@@ -628,8 +628,6 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
      */
     @Override
     public boolean lockPeerLease(String recoveryIdentity) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "lockPeerLease", recoveryIdentity, this);
 
         // Read the appropriate lease file (equivalent to a record in the DB table)
         final File leaseFile = new File(_serverInstallLeaseLogDir + File.separator + recoveryIdentity);
@@ -651,15 +649,11 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
         });
 
         if (!success) {
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "lockPeerLease", false);
             return false;
         }
 
         _peerLeaseLock = lock(leaseFile);
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "lockPeerLease", _peerLeaseLock != null);
         return _peerLeaseLock != null;
     }
 
@@ -671,7 +665,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     private LeaseLock lock(File leaseFile) {
 
         // At this point we are ready to acquire a lock on the lease file prior to attempting to read it.
-        FileChannel fChannel = AccessController.doPrivileged(new PrivilegedAction<FileChannel>() {
+        final FileChannel fChannel = AccessController.doPrivileged(new PrivilegedAction<FileChannel>() {
             @Override
             public FileChannel run() {
                 FileChannel theChannel = null;
@@ -687,12 +681,11 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
             }
         });
 
-        FileLock fLock = null;
         try {
             // Try acquiring the lock without blocking. This method returns
             // null or throws an exception if the file is already locked.
             if (fChannel != null) {
-                fLock = fChannel.tryLock();
+                final FileLock fLock = fChannel.tryLock();
 
                 if (fLock != null) {
                     if (tc.isDebugEnabled())
@@ -728,50 +721,11 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
      * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#releasePeerLease(java.lang.String)
      */
     @Override
-    public boolean releasePeerLease(String recoveryIdentity) throws Exception {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "releasePeerLease", recoveryIdentity, this);
-
+    public void releasePeerLease(String recoveryIdentity) throws Exception {
         if (_peerLeaseLock != null) {
             _peerLeaseLock.release();
             _peerLeaseLock = null;
         }
-
-        // Release the lock - if it is not null!
-        FileLock fLock = null;
-        FileChannel fChannel = null;
-        if (_peerLeaseLock != null) {
-            fLock = _peerLeaseLock.getFileLock();
-            if (fLock != null) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Release the peer lock");
-                try {
-                    fLock.release();
-                } catch (Exception ex) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Caught exception on lock release " + ex);
-                }
-            }
-            // Close the channel
-            fChannel = _peerLeaseLock.getFileChannel();
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Close channel " + fChannel);
-            if (fChannel != null)
-                try {
-                    fChannel.close();
-                } catch (Exception ex) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Caught exception on channel close " + ex);
-                }
-            _peerLeaseLock = null;
-        } else {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "The lease lock was null");
-        }
-
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "releasePeerLease");
-        return true;
     }
 
     /*
@@ -781,8 +735,6 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
      */
     @Override
     public boolean lockLocalLease(String recoveryIdentity) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "lockLocalLease", recoveryIdentity, this);
         // What we need to do is to extract the log location for peer servers and put them somewhere to be used in TxRecoveryAgentImp.initiateRecovery.
 
         // Read the appropriate lease file (equivalent to a record in the DB table)
@@ -792,8 +744,6 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
 
         _localLeaseLock = lock(leaseFile);
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "lockLocalLease", _localLeaseLock != null);
         return _localLeaseLock != null;
     }
 
@@ -803,40 +753,11 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
      * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#releaseLocalLease(java.lang.String)
      */
     @Override
-    public boolean releaseLocalLease(String recoveryIdentity) throws Exception {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "releaseLocalLease", recoveryIdentity, this);
+    public void releaseLocalLease(String recoveryIdentity) throws Exception {
         if (_localLeaseLock != null) {
             _localLeaseLock.release();
             _localLeaseLock = null;
         }
-//        // Release the lock - if it is not null!
-//        FileLock fLock = null;
-//        FileChannel fChannel = null;
-//        if (_localLeaseLock != null) {
-//            String recIdentity = _localLeaseLock.getRecoveryIdentity();
-//            if (recoveryIdentity.equals(recIdentity)) {
-//                fLock = _localLeaseLock.getFileLock();
-//                if (fLock != null) {
-//                    fLock.release();
-//                }
-//                // Close the channel
-//                fChannel = _localLeaseLock.getFileChannel();
-//                if (fChannel != null)
-//                    fChannel.close();
-//                _localLeaseLock = null;
-//            } else {
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "The lock's identity which was " + recIdentity + " did not match the requested identity which was " + recoveryIdentity);
-//            }
-//        } else {
-//            if (tc.isDebugEnabled())
-//                Tr.debug(tc, "The lease lock was unexpectedly null");
-//        }
-//
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "releaseLocalLease");
-        return true;
     }
 
     private class LeaseLock {
@@ -899,20 +820,43 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     public String getBackendURL(String recoveryId) {
         String filename = _serverInstallLeaseLogDir + File.separator + recoveryId;
         String ret = null;
+        int retries = 0;
 
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getBackendURL", filename);
 
-        // Want the second line out of the file
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            // discard first line
-            reader.readLine();
-            // return the second
-            ret = reader.readLine();
-        } catch (Exception e) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "getBackendURL", e);
-        }
+        do {
+            // Want the second line out of the file
+            try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+                // discard first line
+                reader.readLine();
+                // return the second
+                ret = reader.readLine();
+
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "getBackendURL", ret);
+                return ret;
+            } catch (FileNotFoundException e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "getBackendURL: Lease file not found. Recovery is probably done.");
+                break;
+            } catch (IOException e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "getBackendURL: Lease was probably being renewed. Wait 500ms and try again.", e);
+            }
+
+            // Retry for 30s
+            if (retries++ > 60) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "getBackendURL: Couldn't access lease file even after retrying.");
+                break;
+            }
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e1) {
+            }
+        } while (true);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getBackendURL", ret);

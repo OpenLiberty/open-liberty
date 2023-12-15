@@ -15,8 +15,8 @@ src: \
 
 fat.project: true
 
-javac.source: 17
-javac.target: 17
+javac.source: 21
+javac.target: 21
 
 fat.minimum.java.level: 21
 

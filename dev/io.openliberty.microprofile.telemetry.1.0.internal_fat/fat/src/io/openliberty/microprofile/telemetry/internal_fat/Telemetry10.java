@@ -14,6 +14,8 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
+import javax.enterprise.inject.spi.Extension;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -21,14 +23,15 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.CDIArchiveHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.beansxml.BeansAsset.CDIVersion;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -37,7 +40,9 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.ConfigS
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.MetricsDisabledServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.OpenTelemetryBeanServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.SpanCurrentServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpanExtension;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpanServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @RunWith(FATRunner.class)
 public class Telemetry10 extends FATServletClient {
@@ -57,8 +62,7 @@ public class Telemetry10 extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -69,7 +73,16 @@ public class Telemetry10 extends FATServletClient {
                                     MetricsDisabledServlet.class,
                                     SpanCurrentServlet.class,
                                     WithSpanServlet.class,
-                                    ConfigServlet.class);
+                                    WithSpanExtension.class,
+                                    ConfigServlet.class)
+                        .addAsServiceProvider(Extension.class, WithSpanExtension.class);
+
+        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID)) {
+            // On EE7 / CDI 1.2 only, use of AnnotationLiteral requires app permissions
+            app.addAsManifestResource(WithSpanExtension.class.getResource("permissions-ee7.xml"), "permissions.xml");
+        }
+
+        CDIArchiveHelper.addBeansXML(app, CDIVersion.CDI11);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         //Set for testing purposes. The properties in the server.xml should override these variables.

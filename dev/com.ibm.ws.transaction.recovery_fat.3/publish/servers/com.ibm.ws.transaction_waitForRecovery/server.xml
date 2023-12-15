@@ -50,7 +50,7 @@
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/apps/transaction.war" className="java.security.AllPermission"/>
  
-    <logging traceSpecification="Transaction=all:com.ibm.ws.jdbc.*=all:RRA=all:logservice=all=enabled:*=info=enabled"/>
+    <logging traceSpecification="Transaction=all"/>
      
 
 </server>

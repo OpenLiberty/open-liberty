@@ -19,6 +19,10 @@ import static org.hamcrest.Matchers.not;
 
 import java.util.ArrayList;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -28,9 +32,6 @@ import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.instrumentation.annotations.SpanAttribute;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.opentelemetry.sdk.trace.ReadableSpan;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/testWithSpan")
@@ -122,11 +123,18 @@ public class WithSpanServlet extends FATServlet {
         assertThat(ids.get(0), not(equalTo(ids.get(1))));
     }
 
+    @Test
+    public void callAnnotatedViaExtension() {
+        String originalSpanId = Span.current().getSpanContext().getSpanId();
+        ReadableSpan span = spanBean.methodAnnotatedViaExtension();
+        assertThat(span.getSpanContext().getSpanId(), not(equalTo(originalSpanId)));
+        assertThat(span.getParentSpanContext().getSpanId(), equalTo(originalSpanId));
+        assertThat(span.getName(), equalTo("nameFromExtension")); // Set in WithSpanExtension
+        assertThat(span.getKind(), equalTo(SpanKind.PRODUCER)); // Set in WithSpanExtension
+    }
+
     @ApplicationScoped
     public static class SpanBean {
-
-        @Inject
-        private SpanBean spanBean;
 
         @Inject
         private SecondSpanBean secondSpanBean;
@@ -175,6 +183,10 @@ public class WithSpanServlet extends FATServlet {
         public String methodNotAnnotated() {
             Span span = Span.current();
             return span.getSpanContext().getSpanId();
+        }
+
+        public ReadableSpan methodAnnotatedViaExtension() {
+            return (ReadableSpan) Span.current();
         }
 
     }

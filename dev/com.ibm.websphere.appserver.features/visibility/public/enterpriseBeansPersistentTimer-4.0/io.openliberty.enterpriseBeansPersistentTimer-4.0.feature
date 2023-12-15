@@ -3,6 +3,8 @@ symbolicName=io.openliberty.enterpriseBeansPersistentTimer-4.0
 visibility=public
 IBM-App-ForceRestart: install, \
  uninstall
+IBM-API-Package: \
+  com.ibm.websphere.persistence.mbean; type="ibm-api"
 IBM-ShortName: enterpriseBeansPersistentTimer-4.0
 WLP-AlsoKnownAs: ejbPersistentTimer-4.0
 Subsystem-Name: Jakarta Enterprise Beans 4.0 Persistent Timers

@@ -46,8 +46,7 @@ public class TelemetryGlobalOpenTelemetryTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {

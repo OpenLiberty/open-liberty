@@ -17,13 +17,13 @@ import org.eclipse.microprofile.reactive.streams.operators.spi.UnsupportedStageE
 import org.reactivestreams.Processor;
 import org.reactivestreams.Publisher;
 
-import io.openliberty.microprofile.reactive.streams.operators30.spi.impl.LibertyReactiveStreamsEngineImpl;
+import io.smallrye.mutiny.jakarta.streams.Engine;
 
 /**
  * This is a simple subclass that merely records if its methods have been called
  * before delegating to the superclass
  */
-public class TestReactiveStreamsEngine extends LibertyReactiveStreamsEngineImpl {
+public class TestReactiveStreamsEngine extends Engine {
 
     private boolean buildPublisherCalled;
     private boolean buildSubscriberCalled;

@@ -219,11 +219,24 @@ class JakartaEE11Action extends JakartaEEAction {
     /**
      * Invoke the Jakarta transformer on an application with added transformation rules.
      *
+     * @param  appPath                   The application path to be transformed to Jakarta
+     * @param  newAppPath                The application path of the transformed file (or <code>null<code>)
+     * @param  transformationRulesAppend The map with the additional transformation rules to add
+     * @return
+     */
+    @Override
+    void transformApplication(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend) {
+        staticTransformApplication(appPath, newAppPath, transformationRulesAppend);
+    }
+
+    /**
+     * Invoke the Jakarta transformer on an application with added transformation rules.
+     *
      * @param appPath                   The application path to be transformed to Jakarta
      * @param newAppPath                The application path of the transformed file (or <code>null<code>)
      * @param transformationRulesAppend The map with the additional transformation rules to add
      */
-    static void transformApplication(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend) {
+    static void staticTransformApplication(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend) {
         if (transformationRulesAppend != null) {
             TRANSFORMATION_RULES_APPEND.putAll(transformationRulesAppend);
         }

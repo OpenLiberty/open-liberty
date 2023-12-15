@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,6 +28,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.utility.Base58;
 
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.checkpoint.CheckpointKafkaSaslPlainTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedKafkaContainer;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.liberty_login.LibertyLoginModuleTest;
@@ -46,6 +47,7 @@ import componenttest.containers.TestContainerSuite;
 @RunWith(Suite.class)
 @SuiteClasses({
                 KafkaSaslPlainTest.class,
+                CheckpointKafkaSaslPlainTest.class,
                 LibertyLoginModuleTest.class,
                 LibertyLoginModuleXorTest.class,
                 LibertyLoginModuleNoEncTest.class,
@@ -74,15 +76,15 @@ public class SaslPlainTests extends TestContainerSuite {
     public static String generateSecret(String prefix) {
         return prefix + "-" + Base58.randomString(6);
     }
-    
+
     public static AdminClient getAdminClient() throws IOException {
         KafkaUtils.copyTrustStoreToTest(kafkaContainer);
         Map<String, Object> adminClientProps = connectionProperties();
         adminClientProps.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
         adminClientProps.replace(SaslConfigs.SASL_JAAS_CONFIG,
-                "org.apache.kafka.common.security.plain.PlainLoginModule required "
-                        + "username=\"" + ADMIN_USER + "\" "
-                        + "password=\"" + ADMIN_SECRET + "\";");
+                                 "org.apache.kafka.common.security.plain.PlainLoginModule required "
+                                                               + "username=\"" + ADMIN_USER + "\" "
+                                                               + "password=\"" + ADMIN_SECRET + "\";");
         return AdminClient.create(adminClientProps);
     }
 

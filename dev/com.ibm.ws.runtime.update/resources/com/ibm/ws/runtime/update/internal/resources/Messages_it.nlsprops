@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -31,8 +31,8 @@
 # 1100-1199 com.ibm.ws.runtime.update.internal.resources.Messages
 # -------------------------------------------------------------------------------------------------
 
-quiesce.begin=CWWKE1100I: Si attenderanno 30 secondi perch\u00e9 il server passi in stato quiesce.
-quiesce.begin.explanation=Il server attender\u00e0 per un massimo di 30 secondi che venga eseguito il quiesce dei servizi prima di procedere all'arresto.
+quiesce.begin=CWWKE1100I: Attesa fino a {0} secondi per il quiesce del server.
+quiesce.begin.explanation=Il server attende il quiesce dei servizi prima di procedere con la chiusura.
 quiesce.begin.useraction=Non sono richieste azioni.
 
 quiesce.end=CWWKE1101I: Esecuzione del quiesce del server completata.
@@ -40,11 +40,11 @@ quiesce.end.explanation=L'operazione di esecuzione del quiesce \u00e8 stata comp
 quiesce.end.useraction=Non sono richieste azioni.
 
 quiece.warning=CWWKE1102W: L'operazione di esecuzione del quiesce non \u00e8 stata completata. Il server verr\u00e0 ora arrestato.
-quiece.warning.explanation=Il processo non \u00e8 stato in grado di eseguire il quiesce di tutti i servizi entro 30 secondi.
-quiece.warning.useraction=\u00c8 possibile ignorare i messaggi di errore derivanti dalla non disponibilit\u00e0 di servizi richiesti senza alcun rischio.
+quiece.warning.explanation=Il processo non \u00e8 stato in grado di disattivare tutti i servizi entro il periodo di timeout di disattivazione.
+quiece.warning.useraction=\u00c8 possibile ignorare i messaggi di errore derivanti dalla non disponibilit\u00e0 di servizi richiesti senza alcun rischio. Se il problema persiste, aumentare la durata di 'quiesceTimeout' aggiungendo l'attributo 'quiesceTimeout' all'elemento 'executor' nel file 'server.xml'.
 
-client.quiesce.begin=CWWKE1103I: Si attenderanno 30 secondi perch\u00e9 il client passi in stato quiesce.
-client.quiesce.begin.explanation=Il client attender\u00e0 per un massimo di 30 secondi che venga eseguito il quiesce dei servizi prima di procedere all'arresto.
+client.quiesce.begin=CWWKE1103I: Attesa fino a {0} secondi per il quiesce del client.
+client.quiesce.begin.explanation=Il client attende che i servizi vengano disattivati prima di procedere con l'arresto.
 client.quiesce.begin.useraction=Non sono richieste azioni.
 
 client.quiesce.end=CWWKE1104I: Esecuzione del quiesce del client completata.

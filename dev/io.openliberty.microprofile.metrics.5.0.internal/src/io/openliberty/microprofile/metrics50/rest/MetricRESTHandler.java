@@ -137,8 +137,22 @@ public class MetricRESTHandler implements RESTHandler {
                             int status = (int) args[0];
                             String message = (String) args[1];
                             Map<String, String> headers = (Map<String, String>) args[2];
-
-                            headers.forEach((key, value) -> response.addResponseHeader(key, value));
+                            headers.forEach((key, value) -> {
+                                /*
+                                 * For Content-type, avoid adding to header directly and use
+                                 * RestRsponse.setContentType();
+                                 */
+                                if (key.equalsIgnoreCase(Constants.CONTENT_TYPE_HEADER)) {
+                                    if (!value.contains(Constants.CHARSET)) {
+                                        value += (value.endsWith(";")) ? "" : ";";
+                                        value += " " + Constants.CHARSET + "=" + Constants.UTF8;
+                                    }
+                                    // This will automatically set the header for Content-Type
+                                    response.setContentType(value);
+                                } else {
+                                    response.addResponseHeader(key, value);
+                                }
+                            });
                             response.setStatus(status);
                             response.getWriter().write(message);
                         }

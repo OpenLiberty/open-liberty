@@ -13,7 +13,6 @@
 package io.openliberty.microprofile.metrics.internal.monitor_fat;
 
 import java.io.BufferedReader;
-
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -36,11 +35,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -53,6 +51,7 @@ import componenttest.topology.impl.LibertyServer;
  * @SkipForRepeat("MPM3X")
  */
 @RunWith(FATRunner.class)
+@AllowedFFDC("javax.management.InstanceNotFoundException")
 public class MetricsMonitorTest {
 
     private static Class<?> c = MetricsMonitorTest.class;

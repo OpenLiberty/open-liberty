@@ -572,7 +572,7 @@ STATE_DOWNLOAD_FILES_OK=\nV\u0161echna aktiva byla \u00fasp\u011b\u0161n\u011b s
 STATE_CONTACTING_MAVEN_REPO=Z\u0159izov\u00e1n\u00ed p\u0159ipojen\u00ed k nakonfigurovan\u00e9mu \u00falo\u017ei\u0161ti Maven...\nProveden\u00ed tohoto procesu m\u016f\u017ee trvat n\u011bkolik minut.
 STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=P\u0159ipojen\u00ed ke zkonfigurovan\u00e9mu \u00falo\u017ei\u0161ti bylo \u00fasp\u011b\u0161n\u00e9.
 STATE_READING_ENV_PROPS_FILE=\u010cten\u00ed {0}/etc/featureUtility.env...
-STATE_STARTING_VERIFY=Ov\u011b\u0159en\u00ed podpis\u016f...
+STATE_STARTING_VERIFY=Ov\u011b\u0159ov\u00e1n\u00ed podpis\u016f ...
 STATE_VERIFYING=Ov\u011b\u0159en\u00ed {0}...
 PROGRESS_STEP=Krok {0} z {1}
 
@@ -631,7 +631,7 @@ VALIDATION_INVALID_URL=Nepodporovan\u00fd form\u00e1t adresy URL
 VALIDATION_DUPLICATE_KEY=Duplicitn\u00ed n\u00e1zev vlastnosti
 VALIDATION_UNSUPPORTED_PROTOCOL=Nepodporovan\u00fd protokol
 VALIDATION_MISSING_PUBKEY_NAME=Chyb\u00ed n\u00e1zev ve\u0159ejn\u00e9ho kl\u00ed\u010de
-VALIDATION_INVALID_key_URL=Nepodporovan\u00e1 adresa URL kl\u00ed\u010de
+VALIDATION_INVALID_key URL = Nepodporovan\u00e1 adresa URL kl\u00ed\u010de
 VALIDATION_INVALID_KEYID=Neplatn\u00fd form\u00e1t ID kl\u00ed\u010de
 VALIDATION_MISSING_KEYID=Chyb\u011bj\u00edc\u00ed ID kl\u00ed\u010de
 

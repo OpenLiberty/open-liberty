@@ -19,6 +19,7 @@ import static org.junit.Assert.assertThat;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
@@ -39,6 +40,7 @@ import javax.net.ssl.X509TrustManager;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,13 +68,16 @@ public class DefaultHistogramBucketsTest {
 	public static void setUp() throws Exception {
 		trustAll();
 
-		WebArchive testWAR = ShrinkWrap.create(WebArchive.class, "testDefaultBuckets.war")
-				.addPackage("io.openliberty.microprofile.metrics.internal.fat.defaultBuckets")
+		WebArchive testWAR = ShrinkWrap
+				.create(WebArchive.class, "testDefaultBuckets.war")
+				.addPackage(
+						"io.openliberty.microprofile.metrics.internal.fat.defaultBuckets")
 				.addAsManifestResource(new File(
 						"test-applications/testDefaultBucketsApp/resources/META-INF/microprofile-config.properties"),
 						"microprofile-config.properties");
 
-		ShrinkHelper.exportDropinAppToServer(server, testWAR, DeployOptions.SERVER_ONLY);
+		ShrinkHelper.exportDropinAppToServer(server, testWAR,
+				DeployOptions.SERVER_ONLY);
 
 		server.startServer();
 	}
@@ -81,9 +86,18 @@ public class DefaultHistogramBucketsTest {
 	public static void afterClass() throws Exception {
 		// catch if a server is still running.
 		if (server != null && server.isStarted()) {
-			server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E", "CWMCG5003E", "CWPMI2006W", "CWMMC0013E",
-					"CWWKG0033W");
+			server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E",
+					"CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W");
 		}
+	}
+
+	@Before
+	public void beforeTest() {
+
+		// Check that both CWWKO0219I messages for non-secure and secured http
+		// endpoints are initialized
+		server.waitForMultipleStringsInLog(2, "CWWKO0219I");
+
 	}
 
 	@Test
@@ -91,11 +105,12 @@ public class DefaultHistogramBucketsTest {
 		final String method = "testDefaultBucketsEnabledHistogram";
 		// hit rest endpoint
 
-		String res = getHttpsServlet("/testDefaultBuckets/test/histogram");
+		String res = getHttpServlet("/testDefaultBuckets/test/histogram");
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet("/metrics?scope=application&name=testHistogram");
+		String metrics = getHttpsServlet(
+				"/metrics?scope=application&name=testHistogram");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -107,7 +122,8 @@ public class DefaultHistogramBucketsTest {
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
-				if (line.contains("testHistogram_bucket{mp_scope=\"application\",le=\""))
+				if (line.contains(
+						"testHistogram_bucket{mp_scope=\"application\",le=\""))
 					count++;
 
 			}
@@ -122,11 +138,12 @@ public class DefaultHistogramBucketsTest {
 		final String method = "testDefaultBucketsEnabledTimer";
 		// hit rest endpoint
 
-		String res = getHttpsServlet("/testDefaultBuckets/test/timer");
+		String res = getHttpServlet("/testDefaultBuckets/test/timer");
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet("/metrics?scope=application&name=testTimer");
+		String metrics = getHttpsServlet(
+				"/metrics?scope=application&name=testTimer");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -138,7 +155,8 @@ public class DefaultHistogramBucketsTest {
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
-				if (line.contains("testTimer_seconds_bucket{mp_scope=\"application\",le=\""))
+				if (line.contains(
+						"testTimer_seconds_bucket{mp_scope=\"application\",le=\""))
 					count++;
 
 			}
@@ -154,11 +172,12 @@ public class DefaultHistogramBucketsTest {
 		final String method = "testHistogramDefaultBucketsMinMax";
 		// hit rest endpoint
 
-		String res = getHttpsServlet("/testDefaultBuckets/test/histogramMinMax");
+		String res = getHttpServlet("/testDefaultBuckets/test/histogramMinMax");
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet("/metrics?scope=application&name=testHistogramMinMax");
+		String metrics = getHttpsServlet(
+				"/metrics?scope=application&name=testHistogramMinMax");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -170,12 +189,16 @@ public class DefaultHistogramBucketsTest {
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
-				if (line.contains("testHistogramMinMax_bucket{mp_scope=\"application\",le=\"")) {
+				if (line.contains(
+						"testHistogramMinMax_bucket{mp_scope=\"application\",le=\"")) {
 					count++;
-					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*").matcher(line);
+					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*")
+							.matcher(line);
 					if (matcher.find()) {
-						double bucketVal = Double.parseDouble(matcher.group(1).trim());
-						assertThat(bucketVal, allOf(greaterThanOrEqualTo(10.0), lessThanOrEqualTo(88.0)));
+						double bucketVal = Double
+								.parseDouble(matcher.group(1).trim());
+						assertThat(bucketVal, allOf(greaterThanOrEqualTo(10.0),
+								lessThanOrEqualTo(88.0)));
 					}
 				}
 			}
@@ -192,11 +215,12 @@ public class DefaultHistogramBucketsTest {
 
 		// hit rest endpoint
 
-		String res = getHttpsServlet("/testDefaultBuckets/test/timerMinMax");
+		String res = getHttpServlet("/testDefaultBuckets/test/timerMinMax");
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet("/metrics?scope=application&name=testTimerMinMax");
+		String metrics = getHttpsServlet(
+				"/metrics?scope=application&name=testTimerMinMax");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -208,12 +232,16 @@ public class DefaultHistogramBucketsTest {
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
-				if (line.contains("testTimerMinMax_seconds_bucket{mp_scope=\"application\",le=\"")) {
+				if (line.contains(
+						"testTimerMinMax_seconds_bucket{mp_scope=\"application\",le=\"")) {
 					count++;
-					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*").matcher(line);
+					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*")
+							.matcher(line);
 					if (matcher.find()) {
-						double bucketVal = Double.parseDouble(matcher.group(1).trim());
-						assertThat(bucketVal, allOf(greaterThanOrEqualTo(0.5), lessThanOrEqualTo(19.0)));
+						double bucketVal = Double
+								.parseDouble(matcher.group(1).trim());
+						assertThat(bucketVal, allOf(greaterThanOrEqualTo(0.5),
+								lessThanOrEqualTo(19.0)));
 					}
 				}
 			}
@@ -230,11 +258,13 @@ public class DefaultHistogramBucketsTest {
 
 		// hit rest endpoint
 
-		String res = getHttpsServlet("/testDefaultBuckets/test/histogramBadEnableConfig");
+		String res = getHttpServlet(
+				"/testDefaultBuckets/test/histogramBadEnableConfig");
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet("/metrics?scope=application&name=histogram.bad.enable.config");
+		String metrics = getHttpsServlet(
+				"/metrics?scope=application&name=histogram.bad.enable.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -246,7 +276,8 @@ public class DefaultHistogramBucketsTest {
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
-				if (line.contains("histogram_bad_enable_config_bucket{mp_scope=\"application\",le=\"")) {
+				if (line.contains(
+						"histogram_bad_enable_config_bucket{mp_scope=\"application\",le=\"")) {
 					count++;
 				}
 			}
@@ -263,11 +294,13 @@ public class DefaultHistogramBucketsTest {
 
 		// hit rest endpoint
 
-		String res = getHttpsServlet("/testDefaultBuckets/test/timerBadMaxGoodMinConfig");
+		String res = getHttpServlet(
+				"/testDefaultBuckets/test/timerBadMaxGoodMinConfig");
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet("/metrics?scope=application&name=timer.bad.max.good.min.config");
+		String metrics = getHttpsServlet(
+				"/metrics?scope=application&name=timer.bad.max.good.min.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -279,11 +312,14 @@ public class DefaultHistogramBucketsTest {
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
-				if (line.contains("timer_bad_max_good_min_config_seconds_bucket{mp_scope=\"application\",le=\"")) {
+				if (line.contains(
+						"timer_bad_max_good_min_config_seconds_bucket{mp_scope=\"application\",le=\"")) {
 					count++;
-					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*").matcher(line);
+					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*")
+							.matcher(line);
 					if (matcher.find()) {
-						double bucketVal = Double.parseDouble(matcher.group(1).trim());
+						double bucketVal = Double
+								.parseDouble(matcher.group(1).trim());
 						assertThat(bucketVal, greaterThanOrEqualTo(0.2));
 					}
 				}
@@ -301,11 +337,13 @@ public class DefaultHistogramBucketsTest {
 
 		// hit rest endpoint
 
-		String res = getHttpsServlet("/testDefaultBuckets/test/timerBadMinGoodMaxConfig");
+		String res = getHttpServlet(
+				"/testDefaultBuckets/test/timerBadMinGoodMaxConfig");
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet("/metrics?scope=application&name=timer.bad.min.good.max.config");
+		String metrics = getHttpsServlet(
+				"/metrics?scope=application&name=timer.bad.min.good.max.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -317,11 +355,14 @@ public class DefaultHistogramBucketsTest {
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
-				if (line.contains("timer_bad_min_good_max_config_seconds_bucket{mp_scope=\"application\",le=\"")) {
+				if (line.contains(
+						"timer_bad_min_good_max_config_seconds_bucket{mp_scope=\"application\",le=\"")) {
 					count++;
-					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*").matcher(line);
+					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*")
+							.matcher(line);
 					if (matcher.find()) {
-						double bucketVal = Double.parseDouble(matcher.group(1).trim());
+						double bucketVal = Double
+								.parseDouble(matcher.group(1).trim());
 						assertThat(bucketVal, lessThanOrEqualTo(15.0));
 					}
 				}
@@ -339,11 +380,13 @@ public class DefaultHistogramBucketsTest {
 
 		// hit rest endpoint
 
-		String res = getHttpsServlet("/testDefaultBuckets/test/histogramBadMinGoodMaxConfig");
+		String res = getHttpServlet(
+				"/testDefaultBuckets/test/histogramBadMinGoodMaxConfig");
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet("/metrics?scope=application&name=histogram.bad.min.good.max.config");
+		String metrics = getHttpsServlet(
+				"/metrics?scope=application&name=histogram.bad.min.good.max.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -355,11 +398,14 @@ public class DefaultHistogramBucketsTest {
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
-				if (line.contains("histogram_bad_min_good_max_config_bucket{mp_scope=\"application\",le=\"")) {
+				if (line.contains(
+						"histogram_bad_min_good_max_config_bucket{mp_scope=\"application\",le=\"")) {
 					count++;
-					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*").matcher(line);
+					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*")
+							.matcher(line);
 					if (matcher.find()) {
-						double bucketVal = Double.parseDouble(matcher.group(1).trim());
+						double bucketVal = Double
+								.parseDouble(matcher.group(1).trim());
 						assertThat(bucketVal, lessThanOrEqualTo(145.0));
 					}
 				}
@@ -377,11 +423,13 @@ public class DefaultHistogramBucketsTest {
 
 		// hit rest endpoint
 
-		String res = getHttpsServlet("/testDefaultBuckets/test/histogramBadMaxGoodMinConfig");
+		String res = getHttpServlet(
+				"/testDefaultBuckets/test/histogramBadMaxGoodMinConfig");
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet("/metrics?scope=application&name=histogram.bad.max.good.min.config");
+		String metrics = getHttpsServlet(
+				"/metrics?scope=application&name=histogram.bad.max.good.min.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -393,11 +441,14 @@ public class DefaultHistogramBucketsTest {
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
-				if (line.contains("histogram_bad_max_good_min_config_bucket{mp_scope=\"application\",le=\"")) {
+				if (line.contains(
+						"histogram_bad_max_good_min_config_bucket{mp_scope=\"application\",le=\"")) {
 					count++;
-					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*").matcher(line);
+					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*")
+							.matcher(line);
 					if (matcher.find()) {
-						double bucketVal = Double.parseDouble(matcher.group(1).trim());
+						double bucketVal = Double
+								.parseDouble(matcher.group(1).trim());
 						assertThat(bucketVal, greaterThanOrEqualTo(67.0));
 					}
 				}
@@ -415,11 +466,13 @@ public class DefaultHistogramBucketsTest {
 
 		// hit rest endpoint
 
-		String res = getHttpsServlet("/testDefaultBuckets/test/timerGoodMinGoodMaxConfig");
+		String res = getHttpServlet(
+				"/testDefaultBuckets/test/timerGoodMinGoodMaxConfig");
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet("/metrics?scope=application&name=timer.good.min.good.max.config");
+		String metrics = getHttpsServlet(
+				"/metrics?scope=application&name=timer.good.min.good.max.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -431,12 +484,16 @@ public class DefaultHistogramBucketsTest {
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
-				if (line.contains("timer_good_min_good_max_config_seconds_bucket{mp_scope=\"application\",le=\"")) {
+				if (line.contains(
+						"timer_good_min_good_max_config_seconds_bucket{mp_scope=\"application\",le=\"")) {
 					count++;
-					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*").matcher(line);
+					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*")
+							.matcher(line);
 					if (matcher.find()) {
-						double bucketVal = Double.parseDouble(matcher.group(1).trim());
-						assertThat(bucketVal, allOf(greaterThanOrEqualTo(0.3), lessThanOrEqualTo(19.0)));
+						double bucketVal = Double
+								.parseDouble(matcher.group(1).trim());
+						assertThat(bucketVal, allOf(greaterThanOrEqualTo(0.3),
+								lessThanOrEqualTo(19.0)));
 					}
 				}
 			}
@@ -453,11 +510,13 @@ public class DefaultHistogramBucketsTest {
 
 		// hit rest endpoint
 
-		String res = getHttpsServlet("/testDefaultBuckets/test/histogramGoodMaxGoodMinConfig");
+		String res = getHttpServlet(
+				"/testDefaultBuckets/test/histogramGoodMaxGoodMinConfig");
 
 		Log.info(c, method, "REST return " + res);
 
-		String metrics = getHttpsServlet("/metrics?scope=application&name=histogram.good.max.good.min.config");
+		String metrics = getHttpsServlet(
+				"/metrics?scope=application&name=histogram.good.max.good.min.config");
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -469,12 +528,16 @@ public class DefaultHistogramBucketsTest {
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
-				if (line.contains("histogram_good_max_good_min_config_bucket{mp_scope=\"application\",le=\"")) {
+				if (line.contains(
+						"histogram_good_max_good_min_config_bucket{mp_scope=\"application\",le=\"")) {
 					count++;
-					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*").matcher(line);
+					Matcher matcher = Pattern.compile(".*le=\"(\\d+.\\d+)\".*")
+							.matcher(line);
 					if (matcher.find()) {
-						double bucketVal = Double.parseDouble(matcher.group(1).trim());
-						assertThat(bucketVal, allOf(greaterThanOrEqualTo(2.0), lessThanOrEqualTo(78.0)));
+						double bucketVal = Double
+								.parseDouble(matcher.group(1).trim());
+						assertThat(bucketVal, allOf(greaterThanOrEqualTo(2.0),
+								lessThanOrEqualTo(78.0)));
 					}
 				}
 			}
@@ -487,22 +550,25 @@ public class DefaultHistogramBucketsTest {
 	private static void trustAll() throws Exception {
 		try {
 			SSLContext sslContext = SSLContext.getInstance("SSL");
-			sslContext.init(null, new TrustManager[] { new X509TrustManager() {
+			sslContext.init(null, new TrustManager[]{new X509TrustManager() {
 				@Override
-				public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+				public void checkClientTrusted(X509Certificate[] arg0,
+						String arg1) throws CertificateException {
 				}
 
 				@Override
-				public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {
+				public void checkServerTrusted(X509Certificate[] arg0,
+						String arg1) throws CertificateException {
 				}
 
 				@Override
 				public X509Certificate[] getAcceptedIssuers() {
 					return null;
 				}
-			} }, new SecureRandom());
+			}}, new SecureRandom());
 			SSLContext.setDefault(sslContext);
-			HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+			HttpsURLConnection
+					.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 		} catch (Exception e) {
 			Log.error(c, "trustAll", e);
 		}
@@ -511,7 +577,8 @@ public class DefaultHistogramBucketsTest {
 	private String getHttpsServlet(String servletPath) throws Exception {
 		HttpsURLConnection con = null;
 		try {
-			String sURL = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + servletPath;
+			String sURL = "https://" + server.getHostname() + ":"
+					+ server.getHttpDefaultSecurePort() + servletPath;
 			Log.info(c, "getHttpsServlet", sURL);
 			URL checkerServletURL = new URL(sURL);
 			con = (HttpsURLConnection) checkerServletURL.openConnection();
@@ -525,8 +592,9 @@ public class DefaultHistogramBucketsTest {
 				}
 			});
 			String authorization = "Basic "
-					+ Base64.getEncoder().encodeToString(("theUser:thePassword").getBytes(StandardCharsets.UTF_8)); // Java
-																													// 8
+					+ Base64.getEncoder().encodeToString(("theUser:thePassword")
+							.getBytes(StandardCharsets.UTF_8)); // Java
+																// 8
 			con.setRequestProperty("Authorization", authorization);
 			con.setRequestProperty("Accept", "text/plain");
 			con.setRequestMethod("GET");
@@ -534,13 +602,42 @@ public class DefaultHistogramBucketsTest {
 			String sep = System.getProperty("line.separator");
 			String line = null;
 			StringBuilder lines = new StringBuilder();
-			BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(con.getInputStream()));
 
 			while ((line = br.readLine()) != null && line.length() > 0) {
 				if (!line.startsWith("#"))
 					lines.append(line).append(sep);
 			}
 			Log.info(c, "getHttpsServlet", sURL);
+			return lines.toString();
+		} finally {
+			if (con != null)
+				con.disconnect();
+		}
+	}
+
+	private String getHttpServlet(String servletPath) throws Exception {
+		HttpURLConnection con = null;
+		try {
+			String sURL = "http://" + server.getHostname() + ":"
+					+ server.getHttpDefaultPort() + servletPath;
+			URL checkerServletURL = new URL(sURL);
+			con = (HttpURLConnection) checkerServletURL.openConnection();
+			con.setDoInput(true);
+			con.setDoOutput(true);
+			con.setUseCaches(false);
+			con.setRequestMethod("GET");
+			String sep = System.getProperty("line.separator");
+			String line = null;
+			StringBuilder lines = new StringBuilder();
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(con.getInputStream()));
+
+			while ((line = br.readLine()) != null && line.length() > 0) {
+				lines.append(line).append(sep);
+			}
+			Log.info(c, "getHttpServlet", sURL);
 			return lines.toString();
 		} finally {
 			if (con != null)

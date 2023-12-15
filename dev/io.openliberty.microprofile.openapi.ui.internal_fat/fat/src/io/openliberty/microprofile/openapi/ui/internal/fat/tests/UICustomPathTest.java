@@ -86,8 +86,6 @@ public class UICustomPathTest {
         server.addEnvVar(UI_PROPERTY_NAME, UI_PATH_VALUE);
         server.addEnvVar(DOC_PROPERTY_NAME, DOC_PATH_VALUE);
 
-        //Set guards
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         server.startServer();
 
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
@@ -120,7 +118,7 @@ public class UICustomPathTest {
         assertThat("Headerbar image", headerbarWrapper.getCssValue("background-image"), startsWith("url(\"data:image/png"));
 
         // Check we can see and open the operation
-        WebElement testGetOpBlock = waitForElement(driver, By.id("operations-default-get_test"));
+        WebElement testGetOpBlock = waitForElement(driver, By.id("operations-default-get_test__id_"));
         WebElement testGetButton = testGetOpBlock.findElement(By.tagName("button"));
         testGetButton.click();
         WebElement testGet200Response = waitForElement(testGetOpBlock, By.cssSelector("tr.response[data-code=\"200\"]"));

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011,2020 IBM Corporation and others.
+ * Copyright (c) 2011,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,6 +45,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.UserTransaction;
 
 import componenttest.app.FATServlet;
+import fat.jca.resourceadapter.FVTConnection;
+import fat.jca.resourceadapter.FVTConnectionFactory;
+import fat.jca.resourceadapter.FVTManagedConnection;
 import web.mdb.FVTMessageDrivenBean;
 import web.mdb.bindings.FVTMessageDrivenBeanBinding;
 
@@ -464,6 +467,59 @@ public class JCAFVTServlet extends FATServlet {
             }
         } finally {
             con1.close();
+        }
+    }
+
+    /**
+     * Make sure invalid connections are getting cleaned up properly when they go through the non-optimal free pool check
+     */
+    public void testNonOptimalFreePoolInvalidConnectionCleanup(HttpServletRequest request, HttpServletResponse response) throws Throwable {
+        FVTConnectionFactory cf = (FVTConnectionFactory) new InitialContext().lookup("java:comp/env/jms/cf1");
+        UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
+        FVTConnection con1 = null;
+        FVTConnection con2 = null;
+        FVTManagedConnection mc1 = null;
+        FVTManagedConnection mc2 = null;
+
+        try {
+            tran.begin();
+            con1 = (FVTConnection) cf.createConnection("user1", "pwd1");
+            con2 = (FVTConnection) cf.createConnection("user2", "pwd2");
+        } catch (JMSException x) {
+            throw new Exception("Exception thrown creating the initial connections", x);
+        } finally {
+            mc2 = con2.returnManagedConnection();
+            mc1 = con1.returnManagedConnection();
+            con2.close();
+            con1.close();
+            tran.commit();
+        }
+
+        mc1.invalidate();
+        mc2.invalidate();
+
+        try {
+            tran.begin();
+            con1 = (FVTConnection) cf.createConnection("user1", "pwd1");
+            con2 = (FVTConnection) cf.createConnection("user2", "pwd2");
+        } catch (JMSException x) {
+            throw new Exception("Exception thrown during the second connection attempt", x);
+        } finally {
+            con2.close();
+            con1.close();
+            tran.commit();
+        }
+
+        try {
+            tran.begin();
+            con1 = (FVTConnection) cf.createConnection("user1", "pwd1");
+            con2 = (FVTConnection) cf.createConnection("user2", "pwd2");
+        } catch (JMSException x) {
+            throw new Exception("Exception thrown during the third connection attempt", x);
+        } finally {
+            con2.close();
+            con1.close();
+            tran.commit();
         }
     }
 

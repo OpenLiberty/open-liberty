@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,6 +23,18 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
+
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 import io.opentelemetry.api.trace.Span;
@@ -30,16 +42,6 @@ import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.reactivex.Flowable;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.core.Application;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.UriInfo;
 
 @ApplicationPath("/")
 @Path("/")
@@ -64,6 +66,12 @@ public class AgentTestResource extends Application {
         return Span.current().getSpanContext().getTraceId();
     }
 
+    @Path("/getSubResource/{id}")
+    public AgentSubResource getSubResource(@PathParam("id") String id) {
+        Span span = Span.current();
+        return new AgentSubResource(span.getSpanContext().getTraceId());
+    }
+    
     @GET
     @Path("/nestedspans")
     public String createNestedSpans() {
@@ -144,6 +152,12 @@ public class AgentTestResource extends Application {
         Span span = Span.current();
         withSpanNonBeanMethod();
         return span.getSpanContext().getTraceId();
+    }
+    
+    @GET
+    @Path("/pathparameter/{parameter}")
+    public String callPathParameter(@PathParam("parameter") String parameter) {
+        return Span.current().getSpanContext().getTraceId();
     }
 
     @GET

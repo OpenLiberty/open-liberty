@@ -10,7 +10,14 @@ IBM-API-Package: javax.ws.rs; type="spec", \
  javax.ws.rs.ext; type="spec", \
  javax.ws.rs.sse; type="spec", \
  com.ibm.websphere.jaxrs20.multipart; type="ibm-api", \
- com.ibm.websphere.jaxrs.providers.json4j; type="ibm-api"
+ com.ibm.websphere.jaxrs.providers.json4j; type="ibm-api", \
+ javax.activation; type="spec"; require-java:="9", \
+ javax.xml.bind; type="spec"; require-java:="9", \
+ javax.xml.bind.annotation; type="spec"; require-java:="9", \
+ javax.xml.bind.annotation.adapters; type="spec"; require-java:="9", \
+ javax.xml.bind.attachment; type="spec"; require-java:="9", \
+ javax.xml.bind.helpers; type="spec"; require-java:="9", \
+ javax.xml.bind.util; type="spec"; require-java:="9"
 IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 IBM-App-ForceRestart: uninstall, \
  install

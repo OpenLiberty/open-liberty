@@ -607,7 +607,7 @@
 
 7342=The specified boolean value [{0}] for setting allow native sql queries is invalid, the value must either be "true" or "false".
 
-7343=Multiple VPD identifiers (tenant discriminator context property) have been specified. Entity [{1}] uses [{0}] and Entity [{3}] uses [{2}]. When using a Multitenant VPD strategy, there can only be one tenant discriminator column per entity and its context property must be consistent across all the Multitenant VPD entities.
+7343=Multiple VPD identifiers (tenant discriminator context property) have been specified. Entity [{1}] uses [{0}] and Entity [{3}] uses [{2}]. The Multitenant VPD strategy allows only one tenant discriminator column for each entity and its context property must be consistent across all the Multitenant VPD entities.
 
 7344=VPD (connections and DDL generation) is not supported for the platform: [{0}].
 

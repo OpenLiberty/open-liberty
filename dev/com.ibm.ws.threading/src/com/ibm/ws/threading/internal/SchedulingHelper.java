@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015,2021 IBM Corporation and others.
+ * Copyright (c) 2015,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,7 +18,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.RejectedExecutionException;
@@ -28,7 +28,7 @@ import java.util.concurrent.TimeoutException;
 
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.threading.ScheduledPolicyExecutorTask;
+import com.ibm.ws.threading.ScheduledCustomExecutorTask;
 
 /**
  * Base Wrapper for the Scheduled Runnable/Callable returned on overridden schedule methods. It's used to present a consistent state of the
@@ -64,9 +64,12 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
     CountDownLatch m_coordinationLatch;
 
     /**
-     * Default Executor to push dispatches too
+     * The executor to push dispatches to. Typically this is the executor for the Liberty Thread Pool,
+     * but it can be replaced via ScheduledCustomExecutorTask.getExecutor with another executor,
+     * which is typically done to supply an executor that runs tasks on virtual threads or to supply
+     * a PolicyExecutor that applies various constraints to execution of the task.
      */
-    ExecutorService m_executor;
+    Executor m_executor;
 
     /**
      * Future related to submitting to the Default Executor
@@ -94,9 +97,9 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
      *
      * @param task       Callable or Runnable task to schedule.
      * @param inTask     RunnableScheduledFuture associated with the scheduling of inCallable.
-     * @param inExecutor default Executor to direct the dispatch of the inCallable to.
+     * @param inExecutor the executor to direct the dispatch of the inTask to.
      */
-    public SchedulingHelper(Object task, RunnableScheduledFuture<V> inTask, ExecutorService inExecutor, BlockingQueue<Runnable> scheduledExecutorQueue) {
+    public SchedulingHelper(Object task, RunnableScheduledFuture<V> inTask, Executor inExecutor, BlockingQueue<Runnable> scheduledExecutorQueue) {
         this.m_task = task;
         this.m_coordinationLatch = new CountDownLatch(1);
         this.m_executor = inExecutor;
@@ -305,22 +308,22 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
             this.m_executor.execute(futureTask);
             this.m_scheduledExecutorQueue.remove(this);
         } catch (Exception e) {
-            ScheduledPolicyExecutorTask pxtask = null;
+            ScheduledCustomExecutorTask cxtask = null;
             SchedulingRunnableFixedHelper<?> repeatingTaskFuture = null;
-            if (m_task instanceof ScheduledPolicyExecutorTask) {
-                pxtask = (ScheduledPolicyExecutorTask) m_task;
+            if (m_task instanceof ScheduledCustomExecutorTask) {
+                cxtask = (ScheduledCustomExecutorTask) m_task;
             } else if (m_task instanceof SchedulingRunnableFixedHelper) {
                 repeatingTaskFuture = (SchedulingRunnableFixedHelper<?>) m_task;
-                if (repeatingTaskFuture.m_runnable instanceof ScheduledPolicyExecutorTask)
-                    pxtask = (ScheduledPolicyExecutorTask) repeatingTaskFuture.m_runnable;
+                if (repeatingTaskFuture.m_runnable instanceof ScheduledCustomExecutorTask)
+                    cxtask = (ScheduledCustomExecutorTask) repeatingTaskFuture.m_runnable;
             }
 
             // If a callback is available to handle the failure, invoke it. Otherwise, log to FFDC.
-            if (pxtask == null) {
+            if (cxtask == null) {
                 this.m_pendingException = new RuntimeException(e);
                 FFDCFilter.processException(e, getClass().getName(), "315", this);
             } else {
-                this.m_pendingException = pxtask.resubmitFailed(e);
+                this.m_pendingException = cxtask.resubmitFailed(e);
             }
 
             // If this SchedulingHelper is unable to invoke a SchedulingRunnableFixedHelper (for a repeating task),

@@ -41,6 +41,7 @@ Import-Package: \
 Private-Package: \
   io.openliberty.data.internal.persistence.*,\
   io.openliberty.data.internal.persistence.cdi.*,\
+  io.openliberty.data.internal.persistence.model.*,\
   io.openliberty.data.internal.persistence.resources.*,\
   io.openliberty.data.internal.persistence.validation.*
 

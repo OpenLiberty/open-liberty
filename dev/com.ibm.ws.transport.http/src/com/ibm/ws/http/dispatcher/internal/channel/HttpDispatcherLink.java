@@ -22,6 +22,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -117,7 +119,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private volatile UsePrivateHeaders usePrivateHeaders = UsePrivateHeaders.unknown;
     private volatile int configUpdate = 0;
 
-    private final Object WebConnCanCloseSync = new Object();
+    // Using Lock instead of Object with synchronized (WebConnCanCloseSync) to allow
+    // for unmounting when using virtual threads
+    private final Lock WebConnCanCloseSync = new ReentrantLock();
     private boolean WebConnCanClose = true;
     private final String h2InitError = "com.ibm.ws.transport.http.http2InitError";
 
@@ -241,7 +245,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 String toClose = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE));
                 if ((toClose != null) && (toClose.compareToIgnoreCase("true") == 0)) {
                     // want to close down at least once, and only once, for this type of upgraded connection
-                    synchronized (WebConnCanCloseSync) {
+                    WebConnCanCloseSync.lock();
+                    try {
                         if (WebConnCanClose) {
                             // fall through to close logic after setting flag to only fall through once
                             // want to call close outside of the sync to avoid deadlocks.
@@ -255,6 +260,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                             }
                             return;
                         }
+                    } finally {
+                        WebConnCanCloseSync.unlock();
                     }
                 }
             }
@@ -1092,17 +1099,23 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (webconn != null && webconn.equalsIgnoreCase("CLOSED_NON_UPGRADED_STREAMS")) {
                 vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "null");
             } else {
-                synchronized (WebConnCanCloseSync) {
+                WebConnCanCloseSync.lock();
+                try {
                     if (WebConnCanClose) {
                         error = closeStreams();
                     }
+                } finally {
+                    WebConnCanCloseSync.unlock();
                 }
             }
         } else {
-            synchronized (WebConnCanCloseSync) {
+            WebConnCanCloseSync.lock();
+            try {
                 if (WebConnCanClose) {
                     error = closeStreams();
                 }
+            } finally {
+                WebConnCanCloseSync.unlock();
             }
         }
 
@@ -1257,6 +1270,15 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                         ic.sendResponse(StatusCodes.INTERNAL_ERROR, new Exception("Dispatch error", t), true);
                     }
                 }
+
+                if (ic.decrementNeeded.compareAndSet(true, false)) {
+                        //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "decrementNeeded is true: decrement active connection");
+                    }
+                    ic.myChannel.decrementActiveConns();
+                }
+
             } finally {
                 if (this.classifiedExecutor != null) {
                     DecoratedExecutorThread.removeExecutor();

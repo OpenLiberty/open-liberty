@@ -84,7 +84,7 @@ import componenttest.topology.impl.LibertyServer;
                 JaxWSVirtualHostTest.class,
                 WebAppMessageTest.class,
                 URAPIs_Federation_2LDAPsTest.class,
-                SkipIfCheckpointNotSupportedAnnotationTest.class,
+                JavaInfoIsCriuSupportedTest.class,
                 RestConnectorTest.class,
                 AuditTest.class,
                 ConcurrencyTest.class,
@@ -92,7 +92,10 @@ import componenttest.topology.impl.LibertyServer;
                 WebCacheTest.class,
                 XMLbindingsTest.class,
                 LocalConnectorTest.class,
-                WebProfileJSPtest.class
+                WebProfileJSPtest.class,
+                MPTelemetryJaxRsIntegrationTest.class,
+                LogsChangeTraceSpecTest.class,
+                OpenAPIConfigTest.class
 })
 
 public class FATSuite {

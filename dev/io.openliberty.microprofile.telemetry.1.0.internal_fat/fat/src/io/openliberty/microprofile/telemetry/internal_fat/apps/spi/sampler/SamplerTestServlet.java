@@ -20,9 +20,9 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
 /**
  * Test that a sampler can be provided via SPI

@@ -14,8 +14,7 @@ Subsystem-Category: JakartaEE9Application
   io.openliberty.mdb-4.0, \
   io.openliberty.enterpriseBeansHome-4.0, \
   io.openliberty.enterpriseBeansLite-4.0, \
-  com.ibm.websphere.appserver.transaction-2.0, \
-  io.openliberty.connectors-2.0; ibm.tolerates:="2.1"
+  com.ibm.websphere.appserver.transaction-2.0
 kind=ga
 edition=base
 WLP-Activation-Type: parallel

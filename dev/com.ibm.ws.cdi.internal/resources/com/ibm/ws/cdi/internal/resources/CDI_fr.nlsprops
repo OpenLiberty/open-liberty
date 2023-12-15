@@ -104,3 +104,7 @@ enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=Mettez \u00e0 jour vot
 unversioned.beansXML.warning.CWOWB1018W=CWOWB1018W: L'utilisation d'un fichier beans.xml CDI non versionn\u00e9 peut entra\u00eener un comportement inattendu lors de l'utilisation de CDI 4.0 ou version ult\u00e9rieure : {0}
 unversioned.beansXML.warning.CWOWB1018W.explanation=Avant CDI 4.0, un fichier beans.xml non vide, mais non versionn\u00e9 signifiait que l'archive \u00e9tait trait\u00e9e comme une archive beans explicite (toutes les classes peuvent \u00eatre des beans). Dans CDI 4.0 et les versions suivantes, l'archive est consid\u00e9r\u00e9e comme une archive implicite de beans (seules les classes annot\u00e9es peuvent \u00eatre des beans).
 unversioned.beansXML.warning.CWOWB1018W.useraction=Mettez \u00e0 jour le fichier beans.xml de votre application pour utiliser une version plus r\u00e9cente du sch\u00e9ma et assurez-vous que les attributs version et bean-discovery-mode sont correctement d\u00e9finis.
+
+no.bda.for.module.CWOWB1019E=CWOWB1019E: Une erreur interne WebSphere Application Server s'est produite. Contactez le support WebSphere Application Server avec les donn\u00e9es suivantes: {0} {1}
+no.bda.for.module.CWOWB1019E.explanation=CMSG0001
+no.bda.for.module.CWOWB1019E.useraction=Reportez-vous aux informations d'identification de probl\u00e8me sur la page Web de support de WebSphere Application Server : http://www.ibm.com/software/webservers/appserv/was/support.

@@ -30,7 +30,7 @@ public class ConcurrentReactiveTest extends FATServletClient {
 
     public static final String APP_NAME = "reactiveapp";
 
-    @Server("FATServer")
+    @Server("com.ibm.ws.concurrent.fat.reactive.ReactiveServer")
     @TestServlet(servlet = ConcurrentReactiveServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 

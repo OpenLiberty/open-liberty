@@ -9,8 +9,11 @@
         <feature>componentTest-2.0</feature>
     </featureManager>
 
-    <application id="TelemetryServletTestApp" name="TelemetryServletTestApp"
-        type="war" location="TelemetryServletTestApp.war">
+    <application type="war" location="TelemetryServletTestApp.war">
+        <classloader apiTypeVisibility="+third-party" />
+    </application>
+    
+    <application type="war" location="HttpTraceDisabledServletTestApp.war">
         <classloader apiTypeVisibility="+third-party" />
     </application>
     

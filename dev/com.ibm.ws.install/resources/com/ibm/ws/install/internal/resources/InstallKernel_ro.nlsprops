@@ -570,7 +570,7 @@ STATE_DOWNLOAD_FILES_OK=\nToate aseturile au fost desc\u0103rcate cu succes.
 STATE_CONTACTING_MAVEN_REPO=Stabilirea unei conexiuni la o magazie Maven configurat\u0103...\nAcest proces poate dura c\u00e2teva minute p\u00e2n\u0103 la finalizare.
 STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=S-a f\u0103cut conexiunea la magazia configurat\u0103.
 STATE_READING_ENV_PROPS_FILE=Se cite\u015fte {0}/etc/featureUtility.env...
-STATE_STARTING_VERIFY=Se verific\u0103 semn\u0103turile ...
+STATE_STARTING_VERIFY=Verificarea semn\u0103turilor ...
 STATE_VERIFYING=Se verific\u0103 {0} ...
 PROGRESS_STEP=Pasul {0} din {1}
 
@@ -629,7 +629,7 @@ VALIDATION_INVALID_URL=Format de URL nesuportat
 VALIDATION_DUPLICATE_KEY=Nume de proprietate duplicat
 VALIDATION_UNSUPPORTED_PROTOCOL=Protocol nesuportat
 VALIDATION_MISSING_PUBKEY_NAME=Lips\u0103 nume cheie public\u0103
-VALIDATION_INVALID_key_URL=URL de cheie nesuportat
+VALIDATION_INVALID_key URL = URL-ul cheie nesus\u021binut
 VALIDATION_INVALID_KEYID=Format ID de cheie invalid
 VALIDATION_MISSING_KEYID=Lips\u0103 ID de cheie
 

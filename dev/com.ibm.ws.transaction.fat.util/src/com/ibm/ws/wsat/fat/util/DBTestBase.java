@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,23 +42,18 @@ public abstract class DBTestBase extends WSATTest {
 	public static final String setrollbackonly = "setrollbackonly";
 	public static final String transcommit = "transcommit";
 
-	public static final String basicURL = "http://localhost";
+	public static String basicURL = "http://localhost";
 	public static String CLient_URL;
 	public static String Server1_URL;
 	public static String Server2_URL;
 
+	public static LibertyServer client;
+	public static LibertyServer server1;
+	public static LibertyServer server2;
+
 	// Test URL
 	// ATAssertion exists on Operation level in WSDL
 	public static String appName;
-	
-	// ATAssertion with Optional=true exists on Operation level in WSDL
-	public static String appNameOptional;
-	
-	// ATAssertion exists on Service level in WSDL
-	public static String appNameService;
-	
-	// ATAssertion with Optional=true exists on Service level in WSDL
-	public static String appNameServiceOptional;
 
 	public static void initWSATTest(LibertyServer s) throws Exception {
 		s.setServerStartTimeout(START_TIMEOUT);
@@ -105,8 +100,7 @@ public abstract class DBTestBase extends WSATTest {
 				CheckDB(clientResultURL, clientName, expValule[0]);
 				CheckDB(server1ResultURL, server1Name, expValule[0]);
 				CheckDB(server2ResultURL, server2Name, expValule[0]);
-			}
-			else if (expValule.length == 3) {
+			} else if (expValule.length == 3) {
 				CheckDB(clientResultURL, clientName, expValule[0]);
 				CheckDB(server1ResultURL, server1Name, expValule[1]);
 				CheckDB(server2ResultURL, server2Name, expValule[2]);
@@ -114,8 +108,8 @@ public abstract class DBTestBase extends WSATTest {
 				fail("Exception happens: Wrong expect value number: " + expValule.length);
 			}
 		} catch (Exception e) {
+			Log.error(getClass(), "commonTest", e);
 			fail("Exception happens: " + e.toString());
-			e.printStackTrace(System.out);
 		}
 	}
 
@@ -125,7 +119,7 @@ public abstract class DBTestBase extends WSATTest {
 				HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
 		BufferedReader br = HttpUtils.getConnectionStream(con);
 		String result = br.readLine();
-		System.out.println("Init " + serverName + " DB from " + url + ": "
+		Log.info(DBTestBase.class, "InitDB", "Init " + serverName + " DB from " + url + ": "
 				+ result);
 		assertTrue("Init " + serverName + " DB from "+url+", expect is 0, result is "
 				+ result, result.equals(value));
@@ -137,7 +131,7 @@ public abstract class DBTestBase extends WSATTest {
 				HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT);
 		BufferedReader br = HttpUtils.getConnectionStream(con);
 		String result = br.readLine();
-		System.out.println("Check " + serverName + " DB from " + url + ": "
+		Log.info(DBTestBase.class, "CheckDB", "Check " + serverName + " DB from " + url + ": "
 				+ result);
 		assertTrue("Check " + serverName + " DB from "+url+", expect is " + value
 				+ ", result is " + result, result.equals(value));

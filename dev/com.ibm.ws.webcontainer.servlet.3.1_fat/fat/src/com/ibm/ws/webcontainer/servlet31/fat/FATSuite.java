@@ -80,14 +80,6 @@ import componenttest.topology.impl.LibertyServer;
 })
 public class FATSuite {
 
-    /**
-     * @see {@link FatLogHandler#generateHelpFile()}
-     */
-    @BeforeClass
-    public static void generateHelpFile() {
-        FatLogHandler.generateHelpFile();
-    }
-
     @ClassRule
     public static RepeatTests repeat;
 
@@ -134,6 +126,14 @@ public class FATSuite {
          * initialization and server startup.
          */
         server.resetLogMarks();
+    }
+
+    /**
+     * @see {@link FatLogHandler#generateHelpFile()}
+     */
+    @BeforeClass
+    public static void generateHelpFile() {
+        FatLogHandler.generateHelpFile();
     }
 
 }

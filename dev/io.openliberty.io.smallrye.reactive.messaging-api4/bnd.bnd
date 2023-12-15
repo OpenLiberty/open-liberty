@@ -39,5 +39,5 @@ WS-TraceGroup: REACTIVESTREAMS
 instrument.disabled: true
 
 -buildpath: \
-  io.smallrye.reactive:smallrye-reactive-messaging-api;version=4.8.0;strategy=exact,\
-  io.openliberty.io.smallrye.common.2.1;version=latest
+  io.smallrye.reactive:smallrye-reactive-messaging-api;version=4.11.0;strategy=exact,\
+  io.openliberty.io.smallrye.common2;version=latest

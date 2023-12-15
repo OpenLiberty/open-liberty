@@ -18,8 +18,6 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
-
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -28,7 +26,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode
 @RunWith(FATRunner.class)
-@AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException" })
+@AllowedFFDC(value = { "java.sql.SQLRecoverableException", "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException" })
 public class DualServerDynamicDBRotationTest2 extends DualServerDynamicCoreTest2 {
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001")
@@ -56,7 +54,7 @@ public class DualServerDynamicDBRotationTest2 extends DualServerDynamicCoreTest2
 
     @AfterClass
     public static void afterClass() throws Exception {
-        TxTestContainerSuite.afterSuite();
+        dropTables();
     }
 
     @After

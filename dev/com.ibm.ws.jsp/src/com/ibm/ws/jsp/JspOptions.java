@@ -75,7 +75,6 @@ public class JspOptions {
     protected boolean    useDevModeSet = false;   // LIDB4293-2
     protected boolean    useFullPackageNames = false;
     protected boolean    useImplicitTagLibs = true;
-    protected boolean    useInMemory = false;   // LIDB4293-2
     protected boolean    useIterationEval = false;  //PK31135
     protected boolean    useJDKCompiler = false; // defect jdkcompiler
     protected boolean    useJikes = false;
@@ -112,7 +111,7 @@ public class JspOptions {
     protected boolean    deleteClassFilesBeforeRecompile = false; //PI12939
     protected boolean    allowMultipleAttributeValues = false; //PI30519
     protected boolean    allowPrecedenceInJspExpressionsWithConstantString = false; //PI37304
-    
+
     //@BLB Pretouch End
     // defect 400645
     String overriddenJspOptions = new String();
@@ -394,20 +393,11 @@ public class JspOptions {
 			}
 		}//PK31135
 
-        //LIDB4293-2
-		String useInMemoryStr = jspParams.getProperty("useInMemory");
-		if (useInMemoryStr != null) {
-			if (useInMemoryStr.equalsIgnoreCase("true"))
-				this.useInMemory = true;
-			else if (useInMemoryStr.equalsIgnoreCase("false"))
-				this.useInMemory = false;
-			else {
-				if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.INFO)){
-					logger.logp(Level.INFO, CLASS_NAME, "populateOptions", "Invalid value for useInMemory = "+ useInMemoryStr);
-				}
-			}
-		}//LIDB4293-2
+        String useInMemoryStr = jspParams.getProperty("useInMemory");
 
+        if (useInMemoryStr != null && useInMemoryStr.equals("true")) {
+			logger.logp(Level.WARNING, CLASS_NAME, "populateOptions", "jsp.useinmemory.warning");
+        }
         //LIDB4293-2
 		String useDevModeStr = jspParams.getProperty("useDevMode");
 		if (useDevModeStr != null) {
@@ -1246,19 +1236,6 @@ public class JspOptions {
 	//PK31135
 
 	//LIDB4293-2
-	public boolean isUseInMemory() {
-		return useInMemory;
-	}
-
-	public void setUseInMemory(boolean b) {
-		useInMemory = b;
-        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
-            logger.logp(Level.FINEST, CLASS_NAME,"setUseInMemory", "getUseInMemory() [" + isUseInMemory()+"]");
-        }
-	}
-	//LIDB4293-2
-
-	//LIDB4293-2
 	public boolean isUseDevMode() {
 		return useDevMode;
 	}
@@ -1272,13 +1249,9 @@ public class JspOptions {
 			setUseDevModeSet(true);
 	    	setReloadEnabled(true);
 	    	setReloadInterval(1);
-	    	setUseInMemory(true);
 	    	setTrackDependencies(true);
 	    	setDisableJspRuntimeCompilation(false);
 		}
-        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
-            logger.logp(Level.FINEST, CLASS_NAME,"setUseDevMode", "getUseInMemory() [" + isUseInMemory()+"]");
-        }
 	}
 	//LIDB4293-2
 
@@ -1649,7 +1622,6 @@ public class JspOptions {
                 "useDevModeSet =                       [" + useDevModeSet +"]"+separatorString+
                 "useFullPackageNames =                 [" + useFullPackageNames +"]"+separatorString+
                 "useImplicitTagLibs =                  [" + useImplicitTagLibs +"]"+separatorString+
-                "useInMemory =                         [" + useInMemory +"]"+separatorString+
                 "useIterationEval =                    [" + useIterationEval +"]"+separatorString+
                 "useJDKCompiler =                      [" + useJDKCompiler +"]"+separatorString+
                 "useJikes =                            [" + useJikes +"]"+separatorString+

@@ -1,12 +1,12 @@
 package com.ibm.tx.jta.util;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -86,49 +86,49 @@ public final class TranLogConfiguration {
 
     public int type() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "type", _type);
+            Tr.debug(tc, "type: {0}", _type);
         return _type;
     }
 
     public String streamName() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "streamName", _streamName);
+            Tr.debug(tc, "streamName: {0}", _streamName);
         return _streamName;
     }
 
     public String originalLogDirectory() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "originalLogDirectory", _originalLogDirectory);
+            Tr.debug(tc, "originalLogDirectory: {0}", _originalLogDirectory);
         return _originalLogDirectory;
     }
 
     public String expandedLogDirectory() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "expandedLogDirectory", _expandedLogDirectory);
+            Tr.debug(tc, "expandedLogDirectory: {0}", _expandedLogDirectory);
         return _expandedLogDirectory;
     }
 
     public int logFileSize() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "logFileSize", _logFileSize);
+            Tr.debug(tc, "logFileSize: {0}", _logFileSize);
         return _logFileSize;
     }
 
     public boolean enabled() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "enabled", _enabled);
+            Tr.debug(tc, "enabled: {0}", _enabled);
         return _enabled;
     }
 
     public String customId() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "customId", _customId);
+            Tr.debug(tc, "customId: {0}", _customId);
         return _customId;
     }
 
     public Properties customProperties() {
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "customProperties", _customProps);
+            Tr.debug(tc, "customProperties: {0}", _customProps);
         return _customProps;
     }
 }

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012,2020 IBM Corporation and others.
+ * Copyright (c) 2012,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,6 +44,8 @@ public class FVTManagedConnection implements LazyEnlistableManagedConnection, Lo
     final String user;
     private final XAConnection xacon;
 
+    private boolean invalid = false; // For invalidating managed connection
+
     FVTManagedConnection(final FVTManagedConnectionFactory mcf, FVTConnectionRequestInfo cri, Subject subj) throws ResourceException {
         this.mcf = mcf;
         this.cri = cri;
@@ -67,9 +69,9 @@ public class FVTManagedConnection implements LazyEnlistableManagedConnection, Lo
             });
 
         try {
-            this.xacon = userPwd == null
-                            ? mcf.adapter.xaDataSource.getXAConnection()
-                            : mcf.adapter.xaDataSource.getXAConnection(userPwd[0], userPwd[1]);
+            this.xacon = userPwd == null 
+		       ? mcf.adapter.xaDataSource.getXAConnection() 
+		       : mcf.adapter.xaDataSource.getXAConnection(userPwd[0], userPwd[1]);
         } catch (SQLException x) {
             throw new ResourceAllocationException(x);
         }
@@ -231,5 +233,21 @@ public class FVTManagedConnection implements LazyEnlistableManagedConnection, Lo
     @Override
     public void setLogWriter(PrintWriter writer) throws ResourceException {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Invalidate connection
+     */
+    public void invalidate() {
+        invalid = true;
+    }
+
+    /**
+     * Check if connection has been invalidated
+     *
+     * @return
+     */
+    public boolean isInvalid() {
+        return invalid;
     }
 }

@@ -26,7 +26,7 @@
 		id="spOP"
 		authFilterRef="mySamlFilter"
 		wantAssertionsSigned="true"
-		signatureMethodAlgorithm="SHA1"
+		signatureMethodAlgorithm="SHA256"
 		authnRequestsSigned="true"
 		forceAuthn="false"
 		isPassive="false"

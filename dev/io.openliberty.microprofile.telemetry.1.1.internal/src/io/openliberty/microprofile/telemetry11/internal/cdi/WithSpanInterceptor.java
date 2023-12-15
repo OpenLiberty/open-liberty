@@ -12,14 +12,15 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry11.internal.cdi;
 
+import javax.annotation.Priority;
+import javax.inject.Inject;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
+
 import io.openliberty.microprofile.telemetry.internal.common.cdi.AbstractWithSpanInterceptor;
-import io.openliberty.microprofile.telemetry.internal.common.cdi.MethodRequest;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.opentelemetry.instrumentation.api.annotation.support.MethodSpanAttributesExtractor;
-import jakarta.annotation.Priority;
-import jakarta.inject.Inject;
-import jakarta.interceptor.Interceptor;
 
 @WithSpan
 @Interceptor
@@ -34,9 +35,9 @@ public class WithSpanInterceptor extends AbstractWithSpanInterceptor {
     //OpenTelemetry renamed MethodSpanAttributesExtractor.newInstance to MethodSpanAttributesExtractor.create
     //So we move this method to non-common code.
     @Override
-    protected MethodSpanAttributesExtractor<MethodRequest, Void> getMethodSpanAttributesExtractor() {
-        return MethodSpanAttributesExtractor.create(MethodRequest::getMethod,
+    protected MethodSpanAttributesExtractor<InvocationContext, Void> getMethodSpanAttributesExtractor() {
+        return MethodSpanAttributesExtractor.create(InvocationContext::getMethod,
                                                     getNewWithSpanParameterAttributeNamesExtractor(),
-                                                    MethodRequest::getArgs);
+                                                    InvocationContext::getParameters);
     }
 }

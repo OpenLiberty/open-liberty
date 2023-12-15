@@ -631,7 +631,7 @@ VALIDATION_INVALID_URL=Nem t\u00e1mogatott URL form\u00e1tum
 VALIDATION_DUPLICATE_KEY=Ism\u00e9tl\u0151d\u0151 tulajdons\u00e1gn\u00e9v
 VALIDATION_UNSUPPORTED_PROTOCOL=Nem t\u00e1mogatott protokoll
 VALIDATION_MISSING_PUBKEY_NAME=Hi\u00e1nyz\u00f3 nyilv\u00e1nos kulcs n\u00e9v
-VALIDATION_INVALID_key_URL=Nem t\u00e1mogatott kulcs URL
+VALIDATION_INVALID_key URL = Nem t\u00e1mogatott kulcs URL
 VALIDATION_INVALID_KEYID=\u00c9rv\u00e9nytelen kulcsazonos\u00edt\u00f3 form\u00e1tum
 VALIDATION_MISSING_KEYID=Hi\u00e1nyz\u00f3 kulcsazonos\u00edt\u00f3
 

@@ -2,6 +2,12 @@
 symbolicName=com.ibm.websphere.appserver.wasJmsSecurity-1.0
 WLP-DisableAllFeatures-OnConflict: false
 visibility=public
+IBM-API-Package: \
+  com.ibm.wsspi.security.tai; type="ibm-api", \
+  com.ibm.wsspi.security.token; type="ibm-api", \
+  com.ibm.wsspi.security.auth.callback; type="ibm-api", \
+  com.ibm.wsspi.security.common.auth.module; type="ibm-api", \
+  com.ibm.websphere.security.auth.callback; type="ibm-api"
 IBM-ShortName: wasJmsSecurity-1.0
 Subsystem-Name: Message Server Security 1.0
 -features=\

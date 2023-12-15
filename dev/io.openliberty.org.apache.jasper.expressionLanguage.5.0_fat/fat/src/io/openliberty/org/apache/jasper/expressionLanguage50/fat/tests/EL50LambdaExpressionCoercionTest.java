@@ -18,11 +18,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.el50.fat.coercion.servlets.lambda.EL50LambdaExpressionCoercionServlet;
-import io.openliberty.org.apache.jasper.expressionLanguage50.fat.ELUtils;
 
 /**
  * Tests to ensure jakarta.el.LambdaExpression can be coerced to a functional interface, such as java.util.function.Predicate
@@ -38,12 +36,6 @@ public class EL50LambdaExpressionCoercionTest extends FATServletClient {
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "EL50Coercion.war", "io.openliberty.el50.fat.coercion.servlets.lambda");
-
-        // Set websphere.java.security.exempt=true because Expression Language 6.0 removed all references
-        // to the SecurityManager and related APIs.
-        if (JakartaEEAction.isEE11OrLaterActive()) {
-            ELUtils.setServerJavaSecurityExempt(server);
-        }
 
         server.startServer(EL50LambdaExpressionCoercionTest.class.getSimpleName() + ".log");
     }

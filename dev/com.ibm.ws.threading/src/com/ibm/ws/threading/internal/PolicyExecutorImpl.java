@@ -27,8 +27,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,9 +51,9 @@ import com.ibm.ws.threading.VirtualThreadOps;
 import com.ibm.ws.threading.internal.PolicyTaskFutureImpl.InvokeAnyLatch;
 
 /**
- * Policy executors are backed by the Liberty global thread pool,
+ * Policy executors are backed by the Liberty thread pool or virtual threads,
  * but allow concurrency constraints and various queue attributes
- * to be controlled independently of the global thread pool.
+ * to be controlled independently.
  */
 public class PolicyExecutorImpl implements PolicyExecutor {
     private static final TraceComponent tc = Tr.register(PolicyExecutorImpl.class, "concurrencyPolicy", "com.ibm.ws.threading.internal.resources.ThreadingMessages");
@@ -91,9 +93,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
     private final AtomicInteger expeditesAvailable = new AtomicInteger();
 
-    ExecutorServiceImpl globalExecutor;
+    final String identifier;
 
-    String identifier;
+    ExecutorServiceImpl libertyThreadPool;
 
     private int maxConcurrency;
 
@@ -121,12 +123,13 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     private volatile boolean runIfQueueFull;
 
     /**
-     * Tasks that this policy executor is running on global executor threads. This is needed for the life cycle operations.
+     * Tasks that this policy executor is running on Liberty thread pool threads or virtual threads.
+     * This is needed for the life cycle operations.
      */
     private final Set<PolicyTaskFutureImpl<?>> running = Collections.newSetFromMap(new ConcurrentHashMap<PolicyTaskFutureImpl<?>, Boolean>());
 
     /**
-     * Count of tasks that this policy executor is running on global executor threads.
+     * Count of tasks that this policy executor is running on Liberty thread pool threads or virtual threads.
      */
     private final AtomicInteger runningCount = new AtomicInteger();
 
@@ -148,13 +151,25 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     private final AtomicReference<State> state = new AtomicReference<State>(State.ACTIVE);
 
     /**
+     * Whether or not to create virtual threads.
+     * Allow setting this to true only if virtualThreadOps is non-null.
+     */
+    private volatile boolean virtual;
+
+    /**
+     * An executor for running tasks on a thread from this policy executor's ThreadFactory for virtual threads.
+     * Only available on Java 21+. This is populated the first time virtual is set to true.
+     */
+    private volatile Executor virtualThreadExecutor;
+
+    /**
      * Operations related to virtual threads that are only available on Java 21+.
      */
     private final VirtualThreadOps virtualThreadOps;
 
     /**
-     * Counter of tasks for which we didn't submit a GlobalPoolTask in order to honor maxConcurrency.
-     * In deciding whether a GlobalPoolTask should be resubmitted, this counter can be decremented (if positive).
+     * Counter of tasks for which we didn't submit an AsyncTask in order to honor maxConcurrency.
+     * In deciding whether an AsyncTask should be resubmitted, this counter can be decremented (if positive).
      */
     private final AtomicInteger withheldConcurrency = new AtomicInteger();
 
@@ -175,10 +190,10 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     /**
-     * These tasks run on the global thread pool.
+     * These tasks run on the Liberty thread pool or on virtual threads.
      * Their role is to run tasks that are queued up on the policy executor.
      */
-    private class GlobalPoolTask implements QueueItem, Runnable {
+    private class AsyncTask implements QueueItem, Runnable {
         // Indicates whether or not this task should be expedited vs enqueued.
         private boolean expedite;
 
@@ -222,10 +237,12 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             // Avoid reschedule if we are in a state that disallows starting tasks or if no withheld tasks remain
             if (canRun && withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire()) {
                 decrementWithheldConcurrency();
-                if (acquireExpedite() > 0)
-                    expediteGlobal(GlobalPoolTask.this);
+                if (virtual)
+                    enqueueVirtual(AsyncTask.this);
+                else if (acquireExpedite() > 0)
+                    expediteToThreadPool(AsyncTask.this);
                 else
-                    enqueueGlobal(GlobalPoolTask.this);
+                    enqueueToThreadPool(AsyncTask.this);
             }
         }
     }
@@ -257,20 +274,53 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     /**
+     * An executor for running tasks on a thread from this policy executor's ThreadFactory for virtual threads.
+     */
+    private class VirtualThreadExecutor implements Executor {
+        private final ThreadFactory threadFactory;
+
+        @Trivial
+        private VirtualThreadExecutor() {
+            threadFactory = virtualThreadOps.createFactoryOfVirtualThreads(identifier + '-', 1L, false, null);
+        }
+
+        @Override
+        public void execute(Runnable task) {
+            threadFactory.newThread(task).start();
+        }
+
+        @Override
+        @Trivial
+        public int hashCode() {
+            return PolicyExecutorImpl.this.hashCode();
+        }
+
+        @Override
+        @Trivial
+        public String toString() {
+            String tf = threadFactory.toString();
+            return new StringBuilder(tf.length() + 31) //
+                            .append("VirtualThreadExecutor@").append(Integer.toHexString(hashCode())) //
+                            .append(' ').append(tf) //
+                            .toString();
+        }
+    }
+
+    /**
      * This constructor is used by PolicyExecutorProvider.
      *
-     * @param globalExecutor   the Liberty global executor, which was obtained by the PolicyExecutorProvider via declarative services.
-     * @param identifier       unique identifier for this instance, to be used for monitoring and problem determination.
-     * @param owner            application that owns the policy executor instance. Null if not owned by a single application.
-     * @param policyExecutors  list of policy executor instances created by the PolicyExecutorProvider.
-     *                             Each instance is responsible for adding and removing itself from the list per its life cycle.
-     * @param virtualThreadOps virtual thread operations that are only available on Java 21+.
+     * @param libertyThreadPool the Liberty thread pool, which was obtained by the PolicyExecutorProvider via declarative services.
+     * @param identifier        unique identifier for this instance, to be used for monitoring and problem determination.
+     * @param owner             application that owns the policy executor instance. Null if not owned by a single application.
+     * @param policyExecutors   list of policy executor instances created by the PolicyExecutorProvider.
+     *                              Each instance is responsible for adding and removing itself from the list per its life cycle.
+     * @param virtualThreadOps  virtual thread operations that are only available on Java 21+.
      * @throws IllegalStateException if an instance with the specified unique identifier already exists and has not been shut down.
      * @throws NullPointerException  if the specified identifier is null
      */
-    public PolicyExecutorImpl(ExecutorServiceImpl globalExecutor, String identifier, String owner,
+    public PolicyExecutorImpl(ExecutorServiceImpl libertyThreadPool, String identifier, String owner,
                               ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors, VirtualThreadOps virtualThreadOps) {
-        this.globalExecutor = globalExecutor;
+        this.libertyThreadPool = libertyThreadPool;
         this.identifier = identifier;
         this.owner = owner;
         this.policyExecutors = policyExecutors;
@@ -293,6 +343,20 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         int a;
         while ((a = expeditesAvailable.get()) > 0 && !expeditesAvailable.compareAndSet(a, a - 1));
         return a; // returning the value rather than true/false will enable better debug
+    }
+
+    /**
+     * Arranges for a callback to run asynchronously, either on a virtual thread or on the
+     * Liberty thread pool.
+     *
+     * @param callback the callback action.
+     */
+    @Trivial
+    public void asyncCallback(Runnable callback) {
+        if (virtual)
+            virtualThreadExecutor.execute(callback);
+        else
+            libertyThreadPool.submit(callback);
     }
 
     @Override
@@ -335,7 +399,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 case ENQUEUE_STOPPED:
                 case TASKS_CANCELLING:
                 case TASKS_CANCELLED:
-                    // Transition to TERMINATED state if there are no tasks in the queue and we have no tasks on the global executor.
+                    // Transition to TERMINATED state if there are no tasks in the queue and we have no tasks running on the Liberty thread pool or virtual threads.
                     if (queue.isEmpty()) {
                         if (remaining > 0 ? maxConcurrencyConstraint.tryAcquire(maxConcurrency, remaining < pollInterval ? remaining : pollInterval, TimeUnit.NANOSECONDS) //
                                         : maxConcurrencyConstraint.tryAcquire(maxConcurrency)) {
@@ -388,6 +452,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             if (num > maxConcurrency)
                 throw new IllegalArgumentException("expedite: " + num + " > maxConcurrency: " + maxConcurrency);
 
+            if (virtual && num != 0)
+                throw new IllegalArgumentException("expedite: " + num + ", virtual: true");
+
             if (state.get() != State.ACTIVE)
                 throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "expedite", identifier));
 
@@ -396,14 +463,14 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         }
 
         // Expedite as many of the remaining tasks as the available maxConcurrency permits and increased expedites
-        // will allow. We are choosing not to revoke GlobalPoolTasks that have already been enqueued as non-expedited,
+        // will allow. We are choosing not to revoke AsyncTasks that have already been enqueued as non-expedited,
         // which means we do not guarantee an increase in expedites to fully go into effect immediately.
-        // Any reduction to expedites is handled gradually, as expedited GlobalPoolTasks complete.
+        // Any reduction to expedites is handled gradually, as expedited AsyncTasks complete.
         if (a > 0) {
             while (a-- > 0 && withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire())
                 if (acquireExpedite() > 0) {
                     decrementWithheldConcurrency();
-                    expediteGlobal(new GlobalPoolTask());
+                    expediteToThreadPool(new AsyncTask());
                 } else {
                     maxConcurrencyConstraint.release();
                     break;
@@ -415,7 +482,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
     /**
      * Decrement the counter of withheld concurrency only if positive.
-     * This method should only ever be invoked if the caller is about to enqueue a task to the global executor.
+     * This method should only ever be invoked if the caller is about to enqueue a task to the Liberty thread pool or a virtual thread.
      * Otherwise there is a risk of a race condition where withheldConcurrency decrements to 0 with a task still on the queue.
      */
     @Trivial
@@ -429,7 +496,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     /**
      * Attempt to add a task to the policy executor's queue, following the configured
      * behavior for waiting and rejecting vs running on the current thread if the queue is at capacity.
-     * As needed, ensure that tasks are submitted to the global executor to process
+     * As needed, ensure that tasks are submitted to the Liberty thread pool or virtual threads to process
      * the queued up tasks.
      *
      * @param policyTaskFuture       submitted task and its Future.
@@ -437,7 +504,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
      * @param runIfQueueFullOverride indicates if a task should always or may never run on the current thread
      *                                   if no queue positions are available. A value of null means the runIfQueueFull configuration will determine.
      *                                   A value of true must only be specified if the caller already has a permit or doesn't need one.
-     * @return true if the task was enqueued for later execution by the global thread pool.
+     * @return true if the task was enqueued for later execution by the Liberty thread pool or a virtual thread.
      *         If the task instead ran on the current thread, then returns false.
      * @throws RejectedExecutionException if the task is rejected rather than being queued.
      *                                        If this method runs the task on the current thread and the task raises InterruptedException,
@@ -494,7 +561,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     && cbQueueSize.compareAndSet(callback, null)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "callback: queue capacity < " + callback.threshold, callback.runnable);
-                    globalExecutor.submit(callback.runnable);
+                    asyncCallback(callback.runnable);
                 }
 
                 policyTaskFuture.accept(false);
@@ -505,10 +572,12 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     Tr.debug(this, tc, "withheld concurrency --> " + w);
                 if (maxConcurrencyConstraint.tryAcquire()) {
                     decrementWithheldConcurrency();
-                    if (acquireExpedite() > 0)
-                        expediteGlobal(new GlobalPoolTask());
+                    if (virtual)
+                        enqueueVirtual(new AsyncTask());
+                    else if (acquireExpedite() > 0)
+                        expediteToThreadPool(new AsyncTask());
                     else
-                        enqueueGlobal(new GlobalPoolTask());
+                        enqueueToThreadPool(new AsyncTask());
                 }
 
                 // Check if shutdown occurred since acquiring the permit to enqueue, and if so, try to remove the queued task
@@ -565,17 +634,40 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     /**
-     * Queue a task to the global executor.
-     * Prereq: maxConcurrencyConstraint permit must already be acquired to reflect the task being queued to global.
-     * If unsuccessful in queuing to global, this method releases the maxConcurrencyConstraint permit.
+     * Queue a task to the Liberty thread pool.
+     * Prereq: maxConcurrencyConstraint permit must already be acquired to reflect the task being queued.
+     * If unsuccessful in queuing, this method releases the maxConcurrencyConstraint permit.
      *
-     * @param globalTask task that can execute tasks that are queued to the policy executor.
+     * @param asyncTask task that can execute tasks that are queued to the policy executor.
      */
-    private void enqueueGlobal(GlobalPoolTask globalTask) {
-        globalTask.expedite = false;
+    private void enqueueToThreadPool(AsyncTask asyncTask) {
+        asyncTask.expedite = false;
         boolean submitted = false;
         try {
-            globalExecutor.executeWithoutInterceptors(globalTask);
+            libertyThreadPool.executeWithoutInterceptors(asyncTask);
+            submitted = true;
+        } finally {
+            if (!submitted) {
+                maxConcurrencyConstraint.release();
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "expedites/maxConcurrency available", expeditesAvailable, maxConcurrencyConstraint.availablePermits());
+            }
+        }
+    }
+
+    /**
+     * Queue a task to a virtual thread.
+     * Prereq: maxConcurrencyConstraint permit must already be acquired to reflect the task being queued.
+     * If unsuccessful in queuing, this method releases the maxConcurrencyConstraint permit.
+     *
+     * @param asyncTask task that can execute tasks that are queued to the policy executor.
+     */
+    private void enqueueVirtual(AsyncTask asyncTask) {
+        asyncTask.expedite = false;
+        boolean submitted = false;
+        try {
+            virtualThreadExecutor.execute(asyncTask);
             submitted = true;
         } finally {
             if (!submitted) {
@@ -593,19 +685,19 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     /**
-     * Expedite a task to the global executor.
+     * Expedite a task to the Liberty thread pool.
      * Prereq: maxConcurrencyConstraint permit must already be acquired and
-     * expeditesAvailable must already be decremented to reflect the task being expedited to global.
-     * If unsuccessful in expediting to global, this method releases the maxConcurrencyConstraint permit
+     * expeditesAvailable must already be decremented to reflect the task being expedited.
+     * If unsuccessful in expediting, this method releases the maxConcurrencyConstraint permit
      * and increments expeditesAvailable.
      *
-     * @param globalTask task that can execute tasks that are queued to the policy executor.
+     * @param asyncTask task that can execute tasks that are queued to the policy executor.
      */
-    private void expediteGlobal(GlobalPoolTask globalTask) {
-        globalTask.expedite = true;
+    private void expediteToThreadPool(AsyncTask asyncTask) {
+        asyncTask.expedite = true;
         boolean submitted = false;
         try {
-            globalExecutor.executeWithoutInterceptors(globalTask);
+            libertyThreadPool.executeWithoutInterceptors(asyncTask);
             submitted = true;
         } finally {
             if (!submitted) {
@@ -636,6 +728,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     @Override
     public int getRunningTaskCount() {
         return runningCount.get();
+    }
+
+    @Override
+    public Executor getVirtualThreadExecutor() {
+        return virtual == true ? virtualThreadExecutor : null;
     }
 
     @Override
@@ -973,7 +1070,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             case ENQUEUE_STOPPED:
             case TASKS_CANCELLING:
             case TASKS_CANCELLED:
-                // Transition to TERMINATED state if there are no tasks in the queue and we have no tasks on the global executor
+                // Transition to TERMINATED state if there are no tasks in the queue and we have no tasks on the Liberty thread pool or on virtual threads
                 if (queue.isEmpty() && maxConcurrencyConstraint.tryAcquire(maxConcurrency)) {
                     State previous = state.getAndSet(State.TERMINATED);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
@@ -1010,7 +1107,10 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
         while (withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire()) {
             decrementWithheldConcurrency();
-            enqueueGlobal(new GlobalPoolTask());
+            if (virtual)
+                enqueueVirtual(new AsyncTask());
+            else
+                enqueueToThreadPool(new AsyncTask());
         }
 
         return this;
@@ -1056,7 +1156,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 && cbQueueSize.compareAndSet(callback, null)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "callback: queue capacity < " + callback.threshold, callback.runnable);
-                globalExecutor.submit(callback.runnable);
+                asyncCallback(callback.runnable);
             }
         }
 
@@ -1093,7 +1193,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             && cbConcurrency.compareAndSet(callback, null)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "callback: concurrency > " + max, runnable);
-            globalExecutor.submit(runnable);
+            asyncCallback(runnable);
         }
         return previous == null ? null : previous.runnable;
     }
@@ -1124,7 +1224,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             && cbQueueSize.compareAndSet(callback, null)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "callback: queue capacity < " + minAvailable, runnable);
-            globalExecutor.submit(runnable);
+            asyncCallback(runnable);
         }
         return previous == null ? null : previous.runnable;
     }
@@ -1163,7 +1263,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     && cbLateStart.compareAndSet(callback, null)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "callback: late start " + delay + "ns > " + callback.threshold + "ns", callback.runnable);
-                    globalExecutor.submit(callback.runnable);
+                    asyncCallback(callback.runnable);
                 }
             }
 
@@ -1173,7 +1273,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 && cbConcurrency.compareAndSet(callback, null)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "callback: concurrency > " + callback.threshold, callback.runnable);
-                globalExecutor.submit(callback.runnable);
+                asyncCallback(callback.runnable);
             }
 
             if (state.get().canStartTask) {
@@ -1344,7 +1444,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     /**
-     * Releases a permit against maxConcurrency or transfers it to a worker task that runs on the global thread pool.
+     * Releases a permit against maxConcurrency or transfers it to a worker task that runs on the Liberty thread pool or a virtual thread.
      */
     @Trivial
     private void transferOrReleasePermit() {
@@ -1354,13 +1454,15 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             Tr.debug(this, tc, "expedites/maxConcurrency available",
                      expeditesAvailable, maxConcurrencyConstraint.availablePermits());
 
-        // The permit might be needed to run tasks on the global executor,
+        // The permit might be needed to run tasks on the Liberty thread pool or virtual thread,
         if (!queue.isEmpty() && withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire()) {
             decrementWithheldConcurrency();
-            if (acquireExpedite() > 0)
-                expediteGlobal(new GlobalPoolTask());
+            if (virtual)
+                enqueueVirtual(new AsyncTask());
+            else if (acquireExpedite() > 0)
+                expediteToThreadPool(new AsyncTask());
             else
-                enqueueGlobal(new GlobalPoolTask());
+                enqueueToThreadPool(new AsyncTask());
         }
     }
 
@@ -1377,10 +1479,17 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         long u_maxWaitForEnqueue = (Long) props.get("maxWaitForEnqueue");
         boolean u_runIfQueueFull = (Boolean) props.get("runIfQueueFull");
         long u_startTimeout = null == (v = props.get("startTimeout")) ? -1l : (Long) v;
+        boolean useVirtualThreads = null == (v = props.get("virtual")) ? false : (Boolean) v;;
 
         // Validation that cannot be performed by metatype:
+        if (useVirtualThreads && virtualThreadOps == null)
+            throw new IllegalArgumentException("virtual: true");
+
         if (u_expedite > u_max)
             throw new IllegalArgumentException("expedite: " + u_expedite + " > max: " + u_max);
+
+        if (useVirtualThreads && u_expedite != 0)
+            throw new IllegalArgumentException("expedite: " + u_expedite + ", virtual: true");
 
         if (u_maxWaitForEnqueue < 0 || u_maxWaitForEnqueue > maxMS)
             throw new IllegalArgumentException("maxWaitForEnqueue: " + u_maxWaitForEnqueue);
@@ -1414,6 +1523,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             else if (queueCapacityAdded < 0)
                 maxQueueSizeConstraint.reducePermits(-queueCapacityAdded);
             maxQueueSize = u_maxQueueSize;
+
+            if (useVirtualThreads && virtualThreadExecutor == null)
+                virtualThreadExecutor = new VirtualThreadExecutor();
+
+            virtual = useVirtualThreads;
         }
 
         if (queueCapacityAdded < 0) {
@@ -1423,20 +1537,23 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 && cbQueueSize.compareAndSet(callback, null)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "callback: queue capacity < " + callback.threshold, callback.runnable);
-                globalExecutor.submit(callback.runnable);
+                asyncCallback(callback.runnable);
             }
         }
 
         // Expedite as many of the remaining tasks as the available maxConcurrency permits and increased expedites
-        // will allow. We are choosing not to revoke GlobalPoolTasks that have already been enqueued as non-expedited,
+        // will allow. We are choosing not to revoke AsyncTasks that have already been enqueued as non-expedited,
         // which means we do not guarantee an increase in expedites to fully go into effect immediately.
-        // Any reduction to expedites is handled gradually, as expedited GlobalPoolTasks complete.
+        // Any reduction to expedites is handled gradually, as expedited AsyncTasks complete.
         while (withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire()) {
             decrementWithheldConcurrency();
-            if (a-- > 0 && acquireExpedite() > 0)
-                expediteGlobal(new GlobalPoolTask());
+            int available = a--;
+            if (virtual)
+                enqueueVirtual(new AsyncTask());
+            else if (available > 0 && acquireExpedite() > 0)
+                expediteToThreadPool(new AsyncTask());
             else
-                enqueueGlobal(new GlobalPoolTask());
+                enqueueToThreadPool(new AsyncTask());
         }
     }
 
@@ -1450,12 +1567,13 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         out.println(INDENT + "maxWaitForEnqueue = " + TimeUnit.NANOSECONDS.toMillis(maxWaitForEnqueueNS.get()) + " ms");
         out.println(INDENT + "runIfQueueFull = " + runIfQueueFull);
         out.println(INDENT + "startTimeout = " + (startTimeout == -1 ? "None" : TimeUnit.NANOSECONDS.toMillis(startTimeout) + " ms"));
+        out.println(INDENT + "virtual = " + virtual);
         int numRunningThreads, numRunningPrioritizedThreads;
         synchronized (configLock) {
             numRunningThreads = maxConcurrency - maxConcurrencyConstraint.availablePermits();
             numRunningPrioritizedThreads = expedite - expeditesAvailable.get();
         }
-        out.println(INDENT + "Total Enqueued to Global Executor = " + numRunningThreads + " (" + numRunningPrioritizedThreads + " expedited)");
+        out.println(INDENT + "Total Enqueued for Async Execution = " + numRunningThreads + " (" + numRunningPrioritizedThreads + " expedited)");
         out.println(INDENT + "withheldConcurrency = " + withheldConcurrency.get());
         out.println(INDENT + "Remaining Queue Capacity = " + maxQueueSizeConstraint.availablePermits());
         out.println(INDENT + "state = " + state.toString());

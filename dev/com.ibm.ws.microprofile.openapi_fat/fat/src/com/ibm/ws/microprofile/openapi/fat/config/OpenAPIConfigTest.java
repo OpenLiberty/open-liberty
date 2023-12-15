@@ -62,8 +62,6 @@ public class OpenAPIConfigTest {
 
     @Before
     public void setup() throws Exception {
-        // Set guards
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         // Test application startup is only checked in one case where is expected to
         // fail to start
         server.setValidateApps(false);

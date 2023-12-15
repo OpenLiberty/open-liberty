@@ -32,7 +32,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -42,7 +42,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 import mpapp1.MPConfigServlet;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class MPConfigTest extends FATServletClient {
 
     private static final String SERVER_NAME = "checkpointMPConfig";
@@ -185,6 +185,18 @@ public class MPConfigTest extends FATServletClient {
                 case applicationScopedValueTest:
                     updateVariableConfig(server, "early_access_app_scope_key", "serverValue");
                     break;
+                case appScopeEarlyAccessNoDefaultEnvValueTest:
+                    configureEnvVariable(server, singletonMap("early_access_optional_app_scope_key", "optionalEnvValue"));
+                    break;
+                case appScopeEarlyAccessNoDefaultServerValueTest:
+                    updateVariableConfig(server, "early_access_optional_app_scope_key", "optionalServerValue");
+                    break;
+                case appScopeEarlyAccessNoDefaultProviderEnvValueTest:
+                    configureEnvVariable(server, singletonMap("early_access_provider_optional_app_scope_key", "providerEnvValue"));
+                    break;
+                case appScopeEarlyAccessNoDefaultProviderServerValueTest:
+                    updateVariableConfig(server, "early_access_provider_optional_app_scope_key", "providerServerValue");
+                    break;
 
                 // Default tests in all beans
                 case defaultValueTest:
@@ -257,6 +269,17 @@ public class MPConfigTest extends FATServletClient {
                     assertNotNull("CWWKC0651W message expected in logs", server.waitForStringInLog("CWWKC0651W:.*early_access_app_scope_key*", 100));
                     expectedWarning = "CWWKC0651W";
                     break;
+                case appScopeEarlyAccessNoDefaultEnvValueTest:
+                case appScopeEarlyAccessNoDefaultServerValueTest:
+                    assertNotNull("CWWKC0651W message expected in logs", server.waitForStringInLog("CWWKC0651W:.*early_access_optional_app_scope_key*", 100));
+                    expectedWarning = "CWWKC0651W";
+                    break;
+
+                case appScopeEarlyAccessNoDefaultProviderEnvValueTest:
+                case appScopeEarlyAccessNoDefaultProviderServerValueTest:
+                    assertNotNull("CWWKC0651W message expected in logs", server.waitForStringInLog("CWWKC0651W:.*early_access_provider_optional_app_scope_key*", 100));
+                    expectedWarning = "CWWKC0651W";
+                    break;
 
                 // Default tests in all beans
                 case defaultValueTest:
@@ -305,6 +328,10 @@ public class MPConfigTest extends FATServletClient {
         appScopeNoDefaultServerValueTest,
         appScopeProviderEnvValueChangeTest,
         applicationScopedValueTest,
+        appScopeEarlyAccessNoDefaultEnvValueTest,
+        appScopeEarlyAccessNoDefaultServerValueTest,
+        appScopeEarlyAccessNoDefaultProviderEnvValueTest,
+        appScopeEarlyAccessNoDefaultProviderServerValueTest,
         configObjectAppScopeEnvValueTest,
         configObjectAppScopeEnvValueChangeTest,
         configObjectAppScopeServerValueTest,

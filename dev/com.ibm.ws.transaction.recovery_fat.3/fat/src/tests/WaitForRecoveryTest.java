@@ -12,6 +12,11 @@
  *******************************************************************************/
 package tests;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,33 +28,15 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
-import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.WaitForRecoveryServlet;
 
-/**
- * Example Shrinkwrap FAT project:
- * <li> Application packaging is done in the @BeforeClass, instead of ant scripting.
- * <li> Injects servers via @Server annotation. Annotation value corresponds to the
- * server directory name in 'publish/servers/%annotation_value%' where ports get
- * assigned to the LibertyServer instance when the 'testports.properties' does not
- * get used.
- * <li> Specifies an @RunWith(FATRunner.class) annotation. Traditionally this has been
- * added to bytecode automatically by ant.
- * <li> Uses the @TestServlet annotation to define test servlets. Notice that not all @Test
- * methods are defined in this class. All of the @Test methods are defined on the test
- * servlet referenced by the annotation, and will be run whenever this test class runs.
- */
-@Mode
 @RunWith(FATRunner.class)
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 public class WaitForRecoveryTest extends FATServletClient {
 
     public static final String APP_NAME = "transaction";
@@ -61,10 +48,6 @@ public class WaitForRecoveryTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
-        // Exports the resulting application to the ${server.config.dir}/apps/ directory
         ShrinkHelper.defaultApp(server1, APP_NAME, "web");
 
         server1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
@@ -76,9 +59,9 @@ public class WaitForRecoveryTest extends FATServletClient {
         FATUtils.stopServers(server1);
     }
 
-    @Mode(TestMode.LITE)
+    @SuppressWarnings("deprecation")
     @Test
-    @AllowedFFDC(value = { "javax.transaction.xa.XAException" })
+    @ExpectedFFDC(value = { "javax.transaction.xa.XAException" })
     public void testWaitForRecovery() throws Exception {
         final String method = "testBaseRecovery";
         StringBuilder sb = null;
@@ -86,11 +69,13 @@ public class WaitForRecoveryTest extends FATServletClient {
         try {
             // We expect this to fail since it is gonna crash the server
             sb = runTestWithResponse(server1, SERVLET_NAME, "testRec001");
-        } catch (Throwable e) {
+            fail(sb.toString());
+        } catch (IOException e) {
         }
         Log.info(this.getClass(), method, "testRec001 returned: " + sb);
 
-        server1.waitForStringInLog(XAResourceImpl.DUMP_STATE);
+        assertNotNull(server1.getServerName() + " failed to crash", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+        server1.resetLogOffsets(); // Dunno how you would do this with log marks
 
         // Now re-start cloud1
         ProgramOutput po = server1.startServerAndValidate(false, true, true);
@@ -104,7 +89,8 @@ public class WaitForRecoveryTest extends FATServletClient {
         }
 
         // Server appears to have started ok. Check for key string to see whether recovery has succeeded
-        server1.waitForStringInTrace("Performed recovery for server");
+        assertNotNull(server1.getServerName() + " did not perform recovery", server1.waitForStringInTraceUsingLastOffset("Performed recovery for " + server1.getServerName()));
+        assertNotNull("App must have started first", server1.waitForStringInTraceUsingLastOffset("Starting application " + APP_NAME));
 
         // Lastly stop server1
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W" }, server1); // Stop the server and indicate the '"WTRN0075W", "WTRN0076W" error messages were expected
@@ -112,5 +98,4 @@ public class WaitForRecoveryTest extends FATServletClient {
         // Lastly, clean up XA resource file
         server1.deleteFileFromLibertyServerRoot("XAResourceData.dat");
     }
-
 }

@@ -112,6 +112,7 @@ import com.ibm.ws.kernel.provisioning.LibertyBootRuntime;
 import com.ibm.ws.kernel.provisioning.ProductExtension;
 import com.ibm.ws.kernel.provisioning.ProductExtensionInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo;
+import com.ibm.ws.kernel.service.util.ResolutionReportHelper;
 import com.ibm.ws.runtime.update.RuntimeUpdateManager;
 import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
@@ -171,7 +172,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     final static String PRODUCT_INFO_STRING_OPEN_LIBERTY = "Open Liberty";
     final static FeatureResolver featureResolver = new FeatureResolverImpl();
 
-    private static Version JAVA_MAJOR_VERSION =  new Version(JavaInfo.majorVersion(), 0, 0);
+    private static Version JAVA_MAJOR_VERSION = new Version(JavaInfo.majorVersion(), 0, 0);
 
     final static Collection<String> ALLOWED_ON_ALL_FEATURES = Arrays.asList("com.ibm.websphere.appserver.timedexit-1.0", "com.ibm.websphere.appserver.osgiConsole-1.0");
     final static Collection<String> ALL_ALLOWED_ON_CLIENT_FEATURES;
@@ -1537,7 +1538,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         boolean status = checkInstallStatus(installStatus);
 
         // Make sure bundles are ready to start
-        provisioner.resolveBundles(bundleContext, installedBundles);
+        ResolutionReportHelper resolutionReport = provisioner.resolveBundles(bundleContext, installedBundles, shutdownHook);
 
         if (featureChange.featureBundlesResolved != null) {
             Map<String, Object> props = new HashMap<String, Object>(1);
@@ -1554,7 +1555,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         // Analyze unresolved bundles for missing java dependencies
         analyzeUnresolvedBundles(installedBundles, goodFeatures);
 
-        startStatus = provisioner.preStartBundles(installedBundles);
+        startStatus = provisioner.preStartBundles(installedBundles, resolutionReport);
         status &= checkBundleStatus(startStatus);
 
         if (featureChange.featureUpdatesCompleted != null) {
@@ -2496,8 +2497,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     }
 
     boolean withinJavaRange(FeatureResource fr) {
-        VersionRange range =  fr.getJavaRange();
-        return range == null ? true :  range.includes(JAVA_MAJOR_VERSION);
+        VersionRange range = fr.getJavaRange();
+        return range == null ? true : range.includes(JAVA_MAJOR_VERSION);
     }
 
 }

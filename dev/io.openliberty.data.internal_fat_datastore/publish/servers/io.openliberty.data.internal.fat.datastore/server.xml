@@ -1,0 +1,45 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <feature>componenttest-2.0</feature>
+    <feature>data-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>persistence-3.1</feature>
+    <feature>servlet-6.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="DataStoreTestApp.ear">
+    <classloader commonLibraryRef="DerbyLib"/>
+  </application>
+
+  <library id="DerbyLib">
+    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  </library>
+
+  <dataSource id="DefaultDataSource">
+    <jdbcDriver libraryRef="DerbyLib"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:defaultdb" user="defaultuser1" password="defaultpwd1"/>
+  </dataSource>
+
+  <dataSource id="ServerDataSource" jndiName="jdbc/ServerDataSource">
+    <jdbcDriver libraryRef="DerbyLib"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:serverdb" user="serveruser1" password="serverpwd1"/>
+  </dataSource>
+
+  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
+</server>

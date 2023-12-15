@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -82,8 +82,7 @@ import com.ibm.ws.classloading.internal.util.MultiMap;
 import com.ibm.ws.classloading.serializable.ClassLoaderIdentityImpl;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
-import com.ibm.ws.kernel.service.util.KeyBasedLockStore;
+import com.ibm.ws.kernel.boot.utils.KeyBasedLockStore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -121,8 +120,8 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
     });
     
     private BundleContext bundleContext;
-    private CanonicalStore<ClassLoaderIdentity, AppClassLoader> aclStore;
-    private CanonicalStore<String, ThreadContextClassLoader> tcclStore;
+    private final CanonicalStore<ClassLoaderIdentity, AppClassLoader> aclStore = new CanonicalStore<ClassLoaderIdentity, AppClassLoader>();
+    private final CanonicalStore<String, ThreadContextClassLoader> tcclStore = new CanonicalStore<String, ThreadContextClassLoader>();
     private RegionDigraph digraph;
     private ClassRedefiner redefiner = new ClassRedefiner(null);
     private final BundleListener listener = new BundleListener() {
@@ -211,8 +210,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         generatorRefs.activate(cCtx);
         metaInfServicesRefs.activate(cCtx);
         this.bundleContext = cCtx.getBundleContext();
-        this.aclStore = new CanonicalStore<ClassLoaderIdentity, AppClassLoader>();
-        this.tcclStore = new CanonicalStore<String, ThreadContextClassLoader>();
         // use the system bundle so that it is ensured to see all bundle events
         Bundle systemBundle = this.bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
         BundleContext systemContext = systemBundle.getBundleContext();
@@ -228,7 +225,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         systemContext.removeBundleListener(listener);
         this.bundleContext = null;
         this.cleanupRememberedBundles();
-        this.aclStore = null;
         this.resourceProviders.clear();
     }
 
@@ -606,9 +602,10 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         new WeakLibraryListener(libid, acl.getKey().getId(), acl, bundleContext) {
             @Override
             protected void update() {
-                Object cl = get();
-                if (cl instanceof AppClassLoader && aclStore != null)
-                    aclStore.remove((AppClassLoader) cl);
+                AppClassLoader cl = get();
+                if (cl != null) {
+                    aclStore.remove(cl);
+                }
                 deregister();
             }
         };

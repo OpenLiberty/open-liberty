@@ -67,6 +67,9 @@ public class Constants {
     public final static String PERCENTILE_999TH = "p999";
 
     // Content Types
+    public final static String CONTENT_TYPE_HEADER = "Content-Type";
+    public final static String CHARSET = "charset";
+    public final static String UTF8 = "utf-8";
     public final static String TEXTCONTENTTYPE = "text/plain; charset=utf-8";
     public final static String JSONCONTENTTYPE = "application/json; charset=utf-8";
 

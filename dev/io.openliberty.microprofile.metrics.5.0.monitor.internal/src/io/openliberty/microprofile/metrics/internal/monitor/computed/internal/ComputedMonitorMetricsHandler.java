@@ -12,8 +12,6 @@
  *******************************************************************************/
 package io.openliberty.microprofile.metrics.internal.monitor.computed.internal;
 
-import java.lang.management.GarbageCollectorMXBean;
-import java.lang.management.ManagementFactory;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -434,12 +432,6 @@ public class ComputedMonitorMetricsHandler {
                 // Do not need to use the EWMA for the cpu utilization calculation
                 // Can get it directly from com.ibm.ws.kernel.service.util.CpuInfo.getJavaCpuUsage()
                 calculateProcessCpuUsage(computedMetricID);
-            } else if (computedMetricName.equals("gc.time.per.cycle")) {
-                // Need to retrieve the gc.time and gc.total from the GarbageCollectionMXBean directly,
-                // instead of the mpMetrics-5.x API, since there is a known bug, where the gc.time from
-                // the mpMetrics-5.x API returns as a Counter, which drops the decimal in the returned float value,
-                // making the value not useful for computation.
-                calculateEWMAValueForGC(computedMetricID, monitorMetrics);
             } else {
                 for (ComputedMonitorMetrics cmm : monitorMetrics) {
                     mr = getMetricRegistry(cmm.getMonitorMetricScope());
@@ -460,37 +452,6 @@ public class ComputedMonitorMetricsHandler {
             }
         }
     }
-    
-    public void calculateEWMAValueForGC(MetricID computedMetricID, Set<ComputedMonitorMetrics> monitorMetrics) {
-        double currValue = 0.0, diffDuration = 0.0, diffTotalCount = 0.0;
-        
-        // Get the collection of Garbage Collection MXBeans
-        List<GarbageCollectorMXBean> gcMXBeansList = ManagementFactory.getGarbageCollectorMXBeans();
-        
-        for (GarbageCollectorMXBean gcMXBean : gcMXBeansList) {
-            for (ComputedMonitorMetrics cmm : monitorMetrics) {
-                String gcName = gcMXBean.getName();
-                String gcMetricsName = cmm.getMonitorMetricID().getTags().get("name");
-                if (gcName.equals(gcMetricsName)) {
-                    if (cmm.getComputationType().equals(Constants.DURATION)) {
-                        currValue = gcMXBean.getCollectionTime() * Constants.MILLISECONDCONVERSION;
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "GarbageCollectionTime for + " + computedMetricID + " = " + currValue);
-                        }
-                        diffDuration = currValue < 0 ? -1.0 : cmm.getDifference(currValue);
-                    } else if (cmm.getComputationType().equals(Constants.TOTAL)) {
-                        currValue = gcMXBean.getCollectionCount();
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "GarbageCollectionCount for + " + computedMetricID + " = " + currValue);
-                        }
-                        diffTotalCount = currValue < 0 ? -1.0 : cmm.getDifference(currValue);
-                    }
-                }
-            }
-            calculateEWMAValue(computedMetricID, diffDuration, diffTotalCount);
-        }
-    }
-
 
     public void calculateHeapUsage(MetricID computedMetricID, Set<ComputedMonitorMetrics> monitorMetrics) {
         double usedHeap = 0.0, maxHeap = 0.0, heapUsage = 0.0;
@@ -546,18 +507,12 @@ public class ComputedMonitorMetricsHandler {
             if (cmm.getComputationType().equals(Constants.DURATION)) {
                 Duration currentDur = currentTimer.getElapsedTime();
                 if (currentDur != null)  {
-                    // In the Duration API, the length of the duration is stored using two fields - seconds and nanoseconds. 
-                    // The nanoseconds part is a value from 0 to 999,999,999 that is an adjustment to the length in seconds. 
-                    // To retrieve the REST elaspedTime, we need to get the seconds and the nanoseconds and add them.
-                    double tempSecs = (double) currentDur.getSeconds();
+                    // Get total elapsed time in nanoseconds from Duration API.
+                    double tempDurNanos = (double) currentDur.toNanos();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "REST Timer ElapsedTime Duration in seconds = " + tempSecs);
+                        Tr.debug(tc, "REST Timer ElapsedTime Duration in nanoseconds = " + tempDurNanos);
                     }
-                    double tempNanos = (double) currentDur.getNano();
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "REST Timer ElapsedTime Duration in nanoseconds = " + tempNanos);
-                    }
-                    currentValue = tempSecs + (tempNanos * Constants.NANOSECONDCONVERSION); // convert to secs
+                    currentValue = tempDurNanos * Constants.NANOSECONDCONVERSION; // convert to secs
                 }
             } else {
                 // Get Total Counter Value for Timer

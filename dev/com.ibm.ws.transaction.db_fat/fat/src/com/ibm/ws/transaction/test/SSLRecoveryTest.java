@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,7 @@ public class SSLRecoveryTest extends FATServletClient {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        testContainer.withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT).waitingFor(Wait.forLogMessage(".*database system is ready.*", 2)).start();
+        testContainer.waitingFor(Wait.forLogMessage(".*database system is ready.*", 2).withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT)).start();
 
         setUp();
 

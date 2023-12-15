@@ -106,7 +106,8 @@ SHORT-UNIQUE-ID,TS-TOOLBELT, DOMPURIFY, OKIO-JVM, KOTLIN-STDLIB-JDK7, KOTLIN-STD
 OPENSAML-XACML-SAML-IMPL, OPENSAML-XACML-IMPL, OPENSAML-XMLSEC-API, OPENSAML-SOAP-API, OPENSAML-SECURITY-IMPL,
 OPENSAML-SAML-API, OPENSAML-SECURITY-API, OPENSAML-XMLSEC-IMPL, ASM, ASM-ANALYSIS, ASM-COMMONS, ASM-TREE, 
 ASM-UTIL, MICROMETER-COMMONS, MICROMETER-CORE, MICROMETER-OBSERVATION, NETTY-BUFFER, NETTY-CODEC, NETTY-CODEC-SOCKS, 
-NETTY-COMMON, NETTY-HANDLER, NETTY-HANDLER-PROXY, NETTY-RESOLVER, NETTY-TRANSPORT, NETTY-TRANSPORT-NATIVE-UNIX-COMMON
+NETTY-COMMON, NETTY-HANDLER, NETTY-HANDLER-PROXY, NETTY-RESOLVER, NETTY-TRANSPORT, NETTY-TRANSPORT-NATIVE-UNIX-COMMON,
+PERFMARK-API, NETTY-CODE-HTTP
 
 
 Apache License
@@ -713,6 +714,7 @@ under a GPL-2.0-with-classpath-exception license:
 
 JBOSS-ANNOTATIONS-API_SPEC | Copyright (c) Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
 JAXB-IMPL | Copyright (c)  2014 Oracle and/or its affiliates. All rights reserved.
+CHECKER-COMPAT-QUAL | Copyright (c) 2004-present by the Checker Framework developers. All rights reserved.
 
 The Program includes some or all of the following available
 under the GNU General Public License. For copies of the source
@@ -1624,6 +1626,7 @@ REACT-IS (Copyright (c) Meta Platforms, Inc. and affiliates.),
 REDUX (Copyright (c) Meta Platforms, Inc. and affiliates.),
 RESELECT (Copyright (c) 2015-2018 Reselect Contributors),
 @BRAINTREE/SANITIZE-URL (Copyright (c) 2017 Braintree),
+ANIMAL-SNIFFER-ANNOTATIONS (Copyright (c) 2009 codehaus.org)
 
 Permission is hereby granted, free of charge, to any person obtaining a 
 copy of this software and associated documentation files (the 

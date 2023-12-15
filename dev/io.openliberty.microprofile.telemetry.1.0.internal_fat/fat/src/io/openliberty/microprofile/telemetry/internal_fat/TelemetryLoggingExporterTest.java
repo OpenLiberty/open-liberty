@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -42,21 +43,17 @@ public class TelemetryLoggingExporterTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP61)
-                    .andWith(FeatureReplacementAction.BETA_OPTION().fullFATOnly());
+    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addClasses(LoggingServlet.class);
+                        .addClasses(LoggingServlet.class)
+                        //Use logging exporter
+                        .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=logging"),
+                        "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
-
-        server.addEnvVar("otel_sdk_disabled", "false");
-
-        //Use logging exporter
-        server.addEnvVar("otel_traces_exporter", "logging");
-
         server.startServer();
     }
 

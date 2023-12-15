@@ -33,7 +33,7 @@
 
 # {0} size of the pool when a deadlock was first detected
 # {1} current size of the pool
-unbreakableExecutorHang=CWWKE1200W:  Todos os encadeamentos no executor padr\u00e3o do Liberty aparecem para serem interrompidos. O Liberty aumenta o n\u00famero de encadeamentos automaticamente de {0} para {1}. No entanto, todos os encadeamentos ainda aparecem para serem interrompidos.
+unbreakableExecutorHang=CWWKE1200W: \ Todos os encadeamentos no executor padr\u00e3o do Liberty aparecem para serem interrompidos. O Liberty aumenta o n\u00famero de encadeamentos automaticamente de {0} para {1}. No entanto, todos os encadeamentos ainda aparecem para serem interrompidos.
 unbreakableExecutorHang.explanation=Ocorreu um erro que fez com que um executor fosse interrompido e o tempo de execu\u00e7\u00e3o do Liberty incluiu um n\u00famero significativo de encadeamentos em uma tentativa de terminar a condi\u00e7\u00e3o de interrup\u00e7\u00e3o. No entanto, o executor permanece em um estado sem resposta. 
 unbreakableExecutorHang.useraction=Determine se h\u00e1 um gargalo, como uma tabela de banco de dados bloqueada, que pode impedir os encadeamentos de serem resolvidos no servidor. Se n\u00e3o existir nenhum gargalo e o servidor requerer legitimamente encadeamentos adicionais, ajuste o atributo coreThreads do elemento de configura\u00e7\u00e3o do executor.
 
@@ -56,4 +56,8 @@ CWWKE1204.unable.to.invoke.useraction=Nenhuma a\u00e7\u00e3o ser\u00e1 necess\u0
 
 CWWKE1205.start.timeout=CWWKE1205E: O executor {0} n\u00e3o conseguiu iniciar a tarefa {1} depois de {2} nanossegundos porque a tarefa excedeu seu startTimeout de {3} nanossegundos.
 CWWKE1205.start.timeout.explanation=Quando um startTimeout \u00e9 configurado em um executor ou solicitado programaticamente para uma tarefa, o executor rastreia o tempo decorrido entre quando a tarefa \u00e9 enviada e quando \u00e9 poss\u00edvel executar a tarefa. Se o tempo decorrido exceder o startTimeout, o executor interromper\u00e1 a tarefa em vez de inici\u00e1-la. 
-CWWKE1205.start.timeout.useraction=Nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria se o aplicativo esperar que algumas tarefas sejam interrompidas por excederem seu startTimeout. Caso contr\u00e1rio, execute qualquer combina\u00e7\u00e3o das a\u00e7\u00f5es a seguir: aumentar startTimeout, aumentar maxConcurrency.
+CWWKE1205.start.timeout.useraction=Nenhuma a\u00e7\u00e3o ser\u00e1 necess\u00e1ria se o aplicativo esperar que algumas tarefas sejam interrompidas porque elas excedem a dura\u00e7\u00e3o startTimeout . Caso contr\u00e1rio, execute qualquer combina\u00e7\u00e3o das a\u00e7\u00f5es a seguir: aumente a dura\u00e7\u00e3o startTimeout , aumente o valor maxConcurrency .
+
+CWWKE1206.quiesce.timeout.not.valid=CWWKE1206W: O valor ''{0}'' especificado para o atributo ''quiesceTimeout'' no elemento ''executor'' no arquivo ''server.xml'' n\u00e3o \u00e9 v\u00e1lido.  O valor padr\u00e3o de 30 segundos \u00e9 usado no lugar.
+CWWKE1206.quiesce.timeout.not.valid.explanation=O valor 'quiesceTimeout' especifica uma dura\u00e7\u00e3o e aceita valores no formato XmXs, em que 'X' \u00e9 substitu\u00eddo por um n\u00famero,' m 'representa minutos e's' representa segundos.  O valor padr\u00e3o \u00e9 '30s' (30 segundos). Um valor de '1m30s' representa 90 segundos.  
+CWWKE1206.quiesce.timeout.not.valid.useraction=Edite o arquivo 'server.xml' e altere o atributo 'quiesceTimeout' no elemento 'executor' para uma dura\u00e7\u00e3o v\u00e1lida..

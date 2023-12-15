@@ -33,7 +33,7 @@
 
 # {0} size of the pool when a deadlock was first detected
 # {1} current size of the pool
-unbreakableExecutorHang=CWWKE1200W:  Tutti i thread nell''executor predefinito Liberty sembrano essere bloccati. Liberty ha aumentato automaticamente il numero di thread da {0} a {1}.  Tuttavia, tutti i thread sembrano ancora bloccati.
+unbreakableExecutorHang=CWWKE1200W: \ Tutti i thread nell''executor predefinito Liberty sembrano essere bloccati. Liberty ha aumentato automaticamente il numero di thread da {0} a {1}.  Tuttavia, tutti i thread sembrano ancora bloccati.
 unbreakableExecutorHang.explanation=Si \u00e8 verificato un errore che ha causato il blocco di un executor e il runtime Liberty ha aggiunto un significativo numero di thread per tentare di terminare la condizione di blocco. Tuttavia, l'executor rimane in stato di i nattivit\u00e0.
 unbreakableExecutorHang.useraction=Determinare se \u00e8 presente un collo di bottiglia, ad esempio una tabella di database bloccata, che impedisce la risoluzione dei thread nel server. Se non \u00e8 presente un collo di bottiglia e il server richiede legittimamente thread aggiuntivi, adattare l'attributo coreThreads dell'elemento di configurazione executor.
 
@@ -56,4 +56,8 @@ CWWKE1204.unable.to.invoke.useraction=Non \u00e8 necessaria alcuna azione se l'a
 
 CWWKE1205.start.timeout=CWWKE1205E: L''executor {0} non \u00e8 riuscito ad avviare l''attivit\u00e0 {1} dopo {2} nanosecondi perch\u00e9 ha superato il valore startTimeout di {3} nanosecondi.
 CWWKE1205.start.timeout.explanation=Quando \u00e8 configurato un startTimeout su un executor o \u00e8 programmaticamente richiesto per un'attivit\u00e0, l'executor traccia il tempo trascorso tra il momento in cui viene inoltrata l'attivit\u00e0 e il momento in cui \u00e8 possibile eseguirla. Se il tempo trascorso supera il valore startTimeout,  l'executor interrompe l'attivit\u00e0 invece di avviarla. 
-CWWKE1205.start.timeout.useraction=Non \u00e8 necessaria alcuna azione se l'applicazione p revede che alcune attivit\u00e0 si interrompano a causa del superamento di startTimeout. Altrimenti, effettuare una qualsiasi combinazione delle seguenti azioni: aumentare startTimeout, aumentare maxConcurrency.
+CWWKE1205.start.timeout.useraction=Non \u00e8 necessaria alcuna azione se l'applicazione prevede che alcune attivit\u00e0 vengano interrotte perch\u00e9 superano la durata di startTimeout . In caso contrario, effettuare una qualsiasi combinazione delle seguenti azioni: aumentare la durata startTimeout , aumentare il valore maxConcurrency .
+
+CWWKE1206.quiesce.timeout.not.valid=CWWKE1206W: Il valore ''{0}'' specificato per l''attributo ''quiesceTimeout'' nell''elemento ''executor'' nel file ''server.xml'' non \u00e8 valido.  Viene utilizzato il valore predefinito di 30 secondi.
+CWWKE1206.quiesce.timeout.not.valid.explanation=Il valore 'quiesceTimeout' specifica una durata e accetta i valori nel formato XmXs, dove 'X' \u00e8 sostituito da un numero, 'm' rappresenta i minuti e 's' rappresenta i secondi.  Il valore predefinito \u00e8 '30s' (30 secondi). Il valore '1m30s' rappresenta 90 secondi.  
+CWWKE1206.quiesce.timeout.not.valid.useraction=Modificare il file 'server.xml' e modificare l'attributo 'quiesceTimeout' sull'elemento 'executor' in una durata valida.

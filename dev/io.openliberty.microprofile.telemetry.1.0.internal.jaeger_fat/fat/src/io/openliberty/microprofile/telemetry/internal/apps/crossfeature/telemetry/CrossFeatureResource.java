@@ -9,12 +9,13 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.apps.crossfeature.telemetry;
 
+import javax.inject.Inject;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Application;
+
 import io.opentelemetry.api.trace.Span;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.Application;
 
 @ApplicationPath("/")
 @Path("/")

@@ -40,6 +40,7 @@ public class TokenEndpointServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private final String servletName = "TokenEndpointServlet";
     private String token = null;
+    private String idTokenRequestParameter = null;
 
     public TokenEndpointServlet() {
     }
@@ -83,6 +84,7 @@ public class TokenEndpointServlet extends HttpServlet {
         String builderId = null;
         try {
             token = req.getParameter("overrideToken");
+            idTokenRequestParameter = req.getParameter("overrideIDToken");
             if (token == null) { // if the calling test hacked up a token that we want to use, skip creating a new token
                 builderId = req.getParameter("builderId");
                 System.out.println("Using builderId: " + builderId);
@@ -103,6 +105,11 @@ public class TokenEndpointServlet extends HttpServlet {
                 setEncryptWith(builder, req);
                 builtToken = builder.buildJwt();
                 token = builtToken.compact();
+            }
+            if (idTokenRequestParameter == null) {
+            	idTokenRequestParameter = token;
+            } else {
+            	System.out.println("Saving id token: " + idTokenRequestParameter);
             }
         } catch (Exception e) {
             writer.println(e);
@@ -139,7 +146,7 @@ public class TokenEndpointServlet extends HttpServlet {
         theResponse.put("expires_in", 7199);
         theResponse.put("scope", "openid profile");
         theResponse.put("refresh_token", "21MhoIC95diaQo9tb5UpFBDFlHh45NixhcKkCwRipszH6WIzKz");
-        theResponse.put("id_token", token);
+        theResponse.put("id_token", idTokenRequestParameter);
 
         PrintWriter writer = resp.getWriter();
         //        writer.println("ServletName: " + servletName);

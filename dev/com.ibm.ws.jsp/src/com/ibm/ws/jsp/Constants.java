@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp;
 
@@ -48,8 +45,6 @@ public class Constants {
     public static final String TAGFILE_PACKAGE_NAME = "com.ibm.ws.jsp.tagfile";
     public static final String OLD_JSP_PACKAGE_NAME = "org.apache.jsp";
     public static final String TAGFILE_PACKAGE_PATH = "com" + File.separator + "ibm" + File.separator + "ws" + File.separator + "jsp" + File.separator + "tagfile" + File.separator;
-
-    public static final String IN_MEMORY_TRANSLATION_CONTEXT_CLASS = "com.ibm.ws.jsp.inmemory.context.InMemoryJspTranslationContext"; // 415289
 
     public static final int PREPARE_JSPS_DEFAULT_THREADS = 1;
     public static final int PREPARE_JSPS_DEFAULT_MINLENGTH = 0;

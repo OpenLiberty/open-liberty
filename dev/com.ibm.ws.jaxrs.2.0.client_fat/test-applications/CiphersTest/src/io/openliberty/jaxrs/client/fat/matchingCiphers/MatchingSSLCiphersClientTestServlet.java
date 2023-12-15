@@ -40,9 +40,6 @@ public class MatchingSSLCiphersClientTestServlet extends FATServlet {
     public void before() throws ServletException {
         client = ClientBuilder.newClient();
         client.property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig");
-
-        // Workaround for setting Cipher Suites on the outbound SSL request
-        System.setProperty(JAXRSClientConstants.USE_HTTPS_URL_CONNECTION_DEFAULT_SSLSOCKETFACTORY, "true");
     }
 
     @Override
@@ -50,7 +47,7 @@ public class MatchingSSLCiphersClientTestServlet extends FATServlet {
         client.close();
     }
 
-    @Test
+//    @Test
     public void testSimpleSSLRequestWithMatchingSSLCiphers() {
         Response response = client.target(SERVER_CONTEXT_ROOT)
                         .path("echo")

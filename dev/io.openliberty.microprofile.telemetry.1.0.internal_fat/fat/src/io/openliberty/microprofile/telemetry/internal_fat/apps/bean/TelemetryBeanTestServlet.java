@@ -22,9 +22,9 @@ import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
 @WebServlet("/")
@@ -44,6 +44,7 @@ public class TelemetryBeanTestServlet extends FATServlet {
 
     @Test
     public void testSpanUpdates() {
+        injectedSpan.makeCurrent(); //This should do nothing, and putting it here ensures the proxy doesn't delegate to itself in an infinite loop. 
         injectedSpan.toString(); //Just poke the object so CDI fetches the real object behind the proxy.
 
         Span span = Span.current();

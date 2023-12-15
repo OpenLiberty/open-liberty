@@ -33,6 +33,7 @@ import java.util.StringTokenizer;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.resource.ResourceException;
 import javax.resource.spi.ResourceAllocationException;
 import javax.sql.DataSource;
 
@@ -875,7 +876,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Caught SQLException with cause: " + cause);
 
-            if (cause instanceof ResourceAllocationException) {// javax.resource.spi.ResourceAllocationException
+            // Check for exceptions that signify that the prerequisite DataSource
+            // component may have been refreshed, so that we attempt a new DS lookup.
+            if (cause instanceof ResourceAllocationException
+                || cause instanceof ResourceException) {
                 // Look up the DataSource definition again
                 lookupDS = true;
             } else {

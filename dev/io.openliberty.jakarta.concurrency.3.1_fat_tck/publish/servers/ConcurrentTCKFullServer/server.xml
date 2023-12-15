@@ -13,14 +13,13 @@
 <server>
     <featureManager>
         <!-- Features being tested -->
-        <!-- TODO update to Jakarta EE 11 feature -->
-        <feature>jakartaee-10.0</feature>
+        <feature>jakartaee-11.0</feature>
 		
         <!-- Minimum features required 
-        <feature>concurrent-3.0</feature>
+        <feature>concurrent-3.1</feature>
         <feature>enterpriseBeans-4.0</feature>
-        <feature>appSecurity-5.0</feature>
-        <feature>pages-3.1</feature>
+        <feature>appSecurity-6.0</feature>
+        <feature>pages-4.0</feature>
         -->
 		 
         <!-- Features needed for arquillan support -->
@@ -51,6 +50,9 @@
 	
     <!-- Ensure JSP can handle lamdas -->
     <jspEngine jdkSourceLevel="18"/>
+    
+    <keyStore id="defaultKeyStore" password="openliberty"/>
+    <quickStartSecurity userName="admin" userPassword="adminpwd"/>
 
     <!-- Security role(s) needed for TCK tests -->
     <orb id="defaultOrb" orbSSLInitTimeout="90"/>

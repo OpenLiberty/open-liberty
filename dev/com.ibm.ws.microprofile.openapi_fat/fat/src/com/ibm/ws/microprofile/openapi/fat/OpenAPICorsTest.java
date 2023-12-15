@@ -93,9 +93,10 @@ public class OpenAPICorsTest {
         // test CORS request to "http://localhost:8010/" which is not in CORS domain
         Map<String, String> header = new HashMap<>();
         header.put(REQUEST_HEADER_ORIGIN, "openliberty.io");
+        URL url = HttpUtils.createURL(server, "/");
 
-        HttpURLConnection response = HttpUtils.getHttpConnection(new URL("http", server.getHostname(), 8010, "/"),
-            200, null, 30, HTTPRequestMethod.GET, header, null);
+        HttpURLConnection response = HttpUtils.getHttpConnection(url, 200, null, 30, HTTPRequestMethod.GET, header,
+            null);
         response.setReadTimeout(30 * 1000);
 
         checkAbsentResponseHeaders(response);

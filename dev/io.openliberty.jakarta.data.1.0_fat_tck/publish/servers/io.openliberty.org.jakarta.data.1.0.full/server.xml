@@ -43,8 +43,10 @@
       <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
     </dataSource>
     
+    <keyStore id="defaultKeyStore" password="openliberty"/>
+    <quickStartSecurity userName="admin" userPassword="adminpwd"/>
     <orb id="defaultOrb" orbSSLInitTimeout="90"/>
-    
+        
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
 	

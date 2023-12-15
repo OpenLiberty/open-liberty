@@ -57,13 +57,13 @@
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: The DatabaseStore prefix configuration {1} contains illegal characters.
+ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: The DatabaseStore prefix configuration {0} contains illegal characters.
 ILLEGAL_IDENTIFIER_CWWKD0200E.explanation=A DatabaseStore prefix can only contain numbers, letters, or the '_' symbol.
 ILLEGAL_IDENTIFIER_CWWKD0200E.useraction=The DatabaseStore prefix must be modified to contain only numbers, letters, or the '_' symbol.
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: The DatabaseStore schema configuration {1} contains illegal characters.
+ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: The DatabaseStore schema configuration {0} contains illegal characters.
 ILLEGAL_IDENTIFIER_CWWKD0201E.explanation=A DatabaseStore schema can only contain numbers, letters, or the '_' symbol.
 ILLEGAL_IDENTIFIER_CWWKD0201E.useraction=The DatabaseStore schema must be modified to contain only numbers, letters, or the '_' symbol.
 

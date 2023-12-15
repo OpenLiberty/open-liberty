@@ -26,24 +26,15 @@ IBM-API-Package: \
   io.opentelemetry.sdk.resources;type="third-party",\
   io.opentelemetry.instrumentation.annotations;type="third-party"
 -features=\
-  io.openliberty.jakarta.annotation-2.1, \
-  io.openliberty.restfulWS-3.1, \
-  io.openliberty.mpConfig-3.1, \
-  io.openliberty.cdi-4.0, \
-  io.openliberty.mpCompatible-6.1,\
-  io.openliberty.org.eclipse.microprofile.rest.client-3.0
+  io.openliberty.mpTelemetry1.1.ee-10.0; ibm.tolerates:= "9.0, 8.0, 7.0"
 -bundles=\
   io.openliberty.com.squareup.okhttp,\
   io.openliberty.com.squareup.okio-jvm,\
   io.openliberty.org.jetbrains.kotlin,\
   io.openliberty.org.jetbrains.annotation,\
-  io.openliberty.io.zipkin.zipkin2,\
-  com.ibm.ws.cdi.interfaces.jakarta, \
-  io.openliberty.microprofile.telemetry.1.1.internal,\
-  io.openliberty.io.opentelemetry.1.29,\
-  io.openliberty.microprofile.telemetry.internal.common
+  io.openliberty.io.zipkin.zipkin2
 -jars=io.openliberty.mpTelemetry.1.1.thirdparty; location:="dev/api/third-party/,lib/"
-kind=beta
+kind=ga
 edition=core
-WLP-Activation-Type: parallel 
+WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

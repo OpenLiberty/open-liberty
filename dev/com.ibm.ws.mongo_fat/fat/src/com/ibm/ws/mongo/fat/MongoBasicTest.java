@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ public class MongoBasicTest extends FATServletClient {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        FATSuite.skipTestOnFIPS140_3Enabled(server);
         MongoServerSelector.assignMongoServers(server);
         FATSuite.createApp(server);
         server.startServer();

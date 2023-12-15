@@ -40,8 +40,6 @@ public class PeerLeaseData {
 
     @Trivial
     public String getRecoveryIdentity() {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "getRecoveryIdentity", _recoveryIdentity);
         return _recoveryIdentity;
     }
 
@@ -50,8 +48,6 @@ public class PeerLeaseData {
      */
     @Trivial
     public long getLeaseTime() {
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "getLeaseTime", Utils.traceTime(_leaseTime));
         return _leaseTime;
     }
 
@@ -60,23 +56,19 @@ public class PeerLeaseData {
      */
     @Trivial
     public boolean isExpired() {
-        boolean expired = false;
         long curTime = System.currentTimeMillis();
 
         if (curTime - _leaseTime > _leaseTimeout * 1000) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Lease has EXPIRED for " + _recoveryIdentity + ", currenttime: " + Utils.traceTime(curTime) + ", storedTime: " + Utils.traceTime(_leaseTime) + " ("
-                             + (curTime - _leaseTime) / 1000 + "s)");
+                Tr.debug(tc, "Lease for " + _recoveryIdentity + " expired at " + Utils.traceTime(_leaseTime + _leaseTimeout));
             }
-            expired = true;
+            return true;
         } else {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Lease has not expired for " + _recoveryIdentity + ", currenttime: " + Utils.traceTime(curTime) + ", storedTime: " + Utils.traceTime(_leaseTime) + " ("
-                             + (curTime - _leaseTime) / 1000 + "s)");
+                int secondsLeft = (int) ((curTime + _leaseTimeout - _leaseTime) / 1000);
+                Tr.debug(tc, "Lease for " + _recoveryIdentity + " has not expired. " + secondsLeft + " second" + (secondsLeft != 1 ? "s" : "") + " left.");
             }
+            return false;
         }
-
-        return expired;
     }
-
 }

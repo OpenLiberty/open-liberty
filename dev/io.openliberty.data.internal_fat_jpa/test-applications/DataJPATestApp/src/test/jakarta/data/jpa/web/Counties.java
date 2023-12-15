@@ -19,8 +19,10 @@ import java.util.stream.Stream;
 
 import jakarta.data.page.Page;
 import jakarta.data.page.Pageable;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
@@ -86,8 +88,10 @@ public interface Counties {
         }
     }
 
+    @Delete
     boolean remove(County c);
 
+    @Save
     Stream<County> save(County... c);
 
     default Object[] topLevelDefaultMethod() {

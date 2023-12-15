@@ -12,7 +12,7 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
-santuarioVersion=2.3.0
+santuarioVersion=2.3.4
 
 WS-TraceGroup: XMLSEC
 

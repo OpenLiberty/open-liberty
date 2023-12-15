@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 // Change History
@@ -75,7 +72,6 @@ import com.ibm.ws.jsp.JspCoreException;
 import com.ibm.ws.jsp.JspOptions;
 import com.ibm.ws.jsp.configuration.JspConfigurationManager;
 import com.ibm.ws.jsp.configuration.JspXmlExtConfig;
-import com.ibm.ws.jsp.inmemory.context.InMemoryJspTranslationContext;
 import com.ibm.ws.jsp.inputsource.JspInputSourceFactoryImpl;
 import com.ibm.ws.jsp.runtime.ContextListener;
 import com.ibm.ws.jsp.taglib.GlobalTagLibraryCache;
@@ -196,27 +192,12 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
                 //DEFAULT CASE
             	jspCompilerFactory = new JDTCompilerFactory(jspClassloaderContext.getClassLoader(), jspOptions);
             }
-            if (jspOptions.isUseInMemory()) {
-            	DocumentRootUtils dru=null;
-                if (extDocumentRoot != null || preFragmentExtendedDocumentRoot !=null) {
-                    dru = new DocumentRootUtils(webapp, extDocumentRoot,preFragmentExtendedDocumentRoot);
-                }
-                context = new InMemoryJspTranslationContext(webapp, jspOptions, extDocumentRoot, preFragmentExtendedDocumentRoot);
-                URL contextURL = new File(webapp.getRealPath("/")).toURL();
-                if (!docRootRealPathCalled) docRoot = webapp.getRealPath("/");
-                JspInputSourceFactory tempInputSourceFactory = new JspInputSourceFactoryImpl(docRoot,contextURL, dru, false, webapp.getModuleContainer(), jspClassloaderContext.getClassLoader(),webapp);
-                JspResourcesFactoryImpl tempResourceFactory = new JspResourcesFactoryImpl(jspOptions, context, webapp.getModuleContainer());
-                JspTranslationEnvironmentImpl jspEnvironment = new JspTranslationEnvironmentImpl(jspOptions.getOutputDir().getPath(), webapp.getContextPath(), tempInputSourceFactory,
-                                                                                                 tempResourceFactory, jspClassloaderContext, jspCompilerFactory);
-       			context.setJspTranslationEnviroment(jspEnvironment);
-                
-            } else {
-	            if (jspOptions.getTranslationContextClass() != null) {
-	                context = loadTranslationContext(jspOptions.getTranslationContextClass(), webapp, jspOptions.getOutputDir().getPath(), webapp.getContextPath());
-	            } else {
-	                context = new JSPExtensionContext(webapp, jspOptions, extDocumentRoot, preFragmentExtendedDocumentRoot, jspClassloaderContext, jspCompilerFactory);
-	            }
-            }
+
+	        if (jspOptions.getTranslationContextClass() != null) {
+	            context = loadTranslationContext(jspOptions.getTranslationContextClass(), webapp, jspOptions.getOutputDir().getPath(), webapp.getContextPath());
+	        } else {
+	            context = new JSPExtensionContext(webapp, jspOptions, extDocumentRoot, preFragmentExtendedDocumentRoot, jspClassloaderContext, jspCompilerFactory);
+	        }
             List eventListenerList = new ArrayList();
             eventListenerList.addAll(globalTagLibraryCache.getEventListenerList());
 
@@ -456,10 +437,7 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
         }
         //PK81387 end
 
-        if (jspOptions.isDisableJspRuntimeCompilation() == false && // 223399
-            (jspOptions.getTranslationContextClass() == null // 225901 
-            || (jspOptions.getTranslationContextClass() != null && // 415289
-            jspOptions.getTranslationContextClass().equals(Constants.IN_MEMORY_TRANSLATION_CONTEXT_CLASS)))) {
+        if (jspOptions.isDisableJspRuntimeCompilation() == false && jspOptions.getTranslationContextClass() == null) { 
             success = handleCaseSensitivityCheck(filename, checkWEBINF); //PK81387 - added checkWEBINF param
         }
         if (success == false) { // case sensitivity match failed

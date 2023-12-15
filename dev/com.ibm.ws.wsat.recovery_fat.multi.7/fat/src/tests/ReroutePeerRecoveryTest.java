@@ -65,11 +65,22 @@ public class ReroutePeerRecoveryTest extends MultiRecoveryTest {
 
 	@BeforeClass
 	public static void startExtraServers() throws Exception {
-    	Log.info(ReroutePeerRecoveryTest.class, "startExtraServers", "");
-		server3.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_quaternary")));
-		server4.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_tertiary")));
-		server5.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_quinary")));
-		server6.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_senary")));
+		String method = "startExtraServers";
+    	int port = Integer.parseInt(System.getProperty("HTTP_quaternary"));
+    	Log.info(ReroutePeerRecoveryTest.class, method, "Setting port for " + server3.getServerName() + " to " + port);
+    	server3.setHttpDefaultPort(port);
+
+    	port = Integer.parseInt(System.getProperty("HTTP_tertiary"));
+    	Log.info(ReroutePeerRecoveryTest.class, method, "Setting port for " + server4.getServerName() + " to " + port);
+		server4.setHttpDefaultPort(port);
+
+    	port = Integer.parseInt(System.getProperty("HTTP_quinary"));
+    	Log.info(ReroutePeerRecoveryTest.class, method, "Setting port for " + server5.getServerName() + " to " + port);
+		server5.setHttpDefaultPort(port);
+
+    	port = Integer.parseInt(System.getProperty("HTTP_senary"));
+    	Log.info(ReroutePeerRecoveryTest.class, method, "Setting port for " + server6.getServerName() + " to " + port);
+		server6.setHttpDefaultPort(port);
 
 		ShrinkHelper.exportDropinAppToServer(server3, clientApp);
 		ShrinkHelper.exportDropinAppToServer(server5, clientApp);
@@ -198,29 +209,29 @@ public class ReroutePeerRecoveryTest extends MultiRecoveryTest {
 
 	@Test
 	public void WSTXMPR008DFVT() throws Exception {
-		serversToStop = new LibertyServer[]{server2, server3,};
-		serversToStart = new LibertyServer[]{server1, server2, server3};
+		serversToStop = new LibertyServer[]{server3,};
+		serversToStart = new LibertyServer[]{server1, server3};
 		recoveryTest(server1, server2, "801", "server1", "none");
 	}
 
 	@Test
 	public void WSTXMPR008EFVT() throws Exception {
-		serversToStop = new LibertyServer[]{server1, server5,};
-		serversToStart = new LibertyServer[]{server1, server2, server5};
+		serversToStop = new LibertyServer[]{server5,};
+		serversToStart = new LibertyServer[]{server2, server5};
 		recoveryTest(server1, server2, "802", "server2", "none");
 	}
 
 	@Test
 	public void WSTXMPR009DFVT() throws Exception {
-		serversToStop = new LibertyServer[]{server2, server3,};
-		serversToStart = new LibertyServer[]{server1, server2, server3};
+		serversToStop = new LibertyServer[]{server3,};
+		serversToStart = new LibertyServer[]{server1, server3};
 		recoveryTest(server1, server2, "901", "server1", "none");
 	}
 
 	@Test
 	public void WSTXMPR009EFVT() throws Exception {
-		serversToStop = new LibertyServer[]{server1, server5,};
-		serversToStart = new LibertyServer[]{server1, server2, server5};
+		serversToStop = new LibertyServer[]{server5,};
+		serversToStart = new LibertyServer[]{server2, server5};
 		recoveryTest(server1, server2, "902", "server2", "none");
 	}
 }

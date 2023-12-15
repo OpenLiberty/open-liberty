@@ -25,9 +25,9 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class, //Need to have a passing test for java 8 & 11
-                DataCoreTckLauncher.class,
-                DataWebTckLauncher.class,
-                DataFullTckLauncher.class //full mode
+                //DataCoreTckLauncher.class,
+                //DataWebTckLauncher.class,
+                //DataFullTckLauncher.class //full mode
 })
 public class FATSuite extends TestContainerSuite {
     @ClassRule

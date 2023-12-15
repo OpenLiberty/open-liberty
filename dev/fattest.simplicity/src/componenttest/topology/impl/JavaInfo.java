@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -80,6 +80,13 @@ public class JavaInfo {
         String serverJava = server.getServerEnv().getProperty("JAVA_HOME");
         return fromPath(serverJava);
     }
+
+    //FIPS 140-3
+    public static JavaInfo forClient(LibertyClient client) throws IOException {
+        String clientJava = client.getClientEnv().getProperty("JAVA_HOME");
+        return fromPath(clientJava);
+    }
+
 
     /**
      * The java.vendor of the JDK. Note that Sun and Oracle JDKs are considered to be the same.

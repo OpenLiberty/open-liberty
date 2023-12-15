@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.RemoteFile;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEEAction;
@@ -68,7 +68,7 @@ import io.openliberty.checkpoint.testapp.jaxws.props.servlet.LibertyCXFPositiveP
  * cxf.ignore.unsupported.policy
  */
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class LibertyCXFPositivePropertiesTest {
 
     public static final String APP_NAME = "libertyCXFProperty";

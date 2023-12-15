@@ -27,25 +27,31 @@
             required="false" type="String" ibm:type="duration(m)"
             default="120m" />
         <AD id="monitorInterval" name="%ltpa.monitorInterval" description="%ltpa.monitorInterval.desc"
-            required="false" type="String" ibm:type="duration" default="0ms" />
-        <AD id="monitorDirectory"
-            name="%monitorDirectory" 
-            description="%monitorDirectory.desc" 
-            required="false" type="Boolean" default="false" ibm:beta="true"/>
-        
+            required="false" type="String" ibm:type="duration" 
+            default="0ms" />
+        <AD id="monitorValidationKeysDir" name="%ltpa.monitorValidationKeysDir" description="%ltpa.monitorValidationKeysDir.desc" 
+            required="false" type="Boolean"
+            default="false"/>
+        <AD id="updateTrigger" name="%ltpa.updateTrigger" description="%ltpa.updateTrigger.desc" 
+            required="false" type="String"
+            default="polled">
+            <Option label="%ltpa.updateTrigger.timed" value="polled"/>
+            <Option label="%ltpa.updateTrigger.external" value="mbean"/>
+            <Option label="%ltpa.updateTrigger.disabled" value="disabled"/>
+        </AD>
         <AD id="authFilterRef" name="%authFilterRef" description="%authFilterRef.desc" 
-            ibm:type="pid" ibm:reference="com.ibm.ws.security.authentication.filter" required="false" type="String"  />
+            required="false" type="String" ibm:type="pid" 
+            ibm:reference="com.ibm.ws.security.authentication.filter"/>
         <AD id="authenticationFilter.target" name="internal" description="internal use only"
-            required="false" type="String"  default="(service.pid=${authFilterRef})" />
-        
+            required="false" type="String"  
+            default="(service.pid=${authFilterRef})" />
         <AD id="expirationDifferenceAllowed" name="internal" description="internal use only"
-            required="false" type="String" ibm:type="duration(ms)" default="3000ms" /> 
-	
+            required="false" type="String" ibm:type="duration(ms)" 
+            default="3000ms" /> 
         <AD id="validationKeys" ibm:type="pid" ibm:reference="com.ibm.ws.security.token.ltpa.validationKeys" 
-           	required="false" type="String" ibm:flat="true" cardinality="2147483647" ibm:beta="true"/>        
-
+           	required="false" type="String" 
+            ibm:flat="true" cardinality="2147483647"/>        
     </OCD>
-    
 
     <Designate pid="com.ibm.ws.security.token.ltpa.LTPAConfiguration">
         <Object ocdref="com.ibm.ws.security.token.ltpa.configuration" />
@@ -54,9 +60,9 @@
     <OCD id="com.ibm.ws.security.token.ltpa.validationKeys.metatype" name="%validationKeys" description="%validationKeys.desc">
        	<AD id="fileName" name="%fileName" description="%fileName.desc" required="true" type="String"  />
     	<AD id="password" name="%password" description="%password.desc" required="true" type="String" ibm:type="password" />
-    	<AD id="notUseAfterDate" name="%notUseAfterDate" description="%notUseAfterDate.desc" required="false" type="String"  />
-            
+    	<AD id="validUntilDate" name="%validUntilDate" description="%validUntilDate.desc" required="false" type="String"  />
     </OCD>
+
     <Designate factoryPid="com.ibm.ws.security.token.ltpa.validationKeys">
          <Object ocdref="com.ibm.ws.security.token.ltpa.validationKeys.metatype" />
     </Designate>

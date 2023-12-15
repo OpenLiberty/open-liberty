@@ -19,6 +19,7 @@ configurations {
 
 dependencies {
   requiredLibs project(':io.openliberty.mpTelemetry.1.0.thirdparty')
+  requiredLibs project(':io.openliberty.microprofile.telemetry.internal_fat.common')
   shimLibs 'io.opentelemetry:opentelemetry-opentracing-shim:1.19.0-alpha'
   shimLibs129 'io.opentelemetry:opentelemetry-opentracing-shim:1.29.0'
 }

@@ -10,15 +10,15 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import jakarta.data.model.Attribute;
-import jakarta.data.model.StaticMetamodel;
+import jakarta.data.metamodel.SortableAttribute;
+import jakarta.data.metamodel.StaticMetamodel;
 
 /**
  * Static metamodel for an non-JPA entity type to ignore.
  */
 @StaticMetamodel(java.time.Period.class)
 public class EntityModelUnknown_ {
-    public static final Attribute days = Attribute.get();
-    public static final Attribute months = Attribute.get();
-    public static final Attribute years = null;
+    public static final SortableAttribute days = SortableAttribute.get();
+    public static final SortableAttribute months = SortableAttribute.get();
+    public static final SortableAttribute years = null;
 }

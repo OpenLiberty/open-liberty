@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -231,13 +231,7 @@ public class OIDCClientAuthenticatorUtil {
         }
 
         oidcClientRequest.setTokenType(OidcClientRequest.TYPE_ID_TOKEN);
-
-        oidcResult = jose4jUtil.createResultWithJose4J(responseState, reqParameters, clientConfig, oidcClientRequest);
-
-        if (clientConfig.getUserInfoEndpointUrl() != null) {
-            getUserInfo(clientConfig, reqParameters, oidcClientRequest, oidcResult);
-        }
-
+        oidcResult = jose4jUtil.createResultWithJose4J(responseState, reqParameters, clientConfig, oidcClientRequest, getSSLSocketFactory(clientConfig));
         return oidcResult;
     }
 
@@ -254,6 +248,21 @@ public class OIDCClientAuthenticatorUtil {
             }
         }
         new UserInfoHelper(clientConfig, sslSupport).getUserInfoIfPossible(oidcResult, reqParameters, sslSocketFactory, oidcClientRequest);
+    }
+
+    SSLSocketFactory getSSLSocketFactory(ConvergedClientConfig clientConfig) {
+        SSLSocketFactory sslSocketFactory = null;
+        try {
+            sslSocketFactory = new OidcClientHttpUtil().getSSLSocketFactory(clientConfig.getSSLConfigurationName(), sslSupport);
+        } catch (com.ibm.websphere.ssl.SSLException e) {
+            Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { e, clientConfig.getClientId() });
+        } catch (NoSSLSocketFactoryException e) {
+            boolean needHttps = clientConfig.getUserInfoEndpointUrl().toLowerCase().startsWith("https");
+            if (needHttps) {
+                Tr.error(tc, "OIDC_CLIENT_HTTPS_WITH_SSLCONTEXT_NULL", new Object[] { "Null ssl socket factory", clientConfig.getClientId() });
+            }
+        }
+        return sslSocketFactory;
     }
 
     public static boolean checkHttpsRequirement(ConvergedClientConfig clientConfig, String urlStr) {

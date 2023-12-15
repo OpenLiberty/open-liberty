@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -31,8 +31,8 @@
 # 1100-1199 com.ibm.ws.runtime.update.internal.resources.Messages
 # -------------------------------------------------------------------------------------------------
 
-quiesce.begin=CWWKE1100I: V\u00e1rakoz\u00e1s legfeljebb 30 m\u00e1sodpercig a kiszolg\u00e1l\u00f3 fokozatos le\u00e1ll\u00edt\u00e1s\u00e1ra.
-quiesce.begin.explanation=A kiszolg\u00e1l\u00f3 legfeljebb 30 m\u00e1sodpercig v\u00e1r, hogy a szolg\u00e1ltat\u00e1sok fokozatosan le\u00e1lljanak, miel\u0151tt folytatn\u00e1 a le\u00e1ll\u00edt\u00e1st.
+quiesce.begin=CWWKE1100I: V\u00e1rakoz\u00e1s a kiszolg\u00e1l\u00f3 {0} m\u00e1sodperc\u00e9re, hogy a rendszer eln\u00e9m\u00edt\u00e1s.
+quiesce.begin.explanation=A kiszolg\u00e1l\u00f3 a le\u00e1ll\u00edt\u00e1sra v\u00e1rakozik, miel\u0151tt le\u00e1ll.
 quiesce.begin.useraction=Semmit sem kell tennie.
 
 quiesce.end=CWWKE1101I: Kiszolg\u00e1l\u00f3 fokozatos le\u00e1ll\u00edt\u00e1sa befejez\u0151d\u00f6tt.
@@ -40,11 +40,11 @@ quiesce.end.explanation=A fokozatos le\u00e1ll\u00edt\u00e1s m\u0171velete siker
 quiesce.end.useraction=Semmit sem kell tennie.
 
 quiece.warning=CWWKE1102W: A fokozatos le\u00e1ll\u00edt\u00e1s m\u0171velete nem fejez\u0151d\u00f6tt be. A kiszolg\u00e1l\u00f3 most le\u00e1ll.
-quiece.warning.explanation=A folyamat nem tudta az \u00f6sszes szolg\u00e1ltat\u00e1s nyugalmi \u00e1llapot\u00e1t el\u00e9rni 30 m\u00e1sodpercen bel\u00fcl.
-quiece.warning.useraction=Nyugodtan figyelmen k\u00edv\u00fcl hagyhatja a nem el\u00e9rhet\u0151 sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1sok eredm\u00e9nyek\u00e9nt kapott hiba\u00fczeneteket.
+quiece.warning.explanation=A folyamat nem tudta lecsendest\u00e1lni az \u00f6sszes szolg\u00e1ltat\u00e1st a felf\u00fcggeszt\u00e9si id\u0151korl\u00e1ton bel\u00fcl.
+quiece.warning.useraction=Nyugodtan figyelmen k\u00edv\u00fcl hagyhatja a nem el\u00e9rhet\u0151 sz\u00fcks\u00e9ges szolg\u00e1ltat\u00e1sok eredm\u00e9nyek\u00e9nt kapott hiba\u00fczeneteket. Ha a probl\u00e9ma tov\u00e1bbra is fenn\u00e1ll, akkor n\u00f6velje a 'quiesceTimeout' id\u0151tartamot a 'quiesceTimeout' attrib\u00fatum hozz\u00e1ad\u00e1s\u00e1val a 'executor' elemhez a 'server.xml' f\u00e1jlban.
 
-client.quiesce.begin=CWWKE1103I: V\u00e1rakoz\u00e1s legfeljebb 30 m\u00e1sodpercig az \u00fcgyf\u00e9l fokozatos le\u00e1ll\u00edt\u00e1s\u00e1ra.
-client.quiesce.begin.explanation=Az \u00fcgyf\u00e9l legfeljebb 30 m\u00e1sodpercig v\u00e1r, hogy a szolg\u00e1ltat\u00e1sok fokozatosan le\u00e1lljanak, miel\u0151tt folytatn\u00e1 a le\u00e1ll\u00edt\u00e1st.
+client.quiesce.begin=CWWKE1103I: V\u00e1rakoz\u00e1s az \u00fcgyf\u00e9l {0} m\u00e1sodperceire, hogy az eln\u00e9m\u00edt\u00e1s.
+client.quiesce.begin.explanation=Az \u00fcgyf\u00e9l v\u00e1rja a szolg\u00e1ltat\u00e1sok le\u00e1ll\u00edt\u00e1s\u00e1t, miel\u0151tt le\u00e1ll.
 client.quiesce.begin.useraction=Nincs teend\u0151.
 
 client.quiesce.end=CWWKE1104I: \u00dcgyf\u00e9l fokozatos le\u00e1ll\u00edt\u00e1sa befejez\u0151d\u00f6tt.

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -441,8 +441,26 @@ public class LibertyFileManager {
     public static boolean renameLibertyFile(Machine machine, String oldFilePath, String newFilePath) throws Exception {
         RemoteFile source = createRemoteFile(machine, oldFilePath);
         RemoteFile target = createRemoteFile(machine, newFilePath);
+
+        RemoteFile targetFile = target.isDirectory() ? new RemoteFile(target, source.getName()) : target;
+        RemoteFile targetDir = target.isDirectory() ? target : targetFile.getParentFile();
+
         if (source.exists()) {
-            return source.rename(target);
+            if (!targetDir.exists()) {
+                // Create the destination directory if it doesn't exist prior to the rename
+                boolean dirCreated = targetDir.mkdirs();
+                if (!dirCreated) {
+                    Log.info(CLASS, "renameLibertyFile", "Failed to create directory: " + targetDir.getAbsolutePath());
+                    return false;
+                }
+            }
+            boolean moveSuccess = source.rename(target);
+
+            if (!moveSuccess) {
+                Log.info(CLASS, "renameLibertyFile", "Failed to move file: " + source.getAbsolutePath() + " to " + target.getAbsolutePath());
+            }
+
+            return moveSuccess;
         } else {
             Log.info(CLASS, "renameLibertyFile",
                      "Copying: " + source.getAbsolutePath() + " to " + target.getAbsolutePath() + " failed because " + source.getAbsolutePath() + "does not exist");

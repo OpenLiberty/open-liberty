@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.fat.grpc;
 
@@ -111,7 +108,7 @@ public class ClientConfigTests extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         Exception excep = null;
-        
+
         LOG.info("ClientConfigTests : tearDown() : serverConfigurationFile set to null");
         // Setting serverConfigurationFile to null forces a server.xml update (when GrpcTestUtils.setServerConfiguration() is first called) on the repeat run
         // If not set to null, test failures may occur (since the incorrect server.xml could be used)
@@ -127,9 +124,10 @@ public class ClientConfigTests extends FATServletClient {
         try {
             /*
              * SRVE8055E: An unexpected exception occurred flushing out the rest of the response data (for testMaxInboundMetadataSize)
+             * SRVE8056E: An unexpected exception occurred closing the output stream this is generated now occasionally instead of 8055E
              */
             if (GrpcServerOnly != null && GrpcServerOnly.isStarted())
-                GrpcServerOnly.stopServer("SRVE8055E");
+                GrpcServerOnly.stopServer("SRVE8055E", "SRVE8056E");
         } catch (Exception e) {
             if (excep == null)
                 excep = e;
@@ -142,7 +140,7 @@ public class ClientConfigTests extends FATServletClient {
 
     private static void stopClientServer() throws Exception {
         if (GrpcClientOnly != null && GrpcClientOnly.isStarted()) {
-            
+
             /*
              * CWWKG0083W: expected by testInvalidMaxInboundMessageSize due to invalid message size config
              * CWWKG0076W: expected when a previous config is still in use because an invalid config was rejected

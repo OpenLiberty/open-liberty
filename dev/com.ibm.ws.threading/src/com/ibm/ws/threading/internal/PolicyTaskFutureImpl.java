@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017,2022 IBM Corporation and others.
+ * Copyright (c) 2017,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -294,7 +294,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback, long startTimeoutNS) {
         if (task == null)
             throw new NullPointerException();
-        this.callable = executor.globalExecutor.wrap(task);
+        this.callable = executor.libertyThreadPool.wrap(task);
         this.callback = callback;
         this.executor = executor;
         this.latch = null;
@@ -322,7 +322,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback, long startTimeoutNS, InvokeAnyLatch latch) {
         if (task == null)
             throw new NullPointerException();
-        this.callable = executor.globalExecutor.wrap(task);
+        this.callable = executor.libertyThreadPool.wrap(task);
         this.callback = callback;
         this.executor = executor;
         this.latch = latch;
@@ -362,7 +362,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         this.latch = null;
         this.nsStartBy = nsAcceptBegin + startTimeoutNS;
         this.predefinedResult = predefinedResult;
-        this.runnable = executor.globalExecutor.wrap(task);
+        this.runnable = executor.libertyThreadPool.wrap(task);
         this.task = task;
 
         if (callback != null)

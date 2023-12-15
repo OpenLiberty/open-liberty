@@ -572,7 +572,7 @@ STATE_DOWNLOAD_FILES_OK=\nWszystkie zasoby aplikacyjne zosta\u0142y pomy\u015bln
 STATE_CONTACTING_MAVEN_REPO=Nawi\u0105zywanie po\u0142\u0105czenia ze skonfigurowanym repozytorium Maven...\nTen proces mo\u017ce potrwa\u0107 kilka minut.
 STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Pomy\u015blnie nawi\u0105zano po\u0142\u0105czenie ze skonfigurowanym repozytorium.
 STATE_READING_ENV_PROPS_FILE=Odczytywanie pliku {0}/etc/featureUtility.env...
-STATE_STARTING_VERIFY=Weryfikowane podpis\u00f3w...
+STATE_STARTING_VERIFY=Weryfikowanie podpis\u00f3w ...
 STATE_VERIFYING=Weryfikowanie {0}...
 PROGRESS_STEP=Krok {0} z {1}
 
@@ -631,7 +631,7 @@ VALIDATION_INVALID_URL=Nieobs\u0142ugiwany format adresu URL
 VALIDATION_DUPLICATE_KEY=Zduplikowana nazwa w\u0142a\u015bciwo\u015bci
 VALIDATION_UNSUPPORTED_PROTOCOL=Nieobs\u0142ugiwany protok\u00f3\u0142
 VALIDATION_MISSING_PUBKEY_NAME=Brak nazwy klucza publicznego
-VALIDATION_INVALID_key_URL=Nieobs\u0142ugiwany adres URL klucza
+VALIDATION_INVALID_key URL = Nieobs\u0142ugiwany adres URL klucza
 VALIDATION_INVALID_KEYID=Niepoprawny format identyfikatora klucza
 VALIDATION_MISSING_KEYID=Brak identyfikatora klucza
 

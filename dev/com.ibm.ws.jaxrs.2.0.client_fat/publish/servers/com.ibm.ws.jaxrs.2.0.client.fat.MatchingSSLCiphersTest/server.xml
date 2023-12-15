@@ -7,14 +7,17 @@
 
     <!-- Server SSL configuration -->
     <ssl id="defaultSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore"
-        enabledCiphers="TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA TLS_ECDH_RSA_WITH_AES_128_CBC_SHA" />
+        enabledCiphers="TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256 TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256 TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256" />
 
     <!-- customize SSL configuration -->
     <ssl id="mySSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore"
-        enabledCiphers="TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA TLS_ECDH_RSA_WITH_AES_128_CBC_SHA" />
+        enabledCiphers="TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256 TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256 TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256" />
+
 
     <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" />
     <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
+
+    <quickStartSecurity userName="test" userPassword="testpwd" />
 
     <include location="../fatTestPorts.xml"/>
     <javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default.secure" actions="read"/>

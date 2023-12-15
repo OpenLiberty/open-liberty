@@ -14,13 +14,16 @@ package test.jakarta.data.web;
 
 import java.util.List;
 
+import jakarta.data.repository.By;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
 
-import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.update.Assign;
 
@@ -35,17 +38,20 @@ public interface PersonRepo {
     @Query("SELECT o FROM Person o WHERE o.lastName=?1")
     List<Person> find(String lastName);
 
-    @Filter(by = "lastName")
     @OrderBy("firstName")
     @Select("firstName")
-    List<String> findFirstNames(String surname);
+    List<String> findFirstNames(@By("lastName") String surname);
 
+    @Insert
     void insert(Person p);
 
+    @Insert
     void insertAll(Person... p);
 
+    @Insert
     void insertAll(Iterable<Person> p);
 
+    @Save
     void save(List<Person> people);
 
     @Select("firstName")
@@ -57,7 +63,7 @@ public interface PersonRepo {
                                                   @Assign String firstName);
 
     @Transactional(TxType.MANDATORY)
-    boolean setFirstNameInCurrentTransaction(Long ssn_id,
+    boolean setFirstNameInCurrentTransaction(@By("id") Long ssn,
                                              @Assign("firstName") String newFirstName);
 
     @Transactional(TxType.REQUIRES_NEW)
@@ -72,7 +78,9 @@ public interface PersonRepo {
     boolean setFirstNameWithCurrentTransactionSuspended(Long id,
                                                         @Assign("firstname") String newFirstName);
 
+    @Update
     boolean updateOne(Person person);
 
+    @Update
     long updateSome(Person... people);
 }

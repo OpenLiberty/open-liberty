@@ -32,7 +32,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Select;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
@@ -84,10 +83,9 @@ public class QueryInfo {
     EntityInfo entityInfo;
 
     /**
-     * Type of the first method parameter if its type is the entity,
-     * an array of entity, an Iterable of entity, or a Stream of entity.
+     * Type of the first parameter if a life cycle method, otherwise null.
      */
-    Class<?> entityParamType;
+    final Class<?> entityParamType;
 
     /**
      * Entity variable name. "o" is used as the default in generated queries.
@@ -213,8 +211,9 @@ public class QueryInfo {
     /**
      * Construct partially complete query information.
      */
-    public QueryInfo(Method method, Class<?> returnArrayType, List<Class<?>> returnTypeAtDepth) {
+    public QueryInfo(Method method, Class<?> entityParamType, Class<?> returnArrayType, List<Class<?>> returnTypeAtDepth) {
         this.method = method;
+        this.entityParamType = entityParamType;
         this.returnArrayType = returnArrayType;
         this.returnTypeAtDepth = returnTypeAtDepth;
     }
@@ -224,6 +223,7 @@ public class QueryInfo {
      */
     public QueryInfo(Method method, Type type) {
         this.method = method;
+        this.entityParamType = null;
         this.returnArrayType = null;
         this.returnTypeAtDepth = null;
         this.type = type;
@@ -308,6 +308,60 @@ public class QueryInfo {
                 combined.add(entityInfo.getWithAttributeName(sort.property(), sort));
         }
         return combined;
+    }
+
+    /**
+     * Finds the first occurrence of the text followed by a non-alphanumeric/non-underscore character.
+     *
+     * @param lookFor text to find.
+     * @param findIn  where to look for it.
+     * @param startAt starting position.
+     * @return index where found, otherwise -1.
+     */
+    private static int find(String lookFor, String findIn, int startAt) {
+        int totalLength = findIn.length();
+        for (int foundAt; startAt < totalLength && (foundAt = findIn.indexOf(lookFor, startAt)) > 0; startAt = foundAt + 1) {
+            int nextPosition = foundAt + lookFor.length();
+            if (nextPosition >= totalLength)
+                break;
+            char ch = findIn.charAt(nextPosition);
+            if (!Character.isLowerCase(ch) && !Character.isUpperCase(ch) && !Character.isDigit(ch) && ch != '_')
+                return foundAt;
+        }
+        return -1;
+    }
+
+    /**
+     * Finds the entity variable name after the start of the entity name.
+     * Examples of JPQL:
+     * ... FROM Order o, Product p ...
+     * ... FROM Product AS p ...
+     *
+     * @param findIn  where to look for it.
+     * @param startAt position after the end of the entity name.
+     * @return entity variable name. Null if none is found.
+     */
+    private static String findEntityVariable(String findIn, int startAt) {
+        int length = findIn.length();
+        boolean foundStart = false;
+        for (int c = startAt; c < length; c++) {
+            char ch = findIn.charAt(c);
+            if (Character.isLowerCase(ch) || Character.isUpperCase(ch) || Character.isDigit(ch) || ch == '_') {
+                if (!foundStart) {
+                    startAt = c;
+                    foundStart = true;
+                }
+            } else { // not part of the entity variable name
+                if (foundStart) {
+                    String found = findIn.substring(startAt, c);
+                    if ("AS".equalsIgnoreCase(found))
+                        foundStart = false;
+                    else
+                        return found;
+                }
+            }
+        }
+        return foundStart ? findIn.substring(startAt) : null;
     }
 
     /**
@@ -422,13 +476,60 @@ public class QueryInfo {
      */
     void init(Class<? extends Annotation> annoClass, Type operationType) {
         type = operationType;
-        Class<?>[] paramTypes = method.getParameterTypes();
-        if (paramTypes.length != 1)
+        if (entityParamType == null)
             throw new UnsupportedOperationException("Repository " + '@' + annoClass.getSimpleName() +
                                                     " operations must have exactly 1 parameter, which can be the entity" +
                                                     " or a collection or array of entities. The " + method.getDeclaringClass().getName() +
-                                                    '.' + method.getName() + " method has " + paramTypes.length + " parameters."); // TODO NLS
-        entityParamType = paramTypes[0];
+                                                    '.' + method.getName() + " method has " + method.getParameterCount() + " parameters."); // TODO NLS
+    }
+
+    /**
+     * Initializes query information based on the Query annotation.
+     *
+     * @param queryJPQL      Query.value()
+     * @param queryCountJPQL Query.count()
+     * @param countPages     whether or not to obtain a count of pages.
+     */
+    void initForQuery(String queryJPQL, String queryCountJPQL, boolean countPages) {
+        jpql = queryJPQL;
+
+        String upper = jpql.toUpperCase();
+        String upperTrimmed = upper.stripLeading();
+        if (upperTrimmed.startsWith("SELECT")) {
+            int order = upper.lastIndexOf("ORDER BY");
+            type = Type.FIND;
+            sorts = sorts == null ? new ArrayList<>() : sorts;
+            jpqlCount = queryCountJPQL.length() > 0 ? queryCountJPQL : null;
+
+            int selectIndex = upper.length() - upperTrimmed.length();
+            int from = find("FROM", upper, selectIndex + 9);
+            if (from > 0) {
+                // TODO support for multiple entity types
+                int entityName = find(entityInfo.name.toUpperCase(), upper, from + 5);
+                if (entityName > 0)
+                    entityVar = findEntityVariable(jpql, entityName + entityInfo.name.length() + 1);
+
+                if (countPages && jpqlCount == null) {
+                    // Attempt to infer from provided query
+                    String s = jpql.substring(selectIndex + 6, from);
+                    int comma = s.indexOf(',');
+                    if (comma > 0)
+                        s = s.substring(0, comma);
+                    jpqlCount = new StringBuilder(jpql.length() + 7) //
+                                    .append("SELECT COUNT(").append(s.trim()).append(") ") //
+                                    .append(order > from ? jpql.substring(from, order) : jpql.substring(from)) //
+                                    .toString();
+                }
+            }
+        } else if (upperTrimmed.startsWith("UPDATE")) {
+            type = Type.UPDATE;
+        } else if (upperTrimmed.startsWith("DELETE")) {
+            type = Type.DELETE;
+        } else {
+            throw new UnsupportedOperationException(jpql);
+        }
+
+        hasWhere = upperTrimmed.contains("WHERE");
     }
 
     /**
@@ -676,17 +777,16 @@ public class QueryInfo {
      * @param save    The Save annotation if present, otherwise null.
      * @param query   The Query annotation if present, otherwise null.
      * @param orderBy array of OrderBy annotations if present, otherwise an empty array.
-     * @param filters array of Filter annotations if present, otherwise an empty array.
      * @param count   The Count annotation if present, otherwise null.
      * @param exists  The Exists annotation if present, otherwise null.
      * @param select  The Select annotation if present, otherwise null.
+     * @return Count, Delete, Exists, Insert, Query, Save, or Update annotation if present. Otherwise null.
      * @throws UnsupportedOperationException if the combination of annotations is not valid.
      */
     @Trivial
-    void validateAnnotationCombinations(Delete delete, Insert insert, Update update, Save save,
-                                        jakarta.data.repository.Query query, OrderBy[] orderBy,
-                                        Filter[] filters, Count count, Exists exists, Select select) {
-        int f = filters.length == 0 ? 0 : 1;
+    Annotation validateAnnotationCombinations(Delete delete, Insert insert, Update update, Save save,
+                                              jakarta.data.repository.Query query, OrderBy[] orderBy,
+                                              Count count, Exists exists, Select select) {
         int o = orderBy.length == 0 ? 0 : 1;
         int q = query == null ? 0 : 1;
         int s = select == null ? 0 : 1;
@@ -700,7 +800,7 @@ public class QueryInfo {
                      (count == null ? 0 : 1) +
                      (exists == null ? 0 : 1);
 
-        if (ius + f > 1 // more than one of (Insert, Update, Save, Filter)
+        if (ius > 1 // more than one of (Insert, Update, Save)
             || iusdce > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists)
             || iusdce + o > 1 // one of (Insert, Update, Save, Delete, Count, Exists) with OrderBy
             || iusdce + q + s > 1) { // one of (Insert, Update, Save, Delete, Count, Exists) with Query or Select, or both Query and Select
@@ -713,8 +813,6 @@ public class QueryInfo {
                     annoClassNames.add(anno.annotationType().getName());
             if (orderBy.length > 0)
                 annoClassNames.add(OrderBy.class.getName());
-            if (filters.length > 0)
-                annoClassNames.add(Filter.class.getName());
             for (Annotation anno : Arrays.asList(count, exists, select))
                 if (anno != null)
                     annoClassNames.add(anno.annotationType().getName());
@@ -723,13 +821,19 @@ public class QueryInfo {
                                                     " repository method cannot be annotated with the following combination of annotations: " +
                                                     annoClassNames); // TODO NLS
         }
+
+        return ius == 1 //
+                        ? (insert != null ? insert : update != null ? update : save) //
+                        : iusdce == 1 //
+                                        ? (delete != null ? delete : count != null ? count : exists) //
+                                        : (q == 1 ? query : null);
     }
 
     /**
      * Copy of query information, but with updated JPQL and sort criteria.
      */
     QueryInfo withJPQL(String jpql, List<Sort> sorts) {
-        QueryInfo q = new QueryInfo(method, returnArrayType, returnTypeAtDepth);
+        QueryInfo q = new QueryInfo(method, entityParamType, returnArrayType, returnTypeAtDepth);
         q.entityInfo = entityInfo;
         q.entityVar = entityVar;
         q.hasWhere = hasWhere;
@@ -742,7 +846,6 @@ public class QueryInfo {
         q.paramCount = paramCount;
         q.paramAddedCount = paramAddedCount;
         q.paramNames = paramNames;
-        q.entityParamType = entityParamType;
         q.sorts = sorts;
         q.type = type;
         q.validateParams = validateParams;

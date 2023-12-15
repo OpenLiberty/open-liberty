@@ -15,10 +15,13 @@ package com.ibm.ws.feature.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import com.ibm.ws.feature.tasks.FeatureBnd;
@@ -50,6 +53,10 @@ public class FeatureInfo {
     private boolean isSingleton = false;
     private String visibility = "private";
     private String shortName;
+
+    // Using a list in order to find duplicates.
+    private List<ExternalPackageInfo> APIs;
+    private List<ExternalPackageInfo> SPIs;
 
     public FeatureInfo(File feature) {
         this.feature = feature;
@@ -180,6 +187,20 @@ public class FeatureInfo {
         return this.shortName;
     }
 
+    public List<ExternalPackageInfo> getAPIs() {
+        if (!isInit)
+            populateInfo();
+
+        return this.APIs;
+    }
+
+    public List<ExternalPackageInfo> getSPIs() {
+        if (!isInit)
+            populateInfo();
+
+        return this.SPIs;
+    }
+
     private synchronized void populateInfo() {
         if (isInit)
             return;
@@ -210,6 +231,12 @@ public class FeatureInfo {
             this.edition = edition;
             this.kind = kind;
 
+            String ibmAPIsString = builder.getProperty("IBM-API-Package");
+            String ibmSPIsString = builder.getProperty("IBM-SPI-Package");
+
+            this.APIs = parseExternalPackages(ibmAPIsString, null);
+            this.SPIs = parseExternalPackages(ibmSPIsString, "ibm-spi");
+
             for (String autoFeature : builder.getAutoFeatures()) {
                 this.autoFeatures.add(autoFeature);
             }
@@ -233,6 +260,87 @@ public class FeatureInfo {
         }
 
         isInit = true;
+    }
+
+    public static final class ExternalPackageInfo {
+
+        final String packageName;
+        final String type;
+
+        ExternalPackageInfo(String packageName, String type) {
+            this.packageName = packageName;
+            this.type = type;
+        }
+
+        public String getPackageName() {
+            return packageName;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(packageName, type);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            ExternalPackageInfo other = (ExternalPackageInfo) obj;
+            return Objects.equals(packageName, other.packageName) && Objects.equals(type, other.type);
+        }
+
+        @Override
+        public String toString() {
+            return packageName + " [" + type + "]";
+        }
+    }
+
+    private List<ExternalPackageInfo> parseExternalPackages(String packageList, String defaultType) {
+        if (packageList == null) {
+            return null;
+        }
+
+        String[] packageNames = packageList.split(",");
+        List<ExternalPackageInfo> extPackageInfoSet = new ArrayList<>();
+        for (String packageName : packageNames) {
+            String[] packageParts = packageName.split(";");
+            String externalPackage = packageParts[0].trim();
+            String type = null;
+            if (packageParts.length > 1) {
+                for (int i = 1; i < packageParts.length; ++i) {
+                    String packagePart = packageParts[i].trim();
+                    if (packagePart.startsWith("type")) {
+                        type = packagePart.substring(packagePart.indexOf('=') + 1).trim();
+                        while (type.startsWith("\"")) {
+                            type = type.substring(1);
+                        }
+                        while (type.endsWith("\"")) {
+                            type = type.substring(0, type.length() - 1);
+                        }
+                        break;
+                    }
+                }
+            }
+            if (type == null) {
+                type = defaultType;
+            }
+            extPackageInfoSet.add(new ExternalPackageInfo(externalPackage, type));
+        }
+        return Collections.unmodifiableList(extPackageInfoSet);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return name + " " + visibility;
     }
 
 }

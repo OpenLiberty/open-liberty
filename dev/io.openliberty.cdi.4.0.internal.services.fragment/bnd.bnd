@@ -25,7 +25,8 @@ Fragment-Host: io.openliberty.jakarta.cdi.4.0
 
 Bundle-Description:cdi 4.0 services fragment, version ${bVersion}
 
-Import-Package: org.jboss.weld.lite.extension.translator
+Import-Package: org.jboss.weld.lite.extension.translator;version="[5.1,7)", \
+                *
 
 Include-Resource: \
   META-INF=resources/META-INF

@@ -1272,3 +1272,9 @@ jsp.error.page.invalid.erroronelnotfound.useraction=
 jsp.isthreadsafe.warning=CWWJS0003W: La specifica Pages 3.1 suggerisce agli sviluppatori di Pages di non utilizzare la direttiva di pagina obsoleta isThreadSafe.
 jsp.isthreadsafe.warning.explanation=SingleThreadModel \u00e8 stata rimossa dal Servlet 6.0. isThreadSafe obsoleta di Pages 3.1 con i piani per rimuoverla in un futuro aggiornamento di Pages.
 jsp.isthreadsafe.warning.useraction=Rimuovere la direttiva isThreadSafe da tutte le pagine.
+
+
+jsp.useinmemory.warning=CWWJS0004W: L'opzione JSP 'useInMemory' non \u00e8 supportata. I JSP verranno compilati e salvati sul disco.
+jsp.useinmemory.warning.explanation=Questa funzione non \u00e8 mai stata trasferita da WebSphere tradizionale per motivi cronologici.
+jsp.useinmemory.warning.useraction=Rimuovere l'opzione useInMemory dai file server.xml, ibm-web-bnd.xmlo ibm-web-ext.xmi .
+

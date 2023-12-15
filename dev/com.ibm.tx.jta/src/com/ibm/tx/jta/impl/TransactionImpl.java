@@ -3261,9 +3261,9 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         boolean result = false;
         if (_inRecovery && auditRecovery && resource instanceof JTAXAResourceImpl) {
             if (outcome) {
-                Tr.audit(tc, "WTRN0137_REC_TXN_COMMIT", new Object[] { _localTID, printXID(resource), resource.describe() });
+                Tr.audit(tc, "WTRN0137_REC_TXN_COMMIT", new Object[] { String.valueOf(_localTID), printXID(resource), resource.describe() });
             } else {
-                Tr.audit(tc, "WTRN0138_REC_TXN_ROLLBACK", new Object[] { _localTID, printXID(resource), resource.describe() });
+                Tr.audit(tc, "WTRN0138_REC_TXN_ROLLBACK", new Object[] { String.valueOf(_localTID), printXID(resource), resource.describe() });
             }
             result = true;
         }
@@ -3280,18 +3280,20 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         if (_inRecovery && auditRecovery && resource instanceof JTAXAResourceImpl) {
             if (outcome) {
                 if (code == XAResource.XA_OK) {
-                    Tr.audit(tc, "WTRN0140_REC_TXN_COMMITED", new Object[] { _localTID, printXID(resource), resource.describe() });
+                    Tr.audit(tc, "WTRN0140_REC_TXN_COMMITED", new Object[] { String.valueOf(_localTID), printXID(resource), resource.describe() });
 
                 } else // what about XAER_NOTA
                 {
-                    Tr.audit(tc, "WTRN0141_REC_TXN_COMMITERR", new Object[] { _localTID, printXID(resource), resource.describe(), XAReturnCodeHelper.convertXACode(code) });
+                    Tr.audit(tc, "WTRN0141_REC_TXN_COMMITERR",
+                             new Object[] { String.valueOf(_localTID), printXID(resource), resource.describe(), XAReturnCodeHelper.convertXACode(code) });
                 }
             } else {
                 if (code == XAResource.XA_OK) {
-                    Tr.audit(tc, "WTRN0142_REC_TXN_ROLLED", new Object[] { _localTID, printXID(resource), resource.describe() });
+                    Tr.audit(tc, "WTRN0142_REC_TXN_ROLLED", new Object[] { String.valueOf(_localTID), printXID(resource), resource.describe() });
                 } else // what about XAER_NOTA
                 {
-                    Tr.audit(tc, "WTRN0143_REC_TXN_ROLLEDERR", new Object[] { _localTID, printXID(resource), resource.describe(), XAReturnCodeHelper.convertXACode(code) });
+                    Tr.audit(tc, "WTRN0143_REC_TXN_ROLLEDERR",
+                             new Object[] { String.valueOf(_localTID), printXID(resource), resource.describe(), XAReturnCodeHelper.convertXACode(code) });
                 }
             }
         }
@@ -3306,7 +3308,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
         boolean result = false;
         if (_inRecovery && auditRecovery && resource instanceof JTAXAResourceImpl) {
-            Tr.audit(tc, "WTRN0139_REC_TXN_FORGET", new Object[] { _localTID, printXID(resource), resource.describe() });
+            Tr.audit(tc, "WTRN0139_REC_TXN_FORGET", new Object[] { String.valueOf(_localTID), printXID(resource), resource.describe() });
             result = true;
         }
 
@@ -3321,10 +3323,11 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
         if (_inRecovery && auditRecovery && resource instanceof JTAXAResourceImpl) {
             if (code == XAResource.XA_OK) {
-                Tr.audit(tc, "WTRN0144_REC_TXN_FORGOT", new Object[] { _localTID, printXID(resource), resource.describe() });
+                Tr.audit(tc, "WTRN0144_REC_TXN_FORGOT", new Object[] { String.valueOf(_localTID), printXID(resource), resource.describe() });
             } else // what about XAER_NOTA
             {
-                Tr.audit(tc, "WTRN0145_REC_TXN_FORGETERR", new Object[] { _localTID, resource.getXID(), resource.describe(), XAReturnCodeHelper.convertXACode(code) });
+                Tr.audit(tc, "WTRN0145_REC_TXN_FORGETERR",
+                         new Object[] { String.valueOf(_localTID), resource.getXID(), resource.describe(), XAReturnCodeHelper.convertXACode(code) });
             }
         }
 
@@ -3337,7 +3340,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             Tr.entry(tc, "auditTransaction", this);
 
         if (_inRecovery && auditRecovery) {
-            Tr.audit(tc, "WTRN0136_RECOVERING_TRAN", new Object[] { getTranName(), _localTID, Util.printStatus(getStatus()) });
+            Tr.audit(tc, "WTRN0136_RECOVERING_TRAN", new Object[] { getTranName(), String.valueOf(_localTID), Util.printStatus(getStatus()) });
         }
 
         if (tc.isEntryEnabled())
@@ -3348,18 +3351,18 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
         return ((XidImpl) (r.getXID())).printOtid();
     }
 
+    @Trivial
     public TimeoutInfo setTimeoutInfo(TimeoutInfo timeoutInfo) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setTimeoutInfo", timeoutInfo);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "setTimeoutInfo: {0} {1}", timeoutInfo, _timeoutInfo);
 
         final TimeoutInfo ret = _timeoutInfo;
         _timeoutInfo = timeoutInfo;
 
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "setTimeoutInfo", ret);
         return ret;
     }
 
+    @Trivial
     public TimeoutInfo getTimeoutInfo() {
         return _timeoutInfo;
     }

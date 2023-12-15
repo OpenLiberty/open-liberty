@@ -89,7 +89,7 @@ public class JspTranslatorUtil {
 
         long startTranslationTime = System.nanoTime();
         FileLocker zosFileLocker = null; //453730
-        if (isZOS && !options.isUseInMemory()) {  //453730  //PK76810 skip if use in memory
+        if (isZOS) {  //453730  //PK76810 skip if use in memory
             zosFileLocker = (FileLocker) new JspClassFactory().getInstanceOf("FileLocker"); //448201
             
             //PK76810  - Starts
@@ -241,24 +241,12 @@ public class JspTranslatorUtil {
         inputMap.put("JspIdConsumerCounter", JspIdConsumerCounter);
         inputMap.put("JspIdConsumerPrefix", JspIdConsumerPrefix);
 
-        String jspVisitorCollectionId = null;
-        String tagFileVisitorCollectionId = null;
-        if (!options.isUseInMemory()) {
-	        jspVisitorCollectionId = JSP_TRANSLATION_ID;
-	        tagFileVisitorCollectionId = TAGFILE_TRANSLATION_ID;
-
+        String jspVisitorCollectionId = JSP_TRANSLATION_ID;
+        String tagFileVisitorCollectionId = TAGFILE_TRANSLATION_ID;
+	    
         if (options.isDebugEnabled()) {
             jspVisitorCollectionId = DEBUG_JSP_TRANSLATION_ID;
             tagFileVisitorCollectionId = DEBUG_TAGFILE_TRANSLATION_ID;
-        }
-        } else {
-	        jspVisitorCollectionId = IN_MEMORY_JSP_TRANSLATION_ID;
-	        tagFileVisitorCollectionId = IN_MEMORY_TAGFILE_TRANSLATION_ID;
-	
-	        if (options.isDebugEnabled()) {
-	            jspVisitorCollectionId = IN_MEMORY_DEBUG_JSP_TRANSLATION_ID;
-	            tagFileVisitorCollectionId = IN_MEMORY_DEBUG_TAGFILE_TRANSLATION_ID;
-	        }
         }
 
         JspTranslator jspTranslator = JspTranslatorFactory.getFactory().createTranslator(jspVisitorCollectionId, jspResources.getInputSource(), context, config, options, tlc.getImplicitTagLibPrefixMap());

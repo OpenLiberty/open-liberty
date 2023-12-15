@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/jwt/resources/JWTMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -19,11 +16,11 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS6000 - CWWKS6100
 JWT_BUILDER_CONFIG_PROCESSED=CWWKS6000I: Pomy\u015blnie przetworzono konfiguracj\u0119 JWT {0}.
-JWT_BUILDER_CONFIG_PROCESSED.explanation=Konfiguracja JWT (program buduj\u0105cy znaczniki WWW json) zosta\u0142a pomy\u015blnie przetworzona.
+JWT_BUILDER_CONFIG_PROCESSED.explanation=Konfiguracja programu buduj\u0105cego JSON Web Token (JWT) zosta\u0142a pomy\u015blnie przetworzona.
 JWT_BUILDER_CONFIG_PROCESSED.useraction=Brak
 
 JWT_BUILDER_CONFIG_MODIFIED=CWWKS6001I: Zmiana konfiguracji JWT {0} zosta\u0142a pomy\u015blnie przetworzona.
-JWT_BUILDER_CONFIG_MODIFIED.explanation=Konfiguracja JWT (program buduj\u0105cy znaczniki WWW json) zosta\u0142a pomy\u015blnie zmodyfikowana.
+JWT_BUILDER_CONFIG_MODIFIED.explanation=Konfiguracja programu buduj\u0105cego JSON Web Token (JWT) zosta\u0142a pomy\u015blnie zmodyfikowana.
 JWT_BUILDER_CONFIG_MODIFIED.useraction=Brak.
 
 # Do not translate "JSON Web Token", "JWT"
@@ -44,7 +41,7 @@ JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.useraction=Sprawd\u017a, czy \u015bcie\u017c
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Config ID of JWT provider
-JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: Us\u0142uga konfiguracyjna JSON Web Token (JWT) nie jest dost\u0119pna dla dostawcy [{0}].
+JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: Us\u0142uga konfiguracji JSON Web Token nie jest dost\u0119pna dla dostawcy [{0}].
 JWT_CONFIG_SERVICE_NOT_AVAILABLE.explanation=Dostawca podany w komunikacie nie istnieje w konfiguracji serwera lub konfiguracja okre\u015blonego dostawcy nie zosta\u0142a przetworzona przez us\u0142ug\u0119 konfiguracyjn\u0105.
 JWT_CONFIG_SERVICE_NOT_AVAILABLE.useraction=Sprawd\u017a konfiguracj\u0119 serwera, aby upewni\u0107 si\u0119, \u017ce skonfigurowano okre\u015blonego dostawc\u0119.
 
@@ -65,7 +62,7 @@ JWT_BUILDER_INVALID.explanation=Program buduj\u0105cy JSON Web Token (JWT) o okr
 JWT_BUILDER_INVALID.useraction=W pliku server.xml skonfiguruj element jwtBuilder o okre\u015blonym ID.
 
 # Do not translate "JSON Web Token", "JWT"
-JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: Warto\u015b\u0107 [{1}] w roszczeniu JSON Web Token (JWT) [{0}] nie jest poprawna.
+JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: Warto\u015b\u0107 [{1}] w roszczeniu [{0}] JSON Web Token (JWT) jest niepoprawna.
 JWT_INVALID_CLAIM_VALUE_ERR.explanation=Okre\u015blona warto\u015b\u0107 w roszczeniu JSON web token (JWT) nie jest zgodna ze specyfikacj\u0105 JWT.
 JWT_INVALID_CLAIM_VALUE_ERR.useraction=Podaj poprawn\u0105 warto\u015b\u0107 dla okre\u015blonego roszczenia. Dodatkowe informacje mo\u017cna znale\u017a\u0107 w specyfikacji JWT.
 
@@ -131,13 +128,13 @@ JWT_INVALID_CLAIMS_ERR.useraction=Sprawd\u017a, czy podano poprawny zestaw roszc
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Issuer claim of the token, 1=JWT configuration ID, 2=Trusted issuers specified in server configuration
-JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: Wystawca [{0}] podanego znacznika JSON web token (JWT) nie znajduje si\u0119 na li\u015bcie zaufanych wystawc\u00f3w w konfiguracji znacznika JWT [{1}]. Zaufani wystawcy: [{2}].
+JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: Wystawca [{0}] podanego znacznika JSON Web Token (JWT) nie jest wymieniony jako zaufany wystawca w konfiguracji JWT [{1}]. Zaufani wystawcy: [{2}].
 JWT_ISSUER_NOT_TRUSTED.explanation=W konfiguracji serwera okre\u015blono, kt\u00f3rzy wystawcy s\u0105 zaufani podczas sprawdzania poprawno\u015bci znacznik\u00f3w JWT. Podany znacznik nie pochodzi od zaufanego wystawcy, zatem nie mo\u017cna sprawdzi\u0107 jego poprawno\u015bci.
 JWT_ISSUER_NOT_TRUSTED.useraction=Pobierz nowy znacznik od jednego z zaufanych wystawc\u00f3w okre\u015blonych w konfiguracji znacznika JWT lub dodaj wystawc\u0119 okre\u015blonego w komunikacie jako zaufanego wystawc\u0119 w konfiguracji znacznika JWT.
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Audience claim of the token, 1=JWT configuration ID, 2=Trusted audiences specified in server configuration
-JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: Audytorium [{0}] podanego znacznika JSON web token (JWT) nie znajduje si\u0119 na li\u015bcie zaufanych audytori\u00f3w w konfiguracji znacznika JWT [{1}]. Zaufane audytoria: [{2}].
+JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: Audytorium [{0}] udost\u0119pnionego znacznika JSON Web Token (JWT) nie jest wymienione jako audytorium zaufane w konfiguracji znacznika JWT [{1}]. Zaufane audytoria: [{2}].
 JWT_AUDIENCE_NOT_TRUSTED.explanation=W konfiguracji serwera okre\u015blono, kt\u00f3re audytoria s\u0105 zaufane podczas sprawdzania poprawno\u015bci znacznik\u00f3w JWT. Podany znacznik nie jest przeznaczony dla zaufanego audytorium, zatem nie mo\u017cna sprawdzi\u0107 jego poprawno\u015bci.
 JWT_AUDIENCE_NOT_TRUSTED.useraction=Pobierz nowy znacznik dla jednego z zaufanych audytori\u00f3w okre\u015blonych w konfiguracji znacznika JWT lub dodaj audytorium okre\u015blone w komunikacie jako zaufane audytorium w konfiguracji znacznika JWT.
 
@@ -323,7 +320,7 @@ MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Okre\u015bl obs\u0142ugiwany a
 
 # Do not translate "JSON Web Token", "AMR", "JWT"
 # 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
-JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: Warto\u015b\u0107 AMR [{0}] podanego znacznika JSON web token (JWT) nie znajduje si\u0119 na li\u015bcie zaufanych warto\u015bci AMR w konfiguracji znacznika JWT [{1}]. Zaufane warto\u015bci AMR to [{2}].
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: Adres AMR [{0}] podanego znacznika JSON Web Token (JWT) nie jest wymieniony jako zaufany adres AMR w konfiguracji JWT [{1}]. Zaufane warto\u015bci AMR to [{2}].
 JWT_AMR_CLAIM_NOT_VALID.explanation=Konfiguracja serwera okre\u015bla, kt\u00f3re warto\u015bci AMR maj\u0105 by\u0107 traktowane jako zaufane podczas sprawdzania poprawno\u015bci znacznik\u00f3w JWT. Podany znacznik nie jest przeznaczony dla zaufanej warto\u015bci AMR, zatem nie mo\u017cna sprawdzi\u0107 jego poprawno\u015bci.
 JWT_AMR_CLAIM_NOT_VALID.useraction=Pobierz nowy znacznik dla jednej z zaufanych warto\u015bci AMR okre\u015blonych w konfiguracji znacznika JWT lub dodaj warto\u015b\u0107 AMR okre\u015blon\u0105 w komunikacie jako zaufan\u0105 w konfiguracji znacznika JWT.
 

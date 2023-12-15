@@ -12,19 +12,45 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.interfaces;
 
+import java.util.Optional;
+
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIService;
 
+import io.openliberty.microprofile.telemetry.internal.common.helpers.OSGIHelpers;
 import io.openliberty.microprofile.telemetry.internal.common.info.ErrorOpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import io.optenliberty.microprofile.telemetry.internal.common.helpers.OSGIHelpers;
 
+@Component(immediate = true)
 public class OpenTelemetryAccessor {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryAccessor.class);
+
+    private static volatile Optional<OpenTelemetryAccessor> instance = Optional.empty();
+
+    @Reference
+    private CDIService cdiService;
+
+    @Activate
+    protected void activate() {
+        instance = Optional.of(this);
+    }
+
+    @Deactivate
+    protected void deactivate() {
+        if (instance.isPresent() && instance.get() == this) {
+            instance = Optional.empty();
+        }
+    }
 
     //See https://github.com/open-telemetry/opentelemetry-java-docs/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
     /**
@@ -68,6 +94,16 @@ public class OpenTelemetryAccessor {
      */
     public static Baggage getBaggage() {
         return Baggage.current();
+    }
+
+    /**
+     * Gets the CDIService service
+     *
+     * @return the current CDIService instance
+     */
+    public static CDIService getCdiService() {
+        return instance.map(i -> i.cdiService)
+                       .orElseThrow(() -> new IllegalStateException("Unable to get CDIService"));
     }
 
 }

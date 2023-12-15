@@ -118,6 +118,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         compatibleFeatures.removeAll(FeatureUtilities.allMpFeatures());
         compatibleFeatures.addAll(FeatureUtilities.compatibleMpFeatures(EEVersion.EE9));
 
+        //MpTelemetry-1.1 is compatible with EE9 but not in Mp50
+        compatibleFeatures.add("mpTelemetry-1.1");
+
         // Value-add features which aren't compatible
         compatibleFeatures.remove("openid-2.0"); // stabilized
         compatibleFeatures.remove("openapi-3.1"); // depends on mpOpenAPI
@@ -132,6 +135,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         compatibleFeatures.remove("springBoot-3.0"); // springBoot 3.0 only supports EE 10
 
         compatibleFeatures.remove("mpReactiveMessaging-3.0"); //still in development
+
+        compatibleFeatures.remove("mpHealth"); //versionless features in development
+        compatibleFeatures.remove("mpMetrics");
 
         if (!openLibertyOnly) {
             // stabilized features
@@ -283,12 +289,15 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
      */
     @Test
     public void testCdi40Feature() throws Exception {
+        Set<String> featureSet = new HashSet<>(allFeatures);
+        featureSet.remove("mpHealth");
+        featureSet.remove("mpMetrics");
         Map<String, String> specialEE9Conflicts = new HashMap<>();
         // cdi-3.0 will conflict with itself
         specialEE9Conflicts.put("cdi-3.0", "io.openliberty.cdi");
         specialEE9Conflicts.put("cdi-4.0", "io.openliberty.cdi");
         specialEE9Conflicts.put("cdi-4.1", "io.openliberty.cdi");
-        testCompatibility("cdi-3.0", allFeatures, specialEE9Conflicts);
+        testCompatibility("cdi-3.0", featureSet, specialEE9Conflicts);
     }
 
     /**
@@ -306,6 +315,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
      */
     @Test
     public void testServlet50Feature() throws Exception {
+        Set<String> featureSet = new HashSet<>(allFeatures);
+        featureSet.remove("mpHealth");
+        featureSet.remove("mpMetrics");
         Map<String, String> specialEE9Conflicts = new HashMap<>();
         specialEE9Conflicts.put("servlet-6.1", "com.ibm.websphere.appserver.servlet");
         specialEE9Conflicts.put("servlet-6.0", "com.ibm.websphere.appserver.servlet");
@@ -314,7 +326,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         specialEE9Conflicts.put("servlet-3.1", "com.ibm.websphere.appserver.servlet");
         specialEE9Conflicts.put("servlet-3.0", "com.ibm.websphere.appserver.servlet");
 
-        testCompatibility("servlet-5.0", allFeatures, specialEE9Conflicts);
+        testCompatibility("servlet-5.0", featureSet, specialEE9Conflicts);
     }
 
     /**

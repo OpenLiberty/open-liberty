@@ -27,7 +27,8 @@ Subsystem-Category: JakartaEE11Application
  com.ibm.ws.webserver.plugin.runtime.interfaces,\
  io.openliberty.session.6.0.internal, \
  io.openliberty.webcontainer.servlet.6.0.internal, \
- io.openliberty.webcontainer.servlet.6.0.internal.factories
+ io.openliberty.webcontainer.servlet.6.1.internal, \
+ io.openliberty.webcontainer.servlet.6.1.internal.factories
 -jars=com.ibm.ws.webserver.plugin.utility
 -files=bin/tools/ws-webserverPluginutil.jar, \
  bin/pluginUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \

@@ -65,9 +65,12 @@
 
         <AD name="%lease.check.interval" description="%lease.check.interval.desc"
             id="leaseCheckInterval" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
-            
+
 		<AD name="%lease.renewal.threshold" description="%lease.renewal.threshold.desc"
             id="leaseRenewalThreshold" required="false" type="Integer" min="1" max="100" default="90" />
+
+		<AD name="%lease.expiry.threshold" description="%lease.expiry.threshold.desc"
+            id="leaseExpiryThreshold" required="false" type="Integer" min="1" default="1" />
 
         <AD name="%lease.length" description="%lease.length.desc"
             id="leaseLength" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />

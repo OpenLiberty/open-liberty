@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2022 IBM Corporation and others.
+ * Copyright (c) 2017,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -4750,6 +4750,7 @@ public class PolicyExecutorServlet extends FATServlet {
         suspendConfig.put("maxPolicy", MaxPolicy.loose.name());
         suspendConfig.put("maxWaitForEnqueue", 0l);
         suspendConfig.put("runIfQueueFull", false);
+        suspendConfig.put("virtual", false);
         executor.updateConfig(suspendConfig);
 
         try {
@@ -4772,6 +4773,7 @@ public class PolicyExecutorServlet extends FATServlet {
             resumeConfig.put("maxPolicy", MaxPolicy.loose.name());
             resumeConfig.put("maxWaitForEnqueue", 0l);
             resumeConfig.put("runIfQueueFull", false);
+            resumeConfig.put("virtual", false);
             executor.updateConfig(resumeConfig);
 
             // Task executes once for each time it was scheduled
@@ -4811,6 +4813,7 @@ public class PolicyExecutorServlet extends FATServlet {
             suspendConfig.put("maxPolicy", MaxPolicy.loose.name());
             suspendConfig.put("maxWaitForEnqueue", 0l);
             suspendConfig.put("runIfQueueFull", false);
+            suspendConfig.put("virtual", false);
             executor.updateConfig(suspendConfig);
 
             // Clear out any executions that might have already happened or that might overlap the suspend
@@ -4827,6 +4830,7 @@ public class PolicyExecutorServlet extends FATServlet {
             resumeConfig.put("maxPolicy", MaxPolicy.loose.name());
             resumeConfig.put("maxWaitForEnqueue", 0l);
             resumeConfig.put("runIfQueueFull", false);
+            resumeConfig.put("virtual", false);
             executor.updateConfig(resumeConfig);
 
             // Task executes repeatedly
@@ -4872,6 +4876,7 @@ public class PolicyExecutorServlet extends FATServlet {
             suspendConfig.put("maxPolicy", MaxPolicy.loose.name());
             suspendConfig.put("maxWaitForEnqueue", 0l);
             suspendConfig.put("runIfQueueFull", false);
+            suspendConfig.put("virtual", false);
             executor.updateConfig(suspendConfig);
             suspendRequested.countDown();
 
@@ -4935,6 +4940,7 @@ public class PolicyExecutorServlet extends FATServlet {
             suspendConfig.put("maxPolicy", MaxPolicy.loose.name());
             suspendConfig.put("maxWaitForEnqueue", 0l);
             suspendConfig.put("runIfQueueFull", false);
+            suspendConfig.put("virtual", false);
             executor.updateConfig(suspendConfig);
 
             // Suspend doesn't complete until active tasks finish, and this task is still running
@@ -4965,6 +4971,7 @@ public class PolicyExecutorServlet extends FATServlet {
             resumeConfig.put("maxPolicy", MaxPolicy.loose.name());
             resumeConfig.put("maxWaitForEnqueue", 0l);
             resumeConfig.put("runIfQueueFull", false);
+            resumeConfig.put("virtual", false);
             executor.updateConfig(resumeConfig);
 
             assertFalse(executor.isSuspended());

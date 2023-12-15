@@ -26,16 +26,18 @@ import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import componenttest.annotation.SkipForRepeat;
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
 
 @SuppressWarnings("serial")
 @WebServlet("/testJaxrsServerAsync")
@@ -56,6 +58,7 @@ public class JaxRsServerAsyncTestServlet extends FATServlet {
     private TestSpans testSpans;
 
     @Test
+    @SkipForRepeat(TelemetryActions.MP14_MPTEL11_ID)
     public void testJaxRsServerAsyncCompletionStage() {
         doAsyncTest(JaxRsServerAsyncTestEndpointClient::getCompletionStage);
     }

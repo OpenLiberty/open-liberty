@@ -30,7 +30,8 @@ IBM-API-Package: jakarta.decorator;  type="spec", \
  org.jboss.weld.serialization.spi; type="internal", \
  org.jboss.weld.context;type="third-party", \
  org.jboss.weld.context.api;type="third-party", \
- org.jboss.weld.context.bound;type="third-party"
+ org.jboss.weld.context.bound;type="third-party", \
+ jakarta.activation; type="spec"
 IBM-SPI-Package: io.openliberty.cdi.spi;type="ibm-spi"
 IBM-ShortName: cdi-3.0
 Subsystem-Name: Jakarta Contexts and Dependency Injection 3.0

@@ -14,7 +14,6 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -29,16 +28,15 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry. WithSpanErrorServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpanErrorServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.spans.AbstractSpanMatcher;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
-
-import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(FATRunner.class)
 public class TelemetryWithSpanErrorTest extends FATServletClient {
@@ -54,8 +52,8 @@ public class TelemetryWithSpanErrorTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP61, MicroProfileActions.MP60);
-    
+    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
@@ -63,6 +61,7 @@ public class TelemetryWithSpanErrorTest extends FATServletClient {
                                        "META-INF/microprofile-config.properties")
                         .addClasses(InMemorySpanExporter.class, InMemorySpanExporterProvider.class, WithSpanErrorServlet.class)
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);

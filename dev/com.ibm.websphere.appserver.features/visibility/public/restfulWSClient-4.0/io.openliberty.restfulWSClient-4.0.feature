@@ -17,7 +17,29 @@ IBM-API-Package: jakarta.ws.rs; type="spec", \
  org.jboss.resteasy.plugins.providers.sse; type="internal", \
  org.jboss.resteasy.plugins.providers; type="internal", \
  org.jboss.resteasy.spi;type="internal", \
- org.reactivestreams;type="internal"
+ org.reactivestreams;type="internal", \
+ com.ibm.websphere.endpoint; type="ibm-api", \
+ jakarta.activation; type="spec", \
+ jakarta.annotation; type="spec", \
+ jakarta.annotation.security; type="spec", \
+ jakarta.annotation.sql; type="spec"
+IBM-SPI-Package: \
+ com.ibm.wsspi.adaptable.module, \
+ com.ibm.ws.adaptable.module.structure, \
+ com.ibm.wsspi.adaptable.module.adapters, \
+ com.ibm.wsspi.artifact, \
+ com.ibm.wsspi.artifact.factory, \
+ com.ibm.wsspi.artifact.factory.contributor, \
+ com.ibm.wsspi.artifact.overlay, \
+ com.ibm.wsspi.artifact.equinox.module, \
+ com.ibm.wsspi.http, \
+ com.ibm.wsspi.http.ee8, \
+ com.ibm.wsspi.anno.classsource, \
+ com.ibm.wsspi.anno.info, \
+ com.ibm.wsspi.anno.service, \
+ com.ibm.wsspi.anno.targets, \
+ com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification
 IBM-App-ForceRestart: uninstall, \
  install
 IBM-ShortName: restfulWSClient-4.0

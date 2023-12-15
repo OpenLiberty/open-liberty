@@ -20,6 +20,7 @@ import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
 
@@ -47,5 +48,6 @@ public interface Customers extends DataRepository<Customer, Integer> {
     @Query("SELECT dl.street FROM Customer c JOIN c.deliveryLocations dl WHERE (dl.type=?1) ORDER BY dl.street.name DESC, dl.street.direction")
     Stream<Street> withLocationType(DeliveryLocation.Type locationType);
 
+    @Save
     void save(Customer... customers);
 }

@@ -71,6 +71,65 @@ public class DataValidationTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method with constraints on the different method parameters and the return type.
+     * Verify that these methods raise ConstraintViolationException when the constraints are violated, but otherwise run successfully.
+     */
+    @Test
+    public void testConstraintsOnRepositoryMethod() {
+        Creature c1 = new Creature(1001l, "Mink", "Neogale vison", //
+                        BigDecimal.valueOf(44037855L, 6), BigDecimal.valueOf(-92508962L, 6), //
+                        ZonedDateTime.now(ZoneId.of("America/Chicago")).minusMinutes(10).toOffsetDateTime(), //
+                        1.9f);
+        Creature c2 = new Creature(1002l, "Mink", "Neogale vison", //
+                        BigDecimal.valueOf(44036829L, 6), BigDecimal.valueOf(-92507138L, 6), //
+                        ZonedDateTime.now(ZoneId.of("America/Chicago")).minusMinutes(20).toOffsetDateTime(), //
+                        2.2f);
+        Creature c3 = new Creature(1003l, "Double-crested Cormorant", "Nannopterum auritum", //
+                        BigDecimal.valueOf(44028468L, 6), BigDecimal.valueOf(-92506186L, 6), //
+                        ZonedDateTime.now(ZoneId.of("America/Chicago")).minusMinutes(30).toOffsetDateTime(), //
+                        2.3f);
+        Creature c4 = new Creature(1004l, "Mink", "Neogale vison", //
+                        BigDecimal.valueOf(44036987L, 6), BigDecimal.valueOf(-92503694L, 6), //
+                        ZonedDateTime.now(ZoneId.of("America/Chicago")).minusMinutes(40).toOffsetDateTime(), //
+                        1.4f);
+        creatures.saveAll(List.of(c1, c2, c3, c4));
+
+        List<Creature> found;
+
+        // no constraints violated:
+        found = creatures.findByScientificNameStartsWithAndWeightBetween("Neogale ", 1.0f, 2.0f);
+        assertEquals(2, found.size());
+
+        try {
+            found = creatures.findByScientificNameStartsWithAndWeightBetween(" ", 1.0f, 2.0f);
+            fail("Did not detect violation of constraint on first parameter to be non-blank.");
+        } catch (ConstraintViolationException x) {
+            // expected
+        }
+
+        try {
+            found = creatures.findByScientificNameStartsWithAndWeightBetween("Neogale ", -1.0f, 2.5f);
+            fail("Did not detect violation of constraint on second parameter to be positive.");
+        } catch (ConstraintViolationException x) {
+            // expected
+        }
+
+        try {
+            found = creatures.findByScientificNameStartsWithAndWeightBetween("Neogale ", 2.0f, -3.0f);
+            fail("Did not detect violation of constraint on third parameter to be positive.");
+        } catch (ConstraintViolationException x) {
+            // expected
+        }
+
+        try {
+            found = creatures.findByScientificNameStartsWithAndWeightBetween("N%", 1.0f, 3.0f);
+            fail("Did not detect violation on constraint on return value to have a maximum size of 3.");
+        } catch (ConstraintViolationException x) {
+            // expected
+        }
+    }
+
+    /**
      * Verify that a constraint placed on the parameterized type variable for the Id type
      * enforces validation on that type when methods from the repository are used.
      */

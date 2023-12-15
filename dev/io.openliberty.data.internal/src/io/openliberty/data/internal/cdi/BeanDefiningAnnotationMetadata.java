@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
-import jakarta.data.model.StaticMetamodel;
+import jakarta.data.metamodel.StaticMetamodel;
 import jakarta.data.repository.Repository;
 
 /**

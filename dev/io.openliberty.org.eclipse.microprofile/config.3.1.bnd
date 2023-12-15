@@ -21,10 +21,10 @@ Export-Package: \
   org.eclipse.microprofile.config.spi;version=3.0
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.config:microprofile-config-api;3.1.0.RC2;EXACT}
+  @${repo;org.eclipse.microprofile.config:microprofile-config-api;3.1;EXACT}
 
 -maven-dependencies: \
-   dep1;groupId=org.eclipse.microprofile.config;artifactId=microprofile-config-api;version=3.1-RC2;scope=runtime
+   dep1;groupId=org.eclipse.microprofile.config;artifactId=microprofile-config-api;version=3.1;scope=runtime
 
 WS-TraceGroup: APPCONFIG
 

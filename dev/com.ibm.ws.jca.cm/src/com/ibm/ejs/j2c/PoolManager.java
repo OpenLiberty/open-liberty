@@ -2735,7 +2735,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             mcWrapper = getMCWrapperFromMatch(subject, cri, managedConnectionFactory, mcWrapperTemp);
             if (((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).do_not_reuse_mcw) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Connection error occurred for this mcw " + mcWrapperTemp + ", mcw will not be reuse");
+                    Tr.debug(this, tc, "Connection error occurred for this mcw " + mcWrapperTemp + ", mcw will not be reused");
                 }
                 freePool[0].cleanupAndDestroyMCWrapper(mcWrapperTemp);
                 if ((waiterCount > 0) && (waiterCount > mcWrapperWaiterList.size())) {
@@ -2759,7 +2759,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
                     mcWrapper = getMCWrapperFromMatch(subject, cri, managedConnectionFactory, mcWrapperTemp);
                     if (((com.ibm.ejs.j2c.MCWrapper) mcWrapperTemp).do_not_reuse_mcw) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(this, tc, "Connection error occurred for this mcw " + mcWrapperTemp + ", mcw will not be reuse");
+                            Tr.debug(this, tc, "Connection error occurred for this mcw " + mcWrapperTemp + ", mcw will not be reused");
                         }
                         mcWrapperWaiterList.remove(i);
                         freePool[0].cleanupAndDestroyMCWrapper(mcWrapperTemp);
@@ -2826,7 +2826,7 @@ public final class PoolManager implements Runnable, PropertyChangeListener, Veto
             mcWrapper = getMCWrapperFromMatch(subject, cri, managedConnectionFactory, mcw);
             if (((com.ibm.ejs.j2c.MCWrapper) mcw).do_not_reuse_mcw) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Connection error occurred for this mcw " + mcw + ", mcw will not be reuse");
+                    Tr.debug(this, tc, "Connection error occurred for this mcw " + mcw + ", mcw will not be reused");
                 }
                 if (tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Claiming victim " + mcw);
