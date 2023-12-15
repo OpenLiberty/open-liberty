@@ -19,7 +19,7 @@ javac.target: 11
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Bundle-Name: Interceptors for Jakarta Concurrency
-Bundle-SymbolicName: io.openliberty.concurrent.internal.cdi
+Bundle-SymbolicName: io.openliberty.concurrent.internal.cdi.4.0
 Bundle-Description: Provides interceptors for Jakarta Concurrency; version=${bVersion}
 
 WS-TraceGroup: concurrent
@@ -31,14 +31,14 @@ Import-Package: \
  *
 
 Private-Package: \
-  io.openliberty.concurrent.internal.cdi.*,\
-  io.openliberty.concurrent.internal.cdi.resources.*
+  io.openliberty.concurrent.internal.cdi4.*,\
+  io.openliberty.concurrent.internal.cdi4.resources.*
 
 -cdiannotations:
 
--dsannotations: io.openliberty.concurrent.internal.cdi.ConcurrencyExtensionMetadata
+-dsannotations: io.openliberty.concurrent.internal.cdi4.ConcurrencyExtensionMetadata
 
-instrument.classesExcludes: io/openliberty/concurrent/internal/cdi/resources/*.class
+instrument.classesExcludes: io/openliberty/concurrent/internal/cdi4/resources/*.class
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\
@@ -53,7 +53,7 @@ instrument.classesExcludes: io/openliberty/concurrent/internal/cdi/resources/*.c
   com.ibm.ws.kernel.service,\
   com.ibm.ws.threading,\
   io.openliberty.jakarta.annotation.2.1,\
-  io.openliberty.jakarta.cdi.4.1,\
-  io.openliberty.jakarta.concurrency.3.1,\
+  io.openliberty.jakarta.cdi.4.0,\
+  io.openliberty.jakarta.concurrency.3.0,\
   io.openliberty.jakarta.interceptor.2.1,\
   io.openliberty.jakarta.transaction.2.0
