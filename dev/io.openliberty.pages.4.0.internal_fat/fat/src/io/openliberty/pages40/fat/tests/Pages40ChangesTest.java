@@ -57,7 +57,8 @@ public class Pages40ChangesTest {
     public static void testCleanup() throws Exception {
         // Stop the server
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            // SRVE8094W caused by exceptions thrown by the jsp:plugin tests
+            server.stopServer("SRVE8094W");
         }
     }
 
@@ -96,7 +97,7 @@ public class Pages40ChangesTest {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
-        assertTrue("jsp:plugin should throw an error", response.getText().contains("CWWJS0005E: The jsp:plugin element was removed in Pages 4.0 and it no longer supported."));
+        assertTrue("jsp:plugin should throw an error", response.getText().contains("CWWJS0005E: The jsp:plugin element was removed in Pages 4.0 and therefore is no longer supported."));
     }
 
     /**
@@ -115,7 +116,7 @@ public class Pages40ChangesTest {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
-        assertTrue("jsp:params should throw an error", response.getText().contains("CWWJS0005E: The jsp:params element was removed in Pages 4.0 and it no longer supported."));
+        assertTrue("jsp:params should throw an error", response.getText().contains("CWWJS0005E: The jsp:params element was removed in Pages 4.0 and therefore is no longer supported."));
     }
 
     /**
@@ -134,7 +135,7 @@ public class Pages40ChangesTest {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
-        assertTrue("jsp:fallback should throw an error", response.getText().contains("CWWJS0005E: The jsp:fallback element was removed in Pages 4.0 and it no longer supported."));
+        assertTrue("jsp:fallback should throw an error", response.getText().contains("CWWJS0005E: The jsp:fallback element was removed in Pages 4.0 and therefore is no longer supported."));
     }
 
     /**
