@@ -13,9 +13,12 @@
 package com.ibm.ws.example;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_OR_LATER_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE8_OR_LATER_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_OR_LATER_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertTrue;
 
@@ -81,7 +84,7 @@ public class SimpleTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
+    @SkipForRepeat({ EE8_OR_LATER_FEATURES })
     public void testEE7Only() throws Exception {
         // This test will only run for the EE7 feature iteration (i.e. NO_MODIFICATION)
 
@@ -94,7 +97,7 @@ public class SimpleTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat({ NO_MODIFICATION, EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
+    @SkipForRepeat({ NO_MODIFICATION, EE9_OR_LATER_FEATURES })
     public void testEE8Only() throws Exception {
         // This test will only run for the EE 8 iteration
 
@@ -107,7 +110,7 @@ public class SimpleTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES, EE10_FEATURES, EE11_FEATURES })
+    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES, EE10_OR_LATER_FEATURES })
     public void testEE9Only() throws Exception {
         // This test will only run for the EE9 iteration
 
@@ -120,7 +123,7 @@ public class SimpleTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES, EE9_FEATURES, EE11_FEATURES })
+    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES, EE9_FEATURES, EE11_OR_LATER_FEATURES })
     public void testEE10Only() throws Exception {
         // This test will only run for the EE10 iteration
 
