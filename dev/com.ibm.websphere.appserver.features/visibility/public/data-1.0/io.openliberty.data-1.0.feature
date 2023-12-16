@@ -26,3 +26,4 @@ Subsystem-Name: Jakarta Data 1.0
 kind=beta
 edition=base
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

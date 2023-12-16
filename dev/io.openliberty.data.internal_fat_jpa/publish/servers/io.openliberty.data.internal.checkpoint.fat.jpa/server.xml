@@ -1,0 +1,52 @@
+<!--
+    Copyright (c) 2022,2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <feature>componenttest-2.0</feature>
+    <feature>data-1.0</feature>
+    <feature>jndi-1.0</feature>
+    <feature>persistence-3.1</feature>
+    <feature>servlet-6.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="DataJPATestApp.war">
+    <classloader commonLibraryRef="DerbyLib"/>
+  </application>
+
+  <library id="DerbyLib">
+    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  </library>
+
+  <!-- For DataSourceDefinition java:module/jdbc/RepositoryDataStore which is used by Customers and CreditCards repositories -->
+  <variable name="repository.datasource.class.name" value="org.apache.derby.jdbc.EmbeddedXADataSource"/>
+  <variable name="repository.database.name" value="memory:testdb"/>
+  <variable name="repository.database.user" value="dbuser1"/>
+  <variable name="repository.database.password" value="dbpwd1"/>
+  <variable name="repository.database.tables.create" value="true"/>
+  <variable name="repository.database.tables.drop" value="false"/>
+  <variable name="repository.database.tables.prefix" value="TEST"/>
+
+  <!-- For all other repositories: -->
+  <dataSource id="DefaultDataSource" fat.modify="true">
+    <jdbcDriver libraryRef="JDBCLibrary"/>
+    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
+  </dataSource>
+
+  <library id="JDBCLibrary">
+    <fileset dir="${shared.resource.dir}/jdbc" includes="derby.jar"/>
+  </library>
+
+</server>
