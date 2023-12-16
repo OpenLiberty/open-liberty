@@ -7,10 +7,8 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-
-// Define G:A:V coordinates of each dependency
-dependencies {
-  requiredLibs 'org.apache.httpcomponents.client5:httpclient5:5.0.2',
-    'org.apache.httpcomponents.core5:httpcore5:5.0.2',
-    project(':com.ibm.ws.org.slf4j.api')
-}
+/**
+ * @version 1.0
+ */
+@org.osgi.annotation.versioning.Version("1.0")
+package io.openliberty.webcontainer61.facade;
