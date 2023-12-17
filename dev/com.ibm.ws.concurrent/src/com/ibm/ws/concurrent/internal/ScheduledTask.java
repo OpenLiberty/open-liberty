@@ -23,6 +23,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
@@ -44,6 +45,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.ws.concurrent.TriggerService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.threading.ScheduledCustomExecutorTask;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
@@ -55,7 +57,7 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
  * If a repeating task, each execution of the task schedules the next execution,
  * thus guaranteeing that we never have overlapping executions of the same task.
  */
-public class ScheduledTask<T> implements Callable<T> {
+public class ScheduledTask<T> implements Callable<T>, ScheduledCustomExecutorTask {
     private static final TraceComponent tc = Tr.register(ScheduledTask.class);
 
     /**
@@ -700,6 +702,17 @@ public class ScheduledTask<T> implements Callable<T> {
                         .add(BigInteger.valueOf(denominator.getNano()));
 
         return num.divide(denom).longValueExact();
+    }
+
+    /**
+     * Returns a custom executor upon which to run the task.
+     * We use this when virtual=true to direct the task to a new new virtual thread.
+     * Otherwise, the null value that is returned when virtual=false means to use the Liberty thread pool.
+     */
+    @Override
+    @Trivial
+    public Executor getExecutor() {
+        return managedExecSvc.policyExecutor.getVirtualThreadExecutor(); // null if virtual=false
     }
 
     /**

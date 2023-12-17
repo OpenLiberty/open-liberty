@@ -20,7 +20,6 @@ import com.ibm.ws.ffdc.FFDCFilter;
  * When tasks implementing this interface are scheduled to the Liberty scheduled executor,
  * it delegates the actual running of the task to the designated executor.
  */
-// TODO replace ScheduledPolicyExecutorTask with this after code that use it is updated
 public interface ScheduledCustomExecutorTask {
     /**
      * Returns a custom executor upon which to run this task.
