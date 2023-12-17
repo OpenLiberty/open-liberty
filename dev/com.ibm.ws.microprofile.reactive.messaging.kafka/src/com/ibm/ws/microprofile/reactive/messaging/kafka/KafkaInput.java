@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
@@ -46,6 +45,9 @@ import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.OffsetAndMetadat
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.TopicPartition;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.WakeupException;
 
+import io.openliberty.microprofile.reactive.messaging.internal.interfaces.RMAsyncProvider;
+import io.openliberty.microprofile.reactive.messaging.internal.interfaces.RMContext;
+
 /**
  * Connects a reactive stream to a Kafka topic
  *
@@ -60,7 +62,7 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
     private static final Duration FOREVER = Duration.ofMillis(Long.MAX_VALUE);
 
     private final KafkaConsumer<K, V> kafkaConsumer;
-    private final ExecutorService executor;
+    private final RMAsyncProvider asyncProvider;
     private final Collection<String> topics;
 
     private PublisherBuilder<Message<V>> publisher;
@@ -99,11 +101,11 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
     private final ReentrantLock lock = new ReentrantLock();
 
     public KafkaInput(KafkaAdapterFactory kafkaAdapterFactory, PartitionTrackerFactory partitionTrackerFactory,
-                      KafkaConsumer<K, V> kafkaConsumer, ExecutorService executor,
+                      KafkaConsumer<K, V> kafkaConsumer, RMAsyncProvider asyncProvider,
                       String topic, int unackedLimit, boolean fastAck) {
         super();
         this.kafkaConsumer = kafkaConsumer;
-        this.executor = executor;
+        this.asyncProvider = asyncProvider;
         this.topics = Collections.singleton(topic);
         this.tasks = new ConcurrentLinkedQueue<>();
         this.kafkaAdapterFactory = kafkaAdapterFactory;
@@ -249,8 +251,11 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
             result.complete(wrapInMessageStream(records));
         } else {
             try {
-                this.executor.submit(() -> {
-                    executePollActions(result);
+                RMContext context = asyncProvider.captureContext();
+                this.asyncProvider.getExecutorService().submit(() -> {
+                    context.execute(() -> {
+                        executePollActions(result);
+                    });
                 });
             } catch (RejectedExecutionException e) {
                 //by far the most likely reason for this exception is the server is being shutdown
@@ -301,9 +306,19 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
                                       Message<V> message = this.kafkaAdapterFactory.newIncomingKafkaMessage(r,
                                                                                                             () -> {
                                                                                                                 unackedMessageCounter.decrement();
-                                                                                                                CompletionStage<Void> ackResult = tracker.recordDone(r.offset(),
-                                                                                                                                                                     r.leaderEpoch());
-                                                                                                                return fastAck ? CompletableFuture.completedFuture(null) : ackResult;
+                                                                                                                if (fastAck) {
+                                                                                                                    tracker.recordDone(r.offset(),
+                                                                                                                                       r.leaderEpoch(),
+                                                                                                                                       RMContext.NOOP);
+                                                                                                                    return CompletableFuture.completedFuture(null);
+                                                                                                                } else {
+                                                                                                                    RMContext context = asyncProvider.captureContext();
+                                                                                                                    CompletionStage<Void> ackResult = tracker.recordDone(r.offset(),
+                                                                                                                                                                         r.leaderEpoch(),
+                                                                                                                                                                         context);
+                                                                                                                    return ackResult;
+                                                                                                                }
+
                                                                                                             },
                                                                                                             (t) -> {
                                                                                                                 logNackedMessage(r, t);
