@@ -15,8 +15,8 @@
     </featureManager>
     
     <library id="exporter" apiTypeVisibility="+third-party">
-		<file name="${server.config.dir}/shared/exporter.jar" commonLibraryRef="exporter" />
-	</library>
+        <file name="${server.config.dir}/shared/exporter.jar" commonLibraryRef="exporter" />
+    </library>
 
     <application id="ReactiveMessageThatTriggersRestClientApp" name="ReactiveMessageThatTriggersRestClientApp"
         type="war" location="ReactiveMessageThatTriggersRestClientApp.war">

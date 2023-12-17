@@ -16,10 +16,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.MatcherAssert.assertThat; 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.Test;
 
@@ -38,7 +45,7 @@ public class MessageAndRestClientTestServlet extends FATServlet {
     private static final long MAX_WAIT = 40000; //millis
     private static final long WAIT_INTERVAL = 50; //millis
 
-    private static Map<Span, Integer> spanAndExpectedNumber = new HashMap<Span, Integer>();
+    private static List<Span> recordedSpans = new ArrayList<Span>();
 
     @Inject
     private SimpleReactiveMessagingBean reactiveBean;
@@ -47,86 +54,51 @@ public class MessageAndRestClientTestServlet extends FATServlet {
     InMemorySpanExporter inMemorySpanExporter;
 
     @Test
-    public void testReactiveMessagingThatCallsJaxClient() throws InterruptedException {
-        List<String> results = getResultsWithWaitIfNeeded();
+    public void testSpanInBothJaxCallerAndCalled() throws Exception {
+        //Test that the reactive messaging part of the app worked as expected, no point checking the telemetry part works if it did not.
+        List<String> reactiveMessagingResults = getReactiveMessagingResultsWithWaitIfNeeded(3);
+        assertThat(reactiveMessagingResults, not(contains("LENGTH 8", "LENGTH 9!")));
+        assertThat(reactiveMessagingResults, contains("LENGTH 10!", "LENGTH 11!!", "LENGTH 12!!!"));
 
-        assertEquals(3, results.size());
-        assertEquals(3, results.size());
-        assertFalse(results.contains("LENGTH 8"));
-        assertFalse(results.contains("LENGTH 9!"));
-        assertTrue(results.contains("LENGTH 10!"));
-        assertTrue(results.contains("LENGTH 11!!"));
-        assertTrue(results.contains("LENGTH 12!!!"));
-    }
-
-    @Test
-    public void testSpanInBothJaxCallerAndCalled() throws InterruptedException {
-        getResultsWithWaitIfNeeded();//we just want to delay until the results are in.
-        List<List<SpanData>> listOfListOfResults = new ArrayList<List<SpanData>>(5);
+        //Now onto the telemetry
 
         SpanDataMatcher spanInsideClientMatcher = SpanDataMatcher.hasName("SimpleReactiveMessagingBean.toUpperCase");
 
         SpanDataMatcher spanInsideJaxServiceMatcher = SpanDataMatcher.hasName("RestClientThatCapitalizes.jaxServiceThatCapitalizes");
 
         //Each message will end up with four spans being registered. And there are five messages.
-        for (Span s : spanAndExpectedNumber.keySet()) {
-            listOfListOfResults.add(new ArrayList(inMemorySpanExporter.getFinishedSpanItems(spanAndExpectedNumber.get(s), s)));
-        }
+        assertTrue(recordedSpans.size() == 5);
+        for (int i = 0; i < 5; i++) {
+            List<SpanData> results = new ArrayList(inMemorySpanExporter.getFinishedSpanItems(4, recordedSpans.get(i)));
 
-        String failMessage = "";
-
-        //We don't really need to test this five times, but keeping all five
-        //makes the test app more authentic and since we have them.
-        for (int index = 0; index < listOfListOfResults.size(); index++) {
-            boolean foundSpanCallingJax = false;
-            boolean foundSpanInsideJax = false;
-
-            for (SpanData sd : listOfListOfResults.get(index)) {
-                if (spanInsideClientMatcher.matches(sd)) {
-                    foundSpanCallingJax = true;
-                }
-
-                if (spanInsideJaxServiceMatcher.matches(sd)) {
-                    foundSpanInsideJax = true;
-                }
-
-                if (foundSpanCallingJax && foundSpanInsideJax) {
-                    break;
-                }
-            }
-            if (!foundSpanCallingJax || !foundSpanInsideJax) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("failed on index: " + index);
-                if (!foundSpanCallingJax) {
-                    sb.append(" Did not find a Span from SimpleReactiveMessagingBean");
-                }
-                if (!foundSpanInsideJax) {
-                    sb.append(" Did not find a Span from RestClientThatCapitalizes");
-                }
-                sb.append(System.lineSeparator());
-                failMessage = failMessage + sb.toString();
-            }
-        }
-
-        if (!failMessage.isEmpty()) {
-            Assert.fail(failMessage);
+            assertThat("Failed to find spans for index " + i,
+                results,
+                allOf(hasItem(spanInsideClientMatcher),
+                    hasItem(spanInsideJaxServiceMatcher)));
         }
     }
 
-    private List<String> getResultsWithWaitIfNeeded() throws InterruptedException {
+    private List<String> getReactiveMessagingResultsWithWaitIfNeeded(int expectedResultCount) throws Exception {
         List<String> results = reactiveBean.getResults();
 
-        if (results.size() < 3) {
+        if (results.size() >= expectedResultCount) {
+            assertEquals(expectedResultCount, results.size());
             return results;
         }
 
         long maxNanos = System.nanoTime() + millisToNanos(MAX_WAIT);
         //Reactive messaging will populate this on another thread
         synchronized (results) {
-            while (results.size() < 3 && nanoTimeRemaining(maxNanos)) {
+            while (results.size() < expectedResultCount && nanoTimeRemaining(maxNanos)) {
                 results.wait(WAIT_INTERVAL);
             }
+            
+            if (results.size() < expectedResultCount) {
+                throw new TimeoutException("Timed out waiting for reactive messaging to produce results");
+            }
         }
+
+        assertEquals(expectedResultCount, results.size());
         return results;
     }
 
@@ -138,8 +110,8 @@ public class MessageAndRestClientTestServlet extends FATServlet {
         return (maxNanos - System.nanoTime()) > 0;
     }
 
-    public static void recordSpan(Span span, Integer expectedNumber) {
-        spanAndExpectedNumber.put(span, expectedNumber);
+    public static void recordSpan(Span span) {
+        recordedSpans.add(span);
     }
 
 }

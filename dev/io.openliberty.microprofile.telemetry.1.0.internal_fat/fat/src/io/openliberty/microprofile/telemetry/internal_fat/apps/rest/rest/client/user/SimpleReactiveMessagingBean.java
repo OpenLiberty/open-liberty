@@ -45,7 +45,7 @@ public class SimpleReactiveMessagingBean {
     public String toUpperCase(String payload) {
         Span span = Span.current();
         Response restResponse = restClient.postStringReturnUpper(payload);
-        MessageAndRestClientTestServlet.recordSpan(span, 4);
+        MessageAndRestClientTestServlet.recordSpan(span);
         return restResponse.readEntity(String.class);
     }
 
