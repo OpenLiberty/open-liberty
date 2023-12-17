@@ -8,4 +8,4 @@ IBM-Provision-Capability: \
   io.openliberty.concurrent.internal.cdi
 IBM-Install-Policy: when-satisfied
 kind=noship
-edition=core
+edition=full
