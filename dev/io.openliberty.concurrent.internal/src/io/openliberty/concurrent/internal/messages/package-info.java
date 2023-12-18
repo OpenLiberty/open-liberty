@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -8,13 +8,13 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "concurrent")
-package io.openliberty.concurrent.internal.cdi4.interceptor;
+@TraceOptions(traceGroup = "concurrent", messageBundle = "io.openliberty.concurrent.internal.resources.CWWKCMessages")
+package io.openliberty.concurrent.internal.messages;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

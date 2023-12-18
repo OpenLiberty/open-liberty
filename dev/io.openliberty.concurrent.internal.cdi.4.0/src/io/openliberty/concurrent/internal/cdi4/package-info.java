@@ -14,7 +14,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "concurrent", messageBundle = "io.openliberty.concurrent.internal.cdi4.resources.CWWKCMessages")
+@TraceOptions(traceGroup = "concurrent")
 package io.openliberty.concurrent.internal.cdi4;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

@@ -32,13 +32,10 @@ Import-Package: \
 
 Private-Package: \
   io.openliberty.concurrent.internal.cdi4.*,\
-  io.openliberty.concurrent.internal.cdi4.resources.*
 
 -cdiannotations:
 
 -dsannotations: io.openliberty.concurrent.internal.cdi4.ConcurrencyExtensionMetadata
-
-instrument.classesExcludes: io/openliberty/concurrent/internal/cdi4/resources/*.class
 
 -buildpath: \
   com.ibm.websphere.appserver.spi.logging,\
@@ -52,6 +49,7 @@ instrument.classesExcludes: io/openliberty/concurrent/internal/cdi4/resources/*.
   com.ibm.ws.javaee.version,\
   com.ibm.ws.kernel.service,\
   com.ibm.ws.threading,\
+  io.openliberty.concurrent.internal,\
   io.openliberty.jakarta.annotation.2.1,\
   io.openliberty.jakarta.cdi.4.0,\
   io.openliberty.jakarta.concurrency.3.0,\
