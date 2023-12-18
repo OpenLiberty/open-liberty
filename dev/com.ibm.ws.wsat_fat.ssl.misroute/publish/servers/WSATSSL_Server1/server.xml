@@ -30,7 +30,7 @@
   <keyStore password="password"/>
 
   <ssl id="SSLConfig" keyStoreRef="defaultKeyStore"/>
-
+  
   <wsAtomicTransaction sslEnabled="true" sslRef="SSLConfig"/>
 
   <transaction
