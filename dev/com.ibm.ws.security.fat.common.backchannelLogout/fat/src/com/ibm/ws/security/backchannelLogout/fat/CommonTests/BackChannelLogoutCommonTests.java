@@ -552,6 +552,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         } else {
             response = genericRP(_testName, webClient, settings, previousResponse, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
         }
+        testHelpers.testSleep(1); // on some of the fast systems, we're getting identical tokens created because the iat is only down to the second - this causes issues with logout tests.
         return response;
     }
 
@@ -600,6 +601,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
         // If we're getting access, it'll be through the cookies and not propagation, so there should be no difference in behavior for Social clients
         Object response = genericRP(_testName, webClient, settings, Constants.GET_LOGIN_PAGE_ONLY, postLogoutExpectations);
+        testHelpers.testSleep(1); // on some of the fast systems, we're getting identical tokens created because the iat is only down to the second - this causes issues with logout tests.
 
         validationLogger("Ending", thisMethod);
 
@@ -1475,6 +1477,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
 
             // If we're getting access, it'll be through the cookies and not propagation, so there should be no difference in behavior for Social clients
             genericRP(_testName, webClient, settings, Constants.GET_LOGIN_PAGE_ONLY, cookieExpectations);
+            testHelpers.testSleep(1); // on some of the fast systems, we're getting identical tokens created because the iat is only down to the second - this causes issues with logout tests.
 
         }
         validationLogger("Ending", thisMethod);
