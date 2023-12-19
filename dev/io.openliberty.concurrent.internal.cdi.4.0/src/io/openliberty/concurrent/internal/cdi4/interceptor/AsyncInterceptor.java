@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.concurrent.internal.cdi.interceptor;
+package io.openliberty.concurrent.internal.cdi4.interceptor;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -24,8 +24,6 @@ import java.util.concurrent.RejectedExecutionException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -44,8 +42,6 @@ import jakarta.transaction.Transactional.TxType;
 @Priority(Interceptor.Priority.PLATFORM_BEFORE + 5)
 public class AsyncInterceptor implements Serializable {
     private static final long serialVersionUID = 7447792334053278336L;
-
-    private static final TraceComponent tc = Tr.register(AsyncInterceptor.class);
 
     @AroundInvoke
     @FFDCIgnore({ ClassCastException.class, NamingException.class }) // application errors raised directly to the app
