@@ -141,8 +141,12 @@ public class RMAsyncProviderFactoryImpl implements RMAsyncProviderFactory {
     }
 
     @Override
-    public RMAsyncProvider getAsyncProvider(String contextServiceRef) {
-        return new NamedAsyncProvider(contextServiceRef);
+    public RMAsyncProvider getAsyncProvider(String contextServiceRef, String channelName) {
+        if (contextServiceRef != null) {
+            // Validate the supplied context service name
+            getNamedContextService(contextServiceRef, channelName);
+        }
+        return new NamedAsyncProvider(contextServiceRef, channelName);
     }
 
     /**
@@ -152,11 +156,10 @@ public class RMAsyncProviderFactoryImpl implements RMAsyncProviderFactory {
      * @return the captured thread context
      */
     @SuppressWarnings("unchecked")
-    private RMContext captureContext(String contextServiceName) {
+    private RMContext captureContext(String contextServiceName, String channel) {
         WSContextService namedContextService = null;
-        if (contextServiceName != null) {
-            namedContextService = namedContextServices.get(contextServiceName);
-            // TODO: confirm behavior if named context service not found
+        if ((contextServiceName != null) && !contextServiceName.isEmpty()) {
+            namedContextService = getNamedContextService(contextServiceName, channel);
         }
 
         if (namedContextService != null) {
@@ -178,6 +181,25 @@ public class RMAsyncProviderFactoryImpl implements RMAsyncProviderFactory {
     }
 
     /**
+     * Retrieve the context service with the given name.
+     * <p>
+     * Reports an error if the context service cannot be found.
+     *
+     * @param contextServiceName the name, must not be {@code null}
+     * @param channelName the name of the channel, for use in the error message if required
+     * @return the context service
+     * @throws IllegalArgumentException if the named context service cannot be found
+     */
+    private WSContextService getNamedContextService(String contextServiceName, String channelName) {
+        WSContextService result = namedContextServices.get(contextServiceName);
+        if (result == null) {
+            Tr.error(tc, "missing.context.service.CWMRX1200E", channelName, contextServiceName);
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "missing.context.service.CWMRX1200E", channelName, contextServiceName));
+        }
+        return result;
+    }
+
+    /**
      * An RMAsyncProvider which uses a named context service to capture thread context.
      * <p>
      * {@code null} can be provided as the name to use the default context service.
@@ -185,19 +207,21 @@ public class RMAsyncProviderFactoryImpl implements RMAsyncProviderFactory {
     private class NamedAsyncProvider implements RMAsyncProvider {
 
         private final String name;
+        private final String channelName;
 
         /**
          * Create a new AsyncProvider
          *
          * @param name the name of the context service to use for capturing thread context, or {@code null} to use the default
          */
-        public NamedAsyncProvider(String name) {
+        public NamedAsyncProvider(String name, String channelName) {
             this.name = name;
+            this.channelName = channelName;
         }
 
         @Override
         public RMContext captureContext() {
-            return RMAsyncProviderFactoryImpl.this.captureContext(name);
+            return RMAsyncProviderFactoryImpl.this.captureContext(name, channelName);
         }
 
         @Override

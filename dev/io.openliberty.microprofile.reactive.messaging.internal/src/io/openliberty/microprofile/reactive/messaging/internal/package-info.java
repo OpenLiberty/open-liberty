@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-@TraceOptions(traceGroup = "REACTIVEMESSAGE")
+@TraceOptions(traceGroup = "REACTIVEMESSAGE", messageBundle = "io.openliberty.microprofile.reactive.messaging.internal.ReactiveMessagingProvider")
 package io.openliberty.microprofile.reactive.messaging.internal;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

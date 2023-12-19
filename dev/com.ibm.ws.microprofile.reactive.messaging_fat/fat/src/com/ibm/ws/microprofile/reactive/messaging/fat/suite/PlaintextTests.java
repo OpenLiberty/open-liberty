@@ -27,6 +27,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.ack.auto.KafkaAutoAc
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedKafkaContainer;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.context.KafkaDefaultContextTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.context.custom.KafkaCustomContextTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.context.custom.invalid.KakfaInvalidContextTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.flatmap.KafkaFlatMapTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message.ConsumerRecordTest;
@@ -57,6 +58,7 @@ import componenttest.containers.TestContainerSuite;
                 KafkaCustomKeySerializerTest.class,
                 KafkaDefaultContextTest.class,
                 KafkaFlatMapTest.class,
+                KakfaInvalidContextTest.class,
                 KafkaPartitionTest.class,
                 KafkaSharedLibTest.class,
                 MissingGroupIDTest.class,
