@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 
+import com.ibm.ws.repository.common.enums.ReadMode;
 import com.ibm.ws.repository.transport.client.DirectoryClient;
 import com.ibm.ws.repository.transport.client.DirectoryUtils;
 import com.ibm.ws.repository.transport.exceptions.BadVersionException;
@@ -36,7 +37,7 @@ public class DirectoryWriteableClient extends AbstractFileWriteableClient {
 
     public DirectoryWriteableClient(File root) {
         _root = root;
-        _readClient = new DirectoryClient(_root);
+        _readClient = new DirectoryClient(_root, ReadMode.DETECT_CHANGES);
     }
 
     public static void writeDiskRepoJSONToFile(Asset asset, final File writeJsonTo) throws IllegalArgumentException, IllegalAccessException, IOException {
@@ -153,8 +154,7 @@ public class DirectoryWriteableClient extends AbstractFileWriteableClient {
                 if ((mainName + ".license").equals(name)) {
                     return true;
                 }
-                if (name.contains(mainName + ".") && DirectoryUtils.isDirectory(dir))
-                {
+                if (name.contains(mainName + ".") && DirectoryUtils.isDirectory(dir)) {
                     // TODO: Is this one we should delete? Another attachment type?
                 }
                 return false;

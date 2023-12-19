@@ -1,16 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.repository.transport.client;
+
+import static com.ibm.ws.repository.common.enums.ReadMode.DETECT_CHANGES;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -31,10 +34,12 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.aries.util.manifest.ManifestProcessor;
 
+import com.ibm.ws.repository.common.enums.ReadMode;
 import com.ibm.ws.repository.transport.exceptions.BadVersionException;
 import com.ibm.ws.repository.transport.exceptions.RequestFailureException;
 import com.ibm.ws.repository.transport.model.Asset;
 import com.ibm.ws.repository.transport.model.Attachment;
+import com.ibm.ws.repository.transport.model.CopyUtils;
 
 /**
  *
@@ -42,9 +47,20 @@ import com.ibm.ws.repository.transport.model.Attachment;
 public class DirectoryClient extends AbstractFileClient {
 
     private final File _root;
+    private final ReadMode _readMode;
+    private List<Asset> _allAssetsCache;
 
+    /**
+     * @deprecated Use {@link #DirectoryClient(File, ReadMode)}
+     */
+    @Deprecated
     public DirectoryClient(File root) {
+        this(root, DETECT_CHANGES);
+    }
+
+    public DirectoryClient(File root, ReadMode readMode) {
         _root = root;
+        _readMode = readMode;
     }
 
     /*
@@ -67,6 +83,27 @@ public class DirectoryClient extends AbstractFileClient {
         if (!hasChildren(null)) {
             throw new IOException("The root (" + _root + " is not a directory ");
         }
+    }
+
+    @Override
+    public List<Asset> getAllAssets() throws IOException {
+
+        if (_readMode == DETECT_CHANGES) {
+            // Cannot cache anything unless we can assume the files on disk
+            // have not been changed
+            return super.getAllAssets();
+        }
+
+        if (_allAssetsCache == null) {
+            synchronized (this) {
+                if (_allAssetsCache == null) {
+                    _allAssetsCache = super.getAllAssets();
+                }
+            }
+        }
+
+        // Make a copy so that the caller cannot modify the cached data
+        return CopyUtils.copyCollection(_allAssetsCache, Asset::new);
     }
 
     /** {@inheritDoc} */
