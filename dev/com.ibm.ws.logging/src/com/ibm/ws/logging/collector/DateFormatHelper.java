@@ -65,7 +65,8 @@ public class DateFormatHelper {
         while (start <= end && ((letter = sb.charAt(start)) == ' ' || letter == 'a'))
             start++;
         // trim right side
-        while (end > start && ((letter = sb.charAt(end)) == ' ' || letter == 'a'))
+        // Java 20 added a narrow no-break space character into the format (Unicode 202F character)
+        while (end > start && ((letter = sb.charAt(end)) == ' ' || letter == 'a' || letter == '\u202f'))
             end--;
         // replace characters 'h', 'k', and 'K' to 'H' and 'a' to ' '
         for (int i = start; i <= end; i++) {

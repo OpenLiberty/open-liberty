@@ -35,6 +35,22 @@ public class BurstDateFormatterTest {
     private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
     private static final boolean aboveJava8 = !System.getProperty("java.version").startsWith("1.");
 
+    // If this test fails, there is likely an update is needed to the getFormatter methods and to DateFormatHelper and DataFormatHelper
+    // This test was added due to a change in Java 20 to add an additional space character to the format.
+    // See https://bugs.openjdk.org/browse/JDK-8304925
+    @Test
+    public void testEnglishUnchanged() {
+        String pattern = DateTimeFormatterBuilder.getLocalizedDateTimePattern(FormatStyle.SHORT, FormatStyle.MEDIUM, Chronology.ofLocale(Locale.ENGLISH), Locale.ENGLISH);
+        pattern = getFormatter(pattern);
+        StringBuilder sb = new StringBuilder();
+        sb.append("M/d/yy");
+        if (aboveJava8) {
+            sb.append(',');
+        }
+        sb.append(" H:mm:ss:SSS z");
+        assertEquals(sb.toString(), pattern);
+    }
+
     @Test
     public void checkAllLocalesTest() {
         for (Locale locale : Locale.getAvailableLocales()) {
@@ -229,7 +245,7 @@ public class BurstDateFormatterTest {
     }
 
     /**
-     * A partial copy of DateFormatHelper.getDateFormat so that we can work with different locales
+     * A partial copy of DataFormatHelper code so that we can work with different locales
      */
     public DateFormat getFormatter(DateFormat formatter) {
         String pattern;
@@ -251,6 +267,8 @@ public class BurstDateFormatterTest {
             newPattern = newPattern.replace('K', 'H');
             newPattern = newPattern.replace('k', 'H');
             newPattern = newPattern.replace('a', ' ');
+            // Java 20 added a narrow no-break space character into the format (Unicode 202F character)
+            newPattern = newPattern.replace('\u202f', ' ');
             newPattern = newPattern.trim();
             sdFormatter.applyPattern(newPattern);
             formatter = sdFormatter;
@@ -272,6 +290,8 @@ public class BurstDateFormatterTest {
         newPattern = newPattern.replace('K', 'H');
         newPattern = newPattern.replace('k', 'H');
         newPattern = newPattern.replace('a', ' ');
+        // Java 20 added a narrow no-break space character into the format (Unicode 202F character)
+        newPattern = newPattern.replace('\u202f', ' ');
         newPattern = newPattern.trim();
         return newPattern;
     }
