@@ -669,7 +669,7 @@ public class DatabaseStoreImpl implements DatabaseStore {
                                                 String[] entityClassNames,
                                                 String[] entityClassEntries)
                     throws UnsupportedEncodingException {
-        return ((entityClassNames == null || entityClassNames.length == 0) && (entityClassEntries == null && entityClassEntries.length == 0))
+        return ((entityClassNames == null || entityClassNames.length == 0) && (entityClassEntries == null || entityClassEntries.length == 0))
                         ? null
                         : new InMemoryMappingFile(createOrm(schemaName, tablePrefix, entityClassNames, entityClassEntries).getBytes("UTF-8"));
     }
