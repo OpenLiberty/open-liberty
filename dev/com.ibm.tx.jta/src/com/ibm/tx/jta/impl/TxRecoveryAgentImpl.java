@@ -496,8 +496,10 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
             // Peer recovery may be interrupted by shutdown of the home server in which case we stop recovery processing.
             if (!localRecovery) {
                 if (!_serverStopping) {
-                    if (fsc != null)
-                        fsc.getRecoveryManager().waitForRecoveryCompletion(localRecovery);
+                    if (fsc != null) {
+                        if (fsc.getRecoveryManager() != null)
+                            fsc.getRecoveryManager().waitForRecoveryCompletion(localRecovery);
+                    }
                 } else {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "initiateRecovery", "server stopping");
@@ -529,28 +531,30 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                     }
 
                     // If Recovery Failed, then by default, if this is the home server, we shall bring down the Liberty Server
-                    if (fsc != null && fsc.getRecoveryManager().recoveryFailed()) {
-                        // Check the system property but by default we want the server to be shutdown if we, the server
-                        // that owns the logs is not able to recover them. The System Property supports the tWAS style
-                        // of processing.
-                        if (localRecovery) {
-                            if (!doNotShutdownOnRecoveryFailure()) {
-                                cp = ConfigurationProviderManager.getConfigurationProvider();
-                                if (cp == null) {
-                                    if (tc.isEntryEnabled())
-                                        Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
-                                    throw new RecoveryFailedException("ConfigurationProvider is null");
+                    if (fsc != null && fsc.getRecoveryManager() != null) {
+                        if (fsc.getRecoveryManager().recoveryFailed()) {
+                            // Check the system property but by default we want the server to be shutdown if we, the server
+                            // that owns the logs is not able to recover them. The System Property supports the tWAS style
+                            // of processing.
+                            if (localRecovery) {
+                                if (!doNotShutdownOnRecoveryFailure()) {
+                                    cp = ConfigurationProviderManager.getConfigurationProvider();
+                                    if (cp == null) {
+                                        if (tc.isEntryEnabled())
+                                            Tr.exit(tc, "initiateRecovery", "ConfigurationProvider is null");
+                                        throw new RecoveryFailedException("ConfigurationProvider is null");
+                                    }
+                                    cp.shutDownFramework();
                                 }
-                                cp.shutDownFramework();
+
+                                RecoveryFailedException rex = new RecoveryFailedException("Home server recovery failed in peer environment");
+                                if (tc.isEntryEnabled())
+                                    Tr.exit(tc, "initiateRecovery", rex);
+
+                                // Output a message as to why we are terminating the server as in
+                                Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex.toString());
+                                throw rex;
                             }
-
-                            RecoveryFailedException rex = new RecoveryFailedException("Home server recovery failed in peer environment");
-                            if (tc.isEntryEnabled())
-                                Tr.exit(tc, "initiateRecovery", rex);
-
-                            // Output a message as to why we are terminating the server as in
-                            Tr.error(tc, "CWRLS0024_EXC_DURING_RECOVERY", rex.toString());
-                            throw rex;
                         }
                     }
 

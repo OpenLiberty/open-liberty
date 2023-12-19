@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -542,6 +542,25 @@ public class DBRotationTest extends CloudFATServletClient {
             assertNotNull("peer unexpectedly recovered home server logs", server1.waitForStringInTrace("WTRN0140I: Recovered transaction", LOG_SEARCH_TIMEOUT));
         }
         Log.info(c, method, "test complete");
+    }
+
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    public void testReactionToDeletedTables() throws Exception {
+        final String method = "testReactionToDeletedTables";
+        if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
+
+            serversToCleanup = new LibertyServer[] { server2, noRecoveryGroupServer1 };
+            server2.setHttpDefaultPort(cloud2ServerPort);
+            FATUtils.startServers(runner, server2, noRecoveryGroupServer1);
+
+            runTest(noRecoveryGroupServer1, SERVLET_NAME, "dropServer2Tables");
+
+            assertNotNull("Home server tables are still present", server2.waitForStringInTrace("Underlying SQL tables missing", LOG_SEARCH_TIMEOUT));
+
+//            runTest(server2, SERVLET_NAME, "twoTrans");
+        }
+        Log.info(c, method, "testReactionToDeletedTables is complete");
     }
 
     // Returns false if the server is alive, throws Exception otherwise
