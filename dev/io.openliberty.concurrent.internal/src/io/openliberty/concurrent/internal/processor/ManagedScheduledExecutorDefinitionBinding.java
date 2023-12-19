@@ -160,12 +160,15 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
             XMLvirtual = true;
         }
 
-        Class<?>[] qualifierValues = toQualifierClassArray(mxd.getQualifiers());
+        String[] qualifierValues = mxd.getQualifiers();
         if (qualifierValues == null || qualifierValues.length == 0) {
             if (qualifiers == null)
                 qualifiers = DEFAULT_QUALIFIERS;
+        } else if (qualifierValues.length == 1 && qualifierValues[0].isEmpty()) {
+            qualifiers = DEFAULT_QUALIFIERS;
+            XMLqualifers = true;
         } else {
-            qualifiers = mergeXMLValue(qualifiers, qualifierValues, "qualifier", KEY_QUALIFIERS, null);
+            qualifiers = mergeXMLValue(qualifiers, toQualifierClassArray(qualifierValues), "qualifier", KEY_QUALIFIERS, null);
             XMLqualifers = true;
         }
 

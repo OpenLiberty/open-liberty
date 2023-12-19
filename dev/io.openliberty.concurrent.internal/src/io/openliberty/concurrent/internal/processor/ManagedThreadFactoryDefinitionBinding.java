@@ -146,12 +146,15 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
             XMLvirtual = true;
         }
 
-        Class<?>[] qualifierValues = toQualifierClassArray(mtfd.getQualifiers());
+        String[] qualifierValues = mtfd.getQualifiers();
         if (qualifierValues == null || qualifierValues.length == 0) {
             if (qualifiers == null)
                 qualifiers = DEFAULT_QUALIFIERS;
+        } else if (qualifierValues.length == 1 && qualifierValues[0].isEmpty()) {
+            qualifiers = DEFAULT_QUALIFIERS;
+            XMLqualifers = true;
         } else {
-            qualifiers = mergeXMLValue(qualifiers, qualifierValues, "qualifier", KEY_QUALIFIERS, null);
+            qualifiers = mergeXMLValue(qualifiers, toQualifierClassArray(qualifierValues), "qualifier", KEY_QUALIFIERS, null);
             XMLqualifers = true;
         }
 
