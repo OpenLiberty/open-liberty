@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.genericbnf.HeaderField;
@@ -306,9 +307,15 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public boolean isTrailersReady() {
+        boolean trailersNull;
+        if (message instanceof HttpBaseMessageImpl) {
+            trailersNull = ((HttpBaseMessageImpl) message).getTrailersImpl() != null;
+        } else
+            trailersNull = message.getTrailers() != null;
+
         if (!message.isChunkedEncodingSet()
             || !message.containsHeader(HttpHeaderKeys.HDR_TRAILER)
-            || message.getTrailers() != null
+            || trailersNull
             || (message.getVersionValue().getMajor() <= 1 && message.getVersionValue().getMinor() < 1))
             return true;
         return false;
