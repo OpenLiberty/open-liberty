@@ -56,9 +56,6 @@ public class XSDTokenType extends TokenType {
 
         public static final String[] EMPTY_ARRAY = new String[] {};
 
-        public static String[] getEmptyArray() {
-            return EMPTY_ARRAY;
-        }
     }
 
     @Override

@@ -105,7 +105,7 @@ public class ManagedExecutorType extends JNDIEnvironmentRefType implements Manag
         if (qualifiers != null) {
             return qualifiers.getArray();
         } else {
-            return XSDTokenType.ListType.getEmptyArray();
+            return XSDTokenType.ListType.EMPTY_ARRAY;
         }
     }
 

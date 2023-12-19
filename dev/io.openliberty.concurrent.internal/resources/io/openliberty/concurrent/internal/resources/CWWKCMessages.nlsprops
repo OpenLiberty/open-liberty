@@ -46,7 +46,7 @@ CWWKC1204.not.serializable=CWWKC1204E: Cannot create a serializable contextual p
 CWWKC1204.not.serializable.explanation=Third-party thread context types are not compatible with serialization and cannot be configured to be propagated for serializable contextual proxies.
 CWWKC1204.not.serializable.useraction=Update the application to request a non-serializable contextual proxy or ensure that no third-party context types are configured to be propagated.
 
-CWWKC1205.qualifier.class.not.found=CWWKC1205E: The {0} qualifier annotation, which is defined by a deployment descriptor, could not be loaded by the application classloader.
+CWWKC1205.qualifier.class.not.found=CWWKC1205E: The {0} qualifier annotation class, which is defined by a deployment descriptor, could not be loaded by the application classloader.
 CWWKC1205.qualifier.class.not.found.explanation=Qualifier elements that are configured by the application.xml file or the web.xml file contain a class name that could not be loaded.
 CWWKC1205.qualifier.class.not.found.useraction=Verify that the qualifier elements are configured with a fully qualified class name, and that the class is present within the application.
 

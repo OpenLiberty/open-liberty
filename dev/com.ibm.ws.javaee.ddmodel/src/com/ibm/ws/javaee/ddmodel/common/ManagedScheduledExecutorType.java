@@ -96,7 +96,7 @@ public class ManagedScheduledExecutorType extends JNDIEnvironmentRefType impleme
         if (qualifiers != null) {
             return qualifiers.getArray();
         } else {
-            return XSDTokenType.ListType.getEmptyArray();
+            return XSDTokenType.ListType.EMPTY_ARRAY;
         }
     }
 
