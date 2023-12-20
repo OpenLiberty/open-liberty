@@ -1,6 +1,6 @@
-biz.aQute.bnd:biz.aQute.bnd.annotation:6.3.0
-biz.aQute.bnd:biz.aQute.bnd.transform:6.3.0
-biz.aQute.bnd:biz.aQute.bnd:6.3.0
+biz.aQute.bnd:biz.aQute.bnd.annotation:7.0.0
+biz.aQute.bnd:biz.aQute.bnd.transform:6.4.1
+biz.aQute.bnd:biz.aQute.bnd:7.0.0
 cglib:cglib:3.3.0
 ch.qos.logback:logback-classic:1.2.3
 com.beust:jcommander:1.72
@@ -442,10 +442,10 @@ org.apache.thrift:libthrift:0.14.1
 org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23
 org.apache.tomcat:tomcat-el-api:10.0.27
 org.apache.tomcat:tomcat-el-api:10.1.11
-org.apache.tomcat:tomcat-el-api:11.0.0-M13
+org.apache.tomcat:tomcat-el-api:11.0.0-M14
 org.apache.tomcat:tomcat-jasper-el:10.0.27
 org.apache.tomcat:tomcat-jasper-el:10.1.11
-org.apache.tomcat:tomcat-jasper-el:11.0.0-M13
+org.apache.tomcat:tomcat-jasper-el:11.0.0-M14
 org.apache.wink:wink-client-apache-httpclient:1.4
 org.apache.wink:wink-client:1.4
 org.apache.wink:wink-common:1.4

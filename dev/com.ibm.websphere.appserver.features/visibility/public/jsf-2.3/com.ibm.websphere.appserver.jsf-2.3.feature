@@ -48,6 +48,7 @@ Subsystem-Name: JavaServer Faces 2.3
 -bundles=com.ibm.ws.org.apache.myfaces.2.3, \
  com.ibm.ws.org.apache.commons.beanutils.1.9.4, \
  com.ibm.ws.org.apache.commons.collections, \
+ io.openliberty.org.apache.commons.digester, \
  io.openliberty.org.apache.commons.logging, \
  com.ibm.ws.jsf.shared, \
  com.ibm.ws.jsf.jsp.shared, \

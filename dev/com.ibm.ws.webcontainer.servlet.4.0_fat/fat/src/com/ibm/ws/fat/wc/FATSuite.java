@@ -51,7 +51,6 @@ import com.ibm.ws.fat.wc.tests.WCTrailersTest;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
 
 /**
  * Servlet 4.0 Tests
@@ -107,18 +106,15 @@ import componenttest.topology.impl.JavaInfo;
 
 public class FATSuite {
 
+    // EE10 requires Java 11.
+    // EE11 requires Java 21
+    // If we only specify EE10/EE11 for lite mode it will cause no tests to run which causes an error.
+    // If we are running on Java 8 have EE9 be the lite mode test to run.
     @ClassRule
-    public static RepeatTests repeat;
-
-    static {
-        // EE10 requires Java 11.  If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
-        // If we are running on Java 8 have EE9 be the lite mode test to run.
-        if (JavaInfo.JAVA_VERSION >= 11) {
-            repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly()).andWith(FeatureReplacementAction.EE10_FEATURES());
-        } else {
-            repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES());
-        }
-    }
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_21))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

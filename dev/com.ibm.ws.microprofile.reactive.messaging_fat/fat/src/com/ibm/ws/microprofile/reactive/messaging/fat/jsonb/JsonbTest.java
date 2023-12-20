@@ -37,7 +37,7 @@ import componenttest.topology.utils.FATServletClient;
 public class JsonbTest extends FATServletClient {
 
     public static final String APP_NAME = "jsob-messaging";
-    public static final String SERVER_NAME = "SimpleRxMessagingServer";
+    public static final String SERVER_NAME = "JsonbRxMessagingServer";
 
     @ClassRule
     public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10);

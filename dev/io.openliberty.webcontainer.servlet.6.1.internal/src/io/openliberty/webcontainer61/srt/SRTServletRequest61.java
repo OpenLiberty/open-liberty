@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.webcontainer61.srt;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,10 +33,34 @@ public class SRTServletRequest61 extends SRTServletRequest60 implements HttpServ
 
     @Override
     public void initForNextRequest(IRequest req) {
-        if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
+        if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME, "initForNextRequest", "this->" + this + " : " + " req ->" + req);
         }
 
         super.initForNextRequest(req);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see jakarta.servlet.ServletRequest#setCharacterEncoding(java.nio.charset.Charset)
+     */
+    @Override
+    public void setCharacterEncoding(Charset charset) {
+        String encoding = charset.name();
+        if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "setCharacterEncoding", "Charset name [" + encoding + "] [" + this + "]");
+        }
+
+        try {
+            if (encoding != null) {
+                super.setCharacterEncoding(encoding, true);
+            } else {
+                String msg = nls.getFormattedMessage("unsupported.request.encoding.[{0}]", new Object[] { charset }, "Unsupported encoding specified --> " + charset);
+                logger.logp(Level.SEVERE, CLASS_NAME, "setRequestCharacterEncoding", msg);
+            }
+        } catch (UnsupportedEncodingException e) {
+            logger.logp(Level.INFO, CLASS_NAME, "setCharacterEncoding", "Unable to set request character encoding based upon Charset", e);
+        }
     }
 }

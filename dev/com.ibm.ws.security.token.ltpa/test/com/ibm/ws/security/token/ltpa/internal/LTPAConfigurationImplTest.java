@@ -649,7 +649,7 @@ public class LTPAConfigurationImplTest {
         expectedList.add(expectedProps);
 
         // Act
-        List<Properties> outputList = ltpaConfig.testMaskKeysPasswords(inputList);
+        List<Properties> outputList = ltpaConfig.maskKeysPasswords(inputList);
 
         // Assert
         assertEquals("The password was not masked correctly", expectedList, outputList);   

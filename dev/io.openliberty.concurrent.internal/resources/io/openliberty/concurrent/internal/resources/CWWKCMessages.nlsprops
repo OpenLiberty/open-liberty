@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1200 to CWWCK1399
+# All messages must use the range CWWCK1200 to CWWCK1409
 
 CWWKC1200.resource.unavailable=CWWKC1200E: {0}, which is defined by application {1}, was not available in a timely manner.
 CWWKC1200.resource.unavailable.explanation=Too much load on the system to process resource definition annotations and deployment descriptor entries before the application attempts to use them.
@@ -45,3 +45,23 @@ CWWKC1203.duplicate.context.useraction=Update the application, libraries, or bot
 CWWKC1204.not.serializable=CWWKC1204E: Cannot create a serializable contextual proxy that propagates thread context {0} which is not serializable.
 CWWKC1204.not.serializable.explanation=Third-party thread context types are not compatible with serialization and cannot be configured to be propagated for serializable contextual proxies.
 CWWKC1204.not.serializable.useraction=Update the application to request a non-serializable contextual proxy or ensure that no third-party context types are configured to be propagated.
+
+
+
+# Messages for @Asynchronous that are shared with other bundles:
+
+CWWKC1400.unsupported.return.type=CWWKC1400E: {0} is not a valid return type for the {1} method of the {2} class. Valid return types for methods that are annotated with {3} are: {4}.
+CWWKC1400.unsupported.return.type.explanation=The Jakarta concurrency specification limits the range of valid return types for methods that have this annotation.
+CWWKC1400.unsupported.return.type.useraction=Update the method within the application to switch to one of the supported return types, or remove the annotation from the method.
+
+CWWKC1401.class.anno.disallowed=CWWKC1401E: The {0} annotation is allowed at the method level. It cannot be used at the class level on the {1} class.
+CWWKC1401.class.anno.disallowed.explanation=This annotation must not be specified at the class level.
+CWWKC1401.class.anno.disallowed.useraction=Move the annotation to the individual methods of the class.
+
+CWWKC1402.not.managed.executor=CWWKC1402E: The {0} annotation on the {1} method of the {2} class specifies the {3} JNDI name, which resolves to the {4} resource which is not a ManagedExecutorService or ManagedScheduledExecutorService. Interfaces implemented by the resource are: {5}.
+CWWKC1402.not.managed.executor.explanation=The JNDI name must resolve to a resource that implements the ManagedExecutorService interface or ManagedScheduledExecutorService interface.
+CWWKC1402.not.managed.executor.useraction=Correct the JNDI name to specify a resource that is accessible to the application component and implements the ManagedExecutorService interface or ManagedScheduledExecutorService interface.
+
+CWWKC1403.unsupported.tx.type=CWWKC1403E: The {0} annotation specifies the {1} value, which is not permitted in combination with the {2} annotation that is on the {3} method of the {4} class. Permitted values are: {5}.
+CWWKC1403.unsupported.tx.type.explanation=The use of two annotations together depends on whether the value of the first annotation that is specified is permitted with the second annotation.
+CWWKC1403.unsupported.tx.type.useraction=Update the application to switch to one of the supported values or remove one of the annotations.

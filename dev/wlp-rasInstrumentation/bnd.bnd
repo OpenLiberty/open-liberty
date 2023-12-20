@@ -26,7 +26,8 @@ Bundle-Description: Unshipped bundle that houses ras instrumentation for use dur
 Private-Package: \
     com.ibm.*.annotation.*,\
     com.ibm.*.instrument.*,\
-    org.objectweb.asm.*
+    org.objectweb.asm.*,\
+    io.openliberty.asm.*
 
 -plugin.build.bnd.plugins:
 -pluginpath:

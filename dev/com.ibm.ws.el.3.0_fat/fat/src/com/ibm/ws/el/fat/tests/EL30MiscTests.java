@@ -36,7 +36,6 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -56,12 +55,6 @@ public class EL30MiscTests {
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "ELServicesLookup.war", "com.ibm.ws.el30.fat.servicelookup");
-
-        // Set websphere.java.security.exempt=true because Expression Language 6.0 removed all references
-        // to the SecurityManager and related APIs.
-        if (JakartaEEAction.isEE11OrLaterActive()) {
-            ELUtils.setServerJavaSecurityExempt(server);
-        }
 
         server.startServer(EL30MiscTests.class.getSimpleName() + ".log");
     }

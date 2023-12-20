@@ -16,11 +16,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
+import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61CharsetEncodingTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class
+                Servlet61CharsetEncodingTest.class
 })
 public class FATSuite {
 

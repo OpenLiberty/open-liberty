@@ -14,17 +14,17 @@
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd.annotation</artifactId>
-      <version>6.3.0</version>
+      <version>7.0.0</version>
     </dependency>
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd.transform</artifactId>
-      <version>6.3.0</version>
+      <version>6.4.1</version>
     </dependency>
     <dependency>
       <groupId>biz.aQute.bnd</groupId>
       <artifactId>biz.aQute.bnd</artifactId>
-      <version>6.3.0</version>
+      <version>7.0.0</version>
     </dependency>
     <dependency>
       <groupId>cglib</groupId>
@@ -2234,7 +2234,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>11.0.0-M13</version>
+      <version>11.0.0-M14</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -2249,7 +2249,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>11.0.0-M13</version>
+      <version>11.0.0-M14</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wink</groupId>

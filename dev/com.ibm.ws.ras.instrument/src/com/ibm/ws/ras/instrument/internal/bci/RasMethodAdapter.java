@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import io.openliberty.asm.ASMHelper;
+
 /**
  * Interface that must be implemented by method adapters that wish to plug into
  * the trace instrumentation framework.
@@ -23,7 +25,7 @@ import org.objectweb.asm.Type;
 public abstract class RasMethodAdapter extends MethodVisitor {
 
     public RasMethodAdapter(MethodVisitor visitor) {
-        super(Opcodes.ASM9, visitor);
+        super(ASMHelper.getCurrentASM(), visitor);
     }
 
     /**

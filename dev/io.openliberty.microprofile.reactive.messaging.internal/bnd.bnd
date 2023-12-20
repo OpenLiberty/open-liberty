@@ -21,20 +21,27 @@ Bundle-Description: MicroProfile Reactive Messaging common components
 WS-TraceGroup: REACTIVEMESSAGE
 
 -dsannotations: \
-  io.openliberty.microprofile.reactive.messaging.internal.interfaces.MessageAccessProvider
+  io.openliberty.microprofile.reactive.messaging.internal.interfaces.MessageAccessProvider,\
+  io.openliberty.microprofile.reactive.messaging.internal.RMAsyncProviderFactoryImpl,\
+  io.openliberty.microprofile.reactive.messaging.internal.QuiesceRegisterImpl
 
 Export-Package: \
   io.openliberty.microprofile.reactive.messaging.internal.interfaces
+
+Private-Package: \
+  io.openliberty.microprofile.reactive.messaging.internal
 
 Import-Package: \
   org.eclipse.microprofile.reactive.messaging;version="[1.0, 3)",\
   *
 
 -buildpath: \
+  com.ibm.ws.context;version=latest,\
   com.ibm.ws.logging;version=latest,\
   com.ibm.ws.logging.core;version=latest,\
   org.eclipse.osgi;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.websphere.org.eclipse.microprofile.reactive.messaging.1.0;version=latest,\
-  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+  com.ibm.ws.kernel.service;version=latest
