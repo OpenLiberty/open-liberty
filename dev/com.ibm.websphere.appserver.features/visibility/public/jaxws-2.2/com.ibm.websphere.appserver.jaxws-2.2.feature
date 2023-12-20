@@ -96,4 +96,4 @@ Subsystem-Name: Java Web Services 2.2
  bin/jaxws/tools/ws-wsgen.jar
 kind=ga
 edition=base
-WLP-InstantOn-Enabled: true; type:=beta
+WLP-InstantOn-Enabled: true
