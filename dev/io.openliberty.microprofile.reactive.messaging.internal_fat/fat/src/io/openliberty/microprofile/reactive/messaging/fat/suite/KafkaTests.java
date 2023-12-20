@@ -24,6 +24,8 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedK
 
 import componenttest.containers.SimpleLogConsumer;
 import io.openliberty.microprofile.reactive.messaging.fat.apps.kafkanack.KafkaNackTest;
+import io.openliberty.microprofile.reactive.messaging.fat.kafka.metrics.MetricsTest;
+import io.openliberty.microprofile.reactive.messaging.fat.kafka.metrics.MultiAppMetricsTest;
 import io.openliberty.microprofile.reactive.messaging.fat.kafka.validation.KafkaValidationTests;
 import io.openliberty.microprofile.reactive.messaging.fat.telemetry.ReactiveMessagingTelemetryTest;
 import io.openliberty.microprofile.reactive.messaging.fat.telemetry.ReactiveMessagingTelemetryTestWithJAXRS;
@@ -32,6 +34,8 @@ import io.openliberty.microprofile.reactive.messaging.fat.telemetry.ReactiveMess
 @SuiteClasses({
                 KafkaNackTest.class,
                 KafkaValidationTests.class,
+                MetricsTest.class,
+                MultiAppMetricsTest.class,
                 ReactiveMessagingTelemetryTest.class,
                 ReactiveMessagingTelemetryTestWithJAXRS.class
 })
