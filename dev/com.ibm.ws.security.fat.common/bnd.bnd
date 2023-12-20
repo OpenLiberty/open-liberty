@@ -46,31 +46,31 @@ generate.replacement: true
 	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
+	org.jboss.shrinkwrap:shrinkwrap-api;version='1.2.3',\
 	fattest.simplicity;version=latest,\
-	com.ibm.ws.org.apache.httpcomponents;version=latest, \
-	net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
-    net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version=2.44.0,\
-    net.sourceforge.htmlunit:webdriver;version=2.6,\
-    org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
-    org.brotli:dec;version=0.1.2,\
+	com.ibm.ws.org.apache.httpcomponents;version=latest,\
+	net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
+	net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version='2.44.0',\
+	net.sourceforge.htmlunit:webdriver;version='2.6',\
+	org.seleniumhq.webdriver:webdriver-common;version='0.9.7376',\
+	org.brotli:dec;version='0.1.2',\
 	com.ibm.ws.com.meterware.httpunit.1.7;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
-	org.apache.httpcomponents:httpmime;version=4.3.1,\
-	net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
-	org.eclipse.jetty.websocket:websocket-api;version=9.4.5.v20170502,\
-	org.eclipse.jetty.websocket:websocket-client;version=9.4.5.v20170502,\
-	org.eclipse.jetty.websocket:websocket-common;version=9.4.5.v20170502,\
-	org.eclipse.jetty:jetty-util;version=9.4.7.RC0,\
+	org.apache.httpcomponents:httpmime;version='4.3.1',\
+	net.sourceforge.htmlunit:htmlunit-cssparser;version='1.6.0',\
+	org.eclipse.jetty.websocket:websocket-api;version='9.4.5.v20170502',\
+	org.eclipse.jetty.websocket:websocket-client;version='9.4.5.v20170502',\
+	org.eclipse.jetty.websocket:websocket-common;version='9.4.5.v20170502',\
+	org.eclipse.jetty:jetty-util;version='9.4.7.RC0',\
 	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
-	org.glassfish:javax.json;version=1.0,\
+	org.glassfish:javax.json;version='1.0',\
 	com.ibm.ws.org.jose4j;version=latest,\
 	com.ibm.json4j;version=latest,\
 	org.bitbucket.b_c.jose4j,\
-	com.unboundid:unboundid-ldapsdk;version=latest,\
-    com.ibm.ws.com.unboundid;version=latest
+	com.unboundid.ldap.sdk,\
+	com.ibm.ws.com.unboundid
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
     com.ibm.ws.junit.extensions;version=latest, \

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,11 @@ package com.ibm.ws.security.openidconnect.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.Key;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -29,10 +27,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jose4j.jwt.JwtClaims;
-import org.jose4j.jwt.MalformedClaimException;
-import org.jose4j.jwt.consumer.JwtContext;
-import org.jose4j.jwx.JsonWebStructure;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -47,7 +41,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.json.java.JSONObject;
 import com.ibm.oauth.core.api.attributes.AttributeList;
-import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.oauth.core.api.error.oauth20.OAuth20BadParameterFormatException;
 import com.ibm.oauth.core.api.oauth20.token.OAuth20Token;
 import com.ibm.oauth.core.api.oauth20.token.OAuth20TokenCache;
@@ -55,19 +48,14 @@ import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.oauth.core.internal.oauth20.token.OAuth20TokenHelper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.oauth20.AuthnContext;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.claims.UserClaims;
 import com.ibm.ws.security.oauth20.ProvidersService;
 import com.ibm.ws.security.oauth20.api.Constants;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
-import com.ibm.ws.security.oauth20.api.OidcOAuth20Client;
-import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.internal.AuthnContextImpl;
-import com.ibm.ws.security.oauth20.plugins.BaseClient;
 import com.ibm.ws.security.oauth20.plugins.jose4j.OidcUserClaims;
 import com.ibm.ws.security.oauth20.util.ConfigUtils;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
@@ -78,19 +66,16 @@ import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
 import com.ibm.ws.security.oauth20.web.WebUtils;
 import com.ibm.ws.security.openidconnect.server.internal.HashUtils;
 import com.ibm.ws.security.openidconnect.server.internal.HttpUtils;
+import com.ibm.ws.security.openidconnect.server.internal.JwtUtils;
 import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.openidconnect.token.JWT;
 import com.ibm.ws.security.openidconnect.token.JWTPayload;
 import com.ibm.ws.security.openidconnect.token.JsonTokenUtil;
-import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.security.openidconnect.IDTokenMediator;
 import com.ibm.wsspi.security.openidconnect.UserinfoProvider;
-
-import io.openliberty.security.common.jwt.JwtParsingUtils;
-import io.openliberty.security.common.jwt.jws.JwsSignatureVerifier;
 
 @Component(service = { OidcEndpointServices.class }, name = "com.ibm.ws.security.openidconnect.web.OidcEndpointServices", immediate = true, configurationPolicy = ConfigurationPolicy.IGNORE, property = "service.vendor=IBM")
 public class OidcEndpointServices extends OAuth20EndpointServices {
@@ -402,106 +387,6 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
         if (tc.isEntryEnabled()) {
             Tr.exit(tc, methodName);
         }
-    }
-
-    /**
-     * construct JWT which is a super class of IDToken from IdTokenString.
-     * JWT class is used in order to just perform signature validation.
-     *
-     * @param oauth20provider extracted from the request
-     * @param oidcServerConfig is the object of oidc server configurations
-     * @throws OidcServerException
-     *
-     */
-    JWT createJwt(String tokenString, OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig) throws Exception {
-        String aud = null;
-        String issuer = null;
-        JWTPayload payload = JsonTokenUtil.getPayload(tokenString);
-        if (payload != null) {
-            aud = JsonTokenUtil.getAud(payload);
-            issuer = JsonTokenUtil.getIss(payload);
-        }
-        Object key = getJwtVerificationKey(tokenString, oauth20provider, oidcServerConfig);
-        String signatureAlgorithm = oidcServerConfig.getSignatureAlgorithm();
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "clientId : " + aud + " key : " + ((key == null) ? "null" : "<removed>") + " issuer : " + issuer + " signatureAlgorithm : " + signatureAlgorithm);
-        }
-
-        return new JWT(tokenString, key, aud, issuer, signatureAlgorithm);
-    }
-
-    @Sensitive
-    Object getJwtVerificationKey(String tokenString, OAuth20Provider oauth20provider, OidcServerConfig oidcServerConfig) throws Exception {
-        Object key = null;
-        JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(tokenString);
-        String signingAlgorithm = JwsSignatureVerifier.verifyJwsAlgHeaderOnly(jwtContext, Arrays.asList(oidcServerConfig.getIdTokenSigningAlgValuesSupported()));
-        if (signingAlgorithm.equals("none")) {
-            key = null;
-        } else if (signingAlgorithm.startsWith("HS")) {
-            key = getSharedKey(jwtContext, oauth20provider);
-        } else {
-            // TODO - remove beta guard when ready
-            if (ProductInfo.getBetaEdition()) {
-                JsonWebStructure jsonStruct = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
-                key = getPublicKeyFromJsonWebStructure(jsonStruct, oidcServerConfig);
-            }
-        }
-        return key;
-    }
-
-    @Sensitive
-    Object getSharedKey(JwtContext jwtContext, OAuth20Provider oauth20provider) throws OidcServerException, MalformedClaimException {
-        JwtClaims jwtClaims = jwtContext.getJwtClaims();
-        List<String> audiences = jwtClaims.getAudience();
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Audiences from JWT: " + audiences);
-        }
-        if (audiences == null || audiences.isEmpty() || audiences.size() > 1) {
-            // TODO
-            return null;
-        }
-        String clientId = audiences.get(0);
-        return getSharedKey(oauth20provider, clientId);
-    }
-
-    /**
-     * get Shared key
-     *
-     * @param oauth20provider extracted from the request
-     * @param clientId
-     * @throws OidcServerException
-     *
-     */
-    @Sensitive
-    Object getSharedKey(OAuth20Provider oauth20provider, String clientId) throws OidcServerException {
-        String sharedKey = null;
-        OidcOAuth20ClientProvider clientProvider = oauth20provider.getClientProvider();
-        OidcOAuth20Client oauth20Client = clientProvider.get(clientId);
-        if (oauth20Client instanceof BaseClient) {
-            BaseClient baseClient = (BaseClient) oauth20Client;
-            sharedKey = baseClient.getClientSecret();
-        }
-        return sharedKey;
-    }
-
-    Key getPublicKeyFromJsonWebStructure(JsonWebStructure jsonStruct, OidcServerConfig oidcServerConfig) {
-        String alg = jsonStruct.getAlgorithmHeaderValue();
-        String kid = jsonStruct.getKeyIdHeaderValue();
-        String x5t = jsonStruct.getX509CertSha1ThumbprintHeaderValue();
-
-        Key publicKey = null;
-        JSONWebKey jwk = oidcServerConfig.getJSONWebKey();
-        if (jwk != null && alg.equals(jwk.getAlgorithm())) {
-            if (kid != null && kid.equals(jwk.getKeyID())) {
-                publicKey = jwk.getPublicKey();
-            } else if (x5t != null && x5t.equals(jwk.getKeyX5t())) {
-                publicKey = jwk.getPublicKey();
-            } else if (kid == null && x5t == null) {
-                publicKey = jwk.getPublicKey();
-            }
-        }
-        return publicKey;
     }
 
     /**
@@ -897,7 +782,7 @@ public class OidcEndpointServices extends OAuth20EndpointServices {
                 // if it's not there parse the idTokenString and validate signature.
                 JWT jwt = null;
                 try {
-                    jwt = createJwt(idTokenHint, oauth20provider, oidcServerConfig);
+                    jwt = JwtUtils.createJwt(idTokenHint, oauth20provider, oidcServerConfig);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "JWT : " + jwt);
                     }

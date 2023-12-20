@@ -28,7 +28,8 @@ import componenttest.rules.repeater.RepeatTests;
         AlwaysPassesTest.class,
         HttpMethodsTests.class,
         LogoutTokenValidationTests.class,
-        BasicBCLTests.class
+        BasicBCLTests.class,
+        MultiServerBCLTests.class
 
 })
 /**

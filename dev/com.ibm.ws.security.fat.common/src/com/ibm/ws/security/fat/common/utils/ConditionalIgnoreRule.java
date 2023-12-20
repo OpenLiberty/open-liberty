@@ -22,6 +22,8 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 public class ConditionalIgnoreRule implements TestRule {
 
     public interface IgnoreCondition {
@@ -79,8 +81,10 @@ public class ConditionalIgnoreRule implements TestRule {
         private IgnoreCondition createCondition() throws Exception {
             IgnoreCondition result;
             if (isConditionTypeStandalone()) {
+                Log.info(ConditionalIgnoreRule.class, "createCondition", "Standalone");
                 result = conditionType.newInstance();
             } else {
+                Log.info(ConditionalIgnoreRule.class, "createCondition", "isConditionTypeDeclaredInTarget");
                 result = conditionType.getDeclaredConstructor(mTestClass).newInstance(mTestClass);
             }
             return result;
