@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import org.junit.runners.model.FrameworkMethod;
 
 import componenttest.annotation.SkipForRepeat;
+import componenttest.annotation.SkipForRepeat.MultivalueSkips;
 import componenttest.rules.repeater.RepeatTestAction;
 
 public class RepeatTestFilter {
@@ -55,7 +56,8 @@ public class RepeatTestFilter {
         if (anno == null || anno.value().length == 0)
             return true;
 
-        for (String action : anno.value()) {
+        String[] skipValues = MultivalueSkips.getSkipForRepeatValues(anno.value());
+        for (String action : skipValues) {
             if (repeatStackContainsActionByID(action)) {
                 log.info("Skipping test method " + method.getName() + " on action " + action);
                 return false;
@@ -79,7 +81,8 @@ public class RepeatTestFilter {
 
         FATRunner.requireFATRunner(clazz.getName());
 
-        for (String action : anno.value()) {
+        String[] skipValues = MultivalueSkips.getSkipForRepeatValues(anno.value());
+        for (String action : skipValues) {
             if (repeatStackContainsActionByID(action)) {
                 log.info("Skipping test class " + clazz.getName() + " on action " + action);
                 return false;
