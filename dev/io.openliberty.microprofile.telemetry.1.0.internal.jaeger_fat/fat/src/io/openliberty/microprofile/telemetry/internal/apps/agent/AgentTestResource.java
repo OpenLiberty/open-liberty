@@ -71,7 +71,7 @@ public class AgentTestResource extends Application {
         Span span = Span.current();
         return new AgentSubResource(span.getSpanContext().getTraceId());
     }
-    
+
     @GET
     @Path("/nestedspans")
     public String createNestedSpans() {
@@ -140,7 +140,7 @@ public class AgentTestResource extends Application {
 
     @GET
     @Path("/withspanbean")
-    public String callBeanWithSpan() throws Exception {
+    public String callBeanWithSpan() {
         Span span = Span.current();
         bean.withSpanMethod();
         return span.getSpanContext().getTraceId();
@@ -148,7 +148,7 @@ public class AgentTestResource extends Application {
 
     @GET
     @Path("/withspannonbean")
-    public String callNonBeanWithSpan() throws Exception {
+    public String callNonBeanWithSpan() {
         Span span = Span.current();
         withSpanNonBeanMethod();
         return span.getSpanContext().getTraceId();

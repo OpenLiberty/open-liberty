@@ -1,2 +1,1 @@
 -javaagent:opentelemetry-javaagent.jar
--Dotel.javaagent.debug=true
