@@ -10,8 +10,9 @@ IBM-API-Package: \
     org.eclipse.microprofile.opentracing; type="stable", \
     io.opentracing;  type="third-party", \
     io.opentracing.tag;  type="third-party", \
-    io.opentracing.propagation;  type="third-party", \
-    io.openliberty.opentracing.spi.tracer; type="ibm-spi"
+    io.opentracing.propagation;  type="third-party"
+IBM-SPI-Package: \
+    io.openliberty.opentracing.spi.tracer
 -features= \
     io.openliberty.mpConfig-3.0, \
     io.openliberty.restfulWS-3.0, \

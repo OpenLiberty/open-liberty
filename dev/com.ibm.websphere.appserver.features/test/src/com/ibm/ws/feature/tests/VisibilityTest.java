@@ -1256,8 +1256,7 @@ public class VisibilityTest {
             if (APIs != null) {
                 for (ExternalPackageInfo packageInfo : APIs) {
                     String type = packageInfo.getType();
-                    // for now until we figure something out going to leave mpOpenTracing and openTracing feature wrong.
-                    if (!validAPITypes.contains(type) && !entry.getKey().toLowerCase().contains("opentracing")) {
+                    if (!validAPITypes.contains(type)) {
                         errorMessage.append(packageInfo.getPackageName()).append(" in feature ").append(entry.getKey()).append(" has an invalid type ").append(type).append('\n');
                     }
                 }
