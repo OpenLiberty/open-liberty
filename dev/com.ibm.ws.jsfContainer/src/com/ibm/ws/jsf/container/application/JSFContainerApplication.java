@@ -22,13 +22,22 @@ import javax.faces.application.ViewHandler;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import com.ibm.ws.jsf.container.cdi.IBMViewHandlerProxy;
+import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.cdi.LibertyConversationAwareViewHandler;
+
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+
 
 public class JSFContainerApplication extends ApplicationWrapper {
 
     private static final Logger log = Logger.getLogger("com.ibm.ws.jsf.container.application");
     private Application delegate;
     private String appname;
+
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
+    CDIService cdiService;
+
 
     public JSFContainerApplication(Application delegate, String appname) {
         this.delegate = delegate;
@@ -44,7 +53,8 @@ public class JSFContainerApplication extends ApplicationWrapper {
                     log.logp(Level.FINEST, JSFContainerApplication.class.getName(), "setViewHandler", "Setting IBM View Handler");
                 }
 
-                delegate.setViewHandler(new IBMViewHandlerProxy(handler, appname));
+                LibertyConversationAwareViewHandler viewHandler = cdiService.createConversationAwareViewHandler(handler, appname);
+                delegate.setViewHandler((ViewHandler) viewHandler);
 
             } else {
                 if (log.isLoggable(Level.FINEST)) {

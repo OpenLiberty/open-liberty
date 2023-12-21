@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,7 @@ import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanManager;
+import javax.faces.application.ViewHandler;
 import javax.interceptor.InvocationContext;
 
 /**
@@ -75,9 +76,19 @@ public interface CDIService {
     /**
      * Returns all interceptor bindings which apply to the current invocation or lifecycle event.
      *
-     * @return a set of interceptor bindings which apply to the current invocation or lifecycle event. This will include all interceptor bindings that apply, not just those that were used to bind the current interceptor.
+     * @return a set of interceptor bindings which apply to the current invocation or lifecycle event. This will include all interceptor bindings that apply, not just those that
+     *         were used to bind the current interceptor.
      * @throws IllegalArgumentException if InvocationContext is not an instance of org.jboss.weld.interceptor.proxy.AbstractInvocationContext;
      */
     public Set<Annotation> getInterceptorBindingsFromInvocationContext(InvocationContext ic) throws IllegalArgumentException;
+
+    /**
+     * Creates a LibertyConversationAwareViewHandler. Which is an extension of the weld class ConversationAwareViewHandler
+     *
+     * @param delegate the actual JSF ViewHandler 
+     * @param contextId this contextId will be inlcuded in the facesContext's attributes whenever getActionURL is called
+     * @return a LibertyConversationAwareViewHandler
+     */
+    public LibertyConversationAwareViewHandler createConversationAwareViewHandler(ViewHandler delegate, String contextId);
 
 }

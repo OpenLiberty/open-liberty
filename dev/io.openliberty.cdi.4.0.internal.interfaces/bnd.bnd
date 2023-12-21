@@ -28,10 +28,11 @@ Export-Package: io.openliberty.cdi40.internal.extension,\
 WS-TraceGroup: JCDI
 
 -buildpath: \
-	com.ibm.websphere.appserver.spi.logging;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.cdi.internal.jakarta;version=latest,\
 	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	io.openliberty.org.jboss.weld5;version=latest,\
-	org.eclipse.osgi
+	org.eclipse.osgi,\
+	io.openliberty.jakarta.faces.4.0

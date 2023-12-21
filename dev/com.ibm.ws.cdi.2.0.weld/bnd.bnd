@@ -40,7 +40,7 @@ WS-TraceGroup: JCDI
 -buildpath: \
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	com.ibm.ws.org.jboss.weld3;version=latest, \
+	com.ibm.ws.org.jboss.weld3;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
@@ -53,4 +53,5 @@ WS-TraceGroup: JCDI
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.context;version=latest,\
-	org.eclipse.osgi
+	org.eclipse.osgi,\
+	com.ibm.websphere.javaee.jsf.2.3

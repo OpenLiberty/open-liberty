@@ -21,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.enterprise.inject.spi.CDIProvider;
+import javax.faces.application.ViewHandler;
 
 import org.jboss.weld.ejb.spi.EjbServices;
 import org.jboss.weld.security.spi.SecurityServices;
@@ -39,6 +40,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.cdi.LibertyConversationAwareViewHandler;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.cdi.impl.AbstractCDIRuntime;
 import com.ibm.ws.cdi.impl.CDIContainerImpl;
@@ -61,6 +63,7 @@ import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 import com.ibm.ws.cdi.proxy.ProxyServicesImpl;
+import com.ibm.ws.cdi.utils.LibertyConversationAwareViewHandlerImpl;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
@@ -705,5 +708,11 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
             return null;
         }
         return contextBeginnerEnder.clone();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public LibertyConversationAwareViewHandler createConversationAwareViewHandler(ViewHandler delegate, String contextId) {
+        return new LibertyConversationAwareViewHandlerImpl(delegate, contextId);
     }
 }
