@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+jacksonVersion=1.9.13.1
+
+Bundle-Name: Jackson JSON processor
+Bundle-SymbolicName:  io.openliberty.org.codehaus.jackson
+Bundle-Description: Provides Jackson Processor as a bundle; version=${bVersion}
+
+Export-Package: \
+  !org.codehaus.jackson.map.ext, \
+  org.codehaus.jackson.*
+
+Private-Package: org.codehaus.jackson.map.ext
+
+publish.wlp.jar.disabled: true
+
+-pedantic: false
+
+-buildpath: \
+  io.openliberty.org.codehaus.jackson:jackson-core-asl;version=${jacksonVersion},\
+  io.openliberty.org.codehaus.jackson:jackson-jaxrs;version=${jacksonVersion},\
+  io.openliberty.org.codehaus.jackson:jackson-mapper-asl;version=${jacksonVersion},\
+  io.openliberty.org.codehaus.jackson:jackson-xc;version=${jacksonVersion}

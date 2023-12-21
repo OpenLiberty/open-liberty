@@ -16,7 +16,7 @@ Subsystem-Name: MicroProfile Health 4.0
  com.ibm.websphere.appserver.json-1.0,\
  io.openliberty.mpConfig-3.0; ibm.tolerates:="3.1",\
  io.openliberty.webBundle.internal-1.0
--bundles=com.ibm.websphere.jsonsupport, \
+-bundles=io.openliberty.jsonsupport.internal, \
  io.openliberty.microprofile.health.3.1.internal.jakarta; apiJar=false; location:="lib/", \
  com.ibm.ws.org.joda.time.1.6.2
 kind=ga
