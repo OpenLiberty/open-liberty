@@ -44,7 +44,7 @@ configurations {
   jdbcDrivers { transitive = false; }
   testcontainers { transitive = false; }
   derby
-  jakartaTransformer
+  jakartaTransformer { transitive = false; }
 }
 
 dependencies {
