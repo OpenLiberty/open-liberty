@@ -27,6 +27,6 @@
 # CWMRX   1000-1999       MicroProfile Reactive Messaging
 #-----------------------------------------------------------------------------------------------------------------------------
 
-missing.context.service.CWMRX1200E=CWMRX1200E: The {0} channel is configured to use the {1} context service, but no such context service was found. Ensure that the context service is defined in the server.xml and that the concurrent feature is enabled.
-missing.context.service.CWMRX1200E.explanation=The Reactive Messaging channel is configured to use a named context service, but a context service with that name cannot be found.
-missing.context.service.CWMRX1200E.useraction=Define the context service in server.xml, or remove the context.service configuration property for the channel.
+missing.context.service.CWMRX1200E=CWMRX1200E: The {0} channel is configured to use the {1} context service, but no such context service was found. Ensure that the context service is defined in the server.xml file and that the Java EE or Jakarta Concurrency feature is enabled.
+missing.context.service.CWMRX1200E.explanation=The Reactive Messaging channel is configured to use a named context service, but no context service with that name can be found.
+missing.context.service.CWMRX1200E.useraction=Either define the context service in the server.xml file or remove the context.service configuration property for the channel.
