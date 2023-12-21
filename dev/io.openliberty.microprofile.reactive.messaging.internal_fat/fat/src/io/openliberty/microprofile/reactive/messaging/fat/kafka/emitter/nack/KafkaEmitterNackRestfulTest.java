@@ -88,40 +88,38 @@ public class KafkaEmitterNackRestfulTest {
     @Test
     public void testEmittingNackPayload() throws Exception {
         server.setMarkToEndOfLog();
-        int port = server.getHttpDefaultPort();
-        URL url = new URL("http://localhost:"+port+"/"+APP_NAME+"/payload");
+        URL url = HttpUtils.createURL(server, APP_NAME + "/payload");
         HttpURLConnection conn = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HttpUtils.HTTPRequestMethod.POST);
-        OutputStream os = conn.getOutputStream();
-        os.write(("test").getBytes());
-        os.flush();
-        assertThat(conn.getResponseCode(), is(500));
-        os.close();
+        try (OutputStream os = conn.getOutputStream()) {
+            os.write(("test").getBytes());
+            os.flush();
+            assertThat(conn.getResponseCode(), is(500));
+        }
         conn.disconnect();
         // check that we get error about the payload emitter channel
-        assertNotNull("Channel can ",server.waitForStringInLogUsingMark("CWMRX1003E.*restful-emitter-payload"));
+        assertNotNull("Channel fails to send the payload.",server.waitForStringInLogUsingMark("CWMRX1003E.*restful-emitter-payload"));
     }
 
     @Test
     public void testEmittingNackMessage() throws Exception {
         server.setMarkToEndOfLog();
-        int port = server.getHttpDefaultPort();
-        URL url = new URL("http://localhost:"+port+"/"+APP_NAME+"/message");
+        URL url = HttpUtils.createURL(server, APP_NAME + "/message");
         HttpURLConnection conn = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HttpUtils.HTTPRequestMethod.POST);
-        OutputStream os = conn.getOutputStream();
-        os.write(("test").getBytes());
-        os.flush();
-        assertThat(conn.getResponseCode(), is(500));
-        os.close();
+        try(OutputStream os = conn.getOutputStream()) {
+            os.write(("test").getBytes());
+            os.flush();
+            assertThat(conn.getResponseCode(), is(500));
+        }
         conn.disconnect();
         // check that we get error about the message emitter channel
-        assertNotNull("Channel can ",server.waitForStringInLogUsingMark("CWMRX1003E.*restful-emitter-message"));
+        assertNotNull("Channel fails to send the message.",server.waitForStringInLogUsingMark("CWMRX1003E.*restful-emitter-message"));
     }
 
     @AfterClass
     public static void teardown() throws Exception {
         try {
-        //We expect a kafka error and an error from RESTEASY relating to th failure when we respond to the request
-        server.stopServer("CWMRX1003E.*restful-emitter", "RESTEASY002020");
+            //We expect a kafka error and an error from RESTEASY relating to the failure when we respond to the request
+            server.stopServer("CWMRX1003E.*restful-emitter", "RESTEASY002020");
         } finally {
             KafkaUtils.deleteKafkaTopics(KafkaTests.getAdminClient());
         }

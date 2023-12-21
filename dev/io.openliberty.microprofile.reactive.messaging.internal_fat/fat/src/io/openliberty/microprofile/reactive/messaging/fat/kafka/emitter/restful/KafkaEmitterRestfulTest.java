@@ -96,7 +96,7 @@ public class KafkaEmitterRestfulTest {
 
     @Test
     public void testEmittingRestPayload() throws Exception {
-        sendRequest("payload");
+        sendRequests("payload");
 
         try(KafkaReader<String, String> reader = kafkaTestClient.readerFor(payload_topic_name)) {
             List<String> messages = reader.assertReadMessages(5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
@@ -106,7 +106,7 @@ public class KafkaEmitterRestfulTest {
 
     @Test
     public void testEmttingRestMessage() throws Exception {
-        sendRequest("message");
+        sendRequests("message");
 
         try(KafkaReader<String, String> reader = kafkaTestClient.readerFor(message_topic_name)) {
             List<String> messages = reader.assertReadMessages(5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
@@ -115,16 +115,17 @@ public class KafkaEmitterRestfulTest {
     }
 
 
-    public void sendRequest(String path) throws IOException {
+    public void sendRequests(String path) throws IOException {
         int port = server.getHttpDefaultPort();
-        URL url = new URL("http://localhost:"+port+"/"+APP_NAME+"/"+path);
+        URL url = HttpUtils.createURL(server, APP_NAME + "/" + path);
         // Send 5 messages to the server to make sure we do process multiple requests
         for(int count = 1; count <6;count++) {
             HttpURLConnection conn = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HttpUtils.HTTPRequestMethod.POST);
-            OutputStream os = conn.getOutputStream();
-            os.write((path + count).getBytes());
-            os.flush();
-            assertThat(conn.getResponseCode(), is(204));
+            try(OutputStream os = conn.getOutputStream()) {
+                os.write((path + count).getBytes());
+                os.flush();
+                assertThat(conn.getResponseCode(), is(204));
+            }
             conn.disconnect();
         }
     }

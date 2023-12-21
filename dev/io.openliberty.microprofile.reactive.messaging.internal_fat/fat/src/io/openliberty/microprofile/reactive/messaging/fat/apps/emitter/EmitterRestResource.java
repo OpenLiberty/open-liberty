@@ -22,18 +22,18 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 @Path("/")
-public class EmitterRestResource<T> {
+public class EmitterRestResource {
 
     public static final String PAYLOAD_CHANNEL_NAME = "restful-emitter-payload";
     public static final String MESSAGE_CHANNEL_NAME = "restful-emitter-message";
 
     @Inject
     @Channel(PAYLOAD_CHANNEL_NAME)
-    Emitter<String> payloadEmitter;
+    private Emitter<String> payloadEmitter;
 
     @Inject
     @Channel(MESSAGE_CHANNEL_NAME)
-    Emitter<String> messageEmitter;
+    private Emitter<String> messageEmitter;
 
     @POST
     @Path("/payload")

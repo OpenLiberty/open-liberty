@@ -96,9 +96,12 @@ public class KafkaNackTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWMRX1003E.*nack-test-channel", // CWMRX1003E: An error occurred when sending a message to the Kafka broker. The error is: org.apache.kafka.common.errors.TimeoutException: Topic nack-test-channel not present in metadata after 5000 ms.
-                          "CWMRX1011E.*KafkaNackTestException");
-        KafkaUtils.deleteKafkaTopics(KafkaTests.getAdminClient());
+        try {
+            server.stopServer("CWMRX1003E.*nack-test-channel", // CWMRX1003E: An error occurred when sending a message to the Kafka broker. The error is: org.apache.kafka.common.errors.TimeoutException: Topic nack-test-channel not present in metadata after 5000 ms.
+                    "CWMRX1011E.*KafkaNackTestException");
+        } finally {
+            KafkaUtils.deleteKafkaTopics(KafkaTests.getAdminClient());
+        }
     }
 
     @Test

@@ -71,8 +71,8 @@ public class KafkaTestClient {
      * Create a test client with the given set of connection properties
      * <p>
      * The connection properties are properties common to every consumer or producer connecting to this broker.
-     *
-     * Once and instance of KafkaReader is no longer needed. It must be closed either via KafkaTestClient.cleanup() or KafkaReader.close()
+     * <p>
+     * Once an instance of KafkaReader is no longer needed. It must be closed either via KafkaTestClient.cleanup() or KafkaReader.close()
      *
      * @param connectionProperties the connection properties
      */

@@ -18,8 +18,8 @@ import io.openliberty.microprofile.reactive.messaging.fat.validation.ValidationT
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-                      KafkaTests.class,
-                      ValidationTests.class
+    KafkaTests.class,
+    ValidationTests.class
 })
 public class FATSuite extends TestContainerSuite {
 }

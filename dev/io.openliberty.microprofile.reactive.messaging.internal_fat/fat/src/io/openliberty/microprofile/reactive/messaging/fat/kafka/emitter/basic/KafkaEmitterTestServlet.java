@@ -14,7 +14,6 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestCons
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaReader;
-import componenttest.custom.junit.runner.Mode;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import org.eclipse.microprofile.reactive.messaging.Channel;
@@ -35,32 +34,32 @@ public class KafkaEmitterTestServlet extends AbstractKafkaTestServlet {
 
     @Inject
     @Channel(CHANNEL_NAME)
-    public Emitter<String> emitter;
+    private Emitter<String> emitter;
 
     @Inject
     @Channel(CHANNEL_NAME2)
-    public Emitter<String> emitter2;
+    private Emitter<String> emitter2;
 
     @Test
-    public void testmitterMessage() {
-        for(int i=1;i<=5;i++) {
+    public void testEmitterMessage() {
+        for (int i = 1; i <= 5; i++) {
             emitter.send(Message.of("message" + i));
         }
 
         KafkaReader<String, String> reader = kafkaTestClient.readerFor(CHANNEL_NAME);
         List<String> messages = reader.assertReadMessages(5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
-        assertThat(messages, contains("message1","message2", "message3", "message4","message5"));
+        assertThat(messages, contains("message1", "message2", "message3", "message4", "message5"));
     }
 
     @Test
     public void testEmitterPayload() {
-        for(int i=1;i<=5;i++) {
-            emitter.send(Message.of("payload" + i));
+        for (int i = 1; i <= 5; i++) {
+            emitter.send("payload" + i);
         }
 
         KafkaReader<String, String> reader = kafkaTestClient.readerFor(CHANNEL_NAME);
         List<String> messages = reader.assertReadMessages(5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
-        assertThat(messages, contains("payload1","payload2", "payload3", "payload4","payload5"));
+        assertThat(messages, contains("payload1", "payload2", "payload3", "payload4", "payload5"));
     }
 
 }
