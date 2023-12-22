@@ -8,18 +8,11 @@
  * SPDX-License-Identifier: EPL-2.0
  ******************************************************************************/
 
-package io.openliberty.microprofile.reactive.messaging.fat.suite;
+package io.openliberty.microprofile.reactive.messaging.fat.apps.emitter;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import jakarta.ws.rs.ApplicationPath;
+import jakarta.ws.rs.core.Application;
 
-import componenttest.containers.TestContainerSuite;
-import io.openliberty.microprofile.reactive.messaging.fat.validation.ValidationTests;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    KafkaTests.class,
-    ValidationTests.class
-})
-public class FATSuite extends TestContainerSuite {
+@ApplicationPath("/")
+public class EmitterApplication extends Application {
 }

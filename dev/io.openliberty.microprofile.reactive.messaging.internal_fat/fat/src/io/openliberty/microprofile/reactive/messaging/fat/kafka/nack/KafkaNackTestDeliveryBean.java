@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *******************************************************************************/
-package io.openliberty.microprofile.reactive.messaging.fat.apps.kafkanack;
+ ******************************************************************************/
+package io.openliberty.microprofile.reactive.messaging.fat.kafka.nack;
 
 import java.util.concurrent.CompletionStage;
 
