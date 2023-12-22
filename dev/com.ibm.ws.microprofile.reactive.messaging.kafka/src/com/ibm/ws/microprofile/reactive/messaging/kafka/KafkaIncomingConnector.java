@@ -150,7 +150,7 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory, Quiesce
             // Create the kafkaConsumer
             KafkaConsumer<String, Object> kafkaConsumer = getKafkaConsumerWithRetry(consumerConfig, retrySeconds, channelName);
 
-            RMAsyncProvider asyncProvider = asyncProviderFactory.getAsyncProvider(contextServiceRef);
+            RMAsyncProvider asyncProvider = asyncProviderFactory.getAsyncProvider(contextServiceRef, channelName);
 
             PartitionTrackerFactory partitionTrackerFactory = new PartitionTrackerFactory();
             partitionTrackerFactory.setAsyncProvider(asyncProvider);

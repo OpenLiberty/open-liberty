@@ -47,7 +47,8 @@ import componenttest.topology.impl.LibertyServer;
  * </pre>
  *
  * <p>
- * This creates a web application containing just {@code MyInvalidClass}, deploys it, checks that it either succeeds or fails to start. In the case of failure, it checks that a message containing {@code CWMFT5001E} is found in the
+ * This creates a web application containing just {@code MyInvalidClass}, deploys it, checks that it either succeeds or fails to start. In the case of failure, it checks that a
+ * message containing {@code CWMFT5001E} is found in the
  * log, and then undeploys it.
  */
 public class AppValidator {
@@ -184,7 +185,7 @@ public class AppValidator {
                 RemoteFile logFile = server.getDefaultLogFile();
                 server.setMarkToEndOfLog(logFile);
 
-                ShrinkHelper.exportArtifact(app, "tmp/apps");
+                ShrinkHelper.exportArtifact(app, "tmp/apps", true/* print contents */, true/* overwrite */);
                 server.copyFileToLibertyServerRoot("tmp/apps", "dropins", archiveName);
 
                 for (String stringToFind : stringsToFind) {

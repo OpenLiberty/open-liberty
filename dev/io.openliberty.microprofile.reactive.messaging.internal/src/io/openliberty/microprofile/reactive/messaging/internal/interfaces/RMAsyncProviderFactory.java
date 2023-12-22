@@ -20,7 +20,8 @@ public interface RMAsyncProviderFactory {
      * Creates an {@code RMAsyncProvider} which uses the named context service to capture thread context
      *
      * @param contextServiceName the context service name, or {@code null} to use the default context service
+     * @param channelName the channel the async provider is used for. Used in error messages.
      * @return the async provider
      */
-    RMAsyncProvider getAsyncProvider(String contextServiceName);
+    RMAsyncProvider getAsyncProvider(String contextServiceName, String channelName);
 }
