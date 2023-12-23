@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,11 +37,13 @@ import org.osgi.framework.Version;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 public class BundleFactory extends ManifestFactory {
     private static final TraceComponent tc = Tr.register(BundleFactory.class);
     private static final String EXTRAS_SHA_HEADER = "IBM-Extras-SHA";
     private static final String SHA_ALGORITHM = "SHA-256";
+    private static final String SHA_ALGORITHM_DEFAULT = "SHA-1";
     private BundleContext bundleContext;
     private String bundleLocationPrefix = "VirtualBundle@";
     private String bundleLocation = null;
@@ -189,7 +191,7 @@ public class BundleFactory extends ManifestFactory {
             return;
         }
         try {
-            MessageDigest shaDigest = MessageDigest.getInstance(SHA_ALGORITHM);
+            MessageDigest shaDigest = getShaDigest();
             for (ServiceComponentDeclaration component : components) {
                 shaDigest.update(component.toString().getBytes(StandardCharsets.UTF_8));
             }
@@ -205,6 +207,16 @@ public class BundleFactory extends ManifestFactory {
         }
     }
 
+    @FFDCIgnore(NoSuchAlgorithmException.class)
+    private MessageDigest getShaDigest() throws NoSuchAlgorithmException {
+        try {
+            return MessageDigest.getInstance(SHA_ALGORITHM);
+        } catch (NoSuchAlgorithmException e) {
+            // Preferred algorithm may be unavailable during server checkpoint
+            return MessageDigest.getInstance(SHA_ALGORITHM_DEFAULT);
+        }
+    }
+
     static String getHexSHA(MessageDigest digest) {
         Formatter hexFormat = new Formatter();
         for (byte b : digest.digest()) {
@@ -214,7 +226,7 @@ public class BundleFactory extends ManifestFactory {
     }
 
     /**
-     * @param m the jar new manifest
+     * @param m       the jar new manifest
      * @param headers previous bundle headers
      * @return
      */
