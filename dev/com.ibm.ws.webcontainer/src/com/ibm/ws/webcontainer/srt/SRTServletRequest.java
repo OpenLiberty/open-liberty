@@ -328,10 +328,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         }
 
         try {
-
             if (req == null) {
-                // MultiRead Start
-                if(this.multiReadPropertyEnabled) {
+                // MultiRead Start; 25279
+                if(this.multiReadPropertyEnabled || (WebContainerRequestState.getInstance(false).getAttribute("com.ibm.ws.webcontainer.multiReadCleanupDynamically") != null)) {
                     if(this._in instanceof SRTInputStream) {
                         ((SRTInputStream) this._in).cleanupforMultiRead();
                     }
@@ -1182,10 +1181,17 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         // MultiRead Start
         // if stream is currently closed, allow re-read.
         // otherwise this must be the first read so register as an observer to be notified when close occurs.
-        if (this.multiReadPropertyEnabled) {
+        if (this.multiReadPropertyEnabled || (WebContainerRequestState.getInstance(false).getAttribute("com.ibm.ws.webcontainer.multiReadPropertyEnabledDynamically") != null)) {
             if (_srtRequestHelper._InputStreamClosed) {
                 ((SRTInputStream) this._in).restart();
             } 
+            
+            if (!multiReadPropertyEnabled) {
+                //if enable dynamically, not allow the application to read more than one.
+                WebContainerRequestState.getInstance(false).removeAttribute("com.ibm.ws.webcontainer.multiReadPropertyEnabledDynamically");
+                //let initForNextRequest cleanup the buffer at the end.
+                WebContainerRequestState.getInstance(false).setAttribute("com.ibm.ws.webcontainer.multiReadCleanupDynamically", "true");
+            }
         }
         
         if (_srtRequestHelper._gotReader)
@@ -1252,12 +1258,20 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             checkRequestObjectInUse();
         }
         // MultiRead Start
-        if (this.multiReadPropertyEnabled) {
+        if (this.multiReadPropertyEnabled || (WebContainerRequestState.getInstance(false).getAttribute("com.ibm.ws.webcontainer.multiReadPropertyEnabledDynamically") != null)) {
             if (_srtRequestHelper._InputStreamClosed) {
                 ((SRTInputStream) this._in).restart();
             } 
+
+            if (!multiReadPropertyEnabled) {
+                //if enable dynamically, not allow the application to read more than one.
+                WebContainerRequestState.getInstance(false).removeAttribute("com.ibm.ws.webcontainer.multiReadPropertyEnabledDynamically");
+                //let initForNextRequest cleanup the buffer at the end.
+                WebContainerRequestState.getInstance(false).setAttribute("com.ibm.ws.webcontainer.multiReadCleanupDynamically", "true");
+            }
         }
         // MultiRead End
+
         if (_srtRequestHelper._gotInputStream){
             throw new IllegalStateException(liberty_nls.getString(  "InputStream.already.obtained", "Input Stream already obtained"));
         }

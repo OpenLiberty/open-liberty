@@ -6,13 +6,11 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.filter;
 
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -31,10 +29,13 @@ import com.ibm.websphere.servlet.request.extended.IRequestExtended;
 import com.ibm.ws.webcontainer.osgi.interceptor.RegisterRequestInterceptor;
 import com.ibm.ws.webcontainer.servlet.H2Handler;
 import com.ibm.ws.webcontainer.servlet.WsocHandler;
+import com.ibm.ws.webcontainer.srt.SRTInputStream;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.webapp.WebApp;
 import com.ibm.wsspi.http.HttpInboundConnection;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
+import com.ibm.wsspi.webcontainer.WCCustomProperties;
+import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.util.ServletUtil;
@@ -188,6 +189,40 @@ protected static final Logger logger = LoggerFactory.getInstance().getLogger("co
                                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                                     logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "upgrading to H2");
                                 }
+
+                                //25279
+                                if (httpRequest.getMethod().equalsIgnoreCase("POST")) {
+                                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                                        logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "H2 POST request; prep data before starting H2 handleRequest");
+                                    }
+
+                                    try {
+                                        InputStream in = httpRequest.getInputStream();
+
+                                        if (!WCCustomProperties.ENABLE_MULTI_READ_OF_POST_DATA) {
+                                            ((SRTInputStream) in).setupforMultiRead(true);
+                                            ((SRTInputStream) in).setISObserver((SRTServletRequest) request);
+
+                                            //dynamically enable the multi read ONCE for this request; reset at the next getInputStream/getReader.
+                                            WebContainerRequestState.getInstance(true).setAttribute("com.ibm.ws.webcontainer.multiReadPropertyEnabledDynamically", "true");
+                                        }
+
+                                        byte[] inBytes = new byte[1024];
+                                        for (int n; (n = in.read(inBytes)) != -1;) {}       //pull data into WC buffer
+
+                                        in.close();
+                                    }
+                                    //Application's filter may have already getInputStream/getReader and read the data, which causes IllegalStateException here, catch and allow the H2 handleRequest to continue.
+                                    // H2 can still be upgraded but application cannot read any of this POST data without the server property.
+                                    catch (IllegalStateException ise) {
+                                        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                                            logger.logp(Level.FINE, CLASS_NAME, "invokeTarget", "H2 POST request; data may have already read, continue");
+                                        }
+                                        WebContainerRequestState.getInstance(true).removeAttribute("com.ibm.ws.webcontainer.multiReadPropertyEnabledDynamically");
+                                    }
+                                }
+                                //25279 - end
+
                                 h2Handler.handleRequest(httpInboundConnection, httpRequest, httpResponse);
                             }
                         }

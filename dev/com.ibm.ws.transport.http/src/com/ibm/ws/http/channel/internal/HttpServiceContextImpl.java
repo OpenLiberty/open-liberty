@@ -311,7 +311,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @return boolean
      */
     final protected boolean isBodyComplete() {
-        return STATE_FULL_MESSAGE == this.msgParsedState;
+        boolean b = (STATE_FULL_MESSAGE == this.msgParsedState);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isBodyComplete() [" + b + "] , msgParsedState [" + msgParsedState + "]");
+        }
+
+        return b;
     }
 
     /**
@@ -319,10 +324,11 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      */
     private void setBodyComplete() {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "setBodyComplete() called");
-        }
         this.msgParsedState = STATE_FULL_MESSAGE;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setBodyComplete() | msgParsedState [" + msgParsedState + "]");
+        }
     }
 
     /**
@@ -360,10 +366,12 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      */
     @Override
     public boolean isIncomingMessageFullyRead() {
-
         // PK26519 - we may have temp buffers ready, check prior to looking at
         // the isBodyComplete method.
         if (!this.storage.isEmpty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "isIncomingMessageFullyRead() , storage is not empty, return [false]");
+            }
             return false;
         }
 
@@ -375,9 +383,17 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             // if a body is expected then return false as we haven't read
             // it yet
             // @314871 - use the cached value
-            return !isIncomingBodyValid();
+            boolean b = !isIncomingBodyValid();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "isIncomingMessageFullyRead() , !isIncomingBodyValid() , return [" + b + "]");
+            }
+
+            return b;
         }
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isIncomingMessageFullyRead() , return [true]");
+        }
         // if body flag is true, then another channel has already
         // read the entire body (thus the message is fully read)
         return true;
@@ -434,6 +450,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      */
     final public void setHeadersParsed() {
         this.msgParsedState = STATE_FULL_HEADERS;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setHeadersParsed() | msgParsedState [" + msgParsedState + "]");
+        }
     }
 
     /**
@@ -1503,6 +1522,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @return boolean
      */
     final protected boolean isIncomingBodyExpected() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isIncomingBodyExpected() [" + bIsBodyExpected + "]");
+        }
         return this.bIsBodyExpected;
     }
 

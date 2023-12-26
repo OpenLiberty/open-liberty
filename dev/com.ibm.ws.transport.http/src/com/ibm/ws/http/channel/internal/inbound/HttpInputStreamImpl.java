@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.inbound;
 
@@ -49,6 +46,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     private boolean readChannelComplete = false;
     private int postDataIndex = 0;
     protected long bytesReadFromStore = 0L;
+
+    //25279 - [true] when the body is fully read on the first read AND close; signaling subsequent read to not go down to channel for data.
+    protected boolean isMultipReadBodyFullyRead = false;
 
     private HttpInputStreamObserver obs = null;
 
@@ -139,17 +139,21 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
      * @throws IOException
      */
     private boolean checkMultiReadBuffer() throws IOException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.entry(tc, "checkMultiReadBuffer", " firstReadCompleteforMulti [" + firstReadCompleteforMulti + "] " + this);
+        }
+
         //first check existing buffer
         if (null != this.buffer) {
             if (this.buffer.hasRemaining()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "checkMultiReadBuffer, remaining ->" + this);
+                    Tr.debug(tc, "checkMultiReadBuffer Exit | return true ; has remaining . " + this);
                 }
                 return true;
             }
             if (firstReadCompleteforMulti) { // multiRead enabled and subsequent read
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "checkMultiReadBuffer, buffer is completely read, ready this buffer for the subsequent read ->" + this);
+                    Tr.debug(tc, "checkMultiReadBuffer, buffer is completely read, ready this buffer for the subsequent read ");
                 }
                 postDataBuffer.get(postDataIndex).flip(); // make position 0 , to read it again from start
                 postDataIndex++;
@@ -165,8 +169,17 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 Tr.debug(tc, "checkMultiReadBuffer ,index ->" + postDataIndex + " ,storage.size ->" + postDataBuffer.size());
             }
             if (postDataBuffer.size() <= postDataIndex) {
-                //get remaining from channel now as read needs more than the stored
-                readRemainingFromChannel();
+                if (isMultipReadBodyFullyRead) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "checkMultiReadBuffer, multipRead body has fully read before; get them from the storage");
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "checkMultiReadBuffer, check readRemainingFromChannel");
+                    }
+                    //get remaining from channel now as read needs more than the stored
+                    readRemainingFromChannel();
+                }
             }
             if (postDataBuffer.size() > postDataIndex) {
                 this.buffer = postDataBuffer.get(postDataIndex);
@@ -175,8 +188,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             if (null != this.buffer) {
                 // record the new amount of data read from the store
                 this.bytesReadFromStore += this.buffer.remaining();
+
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "checkMultiReadBuffer ->" + this);
+                    Tr.debug(tc, "checkMultiReadBuffer Exit | bytes read from store [" + this.bytesReadFromStore + "] , return true " + this);
                 }
                 return true;
             }
@@ -185,20 +199,26 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 // store the channel buffer
                 postDataBuffer.add(postDataIndex, this.buffer.duplicate());
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "checkMultiReadBuffer, buffer ->" + postDataBuffer.get(postDataIndex)
+                    Tr.debug(tc, "checkMultiReadBuffer, first read ; buffer ->" + postDataBuffer.get(postDataIndex)
                                  + " ,buffersize ->" + postDataBuffer.size() + " ,index ->" + postDataIndex);
                 }
                 postDataIndex++;
 
                 // record the new amount of data read from the channel
                 this.bytesRead += this.buffer.remaining();
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "checkMultiReadBuffer Exit | return true " + this);
+                }
+
                 return true;
             }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "checkMultiReadBuffer:  no more buffer ->" + this);
+            Tr.debug(tc, "checkMultiReadBuffer Exit | return false | no more buffer " + this);
         }
+
         return false;
     }
 
@@ -345,8 +365,21 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             }
             this.firstReadCompleteforMulti = true;
             this.postDataIndex = 0;
+
+            if (isc.isIncomingMessageFullyRead()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "checkMultiReadBuffer, isIncomingMessageFullyRead is true, set isMultipReadBodyFullyRead to true");
+                }
+                isMultipReadBodyFullyRead = true;
+            }
         }
         this.closed = true;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc,
+                     "Closing stream Exit | firstReadCompleteforMulti [" + firstReadCompleteforMulti + "] , isMultipReadBodyFullyRead [" + isMultipReadBodyFullyRead + "] " + this);
+        }
+
     }
 
     @Override
@@ -492,6 +525,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             postDataBuffer = new ArrayList<WsByteBuffer>();
             firstReadCompleteforMulti = false;
             readChannelComplete = false;
+            isMultipReadBodyFullyRead = false;
         }
     }
 
@@ -503,6 +537,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         bytesRead = 0L;
         bytesToCaller = 0L;
         firstReadCompleteforMulti = false;
+        isMultipReadBodyFullyRead = false;
 
         if (this.buffer != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -523,7 +558,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
 
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "init", "cleanupforMultiRead, postDataBuffer is not available");
+                Tr.debug(tc, "cleanupforMultiRead", "postDataBuffer is not available");
             }
         }
     }
