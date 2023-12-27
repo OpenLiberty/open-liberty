@@ -27,6 +27,8 @@ import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
+import java.util.logging.Logger;
+import org.apache.cxf.common.logging.LogUtils;
 
 public class StaxInEndingInterceptor extends AbstractPhaseInterceptor<Message> {
     //certain usages of CXF may require the Stax stream to remain open (example: streaming the stax stuff
@@ -34,6 +36,8 @@ public class StaxInEndingInterceptor extends AbstractPhaseInterceptor<Message> {
     public static final String STAX_IN_NOCLOSE = StaxInEndingInterceptor.class.getName() + ".dontClose";
 
     public static final StaxInEndingInterceptor INSTANCE = new StaxInEndingInterceptor();
+
+    private static final Logger LOG = LogUtils.getL7dLogger(StaxInEndingInterceptor.class);
 
     public StaxInEndingInterceptor() {
         super(Phase.PRE_INVOKE);
@@ -44,6 +48,7 @@ public class StaxInEndingInterceptor extends AbstractPhaseInterceptor<Message> {
 
     public void handleMessage(Message message) {
         XMLStreamReader xtr = message.getContent(XMLStreamReader.class);
+	LOG.finest("XMLStreamReader class: " + xtr.getClass().getCanonicalName()); // Liberty Change
         if (xtr != null && !MessageUtils.getContextualBoolean(message, STAX_IN_NOCLOSE, false)) {
             try {
                 StaxUtils.close(xtr);

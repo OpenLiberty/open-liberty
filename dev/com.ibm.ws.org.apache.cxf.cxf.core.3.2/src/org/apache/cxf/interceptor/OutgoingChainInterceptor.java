@@ -84,6 +84,7 @@ public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> 
                 outChain = OutgoingChainInterceptor.getChain(ex, chainCache);
                 out.setInterceptorChain(outChain);
             } else if (outChain.getState() == InterceptorChain.State.PAUSED) {
+		LOG.finest("OutgoingChainInterceptor: Chain was paused, resumimg"); // Liberty Change
                 outChain.resume();
                 return;
             }
@@ -99,6 +100,7 @@ public class OutgoingChainInterceptor extends AbstractPhaseInterceptor<Message> 
                 is.close();
                 message.removeContent(InputStream.class);
             } catch (IOException ioex) {
+		LOG.finest("closeInput: Ignoring IOException: " + ioex); // Liberty Change
                 //ignore
             }
         }

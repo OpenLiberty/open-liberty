@@ -54,6 +54,7 @@ public class PolicyVerificationOutInterceptor extends AbstractPolicyInterceptor 
 
         AssertionInfoMap aim = message.get(AssertionInfoMap.class);
         if (null == aim) {
+            LOG.fine("AssertionInfoMap is null.");
             return;
         }
 
@@ -61,6 +62,7 @@ public class PolicyVerificationOutInterceptor extends AbstractPolicyInterceptor 
 
         EffectivePolicy policy = message.get(EffectivePolicy.class);
         if (policy == null) {
+            LOG.fine("EffectivePolicy is null.");
             return;
         }
 

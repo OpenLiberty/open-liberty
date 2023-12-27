@@ -23,9 +23,13 @@ import javax.xml.namespace.QName;
 
 import org.apache.ws.commons.schema.XmlSchemaAnnotated;
 import org.apache.ws.commons.schema.XmlSchemaElement;
+import java.util.logging.Logger;
+import org.apache.cxf.common.logging.LogUtils;
+import java.util.logging.Level;
 
 public final class MessagePartInfo extends AbstractPropertiesHolder implements NamedItem {
 
+    private static final Logger LOG = LogUtils.getL7dLogger(MessagePartInfo.class); // Liberty Change
     private QName pname;
     private AbstractMessageContainer mInfo;
 
@@ -131,10 +135,25 @@ public final class MessagePartInfo extends AbstractPropertiesHolder implements N
 
     @Override
     public String toString() {
-        return new StringBuilder("[MessagePartInfo name=")
-            .append(getName())
-            .append(", ConcreteName=")
-            .append(getConcreteName()).toString();
+
+	// Liberty Change start
+	if (LOG.isLoggable(Level.FINEST)) {
+	   return new StringBuilder("[MessagePartInfo name=")
+               .append(getName())
+               .append(", ConcreteName=").append(getConcreteName())
+               .append(", Index=").append(getIndex())
+               .append(", isElement=").append(isElement)
+               .append(", TypeName=").append(getTypeQName())
+               .append(", ElementName=").append(getElementQName())
+               .toString();
+	}
+	else {
+           return new StringBuilder("[MessagePartInfo name=")
+               .append(getName())
+               .append(", ConcreteName=")
+               .append(getConcreteName()).toString();
+	}
+	// Liberty Change end
     }
 
     public int hashCode() {

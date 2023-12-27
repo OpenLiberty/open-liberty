@@ -24,10 +24,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.ws.Holder;
 
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.databinding.DataReader;
@@ -64,7 +66,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
 
     public void handleMessage(Message message) {
         if (isGET(message) && message.getContent(List.class) != null) {
-            LOG.fine("DocLiteralInInterceptor skipped in HTTP GET method");
+            LOG.finest("DocLiteralInInterceptor: HTTP GET method, returning");
             return;
         }
 
@@ -80,6 +82,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
         //operation anymore, just return
         if (bop != null && !StaxUtils.toNextElement(xmlReader)) {
             // body may be empty for partial response to decoupled request
+            LOG.finest("DocLiteralInInterceptor: Soap Body may be empty, returning"); // Liberty Change
             return;
         }
 
@@ -102,6 +105,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                 if (shouldWrapParameters(msgInfo, message)) {
                     QName startQName = xmlReader.getName();
                     MessagePartInfo mpi = msgInfo.getFirstMessagePart();
+		    LOG.fine("Should wrap parameters for Message part: " + mpi); // Liberty Change
                     if (!mpi.getConcreteName().equals(startQName)) {
                         throw new Fault("UNEXPECTED_WRAPPER_ELEMENT", LOG, null, startQName,
                                         mpi.getConcreteName());
@@ -109,6 +113,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                     Object wrappedObject = dr.read(mpi, xmlReader);
                     parameters.put(mpi, wrappedObject);
                 } else {
+		    LOG.fine("No wrapper, unwrap each part individually"); // Liberty Change
                     // Unwrap each part individually if we don't have a wrapper
 
                     bop = bop.getUnwrappedOperation();
@@ -128,9 +133,9 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                 }
 
             } else {
+		LOG.finest("This is Bare style");  // Liberty Change
                 //Bare style
                 BindingMessageInfo msgInfo = null;
-
 
                 Endpoint ep = exchange.getEndpoint();
                 ServiceInfo si = ep.getEndpointInfo().getService();
@@ -144,6 +149,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                         }
                     }
                     if (msgInfo == null) {
+		        LOG.finest("MsgInfo is null, returning");  // Liberty Change
                         return;
                     }
                     setMessage(message, bop, client, si, msgInfo.getMessageInfo());
@@ -154,6 +160,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
 
                 if (xmlReader == null || !StaxUtils.toNextElement(xmlReader)) {
                     // empty input
+		    LOG.finest("No input, returning");  // Liberty Change
                     getBindingOperationForEmptyBody(operations, ep, exchange);
                     return;
                 }
@@ -169,6 +176,7 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                     if (!client && msgInfo != null && msgInfo.getMessageParts() != null
                         && msgInfo.getMessageParts().isEmpty()) {
                         //no input messagePartInfo
+		        LOG.finest("MessageParts empty, returning");  // Liberty Change
                         return;
                     }
 
@@ -186,14 +194,17 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                     if (!forceDocLitBare) {
                         //Make sure the elName found on the wire is actually OK for
                         //the purpose we need it
+		        LOG.finest("Validating elName: " + elName); // Liberty Change
                         validatePart(p, elName, message);
                     }
 
                     final Object o = dr.read(p, xmlReader);
                     if (forceDocLitBare && parameters.isEmpty()) {
                         // webservice provider does not need to ensure size
+			LOG.finest("No parameters to add!");  // Liberty Change
                         parameters.add(o);
                     } else {
+			LOG.finest("Add parameters to msgpart: " + p);  // Liberty Change
                         parameters.put(p, o);
                     }
 
@@ -206,6 +217,21 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
             }
 
             message.setContent(List.class, parameters);
+		
+	    // Liberty Change start
+	    if (LOG.isLoggable(Level.FINEST)) {
+		LOG.finest("message.setContent() called with following parameters:");
+		for (Object o1 : parameters) {
+                   LOG.finest("param: " + o1.getClass().getCanonicalName());
+                   if (o1 instanceof Holder) {
+                      if (((Holder)o1).value != null) {
+                         LOG.finest("Holder type: " + ((Holder)o1).value.getClass());
+                      }
+                   }
+            	}
+	    }
+	    // Liberty Change end
+
         } catch (Fault f) {
             if (!isRequestor(message)) {
                 f.setFaultCode(Fault.FAULT_CODE_CLIENT);

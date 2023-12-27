@@ -30,10 +30,14 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
+import org.apache.cxf.common.logging.LogUtils;
+import java.util.logging.Logger;
 
 public class StaxOutEndingInterceptor extends AbstractPhaseInterceptor<Message> {
 
     private static final ResourceBundle BUNDLE = BundleUtils.getBundle(StaxOutEndingInterceptor.class);
+
+    private static final Logger LOG = LogUtils.getL7dLogger(StaxOutEndingInterceptor.class);  // Liberty Change
 
     private String outStreamHolder;
     private String writerHolder;
@@ -51,6 +55,7 @@ public class StaxOutEndingInterceptor extends AbstractPhaseInterceptor<Message> 
     public void handleMessage(Message message) {
         try {
             XMLStreamWriter xtw = message.getContent(XMLStreamWriter.class);
+	    LOG.finest("XMLStreamWriter class: " + xtw.getClass().getCanonicalName()); // Liberty Change
             if (xtw != null) {
                 try {
                     xtw.writeEndDocument();

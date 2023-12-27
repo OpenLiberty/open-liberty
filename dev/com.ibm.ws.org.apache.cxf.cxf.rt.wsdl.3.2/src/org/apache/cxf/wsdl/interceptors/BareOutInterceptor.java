@@ -19,6 +19,8 @@
 
 package org.apache.cxf.wsdl.interceptors;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import org.apache.cxf.interceptor.AbstractOutDatabindingInterceptor;
 import org.apache.cxf.message.Exchange;
@@ -28,8 +30,12 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.service.model.BindingMessageInfo;
 import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.MessagePartInfo;
+import org.apache.cxf.common.logging.LogUtils;
+
 
 public class BareOutInterceptor extends AbstractOutDatabindingInterceptor {
+
+    private static final Logger LOG = LogUtils.getL7dLogger(BareOutInterceptor.class);  // Liberty Change
 
     public BareOutInterceptor() {
         super(Phase.MARSHAL);
@@ -40,11 +46,13 @@ public class BareOutInterceptor extends AbstractOutDatabindingInterceptor {
         BindingOperationInfo operation = exchange.getBindingOperationInfo();
 
         if (operation == null) {
+	    LOG.finest("BareOutInterceptor: Operation is NULL, returning..."); // Liberty Change start
             return;
         }
 
         MessageContentsList objs = MessageContentsList.getContentsList(message);
         if (objs == null || objs.isEmpty()) {
+	    LOG.finest("BareOutInterceptor: MessageContentsList is empty, returning...");
             return;
         }
 
@@ -54,16 +62,25 @@ public class BareOutInterceptor extends AbstractOutDatabindingInterceptor {
 
         if (!client) {
             if (operation.getOutput() != null) {
+		LOG.fine("BareOutInterceptor: Getoutput for operation: " + operation.getName());
                 bmsg = operation.getOutput();
                 parts = bmsg.getMessageParts();
             } else {
                 // partial response to oneway
+		LOG.finest("BareOutInterceptor: Operation output is NULL, returning");
                 return;
             }
         } else {
+	    LOG.fine("BareOutInterceptor: Get input message parts...");
             bmsg = operation.getInput();
             parts = bmsg.getMessageParts();
         }
+
+	if (LOG.isLoggable(Level.FINEST)) {
+	   for (MessagePartInfo mp1 : parts) {
+	      LOG.finest("BareOutInterceptor: Msg Part: " + mp1.toString());
+	   }
+	}
 
         writeParts(message, exchange, operation, objs, parts);
     }

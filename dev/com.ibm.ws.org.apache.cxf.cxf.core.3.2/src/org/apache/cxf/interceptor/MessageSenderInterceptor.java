@@ -29,6 +29,8 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.transport.Conduit;
+import org.apache.cxf.common.logging.LogUtils;
+import java.util.logging.Logger;
 
 /**
  * Takes the Conduit from the exchange and sends the message through it.
@@ -36,6 +38,8 @@ import org.apache.cxf.transport.Conduit;
 public class MessageSenderInterceptor extends AbstractPhaseInterceptor<Message> {
     private static final ResourceBundle BUNDLE = BundleUtils.getBundle(MessageSenderInterceptor.class);
     private MessageSenderEndingInterceptor ending = new MessageSenderEndingInterceptor();
+
+    private static final Logger LOG = LogUtils.getL7dLogger(MessageSenderInterceptor.class);  // Liberty Change
 
 
     public MessageSenderInterceptor() {

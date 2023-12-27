@@ -62,7 +62,7 @@ public class StaxInInterceptor extends AbstractPhaseInterceptor<Message> {
 
     public void handleMessage(Message message) {
         if (isGET(message) || message.getContent(XMLStreamReader.class) != null) {
-            LOG.fine("StaxInInterceptor skipped.");
+            LOG.finest("StaxInInterceptor skipped.");
             return;
         }
         InputStream is = message.getContent(InputStream.class);
@@ -70,6 +70,7 @@ public class StaxInInterceptor extends AbstractPhaseInterceptor<Message> {
         if (is == null) {
             reader = message.getContent(Reader.class);
             if (reader == null) {
+                LOG.fine("Reader is null, returning."); // Liberty Change
                 return;
             }
         }
@@ -97,6 +98,7 @@ public class StaxInInterceptor extends AbstractPhaseInterceptor<Message> {
                     LOG, (htmlMessage.length() == 0) ? "(none)" : htmlMessage));
         }
         if (contentType == null) {
+	    LOG.finest("contentType is null"); // Liberty Change
             //if contentType is null, this is likely a an empty post/put/delete/similar, lets see if it's
             //detectable at all
             Map<String, List<String>> m = CastUtils.cast((Map<?, ?>)message.get(Message.PROTOCOL_HEADERS));
@@ -117,6 +119,7 @@ public class StaxInInterceptor extends AbstractPhaseInterceptor<Message> {
         }
 
         String encoding = (String)message.get(Message.ENCODING);
+        LOG.finest("Message encoding: " + encoding); // Liberty Change
 
         XMLStreamReader xreader;
         try {
@@ -144,7 +147,12 @@ public class StaxInInterceptor extends AbstractPhaseInterceptor<Message> {
                     }
                 }
             }
+	    // Liberty Change start
+	    LOG.finest("XMLStreamReader before configureReader: " + xreader.getClass().getCanonicalName());
             xreader = StaxUtils.configureReader(xreader, message);
+	    LOG.finest("XMLStreamReader after configureReader: " + xreader.getClass().getCanonicalName());
+	    // Liberty Change end
+	    LOG.finest("XMLStreamReader before configureReader: " + xreader.getClass().getCanonicalName());
         } catch (XMLStreamException e) {
             throw new Fault(new org.apache.cxf.common.i18n.Message("STREAM_CREATE_EXC",
                                                                    LOG,

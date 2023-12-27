@@ -63,6 +63,7 @@ public class OneWayProcessorInterceptor extends AbstractPhaseInterceptor<Message
                 try {
                     in.close();
                 } catch (IOException e) {
+		    LOG.finest("OneWayProcessorInterceptor: Ignoring IOException 1: " + e); // Liberty Change
                     //ignore
                 }
             }
@@ -122,6 +123,7 @@ public class OneWayProcessorInterceptor extends AbstractPhaseInterceptor<Message
                     message.getExchange().setInMessage(message);
                 }
             } catch (IOException e) {
+		LOG.finest("OneWayProcessorInterceptor: Ignoring IOException 2: " + e); // Liberty Change
                 //IGNORE
             }
 
@@ -156,6 +158,7 @@ public class OneWayProcessorInterceptor extends AbstractPhaseInterceptor<Message
                     }
 
                 } catch (InterruptedException e) {
+		    LOG.finest("OneWayProcessorInterceptor: Ignoring InterruptedException: " + e); // Liberty Change
                     //ignore - likely a busy work queue so we'll just let the one-way go
                 }
             }

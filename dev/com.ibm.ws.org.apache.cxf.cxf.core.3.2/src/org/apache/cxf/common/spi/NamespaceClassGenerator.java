@@ -34,7 +34,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 @Trivial
 public class NamespaceClassGenerator extends ClassGeneratorClassLoader implements NamespaceClassCreator {
 
-    private static final Logger LOG = LogUtils.getL7dLogger(ClassGeneratorClassLoader.class);
+    private static final Logger LOG = LogUtils.getL7dLogger(NamespaceClassGenerator.class);
     private final ASMHelper helper;
 
     public NamespaceClassGenerator(Bus bus) {
@@ -62,6 +62,7 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
 
         String className = "org.apache.cxf.jaxb.NamespaceMapper";
         className += postFix;
+	LOG.fine("Calling findClass for: " + className); // Liberty Change
         Class<?> cls = findClass(className, NamespaceClassCreator.class);
         Throwable t = null;
         if (cls == null) {
@@ -73,20 +74,25 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
                     try {
                         return loadClass(className, NamespaceClassCreator.class, bts);
                     } catch(NoClassDefFoundError e) {
+	                LOG.finest("loadClass for : " + className + " returned NCDF, trying RI"); // Liberty Change
                         postFix = "RI";
                         className = "org.apache.cxf.jaxb.NamespaceMapper";
                         className += postFix;
                         cls = findClass(className, NamespaceClassCreator.class);
                         
                         bts = createNamespaceWrapperInternal(postFix);
-                        return loadClass(className, NamespaceClassCreator.class, bts);
-                        
+		        Class<?> lc = loadClass(className, NamespaceClassCreator.class, bts); // Liberty Change begin
+			LOG.finest("createNamespaceWrapperClass returning: " + lc);
+                        return lc;
                     }
                 }
-                
-                return loadClass(className, NamespaceClassCreator.class, bts);
+
+                Class<?> lc = loadClass(className, NamespaceClassCreator.class, bts);
+                return lc;  // Liberty Change end
+
             } catch (RuntimeException ex) {
                 // continue
+		LOG.finest("createNamespaceWrapperClass: RuntimeException: " + ex);  // Liberty Change
                 t = ex;
             }
         }
@@ -97,13 +103,15 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
                         NamespaceClassCreator.class);
             } catch (Throwable ex2) {
                 // ignore
+		LOG.finest("createNamespaceWrapperClass: Exception: " + ex2);  // Liberty Change
                 t = ex2;
             }
         }
 		if (cls == null) {
-            LOG.log(Level.FINEST, "Could not create a NamespaceMapper compatible with Marshaller class " 
-                + mcls.getName(), t); // Liberty Change - Level to FINEST
-        }
+                   LOG.log(Level.FINEST, "Could not create a NamespaceMapper compatible with Marshaller class " 
+                           + mcls.getName(), t); // Liberty Change - Level to FINEST
+                }
+		LOG.fine("createNamespaceWrapperClass returning class: " + cls); // Liberty Change
 		return cls;
     }
 
@@ -115,7 +123,9 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
         }
         byte[] bts = doCreateEclipseNamespaceMapper();
         //previous code use mcls instead of NamespaceClassGenerator.class
-        return loadClass(className, NamespaceClassCreator.class, bts);
+	cls = loadClass(className, NamespaceClassCreator.class, bts);
+        return cls;
+	// Liberty Change end
     }
 
     /*
@@ -137,7 +147,7 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
             for (int x = 1; x < nsctxt.length; x = x + 2) {
                 s.remove(nsctxt[x]);
             }
-            return s.toArray(new String[s.size()]);
+	    return s.toArray(new String[s.size()]);
         }
         public void setContextualNamespaceDecls(String[] f) {
             nsctxt = f;
@@ -154,6 +164,7 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
         String slashedName = "org/apache/cxf/jaxb/EclipseNamespaceMapper";
         ASMHelper.ClassWriter cw = helper.createClassWriter();
         if (cw == null) {
+	    LOG.fine("doCreateEclipseNamespaceMapper: Could not create ASM classwriter, returning null");  // Liberty Change
             return null;
         }
         String superName = "org/eclipse/persistence/internal/oxm/record/namespaces/MapNamespacePrefixMapper";
@@ -168,7 +179,6 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
 
         fv = cw.visitField(Opcodes.ACC_PRIVATE, "nsctxt", "[Ljava/lang/String;", null, null);
         fv.visitEnd();
-
 
         mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "<init>", "(Ljava/util/Map;)V",
                 "(Ljava/util/Map<Ljava/lang/String;Ljava/lang/String;>;)V", null);
@@ -186,7 +196,6 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
         mv.visitLabel(l2);
         mv.visitMaxs(0, 0);
         mv.visitEnd();
-
 
         mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "setContextualNamespaceDecls", "([Ljava/lang/String;)V",
                 null, null);
@@ -223,7 +232,6 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
 
         mv.visitMaxs(0, 0);
         mv.visitEnd();
-
 
         mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "getPreDeclaredNamespaceUris", "()[Ljava/lang/String;", null, null);
         mv.visitCode();
@@ -319,7 +327,6 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
 
     private byte[] createNamespaceWrapperInternal(String postFix) {
 
-        //Liberty change begin
         String superName;
 
         if(postFix.equals("IBM")) {
@@ -335,6 +342,7 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
         String postFixedName = "org/apache/cxf/jaxb/NamespaceMapper" + postFix;
         ASMHelper.ClassWriter cw = helper.createClassWriter();
         if (cw == null) {
+	    LOG.fine("createNamespaceWrapperInternal: Could not create ASM classwriter, returning null");  // Liberty Change
             return null;
         }
         ASMHelper.FieldVisitor fv;
@@ -481,7 +489,6 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
         mv.visitEnd();
 
         cw.visitEnd();
-
         return cw.toByteArray();
     }
     //CHECKSTYLE:ON

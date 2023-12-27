@@ -40,6 +40,8 @@ import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
+import org.apache.cxf.common.logging.LogUtils;
+import java.util.logging.Logger;
 
 
 /**
@@ -54,6 +56,8 @@ public class StaxOutInterceptor extends AbstractPhaseInterceptor<Message> {
 
     private static final ResourceBundle BUNDLE = BundleUtils.getBundle(StaxOutInterceptor.class);
     private static Map<Object, XMLOutputFactory> factories = new HashMap<>();
+
+    private static final Logger LOG = LogUtils.getL7dLogger(StaxOutInterceptor.class);  // Liberty Change
 
 
     public StaxOutInterceptor() {
@@ -103,6 +107,9 @@ public class StaxOutInterceptor extends AbstractPhaseInterceptor<Message> {
                     }
                 }
             }
+
+	    LOG.finest("XMLStreamWriter class: " + xwriter.getClass().getCanonicalName()); // Liberty Change
+
             if (MessageUtils.getContextualBoolean(message, FORCE_START_DOCUMENT, false)) {
                 xwriter.writeStartDocument(encoding, "1.0");
                 message.removeContent(OutputStream.class);

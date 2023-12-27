@@ -73,6 +73,7 @@ public class PolicyOutInterceptor extends AbstractPolicyInterceptor {
 
         PolicyEngine pe = bus.getExtension(PolicyEngine.class);
         if (null == pe) {
+            LOG.fine("No PolicyEngine.");  // Liberty Change
             return;
         }
 
@@ -91,6 +92,7 @@ public class PolicyOutInterceptor extends AbstractPolicyInterceptor {
             addInterceptors(effectivePolicy.getInterceptors(), msg);
             assertions.addAll(effectivePolicy.getChosenAlternative());
         } else if (MessageUtils.isRequestor(msg)) {
+	    LOG.fine("Processing client policy");  // Liberty Change
             // 2. Process client policy
             Conduit conduit = exchange.getConduit(msg);
 
@@ -106,6 +108,7 @@ public class PolicyOutInterceptor extends AbstractPolicyInterceptor {
             }
         } else {
             // 3. Process server policy
+	    LOG.fine("Processing server policy");  // Liberty Change
             Destination destination = exchange.getDestination();
             List<List<Assertion>> incoming
                 = CastUtils.cast((List<?>)exchange.get("ws-policy.validated.alternatives"));

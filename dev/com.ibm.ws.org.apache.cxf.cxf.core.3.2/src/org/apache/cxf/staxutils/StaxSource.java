@@ -37,6 +37,8 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
+import org.apache.cxf.common.logging.LogUtils;
+import java.util.logging.Logger;
 
 
 // Liberty Changes - should try to commit back to CXF 
@@ -47,6 +49,8 @@ public class StaxSource extends SAXSource implements XMLReader {
     private ContentHandler contentHandler;
 
     private LexicalHandler lexicalHandler;
+
+    private static final Logger LOG = LogUtils.getL7dLogger(StaxSource.class);  // Liberty Change
 
     public StaxSource(XMLStreamReader streamReader) {
         this.streamReader = streamReader;
@@ -77,6 +81,7 @@ public class StaxSource extends SAXSource implements XMLReader {
                     char[] chars = streamReader.getTextCharacters();
                     contentHandler.characters(chars, start, length);
                     if (lexicalHandler != null) {
+			LOG.fine("parse: CDATA:  " + String.valueOf(chars)); // Liberty Change
                         lexicalHandler.endCDATA();
                     }
                     break;
@@ -142,11 +147,13 @@ public class StaxSource extends SAXSource implements XMLReader {
                         String nsPrefix = streamReader.getNamespacePrefix(i);
                         String nsUri = streamReader.getNamespaceURI(i);
                         if (nsUri == null) {
+		            LOG.fine("parse: nsUri is null, setting to empty string");  // Liberty Change
                             nsUri = "";
                         }
                         
                         // Liberty Change Start - Handle a null nsPrefix to prevent NPE in TRAX
                         if (nsPrefix == null) {
+		            LOG.fine("parse: nsPrefix is null, setting to empty string");  // Liberty Change
                             nsPrefix = "";
                         } 
                         // Liberty Change End

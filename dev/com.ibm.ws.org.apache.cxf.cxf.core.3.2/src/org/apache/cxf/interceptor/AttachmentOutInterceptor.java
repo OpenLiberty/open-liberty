@@ -33,6 +33,8 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
+import org.apache.cxf.common.logging.LogUtils;
+import java.util.logging.Logger;
 
 public class AttachmentOutInterceptor extends AbstractPhaseInterceptor<Message> {
 
@@ -48,6 +50,8 @@ public class AttachmentOutInterceptor extends AbstractPhaseInterceptor<Message> 
     
     private boolean writeOptionalTypeParameters = true;
 
+    private static final Logger LOG = LogUtils.getL7dLogger(AttachmentOutInterceptor.class);  // Liberty Change
+
     public AttachmentOutInterceptor() {
         super(Phase.PRE_STREAM);
     }
@@ -57,8 +61,10 @@ public class AttachmentOutInterceptor extends AbstractPhaseInterceptor<Message> 
         //same message
         if (message.get(ATTACHMENT_OUT_CHECKED) != null
             && (boolean)message.get(ATTACHMENT_OUT_CHECKED)) {
+	    LOG.fine("ATTACHMENT_OUT_CHECKED is set, interceptor already invoked, returning"); // Liberty Change
             return;
         } else {
+	    LOG.fine("AttachmentOutInterceptor handleMessage: Setting ATTACHMENT_OUT_CHECKED"); // Liberty Change
             message.put(ATTACHMENT_OUT_CHECKED, Boolean.TRUE);
         }
         // Make it possible to step into this process in spite of Eclipse
@@ -69,9 +75,11 @@ public class AttachmentOutInterceptor extends AbstractPhaseInterceptor<Message> 
 
         writeOptionalTypeParameters = MessageUtils.getContextualBoolean(message, WRITE_OPTIONAL_TYPE_PARAMETERS, true);
         if (!mtomEnabled && !writeAtts) {
+	    LOG.fine("AttachmentOutInterceptor: MTOM not enabled and WRITE_ATTACHMENTS is false"); // Liberty Change
             return;
         }
         if (message.getContent(OutputStream.class) == null) {
+	    LOG.fine("AttachmentOutInterceptor: OutputStream.class is null, returning"); // Liberty Change
             return;
         }
 

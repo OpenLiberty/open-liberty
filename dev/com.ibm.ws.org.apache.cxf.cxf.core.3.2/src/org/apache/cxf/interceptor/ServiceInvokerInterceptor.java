@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.xml.ws.Holder;
 
 import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.message.Exchange;
@@ -35,12 +36,17 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.invoker.Invoker;
+import org.apache.cxf.common.logging.LogUtils;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * Invokes a Binding's invoker with the <code>INVOCATION_INPUT</code> from
  * the Exchange.
  */
 public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message> {
+
+    private static final Logger LOG = LogUtils.getL7dLogger(ServiceInvokerInterceptor.class);  // Liberty Change
 
     public ServiceInvokerInterceptor() {
         super(Phase.INVOKE);
@@ -71,12 +77,18 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
                     if (result != null) {
                         MessageContentsList resList = null;
                         if (result instanceof MessageContentsList) {
+			    // Liberty Change start
+			    LOG.finest("Result is instance of MessageContentsList"); 
                             resList = (MessageContentsList)result;
                         } else if (result instanceof List) {
+			    LOG.finest("Result is instance of List");
                             resList = new MessageContentsList((List<?>)result);
                         } else if (result.getClass().isArray()) {
                             resList = new MessageContentsList((Object[])result);
+			    LOG.finest("Result is Array");
                         } else {
+			    LOG.finest("Calling setContent for Object.class");    
+			    // Liberty Change end	
                             outMessage.setContent(Object.class, result);
                         }
                         if (resList != null) {
@@ -147,10 +159,27 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
     }
 
     private Object getInvokee(Message message) {
+	// Liberty Change start
+        LOG.finest("getInvokee: getContent from List: " + message.getClass().getCanonicalName());
         Object invokee = message.getContent(List.class);
         if (invokee == null) {
+	    LOG.finest("getInvokee: getContent from Object");
             invokee = message.getContent(Object.class);
         }
+	if (LOG.isLoggable(Level.FINEST)) {
+	   if (invokee instanceof List) {
+              for (Object o1 : (List)invokee) {
+                 LOG.finest("Invokee param: " + o1.getClass().getCanonicalName());
+                 if (o1 instanceof Holder) {
+                    if (((Holder)o1).value != null) {
+                       LOG.finest("Invokee Holder type: " + ((Holder)o1).value.getClass());
+                    }
+                 }
+              }
+           }
+	}
+	// Liberty Change end
+
         return invokee;
     }
 
