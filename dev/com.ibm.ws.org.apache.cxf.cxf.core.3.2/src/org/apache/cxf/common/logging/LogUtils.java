@@ -58,8 +58,6 @@ public final class LogUtils {
 
     private static final Object[] NO_PARAMETERS = new Object[0];
 
-    private static final Logger LOG = LogUtils.getL7dLogger(LogUtils.class);  // Liberty Change
-
     private static Class<?> loggerClass;
 
 
@@ -259,7 +257,6 @@ public final class LogUtils {
                 try {
                     b = BundleUtils.getBundle(cls);
                 } catch (MissingResourceException rex) {
-		    LOG.finest("createLogger: Ignoring exception 1: " + rex); // Liberty Change
                     //ignore
                 }
             } else {
@@ -267,7 +264,6 @@ public final class LogUtils {
                 try {
                     b = BundleUtils.getBundle(cls, bundleName);
                 } catch (MissingResourceException rex) {
-		    LOG.finest("createLogger: Ignoring exception 2: " + rex); // Liberty Change
                     //ignore
                 }
             }
@@ -307,7 +303,6 @@ public final class LogUtils {
             } catch (IllegalArgumentException | MissingResourceException ex) {
                 //likely a mismatch on the bundle name, just return the default
                 logger = Logger.getLogger(loggerName); //NOPMD
-		LOG.finest("createLogger: Likely mismatch on bundle name, Exceptin: " + ex);  // Liberty Change
             }
             return logger;
         } finally {
@@ -459,7 +454,6 @@ public final class LogUtils {
                 msg = MessageFormat.format(msg, parameters);
             } catch (IllegalArgumentException ex) {
                 //ignore, log as is
-		LOG.finest("log: Ignoring exception: " + ex);  // Liberty Change
             }
             doLog(logger, level, msg, null);
         }
@@ -505,7 +499,6 @@ public final class LogUtils {
             newMsg = bundle != null ? bundle.getString(message) : message;
         } catch (MissingResourceException ex) {
             //string not in the bundle
-	    LOG.finest("localize: Message not found in bundle, returning original message: " + ex); // Liberty Change
             newMsg = message;
         }
 	return newMsg;
