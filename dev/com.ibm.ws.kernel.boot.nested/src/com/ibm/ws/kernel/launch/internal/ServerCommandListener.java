@@ -447,11 +447,25 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
         if (STATUS_START_COMMAND.equals(command)) {
             asyncResponse(command, sc);
             sc = null;
-        } else if (STOP_COMMAND.equals(command) || FORCE_STOP_COMMAND.equals(command)) {
+        } else if (STOP_COMMAND.equals(command) ) { // || FORCE_STOP_COMMAND.equals(command)) {
             Tr.audit(tc, "info.stop.request.received", new Date(), serverName);
             asyncResponse(command, sc);
             sc = null;
             frameworkManager.shutdownCommand(FORCE_STOP_COMMAND.equals(command));
+        } else if (FORCE_STOP_COMMAND.equals(command)) {
+            Tr.audit(tc, "info.stop.request.received", new Date(), serverName);
+            asyncResponse(command, sc);
+            sc = null;
+            frameworkManager.shutdownCommand(FORCE_STOP_COMMAND.equals(command));
+            Tr.audit(tc, "info.serverStopping", new Object[] {this.serverName });
+			try {
+			    Thread.sleep(10 * 1000);
+				System.exit(0);
+				}
+				catch(Exception e)
+				{
+				}
+			Tr.audit(tc, "info.serverStopped", new Object[] {this.serverName });
         } else if (command.startsWith(INTROSPECT_COMMAND)) {
             String arg = command.substring(command.indexOf('#') + 1);
 
