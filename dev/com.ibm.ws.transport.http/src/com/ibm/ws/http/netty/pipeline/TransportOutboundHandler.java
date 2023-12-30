@@ -14,12 +14,16 @@ import java.util.Objects;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 
 /**
@@ -28,6 +32,8 @@ import io.netty.handler.codec.http.HttpUtil;
 public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
 
     HttpChannelConfig config;
+
+    FullHttpResponse fullResponse;
 
     public TransportOutboundHandler(HttpChannelConfig config) {
         Objects.requireNonNull(config);
@@ -64,11 +70,51 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
 //                }
 //            }
 
+            ctx.writeAndFlush(msg);
+            if (response.status() == HttpResponseStatus.SWITCHING_PROTOCOLS) {
+//                fullResponse = new DefaultFullHttpResponse(response.protocolVersion(), response.status(), Unpooled.buffer(0));
+//                fullResponse.headers().set(response.headers());
+                ctx.pipeline().remove(HttpDispatcherHandler.class);
+                ctx.pipeline().remove("maxConnectionHandler");
+                ctx.pipeline().remove("HTTP_SERVER_HANDLER");
+                ctx.pipeline().remove("chunkLoggingHandler");
+                ctx.pipeline().remove("chunkWriteHandler");
+                ctx.pipeline().remove(TransportOutboundHandler.class);
+
+            }
+
         }
 
-        MSP.log("writeAndFlush for message: " + msg.toString());
+        else {
 
-        ctx.writeAndFlush(msg);
+            if (msg instanceof ByteBuf) {
+                // Optionally manipulate the data
+                ByteBuf data = (ByteBuf) msg;
+                // Proceed with writing
+                super.write(ctx, data, promise);
+            } else {
+                // Forward to the next handler if not a ByteBuf
+                super.write(ctx, msg, promise);
+
+            }
+
+            MSP.log("writeAndFlush for message: " + msg.toString());
+
+            ctx.writeAndFlush(msg);
+        }
+    }
+
+    @Override
+    public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
+        // Log or dump caller information before closing
+        MSP.log("Intercepting close");
+        Thread.dumpStack();
+        Exception callerInfo = new Exception("Closing channel triggered by:");
+        callerInfo.printStackTrace();
+        promise.setFailure(new IllegalStateException("Channel close is prevented"));
+
+        // Proceed with the actual close operation
+        // super.close(ctx, promise);
     }
 
 }
