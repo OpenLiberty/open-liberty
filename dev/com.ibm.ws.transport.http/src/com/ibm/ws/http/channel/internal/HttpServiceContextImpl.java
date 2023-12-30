@@ -31,6 +31,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.zip.DataFormatException;
 
@@ -1011,8 +1012,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
     }
 
-    public void init(ChannelHandlerContext context) {
+    public void init(TCPConnectionContext tsc, ChannelHandlerContext context) {
         this.setNettyContext(context);
+        
+        if(null != tsc) {
+            this.myTSC = tsc;
+        }
+        
         InetSocketAddress local = (InetSocketAddress) context.channel().localAddress();
         InetSocketAddress remote = (InetSocketAddress) context.channel().remoteAddress();
 
@@ -2268,8 +2274,19 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
 
         this.nettyContext.channel().writeAndFlush(this.nettyResponse);
-
         this.setHeadersSent();
+        try {
+            System.out.println("waiting 10 secs");
+            Thread.sleep(10000);
+        }catch(Exception e) {
+        
+            System.out.println("done waiting 10 secs to simulate sync write");
+        
+        }
+        
+        //setupCompressionHandler();
+
+        // this.setHeadersSent();
     }
 
     /**

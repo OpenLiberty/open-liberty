@@ -9,7 +9,14 @@
  *******************************************************************************/
 package com.ibm.ws.netty.upgrade;
 
+import java.util.Objects;
+
+import com.ibm.ws.http.netty.MSP;
+import com.ibm.wsspi.bytebuffer.WsByteBuffer;
+import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
+import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
+import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -39,6 +46,8 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
     private final ReadNotifier readNotifier = new ReadNotifier();
 
     TCPReadCompletedCallback callback;
+    private VirtualConnection vc;
+    private TCPReadRequestContext readContext;
 
     /**
      * Initialize the queue that will store the data
@@ -58,9 +67,35 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
             System.out.println(ByteBufUtil.hexDump(buf));
             queue.add(buf);
             totalBytesRead += buf.readableBytes();
-            if (callback != null) {
-                callback.complete(null, null);
+            
+            MSP.log("Will callback be called? " + Objects.nonNull(callback));
+            MSP.log("contains data: " + containsQueuedData());
+            MSP.log("Data size: " + queuedDataSize());
+            
+            MSP.log("do we have data to read?");
+            if (queuedDataSize() > 0) {
+                MSP.log("storing available data");
+                MSP.log("had data? " + containsQueuedData());
+                MSP.log("data size: " + queuedDataSize());
+
+                byte[] bytes = ByteBufUtil.getBytes(read(queuedDataSize(), null));
+                MSP.log("got [" + bytes.length + "] bytes from handler.");
+
+                WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(bytes.length);
+                readContext.setBuffer(buffer);
+                readContext.getBuffer().put(bytes);
+                MSP.log("stored bytes from handler in read context");
+                callback.complete(vc, readContext);
             }
+            MSP.log("read exit... ");
+            MSP.log("had data? " + containsQueuedData());
+            MSP.log("data size: " + queuedDataSize());
+            
+            
+            
+//            if (callback != null) {
+//                callback.complete(vc, );
+//            }
             readNotifier.readReady();
         } else {
             System.out.println("Need to verify!! Message was not a ByteBuf object!! Passing on as normal");
@@ -122,9 +157,17 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
      */
     public void setReadListener(TCPReadCompletedCallback callback) {
         this.callback = callback;
-        if (containsQueuedData()) {
-            callback.complete(null, null);
-        }
+//        if (containsQueuedData()) {
+//            callback.complete(null, null);
+//        }
+    }
+    
+    public void setVC(VirtualConnection vc) {
+        this.vc= vc;
+    }
+    
+    public void setTCPReadContext(TCPReadRequestContext context) {
+        this.readContext = context;
     }
 
 }
