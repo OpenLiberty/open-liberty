@@ -67,8 +67,8 @@ public class ReliabeResponseRetransmitTimer extends BaseTimer {
     /**
 	 * Extracts queue index from the related application session.
 	 */
-	protected int extractQueueIndex(){
-   		int result = -1;
+	protected long extractQueueIndex(){
+   		long result = -1;
    		
    			if(_responseObj != null){
    				TransactionUserWrapper tuImpl = _responseObj.getServletResponse().getTransactionUser();

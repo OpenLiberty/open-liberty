@@ -51,7 +51,7 @@ public abstract class AppQueueHandler {
 	/**
 	 * Represents the Id of this thread in the NativeMessageDispatcher
 	 */
-	private int _id;
+	private long _id;
 
 	/**
 	 * Listener that should be updated by this Dispatcher about changes in the
@@ -97,7 +97,7 @@ public abstract class AppQueueHandler {
 	 * @param id
 	 * @param lstr
 	 */
-	public AppQueueHandler(int waitingQueueSize, int id, QueueLoadListener lstr){
+	public AppQueueHandler(int waitingQueueSize, long id, QueueLoadListener lstr){
 		_id = id;
 		_lstr = lstr;
 		
@@ -255,9 +255,9 @@ public abstract class AppQueueHandler {
 		}
 		if (_queue.offer(msg)) {
 			msgAdded();
-			if (c_logger.isTraceEntryExitEnabled()) {
-				c_logger.traceExit(this, "dispatchMessage(2)",new Integer[] { _id, _queue.size()});
-			}
+			//if (c_logger.isTraceEntryExitEnabled()) {
+			//	c_logger.traceExit(this, "dispatchMessage(2)",new Long[] { _id, _queue.size()});
+			//}
 
 		    PerformanceMgr perfMgr = PerformanceMgr.getInstance();
 			
@@ -409,7 +409,7 @@ public abstract class AppQueueHandler {
 	 * Return the ID
 	 * @return 
 	 */
-	public int getId() {
+	public Long getId() {
 		return _id;
 	}
 

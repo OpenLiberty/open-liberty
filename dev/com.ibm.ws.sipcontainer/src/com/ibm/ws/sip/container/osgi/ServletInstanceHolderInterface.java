@@ -38,7 +38,7 @@ public interface ServletInstanceHolderInterface {
 	/**
 	 * Trigger listener
 	 */
-	public void triggerSipletInitServlet(int appQueueIndex);
+	public void triggerSipletInitServlet(long appQueueIndex);
 	
 	
 	/**

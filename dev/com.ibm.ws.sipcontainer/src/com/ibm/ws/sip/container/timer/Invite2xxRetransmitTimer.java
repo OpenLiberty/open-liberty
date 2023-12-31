@@ -74,8 +74,8 @@ public class Invite2xxRetransmitTimer extends BaseTimer {
     /**
 	 * Extracts queue index from the related application session.
 	 */
-	protected int extractQueueIndex() {
-		int result = -1;
+	protected long extractQueueIndex() {
+		long result = -1;
 			if(_response != null){
 				TransactionUserWrapper tuImpl = _response.getTransactionUser();
 				if(tuImpl != null){

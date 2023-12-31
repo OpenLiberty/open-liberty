@@ -173,7 +173,7 @@ implements SipApplicationSession {
 	 * We use this counter for queuing a message into SIP container's queues.
 	 * look at Queueable#getQueueIndex() 
 	 */
-	private transient int  m_extractedAppSessionSeqCounter = -1;
+	private transient long  m_extractedAppSessionSeqCounter = -1;
 
 	/**
 	 * Member that Developer can set to define that this ApplicationSession
@@ -1518,7 +1518,7 @@ implements SipApplicationSession {
 	 * @param AppSessionId - full sip application session ID
 	 * @return - the last two digits of the SipApplicationSession ID.
 	 */
-	public int extractAppSessionCounter()
+	public long extractAppSessionCounter()
 	{
 		if (m_extractedAppSessionSeqCounter < 0) {
 			m_extractedAppSessionSeqCounter = extractAppSessionCounter(getSharedId());
@@ -1537,7 +1537,7 @@ implements SipApplicationSession {
 	 * 6 is the internal Transaction user ID
 	 * @return - the last two digits of the SAS ID.
 	 */
-	public static int extractAppSessionCounter(String AppSessionId)
+	public static long extractAppSessionCounter(String AppSessionId)
 	{
 		StringTokenizer tokenizer = new StringTokenizer(AppSessionId,Replicatable.ID_INTERNAL_SEPERATOR);
 		tokenizer.nextToken(); // skip the serverid
@@ -1545,9 +1545,9 @@ implements SipApplicationSession {
 		if (c_logger.isTraceDebugEnabled()) {
 			c_logger.traceDebug("SipApplicationSessionImpl", "extractAppSessionCounter","found App session counter:"+appCounterAsString);
 		}
-		int result = Integer.parseInt(appCounterAsString);
-		//Moti: fix for defect 487485: apprantly getAppSession().getID().hashcode()
-		// is not univormly distributed (prefix is always the same:logical name).
+		long result =  Long.parseLong(appCounterAsString);
+		//Moti: fix for defect 487485: apparently getAppSession().getID().hashcode()
+		// is not uniformly distributed (prefix is always the same:logical name).
 		// so we will extract the only thing that actually changes: 
 		// the AppSession number. which is the last digit and also
 		// the global app session internal counter
