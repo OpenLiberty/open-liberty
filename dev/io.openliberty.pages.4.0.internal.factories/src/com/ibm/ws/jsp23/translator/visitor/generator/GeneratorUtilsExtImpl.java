@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 //  Revisions:
 //  Defect PI59436 03/22/2015   hmpadill    EL expressions returning null in EL 3.0 could produce NPE

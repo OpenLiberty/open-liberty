@@ -57,8 +57,8 @@ public class Pages40ChangesTest {
     public static void testCleanup() throws Exception {
         // Stop the server
         if (server != null && server.isStarted()) {
-            // SRVE8094W caused by exceptions thrown by the jsp:plugin tests
-            server.stopServer("SRVE8094W");
+            // SRVE8115W, SRVE8094W caused by exceptions thrown by the jsp:plugin tests
+            server.stopServer("SRVE8115W", "SRVE8094W");
         }
     }
 

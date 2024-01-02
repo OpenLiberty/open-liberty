@@ -68,6 +68,7 @@ public class ResolutionVariablesPropertiesServlet extends HttpServlet {
                 add("class jakarta.el.ResourceBundleELResolver");
                 add("class jakarta.el.ListELResolver");
                 add("class jakarta.el.ArrayELResolver");
+                add("class jakarta.el.RecordELResolver"); // New in Pages 4.0 / Expression Language 5.0
                 add("class jakarta.el.BeanELResolver");
             }
         };

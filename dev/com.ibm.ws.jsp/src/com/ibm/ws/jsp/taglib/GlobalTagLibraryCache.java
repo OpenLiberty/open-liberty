@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -137,7 +137,7 @@ public class GlobalTagLibraryCache extends Hashtable implements JspCoreContext,
                 tagLibCacheConfigParser.parse(this.getClass().getResourceAsStream("/com/ibm/ws/jsp/resources/taglibcacheconfig.tags.2.0.xml"));
             } else if(com.ibm.ws.jsp.PagesVersionHandler.isPages31OrHigherLoaded()) {
                 if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)){
-                    logger.logp(Level.FINE, CLASS_NAME, "GlobalTagLibraryCache", "Parsing taglibcacheconfig.tags.3.0.xml for pages version 3.1");
+                    logger.logp(Level.FINE, CLASS_NAME, "GlobalTagLibraryCache", "Parsing taglibcacheconfig.tags.3.0.xml for pages 3.1 or higher");
                 }
                 tagLibCacheConfigParser.parse(this.getClass().getResourceAsStream("/com/ibm/ws/jsp/resources/taglibcacheconfig.tags.3.0.xml"));
             } else {

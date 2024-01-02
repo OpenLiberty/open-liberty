@@ -200,8 +200,8 @@ public class JSP23JSP22ServerTest {
     }
 
     /**
-     * Tests a request with the pages-3.1 feature enabled.
-     * Then changes the feature to jsp-2.3 and request the same JSP again.
+     * Tests a request with the pages-4.0 feature enabled.
+     * Then changes the feature to pages-3.1 and request the same JSP again.
      * The JSP should be recompiled.
      * The JSP file pulls the version out of it's generated code and displays it in the rendered page.
      *

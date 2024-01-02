@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.pages40.fat.tests;
 
@@ -51,7 +48,8 @@ import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- *
+ * Test Pages 4.0 EL Changes. 
+ *  - Verifies Expression Language Resolvers and Order
  */
 @RunWith(FATRunner.class)
 public class PagesELTests {
@@ -78,13 +76,14 @@ public class PagesELTests {
     }
 
     /**
-     * Test JSP 2.3 Resolution of Variables and their Properties
+     * Test Pages 4.0 Resolution of Variables and their Properties
      *
+     * Test copied and updated from 2.3 FAT: JSPTests#testJSP23ResolutionVariableProperties
      * @throws Exception
      *                       if something goes wrong
      */
     @Test
-    public void testJSP23ResolutionVariableProperties() throws Exception {
+    public void testPages40ResolutionVariableProperties() throws Exception {
         String[] expectedInResponse = { "class org.apache.el.stream.StreamELResolverImpl",
                                         "class jakarta.el.StaticFieldELResolver",
                                         "class jakarta.el.MapELResolver",

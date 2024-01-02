@@ -34,7 +34,6 @@ Export-Package: \
 	org.apache.jasper.el;thread-context=true;version="4.0", \
 	org.apache.jasper.runtime;thread-context=true;version="4.0"
 
-# TODO Update el, servlet, and pages API versions once released
 Import-Package: \
    !com.ibm.ws.jsp23.translator.visitor.generator, \
    !com.ibm.ws.jsp23.translator.visitor.validator, \
@@ -85,7 +84,6 @@ Import-Package: \
 
 instrument.classesExcludes: org/apache/**/*.class
 
-# TODO - Update build path to latest APIs once released
 -buildpath: \
    io.openliberty.jakarta.expressionLanguage.6.0;version=latest,\
    io.openliberty.jakarta.pages.4.0;version=latest,\
