@@ -12,15 +12,12 @@
  *******************************************************************************/
 package app.timeout;
 
-import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
-
 import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 
-import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -47,7 +44,6 @@ import fat.util.JobWaiter;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TranTimeoutCleanupServlet")
 @Mode(TestMode.FULL)
-@SkipIfSysProp(OS_ZOS) // skip on zos due to derby timeouts
 public class TranTimeoutCleanupServlet extends FATServlet {
 
     public static Logger logger = Logger.getLogger("test");
