@@ -9,6 +9,11 @@
 
     <include location="../fatTestCommon.xml" />
 
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}"/>
+
     <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" >
         <iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}"  sslRef="defaultSSLConfig"/>
     </iiopEndpoint>
