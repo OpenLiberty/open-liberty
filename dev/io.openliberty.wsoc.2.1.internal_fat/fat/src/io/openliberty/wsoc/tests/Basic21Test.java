@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import static org.junit.Assert.assertNotNull;
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -28,9 +27,6 @@ import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebBrowserFactory;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
-import basic.war.UpgradeServlet;
-import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -102,7 +98,8 @@ public class Basic21Test {
         bwst.setUp();
 
         // Allow Jetty to finish starting up - https://github.com/OpenLiberty/open-liberty/issues/23172
-        Thread.sleep(3000);
+        // Updated to 5100 - Jan 2nd 2024
+        Thread.sleep(5100);
     }
 
     @AfterClass
