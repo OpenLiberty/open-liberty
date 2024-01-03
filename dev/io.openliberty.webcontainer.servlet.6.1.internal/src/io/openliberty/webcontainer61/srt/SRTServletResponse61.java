@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,13 +34,97 @@ public class SRTServletResponse61 extends SRTServletResponse60 implements HttpSe
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME, "initForNextRequest", "this [" + this + "] , resp [" + resp + "]");
         }
-
         super.initForNextResponse(resp);
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * This method has no effect if {@code null} is passed for the {@code name} parameter.
+     */
+    @Override
+    public void addDateHeader(String name, long date) {
+        if (name == null) {
+            if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                logger.logp(Level.FINE, CLASS_NAME, "addDateHeader", "name is null; return [" + this + "]");
+            }
+            return;
+        }
+        super.addDateHeader(name, date);
+    }
+
+    /**
+     * This method has no effect if {@code null} is passed for the {@code name} parameter.
+     */
+    @Override
+    public void setDateHeader(String name, long date) {
+        if (name == null) {
+            if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                logger.logp(Level.FINE, CLASS_NAME, "setDateHeader", "name is null; return. [" + this + "]");
+            }
+            return;
+        }
+        super.setDateHeader(name, date);
+    }
+
+    /**
+     * This method has no effect if {@code null} is passed for either the {@code name} or {@code value} parameters.
+     */
+    @Override
+    public void addHeader(String name, String value) {
+        if (name == null || value == null) {
+            if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                logger.logp(Level.FINE, CLASS_NAME, "addHeader", "name or value is null; return. [" + this + "]");
+            }
+            return;
+        }
+        super.addHeader(name, value);
+    }
+
+    /**
+     * This method has no effect if {@code null} is passed for the {@code name} parameter.
+     * <p>
+     * Passing {@code null} as the value removes all headers with the given name.
      *
+     */
+    @Override
+    public void setHeader(String name, String value) {
+        if (name == null) {
+            if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                logger.logp(Level.FINE, CLASS_NAME, "setHeader", "name is null; return. [" + this + "]");
+            }
+            return;
+        }
+        super.setHeader(name, value);
+    }
+
+    /**
+     * This method has no effect if {@code null} is passed for the {@code name} parameter.
+     */
+    @Override
+    public void addIntHeader(String name, int value) {
+        if (name == null) {
+            if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                logger.logp(Level.FINE, CLASS_NAME, "addIntHeader", "name is null; return. [" + this + "]");
+            }
+            return;
+        }
+        super.addIntHeader(name, value);
+    }
+
+    /**
+     * This method has no effect if {@code null} is passed for the {@code name} parameter.
+     */
+    @Override
+    public void setIntHeader(String name, int value) {
+        if (name == null) {
+            if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                logger.logp(Level.FINE, CLASS_NAME, "setIntHeader", "name is null; return. [" + this + "]");
+            }
+            return;
+        }
+        super.setIntHeader(name, value);
+    }
+
+    /**
      * @see jakarta.servlet.ServletResponse#setCharacterEncoding(java.nio.charset.Charset)
      */
     @Override
