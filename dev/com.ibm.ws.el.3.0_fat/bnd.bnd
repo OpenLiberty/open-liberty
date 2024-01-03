@@ -19,9 +19,9 @@ src: \
 fat.project: true
 
 tested.features:\
-    expressionLanguage-4.0,\
-    expressionLanguage-5.0,\
-    expressionLanguage-6.0,\
+    expressionlanguage-4.0,\
+    expressionlanguage-5.0,\
+    expressionlanguage-6.0,\
     noship-1.0,\
     servlet-5.0,\
     servlet-6.0,\

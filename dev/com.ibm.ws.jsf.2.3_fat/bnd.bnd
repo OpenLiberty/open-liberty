@@ -19,17 +19,17 @@ fat.test.container.images:\
  alpine:3.16
 
 tested.features: \
- expressionLanguage-4.0, \
+ expressionlanguage-4.0, \
  servlet-5.0, \
  cdi-3.0, \
  websocket-2.0, \
  faces-3.0, \
  pages-3.0,\
  beanvalidation-3.0,\
- xmlBinding-3.0,\
+ xmlbinding-3.0,\
  jpacontainer-3.0,\
  persistence-3.0,\
- expressionLanguage-5.0,\
+ expressionlanguage-5.0,\
  pages-3.1,\
  servlet-6.0,\
  faces-4.0,\
