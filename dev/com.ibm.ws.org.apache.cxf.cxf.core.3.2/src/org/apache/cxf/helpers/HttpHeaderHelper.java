@@ -41,7 +41,8 @@ public final class HttpHeaderHelper {
     public static final String CONNECTION = "Connection";
     public static final String CLOSE = "close";
     public static final String AUTHORIZATION = "Authorization";
-    static final String ISO88591 = StandardCharsets.ISO_8859_1.name();
+//    static final String ISO88591 = StandardCharsets.ISO_8859_1.name(); // Liberty change: This encoding is CXF's default
+    static final String UTF8 = StandardCharsets.UTF_8.name();
 
     private static Map<String, String> internalHeaders = new HashMap<>();
     private static ConcurrentHashMap<String, String> encodings = new ConcurrentHashMap<>();
@@ -94,7 +95,7 @@ public final class HttpHeaderHelper {
         return null;
     }
     public static String mapCharset(String enc) {
-        return mapCharset(enc, ISO88591);
+        return mapCharset(enc, UTF8);   // Liberty change: default encoding is set from ISO88591 to UTF-8
     }
 
     //helper to map the charsets that various things send in the http Content-Type header
