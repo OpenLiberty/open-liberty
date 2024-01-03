@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,30 +21,32 @@ import jakarta.data.metamodel.TextAttribute;
  * Metamodel for the House entity.
  */
 @StaticMetamodel(House.class)
-public interface House_ {
-    SortableAttribute AREA = SortableAttribute.get();
+public class _House {
+    public static volatile SortableAttribute AREA;
 
-    Attribute garage = Attribute.get();
+    public static volatile Attribute garage;
 
-    SortableAttribute GARAGE_AREA = SortableAttribute.get();
+    public static volatile SortableAttribute GARAGE_AREA;
 
-    SortableAttribute garage_door_height = SortableAttribute.get();
+    public static volatile SortableAttribute garage_door_height;
 
-    SortableAttribute Garage_Door_Width = SortableAttribute.get();
+    public static volatile SortableAttribute Garage_Door_Width;
 
-    SortableAttribute garage_type = SortableAttribute.get();
+    public static volatile SortableAttribute garage_type;
 
-    Attribute kitchen = Attribute.get();
+    public static volatile Attribute kitchen;
 
-    SortableAttribute kitchen_length = SortableAttribute.get();
+    public static volatile SortableAttribute kitchen_length;
 
-    SortableAttribute kitchen_width = SortableAttribute.get();
+    public static volatile SortableAttribute kitchen_width;
 
-    TextAttribute id = TextAttribute.get();
+    public static volatile TextAttribute id;
 
-    SortableAttribute LotSize = SortableAttribute.get();
+    public static volatile SortableAttribute LotSize;
 
-    SortableAttribute numBedrooms = SortableAttribute.get();
+    public static final String NUM_BEDROOMS = "numBedrooms";
 
-    TextAttribute parcelid = TextAttribute.get();
+    public static volatile SortableAttribute numBedrooms;
+
+    public static volatile TextAttribute parcelid;
 }
