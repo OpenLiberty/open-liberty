@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1914,7 +1914,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     /**
      * invoke end_session on a provider that didn't issue the id_token - make sure failure about the wrong issuer is issued
      **/
-    @AllowedFFDC({ "io.openliberty.security.openidconnect.backchannellogout.LogoutTokenBuilderException", "jakarta.servlet.ServletException" })
+    @AllowedFFDC({ "io.openliberty.security.openidconnect.backchannellogout.LogoutTokenBuilderException", "jakarta.servlet.ServletException", "javax.servlet.ServletException" })
     @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // there is nothing in the req.logout() that would really tie us to a provider
     @Mode(TestMode.LITE)
     @Test
