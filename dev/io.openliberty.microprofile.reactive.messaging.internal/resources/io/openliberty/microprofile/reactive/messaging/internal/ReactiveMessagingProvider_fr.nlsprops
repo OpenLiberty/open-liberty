@@ -1,0 +1,32 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+missing.context.service.CWMRX1200E=CWMRX1200E: Le canal {0} est configur\u00e9 pour utiliser le service contextuel {1} , mais aucun service contextuel de ce type n'a \u00e9t\u00e9 trouv\u00e9. V\u00e9rifiez que le service de contexte est d\u00e9fini dans le fichier server.xml et que la fonction Java EE ou Jakarta Concurrency est activ\u00e9e.
+missing.context.service.CWMRX1200E.explanation=Le canal de messagerie r\u00e9active est configur\u00e9 pour utiliser un service de contexte nomm\u00e9, mais aucun service de contexte portant ce nom ne peut \u00eatre trouv\u00e9.
+missing.context.service.CWMRX1200E.useraction=D\u00e9finissez le service de contexte dans le fichier server.xml ou supprimez la propri\u00e9t\u00e9 de configuration context.service pour le canal.

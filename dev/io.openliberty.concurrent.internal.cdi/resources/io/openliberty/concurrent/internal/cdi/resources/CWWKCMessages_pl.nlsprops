@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,20 +24,5 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1400 to CWWCK1499
+# All messages must use the range CWWCK1410 to CWWCK1499
 
-CWWKC1400.unsupported.return.type=CWWKC1400E: {0} nie jest poprawnym typem warto\u015bci zwracanej dla metody {1} klasy {2}. Poprawne typy warto\u015bci zwracanych dla metod z adnotacjami {3} s\u0105 nast\u0119puj\u0105ce: {4}.
-CWWKC1400.unsupported.return.type.explanation=Specyfikacja wsp\u00f3\u0142bie\u017cno\u015bci Jakarta ogranicza zakres poprawnych typ\u00f3w warto\u015bci zwracanych dla metod, kt\u00f3re maj\u0105 t\u0119 adnotacj\u0119.
-CWWKC1400.unsupported.return.type.useraction=Zaktualizuj metod\u0119 w aplikacji w taki spos\u00f3b, aby prze\u0142\u0105cza\u0142a si\u0119 na jeden z obs\u0142ugiwanych typ\u00f3w warto\u015bci zwracanych, lub usu\u0144 adnotacj\u0119 z metody.
-
-CWWKC1401.class.anno.disallowed=CWWKC1401E: Adnotacja {0} jest dozwolona na poziomie metody. Nie mo\u017ce by\u0107 ona u\u017cywana na poziomie klasy w klasie {1}.
-CWWKC1401.class.anno.disallowed.explanation=Ta adnotacja nie mo\u017ce by\u0107 okre\u015blona na poziomie klasy.
-CWWKC1401.class.anno.disallowed.useraction=Przenie\u015b adnotacj\u0119 do poszczeg\u00f3lnych metod klasy.
-
-CWWKC1402.not.managed.executor=CWWKC1402E: Adnotacja {0} w metodzie {1} klasy {2} okre\u015bla nazw\u0119 JNDI {3}, kt\u00f3ra jest t\u0142umaczona na zas\u00f3b {4} nieb\u0119d\u0105cy zasobem ManagedExecutorService ani ManagedScheduledExecutorService. Interfejsy zaimplementowane przez zas\u00f3b s\u0105 nast\u0119puj\u0105ce: {5}.
-CWWKC1402.not.managed.executor.explanation=Nazwa JNDI musi okre\u015bla\u0107 zas\u00f3b, kt\u00f3ry implementuje interfejs ManagedExecutorService lub ManagedScheduledExecutorService.
-CWWKC1402.not.managed.executor.useraction=Popraw nazw\u0119 JNDI, tak aby okre\u015bla\u0142a zas\u00f3b, kt\u00f3ry jest dost\u0119pny dla komponentu aplikacji i implementuje interfejs ManagedExecutorService lub ManagedScheduledExecutorService.
-
-CWWKC1403.unsupported.tx.type=CWWKC1403E: Adnotacja {0} okre\u015bla warto\u015b\u0107 {1}, kt\u00f3ra nie jest dozwolona w po\u0142\u0105czeniu z adnotacj\u0105 {2} znajduj\u0105c\u0105 si\u0119 w metodzie {3} klasy {4}. Dozwolone warto\u015bci to: {5}.
-CWWKC1403.unsupported.tx.type.explanation=U\u017cycie dw\u00f3ch adnotacji jest uzale\u017cnione od tego, czy warto\u015b\u0107 pierwszej adnotacji jest dozwolona z drug\u0105 adnotacj\u0105.
-CWWKC1403.unsupported.tx.type.useraction=Zaktualizuj aplikacj\u0119, u\u017cywaj\u0105c jednej z obs\u0142ugiwanych warto\u015bci, lub usu\u0144 jedn\u0105 z adnotacji.

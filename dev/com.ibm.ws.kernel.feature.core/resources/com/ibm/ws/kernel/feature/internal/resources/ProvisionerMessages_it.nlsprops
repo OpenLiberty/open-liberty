@@ -230,6 +230,15 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: L
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=La configurazione del server contiene una combinazione incompatibile di funzioni per i modelli di programmazione indicati. Questo conflitto pu\u00f2 accadere se le due funzioni incompatibili sono configurate direttamente nella configurazione del server o se le funzioni configurate includono versioni differenti di una funzione che sono incompatibili.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Tentare specificando una versione compatibile delle funzioni configurate che hanno causato il conflitto nel file server.xml. Se non sono disponibili altre versioni, le funzioni configurate non sono compatibili tra loro e non possono essere configurate contemporaneamente.
 
+UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: Non \u00e8 stato trovato un valore per la variabile di ambiente PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=Nella configurazione sono presenti funzioni senza versione e non \u00e8 possibile trovare la variabile di ambiente PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=Verificare che la variabile di ambiente, PREFERRED_FEATURE_VERSIONS, esista e sia scritta correttamente.
+
+# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: La variabile di ambiente, PREFERRED_FEATURE_VERSIONS, non contiene un valore per {0}
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=Per ciascuna funzione senza versione nella configurazione, deve essere presente un valore di versione preferito all'interno di PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=Aggiungere un valore in PREFERRED_FEATURE_VERSIONS per la funzione
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: La funzione {0} esiste gi\u00e0. Essa non sar\u00e0 reinstallata. Per modificare una funzione esistente, \u00e8 necessario prima disinstallarla manualmente.

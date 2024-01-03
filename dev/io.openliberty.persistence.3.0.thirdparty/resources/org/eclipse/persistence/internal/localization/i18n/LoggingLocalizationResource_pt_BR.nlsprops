@@ -119,6 +119,10 @@ connected_user_database=Conectado: {3}{4}Usu\u00e1rio: {0}{3}{4}Banco de Dados: 
 
 connected_user_database_driver=Conectado: {0}{6}Usu\u00e1rio: {1}{6}Banco de Dados: {2} Vers\u00e3o: {3}{6}Driver: {4} Vers\u00e3o: {5}
 
+corrupt_object=objeto corrompido: {0}
+
+corrupt_object_referenced_through_mapping=objeto corrompido referenciado por meio do mapeamento: {0}
+
 corrupted_session_announcement=SessionID: {0} O gerenciador de descoberta recebeu um an\u00fancio de sess\u00e3o corrompida - ignorando.
 
 create_default_dbms_tables_not_supported=A configura\u00e7\u00e3o do CMP \u201ccriar-tabelas-dbms-padr\u00e3o\u201d do WLS nativo n\u00e3o \u00e9 suportada diretamente no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
@@ -707,6 +711,8 @@ sop_object_wrong_version=Removendo o sopObject serializado da linha porque ele t
 
 src_pm_name_first_argument=\u00c9 necess\u00e1rio especificar o nome do PM de origem no argumento de entrada primeiro como: -sOc4j-native ou -sWeblogic.
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=pilha de objetos visitados que se referem ao objeto corrompido: {0}
+
 table_existed_during_creation=Falha na cria\u00e7\u00e3o da tabela. Se ela j\u00e1 existe, ela deve ser eliminada primeiro. Isso pode ser feito manualmente ou configurando o atributo db-table-gen em orion-ejb-jar.xml.
 
 template_orion_ejb_jar_created=Um arquivo orion-ejb-jar.xml modelo foi criado
@@ -737,7 +743,12 @@ toplink_warning=[Aviso EL]:
 
 unit_of_work_thread_info=A unidade de trabalho atual na sess\u00e3o ({0}) foi criada por outro encadeamento (ID: {1} nome: {2}) que n\u00e3o o encadeamento atual (ID: {3} nome: {4})
 
-unit_of_work_thread_info_thread_dump=Rastreio de pilha do encadeamento de cria\u00e7\u00e3o (ID: {0} nome: {1}): {2} Rastreio de pilha do encadeamento atual (ID: {3} nome: {4}): {5}\n
+unit_of_work_thread_info_thread_dump=Rastreio de pilha de encadeamento de cria\u00e7\u00e3o (ID: {0} nome: {1}):
+#{2}
+
+Current encadeamento (ID: {3} nome: {4}) rastreio de pilha:
+#{5}
+
 unitofwork_identity_hashcode={0}C\u00f3digo hash de identidade UnitOfWork: {1}
 
 update_all_fields_not_supported=O recurso do CMP \u201catualizar-todos-os-campos" do Oc4j nativo na entidade({0}) n\u00e3o \u00e9 diretamente suportado no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
@@ -747,6 +758,8 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery n\u00e3o pod
 validate_db_schema_with_not_supported=A configura\u00e7\u00e3o do CMP \u201cvalidar-esquema-db-com" do WLS nativo n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
 validate_ejb_jar=Validando ejb-jar.xml \u00e9 iniciado, ele pode levar algum tempo...
+
+validate_object_space=validar espa\u00e7o objeto.
 
 validity_timeout_not_supported=A configura\u00e7\u00e3o do CMP \u201cvalidity-timeout" do Oc4j nativo na entidade({0}) n\u00e3o \u00e9 suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 

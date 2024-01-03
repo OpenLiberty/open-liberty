@@ -57,13 +57,13 @@
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: Die DatabaseStore-Pr\u00e4fixkonfiguration {1} enth\u00e4lt unzul\u00e4ssige Zeichen.
+ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: Die DatabaseStore -Pr\u00e4fixkonfiguration {0} enth\u00e4lt ung\u00fcltige Zeichen.
 ILLEGAL_IDENTIFIER_CWWKD0200E.explanation=Ein DatabaseStore-Pr\u00e4fix darf nur Zahlen, Buchstaben und das Symbol '_' enthalten.
 ILLEGAL_IDENTIFIER_CWWKD0200E.useraction=Das DatabaseStore-Pr\u00e4fix muss ge\u00e4ndert werden, sodass es nur Zahlen, Buchstaben und das Symbol '_' enth\u00e4lt.
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: Die DatabaseStore-Schemakonfiguration {1} enth\u00e4lt unzul\u00e4ssige Zeichen.
+ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: Die DatabaseStore -Schemakonfiguration {0} enth\u00e4lt ung\u00fcltige Zeichen.
 ILLEGAL_IDENTIFIER_CWWKD0201E.explanation=Ein DatabaseStore-Schema darf nur Zahlen, Buchstaben und das Symbol '_' enthalten.
 ILLEGAL_IDENTIFIER_CWWKD0201E.useraction=Das DatabaseStore-Schema muss ge\u00e4ndert werden, sodass es nur Zahlen, Buchstaben und das Symbol '_' enth\u00e4lt.
 
@@ -72,6 +72,7 @@ ILLEGAL_IDENTIFIER_CWWKD0201E.useraction=Das DatabaseStore-Schema muss ge\u00e4n
 DEACTIVATED_CWWKD0202E=CWWKD0202E: Dieser DatabaseStore wurde inaktiviert.
 DEACTIVATED_CWWKD0202E.explanation=Es wurde versucht, eine Operation f\u00fcr einen inaktivierten DatabaseStore auszuf\u00fchren.
 DEACTIVATED_CWWKD0202E.useraction= Es ist keine Benutzeraktion erforderlich. 
+
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
 INVALID_CHAR_IN_PREPSTMT_CWWKD0203E=CWWKD0203E: Es wurde ein nicht zul\u00e4ssiges Unicode-Zeichen in einem PreparedStatement-Zeichenfolgeparameter gefunden.

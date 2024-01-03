@@ -1,0 +1,32 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+reactive.messaging.validation.error.CWMRX1100E=CWMRX1100E: \u5f53 {0} \u5e94\u7528\u7a0b\u5e8f\u542f\u52a8\u65f6\uff0c\u5728 "\u53cd\u5e94\u6d88\u606f\u4f20\u9012" \u9a8c\u8bc1\u671f\u95f4\u53d1\u751f\u9519\u8bef\u3002 \u9519\u8bef\u4e3a {1}
+reactive.messaging.validation.error.CWMRX1100E.explanation=\u5728\u9a8c\u8bc1\u6784\u9020\u7684 "\u53cd\u5e94\u6d88\u606f\u4f20\u9012" \u56fe\u671f\u95f4\uff0c\u53d1\u73b0\u4e86\u963b\u6b62\u53d1\u9001\u6216\u63a5\u6536\u6d88\u606f\u7684\u9519\u8bef\u3002
+reactive.messaging.validation.error.CWMRX1100E.useraction=\u89e3\u51b3\u62a5\u544a\u7684\u9519\u8bef\u5e76\u91cd\u65b0\u90e8\u7f72\u5e94\u7528\u7a0b\u5e8f\u3002

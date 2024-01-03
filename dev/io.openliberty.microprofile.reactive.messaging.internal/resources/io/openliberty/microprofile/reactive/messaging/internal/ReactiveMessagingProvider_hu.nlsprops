@@ -1,0 +1,32 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+missing.context.service.CWMRX1200E=CWMRX1200E: A {0} csatorna a {1} kontextusszolg\u00e1ltat\u00e1s haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva, de ilyen kontextus szolg\u00e1ltat\u00e1s nem tal\u00e1lhat\u00f3. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kontextusszolg\u00e1ltat\u00e1s meg van adva a server.xml f\u00e1jlban, \u00e9s hogy a Java EE vagy Jakarta Concurrency szolg\u00e1ltat\u00e1s enged\u00e9lyezve van.
+missing.context.service.CWMRX1200E.explanation=A Reakt\u00edv \u00fczenetkezel\u00e9si csatorna egy megnevezett kontextusszolg\u00e1ltat\u00e1s haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva, de nem tal\u00e1lhat\u00f3 kontextus szolg\u00e1ltat\u00e1s.
+missing.context.service.CWMRX1200E.useraction=Adja meg a kontextusszolg\u00e1ltat\u00e1st a server.xml f\u00e1jlban, vagy t\u00e1vol\u00edtsa el a csatorna context.service konfigur\u00e1ci\u00f3s tulajdons\u00e1g\u00e1t.
