@@ -270,7 +270,9 @@ jakarta.transaction:jakarta.transaction-api:2.0.1
 jakarta.validation:jakarta.validation-api:3.0.2
 jakarta.websocket:jakarta.websocket-api:2.0.0
 jakarta.websocket:jakarta.websocket-api:2.1.0
+jakarta.websocket:jakarta.websocket-api:2.2.0-M1
 jakarta.websocket:jakarta.websocket-client-api:2.1.0
+jakarta.websocket:jakarta.websocket-client-api:2.2.0-M1
 jakarta.ws.rs:jakarta.ws.rs-api:3.0.0
 jakarta.ws.rs:jakarta.ws.rs-api:3.1.0
 jakarta.xml.bind:jakarta.xml.bind-api:3.0.1
