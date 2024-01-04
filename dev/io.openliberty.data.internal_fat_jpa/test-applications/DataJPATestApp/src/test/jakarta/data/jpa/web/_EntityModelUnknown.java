@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import jakarta.data.Sort;
 import jakarta.data.metamodel.SortableAttribute;
 import jakarta.data.metamodel.StaticMetamodel;
 
@@ -17,8 +18,11 @@ import jakarta.data.metamodel.StaticMetamodel;
  * Static metamodel for an non-JPA entity type to ignore.
  */
 @StaticMetamodel(java.time.Period.class)
-public class EntityModelUnknown_ {
-    public static final SortableAttribute days = SortableAttribute.get();
-    public static final SortableAttribute months = SortableAttribute.get();
-    public static final SortableAttribute years = null;
+public class _EntityModelUnknown {
+    public static volatile SortableAttribute days = new Sortable("Days", Sort.asc("Days"), Sort.desc("Days"));
+    public static volatile SortableAttribute months = new Sortable("Mon", Sort.asc("Mon"), Sort.desc("Mon"));
+    public static volatile SortableAttribute years;
+
+    private record Sortable(String name, Sort asc, Sort desc) implements SortableAttribute {
+    }
 }
