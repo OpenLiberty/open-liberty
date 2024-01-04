@@ -30,7 +30,7 @@ import componenttest.rules.repeater.RepeatActions.SEVersion;
 // This class and its constructor are purposely not public to force people to use the JakartaEEAction class and  //
 // the FeatureReplacementAction.EE11_FEATURES() method instead of referencing this class directly                //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class JakartaEE11Action extends JakartaEEAction {
+public class JakartaEE11Action extends JakartaEEAction {
     private static final Map<String, String> DEFAULT_TRANSFORMATION_RULES = new HashMap<>();
     private static final Map<String, String> TRANSFORMATION_RULES_APPEND = new HashMap<>();
     private static boolean WIDEN = false;
@@ -107,7 +107,7 @@ class JakartaEE11Action extends JakartaEEAction {
 
     public static final Set<String> EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_FEATURES_ARRAY)));
 
-    JakartaEE11Action() {
+    public JakartaEE11Action() {
         // Remove the EE7, EE8, EE9 and EE10 features; replace them with the EE11 features
         super(EE11_FEATURE_SET);
         removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET);
