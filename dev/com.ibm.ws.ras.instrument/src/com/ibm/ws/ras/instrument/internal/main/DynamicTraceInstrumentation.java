@@ -167,6 +167,7 @@ class Transformer extends StaticTraceInstrumentation implements ClassFileTransfo
         }
     }
 
+    @Override
     public byte[] transform(ClassLoader loader,
                             String className,
                             Class<?> classBeingRedefined,

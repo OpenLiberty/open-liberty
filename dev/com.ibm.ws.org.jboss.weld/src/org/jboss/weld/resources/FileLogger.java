@@ -19,6 +19,8 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,19 +47,20 @@ public class FileLogger {
         return System.currentTimeMillis();
     }
 
+    private static final Date current = new Date( getTime() );
     private static final SimpleDateFormat formatter =
         new SimpleDateFormat("MM/dd/yy HH:mm:ss:SSS z");  // 03/22/16 12:01:13:654 ESD
-
-    private static final Date current = new Date( getTime() );
     private static String currentFormatted = formatter.format(current);
 
     public static String getFormattedTime() {
-        long currentMs = getTime();
-        if ((currentMs - current.getTime()) > 10)  {
-            current.setTime(currentMs);
-            currentFormatted = formatter.format(current);
+        synchronized( current ) {
+            long currentMs = getTime();            
+            if ((currentMs - current.getTime()) > 10)  {
+                current.setTime(currentMs);
+                currentFormatted = formatter.format(current);
+            }
+            return currentFormatted;            
         }
-        return currentFormatted;
     }
 
     //
@@ -89,11 +92,28 @@ public class FileLogger {
 
     //
 
+    protected static String getSystemProperty(String propertyName) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty(propertyName);
+            }
+        });
+    }
+    
+    //
+
     public static final String ENABLED_PROPERTY_NAME = "JBOSS_HOTSPOT_TRACE_ENABLED";
     public static final boolean enabled;
 
     static {
-        String enabledValue = System.getProperty(ENABLED_PROPERTY_NAME);
+        String enabledValue = AccessController.doPrivileged( new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return getSystemProperty(ENABLED_PROPERTY_NAME);
+            }
+        });
+        
         enabled = ( (enabledValue != null) && enabledValue.equalsIgnoreCase("true") );
 
         if ( enabled ) {
@@ -235,10 +255,10 @@ public class FileLogger {
             this.overrideProperties = properties;
             this.overridePattern = ( (properties == null) ? null : properties.getProperty(PATTERN_PROPERTY_NAME) );
 
-            this.wlpHome = System.getProperty(WLP_INSTALL_PROPERTY_NAME);
-            this.wlpName = System.getProperty(WLP_SERVER_PROPERTY_NAME);
-            this.log1Home = System.getProperty(WLP_LOG1_PROPERTY_NAME);
-            this.log2Home = System.getProperty(WLP_LOG2_PROPERTY_NAME);
+            this.wlpHome = getSystemProperty(WLP_INSTALL_PROPERTY_NAME);
+            this.wlpName = getSystemProperty(WLP_SERVER_PROPERTY_NAME);
+            this.log1Home = getSystemProperty(WLP_LOG1_PROPERTY_NAME);
+            this.log2Home = getSystemProperty(WLP_LOG2_PROPERTY_NAME);
 
             this.logHome = selectLogHome();
 
@@ -251,7 +271,7 @@ public class FileLogger {
             Properties useProperties = new Properties();
 
             for ( String propertyName : PROPERTY_NAMES ) {
-                String propertyValue = System.getProperty(propertyName);
+                String propertyValue = getSystemProperty(propertyName);
                 if ( propertyValue != null ) {
                     useProperties.setProperty(propertyName, propertyValue);
                     System.out.println("JBH: [ " + propertyName + " ] [ " + propertyValue + " ]");
