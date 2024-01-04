@@ -14,6 +14,7 @@ package com.ibm.ws.kernel.feature.resolver;
 
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,33 +75,101 @@ public interface FeatureResolver {
      */
     public interface Result {
         /**
-         * The set of feature names that are required to resolve an initial set of root features.
+         * Tell if any errors are recorded in the result.
          *
-         * @return the feature names that are resolved
+         * @see #getMissingRequested()
+         * @see #getUnlabelledConstituents()
+         * @see #getNonPublicRoots()
+         * @see #getWrongProcessTypes()
+         * @see #getConflicts()
+         *
+         * @return True or false telling if any errors are recorded.
          */
-        Set<String> getResolvedFeatures();
+        boolean hasErrors();
 
         /**
-         * The required features that could not be found while trying to resolve root features.
+         * Answer the names of requested features which are not
+         * present in the feature repository.
          *
-         * @return the missing features
+         * @return The names of missing requested features.
          */
-        Set<String> getMissing();
+        Set<String> getMissingRequested();
 
         /**
-         * The set of root features must be public. This will return any that are not
+         * Answer a table of features which have missing constituents.
+         * Keys are feature symbolic names. Values are sets of resource
+         * locations.
          *
-         * @return the non public root features
+         * @return A table of missing feature constituents.
+         */
+        Map<String, Set<String>> getUnlabelledConstituents();
+
+        /**
+         * Answer a table of missing constituent versions.
+         *
+         * Keys are enclosing feature symbolic name, resource locations,
+         * and constituent feature symbolic names.
+         *
+         * These do not cause failures: Single missing versions are ignored.
+         *
+         * @return A table of missing constituent versions.
+         */
+        Map<String, Map<String, Set<String>>> getMissingConstituentVersions();
+
+        /**
+         * Answer the names of any requested features which are not public.
+         *
+         * @return The names of any requested non-public features.
          */
         Set<String> getNonPublicRoots();
 
         /**
+         * Answer information about any dependency feature, either requested
+         * or a required dependency feature, which does not have a supported
+         * process type.
+         *
+         * @return Information about features which have the wrong process
+         *         type.
+         */
+        Map<String, ResolutionChain> getWrongProcessTypes();
+
+        //
+
+        /**
+         * Tell how many new conflicts were recorded since these
+         * results were created.
+         *
+         * @return The number of newly recorded conflicts.
+         */
+        int getNumNewConflicts();
+
+        /**
+         * Answer the base names of features which have conflicts and
+         * which were recorded since these results were created.
+         *
+         * @return The base names of newly recorded features which have
+         *         conflicts.
+         */
+        Set<String> getNewConflicts();
+
+        /**
+         * Tell if a specified base name has a conflict since the results
+         * were created.
+         *
+         * @param baseName The base name of a feature which is to be tested.
+         *
+         * @return True or false telling if any new conflicts were recorded
+         *         for the feature.
+         */
+        boolean isNewlyConflicted(String baseName);
+
+        /**
          * The conflicting chains that resulted from a resolution operation. The key
          * is the base name of the feature that has conflicting versions required.
-         * The value is a collection of dependency {@link Chain}s that transitively
+         * The value is a collection of dependency {@link ResolutionChain}s that transitively
          * lead to the conflicting versions of the feature.
          */
-        Map<String, Collection<Chain>> getConflicts();
+        Map<String, Collection<ResolutionChain>> getConflicts();
 
         /**
          * Tell how many conflicts this result contains.
@@ -110,31 +179,60 @@ public interface FeatureResolver {
         int getNumConflicts();
 
         /**
-         * Not really used yet.
+         * Tell if any conflicts are present for a specified base feature name.
+         *
+         * If a base name is present in conflict storage, at least one conflict
+         * will be stored for that base name.
+         *
+         * @param baseName A base feature name.
+         *
+         * @return True or false telling if there are any conflicts for the base
+         *         feature name.
          */
-        Map<String, Chain> getWrongProcessTypes();
+        boolean isConflicted(String baseName);
+
+        //
 
         /**
-         * A quick check to tell if there are any errors in the result.
+         * Answer the names of resolved features.
          *
-         * @see #getMissing()
-         * @see #getNonPublicRoots()
-         * @see #getConflicts()
-         * @see #getWrongProcessTypes()
+         * @return The names of resolved features.
          */
-        boolean hasErrors();
+        Set<String> getResolvedFeatures();
+
+        /**
+         * Answer the resolved features.
+         *
+         * @return The resolved features.
+         */
+        OrderedFeatures getResolved();
+
+        /**
+         * @return
+         */
+        Map<String, Set<String>> getUnusableConstituents();
     }
 
     /**
-     * A dependency chain of feature requirements that lead a singleton feature and a list of candidates
+     * A dependency chain of feature requirements that leads to
+     * a singleton feature and a list of candidates.
      */
-    public static interface Chain {
-        List<String> getChain();
+    public static interface ResolutionChain {
+        List<String> getResolutionPath();
+
         List<String> getCandidates();
-        boolean hasCandidate(String candidate);
+
+        String getPreferredCandidate();
+
+        boolean isCandidate(String candidateSymbolicName);
+
+        String getBaseName();
+
         Version getPreferredVersion();
-        String getFeatureRequirement();
-        Chain select(String candidate);
+
+        String getResolvedSymbolicName();
+
+        ResolutionChain collapse(String candidate);
     }
 
     Result resolveFeatures(Repository repository,
@@ -156,12 +254,12 @@ public interface FeatureResolver {
     /**
      * Resolves a collection of root features against a repository.
      *
-     * @param repository              the feature repository to use
-     * @param kernelFeatures          the set of kernel features to use for auto-feature processing
-     * @param rootFeatures            the root features to resolve
-     * @param preResolved             the set of already resolved features to base the resolution delta off of
+     * @param repository the feature repository to use
+     * @param kernelFeatures the set of kernel features to use for auto-feature processing
+     * @param rootFeatures the root features to resolve
+     * @param preResolved the set of already resolved features to base the resolution delta off of
      * @param allowedMultipleVersions the set that includes features that effectively ignore singletons (null means none, empty set means all)
-     * @param supportedProcessTypes   the supported process types to allow to be resolved
+     * @param supportedProcessTypes the supported process types to allow to be resolved
      *
      * @return the resolution result
      */
@@ -171,4 +269,30 @@ public interface FeatureResolver {
                            Set<String> preResolved,
                            Set<String> allowedMultipleVersions,
                            EnumSet<ProcessType> supportedProcessTypes);
+
+    // TODO: We should not need to use a LinkedHashMap,
+    // however, auto-features appear to be very sensitive
+    // to their installation order.
+
+    /** Simple class synonym. This rather reduces code volume. */
+    static class OrderedFeatures extends LinkedHashMap<String, ProvisioningFeatureDefinition> {
+        private static final long serialVersionUID = 1L;
+
+        public OrderedFeatures() {
+            super();
+        }
+
+        public OrderedFeatures(int size) {
+            super(size);
+        }
+
+        public OrderedFeatures(OrderedFeatures other) {
+            this(other.size());
+            putAll(other);
+        }
+
+        public OrderedFeatures copy() {
+            return new OrderedFeatures(this);
+        }
+    }
 }

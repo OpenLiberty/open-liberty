@@ -97,7 +97,7 @@ import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.ResolutionChain;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 import com.ibm.ws.kernel.launch.service.FrameworkReady;
@@ -1346,11 +1346,11 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
             @Override
             public boolean hasErrors() {
-                return !getMissing().isEmpty();
+                return !getMissingRequested().isEmpty();
             }
 
             @Override
-            public Map<String, Chain> getWrongProcessTypes() {
+            public Map<String, ResolutionChain> getWrongProcessTypes() {
                 return Collections.emptyMap();
             }
 
@@ -1365,12 +1365,12 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             }
 
             @Override
-            public Set<String> getMissing() {
+            public Set<String> getMissingRequested() {
                 return missing;
             }
 
             @Override
-            public Map<String, Collection<Chain>> getConflicts() {
+            public Map<String, Collection<ResolutionChain>> getConflicts() {
                 return Collections.emptyMap();
             }
         };
@@ -1779,7 +1779,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 Tr.error(tc, "UPDATE_NOT_PUBLIC_FEATURE_ERROR", nonPublicRoot);
             }
         }
-        for (String missing : result.getMissing()) {
+        for (String missing : result.getMissingRequested()) {
             reportedErrors = true;
             boolean isRootFeature = rootFeatures.contains(missing);
             boolean isExtension = missing.indexOf(":") > -1;
@@ -1801,9 +1801,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             }
             installStatus.addMissingFeature(missing);
         }
-        for (Entry<String, Chain> wrongProcessType : result.getWrongProcessTypes().entrySet()) {
+        for (Entry<String, ResolutionChain> wrongProcessType : result.getWrongProcessTypes().entrySet()) {
             reportedErrors = true;
-            List<String> chain = wrongProcessType.getValue().getChain();
+            List<String> chain = wrongProcessType.getValue().getResolutionPath();
             if (chain.isEmpty()) {
                 if (supportedProcessTypes.contains(ProcessType.CLIENT)) {
                     Tr.error(tc, "UPDATE_WRONG_PROCESS_TYPE_CONFIGURED_CLIENT_ERROR", getFeatureName(wrongProcessType.getKey()), processTypeString + ".xml");
@@ -1833,20 +1833,20 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             }
         }
 
-        List<Entry<String, Collection<Chain>>> sortedConflicts = new ArrayList<Entry<String, Collection<Chain>>>(result.getConflicts().entrySet());
+        List<Entry<String, Collection<ResolutionChain>>> sortedConflicts = new ArrayList<Entry<String, Collection<ResolutionChain>>>(result.getConflicts().entrySet());
         sortedConflicts.sort(new ConflictComparator()); // order by importance
         List<Entry<String, String>> reportedConfigured = new ArrayList<Entry<String, String>>(); // pairs of configured features
 
         boolean disableAllOnConflict = disableAllOnConflict(result);
-        for (Entry<String, Collection<Chain>> conflict : sortedConflicts) {
+        for (Entry<String, Collection<ResolutionChain>> conflict : sortedConflicts) {
             final String compatibleFeatureBase = conflict.getKey();
-            final Collection<Chain> inConflictChains = conflict.getValue();
+            final Collection<ResolutionChain> inConflictChains = conflict.getValue();
             reportedErrors = true;
             // Attempt to gather two distinct features that are in conflict, here we assume we
             // can find candidate features that are different
             ConflictRecord conflictRecord1 = null;
             ConflictRecord conflictRecord2 = null;
-            for (Chain chain : inConflictChains) {
+            for (ResolutionChain chain : inConflictChains) {
                 if (conflictRecord1 == null) {
                     conflictRecord1 = getConflictRecord(chain, inConflictChains, compatibleFeatureBase);
                 } else if (!!!conflictRecord1.conflict.equals(chain.getCandidates().get(0))) {
@@ -1905,8 +1905,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             IllegalArgumentException ffdcError = new IllegalArgumentException(conflictMsg);
             FFDCFilter.processException(ffdcError, ME, "reportErrors", new Object[] { conflict.getKey(), inConflictChains.toString() });
             // TODO not really sure if detailed chain information is needed in the status; doesn't appear to need it
-            for (Chain chain : inConflictChains) {
-                installStatus.addConflictFeature(chain.getFeatureRequirement());
+            for (ResolutionChain chain : inConflictChains) {
+                installStatus.addConflictFeature(chain.getResolvedSymbolicName());
             }
         }
 
@@ -1924,12 +1924,12 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
 
     }
 
-    private ConflictRecord getConflictRecord(Chain chain, Collection<Chain> inConflict, String compatibleFeatureBase) {
+    private ConflictRecord getConflictRecord(ResolutionChain chain, Collection<ResolutionChain> inConflict, String compatibleFeatureBase) {
         List<String> candidates = chain.getCandidates();
         ConflictRecord result = new ConflictRecord();
         result.conflict = candidates.get(0);
         boolean isEeCompatibleConflict = isEeCompatible(result.conflict);
-        if (chain.getChain().isEmpty()) {
+        if (chain.getResolutionPath().isEmpty()) {
             // this is a configured root
             result.configured = result.conflict;
             result.chain = result.conflict;
@@ -1939,7 +1939,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 result.compatibleConflict = result.conflict;
             }
         } else {
-            result.configured = chain.getChain().get(0);
+            result.configured = chain.getResolutionPath().get(0);
             if (isEeCompatibleConflict) {
                 // Depending on how the feature resolver processes the included features
                 // it may not report the direct dependency on the compatible feature as the first
@@ -1949,7 +1949,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 // Check each level of the chain to see if it has a direct dependency on the compatible feature
                 // and is in conflict with the other chains in conflict.  If so then then use the feature
                 // in this level as the compatible conflict feature.
-                chainCheck: for (String feature : chain.getChain()) {
+                chainCheck: for (String feature : chain.getResolutionPath()) {
                     ProvisioningFeatureDefinition featureDef = featureRepository.getFeature(feature);
                     for (FeatureResource fr : featureDef.getConstituents(SubsystemContentType.FEATURE_TYPE)) {
                         if (isCompatibleInConflictWithChains(fr, chain, inConflict, compatibleFeatureBase)) {
@@ -1961,22 +1961,22 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
                 }
                 if (result.compatibleConflict == null) {
                     // fall back to the second to last in chain that has a direct dependency on the compatible feature
-                    result.compatibleConflict = chain.getChain().get(chain.getChain().size() - 1);
+                    result.compatibleConflict = chain.getResolutionPath().get(chain.getResolutionPath().size() - 1);
                 }
             }
-            result.chain = buildChainString(chain.getChain(), result.conflict);
+            result.chain = buildChainString(chain.getResolutionPath(), result.conflict);
         }
         return result;
     }
 
-    private boolean isCompatibleInConflictWithChains(FeatureResource fr, Chain chain, Collection<Chain> inConflict, String compatibleFeatureBase) {
+    private boolean isCompatibleInConflictWithChains(FeatureResource fr, ResolutionChain chain, Collection<ResolutionChain> inConflict, String compatibleFeatureBase) {
         if (fr.getSymbolicName().startsWith(compatibleFeatureBase) == false) {
             // this included feature is not a compatible feature; move on to next
             return false;
         }
 
         List<String> tolerates = fr.getTolerates();
-        for (Chain chainInConflict : inConflict) {
+        for (ResolutionChain chainInConflict : inConflict) {
             // only check against the other chains
             if (chainInConflict != chain) {
                 List<String> conflictCandidates = chainInConflict.getCandidates();
@@ -1998,7 +1998,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     }
 
     private boolean disableAllOnConflict(Result result) {
-        Map<String, Collection<Chain>> conflicts = result.getConflicts();
+        Map<String, Collection<ResolutionChain>> conflicts = result.getConflicts();
         if (conflicts.isEmpty()) {
             return false;
         }
@@ -2018,8 +2018,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         // NOTE - This is a bit of a degenerate case.  If a requiring feature only tolerates versions
         // of a feature that disable on conflict then that feature likely should be disable on conflict also.
         // In that case the above loop over the resolved features would have returned true already
-        for (Entry<String, Collection<Chain>> conflict : conflicts.entrySet()) {
-            for (Chain chain : conflict.getValue()) {
+        for (Entry<String, Collection<ResolutionChain>> conflict : conflicts.entrySet()) {
+            for (ResolutionChain chain : conflict.getValue()) {
                 // NOTE - reverse logic here because there is no isEmpty on Optional in Java 8!
                 if (!!!chain.getCandidates().stream().filter((f) -> !!!shouldDisableOnConflict(f)).findFirst().isPresent()) {
                     return true;
@@ -2041,16 +2041,16 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         return fd.getFeatureName();
     }
 
-    class ConflictComparator implements Comparator<Entry<String, Collection<Chain>>> {
+    class ConflictComparator implements Comparator<Entry<String, Collection<ResolutionChain>>> {
         @Override
         /**
          * Order conflict elements by ascending type rank and chain length.
          */
-        public int compare(Entry<String, Collection<Chain>> e1, Entry<String, Collection<Chain>> e2) {
-            Iterator<Chain> e1ChainItr = e1.getValue().iterator();
-            Iterator<Chain> e2ChainItr = e2.getValue().iterator();
-            Chain e1Chain1 = e1ChainItr.next();
-            Chain e2Chain1 = e2ChainItr.next();
+        public int compare(Entry<String, Collection<ResolutionChain>> e1, Entry<String, Collection<ResolutionChain>> e2) {
+            Iterator<ResolutionChain> e1ChainItr = e1.getValue().iterator();
+            Iterator<ResolutionChain> e2ChainItr = e2.getValue().iterator();
+            ResolutionChain e1Chain1 = e1ChainItr.next();
+            ResolutionChain e2Chain1 = e2ChainItr.next();
             String e1Conflict = e1Chain1.getCandidates().get(0);
             String e2Conflict = e2Chain1.getCandidates().get(0);
 
@@ -2060,12 +2060,12 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             if (e1Rank != e2Rank)
                 return e1Rank - e2Rank;
 
-            Chain e1Chain2 = e1ChainItr.next();
-            Chain e2Chain2 = e2ChainItr.next();
+            ResolutionChain e1Chain2 = e1ChainItr.next();
+            ResolutionChain e2Chain2 = e2ChainItr.next();
 
             // Subgroup ascending by min chain size within rank
-            int e1MinChainSize = Math.min(e1Chain1.getChain().size(), e1Chain2.getChain().size());
-            int e2MinChainSize = Math.min(e2Chain2.getChain().size(), e2Chain2.getChain().size());
+            int e1MinChainSize = Math.min(e1Chain1.getResolutionPath().size(), e1Chain2.getResolutionPath().size());
+            int e2MinChainSize = Math.min(e2Chain2.getResolutionPath().size(), e2Chain2.getResolutionPath().size());
             return e1MinChainSize - e2MinChainSize;
         }
 

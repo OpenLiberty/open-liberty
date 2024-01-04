@@ -54,7 +54,7 @@ public class ServerFeaturesHelper {
 
         final Set<String> serverFeatureNames = new HashSet<String>();
         serverFeatureNames.addAll(featureResolveResult.getResolvedFeatures());
-        serverFeatureNames.addAll(featureResolveResult.getMissing());
+        serverFeatureNames.addAll(featureResolveResult.getMissingRequested());
 
         //publish the service that will be used by the launcher to read back the data.
         final Dictionary<String, Object> d = new Hashtable<String, Object>();
