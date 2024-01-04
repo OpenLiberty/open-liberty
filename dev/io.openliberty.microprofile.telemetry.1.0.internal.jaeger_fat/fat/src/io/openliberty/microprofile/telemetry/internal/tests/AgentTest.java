@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -66,7 +66,7 @@ import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMat
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 
 /**
- * Test mpTelemetry running with the OpenTelemetry Java Agent enabled
+ * Test mpTelemetry running with the OpenTelemetry Java Agent 1.19 enabled
  */
 @RunWith(FATRunner.class)
 @MaximumJavaLevel(javaLevel = 20)

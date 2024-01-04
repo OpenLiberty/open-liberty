@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -234,7 +234,8 @@ public class AgentConfigTest {
 
     @Test
     /*
-     * Skipping for 1.4 and 4.1 as JavaAgent 1.29 currently will not return a span for methods annotated with @withSpan (BUG)
+     * Skipping for 1.4 and 4.1 as JavaAgent 1.29 currently will not return a span for methods annotated with @withSpan
+     * (https://github.com/open-telemetry/opentelemetry-java-instrumentation/issues/10159)
      */
     @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID })
     public void testEnableSpecificInstrumentation() throws Exception {
