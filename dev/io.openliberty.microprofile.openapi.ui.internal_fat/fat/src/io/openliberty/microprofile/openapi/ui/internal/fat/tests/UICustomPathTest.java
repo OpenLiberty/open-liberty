@@ -86,8 +86,6 @@ public class UICustomPathTest {
         server.addEnvVar(UI_PROPERTY_NAME, UI_PATH_VALUE);
         server.addEnvVar(DOC_PROPERTY_NAME, DOC_PATH_VALUE);
 
-        //Set guards
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         server.startServer();
 
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());

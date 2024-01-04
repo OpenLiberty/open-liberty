@@ -33,7 +33,7 @@
 
 # {0} size of the pool when a deadlock was first detected
 # {1} current size of the pool
-unbreakableExecutorHang=CWWKE1200W:  Alle Threads im Liberty-Standardsteuerprogramm scheinen blockiert zu sein. Liberty hat die Anzahl der Threads automatisch von {0} auf {1} erh\u00f6ht. Es scheinen jedoch alle Threads blockiert zu sein.
+unbreakableExecutorHang=CWWKE1200W: \ Alle Threads im Liberty-Standardsteuerprogramm scheinen blockiert zu sein. Liberty hat die Anzahl der Threads automatisch von {0} auf {1} erh\u00f6ht. Es scheinen jedoch alle Threads blockiert zu sein.
 unbreakableExecutorHang.explanation=Es ist ein Fehler aufgetreten, der zur Blockierung eines Steuerprogramms gef\u00fchrt hat, und die Liberty-Laufzeitumgebung hat eine erhebliche Anzahl an Threads hinzugef\u00fcgt, um zu versuchen, die Blockierung aufzuheben. Das Steuerprogramm scheint jedoch nicht zu reagieren. 
 unbreakableExecutorHang.useraction=Stellen Sie fest, ob es einen Engpass gibt, z. B. eine gesperrte Datenbanktabelle, der verhindert, dass Threads im Server aufgel\u00f6st werden. Wenn es keinen solchen Engpass gibt und der Server tats\u00e4chlich weitere Threads ben\u00f6tigt, passen Sie das Attribut coreThreads des Konfigurationselements des Ausf\u00fchrungsprogramms an.
 
@@ -56,4 +56,8 @@ CWWKE1204.unable.to.invoke.useraction=Es ist keine Aktion erforderlich, wenn die
 
 CWWKE1205.start.timeout=CWWKE1205E: Der Executor {0} konnte die Task {1} nach {2} Nanosekunden nicht starten, weil die Task den zul\u00e4ssigen startTimeout-Wert von {3} Nanosekunden \u00fcberschritten hat.
 CWWKE1205.start.timeout.explanation=Wenn ein startTimeout-Wert in einem Executor konfiguriert ist oder \u00fcber das Programm f\u00fcr eine Task angefordert wurde, verfolgt der Executor die abgelaufene Zeit zwischen der Task\u00fcbergabe und dem m\u00f6glichen Ausf\u00fchrungspunkt f\u00fcr die Task. Wenn die abgelaufene Zeit den startTimeout-Wert \u00fcberschreitet, bricht der Executor die Task ab, anstatt sie zu starten. 
-CWWKE1205.start.timeout.useraction=Es ist keine Aktion erforderlich, wenn die Anwendung erwartet, dass Tasks bei \u00dcberschreitung des festgelegten startTimeout-Werts abgebrochen werden. Verwenden Sie andernfalls eine Kombination der folgenden Aktionen: startTimeout erh\u00f6hen, maxConcurrency erh\u00f6hen.
+CWWKE1205.start.timeout.useraction=Es ist keine Aktion erforderlich, wenn die Anwendung erwartet, dass einige Tasks abgebrochen werden, weil sie die Dauer von startTimeout \u00fcberschreiten. Andernfalls k\u00f6nnen Sie eine beliebige Kombination der folgenden Aktionen ausf\u00fchren: Erh\u00f6hen Sie den Wert f\u00fcr startTimeout und erh\u00f6hen Sie den Wert f\u00fcr maxConcurrency .
+
+CWWKE1206.quiesce.timeout.not.valid=CWWKE1206W: Der Wert ''{0}'', der f\u00fcr das Attribut ''quiesceTimeout'' im Element ''executor ''in der Datei''server.xml'' angegeben wurde, ist nicht g\u00fcltig.  Stattdessen wird der Standardwert von 30 Sekunden verwendet.
+CWWKE1206.quiesce.timeout.not.valid.explanation=Der Wert 'quiesceTimeout' gibt eine Dauer an und akzeptiert Werte im Format XmXs, wobei 'X' durch eine Zahl ersetzt wird,' m 'f\u00fcr Minuten und' s' f\u00fcr Sekunden steht.  Der Standardwert ist30s(30 Sekunden). Der Wert '1m30s' steht f\u00fcr 90 Sekunden.  
+CWWKE1206.quiesce.timeout.not.valid.useraction=Bearbeiten Sie die Datei 'server.xml' und \u00e4ndern Sie das Attribut 'quiesceTimeout' im Element 'executor ' in eine g\u00fcltige Dauer.

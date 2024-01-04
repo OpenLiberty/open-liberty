@@ -40,6 +40,7 @@ import javax.net.ssl.X509TrustManager;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,6 +89,15 @@ public class DefaultHistogramBucketsTest {
 			server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E",
 					"CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W");
 		}
+	}
+
+	@Before
+	public void beforeTest() {
+
+		// Check that both CWWKO0219I messages for non-secure and secured http
+		// endpoints are initialized
+		server.waitForMultipleStringsInLog(2, "CWWKO0219I");
+
 	}
 
 	@Test

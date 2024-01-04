@@ -7,7 +7,7 @@ IBM-API-Package: \
   jakarta.nosql; type="spec",\
   jakarta.nosql.column; type="spec",\
   jakarta.nosql.document; type="spec",\
-  jakarta.nosql.keyvalue; type="spec",\
+  jakarta.nosql.keyvalue; type="spec"
 Subsystem-Name: Jakarta NoSQL 1.0
 #TODO io.openliberty.jakartaeePlatform-11.0
 -features=\

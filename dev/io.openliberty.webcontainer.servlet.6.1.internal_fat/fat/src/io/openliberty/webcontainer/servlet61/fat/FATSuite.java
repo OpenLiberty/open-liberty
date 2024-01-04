@@ -9,16 +9,29 @@
  *******************************************************************************/
 package io.openliberty.webcontainer.servlet61.fat;
 
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
+import com.ibm.ws.fat.util.FatLogHandler;
+
+import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61CharsetEncodingTest;
+import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61HTTPResponseCodesTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class
+                Servlet61CharsetEncodingTest.class,
+                Servlet61HTTPResponseCodesTest.class
 })
 public class FATSuite {
+
+    /**
+     * @see {@link FatLogHandler#generateHelpFile()}
+     */
+    @BeforeClass
+    public static void generateHelpFile() {
+        FatLogHandler.generateHelpFile();
+    }
 
 }

@@ -35,5 +35,5 @@ feature.project: true
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	biz.aQute.bnd:biz.aQute.bnd;version=6.3.0;packages=**,\
+	biz.aQute.bnd:biz.aQute.bnd;version=7.0.0;packages=**,\
 	org.apache.aries:org.apache.aries.util;version=1.1.3

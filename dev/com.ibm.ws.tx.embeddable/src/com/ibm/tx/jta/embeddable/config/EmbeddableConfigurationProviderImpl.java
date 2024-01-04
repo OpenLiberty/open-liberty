@@ -534,6 +534,11 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
         return 90;
     }
 
+    @Override
+    public int getLeaseExpiryThreshold() {
+        return 1;
+    }
+
     /*
      * (non-Javadoc)
      *

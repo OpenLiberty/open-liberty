@@ -66,41 +66,6 @@
             <artifactId>microprofile-telemetry-tracing-tck</artifactId>
             <version>${mptelemetry.version}</version>
         </dependency>
-        
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-sdk</artifactId>
-            <version>${opentelemetry.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-sdk-extension-autoconfigure</artifactId>
-            <version>${opentelemetry.version}-alpha</version>
-        </dependency>
-        <dependency>
-            <groupId>io.opentelemetry.instrumentation</groupId>
-            <artifactId>opentelemetry-instrumentation-annotations</artifactId>
-            <version>${opentelemetry.version}-alpha</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-sdk-trace</artifactId>
-            <version>${opentelemetry.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-sdk-extension-autoconfigure-spi</artifactId>
-            <version>${opentelemetry.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-api</artifactId>
-            <version>${opentelemetry.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.eclipse.microprofile.rest.client</groupId>
@@ -159,43 +124,11 @@
         </dependency>
 
         <dependency>
-            <groupId>jakarta.annotation</groupId>
-            <artifactId>jakarta.annotation-api</artifactId>
-            <version>2.1</version>
-            <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.annotation.2.1_}</systemPath>
-        </dependency>
-
-        <dependency>
             <groupId>jakarta.ws.rs</groupId>
             <artifactId>jakarta.ws.rs-api</artifactId>
             <version>3.1</version>
             <scope>system</scope>
             <systemPath>${io.openliberty.jakarta.restfulWS.3.1_}</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <version>4.0</version>
-            <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.cdi.4.0_}</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.json</groupId>
-            <artifactId>jakarta.json-api</artifactId>
-            <version>2.1</version>
-            <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.jsonp.2.1_}</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.json.bind</groupId>
-            <artifactId>jakarta.json.bind-api</artifactId>
-            <version>3.0</version>
-            <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.jsonb.3.0_}</systemPath>
         </dependency>
         
         <dependency>
@@ -204,14 +137,6 @@
             <version>4.0</version>
             <scope>system</scope>
             <systemPath>${io.openliberty.jakarta.xmlBinding.4.0_}</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.0.0</version>
-            <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.servlet.6.0_}</systemPath>
         </dependency>
 
         <dependency>
@@ -250,12 +175,6 @@
             <version>${testng.version}</version>
             <scope>test</scope>
         </dependency>
-        
-        <dependency>
-            <groupId>org.jboss.arquillian.testng</groupId>
-            <artifactId>arquillian-testng-container</artifactId>
-            <version>${arquillian.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -268,13 +187,6 @@
             <artifactId>slf4j-jdk14</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-        
-        <dependency>
-            <groupId>org.awaitility</groupId>
-            <artifactId>awaitility</artifactId>
-            <version>4.2.0</version>
-        </dependency>
-        
     </dependencies>
 
     <build>

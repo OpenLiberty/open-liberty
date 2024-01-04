@@ -18,7 +18,25 @@ IBM-API-Package: javax.activation; type="spec"; require-java:="9", \
  com.sun.mail.smtp;  type="third-party", \
  com.sun.mail.util;  type="third-party", \
  com.sun.mail.util.logging;  type="third-party", \
- com.sun.mail.handlers;  type="third-party"
+ com.sun.mail.handlers;  type="third-party", \
+ javax.annotation; type="spec", \
+ javax.annotation.security; type="spec", \
+ javax.annotation.sql; type="spec"
+IBM-SPI-Package: \
+ com.ibm.wsspi.adaptable.module, \
+ com.ibm.ws.adaptable.module.structure, \
+ com.ibm.wsspi.adaptable.module.adapters, \
+ com.ibm.wsspi.artifact, \
+ com.ibm.wsspi.artifact.factory, \
+ com.ibm.wsspi.artifact.factory.contributor, \
+ com.ibm.wsspi.artifact.overlay, \
+ com.ibm.wsspi.artifact.equinox.module, \
+ com.ibm.wsspi.anno.classsource, \
+ com.ibm.wsspi.anno.info, \
+ com.ibm.wsspi.anno.service, \
+ com.ibm.wsspi.anno.targets, \
+ com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification
 IBM-ShortName: javaMail-1.5
 Subsystem-Version: 1.5
 Subsystem-Name: JavaMail 1.5

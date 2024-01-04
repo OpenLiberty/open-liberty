@@ -782,7 +782,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 _leaseLog.getLeasesForPeers(peerLeaseTable, recoveryGroup);
 
                 //Now extract a list of the peers that need to be recovered
-//TODO: These **should** be just those whose leases have expired
                 peersToRecover = peerLeaseTable.getExpiredPeers();
 
                 // Discard the local server from the list

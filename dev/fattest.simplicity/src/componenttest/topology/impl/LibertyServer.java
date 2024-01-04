@@ -227,8 +227,8 @@ public class LibertyServer implements LogMonitorClient {
     protected static final JavaInfo javaInfo = JavaInfo.forCurrentVM();
 
     protected static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
-    protected static final boolean GLOBAL_JAVA2SECURITY = Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
-    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = FAT_TEST_LOCALRUN //
+    protected static final boolean GLOBAL_JAVA2SECURITY = javaInfo.MAJOR > 17 ? false : Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
+    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = javaInfo.MAJOR > 17 ? false : FAT_TEST_LOCALRUN //
                     ? Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "true")) //
                     : Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "false"));
 
@@ -361,6 +361,13 @@ public class LibertyServer implements LogMonitorClient {
      */
     public String getInstallRoot() {
         return installRoot;
+    }
+
+    /**
+     * @return the installRootParent
+     */
+    public String getInstallRootParent() {
+        return installRootParent;
     }
 
     /**
@@ -1633,24 +1640,15 @@ public class LibertyServer implements LogMonitorClient {
 
         //FIPS 140-3
         // if we have FIPS 140-3 enabled, and the matched java/platform,  add JVM Arg
-        if (isFIPS140_3Enabled()) {
-            if ((info.majorVersion() == 8) && (info.VENDOR == Vendor.IBM)) {
-                Log.info(c, "startServerWithArgs", "The JDK version: " + info.majorVersion() + " and vendor: " + JavaInfo.Vendor.IBM);
-                Log.info(c, "startServerWithArgs", "FIPS 140-3 global build properties is set for server " + getServerName()
-                                                   + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
+        if (isFIPS140_3EnabledAndSupported()) {
+            Log.info(c, "startServerWithArgs", "Liberty server is running JDK version: " + info.majorVersion() + " and vendor: " + info.VENDOR);
+            Log.info(c, "startServerWithArgs", "FIPS 140-3 global build properties is set for server " + getServerName()
+                                               + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
 
-                JVM_ARGS += " -Xenablefips140-3";
-                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
-                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
-                JVM_ARGS += " -Djavax.net.debug=all";
-                //This debug arg is kept for the initial formal SOE builds and will be removed once stable builds are achieved
-                //in Nov.- Dec., 2023.
-
-            } else {
-                Log.info(c, "startServerWithArgs", "The JDK version: " + info.majorVersion() + " and vendor: " + info.VENDOR);
-                Log.info(c, "startServerWithArgs", "No match of IBM java 8 on liberty server to run with FIPS 140-3 enabled");
-            }
-
+            JVM_ARGS += " -Xenablefips140-3";
+            JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
+            JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
+            // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
         }
 
         Properties bootstrapProperties = getBootstrapProperties();
@@ -2107,15 +2105,18 @@ public class LibertyServer implements LogMonitorClient {
         final String RESTORE_MESSAGE_CODE = "CWWKC0452I";
         Log.info(c, method, "Checking for restore message: " + RESTORE_MESSAGE_CODE);
 
-        RemoteFile messagesLog = new RemoteFile(machine, messageAbsPath);
+        // The console log is where to check first because its location
+        // cannot change on restore.  The messages one may change while restoring
+        // that makes the file the restore message is in not predictable.
+        RemoteFile logToCheck = getConsoleLogFile();
         // App validation needs the info messages in messages.log
-        if (!messagesLog.exists()) {
-            // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
-            Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
-            messagesLog = getConsoleLogFile();
+        if (!logToCheck.exists()) {
+            // try the messages log
+            Log.info(c, method, "WARNING: console.log does not exist-- trying app verification step with messages.log");
+            logToCheck = new RemoteFile(machine, messageAbsPath);
         }
 
-        String found = waitForStringInLog(RESTORE_MESSAGE_CODE, messagesLog);
+        String found = waitForStringInLog(RESTORE_MESSAGE_CODE, logToCheck);
         if (found == null) {
             Log.info(c, method, "Error: server did not restore successfully.");
             return true;
@@ -2137,7 +2138,7 @@ public class LibertyServer implements LogMonitorClient {
      *
      * @throws Exception
      */
-    private void initializeAnyExistingMarks() throws Exception {
+    public void initializeAnyExistingMarks() throws Exception {
         final String method = "initializeAnyExistingMarks";
 
         // First we clear any marks - it's possible this
@@ -3770,7 +3771,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param fromDir  The directory of the file to copy.
      * @param toDir    Any extra path beyond ${server.config.dir} for the destination.
      *                     For example, for a destination of ${server.config.dir}/test/ you would use toServerDir=test
-     * @param fileName The name of the file to copy. The file name will be unchanged form source to dest
+     * @param fileName The name of the file to copy. The file name will be unchanged from source to dest
      */
     public void copyFileToLibertyServerRoot(String fromDir, String toDir, String fileName) throws Exception {
         if (toDir == null)
@@ -3778,8 +3779,34 @@ public class LibertyServer implements LogMonitorClient {
         copyFileToLibertyServerRootUsingTmp(serverRoot + "/" + toDir, (fromDir + "/" + fileName));
     }
 
+    /**
+     * Copies a file from the oldAbsolutePath to the newAbsolutePath in the Liberty server.
+     *
+     * @param  oldAbsolutePath The absolute path of the file to copy.
+     * @param  newAbsolutePath The absolute path of the destination.
+     * @param  fileName        The name of the file to copy. The file name will be unchanged from source to dest
+     *
+     * @throws Exception
+     */
+    public void copyFileToAbsolutePathInLibertyServer(String oldAbsolutePath, String newAbsolutePath, String fileName) throws Exception {
+        copyFileToLibertyServerRootUsingTmp(newAbsolutePath, (oldAbsolutePath + "/" + fileName));
+    }
+
     public void renameLibertyServerRootFile(String oldFileName, String newFileName) throws Exception {
         LibertyFileManager.renameLibertyFile(machine, serverRoot + "/" + oldFileName, serverRoot + "/" + newFileName);
+    }
+
+    /**
+     * Renames a file from the oldAbsolutePath to the newAbsolutePath in the Liberty server.
+     *
+     * @param  oldAbsolutePath The absolute path of the file to copy.
+     * @param  newAbsolutePath The absolute path of the destination.
+     * @param  fileName        The name of the file to rename. The file name will be unchanged from source to dest
+     *
+     * @throws Exception
+     */
+    public void renameFileToAbsolutePathInLibertyServerRootFile(String oldAbsolutePath, String newAbsolutePath, String fileName) throws Exception {
+        LibertyFileManager.renameLibertyFile(machine, (oldAbsolutePath + "/" + fileName), (newAbsolutePath + "/" + fileName));
     }
 
     public void renameLibertyInstallRootFile(String oldFileName, String newFileName) throws Exception {
@@ -3796,6 +3823,12 @@ public class LibertyServer implements LogMonitorClient {
         final String method = "getFileFromLibertyServerRoot";
         Log.entering(c, method);
         return getFileFromLiberty(serverRoot + "/" + filePath);
+    }
+
+    public RemoteFile getFileFromLibertyServerWithAbsoluteFilePath(String absoluteFilePath) throws Exception {
+        final String method = "getFileFromLibertyServerWithAbsoluteFilePath";
+        Log.entering(c, method);
+        return getFileFromLiberty(absoluteFilePath);
     }
 
     /* not called */public RemoteFile getFileFromLibertySharedDir(String filePath) throws Exception {
@@ -3860,6 +3893,10 @@ public class LibertyServer implements LogMonitorClient {
 
     public void deleteFileFromLibertyServerRoot(String filePath) throws Exception {
         LibertyFileManager.deleteLibertyFile(machine, (serverRoot + "/" + filePath));
+    }
+
+    public void deleteFileFromAbsolutePathInLibertyServer(String absolutePath) throws Exception {
+        LibertyFileManager.deleteLibertyFile(machine, absolutePath);
     }
 
     public RemoteFile getServerBootstrapPropertiesFile() throws Exception {
@@ -7033,7 +7070,10 @@ public class LibertyServer implements LogMonitorClient {
      */
     public String waitForStringInTraceUsingMark(String regexp, long timeout) {
         try {
-            return waitForStringInLogUsingMark(regexp, timeout, getMostRecentTraceFile());
+            RemoteFile f = getMostRecentTraceFile();
+
+            Log.info(c, "waitForStringInTrace", "Waiting for \"" + regexp + "\" to be found in " + f);
+            return waitForStringInLogUsingMark(regexp, timeout, f);
         } catch (Exception e) {
             Log.warning(c, "Could not find string in trace log file due to exception " + e);
             return null;
@@ -7116,12 +7156,21 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     //FIPS 140-3
-    public boolean isFIPS140_3Enabled() {
-        boolean globalEnabled = GLOBAL_FIPS_140_3;
-        if (globalEnabled)
-            Log.info(c, "isFIPS140_3Enabled", "The global build properties FIPS_140_3 is set for server " + getServerName() +
-                                              ",  but requires IBM Java version 8/Linux/AIX/Windows to run with FIPS 140-3 enabled. Next checking java version on liberty server.");
-        return globalEnabled;
+    public boolean isFIPS140_3EnabledAndSupported() throws Exception {
+        String methodName = "isFIPS140_3EnabledAndSupported";
+        JavaInfo serverJavaInfo = JavaInfo.forServer(this);
+        boolean isIBMJVM8 = (serverJavaInfo.majorVersion() == 8) && (serverJavaInfo.VENDOR == Vendor.IBM);
+        if (GLOBAL_FIPS_140_3) {
+            Log.info(c, methodName, "Liberty server is running JDK version: " + serverJavaInfo.majorVersion() + " and vendor: " + serverJavaInfo.VENDOR);
+            if (isIBMJVM8) {
+                Log.info(c, methodName, "global build properties FIPS_140_3 is set for server " + getServerName() +
+                                        " and IBM java 8 is available to run with FIPS 140-3 enabled.");
+            } else {
+                Log.info(c, methodName, "The global build properties FIPS_140_3 is set for server " + getServerName() +
+                                        ",  but no IBM java 8 on liberty server to run with FIPS 140-3 enabled.");
+            }
+        }
+        return GLOBAL_FIPS_140_3 && isIBMJVM8;
     }
 
     /**

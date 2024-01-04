@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# Define the bundle for this FAT
+
+src: \
+	fat/src
+
+fat.project: true
+
+tested.features: mphealth-2.2, jndi-1.0, cdi-2.0, json-1.0,\
+	mpconfig-3.0, mphealth-4.0, cdi-3.0, mpmetrics-2.3, ssl-1.0,\
+	monitor-1.0, mpconfig-1.4, mpmetrics-5.0, cdi-4.0, mpmetrics-4.0,\
+	javaee-7.0, javaee-8.0, jakartaee-9.1, jakartaee-10.0,\
+	mpconfig-1.2, mpmetrics-1.1, mphealth-1.0, mpconfig-2.0, mpmetrics-3.0,\
+	mpconfig-3.1, mpmetrics-5.1, mphealth-3.1
+
+-buildpath: \
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	com.ibm.ws.kernel.feature.core;version=latest

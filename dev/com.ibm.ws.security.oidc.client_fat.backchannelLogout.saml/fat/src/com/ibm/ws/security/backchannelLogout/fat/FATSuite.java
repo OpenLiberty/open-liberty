@@ -29,8 +29,7 @@ import componenttest.rules.repeater.RepeatTests;
         AlwaysPassesTest.class,
         // HttpMethodsTests.class,  doesn't need to run with SAML as this is a client only test
         // LogoutTokenValidationTests.class,  doesn't need to run with SAML as this is a client only test
-        BasicBCLTests.class,
-//        MultiServerBCLTests.class
+        BasicBCLTests.class
 
 })
 /**

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1200 to CWWCK1399
+# All messages must use the range CWWCK1200 to CWWCK1409
 
 CWWKC1200.resource.unavailable=CWWKC1200E: {0}, das durch die Anwendung {1} definiert wird, war nicht zeitnah verf\u00fcgbar.
 CWWKC1200.resource.unavailable.explanation=Zu viel Last auf dem System, um Ressourcendefinitionsannotationen und Implementierungsdeskriptoreintr\u00e4ge zu verarbeiten, bevor die Anwendung versucht, sie zu verwenden.
@@ -45,3 +45,23 @@ CWWKC1203.duplicate.context.useraction=Aktualisieren Sie die Anwendung und/oder 
 CWWKC1204.not.serializable=CWWKC1204E: Es kann kein serialisierbarer Kontextproxy erstellt werden, der Threadkontext {0} weitergibt, der nicht serialisierbar ist.
 CWWKC1204.not.serializable.explanation=Threadkontexttypen anderer Anbieter sind nicht mit der Serialisierung kompatibel und k\u00f6nnen nicht f\u00fcr die Weitergabe f\u00fcr serialisierbare kontextabh\u00e4ngige Proxys konfiguriert werden.
 CWWKC1204.not.serializable.useraction=Aktualisieren Sie die Anwendung, um einen nicht serialisierbaren Kontextproxy anzufordern, oder stellen Sie sicher, dass keine Kontexttypen anderer Anbieter f\u00fcr die Weitergabe konfiguriert sind.
+
+
+
+# Messages for @Asynchronous that are shared with other bundles:
+
+CWWKC1400.unsupported.return.type=CWWKC1400E: {0} ist kein g\u00fcltiger R\u00fcckgabetyp f\u00fcr die Methode {1} der Klasse {2}. G\u00fcltige R\u00fcckgabetypen f\u00fcr Methoden, die mit {3} annotiert sind: {4}.
+CWWKC1400.unsupported.return.type.explanation=Die Spezifikation Jakarta Concurrency begrenzt den Bereich der g\u00fcltigen R\u00fcckgabetypen f\u00fcr Methoden, die diese Annotation verwenden.
+CWWKC1400.unsupported.return.type.useraction=Aktualisieren Sie die Methode in der Anwendung, um zu einem der unterst\u00fctzten R\u00fcckgabetypen zu wechseln, oder entfernen Sie die Annotation aus der Methode.
+
+CWWKC1401.class.anno.disallowed=CWWKC1401E: Die Annotation {0} ist auf Methodenebene zul\u00e4ssig. Sie kann nicht auf Klassenebene in der Klasse {1} verwendet werden.
+CWWKC1401.class.anno.disallowed.explanation=Diese Annotation darf nicht auf Klassenebene angegeben werden.
+CWWKC1401.class.anno.disallowed.useraction=Verschieben Sie die Annotation in die einzelnen Methoden der Klasse.
+
+CWWKC1402.not.managed.executor=CWWKC1402E: Die Annotation " {0} " in der Methode {1} der Klasse {2} gibt den JNDI-Namen {3} an, der in die Ressource {4} aufgel\u00f6st wird, die kein ManagedExecutorService oder ManagedScheduledExecutorService ist. Von der Ressource implementierte Schnittstellen: {5}.
+CWWKC1402.not.managed.executor.explanation=Der JNDI-Name muss in eine Ressource aufgel\u00f6st werden, die die Schnittstelle "ManagedExecutorService" oder "ManagedScheduledExecutorService" implementiert.
+CWWKC1402.not.managed.executor.useraction=Korrigieren Sie den JNDI-Namen, um eine Ressource anzugeben, auf die die Anwendungskomponente zugreifen kann und die die Schnittstelle "ManagedExecutorService" oder die Schnittstelle "ManagedScheduledExecutorService" implementiert.
+
+CWWKC1403.unsupported.tx.type=CWWKC1403E: Die Annotation {0} gibt den Wert {1} an, der in Kombination mit der Annotation {2}, die sich in der Methode {3} der Klasse {4} befindet, nicht zul\u00e4ssig ist. Zul\u00e4ssige Werte: {5}.
+CWWKC1403.unsupported.tx.type.explanation=Die gemeinsame Verwendung von zwei Annotationen h\u00e4ngt davon ab, ob der Wert der ersten angegebenen Annotation mit der zweiten Annotation zul\u00e4ssig ist.
+CWWKC1403.unsupported.tx.type.useraction=Aktualisieren Sie die Anwendung, um zu einem der unterst\u00fctzten Werte zu wechseln, oder entfernen Sie eine der Anmerkungen.

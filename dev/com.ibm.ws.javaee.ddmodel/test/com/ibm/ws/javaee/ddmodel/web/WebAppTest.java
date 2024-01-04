@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,6 +28,7 @@ import com.ibm.ws.javaee.dd.web.common.AbsoluteOrdering;
 import com.ibm.ws.javaee.dd.web.common.AttributeValue;
 import com.ibm.ws.javaee.dd.web.common.CookieConfig;
 import com.ibm.ws.javaee.ddmodel.DDJakarta10Elements;
+import com.ibm.ws.javaee.ddmodel.DDJakarta11Elements;
 
 public class WebAppTest extends WebAppTestBase {
     // Absolute ordering fragments.
@@ -338,6 +339,60 @@ public class WebAppTest extends WebAppTestBase {
         WebApp webApp = parseWebApp(
                                     webApp(WebApp.VERSION_6_0, DDJakarta10Elements.MANAGED_THREAD_FACTORY_XML),
                                     WebApp.VERSION_6_0);
+
+        List<String> names = DDJakarta10Elements.names("WebApp", "managedThreadFactories");
+
+        List<ManagedThreadFactory> factories = webApp.getManagedThreadFactories();
+        DDJakarta10Elements.verifySize(names, 1, factories);
+        DDJakarta10Elements.verify(names, factories.get(0));
+    }
+
+    //
+
+    @Test
+    public void testEE11ContextServiceWeb61() throws Exception {
+        WebApp webApp = parseWebApp(
+                                    webApp(WebApp.VERSION_6_1, DDJakarta11Elements.CONTEXT_SERVICE_XML),
+                                    WebApp.VERSION_6_1);
+
+        List<String> names = DDJakarta10Elements.names("WebApp", "contextServices");
+
+        List<ContextService> services = webApp.getContextServices();
+        DDJakarta10Elements.verifySize(names, 1, services);
+        DDJakarta10Elements.verify(names, services.get(0));
+    }
+
+    @Test
+    public void testEE11ManagedExecutorWeb61() throws Exception {
+        WebApp webApp = parseWebApp(
+                                    webApp(WebApp.VERSION_6_1, DDJakarta11Elements.MANAGED_EXECUTOR_XML),
+                                    WebApp.VERSION_6_1);
+
+        List<String> names = DDJakarta10Elements.names("WebApp", "managedExecutors");
+
+        List<ManagedExecutor> executors = webApp.getManagedExecutors();
+        DDJakarta10Elements.verifySize(names, 1, executors);
+        DDJakarta10Elements.verify(names, executors.get(0));
+    }
+
+    @Test
+    public void testEE11ManagedScheduledExecutorWeb61() throws Exception {
+        WebApp webApp = parseWebApp(
+                                    webApp(WebApp.VERSION_6_1, DDJakarta11Elements.MANAGED_SCHEDULED_EXECUTOR_XML),
+                                    WebApp.VERSION_6_1);
+
+        List<String> names = DDJakarta10Elements.names("WebApp", "managedScheduledExecutors");
+
+        List<ManagedScheduledExecutor> executors = webApp.getManagedScheduledExecutors();
+        DDJakarta10Elements.verifySize(names, 1, executors);
+        DDJakarta10Elements.verify(names, executors.get(0));
+    }
+
+    @Test
+    public void testEE11ManagedThreadFactoryWeb61() throws Exception {
+        WebApp webApp = parseWebApp(
+                                    webApp(WebApp.VERSION_6_1, DDJakarta11Elements.MANAGED_THREAD_FACTORY_XML),
+                                    WebApp.VERSION_6_1);
 
         List<String> names = DDJakarta10Elements.names("WebApp", "managedThreadFactories");
 

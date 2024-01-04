@@ -104,3 +104,7 @@ enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=Aktualisieren Sie die 
 unversioned.beansXML.warning.CWOWB1018W=CWOWB1018W: Die Verwendung einer nicht versionsgesteuerten CDI-Datei beans.xml kann bei Verwendung von CDI 4.0 oder h\u00f6her zu unerwartetem Verhalten f\u00fchren: {0}
 unversioned.beansXML.warning.CWOWB1018W.explanation=Vor CDI 4.0 bedeutete eine nicht leere, aber nicht versionierte Datei beans.xml, dass das Archiv als explizites Bean-Archiv behandelt wurde (alle Klassen k\u00f6nnen Beans sein). In CDI 4.0 oder h\u00f6her wird angenommen, dass das Archiv ein implizites Bean-Archiv ist (nur annotierte Klassen k\u00f6nnen Beans sein).
 unversioned.beansXML.warning.CWOWB1018W.useraction=Aktualisieren Sie die Datei "beans.xml" in Ihrer Anwendung, um eine neuere Version des Schemas zu verwenden, und stellen Sie sicher, dass die Attribute "version" und "bean-discovery-mode" ordnungsgem\u00e4\u00df definiert sind.
+
+no.bda.for.module.CWOWB1019E=CWOWB1019E: Es ist ein interner Fehler in WebSphere Application Server aufgetreten. Wenden Sie sich mit den folgenden Daten an den WebSphere Application Server Support: {0} {1}
+no.bda.for.module.CWOWB1019E.explanation=CMSG0001
+no.bda.for.module.CWOWB1019E.useraction=Lesen Sie die Informationen zur Fehlerbestimmung auf der Unterst\u00fctzungswebseite von WebSphere Application Server (http://www.ibm.com/software/webservers/appserv/was/support).

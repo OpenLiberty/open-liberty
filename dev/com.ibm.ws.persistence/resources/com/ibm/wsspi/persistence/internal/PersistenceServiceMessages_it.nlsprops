@@ -57,13 +57,13 @@
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: La configurazione prefisso DatabaseStore {1} contiene caratteri non consentiti.
+ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: La configurazione del prefisso DatabaseStore {0} contiene caratteri non validi.
 ILLEGAL_IDENTIFIER_CWWKD0200E.explanation=Un prefisso DatabaseStore pu\u00f2 contenere solo numeri, lettere o il simbolo '_'.
 ILLEGAL_IDENTIFIER_CWWKD0200E.useraction=Il prefisso DatabaseStore deve essere modificato per contenere solo numeri, lettere o il simbolo '_'.
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: La configurazione schema DatabaseStore {1} contiene caratteri non consentiti.
+ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: La configurazione dello schema DatabaseStore {0} contiene caratteri non validi.
 ILLEGAL_IDENTIFIER_CWWKD0201E.explanation=Uno schema DatabaseStore pu\u00f2 contenere solo numeri, lettere o il simbolo '_'.
 ILLEGAL_IDENTIFIER_CWWKD0201E.useraction=Lo schema DatabaseStore deve essere modificato per contenere solo numeri, lettere o il simbolo '_'.
 

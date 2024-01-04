@@ -24,6 +24,9 @@ Bundle-Description: Jakarta Concurrency 3.0+ implementation; version=${bVersion}
 
 WS-TraceGroup: concurrent
 
+Export-Package: \
+  io.openliberty.concurrent.internal.messages
+
 Private-Package: \
   io.openliberty.concurrent.internal.context,\
   io.openliberty.concurrent.internal.processor,\

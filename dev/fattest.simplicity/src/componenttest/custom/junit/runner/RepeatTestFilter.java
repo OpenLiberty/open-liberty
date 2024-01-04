@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,8 @@ import java.util.logging.Logger;
 import org.junit.runners.model.FrameworkMethod;
 
 import componenttest.annotation.SkipForRepeat;
+import componenttest.annotation.SkipForRepeat.MultivalueSkips;
+import componenttest.rules.repeater.RepeatTestAction;
 
 public class RepeatTestFilter {
 
@@ -31,7 +33,16 @@ public class RepeatTestFilter {
     //will only ever have one item. If is the case then this class should be rewritten to use a relevent data structure
 
     /** Stack of repeat actions. The top of the stack is the most recent repeat action. */
-    private static Deque<String> REPEAT_ACTION_STACK = new ArrayDeque<String>();
+    private static Deque<RepeatTestAction> REPEAT_ACTION_STACK = new ArrayDeque<RepeatTestAction>();
+
+    private static boolean repeatStackContainsActionByID(String searchString) {
+        for (RepeatTestAction rta : REPEAT_ACTION_STACK) {
+            if (rta.getID().equals(searchString)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static boolean shouldRun(FrameworkMethod method) {
         //if we're not repeating then there is no point checking the SkipForRepeat annotation; always run
@@ -45,8 +56,9 @@ public class RepeatTestFilter {
         if (anno == null || anno.value().length == 0)
             return true;
 
-        for (String action : anno.value()) {
-            if (REPEAT_ACTION_STACK.contains(action)) {
+        String[] skipValues = MultivalueSkips.getSkipForRepeatValues(anno.value());
+        for (String action : skipValues) {
+            if (repeatStackContainsActionByID(action)) {
                 log.info("Skipping test method " + method.getName() + " on action " + action);
                 return false;
             }
@@ -69,8 +81,9 @@ public class RepeatTestFilter {
 
         FATRunner.requireFATRunner(clazz.getName());
 
-        for (String action : anno.value()) {
-            if (REPEAT_ACTION_STACK.contains(action)) {
+        String[] skipValues = MultivalueSkips.getSkipForRepeatValues(anno.value());
+        for (String action : skipValues) {
+            if (repeatStackContainsActionByID(action)) {
                 log.info("Skipping test class " + clazz.getName() + " on action " + action);
                 return false;
             }
@@ -83,7 +96,7 @@ public class RepeatTestFilter {
      *
      * @param repeatAction The repeat action to activate.
      */
-    public static void activateRepeatAction(String repeatAction) {
+    public static void activateRepeatAction(RepeatTestAction repeatAction) {
         REPEAT_ACTION_STACK.push(repeatAction);
     }
 
@@ -92,7 +105,7 @@ public class RepeatTestFilter {
      *
      * @return The action that was deactivated.
      */
-    public static String deactivateRepeatAction() {
+    public static RepeatTestAction deactivateRepeatAction() {
         return REPEAT_ACTION_STACK.pop();
     }
 
@@ -101,7 +114,7 @@ public class RepeatTestFilter {
      *
      * @return The most recently activated repeat action.
      */
-    public static String getMostRecentRepeatAction() {
+    public static RepeatTestAction getMostRecentRepeatAction() {
         return REPEAT_ACTION_STACK.peek();
     }
 
@@ -110,10 +123,10 @@ public class RepeatTestFilter {
      *
      * @return The list of repeat actions.
      */
-    public static List<String> getRepeatActions() {
-        List<String> actions = new ArrayList<String>();
+    public static List<RepeatTestAction> getRepeatActions() {
+        List<RepeatTestAction> actions = new ArrayList<RepeatTestAction>();
 
-        Iterator<String> iter = REPEAT_ACTION_STACK.descendingIterator();
+        Iterator<RepeatTestAction> iter = REPEAT_ACTION_STACK.descendingIterator();
         while (iter.hasNext()) {
             actions.add(iter.next());
         }
@@ -139,11 +152,11 @@ public class RepeatTestFilter {
         String actions = "";
 
         if (!REPEAT_ACTION_STACK.isEmpty()) {
-            Iterator<String> iter = REPEAT_ACTION_STACK.descendingIterator();
+            Iterator<RepeatTestAction> iter = REPEAT_ACTION_STACK.descendingIterator();
             while (iter.hasNext()) {
-                String action = iter.next();
-                if (!"NO_MODIFICATION_ACTION".equals(action)) {
-                    actions = actions + "_" + action;
+                String actionId = iter.next().getID();
+                if (!"NO_MODIFICATION_ACTION".equals(actionId)) {
+                    actions = actions + "_" + actionId;
                 }
             }
         }
@@ -154,15 +167,34 @@ public class RepeatTestFilter {
     /**
      * Is the repeat action currently active?
      *
-     * @param  action The repeat action to check.
-     * @return        True if the repeat action (or subclass) is active.
+     * @param  actionID The repeat action to check.
+     * @return          True if the repeat action (or subclass) is active.
      */
-    public static boolean isRepeatActionActive(String action) {
+    public static boolean isRepeatActionActive(String actionID) {
         // Action subclasses are supported by adding a suffix to the ID
         if (!REPEAT_ACTION_STACK.isEmpty()) {
-            Iterator<String> iter = REPEAT_ACTION_STACK.descendingIterator();
+            Iterator<RepeatTestAction> iter = REPEAT_ACTION_STACK.descendingIterator();
             while (iter.hasNext()) {
-                if (iter.next().startsWith(action)) {
+                if (iter.next().getID().startsWith(actionID)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Is the repeat action currently active?
+     *
+     * @param  actionID The repeat action to check.
+     * @return          True if the repeat action (or subclass) is active.
+     */
+    public static boolean isRepeatActionActive(RepeatTestAction action) {
+        // Action subclasses are supported by adding a suffix to the ID
+        if (!REPEAT_ACTION_STACK.isEmpty()) {
+            Iterator<RepeatTestAction> iter = REPEAT_ACTION_STACK.descendingIterator();
+            while (iter.hasNext()) {
+                if (iter.next().getID().startsWith(action.getID())) {
                     return true;
                 }
             }
@@ -176,14 +208,30 @@ public class RepeatTestFilter {
      * @param  actions The repeat actions to check.
      * @return         True if any of the repeat actions (or subclass) is active.
      */
-    public static boolean isAnyRepeatActionActive(String... actions) {
+    public static boolean isAnyRepeatActionActive(String... actionIDs) {
         // Action subclasses are supported by adding a suffix to the ID
         if (!REPEAT_ACTION_STACK.isEmpty()) {
-            Iterator<String> iter = REPEAT_ACTION_STACK.descendingIterator();
+            Iterator<RepeatTestAction> iter = REPEAT_ACTION_STACK.descendingIterator();
             while (iter.hasNext()) {
-                String currentAction = iter.next();
-                for (String action : actions) {
-                    if (currentAction.startsWith(action)) {
+                RepeatTestAction currentAction = iter.next();
+                for (String actionID : actionIDs) {
+                    if (currentAction.getID().startsWith(actionID)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAnyRepeatActionActive(RepeatTestAction... actions) {
+        // Action subclasses are supported by adding a suffix to the ID
+        if (!REPEAT_ACTION_STACK.isEmpty()) {
+            Iterator<RepeatTestAction> iter = REPEAT_ACTION_STACK.descendingIterator();
+            while (iter.hasNext()) {
+                RepeatTestAction currentAction = iter.next();
+                for (RepeatTestAction action : actions) {
+                    if (currentAction.getID().startsWith(action.getID())) {
                         return true;
                     }
                 }

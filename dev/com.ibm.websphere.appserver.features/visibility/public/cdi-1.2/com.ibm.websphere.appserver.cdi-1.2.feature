@@ -45,7 +45,7 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
   com.ibm.websphere.appserver.javax.persistence-2.1; ibm.tolerates:="2.0", \
   com.ibm.websphere.appserver.javax.jsf-2.2, \
   com.ibm.websphere.appserver.javax.validation-1.1
--bundles=com.ibm.ws.org.jboss.weld.2.4.8, \
+-bundles=com.ibm.ws.org.jboss.weld, \
  com.ibm.ws.org.jboss.jdeparser.1.0.0, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.jboss.logging, \

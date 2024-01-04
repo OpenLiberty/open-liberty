@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.microprofile.reactive.messaging.Message;
 
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.TopicPartition;
+
+import io.openliberty.microprofile.reactive.messaging.internal.interfaces.RMContext;
 
 /**
  * Tracks a particular assignment of a partition to this consumer
@@ -72,9 +74,10 @@ public class PartitionTracker {
      *
      * @param offset the record offset
      * @param leaderEpoch the record leaderEpoch
+     * @param context the context to apply around the completion of the result, if the completion stage is completed asynchronously
      * @return a CompletionStage which completes when any associated processing has been completed (e.g. when the message offset has been committed)
      */
-    public CompletionStage<Void> recordDone(long offset, Optional<Integer> leaderEpoch) {
+    public CompletionStage<Void> recordDone(long offset, Optional<Integer> leaderEpoch, RMContext context) {
         return CompletableFuture.completedFuture(null);
     }
 

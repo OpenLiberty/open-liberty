@@ -945,19 +945,32 @@ public class TestServer extends ExternalResource {
      * @throws exception
      */
     public void waitForValueInServerLog(validationData expected) throws Exception {
-        String thisMethod = "waitForValueInServerLog";
+        // same as superclass, but validationData class type is different
+        String thisMethod = "waitForValueInServerLog - oidc";
+        if (expected == null) {
+            throw new Exception("Cannot search for expected value in server log: The provided expectation is null!");
+        }
+        String expectedValue = expected.getValidationValue();
         try {
             Log.info(thisClass, thisMethod, "checkType is: " + expected.getCheckType());
 
             String logName = getGenericLogName(expected.getWhere());
-            String expectedValue = expected.getValidationValue();
             Log.info(thisClass, thisMethod, "Searching for [" + expectedValue + "] in " + logName);
 
-            String searchResult = server.waitForStringInLogUsingMark(expectedValue, server.getMatchingLogFile(logName));
-            msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting to find " + expectedValue + " in " + logName + ", but did not find it there!",
-                    searchResult != null);
-            Log.info(thisClass, thisMethod, "Found message: " + expectedValue);
+            String searchResult = null;
+            if (expected.getCheckType().equals(Constants.MSG_NOT_LOGGED)) {
+                searchResult = server.verifyStringNotInLogUsingMark(expectedValue, 2000); // short timeout because we already expect the msg to "not" be there
+            } else {
+                searchResult = server.waitForStringInLogUsingMark(expectedValue, server.getMatchingLogFile(logName));
+            }
 
+            if (expected.getCheckType().equals(Constants.STRING_DOES_NOT_CONTAIN) || expected.getCheckType().equals(Constants.STRING_DOES_NOT_MATCH) || expected.getCheckType().equals(Constants.MSG_NOT_LOGGED)) {
+                msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting NOT to find [" + expectedValue + "] in " + logName + ", but did find it there!", searchResult == null);
+                Log.info(thisClass, thisMethod, "DID NOT find message: " + expectedValue);
+            } else {
+                msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting to find [" + expectedValue + "] in " + logName + ", but did not find it there!", searchResult != null);
+                Log.info(thisClass, thisMethod, "Found message: " + expectedValue);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Log.error(thisClass, thisMethod, e, "Failure searching for string [" + expected.getValidationValue() + "] in " + expected.getWhere());

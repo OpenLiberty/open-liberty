@@ -14,6 +14,7 @@ package io.openliberty.microprofile.telemetry.internal_fat_tck;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,9 +23,11 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -35,6 +38,9 @@ import componenttest.topology.utils.tck.TCKRunner;
 public class Telemetry11TCKLauncher {
 
     private static final String SERVER_NAME = "Telemetry11TCKServer";
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.aboveMP50Repeats(SERVER_NAME);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

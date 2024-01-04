@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -602,6 +602,7 @@ public class CommonTestHelpers extends TestHelpers {
 
         try {
             setMarkToEndOfAllServersLogs();
+            Thread.sleep(2);
 
             // Invoke protected resource
             URL url = AutomationTools.getNewUrl(settings.getProtectedResource());
@@ -946,6 +947,8 @@ public class CommonTestHelpers extends TestHelpers {
         setMarkToEndOfAllServersLogs();
 
         Object thePage = null;
+
+        Log.info(thisClass, thisMethod, "JavaScript enabled: " + webClient.getOptions().isJavaScriptEnabled());
 
         try {
             com.gargoylesoftware.htmlunit.WebRequest requestSettings = null;
@@ -1810,6 +1813,40 @@ public class CommonTestHelpers extends TestHelpers {
             Log.error(thisClass, testcase, e, "Exception occurred in " + thisMethod);
             System.err.println("Exception: " + e);
             validationTools.validateException(expectations, Constants.PERFORM_IDP_LOGOUT, e);
+        }
+        return thePage;
+    }
+
+    public Object performSPLogout(String testcase, WebClient webClient, Object somePage, TestSettings settings,
+            List<validationData> expectations) throws Exception {
+
+        String thisMethod = "performSPLogout";
+        msgUtils.printMethodName(thisMethod);
+        Object thePage = null;
+        try {
+            setMarkToEndOfAllServersLogs();
+
+            webClient.getOptions().setThrowExceptionOnScriptError(true);
+            webClient.getOptions().setThrowExceptionOnFailingStatusCode(true);
+
+            // Perform logout request
+            URL url = AutomationTools.getNewUrl(settings.getEndSession());
+            com.gargoylesoftware.htmlunit.WebRequest request = new com.gargoylesoftware.htmlunit.WebRequest(url, HttpMethod.POST);
+
+            msgUtils.printAllCookies(webClient);
+            msgUtils.printRequestParts(webClient, request, testcase, "Outgoing request");
+            thePage = webClient.getPage(request);
+            // make sure the page is processed before continuing
+            waitBeforeContinuing(webClient);
+
+            msgUtils.printAllCookies(webClient);
+            msgUtils.printResponseParts(thePage, testcase, thisMethod + " response");
+
+            validationTools.validateResult(thePage, Constants.PERFORM_SP_LOGOUT, expectations, settings);
+        } catch (Exception e) {
+            Log.error(thisClass, testcase, e, "Exception occurred in " + thisMethod);
+            System.err.println("Exception: " + e);
+            validationTools.validateException(expectations, Constants.PERFORM_SP_LOGOUT, e);
         }
         return thePage;
     }

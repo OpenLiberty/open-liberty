@@ -27,6 +27,9 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestCons
 
 /**
  * An interface for writing messages to a kafka topic. The key and message types are dependent on the KafkaProducer which is passed in.
+ * <p>
+ * Once an instance of KafkaWriter is no longer needed it must be close by KafkaWriter.close()
+ *
  */
 public class KafkaWriter<K, V> implements AutoCloseable {
 

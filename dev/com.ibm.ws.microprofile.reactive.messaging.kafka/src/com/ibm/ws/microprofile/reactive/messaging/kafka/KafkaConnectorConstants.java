@@ -41,13 +41,17 @@ public class KafkaConnectorConstants {
     //Whether to complete ack() call before the partition offset is actually committed
     public static final String FAST_ACK = "fast.ack";
 
+    //The name of the context service to use
+    public static final String CONTEXT_SERVICE = "context.service";
+
     //The set of properties which should NOT be passed through to the Kafka client
     public static final Set<String> NON_KAFKA_PROPS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[] { TOPIC,
                                                                                                                              ConnectorFactory.CONNECTOR_ATTRIBUTE,
                                                                                                                              ConnectorFactory.CHANNEL_NAME_ATTRIBUTE,
                                                                                                                              UNACKED_LIMIT,
                                                                                                                              CREATION_RETRY_SECONDS,
-                                                                                                                             FAST_ACK
+                                                                                                                             FAST_ACK,
+                                                                                                                             CONTEXT_SERVICE
     })));
 
 //=======================Kafka Properties===============================//

@@ -7,7 +7,7 @@
     
     SPDX-License-Identifier: EPL-2.0
  -->
- <%@ page import = "static io.openliberty.pages31.fat.misc.Cafe.NAME, static io.openliberty.pages31.fat.misc.Cafe.SPECIALTY" %>
+ <%@ page import = "static io.openliberty.pages31.fat.misc.Cafe.NAME, static io.openliberty.pages31.fat.misc.Cafe.SPECIALTY, static io.openliberty.pages31.fat.misc.AnInterface.FIELD" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -23,6 +23,9 @@
     EL Field expression: ${NAME}
     <br/>
     EL Method expression: ${SPECIALTY()}
+    <br>
+    EL Interface Field expression: ${FIELD} (will NOT be evaluated - see OLGH25135) 
+    <br>
 
     <br/>
     <br/>
@@ -30,6 +33,8 @@
     JSP Field expression: <%=NAME%>
     <br/>
     JSP Method expression: <%=SPECIALTY()%>
-    
+    <br>
+    JSP Static Interface Field expression: <%=FIELD%>
+   
 </body>
 </html>

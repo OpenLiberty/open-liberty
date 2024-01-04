@@ -18,7 +18,11 @@ IBM-API-Package: javax.servlet.annotation;  type="spec", \
  com.ibm.websphere.servlet.event;  type="ibm-api", \
  com.ibm.websphere.webcontainer;  type="ibm-api", \
  com.ibm.wsspi.webcontainer;  type="internal", \
- com.ibm.wsspi.webcontainer.annotation;  type="internal"
+ com.ibm.wsspi.webcontainer.annotation;  type="internal", \
+ com.ibm.websphere.endpoint; type="ibm-api", \
+ javax.annotation; type="spec", \
+ javax.annotation.security; type="spec", \
+ javax.annotation.sql; type="spec"
 IBM-SPI-Package: com.ibm.wsspi.webcontainer, \
  com.ibm.wsspi.webcontainer.collaborator, \
  com.ibm.wsspi.webcontainer.extension, \
@@ -32,7 +36,23 @@ IBM-SPI-Package: com.ibm.wsspi.webcontainer, \
  com.ibm.ws.webcontainer.extension, \
  com.ibm.websphere.servlet.request, \
  com.ibm.ws.webcontainer.spiadapter.collaborator, \
- com.ibm.websphere.webcontainer.async
+ com.ibm.websphere.webcontainer.async, \
+ com.ibm.wsspi.adaptable.module, \
+ com.ibm.ws.adaptable.module.structure, \
+ com.ibm.wsspi.adaptable.module.adapters, \
+ com.ibm.wsspi.artifact, \
+ com.ibm.wsspi.artifact.factory, \
+ com.ibm.wsspi.artifact.factory.contributor, \
+ com.ibm.wsspi.artifact.overlay, \
+ com.ibm.wsspi.artifact.equinox.module, \
+ com.ibm.wsspi.http, \
+ com.ibm.wsspi.http.ee8, \
+ com.ibm.wsspi.anno.classsource, \
+ com.ibm.wsspi.anno.info, \
+ com.ibm.wsspi.anno.service, \
+ com.ibm.wsspi.anno.targets, \
+ com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification
 Subsystem-Category: JavaEE8Application
 -features=io.openliberty.servlet.api-4.0, \
   com.ibm.websphere.appserver.javaeeddSchema-1.0, \

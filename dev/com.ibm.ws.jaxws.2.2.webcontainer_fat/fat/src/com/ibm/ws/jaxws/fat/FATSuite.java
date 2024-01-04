@@ -34,6 +34,7 @@ import componenttest.rules.repeater.RepeatTests;
                 MTOMTest.class,
                 LibertyCXFPositivePropertiesTest.class,
                 LibertyCXFNegativePropertiesTest.class,
+                PartInfoNamespaceCorrectionTest.class,
                 PureCXFTest.class,
                 ServerSideStubClientTest.class,
                 VirtualHostTest.class,

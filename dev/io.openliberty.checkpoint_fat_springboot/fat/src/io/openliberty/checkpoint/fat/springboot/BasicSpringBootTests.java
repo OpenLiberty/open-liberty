@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -31,7 +31,7 @@ import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 @MinimumJavaLevel(javaLevel = 17)
 public class BasicSpringBootTests extends FATServletClient {
 

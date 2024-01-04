@@ -2,7 +2,7 @@
 bVersion=1.0
 
 Bundle-Name: weld OSGi bundle
-Bundle-SymbolicName: com.ibm.ws.org.jboss.weld.2.4.8
+Bundle-SymbolicName: com.ibm.ws.org.jboss.weld
 Bundle-Description: Weld OSGi Bundle, version 2.4.8.Final
 Implementation-Title: Weld OSGi Bundle
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.html

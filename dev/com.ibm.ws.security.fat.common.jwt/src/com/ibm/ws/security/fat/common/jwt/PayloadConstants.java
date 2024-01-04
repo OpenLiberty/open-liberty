@@ -34,7 +34,7 @@ public class PayloadConstants {
     
     public static final String USER_PRINCIPAL_NAME = "upn";
     
-    public static final String GROUP = "groupIds";
+    public static final String GROUP_IDS = "groupIds";
     public static final String GROUPS = "groups";
 
 }

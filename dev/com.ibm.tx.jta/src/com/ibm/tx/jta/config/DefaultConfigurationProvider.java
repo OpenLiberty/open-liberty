@@ -417,6 +417,11 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
         return 90;
     }
 
+    @Override
+    public int getLeaseExpiryThreshold() {
+        return 1;
+    }
+
     /*
      * (non-Javadoc)
      *

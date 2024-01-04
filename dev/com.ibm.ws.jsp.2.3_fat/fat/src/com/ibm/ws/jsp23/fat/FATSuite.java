@@ -51,14 +51,6 @@ import componenttest.topology.impl.JavaInfo;
 public class FATSuite {
 
     /**
-     * @see {@link FatLogHandler#generateHelpFile()}
-     */
-    @BeforeClass
-    public static void generateHelpFile() {
-        FatLogHandler.generateHelpFile();
-    }
-
-    /**
      * Run the tests again with the cdi-2.0 feature. Tests should be skipped where appropriate
      * using @SkipForRepeat("CDI-2.0").
      */
@@ -85,4 +77,13 @@ public class FATSuite {
                             .andWith(FeatureReplacementAction.EE9_FEATURES());
         }
     }
+
+    /**
+     * @see {@link FatLogHandler#generateHelpFile()}
+     */
+    @BeforeClass
+    public static void generateHelpFile() {
+        FatLogHandler.generateHelpFile();
+    }
+
 }

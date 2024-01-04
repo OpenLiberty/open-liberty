@@ -7,9 +7,6 @@
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
@@ -217,7 +214,7 @@
             id="http2ConnectionIdleTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />
 
         <AD name="%http2.maxConcurrentStreams" description="%http2.maxConcurrentStreams.desc"
-            id="maxConcurrentStreams" required="false" type="Integer" default="200" />
+            id="maxConcurrentStreams" required="false" type="Integer" default="100" />
 
         <AD name="%http2.maxFrameSize" description="%http2.maxFrameSize.desc"
             id="maxFrameSize" required="false" type="Integer" min="16384" max="16777215" default="57344" /> 
@@ -230,6 +227,15 @@
 
         <AD name="%http2.limitWindowUpdateFrames" description="%http2.limitWindowUpdateFrames.desc"
             id="limitWindowUpdateFrames" required="false" type="Boolean" default="false" />
+
+        <AD name="%http2.maxResetFrames" description="%http2.maxResetFrames.desc"
+            id="maxResetFrames" required="false" type="Integer" min="0" default="100" />
+
+        <AD name="%http2.resetFramesWindow" description="%http2.resetFramesWindow.desc"
+            id="resetFramesWindow" required="false" type="String" ibm:type="duration" min="0" default="30s"  />
+
+        <AD name="%http2.maxStreamsRefused" description="%http2.maxStreamsRefused.desc"
+            id="maxStreamsRefused" required="false" type="Integer" min="0" default="100" />
 
         <!--  Not technically internal but specifying here to get the property types checked if specified -->    
         <AD name="internal" description="internal use only"

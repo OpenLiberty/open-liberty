@@ -11,10 +11,16 @@
 package val31.web;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  *
  */
 public record Person(@NotNull String name) {
+
+    @Size(min = 6)
+    public String getName() {
+        return this.name;
+    }
 
 }

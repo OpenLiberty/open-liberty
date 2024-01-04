@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010,2020 IBM Corporation and others.
+ * Copyright (c) 2010,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,13 +14,14 @@
 package com.ibm.ws.threading.internal;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.ibm.ws.threading.ScheduledPolicyExecutorTask;
+import com.ibm.ws.threading.ScheduledCustomExecutorTask;
 
 /*
  * This implementation is essentially a wrapper around an scheduled executor but defers execution to the default
@@ -61,36 +62,40 @@ public final class ScheduledExecutorImpl extends ScheduledThreadPoolExecutor {
 
     @Override
     protected <V> RunnableScheduledFuture<V> decorateTask(Runnable r, RunnableScheduledFuture<V> task) {
-        ExecutorService executorService = this.executor;
+        Executor executor = this.executor;
 
-        // Run scheduled tasks on a policy executor if supplied via ScheduledPolicyExecutorTask
-        if (r instanceof ScheduledPolicyExecutorTask)
-            executorService = ((ScheduledPolicyExecutorTask) r).getExecutor();
+        // Run scheduled tasks on the provided custom executor if supplied via ScheduledCustomExecutorTask
+        if (r instanceof ScheduledCustomExecutorTask)
+            executor = ((ScheduledCustomExecutorTask) r).getExecutor();
         else if (r instanceof SchedulingRunnableFixedHelper) {
             Runnable rr = ((SchedulingRunnableFixedHelper<?>) r).m_runnable;
-            if (rr instanceof ScheduledPolicyExecutorTask)
-                executorService = ((ScheduledPolicyExecutorTask) rr).getExecutor();
+            if (rr instanceof ScheduledCustomExecutorTask)
+                executor = ((ScheduledCustomExecutorTask) rr).getExecutor();
         }
+        if (executor == null)
+            executor = this.executor;
 
         // executor will be null after unsetExecutor is called on shutdown. Just return the task in this case.
         if (this.executor == null)
             return task;
 
-        return new SchedulingHelper<V>(r, task, executorService, getQueue());
+        return new SchedulingHelper<V>(r, task, executor, getQueue());
     }
 
     @Override
     protected <V> RunnableScheduledFuture<V> decorateTask(Callable<V> c, RunnableScheduledFuture<V> task) {
-        // Run scheduled tasks on a policy executor if supplied via ScheduledPolicyExecutorTask
-        ExecutorService executorService = c instanceof ScheduledPolicyExecutorTask ? //
-                        ((ScheduledPolicyExecutorTask) c).getExecutor() : //
+        // Run scheduled tasks on a policy executor if supplied via ScheduledCustomExecutorTask
+        Executor executor = c instanceof ScheduledCustomExecutorTask ? //
+                        ((ScheduledCustomExecutorTask) c).getExecutor() : //
                         this.executor;
+        if (executor == null)
+            executor = this.executor;
 
         // executor will be null after unsetExecutor is called on shutdown. Just return the task in this case.
         if (this.executor == null)
             return task;
 
-        return new SchedulingHelper<V>(c, task, executorService, getQueue());
+        return new SchedulingHelper<V>(c, task, executor, getQueue());
     }
 
 }

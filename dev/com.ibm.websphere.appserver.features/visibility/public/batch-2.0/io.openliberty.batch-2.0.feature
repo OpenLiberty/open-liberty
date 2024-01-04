@@ -13,7 +13,8 @@ IBM-API-Package: \
   jakarta.batch.operations; type="spec", \
   jakarta.batch.runtime; type="spec", \
   jakarta.batch.runtime.context; type="spec", \
-  jakarta.inject;  type="spec"
+  jakarta.inject;  type="spec", \
+  com.ibm.websphere.persistence.mbean; type="ibm-api"
 IBM-ShortName: batch-2.0
 Subsystem-Name: Jakarta Batch 2.0
 -features=com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \

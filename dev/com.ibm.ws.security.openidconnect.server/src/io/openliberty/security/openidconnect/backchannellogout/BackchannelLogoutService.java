@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.security.auth.Subject;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,6 +31,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
 import com.ibm.ws.security.sso.common.Constants;
@@ -75,14 +77,10 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
     }
 
     @Override
-    public boolean logout(HttpServletRequest request, HttpServletResponse response, String userName) {
-        if (userName == null || userName.isEmpty()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "The userName is null or empty, so logout will not be performed.");
-            }
-            return false;
+    public boolean logout(HttpServletRequest request, HttpServletResponse response, String userName) throws ServletException {
+        if (userName != null && !userName.isEmpty()) {
+            userName = normalizeUserName(userName);
         }
-        userName = normalizeUserName(userName);
         String requestUri = request.getRequestURI();
         OidcServerConfig oidcServerConfig = getMatchingConfig(requestUri);
         if (oidcServerConfig == null) {
@@ -163,9 +161,14 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
         return null;
     }
 
-    void sendBackchannelLogoutRequests(HttpServletRequest request, OidcServerConfig oidcServerConfig, String userName, String idTokenString) {
-        BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
-        bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
+    @FFDCIgnore(BackchannelLogoutRequestException.class)
+    void sendBackchannelLogoutRequests(HttpServletRequest request, OidcServerConfig oidcServerConfig, String userName, String idTokenString) throws ServletException {
+        try {
+            BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
+            bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
+        } catch (BackchannelLogoutRequestException e) {
+            throw new ServletException(e.getMessage());
+        }
     }
 
 }

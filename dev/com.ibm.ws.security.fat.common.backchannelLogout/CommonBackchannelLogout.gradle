@@ -146,6 +146,12 @@ task copyGenericServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble', 
       rename 'oauthclient.zip', 'oauthclient.war'
     }
         
+    copy {
+      from new File(project(":com.ibm.ws.security.fat.common.backchannelLogout").buildDir, "test-application/simpleLogoutTestApp.zip")
+      into new File(autoFvtDir, "publish/servers/${serverName}/test-apps")
+      rename 'simpleLogoutTestApp.zip', 'simpleLogoutTestApp.war'
+    }
+        
   }
 }
 }
@@ -154,8 +160,13 @@ task copyGenericClient (dependsOn: [':com.ibm.ws.security.fat.common:assemble', 
   doLast {
 
     println "in copyGenericClient"
-      def serverNames = project.findProperty('clientNames').split(",")
-      def srcServerName = project.findProperty('srcClientName')
+    
+     def clientTypes =  project.findProperty('clientTypes').split(",")
+
+  clientTypes.each { clientType ->
+  
+      def serverNames = project.findProperty("${clientType}.clientNames").split(",")
+      def srcServerName = project.findProperty("${clientType}.srcClientName")
       
       println "serverNames: ${serverNames}"
       println "srcServerName: ${srcServerName}"
@@ -238,6 +249,7 @@ task copyGenericClient (dependsOn: [':com.ibm.ws.security.fat.common:assemble', 
       rename 'formlogin.zip', 'formlogin.war'
     }
                
+  }
   }
 }
 }

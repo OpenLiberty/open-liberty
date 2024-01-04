@@ -31,7 +31,8 @@ IBM-API-Package: jakarta.faces; type="spec", \
  org.apache.myfaces.shared.config; type="third-party", \
  org.apache.myfaces.shared.renderkit; type="third-party", \
  org.apache.myfaces.shared.renderkit.html; type="third-party", \
- org.apache.myfaces.shared.renderkit.html.util; type="third-party"
+ org.apache.myfaces.shared.renderkit.html.util; type="third-party", \
+ jakarta.activation; type="spec"
 IBM-ShortName: faces-3.0
 WLP-AlsoKnownAs: jsf-3.0
 Subsystem-Name: Jakarta Server Faces 3.0
@@ -46,7 +47,7 @@ Subsystem-Name: Jakarta Server Faces 3.0
 -bundles=io.openliberty.org.apache.myfaces.3.0, \
  com.ibm.ws.org.apache.commons.beanutils.1.9.4, \
  com.ibm.ws.org.apache.commons.collections, \
- com.ibm.ws.org.apache.commons.discovery.0.2, \
+ io.openliberty.org.apache.commons.digester, \
  io.openliberty.org.apache.commons.logging, \
  com.ibm.ws.jsf.shared.jakarta, \
  com.ibm.ws.jsf.jsp.shared.jakarta, \

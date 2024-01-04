@@ -570,7 +570,7 @@ STATE_DOWNLOAD_FILES_OK=\nAlle Assets wurden erfolgreich heruntergeladen.
 STATE_CONTACTING_MAVEN_REPO=Es wird eine Verbindung zum konfigurierten Maven-Repository hergestellt...\nDie Ausf\u00fchrung dieses Prozesses kann mehrere Minuten dauern.
 STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL=Die Verbindung zum konfigurierten Repository wurde erfolgreich hergestellt.
 STATE_READING_ENV_PROPS_FILE={0}/etc/featureUtility.env wird gelesen...
-STATE_STARTING_VERIFY=Signaturen werden \u00fcberpr\u00fcft...
+STATE_STARTING_VERIFY=Signaturen werden \u00fcberpr\u00fcft ...
 STATE_VERIFYING={0} wird \u00fcberpr\u00fcft...
 PROGRESS_STEP=Schritt {0} von {1}
 
@@ -629,7 +629,7 @@ VALIDATION_INVALID_URL=Nicht unterst\u00fctztes URL-Format
 VALIDATION_DUPLICATE_KEY=Doppelter Eigenschaftsname
 VALIDATION_UNSUPPORTED_PROTOCOL=Nicht unterst\u00fctztes Protokoll
 VALIDATION_MISSING_PUBKEY_NAME=Name des \u00f6ffentlichen Schl\u00fcssels fehlt
-VALIDATION_INVALID_key_URL=Nicht unterst\u00fctzte Schl\u00fcssel-URL
+VALIDATION_INVALID_key URL = Nicht unterst\u00fctzte Schl\u00fcssel-URL
 VALIDATION_INVALID_KEYID=Ung\u00fcltiges Format der Schl\u00fcssel-ID
 VALIDATION_MISSING_KEYID=Fehlende Schl\u00fcssel-ID
 

@@ -25,13 +25,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 @RunWith(FATRunner.class)
 public class BucketSet2CpClientTest {
 

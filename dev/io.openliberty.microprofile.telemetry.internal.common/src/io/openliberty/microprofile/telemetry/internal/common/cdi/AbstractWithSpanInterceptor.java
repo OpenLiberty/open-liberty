@@ -12,10 +12,15 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.common.cdi;
 
+import static java.util.function.Predicate.not;
+
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Optional;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -25,6 +30,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.context.Context;
@@ -46,7 +52,7 @@ public abstract class AbstractWithSpanInterceptor {
 
     protected final String instrumentationName = "io.openliberty.microprofile.telemetry";
 
-    protected final Instrumenter<MethodRequest, Void> instrumenter;
+    protected final Instrumenter<InvocationContext, Void> instrumenter;
 
     public AbstractWithSpanInterceptor() {
         // Required public no-arg constructor for interceptor
@@ -55,38 +61,34 @@ public abstract class AbstractWithSpanInterceptor {
 
     @Inject
     public AbstractWithSpanInterceptor(OpenTelemetry openTelemetry) {
-        MethodSpanAttributesExtractor<MethodRequest, Void> attributesExtractor = getMethodSpanAttributesExtractor();
-        InstrumenterBuilder<MethodRequest, Void> builder = Instrumenter.builder(openTelemetry, instrumentationName, new MethodRequestSpanNameExtractor());
+        MethodSpanAttributesExtractor<InvocationContext, Void> attributesExtractor = getMethodSpanAttributesExtractor();
+        InstrumenterBuilder<InvocationContext, Void> builder = Instrumenter.builder(openTelemetry, instrumentationName, new MethodRequestSpanNameExtractor());
 
-        this.instrumenter = builder.addAttributesExtractor(attributesExtractor).buildInstrumenter(methodRequest -> spanKindFromMethod(methodRequest.getMethod()));
+        this.instrumenter = builder.addAttributesExtractor(attributesExtractor).buildInstrumenter(context -> spanKindFromMethod(context));
     }
 
     //This method is abstract because requires calling an API that changes across different upstream versions of OpenTelemetry
-    protected abstract MethodSpanAttributesExtractor<MethodRequest, Void> getMethodSpanAttributesExtractor();
+    protected abstract MethodSpanAttributesExtractor<InvocationContext, Void> getMethodSpanAttributesExtractor();
 
-    private static SpanKind spanKindFromMethod(Method method) {
-        WithSpan annotation = method.getDeclaredAnnotation(WithSpan.class);
-        if (annotation == null) {
-            return SpanKind.INTERNAL;
-        }
-        return annotation.kind();
+    private SpanKind spanKindFromMethod(InvocationContext context) {
+        return getWithSpanBinding(context).map(WithSpan::kind)
+                                          .orElse(SpanKind.INTERNAL);
     }
 
     @FFDCIgnore(Throwable.class)
     @AroundInvoke
     public Object span(final InvocationContext invocationContext) throws Exception {
-        MethodRequest methodRequest = new MethodRequest(invocationContext.getMethod(), invocationContext.getParameters());
 
         Context parentContext = Context.current();
         Context spanContext = null;
         Scope scope = null;
-        boolean shouldStart = instrumenter != null && instrumenter.shouldStart(parentContext, methodRequest);
+        boolean shouldStart = instrumenter != null && instrumenter.shouldStart(parentContext, invocationContext);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Method " + invocationContext.getMethod().toString() + " Should start: " + shouldStart);
         }
 
         if (shouldStart) {
-            spanContext = instrumenter.start(parentContext, methodRequest);
+            spanContext = instrumenter.start(parentContext, invocationContext);
             scope = spanContext.makeCurrent();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "spanContext " + spanContext.toString() + " has started and is now the current context");
@@ -96,7 +98,7 @@ public abstract class AbstractWithSpanInterceptor {
         try {
             Object result = invocationContext.proceed();
             if (shouldStart) {
-                instrumenter.end(spanContext, methodRequest, null, null);
+                instrumenter.end(spanContext, invocationContext, null, null);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "spanContext " + spanContext.toString() + " has ended");
                 }
@@ -104,7 +106,7 @@ public abstract class AbstractWithSpanInterceptor {
             return result;
         } catch (Throwable error) {
             if (shouldStart) {
-                instrumenter.end(spanContext, methodRequest, null, error);
+                instrumenter.end(spanContext, invocationContext, null, error);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "spanContext " + spanContext.toString() + " has ended with an exception", error);
                 }
@@ -117,17 +119,20 @@ public abstract class AbstractWithSpanInterceptor {
         }
     }
 
-    protected static final class MethodRequestSpanNameExtractor implements SpanNameExtractor<MethodRequest> {
+    protected final class MethodRequestSpanNameExtractor implements SpanNameExtractor<InvocationContext> {
         @Override
-        public String extract(final MethodRequest methodRequest) {
-            return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
-                WithSpan annotation = methodRequest.getMethod().getDeclaredAnnotation(WithSpan.class);
-                String spanName = annotation.value();
-                if (spanName.isEmpty()) {
-                    spanName = SpanNames.fromMethod(methodRequest.getMethod());
-                }
-                return spanName;
-            });
+        public String extract(final InvocationContext context) {
+            return getWithSpanBinding(context).map(WithSpan::value) // If present, use the value as the name ...
+                                              .filter(not(String::isEmpty)) // ... as long as it's not empty ...
+                                              .orElse(getNameFromMethod(context.getMethod())); // ... otherwise compute a name for the method
+        }
+
+        private String getNameFromMethod(Method method) {
+            if (System.getSecurityManager() != null) {
+                return AccessController.doPrivileged((PrivilegedAction<String>) () -> SpanNames.fromMethod(method));
+            } else {
+                return SpanNames.fromMethod(method);
+            }
         }
     }
 
@@ -159,5 +164,23 @@ public abstract class AbstractWithSpanInterceptor {
             }
             return attributeNames;
         }
+    }
+
+    /**
+     * Get the WithSpan annotation used to bind this interceptor, if one can be found
+     * <p>
+     * In almost all cases, it's expected that there will be a WithSpan binding, unless a CDI extension has messed around with the interceptor
+     *
+     * @param context the invocation context
+     * @return the WithSpan annotation, or an empty {@code Optional} if one could not be found
+     */
+    private Optional<WithSpan> getWithSpanBinding(InvocationContext context) {
+        Set<Annotation> bindings = OpenTelemetryAccessor.getCdiService().getInterceptorBindingsFromInvocationContext(context);
+        for (Annotation binding : bindings) {
+            if (binding.annotationType().equals(WithSpan.class)) {
+                return Optional.of((WithSpan) binding);
+            }
+        }
+        return Optional.empty();
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureSet;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -86,6 +87,21 @@ public class BasicJAXRSCDITest {
     @Test
     public void testBasicJAXRSCDI() throws IOException {
         runGetMethod(200, "/helloworld/helloworld", MESSAGE);
+    }
+
+    /**
+     * Prior to MP 6.0, the servlet API was exposed by the JAXRS / RESTful Web Services feature and other MP features.
+     * In MP 6.0 this was changed to no longer expose the servlet API when only using MP features. This test makes sure
+     * that doesn't get regressed.
+     */
+    @Test
+    public void testServletFound() throws Exception {
+        runGetMethod(200, "/helloworld/helloworld/servlettest", JakartaEEAction.isEE10OrLaterActive() ? "NOTFOUND" : "FOUND");
+    }
+
+    @Test
+    public void testOpenTracingSPIFoundAsAnAPI() throws Exception {
+        runGetMethod(200, "/helloworld/helloworld/opentracingtest", JakartaEEAction.isEE10OrLaterActive() ? "NOTFOUND" : "FOUND");
     }
 
     private StringBuilder runGetMethod(int exprc, String requestUri, String testOut) throws IOException {

@@ -32,6 +32,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.microprofile.telemetry.internal_fat.apps.disabledhttptracing.HttpTraceDisabledServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.servlet.HttpTraceTestServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.servlet.SimpleServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
@@ -47,10 +48,12 @@ import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterPro
 public class TelemetryServletTest extends FATServletClient {
 
     public static final String APP_NAME = "TelemetryServletTestApp";
+    public static final String TRACE_APP_NAME = "HttpTraceDisabledServletTestApp";
     public static final String SERVER_NAME = "Telemetry10Servlet";
 
     @TestServlets({
                     @TestServlet(contextRoot = APP_NAME, servlet = HttpTraceTestServlet.class),
+                    @TestServlet(contextRoot = TRACE_APP_NAME, servlet = HttpTraceDisabledServlet.class),
     })
 
     @Server(SERVER_NAME)
@@ -67,6 +70,7 @@ public class TelemetryServletTest extends FATServletClient {
                         .addProperty("otel.bsp.schedule.delay", "100");
         BeansAsset beans = BeansAsset.getBeansAsset(DiscoveryMode.ALL);
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                        .addClass(HttpTraceTestServlet.class)
                         .addPackage(SimpleServlet.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
                         .addPackage(TestSpans.class.getPackage())
@@ -76,7 +80,27 @@ public class TelemetryServletTest extends FATServletClient {
                         .addAsWebResource(new File("test-applications/TelemetryServletTestApp.war/dice.jsp"))
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties")
                         .addAsResource(beans, "META-INF/beans.xml");
+
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
+
+        // Testing that tracing is enabled but http tracing is disabled
+        PropertiesAsset httpTraceConfig = new PropertiesAsset()
+                        .addProperty("otel.sdk.disabled", "false")
+                        // By default otel.trace.http.disabled is false
+                        .addProperty("otel.trace.http.disabled", "true")
+                        .addProperty("otel.traces.exporter", "in-memory")
+                        .addProperty("otel.bsp.schedule.delay", "100");
+        WebArchive appForTrace = ShrinkWrap.create(WebArchive.class, TRACE_APP_NAME + ".war")
+                        .addClass(SimpleServlet.class)
+                        .addPackage(HttpTraceDisabledServlet.class.getPackage())
+                        .addPackage(InMemorySpanExporter.class.getPackage())
+                        .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
+                        .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
+                        .addAsWebResource(new File("test-applications/HttpTraceDisabledServletTestApp.war/dice.jsp"))
+                        .addAsResource(httpTraceConfig, "META-INF/microprofile-config.properties");
+
+        ShrinkHelper.exportAppToServer(server, appForTrace, SERVER_ONLY);
         server.startServer();
     }
 

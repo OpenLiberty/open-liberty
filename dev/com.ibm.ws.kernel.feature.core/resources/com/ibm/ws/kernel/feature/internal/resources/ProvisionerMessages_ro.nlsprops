@@ -230,6 +230,15 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: C
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=Configura\u0163ia serverului con\u0163ine o combina\u0163ie incompatibil\u0103 de caracteristici pentru modelele de programare indicate. Acest conflict poate ap\u0103rea dac\u0103 cele dou\u0103 caracteristici incompatibile sunt configurate direct \u00een configura\u0163ia de server sau dac\u0103 caracteristicile configurate includ versiuni diferite ale unei caracteristici care sunt incompatibile.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=\u00cencerca\u0163i s\u0103 specifica\u0163i o versiune compatibil\u0103 pentru caracteristicile configurate care au cauzat conflictul \u00een fi\u015fierul server.xml. Dac\u0103 nu sunt disponibile alte versiuni, caracteristicile configurate nu sunt compatibile una cu alta \u015fi nu pot fi configurate \u00een acela\u015fi timp.
 
+UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: O valoare nu a putut fi g\u0103sit\u0103 pentru variabila de mediu PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=Ave\u021bi caracteristici versionless \u00een configura\u021bia dvs. \u0219i variabila de mediu PREFERRED_FEATURE_VERSIONS nu a putut fi g\u0103sit\u0103
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=Verifica\u021bi dac\u0103 variabila de mediu, PREFERRED_FEATURE_VERSIONS, exist\u0103 \u0219i este ortografiat\u0103 corect.
+
+# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: Variabila de mediu, PREFERRED_FEATURE_VERSIONS, nu contine o valoare pentru {0}
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=Pentru fiecare caracteristic\u0103 versionless \u00een configura\u021bia dvs., trebuie s\u0103 existe o valoare de versiune preferat\u0103 pentru ea \u00een cadrul PREFERRED_FEATURE_VERSIUNI
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=Ad\u0103uga\u021bi o valoare \u00een PREFERRED_FEATURE_VERSIUNI pentru caracteristica
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: Caracteristica {0} exist\u0103 deja. Nu va fi reinstalat\u0103. Pentru a modifica o caracteristic\u0103 existent\u0103, trebuie s\u0103 o dezinstala\u0163i manual mai \u00eent\u00e2i.

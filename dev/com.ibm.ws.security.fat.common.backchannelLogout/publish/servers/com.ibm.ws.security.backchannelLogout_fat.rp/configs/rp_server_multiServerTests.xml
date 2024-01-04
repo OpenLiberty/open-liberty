@@ -1,0 +1,36 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<server>
+
+	<variable name="client2Port" value="${bvt.prop.security_2_HTTP_default.secure}"/>  
+
+	<include location="${server.config.dir}/imports/oidcClientFeatures.xml" />
+
+	<include location="${server.config.dir}/imports/oidcClient_multiServerTests.xml" />
+	<include location="${server.config.dir}/imports/client_multiServerTests_filters.xml" />
+
+	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
+
+	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
+	<include location="${server.config.dir}/imports/signEncryptSSLSettings.xml" />
+
+	<include location="${server.config.dir}/imports/formlogin_1.xml" />
+	<include location="${server.config.dir}/imports/backchannelLogoutTestApp.xml" />
+	<include location="${server.config.dir}/imports/simpleLogoutTestApp.xml" />
+
+	<include location="${server.config.dir}/imports/rp_fatTestPorts.xml" />
+
+	<include location="${server.config.dir}/imports/clientMisc.xml" />
+
+</server>

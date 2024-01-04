@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@
  */
 package com.ibm.ws.webcontainer.security;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,7 +35,7 @@ public interface UnprotectedResourceService {
      * Otherwise, return false
      * example of userName: "user:sp2_realm_No/user2"
      */
-    boolean logout(HttpServletRequest request, HttpServletResponse response, String userName);
+    boolean logout(HttpServletRequest request, HttpServletResponse response, String userName) throws ServletException;
 
     boolean postLogout(HttpServletRequest request, HttpServletResponse response);
 }

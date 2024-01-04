@@ -57,13 +57,13 @@
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: A(z) {1} DatabaseStore el\u0151tag-konfigur\u00e1ci\u00f3 illeg\u00e1lis karaktereket tartalmaz.
+ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: A DatabaseStore el\u0151tag konfigur\u00e1ci\u00f3 {0} illeg\u00e1lis karaktereket tartalmaz.
 ILLEGAL_IDENTIFIER_CWWKD0200E.explanation=A DatabaseStore el\u0151tag csak sz\u00e1mokat, bet\u0171ket \u00e9s '_' szimb\u00f3lumot tartalmazhat.
 ILLEGAL_IDENTIFIER_CWWKD0200E.useraction=A DatabaseStore el\u0151tagot m\u00f3dos\u00edtani kell, hogy csak sz\u00e1mokat, bet\u0171ket \u00e9s '_' szimb\u00f3lumot tartalmazzon.
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: A(z) {1} DatabaseStore s\u00e9makonfigur\u00e1ci\u00f3 illeg\u00e1lis karaktereket tartalmaz.
+ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: A DatabaseStore s\u00e9ma konfigur\u00e1ci\u00f3 {0} illeg\u00e1lis karaktereket tartalmaz.
 ILLEGAL_IDENTIFIER_CWWKD0201E.explanation=A DatabaseStore s\u00e9ma csak sz\u00e1mokat, bet\u0171ket \u00e9s '_' szimb\u00f3lumot tartalmazhat.
 ILLEGAL_IDENTIFIER_CWWKD0201E.useraction=A DatabaseStore s\u00e9m\u00e1t m\u00f3dos\u00edtani kell, hogy csak sz\u00e1mokat, bet\u0171ket \u00e9s '_' szimb\u00f3lumot tartalmazzon.
 

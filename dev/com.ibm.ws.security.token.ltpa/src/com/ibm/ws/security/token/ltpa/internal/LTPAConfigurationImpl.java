@@ -49,7 +49,6 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
-import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
@@ -144,6 +143,46 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
         loadConfig(props);
         setupRuntimeLTPAInfrastructure();
+        debugLTPAConfig(); //prints debug for current LTPA config
+    }
+
+    /**
+     * When the configuration is modified,
+     *
+     * <pre>
+     * 1. If file name, or expiration, or expirationDifferenceAllowed, monitorValidationKeysDir, validationKeys changed,
+     * then remove the file monitor registration, reload primary and validation LTPA keys, and setup Runtime LTPA Infrastructure.
+     * 2. Else if only the monitor interval changed,
+     * then remove the file monitor registration and optionally create a new file monitor.
+     * 3. (Implicit)Else if only the key password changed,
+     * then do not remove the file monitor registration and do not reload the LTPA keys.
+     * </pre>
+     */
+    protected void modified(Map<String, Object> props) {
+        String oldKeyImportFile = primaryKeyImportFile;
+        Long oldKeyTokenExpiration = keyTokenExpiration;
+        Long oldMonitorInterval = monitorInterval;
+        Long oldExpirationDifferenceAllowed = expirationDifferenceAllowed;
+        boolean oldMonitorValidationKeysDir = monitorValidationKeysDir;
+        String oldUpdateTrigger = updateTrigger;
+        List<Properties> oldValidationKeys = new ArrayList<Properties>();
+        oldValidationKeys.addAll(validationKeys);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "oldValidationKeys: " + maskKeysPasswords(oldValidationKeys));
+        }
+
+        loadConfig(props);
+
+        if (isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldExpirationDifferenceAllowed, oldMonitorValidationKeysDir, oldUpdateTrigger, oldValidationKeys)) {
+            unsetFileMonitorRegistration();
+            Tr.audit(tc, "LTPA_KEYS_TO_LOAD", primaryKeyImportFile);
+            setupRuntimeLTPAInfrastructure();
+        } else if (isMonitorIntervalChanged(oldMonitorInterval)) {
+            unsetFileMonitorRegistration();
+            optionallyCreateFileMonitor();
+        }
+        debugLTPAConfig(); //prints debug for current LTPA config
     }
 
     @Sensitive
@@ -176,7 +215,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         }
 
         if (updateTrigger.equalsIgnoreCase("disabled")) {
-            nonConfigValidationKeys = null;
             if (monitorValidationKeysDir) {
                 Tr.warning(tc, "LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE", monitorValidationKeysDir);
             }
@@ -192,7 +230,12 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         }
 
         combineValidationKeys();
+    }
 
+    /**
+     *
+     */
+    private void debugLTPAConfig() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "primaryKeyImportFile: " + primaryKeyImportFile);
             //Tr.debug(tc, "primaryKeyPassword: " + primaryKeyPassword);
@@ -201,7 +244,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             Tr.debug(tc, "authFilterRef: " + authFilterRef);
             Tr.debug(tc, "monitorValidationKeysDir: " + monitorValidationKeysDir);
             Tr.debug(tc, "updateTrigger: " + updateTrigger);
-            Tr.debug(tc, "validationKeys: " + (validationKeys == null ? "Null" : validationKeys.toString()));
+            Tr.debug(tc, "validationKeys: " + (validationKeys == null ? "Null" : maskKeysPasswords(validationKeys)));
         }
     }
 
@@ -219,8 +262,35 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "validationKeys", validationKeys);
+            Tr.debug(tc, "configured ValidationKeys: " + maskKeysPasswords(configValidationKeys));
+            Tr.debug(tc, "non-configured ValidationKeys: " + maskKeysPasswords(nonConfigValidationKeys));
+            Tr.debug(tc, "combined ValidationKeys: " + maskKeysPasswords(validationKeys));
         }
+    }
+
+    /**
+     * Input a list of properties for the validaiton keys
+     * Output
+     *
+     * @return the same list with passwords masked for debugging.
+     *         masked values: "*null*" or "*not null*"
+     */
+    protected List<Properties> maskKeysPasswords(@Sensitive List<Properties> originalList) {
+        if (originalList == null)
+            return null;
+
+        List<Properties> maskedList = new ArrayList<Properties>();
+        for (Properties props : originalList) {
+            Properties tempProps = new Properties();
+            tempProps.putAll(props);
+            if (tempProps.getProperty(CFG_KEY_VALIDATION_PASSWORD) == null) {
+                tempProps.setProperty(CFG_KEY_VALIDATION_PASSWORD, "*null*");
+            } else {
+                tempProps.setProperty(CFG_KEY_VALIDATION_PASSWORD, "*not null*");
+            }
+            maskedList.add(tempProps);
+        }
+        return maskedList;
     }
 
     /**
@@ -377,9 +447,9 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     public void performFileBasedAction(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {
         Collection<File> allFiles = getAllFiles(createdFiles, modifiedFiles, deletedFiles);
 
-        processAllKeysFiles(createdFiles, modifiedFiles, deletedFiles); // we've got validation3.keys
+        processAllKeysFiles(createdFiles, modifiedFiles, deletedFiles);
 
-        processValidationKeys(); //
+        processValidationKeys();
 
         if (noValidationKeys()) { // no validationKeys. Keep behavior the same as SecurityFileMonnitor
             if (deletedFiles.isEmpty() == false) {
@@ -397,9 +467,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     public void performFileBasedAction(Collection<File> baselineFiles) {
         //load validation keys already in the monitored directory when the monitor is started
         if (!baselineFiles.isEmpty()) {
-            //Tr.audit(tc, "LTPA_KEYS_TO_LOAD", printLTPAKeys(baselineFiles));
-            //TODO: we should have a new info message here for validation keys processed at server startup.
-
             Collection<File> emptyCollection = new HashSet<File>();
             processAllKeysFiles(baselineFiles, emptyCollection, emptyCollection);
 
@@ -415,8 +482,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         if (updateTrigger != null && monitorValidationKeysDir) {
             validationKeys.clear();
 
-            if (configValidationKeys != null && !configValidationKeys.isEmpty())
-                validationKeys.addAll(configValidationKeys);
             nonConfigValidationKeys = getNonConfiguredValidationKeys();
             combineValidationKeys();
         }
@@ -497,60 +562,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
 
     private void submitTaskToCreateLTPAKeys() {
-        CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
-        if (checkpointPhase != CheckpointPhase.INACTIVE) {
-            // conditionally create hook if checkpoint phase is active
-            CheckpointHook hook = new CheckpointHook() {
-                @Override
-                public void restore() {
-                    executorService.getService().execute(createTask);
-                }
-            };
-            if (checkpointPhase.addMultiThreadedHook(hook)) {
-                // will run createTask later, upon restore
-                return;
-            }
-        }
-        // run the create task now, not in a checkpoint
-        executorService.getService().execute(createTask);
-    }
-
-    /**
-     * When the configuration is modified,
-     *
-     * <pre>
-     * 1. If file name, or expiration, or expirationDifferenceAllowed, monitorValidationKeysDir, validationKeys changed,
-     * then remove the file monitor registration, reload primary and validation LTPA keys, and setup Runtime LTPA Infrastructure.
-     * 2. Else if only the monitor interval changed,
-     * then remove the file monitor registration and optionally create a new file monitor.
-     * 3. (Implicit)Else if only the key password changed,
-     * then do not remove the file monitor registration and do not reload the LTPA keys.
-     * </pre>
-     */
-    protected void modified(Map<String, Object> props) {
-        String oldKeyImportFile = primaryKeyImportFile;
-        Long oldKeyTokenExpiration = keyTokenExpiration;
-        Long oldMonitorInterval = monitorInterval;
-        Long oldExpirationDifferenceAllowed = expirationDifferenceAllowed;
-        boolean oldMonitorValidationKeysDir = monitorValidationKeysDir;
-        String oldUpdateTrigger = updateTrigger;
-        List<Properties> oldValidationKeys = new ArrayList<Properties>();
-        oldValidationKeys.addAll(validationKeys);
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "oldValidationKeys: " + oldValidationKeys);
-        }
-
-        loadConfig(props);
-
-        if (isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldExpirationDifferenceAllowed, oldMonitorValidationKeysDir, oldUpdateTrigger, oldValidationKeys)) {
-            unsetFileMonitorRegistration();
-            Tr.audit(tc, "LTPA_KEYS_TO_LOAD", primaryKeyImportFile);
-            setupRuntimeLTPAInfrastructure();
-        } else if (isMonitorIntervalChanged(oldMonitorInterval)) {
-            unsetFileMonitorRegistration();
-            optionallyCreateFileMonitor();
-        }
+        CheckpointPhase.onRestore(() -> executorService.getService().execute(createTask));
     }
 
     /**
@@ -568,7 +580,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      */
     private boolean isKeysConfigChanged(String oldKeyImportFile, Long oldKeyTokenExpiration, Long oldExpirationDifferenceAllowed, boolean oldMonitorValidationKeysDir,
                                         String oldUpdateTrigger,
-                                        List<Properties> oldValidationKeys) {
+                                        @Sensitive List<Properties> oldValidationKeys) {
         return ((oldKeyImportFile.equals(primaryKeyImportFile) == false)
                 || (oldKeyTokenExpiration != keyTokenExpiration)
                 || (oldExpirationDifferenceAllowed != expirationDifferenceAllowed)
@@ -584,7 +596,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * @param oldValidationKeys
      * @return
      */
-    private boolean isValidationKeysConfigured(List<Properties> oldValidationKeys) {
+    private boolean isValidationKeysConfigured(@Sensitive List<Properties> oldValidationKeys) {
         if ((oldValidationKeys == null || oldValidationKeys.isEmpty()) && (validationKeys == null || validationKeys.isEmpty()))
             return false;
         else
@@ -759,21 +771,25 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         return ltpaKeysChangeNotifierService.getService();
     }
 
+    /** {@inheritDoc} */
     @Override
     public long getMonitorInterval() {
         return monitorInterval;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean getMonitorValidationKeysDir() {
         return monitorValidationKeysDir;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String getUpdateTrigger() {
         return updateTrigger;
     }
 
+    /** {@inheritDoc} */
     @Sensitive
     @Override
     public List<Properties> getValidationKeys() {
@@ -783,6 +799,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     /*
      *
      */
+    @Sensitive
     public List<Properties> getConfigValidationKeys(Map<String, List<Map<String, Object>>> listOfNestedElements, String elementName, String... attrKeys) {
         List<Properties> listOfValidationKeysProps = new ArrayList<Properties>();
         List<Map<String, Object>> listOfElementMaps = listOfNestedElements.get(elementName);
@@ -824,7 +841,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             }
 
             if (value != null && value.length() > 0) {
-                value = (String) getValue(value);
+                value = value.trim();
                 if (attrKey.equals(CFG_KEY_VALIDATION_FILE_NAME)) {
                     value = primaryKeyImportDir.concat(value);
                 }
@@ -904,12 +921,5 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         strBuff.delete(currentIndex, currentIndex + 2);
         strBuff.append(")");
         return strBuff.toString();
-    }
-
-    private Object getValue(Object value) {
-        if (value instanceof String) {
-            return ((String) value).trim();
-        }
-        return value;
     }
 }

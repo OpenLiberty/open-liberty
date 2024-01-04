@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,20 +33,22 @@ public interface Application extends DeploymentDescriptor, DescriptionGroup, JND
     int VERSION_8 = 80;
     int VERSION_9 = 90;
     int VERSION_10 = 100;
+    int VERSION_11 = 110;
 
-    int [] VERSIONS = {
-            VERSION_1_2, VERSION_1_3, // dtd
-            VERSION_1_4,              // sun j2ee
-            VERSION_5, VERSION_6,     // sun javaee
-            VERSION_7, VERSION_8,     // jcp java
-            VERSION_9, VERSION_10     // Jakarta
-    };    
-    
+    int[] VERSIONS = {
+                       VERSION_1_2, VERSION_1_3, // dtd
+                       VERSION_1_4, // sun j2ee
+                       VERSION_5, VERSION_6, // sun javaee
+                       VERSION_7, VERSION_8, // jcp java
+                       VERSION_9, VERSION_10, VERSION_11 // Jakarta
+    };
+
     String getVersion();
 
     String getApplicationName();
 
     boolean isSetInitializeInOrder();
+
     boolean isInitializeInOrder();
 
     List<Module> getModules();

@@ -34,6 +34,7 @@ import tests.DBRotationTest;
 public class FATSuite extends TxTestContainerSuite {
 
 	static {
+		DBRotationTest.setDerby();
 		beforeSuite(DatabaseContainerType.Derby);
 	}
 

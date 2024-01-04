@@ -12,6 +12,7 @@ singleton=true
   com.ibm.websphere.security, \
   io.openliberty.security.jaas.internal.common, \
   io.openliberty.security.authentication.internal.builtin, \
+  io.openliberty.security.authentication.internal.tai, \
   com.ibm.ws.security.mp.jwt.proxy,\
   com.ibm.ws.security.kerberos.auth
 kind=ga

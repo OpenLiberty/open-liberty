@@ -26,7 +26,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -35,7 +35,7 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.checkpoint.fat.crac.app.request.fail.notsupported.CRaCResourceRequestFailNotSupportedServlet;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class CRaCResourceRequestNotSupportedTest {
     public static final String APP_NAME = "testApp";
     public static final String APP_PACKAGE = CRaCResourceRequestFailNotSupportedServlet.class.getPackage().getName();

@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.jakartaee9.internal.tests;
 
@@ -135,6 +132,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         compatibleFeatures.remove("springBoot-3.0"); // springBoot 3.0 only supports EE 10
 
         compatibleFeatures.remove("mpReactiveMessaging-3.0"); //still in development
+
+        compatibleFeatures.remove("mpHealth"); //versionless features in development
+        compatibleFeatures.remove("mpMetrics");
 
         if (!openLibertyOnly) {
             // stabilized features
@@ -286,12 +286,15 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
      */
     @Test
     public void testCdi40Feature() throws Exception {
+        Set<String> featureSet = new HashSet<>(allFeatures);
+        featureSet.remove("mpHealth");
+        featureSet.remove("mpMetrics");
         Map<String, String> specialEE9Conflicts = new HashMap<>();
         // cdi-3.0 will conflict with itself
         specialEE9Conflicts.put("cdi-3.0", "io.openliberty.cdi");
         specialEE9Conflicts.put("cdi-4.0", "io.openliberty.cdi");
         specialEE9Conflicts.put("cdi-4.1", "io.openliberty.cdi");
-        testCompatibility("cdi-3.0", allFeatures, specialEE9Conflicts);
+        testCompatibility("cdi-3.0", featureSet, specialEE9Conflicts);
     }
 
     /**
@@ -309,6 +312,9 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
      */
     @Test
     public void testServlet50Feature() throws Exception {
+        Set<String> featureSet = new HashSet<>(allFeatures);
+        featureSet.remove("mpHealth");
+        featureSet.remove("mpMetrics");
         Map<String, String> specialEE9Conflicts = new HashMap<>();
         specialEE9Conflicts.put("servlet-6.1", "com.ibm.websphere.appserver.servlet");
         specialEE9Conflicts.put("servlet-6.0", "com.ibm.websphere.appserver.servlet");
@@ -317,7 +323,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         specialEE9Conflicts.put("servlet-3.1", "com.ibm.websphere.appserver.servlet");
         specialEE9Conflicts.put("servlet-3.0", "com.ibm.websphere.appserver.servlet");
 
-        testCompatibility("servlet-5.0", allFeatures, specialEE9Conflicts);
+        testCompatibility("servlet-5.0", featureSet, specialEE9Conflicts);
     }
 
     /**
@@ -341,7 +347,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         // faces and facesContainer conflict with each other
         specialEE9Conflicts.put("facesContainer-3.0", "io.openliberty.facesProvider");
         specialEE9Conflicts.put("facesContainer-4.0", "io.openliberty.facesProvider");
-        specialEE9Conflicts.put("facesContainer-5.0", "io.openliberty.facesProvider");
+        specialEE9Conflicts.put("facesContainer-4.1", "io.openliberty.facesProvider");
         // the jakartaee-9.1 convenience feature conflicts with itself
         specialEE9Conflicts.put("jakartaee-9.1", "io.openliberty.jakartaee");
         // the convenience feature depends on jdbc-4.2 and tolerates 4.3

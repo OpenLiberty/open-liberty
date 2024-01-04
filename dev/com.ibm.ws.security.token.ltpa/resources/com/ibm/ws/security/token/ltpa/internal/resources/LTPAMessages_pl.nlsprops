@@ -48,7 +48,7 @@ LTPA_CONFIG_ERROR=CWWKS4106E: B\u0142\u0105d konfiguracji uwierzytelniania LTPA.
 LTPA_CONFIG_ERROR.explanation=Nie mo\u017cna odczyta\u0107 lub utworzy\u0107 kluczy LTPA w okre\u015blonym po\u0142o\u017ceniu.
 LTPA_CONFIG_ERROR.useraction=Upewnij si\u0119, czy to po\u0142o\u017cenie jest dost\u0119pne dla procesu serwera. Dane przechwytywania FFDC mog\u0105 wskazywa\u0107 na b\u0142\u0105d krytyczny podczas generowania lub \u0142adowania kluczy.
 
-LTPA_KEYS_TO_LOAD=CWWKS4107A: Nast\u0119puj\u0105ce pliki kluczy LTPA zosta\u0142y utworzone, usuni\u0119te lub zmodyfikowane: {0}, albo konfiguracja LTPA zosta\u0142a zmodyfikowana. Wszystkie klucze LTPA zosta\u0142y prze\u0142adowane.
+LTPA_KEYS_TO_LOAD=CWWKS4107A: Konfiguracja LTPA zosta\u0142a zmodyfikowana. Zmodyfikowano nast\u0119puj\u0105ce pliki: {0}. Wszystkie klucze LTPA w konfiguracji LTPA zostan\u0105 prze\u0142adowane.
 LTPA_KEYS_TO_LOAD.explanation=Pliki kluczy LTPA musz\u0105 zosta\u0107 prze\u0142adowane z powodu zmiany plik\u00f3w kluczy LTPA lub zmiany konfiguracji.
 LTPA_KEYS_TO_LOAD.useraction=Upewnij si\u0119, \u017ce wszystkie serwery, kt\u00f3re bior\u0105 udzia\u0142 w pojedynczym logowaniu, u\u017cywaj\u0105 tych samych kluczy i has\u0142a LTPA.
 
@@ -56,13 +56,13 @@ LTPA_KEY_CREATE_ERROR=CWWKS4108E: System nie mo\u017ce utworzy\u0107 klucza LTPA
 LTPA_KEY_CREATE_ERROR.explanation=Nie mo\u017cna utworzy\u0107 klucza LTPA.
 LTPA_KEY_CREATE_ERROR.useraction=Dane przechwytywania FFDC mog\u0105 wskazywa\u0107 na b\u0142\u0105d krytyczny podczas generowania kluczy.
 
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE=CWWKS4109W: Warto\u015b\u0107 {0} atrybutu notUseAfterDate dla pliku kluczy sprawdzania poprawno\u015bci LTPA {1} wskazuje przesz\u0142o\u015b\u0107. Klucze sprawdzania poprawno\u015bci LTPA nie mog\u0105 by\u0107 u\u017cywane.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.explanation=Klucze sprawdzania poprawno\u015bci LTPA s\u0105 u\u017cywane tylko wtedy, gdy warto\u015b\u0107 atrybutu notUseAfterDate wskazuje przysz\u0142o\u015b\u0107.
-LTPA_VALIDATION_KEYS_PASSED_NOT_USE_AFTER_DATE.useraction=Je\u015bli klucze LTPA musz\u0105 by\u0107 u\u017cywane, zaktualizuj warto\u015b\u0107 atrybutu notUseAfterDate, podaj\u0105c przysz\u0142\u0105 dat\u0119. W przeciwnym razie usu\u0144 plik kluczy LTPA.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST=CWWKS4109W: Warto\u015b\u0107 {0} atrybutu daty validUntildla pliku kluczy sprawdzania poprawno\u015bci LTPA {1} wypada w przesz\u0142o\u015bci. Klucze sprawdzania poprawno\u015bci LTPA nie mog\u0105 by\u0107 u\u017cywane.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.explanation=Klucze sprawdzania poprawno\u015bci LTPA s\u0105 u\u017cywane tylko wtedy, gdy warto\u015b\u0107 atrybutu daty validUntilwypada w przysz\u0142o\u015bci.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_IS_IN_THE_PAST.useraction=Zaktualizuj warto\u015b\u0107 atrybutu daty validUntilna dat\u0119 przypadaj\u0105c\u0105 w przysz\u0142o\u015bci, je\u015bli konieczne jest u\u017cycie kluczy LTPA. W przeciwnym razie usu\u0144 plik kluczy LTPA.
 
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT=CWWKS4110E: Warto\u015b\u0107 {0} atrybutu notUseAfterDate dla pliku kluczy sprawdzania poprawno\u015bci LTPA {1} ma niepoprawny format daty. Klucze sprawdzania poprawno\u015bci LTPA nie mog\u0105 by\u0107 u\u017cywane.
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.explanation=Warto\u015b\u0107 atrybutu notUseAfterDate musi by\u0107 zgodna z formatem ISO z podaniem daty, godziny i strefy czasowej. W poni\u017cszym przyk\u0142adzie przedstawiono format daty ISO: "2023-04-18T18:08:35Z".
-LTPA_VALIDATION_KEYS_NOT_USE_AFTER_DATE_INVALID_FORMAT.useraction=Zaktualizuj warto\u015b\u0107 atrybutu notUseAfterDate na warto\u015b\u0107 zgodn\u0105 z formatem ISO.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT=CWWKS4110E: Warto\u015b\u0107 {0} atrybutu daty validUntildla pliku kluczy sprawdzania poprawno\u015bci LTPA {1} ma niepoprawny format daty. Klucze sprawdzania poprawno\u015bci LTPA nie mog\u0105 by\u0107 u\u017cywane.
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.explanation=Warto\u015b\u0107 atrybutu daty validUntilmusi by\u0107 sformatowana w formacie ISO daty, godziny i strefy. W poni\u017cszym przyk\u0142adzie przedstawiono format daty ISO: "2023-11-18T18:08:35Z".
+LTPA_VALIDATION_KEYS_VALID_UNTIL_DATE_INVALID_FORMAT.useraction=Zaktualizuj warto\u015b\u0107 atrybutu daty validUntildo formatu ISO daty, godziny i strefy (np. '2023-11-18T18:08:35Z').
 
 LTPA_VALIDATION_KEYS_MISSING_ATTR=CWWKS4111E: W elemencie {0} LTPA validationKeys, kt\u00f3ry jest okre\u015blony w pliku server.xml, brakuje nazwy pliku, has\u0142a lub obu tych element\u00f3w: {1}.
 LTPA_VALIDATION_KEYS_MISSING_ATTR.explanation=Element LTPA validationKeys wymaga podania atrybut\u00f3w nazwy pliku i has\u0142a.
@@ -72,6 +72,14 @@ LTPA_KEYS_FILE_DOES_NOT_EXIST=CWWKS4112E: Plik kluczy sprawdzania poprawno\u015b
 LTPA_KEYS_FILE_DOES_NOT_EXIST.explanation=Plik kluczy sprawdzania poprawno\u015bci nie istnieje.
 LTPA_KEYS_FILE_DOES_NOT_EXIST.useraction=Upewnij si\u0119, \u017ce plik kluczy sprawdzania poprawno\u015bci istnieje w miejscu okre\u015blonym przez element validationKeys.
 
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED=CWWKS4113W: Atrybut monitorDirectory zosta\u0142 ustawiony na warto\u015b\u0107 true, ale przedzia\u0142 czasu monitorowania to {0}. W przypadku tworzenia, modyfikowania lub usuwania plik\u00f3w kluczy sprawdzania poprawno\u015bci w katalogu dynamiczne prze\u0142adowanie nie wyst\u0119puje.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.explanation= Atrybut monitorInterval ma warto\u015b\u0107 zero lub mniejsz\u0105 od zera. Nie mo\u017cna monitorowa\u0107 katalogu dla operacji tworzenia, usuwania lub modyfikowania plik\u00f3w z przyrostkiem .keys, dynamiczne prze\u0142adowanie nie mo\u017ce mie\u0107 wi\u0119c miejsca.
-LTPA_MONITOR_DIRECTORY_TRUE_AND_FILE_MONITOR_NOT_ENABLED.useraction=Ustaw atrybut monitorInterval na przedzia\u0142 wi\u0119kszy od zera.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED=CWWKS4113W: Atrybut LTPA updateTrigger jest ustawiony na warto\u015b\u0107 polled, atrybut monitorValidationKeysDir jest ustawiony na warto\u015b\u0107 true, ale atrybut monitorInterval jest ustawiony na warto\u015b\u0107 {0}. Po zmodyfikowaniu plik\u00f3w kluczy LTPA nie jest wykonywane dynamiczne prze\u0142adowanie.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.explanation=Atrybut monitorInterval ma warto\u015b\u0107 zero lub mniejsz\u0105 od zera. Nie mo\u017cna monitorowa\u0107 katalogu pod k\u0105tem modyfikacji plik\u00f3w z przyrostkiem .keys i nie mo\u017cna wykona\u0107 dynamicznego prze\u0142adowania.
+LTPA_UPDATE_TRIGGER_POLLED_MONITOR_VALIDATION_KEYS_DIR_TRUE_AND_MONITOR_INTERVAL_NOT_ENABLED.useraction=Ustaw atrybut monitorInterval na przedzia\u0142 wi\u0119kszy od zera.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE=CWWKS4114W: Atrybut updateTrigger jest ustawiony na warto\u015b\u0107 disabled, a atrybut monitorValidationKeysDir na warto\u015b\u0107 true. Dynamiczne prze\u0142adowanie nie jest wykonywane, gdy pliki kluczy LTPA s\u0105 modyfikowane w katalogu.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.explanation=Je\u015bli atrybut updateTrigger jest ustawiony na warto\u015b\u0107 disabled, katalog nie jest monitorowany pod k\u0105tem modyfikacji plik\u00f3w z przyrostkiem .keys i nie jest wykonywane prze\u0142adowanie dynamiczne. Nawet je\u015bli atrybut monitorValidationKeysDir ma warto\u015b\u0107 true, atrybut jest ignorowany, a katalog nie jest monitorowany.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Ustaw warto\u015b\u0107 atrybutu updateTrigger na polled lub mbean.
+
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: Atrybut updateTrigger jest ustawiony na warto\u015b\u0107 disabled, a odst\u0119p czasu monitorowania jest wi\u0119kszy ni\u017c {0}. Po zmodyfikowaniu plik\u00f3w kluczy LTPA nie jest wykonywane dynamiczne prze\u0142adowanie.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Je\u015bli atrybut updateTrigger jest ustawiony na warto\u015b\u0107 disabled, pliki nie s\u0105 monitorowane pod k\u0105tem modyfikacji plik\u00f3w z przyrostkiem .keys i nie jest wykonywane prze\u0142adowanie dynamiczne. Nawet je\u015bli atrybut monitorInterval ma warto\u015b\u0107 wi\u0119ksz\u0105 od zera, atrybut jest ignorowany, a pliki nie s\u0105 monitorowane.
+LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Ustaw warto\u015b\u0107 atrybutu updateTrigger na polled lub mbean.

@@ -10,7 +10,8 @@ IBM-SPI-Package: \
  com.ibm.wsspi.anno.info, \
  com.ibm.wsspi.anno.service, \
  com.ibm.wsspi.anno.targets, \
- com.ibm.wsspi.anno.util
+ com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification
 Manifest-Version: 1.0
 IBM-Process-Types: server, \
  client

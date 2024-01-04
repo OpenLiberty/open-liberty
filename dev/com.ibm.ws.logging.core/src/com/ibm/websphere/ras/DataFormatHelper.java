@@ -56,6 +56,8 @@ public class DataFormatHelper {
         newPattern = newPattern.replace('K', 'H');
         newPattern = newPattern.replace('k', 'H');
         newPattern = newPattern.replace('a', ' ');
+        // Java 20 added a narrow no-break space character into the format (Unicode 202F character)
+        newPattern = newPattern.replace('\u202f', ' ');
         newPattern = newPattern.trim();
         pattern = newPattern;
         DateTimeFormatterBuilder builder = new DateTimeFormatterBuilder().appendPattern(pattern);

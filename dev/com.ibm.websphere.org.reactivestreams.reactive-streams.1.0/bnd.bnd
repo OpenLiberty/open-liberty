@@ -25,8 +25,8 @@ Export-Package: \
   org.reactivestreams; version=1.1.0
 
 Include-Resource: \
-  @${repo;org.reactivestreams:reactive-streams;1.0.3;EXACT}!/!org/reactivestreams/FlowAdapters*.class, \
-  META-INF/versions/9=@${repo;org.reactivestreams:reactive-streams;1.0.3;EXACT}!/org/reactivestreams/FlowAdapters*.class
+  @${repo;org.reactivestreams:reactive-streams;1.0.4;EXACT}!/!org/reactivestreams/FlowAdapters*.class, \
+  META-INF/versions/9=@${repo;org.reactivestreams:reactive-streams;1.0.4;EXACT}!/org/reactivestreams/FlowAdapters*.class
 
 WS-TraceGroup: REACTIVESTREAMS
 

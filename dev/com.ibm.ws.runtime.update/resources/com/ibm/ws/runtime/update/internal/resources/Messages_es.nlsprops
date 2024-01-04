@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -31,8 +31,8 @@
 # 1100-1199 com.ibm.ws.runtime.update.internal.resources.Messages
 # -------------------------------------------------------------------------------------------------
 
-quiesce.begin=CWWKE1100I: Esperando hasta 30 segundos para que el servidor se desactive temporalmente.
-quiesce.begin.explanation=El servidor espera hasta 30 segundos a que se desactiven temporalmente los servicios antes de continuar con el cierre.
+quiesce.begin=CWWKE1100I: Esperando un m\u00e1ximo de {0} segundos para que el servidor se desactive temporalmente.
+quiesce.begin.explanation=El servidor espera a que los servicios se inmovilice antes de continuar con la conclusi\u00f3n.
 quiesce.begin.useraction=No se requiere ninguna acci\u00f3n.
 
 quiesce.end=CWWKE1101I: La desactivaci\u00f3n temporal del servidor ha finalizado.
@@ -40,11 +40,11 @@ quiesce.end.explanation=La operaci\u00f3n de desactivaci\u00f3n temporal ha fina
 quiesce.end.useraction=No se requiere ninguna acci\u00f3n.
 
 quiece.warning=CWWKE1102W: La operaci\u00f3n de desactivaci\u00f3n temporal no ha finalizado. El servidor se detendr\u00e1 ahora.
-quiece.warning.explanation=El proceso no ha podido desactivar temporalmente todos los servicios en 30 segundos.
-quiece.warning.useraction=Puede ignorar de forma segura los mensajes de error que son el resultado de servicios necesarios no disponibles.
+quiece.warning.explanation=El proceso no ha podido desactivar temporalmente todos los servicios dentro del periodo de tiempo de espera de desactivaci\u00f3n temporal.
+quiece.warning.useraction=Puede ignorar de forma segura los mensajes de error que son el resultado de servicios necesarios no disponibles. Si el problema persiste, aumente la duraci\u00f3n de 'quiesceTimeout' a\u00f1adiendo el atributo 'quiesceTimeout' al elemento 'executor' en el archivo 'server.xml'.
 
-client.quiesce.begin=CWWKE1103I: Esperando hasta 30 segundos para que el cliente se desactive temporalmente.
-client.quiesce.begin.explanation=El cliente espera hasta 30 segundos a que se desactiven temporalmente los servicios antes de continuar con el cierre.
+client.quiesce.begin=CWWKE1103I: Esperando un m\u00e1ximo de {0} segundos para que el cliente se desactive temporalmente.
+client.quiesce.begin.explanation=El cliente espera a que los servicios se desactiven temporalmente antes de continuar con la conclusi\u00f3n.
 client.quiesce.begin.useraction=No se requiere ninguna acci\u00f3n.
 
 client.quiesce.end=CWWKE1104I: La desactivaci\u00f3n temporal del cliente ha finalizado.

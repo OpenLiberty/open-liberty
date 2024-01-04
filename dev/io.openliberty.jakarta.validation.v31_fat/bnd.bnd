@@ -19,11 +19,10 @@ src: \
 
 fat.project: true
 
-#TODO 21
-javac.source: 17
-javac.target: 17
+javac.source: 21
+javac.target: 21
 
-fat.minimum.java.level: 17
+fat.minimum.java.level: 21
 fat.project: true
 
 tested.features: expressionlanguage-5.0

@@ -39,7 +39,7 @@ import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
 
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -50,7 +50,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @LibertyServerWrapper
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class OidcClientBasicTests extends CommonTest {
 
     private static Class<?> thisClass = OidcClientBasicTests.class;

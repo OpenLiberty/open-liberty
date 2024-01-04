@@ -1,0 +1,32 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+missing.context.service.CWMRX1200E=CWMRX1200E: {0} \u901a\u9053\u914d\u7f6e\u4e3a\u4f7f\u7528 {1} \u4e0a\u4e0b\u6587\u670d\u52a1\uff0c\u4f46\u627e\u4e0d\u5230\u6b64\u7c7b\u4e0a\u4e0b\u6587\u670d\u52a1\u3002 \u8bf7\u786e\u4fdd\u5728 server.xml \u6587\u4ef6\u4e2d\u5b9a\u4e49\u4e86\u4e0a\u4e0b\u6587\u670d\u52a1\uff0c\u5e76\u4e14\u5df2\u542f\u7528 Java EE \u6216 Jakarta Concurrency \u529f\u80fd\u90e8\u4ef6\u3002
+missing.context.service.CWMRX1200E.explanation=\u53cd\u5e94\u6d88\u606f\u4f20\u9012\u901a\u9053\u914d\u7f6e\u4e3a\u4f7f\u7528\u6307\u5b9a\u7684\u4e0a\u4e0b\u6587\u670d\u52a1\uff0c\u4f46\u627e\u4e0d\u5230\u5177\u6709\u8be5\u540d\u79f0\u7684\u4e0a\u4e0b\u6587\u670d\u52a1\u3002
+missing.context.service.CWMRX1200E.useraction=\u5728 server.xml \u6587\u4ef6\u4e2d\u5b9a\u4e49\u4e0a\u4e0b\u6587\u670d\u52a1\uff0c\u6216\u8005\u9664\u53bb\u901a\u9053\u7684 context.service \u914d\u7f6e\u5c5e\u6027\u3002

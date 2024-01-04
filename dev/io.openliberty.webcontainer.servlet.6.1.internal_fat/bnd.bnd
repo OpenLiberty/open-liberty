@@ -11,13 +11,19 @@
 bVersion=1.0
 
 src: \
-    fat/src
+    fat/src,\
+    test-applications/CharSetEncodingTest.jar/src,\
+    test-applications/CharSetEncodingTest.war/src,\
+    test-applications/HTTPResponseCodesTest.war/src
 
 fat.project: true
 
-javac.source: 17
-javac.target: 17
+javac.source: 21
+javac.target: 21
 
 fat.minimum.java.level: 21
 
 -buildpath: \
+    io.openliberty.jakarta.servlet.6.1;version=latest,\
+    org.apache.httpcomponents.client5:httpclient5;version=5.0.2,\
+    org.apache.httpcomponents.core5:httpcore5;version=5.0.2

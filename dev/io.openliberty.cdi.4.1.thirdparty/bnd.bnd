@@ -1,0 +1,31 @@
+#*******************************************************************************
+# Copyright (c) 2017, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 21
+javac.target: 21
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+
+Bundle-Name: WebSphere CDI Weld Third Party API
+Bundle-SymbolicName: io.openliberty.cdi.4.1.thirdparty
+Bundle-Description: WebSphere CDI 4.1 Weld Third Party API
+
+Export-Package:\
+ org.jboss.weld.context;version=6.0.0.Alpha1, \
+ org.jboss.weld.context.*;version=6.0.0.Alpha1
+
+Import-Package:*
+
+publish.wlp.jar.suffix: dev/api/third-party
+
+-buildpath: \
+	io.openliberty.org.jboss.weld6;version=latest

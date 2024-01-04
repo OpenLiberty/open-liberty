@@ -104,3 +104,7 @@ enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=Actualiza\u021bi serve
 unversioned.beansXML.warning.CWOWB1018W=CWOWB1018W: Utilizarea unui fi\u0219ier beans.xml CDI f\u0103r\u0103 versiune poate duce la un comportament nea\u0219teptat atunci c\u00e2nd se utilizeaz\u0103 CDI 4.0 sau o versiune ulterioar\u0103: {0}
 unversioned.beansXML.warning.CWOWB1018W.explanation=\u00cenainte de CDI 4.0, un fi\u0219ier beans.xml care nu era gol, dar nu avea versiune \u00eensemna c\u0103 arhiva a fost tratat\u0103 ca o arhiv\u0103 de bean-uri explicit\u0103 (toate clasele sunt eligibile pentru a fi bean-uri). \u00cen CDI 4.0 sau versiunile ulterioare, arhiva este considerat\u0103 o arhiv\u0103 de bean-uri implicit\u0103 (numai clasele adnotate sunt eligibile pentru a fi bean-uri).
 unversioned.beansXML.warning.CWOWB1018W.useraction=Actualiza\u021bi fi\u0219ierul beans.xml \u00een cadrul aplica\u021biei dumneavoastr\u0103, pentru a utiliza o versiune mai nou\u0103 a schemei \u0219i pentru a v\u0103 asigura c\u0103 sunt setate \u00een mod corespunz\u0103tor atributele version \u0219i bean-discovery-mode.
+
+no.bda.for.module.CWOWB1019E=CWOWB1019E: A ap\u0103rut o eroare intern\u0103 WebSphere Application Server. Contact WebSphere Application Server cu urm\u0103toarele date: {0} {1}
+no.bda.for.module.CWOWB1019E.explanation=CMSG0001
+no.bda.for.module.CWOWB1019E.useraction=Vede\u0163i informa\u0163iile pentru determinarea problemei pe pagina web pentru suportul WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.

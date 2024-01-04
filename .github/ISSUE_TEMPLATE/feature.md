@@ -159,7 +159,7 @@ A feature is ready to GA after it is Feature Complete and has obtained all neces
 ### **Feature Complete**
 - [ ] Feature implementation and tests completed.
   - [ ] All PRs are merged.
-  - [ ] All epic and child issues are closed.
+  - [ ] All related/child issues are closed.
   - [ ] All stop ship issues are completed.
 - [ ] Legal: all necessary approvals granted.
 - [ ] Translation: Feature may only proceed to GA if it has either `Translation - Complete` or `Translation - Missing` label
@@ -210,8 +210,11 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
   - Add a link to the GA Blog issue in the [Documents](#documents) section.
   - Note: This is for inclusion into the overall [release blog post](https://openliberty.io/blog/?search=release&key=tag).  If, in addition, you'd also like to create a dedicated blog post about your feature, then follow the "Standalone Feature Blog Post" instructions under the [Other Deliverables](#other-deliverables) section.
 
+### **Post GM** (Complete before GA)
+- [ ] After confirming this feature has been included in the GM driver, feature owner closes this issue.
+
 ### **Post GA**
-- [ ] Replace `target:YY00X` label with the appropriate `release:YY00X`. ([OpenLiberty/release-manager](https://github.com/orgs/OpenLiberty/teams/release-manager))
+- [ ] Remove the `target:ga` and `target:YY00X` labels, and add the appropriate `release:YY00X`. ([OpenLiberty/release-manager](https://github.com/orgs/OpenLiberty/teams/release-manager))
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Other Deliverables**

@@ -1,0 +1,230 @@
+<!--
+    Copyright (c) 2022, 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<oauthProvider
+		id="OAuthConfigSample_mainPath"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>bcl_mainPath_confClient</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_publicClient_withSecret</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_publicClient_withoutSecret</autoAuthorizeClient>
+		<autoAuthorizeClient>variableIntrospectValidationEndpoint</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_accessTokenCacheEnabled_false_confClient</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_accessTokenInLtpaCookie_true_confClient</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_mainPath_introspectFalse_confClient</autoAuthorizeClient>
+		
+	</oauthProvider>
+
+	<oauthProvider
+		id="OAuthConfigSample_defaultBCLTimeout"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>bcl_defaultBCLTimeout</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_otherDefaultBCLTimeout</autoAuthorizeClient>
+		
+	</oauthProvider>
+
+	<oauthProvider
+		id="OAuthConfigSample_shortBCLTimeout"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>bcl_shortBCLTimeout</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_otherShortBCLTimeout</autoAuthorizeClient>
+		
+	</oauthProvider>
+
+	<oauthProvider
+		id="OAuthConfigSample_invalidBCL"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>bcl_invalidBCLUri</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_omittedBCLUri</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_returns400</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_returns501</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_logsMsg</autoAuthorizeClient>
+		
+	</oauthProvider>
+
+	<oauthProvider
+		id="OAuthConfigSample_logger1"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>loggerClient1-1</autoAuthorizeClient>
+		<autoAuthorizeClient>loggerClient1-2</autoAuthorizeClient>
+		<autoAuthorizeClient>loggerClient1-3</autoAuthorizeClient>
+		<autoAuthorizeClient>loggerClient1-4</autoAuthorizeClient>
+		
+	</oauthProvider>	
+
+	<oauthProvider
+		id="OAuthConfigSample_logger2"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>loggerClient2-1</autoAuthorizeClient>
+		<autoAuthorizeClient>loggerClient2-2</autoAuthorizeClient>
+		<autoAuthorizeClient>loggerClient2-3</autoAuthorizeClient>
+		<autoAuthorizeClient>loggerClient2-4</autoAuthorizeClient>
+		
+	</oauthProvider>
+		
+	<oauthProvider
+		id="OAuthConfigSample_logger3"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>loggerClient3-1</autoAuthorizeClient>
+		
+	</oauthProvider>		
+	
+	<oauthProvider
+		id="OAuthConfigSample_logger4"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>loggerClient4-1</autoAuthorizeClient>
+		
+	</oauthProvider>		
+	
+	<oauthProvider
+		id="OAuthConfigSample_useLogoutTokenForAccess"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>useLogoutTokenForAccess</autoAuthorizeClient>
+		
+	</oauthProvider>		
+	
+	<oauthProvider
+		id="OAuthConfigSample_multiClientWithAndWithoutBCL"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>bcl_client1</autoAuthorizeClient>
+		<autoAuthorizeClient>nobcl_client1</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_client2</autoAuthorizeClient>
+		
+	</oauthProvider>
+
+	<oauthProvider
+		id="OAuthConfigSample_checkDuplicateBCLCalls"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>checkDupBcl_client1</autoAuthorizeClient>
+		<autoAuthorizeClient>checkDupBcl_client2</autoAuthorizeClient>
+		
+	</oauthProvider>
+	
+	<oauthProvider
+		id="OAuthConfigSample_http_httpsRequired_true"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>bcl_http_confClient_httpsRequired_true</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_http_publicClient_httpsRequired_true_withSecret</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_http_publicClient_httpsRequired_true_withoutSecret</autoAuthorizeClient>
+		
+	</oauthProvider>
+		
+	<oauthProvider
+		id="OAuthConfigSample_http_httpsRequired_false"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+		httpsRequired="false"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>bcl_http_confClient_httpsRequired_false</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_http_publicClient_httpsRequired_false_withSecret</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_http_publicClient_httpsRequired_false_withoutSecret</autoAuthorizeClient>
+		
+	</oauthProvider>
+		
+	<oauthProvider
+		id="OAuthConfigSample_idTokenCacheEnabledFalse"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>idTokenCacheEnabledFalseClient-1</autoAuthorizeClient>
+		<autoAuthorizeClient>idTokenCacheEnabledFalseClient-2</autoAuthorizeClient>
+		<autoAuthorizeClient>idTokenCacheEnabledFalseClient-3</autoAuthorizeClient>
+		
+	</oauthProvider>	
+	
+	<oauthProvider
+		id="OAuthConfigSample_accessTokenCacheEnabledFalse"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+		accessTokenCacheEnabled="false"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>accessTokenCacheEnabledFalseClient-1</autoAuthorizeClient>
+		<autoAuthorizeClient>accessTokenCacheEnabledFalseClient-2</autoAuthorizeClient>
+		<autoAuthorizeClient>accessTokenCacheEnabledFalseClient-3</autoAuthorizeClient>
+		
+	</oauthProvider>			
+			
+	<oauthProvider
+		id="OAuthConfigSample_userClientTokenLimit"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+		userClientTokenLimit="2"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>bcl_userClientTokenLimit_Client</autoAuthorizeClient>
+		
+	</oauthProvider>			
+
+	<oauthProvider
+		id="OAuthConfigSample_appPasswords"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+		passwordGrantRequiresAppPassword="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>bcl_appPasswordsClient1</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_appPasswordsClient2</autoAuthorizeClient>
+	
+	</oauthProvider>			
+
+	<oauthProvider
+		id="OAuthConfigSample_appTokens"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>bcl_appTokensClient1</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_appTokensClient2</autoAuthorizeClient>
+		
+	</oauthProvider>			
+		
+</server>

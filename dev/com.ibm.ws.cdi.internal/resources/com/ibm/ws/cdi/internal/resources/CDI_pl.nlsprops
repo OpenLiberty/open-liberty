@@ -104,3 +104,7 @@ enableImplicitBeanArchives.conflict.CWOWB1017W.useraction=Zaktualizuj plik serve
 unversioned.beansXML.warning.CWOWB1018W=CWOWB1018W: U\u017cycie pliku beans.xml bez kontroli wersji mo\u017ce prowadzi\u0107 do nieoczekiwanego zachowania w przypadku korzystania ze \u015brodowiska CDI 4.0 lub nowszego: {0}
 unversioned.beansXML.warning.CWOWB1018W.explanation=W wersjach wcze\u015bniejszych ni\u017c CDI 4.0 niepusty ale poza systemem kontroli wersji plik beans.xml oznacza\u0142, \u017ce archiwum zosta\u0142o potraktowane jako jawne archiwum komponent\u00f3w bean (wszystkie klasy kwalifikowane s\u0105 jako komponenty bean). W wersji CDI 4.0 lub nowszej archiwum to jawne archiwum komponent\u00f3w bean (tylko klasy z adnotacjami s\u0105 kwalifikowane jako komponenty bean).
 unversioned.beansXML.warning.CWOWB1018W.useraction=Zaktualizuj plik beans.xml w aplikacji, aby u\u017cy\u0107 nowszej wersji schematu, i upewnij si\u0119, \u017ce atrybuty version i bean-discovery-mode s\u0105 poprawnie ustawione.
+
+no.bda.for.module.CWOWB1019E=CWOWB1019E: Wyst\u0105pi\u0142 b\u0142\u0105d\nwewn\u0119trzny serwera WebSphere Application Server. Skontaktuj si\u0119 z dzia\u0142em wsparcia WebSphere Application Server , podaj\u0105c nast\u0119puj\u0105ce dane: {0} {1}
+no.bda.for.module.CWOWB1019E.explanation=CMSG0001
+no.bda.for.module.CWOWB1019E.useraction=Informacje dotycz\u0105ce okre\u015blania problemu mo\u017cna znale\u017a\u0107 na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.

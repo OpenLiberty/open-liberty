@@ -86,6 +86,9 @@ public class ValidateJPAFeatureTest extends JPAFATServletClient {
         } else if (AbstractFATSuite.repeatPhase.contains("31")) {
             Assert.assertTrue("Expected persistence-3.1 or persistenceContainer-3.1 feature to be installed",
                               (installedFeatures.contains("persistence-3.1") || installedFeatures.contains("persistencecontainer-3.1")));
+        } else if (AbstractFATSuite.repeatPhase.contains("32")) {
+            Assert.assertTrue("Expected persistence-3.2 or persistenceContainer-3.2 feature to be installed",
+                              (installedFeatures.contains("persistence-3.2") || installedFeatures.contains("persistencecontainer-3.2")));
         } else {
             Assert.fail("Unexpected AbstractFATSuite.repeatPhase found: " + AbstractFATSuite.repeatPhase);
         }

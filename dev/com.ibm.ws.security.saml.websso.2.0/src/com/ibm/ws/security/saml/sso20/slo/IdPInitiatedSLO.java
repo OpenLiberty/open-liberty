@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,7 @@ import org.opensaml.saml.saml2.core.Status;
 import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.core.StatusResponseType;
 import org.opensaml.saml.saml2.core.impl.IssuerBuilder;
-import org.opensaml.saml.saml2.core.impl.LogoutRequestMarshaller;
+import org.opensaml.saml.saml2.core.impl.LogoutResponseMarshaller;
 import org.opensaml.saml.saml2.core.impl.LogoutResponseBuilder;
 import org.opensaml.saml.saml2.core.impl.StatusBuilder;
 import org.opensaml.saml.saml2.core.impl.StatusCodeBuilder;
@@ -417,7 +417,7 @@ public class IdPInitiatedSLO {
         String result = null;
         if (logoutResponse != null) {
             try {
-                LogoutRequestMarshaller marshaller = new LogoutRequestMarshaller();
+                LogoutResponseMarshaller marshaller = new LogoutResponseMarshaller();
                 Element element = marshaller.marshall(logoutResponse);
                 //result = XMLHelper.nodeToString(element);
                 result = SerializeSupport.nodeToString(element); //v3

@@ -216,6 +216,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "ltpa")
     private LTPA ltpa;
 
+    @XmlElement(name = "authentication")
+    private Authentication auth;
+
     @XmlElement(name = "sslDefault")
     private SSLDefault sslDefault;
 
@@ -713,6 +716,12 @@ public class ServerConfiguration implements Cloneable {
         if (ltpa == null)
             ltpa = new LTPA();
         return ltpa;
+    }
+
+    public Authentication getAuthentication() {
+        if (auth == null)
+            auth = new Authentication();
+        return auth;
     }
 
     /**
