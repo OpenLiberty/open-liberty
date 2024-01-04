@@ -33,7 +33,7 @@ import org.jboss.weld.context.http.HttpConversationContext;
 // class from weld at build-time and copy it here.  Then we can write a class that extends the CAVH.
 // This will allow us to automatically pick up any changes that are delivered into new versions of weld's CAVH
 
-//The reason we dpublicate a weld class here is becaus com.ibm.ws.jsfContainer is loaded by the app classloader
+//The reason we duplicate a weld class here is because com.ibm.ws.jsfContainer is loaded by the app classloader
 //and uses the app classloader's instance of jsf classes like ViewHandler and FacesContext.
 
 //ConversationAwareViewHandler is loaded by liberty's normal classloader and has its own version of FacesContext
