@@ -57,13 +57,13 @@
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: DatabaseStore \u5b57\u9996\u914d\u7f6e {1} \u5305\u542b\u7121\u6548\u5b57\u5143\u3002
+ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: DatabaseStore \u5b57\u9996\u914d\u7f6e {0} \u5305\u542b\u7121\u6548\u5b57\u5143\u3002
 ILLEGAL_IDENTIFIER_CWWKD0200E.explanation=DatabaseStore \u5b57\u9996\u53ea\u80fd\u5305\u542b\u6578\u5b57\u3001\u5b57\u6bcd\u6216 '_' \u7b26\u865f\u3002
 ILLEGAL_IDENTIFIER_CWWKD0200E.useraction=\u5fc5\u9808\u4fee\u6539 DatabaseStore \u5b57\u9996\uff0c\u4f7f\u5176\u53ea\u5305\u542b\u6578\u5b57\u3001\u5b57\u6bcd\u6216 '_' \u7b26\u865f\u3002
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: DatabaseStore \u7db1\u76ee\u914d\u7f6e {1} \u5305\u542b\u7121\u6548\u5b57\u5143\u3002
+ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: DatabaseStore \u7db1\u76ee\u914d\u7f6e {0} \u5305\u542b\u7121\u6548\u5b57\u5143\u3002
 ILLEGAL_IDENTIFIER_CWWKD0201E.explanation=DatabaseStore \u7db1\u76ee\u53ea\u80fd\u5305\u542b\u6578\u5b57\u3001\u5b57\u6bcd\u6216 '_' \u7b26\u865f\u3002
 ILLEGAL_IDENTIFIER_CWWKD0201E.useraction=\u5fc5\u9808\u4fee\u6539 DatabaseStore \u7db1\u76ee\uff0c\u4f7f\u5176\u53ea\u5305\u542b\u6578\u5b57\u3001\u5b57\u6bcd\u6216 '_' \u7b26\u865f\u3002
 

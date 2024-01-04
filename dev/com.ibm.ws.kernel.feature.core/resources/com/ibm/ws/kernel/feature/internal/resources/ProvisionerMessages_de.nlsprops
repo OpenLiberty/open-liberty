@@ -230,6 +230,15 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: D
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=Die Serverkonfiguration enth\u00e4lt eine nicht kompatible Kombination von Features f\u00fcr die angegebenen Programmiermodelle. Dieser Konflikt kann auftreten, wenn die zwei nicht kompatiblen Features direkt in der Serverkonfiguration konfiguriert werden, oder wenn die konfigurierten Features unterschiedliche Versionen eines Features enthalten, die nicht kompatibel sind.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Versuchen Sie, eine kompatible Version f\u00fcr die konfigurierten Features anzugeben, die den Konflikt in der Datei server.xml verursacht haben. Wenn keine anderen Versionen verf\u00fcgbar sind, sind die konfigurierten Features nicht miteinander kompatibel und k\u00f6nnen nicht gleichzeitig konfiguriert werden.
 
+UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: F\u00fcr die Umgebungsvariable PREFERRED_FEATURE_VERSIONS konnte kein Wert gefunden werden.
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=Sie haben versionslose Features in Ihrer Konfiguration und die Umgebungsvariable PREFERRED_FEATURE_VERSIONS konnte nicht gefunden werden
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=\u00dcberpr\u00fcfen Sie, ob die Umgebungsvariable PREFERRED_FEATURE_VERSIONS vorhanden und korrekt geschrieben ist.
+
+# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: Die Umgebungsvariable PREFERRED_FEATURE_VERSIONS enth\u00e4lt keinen Wert f\u00fcr {0}
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=F\u00fcr jedes versionslose Feature in Ihrer Konfiguration muss in PREFERRED_FEATURE_VERSIONS ein bevorzugter Versionswert vorhanden sein.
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=Wert in PREFERRED_FEATURE_VERSIONS f\u00fcr das Feature hinzuf\u00fcgen
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: Das Feature {0} ist bereits vorhanden. Es wird nicht erneut installiert. Um ein bereits vorhandenes Feature zu \u00e4ndern, m\u00fcssen Sie es zuerst manuell deinstallieren.

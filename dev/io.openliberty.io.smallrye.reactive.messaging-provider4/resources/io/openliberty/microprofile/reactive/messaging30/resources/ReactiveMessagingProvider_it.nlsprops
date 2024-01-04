@@ -1,0 +1,32 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+reactive.messaging.validation.error.CWMRX1100E=CWMRX1100E: Si \u00e8 verificato un errore durante la convalida della messaggistica reattiva quando \u00e8 stata avviata l'applicazione {0} . L'errore era {1}
+reactive.messaging.validation.error.CWMRX1100E.explanation=Durante la convalida del grafico Reactive Messaging creato, sono stati rilevati errori che impediscono l'invio o la ricezione di messaggi.
+reactive.messaging.validation.error.CWMRX1100E.useraction=Risolvere gli errori riportati e ridistribuire l'applicazione.

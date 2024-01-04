@@ -1,0 +1,32 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+missing.context.service.CWMRX1200E=CWMRX1200E: Il canale {0} \u00e8 stato configurato per utilizzare il servizio di contesto {1} , ma non \u00e8 stato trovato alcun servizio di contesto. Verificare che il servizio di contesto sia stato definito nel file server.xml e che la funzione Java EE o Jakarta Concurrency sia abilitata.
+missing.context.service.CWMRX1200E.explanation=Il canale di messaggistica reattiva \u00e8 configurato per utilizzare un servizio di contesto denominato, ma non \u00e8 possibile trovare alcun servizio di contesto con quel nome.
+missing.context.service.CWMRX1200E.useraction=Definire il servizio di contesto nel file server.xml oppure rimuovere la propriet\u00e0 di configurazione context.service per il canale.

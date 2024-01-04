@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1200 to CWWCK1399
+# All messages must use the range CWWCK1200 to CWWCK1409
 
 CWWKC1200.resource.unavailable=CWWKC1200E: A(z) {1} alkalmaz\u00e1s \u00e1ltal meghat\u00e1rozott {0} nem \u00e9rhet\u0151 el norm\u00e1l id\u0151n bel\u00fcl.
 CWWKC1200.resource.unavailable.explanation=T\u00fal nagy a rendszer terhel\u00e9se az er\u0151forr\u00e1s-meghat\u00e1roz\u00e1si feljegyz\u00e9sek \u00e9s a telep\u00edt\u00e9sle\u00edr\u00f3 bejegyz\u00e9sek feldolgoz\u00e1sa sor\u00e1n, miel\u0151tt az alkalmaz\u00e1s megpr\u00f3b\u00e1ln\u00e1 haszn\u00e1lni azokat.
@@ -46,3 +46,23 @@ CWWKC1203.duplicate.context.useraction=Friss\u00edtse az alkalmaz\u00e1st, a k\u
 CWWKC1204.not.serializable=CWWKC1204E: Nem hozhat\u00f3 l\u00e9tre soros\u00edthat\u00f3 k\u00f6rnyezetf\u00fcgg\u0151 proxy, amely a(z) {0} sz\u00e1lkontextust tov\u00e1bb\u00edtja, amely nem soros\u00edthat\u00f3.
 CWWKC1204.not.serializable.explanation=A harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 sz\u00e1lkontextus t\u00edpusok nem kompatibilisek a soros\u00edt\u00e1ssal, \u00e9s nem konfigur\u00e1lhat\u00f3k soros\u00edthat\u00f3 k\u00f6rnyezetf\u00fcgg\u0151 proxykhoz t\u00f6rt\u00e9n\u0151 tov\u00e1bb\u00edt\u00e1sra.
 CWWKC1204.not.serializable.useraction=Friss\u00edtse az alkalmaz\u00e1st, hogy egy nem soros\u00edthat\u00f3 k\u00f6rnyezetf\u00fcgg\u0151 proxyt k\u00e9rjen, vagy gondoskodjon arr\u00f3l, hogy ne legyenek tov\u00e1bb\u00edtva harmadik f\u00e9lt\u0151l sz\u00e1rmaz\u00f3 kontextust\u00edpusok.
+
+
+
+# Messages for @Asynchronous that are shared with other bundles:
+
+CWWKC1400.unsupported.return.type=CWWKC1400E: A(z) {0} nem \u00e9rv\u00e9nyes visszat\u00e9r\u00e9si t\u00edpus a(z) {2} oszt\u00e1ly {1} met\u00f3dus\u00e1hoz. A(z) {3} feljegyz\u00e9ssel ell\u00e1tott met\u00f3dusok \u00e9rv\u00e9nyes visszat\u00e9r\u00e9si t\u00edpusai: {4}.
+CWWKC1400.unsupported.return.type.explanation=A Jakarta egyidej\u0171s\u00e9gi specifik\u00e1ci\u00f3 korl\u00e1tozza az ezzel a feljegyz\u00e9ssel rendelkez\u0151 met\u00f3dusok \u00e9rv\u00e9nyes visszat\u00e9r\u00e9si t\u00edpusainak tartom\u00e1ny\u00e1t.
+CWWKC1400.unsupported.return.type.useraction=Friss\u00edtse az alkalmaz\u00e1son bel\u00fcli met\u00f3dust, hogy az egyik t\u00e1mogatott visszat\u00e9r\u00e9si t\u00edpust haszn\u00e1lja, vagy t\u00e1vol\u00edtsa el a feljegyz\u00e9st a met\u00f3dusb\u00f3l.
+
+CWWKC1401.class.anno.disallowed=CWWKC1401E: A(z) {0} feljegyz\u00e9s met\u00f3dus szinten enged\u00e9lyezett. A(z) {1} oszt\u00e1ly oszt\u00e1lyszintj\u00e9n nem haszn\u00e1lhat\u00f3.
+CWWKC1401.class.anno.disallowed.explanation=Ez a feljegyz\u00e9s nem adhat\u00f3 meg oszt\u00e1lyszinten.
+CWWKC1401.class.anno.disallowed.useraction=Helyezze \u00e1t a feljegyz\u00e9st az oszt\u00e1ly egyedi met\u00f3dusaiba.
+
+CWWKC1402.not.managed.executor=CWWKC1402E: A(z) {0} feljegyz\u00e9s a(z) {2} oszt\u00e1ly {1} met\u00f3dus\u00e1ban a(z) {3} JNDI nevet adja meg, amely a(z) {4} er\u0151forr\u00e1sra oldhat\u00f3 fel, amely viszont nem ManagedExecutorService vagy ManagedScheduledExecutorService. Az er\u0151forr\u00e1s \u00e1ltal megval\u00f3s\u00edtott fel\u00fcletek: {5}.
+CWWKC1402.not.managed.executor.explanation=A JNDI n\u00e9vnek olyan er\u0151forr\u00e1sra kell mutatnia, amely megval\u00f3s\u00edtja a ManagedExecutorService fel\u00fcletet vagy a ManagedScheduledExecutorService fel\u00fcletet.
+CWWKC1402.not.managed.executor.useraction=Jav\u00edtsa ki a JNDI nevet olyan er\u0151forr\u00e1s megad\u00e1s\u00e1hoz, amely el\u00e9rhet\u0151 az alkalmaz\u00e1s \u00f6sszetev\u0151 sz\u00e1m\u00e1ra, \u00e9s megval\u00f3s\u00edtja a ManagedExecutorService fel\u00fcletet vagy a ManagedScheduledExecutorService fel\u00fcletet.
+
+CWWKC1403.unsupported.tx.type=CWWKC1403E: A(z) {0} feljegyz\u00e9s a(z) {1} \u00e9rt\u00e9ket adja meg, ami nem enged\u00e9lyezett a(z) {2} feljegyz\u00e9ssel kombin\u00e1lva, amely a(z) {4} oszt\u00e1ly {3} met\u00f3dus\u00e1ban szerepel. A megengedett \u00e9rt\u00e9kek: {5}.
+CWWKC1403.unsupported.tx.type.explanation=A k\u00e9t feljegyz\u00e9s egy\u00fcttes haszn\u00e1lata att\u00f3l f\u00fcgg, hogy az els\u0151 feljegyz\u00e9s \u00e9rt\u00e9ke enged\u00e9lyezett-e a m\u00e1sodik feljegyz\u00e9ssel.
+CWWKC1403.unsupported.tx.type.useraction=Friss\u00edtse az alkalmaz\u00e1st, hogy az egyik t\u00e1mogatott \u00e9rt\u00e9ket haszn\u00e1lja, vagy t\u00e1vol\u00edtsa el az egyik feljegyz\u00e9s\u00e9t.

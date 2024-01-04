@@ -1,0 +1,32 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+reactive.messaging.validation.error.CWMRX1100E=CWMRX1100E: {0} \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774 \uc2dc\uc791\ub420 \ub54c Reactive Messaging \uc720\ud6a8\uc131 \uac80\uc99d \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc624\ub958\ub294 {1}\uc785\ub2c8\ub2e4.
+reactive.messaging.validation.error.CWMRX1100E.explanation=\uad6c\uc131\ub41c Reactive Messaging \uadf8\ub798\ud504\uc758 \uc720\ud6a8\uc131\uc744 \uac80\uc99d\ud558\ub294 \uc911\uc5d0 \uba54\uc2dc\uc9c0 \uc804\uc1a1 \ub610\ub294 \uc218\uc2e0\uc744 \ubc29\ud574\ud558\ub294 \uc624\ub958\uac00 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+reactive.messaging.validation.error.CWMRX1100E.useraction=\ubcf4\uace0\ub41c \uc624\ub958\ub97c \ud574\uacb0\ud558\uace0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ub2e4\uc2dc \ubc30\uce58\ud558\uc2ed\uc2dc\uc624.
