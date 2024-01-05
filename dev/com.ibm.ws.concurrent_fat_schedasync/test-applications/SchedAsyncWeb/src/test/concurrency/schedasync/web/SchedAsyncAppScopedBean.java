@@ -53,6 +53,34 @@ public class SchedAsyncAppScopedBean {
     }
 
     /**
+     * Combines 4 different schedules to run on seconds that have a remainder of 1 when divided by 6:
+     * 1 7 13 19 25 31 37 43 49 55.
+     * This could be achieved with a single schedule, but the point of this test is to combine many
+     * schedules, including some that use cron with others that don't.
+     *
+     * @param maxExecutions  number of executions to stop after.
+     * @param executionCount for tracking the total number of executions.
+     * @return null to continue with more executions.
+     *         To stop, returns a completed future with the execution count and current time in nanoseconds.
+     */
+    @Asynchronous(runAt = { @Schedule(cron = "1/12 * * * * *", zone = "America/New_York"),
+                            @Schedule(hours = {}, minutes = {}, seconds = { 19, 55 }, zone = "America/Chicago"),
+                            @Schedule(cron = "31 * * * * *", zone = "America/Denver"),
+                            @Schedule(hours = {}, minutes = {}, seconds = { 7, 43 }, zone = "America/Los_Angeles") })
+    CompletionStage<long[]> everySixSeconds(int maxExecutions, AtomicInteger executionCount) {
+        int count = executionCount.incrementAndGet();
+        System.out.println("> everySixSeconds " + count);
+
+        CompletableFuture<long[]> result = null;
+        if (count >= maxExecutions) {
+            result = Asynchronous.Result.complete(new long[] { count, System.nanoTime() });
+        }
+
+        System.out.println("< everySixSeconds " + result);
+        return result;
+    }
+
+    /**
      * Runs on seconds that are divisible by 2 or 3.
      *
      * @param maxExecutions  number of executions to stop after.

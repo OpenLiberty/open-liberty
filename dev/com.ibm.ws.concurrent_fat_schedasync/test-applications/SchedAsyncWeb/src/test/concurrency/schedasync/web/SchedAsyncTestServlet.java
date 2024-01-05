@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.time.DateTimeException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -38,6 +39,8 @@ public class SchedAsyncTestServlet extends FATServlet {
      */
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
+    private static LinkedBlockingQueue<long[]> afterSixSeconds3Times = new LinkedBlockingQueue<>();
+
     @Inject
     private SchedAsyncAppScopedBean bean;
 
@@ -54,16 +57,29 @@ public class SchedAsyncTestServlet extends FATServlet {
     public void destroy() {
     }
 
+    /**
+     * To make the tests run faster, schedule the asynchronous methods upon init
+     * and have individual tests make assertions about them.
+     */
     @Override
     public void init(ServletConfig config) throws ServletException {
         init_ns = System.nanoTime();
 
         cfEveryFiveSeconds3Times = bean.everyFiveSeconds(new AtomicInteger(3));
 
+        bean.everySixSeconds(3, new AtomicInteger()).thenAccept(l -> afterSixSeconds3Times.add(l));
+
         cfEveryThreeAndEvenSeconds8Times = bean.everyThreeOrEvenSeconds(8, new AtomicInteger());
+
+        // Seconds at which the above will aim to run:
+        //
+        // 00        05        10        15        20        25        30        35        40        45        50        55
+        //   01          07          13          19          25          31          37          43          49          55
+        // 00  02..04  06  08..10  12  14..16  18  20..22  24  26..28  30  32..34  36  38..40  42  44..46  48  50..52  54  56..58
     }
 
     /**
+     * Attempt to schedule an asynchronous method specifying the seconds empty.
      */
     @Test
     public void testEmptySeconds() throws Exception {
@@ -86,6 +102,25 @@ public class SchedAsyncTestServlet extends FATServlet {
         long elapsed = timeOfFinalExecution - init_ns;
         if (elapsed < TimeUnit.SECONDS.toNanos(10L))
             fail("A task that runs every 5 seconds must not complete 3 executions in under 10 seconds. Elapsed nanoseconds: " + elapsed);
+    }
+
+    /**
+     * An asynchronous method that combines multiple schedules, intermixing cron and basic schedules
+     * to run every 6 seconds for 3 executions and then complete must run exactly 3 times.
+     */
+    @Test
+    public void testEverySixSeconds3Times() throws Exception {
+        long[] result = afterSixSeconds3Times.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        long numExecutions = result[0];
+        long timeOfFinalExecution = result[1];
+
+        assertEquals(3L, numExecutions);
+
+        long elapsed = timeOfFinalExecution - init_ns;
+        if (elapsed < TimeUnit.SECONDS.toNanos(12L))
+            fail("A task that runs at 6 second intervals must not complete 3 executions in under 12 seconds." +
+                 " Elapsed nanoseconds: " + elapsed);
     }
 
     /**
