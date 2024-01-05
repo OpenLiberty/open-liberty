@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
@@ -85,7 +84,7 @@ public class WCServletContextUnsupportedOperationExceptionTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({ EE10_FEATURES, EE11_FEATURES })
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void test_ProgrammaticListenerAddition_Throws_UnsupportedOperationException() throws Exception {
         // Ensure that the proper exception was output
         String logMessage = server
