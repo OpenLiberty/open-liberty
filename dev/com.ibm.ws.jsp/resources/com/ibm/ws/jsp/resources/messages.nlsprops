@@ -1274,19 +1274,18 @@ jsp.useinmemory.warning=CWWJS0004W: The 'useInMemory' JSP Option is not supporte
 jsp.useinmemory.warning.explanation=This feature was never ported from Traditional WebSphere for historical reasons.
 jsp.useinmemory.warning.useraction=Remove the useInMemory option from the server.xml, ibm-web-bnd.xml, or the ibm-web-ext.xmi files.
 
-jsp.javasourcelevel.warning=CWWJS0004W: The specified javaSourceLevel={0} value exceeds the {1} installed Java level. Therefore, the default Java level is set to {1}.
-jsp.javasourcelevel.warning.explanation=File cannot be compiled with a higher source than the available JDK level. 
-jsp.javasourcelevel.warning.useraction=Specify a javaSourceLevel value that is less than or equal to the available JDK level.
-
-jsp.bothsourcelevelset.warning=CWWJS0005W: Both javaSourceLevel={0} and jdkSourceLevel={1} are specified. Defaulting to javaSourceLevel={0}
-jsp.bothsourcelevelset.warning.explanation= Only one source level attribute can be used at a time.
-jsp.bothsourcelevelset.warning.useraction= Specify only the javaSourceLevel attribute.  The jdkSourceLevel attribute is stabilized. 
-
-jsp.javasourcelevel.value=CWWJS0006I: The value of the JSP attribute javaSourceLevel is \"{0}\".
-jsp.javasourcelevel.value.explanation =
-jsp.javasourcelevel.value.useraction =
-
-pages.removed.element.error=CWWJS0007E: The {0} element was removed in Pages 4.0 and therefore is no longer supported.
+pages.removed.element.error=CWWJS0005E: The {0} element was removed in Pages 4.0 and therefore is no longer supported.
 pages.removed.element.error.explanation=The jsp plugin and related actions were deprecated in Pages 3.1 and removed in 4.0. 
 pages.removed.element.error.useraction= Remove the jsp plugin, fallback, and params elements from your web app.
 
+jsp.javasourcelevel.warning=CWWJS0006W: The specified javaSourceLevel={0} value exceeds the {1} installed Java level. Therefore, the default Java level is set to {1}.
+jsp.javasourcelevel.warning.explanation=File cannot be compiled with a higher source than the available JDK level. 
+jsp.javasourcelevel.warning.useraction=Specify a javaSourceLevel value that is less than or equal to the available JDK level.
+
+jsp.bothsourcelevelset.warning=CWWJS0007W: Both javaSourceLevel={0} and jdkSourceLevel={1} are specified. Defaulting to javaSourceLevel={0}
+jsp.bothsourcelevelset.warning.explanation= Only one source level attribute can be used at a time.
+jsp.bothsourcelevelset.warning.useraction= Specify only the javaSourceLevel attribute.  The jdkSourceLevel attribute is stabilized. 
+
+jsp.javasourcelevel.value=CWWJS0008I: The value of the JSP attribute javaSourceLevel is \"{0}\".
+jsp.javasourcelevel.value.explanation =
+jsp.javasourcelevel.value.useraction =
