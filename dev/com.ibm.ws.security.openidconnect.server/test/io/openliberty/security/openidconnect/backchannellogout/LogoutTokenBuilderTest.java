@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1646,6 +1646,10 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         long timeFrameStart = now - 5;
         long timeFrameEnd = now + 5;
 
+        long logoutTokenLifetimeSeconds = 120;
+        long expTimeFrameStart = timeFrameStart + logoutTokenLifetimeSeconds;
+        long expTimeFrameEnd = timeFrameEnd + logoutTokenLifetimeSeconds;
+
         // iss
         assertNotNull("Token must have an iss claim, but did not. Claims were: " + result, result.getIssuer());
         assertEquals("Issuer did not match expected value. Claims were: " + result, issuerIdentifier, result.getIssuer());
@@ -1657,6 +1661,11 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         long issuedAt = result.getIssuedAt().getValue();
         assertTrue("Issued at time (" + issuedAt + ") is not in an expected reasonable time frame (" + timeFrameStart + " to " + timeFrameEnd + "). Claims were: " + result,
                    (timeFrameStart <= issuedAt) && (issuedAt <= timeFrameEnd));
+        // exp
+        assertNotNull("Token must have an exp claim, but did not. Claims were: " + result, result.getExpirationTime());
+        long exp = result.getExpirationTime().getValue();
+        assertTrue("Expiration time (" + exp + ") is not in an expected reasonable time frame (" + (expTimeFrameStart) + " to " + (expTimeFrameEnd) + "). Claims were: " + result,
+                   ((expTimeFrameStart) <= exp) && (exp <= (expTimeFrameEnd)));
         // jti
         assertNotNull("JTI claim should not have been null but was. Claims were: " + result, result.getJwtId());
         // events
