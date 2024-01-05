@@ -73,6 +73,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     protected static AppPasswordsAndTokensCommonTest appPTcommon = new AppPasswordsAndTokensCommonTest();
 
+    private final static String localStore = "LOCALSTORE";
+
     @Rule
     public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
 
@@ -97,9 +99,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      *
      * @return RepeatTests object for each variation of this class that will be run
      */
-    public static RepeatTests createRepeats(String callingProject) {
-
-        String localStore = "LOCALSTORE";
+    public static RepeatTests createRepeats1(String callingProject) {
 
         String theOS = null;
         try {
@@ -117,30 +117,56 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
                 if (!theOS.equals("ISERIES")) {
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
                 }
-                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.LOGOUT_ENDPOINT + "_" + localStore));
+
                 //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.REVOCATION_ENDPOINT + "_" + localStore));
                 //                // needs resolution of issue https://github.com/OpenLiberty/open-liberty/issues/26615
                 //                //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC__OP + "_" + Constants.HTTP_SESSION));
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.HTTP_SESSION));
-                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
-                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
             }
         } else {
             if (callingProject.equals(Constants.SOCIAL)) {
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.END_SESSION));
                 // LITE mode only run one instance
                 if (TestModeFilter.shouldRun(TestMode.FULL)) {
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.LOGOUT_ENDPOINT));
+
                     //                    //                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.REVOCATION_ENDPOINT));
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION));
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
+
                 }
             } else {
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML_IDP_INITIATED_LOGOUT));
                 if (TestModeFilter.shouldRun(TestMode.FULL)) {
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML_SP_INITIATED_LOGOUT));
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.END_SESSION));
+                }
+
+            }
+        }
+
+        return rTests;
+
+    }
+
+    public static RepeatTests createRepeats2(String callingProject) {
+
+        // note:  using the method addRepeat below instead of adding test repeats in line to simplify hacking up the tests locally to only run one or 2 variations (all the calls are the same - dont' have to worry about using "with" vs "andWith")
+        RepeatTests rTests = null;
+        if (callingProject.equals(Constants.OIDC)) {
+            rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.LOGOUT_ENDPOINT + "_" + localStore));
+            if (TestModeFilter.shouldRun(TestMode.FULL)) {
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
+            }
+        } else {
+            if (callingProject.equals(Constants.SOCIAL)) {
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.LOGOUT_ENDPOINT));
+                // LITE mode only run one instance
+                if (TestModeFilter.shouldRun(TestMode.FULL)) {
+                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
+                }
+            } else {
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML_SP_INITIATED_LOGOUT));
+                if (TestModeFilter.shouldRun(TestMode.FULL)) {
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.LOGOUT_ENDPOINT));
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.OIDC_RP + "_" + Constants.HTTP_SESSION));
                 }

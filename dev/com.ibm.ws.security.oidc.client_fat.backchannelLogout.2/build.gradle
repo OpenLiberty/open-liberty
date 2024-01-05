@@ -1,0 +1,98 @@
+/*******************************************************************************
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../com.ibm.ws.security.fat.common.backchannelLogout/CommonBackchannelLogout.gradle'
+
+addRequiredLibraries.dependsOn copyGenericServer, copyGenericClient
+
+/* the tasks specified above will create the normal op and rp, plus, will popluate the mongo instance of the op with the base files
+ *  now, we need to add the mongodb specific files to that server */
+
+configurations {
+  derbyJar
+  mongoJavaDriver
+}
+
+dependencies {
+
+   derbyJar        'org.apache.derby:derby:10.11.1.1'
+   mongoJavaDriver 'org.mongodb:mongo-java-driver:2.13.3'
+  
+}
+
+/* copy additional files needed for the mongo server (the base op server files have already been copied) */ 
+assemble.dependsOn ':com.ibm.ws.security.oauth_test.servlets:assemble' 
+autoFVT.doLast {
+
+  def servers = [
+    'com.ibm.ws.security.backchannelLogout_fat.op.mongo'
+  ]
+  
+  servers.each { server ->
+ 
+    copy {
+      from configurations.derbyJar
+      into new File(autoFvtDir, 'publish/servers/' + server + '/derby')
+      rename 'derby-.*.jar', 'derby.jar'
+    }
+ 
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth_test.servlets').buildDir, 'test-application/oAuth20DerbySetup.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+    }
+
+    copy {
+      from configurations.mongoJavaDriver
+      into new File(autoFvtDir, 'publish/servers/' + server + '/mongoDB')
+      rename 'mongo-java-driver-.*.jar', 'mongo-java-driver.jar'
+    }
+
+    copy {
+      from new File(project(':com.ibm.ws.security.oauth_test.custom_servlets').buildDir, 'test-application/oAuth20MongoSetup.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
+    }
+  
+  }  
+
+  /****************************************************************
+   *
+   * Copy the custom oauth store JAR feature so we can use it both 
+   * as a user feature and as a library in a BELL.
+   *
+   ****************************************************************/
+  copy { 
+    from new File(project(':com.ibm.ws.security.oauth_test.custom_store').buildDir, 'com.ibm.ws.security.oauth_test.custom_store.jar')
+    into new File(autoFvtDir, 'publish/bundles')
+    rename 'com.ibm.ws.security.oauth_test.custom_store.jar', 'security.custom.store_1.0.jar'
+  }
+  copy { 
+    from new File(project(':com.ibm.ws.security.oauth_test.custom_store').buildDir, 'com.ibm.ws.security.oauth_test.custom_store.jar')
+    into new File(autoFvtDir, 'publish/shared')
+    rename 'com.ibm.ws.security.oauth_test.custom_store.jar', 'security.custom.store_1.0.jar'
+  }
+  copy { 
+    from new File(project(':com.ibm.ws.security.oauth_test.custom_store').projectDir, 'publish/features/customStoreSample-1.0.mf')
+    into new File(autoFvtDir, 'publish/features')
+  }
+      
+  /****************************************************************
+   *
+   * Copy the mongo-java-driver to the shared directory.
+   *
+   ****************************************************************/
+  copy {
+    from configurations.mongoJavaDriver
+    into new File(autoFvtDir, 'publish/shared')
+    rename 'mongo-java-driver-.*.jar', 'mongo-java-driver.jar'
+  }   
+ 
+}
