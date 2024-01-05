@@ -47,6 +47,8 @@ public class ScheduledAsyncMethodsTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
+        runTest(server, APP_NAME + '/' + SchedAsyncTestServlet.class.getSimpleName(), "testScheduledAsynchronousMethodsStopRunning");
+
         server.stopServer();
     }
 }

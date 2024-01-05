@@ -191,6 +191,29 @@ public class SchedAsyncTestServlet extends FATServlet {
     }
 
     /**
+     * After all other tests have run, check that scheduled asynchronous methods that should have completed
+     * are not still running.
+     */
+    // This test intentionally omits the Test annotation so that it can be invoked after all other tests complete.
+    public void testScheduledAsynchronousMethodsStopRunning() throws Exception {
+
+        // Allow time for an additional execution of most methods
+        TimeUnit.SECONDS.sleep(7);
+
+        assertEquals("If testEveryFiveSeconds3Times passed, then everyFiveSeconds should not run again.",
+                     0, cfEveryFiveSeconds3TimesCountdown.get());
+
+        assertEquals("If testEverySixSeconds3Times passed, then everySixSeconds should not run again.",
+                     3, afterSixSeconds3TimesCount.get());
+
+        assertEquals("If testLookUpEverySixSeconds2Times passed, then lookUpAtSixSecondIntervals2Times should not run again.",
+                     null, lookUpAtSixSecondIntervals2Times.poll());
+
+        assertEquals("If testEveryThreeAndEvenNumberedSeconds8Times passed, then everyThreeOrEvenSeconds should not run again.",
+                     8, cfEveryThreeAndEvenSeconds8TimesCount.get());
+    }
+
+    /**
      * Attempt to schedule an asynchronous method for a time that does not exist (February 30).
      */
     @Test
