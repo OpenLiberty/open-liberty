@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2023 IBM Corporation and others.
+    Copyright (c) 2023, 2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -8,14 +8,16 @@
     SPDX-License-Identifier: EPL-2.0
  -->
 <html>
-<title>testQueryStringonError</title>
-<body>
+    <head>
+        <title>testQueryStringonError</title>
+    </head>
+    <body>
 
-<!-- We are setting the error page to "errorPage.jsp" where iserrorpage is true -->
-<%@ page errorPage="errorPage.jsp" autoFlush="false" %>
-<%! int i=0; %>
-<!-- Force a Divid by Zero -->
-<%= 9/i %>
+    <!-- We are setting the error page to "errorPage.jsp" where iserrorpage is true -->
+    <%@ page errorPage="errorPage.jsp" autoFlush="false" %>
+    <%! int i=0; %>
+    <!-- Force a Divid by Zero -->
+    <%= 9/i %>
 
-</body>
+    </body>
 </html>

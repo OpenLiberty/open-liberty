@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@ public class JSP23JSP22ServerTest {
      */
 
     @Test
-    @SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES})
+    @SkipForRepeat({SkipForRepeat.EE9_OR_LATER_FEATURES})
     public void testJsp23to22FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -124,7 +124,7 @@ public class JSP23JSP22ServerTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES})
+    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE10_OR_LATER_FEATURES})
     public void testJsp30to23FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -166,7 +166,7 @@ public class JSP23JSP22ServerTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE11_FEATURES})
+    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE11_OR_LATER_FEATURES})
     public void testJsp31to23FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -208,7 +208,7 @@ public class JSP23JSP22ServerTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES})
+    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_OR_LATER_FEATURES})
     public void testJsp40to31FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
