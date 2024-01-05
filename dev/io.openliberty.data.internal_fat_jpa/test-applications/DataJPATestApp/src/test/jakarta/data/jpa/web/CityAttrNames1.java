@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import jakarta.data.metamodel.TextAttribute;
  */
 @StaticMetamodel(City.class)
 public class CityAttrNames1 {
-    public static final TextAttribute name = TextAttribute.get();
-    public static final TextAttribute stateName = TextAttribute.get();
-    public static final SortableAttribute population = SortableAttribute.get();
+    public static volatile TextAttribute name;
+    public static volatile TextAttribute stateName;
+    public static volatile SortableAttribute population;
 }

@@ -607,7 +607,7 @@
 
 7342=El valor booleano especificado [{0}] para establecer las consultas SQL nativas de permiso no es v\u00e1lido; el valor debe ser "true" o "false".
 
-7343=Se han especificado varios identificadores de VPD (propiedad de contexto de discriminador de arrendatario). La entidad [{1}] utiliza [{0}] y la entidad [{3}] utiliza [{2}]. Cuando se utiliza una estrategia VPD de varios arrendatarios, solo puede haber una columna de discriminador de arrendatario por entidad y su propiedad de contexto debe ser coherente en todas las entidades de VPD de Multiarrendatario.
+7343=Se han especificado varios identificadores de VPD (propiedad de contexto de discriminador de arrendatario). La entidad [{1}] utiliza [{0}] y la entidad [{3}] utiliza [{2}]. La estrategia de VPD multiarrendatario solo permite una columna de discriminador de arrendatario para cada entidad, y su propiedad de contexto debe ser coherente en todas las entidades de VPD multiarrendatario.
 
 7344=VPD (conexiones y generaci\u00f3n DDL) no est\u00e1 soportado para la plataforma: [{0}].
 

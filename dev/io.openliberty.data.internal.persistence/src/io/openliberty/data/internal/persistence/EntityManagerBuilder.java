@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -145,7 +145,7 @@ public abstract class EntityManagerBuilder implements Runnable {
     protected abstract void initialize() throws Exception;
 
     /**
-     * Assigns the public static volatile fields of @StaticMetaModel classes
+     * Assigns the public static volatile fields of @StaticMetamodel classes
      * to be the corresponding entity attribute name from the metamodel.
      *
      * @param staticMetamodels static metamodel class(es) per entity class.

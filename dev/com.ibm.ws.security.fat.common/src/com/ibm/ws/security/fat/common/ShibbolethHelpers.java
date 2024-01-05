@@ -486,6 +486,7 @@ public class ShibbolethHelpers {
     public void chooseIdpWarVersion(TestServer idpServer) throws Exception {
 
         EEVersion eeVersion = null;
+        String eeVersionString = "";
 
         String currentRepeatAction = RepeatTestFilter.getRepeatActionsAsString();
         if (currentRepeatAction.contains(JakartaEEAction.EE9_ACTION_ID)) {
@@ -494,6 +495,7 @@ public class ShibbolethHelpers {
         if (currentRepeatAction.contains(JakartaEEAction.EE10_ACTION_ID)) {
             eeVersion = EEVersion.EE10;
         }
+
         String thisMethod = "chooseIdpWarVersion";
         LibertyServer theServer = idpServer.getServer();
 
@@ -506,12 +508,13 @@ public class ShibbolethHelpers {
         } else {
             Log.info(thisClass, thisMethod, "################## Copying the 4.1.0 version of Shibboleth ##################");
             if (eeVersion != null) {
-                transformedWarFile = new java.io.File(LibertyServerUtils.makeJavaCompatible(theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war" + "." + eeVersion.toString()));
+                eeVersionString = "." + eeVersion.toString();
+                transformedWarFile = new java.io.File(LibertyServerUtils.makeJavaCompatible(theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war" + eeVersionString));
             }
             if (!transformedWarFile.exists() && eeVersion != null) {
-                JakartaEEAction.transformApp(Paths.get(theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war"), Paths.get(theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war" + "." + eeVersion.toString()), eeVersion);
+                JakartaEEAction.transformApp(Paths.get(theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war"), Paths.get(theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war" + eeVersionString), eeVersion);
             }
-            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war" + "." + eeVersion.toString());
+            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war" + eeVersionString);
         }
 
     }

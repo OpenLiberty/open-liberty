@@ -607,7 +607,7 @@
 
 7342=Der angegebene boolesche Wert [{0}] zum Festlegen, dass native SQL-Abfragen zul\u00e4ssig sind, ist ung\u00fcltig. Der Wert muss "true" oder "false" sein.
 
-7343=Es wurden mehrere VPD-IDs (Kontexteigenschaft f\u00fcr den Tenantdiskriminator) angegeben. Die Entit\u00e4t [{1}] verwendet [{0}] und die Entit\u00e4t verwendet [{3}] [{2}]. Bei der Verwendung einer VPD-Multitenantstrategie darf pro Entit\u00e4t nur eine einzige Tenantdiskriminatorspalte vorhanden sein und die zugeh\u00f6rige Kontexteigenschaft muss f\u00fcr alle VPD-Multitenantentit\u00e4ten konsistent sein.
+7343=Es wurden mehrere VPD-IDs (Kontexteigenschaft f\u00fcr den Tenantdiskriminator) angegeben. Die Entit\u00e4t [{1}] verwendet [{0}] und die Entit\u00e4t verwendet [{3]} [{2}]. Die Multitenant-VPD-Strategie l\u00e4sst nur eine Tenantdiskriminatorspalte f\u00fcr jede Entit\u00e4t zu und ihre Kontexteigenschaft muss in allen Multitenant-VPD-Entit\u00e4ten konsistent sein.
 
 7344=VPD (Verbindungen und DDL-Generierung) wird nicht f\u00fcr die Plattform [{0}] unterst\u00fctzt.
 

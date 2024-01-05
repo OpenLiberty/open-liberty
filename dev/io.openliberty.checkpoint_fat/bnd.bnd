@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 #
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -70,7 +67,7 @@ tested.features: \
         connectors-2.1,\
         data-1.0,\
         expressionlanguage-6.0,\
-        faces-5.0,\
+        faces-4.1,\
         jsf-2.3,\
         microProfile-4.1,\
         microProfile-5.0,\

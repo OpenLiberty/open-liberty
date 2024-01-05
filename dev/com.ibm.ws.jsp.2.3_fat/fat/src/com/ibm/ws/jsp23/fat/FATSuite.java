@@ -55,28 +55,14 @@ public class FATSuite {
      * using @SkipForRepeat("CDI-2.0").
      */
     @ClassRule
-    public static RepeatTests repeat;
-
-    static {
-        if (JavaInfo.JAVA_VERSION >= 11) {
-            repeat = RepeatTests
-                            .with(new EmptyAction().fullFATOnly())
-                            .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
-                                            .withID("CDI-2.0")
-                                            .forceAddFeatures(false)
-                                            .fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE10_FEATURES());
-        } else {
-            repeat = RepeatTests
-                            .with(new EmptyAction().fullFATOnly())
-                            .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
-                                            .withID("CDI-2.0")
-                                            .forceAddFeatures(false)
-                                            .fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE9_FEATURES());
-        }
-    }
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                    .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
+                                                            .withID("CDI-2.0")
+                                                            .forceAddFeatures(false)
+                                                            .fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_21))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

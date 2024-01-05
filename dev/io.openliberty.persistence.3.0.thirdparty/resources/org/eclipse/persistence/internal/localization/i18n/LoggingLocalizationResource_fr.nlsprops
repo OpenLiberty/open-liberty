@@ -119,6 +119,10 @@ connected_user_database=Connect\u00e9 : {3}{4}Utilisateur : {0}{3}{4}Base de don
 
 connected_user_database_driver=Connect\u00e9 : {0}{6}Utilisateur : {1}{6}Base de donn\u00e9es : {2}  Version : {3}{6}Pilote : {4}  Version : {5}
 
+corrupt_object=objet endommag\u00e9 : {0}
+
+corrupt_object_referenced_through_mapping=objet endommag\u00e9 r\u00e9f\u00e9renc\u00e9 via le mappage : {0}
+
 corrupted_session_announcement=ID session : {0}  Le gestionnaire de reconnaissance a re\u00e7u une annonce de session endommag\u00e9e - annonce ignor\u00e9e.
 
 create_default_dbms_tables_not_supported=Le param\u00e8tre CMP natif WLS "create-default-dbms-tables" n''est pas directement pris en charge dans EclipseLink CMP. Pour plus de d\u00e9tails, voir la doc de migration.
@@ -707,6 +711,8 @@ sop_object_wrong_version=Retrait de l''objet sopObject s\u00e9rialis\u00e9 de la
 
 src_pm_name_first_argument=Vous devez indiquer le nom PM source comme premier argument en entr\u00e9e : -sOc4j-native ou -sWeblogic.
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=pile d''objets visit\u00e9s qui font r\u00e9f\u00e9rence \u00e0 l''objet endommag\u00e9 : {0}
+
 table_existed_during_creation=La cr\u00e9ation de tableau a \u00e9chou\u00e9. Si le tableau existe d\u00e9j\u00e0, il doit d''abord \u00eatre supprim\u00e9. Cette op\u00e9ration peut \u00eatre effectu\u00e9e manuellement ou en d\u00e9finissant l''attribut db-table-gen dans orion-ejb-jar.xml.
 
 template_orion_ejb_jar_created=Un fichier orion-ejb-jar.xml mod\u00e8le a \u00e9t\u00e9 cr\u00e9\u00e9
@@ -737,7 +743,12 @@ toplink_warning=[EL Warning] :
 
 unit_of_work_thread_info=L''unit\u00e9 de travail en cours dans la session ({0}) a \u00e9t\u00e9 cr\u00e9\u00e9e par une autre unit\u00e9 d''ex\u00e9cution (ID : {1} nom : {2}), que l''unit\u00e9 d''ex\u00e9cution en cours (ID : {3} nom : {4})
 
-unit_of_work_thread_info_thread_dump=Unit\u00e9 d''ex\u00e9cution de cr\u00e9ation (ID : {0} nom : {1}) trace de pile : {2} Unit\u00e9 d''ex\u00e9cution en cours (ID : {3} nom : {4}) trace de pile : {5}\n
+unit_of_work_thread_info_thread_dump=Unit\u00e9 d''ex\u00e9cution de cr\u00e9ation (ID: {0} nom: {1}) trace de pile:
+#{2}
+
+Current unit\u00e9 d''ex\u00e9cution (id: {3} nom: {4}) trace de pile:
+#{5}
+
 unitofwork_identity_hashcode={0} Code de hachage identit\u00e9 unit\u00e9 d''oeuvre : {1}
 
 update_all_fields_not_supported=La fonction CMP Oc4j "update-all-fields" sur l''entit\u00e9 ({0}) n''est pas directement prise en charge dans EclipseLink CMP. Pour plus de d\u00e9tails, voir la doc de migration.
@@ -747,6 +758,8 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery ne peut pas 
 validate_db_schema_with_not_supported=Le param\u00e8tre CMP natif WLS "validate-db-schema-with" n''est pas directement pris en charge dans EclipseLink CMP. Pour plus de d\u00e9tails, voir la doc de migration.
 
 validate_ejb_jar=D\u00e9marrage de la validation de ejb-jar.xml, l''op\u00e9ration peut prendre du temps...
+
+validate_object_space=valider l''espace d''objet.
 
 validity_timeout_not_supported=Le param\u00e8tre CMP natif Oc4j "validity-timeout" sur l''entit\u00e9 ({0}) n''est pas directement pris en charge directement dans EclipseLink CMP. Pour plus de d\u00e9tails, voir la doc de migration.
 

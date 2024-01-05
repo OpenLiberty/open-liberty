@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1200 to CWWCK1399
+# All messages must use the range CWWCK1200 to CWWCK1409
 
 CWWKC1200.resource.unavailable=CWWKC1200E: {0}, qui est d\u00e9fini par l''application {1}, n''\u00e9tait pas disponible en temps utile.
 CWWKC1200.resource.unavailable.explanation=Trop de charge sur le syst\u00e8me pour traiter les annotations de d\u00e9finition de ressource et les entr\u00e9es de descripteur de d\u00e9ploiement avant que l'application ne tente de les utiliser.
@@ -45,3 +45,23 @@ CWWKC1203.duplicate.context.useraction=Mettez \u00e0 jour l'application, les bib
 CWWKC1204.not.serializable=CWWKC1204E: Impossible de cr\u00e9er un proxy contextuel s\u00e9rialisable qui propage le contexte d''unit\u00e9 d''ex\u00e9cution {0} qui n''est pas s\u00e9rialisable.
 CWWKC1204.not.serializable.explanation=Les types de contexte d'unit\u00e9 d'ex\u00e9cution tiers ne sont pas compatibles avec la s\u00e9rialisation et ne peuvent pas \u00eatre configur\u00e9s pour \u00eatre propag\u00e9s pour les proxys contextuels s\u00e9rialisables.
 CWWKC1204.not.serializable.useraction=Mettez \u00e0 jour l'application pour demander un proxy contextuel non s\u00e9rialisable ou v\u00e9rifiez qu'aucun type de contexte tiers n'est configur\u00e9 pour \u00eatre propag\u00e9.
+
+
+
+# Messages for @Asynchronous that are shared with other bundles:
+
+CWWKC1400.unsupported.return.type=CWWKC1400E: {0} n''est pas un type de retour valide pour la m\u00e9thode {1} de la classe {2}. Les types de retour valides pour les m\u00e9thodes annot\u00e9es avec {3} sont: {4}.
+CWWKC1400.unsupported.return.type.explanation=La sp\u00e9cification d'acc\u00e8s concurrent Jakarta limite la plage des types de retour valides pour les m\u00e9thodes ayant cette annotation.
+CWWKC1400.unsupported.return.type.useraction=Mettez \u00e0 jour la m\u00e9thode de l'application pour passer \u00e0 l'un des types de retour pris en charge, ou supprimez l'annotation de la m\u00e9thode.
+
+CWWKC1401.class.anno.disallowed=CWWKC1401E: L''annotation {0} est autoris\u00e9e au niveau de la m\u00e9thode. Il ne peut pas \u00eatre utilis\u00e9 au niveau de la classe de la classe {1}.
+CWWKC1401.class.anno.disallowed.explanation=Cette annotation ne doit pas \u00eatre sp\u00e9cifi\u00e9e au niveau de la classe.
+CWWKC1401.class.anno.disallowed.useraction=D\u00e9placer l'annotation vers les m\u00e9thodes individuelles de la classe.
+
+CWWKC1402.not.managed.executor=CWWKC1402E: L''annotation {0} sur la m\u00e9thode {1} de la classe {2} indique le nom JNDI {3} , qui correspond \u00e0 la ressource {4} qui n''est pas ManagedExecutorService ou ManagedScheduledExecutorService. Les interfaces impl\u00e9ment\u00e9e par la ressource sont: {5}.
+CWWKC1402.not.managed.executor.explanation=Le nom JNDI doit \u00eatre r\u00e9solu en une ressource qui impl\u00e9mente l'interface ManagedExecutorService ou ManagedScheduledExecutorService.
+CWWKC1402.not.managed.executor.useraction=Corrigez le nom JNDI pour sp\u00e9cifier une ressource accessible au composant d'application et impl\u00e9mente l'interface ManagedExecutorService ou ManagedScheduledExecutorService.
+
+CWWKC1403.unsupported.tx.type=CWWKC1403E: L''annotation {0} indique la valeur {1} , qui n''est pas autoris\u00e9e en combinaison avec l''annotation {2} qui se trouve dans la m\u00e9thode {3} de la classe {4}. Les valeurs admises sont: {5}.
+CWWKC1403.unsupported.tx.type.explanation=L'utilisation de deux annotations ensemble d\u00e9pend de la question de savoir si la valeur de la premi\u00e8re annotation sp\u00e9cifi\u00e9e est autoris\u00e9e avec la deuxi\u00e8me annotation.
+CWWKC1403.unsupported.tx.type.useraction=Mettez \u00e0 jour l'application pour passer \u00e0 l'une des valeurs prises en charge ou supprimer l'une des annotations.

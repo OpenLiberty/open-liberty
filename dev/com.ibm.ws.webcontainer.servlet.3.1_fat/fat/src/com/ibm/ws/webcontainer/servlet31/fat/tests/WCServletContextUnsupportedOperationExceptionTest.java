@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet31.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
@@ -80,14 +80,14 @@ public class WCServletContextUnsupportedOperationExceptionTest {
      *
      * These methods should throw an UnsupportedOperationException according to the Servlet 3.1 ServletContext API.
      *
-     * The following features will be tests: servlet-3.1, servlet-4.0, and servlet-5.0.
+     * The following features will be tested: servlet-3.1, servlet-4.0, and servlet-5.0.
      *
      * Check to ensure that the correct message is thrown and the NLS message is resolved correctly.
      *
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void test_ProgrammaticListenerAddition_Throws_UnsupportedOperationException() throws Exception {
         // PI41941: Changed the message. Wait for the full message.
         String logMessage = server

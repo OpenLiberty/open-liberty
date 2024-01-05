@@ -69,14 +69,31 @@ public class LargeProjectRepeatActions {
         return createEE9OrEE10RepeatsWorker(addEE9Feature, addEE10Feature, null, null);
     }
 
+    public static RepeatTests createEE9OrEE10SamlRepeats(String addEE9Feature, String addEE10Feature) {
+        doIDPTransform = true;
+        return createEE9OrEE10RepeatsWorker(addEE9Feature, addEE10Feature, null, null);
+    }
+
     public static RepeatTests createEE9OrEE10Repeats(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList) {
         doIDPTransform = false;
+        return createEE9OrEE10RepeatsWorker(addEE9Feature, addEE10Feature, removeFeatureList, insertFeatureList, null);
+    }
+
+    public static RepeatTests createEE9OrEE10SamlRepeats(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList) {
+        doIDPTransform = true;
         return createEE9OrEE10RepeatsWorker(addEE9Feature, addEE10Feature, removeFeatureList, insertFeatureList, null);
     }
 
     public static RepeatTests createEE9OrEE10Repeats(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList, String... serverPaths) {
 
         doIDPTransform = false;
+        return createEE9OrEE10RepeatsWorker(addEE9Feature, addEE10Feature, removeFeatureList, insertFeatureList, serverPaths);
+
+    }
+
+    public static RepeatTests createEE9OrEE10SamlRepeats(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList, String... serverPaths) {
+
+        doIDPTransform = true;
         return createEE9OrEE10RepeatsWorker(addEE9Feature, addEE10Feature, removeFeatureList, insertFeatureList, serverPaths);
 
     }
@@ -189,12 +206,11 @@ public class LargeProjectRepeatActions {
                 Log.info(thisClass, "idpWarTransform", "list is not null");
                 for (File app : list) {
                     String fullAppName = shibDir + "/" + app.getName();
-                    if (!app.getName().contains("3.3.1")) {
-                        Log.info(thisClass, "idpWarTransform", "app: " + app.getName());
-                        Log.info(thisClass, "idpWarTransform", "app abspath: " + app.getAbsolutePath());
-                        Log.info(thisClass, "idpWarTransform", "Truly full path: " + fullAppName);
+                    if (!app.getName().contains("3.3.1") && !app.getName().contains(eeVersion.toString())) {
                         Path appPathName = Paths.get(fullAppName);
                         Path appPathNewName = Paths.get(fullAppName + "." + eeVersion.toString());
+                        Log.info(thisClass, "idpWarTransform", "From IDP war name: " + appPathName.toString());
+                        Log.info(thisClass, "idpWarTransform", "To IDP war name: " + appPathNewName.toString());
                         JakartaEEAction.transformApp(appPathName, appPathNewName, eeVersion);
                     } else {
                         Log.info(thisClass, "idpWarTransform", "Skipping transform since we will only use the 3.3.1 version with Java 8");

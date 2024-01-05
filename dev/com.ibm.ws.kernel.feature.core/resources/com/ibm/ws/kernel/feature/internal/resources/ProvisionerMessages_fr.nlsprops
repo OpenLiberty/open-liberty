@@ -230,6 +230,15 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: L
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=La configuration du serveur contient une combinaison incompatible de fonctions pour les mod\u00e8les de programmation indiqu\u00e9s. Ce conflit peut survenir si les deux fonctions incompatibles sont configur\u00e9es directement dans la configuration du serveur ou si elles incluent des versions diff\u00e9rentes d'une fonction qui sont incompatibles.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Essayez de sp\u00e9cifier une version compatible des fonctions configur\u00e9es \u00e0 l'origine du conflit dans le fichier server.xml. Si aucune autre version n'est disponible, les fonctions configur\u00e9es ne sont pas compatibles entre elles et ne peuvent pas \u00eatre configur\u00e9es en m\u00eame temps.
 
+UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: Aucune valeur n'a \u00e9t\u00e9 trouv\u00e9e pour la variable d'environnement PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=Vous disposez de fonctions sans version dans votre configuration et la variable d'environnement PREFERRED_FEATURE_VERSIONS est introuvable
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=V\u00e9rifiez que la variable d'environnement PREFERRED_FEATURE_VERSIONS existe et qu'elle est correctement orthographi\u00e9e.
+
+# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: La variable d''environnement PREFERRED_FEATURE_VERSIONS ne contient pas de valeur pour {0}
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=Pour chaque fonction sans version de votre configuration, il doit y avoir une valeur de version pr\u00e9f\u00e9r\u00e9e dans PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=Ajoutez une valeur dans PREFERRED_FEATURE_VERSIONS pour la fonction
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: La fonction {0} existe d\u00e9j\u00e0. Elle ne sera pas r\u00e9install\u00e9e. Pour modifier une fonction existante, vous devez d''abord la d\u00e9sinstaller manuellement.

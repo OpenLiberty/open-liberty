@@ -1,0 +1,32 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+missing.context.service.CWMRX1200E=CWMRX1200E: El canal {0} est\u00e1 configurado para utilizar el servicio de contexto {1} , pero no se ha encontrado dicho servicio de contexto. Aseg\u00farese de que el servicio de contexto est\u00e9 definido en el archivo server.xml y que la caracter\u00edstica Java EE o Jakarta Concurrency est\u00e9 habilitada.
+missing.context.service.CWMRX1200E.explanation=El canal de mensajer\u00eda reactiva est\u00e1 configurado para utilizar un servicio de contexto con nombre, pero no se puede encontrar ning\u00fan servicio de contexto con ese nombre.
+missing.context.service.CWMRX1200E.useraction=Defina el servicio de contexto en el archivo server.xml o elimine la propiedad de configuraci\u00f3n context.service del canal.

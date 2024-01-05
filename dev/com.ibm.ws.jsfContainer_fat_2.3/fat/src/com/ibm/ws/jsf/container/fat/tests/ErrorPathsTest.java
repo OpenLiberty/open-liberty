@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -101,12 +101,21 @@ public class ErrorPathsTest extends FATServletClient {
     @Test
     @AllowedFFDC
     public void testBadApiVersion_Mojarra() throws Exception {
-        // Build test app with that has JSF spec API Specification-Version of 2.1
-        JavaArchive badApiJar = ShrinkWrap.create(JavaArchive.class)
-                        .as(ZipImporter.class)
-                        .importFrom(new File(FATSuite.MOJARRA_API_IMP))
-                        .as(JavaArchive.class)
-                        .setManifest(new File("lib/LibertyFATTestFiles/MANIFEST_badMojarra.MF"));
+        JavaArchive badApiJar;
+        // Build test app with that has the wrong JSF spec API Specification-Version
+        if(isEE10){
+            badApiJar = ShrinkWrap.create(JavaArchive.class)
+                            .as(ZipImporter.class)
+                            .importFrom(new File(FATSuite.MOJARRA_API_IMP_40))
+                            .as(JavaArchive.class)
+                            .setManifest(new File("lib/LibertyFATTestFiles/MANIFEST_badMojarra_40.MF"));
+        } else {
+            badApiJar = ShrinkWrap.create(JavaArchive.class)
+                            .as(ZipImporter.class)
+                            .importFrom(new File(FATSuite.MOJARRA_API_IMP))
+                            .as(JavaArchive.class)
+                            .setManifest(new File("lib/LibertyFATTestFiles/MANIFEST_badMojarra.MF"));
+        }
 
         WebArchive jsfApp = ShrinkHelper.buildDefaultApp(JSF_APP_BAD_API, "jsf.container.bean");
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "publish/files/permissions");
@@ -130,12 +139,21 @@ public class ErrorPathsTest extends FATServletClient {
     @Test
     @AllowedFFDC
     public void testBadApiVersion_MyFaces() throws Exception {
-        // Build test app with that has JSF spec API Specification-Version of 2.2
-        JavaArchive badApiJar = ShrinkWrap.create(JavaArchive.class)
-                        .as(ZipImporter.class)
-                        .importFrom(new File(FATSuite.MYFACES_API))
-                        .as(JavaArchive.class)
-                        .setManifest(new File("lib/LibertyFATTestFiles/MANIFEST_badMyfacesApi.MF"));
+        JavaArchive badApiJar;
+        // Build test app with that has the wrong JSF spec API Specification-Version
+        if(isEE10){
+            badApiJar = ShrinkWrap.create(JavaArchive.class)
+                            .as(ZipImporter.class)
+                            .importFrom(new File(FATSuite.MYFACES_API_40))
+                            .as(JavaArchive.class)
+                            .setManifest(new File("lib/LibertyFATTestFiles/MANIFEST_badMyfacesApi_40.MF"));
+        } else {
+            badApiJar = ShrinkWrap.create(JavaArchive.class)
+                                    .as(ZipImporter.class)
+                                    .importFrom(new File(FATSuite.MYFACES_API))
+                                    .as(JavaArchive.class)
+                                    .setManifest(new File("lib/LibertyFATTestFiles/MANIFEST_badMyfacesApi.MF"));
+        }
 
         WebArchive jsfApp = ShrinkHelper.buildDefaultApp(JSF_APP_BAD_API, "jsf.container.bean");
         jsfApp = (WebArchive) ShrinkHelper.addDirectory(jsfApp, "test-applications/jsfApp/resources/");

@@ -1,0 +1,32 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+reactive.messaging.validation.error.CWMRX1100E=CWMRX1100E: P\u0159i ov\u011b\u0159ov\u00e1n\u00ed reaktivn\u00edho syst\u00e9mu zpr\u00e1v p\u0159i spu\u0161t\u011bn\u00ed aplikace {0} do\u0161lo k chyb\u011b. Chyba byla {1}
+reactive.messaging.validation.error.CWMRX1100E.explanation=B\u011bhem ov\u011b\u0159ov\u00e1n\u00ed sestaven\u00e9ho grafu Reaktivn\u00ed syst\u00e9m zpr\u00e1v byly nalezeny chyby, kter\u00e9 br\u00e1n\u00ed odes\u00edl\u00e1n\u00ed nebo p\u0159ij\u00edm\u00e1n\u00ed zpr\u00e1v.
+reactive.messaging.validation.error.CWMRX1100E.useraction=Vy\u0159e\u0161te ohl\u00e1\u0161en\u00e9 chyby a nov\u011b implementujte aplikaci.
