@@ -24,4 +24,12 @@
 
   <application location="SchedAsyncWeb.war"/>
 
+  <!--  TODO remove this once virtual=true can be sent in through ManagedExecutorDefinition -->
+  <managedExecutorService jndiName="concurrent/temp-max-2-executor">
+    <concurrencyPolicy max="2" virtual="true"/>
+    <contextService>
+      <classloaderContext/>
+      <jeeMetadataContext/>
+    </contextService>
+  </managedExecutorService>
 </server>

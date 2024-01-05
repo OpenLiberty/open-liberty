@@ -72,6 +72,7 @@ class ScheduledAsyncMethod implements Callable<CompletableFuture<Object>>, Sched
     private ZonedDateTime nextExecutionTime;
     private final List<Long> skipIfLateBySeconds;
     private final List<ScheduleCronTrigger> triggers;
+    private final Executor virtualThreadExecutor;
 
     ScheduledAsyncMethod(InvocationContext firstInvocation, AsyncInterceptor interceptor, WSManagedExecutorService managedExecutor,
                          List<ScheduleCronTrigger> triggers, List<Long> skipIfLateBySeconds) {
@@ -81,6 +82,7 @@ class ScheduledAsyncMethod implements Callable<CompletableFuture<Object>>, Sched
         this.interceptor = interceptor;
         this.triggers = triggers;
         this.skipIfLateBySeconds = skipIfLateBySeconds;
+        this.virtualThreadExecutor = managedExecutor.getNormalPolicyExecutor().getVirtualThreadExecutor();
 
         ConcurrencyExtensionMetadata.scheduledExecutor.schedule(this, computeDelayNanos(), TimeUnit.NANOSECONDS);
     }
@@ -223,7 +225,10 @@ class ScheduledAsyncMethod implements Callable<CompletableFuture<Object>>, Sched
      * @return executor that determines the thread to run on.
      */
     @Override
+    @Trivial
     public Executor getExecutor() {
-        return null; // TODO virtual thread executor
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getExecutor for virtual threads: " + virtualThreadExecutor);
+        return virtualThreadExecutor;
     }
 }
