@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,26 +29,26 @@ public class PagesVersionHandler {
     public static String LOADED_SPEC_LEVEL = loadPagesVersion();
 
     private static String DEFAULT_VERSION = "2.2";
-    
-    private static synchronized String loadPagesVersion(){
+
+    private static synchronized String loadPagesVersion() {
         String methodName = "loadServletVersion";
 
         try (InputStream input = PagesVersionHandler.class.getClassLoader().getResourceAsStream("com/ibm/ws/jsp/speclevel/jspSpecLevel.properties")) {
 
             // null check fixes errors in wc unit tests
-            if(input != null){
+            if (input != null) {
                 Properties prop = new Properties();
                 prop.load(input);
                 return prop.getProperty("version");
             } else {
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                    logger.logp(Level.FINE, CLASS_NAME, methodName, "InputStream was null for jspSpecLevel.properties" );
+                    logger.logp(Level.FINE, CLASS_NAME, methodName, "InputStream was null for jspSpecLevel.properties");
                 }
             }
 
         } catch (Exception ex) {
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-                logger.logp(Level.FINE, CLASS_NAME, methodName, "Exception occured: " + ex.getCause() );
+                logger.logp(Level.FINE, CLASS_NAME, methodName, "Exception occured: " + ex.getCause());
             }
         }
 
@@ -57,32 +57,46 @@ public class PagesVersionHandler {
         return PagesVersionHandler.DEFAULT_VERSION;
     }
 
-    public static boolean isPages30Loaded(){
-        if(PagesVersionHandler.LOADED_SPEC_LEVEL.equals("3.0")) {
+    public static boolean isPages30Loaded() {
+        if (PagesVersionHandler.LOADED_SPEC_LEVEL.equals("3.0")) {
             return true;
         }
         return false;
     }
 
-    public static boolean isPages31Loaded(){
-        if(PagesVersionHandler.LOADED_SPEC_LEVEL.equals("3.1")) {
+    public static boolean isPages31Loaded() {
+        if (PagesVersionHandler.LOADED_SPEC_LEVEL.equals("3.1")) {
             return true;
         }
         return false;
     }
 
-    public static boolean isPages31OrHigherLoaded(){
-        if(Double.parseDouble(PagesVersionHandler.LOADED_SPEC_LEVEL) >= 3.1) {
+    public static boolean isPages31OrHigherLoaded() {
+        if (Double.parseDouble(PagesVersionHandler.LOADED_SPEC_LEVEL) >= 3.1) {
             return true;
         }
         return false;
     }
 
-    public static boolean isPages30OrLowerLoaded(){
-        if(Double.parseDouble(PagesVersionHandler.LOADED_SPEC_LEVEL) <= 3.0) {
+    public static boolean isPages30OrLowerLoaded() {
+        if (Double.parseDouble(PagesVersionHandler.LOADED_SPEC_LEVEL) <= 3.0) {
             return true;
         }
         return false;
     }
-    
+
+    public static boolean isPages31OrLowerLoaded() {
+        if (Double.parseDouble(PagesVersionHandler.LOADED_SPEC_LEVEL) <= 3.1) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isPages40OrHigherLoaded() {
+        if (Double.parseDouble(PagesVersionHandler.LOADED_SPEC_LEVEL) >= 4.0) {
+            return true;
+        }
+        return false;
+    }
+
 }

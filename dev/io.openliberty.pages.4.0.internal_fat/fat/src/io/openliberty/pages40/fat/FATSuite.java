@@ -16,14 +16,16 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
+import io.openliberty.pages40.fat.tests.Pages40ChangesTest;
+import io.openliberty.pages40.fat.tests.PagesELTests;
 
 /**
  * Pages 4.0 Tests
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class
+                Pages40ChangesTest.class,
+                PagesELTests.class
 })
 public class FATSuite {
 

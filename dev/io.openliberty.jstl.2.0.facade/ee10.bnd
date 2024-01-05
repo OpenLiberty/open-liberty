@@ -18,10 +18,10 @@ Provide-Capability: com.ibm.ws.jsp.jstl.facade
 # Updated the jakarta.el import to include Expression Language 6.0 (EE11) because Jakarta Tags is not changing for EE11.
 Import-Package: \
   jakarta.el;version="[5.0,7.0)", \
-  jakarta.servlet.jsp;version="[3.1,4.0)", \
-  jakarta.servlet.jsp.el;version="[3.1,4.0)", \
-  jakarta.servlet.jsp.resources;version="[3.1,4.0)", \
-  jakarta.servlet.jsp.tagext;version="[3.1,4.0)", \
+  jakarta.servlet.jsp;version="[3.1,5.0)", \
+  jakarta.servlet.jsp.el;version="[3.1,5.0)", \
+  jakarta.servlet.jsp.resources;version="[3.1,5.0)", \
+  jakarta.servlet.jsp.tagext;version="[3.1,5.0)", \
   jakarta.servlet.jsp.jstl.core;version="[3.0,4.0)", \
   jakarta.servlet.jsp.jstl.fmt;version="[3.0,4.0)", \
   jakarta.servlet.jsp.jstl.sql;version="[3.0,4.0)", \
