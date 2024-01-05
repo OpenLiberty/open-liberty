@@ -15,11 +15,14 @@ package test.concurrency.schedasync.web;
 import java.time.Month;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.Schedule;
 import jakarta.enterprise.context.ApplicationScoped;
+
+import javax.naming.InitialContext;
 
 @ApplicationScoped
 public class SchedAsyncAppScopedBean {
@@ -102,6 +105,32 @@ public class SchedAsyncAppScopedBean {
 
         System.out.println("< everyThreeOrEvenSeconds " + result);
         return result;
+    }
+
+    /**
+     * Look up the specified JNDI name every 6 seconds, on seconds that have a remainder of 5 when
+     * divided by 6.
+     *
+     * @param jndiName              JNDI name to look up.
+     * @param lookupResults         results of the lookup.
+     * @param cancellationCountdown countdown after which this method cancels itself.
+     */
+    @Asynchronous(executor = "java:module/concurrent/max-2-executor",
+                  runAt = @Schedule(cron = "5/12 * * * JAN-DEC SUN-SAT"))
+    void lookUpAtSixSecondIntervals(String jndiName, LinkedBlockingQueue<Object> lookupResults, AtomicInteger cancellationCountdown) {
+        System.out.println("> lookUpAtSixSecondIntervals " + cancellationCountdown);
+
+        Object result;
+        try {
+            lookupResults.add(result = InitialContext.doLookup(jndiName));
+        } catch (Throwable x) {
+            lookupResults.add(result = x);
+        }
+
+        if (cancellationCountdown.decrementAndGet() == 0)
+            Asynchronous.Result.getFuture().cancel(false);
+
+        System.out.println("< lookUpAtSixSecondIntervals " + result);
     }
 
     /**
