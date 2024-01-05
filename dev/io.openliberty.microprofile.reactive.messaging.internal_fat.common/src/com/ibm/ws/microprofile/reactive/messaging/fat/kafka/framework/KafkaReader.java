@@ -72,7 +72,7 @@ public class KafkaReader<K, V> implements AutoCloseable {
      */
     public List<ConsumerRecord<K, V>> assertReadRecords(int count, Duration timeout) {
         List<ConsumerRecord<K, V>> records = readRecords(count, timeout);
-        assertThat("Wrong number of records fetched from kafka", records, hasSize(count));
+        assertThat("Wrong number of records fetched from kafka. We found: " + System.lineSeparator() + listToString(records), records, hasSize(count));
         return records;
     }
 
@@ -111,4 +111,7 @@ public class KafkaReader<K, V> implements AutoCloseable {
         kafkaConsumer.close();
     }
 
+    private String listToString(List<?> list) {
+        return list.stream().map(Object::toString).collect(Collectors.joining(System.lineSeparator()));
+    }
 }
