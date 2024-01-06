@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -108,7 +108,6 @@ import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
 import jakarta.data.page.Pageable;
 import jakarta.data.page.Slice;
-import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
@@ -1668,8 +1667,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
 
         if (isParameterBased) {
-            if (methodTypeAnno instanceof Delete || // Special case for BasicRepository.deleteAll(), which doesn't follow the spec's own rules:
-                BasicRepository.class.equals(queryInfo.method.getDeclaringClass()) && methodName.equals("deleteAll")) {
+            if (methodTypeAnno instanceof Delete) {
                 if (queryInfo.isFindAndDelete()) {
                     queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
                     q = generateSelectClause(queryInfo, null);
@@ -1680,8 +1678,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
                 if (queryInfo.method.getParameterCount() > 0)
                     generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
-            } else if (methodTypeAnno instanceof Count || // Special case for BasicRepository.count(), which doesn't follow the spec's own rules:
-                       BasicRepository.class.equals(queryInfo.method.getDeclaringClass()) && methodName.equals("count")) {
+            } else if (methodTypeAnno instanceof Count) {
                 queryInfo.type = QueryInfo.Type.COUNT;
                 q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
                 if (queryInfo.method.getParameterCount() > 0)
