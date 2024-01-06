@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,35 +27,38 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 /**
- * JSP 2.3 tests which use Java 1.8 specific features.
+ * JSP 2.3 tests which use Java 21 specific features.
  *
- * Tests must only run when Java 1.8 or later is in use.
- *
- * Tests that just need to drive a simple request using our WebBrowser object can be placed in this class.
+ * Tests must only run when Java 21 or later is in use.
  *
  */
-// No need to run against cdi-2.0 since these tests don't use CDI at all.
-@SkipForRepeat("CDI-2.0")
+@Mode(TestMode.FULL)
+@MinimumJavaLevel(javaLevel = 21)
+@SkipForRepeat("CDI-2.0") // No need to run against cdi-2.0 since these tests don't use CDI at all.
 @RunWith(FATRunner.class)
-public class JSPJava8Test {
-    private static final String APP_NAME = "TestJSPWithJava8";
-    private static final Logger LOG = Logger.getLogger(JSPJava8Test.class.getName());
+public class JSPJava21Test {
+    private static final String APP_NAME = "TestJSPWithJava21";
+    private static final Logger LOG = Logger.getLogger(JSPJava21Test.class.getName());
 
-    @Server("jspJava8Server")
+    @Server("jspJava21Server")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war");
 
-        server.startServer(JSPJava8Test.class.getSimpleName() + ".log");
+        server.startServer(JSPJava21Test.class.getSimpleName() + ".log");
     }
 
     @AfterClass
@@ -67,13 +70,13 @@ public class JSPJava8Test {
     }
 
     /**
-     * Simple test for Index.jsp
+     * Simple test for index.jsp. Page uses Java 21's instanceof pattern matching
      *
      * @throws Exception
      *                       if something goes horribly wrong
      */
     @Test
-    public void testJava8JSP() throws Exception {
+    public void testJava21JSP() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 
@@ -86,11 +89,12 @@ public class JSPJava8Test {
 
         assertEquals("Expected " + 200 + " status code was not returned!",
                      200, response.getResponseCode());
-        assertTrue("The response did not contain: onetwothreefour", response.getText().contains("onetwothreefour"));
+        assertTrue("The response did not contain: success", response.getText().contains("getFirst success!"));
+        assertTrue("The response did not contain: success", response.getText().contains("switch success!"));
     }
 
-    /**
-     * Same test as testJava8JSP, but using the runtime JDK (via JSP's useJDKCompiler option rather than the default Eclipse Compiler for Java (ECJ))
+     /**
+     * Same test as testJava21JSP, but using the runtime JDK (via JSP's useJDKCompiler option rather than the default Eclipse Compiler for Java (ECJ))
      *
      * https://openliberty.io/docs/latest/reference/config/jspEngine.html
      * 
@@ -98,7 +102,7 @@ public class JSPJava8Test {
      *                
      */
     @Test
-    public void testJava8viaUseJDKCompiler() throws Exception {
+    public void testJava21viaUseJDKCompiler() throws Exception {
 
         ServerConfiguration configuration = server.getServerConfiguration();
         configuration.getJspEngine().setUseJDKCompiler(true);
@@ -107,7 +111,7 @@ public class JSPJava8Test {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(configuration);
         server.restartApplication(APP_NAME);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*TestJSPWithJava8.*");
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*TestJSPWithJava21.*");
 
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -121,6 +125,7 @@ public class JSPJava8Test {
 
         assertEquals("Expected " + 200 + " status code was not returned!",
                      200, response.getResponseCode());
-        assertTrue("The response did not contain: onetwothreefour", response.getText().contains("onetwothreefour"));
+        assertTrue("The response did not contain: success", response.getText().contains("getFirst success!"));
+        assertTrue("The response did not contain: success", response.getText().contains("switch success!"));
     }
 }

@@ -10,11 +10,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-# 3.35 (aka 4.29) added Java 21 support 
+# 3.36 (aka 4.30) added Java 21 support 
 
 Bundle-Name: JDT Compiler
 Bundle-SymbolicName: io.openliberty.org.eclipse.jdt.core.java17
-Bundle-Description: Eclipse Java Compiler (ECJ) from the Java Development Tools (JDT) Project. Version 3.35.0: Sept, 2023
+Bundle-Description: Eclipse Java Compiler (ECJ) from the Java Development Tools (JDT) Project. Version 3.36.0: Dec, 2023
 
 javac.source: 17
 javac.target: 17
@@ -23,6 +23,6 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Import-Package: !*
    
-Export-Package: org.eclipse.jdt.*;version=3.35.0;usage=JSP
+Export-Package: org.eclipse.jdt.*;version=3.36.0;usage=JSP
 
--buildpath: org.eclipse.jdt:ecj;strategy=exact;version=3.35.0
+-buildpath: org.eclipse.jdt:ecj;strategy=exact;version=3.36.0

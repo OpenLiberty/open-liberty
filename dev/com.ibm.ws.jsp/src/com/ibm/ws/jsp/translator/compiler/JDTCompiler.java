@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp.translator.compiler;
 
@@ -71,18 +68,20 @@ public class JDTCompiler implements JspCompiler {
         private boolean isVerbose = false;
         private boolean isDeprecation = false; 
         private int jdkSourceLevel;
+        private Integer javaSourceLevel;
         private boolean useFullPackageNames = false;
         
         public JDTCompiler(ClassLoader loader, JspOptions options) {
                 this.loader = loader;
                 javaEncoding = options.getJavaEncoding();
                 outputDir = options.getOutputDir().getPath();
-        isClassDebugInfo = options.isClassDebugInfo();
-        isDebugEnabled = options.isDebugEnabled();
-        isVerbose = options.isVerbose();
-        isDeprecation =  options.isDeprecation();
-        jdkSourceLevel =  options.getJdkSourceLevel();
-        useFullPackageNames = options.isUseFullPackageNames();
+                isClassDebugInfo = options.isClassDebugInfo();
+                isDebugEnabled = options.isDebugEnabled();
+                isVerbose = options.isVerbose();
+                isDeprecation =  options.isDeprecation();
+                jdkSourceLevel =  options.getJdkSourceLevel();
+                javaSourceLevel =  options.getJavaSourceLevel();
+                useFullPackageNames = options.isUseFullPackageNames();
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME, "JDTCompiler", "Entering JDTCompiler.");
         }
@@ -108,12 +107,16 @@ public class JDTCompiler implements JspCompiler {
                 compilerOptionsMap.put(CompilerOptions.OPTION_LineNumberAttribute, CompilerOptions.GENERATE);
             compilerOptionsMap.put(CompilerOptions.OPTION_LocalVariableAttribute, CompilerOptions.GENERATE);
             compilerOptionsMap.put(CompilerOptions.OPTION_SourceFileAttribute, CompilerOptions.GENERATE);
-            compilerOptionsMap.put(CompilerOptions.OPTION_PreserveUnusedLocal, CompilerOptions.PRESERVE);            
+            compilerOptionsMap.put(CompilerOptions.OPTION_PreserveUnusedLocal, CompilerOptions.PRESERVE);
         }
         compilerOptionsMap.put(CompilerOptions.OPTION_Encoding, javaEncoding);
         
-        //487396.1 jdkSourceLevel is 15 by default now ... should get into if statement
-        if (jdkSourceLevel == 14) {
+        if (javaSourceLevel != -1) {
+            compilerOptionsMap.put(CompilerOptions.OPTION_Source, javaSourceLevel.toString());
+            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, javaSourceLevel.toString());
+            compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, javaSourceLevel.toString());
+        }
+        else if (jdkSourceLevel == 14) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_4);
             compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_4);  //PM32704
             compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_4);  //PM32704
@@ -132,13 +135,13 @@ public class JDTCompiler implements JspCompiler {
         //PM04610 end
         else if (jdkSourceLevel == 17) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_7);
-            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_7);       
+            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_7);
             compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_7);
         }
         //126902 start
         else if (jdkSourceLevel == 18) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_8);
-            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_8);  
+            compilerOptionsMap.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_8);
             compilerOptionsMap.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_8);
         }
         //126902 end
