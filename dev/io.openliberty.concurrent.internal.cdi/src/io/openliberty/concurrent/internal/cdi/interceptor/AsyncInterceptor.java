@@ -14,7 +14,6 @@ package io.openliberty.concurrent.internal.cdi.interceptor;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -121,21 +120,7 @@ public class AsyncInterceptor implements Serializable {
             List<ScheduleCronTrigger> triggers = new ArrayList<>();
             for (Schedule schedule : schedules) {
                 skipIfLateBySeconds.add(schedule.skipIfLateBy());
-
-                String zone = schedule.zone();
-                ZoneId zoneId = zone.length() == 0 ? ZoneId.systemDefault() : ZoneId.of(zone);
-
-                String cron = schedule.cron();
-                if (cron.length() > 0)
-                    triggers.add(new ScheduleCronTrigger(cron, zoneId));
-                else
-                    triggers.add((ScheduleCronTrigger) new ScheduleCronTrigger(zoneId) //
-                                    .months(schedule.months()) //
-                                    .daysOfMonth(schedule.daysOfMonth()) //
-                                    .daysOfWeek(schedule.daysOfWeek()) //
-                                    .hours(schedule.hours()) //
-                                    .minutes(schedule.minutes()) //
-                                    .seconds(schedule.seconds()));
+                triggers.add(ScheduleCronTrigger.create(schedule));
             }
 
             return new ScheduledAsyncMethod(invocation, this, managedExecutor, triggers, skipIfLateBySeconds).future;
