@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.jakartaee9.internal.tests;
 
@@ -350,7 +347,7 @@ public class EE9FeatureCompatibilityTest extends FATServletClient {
         // faces and facesContainer conflict with each other
         specialEE9Conflicts.put("facesContainer-3.0", "io.openliberty.facesProvider");
         specialEE9Conflicts.put("facesContainer-4.0", "io.openliberty.facesProvider");
-        specialEE9Conflicts.put("facesContainer-5.0", "io.openliberty.facesProvider");
+        specialEE9Conflicts.put("facesContainer-4.1", "io.openliberty.facesProvider");
         // the jakartaee-9.1 convenience feature conflicts with itself
         specialEE9Conflicts.put("jakartaee-9.1", "io.openliberty.jakartaee");
         // the convenience feature depends on jdbc-4.2 and tolerates 4.3

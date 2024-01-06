@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,18 +21,15 @@ import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.Jaeger
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasParentSpanId;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasServiceName;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.isSpan;
-import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasAttribute;
 import static io.opentelemetry.api.trace.SpanKind.CLIENT;
 import static io.opentelemetry.api.trace.SpanKind.INTERNAL;
 import static io.opentelemetry.api.trace.SpanKind.SERVER;
-import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_ROUTE;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.equalTo;
 
 import java.io.File;
 import java.util.HashSet;
@@ -55,23 +52,21 @@ import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
-import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentTestResource;
 import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentSubResource;
-import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
+import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentTestResource;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher;
-import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 
 /**
- * Test mpTelemetry running with the OpenTelemetry Java Agent enabled
+ * Test mpTelemetry running with the OpenTelemetry Java Agent 1.19 enabled
  */
 @RunWith(FATRunner.class)
 @MaximumJavaLevel(javaLevel = 20)
@@ -85,7 +80,7 @@ public class AgentTest {
     public static LibertyServer server;
 
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
-    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests repeat = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60);
 
     // In contrast to most tests, this test needs a new jaeger instance for each repeat
     // so that it can check for any trace IDs not accounted for
@@ -100,7 +95,7 @@ public class AgentTest {
 
         client = new JaegerQueryClient(jaegerContainer);
 
-        server.copyFileToLibertyServerRoot("opentelemetry-javaagent.jar");
+        server.copyFileToLibertyServerRoot("agent-119/opentelemetry-javaagent.jar");
 
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOltpGrpcUrl());
@@ -166,15 +161,9 @@ public class AgentTest {
 
         Span span = spans.get(0);
 
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL11_ID)) {
-            assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
-                                              .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest")
-                                              .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
-        } else {
-            assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
-                                              .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/")
-                                              .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
-        }
+        assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
+                                          .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/")
+                                          .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
         // We shouldn't have any additional spans
         List<String> services = client.getServices();
         assertThat(services, contains(SERVICE_NAME));
@@ -193,9 +182,9 @@ public class AgentTest {
         Span span = spans.get(0);
 
         assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
-                                    .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/pathparameter/{parameter}")
-                                    .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
-        
+                                          .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/pathparameter/{parameter}")
+                                          .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
+
         // We shouldn't have any additional spans
         List<String> services = client.getServices();
         assertThat(services, contains(SERVICE_NAME));
@@ -256,14 +245,13 @@ public class AgentTest {
 
         List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
         Log.info(c, "testBasic", "Spans returned: " + spans);
-        
+
         Span span = spans.get(0);
         assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
-                                    .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/getSubResource/{id}/details")
-                                    .withAttribute(SemanticAttributes.HTTP_TARGET, "/agentTest/getSubResource/pathParameter/details")
-                                    .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
+                                          .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest/getSubResource/{id}/details")
+                                          .withAttribute(SemanticAttributes.HTTP_TARGET, "/agentTest/getSubResource/pathParameter/details")
+                                          .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
 
-        
         // We shouldn't have any additional spans
         List<String> services = client.getServices();
         assertThat(services, contains(SERVICE_NAME));

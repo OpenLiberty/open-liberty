@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static io.openliberty.microprofile.telemetry.internal.utils.TestConstants.NULL_TRACE_ID;
+import static io.openliberty.microprofile.telemetry.internal.utils.TestUtils.findOneFrom;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasKind;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasName;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasNoParent;
@@ -23,30 +24,30 @@ import static io.opentelemetry.api.trace.SpanKind.INTERNAL;
 import static io.opentelemetry.api.trace.SpanKind.SERVER;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import org.junit.rules.RuleChain;
-import org.junit.AfterClass;
 
 import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.LocalFile;
-import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -58,11 +59,12 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agentconfig.AgentConfigTestResource;
+import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.TestUtils;
-import io.openliberty.microprofile.telemetry.internal.suite.FATSuite;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 /**
  * Test all the ways the agent can be configured
@@ -91,7 +93,11 @@ public class AgentConfigTest {
     public static void setup() throws Exception {
         client = new JaegerQueryClient(jaegerContainer);
 
-        server.copyFileToLibertyServerRoot("opentelemetry-javaagent.jar");
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            server.copyFileToLibertyServerRoot("agent-119/opentelemetry-javaagent.jar");
+        } else {
+            server.copyFileToLibertyServerRoot("agent-129/opentelemetry-javaagent.jar");
+        }
 
         // Construct the test application
         WebArchive agentTest = ShrinkWrap.create(WebArchive.class, "agentTest.war")
@@ -141,8 +147,17 @@ public class AgentConfigTest {
         server.startServer();
 
         String traceId = new HttpRequest(server, "/agentTest").run(String.class);
-        Span span = client.waitForSpansForTraceId(traceId, hasSize(1)).get(0);
 
+        Span span = null;
+
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            // MP6.0 uses JavaAgent 1.19 therefore there is no extra span created for JAX-RS
+            span = client.waitForSpansForTraceId(traceId, hasSize(1)).get(0);
+        } else {
+            // All other repeats are using Java Agent 1.29 therefore there is an extra span for JAX-RS.
+            List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(2));
+            span = findOneFrom(spans, hasNoParent());
+        }
         assertThat(span, hasServiceName("agent-config-test-service"));
     }
 
@@ -154,7 +169,16 @@ public class AgentConfigTest {
         server.startServer();
 
         String traceId = new HttpRequest(server, "/agentTest").run(String.class);
-        Span span = client.waitForSpansForTraceId(traceId, hasSize(1)).get(0);
+        Span span = null;
+
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            // MP6.0 uses JavaAgent 1.19 therefore there is no extra span created for JAX-RS
+            span = client.waitForSpansForTraceId(traceId, hasSize(1)).get(0);
+        } else {
+            // All other repeats are using Java Agent 1.29 therefore there is an extra span for JAX-RS.
+            List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(2));
+            span = findOneFrom(spans, hasNoParent());
+        }
 
         assertThat(span, hasServiceName("jvm-options-test-service"));
     }
@@ -167,12 +191,21 @@ public class AgentConfigTest {
         server.startServer();
 
         String traceId = new HttpRequest(server, "/agentTest").run(String.class);
-        Span span = client.waitForSpansForTraceId(traceId, hasSize(1)).get(0);
+        Span span = null;
+
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            // MP6.0 uses JavaAgent 1.19 therefore there is no extra span created for JAX-RS
+            span = client.waitForSpansForTraceId(traceId, hasSize(1)).get(0);
+        } else {
+            // All other repeats are using Java Agent 1.29 therefore there is an extra span for JAX-RS.
+            List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(2));
+            span = findOneFrom(spans, hasNoParent());
+        }
 
         // bootstrap.properties is not read by the agent
         // It's processed as one of the first things liberty does on startup,
         // but that's still too late for the agent to see its changes
-        assertThat(span, hasServiceName("unknown_service:java"));
+        assertThat(span, not(hasServiceName("multi-app-1")));
     }
 
     @Test
@@ -183,7 +216,16 @@ public class AgentConfigTest {
         server.startServer();
 
         String traceId = new HttpRequest(server, "/agentTest/withspan").run(String.class);
-        Span span = client.waitForSpansForTraceId(traceId, hasSize(1)).get(0);
+        Span span = null;
+
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            // MP6.0 uses JavaAgent 1.19 therefore there is no extra span created for JAX-RS
+            span = client.waitForSpansForTraceId(traceId, hasSize(1)).get(0);
+        } else {
+            // All other repeats are using Java Agent 1.29 therefore there is an extra span for JAX-RS.
+            List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(2));
+            span = findOneFrom(spans, hasNoParent());
+        }
 
         // We should only have one span, it should be the server span
         // No span was created for the WithSpan annotation
@@ -191,6 +233,11 @@ public class AgentConfigTest {
     }
 
     @Test
+    /*
+     * Skipping for 1.4 and 4.1 as JavaAgent 1.29 currently will not return a span for methods annotated with @withSpan
+     * (https://github.com/open-telemetry/opentelemetry-java-instrumentation/issues/10159)
+     */
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID })
     public void testEnableSpecificInstrumentation() throws Exception {
         // Enable only @WithSpan instrumentation
         server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_DEFAULT_ENABLED", "false");
@@ -199,7 +246,8 @@ public class AgentConfigTest {
 
         server.startServer();
 
-        String traceId = new HttpRequest(server, "/agentTest/withspan").run(String.class);
+        String traceId = new HttpRequest(server, "/agentTest/withspan").run(String.class);;
+
         Span span = client.waitForSpansForTraceId(traceId, hasSize(1)).get(0);
 
         // We should only have one span, it should be the span created by WithSpan
@@ -211,7 +259,7 @@ public class AgentConfigTest {
     /**
      * If the user configures the agent not to trace Rest or {@code @WithSpan} calls, we should not enable our instrumentation.
      */
-    
+
     @Test
     public void testAgentRestAndCDIInstrumentationDisabled() throws Exception {
 
@@ -220,12 +268,13 @@ public class AgentConfigTest {
         server.addEnvVar("OTEL_INSTRUMENTATION_JAXRS_ENABLED", "false");
         server.addEnvVar("OTEL_INSTRUMENTATION_LIBERTY_ENABLED", "false");
         server.addEnvVar("OTEL_INSTRUMENTATION_APACHE_HTTPCLIENT_ENABLED", "false");
-        server.addEnvVar("OTEL_INSTRUMENTATION_HTTP_URL_CONNECTION_ENABLED","false"); //For JaxRs 2.0 and 2.1
+        server.addEnvVar("OTEL_INSTRUMENTATION_HTTP_URL_CONNECTION_ENABLED", "false"); //For JaxRs 2.0 and 2.1
         server.addEnvVar("OTEL_INSTRUMENTATION_SERVLET_ENABLED", "false");
 
         server.startServer();
 
         String traceId = new HttpRequest(server, "/agentTest/allTraces").run(String.class);
+
         Span span = client.waitForSpansForTraceId(traceId, hasSize(1)).get(0);
 
         // We should only have one span, it should be the span created by WithSpan
@@ -244,10 +293,11 @@ public class AgentConfigTest {
         String traceId = new HttpRequest(server, "/agentTest").run(String.class);
 
         List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
+
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
-            assertThat(spans.get(0), hasName("/agentTest/"));        
+            assertThat(spans.get(0), hasName("/agentTest/"));
         } else {
-            assertThat(spans.get(0), hasName("GET /agentTest/"));  
+            assertThat(spans.get(0), hasName("GET /agentTest/"));
         }
         // We should still be able to manually create spans with the API
         String traceId2 = new HttpRequest(server, "/agentTest/manualSpans").run(String.class);
@@ -257,8 +307,7 @@ public class AgentConfigTest {
         String requestSpanName = "";
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             requestSpanName = "/agentTest/manualSpans";
-        }
-        else{
+        } else {
             requestSpanName = "GET /agentTest/manualSpans";
         }
 

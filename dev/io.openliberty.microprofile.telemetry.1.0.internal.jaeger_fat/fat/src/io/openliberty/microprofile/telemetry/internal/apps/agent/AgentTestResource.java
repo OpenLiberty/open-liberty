@@ -71,7 +71,7 @@ public class AgentTestResource extends Application {
         Span span = Span.current();
         return new AgentSubResource(span.getSpanContext().getTraceId());
     }
-    
+
     @GET
     @Path("/nestedspans")
     public String createNestedSpans() {
@@ -153,7 +153,7 @@ public class AgentTestResource extends Application {
         withSpanNonBeanMethod();
         return span.getSpanContext().getTraceId();
     }
-    
+
     @GET
     @Path("/pathparameter/{parameter}")
     public String callPathParameter(@PathParam("parameter") String parameter) {

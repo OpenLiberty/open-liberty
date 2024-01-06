@@ -57,13 +57,13 @@
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: Konfigurace p\u0159edpony prvku DatabaseStore {1} obsahuje neplatn\u00e9 znaky.
+ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: Konfigurace p\u0159edpony DatabaseStore {0} obsahuje neplatn\u00e9 znaky.
 ILLEGAL_IDENTIFIER_CWWKD0200E.explanation=P\u0159edpona DatabaseStore sm\u00ed obsahovat pouze \u010d\u00edsla, p\u00edsmena nebo symbol "_".
 ILLEGAL_IDENTIFIER_CWWKD0200E.useraction=P\u0159edponu DatabaseStore je nutn\u00e9 upravit tak, aby obsahovala pouze \u010d\u00edsla, p\u00edsmena nebo symbol "_".
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: Sch\u00e9ma konfigurace prvku DatabaseStore {1} obsahuje neplatn\u00e9 znaky.
+ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: Konfigurace sch\u00e9matu DatabaseStore {0} obsahuje neplatn\u00e9 znaky.
 ILLEGAL_IDENTIFIER_CWWKD0201E.explanation=Sch\u00e9ma DatabaseStore sm\u00ed obsahovat pouze \u010d\u00edsla, p\u00edsmena nebo symbol "_".
 ILLEGAL_IDENTIFIER_CWWKD0201E.useraction=Sch\u00e9ma DatabaseStore je nutn\u00e9 upravit tak, aby obsahovalo pouze \u010d\u00edsla, p\u00edsmena nebo symbol "_".
 

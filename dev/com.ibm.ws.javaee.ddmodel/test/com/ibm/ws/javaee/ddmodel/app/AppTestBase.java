@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,7 +26,7 @@ public class AppTestBase extends DDTestBase {
             mockery.mock(ServiceReference.class, "sr" + mockId++);
         String versionText = getDottedVersionText(maxSchemaVersion);
         mockery.checking(new Expectations() {
-            {                
+            {
                 allowing(versionRef).getProperty("version");
                 will(returnValue(versionText));
             }
@@ -143,6 +143,16 @@ public class AppTestBase extends DDTestBase {
                    " id=\"Application_ID\"" +
                    ">";
     
+    protected static String app110Head =
+            "<application" +
+                   " xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee" +
+                   " https://jakarta.ee/xml/ns/jakartaee/application_11.xsd\"" +
+                   " version=\"11\"" +
+                   " id=\"Application_ID\"" +
+                   ">";
+
     protected static String appBody =
             "<display-name>Deployment Descriptor FAT Enterprise Application</display-name>\n" +
 
@@ -193,7 +203,9 @@ public class AppTestBase extends DDTestBase {
         } else if ( schemaVersion == VERSION_9_0_INT ) {
             appHead = app90Head;
         } else if ( schemaVersion == VERSION_10_0_INT ) {
-            appHead = app100Head;            
+            appHead = app100Head;
+        } else if ( schemaVersion == VERSION_11_0_INT ) {
+            appHead = app110Head; 
         } else {
             throw new IllegalArgumentException("Unknown application version [ " + schemaVersion + " ]");
         }

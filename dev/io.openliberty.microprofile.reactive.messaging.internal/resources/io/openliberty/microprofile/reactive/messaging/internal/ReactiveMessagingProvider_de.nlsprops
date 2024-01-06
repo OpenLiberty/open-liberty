@@ -1,0 +1,32 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+missing.context.service.CWMRX1200E=CWMRX1200E: Der Kanal {0} ist f\u00fcr die Verwendung des Kontextservice {1} konfiguriert, aber es wurde kein solcher Kontextservice gefunden. Stellen Sie sicher, dass der Kontextservice in der Datei server.xml definiert ist und dass das Feature Java EE oder Jakarta Concurrency aktiviert ist.
+missing.context.service.CWMRX1200E.explanation=Der Reaktive Messaging-Kanal ist f\u00fcr die Verwendung eines benannten Kontextservice konfiguriert, aber es wurde kein Kontextservice mit diesem Namen gefunden.
+missing.context.service.CWMRX1200E.useraction=Definieren Sie den Kontextservice in der Datei server.xml oder entfernen Sie die Konfigurationseigenschaft context.service f\u00fcr den Kanal.

@@ -10,6 +10,7 @@
 package io.openliberty.pages31.fat;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -19,6 +20,14 @@ import com.ibm.ws.fat.util.FatLogHandler;
 import io.openliberty.pages31.fat.tests.MiscTests;
 import io.openliberty.pages31.fat.tests.TagsTestsEE10;
 import io.openliberty.pages31.fat.tests.UnknownELIdentifiersTest;
+
+
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.impl.JavaInfo;
+
+
 
 /**
  * Pages 3.1 Tests
@@ -41,4 +50,8 @@ public class FATSuite {
         FatLogHandler.generateHelpFile();
     }
 
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_21))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES());
+    
 }

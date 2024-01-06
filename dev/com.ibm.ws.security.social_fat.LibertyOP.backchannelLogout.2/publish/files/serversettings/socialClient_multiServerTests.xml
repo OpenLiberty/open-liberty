@@ -1,0 +1,149 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ <!--  Lots of similar configs because we're using test apps for backchannel logout (so we can record/return the logout_token - when we share configs between tests, we can't rely on which bcl requests we'll get or their order  -->
+
+<server>
+
+
+
+	<oidcLogin
+		id="bcl_multiServer_client1-1"
+		clientId="bcl_multiServer_client1-1"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		createSession="true"	
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer1/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer1/token"
+		authFilterRef="bcl_multiServer_client1-1_filter"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+
+	<oidcLogin
+		id="bcl_multiServer_client1-2"
+		clientId="bcl_multiServer_client1-2"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		createSession="true"	
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer1/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer1/token"
+		authFilterRef="bcl_multiServer_client1-2_filter"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+
+	<oidcLogin
+		id="bcl_multiServer_client1-3"
+		clientId="bcl_multiServer_client1-3"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		createSession="true"	
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer1/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer1/token"
+		authFilterRef="bcl_multiServer_client1-3_filter"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+
+	<oidcLogin
+		id="bcl_multiServer_client1-4"
+		clientId="bcl_multiServer_client1-4"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		createSession="true"	
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer1/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer1/token"
+		authFilterRef="bcl_multiServer_client1-4_filter"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+
+
+	<oidcLogin
+		id="bcl_multiServer_client2-1"
+		clientId="bcl_multiServer_client2-1"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		createSession="true"	
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer2/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer2/token"
+		authFilterRef="bcl_multiServer_client2-1_filter"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+
+	<oidcLogin
+		id="bcl_multiServer_client2-2"
+		clientId="bcl_multiServer_client2-2"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		createSession="true"	
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer2/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer2/token"
+		authFilterRef="bcl_multiServer_client2-2_filter"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+
+	<oidcLogin
+		id="bcl_multiServer_client2-3"
+		clientId="bcl_multiServer_client2-3"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		createSession="true"	
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer2/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer2/token"
+		authFilterRef="bcl_multiServer_client2-3_filter"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+
+	<oidcLogin
+		id="bcl_multiServer_client2-4"
+		clientId="bcl_multiServer_client2-4"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="RS256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="RS256"
+		createSession="true"	
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer2/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_multiServer2/token"
+		authFilterRef="bcl_multiServer_client2-4_filter"
+		hostNameVerificationEnabled="false"
+	>
+	</oidcLogin>
+
+			
+</server>

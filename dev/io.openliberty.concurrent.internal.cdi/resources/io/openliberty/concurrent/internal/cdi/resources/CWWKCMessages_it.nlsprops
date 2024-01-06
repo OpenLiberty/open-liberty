@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,20 +24,5 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1400 to CWWCK1499
+# All messages must use the range CWWCK1410 to CWWCK1499
 
-CWWKC1400.unsupported.return.type=CWWKC1400E: {0} non \u00e8 un tipo di restituzione valido per il metodo {1} della classe {2}. I tipi di restituzione validi per i metodi annotati con {3} sono: {4}.
-CWWKC1400.unsupported.return.type.explanation=La specifica di simultaneit\u00e0 Jakarta limita la gamma di tipi di restituzione validi per i metodi che hanno questa annotazione.
-CWWKC1400.unsupported.return.type.useraction=Aggiornare il metodo all'interno dell'applicazione per passare a uno dei tipi di restituzione supportati oppure rimuovere l'annotazione dal metodo.
-
-CWWKC1401.class.anno.disallowed=CWWKC1401E: L''annotazione {0} \u00e8 consentita a livello di metodo. Non pu\u00f2 essere utilizzata a livello di classe sulla classe {1}.
-CWWKC1401.class.anno.disallowed.explanation=Questa annotazione non deve essere specificata a livello di classe.
-CWWKC1401.class.anno.disallowed.useraction=Spostare l'annotazione ai singoli metodi della classe.
-
-CWWKC1402.not.managed.executor=CWWKC1402E: L''annotazione {0} sul metodo {1} della classe {2} specifica il nome JNDI {3}, che viene risolto nella risorsa {4} che non \u00e8 un ManagedExecutorService o un ManagedScheduledExecutorService. Le interfacce implementate dalla risorsa sono: {5}.
-CWWKC1402.not.managed.executor.explanation=Il nome JNDI deve essere risolto in una risorsa che implementa l'interfaccia ManagedExecutorService o l'interfaccia ManagedScheduledExecutorService.
-CWWKC1402.not.managed.executor.useraction=Correggere il nome JNDI per specificare una risorsa che sia accessibile al componente dell'applicazione e che implementi l'interfaccia ManagedExecutorService o l'interfaccia ManagedScheduledExecutorService.
-
-CWWKC1403.unsupported.tx.type=CWWKC1403E: L''annotazione {0} specifica il valore {1}, che non \u00e8 consentito in combinazione con l''annotazione {2} che \u00e8 presente sul metodo {3} della classe {4}. I valori consentiti sono: {5}.
-CWWKC1403.unsupported.tx.type.explanation=L'utilizzo di due annotazioni insieme dipende dal fatto che il valore della prima annotazione specificata sia consentito o meno con la seconda annotazione.
-CWWKC1403.unsupported.tx.type.useraction=Aggiornare l'applicazione per passare ad uno dei valori supportati o rimuovere una delle annotazioni.

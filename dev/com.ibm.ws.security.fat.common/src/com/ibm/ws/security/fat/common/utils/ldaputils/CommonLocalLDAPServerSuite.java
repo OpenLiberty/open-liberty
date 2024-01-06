@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 
 package com.ibm.ws.security.fat.common.utils.ldaputils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -80,14 +81,44 @@ public class CommonLocalLDAPServerSuite {
 
     @AfterClass
     public static void ldapTearDown() throws Exception {
-        if (useNewerLdap) {
-            Log.info(c, "tearDown", "Calling LocalLDAPServerSuite.tearDown()");
-            LocalLDAPServerSuite.tearDown();
-        } else {
-            Log.info(c, "tearDown", "Calling CommonZOSLocalLDAP.tearDown()");
-            CommonZOSLocalLDAP.ldapTearDown();
+
+        Log.info(c, "ldapTearDown", "Starting LDAP tear down: " + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date()));
+        final Object wait = new Object();
+        Thread t = new Thread(
+                new Runnable() {
+                    // run method
+                    @Override
+                    public void run() {
+                        // setup run
+                        try {
+                            if (useNewerLdap) {
+                                Log.info(c, "ldapTearDown", "Calling LocalLDAPServerSuite.tearDown()");
+                                LocalLDAPServerSuite.tearDown();
+                            } else {
+                                Log.info(c, "ldapTearDown", "Calling CommonZOSLocalLDAP.tearDown()");
+                                CommonZOSLocalLDAP.ldapTearDown();
+                            }
+
+                            synchronized (wait) {
+                                wait.notify();
+                            }
+                        } catch (Exception e) {
+                            Log.info(c, "ldapTearDown", e.getMessage());
+                        }
+                    }
+                });
+        t.start();
+        try {
+            synchronized (wait) {
+                wait.wait(120000); // give it 120 seconds
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        Log.info(c, "ldapTearDown", "Ending LDAP tear down: " + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date()));
+
     }
+
 }
 
 ///*******************************************************************************

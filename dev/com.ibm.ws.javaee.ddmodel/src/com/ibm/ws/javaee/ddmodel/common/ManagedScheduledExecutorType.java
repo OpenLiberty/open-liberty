@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,6 +31,8 @@ import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 //   <xsd:element name="context-service-ref" type="jakartaee:jndi-nameType" minOccurs="0" maxOccurs="1"/>
 //   <xsd:element name="max-async" type="jakartaee:xsdPositiveIntegerType" minOccurs="0" maxOccurs="1"/>
 //   <xsd:element name="hung-task-threshold" type="jakartaee:xsdPositiveIntegerType" minOccurs="0" maxOccurs="1"/>
+//   <xsd:element name="virtual" type="jakartaee:true-falseType" minOccurs="0" maxOccurs="1"/>
+//   <xsd:element name="qualifier" type="jakartaee:fully-qualified-classType" minOccurs="0" maxOccurs="unbounded"/>
 //   <xsd:element name="property" type="jakartaee:propertyType" minOccurs="0" maxOccurs="unbounded"/>
 // </xsd:sequence>
 // <xsd:attribute name="id" type="xsd:ID"/>
@@ -47,13 +49,13 @@ public class ManagedScheduledExecutorType extends JNDIEnvironmentRefType impleme
     @SuppressWarnings("unchecked")
     @Override
     public List<Description> getDescriptions() {
-        if ( descriptions != null ) {
+        if (descriptions != null) {
             return (List<Description>) descriptions;
         } else {
             return Collections.emptyList();
         }
     }
-    
+
     @Override
     public String getContextServiceRef() {
         return contextServiceRef == null ? null : contextServiceRef.getValue();
@@ -78,7 +80,26 @@ public class ManagedScheduledExecutorType extends JNDIEnvironmentRefType impleme
     public long getHungTaskThreshold() {
         return hungTaskThreshold != null ? hungTaskThreshold.getIntValue() : 0;
     }
-    
+
+    @Override
+    public boolean isSetVirtual() {
+        return AnySimpleType.isSet(virtual);
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return virtual != null ? virtual.getBooleanValue() : false;
+    }
+
+    @Override
+    public String[] getQualifiers() {
+        if (qualifiers != null) {
+            return qualifiers.getArray();
+        } else {
+            return XSDTokenType.ListType.EMPTY_ARRAY;
+        }
+    }
+
     @Override
     public List<Property> getProperties() {
         if (properties != null) {
@@ -91,16 +112,18 @@ public class ManagedScheduledExecutorType extends JNDIEnvironmentRefType impleme
     //
 
     private List<? extends Description> descriptions;
-    private JNDINameType contextServiceRef;    
+    private JNDINameType contextServiceRef;
     private XSDIntegerType maxAsync;
     private XSDIntegerType hungTaskThreshold;
-    private PropertyType.ListType properties;    
-    
+    private XSDBooleanType virtual;
+    private XSDTokenType.ListType qualifiers;
+    private PropertyType.ListType properties;
+
     public ManagedScheduledExecutorType() {
         super("name");
     }
 
-    @Trivial    
+    @Trivial
     @Override
     public boolean isIdAllowed() {
         return true;
@@ -140,7 +163,24 @@ public class ManagedScheduledExecutorType extends JNDIEnvironmentRefType impleme
             this.maxAsync = maxAsync;
             return true;
         }
-        
+
+        if ("virtual".equals(localName)) {
+            XSDBooleanType virtual = new XSDBooleanType();
+            parser.parse(virtual);
+            this.virtual = virtual;
+            return true;
+        }
+
+        if ("qualifier".equals(localName)) {
+            XSDTokenType unchanged_element = new XSDTokenType();
+            parser.parse(unchanged_element);
+            if (qualifiers == null) {
+                qualifiers = new XSDTokenType.ListType();
+            }
+            qualifiers.add(unchanged_element);
+            return true;
+        }
+
         if ("property".equals(localName)) {
             PropertyType property = new PropertyType();
             parser.parse(property);
@@ -150,7 +190,7 @@ public class ManagedScheduledExecutorType extends JNDIEnvironmentRefType impleme
             properties.add(property);
             return true;
         }
-        
+
         return false;
     }
 
@@ -158,8 +198,8 @@ public class ManagedScheduledExecutorType extends JNDIEnvironmentRefType impleme
 
     @Override
     public void describeHead(DDParser.Diagnostics diag) {
-        if ( descriptions != null ) {
-            diag.describe( "description", (DescriptionType) (descriptions.get(0)) );
+        if (descriptions != null) {
+            diag.describe("description", (DescriptionType) (descriptions.get(0)));
         }
         super.describeHead(diag);
     }
@@ -167,14 +207,17 @@ public class ManagedScheduledExecutorType extends JNDIEnvironmentRefType impleme
     @Override
     public void describeBody(DDParser.Diagnostics diag) {
         super.describeBody(diag);
-        diag.describe("context-service-ref", contextServiceRef);        
-        diag.describeIfSet("hung-task-threshold", hungTaskThreshold);        
+        diag.describe("context-service-ref", contextServiceRef);
+        diag.describeIfSet("hung-task-threshold", hungTaskThreshold);
         diag.describeIfSet("max-async", maxAsync);
+        diag.describeIfSet("virtual", virtual);
+        diag.describeIfSet("qualifier", qualifiers);
     }
-    
+
     @Override
     public void describeTail(DDParser.Diagnostics diag) {
         super.describeTail(diag);
         diag.describeIfSet("property", properties);
-    }    
+    }
+
 }

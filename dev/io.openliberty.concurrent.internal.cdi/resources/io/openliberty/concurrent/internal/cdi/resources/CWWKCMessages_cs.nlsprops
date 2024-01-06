@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,20 +24,5 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1400 to CWWCK1499
+# All messages must use the range CWWCK1410 to CWWCK1499
 
-CWWKC1400.unsupported.return.type=CWWKC1400E: {0} nen\u00ed platn\u00fd n\u00e1vratov\u00fd typ pro metodu {1} t\u0159\u00eddy {2}. Platn\u00e9 n\u00e1vratov\u00e9 typy pro metody, kter\u00e9 jsou anotov\u00e1ny s {3} jsou: {4}.
-CWWKC1400.unsupported.return.type.explanation=Specifikaci soub\u011b\u017enosti Jakarta omezuje rozsah platn\u00fdch n\u00e1vratov\u00fdch typ\u016f pro metody, kter\u00e9 maj\u00ed tuto anotaci.
-CWWKC1400.unsupported.return.type.useraction=Aktualizujte metodu v aplikaci tak, aby se p\u0159epnul na jeden z podporovan\u00fdch n\u00e1vratov\u00fdch typ\u016f, nebo odeberte anotaci z metody.
-
-CWWKC1401.class.anno.disallowed=CWWKC1401E: Anotace {0} je povolena na \u00farovni metody. Nelze ji pou\u017e\u00edt na \u00farovni t\u0159\u00eddy ve t\u0159\u00edd\u011b {1}.
-CWWKC1401.class.anno.disallowed.explanation=Tato anotace nesm\u00ed b\u00fdt ur\u010dena na \u00farovni t\u0159\u00eddy.
-CWWKC1401.class.anno.disallowed.useraction=P\u0159esu\u0148te anotaci na jednotliv\u00e9 metody t\u0159\u00eddy.
-
-CWWKC1402.not.managed.executor=CWWKC1402E: Anotace {0} u metody {1} t\u0159\u00eddy {2} ur\u010duje n\u00e1zev rozhran\u00ed JNDI {3}, kter\u00fd se interpretuje jako prost\u0159edek {4}, kter\u00fd nen\u00ed ManagedExecutorService nebo ManagedScheduledExecutorService. Rozhran\u00ed implementovan\u00e1 prost\u0159edkem jsou: {5}.
-CWWKC1402.not.managed.executor.explanation=N\u00e1zev rozhran\u00ed JNDI mus\u00ed b\u00fdt interpretov\u00e1no jako prost\u0159edek, kter\u00fd implementuje rozhran\u00ed ManagedExecutorService nebo rozhran\u00ed ManagedScheduledExecutorService.
-CWWKC1402.not.managed.executor.useraction=Opravte n\u00e1zev rozhran\u00ed JNDI tak, aby ur\u010doval prost\u0159edek, kter\u00fd je p\u0159\u00edstupn\u00fd pro komponentu aplikace, a implementuje rozhran\u00ed ManagedExecutorService nebo rozhran\u00ed ManagedScheduledExecutorService.
-
-CWWKC1403.unsupported.tx.type=CWWKC1403E: Anotace {0} ur\u010duje hodnotu {1}, kter\u00e1 nen\u00ed povolena v kombinaci s anotac\u00ed {2}, kter\u00e1 je na metod\u011b {3} t\u0159\u00eddy {4}. Povolen\u00e9 hodnoty jsou: {5}.
-CWWKC1403.unsupported.tx.type.explanation=Pou\u017eit\u00ed dvou anotac\u00ed spole\u010dn\u011b z\u00e1vis\u00ed na tom, zda je hodnota prvn\u00ed anotace, kter\u00e1 je ur\u010dena, povolena s druhou anotac\u00ed.
-CWWKC1403.unsupported.tx.type.useraction=Aktualizujte aplikaci tak, aby se p\u0159epnula na jednu z podporovan\u00fdch hodnot, nebo odeberte jednu z anotac\u00ed.

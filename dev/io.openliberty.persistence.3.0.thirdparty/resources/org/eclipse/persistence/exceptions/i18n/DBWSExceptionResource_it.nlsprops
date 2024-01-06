@@ -37,7 +37,7 @@
 
 47003=Impossibile individuare la query "[{0}]" per la sessione [{1}]
 
-47004=Il tipo di parametro [{0}], per l''operazione [{1}], non \u00e8 presente nello schema
+47004=Il tipo di parametro [{0}], per l''operazione [{1}], non esiste nello schema
 
 47005=Il tipo di parametro [{0}], per l''operazione [{1}], non ha alcuna mappatura O-X
 

@@ -1,0 +1,61 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ <server>
+
+	<featureManager>
+			<feature>samlWeb-2.0</feature>
+	</featureManager>
+
+	<keyStore
+		id="samlKeyStore"
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/samlKey.jks" />
+
+	<samlWebSso20
+		id="spOP"
+		authFilterRef="mySamlFilter"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="SHA256"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		keyAlias="sslspservercert"
+		trustStoreRef="serverStore"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="User"
+		spCookieName="testSPCookie"
+		nameIDFormat="unspecified"
+		spLogout="true"
+	>
+	</samlWebSso20>
+
+	<authFilter id="mySamlFilter">
+		<requestUrl
+			id="myAuthRequestUrl"
+			matchType="contains"
+			urlPattern="/authorize|/end_session" />
+	</authFilter>
+	
+	
+	<samlWebSso20
+		id="defaultSP"
+		enabled="false"
+	>
+	</samlWebSso20>
+	
+</server>    

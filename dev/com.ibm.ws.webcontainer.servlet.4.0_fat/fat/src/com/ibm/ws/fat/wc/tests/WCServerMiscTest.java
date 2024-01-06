@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,9 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_OR_LATER_FEATURES;
 import static org.junit.Assert.assertNull;
 
 import java.util.logging.Logger;
@@ -32,7 +30,7 @@ import componenttest.topology.impl.LibertyServer;
  * Misc Test Class
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
+@SkipForRepeat(EE9_OR_LATER_FEATURES)
 @Mode(TestMode.FULL)
 public class WCServerMiscTest {
 

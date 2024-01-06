@@ -82,7 +82,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
                     logger.logp(Level.FINEST, CLASS_NAME, "visit", "entering code generation phase CLASS_SECTION");
                 }
                 generateClassSection(validatorResult);
-                if (PagesVersionHandler.isPages31Loaded()) {
+                if (PagesVersionHandler.isPages31OrHigherLoaded()) {
                     generateIsErrorOnELFoundMethod(jspConfiguration.errorOnELNotFound());
                     generateImportGetters();
                 }
@@ -256,7 +256,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
             if (singleThreaded) {
                 interfaces.add("SingleThreadModel");
             }
-        } else {
+        } else if(PagesVersionHandler.isPages31Loaded()) { // log warning only for 3.1
             if (singleThreaded) {
                 logger.logp(Level.WARNING, CLASS_NAME, "generateClassSection", "jsp.isthreadsafe.warning");
             }
@@ -356,7 +356,7 @@ public class GenerateJspVisitor extends GenerateVisitor {
          * https://github.com/jakartaee/pages/issues/206#issuecomment-934272204
          */
         String sync = "";
-        if (PagesVersionHandler.isPages31OrHigherLoaded()) {
+        if (PagesVersionHandler.isPages31Loaded()) {  // isThreadSafe is removed in 4.0; synchronized only applies to 3.1
             if (validatorResult.isSingleThreaded()) {
                 sync = " synchronized";
             }

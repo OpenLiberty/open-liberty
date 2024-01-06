@@ -35,9 +35,9 @@
 
 47002=Die Abfrage ''[{0}]'' f\u00fcr den Deskriptor [{1}] kann nicht gefunden werden.
 
-47003=Die Abfrage '{{0}]'' f\u00fcr die Sitzung [{1}] kann nicht  gefunden werden.
+47003=Die Abfrage '{{0}]' f\u00fcr die Sitzung [{1}] kann nicht  gefunden werden.
 
-47004=Der Parametertyp [{0}] f\u00fcr die Operation [{1}] ist nicht im Schema vorhanden.
+47004=Der Parametertyp [{0}] f\u00fcr die Operation [{1}] ist im Schema nicht vorhanden.
 
 47005=Der Parametertyp [{0}] f\u00fcr die Operation [{1}] besitzt keine O-X-Zuordnung.
 

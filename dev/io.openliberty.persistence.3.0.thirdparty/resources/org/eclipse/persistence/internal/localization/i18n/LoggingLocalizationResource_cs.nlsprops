@@ -119,6 +119,10 @@ connected_user_database=P\u0159ipojeno: {3}{4}U\u017eivatel: {0}{3}{4}Datab\u00e
 
 connected_user_database_driver=P\u0159ipojeno: {0}{6}U\u017eivatel: {1}{6}Datab\u00e1ze: {2}  Verze: {3}{6}Ovlada\u010d: {4}  Verze: {5}
 
+corrupt_object=po\u0161kozen\u00fd objekt: {0}
+
+corrupt_object_referenced_through_mapping=po\u0161kozen\u00fd objekt, na kter\u00fd se odkazuje mapov\u00e1n\u00ed: {0}
+
 corrupted_session_announcement=ID relace: {0}  Spr\u00e1vce zji\u0161\u0165ov\u00e1n\u00ed p\u0159ijal ozn\u00e1men\u00ed o poru\u0161en\u00e9 relaci - ignoruje se.
 
 create_default_dbms_tables_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "create-default-dbms-tables" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
@@ -707,6 +711,8 @@ sop_object_wrong_version=Odebr\u00e1n\u00ed serializovan\u00e9ho objektu sopObje
 
 src_pm_name_first_argument=Mus\u00edte zadat n\u00e1zev zdrojov\u00e9ho PM jako prvn\u00ed vstupn\u00ed argument. Bu\u010f jako: -sOc4j-native, nebo jako -sWeblogic.
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=z\u00e1sobn\u00edk nav\u0161t\u00edven\u00fdch objekt\u016f, kter\u00e9 odkazuj\u00ed na po\u0161kozen\u00fd objekt: {0}
+
 table_existed_during_creation=Vytvo\u0159en\u00ed tabulky se nezda\u0159ilo. Pokud ji\u017e existuje, mus\u00edte ji nejprve zru\u0161it. To provedete ru\u010dn\u011b nebo nastaven\u00edm atributu db-table-gen v souboru orion-ejb-jar.xml.
 
 template_orion_ejb_jar_created=Byl vytvo\u0159en \u0161ablonovit\u00fd soubor orion-ejb-jar.xml.
@@ -737,7 +743,12 @@ toplink_warning=[EL varov\u00e1n\u00ed]:
 
 unit_of_work_thread_info=Aktu\u00e1ln\u00ed jednotka pr\u00e1ce v relaci ({0}) byla vytvo\u0159ena jin\u00fdm podprocesem (ID: {1} n\u00e1zev: {2}), ne\u017e je aktu\u00e1ln\u00ed podproces (ID: {3} n\u00e1zev: {4})
 
-unit_of_work_thread_info_thread_dump=Trasov\u00e1n\u00ed z\u00e1sobn\u00edku podprocesu vytvo\u0159en\u00ed (ID: {0} n\u00e1zev: {1}): {2} Trasov\u00e1n\u00ed z\u00e1sobn\u00edku aktu\u00e1ln\u00edho podprocesu (ID: {3} n\u00e1zev: {4}): {5}\n
+unit_of_work_thread_info_thread_dump=Trasov\u00e1n\u00ed z\u00e1sobn\u00edku podprocesu vytvo\u0159en\u00ed (ID: {0} n\u00e1zev: {1}):
+#{2}
+
+Current podproces (ID: {3} n\u00e1zev: {4}) trasov\u00e1n\u00ed z\u00e1sobn\u00edku:
+#{5}
+
 unitofwork_identity_hashcode={0}Ha\u0161ovac\u00ed k\u00f3d identity UnitOfWork: {1}
 
 update_all_fields_not_supported=Nativn\u00ed funkce Oc4j CMP "update-all-fields" nen\u00ed u entity ({0}) p\u0159\u00edmo podporov\u00e1na v EclipseLink CMP. Podrobnosti viz dokumentace k migraci.
@@ -747,6 +758,8 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nem\u016f\u0
 validate_db_schema_with_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "validate-db-schema-with" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 
 validate_ejb_jar=Ov\u011b\u0159ov\u00e1n\u00ed ejb-jar.xml za\u010dalo, m\u016f\u017ee to trvat ur\u010ditou dobu...
+
+validate_object_space=Ov\u011b\u0159te m\u00edsto objekt\u016f.
 
 validity_timeout_not_supported=Nativn\u00ed nastaven\u00ed Oc4j CMP "validity-timeout" u entity ({0}) Eclipse CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 

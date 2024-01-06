@@ -30,7 +30,7 @@ fat.project: true
 tested.features:\
     noship-1.0,\
     servlet-6.1,\
-    expressionLanguage-6.0,\
+    expressionlanguage-6.0,\
     pages-4.0
 
 # To define a global minimum java level for the FAT, use the following property.

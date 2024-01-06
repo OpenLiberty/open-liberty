@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -77,6 +77,7 @@ public class FATSuite {
     }
 
     public static final String MOJARRA_API_IMP = "publish/files/mojarra/javax.faces-2.3.9.jar";
+    public static final String MOJARRA_API_IMP_40 = "publish/files/mojarra40/jakarta.faces-4.0.0.jar";
     public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.10.jar";
     public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.10.jar";
     public static final String MYFACES_IMP_40 = "publish/files/myfaces40//myfaces-impl-4.0.0-RC4.jar";

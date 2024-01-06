@@ -742,9 +742,13 @@ public class JSPTests {
     /**
      * Test JSP 2.3 Resolution of Variables and their Properties
      *
+     *  Skipped for EE11:
+     *  - ELContextImpl (within org.apache.jaspser.el) arguments changed changed in Pages 4.0
+     *  - Test copied and refactored to 4.0 Bucket: PagesELTeststestPages40ResolutionVariableProperties
      * @throws Exception
      *                       if something goes wrong
      */
+    @SkipForRepeat(SkipForRepeat.EE11_FEATURES)
     @Test
     public void testJSP23ResolutionVariableProperties() throws Exception {
         String[] expectedInResponse = { "class org.apache.el.stream.StreamELResolverImpl",

@@ -65,7 +65,7 @@ tested.features: \
         restfulwsclient-4.0,\
         restfulws-4.0,\
         expressionlanguage-6.0,\
-        faces-5.0,\
+        faces-4.1,\
         websocket-2.2,\
         beanvalidation-3.1,\
         pages-4.0
