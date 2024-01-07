@@ -35,10 +35,7 @@ import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponse.Status;
 
 import com.ibm.websphere.jsonsupport.JSON;
-import com.ibm.websphere.jsonsupport.JSONFactory;
 import com.ibm.websphere.jsonsupport.JSONMarshallException;
-import com.ibm.websphere.jsonsupport.JSONSettings;
-import com.ibm.websphere.jsonsupport.JSONSettings.Include;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
@@ -51,7 +48,11 @@ public class HealthCheck30HttpResponseBuilder {
     protected Status overallStatus = Status.UP;
     protected final ArrayList<Map<String, Object>> checks = new ArrayList<Map<String, Object>>();
 
-    JSON json = null;
+    private final JSON json;
+
+    public HealthCheck30HttpResponseBuilder(JSON json) {
+        this.json = json;
+    }
 
     public void addResponses(Set<HealthCheckResponse> hcResponseSet) {
         Iterator<HealthCheckResponse> hcResponseIt = hcResponseSet.iterator();
@@ -114,8 +115,7 @@ public class HealthCheck30HttpResponseBuilder {
 
     protected void setJSONPayload(Map<String, Object> payload, HttpServletResponse httpResponse) {
         try {
-            JSON jsonService = getJSON();
-            httpResponse.getOutputStream().write(jsonService.asBytes(payload));
+            httpResponse.getOutputStream().write(json.asBytes(payload));
         } catch (IOException e) {
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "Unexpected IOException while writing out POJO response", e);
@@ -130,20 +130,6 @@ public class HealthCheck30HttpResponseBuilder {
     }
 
     /**
-     * Utility that returns a JSON object from a factory
-     *
-     * @return the JSON object providing POJO-JSON serialization and deserialization
-     * @throws JSONMarshallException if there are problems configuring serialization inclusion
-     */
-    private JSON getJSON() throws JSONMarshallException {
-        if (json == null) {
-            JSONSettings settings = new JSONSettings(Include.NON_NULL);
-            json = JSONFactory.newInstance(settings);
-        }
-        return json;
-    }
-
-    /**
      * Sets the overall status for the health check
      *
      * @param status
@@ -151,4 +137,5 @@ public class HealthCheck30HttpResponseBuilder {
     public void setOverallStatus(Status status) {
         this.overallStatus = status;
     }
+
 }
