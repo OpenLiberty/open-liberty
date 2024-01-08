@@ -13,6 +13,7 @@
  
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
+Bundle-SymbolicName: com.ibm.ws.wssecurity_fat.wsscxf.2
 
 src: \
   fat/src,\
@@ -23,8 +24,6 @@ src: \
   test-applications/x509migbadclient/src,\
   test-applications/x509migclient/src,\
   test-applications/x509migtoken/src
-
--sub: *.bnd
 
 fat.project: true
 
@@ -50,6 +49,29 @@ tested.features: \
   expressionlanguage-4.0, \
   expressionlanguage-5.0, \
   jsonp-2.1
+
+#Private-Package: \
+#  basicplcy.wssecfvt.test,\
+#  com.ibm.ws.wssecurity.example.cbh,\
+#  com.ibm.ws.wssecurity.example.cbhwss4j,\
+#  com.ibm.ws.wssecurity.fat.cxf,\
+#  com.ibm.ws.wssecurity.fat.cxf.sha2sig,\
+#  com.ibm.ws.wssecurity.fat.cxf.x509migtoken,\
+#  com.ibm.ws.wssecurity.fat.endsuptokens,\
+#  com.ibm.ws.wssecurity.fat.endsuptokensclient,\
+#  com.ibm.ws.wssecurity.fat.sha2sig,\
+#  com.ibm.ws.wssecurity.fat.sha2sigclient,\
+#  com.ibm.ws.wssecurity.fat.x509migbadclient,\
+#  com.ibm.ws.wssecurity.fat.x509migclient,\
+#  test.libertyfat.x509mig.contract,\
+#  test.libertyfat.x509mig.types,\
+#  test.wssecfvt.endsuptokens,\
+#  test.wssecfvt.endsuptokens.types,\
+#  test.wssecfvt.sha2sig,\
+#  test.wssecfvt.sha2sig.types
+
+Include-Resource: \
+  @${repo;com.ibm.ws.wssecurity.fat.example.cbh;latest}!/*
 
 -buildpath: \
 	com.ibm.ws.wssecurity.fat.utils.common;version=latest,\
@@ -82,6 +104,5 @@ tested.features: \
 	com.ibm.ws.org.apache.wss4j.ws.security.web;version=latest,\
 	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
 	com.ibm.ws.wssecurity.3.4.1;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest
-
--dependson: com.ibm.ws.wssecurity.fat.example.cbh;version=latest
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.wssecurity.fat.example.cbh;version=project

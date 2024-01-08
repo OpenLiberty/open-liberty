@@ -13,6 +13,7 @@
  
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
+Bundle-SymbolicName: com.ibm.ws.wssecurity_fat.wsscxf.3
 
 src: \
   fat/src,\
@@ -30,8 +31,6 @@ src: \
   test-applications/x509token/src,\
   test-applications/x509sig/src,\
   test-applications/x509sigclient/src
-
--sub: *.bnd
 
 fat.project: true
 
@@ -89,6 +88,5 @@ tested.features: \
 	com.ibm.ws.org.apache.wss4j.ws.security.web;version=latest,\
 	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
 	com.ibm.ws.wssecurity.3.4.1;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest
-
--dependson: com.ibm.ws.wssecurity.fat.example.cbh;version=latest
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.wssecurity.fat.example.cbh;version=project

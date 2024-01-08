@@ -13,6 +13,7 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
+Bundle-SymbolicName: com.ibm.ws.wssecurity_fat.wsscxf.1
 
 src: \
   fat/src,\
@@ -32,8 +33,6 @@ src: \
   test-applications/pwdigestclient/src,\
   test-applications/WSSampleSei/src,\
   test-applications/webcontentprovider/src
-
--sub: *.bnd
 
 fat.project: true
 
@@ -59,6 +58,8 @@ tested.features:\
   expressionlanguage-4.0, \
   expressionlanguage-5.0, \
   jsonp-2.1 
+
+-includeresource: @${repo;com.ibm.ws.wssecurity.example.cbh}!/!META-INF/*
 
 -buildpath: \
 	com.ibm.ws.wssecurity.fat.utils.common;version=latest,\
@@ -92,6 +93,5 @@ tested.features:\
 	com.ibm.ws.org.apache.wss4j.ws.security.web;version=latest,\
 	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
 	com.ibm.ws.wssecurity.3.4.1;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest
-
--dependson: com.ibm.ws.wssecurity.fat.example.cbh;version=latest
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.wssecurity.fat.example.cbh;version=project
