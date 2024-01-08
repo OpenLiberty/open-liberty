@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import java.util.List;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Opcodes;
 
+import io.openliberty.asm.ASMHelper;
+
 import com.ibm.ws.ras.instrument.internal.bci.RasMethodAdapter;
 
 public class InjectedTraceAnnotationVisitor extends AnnotationVisitor {
@@ -28,15 +30,15 @@ public class InjectedTraceAnnotationVisitor extends AnnotationVisitor {
     private boolean visitedValueArray = false;
 
     public InjectedTraceAnnotationVisitor() {
-        super(Opcodes.ASM9);
+        super(ASMHelper.getCurrentASM());
     }
 
     public InjectedTraceAnnotationVisitor(AnnotationVisitor av) {
-        super(Opcodes.ASM9, av);
+        super(ASMHelper.getCurrentASM(), av);
     }
 
     public <T extends RasMethodAdapter> InjectedTraceAnnotationVisitor(AnnotationVisitor av, Class<T> currentMethodVisitor) {
-        super(Opcodes.ASM9, av);
+        super(ASMHelper.getCurrentASM(), av);
         this.currentMethodVisitor = currentMethodVisitor;
     }
 
@@ -56,7 +58,7 @@ public class InjectedTraceAnnotationVisitor extends AnnotationVisitor {
 
     private class ValueArrayVisitor extends AnnotationVisitor {
         private ValueArrayVisitor(AnnotationVisitor av) {
-            super(Opcodes.ASM9, av);
+            super(ASMHelper.getCurrentASM(), av);
         }
 
         @Override

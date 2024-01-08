@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -213,7 +213,7 @@ public class ValidateJspVisitor extends ValidateVisitor {
                         }
                     }
                 }
-                else if (directiveName.equals("isThreadSafe")) {
+                else if (directiveName.equals("isThreadSafe") && PagesVersionHandler.isPages31OrLowerLoaded()) { // Removed in 4.0
                     valid = true;
                     if (directiveValue.equalsIgnoreCase("true"))
                         jspResult.setSingleThreaded(false);

@@ -690,4 +690,20 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     public ContextBeginnerEnder createContextBeginnerEnder() {
         return new ContextBeginnerEnderImpl();
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isContextBeginnerEnderActive() {
+        return ContextBeginnerEnderImpl.isActive();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ContextBeginnerEnder cloneActiveContextBeginnerEnder() {
+        ContextBeginnerEnderImpl contextBeginnerEnder = ContextBeginnerEnderImpl.getCurrentlyActive();
+        if (contextBeginnerEnder == null) {
+            return null;
+        }
+        return contextBeginnerEnder.clone();
+    }
 }

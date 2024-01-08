@@ -10,7 +10,7 @@ IBM-API-Package: \
   io.openliberty.data.repository.update; type="ibm-api",\
   jakarta.data; type="spec",\
   jakarta.data.exceptions; type="spec",\
-  jakarta.data.model; type="spec",\
+  jakarta.data.metamodel; type="spec",\
   jakarta.data.page; type="spec",\
   jakarta.data.repository; type="spec"
 Subsystem-Name: Jakarta Data 1.0
@@ -26,3 +26,4 @@ Subsystem-Name: Jakarta Data 1.0
 kind=beta
 edition=base
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true

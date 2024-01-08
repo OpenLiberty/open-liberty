@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.webcontainer.servlet.internal.osgi.webapp.factory;
@@ -17,8 +17,9 @@ import com.ibm.ws.managedobject.ManagedObjectService;
 import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppFactory;
-import com.ibm.ws.webcontainer40.osgi.webapp.WebApp40;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
+
+import io.openliberty.webcontainer61.osgi.webapp.WebApp61;
 
 /**
 *
@@ -35,6 +36,6 @@ public class WebAppFactory61Impl implements WebAppFactory {
     @Override
     public WebApp createWebApp(WebAppConfiguration webAppConfig, ClassLoader moduleLoader, ReferenceContext referenceContext, MetaDataService metaDataService,
                                J2EENameFactory j2eeNameFactory, ManagedObjectService managedObjectService) {
-        return new WebApp40(webAppConfig, moduleLoader, referenceContext, metaDataService, j2eeNameFactory, managedObjectService);
+        return new WebApp61(webAppConfig, moduleLoader, referenceContext, metaDataService, j2eeNameFactory, managedObjectService);
     }
 }

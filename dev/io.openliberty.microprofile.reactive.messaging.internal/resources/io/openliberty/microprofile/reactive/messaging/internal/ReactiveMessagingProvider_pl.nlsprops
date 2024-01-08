@@ -1,0 +1,32 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+missing.context.service.CWMRX1200E=CWMRX1200E: Kana\u0142 {0} jest skonfigurowany do u\u017cywania us\u0142ugi kontekstu {1} , ale nie znaleziono takiej us\u0142ugi kontekstu. Upewnij si\u0119, \u017ce us\u0142uga kontekstu jest zdefiniowana w pliku server.xml oraz \u017ce sk\u0142adnik Java EE lub Jakarta Concurrency jest w\u0142\u0105czony.
+missing.context.service.CWMRX1200E.explanation=Kana\u0142 Reaktywnego przesy\u0142ania komunikat\u00f3w jest skonfigurowany do u\u017cywania nazwanej us\u0142ugi kontekstu, ale nie mo\u017cna znale\u017a\u0107 us\u0142ugi kontekstu o tej nazwie.
+missing.context.service.CWMRX1200E.useraction=Zdefiniuj us\u0142ug\u0119 kontekstu w pliku server.xml lub usu\u0144 w\u0142a\u015bciwo\u015b\u0107 konfiguracyjn\u0105 context.service dla kana\u0142u.

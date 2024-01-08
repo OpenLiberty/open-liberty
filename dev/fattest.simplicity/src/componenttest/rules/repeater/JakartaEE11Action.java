@@ -30,7 +30,7 @@ import componenttest.rules.repeater.RepeatActions.SEVersion;
 // This class and its constructor are purposely not public to force people to use the JakartaEEAction class and  //
 // the FeatureReplacementAction.EE11_FEATURES() method instead of referencing this class directly                //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class JakartaEE11Action extends JakartaEEAction {
+public class JakartaEE11Action extends JakartaEEAction {
     private static final Map<String, String> DEFAULT_TRANSFORMATION_RULES = new HashMap<>();
     private static final Map<String, String> TRANSFORMATION_RULES_APPEND = new HashMap<>();
     private static boolean WIDEN = false;
@@ -88,8 +88,8 @@ class JakartaEE11Action extends JakartaEEAction {
                                                   "jsonb-3.0",
                                                   "jsonpContainer-2.1",
                                                   "jsonbContainer-3.0",
-                                                  "faces-5.0",
-                                                  "facesContainer-5.0",
+                                                  "faces-4.1",
+                                                  "facesContainer-4.1",
                                                   "pages-4.0",
                                                   "mdb-4.0",
                                                   "messaging-3.1",
@@ -107,7 +107,7 @@ class JakartaEE11Action extends JakartaEEAction {
 
     public static final Set<String> EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_FEATURES_ARRAY)));
 
-    JakartaEE11Action() {
+    public JakartaEE11Action() {
         // Remove the EE7, EE8, EE9 and EE10 features; replace them with the EE11 features
         super(EE11_FEATURE_SET);
         removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET);
@@ -219,11 +219,24 @@ class JakartaEE11Action extends JakartaEEAction {
     /**
      * Invoke the Jakarta transformer on an application with added transformation rules.
      *
+     * @param  appPath                   The application path to be transformed to Jakarta
+     * @param  newAppPath                The application path of the transformed file (or <code>null<code>)
+     * @param  transformationRulesAppend The map with the additional transformation rules to add
+     * @return
+     */
+    @Override
+    void transformApplication(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend) {
+        staticTransformApplication(appPath, newAppPath, transformationRulesAppend);
+    }
+
+    /**
+     * Invoke the Jakarta transformer on an application with added transformation rules.
+     *
      * @param appPath                   The application path to be transformed to Jakarta
      * @param newAppPath                The application path of the transformed file (or <code>null<code>)
      * @param transformationRulesAppend The map with the additional transformation rules to add
      */
-    static void transformApplication(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend) {
+    static void staticTransformApplication(Path appPath, Path newAppPath, Map<String, String> transformationRulesAppend) {
         if (transformationRulesAppend != null) {
             TRANSFORMATION_RULES_APPEND.putAll(transformationRulesAppend);
         }

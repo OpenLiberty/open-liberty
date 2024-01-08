@@ -11,20 +11,30 @@ package io.openliberty.microprofile.reactive.messaging30.internal;
 
 import java.lang.annotation.Annotation;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 import jakarta.enterprise.inject.spi.DeploymentException;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.spi.Connector;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
+import com.ibm.ws.cdi.internal.interfaces.ContextBeginnerEnder;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.smallrye.reactive.messaging.providers.MediatorFactory;
 import io.smallrye.reactive.messaging.providers.OutgoingInterceptorDecorator;
 import io.smallrye.reactive.messaging.providers.connectors.WorkerPoolRegistry;
@@ -41,9 +51,11 @@ import io.smallrye.reactive.messaging.providers.impl.InternalChannelRegistry;
 import io.smallrye.reactive.messaging.providers.wiring.Wiring;
 import io.smallrye.reactive.messaging.providers.metrics.MetricDecorator;
 import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
+import jakarta.enterprise.inject.spi.DeploymentException;
 import jakarta.enterprise.inject.spi.Extension;
 
 @Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, property = { "service.vendor=IBM", "application.bdas.visible=true" })
@@ -97,20 +109,62 @@ public class OLReactiveMessaging30Extension extends ReactiveMessagingExtension i
 
     @Override
     protected void afterDeploymentValidation(@Observes AfterDeploymentValidation done, BeanManager beanManager) {
-        // Catch DeploymentException that is thrown if there are any validation errors with the Reactive Messaging Configuration
-        try {
-            MediatorManager mediatorManager = configureMediatorManager(beanManager);
+        final ContextBeginnerEnder contextBeginnerEnder = createContextBeginnerEnderIfCheckpointEnabled();
+        final MediatorManager mediatorManager = configureMediatorManager(beanManager);
+
+        CheckpointHook checkpointHook = new CheckpointHook() {
+
+            @Override
+            public void restore() {
+                try (ContextBeginnerEnder cbe = contextBeginnerEnder.beginContext()) {
+                    startMediatorManager(mediatorManager);
+                }
+            }
+        };
+
+        // If checkpoint is enabled this if statement will register the hook we created above, so startMediatorManager() will be called after restore. Then it returns true.
+        // If checkpoint is disabled this if statement will return false, so startMediatorManager() will be called right away.
+        if (!CheckpointPhase.getPhase().addMultiThreadedHook(checkpointHook)) {
             startMediatorManager(mediatorManager);
+        }
+    }
+
+    @Override
+    protected void startMediatorManager(MediatorManager mediatorManager) {
+        // Catch "jakarta.enterprise.inject.spi.DeploymentException: Wiring error(s) detected in application"
+        // that is thrown from MediatorManager.start() there are any validation errors with the Reactive Messaging Configuration
+        try {
+            super.startMediatorManager(mediatorManager);
         } catch (DeploymentException de) {
             StringBuilder exceptionBuilder = new StringBuilder(de.getLocalizedMessage());
             for (Throwable t : de.getSuppressed()) {
                 exceptionBuilder.append("\n" + t.getLocalizedMessage());
             }
             String appName = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getJ2EEName().getApplication();
-            Tr.error(tc,  Tr.formatMessage(tc, "reactive.messaging.validation.error.CWMRX1100E", appName, exceptionBuilder.toString()));
-            // rethrow DeploymentException to make sure we stop the application correctly.
-            throw de;
+            Tr.error(tc, Tr.formatMessage(tc, "reactive.messaging.validation.error.CWMRX1100E", appName, exceptionBuilder.toString()));
+            throw de; // rethrow DeploymentException to make sure we stop the application correctly. Do it here so the compiler doesn't ask for a return statement 
         }
+    }
+
+    private ContextBeginnerEnder createContextBeginnerEnderIfCheckpointEnabled() {
+        if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
+            Bundle b = FrameworkUtil.getBundle(ReactiveMessagingExtension.class);
+            if (b != null) {
+                BundleContext bc = b.getBundleContext();
+                ServiceReference<CDIService> sr = null;
+                try {
+                    sr = bc.getServiceReference(CDIService.class);
+                    CDIService service = bc.getService(sr);
+                    CDIRuntime cdiRuntime = (CDIRuntime) service;
+                    return cdiRuntime.cloneActiveContextBeginnerEnder();
+                } finally {
+                    if (sr != null) {
+                        bc.ungetService(sr);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private <T> void addAnnotatedType(Class<T> clazz, BeforeBeanDiscovery discovery, BeanManager beanManager) {

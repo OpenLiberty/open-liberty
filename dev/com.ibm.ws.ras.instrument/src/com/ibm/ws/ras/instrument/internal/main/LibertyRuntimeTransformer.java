@@ -31,6 +31,8 @@ import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.CheckClassAdapter;
 import org.objectweb.asm.util.TraceClassVisitor;
 
+import io.openliberty.asm.ASMHelper;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.internal.NLSConstants;
@@ -202,7 +204,7 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
         if (isJDK8WithHotReplaceBug)
             return classFileVersion <= Opcodes.V1_7;
         else
-            return classFileVersion <= Opcodes.V22;
+            return classFileVersion <= ASMHelper.getMaximumJavaLevel();
     }
 
     /**

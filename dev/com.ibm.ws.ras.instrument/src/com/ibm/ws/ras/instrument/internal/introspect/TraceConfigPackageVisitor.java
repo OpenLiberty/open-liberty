@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 
+import io.openliberty.asm.ASMHelper;
+
 import com.ibm.ws.ras.instrument.internal.model.PackageInfo;
 import com.ibm.ws.ras.instrument.internal.model.TraceOptionsData;
 
@@ -30,11 +32,11 @@ public class TraceConfigPackageVisitor extends ClassVisitor {
     protected TraceOptionsAnnotationVisitor traceOptionsAnnotationVisitor;
 
     public TraceConfigPackageVisitor() {
-        super(Opcodes.ASM9);
+        super(ASMHelper.getCurrentASM());
     }
 
     public TraceConfigPackageVisitor(ClassVisitor visitor) {
-        super(Opcodes.ASM9, visitor);
+        super(ASMHelper.getCurrentASM(), visitor);
     }
 
     @Override

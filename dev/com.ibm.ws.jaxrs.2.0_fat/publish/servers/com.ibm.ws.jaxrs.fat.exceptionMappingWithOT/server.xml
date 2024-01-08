@@ -5,5 +5,7 @@
         <feature>microprofile-1.3</feature>
     </featureManager>
 
+    <quickStartSecurity userName="test" userPassword="testpwd" />
+
   	<include location="../fatTestPorts.xml"/>
 </server>

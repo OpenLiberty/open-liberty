@@ -227,8 +227,8 @@ public class LibertyServer implements LogMonitorClient {
     protected static final JavaInfo javaInfo = JavaInfo.forCurrentVM();
 
     protected static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
-    protected static final boolean GLOBAL_JAVA2SECURITY = Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
-    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = FAT_TEST_LOCALRUN //
+    protected static final boolean GLOBAL_JAVA2SECURITY = javaInfo.MAJOR > 17 ? false : Boolean.parseBoolean(PrivHelper.getProperty("global.java2.sec", "false"));
+    protected static final boolean GLOBAL_DEBUG_JAVA2SECURITY = javaInfo.MAJOR > 17 ? false : FAT_TEST_LOCALRUN //
                     ? Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "true")) //
                     : Boolean.parseBoolean(PrivHelper.getProperty("global.debug.java2.sec", "false"));
 
@@ -1640,23 +1640,15 @@ public class LibertyServer implements LogMonitorClient {
 
         //FIPS 140-3
         // if we have FIPS 140-3 enabled, and the matched java/platform,  add JVM Arg
-        if (isFIPS140_3Enabled()) {
-            if ((info.majorVersion() == 8) && (info.VENDOR == Vendor.IBM)) {
-                Log.info(c, "startServerWithArgs", "The JDK version: " + info.majorVersion() + " and vendor: " + JavaInfo.Vendor.IBM);
-                Log.info(c, "startServerWithArgs", "FIPS 140-3 global build properties is set for server " + getServerName()
-                                                   + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
+        if (isFIPS140_3EnabledAndSupported()) {
+            Log.info(c, "startServerWithArgs", "Liberty server is running JDK version: " + info.majorVersion() + " and vendor: " + info.VENDOR);
+            Log.info(c, "startServerWithArgs", "FIPS 140-3 global build properties is set for server " + getServerName()
+                                               + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
 
-                JVM_ARGS += " -Xenablefips140-3";
-                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
-                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
-                //JVM_ARGS += " -Djavax.net.debug=all";
-                //Uncomment as needed for additional debugging
-
-            } else {
-                Log.info(c, "startServerWithArgs", "The JDK version: " + info.majorVersion() + " and vendor: " + info.VENDOR);
-                Log.info(c, "startServerWithArgs", "No match of IBM java 8 on liberty server to run with FIPS 140-3 enabled");
-            }
-
+            JVM_ARGS += " -Xenablefips140-3";
+            JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
+            JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
+            // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
         }
 
         Properties bootstrapProperties = getBootstrapProperties();
@@ -2146,7 +2138,7 @@ public class LibertyServer implements LogMonitorClient {
      *
      * @throws Exception
      */
-    private void initializeAnyExistingMarks() throws Exception {
+    public void initializeAnyExistingMarks() throws Exception {
         final String method = "initializeAnyExistingMarks";
 
         // First we clear any marks - it's possible this
@@ -3790,9 +3782,9 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Copies a file from the oldAbsolutePath to the newAbsolutePath in the Liberty server.
      *
-     * @param oldAbsolutePath The absolute path of the file to copy.
-     * @param newAbsolutePath The absolute path of the destination.
-     * @param fileName        The name of the file to copy. The file name will be unchanged from source to dest
+     * @param  oldAbsolutePath The absolute path of the file to copy.
+     * @param  newAbsolutePath The absolute path of the destination.
+     * @param  fileName        The name of the file to copy. The file name will be unchanged from source to dest
      *
      * @throws Exception
      */
@@ -3807,9 +3799,9 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * Renames a file from the oldAbsolutePath to the newAbsolutePath in the Liberty server.
      *
-     * @param oldAbsolutePath The absolute path of the file to copy.
-     * @param newAbsolutePath The absolute path of the destination.
-     * @param fileName        The name of the file to rename. The file name will be unchanged from source to dest
+     * @param  oldAbsolutePath The absolute path of the file to copy.
+     * @param  newAbsolutePath The absolute path of the destination.
+     * @param  fileName        The name of the file to rename. The file name will be unchanged from source to dest
      *
      * @throws Exception
      */
@@ -7164,12 +7156,21 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     //FIPS 140-3
-    public boolean isFIPS140_3Enabled() {
-        boolean globalEnabled = GLOBAL_FIPS_140_3;
-        if (globalEnabled)
-            Log.info(c, "isFIPS140_3Enabled", "The global build properties FIPS_140_3 is set for server " + getServerName() +
-                                              ",  but requires IBM Java version 8/Linux/AIX/Windows to run with FIPS 140-3 enabled. Next checking java version on liberty server.");
-        return globalEnabled;
+    public boolean isFIPS140_3EnabledAndSupported() throws Exception {
+        String methodName = "isFIPS140_3EnabledAndSupported";
+        JavaInfo serverJavaInfo = JavaInfo.forServer(this);
+        boolean isIBMJVM8 = (serverJavaInfo.majorVersion() == 8) && (serverJavaInfo.VENDOR == Vendor.IBM);
+        if (GLOBAL_FIPS_140_3) {
+            Log.info(c, methodName, "Liberty server is running JDK version: " + serverJavaInfo.majorVersion() + " and vendor: " + serverJavaInfo.VENDOR);
+            if (isIBMJVM8) {
+                Log.info(c, methodName, "global build properties FIPS_140_3 is set for server " + getServerName() +
+                                        " and IBM java 8 is available to run with FIPS 140-3 enabled.");
+            } else {
+                Log.info(c, methodName, "The global build properties FIPS_140_3 is set for server " + getServerName() +
+                                        ",  but no IBM java 8 on liberty server to run with FIPS 140-3 enabled.");
+            }
+        }
+        return GLOBAL_FIPS_140_3 && isIBMJVM8;
     }
 
     /**

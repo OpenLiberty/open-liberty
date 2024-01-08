@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.webcontainer.servlet.internal.osgi.srt.factory;
@@ -13,7 +13,7 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContextPool;
 
-import io.openliberty.webcontainer60.osgi.srt.SRTConnectionContext60;
+import io.openliberty.webcontainer61.osgi.srt.SRTConnectionContext61;
 
 @Component(property = { "service.vendor=IBM", "service.ranking:Integer=61", "servlet.version=6.1" })
 public class SRTConnectionContextPool61Impl implements SRTConnectionContextPool {
@@ -29,7 +29,7 @@ public class SRTConnectionContextPool61Impl implements SRTConnectionContextPool 
         }
 
         if (context == null) {
-            context = new SRTConnectionContext60();
+            context = new SRTConnectionContext61();
         }
 
         context.nextContext = null;

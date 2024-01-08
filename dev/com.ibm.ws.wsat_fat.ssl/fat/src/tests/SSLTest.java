@@ -31,6 +31,7 @@ import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATSecurityUtils;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.wsat.fat.util.DBTestBase;
@@ -43,6 +44,8 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class SSLTest extends DBTestBase {
 	
+	protected static boolean startServers = true;
+
 	public static int server1SecurePort = 9444;
 	public static int server2SecurePort = 9445;
 
@@ -57,9 +60,9 @@ public class SSLTest extends DBTestBase {
 	        	Log.info(SSLTest.class, "setupRunner.run", "Setting up "+s.getServerName());
 	        }
 	    };
-
-	    HttpUtils.trustAllCertificates();
 	    
+	    HttpUtils.trustAllCertificates();;
+
 		// Test URL
 		appName = "wsatApp";
 		basicURL = "https://localhost";
@@ -89,8 +92,26 @@ public class SSLTest extends DBTestBase {
 				+ server1.getHttpDefaultSecurePort();
 		Server2_URL = "https://" + server2.getHostname() + ":"
 				+ server2.getHttpDefaultSecurePort();
-
+				
+		// Create keys
 		FATUtils.startServers(runner, client, server1, server2);
+		FATUtils.stopServers(client, server1, server2);
+
+//		FATSecurityUtils.createKeys(client, server1, server2);
+		FATSecurityUtils.extractPublicCertifcate(client, server1, server2);
+		FATSecurityUtils.establishTrust(client, server1);
+		FATSecurityUtils.establishTrust(client, server2);
+		FATSecurityUtils.establishTrust(server1, client);
+		FATSecurityUtils.establishTrust(server1, server2);
+		FATSecurityUtils.establishTrust(server2, client);
+		FATSecurityUtils.establishTrust(server2, server1);
+		
+		// Start servers unless we're going to do it in a subclass
+		if (startServers) {
+			FATUtils.startServers(runner, client, server1, server2);
+		} else {
+			Log.info(SSLTest.class, "beforeTests", "Not starting servers here");
+		}
 	}
 
 	@AfterClass

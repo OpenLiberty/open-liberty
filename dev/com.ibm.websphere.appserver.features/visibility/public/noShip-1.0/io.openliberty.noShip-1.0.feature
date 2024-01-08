@@ -5,3 +5,4 @@ symbolicName=io.openliberty.noShip-1.0
 visibility=public
 kind=noship
 edition=full
+WLP-InstantOn-Enabled: true

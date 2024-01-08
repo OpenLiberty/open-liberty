@@ -17,6 +17,8 @@ Bundle-Name: io.openliberty.cdi.4.0.internal.web
 Bundle-SymbolicName: io.openliberty.cdi.4.0.internal.web
 Bundle-Description: CDI 4.0 Web, version ${bVersion}
 
+Import-Package: org.jboss.weld.*;version="[5.1,7)", \
+                *
 
 Export-Package: com.ibm.ws.cdi.web.factories
 

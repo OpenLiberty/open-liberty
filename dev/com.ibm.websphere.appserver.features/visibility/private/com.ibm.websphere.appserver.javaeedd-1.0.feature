@@ -19,7 +19,7 @@ IBM-Process-Types: server, \
  com.ibm.ws.javaee.dd.common, \
  com.ibm.ws.javaee.dd.ejb
 -jars=com.ibm.websphere.appserver.spi.javaeedd; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.javaeedd_1.7-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.javaeedd_1.8-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

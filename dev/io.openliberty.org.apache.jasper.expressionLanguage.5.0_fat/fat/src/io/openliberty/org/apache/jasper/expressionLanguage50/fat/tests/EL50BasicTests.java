@@ -18,11 +18,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.el50.fat.basic.servlets.EL50BasicTestsServlet;
-import io.openliberty.org.apache.jasper.expressionLanguage50.fat.ELUtils;
 
 /**
  * Tests to ensure Expression Language 5.0 basic changes are covered by testing
@@ -37,12 +35,6 @@ public class EL50BasicTests extends FATServletClient {
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "EL50Basic.war", "io.openliberty.el50.fat.basic.servlets");
-
-        // Set websphere.java.security.exempt=true because Expression Language 6.0 removed all references
-        // to the SecurityManager and related APIs.
-        if (JakartaEEAction.isEE11OrLaterActive()) {
-            ELUtils.setServerJavaSecurityExempt(server);
-        }
 
         server.startServer(EL50BasicTests.class.getSimpleName() + ".log");
     }

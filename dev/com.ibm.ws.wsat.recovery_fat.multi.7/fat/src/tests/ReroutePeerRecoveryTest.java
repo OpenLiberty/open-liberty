@@ -209,29 +209,29 @@ public class ReroutePeerRecoveryTest extends MultiRecoveryTest {
 
 	@Test
 	public void WSTXMPR008DFVT() throws Exception {
-		serversToStop = new LibertyServer[]{server2, server3,};
-		serversToStart = new LibertyServer[]{server1, server2, server3};
+		serversToStop = new LibertyServer[]{server3,};
+		serversToStart = new LibertyServer[]{server1, server3};
 		recoveryTest(server1, server2, "801", "server1", "none");
 	}
 
 	@Test
 	public void WSTXMPR008EFVT() throws Exception {
-		serversToStop = new LibertyServer[]{server1, server5,};
-		serversToStart = new LibertyServer[]{server1, server2, server5};
+		serversToStop = new LibertyServer[]{server5,};
+		serversToStart = new LibertyServer[]{server2, server5};
 		recoveryTest(server1, server2, "802", "server2", "none");
 	}
 
 	@Test
 	public void WSTXMPR009DFVT() throws Exception {
-		serversToStop = new LibertyServer[]{server2, server3,};
-		serversToStart = new LibertyServer[]{server1, server2, server3};
+		serversToStop = new LibertyServer[]{server3,};
+		serversToStart = new LibertyServer[]{server1, server3};
 		recoveryTest(server1, server2, "901", "server1", "none");
 	}
 
 	@Test
 	public void WSTXMPR009EFVT() throws Exception {
-		serversToStop = new LibertyServer[]{server1, server5,};
-		serversToStart = new LibertyServer[]{server1, server2, server5};
+		serversToStop = new LibertyServer[]{server5,};
+		serversToStart = new LibertyServer[]{server2, server5};
 		recoveryTest(server1, server2, "902", "server2", "none");
 	}
 }

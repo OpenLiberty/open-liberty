@@ -54,6 +54,3 @@ Import-Package: ${defaultPackageImport}
 #require explicitly specifying all ds and metatype annotated classes.
 -dsannotations:
 -metatypeannotations:
-
-# With bnd 5.2.0 The importing of java.* packages need to be disabled to maintain legacy behavior.
--noimportjava: true

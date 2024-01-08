@@ -35,11 +35,10 @@ IBM-SPI-Package: \
   com.ibm.wsspi.anno.util,\
   com.ibm.ws.anno.classsource.specification
 -features=com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0", \
+  io.openliberty.beanValidation3.0.internal.ee-9.0; ibm.tolerates:="10.0", \
   io.openliberty.jakarta.validation-3.0, \
   io.openliberty.beanValidationCore-2.0, \
-  com.ibm.websphere.appserver.transaction-2.0, \
-  io.openliberty.expressionLanguage-4.0; ibm.tolerates:="5.0", \
-  io.openliberty.jakarta.cdi-3.0; ibm.tolerates:="4.0"
+  com.ibm.websphere.appserver.transaction-2.0
 -bundles=\
   com.ibm.ws.beanvalidation.v20.jakarta, \
   com.ibm.ws.org.jboss.logging, \

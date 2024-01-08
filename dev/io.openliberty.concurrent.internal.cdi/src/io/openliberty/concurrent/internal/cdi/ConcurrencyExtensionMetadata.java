@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2023 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package io.openliberty.concurrent.internal.cdi;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
@@ -44,6 +45,11 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
      */
     public static Version eeVersion;
 
+    /**
+     * Liberty Scheduled Executor.
+     */
+    public static ScheduledExecutorService scheduledExecutor;
+
     @Override
     public boolean applicationBeansVisible() {
         return true;
@@ -67,6 +73,14 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
     protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
         String version = (String) ref.getProperty("version");
         eeVersion = Version.parseVersion(version);
+    }
+
+    @Reference(target = "(deferrable=false)")
+    protected void setScheduledExecutor(ScheduledExecutorService svc) {
+        scheduledExecutor = svc;
+    }
+
+    protected void unsetScheduledExecutor(ScheduledExecutorService svc) {
     }
 
     protected void unsetEEVersion(ServiceReference<JavaEEVersion> ref) {

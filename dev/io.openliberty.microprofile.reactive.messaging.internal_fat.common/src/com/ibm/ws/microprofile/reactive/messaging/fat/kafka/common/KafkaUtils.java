@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,14 +19,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedKafkaContainer;
-
-import componenttest.topology.impl.LibertyServer;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.ListTopicsResult;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+
+import com.ibm.websphere.simplicity.PropertiesAsset;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedKafkaContainer;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
+
+import componenttest.topology.impl.LibertyServer;
 
 /**
  *
@@ -82,6 +90,29 @@ public class KafkaUtils {
         //`.all()` wraps all the futures from deleteTopics into a signle future that can be
         // used to block progress given the async nature of the base deleteTopics command
         adminClient.deleteTopics(topicNames).all().get();
+    }
+
+    /**
+     * Add the Kafka Library and supporting test framework classes to a test application archive.
+     * <p>
+     * This includes everything necessary to use the Kafka connector, and to inject a {@link KafkaTestClient} into a test servlet.
+     *
+     * @param war                  the test application archive
+     * @param connectionProperties the connection properties which test clients should use to connect to the kafka broker
+     */
+    public static void addKafkaTestFramework(WebArchive war, Map<String, ?> connectionProperties) {
+        // Create a jar with the framework classes and config
+        JavaArchive frameworkJar = ShrinkWrap.create(JavaArchive.class, "KafkaTestFramework.jar")
+                        .addPackage(KafkaTestConstants.class.getPackage())
+                        .addPackage(KafkaTestClientProvider.class.getPackage())
+                        .addAsResource(new PropertiesAsset().addProperty(KafkaTestClientProvider.CONNECTION_PROPERTIES_KEY,
+                                                                         KafkaTestClientProvider.encodeProperties(connectionProperties)),
+                                       "META-INF/microprofile-config.properties");
+
+        // Add the framework jar, the kafka client and the permissions.xml to the app
+        war.addAsLibrary(frameworkJar)
+                        .addAsLibraries(KafkaUtils.kafkaClientLibs())
+                        .addAsManifestResource(KafkaUtils.kafkaPermissions(), "permissions.xml");
     }
 
 }

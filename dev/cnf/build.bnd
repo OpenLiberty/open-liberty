@@ -51,6 +51,9 @@ javac.encoding: UTF-8
 #  off:     do not specify a release
 javac.args.release: source
 -sources: false
+-jpms-multi-release: false
+# With bnd 5.2.0 The importing of java.* packages need to be disabled to maintain legacy behavior.
+-noimportjava: true
 
 instrument.disabled: ${if;${test.project};true;false}
 instrument.classesIncludes: **/*.class

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,9 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.el.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_OR_LATER_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -36,7 +34,6 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -56,12 +53,6 @@ public class EL30MiscTests {
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "ELServicesLookup.war", "com.ibm.ws.el30.fat.servicelookup");
-
-        // Set websphere.java.security.exempt=true because Expression Language 6.0 removed all references
-        // to the SecurityManager and related APIs.
-        if (JakartaEEAction.isEE11OrLaterActive()) {
-            ELUtils.setServerJavaSecurityExempt(server);
-        }
 
         server.startServer(EL30MiscTests.class.getSimpleName() + ".log");
     }
@@ -112,7 +103,7 @@ public class EL30MiscTests {
      *
      * @throws Exception
      */
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
+    @SkipForRepeat(EE9_OR_LATER_FEATURES)
     @Test
     public void testEL22ServiceLookup() throws Exception {
 

@@ -44,7 +44,7 @@ import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
 import com.ibm.wsspi.kernel.service.utils.ServiceReferenceUtils;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
-import com.ibm.ws.cdi40.extension.CDI40ExtensionMetadataInternal;
+import io.openliberty.cdi40.internal.extension.CDI40ExtensionMetadataInternal;
 
 import org.jboss.weld.lite.extension.translator.LiteExtensionTranslator;
 

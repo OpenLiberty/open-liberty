@@ -52,7 +52,7 @@ buildscript {
 
     dependencies {
         classpath bnd_plugin
-        classpath 'biz.aQute.bnd:biz.aQute.bnd:6.3.0'
+        classpath 'biz.aQute.bnd:biz.aQute.bnd:7.0.0'
         classpath 'gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.4.11'
         classpath 'com.gradle:build-scan-plugin:2.1'
             

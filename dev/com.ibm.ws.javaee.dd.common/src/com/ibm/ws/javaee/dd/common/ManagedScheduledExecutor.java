@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,7 +46,24 @@ public interface ManagedScheduledExecutor extends JNDIEnvironmentRef, Describabl
      * @see #getMaxAsync
      */
     boolean isSetMaxAsync();
-    
+
+    /**
+     * @return &lt;virtual&gt; if specified
+     * @see #isSetVirutal
+     */
+    boolean isVirtual();
+
+    /**
+     * @return true if &lt;virtual&gt; is specified
+     * @see #isVirtual
+     */
+    boolean isSetVirtual();
+
+    /**
+     * @return &lt;qualifier&gt; elements as a read-only list
+     */
+    String[] getQualifiers();
+
     /**
      * @return &lt;property&gt; elements as a read-only list
      */

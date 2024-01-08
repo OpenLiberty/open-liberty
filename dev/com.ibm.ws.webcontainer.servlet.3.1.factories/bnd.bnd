@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -16,8 +13,6 @@ bVersion=1.0
 Bundle-Name: WAS WebContainer Factories
 Bundle-SymbolicName: com.ibm.ws.webcontainer.servlet.3.1.factories
 Bundle-Description: WAS WebContainer 8.1 with Servlet 3.1 support. Factories only.
-WLP-ServerName: IBM WebSphere Application Server
-WLP-ServerVersion: ${liberty.beta.version}
 
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc.

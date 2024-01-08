@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1078,19 +1078,21 @@ public class DataTestServlet extends FATServlet {
                              "TestEmbeddable-104-2288-60",
                              "TestEmbeddable-304-3655-30"),
                      houses.findByAreaGreaterThan(1500,
-                                                  Sort.desc(House_.numBedrooms.name()),
-                                                  Sort.asc(House_.LotSize.name()))
+                                                  Sort.desc(_House.numBedrooms.name()),
+                                                  Sort.asc(_House.LotSize.name()))
                                      .map(house -> house.parcelId)
                                      .collect(Collectors.toList()));
+
+        assertEquals(_House.NUM_BEDROOMS, _House.numBedrooms.name());
 
         assertEquals(List.of("TestEmbeddable-404-4418-40",
                              "TestEmbeddable-304-3655-30",
                              "TestEmbeddable-104-2288-60",
                              "TestEmbeddable-204-2992-20"),
                      houses.findByAreaGreaterThan(1400,
-                                                  House_.garage_door_height.desc(),
-                                                  House_.kitchen_width.asc(),
-                                                  House_.AREA.asc())
+                                                  _House.garage_door_height.desc(),
+                                                  _House.kitchen_width.asc(),
+                                                  _House.AREA.asc())
                                      .map(house -> house.parcelId)
                                      .collect(Collectors.toList()));
 
@@ -1099,7 +1101,7 @@ public class DataTestServlet extends FATServlet {
                              "TestEmbeddable-204-2992-20",
                              "TestEmbeddable-104-2288-60"),
                      houses.findByAreaGreaterThan(1300,
-                                                  House_.parcelid.descIgnoreCase())
+                                                  _House.parcelid.descIgnoreCase())
                                      .map(house -> house.parcelId)
                                      .collect(Collectors.toList()));
 
@@ -1108,7 +1110,7 @@ public class DataTestServlet extends FATServlet {
                              "TestEmbeddable-304-3655-30",
                              "TestEmbeddable-404-4418-40"),
                      houses.findByAreaGreaterThan(1200,
-                                                  House_.id.ascIgnoreCase())
+                                                  _House.id.ascIgnoreCase())
                                      .map(house -> house.parcelId)
                                      .collect(Collectors.toList()));
 
@@ -3510,7 +3512,7 @@ public class DataTestServlet extends FATServlet {
                                  new Receipt(500L, "C0045-00-054", 155.00f)));
 
         assertEquals(true, receipts.existsById(300L));
-        assertEquals(5L, receipts.count());
+        assertEquals(5L, receipts.countBy());
 
         Receipt receipt = receipts.findById(200L).orElseThrow();
         assertEquals(202.40f, receipt.total(), 0.001f);
@@ -3531,7 +3533,7 @@ public class DataTestServlet extends FATServlet {
 
         receipts.deleteById(100L);
 
-        assertEquals(2L, receipts.count());
+        assertEquals(2L, receipts.countBy());
 
         receipts.delete(new Receipt(400L, "C0045-00-054", 44.49f));
 
@@ -3544,11 +3546,11 @@ public class DataTestServlet extends FATServlet {
         receipts.deleteAll(List.of(new Receipt(300L, "C0013-00-031", 33.99f),
                                    new Receipt(700L, "C0067-00-076", 17.99f)));
 
-        assertEquals(2L, receipts.count());
+        assertEquals(2L, receipts.countBy());
 
         receipts.deleteAll();
 
-        assertEquals(0L, receipts.count());
+        assertEquals(0L, receipts.countBy());
     }
 
     /**
@@ -3617,7 +3619,7 @@ public class DataTestServlet extends FATServlet {
 
         receipts.deleteAll();
 
-        assertEquals(0L, receipts.count());
+        assertEquals(0L, receipts.countBy());
     }
 
     /**
@@ -3630,7 +3632,7 @@ public class DataTestServlet extends FATServlet {
         // remove data that other tests previously inserted to the same table
         reservations.deleteByHostNot("never-ever-used@example.org");
 
-        assertEquals(0, reservations.count());
+        assertEquals(0, reservations.countBy());
 
         Reservation r1 = new Reservation();
         r1.host = "testRepository-host1@example.org";
@@ -3653,7 +3655,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(true, reservations.existsById(r1.meetingID));
 
-        assertEquals(1, reservations.count());
+        assertEquals(1, reservations.countBy());
 
         Reservation r2 = new Reservation();
         r2.host = "testRepository-host2@example.org";
@@ -3714,7 +3716,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(true, reservations.existsById(r3.meetingID));
 
-        assertEquals(4, reservations.count());
+        assertEquals(4, reservations.countBy());
 
         Map<Long, Reservation> found = reservations.findByIdIn(List.of(r4.meetingID, r2.meetingID))
                         .collect(Collectors.toMap(rr -> rr.meetingID, Function.identity()));
@@ -3732,13 +3734,13 @@ public class DataTestServlet extends FATServlet {
         assertNotNull(r2optional);
         assertEquals(true, r2optional.isEmpty());
 
-        assertEquals(3, reservations.count());
+        assertEquals(3, reservations.countBy());
 
         reservations.deleteByIdIn(Set.of(r1.meetingID, r4.meetingID));
 
         assertEquals(false, reservations.existsById(r4.meetingID));
 
-        assertEquals(1, reservations.count());
+        assertEquals(1, reservations.countBy());
 
         Optional<Reservation> r3optional = reservations.findById(r3.meetingID);
         assertNotNull(r3optional);
@@ -3764,7 +3766,7 @@ public class DataTestServlet extends FATServlet {
         // remove data that other tests previously inserted to the same table
         reservations.removeByHostNotIn(Set.of("never-ever-used@example.org"));
 
-        assertEquals(0, reservations.count());
+        assertEquals(0, reservations.countBy());
 
         // set up some data for the test to use
         Reservation r1 = new Reservation();
@@ -4304,7 +4306,7 @@ public class DataTestServlet extends FATServlet {
 
         packages.deleteAll();
 
-        assertEquals(0, packages.count());
+        assertEquals(0, packages.countBy());
     }
 
     /**
@@ -4584,7 +4586,7 @@ public class DataTestServlet extends FATServlet {
         // remove data that other tests previously inserted to the same table
         reservations.removeByHostNotIn(Set.of("never-ever-used@example.org"));
 
-        assertEquals(0, reservations.count());
+        assertEquals(0, reservations.countBy());
 
         // set up some data for the test to use
         Reservation r1 = new Reservation();

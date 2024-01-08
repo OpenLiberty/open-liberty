@@ -14,7 +14,6 @@ package io.openliberty.concurrent.internal.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.security.AccessController;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -29,7 +28,6 @@ import org.osgi.framework.ServiceReference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.kernel.service.util.SecureAction;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -44,9 +42,6 @@ import jakarta.enterprise.inject.spi.PassivationCapable;
  */
 public class ConcurrencyResourceBean<T> implements Bean<T>, PassivationCapable {
     private final static TraceComponent tc = Tr.register(ConcurrencyResourceBean.class);
-
-    // TODO eventually remove for code that only applies to EE 11+
-    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
     /**
      * Injectable bean types.
@@ -92,16 +87,16 @@ public class ConcurrencyResourceBean<T> implements Bean<T>, PassivationCapable {
 
         T instance;
         Bundle bundle = FrameworkUtil.getBundle(ConcurrencyResourceBean.class);
-        BundleContext bundleContext = priv.getBundleContext(bundle);
+        BundleContext bundleContext = bundle.getBundleContext();
         Collection<ServiceReference<T>> refs;
         try {
-            refs = priv.getServiceReferences(bundleContext, resourceType, filter);
+            refs = bundleContext.getServiceReferences(resourceType, filter);
         } catch (InvalidSyntaxException x) {
             throw new IllegalArgumentException(x); // internal error forming the filter?
         }
         Iterator<ServiceReference<T>> it = refs.iterator();
         if (it.hasNext())
-            instance = priv.getService(bundleContext, it.next());
+            instance = bundleContext.getService(it.next());
         else
             throw new IllegalStateException("The " + resourceType.getName() + " resource with " + filter + " filter cannot be found or is unavailable."); // TODO NLS
 

@@ -109,6 +109,13 @@ public interface CDIRuntime extends CDIService {
     ContextBeginnerEnder createContextBeginnerEnder();
 
     /**
+     * Returns true if a Context started by a ContextBeginnerEnder is currently active on the current thread.
+     *
+     * Trying to start a context while one is already active is both unnecessary and will throw an exception
+     */
+    boolean isContextBeginnerEnderActive();
+
+    /**
      * @param bundle
      * @param extra_classes
      * @param extraAnnotations
@@ -217,5 +224,17 @@ public interface CDIRuntime extends CDIService {
      * @return the WeldDevelopmentMode, or {@code null} if does not exist or it is not enabled
      */
     public WeldDevelopmentMode getWeldDevelopmentMode();
+
+    /**
+     * creates a ContextBeginnerEnder that will do the same thing as the currently
+     * active ContextBeginnerEnder, or returns null if none are active.
+     *
+     * This is useful if you need to record which thread context classloader and
+     * component metadata are currently active so you can re-establish that state
+     * after a checkpoint restore.
+     *
+     * Remember to always close a ContextBeginnerEnder before starting a new one.
+     */
+    public ContextBeginnerEnder cloneActiveContextBeginnerEnder();
 
 }

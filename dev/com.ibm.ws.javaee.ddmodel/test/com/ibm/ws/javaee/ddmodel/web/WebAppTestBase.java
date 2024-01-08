@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -156,6 +156,15 @@ public class WebAppTestBase extends DDTestBase {
                ">";
     }
 
+    protected static String webApp61Head() {
+        return "<web-app xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd\"" +
+                   " version=\"6.1\"" +
+                   " id=\"WebApp_ID\"" +
+               ">";
+    }
+
     protected static String webAppTail() {
         return "</web-app>";
     }
@@ -198,8 +207,9 @@ public class WebAppTestBase extends DDTestBase {
         } else if ( version == WebApp.VERSION_5_0 ) {
             head = webApp50Head();
         } else if ( version == WebApp.VERSION_6_0 ) {
-            head = webApp60Head();  
-            
+            head = webApp60Head();
+        } else if ( version == WebApp.VERSION_6_1 ) {
+            head = webApp61Head();
         } else {
             throw new IllegalArgumentException("Unexpected WebVersion [ " + version + " ]");
         }

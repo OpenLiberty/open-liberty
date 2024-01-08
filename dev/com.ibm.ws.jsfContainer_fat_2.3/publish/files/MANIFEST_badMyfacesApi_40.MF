@@ -1,0 +1,93 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven Bundle Plugin
+Built-By: volosied
+Build-Jdk: 11.0.17
+Specification-Title: Apache MyFaces Core 4.0 - API
+Specification-Version: 3.0.0
+Specification-Vendor: The Apache Software Foundation
+Implementation-Title: Apache MyFaces Core 4.0 - API
+Implementation-Version: 4.0.0-RC4
+Implementation-Vendor-Id: org.apache.myfaces.core
+Implementation-Vendor: The Apache Software Foundation
+Bnd-LastModified: 1674614657552
+Bundle-Classpath: .
+Bundle-Description: The public API classes of the Apache MyFaces Core 
+ JSF-4.0 project
+Bundle-DocURL: https://www.apache.org/
+Bundle-License: https://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache MyFaces Core 4.0 - API
+Bundle-SymbolicName: org.apache.myfaces.core.api
+Bundle-Vendor: The Apache Software Foundation
+Bundle-Version: 4.0.0.RC4
+Export-Package: jakarta.faces;version="4.0.0.RC4",jakarta.faces.annota
+ tion;version="4.0.0.RC4",jakarta.faces.application;version="4.0.0.RC4
+ ";uses:="jakarta.el,jakarta.faces,jakarta.faces.component,jakarta.fac
+ es.component.behavior,jakarta.faces.component.search,jakarta.faces.co
+ ntext,jakarta.faces.convert,jakarta.faces.event,jakarta.faces.flow,ja
+ karta.faces.validator,jakarta.faces.view",jakarta.faces.component;ver
+ sion="4.0.0.RC4";uses:="jakarta.el,jakarta.faces,jakarta.faces.applic
+ ation,jakarta.faces.component.behavior,jakarta.faces.component.visit,
+ jakarta.faces.context,jakarta.faces.convert,jakarta.faces.event,jakar
+ ta.faces.model,jakarta.faces.render,jakarta.faces.validator",jakarta.
+ faces.component.behavior;version="4.0.0.RC4";uses:="jakarta.el,jakart
+ a.faces.component,jakarta.faces.context,jakarta.faces.event,jakarta.f
+ aces.render",jakarta.faces.component.html;version="4.0.0.RC4";uses:="
+ jakarta.el,jakarta.faces.component,jakarta.faces.component.behavior,j
+ akarta.faces.context",jakarta.faces.component.search;version="4.0.0.R
+ C4";uses:="jakarta.faces,jakarta.faces.component,jakarta.faces.compon
+ ent.visit,jakarta.faces.context",jakarta.faces.component.visit;versio
+ n="4.0.0.RC4";uses:="jakarta.faces,jakarta.faces.component,jakarta.fa
+ ces.context",jakarta.faces.context;version="4.0.0.RC4";uses:="jakarta
+ .el,jakarta.faces,jakarta.faces.application,jakarta.faces.component,j
+ akarta.faces.event,jakarta.faces.lifecycle,jakarta.faces.render",jaka
+ rta.faces.convert;version="4.0.0.RC4";uses:="jakarta.faces,jakarta.fa
+ ces.application,jakarta.faces.component,jakarta.faces.context",jakart
+ a.faces.el;version="4.0.0.RC4";uses:="jakarta.el",jakarta.faces.event
+ ;version="4.0.0.RC4";uses:="jakarta.el,jakarta.faces,jakarta.faces.ap
+ plication,jakarta.faces.component,jakarta.faces.component.behavior,ja
+ karta.faces.context,jakarta.faces.lifecycle",jakarta.faces.flow;versi
+ on="4.0.0.RC4";uses:="jakarta.el,jakarta.faces,jakarta.faces.applicat
+ ion,jakarta.faces.context,jakarta.faces.lifecycle",jakarta.faces.flow
+ .builder;version="4.0.0.RC4";uses:="jakarta.el,jakarta.faces.flow",ja
+ karta.faces.lifecycle;version="4.0.0.RC4";uses:="jakarta.faces,jakart
+ a.faces.context,jakarta.faces.event",jakarta.faces.model;version="4.0
+ .0.RC4",jakarta.faces.push;version="4.0.0.RC4",jakarta.faces.render;v
+ ersion="4.0.0.RC4";uses:="jakarta.faces,jakarta.faces.component,jakar
+ ta.faces.component.behavior,jakarta.faces.context,jakarta.faces.conve
+ rt",jakarta.faces.validator;version="4.0.0.RC4";uses:="jakarta.el,jak
+ arta.faces,jakarta.faces.application,jakarta.faces.component,jakarta.
+ faces.context",jakarta.faces.view;version="4.0.0.RC4";uses:="jakarta.
+ faces,jakarta.faces.application,jakarta.faces.component,jakarta.faces
+ .context",jakarta.faces.view.facelets;version="4.0.0.RC4";uses:="jaka
+ rta.el,jakarta.faces,jakarta.faces.component,jakarta.faces.context,ja
+ karta.faces.view",jakarta.faces.webapp;version="4.0.0.RC4";uses:="jak
+ arta.servlet",org.apache.myfaces.core.api.shared;version="4.0.0.RC4";
+ uses:="jakarta.el,jakarta.faces,jakarta.faces.application,jakarta.fac
+ es.component,jakarta.faces.context,jakarta.faces.convert,jakarta.face
+ s.model,jakarta.faces.validator,jakarta.validation",org.apache.myface
+ s.core.api.shared.lang;version="4.0.0.RC4";uses:="jakarta.faces,jakar
+ ta.faces.context"
+Implementation-URL: https://myfaces.apache.org/#/core40
+Import-Package: jakarta.el;version="[5.0.0,6.0.0)",jakarta.validation;
+ version="[3.0.0,4.0.0)";resolution:=optional,jakarta.validation.group
+ s;version="[3.0.0,4.0.0)";resolution:=optional,jakarta.validation.met
+ adata;version="[3.0.0,4.0.0)";resolution:=optional,jakarta.servlet;ve
+ rsion="[6.0.0,7.0.0)",jakarta.servlet.http;version="[6.0.0,7.0.0)",ja
+ karta.faces;version="4.0.0.RC4",jakarta.faces.application;version="4.
+ 0.0.RC4",jakarta.faces.component;version="4.0.0.RC4",jakarta.faces.co
+ mponent.behavior;version="4.0.0.RC4",jakarta.faces.component.search;v
+ ersion="4.0.0.RC4",jakarta.faces.component.visit;version="4.0.0.RC4",
+ jakarta.faces.context;version="4.0.0.RC4",jakarta.faces.convert;versi
+ on="4.0.0.RC4",jakarta.faces.el;version="4.0.0.RC4",jakarta.faces.eve
+ nt;version="4.0.0.RC4",jakarta.faces.flow;version="4.0.0.RC4",jakarta
+ .faces.lifecycle;version="4.0.0.RC4",jakarta.faces.model;version="4.0
+ .0.RC4",jakarta.faces.render;version="4.0.0.RC4",jakarta.faces.valida
+ tor;version="4.0.0.RC4",jakarta.faces.view;version="4.0.0.RC4",jakart
+ a.faces.view.facelets;version="4.0.0.RC4",jakarta.faces.webapp;versio
+ n="4.0.0.RC4"
+Require-Bundle: org.apache.myfaces.core.impl;bundle-version="4.0.0.RC4"
+Require-Capability: osgi.ee;filter:="(osgi.ee=UNKNOWN)"
+Tool: Bnd-4.0.0.201805111645
+

@@ -10,10 +10,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 17
-javac.target: 17
+javac.source: 21
+javac.target: 21
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 
 Bundle-Name: WAS WebContainer
 Bundle-SymbolicName: io.openliberty.webcontainer.servlet.6.1.internal.factories
@@ -80,7 +80,6 @@ Import-Package: \
     io.openliberty.webcontainer60.session.impl, \
     io.openliberty.webcontainer60.osgi.request, \
     io.openliberty.webcontainer60.osgi.response, \
-    io.openliberty.webcontainer60.osgi.srt, \
     *
 
 -buildpath: \
@@ -101,5 +100,7 @@ Import-Package: \
     com.ibm.ws.webcontainer.servlet.4.0.jakarta;version=latest,\
     com.ibm.ws.resource;version=latest, \
     com.ibm.ws.kernel.boot.core;version=latest,\
-    io.openliberty.jakarta.servlet.6.0;version=latest,\
-    io.openliberty.webcontainer.servlet.6.0.internal;version=latest
+    io.openliberty.webcontainer.servlet.6.0.internal;version=latest,\
+    io.openliberty.jakarta.servlet.6.1;version=latest,\
+    io.openliberty.webcontainer.servlet.6.1.internal;version=latest
+

@@ -13,20 +13,20 @@ bVersion=1.0
 # This currently is a copy of the pages.3.1.bnd with the exception of the jakarta.el import version.
 # The jakarta.el import version needed to be updated to include 6.0 for Expression Language 6.0.
 
-javac.source: 17
-javac.target: 17
+javac.source: 21
+javac.target: 21
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 
 Bundle-SymbolicName: io.openliberty.jakarta.pages.4.0; singleton:=true
 Bundle-Description: Jakarta Server Pages, version 4.0
 
 # Note: No files under jakarta.servlet.jsp.resources, but it's needed to resolve other jsp bundles (i.e. com.ibm.jsp.2.3.jakarta)
 Export-Package: \
-	jakarta.servlet.jsp; version="3.1.1",\
-	jakarta.servlet.jsp.el; version="3.1.1",\
-	jakarta.servlet.jsp.resources; version="3.1.1",\
-	jakarta.servlet.jsp.tagext; version="3.1.1"
+	jakarta.servlet.jsp; version="4.0.0",\
+	jakarta.servlet.jsp.el; version="4.0.0",\
+	jakarta.servlet.jsp.resources; version="4.0.0",\
+	jakarta.servlet.jsp.tagext; version="4.0.0"
 
 Import-Package: \
   !jakarta.servlet.jsp.*, \
@@ -39,8 +39,8 @@ Import-Package: \
   org.xml.sax.helpers; resolution:=optional
 
 -includeresource: \
-  @${repo;jakarta.servlet.jsp:jakarta.servlet.jsp-api;3.1.1;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.servlet.jsp:jakarta.servlet.jsp-api;4.0.0.M1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
-   dep1;groupId=jakarta.servlet.jsp;artifactId=jakarta.servlet.jsp-api;version=3.1.1;scope=runtime
+   dep1;groupId=jakarta.servlet.jsp;artifactId=jakarta.servlet.jsp-api;version=4.0.0-M1;scope=runtime
 

@@ -37,6 +37,8 @@ import com.ibm.ws.security.oauth20.ProvidersService;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
+import com.ibm.ws.security.openidconnect.server.internal.JwtUtils;
+import com.ibm.ws.security.openidconnect.token.JWT;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
@@ -60,10 +62,19 @@ public class BackchannelLogoutRequestHelper {
      * Uses the provided ID token string to build logout tokens and sends back-channel logout requests to all of the necessary
      * RPs. If the ID token contains multiple audiences, logout tokens are created for each client audience. Logout tokens are
      * also created for all RPs that the OP is aware of having active or recently valid sessions.
+     *
+     * @throws BackchannelLogoutRequestException
      */
-    public void sendBackchannelLogoutRequests(String user, String idTokenString) {
+    public void sendBackchannelLogoutRequests(String user, String idTokenString) throws BackchannelLogoutRequestException {
         if (!shouldSendLogoutRequests(user, idTokenString)) {
             return;
+        }
+        if (idTokenString != null && !idTokenString.isEmpty()) {
+            try {
+                validateIdTokenHint(idTokenString);
+            } catch (Exception e) {
+                throw new BackchannelLogoutRequestException(e.getMessage());
+            }
         }
         Map<OidcBaseClient, Set<String>> logoutTokens = null;
         try {
@@ -74,8 +85,9 @@ public class BackchannelLogoutRequestHelper {
                 logoutTokens = tokenBuilder.buildLogoutTokensFromIdTokenString(idTokenString);
             }
         } catch (LogoutTokenBuilderException e) {
-            Tr.error(tc, "OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR", oidcServerConfig.getProviderId(), e.getMessage());
-            return;
+            String errorMsg = Tr.formatMessage(tc, "OIDC_SERVER_BACKCHANNEL_LOGOUT_REQUEST_ERROR", oidcServerConfig.getProviderId(), e.getMessage());
+            Tr.error(tc, errorMsg);
+            throw new BackchannelLogoutRequestException(errorMsg);
         }
         sendBackchannelLogoutRequestsToClients(logoutTokens);
     }
@@ -131,6 +143,16 @@ public class BackchannelLogoutRequestHelper {
             return false;
         }
         return false;
+    }
+
+    void validateIdTokenHint(String idTokenHint) throws Exception {
+        String oauthProviderName = oidcServerConfig.getOauthProviderName();
+        OAuth20Provider oauthProvider = ProvidersService.getOAuth20Provider(oauthProviderName);
+        JWT jwt = JwtUtils.createJwt(idTokenHint, oauthProvider, oidcServerConfig);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "JWT : " + jwt);
+        }
+        jwt.verifySignatureOnly();
     }
 
     void sendBackchannelLogoutRequestsToClients(Map<OidcBaseClient, Set<String>> clientsAndLogoutTokens) {

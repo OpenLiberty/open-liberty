@@ -1550,7 +1550,8 @@ case $OSTYPE in
 
       *)
         dirname=$(dirname "$0")
-        WLP_INSTALL_DIR=$(findRealPath "${dirname}/..")
+        WLP_INSTALL_DIR=$(unset CDPATH; cd "${dirname}/.." && pwd)
+        WLP_INSTALL_DIR=$(findRealPath "$WLP_INSTALL_DIR")
     esac
 esac
 

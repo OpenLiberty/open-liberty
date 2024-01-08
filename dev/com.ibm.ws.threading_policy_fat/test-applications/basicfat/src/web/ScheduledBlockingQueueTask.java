@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,7 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.ws.threading.PolicyExecutor;
-import com.ibm.ws.threading.ScheduledPolicyExecutorTask;
+import com.ibm.ws.threading.ScheduledCustomExecutorTask;
 
 /**
  * A task that directs its execution to the specified PolicyExecutor
@@ -25,7 +25,7 @@ import com.ibm.ws.threading.ScheduledPolicyExecutorTask;
  * and then adds to a LinkedBlockingQueue that tests can
  * poll to identify how many executions have occurred.
  */
-public class ScheduledBlockingQueueTask extends LinkedBlockingQueue<Integer> implements Runnable, ScheduledPolicyExecutorTask {
+public class ScheduledBlockingQueueTask extends LinkedBlockingQueue<Integer> implements Runnable, ScheduledCustomExecutorTask {
     private static final long serialVersionUID = 1514933845687256072L;
 
     /**

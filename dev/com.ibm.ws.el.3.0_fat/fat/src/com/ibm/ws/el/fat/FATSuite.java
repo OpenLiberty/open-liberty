@@ -63,14 +63,6 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
 
-    /**
-     * @see {@link FatLogHandler#generateHelpFile()}
-     */
-    @BeforeClass
-    public static void generateHelpFile() {
-        FatLogHandler.generateHelpFile();
-    }
-
     // EE10 requires Java 11.
     // EE11 requires Java 21
     // If we only specify EE10/EE11 for lite mode it will cause no tests to run which causes an error.
@@ -80,4 +72,13 @@ public class FATSuite {
                     .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                     .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_21))
                     .andWith(FeatureReplacementAction.EE11_FEATURES());
+
+    /**
+     * @see {@link FatLogHandler#generateHelpFile()}
+     */
+    @BeforeClass
+    public static void generateHelpFile() {
+        FatLogHandler.generateHelpFile();
+    }
+
 }

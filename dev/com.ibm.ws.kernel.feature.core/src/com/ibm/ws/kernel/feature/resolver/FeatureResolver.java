@@ -143,8 +143,21 @@ public interface FeatureResolver {
          * @param originalFeatureReq The full feature name that is required.
          */
         public Chain(Collection<String> chain, List<String> candidates, String preferredVersion, String originalFeatureReq) {
-            _chain = chain.isEmpty() ? Collections.<String> emptyList() : Collections.unmodifiableList(new ArrayList<String>(chain));
-            _candidates = Collections.unmodifiableList(candidates);
+            _chain = chain.isEmpty() ? Collections.<String> emptyList() : new ArrayList<String>(chain);
+            _candidates = candidates;
+            Version v;
+            try {
+                v = Version.parseVersion(preferredVersion);
+            } catch (IllegalArgumentException e) {
+                v = Version.emptyVersion;
+            }
+            _preferredVersion = v;
+            _originalFeatureReq = originalFeatureReq;
+        }
+
+        public Chain(String candidate, String preferredVersion, String originalFeatureReq) {
+            _chain = Collections.<String> emptyList();
+            _candidates = Collections.singletonList(candidate);
             Version v;
             try {
                 v = Version.parseVersion(preferredVersion);

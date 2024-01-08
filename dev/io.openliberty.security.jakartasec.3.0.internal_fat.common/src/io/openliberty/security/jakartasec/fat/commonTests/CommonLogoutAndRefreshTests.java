@@ -223,6 +223,7 @@ public class CommonLogoutAndRefreshTests extends CommonAnnotatedSecurityTests {
         // now logged in - wait for token to expire
         actions.testLogAndSleep(sleepTimeInSeconds);
         String url = rpHttpsBase + "/" + appName + "/" + baseAppName;
+        webClient.getOptions().setJavaScriptEnabled(false);
         invokeAppGetToSplashPage(webClient, url);
 
     }

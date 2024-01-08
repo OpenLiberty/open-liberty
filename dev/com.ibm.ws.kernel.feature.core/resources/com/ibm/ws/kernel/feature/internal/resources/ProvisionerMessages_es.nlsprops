@@ -230,6 +230,15 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: L
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=La configuraci\u00f3n de servidor contiene una combinaci\u00f3n incompatible de caracter\u00edsticas para los modelos de programaci\u00f3n indicados.  Este conflicto se puede producir si se configuran directamente las dos caracter\u00edsticas incompatibles en la configuraci\u00f3n de servidor o si las caracter\u00edsticas configuradas incluyen versiones diferentes de una caracter\u00edstica que son incompatibles.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Intente especificar una versi\u00f3n compatible de las caracter\u00edsticas configuradas que han provocado el conflicto en el archivo server.xml.  Si no hay disponible ninguna otra versi\u00f3n, las caracter\u00edsticas configuradas no son compatibles entre s\u00ed y no se pueden configurar a la vez.
 
+UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: No se ha podido encontrar un valor para la variable de entorno PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=Tiene caracter\u00edsticas sin versi\u00f3n en la configuraci\u00f3n y no se ha podido encontrar la variable de entorno PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=Compruebe que la variable de entorno, PREFERRED_FEATURE_VERSIONS, existe y se ha escrito correctamente.
+
+# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: La variable de entorno, PREFERRED_FEATURE_VERSIONS, no contiene un valor para {0}
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=Para cada caracter\u00edstica sin versi\u00f3n de la configuraci\u00f3n, debe haber un valor de versi\u00f3n preferido para ella dentro de PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=A\u00f1adir un valor en PREFERRED_FEATURE_VERSIONS para la caracter\u00edstica
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: La caracter\u00edstica {0} ya existe. No se reinstalar\u00e1. Para modificar una caracter\u00edstica existente, primero debe desinstalarla manualmente.

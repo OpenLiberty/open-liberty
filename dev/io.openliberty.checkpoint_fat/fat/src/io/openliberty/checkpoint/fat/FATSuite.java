@@ -94,7 +94,8 @@ import componenttest.topology.impl.LibertyServer;
                 LocalConnectorTest.class,
                 WebProfileJSPtest.class,
                 MPTelemetryJaxRsIntegrationTest.class,
-                LogsChangeTraceSpecTest.class
+                LogsChangeTraceSpecTest.class,
+                OpenAPIConfigTest.class
 })
 
 public class FATSuite {
