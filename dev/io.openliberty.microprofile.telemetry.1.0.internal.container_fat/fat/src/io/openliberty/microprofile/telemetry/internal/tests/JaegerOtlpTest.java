@@ -34,7 +34,7 @@ import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContain
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
 
 /**
- * Test exporting traces to a Jaeger server with OLTP
+ * Test exporting traces to a Jaeger server with OTLP
  */
 @RunWith(FATRunner.class)
 public class JaegerOtlpTest extends JaegerBaseTest {
@@ -53,7 +53,7 @@ public class JaegerOtlpTest extends JaegerBaseTest {
         client = new JaegerQueryClient(jaegerContainer);
 
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
-        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOltpGrpcUrl());
+        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());
 
         server.addEnvVar(TestConstants.ENV_OTEL_SERVICE_NAME, "Test service");
         server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server

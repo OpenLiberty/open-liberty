@@ -38,8 +38,8 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
 
     private static final Class<?> c = JaegerContainer.class;
 
-    public static final int OLTP_GRPC_PORT = 4317;
-    public static final int OLTP_HTTP_PORT = 4318;
+    public static final int OTLP_GRPC_PORT = 4317;
+    public static final int OTLP_HTTP_PORT = 4318;
     public static final int JAEGER_LEGACY_PORT = 14250;
     public static final int JAEGER_THRIFT_PORT = 14268;
     public static final int ZIPKIN_PORT = 9411;
@@ -56,8 +56,8 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
         super(imageName);
         Log.info(c, "JaegerContainer", "creating JaegerContainer with imageName");
 
-        withExposedPorts(OLTP_GRPC_PORT,
-                         OLTP_HTTP_PORT,
+        withExposedPorts(OTLP_GRPC_PORT,
+                         OTLP_HTTP_PORT,
                          JAEGER_LEGACY_PORT,
                          JAEGER_THRIFT_PORT,
                          GRPC_QUERY_PORT,
@@ -79,8 +79,8 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
 
         Log.info(c, "JaegerContainer", "creating JaegerContainer with tls certificate and keys");
 
-        withExposedPorts(OLTP_GRPC_PORT,
-                         OLTP_HTTP_PORT,
+        withExposedPorts(OTLP_GRPC_PORT,
+                         OTLP_HTTP_PORT,
                          JAEGER_LEGACY_PORT,
                          JAEGER_THRIFT_PORT,
                          GRPC_QUERY_PORT,
@@ -94,47 +94,47 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
     }
 
     /**
-     * Get the port to use to send OLTP spans via gRPC
+     * Get the port to use to send OTLP spans via gRPC
      * <p>
      * Only valid when the container is started
      *
-     * @return the OLTP gRPC port
+     * @return the OTLP gRPC port
      */
-    public int getOltpGrpcPort() {
-        return getMappedPort(OLTP_GRPC_PORT);
+    public int getOtlpGrpcPort() {
+        return getMappedPort(OTLP_GRPC_PORT);
     }
 
     /**
-     * Get the URL to use to send OLTP spans via gRPC
+     * Get the URL to use to send OTLP spans via gRPC
      * <p>
      * Only valid when the container is started
      *
-     * @return the OLTP gRPC URL
+     * @return the OTLP gRPC URL
      */
-    public String getOltpGrpcUrl() {
-        return "http://" + getHost() + ":" + getOltpGrpcPort();
+    public String getOtlpGrpcUrl() {
+        return "http://" + getHost() + ":" + getOtlpGrpcPort();
     }
 
     /**
-     * Get the URL to use to send OLTP spans via gRPC over tls
+     * Get the URL to use to send OTLP spans via gRPC over tls
      * <p>
      * Only valid when the container is started
      *
-     * @return the OLTP gRPC URL
+     * @return the OTLP gRPC URL
      */
     public String getSecureOtlpGrpcUrl() {
-        return "https://" + getHost() + ":" + getOltpGrpcPort();
+        return "https://" + getHost() + ":" + getOtlpGrpcPort();
     }
 
     /**
-     * Get the port to use to send OLTP spans via HTTP
+     * Get the port to use to send OTLP spans via HTTP
      * <p>
      * Only valid when the container is started
      *
-     * @return the OLTP HTTP port
+     * @return the OTLP HTTP port
      */
-    public int getOltpHttpPort() {
-        return getMappedPort(OLTP_HTTP_PORT);
+    public int getOtlpHttpPort() {
+        return getMappedPort(OTLP_HTTP_PORT);
     }
 
     /**

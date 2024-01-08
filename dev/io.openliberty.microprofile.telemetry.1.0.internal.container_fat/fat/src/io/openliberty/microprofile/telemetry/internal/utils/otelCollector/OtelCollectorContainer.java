@@ -96,11 +96,11 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
     }
 
     /**
-     * Get the URL to use to send OLTP spans via gRPC over tls
+     * Get the URL to use to send OTLP spans via gRPC over tls
      * <p>
      * Only valid when the container is started
      *
-     * @return the OLTP gRPC URL
+     * @return the OTLP gRPC URL
      */
     public String getSecureOtlpGrpcUrl() {
         return "https://" + getHost() + ":" + getOtlpGrpcPort();
