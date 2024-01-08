@@ -1282,9 +1282,9 @@ jsp.javasourcelevel.warning=CWWJS0006W: The specified javaSourceLevel={0} value 
 jsp.javasourcelevel.warning.explanation=File cannot be compiled with a higher source than the available JDK level. 
 jsp.javasourcelevel.warning.useraction=Specify a javaSourceLevel value that is less than or equal to the available JDK level.
 
-jsp.bothsourcelevelset.warning=CWWJS0007W: Both javaSourceLevel={0} and jdkSourceLevel={1} are specified. Defaulting to javaSourceLevel={0}
-jsp.bothsourcelevelset.warning.explanation= Only one source level attribute can be used at a time.
-jsp.bothsourcelevelset.warning.useraction= Specify only the javaSourceLevel attribute.  The jdkSourceLevel attribute is stabilized. 
+jsp.bothsourcelevelset.warning=CWWJS0007W: Both javaSourceLevel={0} and jdkSourceLevel={1} are specified. Defaulting to javaSourceLevel={0}.
+jsp.bothsourcelevelset.warning.explanation=Only one source level attribute can be used at a time.
+jsp.bothsourcelevelset.warning.useraction=Specify only the javaSourceLevel attribute. The jdkSourceLevel attribute is stabilized. 
 
 jsp.javasourcelevel.value=CWWJS0008I: The value of the JSP attribute javaSourceLevel is \"{0}\".
 jsp.javasourcelevel.value.explanation =

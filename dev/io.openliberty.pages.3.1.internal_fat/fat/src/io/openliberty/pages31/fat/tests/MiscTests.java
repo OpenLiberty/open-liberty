@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.pages31.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_OR_LATER_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
@@ -71,7 +71,7 @@ public class MiscTests {
      *
      * @throws Exception if something goes horribly wrong
      */
-    @SkipForRepeat(EE11_FEATURES)
+    @SkipForRepeat(EE11_OR_LATER_FEATURES)
     @Test
     public void testIsThreadSafeLogsWarning() throws Exception {
         WebConversation wc = new WebConversation();
@@ -96,7 +96,7 @@ public class MiscTests {
      *
      * @throws Exception if something goes horribly wrong
      */
-    @SkipForRepeat(EE11_FEATURES)
+    @SkipForRepeat(EE11_OR_LATER_FEATURES)
     @Test
     public void testJspPluginNoOp() throws Exception {
         WebConversation wc = new WebConversation();

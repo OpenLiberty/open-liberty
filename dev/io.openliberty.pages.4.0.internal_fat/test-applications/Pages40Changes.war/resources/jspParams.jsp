@@ -9,19 +9,15 @@
  -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
-
-<title>jsp:plugin</title>
-</head>
-<body>
-
-    <p> Verify jsp:params throws an exception </p>
-
-    <!-- 
-        Not exactly correct since jsp:params should be nested within jsp:plugin
-        But this verifies an exception is thrown nonetheless.
-     -->
-    <jsp:params> </jsp:params>
-    
-</body>
+    <head>
+        <title>jsp:plugin</title>
+    </head>
+    <body>
+        <p> Verify jsp:params throws an exception </p>
+        <!-- 
+            Not exactly correct since jsp:params should be nested within jsp:plugin
+            But this verifies an exception is thrown nonetheless.
+        -->
+        <jsp:params> </jsp:params>
+    </body>
 </html>

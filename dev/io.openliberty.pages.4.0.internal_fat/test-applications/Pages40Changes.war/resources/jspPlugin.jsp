@@ -9,15 +9,11 @@
  -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
-
-<title>jsp:plugin</title>
-</head>
-<body>
-
-    <p> Verify jsp:plugin throws an exception </p>
-
-    <jsp:plugin type="bean" code="bar.class" codebase="/" ></jsp:plugin>
-    
-</body>
+    <head>
+        <title>jsp:plugin</title>
+    </head>
+    <body>
+        <p> Verify jsp:plugin throws an exception </p>
+        <jsp:plugin type="bean" code="bar.class" codebase="/" ></jsp:plugin>
+    </body>
 </html>

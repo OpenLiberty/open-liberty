@@ -9,19 +9,18 @@
  -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
+    <head>
+        <title>jsp:plugin</title>
+    </head>
+    <body>
 
-<title>jsp:plugin</title>
-</head>
-<body>
+        <p> Verify jsp:fallback throws an exception </p>
 
-    <p> Verify jsp:fallback throws an exception </p>
-
-    <!-- 
-        Not exactly correct since jsp:params should be nested within jsp:plugin
-        But this verifies an exception is thrown nonetheless.
-     -->
-    <jsp:fallback> </jsp:fallback>
-    
-</body>
+        <!-- 
+            Not exactly correct since jsp:params should be nested within jsp:plugin
+            But this verifies an exception is thrown nonetheless.
+        -->
+        <jsp:fallback> </jsp:fallback>
+        
+    </body>
 </html>
