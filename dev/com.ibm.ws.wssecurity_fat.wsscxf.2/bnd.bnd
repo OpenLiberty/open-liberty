@@ -50,28 +50,10 @@ tested.features: \
   expressionlanguage-5.0, \
   jsonp-2.1
 
-#Private-Package: \
-#  basicplcy.wssecfvt.test,\
-#  com.ibm.ws.wssecurity.example.cbh,\
-#  com.ibm.ws.wssecurity.example.cbhwss4j,\
-#  com.ibm.ws.wssecurity.fat.cxf,\
-#  com.ibm.ws.wssecurity.fat.cxf.sha2sig,\
-#  com.ibm.ws.wssecurity.fat.cxf.x509migtoken,\
-#  com.ibm.ws.wssecurity.fat.endsuptokens,\
-#  com.ibm.ws.wssecurity.fat.endsuptokensclient,\
-#  com.ibm.ws.wssecurity.fat.sha2sig,\
-#  com.ibm.ws.wssecurity.fat.sha2sigclient,\
-#  com.ibm.ws.wssecurity.fat.x509migbadclient,\
-#  com.ibm.ws.wssecurity.fat.x509migclient,\
-#  test.libertyfat.x509mig.contract,\
-#  test.libertyfat.x509mig.types,\
-#  test.wssecfvt.endsuptokens,\
-#  test.wssecfvt.endsuptokens.types,\
-#  test.wssecfvt.sha2sig,\
-#  test.wssecfvt.sha2sig.types
-
-Include-Resource: \
-  @${repo;com.ibm.ws.wssecurity.fat.example.cbh;latest}!/*
+-includeresource: \
+  @${repo;com.ibm.ws.wssecurity.example.cbh}!/!META-INF/*, \
+  @${repo;com.ibm.ws.wssecurity.example.cbhwss4j}!/!META-INF/*, \
+  =${bin}
 
 -buildpath: \
 	com.ibm.ws.wssecurity.fat.utils.common;version=latest,\
@@ -105,4 +87,5 @@ Include-Resource: \
 	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
 	com.ibm.ws.wssecurity.3.4.1;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
-	com.ibm.ws.wssecurity.fat.example.cbh;version=project
+	com.ibm.ws.wssecurity.example.cbh;version=latest,\
+	com.ibm.ws.wssecurity.example.cbhwss4j;version=latest

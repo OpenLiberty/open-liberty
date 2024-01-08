@@ -59,7 +59,10 @@ tested.features:\
   expressionlanguage-5.0, \
   jsonp-2.1 
 
--includeresource: @${repo;com.ibm.ws.wssecurity.example.cbh}!/!META-INF/*
+-includeresource: \
+  @${repo;com.ibm.ws.wssecurity.example.cbh}!/!META-INF/*, \
+  @${repo;com.ibm.ws.wssecurity.example.cbhwss4j}!/!META-INF/*, \
+  =${bin}
 
 -buildpath: \
 	com.ibm.ws.wssecurity.fat.utils.common;version=latest,\
@@ -94,4 +97,5 @@ tested.features:\
 	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
 	com.ibm.ws.wssecurity.3.4.1;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
-	com.ibm.ws.wssecurity.fat.example.cbh;version=project
+	com.ibm.ws.wssecurity.example.cbh;version=latest,\
+	com.ibm.ws.wssecurity.example.cbhwss4j;version=latest

@@ -14,7 +14,25 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
--sub: *.bnd
+src: \
+  test-bundles/com.ibm.ws.wssecurity.cbh/src
+
+Bundle-Name: wssecuritycbh
+Bundle-SymbolicName: com.ibm.ws.wssecurity.example.cbh
+Bundle-Version: ${bVersion}
+Bundle-Description: An PasswordCallbackHandler; version=${bVersion}
+
+WS-TraceGroup: \
+  WSSecurity
+
+Export-Package: \
+ com.ibm.ws.wssecurity.example.cbh;version=${bVersion}
+
+#Include-Resource: \
+#  @./resources!/META-INF/**, \
+#  OSGI-INF=resources/OSGI-INF
+
+allow.bundle-version.override=true
 
 test.project: true
 
