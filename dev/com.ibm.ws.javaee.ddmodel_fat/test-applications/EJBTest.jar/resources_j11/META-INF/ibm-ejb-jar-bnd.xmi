@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejbbnd:EJBJarBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ejb="ejb.xmi" xmlns:ejbbnd="ejbbnd.xmi" xmi:id="EJBJarBinding_1200691865843">
+
+  <ejbJar href="META-INF/ejb-jar.xml#ejb-jar_ID"/>
+
+  <ejbBindings xmi:id="EnterpriseBeanBinding_1200691865843" jndiName="/ejb/TestEJB">
+    <enterpriseBean xmi:type="ejb:Session" href="META-INF/ejb-jar.xml#TestBean"/>
+  </ejbBindings>
+
+</ejbbnd:EJBJarBinding>

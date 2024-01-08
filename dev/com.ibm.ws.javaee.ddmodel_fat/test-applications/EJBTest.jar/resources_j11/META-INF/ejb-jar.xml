@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar
+    xmlns="https://jakarta.ee/xml/ns/jakartaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/ejb-jar_4_0.xsd"
+    version="4.0"
+    id="ejb-jar_ID">
+
+    <display-name>EJBTest</display-name>
+
+    <enterprise-beans>
+        <session id="TestBean">
+            <ejb-name>TestBean</ejb-name>
+            <home>ejbtest_j.ejb.ITestHome</home>
+            <remote>ejbtest_j.ejb.ITestRemote</remote>
+            <local-home>ejbtest_j.ejb.TestBeanLocalHome</local-home>
+            <local>ejbtest_j.ejb.TestBeanLocal</local>
+            <ejb-class>ejbtest_j.ejb.TestBean</ejb-class>
+            <session-type>Stateful</session-type>
+            <transaction-type>Bean</transaction-type>
+        </session>
+    </enterprise-beans>
+
+</ejb-jar>
