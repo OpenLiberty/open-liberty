@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -481,9 +481,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
     }
 
-    public void resetReaderChannelMultiRead() {
+    public void setReadFromChannelComplete() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "resetReaderChannelMultiRead", "Reseting indexes of data and setting all data read");
+            Tr.debug(tc, "setReadFromChannelComplete", "Reseting indexes of data and setting all data read");
         }
         this.enableMultiReadofPostData = false;
         dataAlreadyReadFromChannel = true;
