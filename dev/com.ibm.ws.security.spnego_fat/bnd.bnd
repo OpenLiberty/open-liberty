@@ -18,6 +18,8 @@ src: \
 
 fat.project: true
 
+fat.test.container.images: kyleaure/krb5-server:1.0, localhost/spnego-kdc-server:1.0, fbicodex/spnego-kdc-server:1.0
+
 tested.features: pages-3.0, appsecurity-4.0, cdi-3.0, spnego-1.0
 
 -buildpath: \
@@ -40,4 +42,5 @@ tested.features: pages-3.0, appsecurity-4.0, cdi-3.0, spnego-1.0
     com.ibm.ws.webcontainer.security;version=latest,\
     com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
 	com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1;version=latest, \
+	io.openliberty.org.testcontainers;version=latest,\
     org.apache.httpcomponents:httpcore;version=4.1.2

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -152,7 +152,8 @@ public class Krb5Helper {
         }
 
         if (!IBM_KRB5_LOGIN_MODULE_AVAILABLE) {
-            loginContextEntry = SUN_JDK_KRB5_LOGIN;
+            loginContextEntry = "sunKrb5LoginRefreshKrb5Config";//SUN_JDK_KRB5_LOGIN;
+            Log.info(thisClass, thisMethod, "using refreshed krb5 config");
             System.setProperty("javax.security.auth.useSubjectCredsOnly", "false");
             System.setProperty("java.security.krb5.realm", (realm == null) ? InitClass.KDC_REALM : realm);
             System.setProperty("java.security.krb5.kdc", (kdcHostName == null) ? InitClass.KDC_HOSTNAME : kdcHostName);

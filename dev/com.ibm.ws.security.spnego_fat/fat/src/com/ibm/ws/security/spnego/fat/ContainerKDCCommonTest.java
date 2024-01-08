@@ -15,6 +15,8 @@ package com.ibm.ws.security.spnego.fat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -24,7 +26,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +36,7 @@ import javax.security.auth.login.LoginException;
 import org.ietf.jgss.Oid;
 import org.junit.AfterClass;
 import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
@@ -49,7 +51,6 @@ import com.ibm.ws.security.spnego.fat.config.JDKExpectationTestClass;
 import com.ibm.ws.security.spnego.fat.config.KdcHelper;
 import com.ibm.ws.security.spnego.fat.config.Krb5Helper;
 import com.ibm.ws.security.spnego.fat.config.SPNEGOConstants;
-import com.ibm.ws.security.wim.adapter.ldap.fat.krb5.KerberosContainer;
 import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
 import com.ibm.ws.webcontainer.security.test.servlets.SSLBasicAuthClient;
 
@@ -57,8 +58,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.ExternalTestService;
 
-public class ApacheKDCCommonTest {
-    private static final Class<?> c = ApacheKDCCommonTest.class;
+public class ContainerKDCCommonTest {
+    private static final Class<?> c = ContainerKDCCommonTest.class;
 
     public static LibertyServer myServer;
     public static BasicAuthClient myClient;
@@ -82,10 +83,16 @@ public class ApacheKDCCommonTest {
 
     protected static String configFile = null;
 
+    protected static String krbUser1 = "user1";
+    protected static String krbUser1Pwd = "password";
+
+    protected static String SPN = "HTTP/libertyhost";
+    protected static String libertyHostName = "libertyhost";
+
     @Rule
     public TestName name = new TestName();
 
-    //@BeforeClass
+    @BeforeClass
     public static void preClassCheck() throws Exception {
         String thisMethod = "preClassCheck";
 
@@ -101,11 +108,11 @@ public class ApacheKDCCommonTest {
 
         //// testContainer from jdbc FAT
         myServer = LibertyServerFactory.getLibertyServer("BasicAuthTest");
-        Path krbConfPath = Paths.get(myServer.getServerRoot(), "security", "krb5.conf");
-        Path krb5KeytabPath = Paths.get(myServer.getServerRoot(), "security", "krb5.keytab");
+        Path krbConfPath = Paths.get(myServer.getInstallRoot(), "krb5.ini");
+        Path krb5KeytabPath = Paths.get(myServer.getInstallRoot(), "HTTP_libertyhost.keytab");
+
         FATSuite.krb5.generateConf(krbConfPath);
-        //Cannot invoke "com.ibm.ws.security.wim.adapter.ldap.fat.krb5.KerberosContainer.generateConf(java.nio.file.Path)"
-        //because "com.ibm.ws.security.wim.adapter.ldap.fat.krb5.FATSuite.krb5" is null
+        FATSuite.krb5.copyFileFromContainer("/etc/HTTP_libertyhost.keytab", krb5KeytabPath.toAbsolutePath().toString());
 
         myServer.addEnvVar("KRB5_USER", "user1@" + KerberosContainer.KRB5_REALM);
         myServer.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
@@ -113,11 +120,29 @@ public class ApacheKDCCommonTest {
 
         configFile = krbConfPath.toAbsolutePath().toString(); //ApacheKDCforSPNEGO.getDefaultConfigFile();
         assertNotNull("ConfigFile is null", configFile);
-        Log.info(c, "setUp", "Config file: " + configFile);
+        Log.info(c, thisMethod, "Config file: " + configFile);
+
+        System.setProperty("KRB5_CONFIG", configFile);
+        Log.info(c, thisMethod, "set System property: KRB5_CONFIG=" + configFile);
 
         keytabFile = krb5KeytabPath.toAbsolutePath().toString();; // ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
         assertNotNull("Keytab is null", keytabFile);
-        Log.info(c, "setUp", "Keytab file: " + keytabFile);
+        Log.info(c, thisMethod, "Keytab file: " + keytabFile);
+
+        Log.info(c, thisMethod, "Print Config file contents: ");
+        BufferedReader br = new BufferedReader(new FileReader(configFile));
+        String line;
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+        br.close();
+
+        Log.info(c, thisMethod, "Print Keytab file contents: ");
+        br = new BufferedReader(new FileReader(keytabFile));
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+        br.close();
 
         myServer.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
 
@@ -135,6 +160,11 @@ public class ApacheKDCCommonTest {
         //must set to avoid NPE from re-using existing helper functions
         InitClass.KDCP_VAR = InitClass.KDC_HOSTNAME;
         InitClass.KDCS_VAR = InitClass.KDC2_HOSTNAME;
+
+        InitClass.KDC_REALM = KerberosContainer.KRB5_REALM;
+        InitClass.KDC_HOSTNAME = KerberosContainer.KDC_HOSTNAME;
+        Log.info(c, thisMethod, "KDC_REALM: " + InitClass.KDC_REALM);
+        Log.info(c, thisMethod, "KDC_HOSTNAME: " + InitClass.KDC_HOSTNAME);
 
     }
 
@@ -181,15 +211,15 @@ public class ApacheKDCCommonTest {
         if (setAsCommonSpnegoToken) {
             Log.info(c, thisMethod, "The new SPNEGO token will be set as the common SPNEGO token for all future tests and test classes.");
 
-            setRolesForCommonUser(ApacheKDCforSPNEGO.KRB5_USER1);
+            setRolesForCommonUser(krbUser1);
 
             isEmployee = ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_EMPLOYEE;
             isManager = ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_MANAGER;
         }
 
-        Log.info(c, thisMethod, "SPNEGO token will be created for user: " + ApacheKDCforSPNEGO.KRB5_USER1 + " (isEmployee=" + isEmployee + ", isManager=" + isManager + ")");
+        Log.info(c, thisMethod, "SPNEGO token will be created for user: " + krbUser1 + " (isEmployee=" + isEmployee + ", isManager=" + isManager + ")");
 
-        createSpnegoToken(thisMethod, ApacheKDCforSPNEGO.KRB5_USER1, ApacheKDCforSPNEGO.KRB5_USER1_PWD);
+        createSpnegoToken(thisMethod, krbUser1, krbUser1Pwd);
 
         if (setAsCommonSpnegoToken) {
             ApacheKDCforSPNEGO.COMMON_TOKEN_CREATION_DATE = System.currentTimeMillis();
@@ -216,7 +246,7 @@ public class ApacheKDCCommonTest {
     private static void createSpnegoToken(String thisMethod, String user, String password) throws Exception, InterruptedException {
         for (int i = 1; i <= 3; i++) {
             try {
-                spnegoTokenForTestClass = createToken(user, password, TARGET_SERVER, null, null, "krb5ConfPath", krb5Helper, true, Krb5Helper.SPNEGO_MECH_OID, null);
+                spnegoTokenForTestClass = createToken(user, password, TARGET_SERVER, null, null, configFile, krb5Helper, true, Krb5Helper.SPNEGO_MECH_OID, null);
                 break;
             } catch (LoginException e) {
                 if (i == 3) {
@@ -239,7 +269,7 @@ public class ApacheKDCCommonTest {
     public static String createToken(String username, String password, String targetServer, String realm, String kdcHostName, String krb5ConfPath,
                                      Krb5Helper krb5Helper, boolean includeClientGSSCredentialInSubject, Oid mechOid, String jaasLoginContextEntry) throws Exception {
         String method = "createToken";
-        String targetSpn = ApacheKDCforSPNEGO.SPN;
+        String targetSpn = SPN;
         Log.info(c, method, "Target SPN: " + targetSpn);
 
         Subject subject = null;
@@ -256,16 +286,18 @@ public class ApacheKDCCommonTest {
 
     private static String selectRandomUser() {
         List<String> users = new ArrayList<String>();
-        users.add(ApacheKDCforSPNEGO.KRB5_USER1);
+        users.add(krbUser1);
         users.add(ApacheKDCforSPNEGO.KRB5_USER2);
-        return users.get((new Random().nextInt(users.size())));
+        //todo: do we need random users?
+        return krbUser1;
+        //return users.get((new Random().nextInt(users.size())));
     }
 
     private static void setRolesForCommonUser(String user) {
-        if (user.equals(ApacheKDCforSPNEGO.KRB5_USER1)) {
+        if (user.equals(krbUser1)) {
             ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_EMPLOYEE = true;
             ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_MANAGER = false;
-            ApacheKDCforSPNEGO.COMMON_TOKEN_USER_PWD = ApacheKDCforSPNEGO.KRB5_USER1_PWD;
+            ApacheKDCforSPNEGO.COMMON_TOKEN_USER_PWD = krbUser1Pwd;
         } else {
             ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_EMPLOYEE = false;
             ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_MANAGER = true;
@@ -402,6 +434,66 @@ public class ApacheKDCCommonTest {
             Log.info(c, thisMethod, "Using initial config: " + config);
         }
 
+        //// testContainer from jdbc FAT
+        myServer = LibertyServerFactory.getLibertyServer("BasicAuthTest");
+        Path krbConfPath = Paths.get(myServer.getInstallRoot(), "krb5.ini");
+        Path krb5KeytabPath = Paths.get(myServer.getInstallRoot(), "HTTP_libertyhost.keytab");
+
+        //File tempkrb5Config = File.createTempFile("krb5", "ini");
+        //File tempkrb5keytab = File.createTempFile("krb5", "keytab");
+
+        //FATSuite.krb5.generateConf(krbConfPath);
+        //Log.info(c, thisMethod, "tempkrb5Config.toPath(): " + tempkrb5Config.toPath());
+        //Log.info(c, thisMethod, "tempkrb5keytab.toPath(): " + tempkrb5keytab.toPath());
+        //FATSuite.krb5.generateConf(tempkrb5Config.toPath());
+        //FATSuite.krb5.copyFileFromContainer("/etc/HTTP_libertyhost.keytab", krb5KeytabPath.toAbsolutePath().toString());
+        //FATSuite.krb5.copyFileFromContainer("/etc/HTTP_libertyhost.keytab", tempkrb5keytab.getAbsolutePath().toString());
+
+        myServer.addEnvVar("KRB5_USER", "user1@" + KerberosContainer.KRB5_REALM);
+        myServer.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
+        /////
+        System.setProperty("KRB5_CONFIG", configFile);
+        Log.info(c, thisMethod, "set System property: KRB5_CONFIG=" + configFile);
+
+        Log.info(c, thisMethod, "Copy krb5.ini to server: ");
+        //myServer.copyFileToLibertyServerRoot("/resources/security/", tempkrb5Config.getAbsolutePath().toString());
+        //myServer.copyFileToLibertyServerRootUsingTmp(myServer.getServerRoot() + "/resources/security/", tempkrb5Config.getAbsolutePath().toString());
+        myServer.copyFileToLibertyServerRoot(krbConfPath.getParent().toAbsolutePath().toString(), "resources/security", "krb5.ini");
+
+        Log.info(c, thisMethod, "Copy HTTP_libertyhost.keytab to server: ");
+        //myServer.copyFileToLibertyServerRoot("/resources/security/", tempkrb5keytab.getAbsolutePath().toString());
+        //myServer.copyFileToLibertyServerRootUsingTmp(myServer.getServerRoot() + "/resources/security/", tempkrb5keytab.getAbsolutePath().toString());
+        myServer.copyFileToLibertyServerRoot(krb5KeytabPath.getParent().toAbsolutePath().toString(), "resources/security", "HTTP_libertyhost.keytab");
+
+        //update configFile and keytabfile paths from server installRoot to serverRoot/resources/security/
+        krbConfPath = Paths.get(myServer.getServerRoot(), "resources", "security", "krb5.ini");
+        krb5KeytabPath = Paths.get(myServer.getServerRoot(), "resources", "security", "HTTP_libertyhost.keytab");
+
+        //configFile = krbConfPath.toAbsolutePath().toString(); //ApacheKDCforSPNEGO.getDefaultConfigFile();
+        configFile = krbConfPath.toAbsolutePath().toString(); //ApacheKDCforSPNEGO.getDefaultConfigFile();
+        assertNotNull("ConfigFile is null", configFile);
+        Log.info(c, thisMethod, "Config file: " + configFile);
+
+        keytabFile = krb5KeytabPath.toAbsolutePath().toString(); // ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
+        //keytabFile = tempkrb5keytab.getAbsolutePath().toString(); // ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
+        assertNotNull("Keytab is null", keytabFile);
+        Log.info(c, thisMethod, "Keytab file: " + keytabFile);
+
+        Log.info(c, thisMethod, "Print Config file contents: ");
+        BufferedReader br = new BufferedReader(new FileReader(configFile));
+        String line;
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+        br.close();
+
+        Log.info(c, thisMethod, "Print Keytab file contents: ");
+        br = new BufferedReader(new FileReader(keytabFile));
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+        br.close();
+
         /*
          * Configure the KdcHelper appropriately.
          */
@@ -427,10 +519,10 @@ public class ApacheKDCCommonTest {
         //String fullyQualifiedDomainName = testHelper.getTestSystemFullyQualifiedDomainName();
         //String fullyQualifiedDomainName = InitClass.getServerCanonicalHostName();
         if (useCanonicalHostName) {
-            Log.info(c, thisMethod, "Using the canonical host name in the target server SPN: " + "rndhostname");
+            Log.info(c, thisMethod, "Using the canonical host name in the target server SPN: " + libertyHostName);
             //TARGET_SERVER = fullyQualifiedDomainName;
             //TARGET_SERVER = ApacheKDCforSPNEGO.canonicalHostname;
-            TARGET_SERVER = "dbuser";
+            TARGET_SERVER = libertyHostName;
             //todo change dbuser
         } else {
             Log.info(c, thisMethod, "Using the short host name in the target server SPN");
@@ -682,9 +774,10 @@ public class ApacheKDCCommonTest {
      */
     protected static boolean shouldCommonTokenBeRefreshed() {
         String thisMethod = "shouldCommonTokenBeRefreshed";
-        if (ApacheKDCforSPNEGO.OTHER_SUPPORT_JDKS) {
-            return true;
-        }
+        //TODO: is this needed?
+        //if (ApacheKDCforSPNEGO.OTHER_SUPPORT_JDKS) {
+        //    return true;
+        //}
         long currentTime = System.currentTimeMillis();
         if (((currentTime - ApacheKDCforSPNEGO.COMMON_TOKEN_CREATION_DATE) / 1000) > ApacheKDCforSPNEGO.TOKEN_REFRESH_LIFETIME_SECONDS) {
             Log.info(c, thisMethod, "SPNEGO token lifetime has exceeded allowed time; recommend a new token should be created.");
@@ -991,7 +1084,7 @@ public class ApacheKDCCommonTest {
      * @param kdcHelper the kdcHelper to set
      */
     public static void setKdcHelper(KdcHelper kdcHelper) {
-        ApacheKDCCommonTest.kdcHelper = kdcHelper;
+        ContainerKDCCommonTest.kdcHelper = kdcHelper;
     }
 
     /**
@@ -1005,7 +1098,7 @@ public class ApacheKDCCommonTest {
      * @param myServer the myServer to set
      */
     public static void setMyServer(LibertyServer myServer) {
-        ApacheKDCCommonTest.myServer = myServer;
+        ContainerKDCCommonTest.myServer = myServer;
     }
 
     /**
@@ -1065,13 +1158,13 @@ public class ApacheKDCCommonTest {
     protected void setSpnegoServerConfig(String config, String keytab, String spn, String useCanonicalHost, String authErrorPage, String notSupportedErrorPage,
                                          String ntlmErrorPage, boolean enableInfoLogging) throws Exception {
         if (!enableInfoLogging) {
-            ApacheKDCCommonTest.setGlobalLoggingLevel(Level.WARNING);
+            ContainerKDCCommonTest.setGlobalLoggingLevel(Level.WARNING);
         }
         ServerConfiguration newServerConfig = emptyConfiguration.clone();
         Spnego spnego = setSpnegoConfigElement(newServerConfig, config, keytab, spn, useCanonicalHost, authErrorPage, notSupportedErrorPage, ntlmErrorPage);
 
         updateConfigDynamically(myServer, newServerConfig, false);
-        ApacheKDCCommonTest.setGlobalLoggingLevel(Level.INFO);
+        ContainerKDCCommonTest.setGlobalLoggingLevel(Level.INFO);
 
         Log.info(c, "setSpnegoServerConfig", spnego.toString());
         Log.info(c, "setSpnegoServerConfig", "================== Spnego Config is Set  ==================");

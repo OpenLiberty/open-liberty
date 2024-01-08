@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -48,7 +48,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
-public class BasicAuthTest extends ApacheKDCCommonTest {
+public class BasicAuthTest extends ContainerKDCCommonTest {
 
     private static final Class<?> c = BasicAuthTest.class;
 
@@ -75,17 +75,18 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
     @BeforeClass
     public static void setUp() throws Exception {
         Log.info(c, "setUp", "Starting the server and kerberos setup...");
-        ApacheKDCCommonTest.commonSetUp("BasicAuthTest", null,
-                                        SPNEGOConstants.NO_APPS,
-                                        SPNEGOConstants.NO_PROPS,
-                                        SPNEGOConstants.DONT_CREATE_SSL_CLIENT,
-                                        SPNEGOConstants.DONT_CREATE_SPN_AND_KEYTAB,
-                                        SPNEGOConstants.DEFAULT_REALM,
-                                        SPNEGOConstants.DONT_CREATE_SPNEGO_TOKEN,
-                                        SPNEGOConstants.SET_AS_COMMON_TOKEN,
-                                        SPNEGOConstants.USE_CANONICAL_NAME,
-                                        SPNEGOConstants.USE_COMMON_KEYTAB,
-                                        SPNEGOConstants.START_SERVER);
+        //ContainerKDCCommonTest.preClassCheck();
+        ContainerKDCCommonTest.commonSetUp("BasicAuthTest", null,
+                                           SPNEGOConstants.NO_APPS,
+                                           SPNEGOConstants.NO_PROPS,
+                                           SPNEGOConstants.DONT_CREATE_SSL_CLIENT,
+                                           SPNEGOConstants.DONT_CREATE_SPN_AND_KEYTAB,
+                                           SPNEGOConstants.DEFAULT_REALM,
+                                           SPNEGOConstants.DONT_CREATE_SPNEGO_TOKEN,
+                                           SPNEGOConstants.SET_AS_COMMON_TOKEN,
+                                           SPNEGOConstants.USE_CANONICAL_NAME,
+                                           SPNEGOConstants.USE_COMMON_KEYTAB,
+                                           SPNEGOConstants.START_SERVER);
 
         testHelper.addShutdownMessages("CWWKS9127W", "CWWKS4317E", "CWWKS4308E", "CWWKS4309E", "CWWKS4318E", "CWWKG0083W", "CWWKS4313E", "CWWKS4312E", "CWWKG0027W");
     }
