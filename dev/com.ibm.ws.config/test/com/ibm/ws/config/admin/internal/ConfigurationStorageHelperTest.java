@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -295,9 +295,34 @@ public class ConfigurationStorageHelperTest {
     }
 
     @Test
-    public void testMapStore() throws IOException {
+    public void testMapStoreShort() throws IOException {
+        char[] shortChars = "value".toCharArray();
+        char[] shortProtectedChars = "secret".toCharArray();
+
+        testMapStore(shortChars, shortProtectedChars);
+    }
+
+    @Test
+    public void testMapStoreLong() throws IOException {
+        char[] longChars = getChars('l', 100000);
+        char[] longProtectedChars = getChars('p', 101000);
+
+        testMapStore(longChars, longProtectedChars);
+    }
+
+    public static char[] getChars(char c, int len) {
+        char[] chars = new char[len];
+        for (int charNo = 0; charNo < len; charNo++) {
+            chars[charNo] = c;
+        }
+        return chars;
+    }
+
+    protected void testMapStore(char[] chars, char[] protectedChars) throws IOException {
         File configFile = new File("build", "testData");
+
         Map<String, Object> expectedMap = new HashMap<>();
+
         expectedMap.put("null", null);
         expectedMap.put("byte", (byte) 5);
         expectedMap.put("short", (short) 55);
@@ -307,8 +332,10 @@ public class ConfigurationStorageHelperTest {
         expectedMap.put("float", (float) 5.5);
         expectedMap.put("double", 55.55);
         expectedMap.put("boolean", true);
-        expectedMap.put("string", "value");
-        expectedMap.put("password", new SerializableProtectedString("secret".toCharArray()));
+
+        expectedMap.put("string", new String(chars));
+        expectedMap.put("password", new SerializableProtectedString(protectedChars));
+
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(configFile))) {
             ConfigurationStorageHelper.writeMap(dos, ConfigurationStorageHelper.toMapOrDictionary(expectedMap));
         }
@@ -319,9 +346,6 @@ public class ConfigurationStorageHelperTest {
         assertMapEquals(expectedMap, loadedMap);
     }
 
-    /**
-     * @return
-     */
     private List<TestConfiguration> setupTestConfigurations() {
         List<TestConfiguration> testConfigs = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
@@ -452,8 +476,10 @@ public class ConfigurationStorageHelperTest {
         dict.put("float", (float) 5.5);
         dict.put("double", 55.55);
         dict.put("boolean", true);
-        dict.put("string", "value");
-        dict.put("password", new SerializableProtectedString("secret".toCharArray()));
+        dict.put("short string", "value");
+        dict.put("long string", new String(getChars('l', 102000)));
+        dict.put("short password", new SerializableProtectedString("secret".toCharArray()));
+        dict.put("long password", new SerializableProtectedString(getChars('s', 103000)));
 
         dict.put("map", setupSubMap());
         dict.put("byte array", new byte[] { 1, 2, 3, 4, 5 });
@@ -464,7 +490,8 @@ public class ConfigurationStorageHelperTest {
         dict.put("float array", new float[] { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f });
         dict.put("double array", new double[] { 11.11, 22.22, 33.33, 44.44, 55.55 });
         dict.put("boolean array", new boolean[] { true, false, false, true, true });
-        dict.put("string array", new String[] { "abc", "def", "ghi", "jkl", "mno" });
+        dict.put("string array", new String[] { "abc", "def", "ghi", "jkl", "mno",
+                                                new String(getChars('x', 104000)) });
 
         dict.put("Byte array", new Byte[] { 1, 2, 3, 4, 5 });
         dict.put("Byte null array", new Byte[] { 1, 2, null, 4, 5 });
@@ -491,7 +518,8 @@ public class ConfigurationStorageHelperTest {
         dict.put("Float collection", asList(new Float[] { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f }));
         dict.put("Double collection", asList(new Double[] { 11.11, 22.22, 33.33, 44.44, 55.55 }));
         dict.put("Boolean collection", asList(new Boolean[] { true, false, false, true, true }));
-        dict.put("string collection", asList(new String[] { "abc", "def", "ghi", "jkl", "mno" }));
+        dict.put("string collection", asList(new String[] { "abc", "def", "ghi", "jkl", "mno",
+                                                            new String(getChars('y', 105000)) }));
         dict.put("Mixed collection", asList(new Object[] {
                                                            Byte.valueOf((byte) 1),
                                                            Short.valueOf((short) 1),
@@ -500,7 +528,8 @@ public class ConfigurationStorageHelperTest {
                                                            Character.valueOf('a'),
                                                            Float.valueOf(1.1f),
                                                            Double.valueOf(1.1),
-                                                           "string" }));
+                                                           "string",
+                                                           new String(getChars('z', 106000)) }));
 
         return dict;
     }

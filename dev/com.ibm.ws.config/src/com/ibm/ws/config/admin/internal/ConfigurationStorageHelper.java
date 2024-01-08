@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,6 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.admin.ConfigurationDictionary;
 import com.ibm.ws.config.admin.ExtendedConfiguration;
@@ -44,7 +47,7 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
  * A helper class for storing and retrieving the persisted config information.
  * <p>
  * {@link #load(File, ConfigStorageConsumer)} / {@link #store(File, Collection)} format: <br>
- * byte - version, set to constant {@link #VERSION} <br>
+ * byte - version, set to constant {@link #VERSION_LONG_STRINGS} <br>
  * int - number of configurations <br>
  * followed by the list of conditions as loaded by {@link #load(DataInputStream, Set, Set, ConfigurationDictionary)}
  * <p>
@@ -70,14 +73,20 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
  * - maps are written the same way as the main config dictionary <br>
  */
 public class ConfigurationStorageHelper {
+    private static final TraceComponent tc = Tr.register(ConfigurationStorageHelper.class,
+                                                         ConfigAdminConstants.TR_GROUP, ConfigAdminConstants.NLS_PROPS);
+    //
 
     public static interface ConfigStorageConsumer<K, T> {
-        T consumeConfigData(String location, Set<String> uniqueVars, Set<ConfigID> references, ConfigurationDictionary dict);
+        T consumeConfigData(String location,
+                            Set<String> uniqueVars, Set<ConfigID> references, ConfigurationDictionary dict);
 
         K getKey(T consumerType);
     }
 
-    private static final byte VERSION = 0;
+    private static final byte VERSION_SHORT_STRINGS = 0;
+    private static final byte VERSION_LONG_STRINGS = 1;
+
     private static final byte BYTE = 0;
     private static final byte SHORT = 1;
     private static final byte BOOLEAN = 2;
@@ -95,26 +104,120 @@ public class ConfigurationStorageHelper {
     private static final byte NULL = 14;
     private static final byte OBJECT = 15;
 
-    public static <K, T> Map<K, T> load(File configFile, ConfigStorageConsumer<K, T> consumer) throws IOException {
-        Map<K, T> result = new HashMap<>();
-        try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(configFile)))) {
-            if (dis.readByte() == VERSION) {
-                int numConfigs = dis.readInt();
-                for (int i = 0; i < numConfigs; i++) {
-                    Set<String> uniqueVars = new HashSet<>();
-                    Set<ConfigID> references = new HashSet<>();
-                    ConfigurationDictionary dict = new ConfigurationDictionary();
-                    String location = load(dis, uniqueVars, references, dict);
-                    T value = consumer.consumeConfigData(location, uniqueVars, references, dict);
-                    result.put(consumer.getKey(value), value);
-                }
-            }
-        }
-        return result;
+    private static final byte SHORT_STRING = 16;
+    private static final byte LONG_STRING = 17;
+
+    private static final byte SHORT_PROTECTED_STRING = 18;
+    private static final byte LONG_PROTECTED_STRING = 19;
+
+    //
+
+    private final int version;
+
+    private String location;
+
+    // 'store' sets this to a dictionary,
+    // while 'load' sets it to a 'ConfigurationDictionary'.
+    private final Dictionary<String, ?> readOnlyProps;
+    private final Set<String> uniqueVars;
+    private final Set<ConfigID> references;
+
+    /**
+     * Initializer for loading configurations.
+     *
+     * @param version The serialization format version of the configurations.
+     */
+    private ConfigurationStorageHelper(int version) {
+        this.version = version;
+
+        this.location = null;
+
+        this.readOnlyProps = new ConfigurationDictionary();
+        this.uniqueVars = new HashSet<>();
+        this.references = new HashSet<>();
     }
 
-    static String load(DataInputStream dis, Set<String> uniqueVars, Set<ConfigID> references, ConfigurationDictionary dict) throws IOException {
-        String location = (String) readObject(dis);
+    @FFDCIgnore(IllegalStateException.class)
+    private static ConfigurationStorageHelper newWriteHelper(int version, ExtendedConfiguration config) {
+        // Guard against non-valid configurations:
+        // Those with null read-only properties and those which are deleted.
+
+        try {
+            Dictionary<String, ?> dict = config.getReadOnlyProperties();
+            if (dict == null) {
+                return null;
+            } else {
+                return new ConfigurationStorageHelper(version, config, dict);
+            }
+
+        } catch (IllegalStateException e) {
+            // Thrown when attempting to access a deleted configuration.
+            // ignore FFDC
+            return null;
+        }
+    }
+
+    /**
+     * Initializer for saving configurations.
+     *
+     * @param version The serialization format version of the configurations.
+     * @param config A configuration which is to be saved.
+     * @param readOnlyProps Read only properties of the configuration.
+     */
+    private ConfigurationStorageHelper(int version,
+                                       ExtendedConfiguration config,
+                                       Dictionary<String, ?> readOnlyProps) {
+
+        this.readOnlyProps = readOnlyProps;
+
+        this.location = config.getBundleLocation();
+        this.references = config.getReferences();
+        this.uniqueVars = config.getUniqueVariables();
+    }
+
+    public <K, T> void storeConfiguration(ConfigStorageConsumer<K, T> consumer, Map<K, T> storage) {
+
+        // Ugly type-cast.  'store' uses a Dictionary, while 'load' uses a ConfigurationDictionary.
+        T configType = consumer.consumeConfigData(location, uniqueVars, references, (ConfigurationDictionary) readOnlyProps);
+
+        storage.put(consumer.getKey(configType), configType);
+    }
+
+    private static boolean isValidVersion(int version) {
+        if ((version != VERSION_LONG_STRINGS) && (version != VERSION_SHORT_STRINGS)) {
+            tc.warning("Unsupported configuration storage version [ " + version + " ]: The version must be 0 or 1.");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static <K, T> Map<K, T> load(File configFile, ConfigStorageConsumer<K, T> consumer) throws IOException {
+        Map<K, T> storage = new HashMap<>();
+
+        try (FileInputStream fis = new FileInputStream(configFile);
+                        BufferedInputStream bis = new BufferedInputStream(fis);
+                        DataInputStream dis = new DataInputStream(bis)) {
+
+            int version = dis.readByte();
+            if (!isValidVersion(version)) {
+                continue;
+            }
+
+            int numConfigs = dis.readInt();
+            for (int i = 0; i < numConfigs; i++) {
+                ConfigurationStorageHelper helper = new ConfigurationStorageHelper(version);
+                helper.load(dis);
+                helper.storeConfiguration(consumer, storage);
+            }
+        }
+
+        return storage;
+    }
+
+    protected void load(DataInputStream dis) throws IOException {
+        location = (String) readObject(dis);
+
         int len = dis.readInt();
         for (int i = 0; i < len; i++) {
             uniqueVars.add(dis.readUTF());
@@ -143,50 +246,48 @@ public class ConfigurationStorageHelper {
                 references.add(thisId);
             }
         }
-        readMapInternal(dis, toMapOrDictionary(dict));
-        return location;
-
+        readMapInternal(dis, toMapOrDictionary(readOnlyProps));
     }
 
-    @FFDCIgnore(IllegalStateException.class)
     public static void store(File configFile, Collection<? extends ExtendedConfiguration> configs) throws IOException {
-        try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(configFile, false)))) {
-            dos.writeByte(VERSION);
-            // This secondary list is needed so we can collect the valid number of configs:
-            // non-null properties and not deleted (indicated with an IllegalStateException)
-            List<Object[]> configDatas = new ArrayList<>(configs.size());
+
+        try (FileOutputStream fos = new FileOutputStream(configFile, false);
+                        BufferedOutputStream bos = new BufferedOutputStream(fos);
+                        DataOutputStream dos = new DataOutputStream(bos)) {
+
+            dos.writeByte(VERSION_LONG_STRINGS);
+
+            // Determine valid configurations.  This must before doing any of the
+            // saves since the count is stored first.
+
+            // Allocate approximate storage assuming that all of the configurations are valid.
+
+            List<ConfigurationStorageHelper> helpers = new ArrayList<>(configs.size());
             for (ExtendedConfiguration config : configs) {
-                try {
-                    Dictionary<String, ?> properties = config.getReadOnlyProperties();
-                    Set<ConfigID> references = config.getReferences();
-                    Set<String> uniqueVars = config.getUniqueVariables();
-                    String bundleLocation = config.getBundleLocation();
-                    if (properties != null) {
-                        configDatas.add(new Object[] { properties, references, uniqueVars, bundleLocation });
-                    }
-                } catch (IllegalStateException e) {
-                    // ignore FFDC
+                ConfigurationStorageHelper helper = newWriteHelper(VERSION_LONG_STRINGS, config);
+                if (helper != null) {
+                    helpers.add(helper);
                 }
             }
-            // now we have all the valid configs and their dictionaries to save
-            dos.writeInt(configDatas.size());
-            for (Object[] configData : configDatas) {
-                @SuppressWarnings("unchecked")
-                Dictionary<String, ?> properties = (Dictionary<String, ?>) configData[0];
-                @SuppressWarnings("unchecked")
-                Set<ConfigID> references = (Set<ConfigID>) configData[1];
-                @SuppressWarnings("unchecked")
-                Set<String> uniqueVars = (Set<String>) configData[2];
-                String bundleLocation = (String) configData[3];
-                store(dos, properties, bundleLocation, references, uniqueVars);
+
+            dos.writeInt(helpers.size());
+            for (ConfigurationStorageHelper helper : helpers) {
+                helper.store(dos);
             }
         }
     }
 
-    static void store(DataOutputStream dos, Dictionary<String, ?> properties, String bundleLocation,
-                      Set<ConfigID> references, Set<String> uniqueVars) throws IOException {
+    /**
+     * Write a single configuration. That is, write the location, the unique variables,
+     * the references, and the read-only properties of the configuration.
+     *
+     * @param dos A data output stream which receives the configuration.
+     *
+     * @throws IOException Thrown if any of the writes fail.
+     */
+    protected void store(DataOutputStream dos) throws IOException {
+        writeObject(dos, location);
 
-        writeObject(dos, bundleLocation);
         if (uniqueVars != null) {
             dos.writeInt(uniqueVars.size());
             for (String var : uniqueVars) {
@@ -195,6 +296,7 @@ public class ConfigurationStorageHelper {
         } else {
             dos.writeInt(0);
         }
+
         if (references != null) {
             dos.writeInt(references.size());
             int count = 0;
@@ -202,14 +304,19 @@ public class ConfigurationStorageHelper {
             for (ConfigID id : references) {
                 count = writeConfigID(dos, id, count, 0, writtenConfigIds);
             }
+
         } else {
             dos.writeInt(0);
         }
-        writeMapInternal(dos, toMapOrDictionary(properties));
+
+        writeMapInternal(dos, toMapOrDictionary(readOnlyProps));
     }
 
+    //
+
     public static void readMap(DataInputStream dis, MapIterable props) throws IOException {
-        if (dis.readByte() != VERSION) {
+        int version = dis.readByte();
+        if (!isValidVersion(version)) {
             return;
         }
         readMapInternal(dis, props);
@@ -465,10 +572,21 @@ public class ConfigurationStorageHelper {
                 return dis.readFloat();
             case INTEGER:
                 return dis.readInt();
+
             case STRING:
                 return dis.readUTF();
+            case SHORT_STRING:
+                return readSmallString(dis);
+            case LONG_STRING:
+                return readLargeString(dis);
+
             case PROTECTED_STRING:
                 return new SerializableProtectedString(dis.readUTF().toCharArray());
+            case SHORT_PROTECTED_STRING:
+                return new SerializableProtectedString(readSmallProtectedString(dis).toCharArray());
+            case LONG_PROTECTED_STRING:
+                return new SerializableProtectedString(readLargeProtectedString(dis).toCharArray());
+
             case ONERROR:
                 return OnError.values()[dis.readInt()];
             default:
@@ -477,8 +595,10 @@ public class ConfigurationStorageHelper {
         throw new IllegalArgumentException("Unsupported object type: " + type);
     }
 
+    //
+
     public static void writeMap(DataOutputStream dos, MapIterable map) throws IOException {
-        dos.writeByte(VERSION);
+        dos.writeByte(VERSION_LONG_STRINGS);
         writeMapInternal(dos, map);
     }
 
@@ -487,6 +607,7 @@ public class ConfigurationStorageHelper {
             dos.writeInt(-1);
             return;
         }
+
         dos.writeInt(map.size());
         for (Map.Entry<String, Object> entry : map) {
             dos.writeUTF(entry.getKey());
@@ -613,12 +734,12 @@ public class ConfigurationStorageHelper {
         } else if (type == Integer.class) {
             dos.writeByte(INTEGER);
             dos.writeInt((int) obj);
+
         } else if (type == String.class) {
-            dos.writeByte(STRING);
-            dos.writeUTF((String) obj);
+            writeString(dos, (String) obj);
         } else if (type == SerializableProtectedString.class) {
-            dos.writeByte(PROTECTED_STRING);
-            dos.writeUTF(new String(((SerializableProtectedString) obj).getChars()));
+            writeProtectedString(dos, ((SerializableProtectedString) obj).getChars());
+
         } else if (type == OnError.class) {
             dos.writeByte(ONERROR);
             dos.writeInt(((OnError) obj).ordinal());
@@ -725,5 +846,74 @@ public class ConfigurationStorageHelper {
         public void put(String name, Object val) {
             dict.put(name, val);
         }
+    }
+
+    //
+
+    private void writeString(DataOutputStream dos, String str) throws IOException {
+        if (version == 0) {
+            dos.writeByte(STRING);
+            dos.writeUTF(str);
+
+            return;
+        }
+
+        byte[] strBytes = str.getBytes("UTF-8");
+        if (strBytes.length <= 65535) {
+            dos.writeByte(SHORT_STRING);
+            dos.writeShort((short) strBytes.length);
+        } else {
+            dos.writeByte(LONG_STRING);
+            dos.writeInt(strBytes.length);
+        }
+        dos.write(strBytes);
+    }
+
+    @Trivial // Don't log protected values
+    private void writeProtectedString(DataOutputStream dos, String str) throws IOException {
+        if (version == 0) {
+            dos.writeByte(PROTECTED_STRING);
+            dos.writeUTF(str);
+        }
+
+        byte[] strBytes = str.getBytes("UTF-8");
+        if (strBytes.length <= 65535) {
+            dos.writeByte(SHORT_PROTECTED_STRING);
+            dos.writeShort((short) strBytes.length);
+        } else {
+            dos.writeByte(LONG_PROTECTED_STRING);
+            dos.writeInt(strBytes.length);
+        }
+        dos.write(strBytes);
+    }
+
+    private static String readSmallString(DataInputStream dis) throws IOException {
+        int length = dis.readShort();
+        byte[] strBytes = new byte[length];
+        dis.readFully(strBytes);
+        return new String(strBytes, "UTF-8");
+    }
+
+    private static String readLargeString(DataInputStream dis) throws IOException {
+        int length = dis.readInt();
+        byte[] strBytes = new byte[length];
+        dis.readFully(strBytes);
+        return new String(strBytes, "UTF-8");
+    }
+
+    @Trivial // Don't log protected values
+    private static String readSmallProtectedString(DataInputStream dis) throws IOException {
+        int length = dis.readShort();
+        byte[] strBytes = new byte[length];
+        dis.readFully(strBytes);
+        return new String(strBytes, "UTF-8");
+    }
+
+    @Trivial // Don't log protected values
+    private static String readLargeProtectedString(DataInputStream dis) throws IOException {
+        int length = dis.readInt();
+        byte[] strBytes = new byte[length];
+        dis.readFully(strBytes);
+        return new String(strBytes, "UTF-8");
     }
 }
