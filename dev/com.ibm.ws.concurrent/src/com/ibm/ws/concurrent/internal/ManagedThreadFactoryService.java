@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013,2022 IBM Corporation and others.
+ * Copyright (c) 2013,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,6 +31,9 @@ import javax.enterprise.concurrent.ManagedThreadFactory;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -52,6 +55,10 @@ import com.ibm.wsspi.threadcontext.WSContextService;
  * Unlike ManagedExecutorService and ManagedScheduledExecutorService, we need a separate instance of ManagedThreadFactory
  * for each lookup/injection because, per the spec, thread context is captured at that point.
  */
+@Component(configurationPid = "com.ibm.ws.concurrent.managedThreadFactory", configurationPolicy = ConfigurationPolicy.REQUIRE,
+           service = { ResourceFactory.class, ApplicationRecycleComponent.class },
+           property = { "creates.objectClass=java.util.concurrent.ThreadFactory",
+                        "creates.objectClass=javax.enterprise.concurrent.ManagedThreadFactory" })
 public class ManagedThreadFactoryService implements ResourceFactory, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ManagedThreadFactoryService.class);
 
@@ -83,7 +90,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     /**
      * Reference to the context service for this managed thread factory service.
      */
-    private final AtomicServiceReference<WSContextService> contextSvcRef = new AtomicServiceReference<WSContextService>("contextService");
+    private final AtomicServiceReference<WSContextService> contextSvcRef = new AtomicServiceReference<WSContextService>("ContextService");
 
     /**
      * Specifies whether or not to create daemon threads.
@@ -156,7 +163,8 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
         createDaemonThreads = (Boolean) properties.get(CREATE_DAEMON_THREADS);
         defaultPriority = (Integer) properties.get(DEFAULT_PRIORITY);
         Integer maxPriority = (Integer) properties.get(MAX_PRIORITY);
-        threadGroup = AccessController.doPrivileged(new CreateThreadGroupAction(name + " Thread Group", maxPriority), threadGroupTracker.serverAccessControlContext);
+        threadGroup = AccessController.doPrivileged(new CreateThreadGroupAction(name + " Thread Group", maxPriority),
+                                                    threadGroupTracker.serverAccessControlContext);
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "activate");
@@ -205,6 +213,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
      *
      * @param ref reference to the service
      */
+    @Reference(target = "(id=unbound)")
     protected void setContextService(ServiceReference<WSContextService> ref) {
         contextSvcRef.setReference(ref);
     }
@@ -214,6 +223,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
      *
      * @param the service
      */
+    @Reference
     protected void setThreadGroupTracker(ThreadGroupTracker svc) {
         threadGroupTracker = svc;
     }
@@ -223,6 +233,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
      *
      * @param the service
      */
+    @Reference
     protected void setMetadataIdentifierService(MetaDataIdentifierService svc) {
         metadataIdentifierService = svc;
     }
