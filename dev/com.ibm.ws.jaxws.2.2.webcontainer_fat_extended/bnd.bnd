@@ -18,6 +18,7 @@ src: \
   test-applications/addNumbersProvider/src,\
   test-applications/addNumbersClient/src,\
   test-applications/ejbServiceRefBndAppCodes/src,\
+  test-applications/encodingTest/src,\
   test-applications/helloClient/src,\
   test-applications/helloClientDDMerge/src,\
   test-applications/helloClientServiceResource/src,\
