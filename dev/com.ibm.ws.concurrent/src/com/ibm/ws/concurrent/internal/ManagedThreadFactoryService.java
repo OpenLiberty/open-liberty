@@ -24,6 +24,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinWorkerThread;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,6 +35,9 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -42,6 +46,7 @@ import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.ws.threading.VirtualThreadOps;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -81,6 +86,11 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
      * Name of property for maximum thread priority.
      */
     private static final String MAX_PRIORITY = "maxPriority";
+
+    /**
+     * Name of the internal property for virtual threads.
+     */
+    private static final String VIRTUAL = "virtual";
 
     /**
      * Names of applications using this ResourceFactory
@@ -134,6 +144,19 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     private ThreadGroupTracker threadGroupTracker;
 
     /**
+     * Virtual thread operations that are only available when a Java 21+ feature includes the io.openliberty.threading.internal.java21 bundle.
+     */
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected volatile VirtualThreadOps virtualThreadOps;
+
+    /**
+     * Factory that creates virtual threads. Null if not configured to create virtual threads.
+     */
+    private ThreadFactory virtualThreadFactory;
+
+    /**
      * The metadata identifier service.
      */
     private MetaDataIdentifierService metadataIdentifierService;
@@ -160,11 +183,20 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
         defaultExecutionProperties.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
         defaultExecutionProperties.put(WSContextService.TASK_OWNER, name);
 
+        // The following are ignored for virtual threads, but are used for managed fork join threads even if virtual=true
         createDaemonThreads = (Boolean) properties.get(CREATE_DAEMON_THREADS);
         defaultPriority = (Integer) properties.get(DEFAULT_PRIORITY);
         Integer maxPriority = (Integer) properties.get(MAX_PRIORITY);
         threadGroup = AccessController.doPrivileged(new CreateThreadGroupAction(name + " Thread Group", maxPriority),
                                                     threadGroupTracker.serverAccessControlContext);
+
+        boolean virtual = Boolean.TRUE.equals(properties.get(VIRTUAL));
+
+        // TODO check the SPI to override virtual=true for CICS
+
+        virtualThreadFactory = virtual //
+                        ? virtualThreadOps.createFactoryOfVirtualThreads(properties.get(CONFIG_ID) + ":", 1L, false, null) //
+                        : null;
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "activate");
@@ -365,8 +397,14 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
             if (runnable instanceof ContextualAction)
                 throw new IllegalArgumentException(runnable.getClass().getName());
 
-            String threadName = name + "-thread-" + createdThreadCount.incrementAndGet();
-            ManagedThreadImpl thread = new ManagedThreadImpl(this, runnable, threadName);
+            Thread thread;
+            if (virtualThreadFactory == null) {
+                String threadName = name + "-thread-" + createdThreadCount.incrementAndGet();
+                thread = new ManagedThreadImpl(this, runnable, threadName);
+            } else {
+                thread = virtualThreadFactory.newThread(new ManagedVirtualThreadAction(this, runnable));
+                // TODO track virtual threads similar to what ThreadGroupTracker does and interrupt when the application component goes away.
+            }
 
             if (trace && tc.isEntryEnabled())
                 Tr.exit(ManagedThreadFactoryService.this, tc, "newThread", thread);
