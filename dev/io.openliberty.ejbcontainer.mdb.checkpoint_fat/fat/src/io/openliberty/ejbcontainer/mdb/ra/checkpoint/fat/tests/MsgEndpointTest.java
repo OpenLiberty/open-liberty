@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.ejbcontainer.mdb.ra.fat.tests;
+package io.openliberty.ejbcontainer.mdb.ra.checkpoint.fat.tests;
 
 import static org.junit.Assert.assertFalse;
 

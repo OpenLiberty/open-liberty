@@ -10,9 +10,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.ejbcontainer.mdb.ra.fat.tests;
+package io.openliberty.ejbcontainer.mdb.ra.checkpoint.fat.tests;
 
-import static io.openliberty.ejbcontainer.mdb.ra.fat.FATSuite.getTestMethod;
+import static io.openliberty.ejbcontainer.mdb.checkpoint.fat.FATSuite.getTestMethod;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -101,6 +101,7 @@ public class ConfigChangesTest extends FATServletClient {
                 server.startServer();
                 break;
             case testAuthDataUpdatesDuringRestoreAAS:
+            case testJMSAuthDataUpdatesDuringRestoreAAS:
                 // Override the endpoint's activationSpec authData at restore
                 server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, checkpointServer -> {
                     File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
@@ -114,21 +115,8 @@ public class ConfigChangesTest extends FATServletClient {
                 server.addCheckpointRegexIgnoreMessages(IGNORE_REGEX);
                 server.startServer();
                 break;
-            case testJMSAuthDataUpdatesDuringRestoreAAS:
-                server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, checkpointServer -> {
-                    File serverEnvFile = new File(checkpointServer.getServerRoot() + "/server.env");
-                    try (PrintWriter serverEnvWriter = new PrintWriter(new FileOutputStream(serverEnvFile))) {
-                        serverEnvWriter.println("AUTHDATA_USER=" + AUTHDATA_USER);
-                        serverEnvWriter.println("AUTHDATA_PASSWORD=" + AUTHDATA_PASSWORD);
-                    } catch (FileNotFoundException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                });
-                server.addCheckpointRegexIgnoreMessages(IGNORE_REGEX);
-                server.startServer();
-                break;
             default:
-                break;
+                throw new Exception("Missing configuration for " + testName);
         }
     }
 
@@ -158,16 +146,8 @@ public class ConfigChangesTest extends FATServletClient {
 
     @After
     public void teardownTest() throws Exception {
-        switch (testMethod) {
-            case testMEPsActivateOnlyDuringRestoreBAS:
-            case testMEPsActivateOnlyDuringRestoreAAS:
-            case testAuthDataUpdatesDuringRestoreAAS:
-            case testJMSAuthDataUpdatesDuringRestoreAAS:
-            default:
-                if (server.isStarted()) {
-                    server.stopServer(IGNORE_REGEX);
-                }
-                break;
+        if (server.isStarted()) {
+            server.stopServer(IGNORE_REGEX);
         }
     }
 
@@ -176,7 +156,7 @@ public class ConfigChangesTest extends FATServletClient {
     }
 
     /**
-     * Verify message endpoints do not activate during checkpoint beforeAppStart.
+     * Verify message endpoints do not activate during checkpoint at beforeAppStart.
      *
      * This test verifies some JCA internals behavior, which may change as completing
      * RAR installation at restore is not ideal.
@@ -184,42 +164,77 @@ public class ConfigChangesTest extends FATServletClient {
     @Test
     public void testMEPsActivateOnlyDuringRestoreBAS() throws Exception {
 
-        // Verify RAR installation started during checkpoint BAS
-        testMsgs = server.findStringsInLogsUsingMark("J2CA7018I: .*AdapterForEJB",
-                                                     server.getDefaultLogFile());
+        // RAR installation started during checkpoint BAS
+        testMsgs = server.findStringsInLogsUsingMark("J2CA7018I: .*AdapterForEJB", server.getDefaultLogFile());
         assertFalse(testMsgs.isEmpty());
 
-        // Checkpoint BAS executes when the JCA runtime loads RA implementation classes
-        // while processing RAR metadata, i.e., RAR annotations and java bean properties.
-
-        // Verify RAR installation did not complete
-        testMsgs = server.findStringsInLogsUsingMark("J2CA7001I: .*AdapterForEJB",
-                                                     server.getDefaultLogFile());
+        // RAR installation did not complete
+        testMsgs = server.findStringsInLogsUsingMark("J2CA7001I: .*AdapterForEJB", server.getDefaultLogFile());
         assertTrue(testMsgs.isEmpty());
 
-        // Verify checkpoint did not execute while starting (loading) applications,
-        // further ensuring no endpoint has initialized nor activated
-        testMsgs = server.findStringsInLogsUsingMark("CWWKZ0018I: .*MsgEndpointApp",
-                                                     server.getDefaultLogFile());
+        // Application is not starting ==> Checkpoint launched when the connector (JCA)
+        // runtime loaded RAR binaries, and endpoints are not initialized nor activated
+        testMsgs = server.findStringsInLogsUsingMark("CWWKZ0018I: .*MsgEndpointApp", server.getDefaultLogFile());
         assertTrue(testMsgs.isEmpty());
 
         server.checkpointRestore();
+
+        // Server resumed from checkpoint
+        testMsgs = server.findStringsInLogsUsingMark("CWWKC0452I", server.getDefaultLogFile());
+        assertFalse(testMsgs.isEmpty());
+
+        // RAR installation completed during restore
+        testMsgs = server.findStringsInLogsUsingMark("J2CA7001I: .*AdapterForEJB", server.getDefaultLogFile());
+        assertFalse(testMsgs.isEmpty());
+
+        // Application is starting
+        testMsgs = server.findStringsInLogsUsingMark("CWWKZ0018I: .*MsgEndpointApp", server.getDefaultLogFile());
+        assertFalse(testMsgs.isEmpty());
+
+        // Default HTTP endpoint is listening and ready to accept requests
+        testMsgs = server.findStringsInLogsUsingMark("CWWKO0219I: .*defaultHttpEndpoint", server.getDefaultLogFile());
+        assertFalse(testMsgs.isEmpty());
+
+        // Message endpoints are activated and ready to receive messages
+        testMsgs = server.findStringsInLogsUsingMark("J2CA8801I", server.getDefaultLogFile());
+        assertTrue(testMsgs.size() > 5);
     }
 
     /**
-     * Verify endpoints do not activate during checkpoint afterAppStart.
+     * Verify endpoints do not activate during checkpoint at afterAppStart.
      */
     @Test
     public void testMEPsActivateOnlyDuringRestoreAAS() throws Exception {
 
-        testMsgs = server.findStringsInLogs("J2CA8801I");
+        // RAR installation completed during checkpoint AAS
+        testMsgs = server.findStringsInLogsUsingMark("J2CA7001I: .*AdapterForEJB", server.getDefaultLogFile());
+        assertFalse(testMsgs.isEmpty());
+
+        // Application started
+        testMsgs = server.findStringsInLogsUsingMark("CWWKZ0001I: .*MsgEndpointApp", server.getDefaultLogFile());
+        assertFalse(testMsgs.isEmpty());
+
+        // Message endpoints did not activate during checkpoint
+        testMsgs = server.findStringsInLogsUsingMark("J2CA8801I", server.getDefaultLogFile());
         assertTrue(testMsgs.isEmpty());
 
         server.checkpointRestore();
+
+        // Server resumed (started) from checkpoint
+        testMsgs = server.findStringsInLogsUsingMark("CWWKC0452I", server.getDefaultLogFile());
+        assertFalse(testMsgs.isEmpty());
+
+        // Default HTTP endpoint is listening and ready to accept requests
+        testMsgs = server.findStringsInLogsUsingMark("CWWKO0219I: .*defaultHttpEndpoint", server.getDefaultLogFile());
+        assertFalse(testMsgs.isEmpty());
+
+        // Message endpoints are activated and ready to receive messages
+        testMsgs = server.findStringsInLogsUsingMark("J2CA8801I", server.getDefaultLogFile());
+        assertTrue(testMsgs.size() > 5);
     }
 
     /**
-     * Verify endpoint activates during restore using updated authData.
+     * Verify message endpoint activates during restore using updated authData.
      */
     @Test
     public void testAuthDataUpdatesDuringRestoreAAS() throws Exception {
@@ -242,7 +257,7 @@ public class ConfigChangesTest extends FATServletClient {
                                                      server.getDefaultLogFile());
         assertTrue(testMsgs.size() == 1);
 
-        // Verify transactional delivery - CMT + required
+        // Verify transactional delivery: CMT + required
         runTest("MsgEndpointWeb/NonJMS_MDServlet");
         testMsgs = server.findStringsInLogsUsingMark("EndpointRestoreAuthDataNonJMS is in a global transaction",
                                                      server.getDefaultLogFile());
@@ -250,7 +265,7 @@ public class ConfigChangesTest extends FATServletClient {
     }
 
     /**
-     * Verify endpoint activates during restore using updated JMS authData.
+     * Verify message endpoint activates during restore using updated JMS authData.
      */
     @Test
     public void testJMSAuthDataUpdatesDuringRestoreAAS() throws Exception {
@@ -267,7 +282,7 @@ public class ConfigChangesTest extends FATServletClient {
                                                      server.getDefaultLogFile());
         assertTrue(testMsgs.size() == 1);
 
-        // Deliver non-transactional message - BMT
+        // Deliver non-transactional message: BMT
         runTest("MsgEndpointWeb/JMS_MDServlet");
         testMsgs = server.findStringsInLogsUsingMark("EndpointRestoreAuthDataJMS is in a local transaction",
                                                      server.getDefaultLogFile());

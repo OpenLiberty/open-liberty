@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 import org.eclipse.equinox.region.Region;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -207,14 +208,19 @@ public class BundleFactory extends ManifestFactory {
         }
     }
 
+    private static MessageDigest shaDigest;
+
     @FFDCIgnore(NoSuchAlgorithmException.class)
     private MessageDigest getShaDigest() throws NoSuchAlgorithmException {
-        try {
-            return MessageDigest.getInstance(SHA_ALGORITHM);
-        } catch (NoSuchAlgorithmException e) {
-            // Preferred algorithm may be unavailable during server checkpoint
-            return MessageDigest.getInstance(SHA_ALGORITHM_DEFAULT);
+        if (shaDigest == null) {
+            try {
+                shaDigest = MessageDigest.getInstance(SHA_ALGORITHM);
+            } catch (NoSuchAlgorithmException e) {
+                // Preferred algorithm may be unavailable during server checkpoint
+                shaDigest = MessageDigest.getInstance(SHA_ALGORITHM_DEFAULT);
+            }
         }
+        return shaDigest;
     }
 
     static String getHexSHA(MessageDigest digest) {

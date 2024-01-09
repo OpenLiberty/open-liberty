@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.ejbcontainer.mdb.ra.fat;
+package io.openliberty.ejbcontainer.mdb.checkpoint.fat;
 
 import static componenttest.topology.utils.FATServletClient.getTestMethodSimpleName;
 import static org.junit.Assert.fail;
@@ -38,8 +38,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
-import io.openliberty.ejbcontainer.mdb.ra.fat.tests.ConfigChangesTest;
-import io.openliberty.ejbcontainer.mdb.ra.fat.tests.MsgEndpointTest;
+import io.openliberty.ejbcontainer.mdb.ra.checkpoint.fat.tests.ConfigChangesTest;
+import io.openliberty.ejbcontainer.mdb.ra.checkpoint.fat.tests.MsgEndpointTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
