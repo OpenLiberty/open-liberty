@@ -82,7 +82,7 @@ public class CrossFeatureJaegerTest {
         // Inform the test framework that opentracingServer is configured to use the secondary HTTP ports
         opentracingServer.useSecondaryHTTPPort();
 
-        telemetryServer.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOltpGrpcUrl());
+        telemetryServer.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
         telemetryServer.addEnvVar("OTEL_PROPAGATORS", "tracecontext, baggage, jaeger"); // Include the jaeger propagation headers

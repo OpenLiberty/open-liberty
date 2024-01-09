@@ -97,7 +97,7 @@ public class Agent129Test {
         server.copyFileToLibertyServerRoot("agent-129/opentelemetry-javaagent.jar");
 
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
-        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOltpGrpcUrl());
+        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());
         server.addEnvVar("OTEL_METRICS_EXPORTER", "none");
         server.addEnvVar("OTEL_LOGS_EXPORTER", "none");
 

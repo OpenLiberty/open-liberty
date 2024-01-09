@@ -120,7 +120,7 @@ public class AgentConfigTest {
 
         // Env vars are cleared when the server starts, so we need to set the core ones up again
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
-        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOltpGrpcUrl());
+        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());
         server.addEnvVar("OTEL_METRICS_EXPORTER", "none");
         server.addEnvVar("OTEL_LOGS_EXPORTER", "none");
         server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
