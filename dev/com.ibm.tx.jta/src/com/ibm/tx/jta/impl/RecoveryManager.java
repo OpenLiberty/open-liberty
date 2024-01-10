@@ -729,26 +729,41 @@ public class RecoveryManager implements Runnable {
      * When we are operating in a peer recovery environment it is desirable to be able to delete the home server's
      * recovery logs where it has shutdown cleanly. This method accomplishes this operation.
      */
-    public void deleteRecoveryLogsIfPeerRecoveryEnv() {
+    public boolean deleteRecoveryLogsIfPeerRecoveryEnv() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "deleteRecoveryLogsIfPeerRecoveryEnv", this);
 
-        if (_leaseLog != null && _localRecoveryIdentity != null && _localRecoveryIdentity.equals(_failureScopeController.serverName())) {
+        boolean success = false;
+        if (_leaseLog != null) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "The recovery logs of home server {0} with identity {1} are being processed", _failureScopeController.serverName(), _localRecoveryIdentity);
 
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Should home recovery logs be retained {0}", _retainHomeLogs);
-            if (!_retainHomeLogs) {
-                // Delete the home server's recovery logs.
-                if (_tranLog.delete()) {
-                    _xaLog.delete();
+            // Check that we are processing the home server. It would be unexpected if we were not
+            if (_localRecoveryIdentity != null && _localRecoveryIdentity.equals(_failureScopeController.serverName())) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Should home recovery logs be retained {0}", _retainHomeLogs);
+                if (!_retainHomeLogs) {
+                    // Delete the home server's recovery logs.
+                    if (_tranLog.delete()) {
+                        success = _xaLog.delete();
+                    }
+                } else {
+                    success = true; // configured to retain logs
                 }
             }
+        } else {
+            success = true; // Not peer recovery env.
         }
 
+        // FFDC if attempt to delete failed
+        if (!success) {
+            // FFDC exception but allow processing to continue
+            Exception e = new Exception();
+            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.deleteRecoveryLogsIfPeerRecoveryEnv", "758", this);
+        }
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "deleteRecoveryLogsIfPeerRecoveryEnv");
+            Tr.exit(tc, "deleteRecoveryLogsIfPeerRecoveryEnv", success);
+        return success;
     }
 
     protected void checkPartnerServiceData(RecoverableUnit ru) throws IOException {
@@ -1643,19 +1658,32 @@ public class RecoveryManager implements Runnable {
 
                     // Recovery is complete. This is a noop if peer recovery is not enabled.
                     if (_leaseLog != null && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(_failureScopeController.serverName())) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Server with identity " + _localRecoveryIdentity + " has recovered the logs of server " + _failureScopeController.serverName());
+                        // Careful, recovery may have been attempted and failed
+                        if (_tranLog != null && !_tranLog.failed() && _xaLog != null && !_xaLog.failed()) {
+                            Tr.audit(tc,
+                                     "WTRN0108I: Server with identity " + _localRecoveryIdentity + " has recovered the logs of peer server "
+                                         + _failureScopeController.serverName());
 
-                        deleteServerLease(_failureScopeController.serverName(), true);
-
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Should peer recovery logs be retained {0}", _retainPeerLogs);
-                        if (!_retainPeerLogs) {
-                            // Delete the peer recovery logs.
-                            // Don't delete the partner log if the tranlog delete faileded
-                            if (_tranLog.delete()) {
-                                _xaLog.delete();
+                            boolean shouldDeleteLease = true;
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Should peer recovery logs be retained {0}", _retainPeerLogs);
+                            if (!_retainPeerLogs) {
+                                // Delete the peer recovery logs.
+                                // Don't delete the partner log if the tran log delete failed
+                                if (_tranLog.delete()) {
+                                    shouldDeleteLease = _xaLog.delete();
+                                } else {
+                                    shouldDeleteLease = false;
+                                }
                             }
+
+                            // Don't delete lease if recovery log deletion was attempted and failed
+                            if (shouldDeleteLease)
+                                deleteServerLease(_failureScopeController.serverName(), true);
+                        } else {
+                            Tr.audit(tc,
+                                     "WTRN0107W: Server with identity " + _localRecoveryIdentity + " attempted but failed to recover the logs of peer server "
+                                         + _failureScopeController.serverName());
                         }
                     }
                 } else /* @PK31789A */
@@ -1902,6 +1930,18 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "run");
                     return;
+                } catch (PeerLostLogOwnershipException ple) {
+                    // No messaging in this case
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                    closeLogs();
+
+                    recoveryFailed(ple);
+                    Tr.audit(tc,
+                             "WTRN0107W: Server with identity " + _localRecoveryIdentity + " attempted but failed to recover the logs of peer server "
+                                 + serverName);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "run");
                 } catch (InternalLogException exc) {
                     if (!localRecovery && _shutdownInProgress) {
                         if (tc.isDebugEnabled())
@@ -2003,6 +2043,18 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "run");
                     return;
+                } catch (PeerLostLogOwnershipException ple) {
+                    // No messaging in this case
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                    closeLogs();
+
+                    recoveryFailed(ple);
+                    Tr.audit(tc,
+                             "WTRN0107W: Server with identity " + _localRecoveryIdentity + " attempted but failed to recover the logs of peer server "
+                                 + serverName);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "run");
                 } catch (InternalLogException exc) {
                     if (!localRecovery && _shutdownInProgress) {
                         if (tc.isDebugEnabled())
