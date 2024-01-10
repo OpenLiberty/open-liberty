@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,11 +45,12 @@ public class WebServicesInteroperabilityTest extends FATServletClient {
     @BeforeClass
     public static void setup() throws Exception {
         // Build an application and export it to the dropins directory
-        ShrinkHelper.defaultDropinApp(server, appName, "io.openliberty.interop",
+        ShrinkHelper.defaultDropinApp(server, appName, "io.openliberty.interop", "io.openliberty.interop.util",
                                       "com.ibm.ws.jaxws.test.wsr.server.stub",
                                       "com.ibm.ws.jaxws.fat.util");
 
-        ShrinkHelper.defaultDropinApp(server, "helloServer", "com.ibm.ws.jaxws.test.wsr.server",
+        ShrinkHelper.defaultDropinApp(server, "helloServer", "io.openliberty.interop.util",
+                                      "com.ibm.ws.jaxws.test.wsr.server",
                                       "com.ibm.ws.jaxws.test.wsr.server.impl",
                                       "com.ibm.ws.jaxws.fat.util");
 
