@@ -15,7 +15,7 @@
 # Ensure that a Node 16 or later LTS environment is used
 node_version=`node -v | grep "^v"`
 version_number=${node_version:1:2}
-if [[ version_number -lt 16 ]] then
+if [[ version_number -lt 16 ]]; then
     echo "A Node 16 or later LTS environment must be used when running this script."
     exit 1
 else
