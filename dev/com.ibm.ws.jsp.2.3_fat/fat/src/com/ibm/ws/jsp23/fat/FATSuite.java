@@ -19,6 +19,9 @@ import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.jsp23.fat.tests.JSP23JSP22ServerTest;
 import com.ibm.ws.jsp23.fat.tests.JSPCdiTest;
 import com.ibm.ws.jsp23.fat.tests.JSPExceptionTests;
+import com.ibm.ws.jsp23.fat.tests.JSPJava11Test;
+import com.ibm.ws.jsp23.fat.tests.JSPJava17Test;
+import com.ibm.ws.jsp23.fat.tests.JSPJava21Test;
 import com.ibm.ws.jsp23.fat.tests.JSPJava8Test;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountDefaultValueTests;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountNonDefaultValueTests;
@@ -42,6 +45,9 @@ import componenttest.topology.impl.JavaInfo;
                 JSPExceptionTests.class,
                 JSPSkipMetaInfTests.class,
                 JSPJava8Test.class,
+                JSPJava11Test.class,
+                JSPJava17Test.class,
+                JSPJava21Test.class,
                 JSPCdiTest.class,
                 JSP23JSP22ServerTest.class,
                 JSPPrepareJSPThreadCountNonDefaultValueTests.class,
@@ -55,28 +61,14 @@ public class FATSuite {
      * using @SkipForRepeat("CDI-2.0").
      */
     @ClassRule
-    public static RepeatTests repeat;
-
-    static {
-        if (JavaInfo.JAVA_VERSION >= 11) {
-            repeat = RepeatTests
-                            .with(new EmptyAction().fullFATOnly())
-                            .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
-                                            .withID("CDI-2.0")
-                                            .forceAddFeatures(false)
-                                            .fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE10_FEATURES());
-        } else {
-            repeat = RepeatTests
-                            .with(new EmptyAction().fullFATOnly())
-                            .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
-                                            .withID("CDI-2.0")
-                                            .forceAddFeatures(false)
-                                            .fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE9_FEATURES());
-        }
-    }
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                    .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
+                                                            .withID("CDI-2.0")
+                                                            .forceAddFeatures(false)
+                                                            .fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_21))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

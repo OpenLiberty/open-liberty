@@ -21,13 +21,13 @@ public class JSONFactory {
 
     private static JSON json;
 
-    public static synchronized JSON newInstance() throws JSONMarshallException {
+    public static synchronized JSON newInstance() {
         if (json == null)
             json = new JSONJacksonImpl();
         return json;
     }
 
-    public static JSON newInstance(JSONSettings settings) throws JSONMarshallException {
+    public static JSON newInstance(JSONSettings settings) {
         return new JSONJacksonImpl(settings);
     }
 }

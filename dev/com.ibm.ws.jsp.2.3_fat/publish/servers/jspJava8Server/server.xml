@@ -1,14 +1,11 @@
 <!--
-    Copyright (c) 2015 IBM Corporation and others.
+    Copyright (c) 2015, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <server description="Server for testing JavaServer Pages 2.3">
 
@@ -16,10 +13,12 @@
 
     <featureManager>
         <feature>jsp-2.3</feature>
+        <feature>localConnector-1.0</feature>
     </featureManager>
 
+    <!-- Note: jdkSourceLevel has been marked internal -->
     <jspEngine jdkSourceLevel="18"/>
 
-    <logging traceSpecification="*=info=enabled:com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:TCPChannel=all:GenericBNF=all:com.ibm.ws.jsp*=all" maxFileSize="20" maxFiles="10" traceFormat="BASIC"/>
-
+    <logging traceSpecification="*=info=enabled:com.ibm.ws.jsp*=all" maxFileSize="32" maxFiles="24" traceFormat="BASIC"/>
+    
 </server>

@@ -37,6 +37,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
+import java.util.Arrays;
+
 @RunWith(FATRunner.class)
 public class KafkaAcknowledgementTest {
 
@@ -72,6 +74,8 @@ public class KafkaAcknowledgementTest {
                         .addPackage(KafkaTestConstants.class.getPackage())
                         .addPackage(AbstractKafkaTestServlet.class.getPackage())
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
+
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
         server.startServer();

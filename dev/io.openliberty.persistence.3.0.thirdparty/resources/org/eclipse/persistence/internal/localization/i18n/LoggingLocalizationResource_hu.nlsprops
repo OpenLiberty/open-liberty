@@ -119,6 +119,10 @@ connected_user_database=Csatlakoztatott: {3}{4}Felhaszn\u00e1l\u00f3: {0}{3}{4}A
 
 connected_user_database_driver=Csatlakoztatott: {0}{6}Felhaszn\u00e1l\u00f3: {1}{6}Adatb\u00e1zis: {2}  V\u00e1ltozat: {3}{6}Meghajt\u00f3: {4}  V\u00e1ltozat: {5}
 
+corrupt_object=s\u00e9r\u00fclt objektum: {0}
+
+corrupt_object_referenced_through_mapping=hib\u00e1s objektumra t\u00f6rt\u00e9nt hivatkoz\u00e1s lek\u00e9pez\u00e9sen kereszt\u00fcl: {0}
+
 corrupted_session_announcement=SessionID: {0}  Felt\u00e9rk\u00e9pez\u00e9s-kezel\u0151 s\u00e9r\u00fclt munkamenet-k\u00f6zlem\u00e9nyt kapott - mell\u0151z\u00e9s.
 
 create_default_dbms_tables_not_supported=A WLS "create-default-dbms-tables" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
@@ -707,6 +711,8 @@ sop_object_wrong_version=Soros\u00edtott sopObject elt\u00e1vol\u00edt\u00e1sa a
 
 src_pm_name_first_argument=A forr\u00e1s PM nev\u00e9t az els\u0151 bemeneti argumentumban kell megadnia: -sOc4j-native vagy -sWeblogic.
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=a s\u00e9r\u00fclt objektumra hivatkoz\u00f3 l\u00e1togatott objektumokat tartalmaz\u00f3 verem: {0}
+
 table_existed_during_creation=T\u00e1bla l\u00e9trehoz\u00e1s meghi\u00fasult. Ha m\u00e1r l\u00e9tezik, akkor el\u0151sz\u00f6r meg kell sz\u00fcntetni. V\u00e9grehajthatja saj\u00e1t kez\u0171leg, vagy a db-table-gen attrib\u00fatum be\u00e1ll\u00edt\u00e1s\u00e1val az orion-ejb-jar.xml f\u00e1jlban.
 
 template_orion_ejb_jar_created=Egy sablonos\u00edtott orion-ejb-jar.xml f\u00e1jl l\u00e9trehoz\u00e1sra ker\u00fclt
@@ -737,7 +743,12 @@ toplink_warning=[EL Warning]:
 
 unit_of_work_thread_info=A(z) ({0}) munkamenet aktu\u00e1lis egys\u00e9g\u00e9t egy, az aktu\u00e1list\u00f3l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) elt\u00e9r\u0151 sz\u00e1l hozta l\u00e9tre (azonos\u00edt\u00f3: {1} n\u00e9v: {2}).
 
-unit_of_work_thread_info_thread_dump=Sz\u00e1l l\u00e9trehoz\u00e1sa (azonos\u00edt\u00f3: {0} n\u00e9v: {1}) veremnyomk\u00f6vet\u00e9s: {2} Aktu\u00e1lis sz\u00e1l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) veremnyomk\u00f6vet\u00e9s:{5}\n
+unit_of_work_thread_info_thread_dump=L\u00e9trehoz\u00e1si sz\u00e1l (azonos\u00edt\u00f3: {0} n\u00e9v: {1}) verem nyomk\u00f6vet\u00e9s:
+#{2}
+
+Current Sz\u00e1l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) verem nyomk\u00f6vet\u00e9s:
+#{5}
+
 unitofwork_identity_hashcode={0}UnitOfWork azonoss\u00e1g kivonatk\u00f3d: {1}
 
 update_all_fields_not_supported=Az Oc4j "update-all-fields" nat\u00edv CMP funkci\u00f3j\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokkument\u00e1ci\u00f3t.
@@ -747,6 +758,8 @@ update_all_query_cannot_use_binding_on_this_platform=Az UpdateAllQuery nem haszn
 validate_db_schema_with_not_supported=A WLS "validate-db-schema-with" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
 validate_ejb_jar=Az ejb-jar.xml \u00e9rv\u00e9nyes\u00edt\u00e9se indul, eltarthat egy ideig...
+
+validate_object_space=objektumter\u00fclet \u00e9rv\u00e9nyes\u00edt\u00e9se.
 
 validity_timeout_not_supported=Az Oc4j "validity-timeout" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t a(z) ({0}) entit\u00e1son az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 

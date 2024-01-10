@@ -191,13 +191,15 @@ if (javaVersion < 17) {
 
 }
 
-if (System.getenv("JAVA_21_HOME") == null) {
-  print "ERROR: Building this repository requires JAVA_21_HOME to be set to a path for a Java 21 SDK.  Please follow these steps:\n" +
-    "  1) You can download a copy for your OS here if you don't already have it: " + 
-    "https://jdk.java.net/21/\n" +
-    "  2) export 'JAVA_21_HOME=/path/to/your/java21' in the shell or set in your ~/.bashrc\n" +
-    "  3) Restart your gradle daemon with './gradlew --stop'\n";
-  throw new GradleException('JAVA_21_HOME is not set.')
+if (javaVersion < 21) {
+  if (System.getenv("JAVA_21_HOME") == null) {
+    print "ERROR: Building this repository requires JAVA_21_HOME to be set to a path for a Java 21 SDK.  Please follow these steps:\n" +
+      "  1) You can download a copy for your OS here if you don't already have it: " + 
+      "https://jdk.java.net/21/\n" +
+      "  2) export 'JAVA_21_HOME=/path/to/your/java21' in the shell or set in your ~/.bashrc\n" +
+      "  3) Restart your gradle daemon with './gradlew --stop'\n";
+    throw new GradleException('JAVA_21_HOME is not set.')
+  }
 }
 
 //DirectoryScanner.removeDefaultExclude("**/.gitignore")

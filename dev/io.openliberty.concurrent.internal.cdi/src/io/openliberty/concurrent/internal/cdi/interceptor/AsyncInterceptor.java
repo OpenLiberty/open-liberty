@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2023 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,9 @@ package io.openliberty.concurrent.internal.cdi.interceptor;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -33,6 +35,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import io.openliberty.concurrent.internal.messages.ConcurrencyNLS;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.enterprise.concurrent.Schedule;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
@@ -51,13 +54,23 @@ public class AsyncInterceptor implements Serializable {
     @FFDCIgnore({ ClassCastException.class, NamingException.class }) // application errors raised directly to the app
     public Object intercept(InvocationContext invocation) throws Exception {
         Method method = invocation.getMethod();
+        Asynchronous anno = method.getAnnotation(Asynchronous.class);
+
+        // Is it a scheduled asynchronous method?
+        Schedule[] schedules = anno.runAt();
+        if (schedules.length > 0) {
+            // Identify requested inline execution for scheduled executions other than the first,
+            CompletableFuture<?> future = ScheduledAsyncMethod.inlineExecutionFuture.get();
+            if (future != null)
+                return invoke(invocation, future);
+        }
+
         validateTransactional(method);
+
         if (method.getDeclaringClass().getAnnotation(Asynchronous.class) != null)
             throw new UnsupportedOperationException(ConcurrencyNLS.getMessage("CWWKC1401.class.anno.disallowed",
                                                                               "@Asynchronous",
                                                                               method.getDeclaringClass().getName()));
-
-        Asynchronous anno = method.getAnnotation(Asynchronous.class);
 
         // @Asynchronous must be on a method that returns completion stage or void
         Class<?> returnType = method.getReturnType();
@@ -96,7 +109,22 @@ public class AsyncInterceptor implements Serializable {
                                                                            interfaces), x);
         }
 
-        return managedExecutor.newAsyncMethod(this::invoke, invocation);
+        if (schedules.length == 0) {
+            // Immediate one-time asynchronous method
+
+            return managedExecutor.newAsyncMethod(this::invoke, invocation);
+        } else {
+            // Scheduled asynchronous method - arrange first execution
+
+            List<Long> skipIfLateBySeconds = new ArrayList<Long>();
+            List<ScheduleCronTrigger> triggers = new ArrayList<>();
+            for (Schedule schedule : schedules) {
+                skipIfLateBySeconds.add(schedule.skipIfLateBy());
+                triggers.add(ScheduleCronTrigger.create(schedule));
+            }
+
+            return new ScheduledAsyncMethod(invocation, this, managedExecutor, triggers, skipIfLateBySeconds).future;
+        }
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -37,6 +38,7 @@ public class Model {
         ATTRIBUTE_TYPES.add(Attribute.class);
         ATTRIBUTE_TYPES.add(CollectionAttribute.class);
         ATTRIBUTE_TYPES.add(SortableAttribute.class);
+        ATTRIBUTE_TYPES.add(String.class);
         ATTRIBUTE_TYPES.add(TextAttribute.class);
     }
 
@@ -53,31 +55,36 @@ public class Model {
             int mod = field.getModifiers();
             if (Modifier.isPublic(mod)
                 && Modifier.isStatic(mod)
-                && Modifier.isFinal(mod)) {
+                && !Modifier.isFinal(mod)) {
                 Class<?> fieldType = field.getType();
                 if (ATTRIBUTE_TYPES.contains(fieldType)) {
                     String fieldName = field.getName();
                     String attrName = attributeNames.get(fieldName.toLowerCase());
-                    jakarta.data.metamodel.Attribute attribute = null;
                     if (attrName != null)
                         try {
-                            attribute = (Attribute) field.get(null);
+                            Object value = field.get(null);
+                            if (value == null) {
+                                if (String.class.equals(fieldType))
+                                    value = attrName;
+                                else if (SortableAttribute.class.equals(fieldType))
+                                    value = SortableAttributeImpl.create(fieldName);
+                                else if (TextAttribute.class.equals(fieldType))
+                                    value = TextAttributeImpl.create(fieldName);
+                                else if (CollectionAttribute.class.equals(fieldType))
+                                    value = CollectionAttributeImpl.create(fieldName);
+                                else
+                                    value = AttributeImpl.create(fieldName);
+
+                                field.set(null, value);
+
+                                if (trace && tc.isDebugEnabled())
+                                    Tr.debug(tc, "initialize " + metamodelClass.getSimpleName() + '.' + fieldName + " (" + attrName + "): " + value);
+                            }
                         } catch (IllegalAccessException | IllegalArgumentException x) {
                             System.out.println("Unable to initialize the " + fieldName + " field of the " +
-                                               metamodelClass.getName() + " StaticMetamodel class.");
-                            // TODO NLS
+                                               metamodelClass.getName() + " StaticMetamodel class. Valid attribute names are: " +
+                                               new TreeSet<String>(attributeNames.values()) + "."); // TODO NLS
                         }
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(tc, "initialize " + metamodelClass.getSimpleName() + '.' + fieldName + " (" + attrName + "): " + attribute);
-
-                    if (attribute instanceof TextAttribute)
-                        attribute.init(TextAttributeImpl.create(fieldName));
-                    else if (attribute instanceof SortableAttribute)
-                        attribute.init(SortableAttributeImpl.create(fieldName));
-                    else if (attribute instanceof CollectionAttribute)
-                        attribute.init(CollectionAttributeImpl.create(fieldName));
-                    else if (attribute instanceof Attribute)
-                        attribute.init(AttributeImpl.create(fieldName));
                 }
             }
         }

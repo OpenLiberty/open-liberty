@@ -17,10 +17,12 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61CharsetEncodingTest;
+import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61HTTPResponseCodesTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                Servlet61CharsetEncodingTest.class
+                Servlet61CharsetEncodingTest.class,
+                Servlet61HTTPResponseCodesTest.class
 })
 public class FATSuite {
 

@@ -1,201 +1,357 @@
 Begin NOTICES AND INFORMATION FOR Open Liberty @LIBERTY_VERSION@
-Copyright 2022-2023 IBM Corporation and others
+Copyright 2022-2024 IBM Corporation and others
 This product includes software developed at
 The Open Liberty @LIBERTY_VERSION@ Project (https://openliberty.io/).
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 TABLE OF CONTENTS
 
-APACHE V1.1
-APACHE V2
-BSD-2-CLAUSE
-BSD-3-CLAUSE
-BSD-EQUIVALENT  
-CDDL V1  
-CPL  
-EPL V2
-GPL-2.0-WITH-CLASSPATH-EXCEPTION  
-LGPL V2.1 
-MIT
+THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING SECTIONS:
+
+Apache License, Version 2.0 (APACHE V2)
+BSD 2 Clause license (BSD-2-CLAUSE)
+BSD 3 Clause license (BSD-3-CLAUSE)
+BSD Zero Clause license (BSD)
+Bouncy Castle License (Bouncy Castle)
+COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1 (CDDL V1)
+COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1.1 (CDDL V1.1)
+COMMON PUBLIC LICENSE (CPL)
+ECLIPSE PUBLIC LICENSE, VERSION 1 (EPL)
+ECLIPSE PUBLIC LICENSE, VERSION 2 (EPL V2)
+ISC License (ISC)
+GNU LESSER GENERAL PUBLIC LICENSE Version 2.1
+MIT license (MIT)
+Python License, Version 2 (PYTHON LICENSE V2)
+CC-BY-4.0  
+SIL OPEN FONT LICENSE 1.1
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-APACHE SOFTWARE LICENSE 1.1
+Apache License, Version 2.0
 
 The Program includes some or all of the following that IBM obtained
-under the Apache License Version 1.1:
+under the Apache License, Version 2.0:
 
-AVALON-FRAMEWORK, COMMONS-DISCOVERY, COMMONS-LOGGING
-
-
-Apache Software License
-Version 1.1
-
-Copyright (c) 2000 The Apache Software Foundation.  All rights reserved.
- 
-Redistribution and use in source and binary forms, with or without 
-modification, are permitted provided that the following conditions are 
-met:
- 
-1. Redistributions of source code must retain the above copyright 
-notice, this list of conditions and the following disclaimer.
- 
-2. Redistributions in binary form must reproduce the above copyright 
-notice, this list of conditions and the following disclaimer in the 
-documentation and/or other materials provided with the distribution.
-
-3. The end-user documentation included with the redistribution,
-if any, must include the following acknowledgment:
-"This product includes software developed by the
-Apache Software Foundation (http://www.apache.org/)."
-Alternately, this acknowledgment may appear in the software itself,
-if and wherever such third-party acknowledgments normally appear.
-
-4. The names "Apache" and "Apache Software Foundation" must 
-not be used to endorse or promote products derived from this
-software without prior written permission. For written
-permission, please contact apache@apache.org.
-
-5. Products derived from this software may not be called "Apache",
-nor may "Apache" appear in their name, without prior written
-permission of the Apache Software Foundation.
-
-THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
-ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-=================================================================
-
-This software consists of voluntary contributions made by many
-individuals on behalf of the Apache Software Foundation.  For more
-information on the Apache Software Foundation, please see
-<http://www.apache.org/>.
-
-Portions of this software are based upon public domain software
-originally written at the National Center for Supercomputing 
-Applications, University of Illinois, Urbana-Champaign.
-
-END OF APACHE SOFTWARE LICENSE 1.1 NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-APACHE SOFTWARE LICENSE 2.0
-
-The Program includes some or all of the following that IBM obtained
-under the Apache License Version 2.0:
-
-JBOSS.RESTEASY.COMMON.EE10, COMMONS-LANG, APACHE.FELIX.GOGO,
-IO.SMALLRYE.REACTIVE.MESSAGING-PROVIDER, FASTERXML-CLASSMATE,
-IO.REACTIVEX.RXJAVA, CYBERNEKO.HTML, HTTPCOMPONENTS.HTTPCORE.NIO,
-JBOSS-JDEPARSER, IO.SMALLRYE.COMMON, OPENSAML.CORE, OPENTRACING-UTIL,
-EHCACHE-CORE, XMLSEC, OPENAPI, JODA-TIME, ECLIPSE MICROPROFILE, SPRING
-BOOT UTILITIES, ECLIPSE MICROPROFILE OPENAPI, APACHE.YOKO.RMI.IMPL,
-APACHE.YOKO.UTIL, REACTIVE.STREAMS.OPERATORS.CDI,
-HIBERNATE-VALIDATOR.CDI, JBOSS.NARAYANA.RTS, IO.OPENTELEMETRY,
-JBOSS-LOGGING, OPENSAML, COMMONS-DISCOVERY,
-APACHE.JASPER.EXPRESSIONLANGUAGE, BVAL, EHCACHE, NEETHI, COMMONS-CODEC,
-HIBERNATE-VALIDATOR, REACTIVE.MESSAGING.KAFKA, OPENTRACING,
-APACHE.YOKO.CORBA.SPEC, JAKARTA-VALIDATION, GERONIMO-OSGI-REGISTRY,
-APACHE.MYFACES, JBOSS-WELD, COM.SQUAREUP.OKIO-JVM, COMMONS-BEANUTILS,
-IO.SMALLRYE.REACTIVE.CONVERTER-API, APACHE.YOKO.OSGI,
-JAKARTA.ENTERPRISE.CDI.API, APACHE-NEETHI, ECLIPSE.MICROPROFILE.LRA,
-JOSE4J, JASPIC, JBOSS-CLASSFILEWRITER, NET.SHIBBOLETH.UTILITIES,
-JASPER-EL, OPENIDCONNECT.COMMON, APACHE.YOKO.RMI.SPEC, JDEPARSER,
-ARIES, FASTERXML.JACKSON.JR, COMMONS-IO, JSONTOKEN, XMLSCHEMA, APACHE CXF
-OPENIDCONNECT.CLIENT, WELD4, WELD5, APACHE.YOKO.CORE, XMLBINDING,
-COMMONS-LOGGING, OPENIDCONNECT.CLIENTS.COMMON, CRYPTACULAR,
-HIBERNATE-VALIDATOR-CDI, IO.SMALLRYE.GRAPHQL.JAKARTA,
-ECLIPSE.MICROPROFILE.OPENAPI, JODAH-FAILSAFE, COMMONS-COLLECTIONS,
-IO.SMALLRYE.REACTIVE.STREAMS-OPERATORS, XML-RESOLVER, COMMONS-WEAVER,
-APACHE-FELIX, COMMONS-DIGESTER, JBOSS.NARAYANA.RTS.LRA-COORDINATOR,
-REACTIVE.STREAMS.OPERATORS, APACHE.FELIX.SCR, COMMONS-FILEUPLOAD,
-OPENID4JAVA, JBOSS-RESTEASY, IO.SMALLRYE.OPENAPI3.JAXRS,
-IO.SMALLRYE.OPENAPI.CORE, JWT, OPENTELEMETRY-SDK, ECLIPSE MICROPROFILE
-OPENTRACING, APACHE-HTTPCOMPONENTS, APACHE-BVAL,
-IO.SMALLRYE.CONFIG.JAKARTA, GOOGLE-GUICE, IO.SMALLRYE.GRAPHQL, JASYPT,
-WSS4J, JBOSS.CLASSFILEWRITER, APACHE MYFACES, MONGODB, OAUTH,
-JAKARTA.ENTERPRISE.CDI-API, APACHE-MYFACES, COM.SQUAREUP.OKHTTP,
-JBOSS-JANDEX, MICROPROFILE.FAULTTOLERANCE, ECLIPSE MICROPROFIE, WELD,
-IO.SMALLRYE.OPENAPI.CORE, REACTIVE.MESSAGING.KAFKA.ADAPTER,
-SECURITY.OPENIDCONNECT.SERVER, IO.SMALLRYE.CONFIG, JSON-SIMPLE,
-IO.SMALLRYE.COMMON.JAKARTA, IO.SMALLRYE.OPENAPI.JAXRS,
-REACTIVE.MESSAGING.KAFKA.ADAPTER.IMPL, OSGI.SERVICE.HTTP, 
-NARAYANA-IRA, JBOSS.RESTEASY.SERVER.EE, JETBRAINS.KOTLIN, JBOSS-LOGGING,
-APACHE TAGLIBS STANDARD, ECLIPSE.PARSSON, MICROPROFILE.METRICS,
-SMALLRYE.OPENAPI.CORE, APACHE.JASPER.EXPRESSIONLANGUAGE,
-MICROPROFILE.LRA, JBOSS.WELD, MICROPROFILE-JWT, SMALLRYE.METRICS,
-JAKARTA.ENTERPRISE.CDI-API, JBOSS.RESTEASY.JAXB.PROVIDER.EE,
-MICROPROFILE.OPENAPI, ZIPKIN, JBOSS.RESTEASY.CDI.EE,
-JETBRAINS.ANNOTATION, SMALLRYE.OPENAPI.JAXRS, JAKARTA BATCH,
-MICROPROFILE.JW, SQUAREUP.OKIO-JVM,
-JBOSS.RESTEASY.VALIDATOR.PROVIDER.EE, APACHE.TAGLIBS.STANDARD,
-MICROPROFILE.MERTICS, MICROPROFILE.JWT, MICROPROFILE.TELEMETRY,
-SQUAREUP.OKHTTP, MICROPROFILE.LRA.COORDINATOR, JAVAX.VALIDATION
-VALIDATION-API-2.0.1.FINAL.JAR
-JAVAX.BATCH.RUNTIME, ORG.OSGI.SERVICE.COMPONENT, ZIPKIN2,
-JAVAX.ENTERPRISE.INJECT.SPI, MYFACES, CARBON-COMPONENTS,
-SMALLRYE.OPENAPI.JAXRS, ARIES.JMX.CORE.WHITEBOARD, JBOSS.LOGGING,
-KOTLIN-STDLIB, SMALLRYE.OPENAPI.CORE, JAVAX.SERVLET.SIP,
-ORG.ECLIPSE.MICROPROFILE.METRICS, OPENTRACING, GRPC-JAVA, GUAVA-ANDROID,
-JODA.TIME, OKHTTP3, SMALLRYE CONFIG, ARIES.JMX.API, MONGODB,
-APACHE.SANTUARIO.XMLSEC, ORG.OSGI.SERVICE.HTTP, ORG.OSGI.SERVICE.CM,
-OSGI CORE, FASTERXML JACKSON, JBOSS.RESTEASY.CLIENT.JAXRS,
-APACHE.TAGLIBS.STANDARD, SMALLRYE.COMMON, WELD,
-ORG.ECLIPSE.MICROPROFILE.REACTIVE.MESSAGING, JAKARTA.BATCH,
-JAKARTA.ENTERPRISE.CONCURRENT,
-JBOSS.RESTEASY.PLUGINS.PROVIDERS.MULTIPART, ORG.JBOSS.WELD.CONTEXT,
-MONGO.SSL, SMALLRYE-GRAPHQL, JAVAX.ENTERPRISE.EVENT,
-ORG.ECLIPSE.MICROPROFILE.OPENAPI.MODELS,
-KOTLIN-STDLIB-COMMON, KOTLIN-STDLIB-JDK7, KOTLIN-STDLIB-JDK8, MICROMETER-CORE,
-MICROMETER-REGISTRY-PROMETHEUS,MICROPROFILE-CONFIG-API, MICROPROFILE-OPENAPI-API,
-OPENTELEMETRY-API, OPENTELEMETRY-API-LOGS, OPENTELEMETRY-API, OPENTELEMETRY-CONTEXT,
-OPENTELEMETRY-EXPORTER-COMMON, OPENTELEMETRY-EXPORTER-JAEGER, OPENTELEMETRY-EXPORTER-LOGGING,
-OPENTELEMETRY-EXPORTER-OTLP, OPENTELEMETRY-EXPORTER-OTLP-COMMON, OPENTELEMETRY-EXPORTER-ZIPKIN,
-OPENTELEMETRY-EXTENSION-TRACE-PROPAGATORS, OPENTELEMETRY-INSTRUMENTATION-ANNOTATIONS, 
-OPENTELEMETRY-INSTRUMENTATION-ANNOTATIONS-SUPPORT, OPENTELEMETRY-INSTRUMENTATION-API,
-OPENTELEMETRY-INSTRUMENTATION-API-SEMCONV, OPENTELEMETRY-SDK, OPENTELEMETRY-SDK-COMMON,
-OPENTELEMETRY-SDK-EXTENSION-AUTOCONFIGURE, OPENTELEMETRY-SDK-LOGS, OPENTELEMETRY-SDK-METRICS,
-OPENTELEMETRY-SDK-TRACE, OPENTELEMETRY-SEMCONV, SIMPLECLIENT, SIMPLECLIENT_COMMON,
-SIMPLECLIENT_TRACER_COMMON, SIMPLECLIENT_TRACER_OTEL, SIMPLECLIENT_TRACER_OTEL_AGENT,
-SMALLRYE-METRICS, JAKARTA.ENTERPRISE.LANG-MODEL, APACHE.MYFACES-IMPL,
-ZIPKIN-REPORTER, ZIPKIN-SENDER-OKHTTP3, JAKARTA.ENTERPRISE.CDI-API, RESTEASY-CDI, RESTEASY-CLIENT, RESTEASY-CLIENT-API, RESTEASY-CORE, RESTEASY-CORE-SPI,
-RESTEASY-JAXB-PROVIDER, RESTEASY-MULTIPART-PROVIDER, RESTEASY-SERVLET-INITIALIZER, RESTEASY-VALIDATOR-PROVIDER,
-WELD-ENVIRONMENT-COMMON, WELD-OSGI-BUNDLE, WELD-SE-CORE, 
-TOMCAT-JASPER-EL [JASPER EXPRESSION LANGUAGE IMPL], TOMCAT-EL-API [EXPRESSION LANGUAGE PACKAGE],
-MICROPROFILE CONFIG, MICROPROFILE CONTEXT PROPAGATION, MICROPROFILE FAULT TOLERANCE, MICROPROFILE GRAPHQL,
-MICROPROFILE HEALTH, MICROPROFILE JWT AUTH [JSON WEB TOKEN], MICROPROFILE METRICS, MICROPROFILE OPENAPI,
-MICROPROFILE OPENTRACING, MICROPROFILE REACTIVE STREAMS OPERATORS, MICROPROFILE REACTIVE MESSAGING,
-MICROPROFILE REST CLIENT, APIDOM-AST, APIDOM-CORE, CACHE-API, DETECT-LIBC, FIND-YARN-WORKSPACE-ROOT, GERONIMO-ATINJECT, APACHE HTTPCOMPONENTS,
-SHORT-UNIQUE-ID,TS-TOOLBELT, DOMPURIFY,ACME4J-CLIENT, ACME4J-UTILS, ANNOTATIONS, ANT, ANT-LAUNCHER, APACHE-MIME4J-CORE, APACHE-MIME4J-DOM, APACHE-MIME4J-STORAGE,
-APIDOM-JSON-POINTER, APIDOM-NS-API-DESIGN-SYSTEMS, APIDOM-NS-ASYNCAPI, APIDOM-NS-JSON-SCHEMA-DRAFT, APIDOM-NS-OPENAP,
-APIDOM-PARSER-ADAPTER-API-DESIGN-SYSTEMS-JSON, APIDOM-PARSER-ADAPTER-API-DESIGN-SYSTEMS-YAML, APIDOM-PARSER-ADAPTER-ASYNCAPI-JSON,
-APIDOM-PARSER-ADAPTER-ASYNCAPI-YAML, APIDOM-PARSER-ADAPTER-JSON, APIDOM-PARSER-ADAPTER-OPENAPI-JSON, ASM-UTIL,
-ASYNCUTIL, BIZ.AQUTE.BND, COMMONS-COMPRESS, COMMONS-LANG3, APACHE COMMONS, ERROR_PRONE_ANNOTATIONS, FAILUREACCESS,
-FASTINFOSET, GERONIMO-JAVAMAIL_1.4_MAIL, GERONIMO-JTA_1.1_SPEC, GERONIMO-OSGI-REGISTRY, GERONIMO-WS-METADATA_2.0_SPEC,
-GRPC-API, GRPC-CENSUS, GRPC-CONTEXT, GRPC-CORE, GRPC-NETTY, GRPC-PROTOBUF, GRPC-PROTOBUF-LITE, GRPC-STUB,GSON,
-HTTPASYNCCLIENT, HTTPCLIENT, J2OBJC-ANNOTATIONS, JACKSON-ANNOTATIONS, JACKSON-CORE, JACKSON-DATABIND, JACKSON-DATAFORMAT-YAML,
-JACKSON-JR-OBJECTS, JAEGER-CORE, JAKARTA.BATCH-API,JAKARTA.INJECT-API, JAKARTA.VALIDATION-API,
-JANSI, JAVA-DATALOADER, JAVA-SUPPORT, JAVAX.INJECT, JBOSS-LOGGING-ANNOTATIONS, JCL-OVER-SLF4J, JSR305, KAFKA-CLIENTS,
-LISTENABLEFUTURE-9999.0-EMPTY-TO-AVOID-CONFLICT-WITH-GUAVA, LOG4J, IRA-CLIENT, IRA-PROXY-API, LZ4-JAVA, METRICS-CORE,
-MICROPROFILE-CONTEXT-PROPAGATION-API, MICROPROFILE-FAULT-TOLERANCE-API, MICROPROFILE-GRAPHQL-API, MICROPROFILE-HEALTH-API,
-MICROPROFILE-JWT-AUTH-API, MICROPROFILE-LRA-API, MICROPROFILE-METRICS-API, MICROPROFILE-OPENTRACING-API, 
-MICROPROFILE-REACTIVE-MESSAGING-API, MICROPROFILE-REACTIVE-STREAMS-OPERATORS-CORE, MICROPROFILE-REST-CLIENT-API,
-MYFACES-API, MYFACES-BUILDER-ANNOTATIONS, NETTY-BUFFER, NETTY-CODEC, NETTY-CODEC-HTTP2, NETTY-CODEC-HTTP, NETTY-CODEC-SOCKS,
-NETTY-COMMON, NETTY-HANDLER, NETTY-HANDLER-PROXY, NETTY-RESOLVER, NETTY-TRANSPORT, NETTY-TRANSPORT-NATIVE-UNIX-COMMON,
-OKIO, OKIO-JVM, IO.OPENCENSUS, ORG.OPENSAML, OPENSAML-XMLSEC-API, OPENSAML-XMLSEC-IMPL, OPENTELEMETRY-SDK-EXTENSION-AUTOCONFIGURE-SPI,
-OPENTRACING-API, OPENTRACING-NOOP, ORG.APACHE.ARIES.JMX, ORG.APACHE.ARIES.JNDI.API, ORG.APACHE.ARIES.UTIL, ORG.OSGI.ANNOTATION.VERSIONING
-ORG.OSGI.CORE, ORG.OSGI.NAMESPACE.EXTENDER, ORG.OSGI.NAMESPACE.EXTENDER, ORG.OSGI.SERVICE.CM, ORG.OSGI.SERVICE.METATYPE.ANNOTATIONS,
-ORG.OSGI.SERVICE.METATYPE, ORG.OSGI.UTIL.FUNCTION, ORG.OSGI.UTIL.PROMISE, OSGI.ANNOTATION, OSGI.CORE, PERFMARK-API
-PROTO-GOOGLE-COMMON-PROTOS,RESTEASY-CLIENT-MICROPROFILE, RESTEASY-CLIENT-MICROPROFILE-BASE, SHORT-UNIQUE,SNAKEYAML
-SWAGGER-CLIENT, SWAGGER-UI, TUNNEL-AGENT, VELOCITY, VELOCITY-ENGINE-CORE, WELD-API, WELD-CORE-JSF, WELD-EJB, WELD-JTA
-WELD-LITE-EXTENSION-TRANSLATOR, WELD-PROBE-CORE, WELD-SPI, WELD-WEB, WOODSTOX-CORE, WOODSTOX-CORE-ASL, WSS4J-BINDINGS
-WSS4J-POLICY, WSS4J-WS-SECURITY-COMMON, WSS4J-WS-SECURITY-DOM, WSS4J-WS-SECURITY-POLICY-STAX, WSS4J-WS-SECURITY-STAX
-WSS4J-WS-SECURITY-WEB, XBEAN-ASM5-SHADED, XBEAN-FINDER-SHADED, XML-RESOLVER, ASM, ASM-ANALYSIS, ASM-COMMONS,
-ASM-TREE, MICROMETER-COMMONS, MICROMETER-OBSERVATION, NETTY-RESOLVER-DNS,
+@carbon/telemetry [telemetry-0.1.0.tgz],
+@swagger-api/apidom-ast [apidom-ast-0.83.0.tgz],
+@swagger-api/apidom-core [apidom-core-0.83.0.tgz],
+@swagger-api/apidom-error [apidom-error-0.83.0.tgz],
+@swagger-api/apidom-json-pointer [apidom-json-pointer-0.83.0.tgz],
+@swagger-api/apidom-ns-api-design-systems [apidom-ns-api-design-systems-0.83.0.tgz],
+@swagger-api/apidom-ns-asyncapi-2 [apidom-ns-asyncapi-2-0.83.0.tgz],
+@swagger-api/apidom-ns-json-schema-draft-4 [apidom-ns-json-schema-draft-4-0.83.0.tgz],
+@swagger-api/apidom-ns-json-schema-draft-6 [apidom-ns-json-schema-draft-6-0.83.0.tgz],
+@swagger-api/apidom-ns-json-schema-draft-7 [apidom-ns-json-schema-draft-7-0.83.0.tgz],
+@swagger-api/apidom-ns-openapi-2 [apidom-ns-openapi-2-0.83.0.tgz],
+@swagger-api/apidom-ns-openapi-3-0 [apidom-ns-openapi-3-0-0.83.0.tgz],
+@swagger-api/apidom-ns-openapi-3-1 [apidom-ns-openapi-3-1-0.83.0.tgz],
+@swagger-api/apidom-parser-adapter-api-design-systems-json [apidom-parser-adapter-api-design-systems-json-0.83.0.tgz],
+@swagger-api/apidom-parser-adapter-api-design-systems-yaml [apidom-parser-adapter-api-design-systems-yaml-0.83.0.tgz],
+@swagger-api/apidom-parser-adapter-asyncapi-json-2 [apidom-parser-adapter-asyncapi-json-2-0.83.0.tgz],
+@swagger-api/apidom-parser-adapter-asyncapi-yaml-2 [apidom-parser-adapter-asyncapi-yaml-2-0.83.0.tgz],
+@swagger-api/apidom-parser-adapter-json [apidom-parser-adapter-json-0.83.0.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-2 [apidom-parser-adapter-openapi-json-2-0.83.0.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-3-0 [apidom-parser-adapter-openapi-json-3-0-0.83.0.tgz],
+@swagger-api/apidom-parser-adapter-openapi-json-3-1 [apidom-parser-adapter-openapi-json-3-1-0.83.0.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-2 [apidom-parser-adapter-openapi-yaml-2-0.83.0.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-3-0 [apidom-parser-adapter-openapi-yaml-3-0-0.83.0.tgz],
+@swagger-api/apidom-parser-adapter-openapi-yaml-3-1 [apidom-parser-adapter-openapi-yaml-3-1-0.83.0.tgz],
+@swagger-api/apidom-parser-adapter-yaml-1-2 [apidom-parser-adapter-yaml-1-2-0.83.0.tgz],
+@swagger-api/apidom-reference [apidom-reference-0.83.0.tgz],
+Apache Ant Core [ant], Apache Ant Launcher [ant-launcher],
+Apache Aries JMX API [org.apache.aries.jmx.api],
+Apache Aries JMX Core [org.apache.aries.jmx.core],
+Apache Aries JMX Core via Whiteboards [org.apache.aries.jmx.core.whiteboard],
+Apache Aries JNDI API [org.apache.aries.jndi.api],
+Apache Aries Util [org.apache.aries.util],
+Apache CXF Advanced Logging Feature [cxf-rt-features-logging],
+Apache CXF Command Line Tools Common [cxf-tools-common],
+Apache CXF Command Line Tools Validator [cxf-tools-validator],
+Apache CXF Command Line Tools WADLTo JAXRS Frontend [cxf-tools-wadlto-jaxrs],
+Apache CXF Core [cxf-core], Apache CXF JAX-RS Client [cxf-rt-rs-client],
+Apache CXF JAX-RS Extensions: Providers [cxf-rt-rs-extension-providers],
+Apache CXF JAX-RS Server-Side Events Support [cxf-rt-rs-sse],
+Apache CXF JAX-RS Service Description [cxf-rt-rs-service-description],
+Apache CXF MicroProfile Client [cxf-rt-rs-mp-client],
+Apache CXF Runtime Core for WSDL [cxf-rt-wsdl],
+Apache CXF Runtime HTTP Async Transport [cxf-rt-transports-http-hc],
+Apache CXF Runtime HTTP Transport [cxf-rt-transports-http],
+Apache CXF Runtime JAX-RS Frontend [cxf-rt-frontend-jaxrs],
+Apache CXF Runtime JAX-WS Frontend [cxf-rt-frontend-jaxws],
+Apache CXF Runtime JAXB DataBinding [cxf-rt-databinding-jaxb],
+Apache CXF Runtime Management [cxf-rt-management],
+Apache CXF Runtime SAML Security functionality [cxf-rt-security-saml],
+Apache CXF Runtime SOAP Binding [cxf-rt-bindings-soap],
+Apache CXF Runtime Security functionality [cxf-rt-security],
+Apache CXF Runtime Simple Frontend [cxf-rt-frontend-simple],
+Apache CXF Runtime WS Addressing [cxf-rt-ws-addr],
+Apache CXF Runtime WS MetadataExchange [cxf-rt-ws-mex],
+Apache CXF Runtime WS Policy [cxf-rt-ws-policy],
+Apache CXF Runtime WS Security [cxf-rt-ws-security],
+Apache CXF Runtime XML Binding [cxf-rt-bindings-xml], Apache Commons BCEL [bcel],
+Apache Commons BeanUtils [commons-beanutils],
+Apache Commons Codec [commons-codec],
+Apache Commons Collections [commons-collections],
+Apache Commons Compress [commons-compress],
+Apache Commons FileUpload [commons-fileupload], Apache Commons IO [commons-io],
+Apache Commons Lang [commons-lang3], Apache Commons Logging [commons-logging],
+Apache Commons Weaver Privilizer API [commons-weaver-privilizer-api],
+Apache Commons Weaver Privilizer Weaver [commons-weaver-privilizer],
+Apache Commons Weaver Processor [commons-weaver-processor],
+Apache Felix Declarative Services [org.apache.felix.scr],
+Apache Felix Gogo Command [org.apache.felix.gogo.command],
+Apache Felix Gogo Runtime [org.apache.felix.gogo.runtime],
+Apache Felix Gogo Shell [org.apache.felix.gogo.shell],
+Apache Geronimo JSR-330 Spec API [geronimo-atinject_1.0_spec],
+Apache Geronimo OSGI factory registry [geronimo-osgi-registry],
+Apache HttpAsyncClient [httpasyncclient], Apache HttpClient [httpclient],
+Apache HttpCore [httpcore], Apache HttpCore NIO [httpcore-nio],
+Apache James :: Mime4j :: Core [apache-mime4j-core],
+Apache James :: Mime4j :: DOM [apache-mime4j-dom],
+Apache James :: Mime4j :: Storage [apache-mime4j-storage],
+Apache Kafka [kafka-clients],
+Apache MyFaces Buildtools Maven2 Builder Annotations [myfaces-builder-annotations],
+Apache MyFaces Core 4.0 - API [myfaces-api],
+Apache MyFaces Core 4.0 - Impl [myfaces-impl],
+Apache MyFaces JSF-2.3 Core API [myfaces-api],
+Apache MyFaces JSF-2.3 Core Impl [myfaces-impl],
+Apache MyFaces JSF-3.0 Core API [myfaces-api],
+Apache MyFaces JSF-3.0 Core Impl [myfaces-impl], Apache Neethi [neethi],
+Apache Velocity [velocity], Apache Velocity - Engine [velocity-engine-core],
+Apache WSS4J DOM WS-Security [wss4j-ws-security-dom],
+Apache WSS4J Streaming WS-Security [wss4j-ws-security-stax],
+Apache WSS4J Streaming WS-SecurityPolicy [wss4j-ws-security-policy-stax],
+Apache WSS4J WS-Security Bindings [wss4j-bindings],
+Apache WSS4J WS-Security Common [wss4j-ws-security-common],
+Apache WSS4J WS-SecurityPolicy model [wss4j-policy],
+Apache WSS4J Web WS-Security [wss4j-ws-security-web],
+Apache XBean :: ASM 5 shaded (repackaged) [xbean-asm5-shaded],
+Apache XBean :: Finder shaded (repackaged) [xbean-finder-shaded],
+Apache XML Security for Java [xmlsec], Bean Validation API [validation-api],
+Bouncy Castle OpenPGP API [bcpg-jdk18on], CDI APIs [cdi-api],
+CDI APIs [jakarta.enterprise.cdi-api],
+CDI Language Model [jakarta.enterprise.lang-model],
+CDI Lite Extension Translator [weld-lite-extension-translator],
+ClassMate [classmate], Commons BeanUtils [commons-beanutils],
+Commons Digester [commons-digester], Commons Lang [commons-lang],
+Commons Logging [commons-logging], Cryptacular Library [cryptacular],
+Digester [commons-digester],
+Eclipse MicroProfile Reactive Streams Operators API [microprofile-reactive-streams-operators-api],
+Ehcache [ehcache], Ehcache Core [ehcache-core], Failsafe [failsafe],
+FindBugs-jsr305 [jsr305],
+Geronimo JavaMail 1.4 :: Mail [geronimo-javamail_1.4_mail],
+Google Android Annotations Library [annotations], Gson [gson],
+Guava InternalFutureFailureAccess and InternalFutures [failureaccess],
+Guava ListenableFuture only [listenablefuture],
+Guava: Google Core Libraries for Java [guava],
+Hibernate Validator Engine [hibernate-validator],
+Hibernate Validator Portable Extension [hibernate-validator-cdi],
+IntelliJ IDEA Annotations [annotations], J2ObjC Annotations [j2objc-annotations],
+JASYPT: Java Simplified Encryption [jasypt], JBoss Logging 3 [jboss-logging],
+JBoss Logging I18n Annotations [jboss-logging-annotations],
+JCL 1.2 implemented over SLF4J [jcl-over-slf4j], JSON.simple [json-simple],
+JSR107 API and SPI [cache-api], JTA 1.1 [geronimo-jta_1.1_spec],
+Jackson-annotations [jackson-annotations], Jackson-core [jackson-core],
+Jackson-dataformat-YAML [jackson-dataformat-yaml],
+Jakarta Batch API [jakarta.batch-api],
+Jakarta Bean Validation API [jakarta.validation-api],
+Jakarta CDI [jakarta.enterprise.cdi-api],
+Jakarta Dependency Injection [jakarta.inject-api], Jandex: Core [jandex],
+Java Annotation Indexer [jandex], Joda time [joda-time], Joda-Time [joda-time],
+Kotlin Stdlib [kotlin-stdlib], Kotlin Stdlib Common [kotlin-stdlib-common],
+Kotlin Stdlib Jdk7 [kotlin-stdlib-jdk7], Kotlin Stdlib Jdk8 [kotlin-stdlib-jdk8],
+LRA Client [lra-client], LRA Proxy API [lra-proxy-api], LZ4 and xxHash [lz4-java],
+Metrics Core [metrics-core], MicroProfile Config API [microprofile-config-api],
+MicroProfile Context Propagation [microprofile-context-propagation-api],
+MicroProfile GraphQL :: API [microprofile-graphql-api],
+MicroProfile Health API [microprofile-health-api],
+MicroProfile JWT Auth API [microprofile-jwt-auth-api],
+MicroProfile LRA API [microprofile-lra-api],
+MicroProfile Metrics API [microprofile-metrics-api],
+MicroProfile OpenAPI API [microprofile-openapi-api],
+MicroProfile OpenTracing API [microprofile-opentracing-api],
+MicroProfile Opentracing API [microprofile-opentracing-api],
+MicroProfile Reactive Messaging API [microprofile-reactive-messaging-api],
+MicroProfile Reactive Streams Operators Core [microprofile-reactive-streams-operators-core],
+MicroProfile Rest Client API [microprofile-rest-client-api],
+Narayana LRA [narayana-lra], Netty/Buffer [netty-buffer],
+Netty/Codec [netty-codec], Netty/Codec/DNS [netty-codec-dns],
+Netty/Codec/HTTP [netty-codec-http], Netty/Codec/HTTP2 [netty-codec-http2],
+Netty/Codec/Socks [netty-codec-socks], Netty/Common [netty-common],
+Netty/Handler [netty-handler], Netty/Handler/Proxy [netty-handler-proxy],
+Netty/Resolver [netty-resolver], Netty/Resolver/DNS [netty-resolver-dns],
+Netty/Transport [netty-transport],
+Netty/Transport/Native/Unix/Common [netty-transport-native-unix-common],
+OkHttp [okhttp], Okio [okio], OpenCensus [opencensus-api],
+OpenCensus [opencensus-contrib-grpc-metrics], OpenSAML :: Core [opensaml-core],
+OpenSAML :: Messaging API [opensaml-messaging-api],
+OpenSAML :: Messaging Implementations [opensaml-messaging-impl],
+OpenSAML :: Profile API [opensaml-profile-api],
+OpenSAML :: SAML Provider API [opensaml-saml-api],
+OpenSAML :: SAML Provider Implementations [opensaml-saml-impl],
+OpenSAML :: SAML XACML Profile API [opensaml-xacml-saml-api],
+OpenSAML :: SAML XACML Profile Implementation [opensaml-xacml-saml-impl],
+OpenSAML :: SOAP Provider API [opensaml-soap-api],
+OpenSAML :: Security API [opensaml-security-api],
+OpenSAML :: Security Implementation [opensaml-security-impl],
+OpenSAML :: Storage API [opensaml-storage-api],
+OpenSAML :: XACML Provider API [opensaml-xacml-api],
+OpenSAML :: XACML Provider Implementations [opensaml-xacml-impl],
+OpenSAML :: XML Security API [opensaml-xmlsec-api],
+OpenSAML :: XML Security Implementation [opensaml-xmlsec-impl],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-annotations],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api-semconv],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-annotations-support],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api-semconv],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-api],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-annotations-support],
+OpenTelemetry Instrumentation for Java [opentelemetry-instrumentation-annotations],
+OpenTelemetry Java [opentelemetry-exporter-otlp-common],
+OpenTelemetry Java [opentelemetry-exporter-jaeger],
+OpenTelemetry Java [opentelemetry-context],
+OpenTelemetry Java [opentelemetry-sdk-trace],
+OpenTelemetry Java [opentelemetry-sdk-metrics],
+OpenTelemetry Java [opentelemetry-sdk],
+OpenTelemetry Java [opentelemetry-sdk-common],
+OpenTelemetry Java [opentelemetry-api],
+OpenTelemetry Java [opentelemetry-semconv],
+OpenTelemetry Java [opentelemetry-sdk-extension-autoconfigure],
+OpenTelemetry Java [opentelemetry-exporter-logging],
+OpenTelemetry Java [opentelemetry-exporter-zipkin],
+OpenTelemetry Java [opentelemetry-exporter-otlp],
+OpenTelemetry Java [opentelemetry-sdk-extension-autoconfigure-spi],
+OpenTelemetry Java [opentelemetry-sdk-logs],
+OpenTelemetry Java [opentelemetry-api-logs],
+OpenTelemetry Java [opentelemetry-exporter-common],
+OpenTelemetry Java [opentelemetry-extension-trace-propagators],
+OpenTelemetry Java [opentelemetry-sdk],
+OpenTelemetry Java [opentelemetry-exporter-otlp],
+OpenTelemetry Java [opentelemetry-exporter-sender-okhttp],
+OpenTelemetry Java [opentelemetry-exporter-otlp-common],
+OpenTelemetry Java [opentelemetry-sdk-metrics],
+OpenTelemetry Java [opentelemetry-exporter-common],
+OpenTelemetry Java [opentelemetry-api-events],
+OpenTelemetry Java [opentelemetry-api],
+OpenTelemetry Java [opentelemetry-extension-incubator],
+OpenTelemetry Java [opentelemetry-sdk-logs],
+OpenTelemetry Java [opentelemetry-sdk-extension-autoconfigure-spi],
+OpenTelemetry Java [opentelemetry-context],
+OpenTelemetry Java [opentelemetry-extension-trace-propagators],
+OpenTelemetry Java [opentelemetry-semconv],
+OpenTelemetry Java [opentelemetry-sdk-common],
+OpenTelemetry Java [opentelemetry-sdk-trace],
+OpenTelemetry Java [opentelemetry-sdk-extension-autoconfigure],
+OpenTelemetry Java [opentelemetry-exporter-jaeger],
+OpenTelemetry Java [opentelemetry-exporter-logging],
+OpenTelemetry Java [opentelemetry-exporter-zipkin],
+OpenTelemetry Java [opentelemetry-context],
+OpenTelemetry Java [opentelemetry-api], OpenTracing API [opentracing-api],
+OpenTracing-noop [opentracing-noop], OpenTracing-util [opentracing-util],
+Prometheus Java Simpleclient [simpleclient],
+Prometheus Java Simpleclient Common [simpleclient_common],
+Prometheus Java Span Context Supplier - Common [simpleclient_tracer_common],
+Prometheus Java Span Context Supplier - OpenTelemetry [simpleclient_tracer_otel],
+Prometheus Java Span Context Supplier - OpenTelemetry Agent [simpleclient_tracer_otel_agent],
+RESTEasy CDI integration module [resteasy-cdi], RESTEasy Client [resteasy-client],
+RESTEasy Client API [resteasy-client-api], RESTEasy Core [resteasy-core],
+RESTEasy Core SPI [resteasy-core-spi], RESTEasy JAX-RS Client [resteasy-client],
+RESTEasy JAX-RS Client API [resteasy-client-api],
+RESTEasy JAX-RS Client Microprofile [resteasy-client-microprofile],
+RESTEasy JAX-RS Client Microprofile Base classes [resteasy-client-microprofile-base],
+RESTEasy JAX-RS Core [resteasy-core],
+RESTEasy JAX-RS Core SPI [resteasy-core-spi],
+RESTEasy JAXB Provider [resteasy-jaxb-provider],
+RESTEasy Multipart Provider [resteasy-multipart-provider],
+RESTEasy Servlet Container Initializer [resteasy-servlet-initializer],
+RESTEasy Validator Provider [resteasy-validator-provider], RxJava [rxjava],
+SmallRye Common: Annotations [smallrye-common-annotation],
+SmallRye Common: Classloader [smallrye-common-classloader],
+SmallRye Common: Constraints [smallrye-common-constraint],
+SmallRye Common: Expressions [smallrye-common-expression],
+SmallRye Common: Functions [smallrye-common-function],
+SmallRye Common: Vert.x Context Utilities [smallrye-common-vertx-context],
+SmallRye Config: CDI [smallrye-config],
+SmallRye Config: Common [smallrye-config-common],
+SmallRye Config: Core [smallrye-config-core],
+SmallRye Mutiny - Code Generator [vertx-mutiny-generator],
+SmallRye Mutiny - Core library [mutiny],
+SmallRye Mutiny - MicroProfile Reactive Streams Operators 3.x implementation [mutiny-reactive-streams-operators-jakarta],
+SmallRye Mutiny - Runtime Helpers [smallrye-mutiny-vertx-runtime],
+SmallRye Mutiny - Vert.x Core [smallrye-mutiny-vertx-core],
+SmallRye Mutiny Zero [mutiny-zero],
+SmallRye Mutiny Zero JDK Flow / Reactive Streams Adapters [mutiny-zero-flow-adapters],
+SmallRye Reactive Messaging : API [smallrye-reactive-messaging-api],
+SmallRye Reactive Messaging : Provider [smallrye-reactive-messaging-provider],
+SmallRye: Common classes [smallrye-config-common],
+SmallRye: GraphQL Common :: Schema Builder [smallrye-graphql-schema-builder],
+SmallRye: GraphQL Common :: Schema Model [smallrye-graphql-schema-model],
+SmallRye: GraphQL Server :: API [smallrye-graphql-api],
+SmallRye: GraphQL Server :: CDI [smallrye-graphql-cdi],
+SmallRye: GraphQL Server :: Implementation [smallrye-graphql],
+SmallRye: GraphQL Server :: Servlet [smallrye-graphql-servlet],
+SmallRye: MicroProfile Config CDI Implementation [smallrye-config],
+SmallRye: MicroProfile Config Core Implementation [smallrye-config-core],
+SmallRye: MicroProfile Metrics Implementation [smallrye-metrics],
+SmallRye: OpenAPI Core [smallrye-open-api-core],
+SmallRye: OpenAPI extension - JAX-RS [smallrye-open-api-jaxrs],
+SnakeYAML [snakeyaml], Web Services Metadata 2.0 [geronimo-ws-metadata_2.0_spec],
+Vert.x Core [vertx-core], 
+Weld APIs [weld-api], Weld Core - JSF [weld-core-jsf], Weld EJB [weld-ejb],
+Weld Environment Common [weld-environment-common],
+Weld Implementation (Core) [weld-core-impl], Weld JSF [weld-jsf],
+Weld JTA [weld-jta], Weld OSGi Bundle [weld-osgi-bundle],
+Weld Probe Core [weld-probe-core], Weld SE (Core) [weld-se-core],
+Weld SPIs for container integration [weld-spi], Weld Web [weld-web],
+Woodstox [woodstox-core], Woodstox [woodstox-core-asl], Woodstox [woodstox-core],
+Woodstox [woodstox-core-asl], Woodstox [woodstox-core],
+Woodstox [woodstox-core-asl], Woodstox [woodstox-core],
+XML Commons Resolver Component [xml-resolver], XmlSchema Core [xmlschema-core],
+Zipkin Core Library [zipkin], Zipkin Reporter: Core [zipkin-reporter],
+Zipkin Sender: OkHttp 3 [zipkin-sender-okhttp3], acme4j Client [acme4j-client],
+acme4j Utils [acme4j-utils], asm, asm-analysis, asm-commons, asm-tree, asm-util,
+asyncutil, carbon-components [carbon-components-10.42.0-rc.0.min.js],
+carbon-components [carbon-components-10.58.3.tgz],
+classfilewriter [jboss-classfilewriter], detect-libc [detect-libc-2.0.2.tgz],
+dompurify [dompurify-3.0.6.tgz],
+error-prone annotations [error_prone_annotations], fastinfoset [FastInfoset],
+find-yarn-workspace-root [find-yarn-workspace-root-2.0.0.tgz],
+geronimo-annotation_1.1_spec, geronimo-ejb_3.1_spec-alt,
+geronimo-interceptor_1.1_spec, geronimo-validation, guice,
+io.grpc:grpc-api [grpc-api], io.grpc:grpc-census [grpc-census],
+io.grpc:grpc-context [grpc-context], io.grpc:grpc-core [grpc-core],
+io.grpc:grpc-netty [grpc-netty], io.grpc:grpc-protobuf [grpc-protobuf],
+io.grpc:grpc-protobuf-lite [grpc-protobuf-lite], io.grpc:grpc-stub [grpc-stub],
+jackson-databind, jackson-jr-objects, jaeger-client [jaeger-core], jansi,
+jasper-el, java-dataloader, java-support, javax.inject, jboss-logging, jose4j,
+jsp.tld.standard,
+microProfile-fault-tolerance-api [microprofile-fault-tolerance-api],
+micrometer-commons, micrometer-core, micrometer-observation,
+micrometer-registry-prometheus, microprofile-fault-tolerance-api,
+microprofile-metrics-api, microprofile-opentracing-api,
+microprofile-rest-client-api, nekohtml, okhttp, okio [okio-jvm], okio,
+okio [okio-jvm], okio, org.apache.aries.blueprint, org.apache.aries.jndi.core,
+org.apache.bval.bundle, org.osgi.core,
+org.osgi:org.osgi.annotation.versioning [org.osgi.annotation.versioning],
+org.osgi:org.osgi.namespace.extender [org.osgi.namespace.extender],
+org.osgi:org.osgi.namespace.service [org.osgi.namespace.service],
+org.osgi:org.osgi.service.cm [org.osgi.service.cm],
+org.osgi:org.osgi.service.component [org.osgi.service.component],
+org.osgi:org.osgi.service.component.annotations [org.osgi.service.component.annotations],
+org.osgi:org.osgi.service.coordinator [org.osgi.service.coordinator],
+org.osgi:org.osgi.service.event [org.osgi.service.event],
+org.osgi:org.osgi.service.http [org.osgi.service.http],
+org.osgi:org.osgi.service.log [org.osgi.service.log],
+org.osgi:org.osgi.service.metatype [org.osgi.service.metatype],
+org.osgi:org.osgi.service.metatype.annotations [org.osgi.service.metatype.annotations],
+org.osgi:org.osgi.util.function [org.osgi.util.function],
+org.osgi:org.osgi.util.promise [org.osgi.util.promise],
+org.osgi:osgi.annotation [osgi.annotation], org.osgi:osgi.core [osgi.core],
+perfmark:perfmark-api [perfmark-api], proto-google-common-protos, resolver,
+short-unique-id [short-unique-id-5.0.3.tgz], smallrye-reactive-converter-api,
+smallrye-reactive-messaging-provider, smallrye-reactive-streams-operators,
+snappy-java, swagger-client [swagger-client-3.24.5.tgz],
+swagger-ui [swagger-ui-5.10.3.tgz], tomcat-el-api, tomcat-jasper-el,
+ts-toolbelt [ts-toolbelt-9.6.0.tgz], tunnel-agent [tunnel-agent-0.6.0.tgz],
+vertx-codegen, yoko-core, yoko-osgi, yoko-rmi-impl, yoko-rmi-spec, yoko-spec-corba, yoko-util
 
 
 Apache License
@@ -375,448 +531,476 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
 END OF TERMS AND CONDITIONS
 
-END OF APACHE LICENSE 2.0 NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-BSD-2-CLAUSE
-The Program includes some or all of the following packages that IBM 
-obtained under the BSD-2-Clause License:
-
-
-@YARNPKG/LOCKFILE (Copyright (c) 2016-present, Yarn Contributors. All rights reserved.), 
-RC (Copyright (c) 2013, Dominic Tarr), CRAC (Copyright (c) Copyright 2017-2022 Azul Systems, Inc.)
-
-Redistribution and use in source and binary forms, with or without 
-modification, are permitted provided that the following conditions are 
-met: 
-
-* Redistributions of source code must retain the above copyright notice, 
-  this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright 
-  notice, this list of conditions and the following disclaimer in the 
-  documentation and/or other materials provided with the distribution. 
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
-TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
-HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED 
-TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
-
-END OF BSD-2-CLAUSE LICENSE NOTICES AND INFORMATION
+END OF Apache License, Version 2.0 NOTICES AND INFORMATION
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-BSD-3-Clause LICENSE
-
-The Program includes some or all of the following packages that IBM 
-obtained under the BSD-3-Clause License:
-
-JAKARTA.XMLWS (Copyright (c) 2007, Eclipse Foundation, Inc. and its
-licensors.), OBJECTWEB-ASM (Copyright (c) 2000-2011 INRIA, France
-Telecom), ASM (Copyright (c) 2000-2011 INRIA, France Telecom), 
-JAKARTA.XMLWS (Copyright (c) 2017; 2018 Oracle and/or its affiliates.All rights reserved.),
-JAKARTA-XMLBINDING (Copyright (c) 2017; 2018 Oracle and/or its affiliates. All rights reserved.),
-JAKARTA.ACTIVATION (Copyright (c) 2018 Oracle and/or its affiliates. All
-rights reserved.), JAKARTA SOAP (Copyright (c) 2017 Oracle and/or its
-affiliates. All rights reserved.), JAKARTA.XMLBINDING (Copyright (c)
-2017; 2018 Oracle and/or its affiliates. All rights reserved.),
-JAKARTA.PERSISTENCE (Copyright (c)2017; 2018 Oracle and/or its affiliates. All rights reserved.),
-JAKARTA-XMLSOAP (Copyright (c) 2017 Oracle and/or its affiliates. All rights reserved),
-JAKARTA.RESTFULWS (Copyright (c) 2017, 2018 Oracle and/or its affiliates. All rights reserved.),
-RAMDA-ADJUNCT (Copyright 2017-2019 Vladimír Gorej and the Ramda Adjunct contributors),
-STAX-EX (Copyright (c) 2007, Eclipse Foundation, Inc. and its licensors.),
-PROTOBUF-JAVA (Copyright Not Found), 
-PROTOBUF-JAVALITE (Copyright Not Found)
-
-
-
-Redistribution and use in source and binary forms, with or without 
-modification, are permitted provided that the following conditions are 
-met: 
-
-* Redistributions of source code must retain the above copyright notice, 
-  this list of conditions and the following disclaimer. 
-* Redistributions in binary form must reproduce the above copyright 
-  notice, this list of conditions and the following disclaimer in the 
-  documentation and/or other materials provided with the distribution. 
-* Neither the name of the <ORGANIZATION> nor the names of its 
-  contributors may be used to endorse or promote products derived from 
-  this software without specific prior written permission. 
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS 
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED 
-TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER 
-OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
-
-END OF BSD 3-CLAUSE LICENSE NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-BSD-EQUIVALENT
+BSD 2 Clause license
 
 The Program includes some or all of the following that IBM obtained
-under a BSD-EQUIVALENT license:
+under the BSD 2 Clause license:
 
-BCPG-JDK15ON (Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc.)
-BCPKIX-JDK15ON (Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc.)
-BCPROV-JDK15ON (Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc.)
-BCUTIL-JDK15ON (Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc.)
+@yarnpkg/lockfile [lockfile-1.1.0.tgz](Copyright Not Found)
+HdrHistogram (Copyright 2012-2013 2014, 2015, 2016 Gil Tene) (Copyright 2014 Matt Warren) (Copyright 2014 Michael Barker)
+Stax2 API [stax2-api] (Copyright 2004-2010 Woodstox Project (http://woodstox.codehaus.org/))
+Stax2 API [stax2-api] (Copyright 2008 FasterXML LLC <info@fasterxml.com>)
+Stax2 API [stax2-api](Copyright Not Found)
+crac(Copyright Not Found)
+hoist-non-react-statics [hoist-non-react-statics-3.3.2.tgz] (Copyright 2015 Yahoo!)
+rc [rc-1.2.8.tgz] (Copyright 2011 Dominic Tarr) (Copyright 2013 Dominic Tarr)
+zstd-jni(Copyright Not Found)
 
-Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc. (https://www.bouncycastle.org)
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
-to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
-OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
-OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS”
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
 
-END OF BSD-EQUIVALENT NOTICES AND INFORMATION
+END OF BSD 2 Clause license NOTICES AND INFORMATION
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BSD 3 Clause license
 
+The Program includes some or all of the following that IBM obtained
+under the BSD 3 Clause license:
+
+ANTLR 4 Runtime [antlr4-runtime] (Copyright 2012-2017 The ANTLR Project)
+Angus Activation Registries [angus-activation] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2021 Oracle and/or its affiliates)
+Angus Activation Registries [angus-activation] (Copyright 2021-2023 Oracle and/or its affiliates)
+Codemodel Core [codemodel] (Copyright 2010-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+Codemodel Core [codemodel] (Copyright 2010-2021 Oracle and/or its affiliates)
+Codemodel Core [codemodel] (Copyright 2010-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+DTD Parser [dtd-parser] (Copyright 1998-2018 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2017-2018 Oracle and/or its affiliates)
+DTD Parser [dtd-parser] (Copyright 1998-2021 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and) (Copyright 2017-2018 Oracle and/or its affiliates)
+DTD Parser [dtd-parser] (Copyright 1998-2022 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates)
+Extended StAX API [stax-ex] (Copyright 1997-2020 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates)
+Extended StAX API [stax-ex] (Copyright 1997-2021 Oracle and) (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
+Extended StAX API [stax-ex] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
+GMBAL (API only) [gmbal-api-only] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2019-2021 Oracle and/or its affiliates)
+Hamcrest Core [hamcrest-core](Copyright Not Found)
+JAX-WS RI Runtime (jaxws-rt) [jaxws-rt] (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates)
+JAX-WS RI Tools (jaxws-tools) [jaxws-tools] (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates)
+JAXB Core [jaxb-core] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2020 Oracle and/or its affiliates)
+JAXB Core [jaxb-core] (Copyright 2020-2022 Oracle and/or its affiliates)
+JAXB JXC [jaxb-jxc] (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+JAXB JXC [jaxb-jxc] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+JAXB Runtime [jaxb-runtime] (Copyright 2013-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+JAXB Runtime [jaxb-runtime] (Copyright 2013-2019 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+JAXB Runtime [jaxb-runtime] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+JAXB Runtime [jaxb-runtime] (Copyright 2013-2022 Oracle and/or its affiliates)
+JAXB Runtime [jaxb-runtime] (Copyright 2018 Oracle)
+JAXB XJC [jaxb-xjc] (Copyright 2013-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+JAXB XJC [jaxb-xjc] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+JAXB XJC [jaxb-xjc] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+Jakarta Activation API [jakarta.activation-api] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+Jakarta Activation API [jakarta.activation-api] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+Jakarta Activation API jar [jakarta.activation-api] (Copyright 1997-2019 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+Jakarta Activation [jakarta.activation] (Copyright 1997-2019 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018 Oracle and/or its affiliates) (Copyright 2019 Eclipse Foundation)
+Jakarta Activation [jakarta.activation] (Copyright 1997-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+Jakarta Activation [jakarta.activation] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+Jakarta Persistence API [jakarta.persistence-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018-2020 Oracle and/or its affiliates) (Copyright 2019 Oracle and/or its affiliates)
+Jakarta Persistence API [jakarta.persistence-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018-2022 Oracle and/or its affiliates)
+Jakarta Persistence [jakarta.persistence] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2007-2018 Oracle and/or its affiliates)
+Jakarta SOAP Implementation [saaj-impl] (Copyright 2011-2021 Oracle and) (Copyright 2011-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+Jakarta SOAP Implementation [saaj-impl] (Copyright 2011-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Copyright 2019-2020 Eclipse Foundation)
+Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
+Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
+Jakarta Web Services Metadata API [jakarta.jws-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Copyright 2019 Oracle and/or its affiliates) (Copyright 2019-2020 Eclipse Foundation)
+Jakarta Web Services Metadata API [jakarta.jws-api] (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
+Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and) (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2020 Oracle and/or its affiliates)
+Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates)
+Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2022 Oracle and/or its affiliates)
+Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2018 Oracle)
+Jakarta XML Binding API [jboss-jaxb-api_2.3_spec] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates)
+Jakarta XML Web Services API [jakarta.xml.ws-api] (Copyright 1997-2020 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Copyright 2019-2020 Eclipse Foundation)
+Jakarta XML Web Services API [jakarta.xml.ws-api] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and) (Copyright 2017-2018 Oracle and/or its affiliates)
+Jakarta XML Web Services API [jakarta.xml.ws-api] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates)
+JavaBeans Activation Framework API jar [jakarta.activation-api] (Copyright 1997-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+JavaBeans Activation Framework [jakarta.activation] (Copyright 1997-2018 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018 Oracle and/or its affiliates)
+MIME streaming extension [mimepull] (Copyright 2012-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+Old JAXB Core [jaxb-core] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2020-2021 Oracle and/or its affiliates)
+Old JAXB JXC [jaxb-jxc] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+Old JAXB Runtime [jaxb-impl] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+Old JAXB XJC [jaxb-xjc] (Copyright 2001-2002 SourceForge ISO) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2004 Kohsuke Kawaguchi) (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+Protocol Buffers [Core] [protobuf-java](Copyright Not Found)
+Protocol Buffers [Lite] [protobuf-javalite](Copyright Not Found)
+RNGOM [rngom] (Copyright 2001-2002 SourceForge ISO) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2004 Kohsuke Kawaguchi) (Copyright 2005-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+RNGOM [rngom] (Copyright 2001-2002 SourceForge ISO-RELAX Project (ASAMI Tomoharu, Daisuke) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2004 Kohsuke Kawaguchi) (Copyright 2005-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+RNGOM [rngom] (Copyright 2005-2021 Oracle and/or its affiliates)
+RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO-RELAX Project (ASAMI Tomoharu, Daisuke) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+RelaxNG Datatype [relaxng-datatype] (Copyright 2013-2021 Oracle and/or its affiliates)
+TXW2 Runtime [txw2] (Copyright 2005-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+TXW2 Runtime [txw2] (Copyright 2005-2019 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+TXW2 Runtime [txw2] (Copyright 2005-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+TXW2 Runtime [txw2] (Copyright 2005-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+TXW2 Runtime [txw2] (Copyright 2018 Oracle)
+XSOM [xsom] (Copyright 2010-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+XSOM [xsom] (Copyright 2010-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+XSOM [xsom] (Copyright 2010-2022 Oracle and/or its affiliates)
+dojo [dojo-1.17.3.tgz] (Copyright 2003-2004 Lawrence E. Rosen) (Copyright 2005-2018 JS Foundation) (Copyright 2005-2018 The JS Foundation)
+highlight.js [highlight.js-10.7.3.tgz] (Copyright 2006 Ivan Sagalaev)
+ieee754 [ieee754-1.2.1.tgz] (Copyright 2008 Fair Oaks Labs, Inc)
+istack common utility code runtime [istack-commons-runtime] (Copyright 1997-2018 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2017 Oracle and/or its affiliates)
+istack common utility code runtime [istack-commons-runtime] (Copyright 1997-2019 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2017 Oracle and/or its affiliates)
+istack common utility code runtime [istack-commons-runtime] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
+istack common utility code runtime [istack-commons-runtime] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
+istack common utility code tools [istack-commons-tools] (Copyright 1997-2018 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2017 Oracle and/or its affiliates)
+istack common utility code tools [istack-commons-tools] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
+istack common utility code tools [istack-commons-tools] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
+jakarta.xml.bind-api (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+management-api (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2011-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+org.eclipse.persistence.core(Copyright Not Found)
+qs [qs-6.11.2.tgz] (Copyright 2014 Nathan LaFreniere and other "contributors" (https://github.com/ljharb/qs/graphs/contributors))
+ramda-adjunct [ramda-adjunct-4.1.1.tgz] (Copyright 2017-2019 Vladim)
+redux-immutable [redux-immutable-4.0.0.tgz] (Copyright 2016 Gajus Kuizinas (http://gajus.com/))
+relaxngDatatype(Copyright Not Found)
+sprintf-js [sprintf-js-1.0.3.tgz] (Copyright 2014 Alexandru Marasteanu)
+warning [warning-3.0.0.tgz] (Copyright 2013-2015 Facebook, Inc)
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice,
+this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+3. Neither the name of the copyright holder nor the names of its
+contributors may be used to endorse or promote products derived from this
+software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS”
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+
+END OF BSD 3 Clause license NOTICES AND INFORMATION
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+BSD Zero Clause license
+
+The Program includes some or all of the following that IBM obtained
+under the BSD Zero Clause license:
+
+tslib [tslib-2.6.2.tgz] (Copyright Microsoft Corporation)
+
+Permission to use, copy, modify, and/or distribute this software for any 
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES 
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR 
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES 
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN 
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF 
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+END OF BSD Zero Clause license NOTICES AND INFORMATION
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Bouncy Castle License
+
+The Program includes some or all of the following that IBM obtained
+under the Bouncy Castle License:
+
+Bouncy Castle ASN.1 Extension and Utility APIs [bcutil-jdk18on],
+Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs [bcpkix-jdk15on],
+Bouncy Castle PKIX, CMS, EAC, TSP, PKCS, OCSP, CMP, and CRMF APIs [bcpkix-jdk18on],
+Bouncy Castle Provider [bcprov-jdk15on], Bouncy Castle Provider [bcprov-jdk18on]
+
+
+Copyright (c) 2000 - 2023 The Legion of the Bouncy Castle Inc. 
+(https://www.bouncycastle.org)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+copies of the Software, and to permit persons to whom the Software is 
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
+THE SOFTWARE. 
+
+END OF Bouncy Castle License NOTICES AND INFORMATION
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1
 
 The Program includes some or all of the following that IBM obtained
-under the Common Development and Distribution License V1
-(source code available via the indicated URL):
+under the COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1:
 
-JAXWS.TOOLS
-(https://mvnrepository.com/artifact/com.sun.xml.ws/jaxws-tools/2.2.10),
-SAAJ
-(https://search.maven.org/artifact/com.sun.xml.messaging.saaj/saaj-impl/2.0.0/jar),
-MAIL (https://mvnrepository.com/artifact/com.sun.mail/javax.mail/),
-JAVAMAIL (https://javaee.github.io/javamail/), JAVAX-JSON
-(https://mvnrepository.com/artifact/javax.json/javax.json-api/1.0), JAXB
-(https://javaee.github.io/jaxb-v2/), JSTL
-(https://search.maven.org/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api/2.0.0/jar),
-GLASSFISH.HK2.OSGI-RESOURCE-LOCATOR
-(https://mvnrepository.com/artifact/org.glassfish.hk2/osgi-resource-locator),
-JMS (https://javaee.github.io/jms-spec/pages/JMS20FinalRelease),
-JAVAEE/ACTIVATION (https://github.com/javaee/activation), JAXB-TOOLS-XJC
-(https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-xjc/2.2.10),
-JSF (https://javaee.github.io/javaserverfaces-spec/), JAXWS
-(https://javaee.github.io/metro-jax-ws/), JVNET-MIMEPULL
-(https://mvnrepository.com/artifact/org.jvnet.mimepull/mimepull/1.9.7)
-JAVAX.INTERCEPTOR
-(https://repo1.maven.org/maven2/javax/interceptor/javax.interceptor-api/1.2/javax.interceptor-api-1.2-sources.jar),
-JAKARTA.ENTERPRISE.INJECT.SPI
-(https://repo1.maven.org/maven2/jakarta/enterprise/jakarta.enterprise.cdi-api/3.0.0/jakarta.enterprise.cdi-api-3.0.0-sources.jar),
-SAAJ (https://mvnrepository.com/artifact/com.sun.xml.messaging.saaj),
-JAVAX.XML.WS.SOAP
-(https://mvnrepository.com/artifact/javax.xml.ws/jaxws-api/2.2.3),
-JAVAX.TRANSACTION.XA
-(https://mvnrepository.com/artifact/javax.transaction), MAIL
-(https://jakarta.ee/specifications/mail/2.1/), JAVAX.FACES
-(https://jakarta.ee/specifications/faces/2.3/),
-JAKARTA.SERVLET.JSP.JSTL.CORE
-(https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/2.0.0/jakarta.servlet.jsp.jstl-api-2.0.0-sources.jar),
-JAVAX.ENTERPRISE (https://mvnrepository.com/artifact/javax.enterprise),
-JAXWS-TOOLS
-(https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-tools/2.3.0/jaxws-tools-2.3.0-sources.jar),
-JAVAX.NAMING (https://mvnrepository.com/artifact/javax.naming),
-JAKARTA.ENTERPRISE.EVENT
-(https://github.com/jakartaee/cdi/tree/master/api/src/main/java/jakarta/enterprise/event)
 
-END OF COMMON DEVELOPMENT AND DISTRIBUTION V1 LICENSE NOTICES AND INFORMATION
+Java(TM) API for JSON Processing [jboss-json-api_1.0_spec] https://repo1.maven.org/maven2/org/jboss/spec/javax/json/jboss-json-api_1.0_spec/1.0.0.Final
+JSR 374 (JSON Processing) Default Provider [javax.json] https://javaee.github.io/jsonp
+activation (https://github.com/javaee/activation/tree/JAF-1_2_0)
+connector (https://mvnrepository.com/artifact/javax.resource/connector-api)
+el (https://github.com/javaee/uel-ri)
+jaxrpc (https://github.com/javaee/jax-rpc-ri)
+jaxws-api (https://github.com/javaee/jax-ws-spec)
+jcdi (https://repo1.maven.org/maven2/javax/enterprise/cdi-api/1.0/cdi-api-1.0-sources.jar)
+jstl (https://github.com/javaee/jstl-api)
+persistence (https://github.com/javaee/jpa-spec)
+prereq.wsdl4j (https://mvnrepository.com/artifact/wsdl4j/wsdl4j/1.0)
+servlet (https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api/4.0.0)
+servlet (https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api/4.0.0)
+servlet.jsp (https://github.com/javaee/servlet-spec)
+servlet.jsp.resources (https://github.com/javaee/servlet-spec)
+servlet.resources (https://github.com/javaee/servlet-spec)
+
+
+
+END OF COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1 NOTICES AND INFORMATION
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1.1
 
+The Program includes some or all of the following that IBM obtained
+under the COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1.1:
+
+Expression Language 3.0 API [javax.el-api] http://uel-spec.java.net
+Expression Language 3.0 API [jboss-el-api_3.0_spec] http://www.jboss.org
+Extended StAX API [stax-ex] http://stax-ex.java.net/
+JAX-WS API [jaxws-api] https://github.com/javaee/jax-ws-spec
+JAX-WS RI Runtime Bundle [jaxws-rt] http://jax-ws.java.net/
+JAX-WS RI Tools Bundle [jaxws-tools] http://jax-ws.java.net/
+JMS API [javax.jms-api] http://java.net/projects/jms-spec/pages/Home
+JSR 353 (JSON Processing) API [javax.json-api] http://json-processing-spec.java.net
+JSR 353 (JSON Processing) Default Provider [javax.json] http://jsonp.java.net
+JSR 374 (JSON Processing) API [javax.json-api] https://javaee.github.io/jsonp
+JSR-181 Maintenance Release 1 [jsr181-api] http://jcp.org/en/jsr/summary?id=181
+Java Architecture for XML Binding [jaxb-api] http://jaxb.java.net/
+Java Authentication Service Provider Interface for Containers API 1.1 [javax.security.auth.message-api] http://jcp.org/en/jsr/detail?id=196
+Java Authorization Contract for Containers API 1.5 [javax.security.jacc-api] http://jcp.org/en/jsr/detail?id=115
+Java EE Security API [javax.security.enterprise-api] https://repo.maven.apache.org/maven2/javax/security/enterprise/javax.security.enterprise-api/1.0
+Java Servlet API [javax.servlet-api] http://servlet-spec.java.net
+Java Servlet API [javax.servlet-api] https://javaee.github.io/servlet-spec/
+Java(TM) EE Interceptors 1.2 API [jboss-interceptors-api_1.2_spec] http://www.jboss.org
+JavaBeans Activation Framework (JAF) [activation] http://java.sun.com/products/javabeans/jaf/index.jsp
+JavaBeans Activation Framework [javax.activation] https://repo.maven.apache.org/maven2/com/sun/activation/javax.activation/1.2.0
+JavaMail API [javax.mail] http://javaee.github.io/javamail
+JavaMail API [javax.mail] http://javamail.java.net
+JavaMail API jar [javax.mail-api] https://repo.maven.apache.org/maven2/javax/mail/javax.mail-api/1.5.6
+JavaMail API jar [javax.mail-api] https://repo.maven.apache.org/maven2/javax/mail/javax.mail-api/1.6.2
+JavaServer Pages(TM) API [javax.servlet.jsp-api] http://jsp.java.net
+jboss-jakarta-jaxrs-api_spec [jboss-jaxrs-api_2.1_spec] https://repo.maven.apache.org/maven2/org/jboss/spec/javax/ws/rs/jboss-jaxrs-api_2.1_spec/2.0.1.Final
+MIME streaming extension [mimepull] http://mimepull.java.net
+Old JAXB Core [jaxb-core] https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-core/2.2.10
+Old JAXB Core [jaxb-core] https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-core/2.2.11
+Old JAXB JXC [jaxb-jxc] https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-jxc/2.2.10
+Old JAXB Runtime [jaxb-impl] https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-impl/2.2.10
+Old JAXB Runtime [jaxb-impl] https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-impl/2.2.11
+Old JAXB XJC [jaxb-xjc] https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-xjc/2.2.10
+Old JAXB XJC [jaxb-xjc] https://repo.maven.apache.org/maven2/com/sun/xml/bind/jaxb-xjc/2.2.11
+Streaming API for XML [stax-api] https://repo.maven.apache.org/maven2/javax/xml/stream/stax-api/1.0-2
+TXW2 Runtime [txw2] http://txw.java.net/
+WebSocket server API [javax.websocket-api] http://websocket-spec.java.net
+istack common utility code runtime [istack-commons-runtime] https://repo.maven.apache.org/maven2/com/sun/istack/istack-commons-runtime/2.4
+javax.annotation API [javax.annotation-api] http://jcp.org/en/jsr/detail?id=250
+javax.ejb API [javax.ejb-api] http://ejb-spec.java.net
+javax.enterprise.concurrent-api http://concurrency-ee-spec.java.net
+javax.interceptor API [javax.interceptor-api] http://interceptors-spec.java.net
+javax.json.bind-api https://javaee.github.io/jsonb-spec
+javax.resource API [javax.resource-api] http://connector-spec.java.net
+javax.ws.rs-api http://jax-rs-spec.java.net
+javax.xml.soap API [javax.xml.soap-api] https://javaee.github.io/javaee-spec/
+jaxb-core (https://github.com/javaee/jaxb-v2)
+jaxb-impl (https://github.com/javaee/jaxb-v2)
+jdeparser http://www.jboss.org
+jsr181-api (https://github.com/javaee/javax.jws)
+policy http://policy.java.net/
+saaj-impl https://repo.maven.apache.org/maven2/com/sun/xml/messaging/saaj/saaj-impl/1.4.0
+saaj-impl https://repo.maven.apache.org/maven2/com/sun/xml/messaging/saaj/saaj-impl/1.4.0-b03
+xmlstreambuffer [streambuffer] http://xmlstreambuffer.java.net/
+
+
+
+END OF COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1.1 NOTICES AND INFORMATION
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 COMMON PUBLIC LICENSE
 
 The Program includes some or all of the following that IBM obtained
-under the Common Public License (source code available via the indicated
-URL):
+under the COMMON PUBLIC LICENSE:
 
-WSDL4J (https://mvnrepository.com/artifact/wsdl4j/wsdl4j/1.6.2)
+JUnit [junit] http://junit.org
+WSDL4J [wsdl4j] http://sf.net/projects/wsdl4j
+
+
 
 END OF COMMON PUBLIC LICENSE NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ECLIPSE PUBLIC LICENSE, VERSION 1
+
+The Program includes some or all of the following that IBM obtained
+under the ECLIPSE PUBLIC LICENSE, VERSION 1:
+
+javax.persistence-api https://github.com/javaee/jpa-spec
+
+
+
+END OF ECLIPSE PUBLIC LICENSE, VERSION 1 NOTICES AND INFORMATION
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ECLIPSE PUBLIC LICENSE, VERSION 2
 
 The Program includes some or all of the following that IBM obtained
-under the Eclipse Public License (source code available via the
-indicated URL):
+under the ECLIPSE PUBLIC LICENSE, VERSION 2:
 
-YASSON
-(https://repo1.maven.org/maven2/org/eclipse/yasson/3.0.2/yasson-3.0.2.jar),
-JAKARTA-MESSAGING
-(https://search.maven.org/remotecontent?filepath=jakarta/jms/jakarta.jms-api/3.0.0/jakarta.jms-api-3.0.0.jar),
-JAKARTA.RESTFULWS
-(https://repo1.maven.org/maven2/jakarta/ws/rs/jakarta.ws.rs-api/3.0.0/jakarta.ws.rs-api-3.0.0.jar),
-JAKARTA.SERVLET.JSP.TAGS
-(https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/3.0.0/jakarta.servlet.jsp.jstl-api-3.0.0.jar),
-ECLIPSE EQUINOX
-(https://download.eclipse.org/eclipse/updates/4.23/R-4.23-202203080310/plugins/org.eclipse.equinox.frameworkadmin.equinox.source_1.2.100.v20210703-1540.jar),
-ECLIPSE.MICROPROFILE
-(https://github.com/eclipse/microprofile/archive/refs/tags/2.1.zip),
-JAXB-TOOLS
-(https://repo1.maven.org/maven2/com/sun/xml/ws/jaxws-tools/2.2.10/jaxws-tools-2.2.10.jar),
-JAKARTA-CONNECTORS
-(https://repo1.maven.org/maven2/jakarta/resource/jakarta.resource-api/2.0.0/jakarta.resource-api-2.0.0.jar),
-ECLIPSE-PARSSON
-(https://repo1.maven.org/maven2/org/eclipse/parsson/parsson/1.1.0/parsson-1.1.0.jar),
-JAKARTA-TRANSACTION
-(https://repo1.maven.org/maven2/jakarta/transaction/jakarta.transaction-api/2.0.0/jakarta.transaction-api-2.0.0.jar),
-JAKARTA-MAIL
-(https://repo1.maven.org/maven2/jakarta/mail/jakarta.mail-api/2.1.0/jakarta.mail-api-2.1.0.jar),
-JAKARTA-CONCURRENCY
-(https://repo1.maven.org/maven2/jakarta/enterprise/concurrent/jakarta.enterprise.concurrent-api/3.0.0/jakarta.enterprise.concurrent-api-3.0.0.jar),
-JAKARTA-INTERCEPTOR
-(https://repo1.maven.org/maven2/jakarta/interceptor/jakarta.interceptor-api/2.1.0/jakarta.interceptor-api-2.1.0.jar),
-JAKARTA-JSONB
-(https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/jakarta.json.bind-api-3.0.0.jar),
-ECLIPSE JDT
-(https://repo1.maven.org/maven2/org/eclipse/jdt/org.eclipse.jdt.core/3.30.0/org.eclipse.jdt.core-3.30.0.jar),
-ECLIPSELINK
-(https://repo1.maven.org/maven2/org/eclipse/persistence/eclipselink/2.7.1/eclipselink-2.7.1.jar),
-JAKARTA-FACES
-(https://repo1.maven.org/maven2/org/glassfish/jakarta.faces/3.0.1/jakarta.faces-3.0.1.jar),
-JAKARTA-PERSISTENCE
-(https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.1.0/jakarta.persistence-api-3.1.0.jar),
-ECLIPSE.OSGI
-(https://search.maven.org/remotecontent?filepath=org/eclipse/platform/org.eclipse.osgi/3.17.200/org.eclipse.osgi-3.17.200.jar),
-JAKARTA-CDI
-(https://repo1.maven.org/maven2/jakarta/enterprise/cdi-tck-api/4.0.0/cdi-tck-api-4.0.0.jar),
-JAKARTA-ACTIVATION
-(https://repo1.maven.org/maven2/jakarta/activation/jakarta.activation-api/2.1.0/jakarta.activation-api-2.1.0.jar),
-JAKARTA-WEBSOCKET-API
-(https://repo1.maven.org/maven2/jakarta/websocket/jakarta.websocket-api/2.0.0/jakarta.websocket-api-2.0.0.jar),
-JAKARTA-JSONP
-(https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/jakarta.json-api-2.1.0.jar),
-JAKARTA-SOAP
-(https://repo1.maven.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/2.0.0/jakarta.xml.soap-api-2.0.0.jar),
-JAKARTA-XMLBINDING
-(https://repo1.maven.org/maven2/jakarta/xml/bind/jakarta.xml.bind-api/4.0.0/jakarta.xml.bind-api-4.0.0.jar),
-JAKARTA.EXPRESSIONLANGUAGE
-(https://repo1.maven.org/maven2/jakarta/el/jakarta.el-api/5.0.0/jakarta.el-api-5.0.0.jar),
-JAKARTA-PERSISTENCE-API
-(https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.0.0/jakarta.persistence-api-3.0.0.jar),
-JAVAX-JSON
-(https://repo1.maven.org/maven2/javax/json/javax.json-api/1.1.4/javax.json-api-1.1.4.jar),
-JAKARTA-PAGES
-(https://repo1.maven.org/maven2/jakarta/servlet/jsp/jakarta.servlet.jsp-api/3.1.0/jakarta.servlet.jsp-api-3.1.0.jar),
-JAKARTA-SERVLET
-(https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/2.0.0/jakarta.servlet.jsp.jstl-api-2.0.0.jar),
-JAKARTA-SECURITY
-(https://repo1.maven.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/2.0.0/jakarta.security.enterprise-api-2.0.0.jar),
-ECLIPSELINK PERSISTENCE
-(https://repo1.maven.org/maven2/org/eclipse/persistence/eclipselink/3.0.0/eclipselink-3.0.0.jar),
-ECLIPSE.PERSISTENCE
-(https://repo1.maven.org/maven2/org/eclipse/persistence/eclipselink/3.1.0-M1/eclipselink-3.1.0-M1.jar),
-JSF
-(https://search.maven.org/remotecontent?filepath=org/glassfish/javax.faces/2.3.9/javax.faces-2.3.9.jar),
-JAKARTA-ANNOTATION
-(https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/2.1.0/jakarta.annotation-api-2.1.0.jar),
-JAVAEE-JACC
-(https://repo1.maven.org/maven2/javax/security/jacc/javax.security.jacc-api/1.5/javax.security.jacc-api-1.5.jar), 
-JAKARTA.PERSISTENCE.API
-(https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api/3.1.0),
-JAKARTAEE.PLATFORM
-(https://mvnrepository.com/artifact/jakarta.platform/jakarta.jakartaee-api/10.0.0),
-JAKARTA EXPRESSION LANGUAGE
-(https://projects.eclipse.org/projects/ee4j.el), JAKARTA-MESSAGING
-(https://projects.eclipse.org/projects/ee4j.messaging), JAKARTA
-CONCURRENCY
-(https://repo1.maven.org/maven2/jakarta/enterprise/concurrent/jakarta.enterprise.concurrent-api/3.0.0/),
-JAKARTA-AUTHENTICATION
-(https://github.com/jakartaee/authentication/tree/3.0.0-RELEASE),
-ECLIPSE.YASSON
-(https://repo1.maven.org/maven2/org/eclipse/yasson/3.0.0/yasson-3.0.0.pom),
-JAKARTA-CONNECTORS
-(https://github.com/jakartaee/connectors/tree/2.1.0-RELEASE), JAKARTA
-WEBSOCKET-CLIENT
-(https://mvnrepository.com/artifact/jakarta.websocket/jakarta.websocket-client-api),
-JAKARTA.CONCURRENCY
-(https://github.com/jakartaee/concurrency/blob/3.0.0/NOTICE.md),
-JAKARTA.RESTFULWS.3.1
-(https://mvnrepository.com/artifact/jakarta.ws.rs/jakarta.ws.rs-api/3.1.0),
-JAKARTA.SECURITY.ENTERPRISE
-(https://mvnrepository.com/artifact/jakarta.security.enterprise/jakarta.security.enterprise-api/3.0.0),
-JAKARTA.XML.WS (0.4.1), JSON BINDING JAKARTA.JSON-2.0.0.JAR
-(https://jakarta.ee/specifications/jsonb/3.0/jakarta-jsonb-spec-3.0.html),
-JAKARTA.ANNOTATION
-(https://mvnrepository.com/artifact/jakarta.annotation/jakarta.annotation-api/2.1.0),
-ORG.ECLIPSE.YASSON
-(https://repo1.maven.org/maven2/org/eclipse/yasson/3.0.0/), ANGUS-MAIL
-(https://github.com/eclipse-ee4j/angus-mail), JAKARTASEC (eclipse.org),
-JAKARTA.WEBSOCKET
-(https://projects.eclipse.org/projects/ee4j.websocket), JAKARTA.PAGES
-(https://projects.eclipse.org/projects/ee4j.jsp), JAKARTA CONNECTORS
-(jakarta jstl), JAKARTA MESSAGING JAKARTA.JMS-API-3.0.0.JAR (not
-required), JAKARTA.EE-API
-(https://github.com/eclipse-ee4j/jakartaee-api), JAKARTA AUTHORIZATION
-(https://mvnrepository.com/artifact/jakarta.authorization/jakarta.authorization-api),
-JAKARTA INTERCEPTOR
-(https://mvnrepository.com/artifact/jakarta.interceptor/jakarta.interceptor-api/2.1.0),
-JAKARTA ANNOTATION
-(https://search.maven.org/artifact/jakarta.annotation/jakarta.annotation-api/1.3.5/jar),
-JAKARTA.INTERCEPTOR
-(https://github.com/jakartaee/interceptors/tree/2.1.0-RELEASE),
-JAKARTA.PERSISTENCE
-(https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api/3.1.0),
-JSON PROCESSING (https://mvnrepository.com/artifact/jakarta.json/jakarta.json-api/2.1.0), JAKARTA.CONNECTORS
-(https://github.com/jakartaee/connectors/tree/2.1.0-RELEASE),
-JAKARTA.WEBSOCKET.CLIENT
-(https://repo1.maven.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/),
-JARTA.EXPRESSIONLANGUAGE
-(https://github.com/jakartaee/expression-language/tree/5.0.1-RELEASE-api),
-JAKARTA-RESTFULWS
-(https://mvnrepository.com/artifact/jakarta.ws.rs/jakarta.ws.rs-api/3.1.0),
-JAKARTA-TAGS
-(https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/3.0.0/),
-JSON BINDING
-(https://jakarta.ee/specifications/jsonb/3.0/jakarta-jsonb-spec-3.0.html),
-JAKARTA-AUTHORIZATION
-(https://repo1.maven.org/maven2/jakarta/authorization/jakarta.authorization-api/2.1.0/),
-JAKARTA-PAGES
-(https://github.com/jakartaee/pages/blob/3.1.0-RELEASE/pom.xml),
-ORG.ECLIPSE.PARSSON
-(https://mvnrepository.com/artifact/org.eclipse.parsson/parsson/1.1.0),
-JAKARTA.SERVLET
-(https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/6.0.0/),
-JAKARTA-TRANSACTION JAKARTA.TRANSACTION-API (jakarta-websocket), JAKARTA
-AUTHENTICATION
-(https://mvnrepository.com/artifact/jakarta.authentication/jakarta.authentication-api),
-JAKARTA-SECURITY (eclipse.org), JAKARTAEE/CONNECTORS (not required),
-PERSISTENCE
-(https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.1.0/),
-JAKARTA SECURITY (https://github.com/jakartaee/security),
-ECLIPSE.PERSISTENCE (not required), JAKARTA.MESSAGING
-(https://search.maven.org/artifact/io.openliberty.features/io.openliberty.jakarta.messaging-3.0/22.0.0.11/esa),
-JAKARTA-WEBSOCKET
-(https://mvnrepository.com/artifact/jakarta.websocket/jakarta.websocket-all/2.1.0)
-JAKARTA.PERSISTENCE.API
-(https://repo1.maven.org/maven2/jakarta/persistence/jakarta.persistence-api/3.1.0/jakarta.persistence-api-3.1.0-sources.jar),
-JAVAX.PERSISTENCE
-(https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api),
-JAKARTA.RESTFULWS (https://jakarta.ee/specifications/restful-ws/3.1/),
-JAKARTA.JSON
-(https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.0.0-RC3/jakarta.json-api-2.0.0-RC3-sources.jar),
-JAKARTA.ENTERPRISE
-(https://mvnrepository.com/artifact/jakarta.enterprise),
-JAKARTA.CONCURRENCY
-(https://jakarta.ee/specifications/concurrency/3.0/), JAKARTA.ANNOTATION
-(https://repo1.maven.org/maven2/jakarta/annotation/jakarta.annotation-api/2.1.0/jakarta.annotation-api-2.1.0-sources.jar),
-ANGUS-MAIL
-(https://repo1.maven.org/maven2/org/eclipse/angus/angus-mail/1.0.0/angus-mail-1.0.0-sources.jar),
-JAKARTA.WEBSOCKET
-(https://github.com/jakartaee/websocket/tree/2.1.0-RELEASE),
-JAKARTA.PAGES (https://jakarta.ee/specifications/pages/3.1/), JAVAX.WSDL
-(https://mvnrepository.com/artifact/javax/wsdl), JAKARTA.AUTHENTICATION
-(https://repo1.maven.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0/jakarta.authentication-api-3.0.0-sources.jar),
-JAKARTA.INTERCEPTOR
-(https://jakarta.ee/specifications/interceptors/2.1/), JAKARTA.TAGS
-(https://jakarta.ee/specifications/tags/3.0/), JAKARTA.XML.WS.SOAP
-(https://github.com/jakartaee/jax-ws-api), JAKARTA.PERSISTENCE
-(https://github.com/jakartaee/persistence/tree/3.1-3.1.0-RC1-RELEASE),
-JAKARTA.SERVLET.HTTP
-(https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/5.0.0/jakarta.servlet-api-5.0.0-sources.jar),
-JAKARTA.CONNECTORS
-(https://github.com/jakartaee/connectors/tree/2.1.0-RELEASE),
-JAKARTA.SECURITY
-(https://github.com/jakartaee/security/tree/3.0.0-RELEASE),
-JAKARTA.WEBSOCKET.CLIENT
-(https://repo1.maven.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/jakarta.websocket-client-api-2.1.0-sources.jar),
-JAVAX.ACTIVITY
-(https://clojars.org/repo/clojure-interop/javax.activity/1.0.0/javax.activity-1.0.0.jar),
-JAKARTA.CDI
-(https://repo1.maven.org/maven2/jakarta/enterprise/jakarta.enterprise.cdi-api/4.0.0/jakarta.enterprise.cdi-api-4.0.0-sources.jar),
-JAKARTA.JSON.BIND-API
-(https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/jakarta.json.bind-api-3.0.0-sources.jar),
-JAKARTA.SERVLET
-(https://repo1.maven.org/maven2/jakarta/servlet/jakarta.servlet-api/6.0.0/jakarta.servlet-api-6.0.0-sources.jar),
-JAKARTA TRANSACTION (https://projects.eclipse.org/projects/ee4j.jta),
-JAKARTA.AUTHORIZATION
-(https://repo1.maven.org/maven2/jakarta/authorization/jakarta.authorization-api/2.1.0/jakarta.authorization-api-2.1.0-sources.jar),
-JAKARTA.FACES (https://jakarta.ee/specifications/faces/3.0/),
-JAKARTA.MESSAGING
-(https://github.com/jakartaee/messaging/tree/3.1.0-RELEASE)
-JAKARTA.AUTHENTICATION  
-(https://github.com/jakartaee/authentication/tree/3.0.0-RELEASE
-JAKARTA.AUTHORIZATION-API  
- (https://repo.maven.apache.org/maven2/jakarta/authorization/jakarta.authorization-api/2.1.0/jakarta.authorization-api-2.1.0.jar)
-JAKARTA.ENTERPRISE.LANG-MODEL  
- (https://repo1.maven.org/maven2/jakarta/enterprise/jakarta.enterprise.lang-model/4.0.1/)
-JAKARTA.JMS-API
-(https://repo1.maven.org/maven2/jakarta/jms/jakarta.jms-api/3.1.0/)
-JAKARTA.JSON-API
- (https://repo1.maven.org/maven2/jakarta/json/jakarta.json-api/2.1.0/)
-JAKARTA.JSON.BIND-API
- (https://repo1.maven.org/maven2/jakarta/json/bind/jakarta.json.bind-api/3.0.0/)
-JAKARTA.MAIL-API
- (https://mvnrepository.com/artifact/jakarta.mail/jakarta.mail-api/2.1.0)
-JAKARTA.RESOURCE-API [Connectors]
-(https://mvnrepository.com/artifact/jakarta.resource/jakarta.resource-api/2.1.0)
-JAKARTA.SECURITY.ENTERPRISE-API
- (https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/3.0.0/jakarta.security.enterprise-api-3.0.0.jar)
-JAKARTA.SERVLET-API
- ( https://repo1.maven.org/maven2/jakarta/servlet/jsp/jakarta.servlet.jsp-api/3.1.1/)
-JAKARTA.SERVLET.JSP-API
- (https://repo1.maven.org/maven2/jakarta/servlet/jsp/jakarta.servlet.jsp-api/3.1.1/)
-JAKARTA.SERVLET.JSP.JSTL-API [Jakarta Standard Tag]
- (https://repo1.maven.org/maven2/jakarta/servlet/jsp/jstl/jakarta.servlet.jsp.jstl-api/3.0.0/)
-JAKARTA.WEBSOCKET-CLIENT-API 
- (https://repo1.maven.org/maven2/jakarta/websocket/jakarta.websocket-client-api/2.1.0/)
-ECLIPSE-PARSSON
-(https://repo1.maven.org/maven2/org/eclipse/parsson/parsson/1.1.0/parsson-1.1.0.jar)
-YASSON
-(https://repo1.maven.org/maven2/org/eclipse/yasson/3.0/yasson-3.0.jar),
-ORG.ECLIPSE.OSGI
-https://mvnrepository.com/artifact/org.eclipse.platform/org.eclipse.osgi/3.18.300 -  
-ORG.ECLIPSE.PERSISTENCE.JPA
-(https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa/4.0.1)
-ORG.ECLIPSE.PERSISTENCE.JPA.JPQL
-(https://mvnrepository.com/artifact/org.eclipse.persistence/org.eclipse.persistence.jpa.jpql/4.0.1),
-ORG.ECLIPSE.PERSISTENCE.CORE
-(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.core/4.0.1/),
-ORG.ECLIPSE.PERSISTENCE.ASM
-(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.asm/9.6.0),
-(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.asm/9.5.0),
-(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.asm/9.3.0),
-ORG.ECLIPSE.PERSISTENCE.ANTLR
-(https://repo1.maven.org/maven2/org/eclipse/persistence/org.eclipse.persistence.antlr/2.7.13/),
-ORG.ECLIPSE.ECJ
-(https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.35.0/),
-(https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.33.0/),
-(https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.26.0/),
+Angus Mail Provider [angus-mail] http://eclipse-ee4j.github.io/angus-mail
+Angus Mail Provider [angus-mail] http://eclipse-ee4j.github.io/mail
+Console plug-in [org.eclipse.equinox.console] http://www.eclipse.org/platform
+Coordinator [org.eclipse.equinox.coordinator] http://www.eclipse.org/platform
+Eclipse Compiler for Java(TM) [ecj] http://www.eclipse.org/jdt
+Eclipse Compiler for Java(TM) [ecj] https://projects.eclipse.org/projects/eclipse.jdt
+Eclipse Parsson [parsson] https://repo.maven.apache.org/maven2/org/eclipse/parsson/parsson/1.1.0
+Eclipse Parsson [parsson] https://repo.maven.apache.org/maven2/org/eclipse/parsson/parsson/1.1.4
+EclipseLink ANTLR [org.eclipse.persistence.antlr] http://www.eclipse.org/eclipselink
+EclipseLink ASM [org.eclipse.persistence.asm] http://www.eclipse.org/eclipselink
+EclipseLink Core [org.eclipse.persistence.core] http://www.eclipse.org/eclipselink
+EclipseLink Hermes JPQL Parser [org.eclipse.persistence.jpa.jpql] http://www.eclipse.org/eclipselink
+EclipseLink Hermes Parser [org.eclipse.persistence.jpa.jpql] http://www.eclipse.org/eclipselink
+EclipseLink JPA [org.eclipse.persistence.jpa] http://www.eclipse.org/eclipselink
+Expression Language 3.0 API [jboss-el-api_3.0_spec] https://projects.eclipse.org/projects/ee4j.el
+GlassFish High Availability APIs and SPI [ha-api] https://repo.maven.apache.org/maven2/org/glassfish/ha/ha-api/3.1.13
+JBoss Jakarta Annotations API [jboss-annotations-api_1.3_spec] https://github.com/jboss/jboss-jakarta-annotations-api_spec
+JSON-B API [jakarta.json.bind-api] https://eclipse-ee4j.github.io/jsonb-api
+JSON-P Default Provider [jakarta.json] https://github.com/eclipse-ee4j/jsonp
+JSON-P Default Provider [jakarta.json] https://repo.maven.apache.org/maven2/org/glassfish/jakarta.json/2.0.0
+Jakarta Annotations API [jakarta.annotation-api] https://projects.eclipse.org/projects/ee4j.ca
+Jakarta Authentication [jakarta.authentication-api] https://github.com/eclipse-ee4j/authentication
+Jakarta Authentication [jakarta.authentication-api] https://repo.maven.apache.org/maven2/jakarta/authentication/jakarta.authentication-api/3.0.0
+Jakarta Authorization [jakarta.authorization-api] https://github.com/
+Jakarta Authorization [jakarta.authorization-api] https://repo.maven.apache.org/maven2/jakarta/authorization/jakarta.authorization-api/2.1.0
+Jakarta Concurrency [jakarta.enterprise.concurrent-api] https://github.com/jakartaee/concurrency
+Jakarta Enterprise Beans API [jakarta.ejb-api] https://github.com/eclipse-ee4j/ejb-api
+Jakarta Enterprise Beans API [jakarta.ejb-api] https://repo.maven.apache.org/maven2/jakarta/ejb/jakarta.ejb-api/4.0.1
+Jakarta Expression Language API [jakarta.el-api] https://projects.eclipse.org/projects/ee4j.el
+Jakarta Interceptors [jakarta.interceptor-api] https://github.com/eclipse-ee4j/interceptor-api
+Jakarta Interceptors [jakarta.interceptor-api] https://repo.maven.apache.org/maven2/jakarta/interceptor/jakarta.interceptor-api/2.0.1
+Jakarta JSON Processing API [jakarta.json-api] https://github.com/eclipse-ee4j/jsonp
+Jakarta JSON Processing API [jakarta.json-api] https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/2.0.2
+Jakarta JSON Processing API [jakarta.json-api] https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/2.1.0
+Jakarta JSON Processing API [jakarta.json-api] https://repo.maven.apache.org/maven2/jakarta/json/jakarta.json-api/2.1.1
+Jakarta Mail API [jakarta.mail-api] https://repo.maven.apache.org/maven2/jakarta/mail/jakarta.mail-api/2.1.0
+Jakarta Mail API [jakarta.mail-api] https://repo.maven.apache.org/maven2/jakarta/mail/jakarta.mail-api/2.1.1
+Jakarta Mail API [jakarta.mail] http://eclipse-ee4j.github.io/mail
+Jakarta Mail API jar [jakarta.mail-api] https://repo.maven.apache.org/maven2/jakarta/mail/jakarta.mail-api/2.0.1
+Jakarta Messaging API [jakarta.jms-api] https://projects.eclipse.org/projects/ee4j.jms
+Jakarta RESTful WS API [jakarta.ws.rs-api] https://github.com/eclipse-ee4j/
+Jakarta Security [jakarta.security.enterprise-api] https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/2.0.0
+Jakarta Security [jakarta.security.enterprise-api] https://repo.maven.apache.org/maven2/jakarta/security/enterprise/jakarta.security.enterprise-api/3.0.0
+Jakarta Server Pages API [jakarta.servlet.jsp-api] https://projects.eclipse.org/projects/ee4j.jsp
+Jakarta Servlet [jakarta.servlet-api] https://projects.eclipse.org/projects/ee4j.servlet
+Jakarta Standard Tag Library API [jakarta.servlet.jsp.jstl-api] https://projects.eclipse.org/projects/ee4j.jstl
+Jakarta Standard Tag Library Implementation [jakarta.servlet.jsp.jstl] https://projects.eclipse.org/projects/ee4j.jstl
+Jakarta WebSocket - Client API [jakarta.websocket-client-api] https://projects.eclipse.org/projects/ee4j.websocket
+Jakarta WebSocket - Server API [jakarta.websocket-api] https://projects.eclipse.org/projects/ee4j.websocket
+Meta Type [org.eclipse.equinox.metatype] http://www.eclipse.org/platform
+OSGi System Bundle [org.eclipse.osgi] https://nexus.opendaylight.org/content/groups/public/org/eclipse/platform/org.eclipse.osgi/3.18.300
+OSGi System Bundle [org.eclipse.osgi] https://projects.eclipse.org/projects/eclipse.equinox
+OSGi resource locator [osgi-resource-locator] https://repo.maven.apache.org/maven2/org/glassfish/hk2/osgi-resource-locator/1.0.3
+RESTEasy Tracing API [resteasy-tracing-api] https://resteasy.github.io/
+Region Digraph [org.eclipse.equinox.region] http://www.eclipse.org/platform
+Yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
+che-lib7.0.0-rc-4.0 [che-lib] https://github.com/eclipse-che/che-lib.git
+jakarta.enterprise.concurrent-api https://github.com/eclipse-ee4j/concurrency-api
+jakarta.json (https://github.com/jakartaee/jsonp-api)
+jakarta.resource API [jakarta.resource-api] https://github.com/
+jakarta.resource API [jakarta.resource-api] https://repo.maven.apache.org/maven2/jakarta/resource/jakarta.resource-api/2.1.0
+jakarta.transaction API [jakarta.transaction-api] https://projects.eclipse.org/projects/ee4j.jta
+jakarta.ws.rs-api https://github.com/eclipse-ee4j/jaxrs-api
+jakarta.xml.soap-api (https://github.com/javaee/javax.xml.soap)
+javax.transaction API [jakarta.transaction-api] https://projects.eclipse.org/projects/ee4j.jta
+javax.transaction API [jboss-transaction-api_1.3_spec] https://projects.eclipse.org/projects/ee4j.jta
+javax.ws.rs-api [jakarta.ws.rs-api] https://github.com/eclipse-ee4j/jaxrs-api
+jboss-jakarta-ejb-api_spec [jboss-ejb-api_3.2_spec] https://github.com/eclipse-ee4j/ejb-api
+org.eclipse.persistence.jpa (https://github.com/jakartaee/persistence)
+org.eclipse.yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
+
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-GPL-2.0-WITH-CLASSPATH-EXCEPTION
+ISC License
 
 The Program includes some or all of the following that IBM obtained
-under a GPL-2.0-with-classpath-exception license:
+under the ISC License:
+
+at-least-node [at-least-node-1.0.0.tgz] (Copyright 2020 Ryan Zimmerman <opensrc@ryanzim.com>)
+chownr [chownr-1.1.4.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+fs.realpath [fs.realpath-1.0.0.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+glob [glob-7.2.3.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+graceful-fs [graceful-fs-4.2.11.tgz] (Copyright 2011-2022 Isaac Z. Schlueter)
+inflight [inflight-1.0.6.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+inherits [inherits-2.0.4.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+ini [ini-1.3.8.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+isexe [isexe-2.0.0.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+lru-cache [lru-cache-6.0.0.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+minimatch [minimatch-3.1.2.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+minimatch [minimatch-7.4.6.tgz] (Copyright 2011-2023 Isaac Z. Schlueter and Contributors)
+once [once-1.4.0.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+rimraf [rimraf-2.7.1.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+semver [semver-7.5.4.tgz] (Copyright Isaac Z. Schlueter and Contributors) (Copyright Isaac Z. Schlueter and Contributors)
+which [which-2.0.2.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+wrappy [wrappy-1.0.2.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+yallist [yallist-4.0.0.tgz] (Copyright Isaac Z. Schlueter and Contributors)
+yaml [yaml-2.3.4.tgz] (Copyright Eemeli Aro <eemeli@gmail.com>)
 
 
-JBOSS-ANNOTATIONS-API_SPEC | Copyright (c) 2011 Oracle and/or its affiliates. All rights reserved.
-JAXB-IMPL | Copyright (c)  2014 Oracle and/or its affiliates. All rights reserved.
-CHECKER-COMPAT-QUAL | Copyright (C) 1989, 1991 Free Software Foundation, Inc. All rights reserved.
+ISC License
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND ISC DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 
-
-The Program includes some or all of the following available
-under the GNU General Public License. For copies of the source
-code for this software, send an email to identifying the IBM
-product and the GPL-licensed program for which you are
-requesting the source code.
-
-END OF GPL-2.0-WITH-CLASSPATH-EXCEPTION NON-IBM-LICENSE INFORMATION
+END OF ISC License NOTICES AND INFORMATION
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -825,17 +1009,14 @@ MODIFIABLE THIRD PARTY CODE
 This Program includes some or all of the following Modifiable Third 
 Party Code that IBM obtained under the GNU Lesser General Public 
 License. For copies of the source code for this software, send an email 
-to <mbroz@us.ibm.com> identifying the IBM Program and the Modifiable Third 
+to mbroz@ibm.com identifying the IBM Program and the Modifiable Third 
 Party Code for which you are requesting the source code. 
 
-ORG.JBOSS.NARAYANA.RTS:LRA-COORDINATOR (No Copyright found), 
-JBOSS.RESTEASY.COMMON.EE10 (Copyright (C) 2007 Free Software Foundation;
-Inc. <https://fsf.org/>), JBOSS.NARAYANA.LRA (Copyright (C) 1991; 1999
-Free Software Foundation; Inc.),ARJUNA (2008 Copyright 2008 Red Hat Middleware),
-COMMON (2008 Copyright 2008 Red Hat Middleware LLC, and others contributors as indicated by the @authors tag),
-JBOSS-LOGGING-PROCESSOR (2008 Copyright 2008 Red Hat Middleware LLC, and others contributors as indicated by the @authors tag),
-JBOSS-RMI-API_1.0_SPEC (No Copyright found),
-LRA-SERVICE-BASE (No Copyright found)
+
+JBoss Logging I18n Annotation Processor [jboss-logging-processor] (Copyright 2010 Red Hat Inc., and individual contributors)
+Narayana: ArjunaCore arjuna [arjuna] (Copyright 2008 Red Hat Middleware)
+Narayana: common [common] (Copyright 2008 Red Hat Middleware LLC, and others contributors as indicated by the @authors tag)
+lra-service-base(Copyright Not Found)
 
 
                   GNU LESSER GENERAL PUBLIC LICENSE
@@ -1282,75 +1463,421 @@ OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 
 END OF TERMS AND CONDITIONS 
 
-END OF GNU LESSER GENERAL PUBLIC LICENSE, Version 2.1 NOTICES AND INFORMATION
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+END OF GNU LESSER GENERAL PUBLIC LICENSE Version 2.1 NOTICES AND INFORMATION
 
-MIT LICENSE
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+MIT license
 
 The Program includes some or all of the following that IBM obtained
-under the MIT License:
+under the MIT license:
 
-SLF4J-API (Copyright (c) 2004-2017 QOS.ch), SLF4J-JDK14 (Copyright (c)
-2004-2017 QOS.ch), SLF4J-JDK14 (Copyright (c) 2004-2011 QOS.ch),
-GRAPHQL-JAVA (Copyright (c) 2015 Andreas Marek and Contributors),
-ANIMAL-SNIFFER-ANNOTATIONS (Copyright (c) 2009 codehaus.org)
+@babel/runtime [runtime-7.23.4.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
+@babel/runtime-corejs3 [runtime-corejs3-7.23.4.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
+@braintree/sanitize-url [sanitize-url-6.0.4.tgz] (Copyright 2017 Braintree)
+@fastify/busboy [busboy-2.1.0.tgz] (Copyright Brian White)
+@types/hast [hast-2.3.8.tgz] (Copyright Microsoft Corporation)
+@types/hoist-non-react-statics [hoist-non-react-statics-3.3.5.tgz] (Copyright Microsoft Corporation)
+@types/prop-types [prop-types-15.7.11.tgz] (Copyright Microsoft Corporation)
+@types/ramda [ramda-0.29.9.tgz] (Copyright Microsoft Corporation)
+@types/react [react-18.2.38.tgz] (Copyright Microsoft Corporation)
+@types/scheduler [scheduler-0.16.8.tgz] (Copyright Microsoft Corporation)
+@types/unist [unist-2.0.10.tgz] (Copyright Microsoft Corporation)
+@types/use-sync-external-store [use-sync-external-store-0.0.3.tgz] (Copyright Microsoft Corporation)
+Animal Sniffer Annotations [animal-sniffer-annotations] (Copyright 2009 codehaus.org)
+Checker Qual [checker-compat-qual](Copyright Not Found)
+Checker Qual [checker-qual] (Copyright 2004 by the Checker Framework developers)
+SLF4J API Module [slf4j-api] (Copyright 2023 QOS.ch)
+SLF4J API Module [slf4j-api](Copyright Not Found)
+SLF4J JDK14 Binding [slf4j-jdk14](Copyright Not Found)
+ansi-styles [ansi-styles-4.3.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+argparse [argparse-1.0.10.tgz] (Copyright 2012 "Vitaly Puzrin" (https://github.com/puzrin)) (Copyright 2012 [Vitaly Puzrin](https://github.com/puzrin)) (Copyright 2012 by Vitaly Puzrin)
+asynckit [asynckit-0.4.0.tgz] (Copyright 2016 Alex Indigo)
+autolinker [autolinker-3.16.2.tgz] (Copyright 2014 Gregory Jacobs (http://greg-jacobs.com))
+axios [axios-1.6.2.tgz] (Copyright 2014 Matt Zabriskie & Collaborators)
+balanced-match [balanced-match-1.0.2.tgz] (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
+base64-js [base64-js-1.5.1.tgz] (Copyright 2014 Jameson Little)
+bl [bl-4.1.0.tgz] (Copyright 2013-2019 bl contributors)
+bootstrap [bootstrap-5.2.3.tgz] (Copyright 2011-2017 The Bootstrap Authors) (Copyright 2011-2017 Twitter, Inc) (Copyright 2011-2017 the [Bootstrap Authors](https://github.com/twbs/bootstrap/graphs/contributors) a) (Copyright 2011-2022 The Bootstrap Authors) (Copyright 2011-2022 Twitter, Inc) (Copyright 2011-2022 ode and documentation copyright) (Copyright and license" (#copyright-and-license))
+brace-expansion [brace-expansion-1.1.11.tgz] (Copyright 2013 Julian Gruber &lt;julian@juliangruber.com&gt;) (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
+brace-expansion [brace-expansion-2.0.1.tgz] (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
+braces [braces-3.0.2.tgz] (Copyright 2014-2018 Jon Schlinkert) (Copyright 2019 "Jon Schlinkert" (https://github.com/jonschlinkert)) (Copyright 2019 [Jon Schlinkert](https://github.com/jonschlinkert))
+buffer [buffer-5.7.1.tgz] (Copyright Feross Aboukhadijeh, and other contributors)
+buffer [buffer-6.0.3.tgz] (Copyright Feross Aboukhadijeh, and other contributors)
+call-bind [call-bind-1.0.5.tgz] (Copyright 2020 Jordan Harband)
+chalk [chalk-4.1.2.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+character-entities [character-entities-1.2.4.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
+character-entities-legacy [character-entities-legacy-1.1.4.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
+character-reference-invalid [character-reference-invalid-1.1.4.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
+ci-info [ci-info-3.9.0.tgz] (Copyright 2016 Thomas Watson Steen)
+classnames [classnames-2.3.2.tgz] (Copyright 2018 Jed Watson)
+color-convert [color-convert-2.0.1.tgz] (Copyright 2011-2016 Heather Arthur <fayearthur@gmail.com>) (Copyright 2011-2016 Heather Arthur and Josh Junon)
+color-name [color-name-1.1.4.tgz] (Copyright 2015 Dmitry Ivanov)
+combined-stream [combined-stream-1.0.8.tgz] (Copyright 2011 Debuggable Limited <felix@debuggable.com>)
+comma-separated-tokens [comma-separated-tokens-1.0.8.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+concat-map [concat-map-0.0.1.tgz] (Copyright James Halliday)
+cookie [cookie-0.5.0.tgz] (Copyright 2012-2014 Roman Shtylman <shtylman@gmail.com>) (Copyright 2015 Douglas Christopher Wilson <doug@somethingdoug.com>)
+copy-to-clipboard [copy-to-clipboard-3.3.3.tgz] (Copyright 2017 sudodoki <smd.deluzion@gmail.com>)
+core-js [core-js-3.33.3.tgz] (Copyright 2014-2023 Denis Pushkarev)
+core-js-pure [core-js-pure-3.33.3.tgz] (Copyright 2014-2023 Denis Pushkarev)
+cross-spawn [cross-spawn-7.0.3.tgz] (Copyright 2018 Made With MOXY Lda <hello@moxy.studio>)
+crypto-js [enc-base64-min-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
+crypto-js [sha256-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
+css.escape [css.escape-1.5.1.tgz] (Copyright Mathias Bynens <https://mathiasbynens.be/>)
+csstype [csstype-3.1.2.tgz] (Copyright 2017-2018 Fredrik Nicol)
+decompress-response [decompress-response-6.0.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
+deep-extend [deep-extend-0.6.0.tgz] (Copyright 2013-2018 Viacheslav Lotsmanov)
+deepmerge [deepmerge-4.3.1.tgz] (Copyright 2012 James Halliday, Josh Duff, and other contributors)
+define-data-property [define-data-property-1.1.1.tgz] (Copyright 2023 Jordan Harband)
+delayed-stream [delayed-stream-1.0.0.tgz] (Copyright 2011 Debuggable Limited <felix@debuggable.com>)
+drange [drange-1.1.1.tgz] (Copyright 2014 David Tudury)
+end-of-stream [end-of-stream-1.4.4.tgz] (Copyright 2014 Mathias Buus)
+expand-template [expand-template-2.0.3.tgz] (Copyright 2018 Lars-Magnus Skog)
+fast-json-patch [fast-json-patch-3.1.1.tgz] (Copyright 2013-2020 Joachim Wester)
+fault [fault-1.0.4.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
+fill-range [fill-range-7.0.1.tgz] (Copyright 2014 Jon Schlinkert) (Copyright 2019 "Jon Schlinkert" (https://github.com/jonschlinkert))
+flatpickr [flatpickr-4.6.1.tgz] (Copyright 2017 Gregory Petrosyan)
+follow-redirects [follow-redirects-1.15.3.tgz] (Copyright 2014 Olivier Lalonde <olalonde@gmail.com>, James Talmage <james@talmage.io>, Ruben Verborgh)
+form-data [form-data-4.0.0.tgz] (Copyright 2012 Felix Geisendörfer (felix@debuggable.com) and contributors)
+format [format-0.2.2.tgz] (Copyright 2010-2014 Sami Samhuri sami@samhuri.net)
+fs-constants [fs-constants-1.0.0.tgz] (Copyright 2018 Mathias Buus)
+fs-extra [fs-extra-9.1.0.tgz] (Copyright 2011-2017 JP Richardson)
+function-bind [function-bind-1.1.2.tgz] (Copyright 2013 Raynos)
+get-intrinsic [get-intrinsic-1.2.2.tgz] (Copyright 2020 Jordan Harband)
+github-from-package [github-from-package-0.0.0.tgz](Copyright Not Found)
+gopd [gopd-1.0.1.tgz] (Copyright 2022 Jordan Harband)
+graphql-java (Copyright 2015 Andreas Marek and Contributors Permission is hereby granted, free of charge, to any person obtaining)
+has-flag [has-flag-4.0.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+has-property-descriptors [has-property-descriptors-1.0.1.tgz] (Copyright 2022 Inspect JS)
+has-proto [has-proto-1.0.1.tgz] (Copyright 2022 Inspect JS)
+has-symbols [has-symbols-1.0.3.tgz] (Copyright 2016 Jordan Harband)
+hasown [hasown-2.0.0.tgz] (Copyright Jordan Harband and contributors)
+hast-util-parse-selector [hast-util-parse-selector-2.2.5.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+hastscript [hastscript-6.0.0.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+immutable [immutable-3.8.2.tgz] (Copyright 2014 Facebook, Inc)
+invariant [invariant-2.2.4.tgz] (Copyright 2013 Facebook, Inc)
+is-alphabetical [is-alphabetical-1.0.4.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+is-alphanumerical [is-alphanumerical-1.0.4.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+is-decimal [is-decimal-1.0.4.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+is-docker [is-docker-2.2.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
+is-hexadecimal [is-hexadecimal-1.0.4.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+is-number [is-number-7.0.0.tgz] (Copyright 2014 Jon Schlinkert) (Copyright 2018 "Jon Schlinkert" (https://github.com/jonschlinkert)) (Copyright 2018 [Jon Schlinkert](https://github.com/jonschlinkert))
+is-plain-object [is-plain-object-5.0.0.tgz] (Copyright 2014-2017 Jon Schlinkert) (Copyright 2019 "Jon Schlinkert" (https://github.com/jonschlinkert))
+is-wsl [is-wsl-2.2.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+isarray [isarray-2.0.5.tgz] (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
+jquery [jquery-3.5.1.min.js] (Copyright 2020 OpenJS Foundation and jQuery contributors)
+jquery [jquery-3.6.3.tgz] (Copyright OpenJS Foundation and other contributors, https://openjsf.org/) (Copyright jQuery Foundation and other contributors, https://jquery.org/)
+js-file-download [js-file-download-0.4.12.tgz] (Copyright 2017 Kenneth Jiang)
+js-tokens [js-tokens-4.0.0.tgz] (Copyright 2014-2015 2016, 2017, 2018 Simon Lydell)
+js-yaml [js-yaml-4.1.0.tgz] (Copyright 2011-2015 by Vitaly Puzrin)
+json-stable-stringify [json-stable-stringify-1.1.0.tgz] (Copyright 2013 contributors)
+jsonfile [jsonfile-6.1.0.tgz] (Copyright 2012-2015 JP Richardson <jprichardson@gmail.com>) (Copyright 2012-2016 JP Richardson)
+klaw-sync [klaw-sync-6.0.0.tgz] (Copyright 2017 Mani Maghsoudlou)
+lodash [lodash-4.17.21.tgz] (Copyright OpenJS Foundation and other contributors <https://openjsf.org/>)
+lodash.debounce [lodash.debounce-4.0.8.tgz] (Copyright jQuery Foundation and other contributors <https://jquery.org/>)
+loose-envify [loose-envify-1.4.0.tgz] (Copyright 2015 Andres Suarez <zertosh@gmail.com>)
+lowlight [lowlight-1.20.0.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+micromatch [micromatch-4.0.5.tgz](Copyright Not Found)
+mime-db [mime-db-1.52.0.tgz](Copyright Not Found)
+mime-types [mime-types-2.1.35.tgz] (Copyright 2014 Jonathan Ong <me@jongleberry.com>) (Copyright 2015 Douglas Christopher Wilson <doug@somethingdoug.com>)
+mimic-response [mimic-response-3.1.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
+minim [minim-0.23.8.tgz] (Copyright 2014 Stephen Mizell)
+minimist [minimist-1.2.8.tgz](Copyright Not Found)
+mkdirp-classic [mkdirp-classic-0.5.3.tgz] (Copyright 2020 James Halliday (mail@substack.net) and Mathias Buus)
+nan [nan-2.18.0.tgz] (Copyright 2018 NAN WG Members / Collaborators (listed above)) (Copyright 2018 NAN contributors" (https://github.com/nodejs/nan#wg-members--collaborators)) (Copyright The contribution was provided directly to me by some other) (Copyright and I have not modified)
+napi-build-utils [napi-build-utils-1.0.2.tgz] (Copyright 2018 inspiredware)
+node-abi [node-abi-3.51.0.tgz] (Copyright 2016 Lukas Geiger)
+node-abort-controller [node-abort-controller-3.1.1.tgz] (Copyright 2019 Steve Faulkner)
+node-domexception [node-domexception-1.0.0.tgz] (Copyright 2021 Jimmy Wärting)
+node-fetch-commonjs [node-fetch-commonjs-3.3.2.tgz] (Copyright 2016-2020 Node Fetch Team)
+object-assign [object-assign-4.1.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+object-inspect [object-inspect-1.13.1.tgz] (Copyright 2013 James Halliday)
+object-keys [object-keys-1.1.1.tgz] (Copyright 2013 Jordan Harband)
+open [open-7.4.2.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
+os-tmpdir [os-tmpdir-1.0.2.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+parse-entities [parse-entities-2.0.0.tgz] (Copyright 2015 Titus Wormer <mailto:tituswormer@gmail.com>)
+patch-package [patch-package-8.0.0.tgz] (Copyright 2017 David Sheldrick)
+path-is-absolute [path-is-absolute-1.0.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+path-key [path-key-3.1.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+picomatch [picomatch-2.3.1.tgz] (Copyright 2017 Jon Schlinkert) (Copyright 2017 Jon Schlinkert" (https://github.com/jonschlinkert))
+prebuild-install [prebuild-install-7.1.1.tgz] (Copyright 2015 Mathias Buus)
+prismjs [prismjs-1.27.0.tgz] (Copyright 2012 Lea Verou)
+prismjs [prismjs-1.29.0.tgz] (Copyright 2012 Lea Verou)
+process [process-0.11.10.tgz] (Copyright 2013 Roman Shtylman <shtylman@gmail.com>)
+prop-types [prop-types-15.8.1.tgz] (Copyright 2013 Facebook, Inc)
+property-information [property-information-5.6.0.tgz] (Copyright 2013-2015 Facebook, Inc) (Copyright 2015 Titus Wormer <mailto:tituswormer@gmail.com>)
+proxy-from-env [proxy-from-env-1.1.0.tgz] (Copyright 2016-2018 Rob Wu <rob@robwu.nl>)
+pump [pump-3.0.0.tgz] (Copyright 2014 Mathias Buus)
+querystringify [querystringify-2.2.0.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
+ramda [ramda-0.29.1.tgz] (Copyright 2013-2023 Scott Sauyet and Michael Hurley) (Copyright 2014 J. C. Phillipps)
+randexp [randexp-0.5.3.tgz] (Copyright 2011 by fent)
+randombytes [randombytes-2.1.0.tgz] (Copyright 2017 crypto-browserify)
+react [react-17.0.2.tgz] (Copyright Facebook, Inc. and its affiliates)
+react-copy-to-clipboard [react-copy-to-clipboard-5.1.0.tgz] (Copyright 2016 Nik Butenko)
+react-debounce-input [react-debounce-input-3.3.0.tgz] (Copyright 2016 Nik Butenko)
+react-dom [react-dom-17.0.2.tgz] (Copyright Facebook, Inc. and its affiliates)
+react-immutable-proptypes [react-immutable-proptypes-2.2.0.tgz] (Copyright 2015 James Burnett)
+react-immutable-pure-component [react-immutable-pure-component-2.2.2.tgz] (Copyright 2017 Piotr Tomasz Monarski)
+react-inspector [react-inspector-6.0.2.tgz] (Copyright 2017 Xiaoyi Chen)
+react-is [react-is-16.13.1.tgz] (Copyright Facebook, Inc. and its affiliates)
+react-is [react-is-18.2.0.tgz] (Copyright Facebook, Inc. and its affiliates)
+react-redux [react-redux-8.1.3.tgz] (Copyright 2015 Dan Abramov)
+react-syntax-highlighter [react-syntax-highlighter-15.5.0.tgz] (Copyright 2019 Conor Hastings)
+reactive-streams (Copyright 5000 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and as)
+readable-stream [readable-stream-3.6.2.tgz] (Copyright Node.js contributors)
+redux [redux-4.2.1.tgz] (Copyright 2015 Dan Abramov)
+refractor [refractor-3.6.0.tgz] (Copyright 2017 Titus Wormer <tituswormer@gmail.com>)
+regenerator-runtime [regenerator-runtime-0.14.0.tgz] (Copyright 2014 Facebook, Inc) (Copyright 2015 ECMAScript)
+remarkable [remarkable-2.0.1.tgz] (Copyright 2014 Jon Schlinkert, Vitaly Puzrin) (Copyright 2014-2016 Jon Schlinkert)
+repeat-string [repeat-string-1.6.1.tgz] (Copyright 2014-2015 Jon Schlinkert) (Copyright 2014-2016 Jon Schlinkert) (Copyright 2016 "Jon Schlinkert" (http://github.com/jonschlinkert)) (Copyright 2016 [Jon Schlinkert](http://github.com/jonschlinkert))
+require.js [require-2.1.15.min.js](Copyright Not Found)
+requires-port [requires-port-1.0.0.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
+reselect [reselect-4.1.8.tgz] (Copyright 2015-2018 Reselect Contributors)
+ret [ret-0.2.2.tgz] (Copyright 2011 by fent)
+safe-buffer [safe-buffer-5.2.1.tgz] (Copyright Feross Aboukhadijeh)
+scheduler [scheduler-0.20.2.tgz] (Copyright Facebook, Inc. and its affiliates)
+serialize-error [serialize-error-8.1.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
+set-function-length [set-function-length-1.1.1.tgz] (Copyright Jordan Harband and contributors)
+sha.js [sha.js-2.4.11.tgz] (Copyright 1998-2009 Paul Johnston & Contributors) (Copyright 2013-2018 sha.js contributors)
+shebang-command [shebang-command-2.0.0.tgz] (Copyright Kevin Mårtensson <kevinmartensson@gmail.com> (github.com/kevva))
+shebang-regex [shebang-regex-3.0.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+side-channel [side-channel-1.0.4.tgz] (Copyright 2019 Jordan Harband)
+simple-concat [simple-concat-1.0.1.tgz] (Copyright Feross Aboukhadijeh)
+simple-get [simple-get-4.0.1.tgz] (Copyright Feross Aboukhadijeh)
+slash [slash-2.0.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+space-separated-tokens [space-separated-tokens-1.1.5.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+stampit [stampit-4.3.2.tgz] (Copyright 2013 Eric Elliott)
+stream-browserify [stream-browserify-3.0.0.tgz] (Copyright James Halliday)
+string_decoder [string_decoder-1.3.0.tgz] (Copyright Node.js contributors)
+strip-json-comments [strip-json-comments-2.0.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+supports-color [supports-color-7.2.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+tar-fs [tar-fs-2.1.1.tgz] (Copyright 2014 Mathias Buus)
+tar-stream [tar-stream-2.2.0.tgz] (Copyright 2014 Mathias Buus)
+tmp [tmp-0.0.33.tgz] (Copyright 2014 KARASZI István)
+to-regex-range [to-regex-range-5.0.1.tgz] (Copyright 2015 Jon Schlinkert) (Copyright 2019 "Jon Schlinkert" (https://github.com/jonschlinkert))
+toggle-selection [toggle-selection-1.0.6.tgz] (Copyright 2017.0 sudodoki)
+traverse [traverse-0.6.7.tgz] (Copyright 2010 James Halliday (mail@substack.net))
+tree-sitter [tree-sitter-0.20.4.tgz] (Copyright 2014 maxbrunsfeld)
+tree-sitter-json [tree-sitter-json-0.20.1.tgz] (Copyright 2014 Max Brunsfeld)
+tree-sitter-yaml [tree-sitter-yaml-0.5.0.tgz] (Copyright Ika <ikatyang@gmail.com> (https://github.com/ikatyang))
+type-fest [type-fest-0.20.2.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https:/sindresorhus.com))
+types-ramda [types-ramda-0.29.6.tgz](Copyright Not Found)
+undici [undici-5.27.2.tgz] (Copyright Matteo Collina and Undici contributors)
+universalify [universalify-2.0.1.tgz] (Copyright 2017 Ryan Zimmerman <opensrc@ryanzim.com>)
+unraw [unraw-3.0.0.tgz] (Copyright 2019 Ian Sanders)
+url-parse [url-parse-1.5.10.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
+use-sync-external-store [use-sync-external-store-1.2.0.tgz] (Copyright Facebook, Inc. and its affiliates)
+util-deprecate [util-deprecate-1.0.2.tgz] (Copyright 2014 Nathan Rajlich "nathan@tootallnate.net" (mailto:nathan@tootallnate.net)) (Copyright 2014 Nathan Rajlich <nathan@tootallnate.net>)
+web-streams-polyfill [web-streams-polyfill-3.2.1.tgz] (Copyright 2016 Diwank Singh Tomer) (Copyright 2020 Mattias Buelens)
+web-tree-sitter [web-tree-sitter-0.20.3.tgz] (Copyright 2018-2021 Max Brunsfeld)
+xml [xml-1.0.1.tgz] (Copyright 2011-2016 Dylan Greene <dylang@gmail.com>)
+xml-but-prettier [xml-but-prettier-1.0.1.tgz] (Copyright 2015 Jonathan Persson)
+xtend [xtend-4.0.2.tgz] (Copyright 2012-2014 Raynos)
 
-Permission is hereby granted, free of charge, to any person obtaining a 
-copy of this software and associated documentation files (the 
-"Software"), to deal in the Software without restriction, including 
-without limitation the rights to use, copy, modify, merge, publish, 
-distribute, sublicense, and/or sell copies of the Software, and to 
-permit persons to whom the Software is furnished to do so, subject to 
-the following conditions: 
+ Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the “Software”),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:  The
+above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.  THE SOFTWARE IS PROVIDED
+“AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-The above copyright notice and this permission notice shall be included 
-in all copies or substantial portions of the Software. 
+END OF MIT license NOTICES AND INFORMATION
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Python License, Version 2
 
-END OF MIT LICENSE NOTICES AND INFORMATION
+The Program includes some or all of the following that IBM obtained
+under the Python License, Version 2:
+
+argparse [argparse-2.0.1.tgz]
+
+
+
+PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
+
+1. This LICENSE AGREEMENT is between the Python Software Foundation
+("PSF"), and the Individual or Organization ("Licensee") accessing
+and otherwise using this software ("Python") in source or binary form
+and its associated documentation.
+2. Subject to the terms and conditions of this License Agreement,
+PSF hereby grants Licensee a nonexclusive, royalty-free, world-wide
+license to reproduce, analyze, test, perform and/or display publicly,
+prepare derivative works, distribute, and otherwise use Python alone
+or in any derivative version, provided, however, that PSF's License
+Agreement and PSF's notice of copyright, i.e., "Copyright (c) 2001,
+2002, 2003, 2004, 2005, 2006 Python Software Foundation; All Rights
+Reserved" are retained in Python alone or in any derivative version
+prepared by Licensee.
+3. In the event Licensee prepares a derivative work that is based on
+or incorporates Python or any part thereof, and wants to make the
+derivative work available to others as provided herein, then Licensee
+hereby agrees to include in any such work a brief summary of the changes
+made to Python.
+4. PSF is making Python available to Licensee on an "AS IS" basis. PSF
+MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF
+EXAMPLE, BUT NOT LIMITATION, PSF MAKES NO AND DISCLAIMS ANY REPRESENTATION
+OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR
+THAT THE USE OF PYTHON WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
+5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON FOR
+ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF
+MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON, OR ANY DERIVATIVE
+THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+6. This License Agreement will automatically terminate upon a material
+breach of its terms and conditions.
+7. Nothing in this License Agreement shall be deemed to create any
+relationship of agency, partnership, or joint venture between PSF and
+Licensee. This License Agreement does not grant permission to use PSF
+trademarks or trade name in a trademark sense to endorse or promote
+products or services of Licensee, or any third party.
+8. By copying, installing or otherwise using Python, Licensee agrees to
+be bound by the terms and conditions of this License Agreement.
+BEOPEN.COM LICENSE AGREEMENT FOR PYTHON 2.0
+
+BEOPEN PYTHON OPEN SOURCE LICENSE AGREEMENT VERSION 1
+
+1. This LICENSE AGREEMENT is between BeOpen.com ("BeOpen"), having an
+office at 160 Saratoga Avenue, Santa Clara, CA 95051, and the Individual
+or Organization ("Licensee") accessing and otherwise using this software in
+source or binary form and its associated documentation ("the Software").
+2. Subject to the terms and conditions of this BeOpen Python License
+Agreement, BeOpen hereby grants Licensee a non-exclusive, royalty-free,
+world-wide license to reproduce, analyze, test, perform and/or display
+publicly, prepare derivative works, distribute, and otherwise use the
+Software alone or in any derivative version, provided, however, that the
+BeOpen Python License is retained in the Software, alone or in any
+derivative version prepared by Licensee.
+3. BeOpen is making the Software available to Licensee on an "AS IS" basis.
+BEOPEN MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF
+EXAMPLE, BUT NOT LIMITATION, BEOPEN MAKES NO AND DISCLAIMS ANY REPRESENTATION
+OR WARRANTY OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT
+THE USE OF THE SOFTWARE WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
+4. BEOPEN SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF THE SOFTWARE
+FOR ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF
+USING, MODIFYING OR DISTRIBUTING THE SOFTWARE, OR ANY DERIVATIVE THEREOF,
+EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+5. This License Agreement will automatically terminate upon a material breach
+of its terms and conditions.
+6. This License Agreement shall be governed by and interpreted in all respects
+by the law of the State of California, excluding conflict of law provisions.
+Nothing in this License Agreement shall be deemed to create any relationship
+of agency, partnership, or joint venture between BeOpen and Licensee. This
+License Agreement does not grant permission to use BeOpen trademarks or trade
+names in a trademark sense to endorse or promote products or services of
+Licensee, or any third party. As an exception, the "BeOpen Python" logos
+available at http://www.pythonlabs.com/logos.html may be used according to the
+permissions granted on that web page.
+7. By copying, installing or otherwise using the software, Licensee agrees to
+be bound by the terms and conditions of this License Agreement.
+CNRI OPEN SOURCE LICENSE AGREEMENT (for Python 1.6b1)
+
+IMPORTANT: PLEASE READ THE FOLLOWING AGREEMENT CAREFULLY.
+
+BY CLICKING ON "ACCEPT" WHERE INDICATED BELOW, OR BY COPYING, INSTALLING OR
+OTHERWISE USING PYTHON 1.6, beta 1 SOFTWARE, YOU ARE DEEMED TO HAVE AGREED TO
+THE TERMS AND CONDITIONS OF THIS LICENSE AGREEMENT.
+
+1. This LICENSE AGREEMENT is between the Corporation for National Research
+Initiatives, having an office at 1895 Preston White Drive, Reston, VA 20191
+("CNRI"), and the Individual or Organization ("Licensee") accessing and
+otherwise using Python 1.6, beta 1 software in source or binary form and its
+associated documentation, as released at the www.python.org Internet site on
+August 4, 2000 ("Python 1.6b1").
+2. Subject to the terms and conditions of this License Agreement, CNRI hereby
+grants Licensee a non-exclusive, royalty-free, world-wide license to reproduce,
+analyze, test, perform and/or display publicly, prepare derivative works,
+distribute, and otherwise use Python 1.6b1 alone or in any derivative version,
+provided, however, that CNRIs License Agreement is retained in Python 1.6b1,
+alone or in any derivative version prepared by Licensee.
+Alternately, in lieu of CNRIs License Agreement, Licensee may substitute the
+following text (omitting the quotes): "Python 1.6, beta 1, is made available
+subject to the terms and conditions in CNRIs License Agreement. This Agreement
+may be located on the Internet using the following unique, persistent identifier
+(known as a handle): 1895.22/1011. This Agreement may also be obtained from a
+proxy server on the Internet using the URL:http://hdl.handle.net/1895.22/1011".
+
+3. In the event Licensee prepares a derivative work that is based on or
+incorporates Python 1.6b1 or any part thereof, and wants to make the derivative
+work available to the public as provided herein, then Licensee hereby agrees to
+indicate in any such work the nature of the modifications made to Python 1.6b1.
+4. CNRI is making Python 1.6b1 available to Licensee on an "AS IS" basis. CNRI
+MAKES NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE,
+BUT NOT LIMITATION, CNRI MAKES NO AND DISCLAIMS ANY REPRESENTATION OR WARRANTY
+OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF
+PYTHON 1.6b1 WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
+5. CNRI SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF THE SOFTWARE FOR
+ANY INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF USING,
+MODIFYING OR DISTRIBUTING PYTHON 1.6b1, OR ANY DERIVATIVE THEREOF, EVEN IF
+ADVISED OF THE POSSIBILITY THEREOF.
+6. This License Agreement will automatically terminate upon a material breach
+of its terms and conditions.
+7. This License Agreement shall be governed by and interpreted in all respects
+by the law of the State of Virginia, excluding conflict of law provisions.
+Nothing in this License Agreement shall be deemed to create any relationship of
+agency, partnership, or joint venture between CNRI and Licensee. This License
+Agreement does not grant permission to use CNRI trademarks or trade name in a
+trademark sense to endorse or promote products or services of Licensee, or any
+third party.
+8. By clicking on the "ACCEPT" button where indicated, or by copying, installing
+or otherwise using Python 1.6b1, Licensee agrees to be bound by the terms and
+conditions of this License Agreement.
+ACCEPT
+
+CWI LICENSE AGREEMENT FOR PYTHON 0.9.0 THROUGH 1.2
+
+Copyright (c) 1991 - 1995, Stichting Mathematisch Centrum Amsterdam, The
+Netherlands. All rights reserved.
+
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted, provided that
+the above copyright notice appear in all copies and that both that copyright
+notice and this permission notice appear in supporting documentation, and that
+the name of Stichting Mathematisch Centrum or CWI not be used in advertising
+or publicity pertaining to distribution of the software without specific,
+written prior permission.
+
+STICHTING MATHEMATISCH CENTRUM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS
+SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN
+NO EVENT SHALL STICHTING MATHEMATISCH CENTRUM BE LIABLE FOR ANY SPECIAL,
+INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+
+
+END OF Python License, Version 2 NOTICES AND INFORMATION
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-THE REMAINDER OF THIS OPEN LIBERTY @LIBERTY_VERSION@ PROJECT NOTICES FILE CONSISTS OF THE FOLLOWING 
-SECTIONS:
-
-TABLE OF CONTENTS
-
-CC-BY-1.0
-SIL OPEN FONT LICENSE 1.1    
-
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-CREATIVE COMMONS ATTRIBUTION 1.0
+CREATIVE COMMONS ATTRIBUTION 4.0
 
 The Program includes some or all of the following works licensed under
 the Creative Commons.
-The url to the license is https://creativecommons.org/licenses/by/1.0/legalcode
+The url to the license is https://creativecommons.org/licenses/by/4.0/legalcode
 
-HdrHistogram Copyright (c) 2012, 2013, 2014, 2015, 2016 Gil Tene
-Copyright (c) 2014 Michael Barker
-Copyright (c) 2014 Matt Warren
-  (https://mvnrepository.com/artifact/org.hdrhistogram/HdrHistogram/2.1.12)
- 
-LatencyUtils Copyright (c) 2012, 2013, 2014 Gil Tene
- (https://mvnrepository.com/artifact/org.latencyutils/LatencyUtils/2.0.3)
+FONTAWESOME ICONS [weld] (@davegandy) (http://fontawesome.io), 
+FONT AWESOME ICONS [weld] (Copyright @davegandy - http://fontawesome.io
+- @fontawesome) (https://github.com/weld/core/tree/4.0.3.Final)
 
+END OF CREATIVE COMMONS ATTRIBUTION 4.0 NON-IBM-LICENSE INFORMATION
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 SIL OPEN FONT LICENSE 1.1
 
 The Program includes some or all of the following works licensed under
 the SIL OPEN FONT LICENSE 1.1
 
-
+IBM PLEX SANS, FONT-AWESOME [weld], 
 IBMPLEXSANS-BOLD.WOFF, IBMPLEXSANS-LIGHT.WOFF, IBMPLEXSANS-MEDIUM.WOFF,
 IBMPLEXSANS-EXTRALIGHT.WOFF, IBMPLEXSANS-REGULAR.WOFF,
 IBMPLEXSANS-SEMIBOLD.WOFF
-
 
 SIL OPEN FONT LICENSE
 
@@ -1444,10 +1971,12 @@ DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
 
+
 END OF SIL OPEN FONT LICENSE 1.1 NON-IBM-LICENSE INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-END OF OPEN LIBERTY @LIBERTY_VERSION@ PROJECT NOTICES AND INFORMATION 
+
+END OF OPEN LIBERTY BETA @LIBERTY_VERSION@ NOTICES AND INFORMATION
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 END OF NOTICES AND INFORMATION FILE

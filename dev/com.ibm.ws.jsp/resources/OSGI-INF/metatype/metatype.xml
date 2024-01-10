@@ -17,7 +17,15 @@
             id="disableJspRuntimeCompilation" required="false" type="Boolean" default="false"/>
         <AD description="%extendedDocumentRoot" name="%extendedDocumentRoot.name"
             id="extendedDocumentRoot" required="false" type="String" default="" /> 
-        <AD description="%jdkSourceLevel" name="%jdkSourceLevel.name"
+        <AD description="%javaSourceLevel" name="%javaSourceLevel.name"
+            id="javaSourceLevel" required="false" type="String">
+            <Option label="8" value="8"/>
+            <Option label="11" value="11"/>
+            <Option label="17" value="17"/>
+            <Option label="21" value="21"/>
+        </AD> 
+        <!-- Marked internal for compatibility reasons (for existing users), and recommending javaSourceLevel forward. See OLGH #7183  -->
+        <AD name="internal" description="internal use only"
             id="jdkSourceLevel" required="false" type="String">
             <Option label="13" value="13"/>
             <Option label="14" value="14"/>

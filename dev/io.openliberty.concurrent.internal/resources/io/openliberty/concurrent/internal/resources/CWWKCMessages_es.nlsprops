@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,7 +24,7 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1200 to CWWCK1399
+# All messages must use the range CWWCK1200 to CWWCK1409
 
 CWWKC1200.resource.unavailable=CWWKC1200E: {0}, que est\u00e1 definido por la aplicaci\u00f3n {1}, no estaba disponible de forma oportuna.
 CWWKC1200.resource.unavailable.explanation=Demasiada carga en el sistema para procesar anotaciones de definici\u00f3n de recursos y entradas de descriptor de despliegue antes de que la aplicaci\u00f3n intente utilizarlas.
@@ -45,3 +45,23 @@ CWWKC1203.duplicate.context.useraction=Actualice la aplicaci\u00f3n, las bibliot
 CWWKC1204.not.serializable=CWWKC1204E: No se puede crear un proxy contextual serializable que propague el contexto de hebra {0} que no es serializable.
 CWWKC1204.not.serializable.explanation=Los tipos de contexto de hebra de terceros no son compatibles con la serializaci\u00f3n y no se pueden configurar para que se propaguen para proxies contextuales serializables.
 CWWKC1204.not.serializable.useraction=Actualice la aplicaci\u00f3n para solicitar un proxy contextual no serializable o aseg\u00farese de que no hay ning\u00fan tipo de contexto de terceros configurado para que se propague.
+
+
+
+# Messages for @Asynchronous that are shared with other bundles:
+
+CWWKC1400.unsupported.return.type=CWWKC1400E: {0} no es un tipo de retorno v\u00e1lido para el m\u00e9todo {1} de la clase {2}. Los tipos de retorno v\u00e1lidos para los m\u00e9todos anotados con {3} son: {4}.
+CWWKC1400.unsupported.return.type.explanation=La especificaci\u00f3n de simultaneidad de Jakarta limita el rango de tipos de retorno v\u00e1lidos para los m\u00e9todos que tienen esta anotaci\u00f3n.
+CWWKC1400.unsupported.return.type.useraction=Actualice el m\u00e9todo dentro de la aplicaci\u00f3n para conmutar a uno de los tipos de retorno admitidos o elimine la anotaci\u00f3n del m\u00e9todo.
+
+CWWKC1401.class.anno.disallowed=CWWKC1401E: La anotaci\u00f3n {0} est\u00e1 permitida a nivel de m\u00e9todo. No se puede utilizar a nivel de clase en la clase {1}.
+CWWKC1401.class.anno.disallowed.explanation=Esta anotaci\u00f3n no se debe especificar a nivel de clase.
+CWWKC1401.class.anno.disallowed.useraction=Mueva la anotaci\u00f3n a los m\u00e9todos individuales de la clase.
+
+CWWKC1402.not.managed.executor=CWWKC1402E: La anotaci\u00f3n {0} en el m\u00e9todo {1} de la clase {2} especifica el nombre de JNDI {3}, que se resuelve en el recurso {4} que no es un ManagedExecutorService o ManagedScheduledExecutorService. Las interfaces que implementa el recurso son: {5}.
+CWWKC1402.not.managed.executor.explanation=El nombre de JNDI se debe resolver en un recurso que implemente la interfaz ManagedExecutorService o la interfaz ManagedScheduledExecutorService.
+CWWKC1402.not.managed.executor.useraction=Corrija el nombre de JNDI para que especifique un recurso que sea accesible para el componente de aplicaci\u00f3n y que implemente la interfaz ManagedExecutorService o la interfaz ManagedScheduledExecutorService.
+
+CWWKC1403.unsupported.tx.type=CWWKC1403E: La anotaci\u00f3n {0} especifica el valor {1}, que no est\u00e1 permitido en combinaci\u00f3n con la anotaci\u00f3n {2} que est\u00e1 en el m\u00e9todo {3} de la clase {4}. Los valores permitidos son: {5}.
+CWWKC1403.unsupported.tx.type.explanation=El uso de dos anotaciones de forma conjunta depende de si el valor de la primera anotaci\u00f3n que se especifica est\u00e1 permitido con la segunda anotaci\u00f3n.
+CWWKC1403.unsupported.tx.type.useraction=Actualice la aplicaci\u00f3n para conmutar a uno de los valores admitidos o elimine una de las anotaciones.

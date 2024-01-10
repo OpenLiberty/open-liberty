@@ -72,6 +72,7 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
 import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
+import com.ibm.ws.repository.common.enums.ReadMode;
 import com.ibm.ws.repository.connections.DirectoryRepositoryConnection;
 import com.ibm.ws.repository.connections.ProductDefinition;
 import com.ibm.ws.repository.connections.RepositoryConnection;
@@ -874,7 +875,7 @@ public class InstallKernelMap implements Map {
             List<File> singleJsonRepos = (List<File>) data.get(InstallConstants.SINGLE_JSON_FILE);
             File directoryBasedRepo = (File) data.get(DIRECTORY_BASED_REPOSITORY);
             if (directoryBasedRepo != null) {
-                RepositoryConnection directRepo = new DirectoryRepositoryConnection(directoryBasedRepo);
+                RepositoryConnection directRepo = new DirectoryRepositoryConnection(directoryBasedRepo, ReadMode.ASSUME_UNCHANGED);
                 repoList.add(directRepo);
             }
 

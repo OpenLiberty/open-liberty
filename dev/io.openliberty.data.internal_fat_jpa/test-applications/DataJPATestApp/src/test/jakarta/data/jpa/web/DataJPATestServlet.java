@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -2679,19 +2679,11 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(0L, CityAttrNames2.population);
         assertEquals(null, CityAttrNames2.name);
 
-        try {
-            String name = CityAttrNames2.id.name();
-            fail("Metamodel should not initialize an id field when the entity has a compound unique identifier (IdClass): " + name);
-        } catch (MappingException x) {
-            // expected
-        }
+        // Metamodel should not initialize an id field when the entity has a compound unique identifier (IdClass)
+        assertEquals(null, CityAttrNames2.id);
 
-        try {
-            Sort sort = CityAttrNames2.ignore.asc();
-            fail("Metamodel should not initialize fields that do not correspond to entity attributes: " + sort);
-        } catch (MappingException x) {
-            // expected
-        }
+        // Metamodel should not initialize fields that do not correspond to entity attributes
+        assertEquals(null, CityAttrNames2.ignore);
     }
 
     /**
@@ -2699,29 +2691,24 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testStaticMetamodelCollectionAttribute() {
-        assertEquals("bankAccounts", TaxPayer_.bankAccounts.name());
+        assertEquals("bankAccounts", _TaxPayer.bankAccounts.name());
     }
 
     /**
-     * Tests that the StaticMetamodel annotation on a non-JPA entity is not populated by the JPA-based provider.
+     * Tests that the StaticMetamodel annotation on a non-JPA entity is not populated by or overwritten by
+     * the Jakarta Persistence-based Jakarta Data provider.
      */
     @Test
     public void testStaticMetamodelIgnoresNonJPAEntity() {
-        try {
-            Sort sort = EntityModelUnknown_.days.desc();
-            fail("Metamodel should not initialize fields for a non-entity or unrecognized entity: " + sort);
-        } catch (MappingException x) {
-            // expected
-        }
+        // Must have same values that were set by the user:
 
-        try {
-            String name = EntityModelUnknown_.months.name();
-            fail("Metamodel should not initialize fields for a non-entity or unrecognized entity: " + name);
-        } catch (MappingException x) {
-            // expected
-        }
+        Sort desc = _EntityModelUnknown.days.desc();
+        assertEquals("Days", desc.property());
 
-        assertEquals(null, EntityModelUnknown_.years);
+        Sort asc = _EntityModelUnknown.months.asc();
+        assertEquals("Mon", asc.property());
+
+        assertEquals(null, _EntityModelUnknown.years);
     }
 
     /**

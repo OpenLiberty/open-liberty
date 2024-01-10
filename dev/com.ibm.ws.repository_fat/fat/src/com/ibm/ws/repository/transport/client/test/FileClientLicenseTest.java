@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import com.ibm.ws.repository.common.enums.AttachmentType;
+import com.ibm.ws.repository.common.enums.ReadMode;
 import com.ibm.ws.repository.transport.client.AbstractFileClient;
 import com.ibm.ws.repository.transport.client.DirectoryClient;
 import com.ibm.ws.repository.transport.client.ZipClient;
@@ -45,7 +46,7 @@ public abstract class FileClientLicenseTest {
      */
     public static class DirectoryClientLicenseTest extends FileClientLicenseTest {
         public DirectoryClientLicenseTest() {
-            _licenseClient = new DirectoryClient(new File(resourcesDir, "licenseTestRepo"));
+            _licenseClient = new DirectoryClient(new File(resourcesDir, "licenseTestRepo"), ReadMode.DETECT_CHANGES);
         }
     }
 

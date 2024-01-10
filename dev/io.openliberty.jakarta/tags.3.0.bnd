@@ -26,7 +26,7 @@ Export-Package: \
 
 # Updated the jakarta.el import to include Expression Language 6.0 (EE11) because Jakarta Tags is not changing for EE11.
 Import-Package:  jakarta.servlet.jsp.jstl.*;version="[3.0.0,4.0.0)", \
- jakarta.servlet.jsp.*;version="[3.1.0,4.0.0)", \
+ jakarta.servlet.jsp.*;version="[3.1.0,5.0.0)", \
  jakarta.servlet.*; version="[6.0.0,7.0.0)", \
  javax.xml.parsers;resolution:=optional, \
  org.apache.taglibs.standard.resources; resolution:=optional, \

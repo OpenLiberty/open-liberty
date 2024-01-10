@@ -21,6 +21,7 @@ com.ibm.ws.jpa.tests.beanvalidation_jpa_2.1_fat
 com.ibm.ws.jpa.tests.beanvalidation_jpa_2.2_fat
 com.ibm.ws.jpa.tests.beanvalidation_jpa_3.0_fat
 com.ibm.ws.jpa.tests.beanvalidation_jpa_3.1_fat
+com.ibm.ws.jpa.tests.beanvalidation_jpa_3.2_fat
 com.ibm.ws.jpa.tests.eclipselink.query_jpa_2.1_fat
 com.ibm.ws.jpa.tests.eclipselink.query_jpa_2.2_fat
 com.ibm.ws.jpa.tests.eclipselink.query_jpa_3.0_fat

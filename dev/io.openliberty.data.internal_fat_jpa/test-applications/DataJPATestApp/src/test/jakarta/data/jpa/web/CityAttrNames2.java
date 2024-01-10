@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,10 @@ import jakarta.data.metamodel.TextAttribute;
  */
 @StaticMetamodel(City.class)
 public class CityAttrNames2 {
-    public static final Attribute areaCodes = Attribute.get();
-    public static final SortableAttribute changeCount = SortableAttribute.get();
-    public static final Attribute id = Attribute.get();
-    public static final SortableAttribute ignore = SortableAttribute.get();
+    public static volatile Attribute areaCodes;
+    public static volatile SortableAttribute changeCount;
+    public static volatile Attribute id;
+    public static volatile SortableAttribute ignore; // ignored because the entity has no attribute with this name
     public static volatile long population; // ignored due to data type
-    public static final TextAttribute name = null;
+    public static final TextAttribute name = null; // ignored due to final
 }

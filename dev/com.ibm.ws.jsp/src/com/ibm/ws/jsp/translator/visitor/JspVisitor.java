@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -296,7 +296,7 @@ public abstract class JspVisitor {
                         visitJspParamsStart(jspElement);
                         processChildren(jspElement);
                         visitJspParamsEnd(jspElement);
-                    } else {
+                    } else if(PagesVersionHandler.isPages31Loaded()) { //only check in 3.0 since jsp:params was removed in 4.0
                         // Changed for Page 3.1. jsp:params is a no-op (as it must be a child of jsp:plugin)
                         // JSP must still valid contents/syntax within (3.1 Spec, section 5.8 <jsp:params>)
                         if(this.getClass().equals(com.ibm.ws.jsp.translator.visitor.validator.ValidateJspVisitor.class)){
@@ -311,6 +311,8 @@ public abstract class JspVisitor {
                                 logger.logp(Level.FINEST, CLASS_NAME, "processJspElement","Skipping the jsp:params element as it is a no operation for Pages 3.1+");
                             }
                         }
+                    } else if(PagesVersionHandler.isPages40OrHigherLoaded()) {
+                         throw new JspTranslationException(jspElement, "pages.removed.element.error", new Object[] { jspElement.getTagName() });
                     }
                 }
                 else if (jspElementType.equals(Constants.JSP_FALLBACK_TYPE)) {
@@ -318,7 +320,7 @@ public abstract class JspVisitor {
                         visitJspFallbackStart(jspElement);
                         processChildren(jspElement);
                         visitJspFallbackEnd(jspElement);
-                    } else {
+                    } else if(PagesVersionHandler.isPages31Loaded()) { //only check in 3.0 since jsp:fallback was removed in 4.0
                         // Changed for Page 3.1. jsp:fallback is a no-op (as it must be a child of jsp:plugin)
                         // JSP must still valid contents/syntax within (3.1 Spec, section 5.9 <jsp:fallback>)
                         if(this.getClass().equals(com.ibm.ws.jsp.translator.visitor.validator.ValidateJspVisitor.class)){
@@ -333,6 +335,8 @@ public abstract class JspVisitor {
                                 logger.logp(Level.FINEST, CLASS_NAME, "processJspElement","Skipping the jsp:fallback element as it is a no operation for Pages 3.1+");
                             }
                         }
+                    } else if(PagesVersionHandler.isPages40OrHigherLoaded()) {
+                         throw new JspTranslationException(jspElement, "pages.removed.element.error", new Object[] { jspElement.getTagName() });
                     }
                 }
                 else if (jspElementType.equals(Constants.JSP_INCLUDE_TYPE)) {
@@ -361,11 +365,11 @@ public abstract class JspVisitor {
                     visitJspSetPropertyEnd(jspElement);
                 }
                 else if (jspElementType.equals(Constants.JSP_PLUGIN_TYPE)) {
-                    if(PagesVersionHandler.isPages30OrLowerLoaded()){
+                    if(PagesVersionHandler.isPages30OrLowerLoaded()) {
                         visitJspPluginStart(jspElement);
                         processChildren(jspElement);
                         visitJspPluginEnd(jspElement);
-                    } else {
+                    } else if(PagesVersionHandler.isPages31Loaded()) { //only check in 3.0 since jsp:plugin was removed in 4.0
                         // Changed for Page 3.1. jsp:plugin is a no-op, but JSP must still valid contents within (3.1 Spec, section 5.7 <jsp:plugin>)
                         if(this.getClass().equals(com.ibm.ws.jsp.translator.visitor.validator.ValidateJspVisitor.class)){
                             if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
@@ -379,6 +383,8 @@ public abstract class JspVisitor {
                                 logger.logp(Level.FINEST, CLASS_NAME, "processJspElement","Skipping the jsp:plugin element as it is a no operation for Pages 3.1+");
                             }
                         }
+                    } else if(PagesVersionHandler.isPages40OrHigherLoaded()) {
+                         throw new JspTranslationException(jspElement, "pages.removed.element.error", new Object[] { jspElement.getTagName() });
                     }
                 }
                 else if (jspElementType.equals(Constants.JSP_ATTRIBUTE_TYPE)) {
@@ -416,7 +422,7 @@ public abstract class JspVisitor {
                     visitJspOutputEnd(jspElement);
                 }
                 else {
-                    throw new JspTranslationException(jspElement, "jsp.error.element.unknown", new Object[] { jspElement.getTagName() });
+                    throw new JspTranslationException(jspElement, "pages.removed.element.error", new Object[] { jspElement.getTagName() });
                 } 
             }
             else if (jspElement.getTagName().indexOf(':') != -1) {

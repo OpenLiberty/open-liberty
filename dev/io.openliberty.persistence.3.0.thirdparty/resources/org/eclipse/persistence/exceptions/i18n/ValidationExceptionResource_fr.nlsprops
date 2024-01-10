@@ -607,7 +607,7 @@
 
 7342=La valeur bool\u00e9enne sp\u00e9cifi\u00e9e [{0}] pour la d\u00e9finition de SQL natif autoris\u00e9 n''est pas valide, elle doit \u00eatre "true" ou "false".
 
-7343=Plusieurs identificateurs VPD (propri\u00e9t\u00e9 du contexte de discrimination des locataires) ont \u00e9t\u00e9 sp\u00e9cifi\u00e9s. L''entit\u00e9 [{1}] utilise [{0}] et l''entit\u00e9 [{3}] utilise [{2}]. Lorsqu''on utilise une strat\u00e9gie VPD multilocataire, il ne peut y avoir qu''une seule colonne de discrimination des locataires par entit\u00e9 et sa propri\u00e9t\u00e9 de contexte doit \u00eatre coh\u00e9rente dans toutes les entit\u00e9s VPD multilocataires.
+7343=Plusieurs identificateurs VPD (propri\u00e9t\u00e9 du contexte de discrimination des locataires) ont \u00e9t\u00e9 sp\u00e9cifi\u00e9s. L''entit\u00e9 [{1}] utilise [{0}] et l''entit\u00e9 [{3}] utilise [{2}]. La strat\u00e9gie VPD multi-titulaire n''autorise qu''une seule colonne de discriminateur de titulaire pour chaque entit\u00e9 et sa propri\u00e9t\u00e9 de contexte doit \u00eatre coh\u00e9rente dans toutes les entit\u00e9s VPD multi-titulaires.
 
 7344=VPD (connexions et g\u00e9n\u00e9ration DDL) n''est pas pris en charge pour la plateforme : [{0}].
 

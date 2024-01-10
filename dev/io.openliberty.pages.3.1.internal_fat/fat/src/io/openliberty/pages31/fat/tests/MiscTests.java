@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,9 +9,10 @@
  *******************************************************************************/
 package io.openliberty.pages31.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE11_OR_LATER_FEATURES;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.logging.Logger;
 
@@ -21,23 +22,26 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import io.openliberty.pages31.fat.JSPUtils;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
+
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.impl.LibertyServer;
-import io.openliberty.pages31.fat.JSPUtils;
+
 
 /**
- * Tests new changes added in Pages 3.1 that don't really need a a standalone test class.
- * - IsThreadSafe is depcrecated, so we check for a warning
- * - Verify jsp:plugin is skipped
- * - Verify imports are available in Expression Language (not just scriplets), i.e. ${ }
+ *  Tests new changes added in Pages 3.1 that don't really need a a standalone test class. 
+ *  - IsThreadSafe is depcrecated, so we check for a warning 
+ *  - Verify jsp:plugin is skipped 
+ *  - Verify imports are available in Expression Language (not just scriplets), i.e. ${ }
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -51,8 +55,6 @@ public class MiscTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ;
-
         ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "io.openliberty.pages31.fat.misc", "io.openliberty.pages31.fat.misc.other");
         server.startServer();
     }
@@ -69,6 +71,7 @@ public class MiscTests {
      *
      * @throws Exception if something goes horribly wrong
      */
+    @SkipForRepeat(EE11_OR_LATER_FEATURES)
     @Test
     public void testIsThreadSafeLogsWarning() throws Exception {
         WebConversation wc = new WebConversation();
@@ -83,7 +86,7 @@ public class MiscTests {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
-        // CWWJS0003W: Per the Pages 3.1 specification, pages developers are strongly advised not to use the deprecated page directive isThreadSafe.
+        // CWWJS0003W: Per the Pages 3.1 specification, pages developers are strongly advised not to use the deprecated page directive isThreadSafe. 
         assertNotNull("CWWJS0003W Warning not found!", server.waitForStringInLogUsingMark("CWWJS0003W"));
 
         server.resetLogMarks();
@@ -93,6 +96,7 @@ public class MiscTests {
      *
      * @throws Exception if something goes horribly wrong
      */
+    @SkipForRepeat(EE11_OR_LATER_FEATURES)
     @Test
     public void testJspPluginNoOp() throws Exception {
         WebConversation wc = new WebConversation();
@@ -107,7 +111,7 @@ public class MiscTests {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
-        assertTrue("jsp:plugin may have been generated!", response.getText().contains("Nothing should be generated  in between."));
+        assertTrue("jsp:plugin may have been generated!",  response.getText().contains("Nothing should be generated  in between.") ); 
 
         assertNotNull("jsp:plugin skip message not found!", server.waitForStringInTrace("Skipping the jsp:plugin element as it is a no operation for Pages 3.1+"));
 
@@ -161,5 +165,6 @@ public class MiscTests {
         assertTrue("Static method not found in Pages Environment", response.getText().contains("JSP Method expression: LATTE"));
         assertTrue("Interface field not found in Pages Environment", response.getText().contains("JSP Static Interface Field expression: INTERFACE_FIELD"));
     }
+
 
 }

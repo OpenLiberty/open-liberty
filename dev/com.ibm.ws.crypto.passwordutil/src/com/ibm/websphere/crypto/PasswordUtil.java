@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -452,7 +452,7 @@ public class PasswordUtil {
      * Encode the provided password with the algorithm. If another algorithm
      * is already applied, it will be removed and replaced with the new algorithm.
      *
-     * @param decoded_string the string to be encoded, or the encoded string.
+     * @param decoded_string the string to be encoded, or the encoded string. If the string contains an "{}", it is treated as a crypto algorithm tag and not as a decoded string.
      * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, or hash.
      * @return The encoded string. Null if there is any failure during encoding, or invalid or null decoded_string
      */
@@ -461,10 +461,10 @@ public class PasswordUtil {
          * check input:
          *
          * -- decoded_string: any string, any length, cannot be null,
-         * may start with valid (supported) crypto algorithm tag
+         * may start with a valid (supported) crypto algorithm tag
          *
          * -- crypto_algorithm: any string, any length, cannot be null,
-         * must be valid (supported) crypto algorithm
+         * must be a valid (supported) crypto algorithm
          */
 
         if (decoded_string == null) {
@@ -480,11 +480,18 @@ public class PasswordUtil {
                 return decoded_string.trim();
             return null;
         } else if (current_crypto_algorithm != null) {
+            // Return Null if the decoded_string is not tagged with a valid crypto algorithm to avoid NPE.
+            if (!isValidCryptoAlgorithm(current_crypto_algorithm)) {
+                // Since it contains an "{invalid_crypto_algorithm}", return a debug message.
+                logger.logp(Level.FINEST, PasswordUtil.class.getName(), "passwordEncode", "PASSWORDUTIL_INVALID_CRYPTO_ALGORITHM", current_crypto_algorithm);
+                return null;
+            }
+            
             decoded_string = passwordDecode(decoded_string);
         }
 
         // valid input ... encode password
-        return encode_password(decoded_string.trim(), crypto_algorithm.trim(), null); // TODO check this
+        return encode_password(decoded_string.trim(), crypto_algorithm.trim(), null);
     }
 
     /**
