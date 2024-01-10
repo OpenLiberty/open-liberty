@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -3032,7 +3032,6 @@ public class LibertyServer implements LogMonitorClient {
      * @param  skipArchives           Skip postStopServer collection of archives (WARs, EARs, JARs, etc.) - only used if postStopServerArchive is true
      * @param  ignoredFailuresRegExps A list of reg expressions corresponding to warnings or errors that should be ignored.
      *                                    If ignoredFailuresRegExps is null, logs will not be checked for warnings/errors
-     * @param  errorRegexes           A list of reg expressions corresponding to warnings or errors that should be treated as test failures.
      * @return                        the output of the stop command
      * @throws Exception              if the stop operation fails or there are warnings/errors found in server
      *                                    logs that were not in the list of ignored warnings/errors.
@@ -3052,7 +3051,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param  skipArchives           Skip postStopServer collection of archives (WARs, EARs, JARs, etc.) - only used if postStopServerArchive is true
      * @param  ignoredFailuresRegExps A list of reg expressions corresponding to warnings or errors that should be ignored.
      *                                    If ignoredFailuresRegExps is null, logs will not be checked for warnings/errors
-     * @param  errorRegexes           A list of reg expressions corresponding to warnings or errors that should be treated as test failures.
+     * @param  failuresRegExps        A list of reg expressions corresponding to warnings or errors that should be treated as test failures.
      * @return                        the output of the stop command
      * @throws Exception              if the stop operation fails or there are warnings/errors found in server
      *                                    logs that were not in the list of ignored warnings/errors.
@@ -3212,6 +3211,7 @@ public class LibertyServer implements LogMonitorClient {
         return output;
     }
 
+    @Deprecated
     protected void checkLogsForErrorsAndWarnings(String... ignoredFailuresRegExps) throws Exception {
         checkLogsForErrorsAndWarnings(Arrays.asList(LIBERTY_ERROR_REGEX), ignoredFailuresRegExps);
     }
@@ -3220,6 +3220,7 @@ public class LibertyServer implements LogMonitorClient {
      * Checks server logs for any lines containing errors or warnings that
      * do not match any regular expressions provided in regIgnore.
      *
+     * @param  failuresRegExps A list of reg expressions corresponding to warnings or errors that should be treated as test failures.
      * @param  ignoredFailuresRegExps A list of regex strings for errors/warnings that
      *                                    may be safely ignored.
      * @return                        A list of lines containing errors/warnings from server logs
