@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -150,8 +150,8 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         threadFactoryProps.put(UNIQUE_JNDI_NAME, managedThreadFactoryID);
 
         String contextSvcFilter = FilterUtils.createPropertyFilter(ID, contextServiceId);
-        threadFactoryProps.put("contextService.target", contextSvcFilter);
-        threadFactoryProps.put("contextService.cardinality.minimum", 1);
+        threadFactoryProps.put("ContextService.target", contextSvcFilter);
+        threadFactoryProps.put("ContextService.cardinality.minimum", 1);
 
         threadFactoryProps.put("createDaemonThreads", false);
         threadFactoryProps.put("defaultPriority", priority == null ? Thread.NORM_PRIORITY : priority);
@@ -165,7 +165,7 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         // as non-ResourceFactories by the JNDI implementation
         StringBuilder managedThreadFactorySvcFilter = new StringBuilder(200);
         managedThreadFactorySvcFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, managedThreadFactoryID));
-        managedThreadFactorySvcFilter.append("(component.name=com.ibm.ws.concurrent.managedThreadFactory)(jndiName=*))");
+        managedThreadFactorySvcFilter.append("(component.name=com.ibm.ws.concurrent.internal.ManagedThreadFactoryService)(jndiName=*))");
 
         ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, declaringApplication, //
                         managedThreadFactoryID, jndiName, managedThreadFactorySvcFilter.toString(), //
