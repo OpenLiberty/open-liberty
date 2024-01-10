@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package io.openliberty.concurrent.internal.processor;
 
 import java.lang.reflect.Member;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +44,11 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     private static final String KEY_CONTEXT = "context";
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_PRIORITY = "priority";
+    private static final String KEY_VIRTUAL = "virtual";
+    private static final String KEY_QUALIFIERS = "qualifiers";
+
+    private static final boolean DEFAULT_VIRTUAL = false;
+    private static final Class<?>[] DEFAULT_QUALIFIERS = new Class<?>[] {};
 
     private String contextServiceJndiName;
     private boolean XMLContextServiceRef;
@@ -52,6 +58,12 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
 
     private Integer priority;
     private boolean XMLPriority;
+
+    private boolean virtual;
+    private boolean XMLvirtual;
+
+    private Class<?>[] qualifiers;
+    private boolean XMLqualifers;
 
     private Map<String, String> properties;
     private final Set<String> XMLProperties = new HashSet<String>();
@@ -77,7 +89,9 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
         if (trace)
             Tr.entry(this, tc, "merge", toString(annotation), instanceClass, member,
                      (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef: " + contextServiceJndiName + " << " + annotation.context(),
-                     (XMLPriority ? "         (xml)" : "              ") + "priority: " + priority + " << " + annotation.priority());
+                     (XMLPriority ? "         (xml)" : "              ") + "priority: " + priority + " << " + annotation.priority(),
+                     (XMLvirtual ? "          (xml)" : "               ") + "virtual: " + virtual + " << " + annotation.virtual(),
+                     (XMLqualifers ? "        (xml)" : "            ") + "qualifiers: " + toString(qualifiers) + " << " + toString(annotation.qualifiers()));
 
         if (member != null) {
             // ManagedThreadFactoryDefinition is a class-level annotation only.
@@ -87,12 +101,16 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
         contextServiceJndiName = mergeAnnotationValue(contextServiceJndiName, XMLContextServiceRef, annotation.context(), KEY_CONTEXT, "java:comp/DefaultContextService");
         description = mergeAnnotationValue(description, XMLDescription, "", KEY_DESCRIPTION, ""); // ManagedThreadFactoryDefinition has no description attribute
         priority = mergeAnnotationValue(priority, XMLPriority, annotation.priority(), KEY_PRIORITY, Thread.NORM_PRIORITY);
+        virtual = mergeAnnotationBoolean(virtual, XMLvirtual, annotation.virtual(), KEY_VIRTUAL, DEFAULT_VIRTUAL);
+        qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, annotation.qualifiers(), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
         properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ManagedThreadFactoryDefinition has no properties attribute
 
         if (trace)
             Tr.exit(this, tc, "merge", new String[] {
                                                       (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef= " + contextServiceJndiName,
-                                                      (XMLPriority ? "         (xml)" : "              ") + "priority= " + priority
+                                                      (XMLPriority ? "         (xml)" : "              ") + "priority= " + priority,
+                                                      (XMLvirtual ? "          (xml)" : "               ") + "virtual= " + virtual,
+                                                      (XMLqualifers ? "        (xml)" : "            ") + "qualifiers= " + toString(qualifiers)
             });
     }
 
@@ -101,7 +119,9 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
         if (trace)
             Tr.entry(this, tc, "mergeXML", mtfd, mtfd.getName(),
                      (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef: " + contextServiceJndiName + " << " + mtfd.getContextServiceRef(),
-                     (XMLPriority ? "         (xml)" : "              ") + "priority: " + priority + " << " + mtfd.getPriority());
+                     (XMLPriority ? "         (xml)" : "              ") + "priority: " + priority + " << " + mtfd.getPriority(),
+                     (XMLvirtual ? "          (xml)" : "               ") + "virtual: " + virtual + " << " + mtfd.isVirtual(),
+                     (XMLqualifers ? "        (xml)" : "            ") + "qualifiers: " + toString(qualifiers) + " << " + toString(mtfd.getQualifiers()));
 
         List<Description> descriptionList = mtfd.getDescriptions();
 
@@ -121,13 +141,32 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
             XMLPriority = true;
         }
 
+        if (mtfd.isSetVirtual()) {
+            virtual = mergeXMLValue(virtual, mtfd.isVirtual(), "virtual", KEY_VIRTUAL, null);
+            XMLvirtual = true;
+        }
+
+        String[] qualifierValues = mtfd.getQualifiers();
+        if (qualifierValues == null || qualifierValues.length == 0) {
+            if (qualifiers == null)
+                qualifiers = DEFAULT_QUALIFIERS;
+        } else if (qualifierValues.length == 1 && qualifierValues[0].isEmpty()) {
+            qualifiers = DEFAULT_QUALIFIERS;
+            XMLqualifers = true;
+        } else {
+            qualifiers = mergeXMLValue(qualifiers, toQualifierClassArray(qualifierValues), "qualifier", KEY_QUALIFIERS, null);
+            XMLqualifers = true;
+        }
+
         List<Property> mxdProps = mtfd.getProperties();
         properties = mergeXMLProperties(properties, XMLProperties, mxdProps);
 
         if (trace)
             Tr.exit(this, tc, "mergeXML", new String[] {
                                                          (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef= " + contextServiceJndiName,
-                                                         (XMLPriority ? "         (xml)" : "              ") + "priority= " + priority
+                                                         (XMLPriority ? "         (xml)" : "              ") + "priority= " + priority,
+                                                         (XMLvirtual ? "          (xml)" : "               ") + "virtual= " + virtual,
+                                                         (XMLqualifers ? "        (xml)" : "            ") + "qualifiers= " + toString(qualifiers)
             });
     }
 
@@ -138,6 +177,8 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
         mergeSavedValue(contextServiceJndiName, managedThreadFactoryBinding.contextServiceJndiName, "context-service-ref");
         mergeSavedValue(description, managedThreadFactoryBinding.description, "description");
         mergeSavedValue(priority, managedThreadFactoryBinding.priority, "priority");
+        mergeSavedValue(virtual, managedThreadFactoryBinding.virtual, "virtual");
+        mergeSavedValue(qualifiers, managedThreadFactoryBinding.qualifiers, "qualifier");
         mergeSavedValue(properties, managedThreadFactoryBinding.properties, "properties");
     }
 
@@ -152,6 +193,8 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
         addOrRemoveProperty(props, KEY_CONTEXT, contextServiceJndiName);
         addOrRemoveProperty(props, KEY_DESCRIPTION, description);
         addOrRemoveProperty(props, KEY_PRIORITY, priority);
+        addOrRemoveProperty(props, KEY_VIRTUAL, virtual);
+        addOrRemoveProperty(props, KEY_QUALIFIERS, qualifiers);
 
         setObjects(null, createDefinitionReference(null, jakarta.enterprise.concurrent.ManagedThreadFactory.class.getName(), props));
     }
@@ -163,7 +206,34 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
                         .append("(name=").append(anno.name()) //
                         .append(", context=").append(anno.context()) //
                         .append(", priority=").append(anno.priority()) //
+                        .append(", virtual=").append(anno.virtual()) //
+                        .append(", qualifiers=").append(Arrays.toString(anno.qualifiers())) //
                         .append(")");
         return b.toString();
+    }
+
+    @Trivial
+    private static final <T> String toString(T[] list) {
+        if (list == null || list.length == 0)
+            return "Unspecified";
+        boolean none = true;
+        for (int i = 0; none && i < list.length; i++)
+            none &= list[i] == null || list[i].toString().isEmpty();
+        return none ? "None" : Arrays.toString(list);
+    }
+
+    @Trivial
+    private static final Class<?>[] toQualifierClassArray(String[] classList) throws IllegalArgumentException {
+        Class<?>[] clazzArray = new Class<?>[classList.length];
+        for (int i = 0; i < classList.length; i++) {
+            try {
+                //TODO is there a certain classloader I should be using to load this class? ApplicationClassLoader?
+                clazzArray[i] = Class.forName(classList[i]);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1205.qualifier.class.not.found", classList[i]), e);
+            }
+        }
+
+        return clazzArray;
     }
 }

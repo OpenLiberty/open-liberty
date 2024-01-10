@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,9 +45,12 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     private static final String KEY_DESCRIPTION = "description";
     private static final String KEY_PROPAGATED = "propagated";
     private static final String KEY_UNCHANGED = "unchanged";
+    private static final String KEY_QUALIFIERS = "qualifiers";
 
     private static final String[] DEFAULT_CLEARED = new String[] { ContextServiceDefinition.TRANSACTION };
     private static final String[] DEFAULT_PROPAGATED = new String[] { ContextServiceDefinition.ALL_REMAINING };
+    private static final String[] DEFAULT_UNCHANGED = new String[] {};
+    private static final Class<?>[] DEFAULT_QUALIFIERS = new Class<?>[] {};
 
     private String[] cleared;
     private boolean XMLcleared;
@@ -58,11 +61,14 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     private String[] propagated;
     private boolean XMLpropagated;
 
-    private Map<String, String> properties;
-    private final Set<String> XMLProperties = new HashSet<String>();
-
     private String[] unchanged;
     private boolean XMLunchanged;
+
+    private Class<?>[] qualifiers;
+    private boolean XMLqualifers;
+
+    private Map<String, String> properties;
+    private final Set<String> XMLProperties = new HashSet<String>();
 
     public ContextServiceDefinitionBinding(String jndiName, ComponentNameSpaceConfiguration nameSpaceConfig) {
         super(null, nameSpaceConfig);
@@ -86,7 +92,8 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
             Tr.entry(this, tc, "merge", toString(annotation), instanceClass, member,
                      (XMLcleared ? "   (xml)" : "        ") + "cleared: " + toString(cleared) + " << " + toString(annotation.cleared()),
                      (XMLpropagated ? "(xml)" : "     ") + "propagated: " + toString(propagated) + " << " + toString(annotation.propagated()),
-                     (XMLunchanged ? " (xml)" : "      ") + "unchanged: " + toString(unchanged) + " << " + toString(annotation.unchanged()));
+                     (XMLunchanged ? " (xml)" : "      ") + "unchanged: " + toString(unchanged) + " << " + toString(annotation.unchanged()),
+                     (XMLqualifers ? " (xml)" : "     ") + "qualifiers: " + toString(qualifiers) + " << " + toString(annotation.qualifiers()));
 
         if (member != null) {
             // ContextServiceDefinition is a class-level annotation only.
@@ -101,15 +108,18 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
         propagated = mergeAnnotationValue(propagated == DEFAULT_PROPAGATED ? null : propagated,
                                           XMLpropagated, annotation.propagated(), KEY_PROPAGATED, DEFAULT_PROPAGATED);
 
-        properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ContextServiceDefinition has no properties attribute
+        unchanged = mergeAnnotationValue(unchanged, XMLunchanged, annotation.unchanged(), KEY_UNCHANGED, DEFAULT_UNCHANGED);
 
-        unchanged = mergeAnnotationValue(unchanged, XMLunchanged, annotation.unchanged(), KEY_UNCHANGED, new String[0]);
+        qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, annotation.qualifiers(), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
+
+        properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ContextServiceDefinition has no properties attribute
 
         if (trace)
             Tr.exit(this, tc, "merge", new String[] {
                                                       (XMLcleared ? "   (xml)" : "        ") + "cleared= " + toString(cleared),
                                                       (XMLpropagated ? "(xml)" : "     ") + "propagated= " + toString(propagated),
-                                                      (XMLunchanged ? " (xml)" : "      ") + "unchanged= " + toString(unchanged)
+                                                      (XMLunchanged ? " (xml)" : "      ") + "unchanged= " + toString(unchanged),
+                                                      (XMLqualifers ? " (xml)" : "     ") + "qualifiers= " + toString(qualifiers)
             });
     }
 
@@ -119,7 +129,8 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
             Tr.entry(this, tc, "mergeXML", csd, csd.getName(),
                      (XMLcleared ? "   (xml)" : "        ") + "cleared: " + toString(cleared) + " << " + toString(csd.getCleared()),
                      (XMLpropagated ? "(xml)" : "     ") + "propagated: " + toString(propagated) + " << " + toString(csd.getPropagated()),
-                     (XMLunchanged ? " (xml)" : "      ") + "unchanged: " + toString(unchanged) + " << " + toString(csd.getUnchanged()));
+                     (XMLunchanged ? " (xml)" : "      ") + "unchanged: " + toString(unchanged) + " << " + toString(csd.getUnchanged()),
+                     (XMLqualifers ? " (xml)" : "     ") + "qualifiers: " + toString(qualifiers) + " << " + toString(csd.getQualifiers()));
 
         List<Description> descriptionList = csd.getDescriptions();
 
@@ -146,20 +157,33 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
             XMLpropagated = true;
         }
 
-        List<Property> csdProps = csd.getProperties();
-        properties = mergeXMLProperties(properties, XMLProperties, csdProps);
-
         String[] unchangedValues = csd.getUnchanged();
         if (unchangedValues != null && unchangedValues.length > 0) {
             unchanged = mergeXMLValue(unchanged, unchangedValues, "unchanged", KEY_UNCHANGED, null);
             XMLunchanged |= true;
         }
 
+        String[] qualifierValues = csd.getQualifiers();
+        if (qualifierValues == null || qualifierValues.length == 0) {
+            if (qualifiers == null)
+                qualifiers = DEFAULT_QUALIFIERS;
+        } else if (qualifierValues.length == 1 && qualifierValues[0].isEmpty()) {
+            qualifiers = DEFAULT_QUALIFIERS;
+            XMLqualifers = true;
+        } else {
+            qualifiers = mergeXMLValue(qualifiers, toQualifierClassArray(qualifierValues), "qualifier", KEY_QUALIFIERS, null);
+            XMLqualifers = true;
+        }
+
+        List<Property> csdProps = csd.getProperties();
+        properties = mergeXMLProperties(properties, XMLProperties, csdProps);
+
         if (trace)
             Tr.exit(this, tc, "mergeXML", new String[] {
                                                          (XMLcleared ? "   (xml)" : "        ") + "cleared= " + toString(cleared),
                                                          (XMLpropagated ? "(xml)" : "     ") + "propagated= " + toString(propagated),
-                                                         (XMLunchanged ? " (xml)" : "      ") + "unchanged= " + toString(unchanged)
+                                                         (XMLunchanged ? " (xml)" : "      ") + "unchanged= " + toString(unchanged),
+                                                         (XMLqualifers ? " (xml)" : "     ") + "qualifiers= " + toString(qualifiers)
             });
     }
 
@@ -170,8 +194,10 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
         mergeSavedValue(cleared, contextServiceBinding.cleared, "cleared");
         mergeSavedValue(description, contextServiceBinding.description, "description");
         mergeSavedValue(propagated, contextServiceBinding.propagated, "propagated");
-        mergeSavedValue(properties, contextServiceBinding.properties, "properties");
         mergeSavedValue(unchanged, contextServiceBinding.unchanged, "unchanged");
+        mergeSavedValue(qualifiers, contextServiceBinding.qualifiers, "qualifier");
+        mergeSavedValue(properties, contextServiceBinding.properties, "properties");
+
     }
 
     void resolve() throws InjectionException {
@@ -186,6 +212,7 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
         addOrRemoveProperty(props, KEY_DESCRIPTION, description);
         addOrRemoveProperty(props, KEY_PROPAGATED, propagated);
         addOrRemoveProperty(props, KEY_UNCHANGED, unchanged);
+        addOrRemoveProperty(props, KEY_QUALIFIERS, qualifiers);
 
         setObjects(null, createDefinitionReference(null, jakarta.enterprise.concurrent.ContextService.class.getName(), props));
     }
@@ -198,17 +225,33 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
                         .append(", cleared=").append(Arrays.toString(anno.cleared())) //
                         .append(", propagated=").append(Arrays.toString(anno.propagated())) //
                         .append(", unchanged=").append(Arrays.toString(anno.unchanged())) //
+                        .append(", qualifiers=").append(Arrays.toString(anno.qualifiers())) //
                         .append(")");
         return b.toString();
     }
 
     @Trivial
-    private static final String toString(String[] list) {
+    private static final <T> String toString(T[] list) {
         if (list == null || list.length == 0)
             return "Unspecified";
         boolean none = true;
         for (int i = 0; none && i < list.length; i++)
-            none &= list[i] == null || list[i].length() == 0;
+            none &= list[i] == null || list[i].toString().isEmpty();
         return none ? "None" : Arrays.toString(list);
+    }
+
+    @Trivial
+    private static final Class<?>[] toQualifierClassArray(String[] classList) throws IllegalArgumentException {
+        Class<?>[] clazzArray = new Class<?>[classList.length];
+        for (int i = 0; i < classList.length; i++) {
+            try {
+                //TODO is there a certain classloader I should be using to load this class? ApplicationClassLoader?
+                clazzArray[i] = Class.forName(classList[i]);
+            } catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1205.qualifier.class.not.found", classList[i]), e);
+            }
+        }
+
+        return clazzArray;
     }
 }
