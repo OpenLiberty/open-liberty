@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -918,7 +918,6 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
         HashMap<String, Object> claimMap = new HashMap<String, Object>() {
             {
 
-                put(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS, System.currentTimeMillis() / 1000 - hoursToSeconds(1)); // time is outside clockskew
                 put(Constants.PAYLOAD_NOT_BEFORE_TIME_IN_SECS, 2056387597);
                 put("email", "joe@something.com");
                 put(Constants.PAYLOAD_AUTHZ_TIME_IN_SECS, 478550797);
