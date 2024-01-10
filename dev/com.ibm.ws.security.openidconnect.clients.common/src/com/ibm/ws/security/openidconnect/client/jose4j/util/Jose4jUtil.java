@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -364,7 +364,10 @@ public class Jose4jUtil {
             OidcClientRequest oidcClientRequest) throws JWTTokenValidationFailedException, IllegalStateException, Exception {
         try {
             JsonWebStructure jsonStruct = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
-
+            String type = jsonStruct.getHeader("typ");
+            if (type != null && type.equals("logout+jwt")) {
+                throw new JWTTokenValidationFailedException("");
+            }
             Key key = getSignatureVerificationKeyFromJsonWebStructure(jsonStruct, clientConfig, oidcClientRequest);
 
             Jose4jValidator validator = new Jose4jValidator(key,
