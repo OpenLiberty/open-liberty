@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,42 +12,29 @@
  *******************************************************************************/
 package test.jakarta.concurrency31.web;
 
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.SECURITY;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import jakarta.annotation.Resource;
-import jakarta.enterprise.concurrent.ContextService;
-import jakarta.enterprise.concurrent.ContextServiceDefinition;
-import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
-import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import test.context.list.ListContext;
-import test.context.location.ZipCode;
-import test.context.timing.Timestamp;
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -55,6 +42,10 @@ public class Concurrency31TestServlet extends FATServlet {
 
     // Maximum number of nanoseconds to wait for a task to finish.
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+
+    // TODO replace these with resource definition annotations or deployment descriptor elements:
+    @Resource(name = "java:comp/concurrent/virtual-scheduled-executor", lookup = "concurrent/temp-virtual-scheduled-executor")
+    ManagedScheduledExecutorService tempScheduledExecutor;
 
     @Resource(name = "java:module/concurrent/virtual-thread-factory", lookup = "concurrent/temp-virtual-thread-factory")
     ManagedThreadFactory tempThreadFactory;
@@ -65,6 +56,85 @@ public class Concurrency31TestServlet extends FATServlet {
 
     @Override
     public void init(ServletConfig config) throws ServletException {
+    }
+
+    /**
+     * TODO Use ManagedScheduledExecutorDefinition with virtual=true to schedule a repeating timer
+     * to run on virtual threads. Verify that all executions run on different virtual threads and that
+     * context is propagated to these threads.
+     */
+    @Test
+    public void testRepeatingTimerOnVirtualThreads() throws Exception {
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
+        final AtomicInteger executionCount = new AtomicInteger();
+        final AtomicReference<ScheduledFuture<?>> futureRef = new AtomicReference<>();
+
+        Runnable repeatedTask = () -> {
+            int count = executionCount.incrementAndGet();
+            Thread curThread = Thread.currentThread();
+            System.out.println("testRepeatingTimerOnVirtualThreads task execution " + count + " on " + curThread);
+
+            if (count == 3)
+                futureRef.get().cancel(false);
+
+            results.add(curThread);
+            try {
+                results.add(InitialContext.doLookup("java:comp/concurrent/virtual-scheduled-executor"));
+            } catch (Throwable x) {
+                results.add(x);
+            }
+        };
+
+        ManagedScheduledExecutorService scheduledExecutor = InitialContext.doLookup("java:comp/concurrent/virtual-scheduled-executor");
+        futureRef.set(scheduledExecutor.scheduleAtFixedRate(repeatedTask, 200, 100, TimeUnit.MILLISECONDS));
+
+        Object result;
+        Set<Thread> uniqueVirtualThreads = new HashSet<Thread>();
+
+        // execution 1
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(result));
+        uniqueVirtualThreads.add((Thread) result);
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError("Lookup failed on first execution", (Throwable) result);
+
+        // execution 2
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(result));
+        uniqueVirtualThreads.add((Thread) result);
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError("Lookup failed on first execution", (Throwable) result);
+
+        // execution 3
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(result));
+        uniqueVirtualThreads.add((Thread) result);
+
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError("Lookup failed on first execution", (Throwable) result);
+
+        // each execution must use a different virtual thread
+        assertEquals(uniqueVirtualThreads.toString(), 3, uniqueVirtualThreads.size());
+
+        // The task self-cancels on the third execution. There must be no more executions after this.
+        assertEquals(null, results.poll(150, TimeUnit.MILLISECONDS));
+    }
+
+    /**
+     * TODO Use ManagedScheduledExecutorDefinition with virtual=true to schedule a one-shot timer
+     * to run on a virtual thread.
+     */
+    @Test
+    public void testOneShotTimerOnVirtualThread() throws Exception {
+        ManagedScheduledExecutorService scheduledExecutor = InitialContext.doLookup("java:comp/concurrent/virtual-scheduled-executor");
+        ScheduledFuture<Thread> future = scheduledExecutor.schedule(Thread::currentThread, 150, TimeUnit.MILLISECONDS);
+        Thread thread = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread));
     }
 
     /**
