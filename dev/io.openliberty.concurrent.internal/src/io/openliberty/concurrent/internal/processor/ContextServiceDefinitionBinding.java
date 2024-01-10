@@ -50,7 +50,7 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     private static final String[] DEFAULT_CLEARED = new String[] { ContextServiceDefinition.TRANSACTION };
     private static final String[] DEFAULT_PROPAGATED = new String[] { ContextServiceDefinition.ALL_REMAINING };
     private static final String[] DEFAULT_UNCHANGED = new String[] {};
-    private static final Class<?>[] DEFAULT_QUALIFIERS = new Class<?>[] {};
+    private static final String[] DEFAULT_QUALIFIERS = new String[] {};
 
     private String[] cleared;
     private boolean XMLcleared;
@@ -64,7 +64,7 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     private String[] unchanged;
     private boolean XMLunchanged;
 
-    private Class<?>[] qualifiers;
+    private String[] qualifiers;
     private boolean XMLqualifers;
 
     private Map<String, String> properties;
@@ -110,7 +110,7 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
 
         unchanged = mergeAnnotationValue(unchanged, XMLunchanged, annotation.unchanged(), KEY_UNCHANGED, DEFAULT_UNCHANGED);
 
-        qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, annotation.qualifiers(), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
+        qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, toQualifierStringArray(annotation.qualifiers()), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
 
         properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ContextServiceDefinition has no properties attribute
 
@@ -171,7 +171,7 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
             qualifiers = DEFAULT_QUALIFIERS;
             XMLqualifers = true;
         } else {
-            qualifiers = mergeXMLValue(qualifiers, toQualifierClassArray(qualifierValues), "qualifier", KEY_QUALIFIERS, null);
+            qualifiers = mergeXMLValue(qualifiers, qualifierValues, "qualifier", KEY_QUALIFIERS, null);
             XMLqualifers = true;
         }
 
@@ -241,17 +241,11 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     }
 
     @Trivial
-    private static final Class<?>[] toQualifierClassArray(String[] classList) throws IllegalArgumentException {
-        Class<?>[] clazzArray = new Class<?>[classList.length];
+    private static final String[] toQualifierStringArray(Class<?>[] classList) {
+        String[] qualifierNames = new String[classList.length];
         for (int i = 0; i < classList.length; i++) {
-            try {
-                //TODO is there a certain classloader I should be using to load this class? ApplicationClassLoader?
-                clazzArray[i] = Class.forName(classList[i]);
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1205.qualifier.class.not.found", classList[i]), e);
-            }
+            qualifierNames[i] = classList[i].getCanonicalName();
         }
-
-        return clazzArray;
+        return qualifierNames;
     }
 }

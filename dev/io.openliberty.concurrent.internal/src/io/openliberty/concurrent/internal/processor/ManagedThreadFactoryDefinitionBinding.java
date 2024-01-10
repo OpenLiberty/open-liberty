@@ -48,7 +48,7 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     private static final String KEY_QUALIFIERS = "qualifiers";
 
     private static final boolean DEFAULT_VIRTUAL = false;
-    private static final Class<?>[] DEFAULT_QUALIFIERS = new Class<?>[] {};
+    private static final String[] DEFAULT_QUALIFIERS = new String[] {};
 
     private String contextServiceJndiName;
     private boolean XMLContextServiceRef;
@@ -62,7 +62,7 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     private boolean virtual;
     private boolean XMLvirtual;
 
-    private Class<?>[] qualifiers;
+    private String[] qualifiers;
     private boolean XMLqualifers;
 
     private Map<String, String> properties;
@@ -102,7 +102,7 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
         description = mergeAnnotationValue(description, XMLDescription, "", KEY_DESCRIPTION, ""); // ManagedThreadFactoryDefinition has no description attribute
         priority = mergeAnnotationValue(priority, XMLPriority, annotation.priority(), KEY_PRIORITY, Thread.NORM_PRIORITY);
         virtual = mergeAnnotationBoolean(virtual, XMLvirtual, annotation.virtual(), KEY_VIRTUAL, DEFAULT_VIRTUAL);
-        qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, annotation.qualifiers(), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
+        qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, toQualifierStringArray(annotation.qualifiers()), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
         properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ManagedThreadFactoryDefinition has no properties attribute
 
         if (trace)
@@ -154,7 +154,7 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
             qualifiers = DEFAULT_QUALIFIERS;
             XMLqualifers = true;
         } else {
-            qualifiers = mergeXMLValue(qualifiers, toQualifierClassArray(qualifierValues), "qualifier", KEY_QUALIFIERS, null);
+            qualifiers = mergeXMLValue(qualifiers, qualifierValues, "qualifier", KEY_QUALIFIERS, null);
             XMLqualifers = true;
         }
 
@@ -223,17 +223,11 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     }
 
     @Trivial
-    private static final Class<?>[] toQualifierClassArray(String[] classList) throws IllegalArgumentException {
-        Class<?>[] clazzArray = new Class<?>[classList.length];
+    private static final String[] toQualifierStringArray(Class<?>[] classList) {
+        String[] qualifierNames = new String[classList.length];
         for (int i = 0; i < classList.length; i++) {
-            try {
-                //TODO is there a certain classloader I should be using to load this class? ApplicationClassLoader?
-                clazzArray[i] = Class.forName(classList[i]);
-            } catch (ClassNotFoundException e) {
-                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWWKC1205.qualifier.class.not.found", classList[i]), e);
-            }
+            qualifierNames[i] = classList[i].getCanonicalName();
         }
-
-        return clazzArray;
+        return qualifierNames;
     }
 }
