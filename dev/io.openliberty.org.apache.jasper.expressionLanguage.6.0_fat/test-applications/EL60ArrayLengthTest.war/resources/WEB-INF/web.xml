@@ -13,6 +13,6 @@
           xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
           version="6.0">
 
-  <display-name>EL60ArrayLengthTest</display-name>
-    
+    <display-name>EL60ArrayLengthTest</display-name>
+
 </web-app>
