@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,13 @@ import java.util.concurrent.ThreadFactory;
  * An interface for virtual thread-related operations that require Java 21.
  * Code that is compiled to earlier Java levels can compile against this interface
  * and use it to conditionally invoke into the Java 21 operations only when
- * running on Java 21+.
+ * running on Java 21+. Use the {@link #isSupported()} method to check if virtual
+ * thread operations are supported.
+ *
+ * OSGi service components can obtain an instance of VirtualThreadOps as follows:
+ *
+ * {@code @Reference}
+ * {@code protected VirtualThreadOps virtualThreadOps; }
  *
  * TODO Once Java 8, 11, and 17 are no longer supported, this interface should be
  * removed in favor of directly using the API from Java.
@@ -43,6 +49,7 @@ public interface VirtualThreadOps {
      * @param inherit           indicates whether created threads inherit the initial values of inheritable-thread-local variables
      * @param uncaughtHandler   if not null, this is set as the uncaughtExceptionHandler on the Thread.Builder
      * @return new thread factory for virtual threads.
+     * @throws UnsupportedOperationException if running on less than Java SE 21.
      */
     ThreadFactory createFactoryOfVirtualThreads(String namePrefix,
                                                 long initialCountValue,
@@ -66,6 +73,7 @@ public interface VirtualThreadOps {
      * @param uncaughtHandler if not null, this is set as the uncaughtExceptionHandler on the Thread.Builder
      * @param runnable        action that the thread runs when it starts.
      * @return a new virtual thread that has not been started yet.
+     * @throws UnsupportedOperationException if running on less than Java SE 21.
      */
     Thread createVirtualThread(String name,
                                boolean inherit,
@@ -73,10 +81,18 @@ public interface VirtualThreadOps {
                                Runnable runnable);
 
     /**
+     * Indicates whether or not virtual threads are supported.
+     *
+     * @return true if virtual threads are supported, otherwise false.
+     */
+    boolean isSupported();
+
+    /**
      * Invokes <code>isVirtual</code> on the supplied Thread.
      *
      * @param thread thread instance.
      * @return true if the supplied thread is a virtual thread, otherwise false.
+     * @throws UnsupportedOperationException if running on less than Java SE 21.
      */
     boolean isVirtual(Thread thread);
 }
