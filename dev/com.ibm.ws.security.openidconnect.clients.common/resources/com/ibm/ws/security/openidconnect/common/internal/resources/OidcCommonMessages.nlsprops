@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -193,3 +193,8 @@ DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Remove the specified value
 JWT_MISSING_ISSUER=CWWKS1784E: The token is not valid because it does not contain an issuer claim.
 JWT_MISSING_ISSUER.explanation=The token must contain an issuer claim to identify who issued the token.
 JWT_MISSING_ISSUER.useraction=Obtain a new token that includes an issuer claim.
+
+# Do not translate "events", "typ", "logout+jwt", "http://schemas.openid.net/event/backchannel-logout"
+LOGOUT_TOKEN_MISUSED_AS_JWT=CWWKS1785E: The token is not valid because it is a logout token.
+LOGOUT_TOKEN_MISUSED_AS_JWT.explanation=The token must not be a logout token. Logout tokens have an "events" claim with the value of a JSON object containing "http://schemas.openid.net/event/backchannel-logout" as a member. Logout tokens may also have a "typ" (type) header parameter with the value of "logout+jwt";
+LOGOUT_TOKEN_MISUSED_AS_JWT.useraction=Ensure that the token being used is not a logout token.
