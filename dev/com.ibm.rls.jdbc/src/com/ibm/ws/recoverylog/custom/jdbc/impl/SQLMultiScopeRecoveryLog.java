@@ -59,6 +59,7 @@ import com.ibm.ws.recoverylog.spi.LogCursorCallback;
 import com.ibm.ws.recoverylog.spi.LogCursorImpl;
 import com.ibm.ws.recoverylog.spi.LogIncompatibleException;
 import com.ibm.ws.recoverylog.spi.LogProperties;
+import com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException;
 import com.ibm.ws.recoverylog.spi.MultiScopeLog;
 import com.ibm.ws.recoverylog.spi.PeerLostLogOwnershipException;
 import com.ibm.ws.recoverylog.spi.RLSUtils;
@@ -1323,17 +1324,17 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             if (tc.isEntryEnabled())
                                 Tr.exit(tc, "closeLog", ple);
                             throw ple;
+                        } catch (LogsUnderlyingTablesMissingException lutme) {
+                            // No FFDC in this case
+                            if (tc.isEntryEnabled())
+                                Tr.exit(tc, "closeLog", lutme);
+                            throw lutme;
                         } catch (InternalLogException exc) {
-                            if (_isTableDeleted) {
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Reserved Connection is NULL but the underlying tables have been deleted");
-                            } else {
-                                FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.closeLog", "948", this);
-                                markFailed(exc); // @MD19484C
-                                if (tc.isEntryEnabled())
-                                    Tr.exit(tc, "closeLog", exc);
-                                throw exc;
-                            }
+                            FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.closeLog", "948", this);
+                            markFailed(exc); // @MD19484C
+                            if (tc.isEntryEnabled())
+                                Tr.exit(tc, "closeLog", exc);
+                            throw exc;
                         } catch (Throwable exc) {
                             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.closeLog", "955", this);
                             markFailed(exc); // @MD19484C
@@ -2120,7 +2121,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 Tr.debug(tc, "Home server and the underlying table may have been deleted");
                             if (isTableDeleted(sqlex)) {
                                 // The underlying table has been deleted, set exception variables to NOT retry
-                                nonTransientException = sqlex;
+                                LogsUnderlyingTablesMissingException lutme = new LogsUnderlyingTablesMissingException("Underlying table is missing", null);
+                                nonTransientException = lutme;
                                 currentSqlEx = null;
                                 _isTableDeleted = true;
                                 if (_associatedLog != null)
@@ -2149,6 +2151,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Caught PeerLostLogOwnershipException: " + ple);
                     nonTransientException = ple;
+                } catch (LogsUnderlyingTablesMissingException lutme) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Caught LogsUnderlyingTablesMissingException: " + lutme);
+                    nonTransientException = lutme;
                 } catch (Throwable exc) {
                     Tr.audit(tc, "WTRN0107W: " +
                                  "Caught non-SQLException Throwable when forcing SQL RecoveryLog " + _logName + " for server " + _serverName + " Throwable: " + exc);
@@ -2225,15 +2231,18 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                         Tr.exit(tc, "internalForceSections", "PeerLostLogOwnershipException");
                                     PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException(nonTransientException);
                                     throw ple;
+                                } else if (nonTransientException instanceof LogsUnderlyingTablesMissingException) {
+                                    markFailed(nonTransientException, false, false); // second parameter "false" as we do not wish to fire out error messages
+                                    if (tc.isEntryEnabled())
+                                        Tr.exit(tc, "internalForceSections", "LogsUnderlyingTablesMissingException");
+                                    LogsUnderlyingTablesMissingException lutme = new LogsUnderlyingTablesMissingException(nonTransientException);
+                                    throw lutme;
                                 } else {
-                                    if (_isTableDeleted) {
-                                        markFailed(nonTransientException, false, false); // second parameter "false" as we do not wish to fire out error messages
-                                    } else {
-                                        Tr.audit(tc, "WTRN0100E: " +
-                                                     "Cannot recover from SQLException when forcing SQL RecoveryLog " + _logName + " for server " + _serverName + " Exception: "
-                                                     + nonTransientException);
-                                        markFailed(nonTransientException);
-                                    }
+                                    Tr.audit(tc, "WTRN0100E: " +
+                                                 "Cannot recover from SQLException when forcing SQL RecoveryLog " + _logName + " for server " + _serverName + " Exception: "
+                                                 + nonTransientException);
+                                    markFailed(nonTransientException);
+
                                     InternalLogException ile = new InternalLogException(nonTransientException);
                                     if (tc.isEntryEnabled())
                                         Tr.exit(tc, "internalForceSections", ile);

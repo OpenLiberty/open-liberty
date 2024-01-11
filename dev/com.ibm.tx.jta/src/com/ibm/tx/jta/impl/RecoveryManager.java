@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2023 IBM Corporation and others.
+ * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ import com.ibm.ws.recoverylog.spi.InvalidFailureScopeException;
 import com.ibm.ws.recoverylog.spi.LogAllocationException;
 import com.ibm.ws.recoverylog.spi.LogCursor;
 import com.ibm.ws.recoverylog.spi.LogIncompatibleException;
+import com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException;
 import com.ibm.ws.recoverylog.spi.NotSupportedException;
 import com.ibm.ws.recoverylog.spi.PeerLostLogOwnershipException;
 import com.ibm.ws.recoverylog.spi.RecoverableUnit;
@@ -593,6 +594,11 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "preShutdown", ple);
                     throw ple;
+                } catch (LogsUnderlyingTablesMissingException lutme) {
+                    // No FFDC in this case
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "preShutdown", lutme);
+                    throw lutme;
                 } catch (Exception e) {
                     FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.preShutdown", "360", this);
                     Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
@@ -683,6 +689,10 @@ public class RecoveryManager implements Runnable {
                     // No FFDC in this case
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                } catch (LogsUnderlyingTablesMissingException lutme) {
+                    // No FFDC in this case
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "PeerLostLogOwnershipException raised", lutme);
                 } catch (Exception e) {
                     FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "824", this);
                     Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
@@ -1704,6 +1714,11 @@ public class RecoveryManager implements Runnable {
                             // No FFDC in this case
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "keypoint of transaction log failed ... partner log will not be tidied", ple);
+                            failed = true;
+                        } catch (LogsUnderlyingTablesMissingException lutme) {
+                            // No FFDC in this case
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "keypoint of transaction log failed ... partner log will not be tidied", lutme);
                             failed = true;
                         } catch (Exception exc2) /* @PK31789A */
                         { /* @PK31789A */
