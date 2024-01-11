@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,13 +16,17 @@ import java.lang.reflect.Member;
 import java.util.Collections;
 import java.util.List;
 
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.javaee.dd.common.JNDIEnvironmentRef;
 import com.ibm.ws.javaee.dd.common.ManagedScheduledExecutor;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.injectionengine.InjectionBinding;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.InjectionProcessor;
@@ -40,6 +44,11 @@ public class ManagedScheduledExecutorDefinitionProvider extends InjectionProcess
 
     private static final List<Class<? extends JNDIEnvironmentRef>> REF_CLASSES = //
                     Collections.<Class<? extends JNDIEnvironmentRef>> singletonList(ManagedScheduledExecutor.class);
+
+    /**
+     * The Jakarta EE major version (ex. 10)
+     */
+    private int eeVersion;
 
     @Override
     @Trivial
@@ -64,6 +73,16 @@ public class ManagedScheduledExecutorDefinitionProvider extends InjectionProcess
         return new Processor();
     }
 
+    /**
+     * The service ranking of JavaEEVersion ensures we get the highest
+     * Jakarta EE version for the configured features.
+     */
+    @Reference(policyOption = ReferencePolicyOption.GREEDY)
+    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
+        String version = (String) ref.getProperty("version");
+        eeVersion = Integer.parseInt(version.substring(0, version.indexOf('.')));
+    }
+
     class Processor extends InjectionProcessor<ManagedScheduledExecutorDefinition, ManagedScheduledExecutorDefinition.List> {
         @Trivial
         public Processor() {
@@ -76,10 +95,10 @@ public class ManagedScheduledExecutorDefinitionProvider extends InjectionProcess
                                                                                            String jndiName) throws InjectionException {
             final boolean trace = TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled();
             if (trace)
-                Tr.entry(this, tc, "createInjectionBinding", ManagedScheduledExecutorDefinitionBinding.toString(annotation), instanceClass, member, jndiName);
+                Tr.entry(this, tc, "createInjectionBinding", ManagedScheduledExecutorDefinitionBinding.toString(annotation, eeVersion), instanceClass, member, jndiName);
 
             InjectionBinding<ManagedScheduledExecutorDefinition> injectionBinding = //
-                            new ManagedScheduledExecutorDefinitionBinding(jndiName, ivNameSpaceConfig);
+                            new ManagedScheduledExecutorDefinitionBinding(jndiName, ivNameSpaceConfig, eeVersion);
             injectionBinding.merge(annotation, instanceClass, null);
 
             if (trace)
@@ -121,7 +140,7 @@ public class ManagedScheduledExecutorDefinitionProvider extends InjectionProcess
 
                     ManagedScheduledExecutorDefinitionBinding binding;
                     if (injectionBinding == null) {
-                        binding = new ManagedScheduledExecutorDefinitionBinding(jndiName, ivNameSpaceConfig);
+                        binding = new ManagedScheduledExecutorDefinitionBinding(jndiName, ivNameSpaceConfig, eeVersion);
                         addInjectionBinding(binding);
                     } else {
                         binding = (ManagedScheduledExecutorDefinitionBinding) injectionBinding;

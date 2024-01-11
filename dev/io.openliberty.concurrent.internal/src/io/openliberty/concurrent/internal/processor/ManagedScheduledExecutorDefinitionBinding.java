@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,10 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
     private static final boolean DEFAULT_VIRTUAL = false;
     private static final String[] DEFAULT_QUALIFIERS = new String[] {};
 
+    private final int eeVersion;
+
+    // Concurrent 3.0 attributes
+
     private String contextServiceJndiName;
     private boolean XMLContextServiceRef;
 
@@ -64,18 +68,23 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
     private Integer maxAsync;
     private boolean XMLMaxAsync;
 
+    // Concurrent 3.1 attributes
+
     private boolean virtual;
     private boolean XMLvirtual;
 
     private String[] qualifiers;
     private boolean XMLqualifers;
 
+    // General attribute
+
     private Map<String, String> properties;
     private final Set<String> XMLProperties = new HashSet<String>();
 
-    public ManagedScheduledExecutorDefinitionBinding(String jndiName, ComponentNameSpaceConfiguration nameSpaceConfig) {
+    public ManagedScheduledExecutorDefinitionBinding(String jndiName, ComponentNameSpaceConfiguration nameSpaceConfig, int eeVersion) {
         super(null, nameSpaceConfig);
         setJndiName(jndiName);
+        this.eeVersion = eeVersion;
     }
 
     @Override
@@ -92,12 +101,12 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
     public void merge(ManagedScheduledExecutorDefinition annotation, Class<?> instanceClass, Member member) throws InjectionException {
         final boolean trace = TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled();
         if (trace)
-            Tr.entry(this, tc, "merge", toString(annotation), instanceClass, member,
+            Tr.entry(this, tc, "merge", toString(annotation, eeVersion), instanceClass, member,
                      (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef: " + contextServiceJndiName + " << " + annotation.context(),
                      (XMLHungTaskThreshold ? "(xml)" : "     ") + "hungTaskThreshold: " + hungTaskThreshold + " << " + annotation.hungTaskThreshold(),
                      (XMLMaxAsync ? "         (xml)" : "              ") + "maxAsync: " + maxAsync + " << " + annotation.maxAsync(),
-                     (XMLvirtual ? "          (xml)" : "               ") + "virtual: " + virtual + " << " + annotation.virtual(),
-                     (XMLqualifers ? "        (xml)" : "            ") + "qualifiers: " + toString(qualifiers) + " << " + toString(annotation.qualifiers()));
+                     (XMLvirtual ? "          (xml)" : "               ") + "virtual: " + virtual + " << " + (eeVersion >= 11 ? annotation.virtual() : "Unspecified"),
+                     (XMLqualifers ? "        (xml)" : "            ") + "qualifiers: " + toString(qualifiers) + " << " + (eeVersion >= 11 ? toString(annotation.qualifiers()) : "Unspecified"));
 
         if (member != null) {
             // ManagedScheduledExecutorDefinition is a class-level annotation only.
@@ -108,8 +117,13 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
         description = mergeAnnotationValue(description, XMLDescription, "", KEY_DESCRIPTION, ""); // ManagedScheduledExecutorDefinition has no description attribute
         hungTaskThreshold = mergeAnnotationValue(hungTaskThreshold, XMLHungTaskThreshold, annotation.hungTaskThreshold(), KEY_HUNG_TASK_THRESHOLD, -1L);
         maxAsync = mergeAnnotationValue(maxAsync, XMLMaxAsync, annotation.maxAsync(), KEY_MAX_ASYNC, -1);
-        virtual = mergeAnnotationBoolean(virtual, XMLvirtual, annotation.virtual(), KEY_VIRTUAL, DEFAULT_VIRTUAL);
-        qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, toQualifierStringArray(annotation.qualifiers()), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
+
+        //Only merge EE 11 annotations when present, otherwise rely on defaults from mergeXML
+        if (eeVersion >= 11) {
+            virtual = mergeAnnotationBoolean(virtual, XMLvirtual, annotation.virtual(), KEY_VIRTUAL, DEFAULT_VIRTUAL);
+            qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, toQualifierStringArray(annotation.qualifiers()), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
+        }
+
         properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ManagedScheduledExecutorDefinition has no properties attribute
 
         if (trace)
@@ -162,12 +176,15 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
 
         String[] qualifierValues = mxd.getQualifiers();
         if (qualifierValues == null || qualifierValues.length == 0) {
+            // No qualifiers provided via xml
             if (qualifiers == null)
                 qualifiers = DEFAULT_QUALIFIERS;
         } else if (qualifierValues.length == 1 && qualifierValues[0].isEmpty()) {
+            // Special case <qualifier></qualifier>
             qualifiers = DEFAULT_QUALIFIERS;
             XMLqualifers = true;
         } else {
+            // Actual list of qualifiers provided
             qualifiers = mergeXMLValue(qualifiers, qualifierValues, "qualifier", KEY_QUALIFIERS, null);
             XMLqualifers = true;
         }
@@ -217,16 +234,20 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
     }
 
     @Trivial
-    static final String toString(ManagedScheduledExecutorDefinition anno) {
+    static final String toString(ManagedScheduledExecutorDefinition anno, int eeVersion) {
         StringBuilder b = new StringBuilder();
         b.append("ManagedScheduledExecutorDefinition@").append(Integer.toHexString(anno.hashCode())) //
                         .append("(name=").append(anno.name()) //
                         .append(", context=").append(anno.context()) //
                         .append(", hungTaskThreshold=").append(anno.hungTaskThreshold()) //
-                        .append(", maxAsync=").append(anno.maxAsync()) //
-                        .append(", virtual=").append(anno.virtual()) //
-                        .append(", qualifiers=").append(Arrays.toString(anno.qualifiers())) //
-                        .append(")");
+                        .append(", maxAsync=").append(anno.maxAsync());
+
+        if (eeVersion >= 11) {
+            b.append(", virtual=").append(anno.virtual());
+            b.append(", qualifiers=").append(Arrays.toString(anno.qualifiers()));
+        }
+
+        b.append(")");
         return b.toString();
     }
 

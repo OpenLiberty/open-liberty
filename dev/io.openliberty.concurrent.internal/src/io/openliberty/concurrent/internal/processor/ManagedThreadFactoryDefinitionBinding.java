@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,10 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     private static final boolean DEFAULT_VIRTUAL = false;
     private static final String[] DEFAULT_QUALIFIERS = new String[] {};
 
+    private final int eeVersion;
+
+    // Concurrent 3.0 attributes
+
     private String contextServiceJndiName;
     private boolean XMLContextServiceRef;
 
@@ -59,18 +63,23 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     private Integer priority;
     private boolean XMLPriority;
 
+    // Concurrent 3.1 attributes
+
     private boolean virtual;
     private boolean XMLvirtual;
 
     private String[] qualifiers;
     private boolean XMLqualifers;
 
+    // General attribute
+
     private Map<String, String> properties;
     private final Set<String> XMLProperties = new HashSet<String>();
 
-    public ManagedThreadFactoryDefinitionBinding(String jndiName, ComponentNameSpaceConfiguration nameSpaceConfig) {
+    public ManagedThreadFactoryDefinitionBinding(String jndiName, ComponentNameSpaceConfiguration nameSpaceConfig, int eeVersion) {
         super(null, nameSpaceConfig);
         setJndiName(jndiName);
+        this.eeVersion = eeVersion;
     }
 
     @Override
@@ -87,11 +96,11 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     public void merge(ManagedThreadFactoryDefinition annotation, Class<?> instanceClass, Member member) throws InjectionException {
         final boolean trace = TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled();
         if (trace)
-            Tr.entry(this, tc, "merge", toString(annotation), instanceClass, member,
+            Tr.entry(this, tc, "merge", toString(annotation, eeVersion), instanceClass, member,
                      (XMLContextServiceRef ? "(xml)" : "     ") + "contextServiceRef: " + contextServiceJndiName + " << " + annotation.context(),
                      (XMLPriority ? "         (xml)" : "              ") + "priority: " + priority + " << " + annotation.priority(),
-                     (XMLvirtual ? "          (xml)" : "               ") + "virtual: " + virtual + " << " + annotation.virtual(),
-                     (XMLqualifers ? "        (xml)" : "            ") + "qualifiers: " + toString(qualifiers) + " << " + toString(annotation.qualifiers()));
+                     (XMLvirtual ? "          (xml)" : "               ") + "virtual: " + virtual + " << " + (eeVersion >= 11 ? annotation.virtual() : "Unspecified"),
+                     (XMLqualifers ? "        (xml)" : "            ") + "qualifiers: " + toString(qualifiers) + " << " + (eeVersion >= 11 ? toString(annotation.qualifiers()) : "Unspecified"));
 
         if (member != null) {
             // ManagedThreadFactoryDefinition is a class-level annotation only.
@@ -101,8 +110,13 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
         contextServiceJndiName = mergeAnnotationValue(contextServiceJndiName, XMLContextServiceRef, annotation.context(), KEY_CONTEXT, "java:comp/DefaultContextService");
         description = mergeAnnotationValue(description, XMLDescription, "", KEY_DESCRIPTION, ""); // ManagedThreadFactoryDefinition has no description attribute
         priority = mergeAnnotationValue(priority, XMLPriority, annotation.priority(), KEY_PRIORITY, Thread.NORM_PRIORITY);
-        virtual = mergeAnnotationBoolean(virtual, XMLvirtual, annotation.virtual(), KEY_VIRTUAL, DEFAULT_VIRTUAL);
-        qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, toQualifierStringArray(annotation.qualifiers()), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
+
+        //Only merge EE 11 annotations when present, otherwise rely on defaults from mergeXML
+        if (eeVersion >= 11) {
+            virtual = mergeAnnotationBoolean(virtual, XMLvirtual, annotation.virtual(), KEY_VIRTUAL, DEFAULT_VIRTUAL);
+            qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, toQualifierStringArray(annotation.qualifiers()), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
+        }
+
         properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ManagedThreadFactoryDefinition has no properties attribute
 
         if (trace)
@@ -148,12 +162,15 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
 
         String[] qualifierValues = mtfd.getQualifiers();
         if (qualifierValues == null || qualifierValues.length == 0) {
+            // No qualifiers provided via xml
             if (qualifiers == null)
                 qualifiers = DEFAULT_QUALIFIERS;
         } else if (qualifierValues.length == 1 && qualifierValues[0].isEmpty()) {
+            // Special case <qualifier></qualifier>
             qualifiers = DEFAULT_QUALIFIERS;
             XMLqualifers = true;
         } else {
+            // Actual list of qualifiers provided
             qualifiers = mergeXMLValue(qualifiers, qualifierValues, "qualifier", KEY_QUALIFIERS, null);
             XMLqualifers = true;
         }
@@ -200,15 +217,21 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
     }
 
     @Trivial
-    static final String toString(ManagedThreadFactoryDefinition anno) {
+    static final String toString(ManagedThreadFactoryDefinition anno, int eeVersion) {
         StringBuilder b = new StringBuilder();
-        b.append("ManagedThreadFactoryDefinition@").append(Integer.toHexString(anno.hashCode())) //
+        b.append("ManagedThreadFactoryDefinition@") //
+                        .append(Integer.toHexString(anno.hashCode())) //
+                        .append("#EE").append(eeVersion) //
                         .append("(name=").append(anno.name()) //
                         .append(", context=").append(anno.context()) //
-                        .append(", priority=").append(anno.priority()) //
-                        .append(", virtual=").append(anno.virtual()) //
-                        .append(", qualifiers=").append(Arrays.toString(anno.qualifiers())) //
-                        .append(")");
+                        .append(", priority=").append(anno.priority());
+
+        if (eeVersion >= 11) {
+            b.append(", virtual=").append(anno.virtual());
+            b.append(", qualifiers=").append(Arrays.toString(anno.qualifiers()));
+        }
+
+        b.append(")");
         return b.toString();
     }
 

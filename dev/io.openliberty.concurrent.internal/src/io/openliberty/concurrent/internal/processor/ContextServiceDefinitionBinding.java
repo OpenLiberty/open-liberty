@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,10 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     private static final String[] DEFAULT_UNCHANGED = new String[] {};
     private static final String[] DEFAULT_QUALIFIERS = new String[] {};
 
+    private final int eeVersion;
+
+    // Concurrent 3.0 attributes
+
     private String[] cleared;
     private boolean XMLcleared;
 
@@ -64,15 +68,20 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     private String[] unchanged;
     private boolean XMLunchanged;
 
+    // Concurrent 3.1 attributes
+
     private String[] qualifiers;
     private boolean XMLqualifers;
+
+    // General attribute
 
     private Map<String, String> properties;
     private final Set<String> XMLProperties = new HashSet<String>();
 
-    public ContextServiceDefinitionBinding(String jndiName, ComponentNameSpaceConfiguration nameSpaceConfig) {
+    public ContextServiceDefinitionBinding(String jndiName, ComponentNameSpaceConfiguration nameSpaceConfig, int eeVersion) {
         super(null, nameSpaceConfig);
         setJndiName(jndiName);
+        this.eeVersion = eeVersion;
     }
 
     @Override
@@ -89,11 +98,11 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     public void merge(ContextServiceDefinition annotation, Class<?> instanceClass, Member member) throws InjectionException {
         final boolean trace = TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled();
         if (trace)
-            Tr.entry(this, tc, "merge", toString(annotation), instanceClass, member,
+            Tr.entry(this, tc, "merge", toString(annotation, eeVersion), instanceClass, member,
                      (XMLcleared ? "   (xml)" : "        ") + "cleared: " + toString(cleared) + " << " + toString(annotation.cleared()),
                      (XMLpropagated ? "(xml)" : "     ") + "propagated: " + toString(propagated) + " << " + toString(annotation.propagated()),
                      (XMLunchanged ? " (xml)" : "      ") + "unchanged: " + toString(unchanged) + " << " + toString(annotation.unchanged()),
-                     (XMLqualifers ? " (xml)" : "     ") + "qualifiers: " + toString(qualifiers) + " << " + toString(annotation.qualifiers()));
+                     (XMLqualifers ? " (xml)" : "     ") + "qualifiers: " + toString(qualifiers) + " << " + (eeVersion >= 11 ? toString(annotation.qualifiers()) : "Unspecified"));
 
         if (member != null) {
             // ContextServiceDefinition is a class-level annotation only.
@@ -110,7 +119,9 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
 
         unchanged = mergeAnnotationValue(unchanged, XMLunchanged, annotation.unchanged(), KEY_UNCHANGED, DEFAULT_UNCHANGED);
 
-        qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, toQualifierStringArray(annotation.qualifiers()), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
+        //Only merge EE 11 annotations when present, otherwise rely on defaults from mergeXML
+        if (eeVersion >= 11)
+            qualifiers = mergeAnnotationValue(qualifiers, XMLqualifers, toQualifierStringArray(annotation.qualifiers()), KEY_QUALIFIERS, DEFAULT_QUALIFIERS);
 
         properties = mergeAnnotationProperties(properties, XMLProperties, new String[] {}); // ContextServiceDefinition has no properties attribute
 
@@ -165,12 +176,15 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
 
         String[] qualifierValues = csd.getQualifiers();
         if (qualifierValues == null || qualifierValues.length == 0) {
+            // No qualifiers provided via xml
             if (qualifiers == null)
                 qualifiers = DEFAULT_QUALIFIERS;
         } else if (qualifierValues.length == 1 && qualifierValues[0].isEmpty()) {
+            // Special case <qualifier></qualifier>
             qualifiers = DEFAULT_QUALIFIERS;
             XMLqualifers = true;
         } else {
+            // List of qualifiers provided
             qualifiers = mergeXMLValue(qualifiers, qualifierValues, "qualifier", KEY_QUALIFIERS, null);
             XMLqualifers = true;
         }
@@ -218,15 +232,20 @@ public class ContextServiceDefinitionBinding extends InjectionBinding<ContextSer
     }
 
     @Trivial
-    static final String toString(ContextServiceDefinition anno) {
+    static final String toString(ContextServiceDefinition anno, int eeVersion) {
         StringBuilder b = new StringBuilder();
-        b.append("ContextServiceDefinition@").append(Integer.toHexString(anno.hashCode())) //
+        b.append("ContextServiceDefinition@") //
+                        .append(Integer.toHexString(anno.hashCode())) //
+                        .append("#EE").append(eeVersion) //
                         .append("(name=").append(anno.name()) //
                         .append(", cleared=").append(Arrays.toString(anno.cleared())) //
                         .append(", propagated=").append(Arrays.toString(anno.propagated())) //
-                        .append(", unchanged=").append(Arrays.toString(anno.unchanged())) //
-                        .append(", qualifiers=").append(Arrays.toString(anno.qualifiers())) //
-                        .append(")");
+                        .append(", unchanged=").append(Arrays.toString(anno.unchanged()));
+
+        if (eeVersion >= 11)
+            b.append(", qualifiers=").append(Arrays.toString(anno.qualifiers()));
+
+        b.append(")");
         return b.toString();
     }
 
