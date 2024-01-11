@@ -33,6 +33,9 @@ Import-Package: \
 Require-Capability: osgi.contract;
  filter:="(&(osgi.contract=JavaEL)(version=5.0.0))"
 
+-includeresource: \
+    org/apache/el=${bin}/org/apache/el
+
 instrument.disabled: true
 
 -buildpath: \

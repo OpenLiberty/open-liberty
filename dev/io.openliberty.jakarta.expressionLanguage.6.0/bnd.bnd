@@ -31,7 +31,8 @@ Export-Package: \
 
 -includeresource: \
     @${repo;org.apache.tomcat:tomcat-el-api;11.0.0.M14;EXACT}!/!(META-INF/maven/*|module-info.class),\
-    jakarta=resources/jakarta
+    jakarta=resources/jakarta,\
+    jakarta/el=${bin}/jakarta/el
 
 instrument.disabled: true
 
