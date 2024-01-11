@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ import com.ibm.ws.jsp23.fat.tests.JSTLTests;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
 
 /**
  * JSP 2.3 Tests
@@ -63,11 +62,11 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                     .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
-                                                            .withID("CDI-2.0")
-                                                            .forceAddFeatures(false)
-                                                            .fullFATOnly())
+                                    .withID("CDI-2.0")
+                                    .forceAddFeatures(false)
+                                    .fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_21))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES());
 
     /**

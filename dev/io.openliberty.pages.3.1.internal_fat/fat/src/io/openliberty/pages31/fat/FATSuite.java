@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,17 +17,12 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 
-import io.openliberty.pages31.fat.tests.MiscTests;
-import io.openliberty.pages31.fat.tests.TagsTestsEE10;
-import io.openliberty.pages31.fat.tests.UnknownELIdentifiersTest;
-
-
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
-
-
+import io.openliberty.pages31.fat.tests.MiscTests;
+import io.openliberty.pages31.fat.tests.TagsTestsEE10;
+import io.openliberty.pages31.fat.tests.UnknownELIdentifiersTest;
 
 /**
  * Pages 3.1 Tests
@@ -51,7 +46,7 @@ public class FATSuite {
     }
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_21))
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES());
-    
+
 }
