@@ -56,6 +56,25 @@ public class SchedAsyncAppScopedBean {
     }
 
     /**
+     * Run every 4 seconds on seconds that have a remainder of 2 when divided by 4.
+     *
+     * @param countdown executions remaining.
+     * @param threads   a queue for recording the threads where executions have occurred.
+     */
+    @Asynchronous(executor = "java:module/concurrent/max-2-executor",
+                  runAt = @Schedule(cron = "2/4 * * * * *"))
+    void everyFourSecondsVirtual(AtomicInteger countdown, LinkedBlockingQueue<Thread> threads) {
+        System.out.println("> everyFourSecondsVirtual " + countdown);
+
+        threads.add(Thread.currentThread());
+
+        if (countdown.decrementAndGet() == 0)
+            Asynchronous.Result.complete(null);
+
+        System.out.println("< everyFourSecondsVirtual executed on " + Thread.currentThread());
+    }
+
+    /**
      * Combines 4 different schedules to run on seconds that have a remainder of 1 when divided by 6:
      * 1 7 13 19 25 31 37 43 49 55.
      * This could be achieved with a single schedule, but the point of this test is to combine many

@@ -19,14 +19,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.time.DateTimeException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
-import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -39,9 +42,10 @@ import componenttest.app.FATServlet;
 @ContextServiceDefinition(name = "java:app/concurrent/app-context",
                           propagated = APPLICATION,
                           unchanged = ALL_REMAINING)
-@ManagedExecutorDefinition(name = "java:module/concurrent/max-2-executor",
-                           context = "java:app/concurrent/app-context",
-                           maxAsync = 2)
+//@ManagedExecutorDefinition(name = "java:module/concurrent/max-2-executor",
+//                           context = "java:app/concurrent/app-context",
+//                           maxAsync = 2,
+//                           virtual = true)
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class SchedAsyncTestServlet extends FATServlet {
@@ -50,10 +54,12 @@ public class SchedAsyncTestServlet extends FATServlet {
      */
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
+    // TODO remove this once virtual=true is honored on @ManagedExecutorDefinition
+    @Resource(name = "java:module/concurrent/max-2-executor", lookup = "concurrent/temp-max-2-executor")
+    ManagedExecutorService temp;
+
     private static LinkedBlockingQueue<long[]> afterSixSeconds3Times = new LinkedBlockingQueue<>();
     private static final AtomicInteger afterSixSeconds3TimesCount = new AtomicInteger();
-
-    private static LinkedBlockingQueue<Object> lookUpAtSixSecondIntervals2Times = new LinkedBlockingQueue<>();
 
     @Inject
     private SchedAsyncAppScopedBean bean;
@@ -63,6 +69,11 @@ public class SchedAsyncTestServlet extends FATServlet {
 
     private static CompletableFuture<long[]> cfEveryThreeAndEvenSeconds8Times;
     private static final AtomicInteger cfEveryThreeAndEvenSeconds8TimesCount = new AtomicInteger();
+
+    private static AtomicInteger everyFourSecondsVirtualCountdown;
+    private static final LinkedBlockingQueue<Thread> everyFourSecondsVirtualThreads = new LinkedBlockingQueue<>();
+
+    private static LinkedBlockingQueue<Object> lookUpAtSixSecondIntervals2Times = new LinkedBlockingQueue<>();
 
     /**
      * Nanoseconds at which the init method was invoked on this servlet.
@@ -91,12 +102,16 @@ public class SchedAsyncTestServlet extends FATServlet {
 
         cfEveryThreeAndEvenSeconds8Times = bean.everyThreeOrEvenSeconds(8, cfEveryThreeAndEvenSeconds8TimesCount);
 
+        bean.everyFourSecondsVirtual(everyFourSecondsVirtualCountdown = new AtomicInteger(4),
+                                     everyFourSecondsVirtualThreads);
+
         // Seconds at which the above will aim to run:
         //
         // 00        05        10        15        20        25        30        35        40        45        50        55
         //           05          11          17          23          29          35          41          47          53          59
         //   01          07          13          19          25          31          37          43          49          55
         // 00  02..04  06  08..10  12  14..16  18  20..22  24  26..28  30  32..34  36  38..40  42  44..46  48  50..52  54  56..58
+        //     02      06      10      14      18      22      26      30      24      38      42      46      50      54      58
     }
 
     /**
@@ -211,6 +226,9 @@ public class SchedAsyncTestServlet extends FATServlet {
 
         assertEquals("If testEveryThreeAndEvenNumberedSeconds8Times passed, then everyThreeOrEvenSeconds should not run again.",
                      8, cfEveryThreeAndEvenSeconds8TimesCount.get());
+
+        assertEquals("If testVirtualThreads passed, then everyFourSecondsVirtual should not run again.",
+                     0, everyFourSecondsVirtualCountdown.get());
     }
 
     /**
@@ -224,5 +242,43 @@ public class SchedAsyncTestServlet extends FATServlet {
         } catch (DateTimeException x) {
             // expected
         }
+    }
+
+    /**
+     * Ensure that scheduled asynchronous methods run all executions on virtual threads
+     * when the specified executor has virtual=true.
+     */
+    @Test
+    public void testVirtualThreads() throws Exception {
+        Set<Thread> uniqueThreads = new HashSet<>();
+        Thread th;
+
+        // TODO update thread name assertions to check for the JNDI name once we are actually using the ManagedExecutorDefinition
+        // Example name: managedExecutorService[java:module/concurrent/max-2-executor]/concurrencyPolicy:4
+
+        assertNotNull(th = everyFourSecondsVirtualThreads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(true, th.isVirtual());
+        assertEquals(true, th.getName().startsWith("managedExecutorService["));
+        uniqueThreads.add(th);
+
+        assertNotNull(th = everyFourSecondsVirtualThreads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(true, th.isVirtual());
+        assertEquals(true, th.getName().startsWith("managedExecutorService["));
+        uniqueThreads.add(th);
+
+        assertNotNull(th = everyFourSecondsVirtualThreads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(true, th.isVirtual());
+        assertEquals(true, th.getName().startsWith("managedExecutorService["));
+        uniqueThreads.add(th);
+
+        assertNotNull(th = everyFourSecondsVirtualThreads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(true, th.isVirtual());
+        assertEquals(true, th.getName().startsWith("managedExecutorService["));
+        uniqueThreads.add(th);
+
+        assertEquals(null, everyFourSecondsVirtualThreads.poll());
+
+        // virtual threads are not reused
+        assertEquals(uniqueThreads.toString(), 4, uniqueThreads.size());
     }
 }
