@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,7 +28,7 @@ public interface MessageListenerAuth extends MessageListener {
     void onStringMessage(String message);
 
     /**
-     * <p>Passes an Integermessage to the listener.
+     * <p>Passes an Integer message to the listener.
      *
      * @param an Integer message
      */
@@ -65,7 +65,7 @@ public interface MessageListenerAuth extends MessageListener {
     /**
      * <p>onGetTimestamp from tra.MessageListner interface
      * This method will be used by J2C FVT to get a system time when message is
-     * received. This is used for validing when each message is
+     * received. This is used for validating when each message is
      * received to make sure the message is sent periodically according to the
      * period specified.
      *
@@ -78,7 +78,7 @@ public interface MessageListenerAuth extends MessageListener {
     // d174256
     /**
      * onThrowEJBException from tra.MessageListner interface
-     * This method will throw EJB exceptions. This is used for validing if there are
+     * This method will throw EJB exceptions. This is used for validating if there are
      * any problem in stopping the server after MDB throws this exception.
      */
     public void onThrowEJBException(String msg);

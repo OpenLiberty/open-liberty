@@ -546,6 +546,13 @@ public class LibertyServer implements LogMonitorClient {
         return this;
     }
 
+    public LibertyServer addCheckpointRegexIgnoreMessages(String... regExs) {
+        for (String regEx : regExs) {
+            checkpointInfo.checkpointRegexIgnoreMessages.add(regEx);
+        }
+        return this;
+    }
+
     public static class CheckpointInfo {
         final Consumer<LibertyServer> defaultPreCheckpointLambda = (LibertyServer s) -> {
             Log.debug(c, "No preCheckpointLambda supplied.");
