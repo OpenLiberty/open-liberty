@@ -24,7 +24,6 @@ Bundle-Description: Jakarta Concurrency 3.0+ implementation; version=${bVersion}
 
 WS-TraceGroup: concurrent
 
-# TODO likely importing * is not correct here. Fix before pushing.
 Import-Package: \
   jakarta.enterprise.concurrent; version="[3.0.0,4.0.0)", \
   jakarta.enterprise.concurrent.spi; version="[3.0.0,4.0.0)", \
