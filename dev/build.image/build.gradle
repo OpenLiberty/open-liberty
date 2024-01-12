@@ -840,7 +840,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn cleanupOpenLibertyBetaPackage
         doLast {
           generateZipChecksums(ant)
-          ant.calcZipChecksums(installRoot:"${distsDirectory}") {}
+          ant.calcZipChecksums(installRoot:"build/libs/distributions") {}
         }
     }   
     publish.dependsOn genZipChecksums
