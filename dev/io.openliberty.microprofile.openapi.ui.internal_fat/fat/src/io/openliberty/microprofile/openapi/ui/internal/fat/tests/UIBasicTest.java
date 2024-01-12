@@ -13,10 +13,12 @@ import static componenttest.selenium.SeleniumWaits.waitForElement;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.time.Duration;
+import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -45,6 +47,7 @@ import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestApplication;
 import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestResource;
 
 /**
@@ -74,7 +77,7 @@ public class UIBasicTest {
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                                   .addClass(TestResource.class);
+                                   .addClasses(TestResource.class, TestApplication.class);
 
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
 
@@ -95,13 +98,13 @@ public class UIBasicTest {
     }
 
     @Test
-    public void testHttpUI(){
+    public void testHttpUI() {
         driver.get("http://host.testcontainers.internal:" + server.getHttpDefaultPort() + "/openapi/ui");
         testUI();
     }
 
     @Test
-    public void testHttpsUI() throws Exception{
+    public void testHttpsUI() throws Exception {
         //Reduce possibility that Server is not listening on its HTTPS Port
         //Especially for Windows if certificates are slow to create
         server.waitForSSLStart();
@@ -115,6 +118,10 @@ public class UIBasicTest {
         WebElement title = waitForElement(driver, By.cssSelector("h2.title"), LONG_WAIT);
         assertThat("Page title", title.getText(), Matchers.containsString("Generated API"));
 
+        // Check the title and description loads with no links
+        WebElement info = waitForElement(driver, By.cssSelector("div.info"));
+        assertThat("Page info", info.getAttribute("innerHTML"), not(Matchers.containsString("href")));
+
         // Check the headerbar colour
         WebElement headerbar = waitForElement(driver, By.cssSelector("div.headerbar"));
         assertEquals("Headerbar colour", Color.fromString("#191c2c"), Color.fromString(headerbar.getCssValue("background-color")));
@@ -123,12 +130,48 @@ public class UIBasicTest {
         WebElement headerbarWrapper = waitForElement(headerbar, By.cssSelector("div.headerbar-wrapper"));
         assertThat("Headerbar image", headerbarWrapper.getCssValue("background-image"), startsWith("url(\"data:image/png"));
 
+        // Check that the footer loads with 4 links
+        WebElement footer = waitForElement(driver, By.cssSelector("div.footer"));
+        List<WebElement> links = footer.findElement(By.tagName("ul")).findElements(By.tagName("li"));
+        assertThat(links.size(), is(4));
+        for (WebElement link : links) {
+            assertThat("Footer links", link.getAttribute("innerHTML"), Matchers.containsString("href"));
+        }
+
         // Check we can see and open the operation
         WebElement testGetOpBlock = waitForElement(driver, By.id("operations-default-get_test__id_"));
         WebElement testGetButton = testGetOpBlock.findElement(By.tagName("button"));
         testGetButton.click();
         WebElement testGet200Response = waitForElement(testGetOpBlock, By.cssSelector("tr.response[data-code=\"200\"]"));
         assertNotNull("200 response line", testGet200Response);
+
+        // Test that all APIs are displayed with the correct colours
+        assertThat(testGetOpBlock.getCssValue("background"), startsWith("rgba(31, 111, 240, 0.1)"));
+        assertThat(testGetOpBlock.getCssValue("border-color"), is("rgb(31, 111, 240)"));
+        WebElement testGetIcon = testGetOpBlock.findElement(By.tagName("span"));
+        assertThat(testGetIcon.getCssValue("background"), startsWith("rgb(31, 111, 240)"));
+
+        WebElement testDeleteOpBlock = waitForElement(driver, By.id("operations-default-delete_test__id_"));
+        assertThat(testDeleteOpBlock.getCssValue("background"), startsWith("rgba(224, 7, 7, 0.1)"));
+        assertThat(testDeleteOpBlock.getCssValue("border-color"), is("rgb(224, 7, 7)"));
+        WebElement testDeleteIcon = testDeleteOpBlock.findElement(By.tagName("span"));
+        assertThat(testDeleteIcon.getCssValue("background"), startsWith("rgb(224, 7, 7)"));
+
+        WebElement testPutOpBlock = waitForElement(driver, By.id("operations-default-put_test__id_"));
+        assertThat(testPutOpBlock.getCssValue("background"), startsWith("rgba(177, 99, 3, 0.1)"));
+        assertThat(testPutOpBlock.getCssValue("border-color"), is("rgb(177, 99, 3)"));
+        WebElement testPutIcon = testPutOpBlock.findElement(By.tagName("span"));
+        assertThat(testPutIcon.getCssValue("background"), startsWith("rgb(177, 99, 3)"));
+
+        WebElement testPostOpBlock = waitForElement(driver, By.id("operations-default-post_test__id_"));
+        assertThat(testPostOpBlock.getCssValue("background"), startsWith("rgba(32, 128, 80, 0.1)"));
+        assertThat(testPostOpBlock.getCssValue("border-color"), is("rgb(32, 128, 80)"));
+        WebElement testPostIcon = testPostOpBlock.findElement(By.tagName("span"));
+        assertThat(testPostIcon.getCssValue("background"), startsWith("rgb(32, 128, 80)"));
+
+        // Check that version stamp is present with correct colors
+        WebElement versionStamp = waitForElement(driver, By.cssSelector("small.version-stamp"));
+        assertThat(versionStamp.getCssValue("background"), startsWith("rgb(93, 130, 3)"));
 
         // Check the Required field renders correctly so we know the JS is being interpreted as UTF-8
         WebElement requiredField = waitForElement(testGetOpBlock, By.cssSelector("div.parameter__name.required"));
