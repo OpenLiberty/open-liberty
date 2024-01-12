@@ -233,7 +233,7 @@ public class Jose4jValidator {
 
     public void verifyHeaderType(String type) throws JWTTokenValidationFailedException {
         if (BackchannelLogoutConstants.LOGOUT_TOKEN_TYPE.equals(type)) {
-            String errMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_MISUSED_AS_JWT");
+            String errMsg = Tr.formatMessage(tc, "JWT_HAS_LOGOUT_TOKEN_TYP_HEADER", type);
             throw new JWTTokenValidationFailedException(errMsg);
         }
     }
@@ -306,7 +306,7 @@ public class Jose4jValidator {
             return;
         }
         if (events.containsKey(BackchannelLogoutConstants.EVENTS_MEMBER_NAME)) {
-            String errMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_MISUSED_AS_JWT");
+            String errMsg = Tr.formatMessage(tc, "JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM", events);
             throw new JWTTokenValidationFailedException(errMsg);
         }
     }

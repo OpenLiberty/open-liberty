@@ -40,7 +40,8 @@ public class Jose4jValidatorTests extends CommonTestClass {
 
     static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.openidconnect.common.*=all=enabled");
 
-    final String CWWKS1785E_LOGOUT_TOKEN_MISUSED_AS_ACCESS_TOKEN = "CWWKS1785E";
+    final String CWWKS1785E_JWT_HAS_LOGOUT_TOKEN_TYP_HEADER = "CWWKS1785E";
+    final String CWWKS1786E_JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM = "CWWKS1786E";
 
     final String BACKCHANNEL_LOGOUT_EVENT = "http://schemas.openid.net/event/backchannel-logout";
 
@@ -111,7 +112,7 @@ public class Jose4jValidatorTests extends CommonTestClass {
             validator.verifyHeaderType("logout+jwt");
             fail("Should have thrown an exception but didn't.");
         } catch (JWTTokenValidationFailedException e) {
-            verifyException(e, CWWKS1785E_LOGOUT_TOKEN_MISUSED_AS_ACCESS_TOKEN);
+            verifyException(e, CWWKS1785E_JWT_HAS_LOGOUT_TOKEN_TYP_HEADER);
         }
     }
 
@@ -177,7 +178,7 @@ public class Jose4jValidatorTests extends CommonTestClass {
             validator.verifyEventsClaim(jwtClaims);
             fail("Should have thrown an exception but didn't.");
         } catch (JWTTokenValidationFailedException e) {
-            verifyException(e, CWWKS1785E_LOGOUT_TOKEN_MISUSED_AS_ACCESS_TOKEN);
+            verifyException(e, CWWKS1786E_JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM);
         }
     }
 

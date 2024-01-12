@@ -194,7 +194,12 @@ JWT_MISSING_ISSUER=CWWKS1784E: The token is not valid because it does not contai
 JWT_MISSING_ISSUER.explanation=The token must contain an issuer claim to identify who issued the token.
 JWT_MISSING_ISSUER.useraction=Obtain a new token that includes an issuer claim.
 
-# Do not translate "events", "typ", "logout+jwt", "http://schemas.openid.net/event/backchannel-logout"
-LOGOUT_TOKEN_MISUSED_AS_JWT=CWWKS1785E: The token is not valid because it is a logout token.
-LOGOUT_TOKEN_MISUSED_AS_JWT.explanation=The token must not be a logout token. Logout tokens have an "events" claim with the value of a JSON object containing "http://schemas.openid.net/event/backchannel-logout" as a member. Logout tokens may also have a "typ" (type) header parameter with the value of "logout+jwt";
-LOGOUT_TOKEN_MISUSED_AS_JWT.useraction=Ensure that the token being used is not a logout token.
+# Do not translate "typ", "logout+jwt"
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER=CWWKS1785E: The token is not valid because the [{0}] ''typ'' header of the token indicates that it is a logout token.
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.explanation=The token must not be a logout token. Logout tokens might have a "typ" (type) header parameter with the value of "logout+jwt".
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.useraction=Ensure that the token being used is not a logout token.
+
+# Do not translate "events", "http://schemas.openid.net/event/backchannel-logout"
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM=CWWKS1786E: The token is not valid because the ''events'' claim with the value [{0}] indicates that the token is a logout token.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.explanation=The token must not be a logout token. Logout tokens have an "events" claim whose value is a JSON object containing "http://schemas.openid.net/event/backchannel-logout" as a member.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.useraction=Ensure that the token being used is not a logout token.
