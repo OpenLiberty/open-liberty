@@ -31,8 +31,8 @@ import com.ibm.ws.jaxws.test.wsr.server.stub.PeopleService;
 /**
  *
  */
-@WebServlet("/EncodingHttpTestServlet")
-public class EncodingHttpTestServlet extends HttpServlet {
+@WebServlet("/EncodingTestServlet")
+public class EncodingTestServlet extends HttpServlet {
 
     private static final long serialVersionUID = -1176036061013556217L;
 

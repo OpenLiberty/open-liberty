@@ -33,7 +33,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- * The purpose of this test is to check default encoding of
+ * The purpose of this test is to check the encoding we set in the Response's HTTP Headers
  */
 @RunWith(FATRunner.class)
 public class EncodingTest {
@@ -55,7 +55,7 @@ public class EncodingTest {
         server.startServer();
 
         assertNotNull("Application " + APP_NAME + " does not appear to have started.", server.waitForStringInLog("CWWKZ0001I:.*" + APP_NAME));
-        SERVLET_URL = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/").append(APP_NAME).append("/EncodingHttpTestServlet?target=").toString();//?method=
+        SERVLET_URL = new StringBuilder().append("http://").append(server.getHostname()).append(":").append(server.getHttpDefaultPort()).append("/").append(APP_NAME).append("/EncodingTestServlet?target=").toString();//?method=
     }
 
     @AfterClass
