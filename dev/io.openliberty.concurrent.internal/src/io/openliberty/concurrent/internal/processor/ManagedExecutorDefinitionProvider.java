@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,13 +16,17 @@ import java.lang.reflect.Member;
 import java.util.Collections;
 import java.util.List;
 
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.javaee.dd.common.JNDIEnvironmentRef;
 import com.ibm.ws.javaee.dd.common.ManagedExecutor;
+import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.injectionengine.InjectionBinding;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.InjectionProcessor;
@@ -40,6 +44,11 @@ public class ManagedExecutorDefinitionProvider extends InjectionProcessorProvide
 
     private static final List<Class<? extends JNDIEnvironmentRef>> REF_CLASSES = //
                     Collections.<Class<? extends JNDIEnvironmentRef>> singletonList(ManagedExecutor.class);
+
+    /**
+     * The Jakarta EE major version (ex. 10)
+     */
+    private int eeVersion;
 
     @Override
     @Trivial
@@ -64,6 +73,16 @@ public class ManagedExecutorDefinitionProvider extends InjectionProcessorProvide
         return new Processor();
     }
 
+    /**
+     * The service ranking of JavaEEVersion ensures we get the highest
+     * Jakarta EE version for the configured features.
+     */
+    @Reference(policyOption = ReferencePolicyOption.GREEDY)
+    protected void setEEVersion(ServiceReference<JavaEEVersion> ref) {
+        String version = (String) ref.getProperty("version");
+        eeVersion = Integer.parseInt(version.substring(0, version.indexOf('.')));
+    }
+
     class Processor extends InjectionProcessor<ManagedExecutorDefinition, ManagedExecutorDefinition.List> {
         @Trivial
         public Processor() {
@@ -76,10 +95,10 @@ public class ManagedExecutorDefinitionProvider extends InjectionProcessorProvide
                                                                                   String jndiName) throws InjectionException {
             final boolean trace = TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled();
             if (trace)
-                Tr.entry(this, tc, "createInjectionBinding", ManagedExecutorDefinitionBinding.toString(annotation), instanceClass, member, jndiName);
+                Tr.entry(this, tc, "createInjectionBinding", ManagedExecutorDefinitionBinding.toString(annotation, eeVersion), instanceClass, member, jndiName);
 
             InjectionBinding<ManagedExecutorDefinition> injectionBinding = //
-                            new ManagedExecutorDefinitionBinding(jndiName, ivNameSpaceConfig);
+                            new ManagedExecutorDefinitionBinding(jndiName, ivNameSpaceConfig, eeVersion);
             injectionBinding.merge(annotation, instanceClass, null);
 
             if (trace)
@@ -121,7 +140,7 @@ public class ManagedExecutorDefinitionProvider extends InjectionProcessorProvide
 
                     ManagedExecutorDefinitionBinding binding;
                     if (injectionBinding == null) {
-                        binding = new ManagedExecutorDefinitionBinding(jndiName, ivNameSpaceConfig);
+                        binding = new ManagedExecutorDefinitionBinding(jndiName, ivNameSpaceConfig, eeVersion);
                         addInjectionBinding(binding);
                     } else {
                         binding = (ManagedExecutorDefinitionBinding) injectionBinding;
