@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2023 IBM Corporation and others.
+ * Copyright (c) 2017,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,6 @@ import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.inject.Inject;
-import jakarta.inject.Named;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -50,16 +49,22 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 @ContextServiceDefinition(name = "java:global/concurrent/with-app-context",
+                          qualifiers = WithAppContext.class,
                           propagated = APPLICATION, cleared = ALL_REMAINING)
 @ContextServiceDefinition(name = "java:global/concurrent/without-app-context",
+                          qualifiers = WithoutAppContext.class,
                           cleared = APPLICATION, propagated = ALL_REMAINING)
 @ManagedExecutorDefinition(name = "java:global/concurrent/executor-with-app-context",
+                           qualifiers = WithAppContext.class,
                            context = "java:global/concurrent/with-app-context")
 @ManagedExecutorDefinition(name = "java:global/concurrent/executor-without-app-context",
+                           qualifiers = WithoutAppContext.class,
                            context = "java:global/concurrent/without-app-context")
 @ManagedScheduledExecutorDefinition(name = "java:global/concurrent/scheduled-executor-with-app-context",
+                                    qualifiers = WithAppContext.class,
                                     context = "java:global/concurrent/with-app-context")
 @ManagedScheduledExecutorDefinition(name = "java:global/concurrent/scheduled-executor-without-app-context",
+                                    qualifiers = WithoutAppContext.class,
                                     context = "java:global/concurrent/without-app-context")
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -80,27 +85,31 @@ public class ConcurrentCDIServlet extends HttpServlet {
     ManagedScheduledExecutorService defaultManagedScheduledExecutor;
 
     @Inject
-    @Named("java:global/concurrent/executor-with-app-context")
+    @WithAppContext
     ManagedExecutorService executorWithAppContext;
 
     @Inject
-    @Named("java:global/concurrent/executor-without-app-context")
+    @WithoutAppContext
     ManagedExecutorService executorWithoutAppContext;
 
     @Inject
-    @Named("java:global/concurrent/scheduled-executor-with-app-context")
+    @WithAppContext
     ManagedScheduledExecutorService scheduledExecutorWithAppContext;
 
     @Inject
-    @Named("java:global/concurrent/scheduled-executor-without-app-context")
+    @WithoutAppContext
     ManagedScheduledExecutorService scheduledExecutorWithoutAppContext;
 
     @Inject
-    @Named("java:global/concurrent/with-app-context")
+    @Unrecognized
+    ContextService unknownContextService;
+
+    @Inject
+    @WithAppContext
     ContextService withAppContext;
 
     @Inject
-    @Named("java:global/concurrent/without-app-context")
+    @WithoutAppContext
     ContextService withoutAppContext;
 
     private ExecutorService unmanagedThreads;
@@ -159,6 +168,13 @@ public class ConcurrentCDIServlet extends HttpServlet {
         writer.close();
 
         System.out.println("<<< END:   " + method);
+    }
+
+    /**
+     * Attempt to inject a ContextService with an unrecognized qualifier.
+     */
+    public void testContextServiceWithUnrecognizedQualifier() throws Exception {
+        assertEquals(null, unknownContextService);
     }
 
     /**
