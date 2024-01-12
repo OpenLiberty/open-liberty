@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2023 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,6 @@ package io.openliberty.concurrent.internal.cdi;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -32,14 +29,12 @@ import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AnnotatedType;
-import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
-import jakarta.inject.Named;
 
 /**
  * CDI Extension for Jakarta Concurrency 3.1+ in Jakarta EE 11+, which corresponds to CDI 4.1+
@@ -75,7 +70,7 @@ public class ConcurrencyExtension implements Extension {
     /**
      * Invoked for each matching injection point:
      *
-     * @Inject {@Qualifier1 @Qualifier2 ...} ManagedExecutorService executor;
+     * @Inject {@Qualifier1 @Qualifier2 ...} ContextService contextSvc;
      *
      * @param <T>   bean class that has the injection point
      * @param event event
@@ -126,28 +121,19 @@ public class ConcurrencyExtension implements Extension {
             } else {
                 // It doesn't already exist, so try to add it:
                 String filter = null;
-                if (DEFAULT_QUALIFIER.equals(qualifiers))
+                if (DEFAULT_QUALIFIER.equals(qualifiers)) {
                     filter = "(id=DefaultContextService)";
-                else // TODO replace with spec solution. Temporarily using @Named value to map to @ContextServiceDefinition name.
+                } else { // TODO replace this temporary approach to partially simulate spec function
+                    StringBuilder f = new StringBuilder().append("(&");
                     for (Annotation q : qualifiers)
-                        if (Named.class.equals(q.annotationType())) {
-                            String name = ((Named) q).value();
-                            filter = new StringBuilder(name.length() + 21).append("(id=contextService[").append(name).append("])").toString();
-                        }
-
-                if (filter == null) {
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "No producer or ContextServiceDefinition for qualifiers " + qualifiers);
-                } else {
-                    Bean<ContextService> bean = new ConcurrencyResourceBean<>(ContextService.class, //
-                                    filter, //
-                                    Set.of(ContextService.class), //
-                                    qualifiers);
-                    event.addBean(bean);
-
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "Added ContextService bean with qualifiers " + qualifiers);
+                        f.append("(qualifiers=").append(q.annotationType().getName()).append(')');
+                    filter = f.append(')').toString();
                 }
+
+                event.addBean(new ContextServiceBean(filter, qualifiers));
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "Added ContextService bean with qualifiers " + qualifiers);
             }
         }
         contextServiceQualifiers.clear();
@@ -159,29 +145,20 @@ public class ConcurrencyExtension implements Extension {
             } else {
                 // It doesn't already exist, so try to add it:
                 String filter = null;
-                if (DEFAULT_QUALIFIER.equals(qualifiers))
+                if (DEFAULT_QUALIFIER.equals(qualifiers)) {
                     filter = "(id=DefaultManagedExecutorService)";
-                else // TODO replace with spec solution. Temporarily using @Named value to map to @ContextServiceDefinition name.
+                } else { // TODO replace this temporary approach to partially simulate spec function
+                    // The filter on config.displayId prevents matching scheduled executor instances with the same qualifiers
+                    StringBuilder f = new StringBuilder().append("(&(config.displayId=*managedExecutorService*)");
                     for (Annotation q : qualifiers)
-                        if (Named.class.equals(q.annotationType())) {
-                            String name = ((Named) q).value();
-                            filter = new StringBuilder(name.length() + 29).append("(id=managedExecutorService[").append(name).append("])").toString();
-                        }
-
-                if (filter == null) {
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "No producer or ManagedExecutorDefinition for qualifiers " + qualifiers);
-                } else {
-                    Bean<ManagedExecutorService> bean = new ConcurrencyResourceBean<>(ManagedExecutorService.class, //
-                                    filter, //
-                                    Set.of(ManagedExecutorService.class, ExecutorService.class, Executor.class), //
-                                    qualifiers);
-                    // TODO should ExecutorService.class, Executor.class be removed? If not, must avoid collisions with application's producers
-                    event.addBean(bean);
-
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "Added ManagedExecutorService bean with qualifiers " + qualifiers);
+                        f.append("(qualifiers=").append(q.annotationType().getName()).append(')');
+                    filter = f.append(')').toString();
                 }
+
+                event.addBean(new ManagedExecutorBean(filter, qualifiers));
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "Added ManagedExecutorService bean with qualifiers " + qualifiers);
             }
         }
         executorQualifiers.clear();
@@ -193,29 +170,19 @@ public class ConcurrencyExtension implements Extension {
             } else {
                 // It doesn't already exist, so try to add it:
                 String filter = null;
-                if (DEFAULT_QUALIFIER.equals(qualifiers))
+                if (DEFAULT_QUALIFIER.equals(qualifiers)) {
                     filter = "(id=DefaultManagedScheduledExecutorService)";
-                else // TODO replace with spec solution. Temporarily using @Named value to map to @ManagedScheduledExecutorDefinition name.
+                } else { // TODO replace this temporary approach to partially simulate spec function
+                    StringBuilder f = new StringBuilder().append("(&");
                     for (Annotation q : qualifiers)
-                        if (Named.class.equals(q.annotationType())) {
-                            String name = ((Named) q).value();
-                            filter = new StringBuilder(name.length() + 38).append("(id=managedScheduledExecutorService[").append(name).append("])").toString();
-                        }
-
-                if (filter == null) {
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "No producer or ManagedScheduledExecutorDefinition for qualifiers " + qualifiers);
-                } else {
-                    Bean<ManagedScheduledExecutorService> bean = new ConcurrencyResourceBean<>(ManagedScheduledExecutorService.class, //
-                                    filter, //
-                                    Set.of(ManagedScheduledExecutorService.class, ScheduledExecutorService.class), //
-                                    qualifiers);
-                    // TODO should ScheduledExecutorService.class be removed? If not, must avoid collisions with application's producers
-                    event.addBean(bean);
-
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "Added ManagedScheduledExecutorService bean with qualifiers " + qualifiers);
+                        f.append("(qualifiers=").append(q.annotationType().getName()).append(')');
+                    filter = f.append(')').toString();
                 }
+
+                event.addBean(new ManagedScheduledExecutorBean(filter, qualifiers));
+
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "Added ManagedScheduledExecutorService bean with qualifiers " + qualifiers);
             }
         }
         scheduledExecutorQualifiers.clear();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
@@ -36,17 +37,15 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 import jakarta.enterprise.inject.spi.PassivationCapable;
 
 /**
- * Bean that delegates to the OSGi service registry to obtain resources.
- *
- * @param <T> type of resource (such as ManagedExecutorService or ContextService)
+ * Bean that delegates to the OSGi service registry to obtain ManagedExecutorService resources.
  */
-public class ConcurrencyResourceBean<T> implements Bean<T>, PassivationCapable {
-    private final static TraceComponent tc = Tr.register(ConcurrencyResourceBean.class);
+public class ManagedExecutorBean implements Bean<ManagedExecutorService>, PassivationCapable {
+    private final static TraceComponent tc = Tr.register(ManagedExecutorBean.class);
 
     /**
      * Injectable bean types.
      */
-    private final Set<Type> beanTypes;
+    private final Set<Type> beanTypes = Set.of(ManagedExecutorService.class);
 
     /**
      * OSGi filter for the resource.
@@ -59,46 +58,37 @@ public class ConcurrencyResourceBean<T> implements Bean<T>, PassivationCapable {
     private final Set<Annotation> qualifiers;
 
     /**
-     * Type of resource.
-     */
-    private final Class<T> resourceType;
-
-    /**
      * Construct a new Producer/ProducerFactory for this resource.
      *
-     * @param resourceType type of resource.
-     * @param filter       OSGi filter for the resource.
-     * @param types        bean types.
-     * @param qualifiers   qualifiers for the bean.
+     * @param filter     OSGi filter for the resource.
+     * @param qualifiers qualifiers for the bean.
      */
-    public ConcurrencyResourceBean(Class<T> resourceType, String filter, Set<Type> types, Set<Annotation> qualifiers) {
+    public ManagedExecutorBean(String filter, Set<Annotation> qualifiers) {
         this.filter = filter;
-        this.resourceType = resourceType;
-        this.beanTypes = types;
         this.qualifiers = qualifiers;
     }
 
     @Override
     @Trivial
-    public T create(CreationalContext<T> cc) {
+    public ManagedExecutorService create(CreationalContext<ManagedExecutorService> cc) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "create", cc, resourceType, filter, qualifiers);
+            Tr.entry(this, tc, "create", cc, filter, qualifiers);
 
-        T instance;
-        Bundle bundle = FrameworkUtil.getBundle(ConcurrencyResourceBean.class);
+        ManagedExecutorService instance;
+        Bundle bundle = FrameworkUtil.getBundle(ManagedExecutorBean.class);
         BundleContext bundleContext = bundle.getBundleContext();
-        Collection<ServiceReference<T>> refs;
+        Collection<ServiceReference<ManagedExecutorService>> refs;
         try {
-            refs = bundleContext.getServiceReferences(resourceType, filter);
+            refs = bundleContext.getServiceReferences(ManagedExecutorService.class, filter);
         } catch (InvalidSyntaxException x) {
             throw new IllegalArgumentException(x); // internal error forming the filter?
         }
-        Iterator<ServiceReference<T>> it = refs.iterator();
+        Iterator<ServiceReference<ManagedExecutorService>> it = refs.iterator();
         if (it.hasNext())
             instance = bundleContext.getService(it.next());
         else
-            throw new IllegalStateException("The " + resourceType.getName() + " resource with " + filter + " filter cannot be found or is unavailable."); // TODO NLS
+            throw new IllegalStateException("The ManagedExecutorService resource with " + filter + " filter cannot be found or is unavailable."); // TODO NLS
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "create", instance);
@@ -106,12 +96,12 @@ public class ConcurrencyResourceBean<T> implements Bean<T>, PassivationCapable {
     }
 
     @Override
-    public void destroy(T instance, CreationalContext<T> creationalContext) {
+    public void destroy(ManagedExecutorService instance, CreationalContext<ManagedExecutorService> creationalContext) {
     }
 
     @Override
-    public Class<T> getBeanClass() {
-        return resourceType;
+    public Class<ManagedExecutorService> getBeanClass() {
+        return ManagedExecutorService.class;
     }
 
     /**
@@ -120,7 +110,6 @@ public class ConcurrencyResourceBean<T> implements Bean<T>, PassivationCapable {
     @Override
     public String getId() {
         return new StringBuilder(getClass().getName()) //
-                        .append(':').append(resourceType.getClass().getSimpleName()) //
                         .append(":").append(qualifiers) //
                         .append(':').append(filter) //
                         .toString();
@@ -162,9 +151,9 @@ public class ConcurrencyResourceBean<T> implements Bean<T>, PassivationCapable {
     }
 
     @Override
+    @Trivial
     public String toString() {
         return new StringBuilder(getClass().getSimpleName()).append('@').append(Integer.toHexString(hashCode())) //
-                        .append(' ').append(resourceType.getClass().getSimpleName()) //
                         .append(' ').append(filter) //
                         .append(" with qualifiers ").append(qualifiers) //
                         .toString();

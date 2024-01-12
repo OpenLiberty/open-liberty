@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -214,6 +215,15 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         String[] propagated = (String[]) contextSvcProps.remove("propagated");
         String[] unchanged = (String[]) contextSvcProps.remove("unchanged");
         String[] properties = (String[]) contextSvcProps.remove("properties"); // TODO process these?
+        String[] qualifiers = (String[]) contextSvcProps.remove("qualifiers");
+
+        // Convert qualifier array to list attribute if present
+        if (qualifiers != null && qualifiers.length > 0) {
+            List<String> qualifierList = Arrays.asList(qualifiers);
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(tc, "qualifiers", qualifierList);
+            contextSvcProps.put("qualifiers", qualifierList);
+        }
 
         if (cleared == null)
             cleared = new String[0];
