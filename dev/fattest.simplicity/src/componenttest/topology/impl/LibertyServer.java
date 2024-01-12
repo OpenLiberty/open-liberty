@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -129,6 +129,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final String CLASS_NAME = c.getName();
     protected static Logger LOG = Logger.getLogger(CLASS_NAME); // why don't we always use the Logger directly?
     private final static String LS = System.getProperty("line.separator");
+    public final static String LIBERTY_ERROR_REGEX = "^.*[EW] .*\\d{4}[EW]:.*$";
 
     /** How frequently we poll the logs when waiting for something to happen */
     protected static final int WAIT_INCREMENT = 300;
@@ -3043,6 +3044,26 @@ public class LibertyServer implements LogMonitorClient {
      *                                    logs that were not in the list of ignored warnings/errors.
      */
     public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, boolean skipArchives, String... ignoredFailuresRegExps) throws Exception {
+        List<String> failuresRegExps = Arrays.asList(LIBERTY_ERROR_REGEX);
+        return stopServer(postStopServerArchive, forceStop, true, failuresRegExps, ignoredFailuresRegExps);
+    }
+
+    /**
+     * Stops the server and checks for any warnings or errors that appeared in logs.
+     * If warnings/errors are found, an exception will be thrown after the server stops.
+     *
+     * @param  postStopServerArchive  true to collect server log files after the server is stopped; false to skip this step (sometimes, FATs back up log files on their own, so this
+     *                                    would be redundant)
+     * @param  forceStop              Force the server to stop, skipping the quiesce (default/usual value should be false)
+     * @param  skipArchives           Skip postStopServer collection of archives (WARs, EARs, JARs, etc.) - only used if postStopServerArchive is true
+     * @param  ignoredFailuresRegExps A list of reg expressions corresponding to warnings or errors that should be ignored.
+     *                                    If ignoredFailuresRegExps is null, logs will not be checked for warnings/errors
+     * @param  failuresRegExps        A list of reg expressions corresponding to warnings or errors that should be treated as test failures.
+     * @return                        the output of the stop command
+     * @throws Exception              if the stop operation fails or there are warnings/errors found in server
+     *                                    logs that were not in the list of ignored warnings/errors.
+     */
+    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, boolean skipArchives, List<String> failuresRegExps, String... ignoredFailuresRegExps) throws Exception {
         ProgramOutput output = null;
         boolean commandPortEnabled = true;
         final String method = "stopServer";
@@ -3142,7 +3163,7 @@ public class LibertyServer implements LogMonitorClient {
 
             this.isTidy = true;
 
-            checkLogsForErrorsAndWarnings(ignoredFailuresRegExps);
+            checkLogsForErrorsAndWarnings(failuresRegExps, ignoredFailuresRegExps);
 
             if (doCheckpoint() && checkpointInfo.isAssertNoAppRestartOnRestore() &&
                 checkpointInfo.checkpointPhase == CheckpointPhase.AFTER_APP_START) {
@@ -3197,21 +3218,29 @@ public class LibertyServer implements LogMonitorClient {
         return output;
     }
 
+    @Deprecated
+    protected void checkLogsForErrorsAndWarnings(String... ignoredFailuresRegExps) throws Exception {
+        checkLogsForErrorsAndWarnings(Arrays.asList(LIBERTY_ERROR_REGEX), ignoredFailuresRegExps);
+    }
+
     /**
      * Checks server logs for any lines containing errors or warnings that
      * do not match any regular expressions provided in regIgnore.
      *
+     * @param  failuresRegExps A list of reg expressions corresponding to warnings or errors that should be treated as test failures.
      * @param  ignoredFailuresRegExps A list of regex strings for errors/warnings that
      *                                    may be safely ignored.
      * @return                        A list of lines containing errors/warnings from server logs
      */
-    protected void checkLogsForErrorsAndWarnings(String... ignoredFailuresRegExps) throws Exception {
+    protected void checkLogsForErrorsAndWarnings(List<String> failuresRegExps, String... ignoredFailuresRegExps) throws Exception {
         final String method = "checkLogsForErrorsAndWarnings";
 
         // Get all warnings and errors in logs - default to an empty list
         List<String> errorsInLogs = new ArrayList<String>();
         try {
-            errorsInLogs = this.findStringsInLogs("^.*[EW] .*\\d{4}[EW]:.*$"); // uses getDefaultLogFile()
+            for (String failureRegExp : failuresRegExps) {
+                errorsInLogs.addAll(this.findStringsInLogs(failureRegExp)); // uses getDefaultLogFile()
+            }
             if (!errorsInLogs.isEmpty()) {
                 // There were unexpected errors in logs, print them
                 // and set an exception to return
