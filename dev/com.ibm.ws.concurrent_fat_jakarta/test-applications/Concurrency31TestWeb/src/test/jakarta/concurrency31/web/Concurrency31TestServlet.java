@@ -14,6 +14,8 @@ package test.jakarta.concurrency31.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +29,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ContextServiceDefinition;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.servlet.ServletConfig;
@@ -40,6 +45,15 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
+@ContextServiceDefinition(name = "java:module/concurrent/my-context",
+                          propagated = APPLICATION,
+                          cleared = ALL_REMAINING)
+@ManagedExecutorDefinition(name = "java:module/concurrent/virtual-executor",
+                           context = "java:module/concurrent/my-context",
+                           virtual = true)
+@ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/virtual-scheduled-executor",
+                                    context = "java:module/concurrent/my-context",
+                                    virtual = true)
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class Concurrency31TestServlet extends FATServlet {
@@ -48,13 +62,6 @@ public class Concurrency31TestServlet extends FATServlet {
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
     // TODO replace these with resource definition annotations or deployment descriptor elements:
-    @Resource(name = "java:module/concurrent/virtual-executor", lookup = "concurrent/temp-virtual-executor")
-    ManagedExecutorService tempExecutor;
-
-    // TODO replace these with resource definition annotations or deployment descriptor elements:
-    @Resource(name = "java:comp/concurrent/virtual-scheduled-executor", lookup = "concurrent/temp-virtual-scheduled-executor")
-    ManagedScheduledExecutorService tempScheduledExecutor;
-
     @Resource(name = "java:module/concurrent/virtual-thread-factory", lookup = "concurrent/temp-virtual-thread-factory")
     ManagedThreadFactory tempThreadFactory;
 

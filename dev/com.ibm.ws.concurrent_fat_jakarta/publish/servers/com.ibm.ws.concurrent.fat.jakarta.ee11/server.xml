@@ -36,24 +36,6 @@
     <fileset dir="${server.config.dir}/lib" include="location-utils.jar,stat-utils.jar"/>
   </library>
 
-  <!-- TODO replace with ManagedExecutorDefinition once virtual=true is available -->
-  <managedExecutorService id="temp-virtual-executor" jndiName="concurrent/temp-virtual-executor">
-    <concurrencyPolicy virtual="true"/>
-    <contextService>
-      <classloaderContext/>
-      <jeeMetadataContext/>
-    </contextService>
-  </managedExecutorService>
-
-  <!-- TODO replace with ManagedScheduledExecutorDefinition once virtual=true is available -->
-  <managedScheduledExecutorService id="temp-virtual-scheduled-executor" jndiName="concurrent/temp-virtual-scheduled-executor">
-    <concurrencyPolicy virtual="true"/>
-    <contextService>
-      <classloaderContext/>
-      <jeeMetadataContext/>
-    </contextService>
-  </managedScheduledExecutorService>
-
   <!-- TODO replace with ManagedThreadFactoryDefinition once virtual=true is available -->
   <managedThreadFactory id="temp-virtual-thread-factory" jndiName="concurrent/temp-virtual-thread-factory" virtual="true">
     <contextService>
