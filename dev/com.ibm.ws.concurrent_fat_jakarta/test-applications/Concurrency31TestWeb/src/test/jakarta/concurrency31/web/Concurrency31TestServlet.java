@@ -16,7 +16,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import jakarta.annotation.Resource;
+import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.servlet.ServletConfig;
@@ -42,6 +46,10 @@ public class Concurrency31TestServlet extends FATServlet {
 
     // Maximum number of nanoseconds to wait for a task to finish.
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+
+    // TODO replace these with resource definition annotations or deployment descriptor elements:
+    @Resource(name = "java:module/concurrent/virtual-executor", lookup = "concurrent/temp-virtual-executor")
+    ManagedExecutorService tempExecutor;
 
     // TODO replace these with resource definition annotations or deployment descriptor elements:
     @Resource(name = "java:comp/concurrent/virtual-scheduled-executor", lookup = "concurrent/temp-virtual-scheduled-executor")
@@ -136,6 +144,97 @@ public class Concurrency31TestServlet extends FATServlet {
         Thread thread = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread));
     }
+
+    /**
+     * TODO Use ManagedExecutorDefinition with virtual=true to submit a task to run on a virtual thread.
+     */
+    @Test
+    public void testSubmitToVirtualThread() throws Exception {
+        ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/virtual-executor");
+        Future<Thread> future = executor.submit(Thread::currentThread);
+        Thread thread = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread));
+    }
+
+    /**
+     * TODO Use ManagedExecutorDefinition with virtual=true to submit multiple tasks to run on virtual threads,
+     * with a timeout before which all must complete.
+     */
+    @Test
+    public void testTimedInvokeAllOnVirtualThreads() throws Exception {
+        Callable<Object> task = () -> {
+            try {
+                InitialContext.doLookup("java:module/concurrent/virtual-executor");
+            } catch (Throwable x) {
+                return x;
+            }
+            return Thread.currentThread();
+        };
+
+        ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/virtual-executor");
+        List<Future<Object>> futures = executor.invokeAll(List.of(task, task, task),
+                                                          TIMEOUT_NS,
+                                                          TimeUnit.NANOSECONDS);
+
+        assertEquals(futures.toString(), 3, futures.size());
+
+        Object threadOrLookupFailure;
+
+        assertNotNull(threadOrLookupFailure = futures.get(0).get(1, TimeUnit.MILLISECONDS));
+        assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(threadOrLookupFailure));
+
+        assertNotNull(threadOrLookupFailure = futures.get(1).get(1, TimeUnit.MILLISECONDS));
+        assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(threadOrLookupFailure));
+
+        assertNotNull(threadOrLookupFailure = futures.get(2).get(1, TimeUnit.MILLISECONDS));
+        assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(threadOrLookupFailure));
+    }
+
+    /**
+     * TODO Use ManagedExecutorDefinition with virtual=true to submit multiple tasks to run on virtual threads,
+     * with a timeout before which one must complete.
+     */
+    @Test
+    public void testTimedInvokeAnyOnVirtualThreads() throws Exception {
+        ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/virtual-executor");
+        Thread thread = executor.invokeAny(List.of(Thread::currentThread,
+                                                   Thread::currentThread),
+                                           TIMEOUT_NS,
+                                           TimeUnit.NANOSECONDS);
+
+        assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread));
+    }
+
+    // TODO after the workaround is removed, write: public void testUntimedInvokeAllOnVirtualThreads() throws Exception {
+
+    /**
+     * TODO Use ManagedExecutorDefinition with virtual=true to submit multiple tasks to run on virtual threads,
+     * waiting until the first one completes.
+     */
+    @Test
+    public void testUntimedInvokeAnyOnVirtualThreads() throws Exception {
+        Callable<Object> anyTask = () -> {
+            try {
+                InitialContext.doLookup("java:module/concurrent/virtual-executor");
+            } catch (Throwable x) {
+                return x;
+            }
+            return Thread.currentThread();
+        };
+
+        ManagedExecutorService executor = InitialContext.doLookup("java:module/concurrent/virtual-executor");
+
+        Object threadOrLookupFailure = executor.invokeAny(List.of(anyTask, anyTask));
+
+        if (threadOrLookupFailure instanceof Throwable)
+            throw new AssertionError("Task failed, see cause.", (Throwable) threadOrLookupFailure);
+
+        Thread thread = (Thread) threadOrLookupFailure;
+
+        assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread));
+    }
+
+    // TODO after the workaround is removed, write: public void testUntimedInvokeAnyOneOnVirtualThread() throws Exception {
 
     /**
      * TODO Use ManagedThreadFactoryDefinition with virtual=true to request virtual threads once implemented.
