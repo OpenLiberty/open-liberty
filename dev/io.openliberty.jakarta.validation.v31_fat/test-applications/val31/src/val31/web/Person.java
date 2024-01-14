@@ -17,10 +17,8 @@ import jakarta.validation.constraints.Size;
  *
  */
 public record Person(@NotNull String name) {
+    public String checkNameSize(@Size(max = 10) String x) {
 
-    @Size(min = 6)
-    public String getName() {
-        return this.name;
+        return x + "String value";
     }
-
 }
