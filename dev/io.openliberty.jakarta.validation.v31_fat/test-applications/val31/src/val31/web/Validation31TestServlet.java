@@ -108,4 +108,27 @@ public class Validation31TestServlet extends FATServlet {
         assertTrue("Record Company should have validated with 2 violations after conversion", constraintViolations2.size() == 2);
     }
 
+    /**
+     * Test the GroupSequence on a record.
+     */
+    @Test
+    public void GroupSequenceRecordsTest() throws Exception {
+        // SignupForm has BasicInfo - fistName and AdvanceInfo - age. firstName must be non empty and age must be greater than 18.
+
+        // Creating a SignupForm with valid data. Both firstName and age is valid here.
+        SignupForm validSignupForm = new SignupForm("John Doe", 25);
+
+        // Creating a SignupForm with invalid data. Both firstName and age is invalid here.
+        SignupForm invalidSignupForm = new SignupForm("", 15);
+
+        Set<ConstraintViolation<SignupForm>> constraintViolations = validator.validate(validSignupForm, ValidationOrder.class);
+        // No violations expected here because both firstName and age is valid.
+        assertEquals("Record SignupForm() should have validated with zero violation", 0, constraintViolations.size());
+
+        constraintViolations = validator.validate(invalidSignupForm, ValidationOrder.class);
+        // Expecting ONLY ONE violation here for firstName although firstName and age is invalid.
+        // When BasicInfo is not complete then should give violation for BasicInfo ONLY.
+        assertEquals("Record SignupForm() should have validated with one violation", 1, constraintViolations.size());
+    }
+
 }
