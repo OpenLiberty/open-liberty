@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.microprofile.health20.fat.ApplicationStateHealthCheckTest;
+import com.ibm.ws.microprofile.health20.fat.ConfigAdminHealthCheckTest;
 import com.ibm.ws.microprofile.health20.fat.DelayAppStartupHealthCheckTest;
 import com.ibm.ws.microprofile.health20.fat.DifferentApplicationNameHealthCheckTest;
 import com.ibm.ws.microprofile.health20.fat.MultipleHealthCheckTest;
@@ -28,7 +29,8 @@ import componenttest.containers.TestContainerSuite;
                 ApplicationStateHealthCheckTest.class,
                 DelayAppStartupHealthCheckTest.class,
                 MultipleHealthCheckTest.class,
-                DifferentApplicationNameHealthCheckTest.class
+                DifferentApplicationNameHealthCheckTest.class,
+                ConfigAdminHealthCheckTest.class
 })
 
 public class FATSuite extends TestContainerSuite {

@@ -19,7 +19,9 @@ src: \
 	test-applications/DelayedHealthCheckApp/src, \
 	test-applications/DifferentAppNameHealthCheckApp/src, \
 	test-applications/FailsToStartHealthCheckApp/src, \
-	test-applications/SuccessfulHealthCheckApp/src
+	test-applications/SuccessfulHealthCheckApp/src, \
+	test-applications/ConfigAdminDropinsCheckApp/src, \
+	test-applications/ConfigAdminXmlCheckApp/src
 
 fat.project: true
 
