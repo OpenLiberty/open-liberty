@@ -112,4 +112,14 @@ public interface AppTracker {
      */
     void setHealthCheckService(HealthCheckService healthService);
 
+    /**
+     * @param appName
+     */
+    void addAppName(String appName);
+
+    /**
+     * @return appNames found by Config Admin
+     */
+    Set<String> getAllConfigAppNames();
+
 }

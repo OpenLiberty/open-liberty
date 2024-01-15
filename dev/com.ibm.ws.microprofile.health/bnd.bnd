@@ -70,7 +70,7 @@ testsrc: test/src
         com.ibm.websphere.org.osgi.service.component;version=latest,\
         com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
         com.ibm.ws.app.manager;version=latest,\
-	    com.ibm.ws.adaptable.module;version=latest,\
+        com.ibm.ws.adaptable.module;version=latest,\
         com.ibm.ws.cdi.interfaces;version=latest,\
         com.ibm.ws.classloader.context;version=latest,\
         com.ibm.ws.classloading;version=latest,\
@@ -85,7 +85,9 @@ testsrc: test/src
         com.ibm.ws.threading;version=latest,\
         com.ibm.ws.webcontainer;version=latest,\
         com.ibm.ws.org.apache.commons.lang3;version=latest,\
-        org.eclipse.osgi;version=latest
+        org.eclipse.osgi;version=latest,\
+        com.ibm.websphere.org.osgi.service.cm;version=latest
+
 
 -testpath: \
         ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
