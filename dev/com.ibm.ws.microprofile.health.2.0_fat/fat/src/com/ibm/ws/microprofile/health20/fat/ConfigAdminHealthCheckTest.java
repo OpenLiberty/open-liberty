@@ -76,6 +76,14 @@ public class ConfigAdminHealthCheckTest {
         SUCCESS, FAILURE;
     }
 
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(new FeatureReplacementAction()
+                                    .withID("mpHealth-3.0")
+                                    .addFeature("mpHealth-3.0")
+                                    .removeFeature("mpHealth-2.0")
+                                    .forServers(SERVER_NAME));
+
     @Server(SERVER_NAME)
     public static LibertyServer server1;
 
