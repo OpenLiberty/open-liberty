@@ -54,8 +54,6 @@ Import-Package: \
 # Export-Package and Private-Package specified in sub-bundles
 # because bundles have different contents in addition to being transformed
 
-Private-Package: io.openliberty.microprofile.telemetry.internal.common.helpers
-
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
