@@ -540,7 +540,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenValidationTests_invalid_iat() throws Exception {
 
-        long iat = 2055696852; // set an invalid iat (future date - 2/21/2035)
+        long iat = System.currentTimeMillis() / 1000 + hoursToSeconds(24 * 365 * 10);
         long exp = iat + minutesToSeconds(2);
 
         genericInvalidIatOrExpClaimTest(iat, exp);
@@ -708,7 +708,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
-    public void LogoutTokenValidationTests_invalid_exp_now() throws Exception {
+    public void LogoutTokenValidationTests_valid_exp_now() throws Exception {
 
         long exp = System.currentTimeMillis() / 1000;
         long iat = exp - minutesToSeconds(2);
@@ -733,7 +733,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
-    public void LogoutTokenValidationTests_invalid_exp_tomorrow() throws Exception {
+    public void LogoutTokenValidationTests_valid_exp_tomorrow() throws Exception {
 
         long tomorrow = System.currentTimeMillis() / 1000 + hoursToSeconds(24);
         
@@ -747,11 +747,11 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
-    public void LogoutTokenValidationTests_invalid_exp_2035() throws Exception {
+    public void LogoutTokenValidationTests_valid_exp_farInFuture() throws Exception {
 
-        long feb_21_2035 = 2055696852;
+        long futureTime = System.currentTimeMillis() / 1000 + hoursToSeconds(24 * 365 * 10);
 
-        genericAddedUpdatedClaimsTest(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS, feb_21_2035);
+        genericAddedUpdatedClaimsTest(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS, futureTime);
 
     }
 
