@@ -522,6 +522,11 @@ public class RecoveryManager implements Runnable {
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
                                 throw ple;
+                            } catch (LogsUnderlyingTablesMissingException lutme) {
+                                // No FFDC in this case
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "LogsUnderlyingTablesMissingException raised", lutme);
+                                throw lutme;
                             } catch (Exception e) {
                                 FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.preShutdown", "359", this);
                                 Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
@@ -555,6 +560,11 @@ public class RecoveryManager implements Runnable {
                                     Tr.debug(tc, "PeerLostLogOwnershipException raised forcing tranlog at shutdown", ple);
 
                                 throw ple;
+                            } catch (LogsUnderlyingTablesMissingException lutme) {
+                                // No FFDC in this case
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "LogsUnderlyingTablesMissingException raised forcing tranlog at shutdown", lutme);
+                                throw lutme;
                             } catch (Exception e) {
                                 // We were unable to force the tranlog, so just return as if we had crashed
                                 // (or did an immediate shutdown) and we will recover everything at the next restart.
@@ -637,6 +647,10 @@ public class RecoveryManager implements Runnable {
                             // No FFDC in this case
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                        } catch (LogsUnderlyingTablesMissingException lutme) {
+                            // No FFDC in this case
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "LogsUnderlyingTablesMissingException raised", lutme);
                         } catch (Exception e) {
                             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "779", this);
                             if (tc.isEventEnabled())
@@ -662,6 +676,10 @@ public class RecoveryManager implements Runnable {
                                 // No FFDC in this case
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                            } catch (LogsUnderlyingTablesMissingException lutme) {
+                                // No FFDC in this case
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "LogsUnderlyingTablesMissingException raised", lutme);
                             } catch (Exception e) {
                                 FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "793", this);
                                 if (tc.isEventEnabled())
@@ -692,7 +710,7 @@ public class RecoveryManager implements Runnable {
                 } catch (LogsUnderlyingTablesMissingException lutme) {
                     // No FFDC in this case
                     if (tc.isDebugEnabled())
-                        Tr.debug(tc, "PeerLostLogOwnershipException raised", lutme);
+                        Tr.debug(tc, "LogsUnderlyingTablesMissingException raised", lutme);
                 } catch (Exception e) {
                     FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "824", this);
                     Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
@@ -1165,6 +1183,10 @@ public class RecoveryManager implements Runnable {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "updateTranLogServiceData", ple);
             throw ple;
+        } catch (LogsUnderlyingTablesMissingException lutme) {
+            // No FFDC in this case
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "updateTranLogServiceData", lutme);
         } catch (Exception e) {
             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.updateTranLogSeviceData", "1130", this);
             if (tc.isEntryEnabled())
@@ -1248,6 +1270,10 @@ public class RecoveryManager implements Runnable {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "updateServerState", ple);
             throw ple;
+        } catch (LogsUnderlyingTablesMissingException lutme) {
+            // No FFDC in this case
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "updateServerState", lutme);
         } catch (Exception e) {
             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.updateServerState", "1250", this);
             if (tc.isEntryEnabled())
@@ -2256,6 +2282,16 @@ public class RecoveryManager implements Runnable {
                         Tr.event(tc, "Caught PeerLostLogOwnershipException during keypointing: " + ple);
 
                     recoveryFailed(ple); // @254326C
+
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "run");
+                    return;
+                } catch (LogsUnderlyingTablesMissingException lutme) {
+                    // No FFDC or error messaging in this case
+                    if (tc.isDebugEnabled())
+                        Tr.event(tc, "Caught LogsUnderlyingTablesMissingException during keypointing: " + lutme);
+
+                    recoveryFailed(lutme); // @254326C
 
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "run");
