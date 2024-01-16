@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.InvalidRecoverableUnitSectionException;
 import com.ibm.ws.recoverylog.spi.LogCursor;
 import com.ibm.ws.recoverylog.spi.LogCursorImpl;
+import com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException;
 import com.ibm.ws.recoverylog.spi.PeerLostLogOwnershipException;
 import com.ibm.ws.recoverylog.spi.RecoverableUnit;
 import com.ibm.ws.recoverylog.spi.RecoverableUnitSection;
@@ -561,6 +562,11 @@ public class SQLRecoverableUnitImpl implements RecoverableUnit {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "forceSections", ple);
             throw ple;
+        } catch (LogsUnderlyingTablesMissingException lutme) {
+            // No FFDC in this case
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "forceSections", lutme);
+            throw lutme;
         } catch (InternalLogException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.SQLRecoverableUnitImpl.forceSections", "531", this);
             if (tc.isEntryEnabled())
