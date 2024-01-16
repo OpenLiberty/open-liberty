@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,8 +12,10 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.processor;
 
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
@@ -133,6 +135,15 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
         String component = (String) execSvcProps.get("component");
         String jndiName = (String) execSvcProps.get(ResourceFactory.JNDI_NAME);
         String contextSvcJndiName = (String) execSvcProps.remove("context");
+        String[] qualifiers = (String[]) execSvcProps.remove("qualifiers");
+
+        // Convert qualifier array to list attribute if present
+        if (qualifiers != null && qualifiers.length > 0) {
+            List<String> qualifierList = Arrays.asList(qualifiers);
+            if (trace && tc.isDebugEnabled())
+                Tr.debug(tc, "qualifiers", qualifierList);
+            execSvcProps.put("qualifiers", qualifierList);
+        }
 
         Long hungTaskThreshold = (Long) execSvcProps.remove("hungTaskThreshold");
         Integer maxAsync = (Integer) execSvcProps.remove("maxAsync");
