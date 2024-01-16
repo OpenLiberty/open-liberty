@@ -759,7 +759,16 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         // Determine if we need a permit to run one or more of the tasks on the current thread, and if so, acquire it,
         int taskCount = tasks.size();
         boolean havePermit = false;
-        boolean useCurrentThread = maxPolicy == MaxPolicy.loose || (havePermit = taskCount > 0 && maxConcurrencyConstraint.tryAcquire());
+        boolean useCurrentThread;
+        MaxPolicy policy = maxPolicy;
+        if (policy == MaxPolicy.loose) // can always run inline
+            useCurrentThread = true;
+        else if (policy == MaxPolicy.strict) // must acquire a permit to run inline
+            useCurrentThread = havePermit = taskCount > 0 && maxConcurrencyConstraint.tryAcquire();
+        else // can run inline on platform threads (loose); Never run inline on virtual threads
+            throw new UnsupportedOperationException("maxPolicy=null"); // currently unreachable, waiting for a pull that is blocked
+        // TODO:
+        // useCurrentThread = !(virtualThreadOps.isSupported() && virtualThreadOps.isVirtual(Thread.currentThread()));
 
         List<PolicyTaskFutureImpl<T>> futures = new ArrayList<PolicyTaskFutureImpl<T>>(taskCount);
         try {
@@ -930,7 +939,18 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         // Special case to run a single task on the current thread if we can acquire a permit, if a permit is required
         if (taskCount == 1) {
             boolean havePermit = false;
-            if (maxPolicy == MaxPolicy.loose || (havePermit = maxConcurrencyConstraint.tryAcquire())) // use current thread
+            boolean useCurrentThread;
+            MaxPolicy policy = maxPolicy;
+            if (policy == MaxPolicy.loose) // can always run inline
+                useCurrentThread = true;
+            else if (policy == MaxPolicy.strict) // must acquire a permit to run inline
+                useCurrentThread = havePermit = maxConcurrencyConstraint.tryAcquire();
+            else // can run inline on platform threads (loose); Never run inline on virtual threads
+                throw new UnsupportedOperationException("maxPolicy=null"); // currently unreachable, waiting for a pull that is blocked
+            // TODO:
+            // useCurrentThread = !(virtualThreadOps.isSupported() && virtualThreadOps.isVirtual(Thread.currentThread()));
+
+            if (useCurrentThread)
                 try {
                     if (state.get() != State.ACTIVE)
                         throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
@@ -1118,9 +1138,6 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
     @Override
     public PolicyExecutor maxPolicy(MaxPolicy policy) {
-        if (policy == null)
-            throw new NullPointerException();
-
         if (state.get() != State.ACTIVE)
             throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "maxPolicy", identifier));
 

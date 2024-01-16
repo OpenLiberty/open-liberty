@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -148,6 +148,7 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
         Long hungTaskThreshold = (Long) execSvcProps.remove("hungTaskThreshold");
         Integer maxAsync = (Integer) execSvcProps.remove("maxAsync");
         String[] properties = (String[]) execSvcProps.remove("properties"); // TODO use these properties?
+        Boolean virtual = (Boolean) execSvcProps.remove("virtual");
 
         String managedScheduledExecutorServiceID = getManagedScheduledExecutorServiceID(application, module, component, jndiName);
         String concurrencyPolicyId = managedScheduledExecutorServiceID + "/concurrencyPolicy";
@@ -196,9 +197,18 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
             else if (maxAsync != -1) // unbounded
                 throw new IllegalArgumentException(jndiName + " maxAsync=" + maxAsync);
 
-        concurrencyPolicyProps.put("maxPolicy", "loose");
         concurrencyPolicyProps.put("maxWaitForEnqueue", 0L);
         concurrencyPolicyProps.put("runIfQueueFull", false);
+
+        if (Boolean.TRUE.equals(virtual)) { // only available in Concurrency 3.1+
+            concurrencyPolicyProps.put("virtual", virtual);
+            // maxPolicy unspecified makes the policy conditional on whether or not the submitter thread is virtual
+            // TODO remove the following once unspecified is supported
+            concurrencyPolicyProps.put("maxPolicy", "loose");
+        } else {
+            // virtual = false is the default
+            concurrencyPolicyProps.put("maxPolicy", "loose");
+        }
 
         BundleContext concurrencyBundleCtx = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(WSManagedExecutorService.class));
         BundleContext concurrencyPolicyBundleCtx = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(ConcurrencyPolicy.class));
