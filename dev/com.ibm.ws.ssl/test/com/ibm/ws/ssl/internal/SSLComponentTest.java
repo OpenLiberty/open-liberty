@@ -178,7 +178,7 @@ public class SSLComponentTest {
 
     @Before
     public void setUp() {
-        sslComponent = new SSLComponent();
+        sslComponent = new SSLComponent(null);
 
         mock.checking(new Expectations() {
             {
