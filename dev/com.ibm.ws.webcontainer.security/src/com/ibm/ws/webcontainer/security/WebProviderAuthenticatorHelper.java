@@ -76,7 +76,7 @@ public class WebProviderAuthenticatorHelper {
             return new AuthenticationResult(AuthResult.FAILURE, "subject is null");
         }
 
-        if (!mapIdentityToRegistryUser && !subject.isReadOnly()) {
+        if (!mapIdentityToRegistryUser) {
             removeSecurityNameAndUniquedIdFromHashtable(subject, customProperties, mapIdentityToRegistryUser);
         }
 
@@ -146,8 +146,14 @@ public class WebProviderAuthenticatorHelper {
         if (privateCredentials.remove(props)) {
             props.remove(AttributeNameConstants.WSCREDENTIAL_UNIQUEID);
             props.remove(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME);
-            if (!props.isEmpty()) {
-                privateCredentials.add(props);
+            if (!props.isEmpty()  && !subject.isReadOnly()) {
+                try {
+                    privateCredentials.add(props);
+                }
+                catch (Exception e) {
+                    //Not throwing an exception. We always have a slight chance of the same subject gets setReadOnly() on another thread just before the above call is made.   
+                    //The purpose of this method is to prevent the Subject from growing. Once the subject is set readOnly, it would not grow any more.  
+                }
             }
         }
     }
