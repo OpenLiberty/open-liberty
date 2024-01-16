@@ -21,4 +21,9 @@ public record Person(@NotNull String name) {
 
         return x + "String value";
     }
+
+    @Size(min = 6)
+    public String getName() {
+        return this.name;
+    }
 }

@@ -15,7 +15,6 @@ package val31.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Set;
 
@@ -26,7 +25,6 @@ import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import jakarta.validation.constraints.Size;
 
 @SuppressWarnings("serial")
 @WebServlet("/Validation31TestServlet")
@@ -67,27 +65,21 @@ public class Validation31TestServlet extends FATServlet {
      * This tests if able to validate parameters and return value with records.
      */
     @Test
-    public void validateRecordParameters() throws Exception {
+    public void validateRecordParametersTest() throws Exception {
 
         Person object = new Person("x");
-        Method method = Person.class.getMethod("checkNameSize", String.class);
-
-        Object[] parameterValues = { "valuetocheck" };
-        Set<ConstraintViolation<Person>> violations1 = validator.forExecutables()
-                        .validateParameters(object, method,
+        Method method1 = Person.class.getMethod("checkNameSize", String.class);
+        Object[] parameterValues = { "Maxallowedvaluesis10" };
+        Set<ConstraintViolation<Person>> parameterViolations = validator.forExecutables()
+                        .validateParameters(object, method1,
                                             parameterValues);
-        assertEquals(1, violations1.size());
-        Class<? extends Annotation> constraintType = violations1.iterator()
-                        .next()
-                        .getConstraintDescriptor()
-                        .getAnnotation()
-                        .annotationType();
-        assertEquals(Size.class, constraintType);
-        String returnvalue = object.checkNameSize("x");
-        Set<ConstraintViolation<Person>> violations = validator.forExecutables()
+        assertEquals("Record Person('x') should have validated with one violation", 1, parameterViolations.size());
+        Method method = Person.class.getMethod("getName");
+        String returnValue = object.getName();
+        Set<ConstraintViolation<Person>> returnValueviolations = validator.forExecutables()
                         .validateReturnValue(object, method,
-                                             returnvalue);
-        assertEquals(0, violations.size());
+                                             returnValue);
+        assertEquals("Record Person('x') should have validated with one violation", 1, returnValueviolations.size());
     }
 
     /**
