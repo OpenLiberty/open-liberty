@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -76,10 +76,10 @@ public class Validation31TestServlet extends FATServlet {
         assertEquals("Record Person('x') should have validated with one violation", 1, parameterViolations.size());
         Method method = Person.class.getMethod("getName");
         String returnValue = object.getName();
-        Set<ConstraintViolation<Person>> returnValueviolations = validator.forExecutables()
+        Set<ConstraintViolation<Person>> returnValueViolations = validator.forExecutables()
                         .validateReturnValue(object, method,
                                              returnValue);
-        assertEquals("Record Person('x') should have validated with one violation", 1, returnValueviolations.size());
+        assertEquals("Record Person('x') should have validated with one violation", 1, returnValueViolations.size());
     }
 
     /**
