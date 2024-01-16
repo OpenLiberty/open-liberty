@@ -11,6 +11,12 @@
 
 	<include location="../fatTestPorts.xml" />
 
+	<httpOptions
+		readTimeout="150s"
+		writeTimeout="150s"
+		persistTimeout="150s"
+	/>
+
 	<transaction
 	  backendURL="http://localhost:${bvt.prop.HTTP_default}"
       recoveryIdentity="Server1"
