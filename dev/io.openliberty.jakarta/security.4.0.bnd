@@ -1,0 +1,34 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+Bundle-SymbolicName: io.openliberty.jakarta.security.4.0; singleton:=true
+Bundle-Description: Jakarta Security, version 4.0
+
+Export-Package: \
+    jakarta.security.enterprise;version="4.0.0", \
+    jakarta.security.enterprise.authentication.mechanism.http;version="4.0.0", \
+    jakarta.security.enterprise.authentication.mechanism.http.openid;version="4.0.0", \
+    jakarta.security.enterprise.credential;version="4.0.0", \
+    jakarta.security.enterprise.identitystore;version="4.0.0", \
+    jakarta.security.enterprise.identitystore.openid;version="4.0.0"
+
+-includeresource: \
+  @${repo;jakarta.security.enterprise:jakarta.security.enterprise-api;4.0.0.M1;EXACT}!/!(META-INF/maven/*|module-info.class)
+
+-maven-dependencies: \
+   dep1;groupId=jakarta.security.enterprise;artifactId=jakarta.security.enterprise-api;version=4.0.0.M1;scope=runtime
+
