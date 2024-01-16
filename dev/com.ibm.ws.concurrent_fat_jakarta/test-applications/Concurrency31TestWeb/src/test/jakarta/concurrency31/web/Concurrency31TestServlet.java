@@ -73,6 +73,33 @@ public class Concurrency31TestServlet extends FATServlet {
     }
 
     /**
+     * Use a managed-thread-factory from the web.xml deployment descriptor with virtual=false
+     * to request platform threads.
+     */
+    @Test
+    public void testPlatformThreadFactoryWebDD() throws Exception {
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
+        Runnable action = () -> {
+            try {
+                results.add(InitialContext.doLookup("java:comp/concurrent/webdd/virtual-thread-factory"));
+            } catch (Throwable x) {
+                results.add(x);
+            }
+        };
+
+        ManagedThreadFactory threadFactory = InitialContext.doLookup("java:global/concurrent/webdd/platform-thread-factory");
+        Thread thread1 = threadFactory.newThread(action);
+        assertEquals(7, thread1.getPriority());
+        assertEquals(Boolean.FALSE, Thread.class.getMethod("isVirtual").invoke(thread1));
+        thread1.start();
+
+        Object result;
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError("An error occurred on the thread.", (Throwable) result);
+    }
+
+    /**
      * Use ManagedScheduledExecutorDefinition with virtual=true to schedule a repeating timer
      * to run on virtual threads. Verify that all executions run on different virtual threads and that
      * context is propagated to these threads.
@@ -243,11 +270,11 @@ public class Concurrency31TestServlet extends FATServlet {
     // TODO after the workaround is removed, write: public void testUntimedInvokeAnyOneOnVirtualThread() throws Exception {
 
     /**
-     * Use ManagedThreadFactoryDefinition with virtual=true to request virtual threads once implemented.
+     * Use ManagedThreadFactoryDefinition with virtual=true to request virtual threads.
      * TODO It can also define custom context to propagate to the managed virtual thread.
      */
     @Test
-    public void testVirtualThreadFactory() throws Exception {
+    public void testVirtualThreadFactoryAnno() throws Exception {
         LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
         Runnable action = () -> {
             try {
@@ -274,5 +301,33 @@ public class Concurrency31TestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError("An error occurred on the other virtual thread.", (Throwable) result);
+    }
+
+    /**
+     * Use a managed-thread-factory from the web.xml deployment descriptor with virtual=true
+     * to request virtual threads.
+     * TODO It can also define custom context to propagate to the managed virtual thread.
+     */
+    @Test
+    public void testVirtualThreadFactoryWebDD() throws Exception {
+        LinkedBlockingQueue<Object> results = new LinkedBlockingQueue<>();
+        Runnable action = () -> {
+            try {
+                results.add(InitialContext.doLookup("java:comp/concurrent/webdd/virtual-thread-factory"));
+            } catch (Throwable x) {
+                results.add(x);
+            }
+        };
+
+        ManagedThreadFactory threadFactory = InitialContext.doLookup("java:comp/concurrent/webdd/virtual-thread-factory");
+        Thread thread1 = threadFactory.newThread(action);
+        assertEquals(Thread.NORM_PRIORITY, thread1.getPriority());
+        assertEquals(Boolean.TRUE, Thread.class.getMethod("isVirtual").invoke(thread1));
+        thread1.start();
+
+        Object result;
+        assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (result instanceof Throwable)
+            throw new AssertionError("An error occurred on the virtual thread.", (Throwable) result);
     }
 }
