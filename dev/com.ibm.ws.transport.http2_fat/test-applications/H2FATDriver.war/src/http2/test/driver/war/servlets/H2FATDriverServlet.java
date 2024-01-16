@@ -2869,7 +2869,7 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] chfwDebugData = "SETTINGS_MAX_FRAME_SIZE value exceeded the max allowable value".getBytes();
-        byte[] nettyDebugData = "Protocol error: Setting MAX_FRAME_SIZE is invalid: 16777216".getBytes();
+        byte[] nettyDebugData = "Protocol error: Setting MAX_FRAME_SIZE is invalid: 16777216, expected [16384, 16777215]".getBytes();
         FrameGoAway errorFrame;
         if (USING_NETTY)
             errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
@@ -2898,7 +2898,7 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] chfwDebugData = "Initial window size setting value exceeded max allowable value".getBytes();
-        byte[] nettyDebugData = "Failed setting initial window size: Setting INITIAL_WINDOW_SIZE is invalid: 4294967295".getBytes();
+        byte[] nettyDebugData = "Failed setting initial window size: Setting INITIAL_WINDOW_SIZE is invalid: 4294967295, expected [0, 2147483647]".getBytes();
         FrameGoAway errorFrame;
         if (USING_NETTY)
             errorFrame = new FrameGoAway(0, nettyDebugData, FLOW_CONTROL_ERROR, 2147483647, false);
@@ -3470,7 +3470,7 @@ public class H2FATDriverServlet extends FATServlet {
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
         byte[] chfwDebugData = "SETTINGS_ENABLE_PUSH must be set to 0 or 1 0".getBytes();
-        byte[] nettyDebugData = "Protocol error: Setting ENABLE_PUSH is invalid: 2".getBytes();
+        byte[] nettyDebugData = "Protocol error: Setting ENABLE_PUSH is invalid: 2, expected [0, 1]".getBytes();
         FrameGoAway errorFrame;
         if (USING_NETTY)
             errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
