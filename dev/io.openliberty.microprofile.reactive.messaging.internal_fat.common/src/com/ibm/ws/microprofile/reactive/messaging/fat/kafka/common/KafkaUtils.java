@@ -19,6 +19,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -42,6 +44,8 @@ import componenttest.topology.impl.LibertyServer;
 public class KafkaUtils {
 
     public static final String TRUSTSTORE_FILENAME = "kafka-truststore.jks";
+
+    private final static String KAFKA_REGEX = "E Error.*kafka";
 
     public static File[] kafkaClientLibs() {
         File libsDir = new File("lib/LibertyFATTestFiles/libs");
@@ -113,6 +117,20 @@ public class KafkaUtils {
         war.addAsLibrary(frameworkJar)
                         .addAsLibraries(KafkaUtils.kafkaClientLibs())
                         .addAsManifestResource(KafkaUtils.kafkaPermissions(), "permissions.xml");
+    }
+
+    /**
+     * This method is syntatic sugar for calling server.stopServer() with an argument that makes it check the logs
+     * for Kafka errors on shutdown and ensure the test is recorded as a failure if any such errors are found.
+     *
+     * This method considers anything in the logs matching the regex "E Error.*kafka" to be a Kafka error.
+     *
+     * @param ignoredFailuresRegex A list of reg expressions corresponding to warnings or errors that should be ignored.
+     */
+    public static void kafkaStopServer(LibertyServer server, String... ignoredFailuresRegex) throws Exception {
+        List<String> failuresRegExps = Arrays.asList(LibertyServer.LIBERTY_ERROR_REGEX, KAFKA_REGEX);
+        //booleans are default values you get when calling LibertyServer.stopServer() with no args
+        server.stopServer(true, false, true, failuresRegExps, ignoredFailuresRegex);
     }
 
 }
