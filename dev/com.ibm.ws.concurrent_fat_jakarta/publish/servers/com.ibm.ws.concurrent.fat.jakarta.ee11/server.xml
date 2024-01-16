@@ -36,12 +36,4 @@
     <fileset dir="${server.config.dir}/lib" include="location-utils.jar,stat-utils.jar"/>
   </library>
 
-  <!-- TODO replace with ManagedThreadFactoryDefinition once virtual=true is available -->
-  <managedThreadFactory id="temp-virtual-thread-factory" jndiName="concurrent/temp-virtual-thread-factory" virtual="true">
-    <contextService>
-      <classloaderContext/>
-      <jeeMetadataContext/>
-    </contextService>
-  </managedThreadFactory>
-
 </server>

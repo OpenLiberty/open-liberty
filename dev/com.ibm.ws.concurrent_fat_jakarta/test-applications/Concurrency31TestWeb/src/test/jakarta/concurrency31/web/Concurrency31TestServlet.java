@@ -28,13 +28,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -54,16 +54,15 @@ import componenttest.app.FATServlet;
 @ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/virtual-scheduled-executor",
                                     context = "java:module/concurrent/my-context",
                                     virtual = true)
+@ManagedThreadFactoryDefinition(name = "java:module/concurrent/virtual-thread-factory",
+                                context = "java:module/concurrent/my-context",
+                                virtual = true)
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class Concurrency31TestServlet extends FATServlet {
 
     // Maximum number of nanoseconds to wait for a task to finish.
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
-
-    // TODO replace these with resource definition annotations or deployment descriptor elements:
-    @Resource(name = "java:module/concurrent/virtual-thread-factory", lookup = "concurrent/temp-virtual-thread-factory")
-    ManagedThreadFactory tempThreadFactory;
 
     @Override
     public void destroy() {
@@ -74,7 +73,7 @@ public class Concurrency31TestServlet extends FATServlet {
     }
 
     /**
-     * TODO Use ManagedScheduledExecutorDefinition with virtual=true to schedule a repeating timer
+     * Use ManagedScheduledExecutorDefinition with virtual=true to schedule a repeating timer
      * to run on virtual threads. Verify that all executions run on different virtual threads and that
      * context is propagated to these threads.
      */
@@ -141,7 +140,7 @@ public class Concurrency31TestServlet extends FATServlet {
     }
 
     /**
-     * TODO Use ManagedScheduledExecutorDefinition with virtual=true to schedule a one-shot timer
+     * Use ManagedScheduledExecutorDefinition with virtual=true to schedule a one-shot timer
      * to run on a virtual thread.
      */
     @Test
@@ -153,7 +152,7 @@ public class Concurrency31TestServlet extends FATServlet {
     }
 
     /**
-     * TODO Use ManagedExecutorDefinition with virtual=true to submit a task to run on a virtual thread.
+     * Use ManagedExecutorDefinition with virtual=true to submit a task to run on a virtual thread.
      */
     @Test
     public void testSubmitToVirtualThread() throws Exception {
@@ -164,7 +163,7 @@ public class Concurrency31TestServlet extends FATServlet {
     }
 
     /**
-     * TODO Use ManagedExecutorDefinition with virtual=true to submit multiple tasks to run on virtual threads,
+     * Use ManagedExecutorDefinition with virtual=true to submit multiple tasks to run on virtual threads,
      * with a timeout before which all must complete.
      */
     @Test
@@ -198,7 +197,7 @@ public class Concurrency31TestServlet extends FATServlet {
     }
 
     /**
-     * TODO Use ManagedExecutorDefinition with virtual=true to submit multiple tasks to run on virtual threads,
+     * Use ManagedExecutorDefinition with virtual=true to submit multiple tasks to run on virtual threads,
      * with a timeout before which one must complete.
      */
     @Test
@@ -215,7 +214,7 @@ public class Concurrency31TestServlet extends FATServlet {
     // TODO after the workaround is removed, write: public void testUntimedInvokeAllOnVirtualThreads() throws Exception {
 
     /**
-     * TODO Use ManagedExecutorDefinition with virtual=true to submit multiple tasks to run on virtual threads,
+     * Use ManagedExecutorDefinition with virtual=true to submit multiple tasks to run on virtual threads,
      * waiting until the first one completes.
      */
     @Test
@@ -244,8 +243,8 @@ public class Concurrency31TestServlet extends FATServlet {
     // TODO after the workaround is removed, write: public void testUntimedInvokeAnyOneOnVirtualThread() throws Exception {
 
     /**
-     * TODO Use ManagedThreadFactoryDefinition with virtual=true to request virtual threads once implemented.
-     * It can also define custom context to propagate to the managed virtual thread.
+     * Use ManagedThreadFactoryDefinition with virtual=true to request virtual threads once implemented.
+     * TODO It can also define custom context to propagate to the managed virtual thread.
      */
     @Test
     public void testVirtualThreadFactory() throws Exception {
