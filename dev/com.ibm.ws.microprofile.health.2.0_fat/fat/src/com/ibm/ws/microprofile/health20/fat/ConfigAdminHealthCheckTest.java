@@ -26,6 +26,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,6 +39,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 
 /**
  *
@@ -224,35 +227,12 @@ public class ConfigAdminHealthCheckTest {
     private void addApplication(LibertyServer server, String appName, String packageName) throws Exception {
         log("addApplication", "Adding " + appName + " to the server");
         WebArchive app = ShrinkHelper.buildDefaultApp(appName, packageName);
-        if (appName.equals(FAILS_TO_START_APP_NAME)) {
-            app = app.addAsManifestResource(ConfigAdminHealthCheckTest.class.getResource("permissions.xml"), "permissions.xml");
-            File libsDir = new File("lib/LibertyFATTestFiles/libs");
-            for (File file : libsDir.listFiles()) {
-                server.copyFileToLibertyServerRoot(file.getParent(), "kafkaLib", file.getName());
-            }
-            //Don't validate that FAILS_TO_START_APP_NAME starts correctly.
-            ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
-        } else if (appName.equals(DELAYED_APP_NAME)) {
-            //Don't wait for app to start because it sleeps for 60 seconds
-            ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
-            //But wait for the servlet to be up
-            server.waitForStringInLog("CWWKT0016I:.*" + DELAYED_APP_NAME);
-        } else {
-            ShrinkHelper.exportDropinAppToServer(server, app);
-        }
-
+        ShrinkHelper.exportDropinAppToServer(server, app);
     }
 
     private void waitForApplication(LibertyServer server, String appName) {
-        if (appName.equals(FAILS_TO_START_APP_NAME)) {
-            log("waitForApplication", "Waiting for expected app failure");
-            server.waitForStringInLog("CWWKZ0012I.* " + FAILS_TO_START_APP_NAME, APP_STARTUP_TIMEOUT);
-            log("waitForApplication", "Waiting for expected FFDC");
-            server.waitForMultipleStringsInLog(3, "FFDC1015I");
-        } else {
-            log("waitForApplication", "Waiting for " + appName + " to start");
-            server.waitForStringInLog("CWWKZ0001I.* " + appName, APP_STARTUP_TIMEOUT);
-        }
+        log("waitForApplication", "Waiting for " + appName + " to start");
+        server.waitForStringInLog("CWWKZ0001I.* " + appName, APP_STARTUP_TIMEOUT);
     }
 
     private void startServer(LibertyServer server, boolean isFailsToStartApp) throws Exception {
