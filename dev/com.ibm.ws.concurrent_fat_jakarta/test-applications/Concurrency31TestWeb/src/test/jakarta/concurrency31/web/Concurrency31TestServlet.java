@@ -12,10 +12,10 @@
  *******************************************************************************/
 package test.jakarta.concurrency31.web;
 
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
-import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;;
 
 import java.util.HashSet;
 import java.util.List;
