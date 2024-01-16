@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,11 @@ import aQute.bnd.header.Attrs;
 public class VisibilityTest {
 
     private static Map<String, FeatureInfo> features = null;
+
+    private static final Set<String> EXPECTED_ZERO_FEATURE_AUTOFEATURES = new HashSet<>();
+    static {
+        EXPECTED_ZERO_FEATURE_AUTOFEATURES.add("io.openliberty.threading.javase");
+    }
 
     @BeforeClass
     public static void setUpClass() {
@@ -390,15 +395,14 @@ public class VisibilityTest {
             }
 
             String[] filterFeatures = featureInfo.getAutoFeatures();
-            if (filterFeatures.length <= 1) {
+            if (filterFeatures.length == 0 && !EXPECTED_ZERO_FEATURE_AUTOFEATURES.contains(featureName)) {
                 errorMessage.append("Found issues with " + featureName + '\n');
-                if (filterFeatures.length == 0) {
-                    errorMessage.append("     Auto feature filter doesn't have any features listed.\n");
-                } else {
-                    errorMessage.append("     Auto feature filter only depends on one feature " + filterFeatures[0] + ".\n");
-                    errorMessage.append("     The feature and/or bundle dependencies in this auto feature should just be a dependency of that feature\n");
-                    errorMessage.append("     OR this should be turned into a private feature that " + filterFeatures[0] + " depends on.");
-                }
+                errorMessage.append("     Auto feature filter doesn't have any features listed.\n");
+            } else if (filterFeatures.length == 1) {
+                errorMessage.append("Found issues with " + featureName + '\n');
+                errorMessage.append("     Auto feature filter only depends on one feature " + filterFeatures[0] + ".\n");
+                errorMessage.append("     The feature and/or bundle dependencies in this auto feature should just be a dependency of that feature\n");
+                errorMessage.append("     OR this should be turned into a private feature that " + filterFeatures[0] + " depends on.");
             }
         }
         if (errorMessage.length() != 0) {
