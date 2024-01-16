@@ -2267,7 +2267,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             ((NettyResponseMessage) getResponse()).processCookies();
         }
 
-        this.nettyContext.channel().write(this.nettyResponse);
+        this.nettyContext.channel().writeAndFlush(this.nettyResponse);
 
         this.setHeadersSent();
     }
