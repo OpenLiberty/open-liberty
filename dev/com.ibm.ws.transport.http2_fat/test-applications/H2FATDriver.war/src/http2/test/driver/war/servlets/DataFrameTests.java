@@ -360,7 +360,7 @@ public class DataFrameTests extends H2FATDriverServlet {
             h2Client.addExpectedFrame(connectionUpdateFrame);
         }
 
-        h2Client.addExpectedFrame(new FrameSettings(0, -1, -1, 200, 1000, 57344, -1, false));
+        h2Client.addExpectedFrame(new FrameSettings(0, -1, -1, 100, 1000, 57344, -1, false));
         FrameHeaders headers = addFirstExpectedHeaders(h2Client);
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
@@ -426,7 +426,7 @@ public class DataFrameTests extends H2FATDriverServlet {
 //            setupDefaultUpgradedConnection(h2Client);
 //        }
 
-        h2Client.addExpectedFrame(new FrameSettings(0, -1, -1, 200, 1000, 57344, -1, false));
+        h2Client.addExpectedFrame(new FrameSettings(0, -1, -1, 100, 1000, 57344, -1, false));
         FrameHeaders headers = addFirstExpectedHeaders(h2Client);
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPrefaceFollowedBySettingsFrame(EMPTY_SETTINGS_FRAME);
