@@ -4,6 +4,8 @@ bVersion=1.0
 Bundle-Name: JakartaMail 2.0 Implementation
 Bundle-SymbolicName: io.openliberty.com.sun.mail.jakarta.mail.2.0
 Bundle-Description: Private Jakarta Mail bundle
+
+Fragment-Host: io.openliberty.jakarta.mail.2.0
   
 Include-Resource: \
      @${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/META-INF/mailcap, \
@@ -12,32 +14,46 @@ Include-Resource: \
      @${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/META-INF/javamail.default.address.map, \
      @${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/META-INF/javamail.default.providers, \
      @${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/!(jakarta/mail/*|module-info.class)
+     
+Service-Component: \
+  io.openliberty.com.sun.mail.jakarta.mail_2_0_${replace;${bVersion};\\.;_}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:= "resources=${app-resources}"
+    
+app-resources= \
+  META-INF/services/jakarta.mail.Provider | \
+  META-INF/gfprobe-provider.xml | \
+  META-INF/javamail.default.address.map | \
+  META-INF/javamail.default.providers | \
+  META-INF/javamail.charset.map | \
+  META-INF/mailcap
 
 Import-Package: jakarta.mail;version="[2.0.0,3.0.0)",  \
-jakarta.mail.event;version="[2.0.0,3.0.0)", \
-jakarta.mail.internet;version="[2.0.0,3.0.0)", \
-jakarta.mail.search;version="[2.0.0,3.0.0)", \
-jakarta.mail.util;version="[2.0.0,3.0.0)", \
-com.sun.mail;version="[2.0.0,3.0.0)", \
-com.sun.mail.auth;version="[2.0.0,3.0.0)", \
-com.sun.mail.imap;version="[2.0.0,3.0.0)", \
-com.sun.mail.imap.protocol;version="[2.0.0,3.0.0)", \
-com.sun.mail.iap;version="[2.0.0,3.0.0)", \
-com.sun.mail.pop3;version="[2.0.0,3.0.0)", \
-com.sun.mail.smtp;version="[2.0.0,3.0.0)", \
-com.sun.mail.util;version="[2.0.0,3.0.0)", \
-com.sun.mail.util.logging;version="[2.0.0,3.0.0)", \
-com.sun.mail.handlers;version="[2.0.0,3.0.0)"
-
+  jakarta.mail.event;version="[2.0.0,3.0.0)", \
+  jakarta.mail.internet;version="[2.0.0,3.0.0)", \
+  jakarta.mail.search;version="[2.0.0,3.0.0)", \
+  jakarta.mail.util;version="[2.0.0,3.0.0)", \
+  com.sun.mail;version="[2.0.0,3.0.0)", \
+  com.sun.mail.auth;version="[2.0.0,3.0.0)", \
+  com.sun.mail.imap;version="[2.0.0,3.0.0)", \
+  com.sun.mail.imap.protocol;version="[2.0.0,3.0.0)", \
+  com.sun.mail.iap;version="[2.0.0,3.0.0)", \
+  com.sun.mail.pop3;version="[2.0.0,3.0.0)", \
+  com.sun.mail.smtp;version="[2.0.0,3.0.0)", \
+  com.sun.mail.util;version="[2.0.0,3.0.0)", \
+  com.sun.mail.util.logging;version="[2.0.0,3.0.0)", \
+  com.sun.mail.handlers;version="[2.0.0,3.0.0)"
 
 Export-Package: \
-com.sun.mail;version="2.0.1"; thread-context=true, \
-com.sun.mail.auth;version="2.0.1"; thread-context=true, \
-com.sun.mail.imap; thread-context=true, \
-com.sun.mail.imap.protocol; thread-context=true, \
-com.sun.mail.iap; thread-context=true, \
-com.sun.mail.pop3; thread-context=true, \
-com.sun.mail.smtp; thread-context=true, \
-com.sun.mail.util; thread-context=true, \
-com.sun.mail.util.logging; thread-context=true, \
-com.sun.mail.handlers; thread-context=true
+  com.sun.mail;version="2.0.1"; thread-context=true, \
+  com.sun.mail.auth;version="2.0.1"; thread-context=true, \
+  com.sun.mail.imap; thread-context=true, \
+  com.sun.mail.imap.protocol; thread-context=true, \
+  com.sun.mail.iap; thread-context=true, \
+  com.sun.mail.pop3; thread-context=true, \
+  com.sun.mail.smtp; thread-context=true, \
+  com.sun.mail.util; thread-context=true, \
+  com.sun.mail.util.logging; thread-context=true, \
+  com.sun.mail.handlers; thread-context=true

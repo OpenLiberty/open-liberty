@@ -7,12 +7,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.mail.fat;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -213,6 +212,14 @@ public class IMAPTest {
         if (null != imapServer) {
             imapServer.stop();
         }
+
+        String resourceWarning = server.waitForStringInLog("expected resource not found:");
+
+        // If this assert fails its because the default mail cap files needed to set default encoding/decoding via
+        // the activation framework are missing are not visible to the mail-2.x spec. Check the bnd file configuration
+        // to ensure bundle has proper resources included
+        assertNull("FAIL: One of the Jakarta Mail resources in /META-INF/ directory is not availible to the application",
+                   resourceWarning);
 
         if (server != null && server.isStarted()) {
             server.stopServer("CWWKZ0013E");
