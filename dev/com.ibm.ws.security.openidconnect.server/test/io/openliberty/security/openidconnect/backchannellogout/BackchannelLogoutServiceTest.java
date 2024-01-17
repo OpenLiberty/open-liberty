@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 
+import org.jmock.Expectations;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -31,12 +32,15 @@ import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.security.sso.common.Constants;
 import com.ibm.ws.security.test.common.CommonTestClass;
+import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
 import test.common.SharedOutputManager;
 
 public class BackchannelLogoutServiceTest extends CommonTestClass {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+
+    private final OidcServerConfig oidcServerConfig = mockery.mock(OidcServerConfig.class);
 
     private BackchannelLogoutService service;
 
@@ -373,6 +377,64 @@ public class BackchannelLogoutServiceTest extends CommonTestClass {
 
         boolean result = service.isDelegatedLogoutRequestForConfig(requestUri, expectedProviderId);
         assertTrue("Request to [" + requestUri + "] should have been considered a delegated logout request.", result);
+    }
+
+    @Test
+    public void test_isIdTokenHintIssuedByConfig_issuerIdentifierConfigured_matches() {
+        String providerId = "OP";
+        String issuerIdentifier = "https://localhost/oidc/endpoint/OP";
+        String issuerFromIdTokenHint = issuerIdentifier;
+        mockery.checking(new Expectations() {
+            {
+                one(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(issuerIdentifier));
+            }
+        });
+        boolean result = service.isIdTokenHintIssuedByConfig(providerId, oidcServerConfig, issuerFromIdTokenHint);
+        assertTrue("The ID Token should have been considered issued by the OIDC server.", result);
+    }
+
+    @Test
+    public void test_isIdTokenHintIssuedByConfig_issuerIdentifierConfigured_doesNotMatch() {
+        String providerId = "OP";
+        String issuerIdentifier = "https://localhost/oidc/endpoint/OP";
+        String issuerFromIdTokenHint = "https://localhost/oidc/endpoint/OP2";
+        mockery.checking(new Expectations() {
+            {
+                one(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(issuerIdentifier));
+            }
+        });
+        boolean result = service.isIdTokenHintIssuedByConfig(providerId, oidcServerConfig, issuerFromIdTokenHint);
+        assertFalse("The ID Token should not have been considered issued by the OIDC server.", result);
+    }
+
+    @Test
+    public void test_isIdTokenHintIssuedByConfig_issuerIdentifierNotConfigured_matches() {
+        String providerId = "OP";
+        String issuerFromIdTokenHint = "https://localhost/oidc/endpoint/" + providerId;
+        mockery.checking(new Expectations() {
+            {
+                one(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(null));
+            }
+        });
+        boolean result = service.isIdTokenHintIssuedByConfig(providerId, oidcServerConfig, issuerFromIdTokenHint);
+        assertTrue("The ID Token should have been considered issued by the OIDC server.", result);
+    }
+
+    @Test
+    public void test_isIdTokenHintIssuedByConfig_issuerIdentifierNotConfigured_doesNotMatch() {
+        String providerId = "OP";
+        String issuerFromIdTokenHint = "https://localhost/oidc/endpoint/OP2";
+        mockery.checking(new Expectations() {
+            {
+                one(oidcServerConfig).getIssuerIdentifier();
+                will(returnValue(null));
+            }
+        });
+        boolean result = service.isIdTokenHintIssuedByConfig(providerId, oidcServerConfig, issuerFromIdTokenHint);
+        assertFalse("The ID Token should not have been considered issued by the OIDC server.", result);
     }
 
 }
