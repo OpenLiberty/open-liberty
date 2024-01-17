@@ -83,7 +83,10 @@
      private DocumentBuilder db;			   // reusable factory
      private DocumentBuilderFactory dbf;		   // reusable factory
  
- 
+     // To secure XML processing
+     private String ACCESS_EXTERNAL_DTD_SETTING = "javax.xml.accessExternalDTD";
+     private String ACCESS_EXTERNAL_SCHEMA_SETTING = "javax.xml.accessExternalSchema";
+     
      //*********************************************************************
      // Constructor and initialization
  
@@ -123,6 +126,18 @@
              dbf.setValidating(false);
              try {
                  dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                 
+                 // JDK may not implement FEATURE_SECURE_PROCESSING, so force it to be secure if 
+                 // neither property is set explicity.
+                 String accessExternalDTD = System.getProperty("javax.xml.accessExternalDTD");
+                 String accessExternalSchema = System.getProperty("javax.xml.accessExternalSchema");
+   
+                 if(accessExternalDTD == null){
+                     dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                 }
+                 if(accessExternalSchema == null){
+                     dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+                 }
              } catch (ParserConfigurationException e) {
                  throw new AssertionError("Parser does not support secure processing");
              }
@@ -135,6 +150,18 @@
              tf = TransformerFactory.newInstance();
              try {
                  tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+ 
+                 // JDK may not implement FEATURE_SECURE_PROCESSING, so force it to be secure if 
+                 // neither property is set explicity.
+                 String accessExternalDTD = System.getProperty("javax.xml.accessExternalDTD");
+                 String accessExternalSchema = System.getProperty("javax.xml.accessExternalSchema");
+   
+                 if(accessExternalDTD == null){
+                    tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                 }
+                 if(accessExternalSchema == null){
+                    tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+                 }
              } catch (TransformerConfigurationException e) {
                  throw new AssertionError(
                          "TransformerFactory does not support secure processing");
