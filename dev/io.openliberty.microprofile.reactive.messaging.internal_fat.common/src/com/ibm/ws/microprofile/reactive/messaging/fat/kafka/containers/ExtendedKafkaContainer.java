@@ -98,12 +98,29 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
         return this;
     }
 
+    /**
+     * Enable MTLS
+     *
+     * This also enables TLS and all related TLS objects are created.
+     *
+     * @return
+     */
     public ExtendedKafkaContainer withMTls(){
         this.mtls = true;
         withTls();
         return this;
     }
 
+    /**
+     * Set that keystore 1 and 2 are to be merged into a separate single truststore
+     *
+     * By Default the primary key/truststore will only contain the contents of keystore 1, not keystore 2
+     * So if a server uses the contents of 2 it should be rejected by the other side for not being trusted
+     *
+     * the merge store is for use as a truststore only.
+     *
+     * @return
+     */
     public ExtendedKafkaContainer mergeKeyStores(){
         this.mergeKeystores = true;
         return this;
@@ -131,12 +148,21 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
     /**
      * Get Primary Keystore file
      *
+     * If TLS has not been enabled returns null
+     *
      * The contents of this keystore is used as the basis of trust and key stores for both Liberty and Kafka
      * therefore its contents should always be trusted if used on either side of the communication
+     *
+     * This will return null if at least TLS is not enabled on the kafka definition
+     *
      * @return
      */
     public File getKeystoreFile() {
-        return new File(KEYSTORE_FILENAME);
+        if(tls) {
+            return new File(KEYSTORE_FILENAME);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -144,7 +170,7 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
      *
      * This should be used for Client keystores such as RM Channels or connector
      *
-     * By default, this keystore is not included in the truststores of either Liberty or Kafka so would, if used as the keystore
+     * By default, this keystore is not included in the truststores of either Liberty or Kafka. If used as the keystore
      * for either server or client sides should result in a SSL Handshake error
      *
      * If you want to include the contents of this keystore in the truststore used for kafka, then `mergeKeyStores()` must be used
