@@ -12,17 +12,16 @@ package com.ibm.ws.http.netty.inbound;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
-import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpServerCodec;
 
@@ -59,7 +58,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
     @Override
     public void clearBuffers() {
-        if (Objects.nonNull(this.buffers)) {
+        if (this.buffers!=null) {
             for (int i = 0; i < this.buffers.length; i++) {
                 this.buffers[i].clear();
             }
@@ -98,6 +97,17 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
         MSP.log("had data? " + upgrade.containsQueuedData());
         MSP.log("data size: " + upgrade.queuedDataSize());
+
+        boolean dataAvailable = upgrade.awaitReadReady(5, TimeUnit.SECONDS);
+
+        if (dataAvailable) {
+            if (callback != null) {
+                callback.complete(vc, this);
+            }
+        } else {
+            //TODO: handle read timeout.
+        }
+
 //        try {
 //            upgrade.waitForDataRead(timeout);
 //        } catch (Exception e) {
