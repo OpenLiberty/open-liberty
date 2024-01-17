@@ -113,7 +113,7 @@ public class Validation31TestServlet extends FATServlet {
      */
     @Test
     public void GroupSequenceRecordsTest() throws Exception {
-        // SignupForm has BasicInfo - fistName and AdvanceInfo - age. firstName must be non empty and age must be greater than 18.
+        // SignupForm has FirstGroup - fistName and SecondGroup - age. firstName must be non empty and age must be greater than 18.
 
         // Creating a SignupForm with valid data. Both firstName and age is valid here.
         SignupForm validSignupForm = new SignupForm("John Doe", 25);
@@ -127,7 +127,7 @@ public class Validation31TestServlet extends FATServlet {
 
         constraintViolations = validator.validate(invalidSignupForm, ValidationOrder.class);
         // Expecting ONLY ONE violation here for firstName although firstName and age is invalid.
-        // When BasicInfo is not complete then should give violation for BasicInfo ONLY.
+        // When FirstGroup is not complete then should give violation for FirstGroup ONLY.
         assertEquals("Record SignupForm() should have validated with one violation", 1, constraintViolations.size());
     }
 

@@ -16,8 +16,8 @@ import jakarta.validation.constraints.NotBlank;
 /**
  *
  */
-public record SignupForm(@NotBlank(message = "Name cannot be blank", groups = BasicInfo.class) String firstName,
+public record SignupForm(@NotBlank(message = "Name cannot be blank", groups = FirstGroup.class) String firstName,
 
-                @Min(value = 18, message = "Age must be at least 18", groups = AdvanceInfo.class) int age) {
+                @Min(value = 18, message = "Age must be at least 18", groups = SecondGroup.class) int age) {
 
 }

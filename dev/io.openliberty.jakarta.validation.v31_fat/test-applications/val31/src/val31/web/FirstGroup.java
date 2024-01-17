@@ -13,6 +13,6 @@ package val31.web;
 /**
  *
  */
-public interface AdvanceInfo {
+public interface FirstGroup {
 
 }

@@ -15,7 +15,7 @@ import jakarta.validation.GroupSequence;
 /**
  * Define a GroupSequence to specify the order of validation groups.
  */
-@GroupSequence({ BasicInfo.class, AdvanceInfo.class })
+@GroupSequence({ FirstGroup.class, SecondGroup.class })
 public interface ValidationOrder {
 
 }
