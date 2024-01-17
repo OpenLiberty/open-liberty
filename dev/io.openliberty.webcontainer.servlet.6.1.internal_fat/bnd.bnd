@@ -12,6 +12,7 @@ bVersion=1.0
 
 src: \
     fat/src,\
+    test-applications/AddAndSetHeaderTest.war/src,\
     test-applications/CharSetEncodingTest.jar/src,\
     test-applications/CharSetEncodingTest.war/src,\
     test-applications/HTTPResponseCodesTest.war/src

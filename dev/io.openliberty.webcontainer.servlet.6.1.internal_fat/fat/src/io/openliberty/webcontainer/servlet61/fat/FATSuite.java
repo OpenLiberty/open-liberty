@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,11 +16,13 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 
+import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61AddAndSetHeaderTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61CharsetEncodingTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61HTTPResponseCodesTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                Servlet61AddAndSetHeaderTest.class,
                 Servlet61CharsetEncodingTest.class,
                 Servlet61HTTPResponseCodesTest.class
 })
