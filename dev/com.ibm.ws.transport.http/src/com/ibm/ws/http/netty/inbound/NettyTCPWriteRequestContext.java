@@ -12,9 +12,8 @@ package com.ibm.ws.http.netty.inbound;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import com.ibm.ws.http.netty.MSP;
-import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -22,8 +21,12 @@ import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  *
@@ -195,36 +198,67 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     @Override
     public long write(long numBytes, int timeout) throws IOException {
-        //TODO send only numBytes, for now write everything
+
+        long writtenBytes = 0;
         for (WsByteBuffer buffer : buffers) {
-            if (Objects.nonNull(buffer)) {
-                MSP.log("Writing Netty TCP write Context bytes: [" + buffer.remaining()+"]");
+            if (buffer != null) {
+                ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+                writtenBytes += nettyBuf.readableBytes();
+                ChannelFuture writeFuture = this.nettyContext.write(nettyBuf);
+                writeFuture.addListener((ChannelFutureListener) future -> {
+                    if (!future.isSuccess()) {
+                        //TODO "write operation has failed"
 
-                this.nettyContext.channel().write(Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer)));
-             
-
-                            //this.nettyContext.pipeline().context(NettyServletUpgraUnpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer)));
-                           // this.nettyContext.pipeline().writeAndFlush(WsByteBufferUtils.asByteArray(buffer));
-                            //this.nettyContext.write(buffer);
-                    //    }
-                    //}
-
-              
-                    
-    }
+                    }
+                    //Release buffer
+                    ReferenceCountUtil.release(nettyBuf);
+                });
+            }
         }
-        
-        this.nettyContext.channel().flush();
 
-        return numBytes;
+        this.nettyContext.flush();
+        return writtenBytes;
+
+        //TODO send only numBytes, for now write everything
+//        for (WsByteBuffer buffer : buffers) {
+//            if (Objects.nonNull(buffer)) {
+//                MSP.log("Writing Netty TCP write Context bytes: [" + buffer.remaining()+"]");
+//
+//                this.nettyContext.channel().write(Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer)));
+//
+
+        //this.nettyContext.pipeline().context(NettyServletUpgraUnpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer)));
+        // this.nettyContext.pipeline().writeAndFlush(WsByteBufferUtils.asByteArray(buffer));
+        //this.nettyContext.write(buffer);
+        //    }
+        //}
+
     }
 
     @Override
     public VirtualConnection write(long numBytes, TCPWriteCompletedCallback callback, boolean forceQueue, int timeout) {
+        AtomicInteger pendingWrites = new AtomicInteger(buffers.length);
         try {
-            write(numBytes, timeout);
-        } catch (Exception e) {
+            for (WsByteBuffer buffer : buffers) {
+                if (buffer != null) {
+                    ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+                    ChannelFuture writeFuture = this.nettyContext.write(nettyBuf);
+                    writeFuture.addListener((ChannelFutureListener) future -> {
+                        if (future.isSuccess()) {
+                            if (pendingWrites.decrementAndGet() == 0) {
+                                callback.complete(null, this);
+                            }
+                        } else {
+                            //callback.error(null, future.cause());
+                        }
+                        ReferenceCountUtil.release(nettyBuf);
+                    });
 
+                }
+            }
+            this.nettyContext.flush();
+        } catch (Exception e) {
+            //callback.error(null, this, e);
         }
         return null;
     }

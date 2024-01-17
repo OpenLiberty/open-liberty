@@ -274,6 +274,10 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
 
         useNetty = ProductInfo.getBetaEdition() &&
                    MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
+        
+        MSP.log("USE NETTY -> " + useNetty);
+        MSP.log("ProductInfo -> " + ProductInfo.getBetaEdition());
+        MSP.log("Got config netty:  " +  MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true));
 
         //useNetty = MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), false);
         if (useNetty) {
