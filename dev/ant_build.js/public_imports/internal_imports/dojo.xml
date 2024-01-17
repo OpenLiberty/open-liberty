@@ -395,7 +395,7 @@
     </target>
 
     <!-- Common post-'dojo build' construction -->
-    <target name="dojo-release-post-copy">
+    <target name="dojo-release-post-copy" depends="dojo-release-execute, dojo-release-post-create">
         <!-- Copy over the important things we know we need from DOJO -->
         <copy todir="${dojo.project.release.output}/dijit">
             <fileset dir="${dojo.project.build.output}/dijit">
@@ -450,7 +450,7 @@
     </target>
 
     <!-- Common post-'dojo build' construction -->
-    <target name="dojo-release-post-future-copy">
+    <target name="dojo-release-post-future-copy" depends="dojo-release-execute, dojo-release-post-create">
         <!-- Copy over the important things we know we need from DOJO -->
         <!-- TODO: Go through all the images that we actually use from dojo/gridx/idx and only copy those -->
         <copy todir="${dojo.project.release.output}/dijit">
@@ -509,13 +509,13 @@
     </target>
 
     <!-- Extension target for dojo-release-post -->
-    <target name="dojo-release-post-ext" />
+    <target name="dojo-release-post-ext" depends="dojo-release-post-create" />
 
     <!-- Common post-'dojo build' construction -->
-    <target name="dojo-release-post" depends="dojo-release-post-create, dojo-release-post-copy, dojo-nls-fix, dojo-release-post-ext" />
+    <target name="dojo-release-post" depends="dojo-release-execute, dojo-release-post-create, dojo-release-post-copy, dojo-nls-fix, dojo-release-post-ext" />
 
     <!-- Runtime launcher specific targets -->
-    <target name="dojo-release" depends="dojo-release-execute,  dojo-release-post" />
+    <target name="dojo-release" depends="dojo-release-execute, dojo-release-post" />
     <target name="dojo-release-rhino" depends="dojo-release-rhino-execute,  dojo-release-post" />
     <target name="dojo-release-nodejs" depends="dojo-release-nodejs-execute, dojo-release-post" />
 
@@ -568,7 +568,7 @@
     </target>
 
     <!-- Common post-'dojo doh build' clean up -->
-    <target name="dojo-doh-post">
+    <target name="dojo-doh-post" depends="dojo-doh-execute">
         <delete dir="${dojo.build.output.doh}/dijit" includeemptydirs="true" />
         <delete dir="${dojo.build.output.doh}/dojo" includes="**/*" excludes="nls/*.js,resources/**,dojo.js,**/.jazzignore" includeemptydirs="true" />
         <delete dir="${dojo.build.output.doh}/dojo" includes="**/*.js.uncompressed.js,**/*.js.consoleStripped.js,**/*.js.map" includeemptydirs="true" />
@@ -583,7 +583,7 @@
     <target name="dojo-doh-nodejs" depends="dojo-doh-nodejs-execute, dojo-doh-post" />
 
     <!-- Remove available server-side localization string from _ROOT NLS -->
-    <target name="dojo-nls-fix">
+    <target name="dojo-nls-fix" depends="dojo-release-post-copy">
     	<replaceregexp byline="true" encoding="UTF-8"> 
     		<!-- do not remove localization string for gregorian and number -->
     		<regexp pattern="^(?!'dojo/cldr/nls/number'|'dojo/cldr/nls/gregorian')(.+)&quot;_localized&quot;:\{[^\}]*\}(.+)"/>
