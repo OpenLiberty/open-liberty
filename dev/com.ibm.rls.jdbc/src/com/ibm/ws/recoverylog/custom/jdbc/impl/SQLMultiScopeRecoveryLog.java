@@ -1457,13 +1457,15 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         }
                     } else { // the log is in the right state, we can proceed
                         Connection conn = null;
+                        String tableToDrop = "PARTNER_LOG";
                         try {
                             conn = getConnection();
                             // Set autocommit FALSE and RR isolation on the connection
                             initialIsolation = prepareConnectionForBatch(conn);
-                            succeeded = dropDBTable(conn, "PARTNER_LOG");
+                            succeeded = dropDBTable(conn, tableToDrop);
                             if (succeeded) {
-                                succeeded = dropDBTable(conn, "TRAN_LOG");
+                                tableToDrop = "TRAN_LOG";
+                                succeeded = dropDBTable(conn, tableToDrop);
                             }
                             if (succeeded) {
                                 succeeded = false;
@@ -1476,10 +1478,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 conn.rollback();
                             }
                         } catch (Exception e) {
-                            // FFDC exception but allow processing to continue
-                            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.delete", "1286", this);
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "delete caught exception ", e);
+                            // Issue a warning but allow processing to continue
+                            Tr.audit(tc,
+                                     "WTRN0107W: Caught exception {0} when attempting to drop table {1} during deletion of recovery log {2} by server {3}",
+                                     e, tableToDrop, _logName, _serverName);
                         } finally {
                             // Attempt a close. If it fails, trace the failure but allow processing to continue
                             try {
