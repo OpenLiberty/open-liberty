@@ -380,6 +380,14 @@ assemble {
   dependsOn loginmethod_EAR
 }
 
+zipAutoFVT {
+  dependsOn basicauth_altVhost_WAR
+  dependsOn basicauth_httpOnlyVhost_WAR
+  dependsOn basicauth_httpsOnlyVhost_WAR
+  dependsOn formlogin_altVhost_WAR
+  dependsOn formlogin_httpOnlyVhost_WAR
+  dependsOn formlogin_httpsOnlyVhost_WAR
+}
 
 /******************************************************************
  ******************************************************************

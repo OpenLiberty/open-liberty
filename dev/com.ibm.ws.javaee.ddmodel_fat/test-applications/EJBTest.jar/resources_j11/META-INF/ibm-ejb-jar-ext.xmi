@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejbext:EJBJarExtension xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ejbext="ejbext.xmi" xmi:id="EJBJarExtension_1200691865859">
+
+  <ejbJar href="META-INF/ejb-jar.xml#ejb-jar_ID"/>
+
+</ejbext:EJBJarExtension>

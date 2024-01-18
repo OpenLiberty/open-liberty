@@ -16,4 +16,15 @@
 
   <!-- TODO concurrency resources with virtual=true -->
 
+  <managed-thread-factory>
+    <name>java:global/concurrent/webdd/platform-thread-factory</name>
+    <priority>7</priority>
+    <virtual>false</virtual>
+  </managed-thread-factory>
+
+  <managed-thread-factory>
+    <name>java:comp/concurrent/webdd/virtual-thread-factory</name>
+    <virtual>true</virtual>
+  </managed-thread-factory>
+
 </web-app>

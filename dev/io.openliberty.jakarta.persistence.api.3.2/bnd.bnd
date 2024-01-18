@@ -22,8 +22,8 @@ Require-Bundle: io.openliberty.org.eclipse.persistence-3.2
  jakarta.persistence.spi; \
    jpa="3.2"; version="3.2.0"
 
-javac.source: 21
-javac.target: 21
+javac.source: 17
+javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 

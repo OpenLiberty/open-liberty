@@ -13,11 +13,10 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
+Bundle-SymbolicName: com.ibm.ws.wssecurity_fat.wsscxf.1
 
 src: \
   fat/src,\
-  test-bundles/com.ibm.ws.wssecurity.cbh/src,\
-  test-bundles/com.ibm.ws.wssecurity.cbhwss4j/src,\
   test-applications/callerclient/src,\
   test-applications/callertoken/src,\
   test-applications/cxfclient/src,\
@@ -34,9 +33,6 @@ src: \
   test-applications/pwdigestclient/src,\
   test-applications/WSSampleSei/src,\
   test-applications/webcontentprovider/src
-
-
--sub: *.bnd
 
 fat.project: true
 
@@ -63,6 +59,10 @@ tested.features:\
   expressionlanguage-5.0, \
   jsonp-2.1 
 
+-includeresource: \
+  @${repo;com.ibm.ws.wssecurity.example.cbh}!/!META-INF/*, \
+  @${repo;com.ibm.ws.wssecurity.example.cbhwss4j}!/!META-INF/*, \
+  =${bin}
 
 -buildpath: \
 	com.ibm.ws.wssecurity.fat.utils.common;version=latest,\
@@ -70,7 +70,7 @@ tested.features:\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	httpunit:httpunit;version=1.5.4,\
 	com.ibm.websphere.security;version=latest,\
-    io.openliberty.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
@@ -84,7 +84,7 @@ tested.features:\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.org.apache.cxf.rt.security.3.4.1;version=latest,\
-    com.ibm.ws.org.apache.cxf.rt.ws.security.3.4.1;version=latest,\
+	com.ibm.ws.org.apache.cxf.rt.ws.security.3.4.1;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
 	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
 	com.ibm.ws.org.apache.wss4j.bindings;version=latest,\
@@ -96,4 +96,6 @@ tested.features:\
 	com.ibm.ws.org.apache.wss4j.ws.security.web;version=latest,\
 	com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
 	com.ibm.ws.wssecurity.3.4.1;version=latest,\
-	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+	com.ibm.ws.wssecurity.example.cbh;version=latest,\
+	com.ibm.ws.wssecurity.example.cbhwss4j;version=latest

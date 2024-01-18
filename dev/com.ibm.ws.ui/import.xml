@@ -23,7 +23,7 @@
   </target>
 
   <!-- Copy over the things we need from the DOJO build process -->
-  <target name="dojo-release-post-ext">
+  <target name="dojo-release-post-ext" depends="dojo-release-execute, dojo-release-post-create">
     <copy todir="${dojo.project.release.output}/css">
       <fileset dir="${dojo.project.build.output}/css">
         <include name="toolbox.css" />

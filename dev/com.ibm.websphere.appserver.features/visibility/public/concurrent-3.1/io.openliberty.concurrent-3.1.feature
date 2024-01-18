@@ -41,7 +41,7 @@ Subsystem-Name: Jakarta Concurrency 3.1
   com.ibm.ws.javaee.platform.defaultresource, \
   com.ibm.ws.resource, \
   io.openliberty.concurrent.internal,\
-  io.openliberty.threading.internal.java21
+  io.openliberty.threading.internal.java21; require-java:="21"
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

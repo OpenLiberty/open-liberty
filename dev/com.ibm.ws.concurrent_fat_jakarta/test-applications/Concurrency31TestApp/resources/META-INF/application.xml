@@ -11,8 +11,7 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<!-- TODO EE 11 -->
-<application version="10" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/application_10.xsd">
+<application version="11" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/application_11.xsd">
   <display-name>Concurrency 3.1 Test Application</display-name>
 
   <module>
@@ -23,5 +22,10 @@
   </module>
 
   <!-- TODO concurrency resources with virtual=true -->
+
+  <managed-thread-factory>
+    <name>java:app/concurrent/appdd/virtual-thread-factory</name>
+    <virtual>true</virtual>
+  </managed-thread-factory>
 
 </application>

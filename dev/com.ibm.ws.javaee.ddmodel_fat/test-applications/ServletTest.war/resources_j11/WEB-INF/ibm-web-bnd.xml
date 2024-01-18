@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-bnd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://websphere.ibm.com/xml/ns/javaee" xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd" version="1.0">
+
+  <virtual-host name="fromApp"/>
+
+  <ejb-ref name="ejb/PriceSession" binding-name="ejb/com/ibm/svt/populateModule/grade/PriceSessionHome"/>
+
+  <ejb-ref name="SSBR" binding-name="ejb/GasNet/Station#com.ibm.svt.stationModule.gas.station.StationSessionBeanRemote"/>
+  <ejb-ref name="GMSBR" binding-name="ejb/GasNet/GasMaint#com.ibm.svt.stationModule.gas.maintenance.GasMaintenanceSessionBeanRemote"/>
+
+  <ejb-ref name="SeqSBR" binding-name="ejb/GasNet/Seq#com.ibm.svt.stationModule.sequence.SequenceSessionBeanRemote"/>
+
+  <ejb-ref name="SMBR" binding-name="ejb/GasNet/StoreMaint#com.ibm.svt.stationModule.store.maintenance.StoreMaintenanceBeanRemote"/>
+  <ejb-ref name="SCartBR" binding-name="ejb/GasNet/Cart#com.ibm.svt.stationModule.store.storeSessions.ShoppingCartBeanRemote"/>
+  <ejb-ref name="StoreSBR" binding-name="ejb/GasNet/StationStore#com.ibm.svt.stationModule.store.storeSessions.StationStoreSessionBeanRemote"/>
+
+  <ejb-ref name="FLSBR" binding-name="ejb/GasNet/Failure#com.ibm.svt.stationModule.failureLog.FailureLogSessionBeanRemote"/>
+
+  <resource-ref name="FuelDS" binding-name="jdbc/FuelDS"/>
+
+</web-bnd>

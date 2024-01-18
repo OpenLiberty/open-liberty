@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application
+    xmlns="https://jakarta.ee/xml/ns/jakartaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/application_11.xsd"
+    version="11"
+    id="Application_ID">
+
+    <display-name>Deployment Descriptor FAT Enterprise Application</display-name>
+
+    <module>
+        <web>
+            <web-uri>ServletTest.war</web-uri>
+            <context-root>autoctx</context-root>
+        </web>
+    </module>
+
+    <module>
+        <web>
+            <web-uri>ServletTestNoBnd.war</web-uri>
+            <context-root>nobindings</context-root>
+        </web>
+    </module>
+
+    <module>
+        <ejb>EJBTest.jar</ejb>
+    </module>
+
+    <module>
+        <ejb>EJBTestNoBnd.jar</ejb>
+    </module>
+
+</application> 

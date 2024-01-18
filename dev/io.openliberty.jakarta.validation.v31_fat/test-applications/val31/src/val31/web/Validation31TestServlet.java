@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -62,19 +62,24 @@ public class Validation31TestServlet extends FATServlet {
     }
 
     /**
-     * Test that the result of a method on a record can be validated.
+     * This tests if able to validate parameters and return value with records.
      */
-
     @Test
-    public void recordMethodValidationTest() throws Exception {
-        // TODO Add a method that includes validation to a record class and confirm that it can be validated
+    public void validateRecordParametersTest() throws Exception {
 
         Person object = new Person("x");
+        Method method1 = Person.class.getMethod("checkNameSize", String.class);
+        Object[] parameterValues = { "Maxallowedvaluesis10" };
+        Set<ConstraintViolation<Person>> parameterViolations = validator.forExecutables()
+                        .validateParameters(object, method1,
+                                            parameterValues);
+        assertEquals("Record Person('x') should have validated with one violation", 1, parameterViolations.size());
         Method method = Person.class.getMethod("getName");
         String returnValue = object.getName();
-        Set<ConstraintViolation<Person>> violations = validator.forExecutables()
-                        .validateReturnValue(object, method, returnValue);
-        assertEquals("Record Person('x') should have validated with one violation", 1, violations.size());
+        Set<ConstraintViolation<Person>> returnValueViolations = validator.forExecutables()
+                        .validateReturnValue(object, method,
+                                             returnValue);
+        assertEquals("Record Person('x') should have validated with one violation", 1, returnValueViolations.size());
     }
 
     /**

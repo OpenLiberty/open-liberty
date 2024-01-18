@@ -1,5 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.transaction.fat.util;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -48,8 +60,10 @@ public class FATSecurityUtils {
 	}
 
 	public static void extractPublicCertifcate(LibertyServer... servers) {
+		ArrayList<String> cmd;
+
 		for (LibertyServer s : servers) {
-			ArrayList<String> cmd = new ArrayList<String>();
+			cmd = new ArrayList<String>();
 
 			cmd.add("keytool");
 			cmd.add("-exportcert");
@@ -58,24 +72,24 @@ public class FATSecurityUtils {
 			cmd.add(s.getServerRoot()+KEYSTORE_PATH);
 			cmd.add("-storepass");
 			cmd.add("password");
+			cmd.add("-storetype");
+			cmd.add("PKCS12");
 			cmd.add("-alias");
 			cmd.add("default");
 			cmd.add("-file");
 			cmd.add(s.getServerRoot()+CERT_PATH);
 
 			try {
-				Process proc = new ProcessBuilder(cmd).start();
-				while (true) {
-					try {
-						if (proc.exitValue() == 0) 
-							Log.info(FATSecurityUtils.class, "extractPublicCerts", s.getServerRoot().concat(CERT_PATH) + " extracted");
-						break;
-					} catch (IllegalThreadStateException e) {
-						Log.info(FATSecurityUtils.class, "extractPublicCerts", s.getServerRoot().concat(CERT_PATH) + " not extracted yet");
-						Thread.sleep(1000);
+				Process proc = new ProcessBuilder(cmd).redirectErrorStream(true).start();
+				Log.info(FATSecurityUtils.class, "extractPublicCerts", "Running " + String.join(" ", cmd));
+				try (InputStream is = proc.getInputStream()) {
+					final BufferedReader reader =
+							new BufferedReader(new InputStreamReader(is));
+					String line;
+					while ((line = reader.readLine()) != null) {
+						Log.info(FATSecurityUtils.class, "extractPublicCerts", line);
 					}
 				}
-				Log.info(FATSecurityUtils.class, "extractPublicCerts", "Certificate exported for " + s.getServerName());
 			} catch (Throwable t) {
 				Log.error(FATSecurityUtils.class, "extractPublicCerts", t);
 			}
@@ -83,30 +97,52 @@ public class FATSecurityUtils {
 	}
 
 	public static void establishTrust(LibertyServer trusting, LibertyServer trusted) {
-		ArrayList<String> cmd = new ArrayList<String>();
-
-		cmd.add("keytool");
-		cmd.add("-importcert");
-		cmd.add("-noprompt");
-		cmd.add("-file");
-		cmd.add(trusted.getServerRoot()+CERT_PATH);
-		cmd.add("-alias");
-		cmd.add(trusted.getServerName());
-		cmd.add("-keystore");
-		cmd.add(trusting.getServerRoot()+KEYSTORE_PATH);
-		cmd.add("-storepass");
-		cmd.add("password");
-
 		try {
-			Log.info(FATSecurityUtils.class, "establishTrust", "Running keytool");
-			Process proc = new ProcessBuilder(cmd).start();
-			while (true) {
-				try {
-					Log.info(FATSecurityUtils.class, proc.exitValue() + " establishTrust", trusting.getServerName() + " now trusts " + trusted.getServerName());
-					break;
-				} catch (IllegalThreadStateException e) {
-					Log.info(FATSecurityUtils.class, "establishTrust", "keytool -importcert..... has not finished yet");
-					Thread.sleep(1000);
+			ArrayList<String> cmd = new ArrayList<String>();
+
+			cmd.add("keytool");
+			cmd.add("-importcert");
+			cmd.add("-noprompt");
+			cmd.add("-file");
+			cmd.add(trusted.getServerRoot()+CERT_PATH);
+			cmd.add("-alias");
+			cmd.add(trusted.getServerName());
+			cmd.add("-keystore");
+			cmd.add(trusting.getServerRoot()+KEYSTORE_PATH);
+			cmd.add("-storepass");
+			cmd.add("password");
+			cmd.add("-storetype");
+			cmd.add("PKCS12");
+
+			Log.info(FATSecurityUtils.class, "establishTrust", "Running " + String.join(" ", cmd));
+			Process proc = new ProcessBuilder(cmd).redirectErrorStream(true).start();
+			try (InputStream is = proc.getInputStream()) {
+				final BufferedReader reader =
+						new BufferedReader(new InputStreamReader(is));
+				String line;
+				while ((line = reader.readLine()) != null) {
+					Log.info(FATSecurityUtils.class, "establishTrust", line);
+				}
+			}
+			
+			cmd = new ArrayList<String>();
+			cmd.add("keytool");
+			cmd.add("-list");
+			cmd.add("-keystore");
+			cmd.add(trusting.getServerRoot()+KEYSTORE_PATH);
+			cmd.add("-storepass");
+			cmd.add("password");
+			cmd.add("-storetype");
+			cmd.add("PKCS12");
+			
+			Log.info(FATSecurityUtils.class, "establishTrust", "Running " + String.join(" ", cmd));
+			proc = new ProcessBuilder(cmd).redirectErrorStream(true).start();
+			try (InputStream is = proc.getInputStream()) {
+				final BufferedReader reader =
+						new BufferedReader(new InputStreamReader(is));
+				String line;
+				while ((line = reader.readLine()) != null) {
+					Log.info(FATSecurityUtils.class, "establishTrust", line);
 				}
 			}
 		} catch (Throwable e) {

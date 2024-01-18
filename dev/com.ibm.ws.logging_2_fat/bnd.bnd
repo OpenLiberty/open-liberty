@@ -56,4 +56,5 @@ tested.features:\
 	com.ibm.ws.jaxrs.2.0.common;version=latest,\
 	com.ibm.websphere.filetransfer;version=latest,\
 	com.ibm.json4j;version=latest,\
-	com.ibm.websphere.javaee.persistence.2.1;version=latest
+	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
+	com.ibm.ws.logging_fat;version=latest
