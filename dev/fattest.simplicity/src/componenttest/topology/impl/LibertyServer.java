@@ -3493,6 +3493,10 @@ public class LibertyServer implements LogMonitorClient {
         Log.exiting(c, method);
     }
 
+    public String getPathToAutoFVTOutputServersFolder() {
+        return pathToAutoFVTOutputServersFolder;
+    }
+
     protected void runJextract(RemoteFile serverFolder) throws Exception {
         RemoteFile[] files = serverFolder.list(false);
         if (files != null) {
@@ -3553,9 +3557,9 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    protected void recursivelyCopyDirectory(RemoteFile remoteSrcDir,
-                                            LocalFile localDstDir,
-                                            boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
+    public void recursivelyCopyDirectory(RemoteFile remoteSrcDir,
+                                         LocalFile localDstDir,
+                                         boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
 
         String method = "recursivelyCopyDirectory";
 
