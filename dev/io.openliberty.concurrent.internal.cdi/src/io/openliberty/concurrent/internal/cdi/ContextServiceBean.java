@@ -45,7 +45,6 @@ public class ContextServiceBean implements Bean<ContextService>, PassivationCapa
 
     /**
      * Resource factory that creates the resource.
-     * Null if an OSGi filter is used instead.
      */
     private final ResourceFactory factory;
 
@@ -53,17 +52,6 @@ public class ContextServiceBean implements Bean<ContextService>, PassivationCapa
      * Qualifiers for the injection points for this bean.
      */
     private final Set<Annotation> qualifiers;
-
-    /**
-     * Construct a new bean for this resource.
-     *
-     * @param factory    resource factory.
-     * @param qualifiers qualifiers for the bean.
-     */
-    ContextServiceBean(ResourceFactory factory, Set<Annotation> qualifiers) {
-        this.factory = factory;
-        this.qualifiers = qualifiers;
-    }
 
     /**
      * Construct a new bean for this resource.
@@ -88,6 +76,17 @@ public class ContextServiceBean implements Bean<ContextService>, PassivationCapa
         }
     }
 
+    /**
+     * Construct a new bean for this resource.
+     *
+     * @param factory    resource factory.
+     * @param qualifiers qualifiers for the bean.
+     */
+    ContextServiceBean(ResourceFactory factory, Set<Annotation> qualifiers) {
+        this.factory = factory;
+        this.qualifiers = qualifiers;
+    }
+
     @Override
     @Trivial
     public ContextService create(CreationalContext<ContextService> cc) {
@@ -99,8 +98,12 @@ public class ContextServiceBean implements Bean<ContextService>, PassivationCapa
         try {
             instance = (ContextService) factory.createResource(null);
         } catch (RuntimeException x) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "create", x);
             throw x;
         } catch (Exception x) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "create", x);
             throw new RuntimeException(x);
         }
 
