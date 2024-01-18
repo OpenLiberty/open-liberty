@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,23 +72,21 @@ public class VerboseLogTest {
         verboseLogServerRoot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/verbosegc.log");
         jvmoptionsserverroot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/jvm.options");
         serverEnvServerRoot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/server.env");
-        if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS)
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS){
             serverCommand = "bin\\server.bat";
-        else
+        }
+        else{
             serverCommand = "bin/server";
-
-        try {
-            File javaHomeRelease = new File(System.getenv("JAVA_HOME") + "/release");
-            InputStream is = new FileInputStream(javaHomeRelease);
+        }
+        
+        try (InputStream is = new FileInputStream(new File(System.getenv("JAVA_HOME") + "/release"));) {
             Properties props = new Properties();
             props.load(is);
-            if(props.getProperty("JVM_VARIANT").contains("Openj9")){
+            if(props.containsKey("JVM_VARIANT") && props.getProperty("JVM_VARIANT").contains("Openj9")){
                 isOpenJ9 = true;
             }
         }
-        catch (Exception e) {
-            //nothing
-        }
+        
     }
 
     @After
@@ -100,8 +98,7 @@ public class VerboseLogTest {
 
     @Test
     public void testNonOpenJ9DefaultVerboseLogging() throws Exception {
-        //Only run if jvm is not OpenJ9
-        assumeTrue(!isOpenJ9);
+        assumeTrue(!!!isOpenJ9);
 
         // Test with no jvm.options, verbose log should appear by default
         Log.entering(c, testName.getMethodName());
@@ -131,7 +128,6 @@ public class VerboseLogTest {
 
     @Test
     public void testOpenJ9DefaultVerboseLogging() throws Exception {
-        //Only run if jvm is OpenJ9
         assumeTrue(isOpenJ9);
 
         // Test with no jvm.options, verbose log should appear by default
@@ -162,7 +158,6 @@ public class VerboseLogTest {
 
     @Test
     public void testOpenJ9JvmTurnOffVerbose() throws Exception {
-        //Only run if jvm is OpenJ9
         assumeTrue(isOpenJ9);
 
         // Test with jvm.options to turn off verbose log, no verbose log should appear
@@ -199,7 +194,6 @@ public class VerboseLogTest {
 
     @Test
     public void testOpenJ9ServerEnvTurnOffVerbose() throws Exception {
-        //Only run if jvm is OpenJ9
         assumeTrue(isOpenJ9);
 
         // Test with server.env to turn off verbose log, no verbose log should appear
@@ -236,7 +230,6 @@ public class VerboseLogTest {
 
     @Test
     public void testOpenJ9ServerEnvKeepVerbose() throws Exception {
-        //Only run if jvm is OpenJ9
         assumeTrue(isOpenJ9);
         
         // Test with server.env to keep verbose log, verbose log should appear
@@ -273,7 +266,6 @@ public class VerboseLogTest {
 
     @Test
     public void testOpenJ9JvmChangeVerbose() throws Exception {
-        //Only run if jvm is OpenJ9
         assumeTrue(isOpenJ9);
         
         // Test with jvm.options, change location or file name, the jvm.options log should be the one shown
@@ -310,7 +302,6 @@ public class VerboseLogTest {
 
     @Test
     public void testOpenJ9StartChangeVerbose() throws Exception {
-        //Only run if jvm is OpenJ9
         assumeTrue(isOpenJ9);
         
         // Test with command variable, change location or file name, the jvm.options log should be the one shown
