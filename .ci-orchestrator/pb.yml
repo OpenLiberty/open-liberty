@@ -7,23 +7,10 @@ triggers:
   triggerName: "ol-pbbeta"
   triggerRank: 50
   groups: ["LibertyDev"]
-  keyword: "#pbbeta"
-  propertyDefinitions:
-  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step
-  # because those steps are set to use a value calculated by the PR Changes step.
-  - name: fat.buckets.to.run
-    defaultValue: ${PR Changes:fat.buckets.to.run}
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Compile FATs
-    - stepName: Determine FATs Needed
-    - stepName: Distributed Lite FATs
-    
-- type: github
-  triggerName: "ol-exclamation-pbbeta"
-  triggerRank: 50
-  groups: ["LibertyDev"]
   keyword: "!pbbeta"
+  aliasKeywords:
+  - "!build"
+  - "#pbbeta"
   propertyDefinitions:
   # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step
   # because those steps are set to use a value calculated by the PR Changes step.
@@ -69,55 +56,14 @@ triggers:
     defaultValue: "PR number in open-liberty"
   - name: github_pr_api
     defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${github_pr_number}"
-    
-- type: github
-  triggerName: "ol-exclamation-pbbeta-build"
-  triggerRank: 50
-  groups: ["LibertyDev"]
-  keyword: "!build"
-  propertyDefinitions:
-  # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step
-  # because those steps are set to use a value calculated by the PR Changes step.
-  - name: fat.buckets.to.run
-    defaultValue: ${PR Changes:fat.buckets.to.run}
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Compile FATs
-    - stepName: Determine FATs Needed
-    - stepName: Distributed Lite FATs
 
 - type: github
   triggerName: "ol-fullpbbeta"
   triggerRank: 50
   groups: ["LibertyDev"]
-  keyword: "#fullpbbeta"
-  propertyDefinitions:
-  # Run all buckets in full mode.
-  - name: fat.buckets.to.run
-    defaultValue: all
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Compile FATs
-    - stepName: Distributed Full FATs
-  # Run IM buckets.
-  - name: create.im.repo
-    defaultValue: true
-    steps:
-    - stepName: Compile Liberty Images
-  # Run z/OS buckets.
-  - name: spawn.zos
-    defaultValue: true
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Compile FATs
-    - stepName: z/OS FATs
-    - stepName: z/OS Unittests
-
-- type: github
-  triggerName: "ol-exclamation-fullpbbeta"
-  triggerRank: 50
-  groups: ["LibertyDev"]
   keyword: "!fullpbbeta"
+  aliasKeywords:
+  - "#fullpbbeta"
   propertyDefinitions:
   # Run all buckets in full mode.
   - name: fat.buckets.to.run
