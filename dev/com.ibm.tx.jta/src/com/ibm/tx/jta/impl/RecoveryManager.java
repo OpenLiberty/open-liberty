@@ -785,9 +785,10 @@ public class RecoveryManager implements Runnable {
 
         // FFDC if attempt to delete failed
         if (!success) {
-            // FFDC exception but allow processing to continue
-            Exception e = new Exception();
-            FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.deleteRecoveryLogsIfPeerRecoveryEnv", "758", this);
+            // Issue a warning but allow processing to continue
+            Tr.audit(tc,
+                     "WTRN0107W: Server {0} with identity {1} attempted but failed to delete its recovery logs",
+                     _failureScopeController.serverName(), _localRecoveryIdentity);
         }
         if (tc.isEntryEnabled())
             Tr.exit(tc, "deleteRecoveryLogsIfPeerRecoveryEnv", success);

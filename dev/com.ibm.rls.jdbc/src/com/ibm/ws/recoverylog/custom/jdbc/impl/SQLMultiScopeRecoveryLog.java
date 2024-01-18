@@ -4224,13 +4224,16 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 }
             }
         } else {
-            // Alert the HeartbeatLogManager that the log is closing/closed or failed
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "heartbeat", "Log is not in a fit state for a heartbeat");
-            throw new LogClosedException();
+            if (_serverStopping || failed()) {
+                // Alert the HeartbeatLogManager that the server is stopping or the log is failed
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "heartbeat", "Log is not in a fit state for a heartbeat");
+                throw new LogClosedException();
+            }
+            // Otherwise, the log is closed (and maybe not even opened yet) allow processing to continue
         }
 
-        if (!sqlSuccess) {
+        if (!sqlSuccess && nonTransientException != null) {
             // Audit the failure (if not closed/failed log) but allow processing to continue
             if (!_serverStopping && !failed()) {
                 Tr.audit(tc, "WTRN0107W: " +
