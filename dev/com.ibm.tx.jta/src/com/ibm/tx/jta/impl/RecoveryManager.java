@@ -746,7 +746,10 @@ public class RecoveryManager implements Runnable {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Ignoring exception: ", e);
             } else {
-                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.deleteServerLease", "701", this);
+                // Issue a warning but allow processing to continue
+                Tr.audit(tc,
+                         "WTRN0107W: Server {0} attempted but failed to delete the lease for server with identity {1}",
+                         _failureScopeController.serverName(), recoveryIdentity);
             }
         }
         if (tc.isEntryEnabled())

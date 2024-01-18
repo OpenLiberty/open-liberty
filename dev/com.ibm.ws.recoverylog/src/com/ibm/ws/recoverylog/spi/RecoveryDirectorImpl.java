@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -512,8 +512,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      * @return boolean success
      */
     @Override
-    @FFDCIgnore({ RecoveryFailedException.class })
-    public void directInitialization(FailureScope failureScope) throws RecoveryFailedException, PeerLostLogOwnershipException {
+    @FFDCIgnore({ RecoveryFailedException.class, LogsUnderlyingTablesMissingException.class })
+    public void directInitialization(FailureScope failureScope) throws RecoveryFailedException, PeerLostLogOwnershipException, LogsUnderlyingTablesMissingException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "directInitialization", new Object[] { failureScope, this });
 
@@ -596,12 +596,23 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                             } else {
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "PEER RECOVERY, take lock, ie check staleness");
-                                shouldBeRecovered = heartbeatLog.claimPeerRecoveryLogs();
+                                try {
+                                    shouldBeRecovered = heartbeatLog.claimPeerRecoveryLogs();
+                                } catch (LogsUnderlyingTablesMissingException lutme) {
+                                    Tr.audit(tc, "WTRN0107W: " +
+                                                 "Peer server " + failureScope.serverName() + " has missing recovery log SQL tables. Delete its lease");
+                                    recoveryAgent.deleteServerLease(failureScope.serverName(), true);
+                                    if (tc.isEntryEnabled())
+                                        Tr.exit(tc, "directInitialization", lutme);
+                                    throw lutme;
+                                }
                                 if (!shouldBeRecovered) {
                                     // Cannot recover peer server, throw exception
                                     if (tc.isDebugEnabled())
                                         Tr.debug(tc, "Unable to claim logs, throw PeerLostLogOwnershipException");
                                     PeerLostLogOwnershipException plex = new PeerLostLogOwnershipException();
+                                    if (tc.isEntryEnabled())
+                                        Tr.exit(tc, "directInitialization", plex);
                                     throw plex;
                                 }
                             }
@@ -1050,6 +1061,12 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
         } catch (PeerLostLogOwnershipException plex) {
             // Not expected, wrap exception and rethrow
             RecoveryFailedException rfex = new RecoveryFailedException(plex);
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "driveLocalRecovery", rfex);
+            throw rfex;
+        } catch (LogsUnderlyingTablesMissingException lutmex) {
+            // Not expected, wrap exception and rethrow
+            RecoveryFailedException rfex = new RecoveryFailedException(lutmex);
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "driveLocalRecovery", rfex);
             throw rfex;
@@ -1639,7 +1656,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
             Tr.exit(tc, "drivePeerRecovery");
     }
 
-    @FFDCIgnore({ RecoveryFailedException.class, PeerLostLogOwnershipException.class })
+    @FFDCIgnore({ RecoveryFailedException.class, PeerLostLogOwnershipException.class, LogsUnderlyingTablesMissingException.class })
     public synchronized void peerRecoverServers(RecoveryAgent recoveryAgent, String myRecoveryIdentity, ArrayList<String> peersToRecover) throws RecoveryFailedException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "peerRecoverServers", new Object[] { recoveryAgent, myRecoveryIdentity, peersToRecover });
@@ -1670,6 +1687,8 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
                 Tr.audit(tc, "WTRN0108I: " +
                              "Peer recovery will not be attempted, this server was unable to claim the logs of the server with recovery identity " + peerRecoveryIdentity);
                 // allow processing to continue
+            } catch (LogsUnderlyingTablesMissingException lutmex) {
+                // This has already been audited, allow processing to continue
             } catch (Exception exc) {
                 Tr.audit(tc, "WTRN0108I: " +
                              "HADB Peer Recovery failed for server with recovery identity " + peerRecoveryIdentity + " with exception " + exc);
