@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package io.openliberty.microprofile.reactive.messaging.fat.validation;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -28,12 +29,15 @@ public class IncomingMethodWithMultipleUpstreams {
     @Channel(CHANNEL)
     Emitter<String> emitter1;
 
-    @Inject
-    @Channel(CHANNEL)
-    Emitter<String> emitter2;
+
+    @Outgoing(CHANNEL)
+    public String outgoing(){
+        return "hello";
+    }
 
     @Incoming(CHANNEL)
     public void badMethod(String message) {
         // do nothing
     }
+
 }
