@@ -97,7 +97,7 @@ public class HttpInputStreamEE7Extended extends HttpInputStreamEE7 {
     private boolean setNextBuffer() {
         if (this.postDataPos < this.postData.length) {
             this.buffer = HttpDispatcher.getBufferManager().wrap(this.postData[this.postDataPos]);
-            this.postData = null;
+            this.postData[this.postDataPos] = null;
             //this.buffer = HttpDispatcher.getBufferManager().allocate(this.postData[this.postDataPos].length);
             //this.buffer.put(this.postData[this.postDataPos]);
             //this.buffer.flip();
