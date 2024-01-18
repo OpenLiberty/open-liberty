@@ -18,10 +18,19 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Qualifier;
 
 @Qualifier
 @Retention(RUNTIME)
 @Target(FIELD)
 public @interface WithAppContext {
+    public static class Literal extends AnnotationLiteral<WithAppContext> implements WithAppContext {
+        private static final long serialVersionUID = 2122945694024703476L;
+
+        public static final WithAppContext INSTANCE = new Literal();
+
+        private Literal() {
+        }
+    }
 }
