@@ -20,10 +20,10 @@ fat.project: true
 fat.test.databases: true
 tested.features: persistence-3.2, persistenceContainer-3.2, beanValidation-3.0, enterpriseBeansLite-4.0, servlet-6.1, expressionLanguage-4.0, jdbc-4.2, jndi-1.0, xmlbinding-4.0, expressionlanguage-5.0
 
-javac.source: 21
-javac.target: 21
+javac.source: 17
+javac.target: 17
 
-fat.minimum.java.level: 21
+fat.minimum.java.level: 17
 
 # Uncomment to test against alternative databases
 # Options: Derby, Postgres, DB2, Oracle, SQLServer
