@@ -58,11 +58,6 @@ public class ConcurrencyExtension implements Extension {
     private static final Set<Annotation> DEFAULT_QUALIFIER_SET = Set.of(Default.Literal.INSTANCE);
 
     /**
-     * Set of qualifier lists found on ManagedExecutorService injection points.
-     */
-    private final Set<Set<Annotation>> executorQualifiers = new HashSet<>();
-
-    /**
      * Set of qualifier lists found on ManagedScheduledExecutorService injection points.
      */
     private final Set<Set<Annotation>> scheduledExecutorQualifiers = new HashSet<>();
@@ -73,20 +68,6 @@ public class ConcurrencyExtension implements Extension {
         beforeBeanDiscovery.addInterceptorBinding(bindingType);
         AnnotatedType<AsyncInterceptor> interceptorType = beanManager.createAnnotatedType(AsyncInterceptor.class);
         beforeBeanDiscovery.addAnnotatedType(interceptorType, CDIServiceUtils.getAnnotatedTypeIdentifier(interceptorType, this.getClass()));
-    }
-
-    /**
-     * Invoked for each matching injection point:
-     *
-     * @Inject {@Qualifier1 @Qualifier2 ...} ManagedExecutorService executor;
-     *
-     * @param <T>   bean class that has the injection point
-     * @param event event
-     */
-    public <T> void processExecutorInjectionPoint(@Observes ProcessInjectionPoint<T, ManagedExecutorService> event) {
-        InjectionPoint injectionPoint = event.getInjectionPoint();
-        Set<Annotation> qualifiers = injectionPoint.getQualifiers();
-        executorQualifiers.add(qualifiers);
     }
 
     /**
@@ -115,6 +96,9 @@ public class ConcurrencyExtension implements Extension {
         if (!cdi.select(ContextService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
             event.addBean(new ContextServiceBean(ext.defaultContextServiceFactory, DEFAULT_QUALIFIER_SET));
 
+        if (!cdi.select(ManagedExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
+            event.addBean(new ManagedExecutorBean(ext.defaultManagedExecutorFactory, DEFAULT_QUALIFIER_SET));
+
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         if (cmd == null)
             throw new IllegalStateException(); // should be unreachable
@@ -122,7 +106,9 @@ public class ConcurrencyExtension implements Extension {
         List<Map<List<String>, ResourceFactory>> list = ext.removeAll(cmd.getName());
 
         if (list != null) {
-            Map<List<String>, ResourceFactory> qualifiedContextServices = list.get(QualifiedResourceFactories.Type.ContextService.ordinal());
+            Map<List<String>, ResourceFactory> qualifiedContextServices = //
+                            list.get(QualifiedResourceFactories.Type.ContextService.ordinal());
+
             for (Entry<List<String>, ResourceFactory> entry : qualifiedContextServices.entrySet()) {
                 List<String> qualifierList = entry.getKey();
                 ResourceFactory factory = entry.getValue();
@@ -136,32 +122,25 @@ public class ConcurrencyExtension implements Extension {
                     x.printStackTrace();
                 }
             }
-        }
 
-        for (Set<Annotation> qualifiers : executorQualifiers) {
-            if (cdi.select(ManagedExecutorService.class, qualifiers.toArray(new Annotation[qualifiers.size()])).isResolvable()) {
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "ManagedExecutorService already exists with qualifiers " + qualifiers);
-            } else {
-                // It doesn't already exist, so try to add it:
-                String filter = null;
-                if (DEFAULT_QUALIFIER_SET.equals(qualifiers)) {
-                    filter = "(id=DefaultManagedExecutorService)";
-                } else { // TODO replace this temporary approach to partially simulate spec function
-                    // The filter on config.displayId prevents matching scheduled executor instances with the same qualifiers
-                    StringBuilder f = new StringBuilder().append("(&(config.displayId=*managedExecutorService*)");
-                    for (Annotation q : qualifiers)
-                        f.append("(qualifiers=").append(q.annotationType().getName()).append(')');
-                    filter = f.append(')').toString();
+            Map<List<String>, ResourceFactory> qualifiedManagedExecutors = //
+                            list.get(QualifiedResourceFactories.Type.ManagedExecutorService.ordinal());
+
+            for (Entry<List<String>, ResourceFactory> entry : qualifiedManagedExecutors.entrySet()) {
+                List<String> qualifierList = entry.getKey();
+                ResourceFactory factory = entry.getValue();
+                try {
+                    event.addBean(new ManagedExecutorBean(factory, qualifierList));
+                } catch (Throwable x) {
+                    // TODO NLS
+                    System.out.println(" E Unable to create a bean for the " +
+                                       factory + " ManagedExecutorDefinition with the " + qualifierList + " qualifiers" +
+                                       " due to the following error: ");
+                    x.printStackTrace();
                 }
-
-                event.addBean(new ManagedExecutorBean(filter, qualifiers));
-
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "Added ManagedExecutorService bean with qualifiers " + qualifiers);
             }
+
         }
-        executorQualifiers.clear();
 
         for (Set<Annotation> qualifiers : scheduledExecutorQualifiers) {
             if (cdi.select(ManagedScheduledExecutorService.class, qualifiers.toArray(new Annotation[qualifiers.size()])).isResolvable()) {

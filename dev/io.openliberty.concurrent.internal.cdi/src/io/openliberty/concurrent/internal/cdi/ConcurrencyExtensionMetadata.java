@@ -57,6 +57,14 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
     protected volatile ResourceFactory defaultContextServiceFactory;
 
     /**
+     * ResourceFactory for the default ManagedExecutorService instance: java:comp/DefaultManagedExecutorService.
+     */
+    @Reference(target = "(&(id=DefaultManagedExecutorService)(component.name=com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl))",
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected volatile ResourceFactory defaultManagedExecutorFactory;
+
+    /**
      * Jakarta EE version.
      */
     public static Version eeVersion;
@@ -77,8 +85,18 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
      */
     public static ScheduledExecutorService scheduledExecutor;
 
+    /**
+     * The resource factory builder invokes this method to add a
+     * resource factory with qualifiers to be processed by the
+     * concurrency CDI extension.
+     *
+     * @param jeeName         Java EE name obtained from ComponentMetaData.getName()
+     * @param resourceType    type of resource definition
+     * @param qualifierNames  names of qualifier annotation classes
+     * @param resourceFactory the resource factory
+     */
     @Override
-    public void add(String jeeName, Type resourceType, List<String> qualifiers, ResourceFactory resourceFactory) {
+    public void add(String jeeName, Type resourceType, List<String> qualifierNames, ResourceFactory resourceFactory) {
         List<Map<List<String>, ResourceFactory>> list = resourceFactories.get(jeeName);
         if (list == null) {
             list = List.of(new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
@@ -86,11 +104,11 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
         }
 
         Map<List<String>, ResourceFactory> qualifiersToResourceFactory = list.get(resourceType.ordinal());
-        ResourceFactory conflict = qualifiersToResourceFactory.put(qualifiers, resourceFactory);
+        ResourceFactory conflict = qualifiersToResourceFactory.put(qualifierNames, resourceFactory);
 
         if (conflict != null)
             throw new IllegalStateException("The " + jeeName + " application defines multiple " + //
-                                            resourceType + " resources with the " + qualifiers + " qualifiers."); // TODO NLS and Tr.error
+                                            resourceType + " resources with the " + qualifierNames + " qualifiers."); // TODO NLS and Tr.error
     }
 
     @Override
@@ -108,6 +126,17 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
         return Collections.singleton(ConcurrencyExtension.class);
     }
 
+    /**
+     * The concurrency CDI extension invokes this method to obtain all
+     * of the resource factories so it can register them as beans with
+     * their respective qualifiers.
+     *
+     * @param jeeName Java EE name obtained from ComponentMetaData.getName()
+     * @return list of the form [qualifiers -> ResourceFactory for ContextService,
+     *         . . . . . . . . . qualifiers -> ResourceFactory for ManagedExecutorService,
+     *         . . . . . . . . . qualifiers -> ResourceFactory for ManagedScheduledExecutorService,
+     *         . . . . . . . . . qualifiers -> ResourceFactory for ManagedThreadFactory ]
+     */
     @Override
     public List<Map<List<String>, ResourceFactory>> removeAll(String jeeName) {
         return resourceFactories.remove(jeeName);

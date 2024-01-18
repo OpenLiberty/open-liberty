@@ -221,10 +221,10 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         String[] qualifiers = (String[]) contextSvcProps.remove("qualifiers");
 
         // Convert qualifier array to list attribute if present
-        List<String> qualifierList = null;
+        List<String> qualifierNames = null;
         if (qualifiers != null && qualifiers.length > 0) {
-            qualifierList = Arrays.asList(qualifiers);
-            contextSvcProps.put("qualifiers", qualifierList);
+            qualifierNames = Arrays.asList(qualifiers);
+            contextSvcProps.put("qualifiers", qualifierNames);
         }
 
         if (cleared == null)
@@ -370,7 +370,7 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
             Configuration contextServiceConfig = configAdmin.createFactoryConfiguration("com.ibm.ws.context.service", bundleLocation);
             contextServiceConfig.update(contextSvcProps);
 
-            if (qualifierList != null) {
+            if (qualifierNames != null) {
                 ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
                 if (cmd == null)
                     throw new IllegalStateException(); // should be unreachable
@@ -379,12 +379,12 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
 
                 if (ref == null)
                     throw new UnsupportedOperationException("The " + cmd.getName() + " application cannot specify the " +
-                                                            qualifierList + " qualifiers on the " +
+                                                            qualifierNames + " qualifiers on the " +
                                                             jndiName + " " + ContextServiceDefinition.class.getSimpleName() +
                                                             " because the " + "CDI" + " feature is not enabled."); // TODO NLS
 
                 QualifiedResourceFactories qrf = bundleContext.getService(ref);
-                qrf.add(cmd.getName(), QualifiedResourceFactories.Type.ContextService, qualifierList, factory);
+                qrf.add(cmd.getName(), QualifiedResourceFactories.Type.ContextService, qualifierNames, factory);
             }
         } catch (Exception x) {
             factory.destroy();
