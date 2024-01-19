@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,8 +38,11 @@ public class MatchingSSLCiphersClientTestServlet extends FATServlet {
 
     @Override
     public void before() throws ServletException {
-        client = ClientBuilder.newClient();
-        client.property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig");
+        ClientBuilder cb = ClientBuilder.newBuilder();
+        // Property must be set on the ClientBuilder for EE9+
+        // Setting on the Client technically works for EE7 & EE8, but we don't document it.
+        cb.property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig");
+        client = cb.build();
     }
 
     @Override
@@ -47,7 +50,7 @@ public class MatchingSSLCiphersClientTestServlet extends FATServlet {
         client.close();
     }
 
-//    @Test
+    @Test
     public void testSimpleSSLRequestWithMatchingSSLCiphers() {
         Response response = client.target(SERVER_CONTEXT_ROOT)
                         .path("echo")
