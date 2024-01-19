@@ -33,6 +33,7 @@ import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
@@ -76,6 +77,8 @@ public class ConcurrencyExtension implements Extension {
         ServiceReference<QualifiedResourceFactories> ref = bundleContext.getServiceReference(QualifiedResourceFactories.class);
         ConcurrencyExtensionMetadata ext = (ConcurrencyExtensionMetadata) bundleContext.getService(ref);
 
+        // Add beans for Concurrency default resources if not already present:
+
         CDI<Object> cdi = CDI.current();
 
         if (!cdi.select(ContextService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
@@ -86,6 +89,11 @@ public class ConcurrencyExtension implements Extension {
 
         if (!cdi.select(ManagedScheduledExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
             event.addBean(new ManagedScheduledExecutorBean(ext.defaultManagedScheduledExecutorFactory, DEFAULT_QUALIFIER_SET));
+
+        if (!cdi.select(ManagedThreadFactory.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
+            event.addBean(new ManagedThreadFactoryBean(ext.defaultManagedThreadFactoryFactory, DEFAULT_QUALIFIER_SET));
+
+        // Add beans for Concurrency resources that have one or more qualifier annotations:
 
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         if (cmd == null)
@@ -145,7 +153,22 @@ public class ConcurrencyExtension implements Extension {
                 }
             }
 
-            // TODO qualified ManagedThreadFactory instances
+            Map<List<String>, ResourceFactory> qualifiedManagedThreadFactories = //
+                            list.get(QualifiedResourceFactories.Type.ManagedThreadFactory.ordinal());
+
+            for (Entry<List<String>, ResourceFactory> entry : qualifiedManagedThreadFactories.entrySet()) {
+                List<String> qualifierList = entry.getKey();
+                ResourceFactory factory = entry.getValue();
+                try {
+                    event.addBean(new ManagedThreadFactoryBean(factory, qualifierList));
+                } catch (Throwable x) {
+                    // TODO NLS
+                    System.out.println(" E Unable to create a bean for the " +
+                                       factory + " ManagedThreadFactoryDefinition with the " + qualifierList + " qualifiers" +
+                                       " due to the following error: ");
+                    x.printStackTrace();
+                }
+            }
         }
     }
 }
