@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,8 +47,8 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                                                           Object managedComponentObject) {
         final String testName = getTestName();
 
-        if ((isUsingJPA30Feature() || isUsingJPA31Feature())) {
-            System.out.println("testEmptyAggregateFunctionsWithPrimitives is not intended for persistence-3.0 or persistence-3.1");
+        if ((isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature())) {
+            System.out.println("testEmptyAggregateFunctionsWithPrimitives is not intended for persistence-3.0 or persistence-3.1 or persistence-3.2");
             return;
         }
 
@@ -126,7 +126,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                                                         Object managedComponentObject) {
         final String testName = getTestName();
 
-        if ((isUsingJPA30Feature() || isUsingJPA31Feature())) {
+        if ((isUsingJPA30Feature() || isUsingJPA31Feature()) || isUsingJPA32Feature()) {
             System.out.println("testEmptyAggregateFunctionsWithPrimitives is not intended for persistence-3.0 or persistence-3.1");
             return;
         }
@@ -200,7 +200,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                                                      Object managedComponentObject) {
         final String testName = getTestName();
 
-        if ((isUsingJPA30Feature() || isUsingJPA31Feature())) {
+        if ((isUsingJPA30Feature() || isUsingJPA31Feature()) || isUsingJPA32Feature()) {
             System.out.println("testEmptyAggregateFunctionsWithPrimitives is not intended for persistence-3.0 or persistence-3.1");
             return;
         }
@@ -269,7 +269,7 @@ public class JPATestOLGH8014Logic extends AbstractTestLogic {
                                                    Object managedComponentObject) {
         final String testName = getTestName();
 
-        if ((isUsingJPA30Feature() || isUsingJPA31Feature())) {
+        if ((isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature())) {
             System.out.println("testEmptyAggregateFunctionsWithPrimitives is not intended for persistence-3.0 or persistence-3.1");
             return;
         }

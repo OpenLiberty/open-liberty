@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022.2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -89,7 +89,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             em.createQuery("SELECT s.intVal1 FROM OLGH17837Entity s WHERE s.intVal1 = (4)").getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.get(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -124,7 +124,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             em.createQuery(cquery2).getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.get(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -191,7 +191,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             em.createQuery("SELECT s.intVal1 FROM OLGH17837Entity s WHERE s.intVal1 = (4)").getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.get(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -226,7 +226,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             em.createQuery(cquery2).getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.get(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -515,7 +515,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z) {
                     Assert.assertEquals("SELECT INTVAL1, (? + ?) FROM OLGH17837ENTITY WHERE (? = (INTVAL1 + ABS(-2)))", sql.remove(0));
                 } else if (isDerby) {
@@ -536,7 +536,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z) {
                     Assert.assertEquals("SELECT INTVAL1, (? + ?) FROM OLGH17837ENTITY WHERE (? = (INTVAL1 + ABS(-2)))", sql.remove(0));
                 } else if (isDerby) {
@@ -588,7 +588,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z) {
                     Assert.assertEquals("SELECT INTVAL1, (? + ?) FROM OLGH17837ENTITY WHERE (? = (INTVAL1 + ABS(-2)))", sql.remove(0));
                 } else if (isDerby) {
@@ -616,7 +616,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z) {
                     Assert.assertEquals("SELECT INTVAL1, (? + ?) FROM OLGH17837ENTITY WHERE (? = (INTVAL1 + ABS(-2)))", sql.remove(0));
                 } else if (isDerby) {
@@ -837,7 +837,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 = ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -875,7 +875,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 = ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -942,7 +942,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 = ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -980,7 +980,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 = ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -1269,7 +1269,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDerby) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE ((? + 10) < INTVAL1)", sql.remove(0));
                 } else {
@@ -1288,7 +1288,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDerby) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE ((? + 10) < INTVAL1)", sql.remove(0));
                 } else {
@@ -1334,7 +1334,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDerby) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE ((? + 10) < INTVAL1)", sql.remove(0));
                 } else {
@@ -1360,7 +1360,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDerby) {
                     Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE ((? + 10) < INTVAL1)", sql.remove(0));
                 } else {
@@ -1563,7 +1563,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE STRVAL1 LIKE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -1601,7 +1601,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE STRVAL1 LIKE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -1668,7 +1668,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE STRVAL1 LIKE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -1706,7 +1706,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE STRVAL1 LIKE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -1994,7 +1994,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ? LIKE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -2009,7 +2009,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ? LIKE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -2048,7 +2048,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ? LIKE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -2071,7 +2071,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ? LIKE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -2243,7 +2243,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT (STRVAL1 LIKE ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -2280,7 +2280,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE STRVAL1 NOT LIKE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -2347,7 +2347,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT (STRVAL1 LIKE ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -2385,7 +2385,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE STRVAL1 NOT LIKE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -2646,7 +2646,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE STRVAL1 LIKE ? ESCAPE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -2689,7 +2689,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE STRVAL1 LIKE ? ESCAPE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3014,7 +3014,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ? LIKE ? ESCAPE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3030,7 +3030,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ? LIKE ? ESCAPE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3071,7 +3071,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ? LIKE ? ESCAPE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3096,7 +3096,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ? LIKE ? ESCAPE ?", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3287,7 +3287,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3304,7 +3304,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3342,7 +3342,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3365,7 +3365,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ((INTVAL1 IN (?, ?, ?, ?)) OR (INTVAL1 IN (?,?,?)))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3432,7 +3432,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3449,7 +3449,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3487,7 +3487,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3510,7 +3510,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ((INTVAL1 IN (?, ?, ?, ?)) OR (INTVAL1 IN (?,?,?)))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3687,7 +3687,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3703,7 +3703,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3747,7 +3747,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3778,7 +3778,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3849,7 +3849,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3865,7 +3865,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3909,7 +3909,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -3940,7 +3940,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4131,7 +4131,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4148,7 +4148,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4188,7 +4188,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4212,7 +4212,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING ((INTVAL1 IN (?, ?, ?, ?)) OR (INTVAL1 IN (?,?,?)))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4279,7 +4279,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4296,7 +4296,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4336,7 +4336,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4360,7 +4360,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING ((INTVAL1 IN (?, ?, ?, ?)) OR (INTVAL1 IN (?,?,?)))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4540,7 +4540,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4556,7 +4556,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4602,7 +4602,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4634,7 +4634,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4705,7 +4705,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4721,7 +4721,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4767,7 +4767,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4799,7 +4799,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (INTVAL1 IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4993,7 +4993,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5008,7 +5008,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5058,7 +5058,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5086,7 +5086,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5154,7 +5154,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5169,7 +5169,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5219,7 +5219,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5247,7 +5247,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5437,7 +5437,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5452,7 +5452,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5502,7 +5502,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5530,7 +5530,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5598,7 +5598,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5613,7 +5613,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5663,7 +5663,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5691,7 +5691,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5884,7 +5884,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 IN (?, ?, ?)))",
                                     sql.remove(0));
             } else {
@@ -5903,7 +5903,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 IN (?, ?, ?)))",
                                     sql.remove(0));
             } else {
@@ -5961,7 +5961,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 IN (?, ?, ?)))",
                                     sql.remove(0));
             } else {
@@ -5995,7 +5995,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 IN (?, ?, ?)))",
                                     sql.remove(0));
             } else {
@@ -6069,7 +6069,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 IN (?, ?, ?)))",
                                     sql.remove(0));
             } else {
@@ -6088,7 +6088,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 IN (?, ?, ?)))",
                                     sql.remove(0));
             } else {
@@ -6146,7 +6146,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 IN (?, ?, ?)))",
                                     sql.remove(0));
             } else {
@@ -6180,7 +6180,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 IN (?, ?, ?)))",
                                     sql.remove(0));
             } else {
@@ -6388,7 +6388,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 NOT IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -6405,7 +6405,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 NOT IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -6443,7 +6443,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 IN (?, ?, ?, ?, ?, ?, ?)))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -6466,7 +6466,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (NOT ((INTVAL1 IN (?, ?, ?, ?))) OR NOT ((INTVAL1 IN (?,?,?))))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -6533,7 +6533,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 NOT IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -6550,7 +6550,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 NOT IN (?, ?, ?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -6588,7 +6588,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 IN (?, ?, ?, ?, ?, ?, ?)))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -6611,7 +6611,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (NOT ((INTVAL1 IN (?, ?, ?, ?))) OR NOT ((INTVAL1 IN (?,?,?))))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -6788,7 +6788,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 NOT IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -6804,7 +6804,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 NOT IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -6848,7 +6848,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 IN (?, ?, ?, ?, ?)))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -6879,7 +6879,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 IN (?, ?, ?, ?, ?)))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -6950,7 +6950,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 NOT IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -6966,7 +6966,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 NOT IN (?, ?, ?, ?, ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -7010,7 +7010,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 IN (?, ?, ?, ?, ?)))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -7041,7 +7041,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 IN (?, ?, ?, ?, ?)))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -7232,7 +7232,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? NOT IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))",
                                     sql.remove(0));
             } else {
@@ -7250,7 +7250,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? NOT IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))",
                                     sql.remove(0));
             } else {
@@ -7303,7 +7303,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?)))",
                                     sql.remove(0));
             } else {
@@ -7334,7 +7334,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?)))",
                                     sql.remove(0));
             } else {
@@ -7405,7 +7405,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? NOT IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))",
                                     sql.remove(0));
             } else {
@@ -7423,7 +7423,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? NOT IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))",
                                     sql.remove(0));
             } else {
@@ -7476,7 +7476,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?)))",
                                     sql.remove(0));
             } else {
@@ -7507,7 +7507,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?)))",
                                     sql.remove(0));
             } else {
@@ -7700,7 +7700,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? NOT IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))",
                                     sql.remove(0));
             } else {
@@ -7718,7 +7718,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? NOT IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))",
                                     sql.remove(0));
             } else {
@@ -7771,7 +7771,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?)))",
                                     sql.remove(0));
             } else {
@@ -7802,7 +7802,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?)))",
                                     sql.remove(0));
             } else {
@@ -7873,7 +7873,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? NOT IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))",
                                     sql.remove(0));
             } else {
@@ -7891,7 +7891,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? NOT IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?))",
                                     sql.remove(0));
             } else {
@@ -7944,7 +7944,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?)))",
                                     sql.remove(0));
             } else {
@@ -7975,7 +7975,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 = ?)))",
                                     sql.remove(0));
             } else {
@@ -8171,7 +8171,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? NOT IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 IN (?, ?, ?)))",
                                     sql.remove(0));
             } else {
@@ -8190,7 +8190,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? NOT IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 IN (?, ?, ?)))",
                                     sql.remove(0));
             } else {
@@ -8248,7 +8248,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE NOT ((t1.INTVAL2 IN (?, ?, ?)))))",
                                     sql.remove(0));
             } else {
@@ -8282,7 +8282,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE NOT ((t1.INTVAL2 IN (?, ?, ?)))))",
                                     sql.remove(0));
             } else {
@@ -8356,7 +8356,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? NOT IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 IN (?, ?, ?)))",
                                     sql.remove(0));
             } else {
@@ -8375,7 +8375,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE ? NOT IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.INTVAL2 IN (?, ?, ?)))",
                                     sql.remove(0));
             } else {
@@ -8433,7 +8433,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE NOT ((t1.INTVAL2 IN (?, ?, ?)))))",
                                     sql.remove(0));
             } else {
@@ -8467,7 +8467,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (? IN (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE NOT ((t1.INTVAL2 IN (?, ?, ?)))))",
                                     sql.remove(0));
             } else {
@@ -8676,7 +8676,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 BETWEEN ? AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -8691,7 +8691,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 BETWEEN ? AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -8731,7 +8731,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 BETWEEN ? AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -8754,7 +8754,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 BETWEEN ? AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -8822,7 +8822,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 BETWEEN ? AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -8837,7 +8837,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 BETWEEN ? AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -8877,7 +8877,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 BETWEEN ? AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -8900,7 +8900,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 BETWEEN ? AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -9075,7 +9075,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? BETWEEN INTVAL1 AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -9090,7 +9090,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? BETWEEN INTVAL1 AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -9130,7 +9130,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? BETWEEN INTVAL1 AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -9153,7 +9153,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? BETWEEN INTVAL1 AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -9221,7 +9221,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? BETWEEN INTVAL1 AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -9236,7 +9236,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? BETWEEN INTVAL1 AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -9276,7 +9276,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? BETWEEN INTVAL1 AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -9299,7 +9299,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? BETWEEN INTVAL1 AND ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -9622,7 +9622,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? BETWEEN ? AND 9)", sql.remove(0));
                 } else {
@@ -9642,7 +9642,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? BETWEEN ? AND 9)", sql.remove(0));
                 } else {
@@ -9691,7 +9691,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? BETWEEN ? AND 9)", sql.remove(0));
                 } else {
@@ -9720,7 +9720,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? BETWEEN ? AND 9)", sql.remove(0));
                 } else {
@@ -9934,7 +9934,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 BETWEEN ? AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -9949,7 +9949,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 BETWEEN ? AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -9989,7 +9989,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 BETWEEN ? AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10012,7 +10012,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 BETWEEN ? AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10080,7 +10080,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 BETWEEN ? AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10095,7 +10095,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 BETWEEN ? AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10135,7 +10135,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 BETWEEN ? AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10158,7 +10158,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((INTVAL1 BETWEEN ? AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10333,7 +10333,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((? BETWEEN INTVAL1 AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10348,7 +10348,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((? BETWEEN INTVAL1 AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10388,7 +10388,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((? BETWEEN INTVAL1 AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10411,7 +10411,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((? BETWEEN INTVAL1 AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10479,7 +10479,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((? BETWEEN INTVAL1 AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10494,7 +10494,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((? BETWEEN INTVAL1 AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10534,7 +10534,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((? BETWEEN INTVAL1 AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10557,7 +10557,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((? BETWEEN INTVAL1 AND ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -10881,7 +10881,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((? BETWEEN ? AND 9))", sql.remove(0));
                 } else {
@@ -10901,7 +10901,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((? BETWEEN ? AND 9))", sql.remove(0));
                 } else {
@@ -10951,7 +10951,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((? BETWEEN ? AND 9))", sql.remove(0));
                 } else {
@@ -10980,7 +10980,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE NOT ((? BETWEEN ? AND 9))", sql.remove(0));
                 } else {
@@ -11304,7 +11304,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ('HELLO' IS NULL)", sql.remove(0));
                 } else {
@@ -11350,7 +11350,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ('HELLO' IS NULL)", sql.remove(0));
                 } else {
@@ -11633,7 +11633,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ('HELLO' IS NOT NULL)", sql.remove(0));
                 } else {
@@ -11679,7 +11679,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE ('HELLO' IS NOT NULL)", sql.remove(0));
                 } else {
@@ -11901,7 +11901,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -11973,7 +11973,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE EXISTS (SELECT 1 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?))", sql.remove(0));
                 } else {
@@ -12025,7 +12025,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?))", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -12344,7 +12344,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE  WHEN EXISTS (SELECT 1 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)) THEN 1 ELSE 0 END FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -12417,7 +12417,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)) THEN 1 ELSE 0 END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -12660,7 +12660,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)))",
                                     sql.remove(0));
             } else {
@@ -12683,7 +12683,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)))",
                                     sql.remove(0));
             } else if (isUsingJPA22Feature() || isUsingJPA30Feature()) {
@@ -12765,7 +12765,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT EXISTS (SELECT 1 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?))",
                                         sql.remove(0));
@@ -12801,7 +12801,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)))",
                                     sql.remove(0));
             } else {
@@ -12824,7 +12824,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)))",
                                     sql.remove(0));
             } else if (isUsingJPA22Feature() || isUsingJPA30Feature()) {
@@ -12932,7 +12932,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)))",
                                     sql.remove(0));
             } else {
@@ -12955,7 +12955,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT t0.INTVAL1 FROM OLGH17837ENTITY t0 WHERE NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)))",
                                     sql.remove(0));
             } else {
@@ -13063,7 +13063,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = 'HELLO'))) THEN 1 ELSE 0 END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -13100,7 +13100,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = 'HELLO'))) THEN 1 ELSE 0 END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -13183,7 +13183,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE  WHEN NOT EXISTS (SELECT 1 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?)) THEN 1 ELSE 0 END FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -13229,7 +13229,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?))) THEN 1 ELSE 0 END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -13266,7 +13266,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?))) THEN 1 ELSE 0 END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -13393,7 +13393,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?))) THEN 1 ELSE 0 END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -13430,7 +13430,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+            if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN NOT (EXISTS (SELECT t1.INTVAL2 FROM OLGH17837ENTITY t1 WHERE (t1.STRVAL1 = ?))) THEN 1 ELSE 0 END  FROM OLGH17837ENTITY t0",
                                         sql.remove(0));
@@ -13621,7 +13621,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END)", sql.remove(0));
                 } else {
@@ -13641,7 +13641,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END)", sql.remove(0));
                 } else {
@@ -13674,7 +13674,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END)", sql.remove(0));
                 } else {
@@ -14038,7 +14038,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE  WHEN (INTVAL2 = ?) THEN 6 WHEN (INTVAL2 = ?) THEN 16 ELSE 26 END)",
                                         sql.remove(0));
@@ -14062,7 +14062,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE  WHEN (INTVAL2 = ?) THEN 6 WHEN (INTVAL2 = ?) THEN 16 ELSE 26 END)",
                                         sql.remove(0));
@@ -14134,7 +14134,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE WHEN (INTVAL2 = ?) THEN 6 WHEN (INTVAL2 = ?) THEN 16 ELSE 26 END )",
                                         sql.remove(0));
@@ -14174,7 +14174,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = CASE WHEN (INTVAL2 = ?) THEN 6 WHEN (INTVAL2 = ?) THEN 16 ELSE 26 END )",
                                         sql.remove(0));
@@ -14543,7 +14543,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
                 } else {
@@ -14564,7 +14564,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
                 } else {
@@ -14596,7 +14596,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE INTVAL2 WHEN ? THEN 6 WHEN ? THEN 16 ELSE 26 END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
                 } else {
@@ -14958,7 +14958,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE  WHEN (INTVAL2 = ?) THEN 6 WHEN (INTVAL2 = ?) THEN 16 ELSE 26 END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
                 } else {
@@ -14979,7 +14979,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE  WHEN (INTVAL2 = ?) THEN 6 WHEN (INTVAL2 = ?) THEN 16 ELSE 26 END FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
                 } else {
@@ -15046,7 +15046,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN (INTVAL2 = ?) THEN 6 WHEN (INTVAL2 = ?) THEN 16 ELSE 26 END  FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
                 } else {
@@ -15083,7 +15083,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT CASE WHEN (INTVAL2 = ?) THEN 6 WHEN (INTVAL2 = ?) THEN 16 ELSE 26 END  FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
                 } else {
@@ -15438,7 +15438,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT 1 FROM OLGH17837ENTITY WHERE (? = NULLIF(STRVAL1, ?))", sql.remove(0));
                 } else {
@@ -15484,7 +15484,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT 1 FROM OLGH17837ENTITY WHERE (? = NULLIF(STRVAL1, ?))", sql.remove(0));
                 } else {
@@ -15772,7 +15772,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT 1 FROM OLGH17837ENTITY WHERE (? = NULLIF(?, STRVAL1))", sql.remove(0));
                 } else {
@@ -15818,7 +15818,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT 1 FROM OLGH17837ENTITY WHERE (? = NULLIF(?, STRVAL1))", sql.remove(0));
                 } else {
@@ -16132,7 +16132,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT NULLIF(?, 'WORLD') FROM OLGH17837ENTITY", sql.remove(0));
                 } else {
@@ -16187,7 +16187,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT NULLIF(?, 'WORLD') FROM OLGH17837ENTITY", sql.remove(0));
                 } else {
@@ -16407,7 +16407,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT STRVAL2 FROM OLGH17837ENTITY WHERE (COALESCE(INTVAL1, ?) = INTVAL2)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -16467,7 +16467,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT STRVAL2 FROM OLGH17837ENTITY WHERE (COALESCE(INTVAL1, ?) = INTVAL2)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -16489,7 +16489,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT STRVAL2 FROM OLGH17837ENTITY WHERE (COALESCE(INTVAL1, ?) = INTVAL2)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -16556,7 +16556,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT STRVAL2 FROM OLGH17837ENTITY WHERE (COALESCE(INTVAL1, ?) = INTVAL2)", sql.remove(0));
                 } else {
@@ -16620,7 +16620,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT STRVAL2 FROM OLGH17837ENTITY WHERE (COALESCE(INTVAL1, ?) = INTVAL2)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -16642,7 +16642,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT STRVAL2 FROM OLGH17837ENTITY WHERE (COALESCE(INTVAL1, ?) = INTVAL2)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -16827,7 +16827,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT COALESCE(INTVAL1, ?) FROM OLGH17837ENTITY", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -16884,7 +16884,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT COALESCE(INTVAL1, ?) FROM OLGH17837ENTITY", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -16905,7 +16905,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT COALESCE(INTVAL1, ?) FROM OLGH17837ENTITY", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -16972,7 +16972,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT COALESCE(INTVAL1, ?) FROM OLGH17837ENTITY", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -17029,7 +17029,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT COALESCE(INTVAL1, ?) FROM OLGH17837ENTITY", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -17050,7 +17050,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT COALESCE(INTVAL1, ?) FROM OLGH17837ENTITY", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -17252,7 +17252,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             } finally {
                 sql = SQLCallListener.getAndClearCallList();
                 Assert.assertEquals(1, sql.size());
-                if (isUsingJPA31Feature()) {
+                if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                     if (isDB2Z || isDB2 || isDerby) {
                         // DB2 z throws `DB2 SQL Error: SQLCODE=-206, SQLSTATE=42703` because a "NULL" value is being passed
                         // Derby throws `ERROR 42X01: Syntax error: Encountered "NULL" at line 1, column 50.`
@@ -17340,7 +17340,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             } finally {
                 sql = SQLCallListener.getAndClearCallList();
                 Assert.assertEquals(1, sql.size());
-                if (isUsingJPA31Feature()) {
+                if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                     if (isDB2Z || isDB2 || isDerby) {
                         // DB2 z throws `DB2 SQL Error: SQLCODE=-206, SQLSTATE=42703` because a "NULL" value is being passed
                         // Derby throws `ERROR 42X01: Syntax error: Encountered "NULL" at line 1, column 50.`
@@ -17443,7 +17443,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             } finally {
                 sql = SQLCallListener.getAndClearCallList();
                 Assert.assertEquals(1, sql.size());
-                if (isUsingJPA31Feature()) {
+                if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                     if (isDB2Z || isDB2 || isDerby) {
                         Assert.assertNull(exception);
                         Assert.assertEquals("SELECT STRVAL2 FROM OLGH17837ENTITY WHERE (COALESCE(?, ?, ?, ?, 12) = INTVAL2)", sql.remove(0));
@@ -17531,7 +17531,7 @@ public class TestComparisonLogic extends AbstractTestLogic {
             } finally {
                 sql = SQLCallListener.getAndClearCallList();
                 Assert.assertEquals(1, sql.size());
-                if (isUsingJPA31Feature()) {
+                if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                     if (isDB2Z || isDB2 || isDerby) {
                         Assert.assertNull(exception);
                         Assert.assertEquals("SELECT STRVAL2 FROM OLGH17837ENTITY WHERE (COALESCE(?, ?, ?, ?, 12) = INTVAL2)", sql.remove(0));
