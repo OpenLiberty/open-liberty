@@ -21,6 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import jakarta.enterprise.util.AnnotationLiteral;
 import jakarta.inject.Qualifier;
 
 /**
@@ -32,4 +33,12 @@ import jakarta.inject.Qualifier;
 @Retention(RUNTIME)
 @Target({ FIELD, METHOD, PARAMETER, TYPE })
 public @interface Unrecognized {
+    public static class Literal extends AnnotationLiteral<Unrecognized> implements Unrecognized {
+        private static final long serialVersionUID = 820070466281499464L;
+
+        public static final Unrecognized INSTANCE = new Literal();
+
+        private Literal() {
+        }
+    }
 }

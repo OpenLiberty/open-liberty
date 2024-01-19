@@ -93,4 +93,14 @@ public class ConcurrentCDITest extends FATServletClient {
     public void testInjectManagedScheduledExecutorServiceQualified() throws Exception {
         runTest(server, APP_NAME, testName);
     }
+
+    @Test
+    public void testSelectContextServiceDefaultInstance() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testSelectContextServiceQualified() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
 }

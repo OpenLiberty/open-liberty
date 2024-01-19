@@ -13,21 +13,17 @@
 package io.openliberty.concurrent.internal.cdi;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.wsspi.resource.ResourceFactory;
 
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -38,8 +34,6 @@ import jakarta.enterprise.inject.spi.PassivationCapable;
 
 /**
  * Bean that delegates to the OSGi service registry to obtain ContextService resources.
- *
- * @param <T> type of resource (such as ManagedExecutorService or ContextService)
  */
 public class ContextServiceBean implements Bean<ContextService>, PassivationCapable {
     private final static TraceComponent tc = Tr.register(ContextServiceBean.class);
@@ -50,9 +44,9 @@ public class ContextServiceBean implements Bean<ContextService>, PassivationCapa
     private final Set<Type> beanTypes = Set.of(ContextService.class);
 
     /**
-     * OSGi filter for the resource.
+     * Resource factory that creates the resource.
      */
-    private final String filter;
+    private final ResourceFactory factory;
 
     /**
      * Qualifiers for the injection points for this bean.
@@ -60,13 +54,36 @@ public class ContextServiceBean implements Bean<ContextService>, PassivationCapa
     private final Set<Annotation> qualifiers;
 
     /**
-     * Construct a new Producer/ProducerFactory for this resource.
+     * Construct a new bean for this resource.
      *
-     * @param filter     OSGi filter for the resource.
+     * @param factory        resource factory.
+     * @param qualifierNames names of qualifier annotations for the bean.
+     */
+    ContextServiceBean(ResourceFactory factory, List<String> qualifierNames) throws ClassNotFoundException {
+        this.factory = factory;
+        this.qualifiers = new LinkedHashSet<Annotation>();
+
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+        for (String qualifierClassName : qualifierNames) {
+            Class<?> qualifierClass = loader.loadClass(qualifierClassName);
+            if (!qualifierClass.isInterface())
+                throw new IllegalArgumentException("The " + qualifierClassName + " class is not a valid qualifier class" +
+                                                   " because it is not an annotation."); // TODO NLS
+            qualifiers.add(Annotation.class.cast(Proxy.newProxyInstance(loader,
+                                                                        new Class<?>[] { Annotation.class, qualifierClass },
+                                                                        new QualifierProxy(qualifierClass))));
+        }
+    }
+
+    /**
+     * Construct a new bean for this resource.
+     *
+     * @param factory    resource factory.
      * @param qualifiers qualifiers for the bean.
      */
-    public ContextServiceBean(String filter, Set<Annotation> qualifiers) {
-        this.filter = filter;
+    ContextServiceBean(ResourceFactory factory, Set<Annotation> qualifiers) {
+        this.factory = factory;
         this.qualifiers = qualifiers;
     }
 
@@ -75,22 +92,20 @@ public class ContextServiceBean implements Bean<ContextService>, PassivationCapa
     public ContextService create(CreationalContext<ContextService> cc) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "create", cc, filter, qualifiers);
+            Tr.entry(this, tc, "create", cc, factory, qualifiers);
 
         ContextService instance;
-        Bundle bundle = FrameworkUtil.getBundle(ContextServiceBean.class);
-        BundleContext bundleContext = bundle.getBundleContext();
-        Collection<ServiceReference<ContextService>> refs;
         try {
-            refs = bundleContext.getServiceReferences(ContextService.class, filter);
-        } catch (InvalidSyntaxException x) {
-            throw new IllegalArgumentException(x); // internal error forming the filter?
+            instance = (ContextService) factory.createResource(null);
+        } catch (RuntimeException x) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "create", x);
+            throw x;
+        } catch (Exception x) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "create", x);
+            throw new RuntimeException(x);
         }
-        Iterator<ServiceReference<ContextService>> it = refs.iterator();
-        if (it.hasNext())
-            instance = bundleContext.getService(it.next());
-        else
-            throw new IllegalStateException("The ContextService resource with " + filter + " filter cannot be found or is unavailable."); // TODO NLS
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "create", instance);
@@ -113,7 +128,7 @@ public class ContextServiceBean implements Bean<ContextService>, PassivationCapa
     public String getId() {
         return new StringBuilder(getClass().getName()) //
                         .append(":").append(qualifiers) //
-                        .append(':').append(filter) //
+                        .append(':').append(factory) //
                         .toString();
     }
 
@@ -156,7 +171,7 @@ public class ContextServiceBean implements Bean<ContextService>, PassivationCapa
     @Trivial
     public String toString() {
         return new StringBuilder(getClass().getSimpleName()).append('@').append(Integer.toHexString(hashCode())) //
-                        .append(' ').append(filter) //
+                        .append(' ').append(factory) //
                         .append(" with qualifiers ").append(qualifiers) //
                         .toString();
     }

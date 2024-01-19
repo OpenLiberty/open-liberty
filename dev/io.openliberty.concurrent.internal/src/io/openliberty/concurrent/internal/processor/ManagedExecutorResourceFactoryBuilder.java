@@ -33,9 +33,14 @@ import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
+
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
            property = "creates.objectClass=jakarta.enterprise.concurrent.ManagedExecutorService") //  TODO more types?
@@ -138,11 +143,10 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
         String[] qualifiers = (String[]) execSvcProps.remove("qualifiers");
 
         // Convert qualifier array to list attribute if present
+        List<String> qualifierNames = null;
         if (qualifiers != null && qualifiers.length > 0) {
-            List<String> qualifierList = Arrays.asList(qualifiers);
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(tc, "qualifiers", qualifierList);
-            execSvcProps.put("qualifiers", qualifierList);
+            qualifierNames = Arrays.asList(qualifiers);
+            execSvcProps.put("qualifiers", qualifierNames);
         }
 
         Long hungTaskThreshold = (Long) execSvcProps.remove("hungTaskThreshold");
@@ -226,6 +230,23 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
             Configuration managedExecutorSvcConfig = configAdmin.createFactoryConfiguration("com.ibm.ws.concurrent.managedExecutorService",
                                                                                             concurrencyBundleLocation);
             managedExecutorSvcConfig.update(execSvcProps);
+
+            if (qualifierNames != null) {
+                ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                if (cmd == null)
+                    throw new IllegalStateException(); // should be unreachable
+
+                ServiceReference<QualifiedResourceFactories> ref = concurrencyBundleCtx.getServiceReference(QualifiedResourceFactories.class);
+
+                if (ref == null)
+                    throw new UnsupportedOperationException("The " + cmd.getName() + " application cannot specify the " +
+                                                            qualifierNames + " qualifiers on the " +
+                                                            jndiName + " " + ManagedExecutorDefinition.class.getSimpleName() +
+                                                            " because the " + "CDI" + " feature is not enabled."); // TODO NLS
+
+                QualifiedResourceFactories qrf = concurrencyBundleCtx.getService(ref);
+                qrf.add(cmd.getName(), QualifiedResourceFactories.Type.ManagedExecutorService, qualifierNames, factory);
+            }
         } catch (Exception x) {
             factory.destroy();
             throw x;

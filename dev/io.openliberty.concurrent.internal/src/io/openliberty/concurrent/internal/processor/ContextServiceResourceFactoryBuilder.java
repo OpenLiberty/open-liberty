@@ -38,11 +38,14 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
@@ -218,11 +221,10 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         String[] qualifiers = (String[]) contextSvcProps.remove("qualifiers");
 
         // Convert qualifier array to list attribute if present
+        List<String> qualifierNames = null;
         if (qualifiers != null && qualifiers.length > 0) {
-            List<String> qualifierList = Arrays.asList(qualifiers);
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(tc, "qualifiers", qualifierList);
-            contextSvcProps.put("qualifiers", qualifierList);
+            qualifierNames = Arrays.asList(qualifiers);
+            contextSvcProps.put("qualifiers", qualifierNames);
         }
 
         if (cleared == null)
@@ -367,6 +369,23 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
 
             Configuration contextServiceConfig = configAdmin.createFactoryConfiguration("com.ibm.ws.context.service", bundleLocation);
             contextServiceConfig.update(contextSvcProps);
+
+            if (qualifierNames != null) {
+                ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                if (cmd == null)
+                    throw new IllegalStateException(); // should be unreachable
+
+                ServiceReference<QualifiedResourceFactories> ref = bundleContext.getServiceReference(QualifiedResourceFactories.class);
+
+                if (ref == null)
+                    throw new UnsupportedOperationException("The " + cmd.getName() + " application cannot specify the " +
+                                                            qualifierNames + " qualifiers on the " +
+                                                            jndiName + " " + ContextServiceDefinition.class.getSimpleName() +
+                                                            " because the " + "CDI" + " feature is not enabled."); // TODO NLS
+
+                QualifiedResourceFactories qrf = bundleContext.getService(ref);
+                qrf.add(cmd.getName(), QualifiedResourceFactories.Type.ContextService, qualifierNames, factory);
+            }
         } catch (Exception x) {
             factory.destroy();
             throw x;

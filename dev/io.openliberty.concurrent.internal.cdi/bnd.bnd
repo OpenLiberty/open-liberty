@@ -46,9 +46,11 @@ instrument.classesExcludes: io/openliberty/concurrent/internal/cdi/resources/*.c
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.cdi.interfaces.jakarta;version=latest, \
   com.ibm.ws.concurrent,\
+  com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.context,\
   com.ibm.ws.javaee.version,\
   com.ibm.ws.kernel.service,\
+  com.ibm.ws.resource,\
   com.ibm.ws.threading,\
   io.openliberty.concurrent.internal,\
   io.openliberty.jakarta.annotation.2.1,\

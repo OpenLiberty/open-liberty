@@ -37,6 +37,8 @@ import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -99,10 +101,6 @@ public class ConcurrentCDIServlet extends HttpServlet {
     @Inject
     @WithoutAppContext
     ManagedScheduledExecutorService scheduledExecutorWithoutAppContext;
-
-    @Inject
-    @Unrecognized
-    ContextService unknownContextService;
 
     @Inject
     @WithAppContext
@@ -171,10 +169,10 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
-     * Attempt to inject a ContextService with an unrecognized qualifier.
+     * Attempt to obtain a ContextService with an unrecognized qualifier.
      */
     public void testContextServiceWithUnrecognizedQualifier() throws Exception {
-        assertEquals(null, unknownContextService);
+        assertEquals(null, CDI.current().select(ContextService.class, Unrecognized.Literal.INSTANCE));
     }
 
     /**
@@ -305,4 +303,52 @@ public class ConcurrentCDIServlet extends HttpServlet {
         Object result2 = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertEquals("value2", result2);
     }
+
+    /**
+     * Use CDI.current() to select the default instance of ContextService and use it.
+     */
+    public void testSelectContextServiceDefaultInstance() throws Exception {
+        ContextService contextSvc = CDI.current().select(ContextService.class, Default.Literal.INSTANCE).get();
+
+        assertNotNull(contextSvc);
+
+        // Use the ContextService to contextualize a task that require the application's context (to look up a java:comp name)
+        Callable<?> task = contextSvc.contextualCallable(() -> InitialContext.doLookup("java:comp/env/entry2"));
+
+        Future<?> future = unmanagedThreads.submit(task);
+
+        Object found = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value2", found);
+    }
+
+    /**
+     * Use CDI.current() to select qualified instances of ContextService and verify that the behavior of each
+     * matches the configuration that the qualifier points to.
+     */
+    public void testSelectContextServiceQualified() throws Exception {
+        ContextService appContext = CDI.current().select(ContextService.class, WithAppContext.Literal.INSTANCE).get();
+
+        assertNotNull(appContext);
+
+        Callable<?> task1 = appContext.contextualCallable(() -> InitialContext.doLookup("java:comp/env/entry2"));
+
+        Future<?> future1 = unmanagedThreads.submit(task1);
+
+        Object found1 = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value2", found1);
+
+        ContextService clearAppContext = CDI.current().select(ContextService.class, WithoutAppContext.Literal.INSTANCE).get();
+
+        assertNotNull(clearAppContext);
+
+        Callable<?> task2 = clearAppContext.contextualCallable(() -> InitialContext.doLookup("java:comp/env/entry2"));
+
+        try {
+            Object found2 = task2.call();
+            fail("Application context should be cleared, preventing java:comp lookup. Instead found " + found2);
+        } catch (NamingException x) {
+            // expected
+        }
+    }
+
 }

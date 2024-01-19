@@ -13,21 +13,17 @@
 package io.openliberty.concurrent.internal.cdi;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.wsspi.resource.ResourceFactory;
 
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -48,9 +44,9 @@ public class ManagedExecutorBean implements Bean<ManagedExecutorService>, Passiv
     private final Set<Type> beanTypes = Set.of(ManagedExecutorService.class);
 
     /**
-     * OSGi filter for the resource.
+     * Resource factory that creates the resource.
      */
-    private final String filter;
+    private final ResourceFactory factory;
 
     /**
      * Qualifiers for the injection points for this bean.
@@ -58,13 +54,36 @@ public class ManagedExecutorBean implements Bean<ManagedExecutorService>, Passiv
     private final Set<Annotation> qualifiers;
 
     /**
-     * Construct a new Producer/ProducerFactory for this resource.
+     * Construct a new bean for this resource.
      *
-     * @param filter     OSGi filter for the resource.
+     * @param factory        resource factory.
+     * @param qualifierNames names of qualifier annotations for the bean.
+     */
+    ManagedExecutorBean(ResourceFactory factory, List<String> qualifierNames) throws ClassNotFoundException {
+        this.factory = factory;
+        this.qualifiers = new LinkedHashSet<Annotation>();
+
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+
+        for (String qualifierClassName : qualifierNames) {
+            Class<?> qualifierClass = loader.loadClass(qualifierClassName);
+            if (!qualifierClass.isInterface())
+                throw new IllegalArgumentException("The " + qualifierClassName + " class is not a valid qualifier class" +
+                                                   " because it is not an annotation."); // TODO NLS
+            qualifiers.add(Annotation.class.cast(Proxy.newProxyInstance(loader,
+                                                                        new Class<?>[] { Annotation.class, qualifierClass },
+                                                                        new QualifierProxy(qualifierClass))));
+        }
+    }
+
+    /**
+     * Construct a new bean for this resource.
+     *
+     * @param factory    resource factory.
      * @param qualifiers qualifiers for the bean.
      */
-    public ManagedExecutorBean(String filter, Set<Annotation> qualifiers) {
-        this.filter = filter;
+    ManagedExecutorBean(ResourceFactory factory, Set<Annotation> qualifiers) {
+        this.factory = factory;
         this.qualifiers = qualifiers;
     }
 
@@ -73,22 +92,20 @@ public class ManagedExecutorBean implements Bean<ManagedExecutorService>, Passiv
     public ManagedExecutorService create(CreationalContext<ManagedExecutorService> cc) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "create", cc, filter, qualifiers);
+            Tr.entry(this, tc, "create", cc, factory, qualifiers);
 
         ManagedExecutorService instance;
-        Bundle bundle = FrameworkUtil.getBundle(ManagedExecutorBean.class);
-        BundleContext bundleContext = bundle.getBundleContext();
-        Collection<ServiceReference<ManagedExecutorService>> refs;
         try {
-            refs = bundleContext.getServiceReferences(ManagedExecutorService.class, filter);
-        } catch (InvalidSyntaxException x) {
-            throw new IllegalArgumentException(x); // internal error forming the filter?
+            instance = (ManagedExecutorService) factory.createResource(null);
+        } catch (RuntimeException x) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "create", x);
+            throw x;
+        } catch (Exception x) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "create", x);
+            throw new RuntimeException(x);
         }
-        Iterator<ServiceReference<ManagedExecutorService>> it = refs.iterator();
-        if (it.hasNext())
-            instance = bundleContext.getService(it.next());
-        else
-            throw new IllegalStateException("The ManagedExecutorService resource with " + filter + " filter cannot be found or is unavailable."); // TODO NLS
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "create", instance);
@@ -111,7 +128,7 @@ public class ManagedExecutorBean implements Bean<ManagedExecutorService>, Passiv
     public String getId() {
         return new StringBuilder(getClass().getName()) //
                         .append(":").append(qualifiers) //
-                        .append(':').append(filter) //
+                        .append(':').append(factory) //
                         .toString();
     }
 
@@ -154,7 +171,7 @@ public class ManagedExecutorBean implements Bean<ManagedExecutorService>, Passiv
     @Trivial
     public String toString() {
         return new StringBuilder(getClass().getSimpleName()).append('@').append(Integer.toHexString(hashCode())) //
-                        .append(' ').append(filter) //
+                        .append(' ').append(factory) //
                         .append(" with qualifiers ").append(qualifiers) //
                         .toString();
     }
