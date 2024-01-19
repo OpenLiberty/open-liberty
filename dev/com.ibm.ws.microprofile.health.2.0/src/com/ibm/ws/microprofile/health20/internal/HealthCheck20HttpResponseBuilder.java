@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponse.State;
 
+import com.ibm.websphere.jsonsupport.JSON;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.health.internal.HealthCheckHttpResponseBuilder;
@@ -28,6 +29,10 @@ import com.ibm.ws.microprofile.health.internal.HealthCheckHttpResponseBuilder;
 public class HealthCheck20HttpResponseBuilder extends HealthCheckHttpResponseBuilder {
 
     private static final TraceComponent tc = Tr.register(HealthCheck20HttpResponseBuilder.class);
+
+    public HealthCheck20HttpResponseBuilder(JSON json) {
+        super(json);
+    }
 
     @Override
     public void setHttpResponse(HttpServletResponse httpResponse) {

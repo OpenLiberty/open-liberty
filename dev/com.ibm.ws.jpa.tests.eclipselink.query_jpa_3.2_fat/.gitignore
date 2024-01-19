@@ -1,0 +1,5 @@
+fat/src/com/ibm/ws/jpa/tests/eclipselink/query/tests
+fat/src/com/ibm/ws/jpa31/tests/eclipselink/query/tests
+test-applications/
+publish/servers
+

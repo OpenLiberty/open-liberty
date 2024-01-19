@@ -311,7 +311,7 @@ class ConfigurationStore implements Runnable, CheckpointHook {
         } finally {
             saveMonitor.unlock();
         }
-        if (currentSaveTask == null && !checkpointPhase.restored()) {
+        if (currentSaveTask == null && checkpointPhase.restored()) {
             // no need to save if there is no save task and we have restored
             return;
         }

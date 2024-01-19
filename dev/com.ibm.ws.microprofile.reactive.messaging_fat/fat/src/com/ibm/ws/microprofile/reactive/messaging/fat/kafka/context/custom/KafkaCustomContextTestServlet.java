@@ -70,13 +70,13 @@ public class KafkaCustomContextTestServlet extends FATServlet {
             assertThat(appName, not(isEmptyOrNullString()));
 
             // Send two messages
-            testWriter.sendMessage("abc");
-            testWriter.sendMessage("def");
+            testWriter.sendMessage("ghi");
+            testWriter.sendMessage("jkl");
 
             // Check correct context was propagated
             List<String> received = testReader.assertReadMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
-            assertThat(received, contains("abc-" + appName + "-true",
-                                          "def-" + appName + "-true"));
+            assertThat(received, contains("ghi-" + appName + "-true",
+                                          "jkl-" + appName + "-true"));
         }
     }
 
@@ -89,32 +89,32 @@ public class KafkaCustomContextTestServlet extends FATServlet {
             assertThat(appName, not(isEmptyOrNullString()));
 
             // Send two messages
-            testWriter.sendMessage("abc");
-            testWriter.sendMessage("def");
+            testWriter.sendMessage("mno");
+            testWriter.sendMessage("pqr");
 
             // Check correct context was propagated
             List<String> received = testReader.assertReadMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
-            assertThat(received, contains("abc-noapp-false",
-                                          "def-noapp-false"));
+            assertThat(received, contains("mno-noapp-false",
+                                          "pqr-noapp-false"));
         }
     }
 
     @Test
     public void testPropagateAppMetadataOnly() throws Exception {
-        try (KafkaWriter<String, String> testWriter = client.writerFor(KakfaCustomContextTestBean.PROPAGATE_NONE_IN);
-                        KafkaReader<String, String> testReader = client.readerFor(KakfaCustomContextTestBean.PROPAGATE_NONE_OUT)) {
+        try (KafkaWriter<String, String> testWriter = client.writerFor(KakfaCustomContextTestBean.PROPAGATE_APP_IN);
+                        KafkaReader<String, String> testReader = client.readerFor(KakfaCustomContextTestBean.PROPAGATE_APP_OUT)) {
 
             // Check our injection of the app name has worked
             assertThat(appName, not(isEmptyOrNullString()));
 
             // Send two messages
-            testWriter.sendMessage("abc");
-            testWriter.sendMessage("def");
+            testWriter.sendMessage("stu");
+            testWriter.sendMessage("vwx");
 
             // Check correct context was propagated
             List<String> received = testReader.assertReadMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
-            assertThat(received, contains("abc-noapp-false",
-                                          "def-noapp-false"));
+            assertThat(received, contains("stu-" + appName + "-true",
+                                          "vwx-" + appName + "-true"));
         }
     }
 

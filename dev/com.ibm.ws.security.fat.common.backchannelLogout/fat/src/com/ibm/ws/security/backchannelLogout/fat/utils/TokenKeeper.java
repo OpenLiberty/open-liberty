@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -170,7 +170,11 @@ public class TokenKeeper {
 
     private String getAccessTokenFromResponse(Object response) throws Exception {
 
-        String accessToken = validationTools.getTokenFromResponse(response, Constants.ACCESS_TOKEN_KEY);
+        String accessToken = null;
+        String rawAccessToken = validationTools.getTokenFromResponse(response, Constants.ACCESS_TOKEN_KEY);
+        if (rawAccessToken != null) {
+            accessToken = rawAccessToken.split("}")[0];
+        }
         Log.info(thisClass, "getAccessToken", "access_token:  " + accessToken);
         return accessToken;
 

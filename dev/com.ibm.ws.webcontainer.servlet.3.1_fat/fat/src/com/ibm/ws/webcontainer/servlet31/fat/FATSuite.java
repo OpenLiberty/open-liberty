@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -86,7 +86,7 @@ public class FATSuite {
 
     static {
         // EE10 requires Java 11.
-        // EE11 requires Java 21
+        // EE11 requires Java 17
         // If we only specify EE10/EE11 for lite mode it will cause no tests to run which causes an error.
         // If we are running on Java 8 have EE9 be the lite mode test to run.
         if (isWindows && !FATRunner.FAT_TEST_LOCALRUN) {
@@ -94,13 +94,13 @@ public class FATSuite {
             // Skip EE9 on the windows platform when not running locally.
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                             .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_21))
+                            .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                             .andWith(FeatureReplacementAction.EE11_FEATURES());
         } else {
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                             .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                             .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                            .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_21))
+                            .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                             .andWith(FeatureReplacementAction.EE11_FEATURES());
         }
     }

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -10,10 +10,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 21
-javac.target: 21
+javac.source: 17
+javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Bundle-Name: Open Liberty Pages 4.0 Factories
 Bundle-SymbolicName: io.openliberty.pages.4.0.internal.factories
@@ -89,7 +89,6 @@ instrument.classesExcludes: org/apache/**/*.class
    io.openliberty.jakarta.pages.4.0;version=latest,\
    io.openliberty.jakarta.servlet.6.0;version=latest,\
    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-   com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
    com.ibm.ws.container.service;version=latest,\
    com.ibm.ws.logging.core,\
    com.ibm.wsspi.org.osgi.service.component.annotations, \

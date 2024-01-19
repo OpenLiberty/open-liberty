@@ -194,12 +194,12 @@ io.smallrye.config:smallrye-config-core:2.5.1
 io.smallrye.config:smallrye-config-core:3.5.2
 io.smallrye.config:smallrye-config:2.5.1
 io.smallrye.config:smallrye-config:3.5.2
-io.smallrye.reactive:mutiny-reactive-streams-operators-jakarta:2.5.1
+io.smallrye.reactive:mutiny-reactive-streams-operators-jakarta:2.5.3
 io.smallrye.reactive:mutiny-zero-flow-adapters:1.0.0
-io.smallrye.reactive:mutiny:2.5.1
+io.smallrye.reactive:mutiny:2.5.3
 io.smallrye.reactive:smallrye-reactive-converter-api:3.0.1
-io.smallrye.reactive:smallrye-reactive-messaging-api:4.11.0
-io.smallrye.reactive:smallrye-reactive-messaging-provider:4.11.0
+io.smallrye.reactive:smallrye-reactive-messaging-api:4.15.0
+io.smallrye.reactive:smallrye-reactive-messaging-provider:4.15.0
 io.smallrye:jandex:3.0.5
 io.smallrye:smallrye-graphql-api:1.0.26
 io.smallrye:smallrye-graphql-cdi:1.0.26
@@ -299,7 +299,7 @@ javax.servlet:javax.servlet-api:3.1.0
 javax.validation:validation-api:1.1.0.Final
 javax.websocket:javax.websocket-client-api:1.0
 javax.ws.rs:javax.ws.rs-api:2.0
-javax.ws.rs:javax.ws.rs-api:2.1-m09
+javax.ws.rs:javax.ws.rs-api:2.1.1
 javax.xml.bind:jaxb-api:2.2.12-b140109.1041
 javax.xml.bind:jaxb-api:2.2.7
 javax.xml.bind:jaxb-api:2.3.0

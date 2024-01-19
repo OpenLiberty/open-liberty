@@ -23,7 +23,7 @@ dependencies {
 }
 
 task copyBundles {
-  dependsOn assemble
+  dependsOn jar
   enabled project.file('test-bundles').exists()
   doLast {
     new File(project.buildDir, 'buildfiles').eachLine { String line ->

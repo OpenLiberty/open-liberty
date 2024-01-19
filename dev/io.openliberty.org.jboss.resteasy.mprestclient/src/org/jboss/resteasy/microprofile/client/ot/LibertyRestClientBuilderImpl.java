@@ -166,7 +166,7 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
         BeanManager beanManager = getBeanManager();
         if (beanManager != null) {
             builderDelegate.getProviderFactory()
-                    .setInjectorFactory(new CdiInjectorFactory(beanManager));
+                    .setInjectorFactory(new CdiInjectorFactory((jakarta.enterprise.inject.spi.BeanManager) beanManager));
         }
         configurationWrapper = new ConfigurationWrapper(builderDelegate.getConfiguration());
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -89,7 +89,7 @@ public class RebindConfigUpdateTest extends FATServletClient {
                                                                                                                     "com.ibm.ws.ejbcontainer.remote.config.fat.server.ssl")) //
                     .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.config.fat.server",
                                                                                 "com.ibm.ws.ejbcontainer.remote.config.fat.server.ssl")) //
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_21).forServers("com.ibm.ws.ejbcontainer.remote.config.fat.server",
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17).forServers("com.ibm.ws.ejbcontainer.remote.config.fat.server",
                                                                                                                                                                "com.ibm.ws.ejbcontainer.remote.config.fat.server.ssl")) //
                     .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.config.fat.server",
                                                                                                "com.ibm.ws.ejbcontainer.remote.config.fat.server.ssl")) //

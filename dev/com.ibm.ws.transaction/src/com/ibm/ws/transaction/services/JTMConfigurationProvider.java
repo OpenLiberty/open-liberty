@@ -1077,4 +1077,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         }
         return success;
     }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
+     */
+    @Override
+    public boolean peerRecoveryPrecedence() {
+        return (Boolean) _props.get("peerRecoveryPrecedence");
+    }
 }

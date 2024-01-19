@@ -1,0 +1,16 @@
+<server>
+    <featureManager>
+        <feature>enterpriseBeansLite-4.0</feature>
+        <feature>servlet-6.1</feature>
+        <feature>persistence-3.2</feature>
+        <feature>componenttest-2.0</feature>
+    </featureManager>
+
+    <!-- This configuration is part of the testing for JPAComponent configuration -->
+    <jpa>
+        <defaultProperties>
+            <property name="javax.persistence.lock.timeout" value="12345"/>
+            <property name="jakarta.persistence.lock.timeout" value="12345"/>
+        </defaultProperties>
+    </jpa>
+</server>

@@ -29,9 +29,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import javax.transaction.xa.XAResource;
 
 import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
+import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
 
@@ -45,7 +47,7 @@ public class FailoverServlet extends FATServlet {
     private DataSource ds;
 
     private enum TestType {
-        STARTUP, RUNTIME, DUPLICATE_RESTART, DUPLICATE_RUNTIME, HALT, CONNECT, LEASE
+        STARTUP, RUNTIME, DUPLICATE_RESTART, DUPLICATE_RUNTIME, HALT, CONNECT, LEASE, AGGRESSIVE
     };
 
     /**
@@ -148,6 +150,18 @@ public class FailoverServlet extends FATServlet {
         System.out.println("FAILOVERSERVLET: drive setupForLeaseGet");
         setupTestParameters(request, response, TestType.LEASE, 0, 773, 1); // 773 interpreted as lease get
         System.out.println("FAILOVERSERVLET: setupForLeaseGet complete");
+    }
+
+    public void setupForAggressivePeerRecovery1(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForAggressivePeerRecovery1");
+        setupTestParameters(request, response, TestType.AGGRESSIVE, 0, 0, 1);
+        System.out.println("FAILOVERSERVLET: setupForAggressivePeerRecovery1 complete");
+    }
+
+    public void setupForAggressivePeerRecovery2(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive setupForAggressivePeerRecovery2");
+        setupTestParameters(request, response, TestType.AGGRESSIVE, 0, 0, 2);
+        System.out.println("FAILOVERSERVLET: setupForAggressivePeerRecovery2 complete");
     }
 
     private void setupTestParameters(HttpServletRequest request, HttpServletResponse response, TestType testType,
@@ -550,6 +564,29 @@ public class FailoverServlet extends FATServlet {
             }
         }
 
+    }
+
+    public void setupRec007(HttpServletRequest request,
+                            HttpServletResponse response) throws Exception {
+        final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
+        XAResourceImpl.clear();
+        final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
+        final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
+
+        try {
+            tm.begin();
+            final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
+            tm.enlist(xaRes1, recoveryId1);
+
+            final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
+            tm.enlist(xaRes2, recoveryId2);
+
+            tm.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static String toHexString(byte[] byteSource, int bytes) {

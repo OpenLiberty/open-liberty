@@ -144,7 +144,7 @@
 				<exec executable="sh">
 					<arg value="-c" />
 					<arg value="ps -ef | grep &quot;apacheds-2.0.0-M15&quot; | grep &quot;apacheds.controls&quot; | grep &quot;org.apache.directory.server.UberjarMain&quot; 
-  	  	  	| grep -v grep | awk '{ print $2 }' | xargs kill -9" />
+  	  	  	| grep -v grep | awk '{ print $2 }' | xargs --no-run-if-empty kill -9" />
 				</exec>
 			</then>
 		</iff>
@@ -433,7 +433,7 @@
 				<exec executable="sh">
 					<arg value="-c" />
 					<arg value="ps -ef | grep &quot;apacheds-2.0.0-M15&quot; | grep &quot;apacheds.controls&quot; | grep &quot;org.apache.directory.server.UberjarMain&quot; 
-      	  	| grep -v grep | awk '{ print $2 }' | xargs kill -9" />
+      	  	| grep -v grep | awk '{ print $2 }' | xargs --no-run-if-empty kill -9" />
 				</exec>
 			</then>
 		</iff>

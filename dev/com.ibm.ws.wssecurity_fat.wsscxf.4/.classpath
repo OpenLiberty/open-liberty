@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-bundles/com.ibm.ws.wssecurity.cbh/src"/>
-	<classpathentry kind="src" path="test-bundles/com.ibm.ws.wssecurity.cbhwss4j/src"/>
-        <classpathentry kind="src" path="test-applications/callerclient/src"/>
+	<classpathentry kind="src" path="test-applications/callerclient/src"/>
 	<classpathentry kind="src" path="test-applications/callertoken/src"/>
 	<classpathentry kind="src" path="test-applications/cxfclient/src"/>
 	<classpathentry kind="src" path="test-applications/untsslclient/src"/>

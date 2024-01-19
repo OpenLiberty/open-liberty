@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,9 +38,10 @@ import componenttest.app.FATServlet;
 public class NpTimerConfigRetryServlet extends FATServlet {
     private static final String CLASS_NAME = NpTimerConfigRetryServlet.class.getName();
     private static final Logger svLogger = Logger.getLogger(CLASS_NAME);
+    private static final boolean isMacOSX = System.getProperty("os.name", "unknown").toLowerCase().indexOf("mac os x") >= 0;
 
     private static final int TIMER_DELAY = 2500;
-    private static final int LONG_TIMER_DELAY = 85000;
+    private static final int LONG_TIMER_DELAY = isMacOSX ? 150000 : 5000;
     private static final long NO_CANCEL_DELAY = 0;
 
     @EJB
@@ -77,8 +78,8 @@ public class NpTimerConfigRetryServlet extends FATServlet {
      */
     private boolean verifyRetryIntervalAcceptable(long timestampForFirstAttempt, long timestampForSecondAttempt, long minimumDifference) {
         long difference = timestampForSecondAttempt - timestampForFirstAttempt;
-        // allow longer timer delay for longer minimum differences
-        long timer_delay = (minimumDifference < 2 * LONG_TIMER_DELAY) ? TIMER_DELAY : LONG_TIMER_DELAY;
+        // allow longer timer delay for longer minimum differences; especially on Mac OS X
+        long timer_delay = (minimumDifference <= 2 * LONG_TIMER_DELAY) ? TIMER_DELAY : LONG_TIMER_DELAY;
         // 500 ms fudge factor for Windows time math and preInvoke delays
         long maxDifference = minimumDifference + timer_delay + 500;
         minimumDifference = minimumDifference - 500;

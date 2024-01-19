@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.security.fat.common;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.security.Provider;
 import java.security.Security;
 import java.util.HashMap;
@@ -29,9 +30,13 @@ import javax.naming.directory.InitialDirContext;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.RepeatActions.EEVersion;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.LDAPUtils;
+import componenttest.topology.utils.LibertyServerUtils;
 
 public class ShibbolethHelpers {
     private final static Class<?> thisClass = ShibbolethHelpers.class;
@@ -480,8 +485,21 @@ public class ShibbolethHelpers {
 
     public void chooseIdpWarVersion(TestServer idpServer) throws Exception {
 
+        EEVersion eeVersion = null;
+        String eeVersionString = "";
+
+        String currentRepeatAction = RepeatTestFilter.getRepeatActionsAsString();
+        if (currentRepeatAction.contains(JakartaEEAction.EE9_ACTION_ID)) {
+            eeVersion = EEVersion.EE9;
+        }
+        if (currentRepeatAction.contains(JakartaEEAction.EE10_ACTION_ID)) {
+            eeVersion = EEVersion.EE10;
+        }
+
         String thisMethod = "chooseIdpWarVersion";
         LibertyServer theServer = idpServer.getServer();
+
+        File transformedWarFile = new java.io.File(LibertyServerUtils.makeJavaCompatible(theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war"));
 
         // copy the appropriate version of the idp.war file
         if (System.getProperty("java.specification.version").matches("1\\.[789]")) {
@@ -489,7 +507,14 @@ public class ShibbolethHelpers {
             LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/idp-apps/idp-war-3.3.1.war");
         } else {
             Log.info(thisClass, thisMethod, "################## Copying the 4.1.0 version of Shibboleth ##################");
-            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war");
+            if (eeVersion != null) {
+                eeVersionString = "." + eeVersion.toString();
+                transformedWarFile = new java.io.File(LibertyServerUtils.makeJavaCompatible(theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war" + eeVersionString));
+            }
+            if (!transformedWarFile.exists() && eeVersion != null) {
+                JakartaEEAction.transformApp(Paths.get(theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war"), Paths.get(theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war" + eeVersionString), eeVersion);
+            }
+            LibertyFileManager.copyFileIntoLiberty(theServer.getMachine(), theServer.getServerRoot() + "/test-apps", "idp.war", theServer.getServerRoot() + "/idp-apps/idp-war-4.1.0.war" + eeVersionString);
         }
 
     }

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,7 +36,9 @@ import javax.resource.spi.endpoint.MessageEndpointFactory;
 import javax.resource.spi.work.WorkManager;
 import javax.transaction.xa.XAResource;
 
+import com.ibm.ws.ejbcontainer.fat.rar.activationSpec.ActivationSpecAuthImpl;
 import com.ibm.ws.ejbcontainer.fat.rar.activationSpec.ActivationSpecImpl;
+import com.ibm.ws.ejbcontainer.fat.rar.activationSpec.JMSActivationSpecImpl;
 import com.ibm.ws.ejbcontainer.fat.rar.message.FVTMessageProviderImpl;
 import com.ibm.ws.ejbcontainer.fat.rar.message.MessageEndpointFactoryWrapper;
 
@@ -253,6 +255,16 @@ public class FVTAdapterImpl implements ResourceAdapter, Serializable {
         if (messageFactories.get(endpointName) != null) {
             svLogger.info("The end point factory with the name " + endpointName + "already exists, mapping it under " + endpointName + "+");
             endpointName += "+";
+        }
+
+        if (spec instanceof ActivationSpecAuthImpl) {
+            String user = ((ActivationSpecAuthImpl) spec).getUserName();
+            String password = ((ActivationSpecAuthImpl) spec).getPassword();
+            svLogger.info("JCA activation authData for endpoint named " + endpointName + " is user=" + user + ", password=" + password);
+        } else if (spec instanceof JMSActivationSpecImpl) {
+            String user = ((JMSActivationSpecImpl) spec).getUserName();
+            String password = ((JMSActivationSpecImpl) spec).getPassword();
+            svLogger.info("JMS activation authData for endpoint named " + endpointName + " is user=" + user + ", password=" + password);
         }
 
         // Add the factory to messagefactories.

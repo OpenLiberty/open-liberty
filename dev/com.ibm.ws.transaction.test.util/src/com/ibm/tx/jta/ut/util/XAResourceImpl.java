@@ -48,7 +48,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     
     // Set when dumped. If a operation occurs which changes the state after this has happened
     protected static boolean dumped;
-
+    
     protected static ConcurrentHashMap<String, XAResourceData> _resources = new ConcurrentHashMap<String, XAResourceData>();
 
     protected static StateKeeper stateKeeper;
@@ -139,6 +139,7 @@ public class XAResourceImpl implements XAResource, Serializable {
     public static final int SLEEP_ROLLBACK = -4000;
     public static final int RETURN_TRUE = -5000;
     public static final int RETURN_FALSE = -6000;
+    public static final int SLEEP_RECOVER = -7000;
 
     public static final int NOT_STARTED = 1;
     public static final int COMMITTED = 2;
@@ -911,18 +912,43 @@ public class XAResourceImpl implements XAResource, Serializable {
         if (recoverAction != XAResource.XA_OK) {
             final int repeatCount = self().getRecoverRepeatCount();
             System.out.println("recoverRepeatCount = "+repeatCount+", recoverAction = "+actionFormatter(recoverAction));
-            self().setRecoverRepeatCount(repeatCount - 1);
-            if (repeatCount > 0) {
-                switch (recoverAction) {
-                    case RUNTIME_EXCEPTION:
-                        throw new RuntimeException();
-
-                    case DIE:
-                        killDoomedServers(true);
-
-                    default:
-                        throw new XAException(recoverAction);
+            if(recoverAction == SLEEP_RECOVER) {
+                // Check property
+                final String sleepflagStr = java.security.AccessController.doPrivileged(new PrivilegedAction<String>() {
+                    @Override
+                    public String run() {
+                        return System.getProperty("com.ibm.tx.sleepInRecover");
+                    }
+                });
+                boolean sleepFlag = false;
+                if (sleepflagStr != null) {
+                    sleepFlag =  Boolean.parseBoolean(sleepflagStr);
                 }
+                System.out.println("sleepFlag is " + sleepFlag);
+                if(sleepFlag) {
+                	try {
+                		System.out.println("Sleeping in RECOVER");
+                		Thread.sleep(120 * 1000);
+                	} catch (InterruptedException e) {
+                		// TODO Auto-generated catch block
+                		e.printStackTrace();
+                	}            	
+                }
+            } else {
+            	self().setRecoverRepeatCount(repeatCount - 1);
+            	if (repeatCount > 0) {
+            		switch (recoverAction) {
+            		    case RUNTIME_EXCEPTION:
+            		    	throw new RuntimeException();
+
+            		    case DIE:
+            		    	killDoomedServers(true);
+            		    	break;
+            		    	
+            		    default:
+            		    	throw new XAException(recoverAction);
+            		}
+            	}
             }
         }
 
