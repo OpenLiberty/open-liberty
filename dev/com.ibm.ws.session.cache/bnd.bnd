@@ -62,5 +62,6 @@ Service-Component=com.ibm.ws.session.cache;\
 	com.ibm.ws.session.store;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.runtime.update;version=latest,\
-	io.openliberty.jcache.internal;version=latest
+	io.openliberty.jcache.internal;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest
 

@@ -25,3 +25,4 @@ IBM-API-Package: \
   com.ibm.websphere.security
 kind=ga
 edition=core
+WLP-InstantOn-Enabled: true; type:=beta
