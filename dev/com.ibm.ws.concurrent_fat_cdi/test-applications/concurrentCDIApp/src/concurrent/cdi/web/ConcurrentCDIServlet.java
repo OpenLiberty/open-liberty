@@ -24,6 +24,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,6 +38,8 @@ import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
@@ -68,6 +71,14 @@ import javax.naming.NamingException;
 @ManagedScheduledExecutorDefinition(name = "java:global/concurrent/scheduled-executor-without-app-context",
                                     qualifiers = WithoutAppContext.class,
                                     context = "java:global/concurrent/without-app-context")
+@ManagedThreadFactoryDefinition(name = "java:global/concurrent/thread-factory-with-app-context",
+                                qualifiers = WithAppContext.class,
+                                context = "java:global/concurrent/with-app-context",
+                                priority = 4)
+@ManagedThreadFactoryDefinition(name = "java:global/concurrent/thread-factory-without-app-context",
+                                qualifiers = WithoutAppContext.class,
+                                context = "java:global/concurrent/without-app-context",
+                                priority = 6)
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class ConcurrentCDIServlet extends HttpServlet {
@@ -87,6 +98,9 @@ public class ConcurrentCDIServlet extends HttpServlet {
     ManagedScheduledExecutorService defaultManagedScheduledExecutor;
 
     @Inject
+    ManagedThreadFactory defaultManagedThreadFactory;
+
+    @Inject
     @WithAppContext
     ManagedExecutorService executorWithAppContext;
 
@@ -101,6 +115,14 @@ public class ConcurrentCDIServlet extends HttpServlet {
     @Inject
     @WithoutAppContext
     ManagedScheduledExecutorService scheduledExecutorWithoutAppContext;
+
+    @Inject
+    @WithAppContext
+    ManagedThreadFactory threadFactoryWithAppContext;
+
+    @Inject
+    @WithoutAppContext
+    ManagedThreadFactory threadFactoryWithoutAppContext;
 
     @Inject
     @WithAppContext
@@ -305,6 +327,85 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
+     * Inject an instance of the default ManagedThreadFactory resource and use it.
+     */
+    public void testInjectManagedThreadFactoryDefaultInstance() throws Exception {
+        assertNotNull(defaultManagedThreadFactory);
+
+        CompletableFuture<?> future = new CompletableFuture<>();
+
+        // Requires the application's context (to look up a java:comp name)
+        Runnable task = () -> {
+            try {
+                future.complete(InitialContext.doLookup("java:comp/env/entry2"));
+            } catch (Throwable x) {
+                future.completeExceptionally(x);
+            }
+        };
+
+        Thread thread = defaultManagedThreadFactory.newThread(task);
+        thread.start();
+
+        assertEquals(Thread.NORM_PRIORITY, thread.getPriority());
+
+        Object result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value2", result);
+    }
+
+    /**
+     * Inject qualified instances of ManagedThreadFactory and verify that the behavior of each
+     * matches the configuration that the qualifier points to.
+     */
+    public void testInjectManagedThreadFactoryQualified() throws Exception {
+        assertNotNull(threadFactoryWithAppContext);
+        assertNotNull(threadFactoryWithoutAppContext);
+
+        CompletableFuture<?> future1 = new CompletableFuture<>();
+        CompletableFuture<?> future2 = new CompletableFuture<>();
+
+        // Requires the application's context (to look up a java:comp name)
+        Runnable task1 = () -> {
+            try {
+                future1.complete(InitialContext.doLookup("java:comp/env/entry2"));
+            } catch (Throwable x) {
+                future1.completeExceptionally(x);
+            }
+        };
+
+        // Requires the application's context (to look up a java:comp name).
+        // Expect an exception because this context should be cleared.
+        Runnable task2 = () -> {
+            try {
+                future2.complete(InitialContext.doLookup("java:comp/env/entry2"));
+            } catch (Throwable x) {
+                future2.completeExceptionally(x);
+            }
+        };
+
+        Thread thread1 = threadFactoryWithAppContext.newThread(task1);
+        Thread thread2 = threadFactoryWithoutAppContext.newThread(task2);
+
+        thread1.start();
+        thread2.start();
+
+        assertEquals(4, thread1.getPriority());
+        assertEquals(6, thread2.getPriority());
+
+        Object result1 = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value2", result1);
+
+        try {
+            Object result2 = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Should not be abl to look up java:comp name because application context should be cleared. Found: " + result2);
+        } catch (ExecutionException x) {
+            if (x.getCause() instanceof NamingException)
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
      * Use CDI.current() to select the default instance of ContextService and use it.
      */
     public void testSelectContextServiceDefaultInstance() throws Exception {
@@ -351,4 +452,31 @@ public class ConcurrentCDIServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Use CDI.current() to select an instance of the default ManagedThreadFactory instance and use it.
+     */
+    public void testSelectManagedThreadFactoryDefaultInstance() throws Exception {
+        ManagedThreadFactory threadFactory = CDI.current().select(ManagedThreadFactory.class, Default.Literal.INSTANCE).get();
+
+        assertNotNull(threadFactory);
+
+        CompletableFuture<?> future = new CompletableFuture<>();
+
+        // Requires the application's context (to look up a java:comp name)
+        Runnable task = () -> {
+            try {
+                future.complete(InitialContext.doLookup("java:comp/env/entry2"));
+            } catch (Throwable x) {
+                future.completeExceptionally(new AssertionError("A failure occurred on the new thread.", x));
+            }
+        };
+
+        Thread thread = threadFactory.newThread(task);
+        thread.start();
+
+        assertEquals(Thread.NORM_PRIORITY, thread.getPriority());
+
+        Object result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value2", result);
+    }
 }
