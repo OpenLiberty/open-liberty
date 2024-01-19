@@ -50,6 +50,9 @@ import com.ibm.ws.session.store.common.BackedHashMap;
 import com.ibm.ws.session.store.common.BackedSession;
 import com.ibm.wsspi.session.IStore;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * Hash map backed by JCache.
  * A CacheHashMap exists per application that uses HTTP sessions.
@@ -103,13 +106,13 @@ public class CacheHashMap extends BackedHashMap {
     /**
      * Per-application session attribute cache.
      */
-    private Cache<String, byte[]> sessionAttributeCache; // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
+    private volatile Cache<String, byte[]> sessionAttributeCache; // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
 
     /**
      * Per-application cache that contains meta information about the session but not the session attribute values.
      */
     @SuppressWarnings("rawtypes")
-    private Cache<String, ArrayList> sessionMetaCache;
+    private volatile Cache<String, ArrayList> sessionMetaCache;
 
     /**
      * Trace identifier for the session attribute cache
@@ -132,10 +135,7 @@ public class CacheHashMap extends BackedHashMap {
         // we must keep the app data tables per thread (rather than per session)
         appDataTablesPerThread = (!_smc.writeAllProperties() && !_smc.getEnableTimeBasedWrite());
 
-        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-            cacheInit();
-            return null;
-        });
+        CheckpointPhase.onRestore(() -> AccessController.doPrivileged((PrivilegedAction<Void>) () -> { cacheInit(); return null; }));
     }
 
     /**
@@ -143,7 +143,7 @@ public class CacheHashMap extends BackedHashMap {
      * Only invoke this method from the CacheHashMap constructor, within a doPrivileged block.
      */
     @FFDCIgnore(CacheException.class)
-    private void cacheInit() {
+    private synchronized void cacheInit() {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         // Attempt lazy initialization if necessary
