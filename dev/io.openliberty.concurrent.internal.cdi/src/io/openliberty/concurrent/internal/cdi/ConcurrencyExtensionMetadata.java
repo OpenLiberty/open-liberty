@@ -73,6 +73,14 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
     protected volatile ResourceFactory defaultManagedScheduledExecutorFactory;
 
     /**
+     * ResourceFactory for the default ManagedThreadFactory instance: java:comp/DefaultManagedThreadFactory.
+     */
+    @Reference(target = "(&(id=DefaultManagedThreadFactory)(component.name=com.ibm.ws.concurrent.internal.ManagedThreadFactoryService))",
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected volatile ResourceFactory defaultManagedThreadFactoryFactory;
+
+    /**
      * Jakarta EE version.
      */
     public static Version eeVersion;

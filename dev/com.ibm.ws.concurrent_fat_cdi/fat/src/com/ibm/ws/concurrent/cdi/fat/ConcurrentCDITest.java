@@ -95,12 +95,27 @@ public class ConcurrentCDITest extends FATServletClient {
     }
 
     @Test
+    public void testInjectManagedThreadFactoryDefaultInstance() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testInjectManagedThreadFactoryQualified() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
     public void testSelectContextServiceDefaultInstance() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 
     @Test
     public void testSelectContextServiceQualified() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testSelectManagedThreadFactoryDefaultInstance() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 }
