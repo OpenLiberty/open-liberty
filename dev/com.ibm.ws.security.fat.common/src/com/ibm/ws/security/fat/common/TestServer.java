@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,14 +21,17 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
 import org.junit.rules.ExternalResource;
 
+import com.ibm.websphere.simplicity.LocalFile;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
@@ -754,9 +757,40 @@ public class TestServer extends ExternalResource {
             // ignore ssl message - runtime retries and can proceed (sometimes) when it can't tests will fail when they don't get the correct response
             server.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0801E_UNABLE_TO_INIT_SSL));
 
+            shibbolehtBackup(server);
+
             server.stopServer(ignoredServerExceptions);
         }
         unInstallCallbackHandler(callback, callbackFeature);
+    }
+
+    /**
+     * backup shibboleth config
+     */
+    private void shibbolehtBackup(LibertyServer server) throws Exception {
+        final String method = "shibbolehtBackup";
+        Log.entering(thisClass, method, server.getServerName());
+
+        if (server.getServerName().contains("shibboleth")) {
+            Log.info(thisClass, method, "Need to back up shibboleth-idp directory");
+        } else {
+            Log.info(thisClass, method, "There is no shibboleth-idp directory to backup");
+            return;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
+        Date d = new Date(System.currentTimeMillis());
+
+        String logDirectoryName = "";
+        logDirectoryName = server.getPathToAutoFVTOutputServersFolder() + "/" + server.getServerNameWithRepeatAction().replace("shibboleth", "shibboleth-idp") + "-" + sdf.format(d);
+        LocalFile logFolder = new LocalFile(logDirectoryName);
+        String shibbolethDir = new File(".").getAbsoluteFile().getCanonicalPath().replace("\\", "/") + "/shibboleth-idp";
+        RemoteFile serverFolder = new RemoteFile(server.getMachine(), shibbolethDir);
+
+        // Copy the log files: try to move them instead if we can
+        server.recursivelyCopyDirectory(serverFolder, logFolder, false, false, true);
+
+        Log.exiting(thisClass, method);
     }
 
     /**
