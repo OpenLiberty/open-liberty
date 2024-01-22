@@ -107,12 +107,7 @@ public class FileLogger {
     public static final boolean enabled;
 
     static {
-        String enabledValue = AccessController.doPrivileged( new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                return getSystemProperty(ENABLED_PROPERTY_NAME);
-            }
-        });
+        String enabledValue = getSystemProperty(ENABLED_PROPERTY_NAME);
         
         enabled = ( (enabledValue != null) && enabledValue.equalsIgnoreCase("true") );
 
