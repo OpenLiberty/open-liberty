@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2020, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -11,23 +11,18 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= \
- jar:${fileuri;${repo;org.apache.felix:org.apache.felix.scr;2.2.6;EXACT}}!/META-INF/MANIFEST.MF,\
+ jar:${fileuri;${repo;org.apache.felix:org.apache.felix.scr;2.2.10;EXACT}}!/META-INF/MANIFEST.MF,\
  bnd.overrides
-
-instrument.disabled: true
 
 -includeresource: \
    OSGI-INF=resources/OSGI-INF, \
-   @${repo;org.apache.felix:org.apache.felix.scr;2.2.6;EXACT}!/!META-INF/maven/*,\
+   @${repo;org.apache.felix:org.apache.felix.scr;2.2.10;EXACT}!/!META-INF/maven/*,\
    @${repo;org.osgi:org.osgi.util.function;1.1.0;EXACT}!/!(OSGI-OPT|META-INF)/*,\
    @${repo;org.osgi:org.osgi.util.promise;1.1.1;EXACT}!/!(OSGI-OPT|META-INF)/*,\
-   @${repo;org.osgi:org.osgi.service.component;1.5.0;EXACT}!/!(OSGI-OPT|META-INF)/*,\
-   org/apache=${bin}/org/apache
+   @${repo;org.osgi:org.osgi.service.component;1.5.0;EXACT}!/!(OSGI-OPT|META-INF)/*
 
 -buildpath: \
-	org.apache.felix:org.apache.felix.scr;strategy=exact;version=2.2.6,\
+	org.apache.felix:org.apache.felix.scr;strategy=exact;version=2.2.10,\
 	org.osgi:org.osgi.util.function;strategy=exact;version=1.1.0,\
 	org.osgi:org.osgi.util.promise;strategy=exact;version=1.1.1,\
-	org.osgi:org.osgi.service.component;strategy=exact;version=1.5.0,\
-	org.osgi:org.osgi.namespace.extender;strategy=exact;version=1.0.1,\
-	com.ibm.websphere.org.osgi.core;version=latest
+	org.osgi:org.osgi.service.component;strategy=exact;version=1.5.0
