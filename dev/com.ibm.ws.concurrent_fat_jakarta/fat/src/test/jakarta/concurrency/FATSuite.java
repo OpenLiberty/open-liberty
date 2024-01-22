@@ -21,7 +21,6 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                Concurrency31Test.class,
                 ConcurrencyTest.class,
                 ConcurrencyJSPTest.class,
                 ConcurrencyErrorTest.class,

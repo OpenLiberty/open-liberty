@@ -5,7 +5,6 @@
 	<classpathentry kind="src" path="test-applications/ConcurrencyTestEJB/src"/>
 	<classpathentry kind="src" path="test-applications/ConcurrencyTestWeb/src"/>
 	<classpathentry kind="src" path="test-applications/ConcurrencyTestError/src"/>
-	<classpathentry kind="src" path="test-applications/Concurrency31TestWeb/src"/>
 	<classpathentry kind="src" path="test-libraries/LocationUtils/src"/>
 	<classpathentry kind="src" path="test-libraries/PriorityContext/src"/>
 	<classpathentry kind="src" path="test-libraries/StatUtils/src"/>
