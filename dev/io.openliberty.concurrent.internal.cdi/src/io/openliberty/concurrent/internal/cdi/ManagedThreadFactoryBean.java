@@ -26,7 +26,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.InjectionPoint;
@@ -96,6 +96,8 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
 
         ManagedThreadFactory instance;
         try {
+            // TODO send in signal to MTF to defer context capture until newThread?
+            // Or, send in context that we already obtained?
             instance = (ManagedThreadFactory) factory.createResource(null);
         } catch (RuntimeException x) {
             if (trace && tc.isEntryEnabled())
@@ -149,7 +151,7 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
 
     @Override
     public Class<? extends Annotation> getScope() {
-        return RequestScoped.class;
+        return ApplicationScoped.class;
     }
 
     @Override
