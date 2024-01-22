@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -231,6 +231,31 @@ public class FailoverServlet extends FATServlet {
             // didn't exist
         }
 
+        // UserTransaction Commit
+        con.setAutoCommit(false);
+
+        System.out.println("FAILOVERSERVLET: commit changes to database");
+        con.commit();
+
+    }
+
+    public void dropStaleRecoveryLogTables(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive dropStaleRecoveryLogTables");
+
+        Connection con = getConnection();
+        // Set up statement to use for table delete
+        Statement stmt = con.createStatement();
+        System.out.println("FAILOVERSERVLET: drop dropStaleRecoveryLogTables");
+        try {
+            stmt.executeUpdate("drop table WAS_PARTNER_LOGcloudstale");
+        } catch (SQLException x) {
+            // didn't exist
+        }
+        try {
+            stmt.executeUpdate("drop table WAS_TRAN_LOGcloudstale");
+        } catch (SQLException x) {
+            // didn't exist
+        }
         // UserTransaction Commit
         con.setAutoCommit(false);
 

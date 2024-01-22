@@ -256,6 +256,8 @@ public class FailoverTestLease extends FATServletClient {
         Log.info(this.getClass(), method, "call startserver");
         FATUtils.startServers(runner, retriableCloudServer);
 
+        Log.info(this.getClass(), method, "dropStaleRecoveryLogTables returned: " + sb);
+
         sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
 
         Log.info(this.getClass(), method, "insertStaleLease returned: " + sb);
@@ -387,22 +389,29 @@ public class FailoverTestLease extends FATServletClient {
     @Test
     public void testLeaseDeletion() throws Exception {
         final String method = "testLeaseDeletion";
-        StringBuilder sb = null;
+        if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
+            StringBuilder sb = null;
 
-        FATUtils.startServers(runner, retriableCloudServer);
+            FATUtils.startServers(runner, retriableCloudServer);
 
-        Log.info(this.getClass(), method, "set timeout");
-        retriableCloudServer.setServerStartTimeout(30000);
+            Log.info(this.getClass(), method, "set timeout");
+            retriableCloudServer.setServerStartTimeout(30000);
 
-        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
+            // Tidy up any pre-existing tables
+            sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropStaleRecoveryLogTables");
 
-        Log.info(this.getClass(), method, "insertStaleLease returned: " + sb);
+            // Insert stale lease
+            sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
 
-        // Wait for string that shows we attempted to peer recover "cloudstale"
-        assertNotNull("peer recovery failed", retriableCloudServer
-                        .waitForStringInTrace("Peer server cloudstale has missing recovery log SQL tables", LOG_SEARCH_TIMEOUT));
+            Log.info(this.getClass(), method, "insertStaleLease returned: " + sb);
 
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
+            // Wait for string that shows we attempted to peer recover "cloudstale"
+            assertNotNull("peer recovery failed", retriableCloudServer
+                            .waitForStringInTrace("Peer server cloudstale has missing recovery log SQL tables", LOG_SEARCH_TIMEOUT));
+
+            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
+        }
+        Log.info(this.getClass(), method, "test complete");
     }
 
     /**
