@@ -47,14 +47,14 @@ Import-Package: \
         *
 
 Export-Package: \
-        io.smallrye.config.*;version="3.3.0"
+        io.smallrye.config.*;version="3.5.2"
 
 
 -buildpath: \
   io.openliberty.io.smallrye.common2;version=latest, \
-  io.smallrye.config:smallrye-config;version=3.3.0;strategy=exact, \
-  io.smallrye.config:smallrye-config-common;version=3.3.0;strategy=exact, \
-  io.smallrye.config:smallrye-config-core;version=3.3.0;strategy=exact, \
+  io.smallrye.config:smallrye-config;version=3.5.2;strategy=exact, \
+  io.smallrye.config:smallrye-config-common;version=3.5.2;strategy=exact, \
+  io.smallrye.config:smallrye-config-core;version=3.5.2;strategy=exact, \
   io.openliberty.jakarta.cdi.4.0;version=latest, \
   io.openliberty.jakarta.annotation.2.1;version=latest, \
   io.openliberty.org.eclipse.microprofile.config.3.1;version=latest, \
