@@ -45,6 +45,7 @@ import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnow
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.util.ReferenceCountUtil;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
@@ -284,10 +285,11 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             @Override
             protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
                 // If this handler is hit then no upgrade has been attempted and the client is just talking HTTP 1.1.
+                ctx.pipeline().addBefore("chunkLoggingHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                ctx.pipeline().addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, "objectAggregator",
+                                        new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
                 ctx.pipeline().remove(HttpServerUpgradeHandler.class);
-                ctx.pipeline().addBefore("chunkWriteHandler", "objectAggregator", new LibertyHttpObjectAggregator(maxContentLength));
-                ctx.pipeline().addBefore("objectAggregator", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
-                ctx.fireChannelRead(msg);
+                ctx.fireChannelRead(ReferenceCountUtil.retain(msg, 1));
                 // Remove unused handlers
                 ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
             }
