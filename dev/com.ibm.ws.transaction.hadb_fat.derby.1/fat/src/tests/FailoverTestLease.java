@@ -256,8 +256,6 @@ public class FailoverTestLease extends FATServletClient {
         Log.info(this.getClass(), method, "call startserver");
         FATUtils.startServers(runner, retriableCloudServer);
 
-        Log.info(this.getClass(), method, "dropStaleRecoveryLogTables returned: " + sb);
-
         sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
 
         Log.info(this.getClass(), method, "insertStaleLease returned: " + sb);
@@ -399,10 +397,10 @@ public class FailoverTestLease extends FATServletClient {
 
             // Tidy up any pre-existing tables
             sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropStaleRecoveryLogTables");
+            Log.info(this.getClass(), method, "dropStaleRecoveryLogTables returned: " + sb);
 
             // Insert stale lease
             sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
-
             Log.info(this.getClass(), method, "insertStaleLease returned: " + sb);
 
             // Wait for string that shows we attempted to peer recover "cloudstale"
