@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -494,6 +494,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         builder.setAudience((audience != null) ? audience : "AudienceNotInIdToken");
 
         builder.setIssuedAtToNow(); // required
+        builder.setExpirationTimeMinutesIntheFuture(2); // required
         builder.setGeneratedJwtId(); // will ensure a unique jti for each test
 
         JSONObject events = new JSONObject();
