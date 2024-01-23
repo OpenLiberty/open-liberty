@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,7 +36,7 @@ public class TCKResultsWriter {
      *
      * @param resultInfo TCK Results metadata
      */
-    public static void preparePublicationFile(TCKResultsInfo resultInfo) {
+    public static void preparePublicationFile(TCKResultsInfo resultInfo, String repeat) {
         String javaMajorVersion = resultInfo.getJavaMajorVersion();
         String javaVersion = resultInfo.getJavaVersion();
         String openLibertyVersion = resultInfo.getOpenLibertyVersion();
@@ -74,7 +74,7 @@ public class TCKResultsWriter {
             specURL = "https://jakarta.ee/specifications/" + specName + "/" + specVersion;
             tckURL = "https://download.eclipse.org/ee4j/" + specName + "/jakartaee10/promoted/eftl/" + specName + "-tck-" + specVersion + ".zip"; //just a placeholder, needs to be manually updated
         }
-        String filename = openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + "-TCKResults.adoc";
+        String filename = openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + "-TCKResults" + repeat + ".adoc";
         Path outputPath = Paths.get("results", filename);
         File outputFile = outputPath.toFile();
         String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osName, osVersion, tckURL, tckSHA1, tckSHA256);
@@ -94,7 +94,10 @@ public class TCKResultsWriter {
             }
             output.write(adocContent);
             for (TestSuiteResult result : xmlParser.getResults()) {
-                output.write(result.toString());
+                if (result.toString().contains(repeat)) {
+                    String newResult = result.toString().replace(repeat, "");
+                    output.write(newResult);
+                }
             }
             output.write("----");
 

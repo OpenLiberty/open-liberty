@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -228,7 +228,7 @@ public class TCKRunner {
         if (TCKUtilities.useArtifactory()) {
             Properties wrapperProperties = TCKUtilities.updateWrapperPropertiesFile(wrapperPropertiesFile, TCKUtilities.getArtifactoryServer());
 
-            // Pre-download wrapper jar and set up a temporary maven home directory (if not already created
+            // Pre-download wrapper jar and set up a temporary maven home directory (if not already created)
             this.artifactoryAuthenticator = new ArtifactoryAuthenticator();
             TCKUtilities.downloadMvnWrapperJar(tckRunnerDir, wrapperProperties, this.artifactoryAuthenticator);
             this.mavenUserHome = TCKUtilities.getTemporaryMavenHomeDir();
@@ -258,7 +258,8 @@ public class TCKRunner {
         List<String> dependencyOutput = runDependencyCmd();
         TCKJarInfo tckJarInfo = TCKUtilities.getTCKJarInfo(this.type, dependencyOutput);
         TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server, tckJarInfo);
-        TCKResultsWriter.preparePublicationFile(resultsInfo);
+        String repeat = RepeatTestFilter.getRepeatActionsAsString();
+        TCKResultsWriter.preparePublicationFile(resultsInfo, repeat);
     }
 
     /**
