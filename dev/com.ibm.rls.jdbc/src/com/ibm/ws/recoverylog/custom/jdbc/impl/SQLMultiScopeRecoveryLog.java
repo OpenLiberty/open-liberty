@@ -4694,7 +4694,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#claimPeerRecoveryLogs()
      */
     @Override
-    public boolean claimPeerRecoveryLogs() {
+    public boolean claimPeerRecoveryLogs() throws LogsUnderlyingTablesMissingException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "claimPeerRecoveryLogs", this);
 
@@ -4747,10 +4747,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Check whether the underlying table has been deleted");
                 if (isTableDeleted(sqlex)) {
-                    // Slightly clunky, but prevents retries in this case
-                    PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException("Underlying table is missing", null);
-                    nonTransientException = ple;
-                    currentSqlEx = null;
+                    // The underlying table has been deleted, throw an exception
+                    LogsUnderlyingTablesMissingException lutme = new LogsUnderlyingTablesMissingException("Underlying table is missing", null);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "claimPeerRecoveryLogs", lutme);
+                    throw lutme;
                 }
             }
             if (currentSqlEx != null) {

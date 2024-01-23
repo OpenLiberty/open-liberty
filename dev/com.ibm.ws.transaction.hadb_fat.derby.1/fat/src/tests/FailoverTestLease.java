@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -379,6 +379,44 @@ public class FailoverTestLease extends FATServletClient {
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
     }
 
+    /**
+     * Mimic situation where a server's logs have been deleted but a lease log entry remains.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testLeaseDeletion() throws Exception {
+        final String method = "testLeaseDeletion";
+        if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
+            StringBuilder sb = null;
+
+            FATUtils.startServers(runner, retriableCloudServer);
+
+            Log.info(this.getClass(), method, "set timeout");
+            retriableCloudServer.setServerStartTimeout(30000);
+
+            // Tidy up any pre-existing tables
+            sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropStaleRecoveryLogTables");
+            Log.info(this.getClass(), method, "dropStaleRecoveryLogTables returned: " + sb);
+
+            // Insert stale lease
+            sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
+            Log.info(this.getClass(), method, "insertStaleLease returned: " + sb);
+
+            // Wait for string that shows we attempted to peer recover "cloudstale"
+            assertNotNull("peer recovery failed", retriableCloudServer
+                            .waitForStringInTrace("Peer server cloudstale has missing recovery log SQL tables", LOG_SEARCH_TIMEOUT));
+
+            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
+        }
+        Log.info(this.getClass(), method, "test complete");
+    }
+
+    /**
+     * Test aggressive takeover of recovery logs by a home server
+     *
+     * @throws Exception
+     */
     @Test
     public void testAggressiveTakeover1() throws Exception {
         final String method = "testAggressiveTakeover1";
@@ -438,6 +476,11 @@ public class FailoverTestLease extends FATServletClient {
         Log.info(this.getClass(), method, "test complete");
     }
 
+    /**
+     * Test aggressive takeover of recovery logs by a home server. Take over at different point in server2's processing.
+     *
+     * @throws Exception
+     */
     @Test
     public void testAggressiveTakeover2() throws Exception {
         final String method = "testAggressiveTakeover2";
