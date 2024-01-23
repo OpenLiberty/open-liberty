@@ -23,7 +23,7 @@
   <transaction
     backendURL="http://localhost:${bvt.prop.HTTP_senary}"
     leaseLength="2m"
-    leaseCheckInterval="1d"
+    leaseCheckInterval="3h"
     clientInactivityTimeout="15m"
     heuristicRetryInterval="10"
     heuristicRetryLimit="10"
