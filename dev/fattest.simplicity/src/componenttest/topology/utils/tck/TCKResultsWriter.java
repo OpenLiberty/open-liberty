@@ -94,7 +94,9 @@ public class TCKResultsWriter {
             }
             output.write(adocContent);
             for (TestSuiteResult result : xmlParser.getResults()) {
+                // Checking if the result is for the correct repeat (avoiding adding wrong repeat results to wrong TCK report repeat files)
                 if (result.toString().contains(repeat)) {
+                    // Removing repeat ID from the test results
                     String newResult = result.toString().replace(repeat, "");
                     output.write(newResult);
                 }
