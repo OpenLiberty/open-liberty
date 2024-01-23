@@ -331,4 +331,51 @@ public class Servlet61AddAndSetHeaderTest {
             }
         }
     }
+
+    @Test
+    public void test_Request_GetDateAndIntHeaders() throws Exception {
+        LOG.info("====== <test_Request_GetDateAndIntHeaders> ======");
+
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/TestResponseHeaders";
+        HttpGet getMethod = new HttpGet(url);
+
+        final String DATE_2022 = "Fri, 30 Dec 2022 19:05:51 GMT";
+        final String DATE_2023 = "Sat, 30 Dec 2023 19:05:51 GMT";
+        final String DATE_2024 = "Tue, 09 Jan 2024 00:31:55 GMT";
+
+
+        getMethod.addHeader("runTest", "testRequestGetDateAndIntHeaders");
+
+        //send same request header with multiple values
+        getMethod.addHeader("testInHeader" , "61");
+        getMethod.addHeader("testInHeader" , "60");
+        getMethod.addHeader("testInHeader" , "50");
+
+        getMethod.addHeader("testDateHeader" , DATE_2022);
+        getMethod.addHeader("testDateHeader" , DATE_2024);
+
+        getMethod.addHeader("If-Modified-Since" , DATE_2023);
+        getMethod.addHeader("If-Modified-Since" , DATE_2024);
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text: \n[" + responseText + "]");
+
+                Header[] headers = response.getHeaders();
+                for (Header header : headers) {
+                    LOG.info("Found Header: [" + header + "]");
+                }
+
+                String value = response.getHeader("requestInHeader").getValue();
+                assertTrue("Expecting requestIntHeader is [61]. Found [" + value + "]", value.equals("61"));
+
+                value = response.getHeader("requestDateHeader").getValue();
+                assertTrue("Expecting requestDateHeader is ["+ DATE_2022 + "]. Found [" + value + "]", value.equals(DATE_2022));
+
+                value = response.getHeader("requestIfModifiedSinceHeader").getValue();
+                assertTrue("Expecting requestIfModifiedSinceHeader is ["+ DATE_2023 + "]. Found [" + value + "]", value.equals(DATE_2023));
+            }
+        }
+    }
 }
