@@ -33,6 +33,7 @@ Export-Package: \
 
 Import-Package: \
     com.ibm.websphere.security, \
+    com.ibm.ws.genericbnf, \
     *
 
 instrument.disabled: true

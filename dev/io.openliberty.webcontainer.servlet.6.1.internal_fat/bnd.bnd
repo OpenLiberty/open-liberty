@@ -15,7 +15,8 @@ src: \
     test-applications/AddAndSetHeaderTest.war/src,\
     test-applications/CharSetEncodingTest.jar/src,\
     test-applications/CharSetEncodingTest.war/src,\
-    test-applications/HTTPResponseCodesTest.war/src
+    test-applications/HTTPResponseCodesTest.war/src,\
+    test-applications/ResponseSendRedirectTest.war/src
 
 fat.project: true
 
