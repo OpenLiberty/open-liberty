@@ -15,25 +15,25 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/ConcurrencyRestTestApp/src,\
-	test-applications/ConcurrencyTestEJB/src,\
-	test-applications/ConcurrencyTestWeb/src,\
-	test-applications/ConcurrencyTestError/src,\
-	test-applications/ConcurrencyJSPTestApp/src,\
-	test-libraries/LocationUtils/src,\
-	test-libraries/PriorityContext/src,\
-	test-libraries/StatUtils/src
+	test-applications/Concurrency31TestWeb/src
 
-javac.source: 11
-javac.target: 11
+javac.source: 17
+javac.target: 17
 
-fat.minimum.java.level: 11
+fat.minimum.java.level: 17
 fat.project: true
+
+# Include com.ibm.ws.concurrent_fat_jakarta for test-library/* classes
+# Avoid importing FATSuite and test classes from com.ibm.ws.concurrent_fat_jakarta
+Import-Package:\
+    !test.jakarta.concurrency,\
+    *
 
 -buildpath: \
 	com.ibm.ws.componenttest.2.0;version=latest,\
+	com.ibm.ws.concurrent_fat_jakarta;version=latest,\
 	io.openliberty.jakarta.annotation.2.0;version=latest,\
-	io.openliberty.jakarta.concurrency.3.0;version=latest,\
+	io.openliberty.jakarta.concurrency.3.1;version=latest,\
 	io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
 	io.openliberty.jakarta.restfulWS.3.0;version=latest,\
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
