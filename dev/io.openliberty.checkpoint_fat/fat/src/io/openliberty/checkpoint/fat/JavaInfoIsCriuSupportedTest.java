@@ -14,6 +14,7 @@ package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -63,7 +64,9 @@ public class JavaInfoIsCriuSupportedTest extends FATServletClient {
             server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, true, false, null));
             ProgramOutput output = server.startServer(getTestMethodNameOnly(testName) + ".log");
             returnCode = output.getReturnCode();
-            assertEquals("Return code 70 expected", 70, returnCode);
+            // return code 70 is returned when the JVM doesn't support CRIU at all
+            // return code 71 is returned for Semeru when the criu dependency is not installed properly
+            assertTrue("Return code 70 or 71 expected", returnCode == 70 || returnCode == 71);
         }
     }
 
