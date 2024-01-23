@@ -115,6 +115,7 @@ import componenttest.custom.junit.runner.LogPolice;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
+import componenttest.rules.repeater.JakartaEE11Action;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
 import componenttest.topology.utils.FileUtils;
@@ -3063,7 +3064,8 @@ public class LibertyServer implements LogMonitorClient {
      * @throws Exception              if the stop operation fails or there are warnings/errors found in server
      *                                    logs that were not in the list of ignored warnings/errors.
      */
-    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, boolean skipArchives, List<String> failuresRegExps, String... ignoredFailuresRegExps) throws Exception {
+    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, boolean skipArchives, List<String> failuresRegExps,
+                                    String... ignoredFailuresRegExps) throws Exception {
         ProgramOutput output = null;
         boolean commandPortEnabled = true;
         final String method = "stopServer";
@@ -3227,7 +3229,7 @@ public class LibertyServer implements LogMonitorClient {
      * Checks server logs for any lines containing errors or warnings that
      * do not match any regular expressions provided in regIgnore.
      *
-     * @param  failuresRegExps A list of reg expressions corresponding to warnings or errors that should be treated as test failures.
+     * @param  failuresRegExps        A list of reg expressions corresponding to warnings or errors that should be treated as test failures.
      * @param  ignoredFailuresRegExps A list of regex strings for errors/warnings that
      *                                    may be safely ignored.
      * @return                        A list of lines containing errors/warnings from server logs
@@ -7180,10 +7182,19 @@ public class LibertyServer implements LogMonitorClient {
         fixedIgnoreErrorsList.add("CWWKG0011W");
     }
 
-    public boolean isJava2SecurityEnabled() {
+    public boolean isJava2SecurityEnabled() throws Exception {
         boolean globalEnabled = GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY;
         if (!globalEnabled)
             return false;
+
+        // EE 11 which doesn't support Java security manager can run with Java 17.  As such we need to return false even if we are running
+        // with Java security enabled in the build.
+        Set<String> features = getServerConfiguration().getFeatureManager().getFeatures();
+        for (String feature : features) {
+            if (JakartaEE11Action.EE11_ONLY_FEATURE_SET.contains(feature)) {
+                return false;
+            }
+        }
 
         // Allow servers to opt-out of j2sec by setting websphere.java.security.exempt=true in their ${server.config.dir}/bootstrap.properties
         boolean isJava2SecExempt = "true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt"));
