@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020, 2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -23,19 +23,21 @@ package io.openliberty.microprofile.health30.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonBuilderFactory;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponse.Status;
 
-import com.ibm.websphere.jsonsupport.JSON;
-import com.ibm.websphere.jsonsupport.JSONMarshallException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
@@ -46,12 +48,11 @@ public class HealthCheck30HttpResponseBuilder {
     private static final TraceComponent tc = Tr.register(HealthCheck30HttpResponseBuilder.class);
 
     protected Status overallStatus = Status.UP;
-    protected final ArrayList<Map<String, Object>> checks = new ArrayList<Map<String, Object>>();
+    protected final ArrayList<JsonObject> checks = new ArrayList<JsonObject>();
 
-    private final JSON json;
+    private static final JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(null);
 
-    public HealthCheck30HttpResponseBuilder(JSON json) {
-        this.json = json;
+    public HealthCheck30HttpResponseBuilder() {
     }
 
     public void addResponses(Set<HealthCheckResponse> hcResponseSet) {
@@ -66,16 +67,23 @@ public class HealthCheck30HttpResponseBuilder {
 
     public void setHttpResponse(HttpServletResponse httpResponse) {
         httpResponse.setHeader(HealthCheckConstants.HTTP_HEADER_CONTENT_TYPE, HealthCheckConstants.MEDIA_TYPE_APPLICATION_JSON);
-        HashMap<String, Object> payload = new HashMap<String, Object>();
 
         // Set the HTTP Response code
         httpResponse.setStatus(overallStatus == Status.UP ? 200 : 503);
 
         // Populate the payload with the overall status and checks array
-        payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, overallStatus);
-        payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_CHECKS, checks.toArray());
+
+        JsonArrayBuilder jsonArrayBuilder = jsonBuilderFactory.createArrayBuilder();
+        for (int i = 0; i < checks.size(); i++) {
+            jsonArrayBuilder.add(checks.get(i));
+        }
+
+        JsonObjectBuilder payloadBuilder = jsonBuilderFactory.createObjectBuilder();
+        payloadBuilder.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_CHECKS, jsonArrayBuilder.build());
+        payloadBuilder.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, overallStatus.toString());
 
         // Convert it into a JSON payload
+        JsonObject payload = payloadBuilder.build();
         setJSONPayload(payload, httpResponse);
     }
 
@@ -90,40 +98,40 @@ public class HealthCheck30HttpResponseBuilder {
 
     protected void setChecks(HealthCheckResponse response) {
 
-        HashMap<String, Object> check = new HashMap<String, Object>();
-        check.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_NAME, response.getName());
+        JsonObjectBuilder checkBuilder = jsonBuilderFactory.createObjectBuilder();
+
+        Optional<Map<String, Object>> data = response.getData();
+        if ((data != null) && data.isPresent()) {
+            for (Map.Entry<String, Object> entry : data.get().entrySet()) {
+                JsonObjectBuilder dataBuilder = jsonBuilderFactory.createObjectBuilder();
+                dataBuilder.add(entry.getKey(), entry.getValue().toString());
+                checkBuilder.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_DATA, dataBuilder.build());
+            }
+        }
+
+        checkBuilder.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_NAME, response.getName());
 
         Status checkStatus = response.getStatus();
-        check.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, checkStatus);
+        checkBuilder.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, checkStatus.toString());
         if (checkStatus != null) {
             if (checkStatus.equals(Status.DOWN))
                 overallStatus = Status.DOWN;
-        } else {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "setChecks(): checkStatus is null");
-            overallStatus = Status.DOWN; // treat as fail case
         }
 
-        Optional<Map<String, Object>> data = response.getData();
-        if ((data != null) && data.isPresent())
-            check.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_DATA, data.get());
+        JsonObject check = checkBuilder.build();
 
         checks.add(check);
-        if (tc.isDebugEnabled())
+        if (tc.isDebugEnabled()) {
             Tr.debug(tc, "setChecks(): checks = " + checks);
+        }
     }
 
-    protected void setJSONPayload(Map<String, Object> payload, HttpServletResponse httpResponse) {
+    protected void setJSONPayload(JsonObject payload, HttpServletResponse httpResponse) {
         try {
-            httpResponse.getOutputStream().write(json.asBytes(payload));
+            httpResponse.getOutputStream().write(payload.toString().getBytes());
         } catch (IOException e) {
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "Unexpected IOException while writing out POJO response", e);
-            }
-            httpResponse.setStatus(500);
-        } catch (JSONMarshallException e) {
-            if (tc.isEventEnabled()) {
-                Tr.event(tc, "Unexpected JSONMarshallException while getting the JSON service", e);
             }
             httpResponse.setStatus(500);
         }
@@ -137,5 +145,4 @@ public class HealthCheck30HttpResponseBuilder {
     public void setOverallStatus(Status status) {
         this.overallStatus = status;
     }
-
 }

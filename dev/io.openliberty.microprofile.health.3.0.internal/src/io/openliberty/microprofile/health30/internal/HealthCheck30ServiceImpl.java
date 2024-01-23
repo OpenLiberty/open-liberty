@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,10 +31,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.websphere.jsonsupport.JSON;
-import com.ibm.websphere.jsonsupport.JSONFactory;
-import com.ibm.websphere.jsonsupport.JSONSettings;
-import com.ibm.websphere.jsonsupport.JSONSettings.Include;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.health.internal.AppTracker;
@@ -57,8 +53,6 @@ public class HealthCheck30ServiceImpl implements HealthCheck30Service {
 
     final AtomicBoolean warningAlreadyShown = new AtomicBoolean(false);
     AtomicInteger unstartedAppsCounter = new AtomicInteger(0);
-
-    private JSON json = null;
 
     @Reference(service = AppTracker.class)
     protected void setAppTracker(AppTracker service) {
@@ -110,7 +104,7 @@ public class HealthCheck30ServiceImpl implements HealthCheck30Service {
         Iterator<String> appsIt = apps.iterator();
         boolean anyAppsInstalled = false;
 
-        HealthCheck30HttpResponseBuilder hcHttpResponseBuilder = new HealthCheck30HttpResponseBuilder(getJSON());
+        HealthCheck30HttpResponseBuilder hcHttpResponseBuilder = new HealthCheck30HttpResponseBuilder();
 
         // Verify if the default overall Readiness status is configured
         String defaultReadinessProp = ConfigProvider.getConfig().getOptionalValue(HealthCheckConstants.DEFAULT_OVERALL_READINESS_STATUS, String.class).orElse("");
@@ -202,18 +196,5 @@ public class HealthCheck30ServiceImpl implements HealthCheck30Service {
         if (hcExecutor != null) {
             hcExecutor.removeModuleReferences(appName, moduleName);
         }
-    }
-
-    /**
-     * Utility that returns a JSON object from a factory
-     *
-     * @return the JSON object providing POJO-JSON serialization and deserialization
-     */
-    private JSON getJSON() {
-        if (json == null) {
-            JSONSettings settings = new JSONSettings(Include.NON_NULL);
-            json = JSONFactory.newInstance(settings);
-        }
-        return json;
     }
 }

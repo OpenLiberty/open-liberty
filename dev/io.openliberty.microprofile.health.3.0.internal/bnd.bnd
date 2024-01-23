@@ -87,6 +87,7 @@ testsrc: test/src
         com.ibm.ws.org.apache.commons.lang3;version=latest,\
         org.eclipse.osgi;version=latest,\
         io.openliberty.microprofile.health.internal.common,\
+        com.ibm.websphere.javaee.jsonp.1.0,\
         com.ibm.ws.microprofile.health;version=latest
 
 -testpath: \
