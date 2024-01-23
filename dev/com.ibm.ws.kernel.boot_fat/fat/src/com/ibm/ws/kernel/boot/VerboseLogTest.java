@@ -78,15 +78,15 @@ public class VerboseLogTest {
         else{
             serverCommand = "bin/server";
         }
-        
-        try (InputStream is = new FileInputStream(new File(System.getenv("JAVA_HOME") + "/release"));) {
-            Properties props = new Properties();
-            props.load(is);
-            if(props.containsKey("JVM_VARIANT") && props.getProperty("JVM_VARIANT").contains("Openj9")){
-                isOpenJ9 = true;
-            }
+
+        Properties properties = System.getProperties();
+        if (String.valueOf(properties.get("java.vm.name")).toLowerCase().contains("openj9")  ||
+            String.valueOf(properties.get("java.vm.vendor")).toLowerCase().contains("openj9") ||
+            String.valueOf(properties.get("java.vm.version")).toLowerCase().contains("openj9") ||
+            String.valueOf(properties.get("java.vm.info")).toLowerCase().contains("openj9"))
+        {
+            isOpenJ9 = true;
         }
-        
     }
 
     @After
