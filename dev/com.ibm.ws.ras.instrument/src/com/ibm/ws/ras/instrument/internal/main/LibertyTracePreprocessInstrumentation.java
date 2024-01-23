@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 IBM Corporation and others.
+ * Copyright (c) 2010, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -658,7 +658,7 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
      * {@inheritDoc}
      */
     @Override
-    protected byte[] transform(InputStream classfileStream) throws IOException {
+    protected byte[] transform(String path, InputStream classfileStream) throws IOException {
 
         // Read in the class bytes and chain to the serialization version adpater.
         // If we fail to calculate the serialVersionUID before mucking around with
