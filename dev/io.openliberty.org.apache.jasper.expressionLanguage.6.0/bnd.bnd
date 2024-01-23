@@ -31,7 +31,7 @@ Import-Package: \
 # Set this to 5.0.0 for now until other EE11 features such as Security, CDI and Faces update
 # to depend on Expression Language 6.0.
 Require-Capability: osgi.contract;
- filter:="(&(osgi.contract=JavaEL)(version=5.0.0))"
+ filter:="(&(osgi.contract=JakartaExpressionLanguage)(version=6.0.0))"
 
 instrument.disabled: true
 
