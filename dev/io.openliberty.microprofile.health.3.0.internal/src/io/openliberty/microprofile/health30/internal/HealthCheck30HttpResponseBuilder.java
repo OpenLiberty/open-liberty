@@ -102,11 +102,11 @@ public class HealthCheck30HttpResponseBuilder {
 
         Optional<Map<String, Object>> data = response.getData();
         if ((data != null) && data.isPresent()) {
+            JsonObjectBuilder dataBuilder = jsonBuilderFactory.createObjectBuilder();
             for (Map.Entry<String, Object> entry : data.get().entrySet()) {
-                JsonObjectBuilder dataBuilder = jsonBuilderFactory.createObjectBuilder();
                 dataBuilder.add(entry.getKey(), entry.getValue().toString());
-                checkBuilder.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_DATA, dataBuilder.build());
             }
+            checkBuilder.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_DATA, dataBuilder.build());
         }
 
         checkBuilder.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_NAME, response.getName());
@@ -118,9 +118,7 @@ public class HealthCheck30HttpResponseBuilder {
                 overallStatus = Status.DOWN;
         }
 
-        JsonObject check = checkBuilder.build();
-
-        checks.add(check);
+        checks.add(checkBuilder.build());
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "setChecks(): checks = " + checks);
         }
