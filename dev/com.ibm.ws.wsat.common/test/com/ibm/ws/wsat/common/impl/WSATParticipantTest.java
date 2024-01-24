@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,13 +29,13 @@ import com.ibm.ws.wsat.test.Utils;
  */
 public class WSATParticipantTest {
 
-    WSATCoordinatorTran tran = null;
+    WSATTransaction tran = null;
 
     @Before
     public void setUp() throws Exception {
         Utils.setTranService("clService", new MockLoader());
         Utils.setTranService("syncRegistry", new MockProxy());
-        tran = new WSATCoordinatorTran(Utils.tranId(), 10);
+        tran = new WSATTransaction(Utils.tranId(), 10);
     }
 
     @Test
@@ -92,7 +92,7 @@ public class WSATParticipantTest {
         WSATParticipant part2 = new WSATParticipant(tran.getGlobalId(), "1", null);
         WSATParticipant part3 = new WSATParticipant(tran.getGlobalId(), "2", null);
 
-        WSATCoordinatorTran tran2 = new WSATCoordinatorTran(Utils.tranId(), 10);
+        WSATTransaction tran2 = new WSATTransaction(Utils.tranId(), 10);
         WSATParticipant part4 = new WSATParticipant(tran2.getGlobalId(), "1", null);
 
         assertTrue(part1.equals(part2));

@@ -117,7 +117,7 @@ public class CoorContextOutInterceptor extends AbstractPhaseInterceptor<Message>
                     Tr.debug(
                              tc,
                              "handleMessage",
-                             "Generate a new CoordinationContext",
+                             "Generate a new CoordinationContext", header.toString(),
                              header.getName());
                 }
                 //Abandon using AbstractSoapInterceptor
