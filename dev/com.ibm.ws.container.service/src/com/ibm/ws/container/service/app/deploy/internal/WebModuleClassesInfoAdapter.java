@@ -86,11 +86,15 @@ public class WebModuleClassesInfoAdapter implements ContainerAdapter<WebModuleCl
         if (libEntry != null) {
             Container libContainer = libEntry.adapt(Container.class);
             if (libContainer != null) {
+                StringBuilder infoNameBuilder = new StringBuilder("WEB-INF/lib/");
+                int prefixLength = infoNameBuilder.length();
                 for (Entry entry : libContainer) {
                     if (entry.getName().toLowerCase().endsWith(".jar")) {
                         final String jarEntryName = entry.getName();
                         final Container jarContainer = entry.adapt(Container.class);
                         if (jarContainer != null) {
+                            infoNameBuilder.setLength(prefixLength);
+                            final String infoName = infoNameBuilder.append(jarEntryName).toString();
                             ContainerInfo containerInfo = new ContainerInfo() {
                                 @Override
                                 public Type getType() {
@@ -99,7 +103,7 @@ public class WebModuleClassesInfoAdapter implements ContainerAdapter<WebModuleCl
 
                                 @Override
                                 public String getName() {
-                                    return "WEB-INF/lib/" + jarEntryName;
+                                    return infoName;
                                 }
 
                                 @Override

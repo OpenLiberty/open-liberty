@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,12 +30,12 @@ public class UtilImpl_InternMap implements Util_InternMap {
 
     public static final String CLASS_NAME = "UtilImpl_InternMap";
 
-    protected final String hashText;
-
     @Override
     @Trivial
     public String getHashText() {
-        return hashText;
+        return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) +
+                        "(" + this.name + ")";
+
     }
 
     public static final int DEFAULT_LOG_THRESHHOLD = 1024 * 4;
@@ -137,9 +137,6 @@ public class UtilImpl_InternMap implements Util_InternMap {
 
         this.name = name;
 
-        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) +
-                        "(" + this.name + ")";
-
         this.valueType = valueType;
         this.checkValues = logger.isLoggable(Level.FINER);
 
@@ -150,7 +147,7 @@ public class UtilImpl_InternMap implements Util_InternMap {
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                     "[ {0} ] Value type [ {1} ] Log threshhold [ {2} ]",
-                    new Object[] { this.hashText,
+                    new Object[] { this.getHashText(),
                                    this.valueType,
                                    Integer.valueOf(this.logThreshHold) });
         }
@@ -265,7 +262,7 @@ public class UtilImpl_InternMap implements Util_InternMap {
             if ( logger.isLoggable(Level.FINER) ) {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] Total [ {1} ]",
-                        new Object[] { hashText, Integer.valueOf(totalLength) });
+                        new Object[] { getHashText(), Integer.valueOf(totalLength) });
             }
         }
 
