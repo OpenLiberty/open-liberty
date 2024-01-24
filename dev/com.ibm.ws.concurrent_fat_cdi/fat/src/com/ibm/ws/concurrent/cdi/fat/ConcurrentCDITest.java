@@ -12,6 +12,10 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.cdi.fat;
 
+import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
+
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,7 +47,14 @@ public class ConcurrentCDITest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "concurrent.cdi.web");
+        // fake third-party library that includes a thread context provider
+        JavaArchive locationContextProviderJar = ShrinkWrap.create(JavaArchive.class, "location-context.jar")
+                        .addPackage("concurrent.cdi.context.location")
+                        .addAsServiceProvider(ThreadContextProvider.class.getName(),
+                                              "concurrent.cdi.context.location.LocationContextProvider");
+        ShrinkHelper.exportToServer(server, "lib", locationContextProviderJar);
+
+        ShrinkHelper.defaultApp(server, APP_NAME, "concurrent.cdi.web");
         // TODO Adding "concurrent.cu3.web" to the following would cause conflict with app-defined ManagedExecutorService.
         // There is a spec proposal to detect conflict and avoid automatically adding the bean.
         ShrinkHelper.defaultDropinApp(server, APP_NAME_EE10, "concurrent.cdi4.web");
@@ -105,6 +116,11 @@ public class ConcurrentCDITest extends FATServletClient {
     }
 
     @Test
+    public void testLookUpManagedThreadFactory() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
     public void testSelectContextServiceDefaultInstance() throws Exception {
         runTest(server, APP_NAME, testName);
     }
@@ -116,6 +132,11 @@ public class ConcurrentCDITest extends FATServletClient {
 
     @Test
     public void testSelectManagedThreadFactoryDefaultInstance() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testSelectManagedThreadFactoryQualified() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 }

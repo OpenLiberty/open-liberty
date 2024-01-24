@@ -13,6 +13,8 @@
 package io.openliberty.concurrent.internal.cdi;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,7 +38,9 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
@@ -50,6 +54,13 @@ public class ConcurrencyExtension implements Extension {
     private static final Annotation[] DEFAULT_QUALIFIER_ARRAY = new Annotation[] { Default.Literal.INSTANCE };
 
     private static final Set<Annotation> DEFAULT_QUALIFIER_SET = Set.of(Default.Literal.INSTANCE);
+
+    /**
+     * List of the qualifier sets for each ManagedThreadFactory bean with qualifiers that is
+     * created during afterBeanDiscovery. Instances of these beans are obtained during
+     * afterDeploymentValidation to force context capture to occur.
+     */
+    private List<Set<Annotation>> qualifierSetsPerMTF;
 
     /**
      * Register interceptors before bean discovery.
@@ -90,8 +101,11 @@ public class ConcurrencyExtension implements Extension {
         if (!cdi.select(ManagedScheduledExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
             event.addBean(new ManagedScheduledExecutorBean(ext.defaultManagedScheduledExecutorFactory, DEFAULT_QUALIFIER_SET));
 
-        if (!cdi.select(ManagedThreadFactory.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
+        if (!cdi.select(ManagedThreadFactory.class, DEFAULT_QUALIFIER_ARRAY).isResolvable()) {
             event.addBean(new ManagedThreadFactoryBean(ext.defaultManagedThreadFactoryFactory, DEFAULT_QUALIFIER_SET));
+            qualifierSetsPerMTF = new ArrayList<>();
+            qualifierSetsPerMTF.add(Collections.emptySet());
+        }
 
         // Add beans for Concurrency resources that have one or more qualifier annotations:
 
@@ -156,19 +170,46 @@ public class ConcurrencyExtension implements Extension {
             Map<List<String>, ResourceFactory> qualifiedManagedThreadFactories = //
                             list.get(QualifiedResourceFactories.Type.ManagedThreadFactory.ordinal());
 
-            for (Entry<List<String>, ResourceFactory> entry : qualifiedManagedThreadFactories.entrySet()) {
-                List<String> qualifierList = entry.getKey();
-                ResourceFactory factory = entry.getValue();
-                try {
-                    event.addBean(new ManagedThreadFactoryBean(factory, qualifierList));
-                } catch (Throwable x) {
-                    // TODO NLS
-                    System.out.println(" E Unable to create a bean for the " +
-                                       factory + " ManagedThreadFactoryDefinition with the " + qualifierList + " qualifiers" +
-                                       " due to the following error: ");
-                    x.printStackTrace();
+            int count = qualifiedManagedThreadFactories.size();
+            if (count > 0) {
+                qualifierSetsPerMTF = qualifierSetsPerMTF == null ? new ArrayList<>(count) : qualifierSetsPerMTF;
+
+                for (Entry<List<String>, ResourceFactory> entry : qualifiedManagedThreadFactories.entrySet()) {
+                    List<String> qualifierList = entry.getKey();
+                    ResourceFactory factory = entry.getValue();
+                    try {
+                        ManagedThreadFactoryBean bean = new ManagedThreadFactoryBean(factory, qualifierList);
+                        event.addBean(bean);
+                        qualifierSetsPerMTF.add(bean.getQualifiers());
+                    } catch (Throwable x) {
+                        // TODO NLS
+                        System.out.println(" E Unable to create a bean for the " +
+                                           factory + " ManagedThreadFactoryDefinition with the " + qualifierList + " qualifiers" +
+                                           " due to the following error: ");
+                        x.printStackTrace();
+                    }
                 }
             }
+        }
+    }
+
+    /**
+     * Force context to be initialized for each ManagedThreadFactory that we registered a bean for.
+     *
+     * @param event
+     * @param beanManager
+     */
+    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
+        if (qualifierSetsPerMTF != null) {
+            CDI<Object> cdi = CDI.current();
+
+            for (Set<Annotation> qualifierSet : qualifierSetsPerMTF) {
+                Instance<ManagedThreadFactory> instance = cdi.select(ManagedThreadFactory.class, qualifierSet.toArray(new Annotation[qualifierSet.size()]));
+                ManagedThreadFactory mtf = instance.get();
+                // Force instantiation of the bean in order to cause context to be captured
+                mtf.toString();
+            }
+            qualifierSetsPerMTF = null;
         }
     }
 }

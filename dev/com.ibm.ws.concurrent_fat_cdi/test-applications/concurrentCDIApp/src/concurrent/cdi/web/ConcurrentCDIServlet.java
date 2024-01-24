@@ -14,6 +14,7 @@ package concurrent.cdi.web;
 
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.ALL_REMAINING;
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION;
+import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -53,31 +54,40 @@ import jakarta.servlet.http.HttpServletResponse;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-@ContextServiceDefinition(name = "java:global/concurrent/with-app-context",
+import concurrent.cdi.context.location.Location;
+
+@ContextServiceDefinition(name = "java:app/concurrent/with-app-context",
                           qualifiers = WithAppContext.class,
                           propagated = APPLICATION, cleared = ALL_REMAINING)
-@ContextServiceDefinition(name = "java:global/concurrent/without-app-context",
+@ContextServiceDefinition(name = "java:app/concurrent/with-location-and-tx-context",
+                          qualifiers = { WithLocationContext.class, WithTransactionContext.class },
+                          propagated = { Location.CONTEXT_NAME, TRANSACTION }, cleared = ALL_REMAINING)
+@ContextServiceDefinition(name = "java:app/concurrent/without-app-context",
                           qualifiers = WithoutAppContext.class,
                           cleared = APPLICATION, propagated = ALL_REMAINING)
-@ManagedExecutorDefinition(name = "java:global/concurrent/executor-with-app-context",
+@ManagedExecutorDefinition(name = "java:app/concurrent/executor-with-app-context",
                            qualifiers = WithAppContext.class,
-                           context = "java:global/concurrent/with-app-context")
-@ManagedExecutorDefinition(name = "java:global/concurrent/executor-without-app-context",
+                           context = "java:app/concurrent/with-app-context")
+@ManagedExecutorDefinition(name = "java:app/concurrent/executor-without-app-context",
                            qualifiers = WithoutAppContext.class,
-                           context = "java:global/concurrent/without-app-context")
-@ManagedScheduledExecutorDefinition(name = "java:global/concurrent/scheduled-executor-with-app-context",
+                           context = "java:app/concurrent/without-app-context")
+@ManagedScheduledExecutorDefinition(name = "java:app/concurrent/scheduled-executor-with-app-context",
                                     qualifiers = WithAppContext.class,
-                                    context = "java:global/concurrent/with-app-context")
-@ManagedScheduledExecutorDefinition(name = "java:global/concurrent/scheduled-executor-without-app-context",
+                                    context = "java:app/concurrent/with-app-context")
+@ManagedScheduledExecutorDefinition(name = "java:app/concurrent/scheduled-executor-without-app-context",
                                     qualifiers = WithoutAppContext.class,
-                                    context = "java:global/concurrent/without-app-context")
-@ManagedThreadFactoryDefinition(name = "java:global/concurrent/thread-factory-with-app-context",
+                                    context = "java:app/concurrent/without-app-context")
+@ManagedThreadFactoryDefinition(name = "java:app/concurrent/thread-factory-with-app-context",
                                 qualifiers = WithAppContext.class,
-                                context = "java:global/concurrent/with-app-context",
+                                context = "java:app/concurrent/with-app-context",
                                 priority = 4)
-@ManagedThreadFactoryDefinition(name = "java:global/concurrent/thread-factory-without-app-context",
+@ManagedThreadFactoryDefinition(name = "java:app/concurrent/thread-factory-with-location-and-tx-context",
+                                qualifiers = { WithLocationContext.class, WithTransactionContext.class },
+                                context = "java:app/concurrent/with-location-and-tx-context",
+                                priority = 7)
+@ManagedThreadFactoryDefinition(name = "java:app/concurrent/thread-factory-without-app-context",
                                 qualifiers = WithoutAppContext.class,
-                                context = "java:global/concurrent/without-app-context",
+                                context = "java:app/concurrent/without-app-context",
                                 priority = 6)
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -119,6 +129,10 @@ public class ConcurrentCDIServlet extends HttpServlet {
     @Inject
     @WithAppContext
     ManagedThreadFactory threadFactoryWithAppContext;
+
+    @Inject
+    @WithLocationContext
+    ManagedThreadFactory threadFactoryWithLocationContext;
 
     @Inject
     @WithoutAppContext
@@ -406,6 +420,35 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
+     * Verify that a ManagedThreadFactory (regardless of whether it has qualifiers) follows the rule of
+     * capturing context at the point when the resource is created. A new instance must be created upon
+     * lookup.
+     */
+    public void testLookUpManagedThreadFactory() throws Exception {
+        Location.set("Rochester, MN");
+        try {
+            ManagedThreadFactory threadFactory1 = InitialContext.doLookup("java:app/concurrent/thread-factory-with-location-and-tx-context");
+
+            Location.set("Byron, MN");
+
+            CompletableFuture<String> future1 = new CompletableFuture<>();
+
+            Thread thread1 = threadFactory1.newThread(() -> future1.complete(Location.get()));
+            thread1.start();
+
+            assertEquals(7, thread1.getPriority());
+
+            String result1 = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals("Rochester, MN", result1);
+
+            assertEquals("Byron, MN", Location.get());
+        } finally {
+            Location.clear();
+        }
+    }
+
+    /**
      * Use CDI.current() to select the default instance of ContextService and use it.
      */
     public void testSelectContextServiceDefaultInstance() throws Exception {
@@ -478,5 +521,53 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         Object result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertEquals("value2", result);
+    }
+
+    /**
+     * Verify that a ManagedThreadFactory with qualifiers follows the rule of capturing context only
+     * at the point when the resource was created, and does not replace that context with the context that is on
+     * the thread when CDI.current().select obtains the bean.
+     */
+    public void testSelectManagedThreadFactoryQualified() throws Exception {
+        // Context is captured when the ManagedThreadFactory is created, not when we first obtain it from CDI,
+
+        Location.set("Rochester, MN");
+        try {
+            ManagedThreadFactory threadFactory1 = CDI.current().select(ManagedThreadFactory.class, WithLocationContext.Literal.INSTANCE).get();
+
+            CompletableFuture<String> future1 = new CompletableFuture<>();
+
+            Thread thread1 = threadFactory1.newThread(() -> future1.complete(Location.get()));
+            thread1.start();
+
+            assertEquals(7, thread1.getPriority());
+
+            String result1 = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals(null, result1);
+
+            assertEquals("Rochester, MN", Location.get());
+        } finally {
+            Location.clear();
+        }
+
+        // Application context was originally on the thread, so it is propagated,
+
+        ManagedThreadFactory threadFactory2 = CDI.current().select(ManagedThreadFactory.class, WithAppContext.Literal.INSTANCE).get();
+
+        CompletableFuture<String> future2 = new CompletableFuture<>();
+
+        Thread thread2 = threadFactory2.newThread(() -> {
+            try {
+                future2.complete(InitialContext.doLookup("java:comp/env/entry2"));
+            } catch (Throwable x) {
+                future2.completeExceptionally(x);
+            }
+        });
+        thread2.start();
+
+        assertEquals(4, thread2.getPriority());
+
+        assertEquals("value2", future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 }
