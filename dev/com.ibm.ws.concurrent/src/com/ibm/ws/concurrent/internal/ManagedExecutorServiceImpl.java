@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -179,7 +179,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     /**
      * Available only on the MicroProfile code path (CDI injection or ManagedExecutorBuilder).
      */
-    private final ContextServiceImpl mpContextService;
+    private final ContextServiceBase mpContextService;
 
     /**
      * Reference to the name of this managed executor service.
@@ -216,7 +216,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
      * Constructor for ManagedExecutorBuilder (from MicroProfile Context Propagation).
      */
     public ManagedExecutorServiceImpl(String name, int hash, int eeVersion,
-                                      PolicyExecutor policyExecutor, ContextServiceImpl mpThreadContext,
+                                      PolicyExecutor policyExecutor, ContextServiceBase mpThreadContext,
                                       AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> tranContextProviderRef) {
         this.name.set(name);
         this.hash = hash;
@@ -313,9 +313,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
 
     @Override
     public ThreadContextDescriptor captureThreadContext(Map<String, String> props) {
-        ContextServiceImpl contextSvc;
+        ContextServiceBase contextSvc;
         if (mpContextService == null)
-            contextSvc = (ContextServiceImpl) contextSvcRef.getServiceWithException();
+            contextSvc = (ContextServiceBase) contextSvcRef.getServiceWithException();
         else
             contextSvc = mpContextService;
 
@@ -476,7 +476,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, //
     // Concurrency 3.0 / Jakarta EE 10
     public ContextService getContextService() {
         return mpContextService == null //
-                        ? ((ContextServiceImpl) contextSvcRef.getServiceWithException()).forManagedExecutor(this, servicePid) //
+                        ? ((ContextServiceBase) contextSvcRef.getServiceWithException()).forManagedExecutor(this, servicePid) //
                         : mpContextService;
     }
 

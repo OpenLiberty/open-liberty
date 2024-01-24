@@ -16,6 +16,7 @@ Subsystem-Name: Jakarta Concurrency 2.0
   io.openliberty.org.eclipse.microprofile.contextpropagation-1.3
 -bundles=\
   com.ibm.ws.concurrent.jakarta, \
+  com.ibm.ws.concurrent.java8.jakarta, \
   com.ibm.ws.javaee.platform.defaultresource, \
   com.ibm.ws.resource, \
   io.openliberty.concurrent.internal.basictrigger.jakarta

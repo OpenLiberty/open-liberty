@@ -40,7 +40,6 @@ Include-Resource:\
 
 -dsannotations: \
   com.ibm.ws.concurrent.internal.ConcurrencyService,\
-  com.ibm.ws.concurrent.internal.ContextServiceImpl,\
   com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl,\
   com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl,\
   com.ibm.ws.concurrent.internal.ManagedThreadFactoryService
@@ -56,7 +55,23 @@ Service-Component:\
     configuration-policy:=ignore;\
     immediate:=true;\
     deferrableScheduledExecutor='java.util.concurrent.ScheduledExecutorService(deferrable=true)';\
-    metadataIdentifierService=com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService
+    metadataIdentifierService=com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService,\
+  com.ibm.ws.context.service;\
+    eEVersion='com.ibm.ws.javaee.version.JavaEEVersion?';\
+    baseInstance='com.ibm.wsspi.threadcontext.WSContextService(id=unbound)?';\
+    threadContextManager='com.ibm.wsspi.threadcontext.WSContextService(component.name=com.ibm.ws.context.manager)';\
+    greedy:='eEVersion,baseInstance';\
+    provide:='\
+      com.ibm.wsspi.resource.ResourceFactory,\
+      javax.enterprise.concurrent.ContextService,\
+      org.eclipse.microprofile.context.ThreadContext,\
+      com.ibm.wsspi.threadcontext.WSContextService,\
+      com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent';\
+    implementation:=com.ibm.ws.concurrent.internal.ContextServiceImpl;\
+    configuration-policy:=require;\
+    properties:='\
+      creates.objectClass=javax.enterprise.concurrent.ContextService,\
+      creates.objectClass=org.eclipse.microprofile.context.ThreadContext'
 
 instrument.classesExcludes: com/ibm/ws/concurrent/resources/*.class
 

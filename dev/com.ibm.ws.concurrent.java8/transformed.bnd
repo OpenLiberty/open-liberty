@@ -1,0 +1,19 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/transform.props
+
+Bundle-Name: Managed Concurrency Java 8 Class Versions Jakarta
+Bundle-SymbolicName: com.ibm.ws.concurrent.java8.jakarta
+Bundle-Description: Fragment bundle for Java 8 versions of concurrency classes; version=${bVersion}; Jakarta Enabled
+
+Fragment-Host: com.ibm.ws.concurrent.jakarta

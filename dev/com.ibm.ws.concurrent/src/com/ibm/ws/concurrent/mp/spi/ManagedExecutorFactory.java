@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,7 +15,7 @@ package com.ibm.ws.concurrent.mp.spi;
 import org.eclipse.microprofile.context.ManagedExecutor;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.concurrent.internal.ContextServiceImpl;
+import com.ibm.ws.concurrent.internal.ContextServiceBase;
 import com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -41,7 +41,7 @@ public class ManagedExecutorFactory {
     public static ManagedExecutor createManagedExecutor(String managedExecutorName, String threadContextName, int hash,
                                                         int eeVersion, PolicyExecutor policyExecutor, ThreadContextConfig config,
                                                         @SuppressWarnings("deprecation") AtomicServiceReference<com.ibm.wsspi.threadcontext.ThreadContextProvider> tranContextProviderRef) {
-        ContextServiceImpl mpThreadContext = new ContextServiceImpl(threadContextName, hash, eeVersion, config);
+        ContextServiceBase mpThreadContext = new ContextServiceBase(threadContextName, hash, eeVersion, config);
         return new ManagedExecutorServiceImpl(managedExecutorName, hash, eeVersion, policyExecutor, mpThreadContext, tranContextProviderRef);
     }
 }
