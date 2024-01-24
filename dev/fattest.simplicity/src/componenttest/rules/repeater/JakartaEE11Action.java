@@ -101,7 +101,31 @@ public class JakartaEE11Action extends JakartaEEAction {
                                                   "xmlWS-4.0"
     };
 
+    private static final String[] EE11_ONLY_FEATURES_ARRAY = {
+                                                               "jakartaee-11.0",
+                                                               "webProfile-11.0",
+                                                               "jakartaeeClient-11.0",
+                                                               "appAuthentication-3.1",
+                                                               "appAuthorization-3.0",
+                                                               "appSecurity-6.0",
+                                                               "beanValidation-3.1",
+                                                               "cdi-4.1",
+                                                               "concurrent-3.1",
+                                                               "data-1.0",
+                                                               "expressionLanguage-6.0",
+                                                               "persistence-3.2",
+                                                               "persistenceContainer-3.2",
+                                                               "faces-4.1",
+                                                               "facesContainer-4.1",
+                                                               "pages-4.0",
+                                                               "restfulWS-4.0",
+                                                               "restfulWSClient-4.0",
+                                                               "servlet-6.1",
+                                                               "websocket-2.2"
+    };
+
     public static final Set<String> EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_FEATURES_ARRAY)));
+    public static final Set<String> EE11_ONLY_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_ONLY_FEATURES_ARRAY)));
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // This constructor is purposely not public to force people to use the JakartaEEAction class and                 //
