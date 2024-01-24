@@ -20,7 +20,7 @@ import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
 /**
- * CDI Extension for Jakarta Concurrency 3.1+ in Jakarta EE 11+, which corresponds to CDI 4.1+
+ * Proxy for Subscriber that wraps execution of methods with thread context.
  */
 public class ContextualSubscriber<T> implements Subscriber<T>, ContextualAction<Subscriber<T>> {
     private final Subscriber<T> action;

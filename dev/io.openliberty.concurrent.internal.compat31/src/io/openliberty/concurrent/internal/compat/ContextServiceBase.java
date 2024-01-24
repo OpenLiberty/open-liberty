@@ -19,7 +19,7 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import io.openliberty.concurrent.internal.compat.impl.ContextualSubscriber;
 
 /**
- * Superclass for ContextServiceImpl when using Concurrency 3.0 or less.
+ * Superclass for ContextServiceImpl when using Concurrency 3.1 or higher.
  */
 public abstract class ContextServiceBase {
     /**
