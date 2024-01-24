@@ -40,7 +40,8 @@ Subsystem-Name: Jakarta Concurrency 3.0
   com.ibm.ws.concurrent.jakarta, \
   com.ibm.ws.javaee.platform.defaultresource, \
   com.ibm.ws.resource, \
-  io.openliberty.concurrent.internal
+  io.openliberty.concurrent.internal, \
+  io.openliberty.concurrent.internal.compat
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

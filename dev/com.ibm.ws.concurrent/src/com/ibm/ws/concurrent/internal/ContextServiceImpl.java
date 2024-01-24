@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -86,6 +86,8 @@ import com.ibm.wsspi.resource.ResourceInfo;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
+import io.openliberty.concurrent.internal.compat.ContextServiceBase;
+
 /**
  * Captures and propagates thread context.
  * This class implements the Jakarta/Java EE ContextService as well as MicroProfile ThreadContext.
@@ -95,7 +97,7 @@ import com.ibm.wsspi.threadcontext.WSContextService;
            service = { ResourceFactory.class, ContextService.class, ThreadContext.class, WSContextService.class, ApplicationRecycleComponent.class },
            property = { "creates.objectClass=javax.enterprise.concurrent.ContextService",
                         "creates.objectClass=org.eclipse.microprofile.context.ThreadContext" })
-public class ContextServiceImpl implements ContextService, //
+public class ContextServiceImpl extends ContextServiceBase implements ContextService, //
                 ResourceFactory, ThreadContext, WSContextService, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ContextServiceImpl.class);
 
@@ -293,6 +295,13 @@ public class ContextServiceImpl implements ContextService, //
 
         for (ContextServiceImpl listener : listeners)
             listener.baseInstanceModified();
+    }
+
+    // Implements abstract method from ContextServiceBase for Concurrency 3.1+.
+    @SuppressWarnings("unchecked")
+    @Trivial
+    protected ThreadContextDescriptor captureThreadContext() {
+        return captureThreadContext(execProps);
     }
 
     /**
