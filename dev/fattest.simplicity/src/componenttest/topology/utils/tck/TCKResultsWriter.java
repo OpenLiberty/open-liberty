@@ -36,7 +36,7 @@ public class TCKResultsWriter {
      *
      * @param resultInfo TCK Results metadata
      */
-    public static void preparePublicationFile(TCKResultsInfo resultInfo, String repeat) {
+    public static void preparePublicationFile(TCKResultsInfo resultInfo) {
         String javaMajorVersion = resultInfo.getJavaMajorVersion();
         String javaVersion = resultInfo.getJavaVersion();
         String openLibertyVersion = resultInfo.getOpenLibertyVersion();
@@ -45,6 +45,7 @@ public class TCKResultsWriter {
         String osVersion = resultInfo.getOsVersion();
         String specName = resultInfo.getSpecName();
         String specVersion = resultInfo.getSpecVersion();
+        String repeat = resultInfo.getRepeat();
 
         SAXParserFactory factory = null;
         SAXParser saxParser = null;
@@ -74,7 +75,8 @@ public class TCKResultsWriter {
             specURL = "https://jakarta.ee/specifications/" + specName + "/" + specVersion;
             tckURL = "https://download.eclipse.org/ee4j/" + specName + "/jakartaee10/promoted/eftl/" + specName + "-tck-" + specVersion + ".zip"; //just a placeholder, needs to be manually updated
         }
-        String filename = openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + "-TCKResults" + repeat + ".adoc";
+        // Replace the "_" with "-" in filename to keep consistency
+        String filename = (openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + "-TCKResults" + repeat + ".adoc").replace("_", "-");
         Path outputPath = Paths.get("results", filename);
         File outputFile = outputPath.toFile();
         String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osName, osVersion, tckURL, tckSHA1, tckSHA256);
@@ -94,7 +96,11 @@ public class TCKResultsWriter {
             }
             output.write(adocContent);
             for (TestSuiteResult result : xmlParser.getResults()) {
-                // Checking if the result is for the correct repeat (avoiding adding wrong repeat results to wrong TCK report repeat files)
+                /*
+                 * Checking if the result is for the correct repeat (avoiding adding wrong repeat results to wrong TCK report repeat files)
+                 * This will never be null because when calling RepeatTestFilter.getRepeatActionsAsString()
+                 * if REPEAT_ACTION_STACK is empty it will return an empty string instead ("")
+                 */
                 if (result.toString().contains(repeat)) {
                     // Removing repeat ID from the test results
                     String newResult = result.toString().replace(repeat, "");

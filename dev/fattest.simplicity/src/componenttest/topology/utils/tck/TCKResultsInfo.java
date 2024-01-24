@@ -14,6 +14,7 @@ package componenttest.topology.utils.tck;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
@@ -44,6 +45,7 @@ public class TCKResultsInfo {
     private final String specName;// = resultInfo.get("feature_name");
     private final TCKJarInfo tckJarInfo;
     private final LibertyServer server;
+    private final String repeat; // = RepeatTestFilter.getRepeatActionsAsString();
 
     public TCKResultsInfo(Type type, String specName, LibertyServer server, TCKJarInfo tckJarInfo) {
         this.type = type;
@@ -53,6 +55,7 @@ public class TCKResultsInfo {
         this.javaMajorVersion = String.valueOf(javaInfo.majorVersion());
         this.server = server;
         this.tckJarInfo = tckJarInfo;
+        this.repeat = RepeatTestFilter.getRepeatActionsAsString();
     }
 
     /**
@@ -112,6 +115,13 @@ public class TCKResultsInfo {
      */
     public String getSpecName() {
         return specName;
+    }
+
+    /**
+     * @return the repeatID
+     */
+    public String getRepeat() {
+        return repeat;
     }
 
     /**

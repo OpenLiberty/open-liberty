@@ -258,8 +258,7 @@ public class TCKRunner {
         List<String> dependencyOutput = runDependencyCmd();
         TCKJarInfo tckJarInfo = TCKUtilities.getTCKJarInfo(this.type, dependencyOutput);
         TCKResultsInfo resultsInfo = new TCKResultsInfo(this.type, this.specName, this.server, tckJarInfo);
-        String repeat = RepeatTestFilter.getRepeatActionsAsString();
-        TCKResultsWriter.preparePublicationFile(resultsInfo, repeat);
+        TCKResultsWriter.preparePublicationFile(resultsInfo);
     }
 
     /**
