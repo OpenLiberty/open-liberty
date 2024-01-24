@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,8 +49,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.cache.Cache;
-import javax.cache.CacheManager;
 import javax.cache.management.CacheMXBean;
 import javax.cache.management.CacheStatisticsMXBean;
 import javax.management.JMX;
@@ -60,11 +58,13 @@ import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionListener;
 import javax.sql.DataSource;
 
 import com.ibm.websphere.servlet.session.IBMSession;
+import com.ibm.websphere.simplicity.config.HttpSession;
+import com.ibm.websphere.simplicity.config.cache.Cache;
+import com.ibm.websphere.simplicity.config.cache.CacheManager;
 
 import componenttest.app.FATServlet;
 
@@ -430,6 +430,10 @@ public class SessionCacheTestServlet extends FATServlet {
      */
     public void testSerialization_complete(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         HttpSession session = request.getSession(false);
+        if (session == null) {
+            assumeTrue(false);
+            return;
+        }
         @SuppressWarnings("unchecked")
         Map<String, Object> sessionMap = (Map<String, Object>) session.getAttribute("map");
         System.out.println("Session is: " + session.getId());
@@ -574,6 +578,10 @@ public class SessionCacheTestServlet extends FATServlet {
 
     public void testSerializeDataSource_complete(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         HttpSession session = request.getSession(false);
+        if (session == null) {
+            assumeTrue(false);
+            return;
+        }
         @SuppressWarnings("unchecked")
         Map<String, Object> sessionMap = (Map<String, Object>) session.getAttribute("map");
         System.out.println("Session is: " + session.getId());
@@ -696,6 +704,10 @@ public class SessionCacheTestServlet extends FATServlet {
     public void sessionPut(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         boolean createSession = Boolean.parseBoolean(request.getParameter("createSession"));
         HttpSession session = request.getSession(createSession);
+        if (session == null) {
+            assumeTrue(false);
+            return;
+        }
         if (createSession)
             System.out.println("Created a new session with sessionID=" + session.getId());
         else
