@@ -11,8 +11,10 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<!-- TODO 6.1 -->
-<web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+<web-app version="6.1" 
+	xmlns="https://jakarta.ee/xml/ns/jakartaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd">
 
   <!-- TODO concurrency resources with virtual=true -->
 
