@@ -63,6 +63,8 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionListener;
 import javax.sql.DataSource;
 
+import org.junit.Assume;
+
 import com.ibm.websphere.servlet.session.IBMSession;
 
 import componenttest.app.FATServlet;
@@ -396,7 +398,7 @@ public class SessionCacheTestServlet extends FATServlet {
         //assertNotNull("Value from session is unexpectedly NULL, most likely due to test infrastructure; check logs for more information.", session);
         if (session == null) {
             System.out.println("Value from session is unexpectedly NULL, most likely due to test infrastructure; Exit test.");
-            assumeTrue(false);
+            Assume.assumeTrue(false);
             return;
         }
         @SuppressWarnings("unchecked")
@@ -545,7 +547,7 @@ public class SessionCacheTestServlet extends FATServlet {
         HttpSession session = request.getSession(false);
         if (session == null) {
             System.out.println("Value from session is unexpectedly NULL, most likely due to test infrastructure; Exit test.");
-            assumeTrue(false);
+            Assume.assumeTrue(false);
             return;
         }
         @SuppressWarnings("unchecked")
@@ -592,7 +594,7 @@ public class SessionCacheTestServlet extends FATServlet {
         //assertNotNull("Value from cache is unexpectedly NULL, most likely due to test infrastructure; check logs for more information.", cache);
         if (cache == null) {
             System.out.println("Value from cache is unexpectedly NULL, most likely due to test infrastructure; Exit test.");
-            assumeTrue(false);
+            Assume.assumeTrue(false);
             return;
         }
 
@@ -632,7 +634,7 @@ public class SessionCacheTestServlet extends FATServlet {
         //assertNotNull("Value from cache is unexpectedly NULL, most likely due to test infrastructure; check logs for more information.", cache);
         if (cache == null) {
             System.out.println("Value from cache is unexpectedly NULL, most likely due to test infrastructure; Exit test.");
-            assumeTrue(false);
+            Assume.assumeTrue(false);
             return;
         }
 

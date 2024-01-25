@@ -64,6 +64,8 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionListener;
 import javax.sql.DataSource;
 
+import org.junit.Assume;
+
 import com.ibm.websphere.servlet.session.IBMSession;
 
 import componenttest.app.FATServlet;
@@ -431,7 +433,7 @@ public class SessionCacheTestServlet extends FATServlet {
     public void testSerialization_complete(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         HttpSession session = request.getSession(false);
         if (session == null) {
-            assumeTrue(false);
+            Assume.assumeTrue(false);
             return;
         }
         @SuppressWarnings("unchecked")
@@ -579,7 +581,7 @@ public class SessionCacheTestServlet extends FATServlet {
     public void testSerializeDataSource_complete(HttpServletRequest request, HttpServletResponse response) throws Throwable {
         HttpSession session = request.getSession(false);
         if (session == null) {
-            assumeTrue(false);
+            Assume.assumeTrue(false);
             return;
         }
         @SuppressWarnings("unchecked")
@@ -705,7 +707,7 @@ public class SessionCacheTestServlet extends FATServlet {
         boolean createSession = Boolean.parseBoolean(request.getParameter("createSession"));
         HttpSession session = request.getSession(createSession);
         if (session == null) {
-            assumeTrue(false);
+            Assume.assumeTrue(false);
             return;
         }
         if (createSession)
