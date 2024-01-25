@@ -31,11 +31,13 @@ public class ContextualProcessor<T, R> implements Processor<T, R>, ContextualAct
     }
 
     @Override
+    @Trivial
     public Processor<T, R> getAction() {
         return action;
     }
 
     @Override
+    @Trivial
     public ThreadContextDescriptor getContextDescriptor() {
         return threadContextDescriptor;
     }
