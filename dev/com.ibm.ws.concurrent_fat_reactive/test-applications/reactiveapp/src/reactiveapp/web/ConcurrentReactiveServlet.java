@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Flow;
+import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
@@ -182,6 +183,15 @@ public class ConcurrentReactiveServlet extends FATServlet {
                     throw new AssertionError("Timed out waiting for CountDownLatch, context may not have been available on Subscriber");
             }
         }
+    }
+
+    /**
+     * TODO write this test to cover the ContextService.contextualSubscriber method.
+     * For now, it only covers that the method can be invoked without an error occurring.
+     */
+    @Test
+    public void contextualSubscriber() throws Exception {
+        Subscriber<ContextCDL> contextualSubscriber = contextSvcDefault.contextualSubscriber(new ThreadSubscriber());
     }
 
     /**

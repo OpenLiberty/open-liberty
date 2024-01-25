@@ -28,6 +28,7 @@ Export-Package:\
 
 Import-Package:\
   org.eclipse.microprofile.context; version="[1.0.0,2.0.0)",\
+  io.openliberty.concurrent.internal.compat; version="[1.0.0,2.0.0)",\
   *
 
 Private-Package:\
@@ -78,4 +79,5 @@ instrument.classesExcludes: com/ibm/ws/concurrent/resources/*.class
 	com.ibm.ws.threading;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.wsspi.org.osgi.service.metatype.annotations;version=latest,\
+	io.openliberty.concurrent.internal.compat;version=latest,\
 	io.openliberty.org.eclipse.microprofile.contextpropagation.1.2

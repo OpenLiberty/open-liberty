@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2023,2024 IBM Corporation and others.
+# Copyright (c) 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -13,20 +13,16 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-src: \
-	fat/src,\
-	test-applications/reactiveapp/src
+Bundle-Name: Superclasses for Concurrency 3.0 and earlier
+Bundle-SymbolicName: io.openliberty.concurrent.internal.compat
+Bundle-Description: Superclasses for Concurrency 3.0 and earlier; version=${bVersion}
 
-javac.source: 17
-javac.target: 17
+WS-TraceGroup: concurrent
 
-fat.minimum.java.level: 17
-fat.project: true
+Export-Package: \
+  io.openliberty.concurrent.internal.compat
 
 -buildpath: \
-	io.openliberty.jakarta.servlet.6.1;version=latest,\
-	com.ibm.ws.componenttest.2.0;version=latest,\
-	io.openliberty.jakarta.annotation.2.1;version=latest,\
-	io.openliberty.jakarta.concurrency.3.1;version=latest,\
-	io.openliberty.io.smallrye.reactive.mutiny
-	
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
