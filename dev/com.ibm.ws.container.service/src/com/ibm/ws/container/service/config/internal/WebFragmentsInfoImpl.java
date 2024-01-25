@@ -49,6 +49,13 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
 
     //
 
+    private static final HashSet<Integer> METADATA_COMPLETE_SUPPORT = //
+                    new HashSet<>(Arrays.asList(WebApp.VERSION_2_5,
+                                                WebApp.VERSION_3_0, WebApp.VERSION_3_1,
+                                                WebApp.VERSION_4_0,
+                                                WebApp.VERSION_5_0,
+                                                WebApp.VERSION_6_0, WebApp.VERSION_6_1));
+
     /**
      * Create aggregate fragment information for a web module.
      *
@@ -66,8 +73,7 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
         WebApp webApp = containerToAdapt.adapt(WebApp.class); // throws UnableToAdaptException
         if (webApp != null) {
             this.servletSchemaLevel = webApp.getVersion();
-            int servletSchemaLevelInt = PlatformVersion.getVersionInt(servletSchemaLevel);
-            if (Arrays.binarySearch(WebApp.METADATA_COMPLETE_SUPPORT, servletSchemaLevelInt) >= 0) {
+            if (isMetadataCompleteSupported(servletSchemaLevel)) {
                 this.isMetadataComplete = webApp.isSetMetadataComplete() && webApp.isMetadataComplete();
             } else {
                 this.isMetadataComplete = true; // Default to true for earlier versions.
@@ -120,6 +126,24 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
     @Override
     public String getServletSchemaLevel() {
         return servletSchemaLevel;
+    }
+
+    /**
+     * Verify if the web-app version supports metadata-complete elements.
+     * metadata-complete was added in version 2.5.
+     *
+     * @param version
+     *
+     * @return true if metadata-complete is supported,
+     *         false if metadata-complete is not supported or the schema version is unknown
+     */
+    private boolean isMetadataCompleteSupported(String version) {
+        try {
+            int intVersion = PlatformVersion.getVersionInt(version);
+            return METADATA_COMPLETE_SUPPORT.contains(intVersion);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     /** Cache of the 'metadata-complete' attribute of the web module descriptor. */
