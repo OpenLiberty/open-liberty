@@ -83,9 +83,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         //Start a new thread that waits to be notified by the handler when enough data is accumulated. On completion, use the callback complete and return null
 
         if (nettyContext.pipeline().get(NettyServletUpgradeHandler.class) == null) {
+            MSP.log("upgradeHandler not present, adding now");
             NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(nettyContext.channel());
-            HttpServerCodec httpHandler = nettyContext.channel().pipeline().get(HttpServerCodec.class);
-            nettyContext.channel().pipeline().addBefore(nettyContext.channel().pipeline().context(httpHandler).name(), "ServletUpgradeHandler", upgradeHandler);
+            
+            nettyContext.channel().pipeline().addLast("ServletUpgradeHandler", upgradeHandler);
         }
 
         NettyServletUpgradeHandler upgrade = this.nettyContext.pipeline().get(NettyServletUpgradeHandler.class);
@@ -95,51 +96,34 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         upgrade.setTCPReadContext(this);
         upgrade.setVC(vc);
 
-        MSP.log("had data? " + upgrade.containsQueuedData());
-        MSP.log("data size: " + upgrade.queuedDataSize());
+        MSP.log("TCP READ REQUEST CONTEXT - Before read: had data? " + upgrade.containsQueuedData());
+        MSP.log("TCP READ REQUEST CONTEXT - Before read: data size: " + upgrade.queuedDataSize());
+        MSP.log("TCP READ REQUEST CONTEXT - numBytes requested: "+ numBytes);
+        
+        
 
-        boolean dataAvailable = upgrade.awaitReadReady(5, TimeUnit.SECONDS);
+        boolean dataAvailable = upgrade.containsQueuedData() || upgrade.awaitReadReady(numBytes, 30, TimeUnit.SECONDS);
 
         if (dataAvailable) {
+            
+            upgrade.setToBuffer();
+            //TODO: if -1 do infinite
+            MSP.log("TCP READ REQUEST - SHOULD HAVE STORED DATA: " + this.getBuffer().limit());
+            
+            
             if (callback != null) {
                 callback.complete(vc, this);
+            } else {
+                MSP.log("CALLBACK IS NULL - NOT SUPPORTED");
+                //throw new IOException ("BETA - unexpected null callback provided");
             }
         } else {
-            //TODO: handle read timeout.
+            MSP.log("BETA TIMED OUT");
+            //throw new IOException("BETA - Timed out waiting on read");
         }
 
-//        try {
-//            upgrade.waitForDataRead(timeout);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        try {
-//            upgrade.waitForDataRead(5000);
-//        } catch (Exception er) {
-//            er.printStackTrace();
-//        }
 
-//        MSP.log("do we have data to read?");
-//        if (upgrade.queuedDataSize() > 0) {
-//            MSP.log("storing available data");
-//            MSP.log("had data? " + upgrade.containsQueuedData());
-//            MSP.log("data size: " + upgrade.queuedDataSize());
-//
-//            byte[] bytes = ByteBufUtil.getBytes(upgrade.read(timeout, null));
-//            MSP.log("got [" + bytes.length + "] bytes from handler.");
-//
-//            WsByteBuffer buf = ChannelFrameworkFactory.getBufferManager().allocate(bytes.length);
-//            this.setBuffer(buf);
-//
-//            this.getBuffer().put(bytes);
-//            MSP.log("stored bytes from handler in read context");
-//            callback.complete(vc, this);
-//        }
-//        MSP.log("read exit... ");
-//        MSP.log("had data? " + upgrade.containsQueuedData());
-//        MSP.log("data size: " + upgrade.queuedDataSize());
-
-        return null;
+        return vc;
     }
 
     @Override
