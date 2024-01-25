@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -101,10 +101,10 @@ import com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo.Type;
-import com.ibm.ws.container.service.app.deploy.ManifestClassPathUtils;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.extended.ManifestClassPathHelper;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.extended.ModuleMetaDataExtender;
 import com.ibm.ws.container.service.metadata.extended.NestedModuleMetaDataFactory;
@@ -809,7 +809,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
                         if (jarContainer != null) {
                             ContainerInfo containerInfo = new ContainerInfoImpl(Type.WEB_INF_LIB, manifest.getSpringBootLib() + '/' + jarEntryName, jarContainer);
                             result.add(containerInfo);
-                            ManifestClassPathUtils.addCompleteJarEntryUrls(result, entry, resolved);
+                            ManifestClassPathHelper.addCompleteJarEntryUrls(result, entry, jarContainer, resolved);
                         }
                     }
                 }
