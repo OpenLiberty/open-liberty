@@ -41,6 +41,14 @@ public interface WebApp extends ModuleDeploymentDescriptor, DeploymentDescriptor
                        VERSION_6_1
     };
 
+    int[] METADATA_COMPLETE_SUPPORT = {
+                                        VERSION_2_5,
+                                        VERSION_3_0, VERSION_3_1,
+                                        VERSION_4_0,
+                                        VERSION_5_0,
+                                        VERSION_6_0, VERSION_6_1
+    };
+
     String getVersion();
 
     boolean isSetMetadataComplete();

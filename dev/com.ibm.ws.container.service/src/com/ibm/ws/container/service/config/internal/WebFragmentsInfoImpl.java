@@ -1,10 +1,10 @@
 /*********************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package com.ibm.ws.container.service.config.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -30,6 +31,7 @@ import com.ibm.ws.container.service.app.deploy.ContainerInfo.Type;
 import com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo;
 import com.ibm.ws.container.service.config.WebFragmentInfo;
 import com.ibm.ws.container.service.config.WebFragmentsInfo;
+import com.ibm.ws.javaee.dd.PlatformVersion;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.WebFragment;
 import com.ibm.ws.javaee.dd.web.common.AbsoluteOrdering;
@@ -61,13 +63,11 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
         this.servletSpecLevel = servletSpecLevel;
 
         // Web app ...
-
         WebApp webApp = containerToAdapt.adapt(WebApp.class); // throws UnableToAdaptException
         if (webApp != null) {
             this.servletSchemaLevel = webApp.getVersion();
-            if ("6.0".equals(servletSchemaLevel) || "5.0".equals(servletSchemaLevel) || "4.0".equals(servletSchemaLevel) || "3.1".equals(servletSchemaLevel)
-                || "3.0".equals(servletSchemaLevel)
-                || "2.5".equals(servletSchemaLevel)) {
+            int servletSchemaLevelInt = PlatformVersion.getVersionInt(servletSchemaLevel);
+            if (Arrays.binarySearch(WebApp.METADATA_COMPLETE_SUPPORT, servletSchemaLevelInt) >= 0) {
                 this.isMetadataComplete = webApp.isSetMetadataComplete() && webApp.isMetadataComplete();
             } else {
                 this.isMetadataComplete = true; // Default to true for earlier versions.
