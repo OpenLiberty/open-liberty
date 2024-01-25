@@ -24,15 +24,20 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
+import jakarta.annotation.Resource;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
@@ -41,6 +46,7 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
@@ -50,6 +56,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Status;
+import jakarta.transaction.UserTransaction;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -90,6 +98,7 @@ import concurrent.cdi.context.location.Location;
                                 context = "java:app/concurrent/without-app-context",
                                 priority = 6)
 @SuppressWarnings("serial")
+@ApplicationScoped
 @WebServlet("/*")
 public class ConcurrentCDIServlet extends HttpServlet {
 
@@ -119,12 +128,21 @@ public class ConcurrentCDIServlet extends HttpServlet {
     ManagedExecutorService executorWithoutAppContext;
 
     @Inject
+    @WithoutLocationContext
+    @WithoutTransactionContext
+    ManagedExecutorService executorWithoutLocationAndTxContext;
+
+    @Inject
     @WithAppContext
     ManagedScheduledExecutorService scheduledExecutorWithAppContext;
 
     @Inject
     @WithoutAppContext
     ManagedScheduledExecutorService scheduledExecutorWithoutAppContext;
+
+    @Inject
+    @WithoutLocationContext
+    ManagedScheduledExecutorService scheduledExecutorWithoutLocationContext;
 
     @Inject
     @WithAppContext
@@ -139,12 +157,29 @@ public class ConcurrentCDIServlet extends HttpServlet {
     ManagedThreadFactory threadFactoryWithoutAppContext;
 
     @Inject
+    @WithoutTransactionContext
+    @WithoutLocationContext
+    ManagedThreadFactory threadFactoryWithoutLocationAndTxContext;
+
+    @Inject
     @WithAppContext
     ContextService withAppContext;
 
     @Inject
     @WithoutAppContext
     ContextService withoutAppContext;
+
+    @Inject
+    @WithoutLocationContext
+    @WithoutTransactionContext
+    ContextService withoutLocationAndTxContext;
+
+    @Inject
+    @WithoutLocationContext
+    ContextService withoutLocationContext;
+
+    @Resource
+    UserTransaction tx;
 
     private ExecutorService unmanagedThreads;
 
@@ -228,9 +263,10 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
     /**
      * Inject qualified instances of ContextService and verify that the behavior of each
-     * matches the configuration that the qualifier points to.
+     * matches the configuration that the qualifier points to. The qualifiers are defined
+     * on a ContextServiceDefinition annotation.
      */
-    public void testInjectContextServiceQualified() throws Exception {
+    public void testInjectContextServiceQualifiedFromAnno() throws Exception {
         assertNotNull(withAppContext);
 
         Callable<?> task1 = withAppContext.contextualCallable(() -> InitialContext.doLookup("java:comp/env/entry2"));
@@ -253,6 +289,56 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
+     * Inject qualified instances of ContextService and verify that the behavior of each
+     * matches the configuration that the qualifier points to. The qualifiers are defined
+     * on a context-service element in web.xml.
+     */
+    public void testInjectContextServiceQualifiedFromWebDD() throws Exception {
+        assertNotNull(withoutLocationContext);
+        assertNotNull(withoutLocationAndTxContext);
+
+        Location.set("Olmsted County");
+        try {
+            Supplier<String> supplier1 = withoutLocationContext.contextualSupplier(Location::get);
+            assertEquals(null, supplier1.get());
+            assertEquals("Olmsted County", Location.get());
+
+            Callable<String> callable1 = withoutLocationContext.contextualCallable(() -> {
+                return InitialContext.doLookup("java:comp/env/entry2");
+            });
+
+            Future<?> future1 = unmanagedThreads.submit(callable1);
+
+            Object found1 = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals("value2", found1);
+
+            tx.begin();
+            try {
+                Supplier<String> supplier2 = withoutLocationAndTxContext.contextualSupplier(Location::get);
+                assertEquals(null, supplier2.get());
+                assertEquals("Olmsted County", Location.get());
+
+                Callable<String> callable2 = withoutLocationContext.contextualCallable(() -> {
+                    return InitialContext.doLookup("java:comp/env/entry2");
+                });
+
+                Future<?> future2 = unmanagedThreads.submit(callable2);
+
+                Object found2 = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+                assertEquals("value2", found2);
+
+                Callable<Integer> callable3 = withoutLocationAndTxContext.contextualCallable(() -> tx.getStatus());
+                assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), callable3.call());
+                assertEquals(Status.STATUS_ACTIVE, tx.getStatus());
+            } finally {
+                tx.rollback();
+            }
+        } finally {
+            Location.clear();
+        }
+    }
+
+    /**
      * Inject default instance of ManagedExecutorService and use it.
      */
     public void testInjectManagedExecutorServiceDefaultInstance() throws Exception {
@@ -268,9 +354,10 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
     /**
      * Inject qualified instances of ManagedExecutorService and verify that the behavior of each
-     * matches the configuration that the qualifier points to.
+     * matches the configuration that the qualifier points to. The qualifiers are configured
+     * on the ManagedExecutorDefinition annotation.
      */
-    public void testInjectManagedExecutorServiceQualified() throws Exception {
+    public void testInjectManagedExecutorServiceQualifiedFromAnno() throws Exception {
         Callable<?> task = () -> InitialContext.doLookup("java:comp/env/entry2");
 
         assertNotNull(executorWithAppContext);
@@ -291,6 +378,45 @@ public class ConcurrentCDIServlet extends HttpServlet {
         Future<?> future2 = executorWithAppContext.submit(task);
         Object result2 = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertEquals("value2", result2);
+    }
+
+    /**
+     * Inject qualified instances of ManagedExecutorService and verify that the behavior of each
+     * matches the configuration that the qualifier points to. The qualifiers are configured
+     * on the managed-executor element in web.xml.
+     */
+    public void testInjectManagedExecutorServiceQualifiedFromWebDD() throws Exception {
+        Callable<Object[]> task = () -> {
+            return new Object[] {
+                                  Location.get(),
+                                  tx.getStatus(),
+                                  InitialContext.doLookup("java:comp/env/entry2")
+            };
+        };
+
+        assertNotNull(executorWithoutLocationAndTxContext);
+
+        tx.begin();
+        Location.set("Minnesota");
+        try {
+            List<Future<Object[]>> results = executorWithoutLocationAndTxContext.invokeAll(Arrays.asList(task, task));
+
+            Object[] r = results.get(0).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(null, r[0]); // cleared location context
+            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), r[1]); // cleared transaction context
+            assertEquals("value2", r[2]); // propagated transaction context
+
+            r = results.get(0).get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(null, r[0]); // cleared location context
+            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), r[1]); // cleared transaction context
+            assertEquals("value2", r[2]); // propagated transaction context
+
+            assertEquals("Minnesota", Location.get());
+            assertEquals(Status.STATUS_ACTIVE, tx.getStatus());
+        } finally {
+            Location.clear();
+            tx.rollback();
+        }
     }
 
     /**
@@ -315,9 +441,10 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
     /**
      * Inject qualified instances of ManagedScheduledExecutorService and verify that the behavior of each
-     * matches the configuration that the qualifier points to.
+     * matches the configuration that the qualifier points to. The qualifiers are configured on the
+     * ManagedScheduledExecutorDefinition annotation.
      */
-    public void testInjectManagedScheduledExecutorServiceQualified() throws Exception {
+    public void testInjectManagedScheduledExecutorServiceQualifiedFromAnno() throws Exception {
         Callable<?> task = () -> InitialContext.doLookup("java:comp/env/entry2");
 
         assertNotNull(scheduledExecutorWithAppContext);
@@ -338,6 +465,35 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         Object result2 = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertEquals("value2", result2);
+    }
+
+    /**
+     * Inject qualified instances of ManagedScheduledExecutorService and verify that the behavior of each
+     * matches the configuration that the qualifier points to. The qualifiers are configured
+     * on the managed-scheduled-executor element in web.xml.
+     */
+    public void testInjectManagedScheduledExecutorServiceQualifiedFromWebDD() throws Exception {
+        Callable<Object[]> task = () -> {
+            return new Object[] {
+                                  Location.get(),
+                                  InitialContext.doLookup("java:comp/env/entry2")
+            };
+        };
+
+        assertNotNull(scheduledExecutorWithoutLocationContext);
+
+        Location.set("2800 37th St NW");
+        try {
+            ScheduledFuture<Object[]> future = scheduledExecutorWithoutLocationContext.schedule(task, 37, TimeUnit.MILLISECONDS);
+
+            Object[] results = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals(null, results[0]); // cleared location context
+            assertEquals("value2", results[1]); // propagated transaction context
+
+            assertEquals("2800 37th St NW", Location.get());
+        } finally {
+            Location.clear();
+        }
     }
 
     /**
@@ -368,9 +524,10 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
     /**
      * Inject qualified instances of ManagedThreadFactory and verify that the behavior of each
-     * matches the configuration that the qualifier points to.
+     * matches the configuration that the qualifier points to. The qualifiers are configured
+     * on a ManagedThreadFactoryDefinition annotation.
      */
-    public void testInjectManagedThreadFactoryQualified() throws Exception {
+    public void testInjectManagedThreadFactoryQualifiedFromAnno() throws Exception {
         assertNotNull(threadFactoryWithAppContext);
         assertNotNull(threadFactoryWithoutAppContext);
 
@@ -416,6 +573,51 @@ public class ConcurrentCDIServlet extends HttpServlet {
                 ; // expected
             else
                 throw x;
+        }
+    }
+
+    /**
+     * Inject qualified instances of ManagedThreadFactory and verify that the behavior of each
+     * matches the configuration that the qualifier points to. The qualifiers are configured
+     * on a managed-thread-factory element in web.xml.
+     */
+    public void testInjectManagedThreadFactoryQualifiedFromWebDD() throws Exception {
+        assertNotNull(threadFactoryWithoutLocationAndTxContext);
+
+        tx.begin();
+        Location.set("St. Paul, MN");
+        try {
+            CompletableFuture<Object[]> future = new CompletableFuture<>();
+
+            Runnable task = () -> {
+                try {
+                    future.complete(new Object[] {
+                                                   tx.getStatus(),
+                                                   Location.get(),
+                                                   // Requires the application's context to look up a java:comp name
+                                                   InitialContext.doLookup("java:comp/env/entry2"),
+                                                   Thread.currentThread().getPriority()
+                    });
+                } catch (Throwable x) {
+                    future.completeExceptionally(x);
+                }
+            };
+
+            Thread thread = threadFactoryWithoutLocationAndTxContext.newThread(task);
+
+            thread.start();
+
+            assertEquals(3, thread.getPriority());
+
+            Object[] results = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), results[0]);
+            assertEquals(null, results[1]);
+            assertEquals("value2", results[2]);
+            assertEquals(Integer.valueOf(3), results[3]);
+        } finally {
+            Location.clear();
+            tx.rollback();
         }
     }
 
