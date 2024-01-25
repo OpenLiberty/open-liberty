@@ -14,6 +14,7 @@ import java.util.concurrent.Flow.Processor;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Subscription;
 
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
