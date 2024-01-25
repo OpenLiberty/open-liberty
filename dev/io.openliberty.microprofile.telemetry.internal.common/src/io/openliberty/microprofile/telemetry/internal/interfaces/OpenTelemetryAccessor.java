@@ -22,8 +22,8 @@ import org.osgi.service.component.annotations.Reference;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 
-import io.openliberty.microprofile.telemetry.internal.common.helpers.OSGIHelpers;
 import io.openliberty.microprofile.telemetry.internal.common.info.ErrorOpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.opentelemetry.api.baggage.Baggage;
@@ -34,6 +34,7 @@ import io.opentelemetry.api.trace.Tracer;
 public class OpenTelemetryAccessor {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryAccessor.class);
+    private static final ServiceCaller<OpenTelemetryInfoFactory> openTelemetryInfoFactoryService = new ServiceCaller<OpenTelemetryInfoFactory>(OpenTelemetryAccessor.class, OpenTelemetryInfoFactory.class);
 
     private static volatile Optional<OpenTelemetryAccessor> instance = Optional.empty();
 
@@ -60,12 +61,8 @@ public class OpenTelemetryAccessor {
      *         is disabled or the application has shut down.
      */
     public static OpenTelemetryInfo getOpenTelemetryInfo() {
-        try {
-            OpenTelemetryInfoFactory factory = OSGIHelpers.getService(OpenTelemetryInfoFactory.class, OpenTelemetryAccessor.class);
-            return factory.getOpenTelemetryInfo();
-        } catch (Exception e) {
-            return new ErrorOpenTelemetryInfo();
-        }
+        Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryInfoFactoryService.call( (factory) -> {return factory.getOpenTelemetryInfo(); });
+        return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::new);
     }
 
     /**
