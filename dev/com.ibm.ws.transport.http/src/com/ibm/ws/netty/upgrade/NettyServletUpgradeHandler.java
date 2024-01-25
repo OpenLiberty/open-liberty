@@ -54,6 +54,7 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
     TCPReadCompletedCallback callback;
     private VirtualConnection vc;
     private TCPReadRequestContext readContext;
+    private long minBytesToRead = 0;
 
     /**
      * Initialize the queue that will store the data
@@ -66,54 +67,48 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        // TODO Auto-generated method stub
         if (msg instanceof ByteBuf) {
             System.out.println("Got content to store!!");
             ByteBuf buf = (ByteBuf) msg;
 
             try {
-
                 System.out.println(ByteBufUtil.hexDump(buf));
+                buf.retain();
                 queue.add(buf);
-                totalBytesRead += buf.readableBytes();
+                long bytesRead = buf.readableBytes();
+                totalBytesRead += bytesRead;
 
-                MSP.log("Will callback be called? " + Objects.nonNull(callback));
+           //     MSP.log("Will callback be called? " + Objects.nonNull(callback));
                 MSP.log("contains data: " + containsQueuedData());
                 MSP.log("Data size: " + queuedDataSize());
 
                 MSP.log("do we have data to read?");
-                if (queuedDataSize() > 0) {
-                    MSP.log("storing available data");
-                    MSP.log("had data? " + containsQueuedData());
-                    MSP.log("data size: " + queuedDataSize());
-
-                    byte[] bytes = ByteBufUtil.getBytes(read(queuedDataSize(), null));
-                    MSP.log("got [" + bytes.length + "] bytes from handler.");
-
-                    WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(bytes.length);
-                    readContext.setBuffer(buffer);
-                    readContext.getBuffer().put(bytes);
-                    MSP.log("stored bytes from handler in read context");
-
-                }
-                MSP.log("read exit... ");
-                MSP.log("had data? " + containsQueuedData());
-                MSP.log("data size: " + queuedDataSize());
-
+                
+//                MSP.log("read exit... ");
+//                MSP.log("had data? " + containsQueuedData());
+//                MSP.log("data size: " + queuedDataSize());
+                
             } catch (Exception e) {
                 ctx.fireExceptionCaught(e);
             } finally {
                 buf.release();
-                signalReadReady();
+//                if (totalBytesRead >= minBytesToRead) {
+//                    signalReadReady(); // Signal only if minimum bytes are read
+//                }
             }
 
         } else {
             System.out.println("Need to verify!! Message was not a ByteBuf object!! Passing on as normal");
             System.out.println(msg);
-            //super.channelRead(ctx, msg);
             ctx.fireChannelRead(msg);
         }
     }
+    
+    
+    
+    
+    
+    
 
     private void signalReadReady() {
         readLock.lock();
@@ -125,22 +120,77 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    public boolean awaitReadReady(long timeout, TimeUnit unit)  {
+    public void waitForDataRead(long waitTime) throws InterruptedException {
+//        synchronized (readNotifier) {
+//            readNotifier.wait((waitTime < 0) ? 0 : waitTime);
+//        }
         readLock.lock();
-        boolean dataReady = true;
         try {
             while (!containsQueuedData()) {
-                readCondition.await(timeout, unit);
+                readCondition.await(waitTime, TimeUnit.MILLISECONDS);
             }
+        } finally {
+            readLock.unlock();
+        }
+    }
+
+    public boolean awaitReadReady(long numBytes, int timeout, TimeUnit unit) {
+        MSP.log("UPGRADE HANDLER - minBytes: " + numBytes + " Waiting for "+ timeout + " " + unit);
+        
+        minBytesToRead  = numBytes; // Set the minimum number of bytes to read
+        
+        readLock.lock();
+        boolean dataReady = false;
+        try {
+            long waitTime = unit.toNanos(timeout);
+            long endTime = System.nanoTime() + waitTime;
+            MSP.log("Beginning wait");
+            while (totalBytesRead < minBytesToRead && waitTime > 0) {
+                readCondition.awaitNanos(waitTime);
+                waitTime = endTime - System.nanoTime(); // Recalculate remaining wait time
+                MSP.debug(" totalBytesRead: " + totalBytesRead);
+                MSP.log(" minBytesToRead: "+ minBytesToRead);
+            }
+            dataReady = totalBytesRead >= minBytesToRead; // Check if the minimum number of bytes was read
         } catch (InterruptedException e) {
-            dataReady = false;
-        }finally {
+            Thread.currentThread().interrupt(); // Restore the interrupt status
+        } finally {
             readLock.unlock();
         }
         
-        
+        MSP.log(" UPGRADE HANDLER - finished awaitReadReady");
+
         return dataReady;
     }
+    
+    
+    public synchronized void setToBuffer() {
+    
+    if (queuedDataSize() > 0) { // Check if we have enough data
+        MSP.log("storing available data");
+        MSP.log("had data? " + containsQueuedData());
+        MSP.log("data size: " + queuedDataSize());
+
+        byte[] bytes = ByteBufUtil.getBytes(read(queuedDataSize(), null));
+        MSP.log("got [" + bytes.length + "] bytes from handler.");
+
+        WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(bytes.length);
+        readContext.setBuffer(buffer);
+        readContext.getBuffer().put(bytes);
+        MSP.log("stored bytes from handler in read context");
+
+        // Reset totalBytesRead after fulfilling the read
+        totalBytesRead -= bytes.length; // Adjust totalBytesRead
+
+        // Signal that the read is complete
+//        if (callback != null) {
+//            callback.complete(vc, readContext);
+//        }
+    }
+    }
+    
+    
+    
 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {

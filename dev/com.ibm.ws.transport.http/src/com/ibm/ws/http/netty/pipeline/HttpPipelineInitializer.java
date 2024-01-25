@@ -40,6 +40,7 @@ import io.netty.handler.codec.http.HttpObjectDecoder;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
 import io.netty.handler.ssl.SslContext;
@@ -154,11 +155,10 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         // Initialize with the parent bootstrap initializer
         this.chain.getBootstrap().getBaseInitializer().init(channel);
+        
+        channel.attr(NettyHttpConstants.IS_OUTBOUND_KEY).set(false);
 
         if (chain.isHttps()) {
-            
-            
-
             if (chain.isHttp2Enabled() && notDisabled) { // h2 setup starts here
                 // Need to setup ALPN
                 setupH2Pipeline(pipeline);
@@ -334,6 +334,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null,
                                new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
         }
+        
 
         //pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(maxContentLength);
         //pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new HttpObjectAggregator(64 * 1024));

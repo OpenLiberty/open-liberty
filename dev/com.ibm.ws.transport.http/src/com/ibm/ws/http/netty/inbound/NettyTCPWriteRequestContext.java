@@ -211,7 +211,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
                     }
                     //Release buffer
-                    ReferenceCountUtil.release(nettyBuf);
+                   // ReferenceCountUtil.release(nettyBuf);
                 });
             }
         }
@@ -251,7 +251,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                         } else {
                             //callback.error(null, future.cause());
                         }
-                        ReferenceCountUtil.release(nettyBuf);
+                        //ReferenceCountUtil.release(nettyBuf);
                     });
 
                 }
