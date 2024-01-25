@@ -14,17 +14,21 @@ import java.util.Objects;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
-import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
+import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpUtil;
+import io.openliberty.netty.internal.tcp.InactivityTimeoutHandler;
 
 /**
  *
@@ -69,19 +73,39 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
 //                    ctx.channel().attr(NettyHttpConstants.COMPRESSION_ENCODING).set(compressionHandler.getEncoding());
 //                }
 //            }
+            
+            final boolean isSwitching = response.status() == HttpResponseStatus.SWITCHING_PROTOCOLS;
 
-            ctx.writeAndFlush(msg);
-            if (response.status() == HttpResponseStatus.SWITCHING_PROTOCOLS) {
-//                fullResponse = new DefaultFullHttpResponse(response.protocolVersion(), response.status(), Unpooled.buffer(0));
-//                fullResponse.headers().set(response.headers());
-                ctx.pipeline().remove(HttpDispatcherHandler.class);
-                ctx.pipeline().remove("maxConnectionHandler");
-                ctx.pipeline().remove("HTTP_SERVER_HANDLER");
-                ctx.pipeline().remove("chunkLoggingHandler");
-                ctx.pipeline().remove("chunkWriteHandler");
-                ctx.pipeline().remove(TransportOutboundHandler.class);
+//            if (response.status() == HttpResponseStatus.SWITCHING_PROTOCOLS) {
+////               
+//                isSwitching = true;
+//
+//            }
+            ChannelFuture future = ctx.writeAndFlush(msg);
+            
+            future.addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture future) {
+                    if (future.isSuccess() && isSwitching) {
+                        // Handle the successful write operation
+                        ctx.pipeline().remove("maxConnectionHandler");
+                        // ctx.pipeline().remove("HTTP_SERVER_HANDLER");
+                        ctx.pipeline().remove("chunkLoggingHandler");
+                        ctx.pipeline().remove("chunkWriteHandler");
+                        ctx.pipeline().remove(ByteBufferCodec.class);
+                        ctx.pipeline().remove(TransportOutboundHandler.class);
+                        ctx.pipeline().remove(InactivityTimeoutHandler.class);
+                        ctx.pipeline().remove(HttpServerCodec.class);
+                        if (ctx.pipeline().get(NettyServletUpgradeHandler.class) == null) {
 
-            }
+                            NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(ctx.channel());
+                            ctx.pipeline().addLast(upgradeHandler);
+                        }
+                        
+                        System.out.println(ctx.pipeline().names());
+                    }
+                }
+            });
 
         }
 

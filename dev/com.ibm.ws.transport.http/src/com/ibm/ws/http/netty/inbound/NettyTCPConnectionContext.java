@@ -12,6 +12,7 @@ package com.ibm.ws.http.netty.inbound;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
+import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.SSLConnectionContext;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
@@ -19,6 +20,7 @@ import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.ssl.SslHandler;
 
 /**
  *
@@ -29,6 +31,7 @@ public class NettyTCPConnectionContext implements TCPConnectionContext {
     private final NettyTCPWriteRequestContext writeContext;
     private final VirtualConnection vc;
     private final ChannelHandlerContext nettyContext;
+    private SSLConnectionContext sslContext;
 
     public NettyTCPConnectionContext(ChannelHandlerContext nettyContext, VirtualConnection vc) {
 
@@ -38,7 +41,16 @@ public class NettyTCPConnectionContext implements TCPConnectionContext {
         this.readContext = new NettyTCPReadRequestContext(this, nettyContext);
         this.readContext.setVC(this.vc);
         this.writeContext = new NettyTCPWriteRequestContext(this, nettyContext);
+        initializeSSLContext();
 
+    }
+
+    private void initializeSSLContext() {
+        SslHandler sslHandler = nettyContext.pipeline().get(SslHandler.class);
+
+        if (sslHandler != null) {
+            this.sslContext = new NettySSLConnectionContext(nettyContext.channel(), nettyContext.channel().attr(NettyHttpConstants.IS_OUTBOUND_KEY).get());
+        }
     }
 
     @Override
