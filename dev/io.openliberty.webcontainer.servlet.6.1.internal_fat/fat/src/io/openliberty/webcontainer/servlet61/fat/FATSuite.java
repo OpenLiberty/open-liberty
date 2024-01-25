@@ -18,6 +18,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
 
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61AddAndSetHeaderTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61CharsetEncodingTest;
+import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61EmptyURLPatternMappingTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61HTTPResponseCodesTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ResponseSendRedirectTest;
 
@@ -25,6 +26,7 @@ import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ResponseSendRedi
 @SuiteClasses({
                 Servlet61AddAndSetHeaderTest.class,
                 Servlet61CharsetEncodingTest.class,
+                Servlet61EmptyURLPatternMappingTest.class,
                 Servlet61HTTPResponseCodesTest.class,
                 Servlet61ResponseSendRedirectTest.class
 })
