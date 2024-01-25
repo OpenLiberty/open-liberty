@@ -48,6 +48,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.cache.Cache;
 import javax.cache.Caching;
 import javax.cache.management.CacheMXBean;
 import javax.cache.management.CacheStatisticsMXBean;
@@ -58,12 +59,11 @@ import javax.naming.InitialContext;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionListener;
 import javax.sql.DataSource;
 
 import com.ibm.websphere.servlet.session.IBMSession;
-import com.ibm.websphere.simplicity.config.HttpSession;
-import com.ibm.websphere.simplicity.config.cache.Cache;
 
 import componenttest.app.FATServlet;
 
