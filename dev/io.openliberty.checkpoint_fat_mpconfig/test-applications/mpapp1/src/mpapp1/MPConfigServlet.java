@@ -52,11 +52,6 @@ public class MPConfigServlet extends FATServlet {
     }
 
     @Test
-    public void envValueChangeTest() {
-        reqScopeBean.envValueChangeTest();
-    }
-
-    @Test
     public void serverValueTest() {
         reqScopeBean.serverValueTest();
     }
@@ -67,6 +62,11 @@ public class MPConfigServlet extends FATServlet {
     }
 
     @Test
+    public void varDirValueTest() {
+        reqScopeBean.varDirValueTest();
+    }
+
+    @Test
     public void noDefaultEnvValueTest() {
         reqScopeBean.noDefaultEnvValueTest();
     }
@@ -74,11 +74,6 @@ public class MPConfigServlet extends FATServlet {
     @Test
     public void noDefaultServerValueTest() {
         reqScopeBean.noDefaultServerValueTest();
-    }
-
-    @Test
-    public void providerEnvValueChangeTest() {
-        reqScopeBean.providerEnvValueChangeTest();
     }
 
     // MPconfigBeanWithApplicationScope
@@ -93,11 +88,6 @@ public class MPConfigServlet extends FATServlet {
     }
 
     @Test
-    public void appScopeEnvValueChangeTest() {
-        appScopeBean.appScopeEnvValueChangeTest();
-    }
-
-    @Test
     public void appScopeServerValueTest() {
         appScopeBean.appScopeServerValueTest();
     }
@@ -105,6 +95,11 @@ public class MPConfigServlet extends FATServlet {
     @Test
     public void appScopeAnnoValueTest() {
         appScopeBean.appScopeAnnoValueTest();
+    }
+
+    @Test
+    public void appScopeVarDirValueTest() {
+        appScopeBean.varDirValueTest();
     }
 
     @Test
@@ -117,11 +112,6 @@ public class MPConfigServlet extends FATServlet {
         appScopeBean.appScopeNoDefaultServerValueTest();
     }
 
-    @Test
-    public void appScopeProviderEnvValueChangeTest() {
-        appScopeBean.appScopeProviderEnvValueChangeTest();
-    }
-
     // ApplicationScopedOnCheckpointBeanWithConfigObject
     @Test
     public void configObjectAppScopeDefaultValueTest() {
@@ -131,11 +121,6 @@ public class MPConfigServlet extends FATServlet {
     @Test
     public void configObjectAppScopeEnvValueTest() {
         appScopeOnCheckpointWithConfigObject.appScopeEnvValueTest();
-    }
-
-    @Test
-    public void configObjectAppScopeEnvValueChangeTest() {
-        appScopeOnCheckpointWithConfigObject.appScopeEnvValueChangeTest();
     }
 
     @Test
@@ -160,19 +145,14 @@ public class MPConfigServlet extends FATServlet {
     }
 
     @Test
-    public void configObjectPropertiesAppScopeEnvValueChangeTest() {
-        appScopeOnCheckpointWithConfigObjectProperties.appScopeEnvValueChangeTest();
-    }
-
-    @Test
     public void configObjectPropertiesAppScopeServerValueTest() {
         appScopeOnCheckpointWithConfigObjectProperties.appScopeServerValueTest();
     }
 
     // ApplicationScopedOnCheckpointBean
     @Test
-    public void applicationScopedValueTest() {
-        appScopeOnCheckpointBean.applicationScopedValueTest();
+    public void appScopeEarlyAccessValueTest() {
+        appScopeOnCheckpointBean.appScopedValueTest();
     }
 
     @Test
