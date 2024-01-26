@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,14 +14,11 @@ package com.ibm.ws.config.admin;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -34,59 +31,200 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 @Trivial
 public class ConfigurationDictionary extends Dictionary<String, Object> implements Serializable {
-
     private static final long serialVersionUID = 7966152868712543805L;
 
-    /** Set of supported simple types */
-    static private final List<Class<?>> simpleTypes = Arrays.asList(new Class<?>[] { String.class, Integer.class, Long.class, Float.class, Double.class,
-                                                                                    Byte.class,
-                                                                                    Short.class, Character.class, Boolean.class });
-
-    /** Set of supported primitive array types */
-    static private final List<Class<?>> primitiveArrayTypes = Arrays.asList(new Class<?>[] { long[].class, int[].class, short[].class, char[].class,
-                                                                                            byte[].class,
-                                                                                            double[].class, float[].class, boolean[].class });
-
-    /** Set of supported simple array types */
-    static private final List<Class<?>> simpleArrayTypes = Arrays.asList(new Class<?>[] { String[].class, Integer[].class, Long[].class, Float[].class,
-                                                                                         Double[].class,
-                                                                                         Byte[].class, Short[].class, Character[].class, Boolean[].class });
-    /** Set of IBM extended types */
-    static private final List<Class<?>> extendedTypes = Arrays.asList(new Class<?>[] { SerializableProtectedString.class, OnError.class });
-
-    static final Comparator<String> CASE_INSENSITIVE = new CaseInsensitive();
+    @Trivial
+    private static final boolean isSimpleType(Class<?> aType) {
+        return ((aType == String.class) ||
+                (aType == Integer.class) ||
+                (aType == Long.class) ||
+                (aType == Float.class) ||
+                (aType == Double.class) ||
+                (aType == Byte.class) ||
+                (aType == Short.class) ||
+                (aType == Character.class) ||
+                (aType == Boolean.class));
+    }
 
     @Trivial
-    static class CaseInsensitive implements Comparator<String>, Serializable {
-        private static final long serialVersionUID = 7962325242424955159L;
+    private static final boolean isPrimitiveArrayType(Class<?> aType) {
+        return ((aType == long[].class) ||
+                (aType == int[].class) ||
+                (aType == short[].class) ||
+                (aType == char[].class) ||
+                (aType == byte[].class) ||
+                (aType == double[].class) ||
+                (aType == float[].class) ||
+                (aType == boolean[].class));
+    }
 
-        @Override
-        public int compare(String s1, String s2) {
-            if (s1 == s2)
-                return 0;
-            return String.CASE_INSENSITIVE_ORDER.compare(s1, s2);
+    @Trivial
+    private static final boolean isSimpleArrayType(Class<?> aType) {
+        return ((aType == String[].class) ||
+                (aType == Integer[].class) ||
+                (aType == Long[].class) ||
+                (aType == Float[].class) ||
+                (aType == Double[].class) ||
+                (aType == Byte[].class) ||
+                (aType == Short[].class) ||
+                (aType == Character[].class) ||
+                (aType == Boolean[].class));
+    }
+
+    @Trivial
+    private static final boolean isExtendedType(Class<?> aType) {
+        return ((aType == SerializableProtectedString.class) ||
+                (aType == OnError.class));
+    }
+
+    @Trivial
+    private static final void validateValue(Object value) {
+        Class<?> clazz = value.getClass();
+
+        if (isSimpleType(clazz) || isSimpleArrayType(clazz) || isPrimitiveArrayType(clazz) || isExtendedType(clazz)) {
+            return;
         }
 
-    };
+        // Do NOT test against Collection.class; the value class is an implementer of Collection.
+        if (value instanceof Collection) {
+            Collection<?> valueCollection = (Collection<?>) value;
+            for (Object valueElement : valueCollection) {
+                Class<?> containedClazz = valueElement.getClass();
+                if (!isSimpleType(containedClazz)) {
+                    throw new IllegalArgumentException(containedClazz.getName() + " in " + clazz.getName());
+                }
+            }
+            return;
+        }
 
-    protected final Map<String, Object> properties = Collections.synchronizedMap(new TreeMap<String, Object>(CASE_INSENSITIVE));
+        // Do NOT test against Map.class; the value class is an implementer of Map.
+        if (value instanceof Map) {
+            Map<?, ?> valueMap = (Map<?, ?>) value;
+            valueMap.forEach((Object key, Object valueElement) -> {
+                Class<?> keyClazz = key.getClass();
+                if (keyClazz != String.class) {
+                    throw new IllegalArgumentException(keyClazz.getName() + " in " + clazz.getName());
+                }
+                Class<?> elementClazz = valueElement.getClass();
+                if (!isSimpleType(elementClazz)) {
+                    throw new IllegalArgumentException(elementClazz.getName() + " in " + clazz.getName());
+                }
+            });
+            return;
+        }
 
+        throw new IllegalArgumentException(clazz.getName());
+    }
+
+    @Trivial
+    private static final Object copyValue(Object value) {
+        if (value.getClass().isArray()) {
+            int arrayLength = Array.getLength(value);
+            Object copyOfArray = Array.newInstance(value.getClass().getComponentType(), arrayLength);
+            System.arraycopy(value, 0, copyOfArray, 0, arrayLength);
+            return copyOfArray;
+        } else if (value instanceof Vector) {
+            return ((Vector<?>) value).clone();
+        } else {
+            return value;
+        }
+    }
+
+    //
+
+    @Trivial
+    private static TreeMap<String, Object> newProperties() {
+        return new TreeMap<String, Object>((String s1, String s2) -> s1.compareToIgnoreCase(s2));
+    }
+
+    @Trivial
     public ConfigurationDictionary() {
+        this(newProperties());
+    }
 
+    @Trivial
+    private ConfigurationDictionary(TreeMap<String, Object> rawProperties) {
+        this.properties = Collections.synchronizedMap(rawProperties);
+    }
+
+    public ConfigurationDictionary copy() {
+        TreeMap<String, Object> rawProperties = newProperties();
+
+        synchronized (properties) { // 'forEach' is not synchronized.
+            properties.forEach((String key, Object value) -> {
+                rawProperties.put(key, copyValue(value));
+            });
+        }
+
+        return new ConfigurationDictionary(rawProperties);
+    }
+
+    //
+
+    // TODO: Map iterators are not thread safe: Having the
+    //       map be a synchronized map does not provide complete
+    //       thread safety.
+    //
+    //       See the comment on 'Collections.synchronizedMap(Map<K, V>)'.
+
+    protected final Map<String, Object> properties;
+
+    @Override
+    public Object get(Object key) {
+        if (key == null) {
+            throw new NullPointerException();
+        } else {
+            return properties.get(key); // thread safe
+        }
+    }
+
+    @Override
+    public Object put(String key, Object value) {
+        if ((key == null) || (value == null)) {
+            throw new NullPointerException();
+        }
+
+        validateValue(value); // throws IllegalArgumentException
+
+        return properties.put(key, value); // thread safe
+    }
+
+    @Override
+    public Object remove(Object key) {
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        return properties.remove(key); // thread safe
+    }
+
+    @Override
+    public int size() {
+        return properties.size(); // thread safe
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return properties.isEmpty(); // thread safe
+    }
+
+    public boolean matches(Filter filter) {
+        // TODO: Should this synchronize on the properties?
+        return filter.matches(properties);
     }
 
     @Trivial
     private class ValuesEnumeration<T> implements Enumeration<Object> {
+        // TODO: The values iterator is not thread safe:
+        //       use of the values enumeration should synchronize on 'properties'.
+        //       See the comment on 'Collections.synchronizedMap(Map<K, V>)'.
         final Iterator<Object> valuesIterator = properties.values().iterator();
 
         @Override
-        @Trivial
         public boolean hasMoreElements() {
             return valuesIterator.hasNext();
         }
 
         @Override
-        @Trivial
         public Object nextElement() {
             return valuesIterator.next();
         }
@@ -97,20 +235,12 @@ public class ConfigurationDictionary extends Dictionary<String, Object> implemen
         return new ValuesEnumeration<Object>();
     }
 
-    @Override
-    public Object get(Object key) {
-        if (key == null)
-            throw new NullPointerException();
-        return properties.get(key);
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return properties.isEmpty();
-    }
-
     @Trivial
     private class KeysEnumeration<T> implements Enumeration<String> {
+        // TODO: The keys iterator is not thread safe:
+        //       use of the keys enumeration should synchronize on 'properties'.
+        //       See the comment on 'Collections.synchronizedMap(Map<K, V>)'.
+
         Iterator<String> keysIterator = properties.keySet().iterator();
 
         @Override
@@ -131,107 +261,30 @@ public class ConfigurationDictionary extends Dictionary<String, Object> implemen
         return new KeysEnumeration<String>();
     }
 
-    @Override
-    public Object put(String key, Object value) {
-        if (key == null || value == null)
-            throw new NullPointerException();
-
-        // Will throw an illegal argument exception if not a valid configuration property type
-        validateValue(value);
-
-        return properties.put(key, value);
-    }
-
-    @Override
-    public Object remove(Object key) {
-        if (key == null)
-            throw new NullPointerException();
-        return properties.remove(key);
-    }
-
-    @Override
-    public int size() {
-        return properties.size();
-    }
-
-    private static void validateValue(Object value) {
-        Class<?> clazz = value.getClass();
-
-        // Is it in the set of simpleTypes 
-        if (simpleTypes.contains(clazz))
-            return;
-
-        // Is it an array of primitives or simples or extended
-        if (simpleArrayTypes.contains(clazz) || primitiveArrayTypes.contains(clazz) || extendedTypes.contains(clazz))
-            return;
-
-        // Is it a Collection of simpleTypes
-        if (value instanceof Collection<?>) {
-            Collection<?> valueCollection = (Collection<?>) value;
-            for (Iterator<?> it = valueCollection.iterator(); it.hasNext();) {
-                Class<?> containedClazz = it.next().getClass();
-                if (!simpleTypes.contains(containedClazz)) {
-                    throw new IllegalArgumentException(containedClazz.getName() + " in " + clazz.getName()); //$NON-NLS-1$
-                }
-            }
-            return;
-        }
-
-        // IBM extension to support Maps
-        if (value instanceof Map) {
-            Map<?, ?> valueMap = (Map<?, ?>) value;
-            for (Map.Entry<?, ?> entry : valueMap.entrySet()) {
-                Class<?> keyClazz = entry.getKey().getClass();
-                if (keyClazz != String.class) {
-                    throw new IllegalArgumentException(keyClazz.getName() + " in " + clazz.getName()); //$NON-NLS-1$
-                }
-                Class<?> valueClazz = entry.getValue().getClass();
-                if (!simpleTypes.contains(valueClazz)) {
-                    throw new IllegalArgumentException(valueClazz.getName() + " in " + clazz.getName()); //$NON-NLS-1$
-                }
-            }
-            return;
-        }
-
-        throw new IllegalArgumentException(clazz.getName());
-    }
-
-    public ConfigurationDictionary copy() {
-        ConfigurationDictionary result = new ConfigurationDictionary();
-        for (Map.Entry<String, Object> entry : properties.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            if (value.getClass().isArray()) {
-                int arrayLength = Array.getLength(value);
-                Object copyOfArray = Array.newInstance(value.getClass().getComponentType(), arrayLength);
-                System.arraycopy(value, 0, copyOfArray, 0, arrayLength);
-                result.properties.put(key, copyOfArray);
-            } else if (value instanceof Vector)
-                result.properties.put(key, ((Vector<?>) value).clone());
-            else
-                result.properties.put(key, value);
-        }
-        return result;
-    }
+    //
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
+
         builder.append('{');
 
-        synchronized (properties) {
-            for (Iterator<Map.Entry<String, Object>> it = properties.entrySet().iterator(); it.hasNext();) {
-                Map.Entry<String, Object> entry = it.next();
+        synchronized (properties) { // 'forEach' is not synchronized.
+            properties.forEach((String key, Object value) -> {
+                if (builder.length() != 0) {
+                    builder.append(", ");
+                }
 
-                builder.append(entry.getKey());
+                builder.append(key);
                 builder.append('=');
 
-                Object value = entry.getValue();
-                if (value == null || !value.getClass().isArray()) {
+                if ((value == null) || !value.getClass().isArray()) {
                     builder.append(value);
+
                 } else {
                     String name = value.getClass().getComponentType().getName();
-                    builder.append(name, name.lastIndexOf('.') + 1, name.length()).append("[]{");
+                    builder.append(name, name.lastIndexOf('.') + 1, name.length());
+                    builder.append("[]{");
                     for (int i = 0, length = Array.getLength(value); i < length; i++) {
                         if (i != 0) {
                             builder.append(", ");
@@ -240,21 +293,11 @@ public class ConfigurationDictionary extends Dictionary<String, Object> implemen
                     }
                     builder.append('}');
                 }
-
-                if (it.hasNext()) {
-                    builder.append(", ");
-                }
-            }
+            });
         }
 
-        return builder.append('}').toString();
-    }
+        builder.append('}');
 
-    /**
-     * @param filter
-     * @return
-     */
-    public boolean matches(Filter filter) {
-        return filter.matches(this.properties);
+        return builder.toString();
     }
 }

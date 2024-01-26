@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -100,33 +100,43 @@ class ServerXMLConfiguration {
     }
 
     /**
-     * This sets a server's base configuration by processing server's root
-     * configuration document(i.e. server.cfg)
-     * and any of its included configuration resources, but not individual
-     * bundle's default configurations(i.e. bundle.cfg).
-     * <P>
-     * Generally, this should be only done once at the beginning before any of the bundle's default configurations are processed.
+     * Set a server's base configuration by loading the server's root
+     * configuration resource (server.xml) and any included configuration
+     * resources, but not individual bundle default configurations
+     * (for example, bundle.cfg).
+     * <p>
+     * This should be only done once, before any bundle default configurations
+     * are loaded.
      *
      * @throws ConfigValidationException
      * @throws ConfigParserException
-     *
      */
-
     @FFDCIgnore(ConfigParserTolerableException.class)
     public void loadInitialConfiguration(ConfigVariableRegistry variableRegistry) throws ConfigValidationException, ConfigParserException {
-        if (configRoot != null && configRoot.exists()) {
 
+        // If possible, load the server configuration.
+        //
+        // The load can fail in three ways:
+        // 1 A null server configuration can be obtained.
+        // 2 A tolerable parser exception was thrown.
+        // 3 A non-tolerable parser exception was thrown.
+        //
+        // (1) Happens only if there is a parser error and onError has
+        // been set to IGNORE or WARN.  Set an empty configuration, avoiding an NPE.
+        // Proceeding with an empty configuration is less than idea, in particular, when
+        // onError is set to IGNORE.  However, its what the user asked for.
+        //
+        // (2) Happens only if onError is set to FAIL.  In this case,
+        // rethrow the exception: The caller will handle this and will
+        // cause the server to shut down.
+
+        if ((configRoot != null) && configRoot.exists()) {
             try {
                 serverConfiguration = loadServerConfiguration();
                 if (serverConfiguration == null) {
-                    // This only happens if there is a parser error and onError has been set to IGNORE or WARN.
-                    // We're just avoiding an NPE here. The user will see the server start up with a warning
-                    // that nothing has been configured. This is less than ideal in the case of IGNORE, but it's
-                    // the behavior the user has asked for.
                     serverConfiguration = new ServerConfiguration();
                 }
             } catch (ConfigParserTolerableException ex) {
-                // This only gets caught here if OnError = FAIL.. rethrow so the server will shut down
                 throw ex;
             } catch (ConfigParserException ex) {
                 Tr.error(tc, "error.config.update.init", ex.getMessage());
@@ -136,7 +146,6 @@ class ServerXMLConfiguration {
             }
 
             serverConfiguration.setDefaultConfiguration(new BaseConfiguration());
-
         }
 
         try {
@@ -151,7 +160,6 @@ class ServerXMLConfiguration {
                 throw new ConfigParserTolerableException(e);
             }
         }
-
     }
 
     public void setConfigReadTime() {
@@ -215,9 +223,6 @@ class ServerXMLConfiguration {
         return (value / 1000) * 1000;
     }
 
-    /**
-     * @return
-     */
     public boolean isModified() {
         return reduceTimestampPrecision(getLastResourceModifiedTime()) != reduceTimestampPrecision(configReadTime);
     }
@@ -271,6 +276,28 @@ class ServerXMLConfiguration {
 
     }
 
+    /**
+     * Load the entire configuration.
+     *
+     * Load dropins defaults resources, then load the root resource and
+     * its included resources, then load dropins overrides. Finally, record
+     * that the configuration is up to date relative to the last modification
+     * time of the root configuration resource.
+     *
+     * @param configuration The configuration which is to be parsed.
+     *
+     * @throws ConfigValidationException Thrown in case of a problem in
+     *             the parsed XML data.
+     * @throws ConfigParserException Thrown if the XML parse fails.
+     */
+    private void load(ServerConfiguration configuration) throws ConfigValidationException, ConfigParserException {
+        parseDirectoryFiles(configDropinDefaults, configuration);
+        parser.parseServerConfiguration(configRoot, configuration);
+        parseDirectoryFiles(configDropinOverrides, configuration);
+
+        configuration.updateLastModified(configRoot.getLastModified());
+    }
+
     @FFDCIgnore({ ConfigParserException.class, ConfigParserTolerableException.class })
     private ServerConfiguration loadServerConfiguration() throws ConfigValidationException, ConfigParserException {
         ServerConfiguration configuration = null;
@@ -280,21 +307,12 @@ class ServerXMLConfiguration {
                 // Initialize the configuration object here, so that as the parser progresses
                 // we maintain the information if an exception is thrown.
                 configuration = new ServerConfiguration();
-
-                // Load files from configDropins/defaults first
-                parseDirectoryFiles(configDropinDefaults, configuration);
-
-                // Parse server.xml and its includes
-                parser.parseServerConfiguration(configRoot, configuration);
-
-                // Parse files from configDropins/overrides
-                parseDirectoryFiles(configDropinOverrides, configuration);
-
-                configuration.updateLastModified(configRoot.getLastModified());
+                load(configuration);
 
             } catch (ConfigParserTolerableException ex) {
                 // We know what this is, so no need to retry
                 throw ex;
+
             } catch (ConfigParserException cpe) {
                 // Wait a short period of time and retry. This is to attempt to handle the case where we
                 // parse the configuration in the middle of a file update.
@@ -302,13 +320,13 @@ class ServerXMLConfiguration {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     // Ignore
-                } finally {
-                    // Reset the server configuration so that we can start over from the beginning.
-                    configuration = new ServerConfiguration();
-                    parser.parseServerConfiguration(configRoot, configuration);
 
+                } finally {
+                    configuration = new ServerConfiguration();
+                    load(configuration);
                 }
             }
+
         } catch (ConfigParserException ex) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception while parsing root and referenced config documents.  Message=" + ex.getMessage());
@@ -317,17 +335,19 @@ class ServerXMLConfiguration {
             parser.handleParseError(ex, null);
 
             if (ErrorHandler.INSTANCE.fail()) {
-                // if onError=FAIL, bubble the exception up the stack
                 throw ex;
+
             } else if (ex instanceof ConfigParserTolerableException) {
-                // Mark the last update for the configuration so that we don't try to load it again
+                // Discard the exception: Any messaging must be performed
+                // when throwing the exception.
+                //
+                // Mark the configuration as up to date relative to the configuration resource.
                 configuration.updateLastModified(configRoot.getLastModified());
             } else {
                 // onError isn't set to FAIL, but we can't tolerate this exception either
                 // so null the configuration reference
                 configuration = null;
             }
-
         }
 
         return configuration;
@@ -432,24 +452,15 @@ class ServerXMLConfiguration {
         return serverConfiguration;
     }
 
-    /**
-     * @return
-     */
     public BaseConfiguration getDefaultConfiguration() {
         return serverConfiguration.getDefaultConfiguration();
     }
 
-    /**
-     * @return
-     * @throws ConfigMergeException
-     */
+    @SuppressWarnings("unused")
     public Map<String, LibertyVariable> getVariables() throws ConfigMergeException {
         return serverConfiguration.getVariables();
     }
 
-    /**
-     * @param newConfiguration
-     */
     public void setNewConfiguration(ServerConfiguration newConfiguration) {
         this.serverConfiguration = newConfiguration;
     }

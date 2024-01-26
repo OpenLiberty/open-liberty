@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,103 +24,173 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
+//@formatter:off
 /**
- * Dispatches ConfigurationEvent to registered ConfigurationListeners.
+ * Helper for creating and sending configuration events.
+ *
+ * The helper encapsulates the creation of events based on an
+ * event type and configuration IDs, and encapsulates querying
+ * for event listeners and sending the created event to those
+ * listeners.
+ *
+ * Events are not sent immediately: A request to dispatch an event
+ * is scheduled through a queue managed by the configuration admin
+ * service factory.  See {@link ConfigAdminServiceFactory#updateQueue}.
  */
 class ConfigEventDispatcher {
+    private static final TraceComponent tc =
+        Tr.register(ConfigEventDispatcher.class,
+                    ConfigAdminConstants.TR_GROUP, ConfigAdminConstants.NLS_PROPS);
 
-    private static final String ME = ConfigEventDispatcher.class.getName();
-    private static final TraceComponent tc = Tr.register(ConfigEventDispatcher.class, ConfigAdminConstants.TR_GROUP, ConfigAdminConstants.NLS_PROPS);
+    private static final String CLASS_NAME = ConfigEventDispatcher.class.getName();
 
-    /** Service Tracker for ConfigurationListener */
-    private final ServiceTracker<ConfigurationListener, ConfigurationListener> st;
+    //
 
-    /** ConfigurationAdmin service reference */
-    private ServiceReference<ConfigurationAdmin> configAdminReference;
+    public ConfigEventDispatcher(ConfigAdminServiceFactory caFactory, BundleContext bundleContext) {
+        this.caFactory = caFactory;
 
-    /** ConfigurationAdmin service factory */
-    private final ConfigAdminServiceFactory caFactory;
-
-    /**
-     * Constructor.
-     * 
-     * @param bc
-     *            - bundle context
-     * @param sr
-     *            - ServiceReference for ConfigurationAdmin
-     */
-    public ConfigEventDispatcher(ConfigAdminServiceFactory casf, BundleContext bc) {
-        caFactory = casf;
-        st = new ServiceTracker<ConfigurationListener, ConfigurationListener>(bc, ConfigurationListener.class.getName(), null);
-        st.open();
+        this.listenerTracker = new ServiceTracker<>(bundleContext, ConfigurationListener.class.getName(), null);
+        this.listenerTracker.open();
     }
 
     public void close() {
-        st.close();
+        listenerTracker.close();
     }
 
-    synchronized void setServiceReference(ServiceReference<ConfigurationAdmin> reference) {
-        if (configAdminReference == null)
-            configAdminReference = reference;
+    //
+
+    private final ConfigAdminServiceFactory caFactory;
+
+    @Trivial
+    private Future<?> schedule(String eventKey, Runnable eventRunner) {
+        return caFactory.updateQueue.add(eventKey, eventRunner);
+    }
+
+    //
+
+    private ServiceReference<ConfigurationAdmin> caRef;
+
+    synchronized void setServiceReference(ServiceReference<ConfigurationAdmin> caRef) {
+        if ( this.caRef == null ) {
+            this.caRef = caRef;
+        }
     }
 
     /**
-     * Dispatch ConfigurationEvent to the ConfigurationListeners.
-     * 
-     * @param pid
-     *            - Service PID
-     * @param factoryPid
-     *            - factory PID
-     * @param eventType
-     *            - ConfigurationEvent type
+     * Factory method: Create a configuration event of a specified type and with
+     * specified IDs.
+     *
+     * @param type The type of the event.
+     * @param factoryPid The factory ID of the event.
+     * @param pid The ID of the event.
+     *
+     * @return The new configuration event.  Null if the administration service is
+     *     not available.
      */
-    protected Future<?> dispatch(final int eventType, final String factoryPid, final String pid) {
-        final ConfigurationEvent event = createConfigurationEvent(eventType, factoryPid, pid);
-        if (event == null)
-            return null;
-
-        final ServiceReference<ConfigurationListener>[] refs = st.getServiceReferences();
-        if (refs == null)
-            return null;
-
-        final String qPid = (factoryPid != null) ? factoryPid : pid;
-        return caFactory.updateQueue.add(qPid, new Runnable() {
-            @Override
-            @FFDCIgnore(Exception.class)
-            public void run() {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "dispatch: sending configuration listener event for " + qPid);
-                }
-                for (ServiceReference<ConfigurationListener> sr : refs) {
-                    if (sr != null) {
-                        ConfigurationListener cl = st.getService(sr);
-                        if (cl != null && FrameworkState.isValid()) {
-                            try {
-                                cl.configurationEvent(event);
-                            } catch (Exception e) {
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "dispatch(): Exception thrown while trying to dispatch ConfigurationEvent.", e);
-                                }
-                                FFDCFilter.processException(e, ME,
-                                                            "dispatch(): Exception thrown while trying to dispatch ConfigurationEvent.",
-                                                            new Object[] { pid, factoryPid, eventType, cl });
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-
     private synchronized ConfigurationEvent createConfigurationEvent(int type, String factoryPid, String pid) {
-        if (configAdminReference == null)
+        if ( caRef == null ) {
             return null;
-
-        return new ConfigurationEvent(configAdminReference, type, factoryPid, pid);
+        } else {
+            return new ConfigurationEvent(caRef, type, factoryPid, pid);
+        }
     }
 
+    //
+
+    private final ServiceTracker<ConfigurationListener, ConfigurationListener> listenerTracker;
+
+    /**
+     * Schedule the send of configuration events to configuration event listeners.
+     *
+     * See {@link #handleEvent}.
+     *
+     * @param eventType The type of event which is to be sent.
+     * @param factoryPid The factory PID of the event.
+     * @param pid The PID of the event.
+     *
+     * @return The future for sending the event to selected listeners.
+     */
+    protected Future<?> dispatch(int eventType, String factoryPid, String pid) {
+        ConfigurationEvent event = createConfigurationEvent(eventType, factoryPid, pid);
+        if ( event == null ) {
+            return null;
+        }
+
+        ServiceReference<ConfigurationListener>[] listenerRefs = listenerTracker.getServiceReferences();
+        if ( (listenerRefs == null) || (listenerRefs.length == 0) ) {
+            return null;
+        }
+
+        String qPid = (factoryPid != null) ? factoryPid : pid;
+
+        return schedule( qPid, () -> handleEvent(factoryPid, pid, qPid, listenerRefs, event) );
+    }
+
+    /**
+     * Send a configuration event to configuration event listeners.
+     *
+     * Emit FFDC and continue if an exception is thrown by the listener.
+     *
+     * @param factoryPid The factory PID of the event.
+     * @param pid The PID of the event.
+     * @param qPid The selected ID of the event.
+     * @param listenerRefs References to listeners which are to receive the event.
+     * @param event The event being sent to the listeners.
+     */
+    @FFDCIgnore(Exception.class)
+    private void handleEvent(String factoryPid, String pid, String qPid,
+                             ServiceReference<ConfigurationListener>[] listenerRefs,
+                             ConfigurationEvent event) {
+
+        String prefix = "ConfigEventDispatcher.handleEvent:";
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled() ) {
+            Tr.event(tc, prefix + " Sending event for " + qPid);
+        }
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, prefix + " Event [ " + event + " ] ID [ " + qPid + " ]");
+        }
+
+        for ( ServiceReference<ConfigurationListener> listenerRef : listenerRefs ) {
+            if ( listenerRef == null ) {
+                continue;
+            }
+            ConfigurationListener listener = listenerTracker.getService(listenerRef);
+            if ( listener == null ) {
+                continue;
+            }
+
+            if ( !FrameworkState.isValid() ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, prefix +
+                                 " Framework is not valid: Skipping event [ " + event + " ]" +
+                                 " to listener [ " + listener + " ]");
+                }
+                continue;
+            }
+
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, prefix +
+                             " Dispatching event [ " + event + " ]" +
+                             " to listener [ " + listener + " ]");
+            }
+
+            try {
+                listener.configurationEvent(event);
+
+            } catch ( Exception e ) {
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, prefix + " Exception dispatching [ " + event + " ] to [ " + listener + " ]", e);
+                }
+                FFDCFilter.processException(e, CLASS_NAME,
+                                            prefix + " Exception dispatching configuration event",
+                                            new Object[] { pid, factoryPid, event.getType(), listener });
+            }
+        }
+    }
 }
+//@Formatter:on
