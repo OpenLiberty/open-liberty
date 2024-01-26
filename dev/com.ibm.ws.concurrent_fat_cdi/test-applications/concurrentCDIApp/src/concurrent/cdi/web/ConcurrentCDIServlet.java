@@ -22,6 +22,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -48,6 +49,7 @@ import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
@@ -243,7 +245,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Attempt to obtain a ContextService with an unrecognized qualifier.
      */
     public void testContextServiceWithUnrecognizedQualifier() throws Exception {
-        assertEquals(null, CDI.current().select(ContextService.class, Unrecognized.Literal.INSTANCE));
+        assertEquals(false, CDI.current().select(ContextService.class, Unrecognized.Literal.INSTANCE).isResolvable());
     }
 
     /**
@@ -648,6 +650,198 @@ public class ConcurrentCDIServlet extends HttpServlet {
         } finally {
             Location.clear();
         }
+    }
+
+    /**
+     * Verify that the equals operation of generated instances of qualifier annotations
+     * obeys the JavaDoc for Annotation.equals and can be compared with literal instances
+     * of the same annotation in either direction.
+     */
+    public void testQualifierEquals() throws Exception {
+        Instance<ContextService> instance;
+
+        Annotation annoWithAppContext = null;
+        instance = CDI.current().select(ContextService.class, WithAppContext.Literal.INSTANCE);
+        for (Annotation anno : instance.getHandle().getBean().getQualifiers())
+            if (anno.annotationType().equals(WithAppContext.class))
+                annoWithAppContext = anno;
+        assertNotNull(annoWithAppContext);
+        assertEquals(true, WithAppContext.Literal.INSTANCE.equals(annoWithAppContext));
+        assertEquals(true, annoWithAppContext.equals(WithAppContext.Literal.INSTANCE));
+        assertEquals(true, annoWithAppContext.equals(annoWithAppContext));
+
+        Annotation annoWithLocationContext = null;
+        instance = CDI.current().select(ContextService.class, WithLocationContext.Literal.INSTANCE);
+        for (Annotation anno : instance.getHandle().getBean().getQualifiers())
+            if (anno.annotationType().equals(WithLocationContext.class))
+                annoWithLocationContext = anno;
+        assertNotNull(annoWithLocationContext);
+        assertEquals(true, WithLocationContext.Literal.INSTANCE.equals(annoWithLocationContext));
+        assertEquals(true, annoWithLocationContext.equals(WithLocationContext.Literal.INSTANCE));
+        assertEquals(true, annoWithLocationContext.equals(annoWithLocationContext));
+
+        Annotation annoWithoutLocationContext = null;
+        instance = CDI.current().select(ContextService.class, WithoutLocationContext.Literal.INSTANCE);
+        for (Annotation anno : instance.getHandle().getBean().getQualifiers())
+            if (anno.annotationType().equals(WithoutLocationContext.class))
+                annoWithoutLocationContext = anno;
+        assertNotNull(annoWithoutLocationContext);
+        assertEquals(true, WithoutLocationContext.Literal.INSTANCE.equals(annoWithoutLocationContext));
+        assertEquals(true, annoWithoutLocationContext.equals(WithoutLocationContext.Literal.INSTANCE));
+        assertEquals(true, annoWithoutLocationContext.equals(annoWithoutLocationContext));
+
+        Annotation annoWithoutTransactionContext = null;
+        instance = CDI.current().select(ContextService.class, WithoutTransactionContext.Literal.INSTANCE);
+        for (Annotation anno : instance.getHandle().getBean().getQualifiers())
+            if (anno.annotationType().equals(WithoutTransactionContext.class))
+                annoWithoutTransactionContext = anno;
+        assertNotNull(annoWithoutTransactionContext);
+        assertEquals(true, WithoutTransactionContext.Literal.INSTANCE.equals(annoWithoutTransactionContext));
+        assertEquals(true, annoWithoutTransactionContext.equals(WithoutTransactionContext.Literal.INSTANCE));
+        assertEquals(true, annoWithoutTransactionContext.equals(annoWithoutTransactionContext));
+
+        assertEquals(false, annoWithAppContext.equals(annoWithLocationContext));
+        assertEquals(false, annoWithAppContext.equals(annoWithoutLocationContext));
+        assertEquals(false, annoWithAppContext.equals(annoWithoutTransactionContext));
+
+        assertEquals(false, annoWithLocationContext.equals(annoWithAppContext));
+        assertEquals(false, annoWithLocationContext.equals(annoWithoutLocationContext));
+        assertEquals(false, annoWithLocationContext.equals(annoWithoutTransactionContext));
+
+        assertEquals(false, annoWithoutLocationContext.equals(annoWithAppContext));
+        assertEquals(false, annoWithoutLocationContext.equals(annoWithLocationContext));
+        assertEquals(false, annoWithoutLocationContext.equals(annoWithoutTransactionContext));
+
+        assertEquals(false, annoWithoutTransactionContext.equals(annoWithAppContext));
+        assertEquals(false, annoWithoutTransactionContext.equals(annoWithLocationContext));
+        assertEquals(false, annoWithoutTransactionContext.equals(annoWithoutLocationContext));
+
+        assertEquals(false, annoWithLocationContext.equals(WithLocationContext.Literal.with(TRANSACTION)));
+
+        assertEquals(false, annoWithoutLocationContext.equals(WithoutLocationContext.Literal.of("A", 12)));
+
+        assertEquals(false, annoWithoutTransactionContext.equals(WithoutTransactionContext.Literal.of("B", 10)));
+
+        // comparison of array valued attributes
+        Annotation annoWithTransactionContext = null;
+        instance = CDI.current().select(ContextService.class, WithTransactionContext.Literal.INSTANCE);
+        for (Annotation anno : instance.getHandle().getBean().getQualifiers())
+            if (anno.annotationType().equals(WithTransactionContext.class))
+                annoWithTransactionContext = anno;
+        assertNotNull(annoWithTransactionContext);
+        assertEquals(true, WithTransactionContext.Literal.INSTANCE.equals(annoWithTransactionContext));
+        assertEquals(true, annoWithTransactionContext.equals(WithTransactionContext.Literal.INSTANCE));
+        assertEquals(true, annoWithTransactionContext.equals(annoWithTransactionContext));
+
+        WithTransactionContext annoWithDifferentOrderedArray = WithTransactionContext.Literal //
+                        .of(new Class<?>[] { short.class, int.class, long.class }, // different order of values
+                            new int[] { 216, 713, 745 }); // matches
+
+        assertEquals(false, annoWithTransactionContext.equals(annoWithDifferentOrderedArray));
+
+        WithTransactionContext annoWithOneLessArrayElement = WithTransactionContext.Literal //
+                        .of(new Class<?>[] { long.class, int.class, short.class }, // matches
+                            new int[] { 216, 713 }); // one less value in array
+
+        assertEquals(false, annoWithTransactionContext.equals(annoWithOneLessArrayElement));
+    }
+
+    /**
+     * Verify that the hashCode operation of generated instances of qualifier annotations
+     * matches the behavior of literal instances of the same annotation.
+     */
+    public void testQualifierHashCode() throws Exception {
+        Instance<ContextService> instance;
+        Annotation qualifier;
+
+        instance = CDI.current().select(ContextService.class, WithAppContext.Literal.INSTANCE);
+        qualifier = null;
+        for (Annotation anno : instance.getHandle().getBean().getQualifiers())
+            if (anno.annotationType().equals(WithAppContext.class))
+                qualifier = anno;
+        assertNotNull(qualifier);
+        assertEquals(WithAppContext.Literal.INSTANCE.hashCode(), qualifier.hashCode());
+
+        instance = CDI.current().select(ContextService.class, WithLocationContext.Literal.INSTANCE);
+        qualifier = null;
+        for (Annotation anno : instance.getHandle().getBean().getQualifiers())
+            if (anno.annotationType().equals(WithLocationContext.class))
+                qualifier = anno;
+        assertNotNull(qualifier);
+        assertEquals(WithLocationContext.Literal.INSTANCE.hashCode(), qualifier.hashCode());
+
+        instance = CDI.current().select(ContextService.class, WithoutLocationContext.Literal.INSTANCE);
+        qualifier = null;
+        for (Annotation anno : instance.getHandle().getBean().getQualifiers())
+            if (anno.annotationType().equals(WithoutLocationContext.class))
+                qualifier = anno;
+        assertNotNull(qualifier);
+        assertEquals(WithoutLocationContext.Literal.INSTANCE.hashCode(), qualifier.hashCode());
+
+        instance = CDI.current().select(ContextService.class, WithoutTransactionContext.Literal.INSTANCE);
+        qualifier = null;
+        for (Annotation anno : instance.getHandle().getBean().getQualifiers())
+            if (anno.annotationType().equals(WithoutTransactionContext.class))
+                qualifier = anno;
+        assertNotNull(qualifier);
+        assertEquals(WithoutTransactionContext.Literal.INSTANCE.hashCode(), qualifier.hashCode());
+
+        instance = CDI.current().select(ContextService.class, WithTransactionContext.Literal.INSTANCE);
+        qualifier = null;
+        for (Annotation anno : instance.getHandle().getBean().getQualifiers())
+            if (anno.annotationType().equals(WithTransactionContext.class))
+                qualifier = anno;
+        assertNotNull(qualifier);
+        assertEquals(WithTransactionContext.Literal.INSTANCE.hashCode(), qualifier.hashCode());
+    }
+
+    /**
+     * Verify the toString operation of generated instances of qualifier annotations.
+     */
+    public void testQualifierToString() throws Exception {
+        Instance<ContextService> instance;
+        Annotation qualifier;
+        String stringValue;
+
+        instance = CDI.current().select(ContextService.class, WithLocationContext.Literal.INSTANCE);
+        qualifier = null;
+        for (Annotation anno : instance.getHandle().getBean().getQualifiers())
+            if (anno.annotationType().equals(WithLocationContext.class))
+                qualifier = anno;
+        assertNotNull(qualifier);
+        stringValue = qualifier.toString();
+        assertEquals(stringValue, true, stringValue.contains(WithLocationContext.class.getName()));
+        assertEquals(stringValue, true, stringValue.contains("pairedWith")); // annotation attribute name
+
+        instance = CDI.current().select(ContextService.class, WithoutLocationContext.Literal.INSTANCE);
+        qualifier = null;
+        for (Annotation anno : instance.getHandle().getBean().getQualifiers())
+            if (anno.annotationType().equals(WithoutLocationContext.class))
+                qualifier = anno;
+        assertNotNull(qualifier);
+        stringValue = qualifier.toString();
+        assertEquals(stringValue, true, stringValue.contains(WithoutLocationContext.class.getName()));
+        assertEquals(stringValue, true, stringValue.contains("letter")); // annotation attribute name
+        assertEquals(stringValue, true, stringValue.contains("A")); // annotation attribute value
+        assertEquals(stringValue, true, stringValue.contains("number")); // annotation attribute name
+        assertEquals(stringValue, true, stringValue.contains("10")); // annotation attribute value
+
+        instance = CDI.current().select(ContextService.class, WithTransactionContext.Literal.INSTANCE);
+        qualifier = null;
+        for (Annotation anno : instance.getHandle().getBean().getQualifiers())
+            if (anno.annotationType().equals(WithTransactionContext.class))
+                qualifier = anno;
+        assertNotNull(qualifier);
+        stringValue = qualifier.toString();
+        assertEquals(stringValue, true, stringValue.contains(WithTransactionContext.class.getName()));
+        assertEquals(stringValue, true, stringValue.contains("classes")); // annotation attribute name
+        assertEquals(stringValue, true, stringValue.contains("int")); // in annotation attribute value
+        assertEquals(stringValue, true, stringValue.contains("long")); // in annotation attribute value
+        assertEquals(stringValue, true, stringValue.contains("short")); // in annotation attribute value
+        assertEquals(stringValue, true, stringValue.contains("numbers")); // annotation attribute name
+        assertEquals(stringValue, true, stringValue.contains("216")); // in annotation attribute value
+        assertEquals(stringValue, true, stringValue.contains("713")); // in annotation attribute value
+        assertEquals(stringValue, true, stringValue.contains("745")); // in annotation attribute value
     }
 
     /**

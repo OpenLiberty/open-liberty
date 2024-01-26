@@ -70,7 +70,7 @@ public class ConcurrentCDITest extends FATServletClient {
         );
     }
 
-    // TODO enable once implemented correctly @Test
+    @Test
     public void testContextServiceWithUnrecognizedQualifier() throws Exception {
         runTest(server, APP_NAME, testName);
     }
@@ -137,6 +137,21 @@ public class ConcurrentCDITest extends FATServletClient {
 
     @Test
     public void testLookUpManagedThreadFactory() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testQualifierEquals() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testQualifierHashCode() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testQualifierToString() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 

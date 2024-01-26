@@ -25,12 +25,45 @@ import jakarta.inject.Qualifier;
 @Retention(RUNTIME)
 @Target(FIELD)
 public @interface WithoutTransactionContext {
+
+    /**
+     * A qualifier attribute such as this must have a default value to be usable
+     * on a Concurrency resource definition.
+     */
+    String letter() default "A";
+
+    /**
+     * A qualifier attribute such as this must have a default value to be usable
+     * on a Concurrency resource definition.
+     */
+    int number() default 10;
+
     public static class Literal extends AnnotationLiteral<WithoutTransactionContext> implements WithoutTransactionContext {
         private static final long serialVersionUID = -3978433230176629819L;
 
-        public static final WithoutTransactionContext INSTANCE = new Literal();
+        public static final WithoutTransactionContext INSTANCE = new Literal("A", 10);
 
-        private Literal() {
+        private final String letter;
+        private final int number;
+
+        private Literal(String letter, int number) {
+            this.letter = letter;
+            this.number = number;
         }
+
+        @Override
+        public String letter() {
+            return letter;
+        }
+
+        @Override
+        public int number() {
+            return number;
+        }
+
+        public static final WithoutTransactionContext of(String letter, int number) {
+            return new Literal(letter, number);
+        }
+
     }
 }
