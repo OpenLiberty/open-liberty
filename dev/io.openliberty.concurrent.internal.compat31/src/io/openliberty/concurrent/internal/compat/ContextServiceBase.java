@@ -12,10 +12,12 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.compat;
 
+import java.util.concurrent.Flow.Processor;
 import java.util.concurrent.Flow.Subscriber;
 
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
+import io.openliberty.concurrent.internal.compat.impl.ContextualProcessor;
 import io.openliberty.concurrent.internal.compat.impl.ContextualSubscriber;
 
 /**
@@ -33,5 +35,13 @@ public abstract class ContextServiceBase {
 
         ThreadContextDescriptor contextDescriptor = captureThreadContext();
         return new ContextualSubscriber<T>(contextDescriptor, subscriber);
+    }
+
+    public <T, R> Processor<T, R> contextualProcessor(Processor<T, R> processor) {
+        if (processor instanceof ContextualProcessor)
+            throw new IllegalArgumentException(ContextualProcessor.class.getSimpleName());
+
+        ThreadContextDescriptor contextDescriptor = captureThreadContext();
+        return new ContextualProcessor<T, R>(contextDescriptor, processor);
     }
 }
