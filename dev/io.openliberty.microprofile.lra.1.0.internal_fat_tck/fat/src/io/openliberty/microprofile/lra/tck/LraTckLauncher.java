@@ -1,16 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2020,2022 IBM Corporation and others.
+ * Copyright (c) 2020,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.lra.tck;
+
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assume.assumeThat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +22,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.Machine;
+import com.ibm.websphere.simplicity.OperatingSystem;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -49,6 +55,10 @@ public class LraTckLauncher {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        // Test fails to start properly on z/OS
+        assumeThat(Machine.getLocalMachine().getOperatingSystem(), not(OperatingSystem.ZOS));
+
         // microprofile config will allow this to be accessed by the application as
         // lra.tck.base.url, which is what the tck is looking for. LibertyServer won't allow
         // '.' to be used in an env var name, as it "isn't cross platform".
