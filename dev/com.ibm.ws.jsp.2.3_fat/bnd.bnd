@@ -14,9 +14,12 @@ src: \
     fat/src,\
     test-applications/TestInjection.war/src,\
     test-applications/TestEL.war/src,\
-    test-applications/TestPreDestroy.war/src
+    test-applications/TestPreDestroy.war/src,\
+    test-bundle/src
 
 fat.project: true
+
+-sub: *.bnd
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 # In this case, jsp-2.2 is added programmatically at runtime.
@@ -49,4 +52,5 @@ tested.features:\
     httpunit:httpunit;version=1.5.4,\
     com.ibm.websphere.javaee.interceptor.1.1;version=latest,\
     org.apache.httpcomponents:httpclient;version=4.1.2,\
-    org.apache.httpcomponents:httpcore;version=4.1.2
+    org.apache.httpcomponents:httpcore;version=4.1.2,\
+    com.ibm.websphere.appserver.spi.jsp
