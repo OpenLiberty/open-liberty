@@ -319,17 +319,22 @@
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
-      <version>2.3.9</version>
+      <version>2.2.10</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>2.3.0.1</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-jxc</artifactId>
-      <version>2.3.9</version>
+      <version>2.2.10</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
-      <version>2.3.9</version>
+      <version>2.2.10</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.fastinfoset</groupId>
@@ -349,7 +354,7 @@
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
-      <version>2.3.6</version>
+      <version>2.2.10</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
@@ -359,7 +364,7 @@
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-tools</artifactId>
-      <version>2.3.6</version>
+      <version>2.2.10</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
@@ -3185,11 +3190,6 @@
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-jxc</artifactId>
       <version>4.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jaxb</groupId>
-      <artifactId>jaxb-runtime</artifactId>
-      <version>2.3.5</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jaxb</groupId>
