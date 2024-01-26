@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2024 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -87,7 +87,8 @@ fat.test.container.images: testcontainers/ryuk:0.5.1, testcontainers/sshd:1.1.0,
     com.ibm.ws.common.encoder;version=latest,\
     com.ibm.ws.componenttest;version=latest,\
     com.ibm.ws.timedexit.internal;version=latest,\
-	com.ibm.ws.jaxb.tools;version=latest,\
+    com.sun.xml.bind:jaxb-core;version=2.2.10,\
+    com.sun.xml.bind:jaxb-impl;version=2.2.10,\
     httpunit:httpunit;version=1.5.4,\
     javax.activation:activation;version=1.1,\
     net.sf.jtidy:jtidy;version=9.3.8,\
