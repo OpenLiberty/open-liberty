@@ -96,18 +96,7 @@ public class HttpInputStreamEE7Extended extends HttpInputStreamEE7 {
 
     private boolean setNextBuffer() {
         if (this.postDataPos < this.postData.length) {
-
-            if (this.buffer == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Allocate new buffer");
-                }
-                this.buffer = HttpDispatcher.getBufferManager().allocate(this.postData[this.postDataPos].length);
-                this.buffer.put(this.postData[this.postDataPos]);
-                this.buffer.flip();
-            } else {
-                this.buffer = HttpDispatcher.getBufferManager().wrap(this.postData[this.postDataPos]);
-                this.postData[this.postDataPos] = null;
-            }
+            this.buffer = HttpDispatcher.getBufferManager().wrap(this.postData[this.postDataPos]);
             this.postDataPos++;
             this.bytesRead += this.buffer.remaining();
 
