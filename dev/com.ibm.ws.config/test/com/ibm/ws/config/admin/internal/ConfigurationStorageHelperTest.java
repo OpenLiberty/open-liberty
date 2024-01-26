@@ -16,7 +16,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -215,19 +214,18 @@ public class ConfigurationStorageHelperTest {
         }
     }
 
-    // Use the current latest storage version for tests.
+    //
 
-    public static final int STORAGE_SHORT = ConfigurationStorageHelper.VERSION_SHORT_STRINGS;
-    public static final int STORAGE_LONG = ConfigurationStorageHelper.VERSION_LONG_STRINGS;
+    public static final boolean USE_LONG_STRINGS = true;
 
     @Test
-    public void testStoreLoadCycleShort() throws IOException {
-        testCycle(0, STORAGE_SHORT, STORAGE_SHORT);
+    public void testStoreShort() throws IOException {
+        testStore(0, !USE_LONG_STRINGS);
     }
 
     @Test
-    public void testStoreLoadCycleLong() throws IOException {
-        testCycle(0, STORAGE_LONG, STORAGE_LONG);
+    public void testStoreLong() throws IOException {
+        testStore(0, USE_LONG_STRINGS);
     }
 
     protected static final ConfigStorageConsumer<Integer, TestConfiguration> EMPTY_CONSUMER = new ConfigStorageConsumer<Integer, TestConfiguration>() {
@@ -242,54 +240,22 @@ public class ConfigurationStorageHelperTest {
         }
     };
 
-    @Test
-    public void testStoreLoadCycleDowngrade() throws IOException {
+    protected void testStore(int dataNo, boolean storeLongs) throws IOException {
         File configFile = new File("build", "testData");
 
-        List<TestConfiguration> expectedConfigs = setupTestConfigurations(1, STORAGE_LONG);
+        String location = "bundle.location";
 
-        ConfigurationStorageHelper.store(configFile, expectedConfigs, STORAGE_LONG);
-
-        try {
-            ConfigurationStorageHelper.load(configFile, EMPTY_CONSUMER, STORAGE_SHORT, STORAGE_SHORT);
-        } catch (UnsupportedOperationException e) {
-            fail("Unexpected store");
-        }
-
-        Map<Integer, TestConfiguration> loadedConfigs = ConfigurationStorageHelper.load(configFile, STANDARD_CONSUMER, STORAGE_SHORT, STORAGE_LONG);
-
-        verifyConfigs(expectedConfigs, loadedConfigs);
-    }
-
-    @Test
-    public void testStoreLoadCycleUpgrade() throws IOException {
-        File configFile = new File("build", "testData");
-
-        List<TestConfiguration> expectedConfigs = setupTestConfigurations(1, STORAGE_SHORT);
-
-        ConfigurationStorageHelper.store(configFile, expectedConfigs, STORAGE_SHORT);
-
-        Map<Integer, TestConfiguration> loadedConfigs = ConfigurationStorageHelper.load(configFile, STANDARD_CONSUMER, STORAGE_SHORT, STORAGE_LONG);
-
-        verifyConfigs(expectedConfigs, loadedConfigs);
-    }
-
-    protected void testCycle(int dataNo, int storeVersion, int loadVersion) throws IOException {
-        File configFile = new File("build", "testData");
-
-        String location = "the location of the bundle";
-
-        ConfigurationDictionary testData = setupTestData(dataNo, storeVersion);
+        ConfigurationDictionary testData = setupTestData(dataNo, storeLongs);
 
         Set<String> testVars = setupUniqueVars();
         Set<ConfigID> testRefs = setupConfigID();
 
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(configFile))) {
-            ConfigurationStorageHelper helper = new ConfigurationStorageHelper(storeVersion, location, testData, testVars, testRefs);
+            ConfigurationStorageHelper helper = new ConfigurationStorageHelper(location, testData, testVars, testRefs);
             helper.store(dos);
         }
 
-        ConfigurationStorageHelper helper = new ConfigurationStorageHelper(loadVersion);
+        ConfigurationStorageHelper helper = new ConfigurationStorageHelper();
         try (DataInputStream dis = new DataInputStream(new FileInputStream(configFile))) {
             helper.load(dis);
         }
@@ -301,25 +267,25 @@ public class ConfigurationStorageHelperTest {
     }
 
     @Test
-    public void testStoreLoadCycleWithNullsShort() throws IOException {
-        testCycleWithNulls(0, STORAGE_SHORT);
+    public void testStoreNullsShort() throws IOException {
+        testStoreNulls(0, !USE_LONG_STRINGS);
     }
 
     @Test
-    public void testStoreLoadCycleWithNullsLong() throws IOException {
-        testCycleWithNulls(0, STORAGE_LONG);
+    public void testStoreNullsLong() throws IOException {
+        testStoreNulls(0, USE_LONG_STRINGS);
     }
 
-    public void testCycleWithNulls(int dataNo, int version) throws IOException {
+    public void testStoreNulls(int dataNo, boolean useLongStrings) throws IOException {
         File configFile = new File("build", "testData");
 
-        ConfigurationDictionary testData = setupTestData(dataNo, version);
+        ConfigurationDictionary testData = setupTestData(dataNo, useLongStrings);
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(configFile))) {
-            ConfigurationStorageHelper helper = new ConfigurationStorageHelper(version, null, testData, null, null);
+            ConfigurationStorageHelper helper = new ConfigurationStorageHelper(null, testData, null, null);
             helper.store(dos);
         }
 
-        ConfigurationStorageHelper helper = new ConfigurationStorageHelper(version);
+        ConfigurationStorageHelper helper = new ConfigurationStorageHelper();
         try (DataInputStream dis = new DataInputStream(new FileInputStream(configFile))) {
             helper.load(dis);
         }
@@ -331,13 +297,13 @@ public class ConfigurationStorageHelperTest {
     }
 
     @Test
-    public void testMultiConfigStoreShort() throws IOException {
-        testMultiStore(STORAGE_SHORT);
+    public void testMultiStoreShort() throws IOException {
+        testMultiStore(!USE_LONG_STRINGS);
     }
 
     @Test
-    public void testMultiConfigStoreLong() throws IOException {
-        testMultiStore(STORAGE_LONG);
+    public void testMultiStoreLong() throws IOException {
+        testMultiStore(USE_LONG_STRINGS);
     }
 
     protected static final ConfigStorageConsumer<Integer, TestConfiguration> STANDARD_CONSUMER = new ConfigStorageConsumer<Integer, TestConfiguration>() {
@@ -352,11 +318,11 @@ public class ConfigurationStorageHelperTest {
         }
     };
 
-    protected void testMultiStore(int version) throws IOException {
+    protected void testMultiStore(boolean useLongStrings) throws IOException {
         File configFile = new File("build", "testData");
-        List<TestConfiguration> expectedConfigs = setupTestConfigurations(100, version);
+        List<TestConfiguration> expectedConfigs = setupTestConfigurations(100, useLongStrings);
 
-        ConfigurationStorageHelper.store(configFile, expectedConfigs, version);
+        ConfigurationStorageHelper.store(configFile, expectedConfigs);
 
         Map<Integer, TestConfiguration> loadedConfigs = ConfigurationStorageHelper.load(configFile, STANDARD_CONSUMER);
 
@@ -430,11 +396,11 @@ public class ConfigurationStorageHelperTest {
         assertMapEquals(expectedMap, loadedMap);
     }
 
-    private List<TestConfiguration> setupTestConfigurations(int count, int version) {
+    private List<TestConfiguration> setupTestConfigurations(int count, boolean useLongStrings) {
         List<TestConfiguration> testConfigs = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             String location = i % 2 == 0 ? null : "location " + i;
-            ConfigurationDictionary props = setupTestData(i, version);
+            ConfigurationDictionary props = setupTestData(i, useLongStrings);
             Set<String> testVars = setupUniqueVars();
             Set<ConfigID> testConfigID = setupConfigID();
             testConfigs.add(new TestConfiguration(location, props, testConfigID, testVars));
@@ -513,13 +479,17 @@ public class ConfigurationStorageHelperTest {
         if (expecteds.length == actuals.length) {
             for (int i = 0; i < expecteds.length; i++) {
                 if (expecteds[i] != actuals[i]) {
-                    throw new AssertionFailedError("The boolean arrays are different at position " + i + ". Expected: " + Arrays.toString(expecteds) + " actual: "
-                                                   + Arrays.toString(actuals));
+                    throw new AssertionFailedError(message +
+                                                   ": Difference at " + i +
+                                                   ": Expected: " + Arrays.toString(expecteds) +
+                                                   ": Actual: " + Arrays.toString(actuals));
                 }
             }
         } else {
-            throw new AssertionFailedError("The boolean arrays are different lengths. Expected: " + Arrays.toString(expecteds) + "[" + expecteds.length + "] actual: "
-                                           + Arrays.toString(actuals) + "[" + actuals.length + "]");
+            throw new AssertionFailedError(message +
+                                           ": Different lengths" +
+                                           ": Expected: " + Arrays.toString(expecteds) + "[" + expecteds.length + "]" +
+                                           ": Actual: " + Arrays.toString(actuals) + "[" + actuals.length + "]");
         }
     }
 
@@ -549,9 +519,7 @@ public class ConfigurationStorageHelperTest {
         return configIDs;
     }
 
-    public static ConfigurationDictionary setupTestData(int testId, int version) {
-        boolean useLongStrings = (version > ConfigurationStorageHelper.VERSION_SHORT_STRINGS);
-
+    public static ConfigurationDictionary setupTestData(int testId, boolean useLongStrings) {
         ConfigurationDictionary dict = new ConfigurationDictionary();
         dict.put("test id", testId);
         dict.put("byte", (byte) 5);
