@@ -75,8 +75,20 @@ public class TCKResultsWriter {
             specURL = "https://jakarta.ee/specifications/" + specName + "/" + specVersion;
             tckURL = "https://download.eclipse.org/ee4j/" + specName + "/jakartaee10/promoted/eftl/" + specName + "-tck-" + specVersion + ".zip"; //just a placeholder, needs to be manually updated
         }
+        String filename = null;
+        if (repeat.contains("FeatureReplacementAction")) {
+            String newRepeat = repeat.replaceAll("FeatureReplacementAction.*REMOVE", "remove")
+                            .replaceAll("\\[", "")
+                            .replaceAll("\\]", "")
+                            .replaceAll("ADD", "add")
+                            .replaceAll("  ", " ")
+                            .replaceAll(" ", "_");
+            filename = (openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + newRepeat + "-TCKResults.adoc").replace("_", "-");
+        } else {
+            filename = (openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + repeat + "-TCKResults.adoc").replace("_", "-");
+        }
         // Replace the "_" with "-" in filename to keep consistency
-        String filename = (openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + repeat + "-TCKResults.adoc").replace("_", "-");
+
         Path outputPath = Paths.get("results", filename);
         File outputFile = outputPath.toFile();
         String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osName, osVersion, tckURL, tckSHA1, tckSHA256);
