@@ -45,6 +45,7 @@ javax.xml.ws.wsaddressing
 Command-Class: com.ibm.ws.jaxws.tools.WsGen
 
 -outputmask: ws-wsgen.jar
+-pom: false
 
 instrument.disabled: true
 
