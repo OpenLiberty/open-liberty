@@ -146,7 +146,17 @@ public class WebFragmentTestBase extends DDTestBase {
                ">" +
                    body +
                webFragmentTail();
-    }    
+    }
+    
+    protected static String webFragment61(String body) {
+        return "<web-fragment xmlns=\"https://jakarta.ee/xml/ns/jakartaee\"" +
+                   " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+                   " xsi:schemaLocation=\"https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-fragment_6_1.xsd\"" +
+                   " version=\"6.1\"" +
+               ">" +
+                   body +
+               webFragmentTail();
+    } 
 
     protected static String webFragment(int schemaVersion) {
         return webFragment(schemaVersion, WebAppTestBase.webAppBody());
@@ -163,6 +173,8 @@ public class WebFragmentTestBase extends DDTestBase {
             return webFragment50(body);
         } else if ( version == WebApp.VERSION_6_0 ) {
             return webFragment60(body);
+        } else if ( version == WebApp.VERSION_6_1 ) {
+            return webFragment61(body);
         } else {
             throw new IllegalArgumentException("Unexpected WebFragment version [ " + version + " ]");
         }

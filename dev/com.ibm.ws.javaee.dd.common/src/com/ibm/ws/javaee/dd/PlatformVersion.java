@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -120,6 +120,40 @@ public interface PlatformVersion {
             case 100: return "10";
             case 110: return "11";
             default:  throw new IllegalArgumentException("Unknown schema version [ " + version + " ]");
+        }
+    }
+    
+    public static int getVersionInt(String version) {
+        switch ( version ) {
+            case "0.9" : return 9 ;
+            case "1.0" : return 10 ;
+            case "1.1" : return 11 ;
+            case "1.2" : return 12 ;
+            case "1.3" : return 13 ;
+            case "1.4" : return 14 ;
+            case "1.5" : return 15 ;
+            case "1.6" : return 16 ;
+            case "1.7" : return 17 ;
+            case "2.0" : return 20 ;
+            case "2.1" : return 21 ;
+            case "2.2" : return 22 ;
+            case "2.3" : return 23 ;
+            case "2.4" : return 24 ;
+            case "2.5" : return 25 ;
+            case "3.0" : return 30 ;
+            case "3.1" : return 31 ;
+            case "3.2" : return 32 ;
+            case "4.0" : return 40 ;
+            case "5.0" : return 50 ;
+            case "6.0" : return 60 ;
+            case "6.1" : return 61 ;
+            case "7.0" : return 70 ;
+            case "8.0" : return 80 ;
+            case "9.0" : return 90 ;
+            case "10.0": return 100 ;
+            case "11.0": return 110 ;
+            default:  throw new IllegalArgumentException("Unknown schema version [ " + version + " ]");
+            
         }
     }
 }
