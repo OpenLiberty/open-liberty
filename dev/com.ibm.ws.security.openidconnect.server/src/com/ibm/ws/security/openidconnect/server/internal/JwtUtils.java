@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20Client;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
@@ -80,11 +79,8 @@ public class JwtUtils {
         } else if (signingAlgorithm.startsWith("HS")) {
             key = getSharedKey(jwtContext, oauth20provider);
         } else {
-            // TODO - remove beta guard when ready
-            if (ProductInfo.getBetaEdition()) {
-                JsonWebStructure jsonStruct = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
-                key = getPublicKeyFromJsonWebStructure(jsonStruct, oidcServerConfig);
-            }
+            JsonWebStructure jsonStruct = JwtParsingUtils.getJsonWebStructureFromJwtContext(jwtContext);
+            key = getPublicKeyFromJsonWebStructure(jsonStruct, oidcServerConfig);
         }
         return key;
     }

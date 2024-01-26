@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -80,8 +80,6 @@ public class Jose4jUtil {
     private static final JtiNonceCache jtiCache = new JtiNonceCache(); // Jose4jUil has only one instance
 
     WebSSOUtils webSsoUtils = new WebSSOUtils();
-
-    private static boolean issuedBetaMessage = false;
 
     // set org.jose4j.jws.default-allow-none to true to behave the same as old jwt
     // allow signatureAlgorithme as none
@@ -229,9 +227,7 @@ public class Jose4jUtil {
                     props.put(Constants.USERINFO_STR, userInfoStr);
                 }
                 oidcResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, null, null, props, null);
-                if (isRunningBetaMode()) {
-                    createWASOidcSession(oidcClientRequest, idToken.getJwtClaims(), clientConfig);
-                }
+                createWASOidcSession(oidcClientRequest, idToken.getJwtClaims(), clientConfig);
                 return oidcResult;
             }
 
@@ -288,7 +284,7 @@ public class Jose4jUtil {
 
             //doIdAssertion(customProperties, payload, clientConfig);
             oidcResult = new ProviderAuthenticationResult(AuthResult.SUCCESS, HttpServletResponse.SC_OK, userName, subject, customProperties, null);
-            if (oidcResult.getStatus() == AuthResult.SUCCESS && isRunningBetaMode()) {
+            if (oidcResult.getStatus() == AuthResult.SUCCESS) {
                 createWASOidcSession(oidcClientRequest, idToken.getJwtClaims(), clientConfig);
             }
         } catch (Exception e) {
@@ -316,19 +312,6 @@ public class Jose4jUtil {
         cookie.setSecure(true);
 
         oidcClientRequest.getResponse().addCookie(cookie);
-    }
-
-    boolean isRunningBetaMode() {
-        if (!ProductInfo.getBetaEdition()) {
-            return false;
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
-        }
     }
 
     String getIdToken(Map<String, String> tokens, ConvergedClientConfig clientConfig) {
