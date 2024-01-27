@@ -119,6 +119,7 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
     }
 
     @Override
+    @Trivial
     public Class<ManagedThreadFactory> getBeanClass() {
         return ManagedThreadFactory.class;
     }
@@ -127,6 +128,7 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
      * @return unique identifier for PassivationCapable.
      */
     @Override
+    @Trivial
     public String getId() {
         return new StringBuilder(getClass().getName()) //
                         .append(":").append(qualifiers) //
@@ -135,36 +137,43 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
     }
 
     @Override
+    @Trivial
     public Set<InjectionPoint> getInjectionPoints() {
         return Collections.emptySet();
     }
 
     @Override
+    @Trivial
     public String getName() {
         return null;
     }
 
     @Override
+    @Trivial
     public Set<Annotation> getQualifiers() {
         return qualifiers;
     }
 
     @Override
+    @Trivial
     public Class<? extends Annotation> getScope() {
         return ApplicationScoped.class;
     }
 
     @Override
+    @Trivial
     public Set<Class<? extends Annotation>> getStereotypes() {
         return Collections.emptySet();
     }
 
     @Override
+    @Trivial
     public Set<Type> getTypes() {
         return beanTypes;
     }
 
     @Override
+    @Trivial
     public boolean isAlternative() {
         return false;
     }

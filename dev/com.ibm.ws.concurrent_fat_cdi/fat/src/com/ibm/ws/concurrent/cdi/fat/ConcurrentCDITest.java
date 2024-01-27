@@ -70,7 +70,7 @@ public class ConcurrentCDITest extends FATServletClient {
         );
     }
 
-    // TODO enable once implemented correctly @Test
+    @Test
     public void testContextServiceWithUnrecognizedQualifier() throws Exception {
         runTest(server, APP_NAME, testName);
     }
@@ -81,7 +81,12 @@ public class ConcurrentCDITest extends FATServletClient {
     }
 
     @Test
-    public void testInjectContextServiceQualified() throws Exception {
+    public void testInjectContextServiceQualifiedFromAnno() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testInjectContextServiceQualifiedFromWebDD() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 
@@ -91,7 +96,12 @@ public class ConcurrentCDITest extends FATServletClient {
     }
 
     @Test
-    public void testInjectManagedExecutorServiceQualified() throws Exception {
+    public void testInjectManagedExecutorServiceQualifiedFromAnno() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testInjectManagedExecutorServiceQualifiedFromWebDD() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 
@@ -101,7 +111,12 @@ public class ConcurrentCDITest extends FATServletClient {
     }
 
     @Test
-    public void testInjectManagedScheduledExecutorServiceQualified() throws Exception {
+    public void testInjectManagedScheduledExecutorServiceQualifiedFromAnno() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testInjectManagedScheduledExecutorServiceQualifiedFromWebDD() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 
@@ -111,12 +126,32 @@ public class ConcurrentCDITest extends FATServletClient {
     }
 
     @Test
-    public void testInjectManagedThreadFactoryQualified() throws Exception {
+    public void testInjectManagedThreadFactoryQualifiedFromAnno() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testInjectManagedThreadFactoryQualifiedFromWebDD() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 
     @Test
     public void testLookUpManagedThreadFactory() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testQualifierEquals() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testQualifierHashCode() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testQualifierToString() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 
