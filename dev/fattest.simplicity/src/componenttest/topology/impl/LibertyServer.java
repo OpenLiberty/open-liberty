@@ -116,6 +116,7 @@ import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.rules.repeater.JakartaEE11Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
 import componenttest.topology.utils.FileUtils;
@@ -274,6 +275,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final String EBCDIC_CHARSET_NAME = "IBM1047";
 
     protected volatile boolean isStarted = false;
+    protected volatile boolean startedWithJavaSecurity = false;
     protected boolean isStartedConsoleLogLevelOff = false;
 
     protected int osgiConsolePort = 5678; // The port number of the OSGi Console
@@ -1606,18 +1608,13 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
-        if (isJava2SecurityEnabled()) {
+        if (isJava2SecurityEnabled() && !isEE11Enabled()) {
             RemoteFile f = getServerBootstrapPropertiesFile();
             addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
             Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because " + reason + "=true");
-
-            // If we are running on Java 18+, then we need to explicitly enable the security manager
-            if (info.majorVersion() >= 18) {
-                Log.info(c, "startServerWithArgs", "Java 18 + and java2security is global, setting -Djava.security.manager=allow");
-                JVM_ARGS += " -Djava.security.manager=allow";
-            }
-        } else if (info.majorVersion() >= 18) {
+            startedWithJavaSecurity = true;
+        } else {
             boolean bootstrapHasJava2SecProps = false;
             // Check if "websphere.java.security" has been added to bootstrapping.properties
             // as some tests will add it for their own security enable tests
@@ -1640,10 +1637,13 @@ public class LibertyServer implements LogMonitorClient {
                     reader.close();
             }
 
+            startedWithJavaSecurity = bootstrapHasJava2SecProps;
             if (bootstrapHasJava2SecProps) {
-                // If we are running on Java 18+, then we need to explicitly enable the security manager
-                Log.info(c, "startServerWithArgs", "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
-                JVM_ARGS += " -Djava.security.manager=allow";
+                if (info.majorVersion() >= 18) {
+                    // If we are running on Java 18+, then we need to explicitly enable the security manager
+                    Log.info(c, "startServerWithArgs", "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
+                    JVM_ARGS += " -Djava.security.manager=allow";
+                }
             }
         }
 
@@ -3203,12 +3203,13 @@ public class LibertyServer implements LogMonitorClient {
                 resetLogOffsets();
             }
 
-            if (isJava2SecurityEnabled()) {
+            if (startedWithJavaSecurity) {
                 try {
                     new ACEScanner(this).run();
                 } catch (Throwable t) {
                     LOG.logp(Level.WARNING, c.getName(), "stopServer", "Caught exception trying to scan for AccessControlExceptions", t);
                 }
+                startedWithJavaSecurity = false;
             }
             if (postStopServerArchive) {
                 postStopServerArchive(true, skipArchives);
@@ -3317,7 +3318,7 @@ public class LibertyServer implements LogMonitorClient {
                 sb.append("Java 2 security issues were found in logs");
                 boolean showJ2secErrors = true;
                 // If an ACE-report will be generated....
-                if (isJava2SecurityEnabled()) {
+                if (startedWithJavaSecurity) {
                     sb.append("  See autoFVT/ACE-report-*.log for details.");
                     if (j2secIssues.size() > 25)
                         showJ2secErrors = false;
@@ -7186,24 +7187,52 @@ public class LibertyServer implements LogMonitorClient {
         fixedIgnoreErrorsList.add("CWWKG0011W");
     }
 
-    public boolean isJava2SecurityEnabled() throws Exception {
+    public boolean isJava2SecurityEnabled() {
         boolean globalEnabled = GLOBAL_JAVA2SECURITY || GLOBAL_DEBUG_JAVA2SECURITY;
         if (!globalEnabled)
             return false;
-
-        // EE 11 which doesn't support Java security manager can run with Java 17.  As such we need to return false even if we are running
-        // with Java security enabled in the build.
-        Set<String> features = getServerConfiguration().getFeatureManager().getFeatures();
-        for (String feature : features) {
-            if (JakartaEE11Action.EE11_ONLY_FEATURE_SET.contains(feature)) {
-                return false;
-            }
-        }
 
         // Allow servers to opt-out of j2sec by setting websphere.java.security.exempt=true in their ${server.config.dir}/bootstrap.properties
         boolean isJava2SecExempt = "true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt"));
         Log.info(c, "isJava2SecurityEnabled", "Is server " + getServerName() + " Java 2 Security exempt?  " + isJava2SecExempt);
         return !isJava2SecExempt;
+    }
+
+    private boolean isEE11Enabled() throws Exception {
+        if (JakartaEEAction.isEE11OrLaterActive()) {
+            return true;
+        }
+
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            return false;
+        }
+
+        // EE 11 which doesn't support Java security manager can run with Java 17.  As such we need to return false even if we are running
+        // with Java security enabled in the build.
+
+        RemoteFile serverXML = new RemoteFile(machine, serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
+        InputStreamReader in = new InputStreamReader(serverXML.openForReading());
+        try (Scanner s = new Scanner(in)) {
+            while (s.hasNextLine()) {
+                String line = s.nextLine();
+                if (line.contains("<featureManager>")) {//So has reached featureSets
+                    while (s.hasNextLine()) {
+                        line = s.nextLine();
+                        if (line.contains("</featureManager>"))
+                            break;
+
+                        line = line.replaceAll("<feature>", "");
+                        line = line.replaceAll("</feature>", "");
+                        line = line.trim();
+                        if (JakartaEE11Action.EE11_ONLY_FEATURE_SET_LOWERCASE.contains(line.toLowerCase())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     //FIPS 140-3
