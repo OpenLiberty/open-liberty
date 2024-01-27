@@ -48,6 +48,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -69,6 +70,7 @@ import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
  * Test mpTelemetry running with the OpenTelemetry Java Agent enabled
  */
 @RunWith(FATRunner.class)
+@MaximumJavaLevel(javaLevel = 20)
 public class Agent129Test {
 
     private static final Class<Agent129Test> c = Agent129Test.class;
