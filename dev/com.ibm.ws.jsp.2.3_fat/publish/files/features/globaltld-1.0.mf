@@ -1,0 +1,7 @@
+Subsystem-ManifestVersion: 1.0
+Subsystem-SymbolicName: io.openliberty.jsp.globaltld-1.0; visibility:=public
+Subsystem-Version: 1.0.0.qualifier
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content: io.openliberty.test.tld; version="[1,1.0.100)"
+IBM-Feature-Version: 2
+IBM-ShortName: globaltld-1.0

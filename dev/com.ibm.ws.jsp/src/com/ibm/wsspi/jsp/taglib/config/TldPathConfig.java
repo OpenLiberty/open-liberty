@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.wsspi.jsp.taglib.config;
 
@@ -24,7 +21,17 @@ public class TldPathConfig {
     private String uri = null;
     private boolean containsListenerDefs = false;
     private List availabilityConditionList = null;    
+    private boolean overrideTLDURI = false;
     
+
+    /**
+     * Use {@link #TldPathConfig(String tldPath, String uri, boolean strContainsListenerDefs)  TldPathConfig(String tldPath, String uri, boolean strContainsListenerDefs)} instead
+     * 
+     * @param tldPath - location of the TLD file.
+     * @param uri -This value is ignored in favor of the uri attribute within the TLD file. Use the other constructor if a custom URI is needed.
+     * @param strContainsListenerDefs - use "true" if any listeners are contained while any other value is considered false.
+     */
+    @Deprecated 
     public TldPathConfig(String tldPath, String uri, String strContainsListenerDefs) {
         this.tldPath = tldPath;
         this.uri = uri;
@@ -32,8 +39,23 @@ public class TldPathConfig {
             containsListenerDefs = true;    
         }
         availabilityConditionList = new ArrayList();
+        overrideTLDURI = false;
     }
-    
+    /**
+     * Note that strContainsListenerDefs is a boolean
+     * 
+     * @param tldPath - location of the TLD file.
+     * @param uri - overrides the uri attribute within the TLD file. (If overriding is not needed, set uri argument to match the uri-attribute in the TLD)
+     * @param strContainsListenerDefs - boolean value  if any listeners are contained within the TLD.
+     */
+    public TldPathConfig(String tldPath, String uri, boolean strContainsListenerDefs) {
+        this.tldPath = tldPath;
+        this.uri = uri;
+        this.containsListenerDefs = strContainsListenerDefs;  
+        availabilityConditionList = new ArrayList();
+        this.overrideTLDURI = true;
+    }
+
     /**
      * Gets the conditions as to when this tld is made available.
      * The condition can be the existence of a file within the web-inf directory or the existence of a servlet class.
@@ -60,8 +82,11 @@ public class TldPathConfig {
     }
 
     /**
+     *  The uri will only be picked up by the JSP Engine when {@link #TldPathConfig(String tldPath, String uri, boolean strContainsListenerDefs)} is used.
+     * 
      * Sets the uri for the tld
-     * param string String - the uri for the tld
+     * <p> The uri will only be picked up by the JSP Engine when {@link #TldPathConfig(String tldPath, String uri, boolean strContainsListenerDefs)} is used. </p>
+     * @param string String - the uri for the tld
      */
     public void setUri(String string) {
         uri = string;
@@ -74,4 +99,14 @@ public class TldPathConfig {
     public boolean containsListenerDefs() {
         return containsListenerDefs;
     }
+
+    /**
+     * Specifies if the uri argument should override the uri attribute in the TLD. 
+     * <p> Determined by which construtor is used. </p>
+     * @return boolean - true only if {@link #TldPathConfig(String tldPath, String uri, boolean strContainsListenerDefs) TldPathConfig(String tldPath, String uri, boolean strContainsListenerDefs)}  is used
+     */
+    public boolean isTLDURIOverridden() {
+        return this.overrideTLDURI;
+    }
+
 }
