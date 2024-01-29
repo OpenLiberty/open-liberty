@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.fat.wc;
 
+import java.util.Locale;
+
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -48,6 +50,7 @@ import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingFalse;
 import com.ibm.ws.fat.wc.tests.WCTestEncodedX590;
 import com.ibm.ws.fat.wc.tests.WCTrailersTest;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -106,15 +109,29 @@ import componenttest.rules.repeater.RepeatTests;
 
 public class FATSuite {
 
-    // EE10 requires Java 11.
-    // EE11 requires Java 17
-    // If we only specify EE10/EE11 for lite mode it will cause no tests to run which causes an error.
-    // If we are running on Java 8 have EE9 be the lite mode test to run.
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-                    .andWith(FeatureReplacementAction.EE11_FEATURES());
+    public static RepeatTests repeat;
+
+    public static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+
+    static {
+        // EE10 requires Java 11.
+        // EE11 requires Java 17
+        // If we only specify EE10/EE11 for lite mode it will cause no tests to run which causes an error.
+        // If we are running on Java 8 have EE9 be the lite mode test to run.
+        if (isWindows && !FATRunner.FAT_TEST_LOCALRUN) {
+            // Repeating the full fat for all features may exceed the 3 hour limit on Fyre Windows and causes random build breaks.
+            // Skip EE9 on the windows platform when not running locally.
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                            .andWith(FeatureReplacementAction.EE11_FEATURES());
+        } else {
+            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                            .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                            .andWith(FeatureReplacementAction.EE11_FEATURES());
+        }
+    }
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}
