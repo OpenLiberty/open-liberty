@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ import junit.framework.Assert;
 public class AsyncReadListenerHttpUnit {
     private static final Logger LOG = Logger.getLogger(AsyncReadListenerHttpUnit.class.getName());
 
-    @Server("servlet31_wcServer")
+    @Server("servlet31_asyncReadListenerServer")
     public static LibertyServer server;
 
     private static final String LIBERTY_WRITE_LISTENER_FILTER_APP_NAME = "LibertyWriteListenerFilterTest";
