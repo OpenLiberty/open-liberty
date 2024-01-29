@@ -22,8 +22,7 @@ public class ExceptionResource {
     @GET
     @Path("echo")
     @Produces({ "application/json" })
-    public CompletionStage<List<Object>> hello() {
-        System.out.println("Jim... in hello method");
+    public CompletionStage<List<Object>> echo() {
         try {
             CompletableFuture<List<Object>> response = new CompletableFuture<>();
             int a = 2;
@@ -32,8 +31,22 @@ public class ExceptionResource {
             System.out.println(c);
             return response;
         } catch (Exception e) {
-            System.out.println("Jim... in hello... caught: " + e);
             throw e;
         }
     }
+    
+    @GET
+    @Path("single")
+    public String single() {
+        try {
+            int a = 2;
+            int b = 0;
+            int c = a / b;
+            System.out.println(c);
+            return "fail";
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
 }

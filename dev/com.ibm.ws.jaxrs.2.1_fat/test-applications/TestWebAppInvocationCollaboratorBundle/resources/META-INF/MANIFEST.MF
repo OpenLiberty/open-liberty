@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Export-Package: test.collaborator
 Bundle-Name: TestWebAppInvocationCollaboratorBundle
 Bundle-ManifestVersion: 2
-Import-Package: javax.servlet,com.ibm.wsspi.webcontainer.collaborator,com.ibm.wsspi.webcontainer.metadata,com.ibm.wsspi.webcontainer.servlet
+Import-Package: javax.servlet,com.ibm.wsspi.webcontainer.collaborator,com.ibm.wsspi.webcontainer.metadata,com.ibm.wsspi.webcontainer.servlet,org.osgi.framework
 Bundle-SymbolicName: TestWebAppInvocationCollaboratorBundle
+Bundle-Activator: test.collaborator.MyRSActivator
 Bundle-Version: 1.0.0

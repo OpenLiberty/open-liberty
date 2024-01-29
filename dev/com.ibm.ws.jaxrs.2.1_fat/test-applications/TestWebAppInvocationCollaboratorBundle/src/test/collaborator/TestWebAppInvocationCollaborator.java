@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public class TestWebAppInvocationCollaborator implements WebAppInvocationCollabo
      */
     @Override
     public void postInvoke(WebComponentMetaData metaData) {
-        System.out.println("TestWebAppInvocationCollaborator preInvoke (metaData) ");
+        System.out.println("TestWebAppInvocationCollaborator postInvoke(metaData) ");
 
 
     }
@@ -75,9 +75,13 @@ public class TestWebAppInvocationCollaborator implements WebAppInvocationCollabo
      */
     @Override
     public void postInvoke(WebComponentMetaData metaData, ServletRequest req, ServletResponse res) {
-
+        System.out.println("TestWebAppInvocationCollaborator postInvoke ");
+        Thread.dumpStack();
+        
         Throwable currentException = ((ServletRequestExtended) req).getCurrentException();
-        System.out.println("TestWebAppInvocationCollaborator CurrentException = " + currentException);
+        if (currentException != null) {
+            System.out.println("TestWebAppInvocationCollaborator CurrentException = " + currentException);
+        }
 
     }
 

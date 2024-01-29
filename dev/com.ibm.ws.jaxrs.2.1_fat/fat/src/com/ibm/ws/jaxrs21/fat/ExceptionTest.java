@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxrs21.fat;
+
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -30,11 +32,9 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 
 /*
- * The purpose of this test is to provide an empty canvas for rapid/easy test experimentation,
- * as well as providing and example of FAT best practices.
- *
- * This Test should never have any real tests, if you use this Test to create a test that should
- * be added permanently, create a new FAT Test using this test as a template.
+ * The purpose of this test is to ensure that exceptions thrown during resource method processing in an application
+ * with a com.ibm.wsspi.webcontainer.collaborator.WebAppInvocationCollaborator user feature defined will be reflected
+ * in the com.ibm.wsspi.webcontainer.servlet.ServletRequestExtended SPI.
  */
 @RunWith(FATRunner.class)
 public class ExceptionTest extends FATServletClient {
@@ -66,15 +66,26 @@ public class ExceptionTest extends FATServletClient {
             System.out.println(e.toString());
         }
     }
+    /*
+     *  Ensure that the postInvoke() method in the user feature has been invoked and that the 
+     *  expected exception is obtained from the SPI.   
+     */
+    @After
+    public void checkLogs() throws Exception {
+        assertNotNull("WebAppInvocationCollaborator postinvoke not executed as expected",server.waitForStringInLogUsingMark("TestWebAppInvocationCollaborator postInvoke "));
+        assertNotNull("WebAppInvocationCollaborator did not get expected exception", server.waitForStringInLogUsingMark("TestWebAppInvocationCollaborator CurrentException ="));
+        //Move mark to end of log after each test in the servlet.
+        server.setMarkToEndOfLog();
+    }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        server.stopServer("SRVE0777E","SRVE0315E"); // ignore expected exceptions in server logs
 
         if (server != null) {
-            server.stopServer("CWWKE1102W");  //ignore server quiesce timeouts due to slow test machines
- //           server.uninstallUserBundle("TestWebAppInvocationCollaboratorBundle");
- //           server.uninstallUserFeature("MyWebAppInvocationCollaboratorFeature");
+            server.stopServer("CWWKE1102W","SRVE0777E","SRVE0315E");  //ignore server quiesce timeouts due to slow test machines
+            server.uninstallUserBundle("TestWebAppInvocationCollaboratorBundle");
+            server.uninstallUserFeature("MyWebAppInvocationCollaboratorFeature");
 
         }
     }
