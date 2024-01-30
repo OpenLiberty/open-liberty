@@ -202,6 +202,7 @@ public class MPConfigTest extends FATServletClient {
                 case envValueTest:
                 case serverValueTest:
                 case annoValueTest:
+                case varDirValueTest:
                 case providerEnvValueTest:
                 case noDefaultEnvValueTest:
                 case noDefaultServerValueTest:
@@ -212,6 +213,8 @@ public class MPConfigTest extends FATServletClient {
                 case appScopeEnvValueTest:
                 case appScopeServerValueTest:
                 case appScopeAnnoValueTest:
+                case appScopeVarDirValueTest:
+                case appScopeProviderEnvValueTest:
                 case appScopeNoDefaultEnvValueTest:
                 case appScopeNoDefaultServerValueTest:
                     assertNull("CWWKC0651W message not expected in logs", server.waitForStringInLog("CWWKC0651W:.*", 100));
