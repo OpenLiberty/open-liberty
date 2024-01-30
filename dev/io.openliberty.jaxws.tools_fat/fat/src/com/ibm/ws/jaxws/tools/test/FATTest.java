@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
@@ -421,7 +422,15 @@ public class FATTest {
         }
         Log.info(c, "execute", "Run command: " + commandLine);
 
-        ProcessBuilder builder = new ProcessBuilder();
+        ProcessBuilder builder = new ProcessBuilder();   
+        Map<String, String> envProps = builder.environment();
+        String jvmArgs = envProps.get("JVM_ARGS");
+        if(jvmArgs != null) {
+            jvmArgs.concat(" --add-opens java.base/java.net=ALL-UNNAMED");
+        } else {
+            jvmArgs = " --add-opens java.base/java.net=ALL-UNNAMED";
+        }
+        envProps.put("JVM_ARGS", jvmArgs);
         builder.command(command);
         String javaHome = JavaInfo.forServer(server).javaHome();
         builder.environment().put("JAVA_HOME", javaHome);
