@@ -22,7 +22,7 @@
 
     <include location="../fatTestPorts.xml"/>
 
-    <application location="concurrentCDIApp.war">
+    <application location="concurrentCDIApp.ear">
         <classloader commonLibraryRef="location-context"/>
     </application>
 

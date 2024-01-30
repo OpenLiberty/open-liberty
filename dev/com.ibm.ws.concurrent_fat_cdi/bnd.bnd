@@ -15,10 +15,10 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/concurrentCDIApp/src,\
 	test-applications/concurrentCDI2App/src,\
 	test-applications/concurrentCDI3App/src,\
-	test-applications/concurrentCDI4App/src
+	test-applications/concurrentCDI4App/src,\
+	test-applications/concurrentCDIWeb/src
 
 fat.project: true
 
