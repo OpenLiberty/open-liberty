@@ -20,9 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Authenticator;
-import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
-import java.net.Proxy;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -311,7 +309,6 @@ public class ArtifactDownloader implements AutoCloseable {
      */
     protected boolean testConnection(MavenRepository repository) {
         try {
-            ArtifactDownloaderUtils.checkValidProxy(envMap);
             ArtifactDownloaderUtils.verifyPassword(repository.getPassword());
             int responseCode = ArtifactDownloaderUtils.exists(repository.getRepositoryUrl(), envMap, repository);
             logger.fine("Response code - " + repository.getRepositoryUrl() + ":" + responseCode);
@@ -324,19 +321,17 @@ public class ArtifactDownloader implements AutoCloseable {
     }
 
     private void downloadInternal(URI address, File destination, MavenRepository repository) throws IOException, InstallException {
-        Proxy proxy;
+        URL url = address.toURL();
+        logger.fine("non Proxy Hosts: " + System.getProperty("http.nonProxyHosts"));
+        logger.fine("url: " + url.getHost());
         String proxyEncodedAuth = "";
-        if (envMap.get("https.proxyHost") != null) {
-            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
+        if (url.getProtocol().equals("https") && envMap.get("https.proxyHost") != null) {
             proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword"));
         } else if (envMap.get("http.proxyHost") != null) {
-            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
             proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("http.proxyUser"), (String) envMap.get("http.proxyPassword"));
-        } else {
-            proxy = Proxy.NO_PROXY;
         }
-        URL url = address.toURL();
-        URLConnection conn = url.openConnection(proxy);
+
+        URLConnection conn = url.openConnection();
 
         final String userAgentValue = calculateUserAgent();
         String repoEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication(repository.getUserId(), repository.getPassword());
@@ -349,6 +344,7 @@ public class ArtifactDownloader implements AutoCloseable {
         }
 
         conn.connect();
+        logger.fine(conn.getHeaderFields().toString());
 
         destination.getParentFile().mkdirs();
         File tempFile = File.createTempFile(destination.getName(), null, destination.getParentFile());

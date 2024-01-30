@@ -545,6 +545,8 @@ public class InstallKernelMap implements Map {
         } else if (InstallConstants.OVERRIDE_ENVIRONMENT_VARIABLES.equals(key)) {
             if (value instanceof Map<?, ?>) {
                 overrideEnvMap((Map<String, Object>) value);
+                //set proxy system properties
+                setProxy();
             } else {
                 throw new IllegalArgumentException();
             }
@@ -1109,6 +1111,59 @@ public class InstallKernelMap implements Map {
         envMap.putAll(overrideMap);
         logger.fine("printing envmap after");
         logger.fine(envMap.toString());
+
+    }
+
+    /**
+     * set proxy jvm system properties
+     * http.nonProxyHosts:a list of hosts that should be reached directly, bypassing the proxy. This is a list of patterns separated by '|'. The patterns may start or end with a
+     * '*' for wildcards. Any host matching one of these patterns will be reached through a direct connection instead of through a proxy.
+     */
+    protected void setProxy() {
+        //set up basic auth HTTP tunnel
+        System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+
+        try {
+            if (envMap.get("https.proxyHost") != null) {
+                checkValidProxy("https");
+                System.setProperty("https.proxyHost", (String) envMap.get("https.proxyHost"));
+                System.setProperty("https.proxyPort", (String) envMap.get("https.proxyPort"));
+            }
+            if (envMap.get("http.proxyHost") != null) {
+                checkValidProxy("http");
+                System.setProperty("http.proxyHost", (String) envMap.get("http.proxyHost"));
+                System.setProperty("http.proxyPort", (String) envMap.get("http.proxyPort"));
+                if (envMap.get("https.proxyHost") == null) {
+                    System.setProperty("https.proxyHost", (String) envMap.get("http.proxyHost"));
+                    System.setProperty("https.proxyPort", (String) envMap.get("http.proxyPort"));
+                }
+            }
+            if (envMap.get("http.nonProxyHosts") != null) {
+                String noProxyHosts = (String) envMap.get("http.nonProxyHosts");
+                //if users provide list of hosts using ",", replace to "|"
+                noProxyHosts = noProxyHosts.replace(",", "|");
+                System.setProperty("http.nonProxyHosts", noProxyHosts);
+            }
+        } catch (InstallException e) {
+            data.put(InstallConstants.ACTION_ERROR_MESSAGE, e.getMessage());
+            data.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
+        }
+
+    }
+
+    protected void checkValidProxy(String protocol) throws InstallException {
+        String proxyPort = (String) envMap.get(protocol + ".proxyPort");
+        if (protocol != null) {
+            int proxyPortnum = Integer.parseInt(proxyPort);
+            if (((String) envMap.get(protocol + ".proxyHost")).isEmpty()) {
+                throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
+            } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
+                throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
+            } else if (((String) envMap.get(protocol + ".proxyPassword")).isEmpty() ||
+                       envMap.get(protocol + ".proxyPassword") == null) {
+                throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
+            }
+        }
     }
 
     private static Collection<String> keepFirstInstance(Collection<String> dupStrCollection) {
@@ -1903,6 +1958,7 @@ public class InstallKernelMap implements Map {
                 envMapRet.put(key, httpsProxyVariables.get(key));
             }
         }
+        envMapRet.put("http.nonProxyHosts", System.getenv("no_proxy"));
 
         envMapRet.put("FEATURE_REPO_URL", System.getenv("FEATURE_REPO_URL"));
         envMapRet.put("FEATURE_REPO_USER", System.getenv("FEATURE_REPO_USER"));
@@ -1917,7 +1973,8 @@ public class InstallKernelMap implements Map {
 
         envMapRet.put("FEATURE_VERIFY", System.getenv("FEATURE_VERIFY"));
 
-        //search through the properties file to look for overrides if they exist TODO
+        //search through the properties file to look for overrides if they exist
+        //TODO remove?
         Map<String, String> propsFileMap = getFeatureUtilEnvProps();
         if (!propsFileMap.isEmpty()) {
             fine("The properties found in featureUtility.env will override latent environment variables of the same name");

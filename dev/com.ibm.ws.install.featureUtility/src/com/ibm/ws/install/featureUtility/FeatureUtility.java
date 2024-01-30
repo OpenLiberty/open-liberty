@@ -313,6 +313,11 @@ public class FeatureUtility {
 
 		}
 
+		// override no_proxy settings
+		if (FeatureUtilityProperties.getNoProxySetting() != null) {
+		    overrideMap.put("no_proxy", FeatureUtilityProperties.getNoProxySetting());
+		}
+
         // override the local feature repo
         if(FeatureUtilityProperties.getFeatureLocalRepo() != null){
             overrideMap.put("FEATURE_LOCAL_REPO", FeatureUtilityProperties.getFeatureLocalRepo());
@@ -347,6 +352,13 @@ public class FeatureUtility {
         }
 
 	map.put(InstallConstants.OVERRIDE_ENVIRONMENT_VARIABLES, overrideMap);
+
+	if (map.get(InstallConstants.ACTION_ERROR_MESSAGE) != null) {
+	    // error with installation
+	    fine("action.exception.stacktrace: " + map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE));
+	    String exceptionMessage = (String) map.get(InstallConstants.ACTION_ERROR_MESSAGE);
+	    throw new InstallException(exceptionMessage);
+	}
     }
 
     /**
