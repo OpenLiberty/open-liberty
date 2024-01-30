@@ -87,7 +87,7 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
 
     /**
      * Maintains associations of qualifiers to resource factory for
-     * each type of resource and for each Java EE name.
+     * each type of resource and for each JEE name.
      *
      * JEEName -> [qualifiers -> ResourceFactory for ContextService,
      * . . . . . . qualifiers -> ResourceFactory for ManagedExecutorService,
@@ -106,7 +106,8 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
      * resource factory with qualifiers to be processed by the
      * concurrency CDI extension.
      *
-     * @param jeeName         Java EE name obtained from ComponentMetaData.getName()
+     * @param jeeName         JEE name of the form APP#MODULE or APP.
+     *                            // TODO EJBs and component level
      * @param resourceType    type of resource definition
      * @param qualifierNames  names of qualifier annotation classes
      * @param resourceFactory the resource factory
@@ -123,7 +124,7 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
         ResourceFactory conflict = qualifiersToResourceFactory.put(qualifierNames, resourceFactory);
 
         if (conflict != null)
-            throw new IllegalStateException("The " + jeeName + " application defines multiple " + //
+            throw new IllegalStateException("The " + jeeName + " application artifact defines multiple " + //
                                             resourceType + " resources with the " + qualifierNames + " qualifiers."); // TODO NLS and Tr.error
     }
 
@@ -147,7 +148,8 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
      * of the resource factories so it can register them as beans with
      * their respective qualifiers.
      *
-     * @param jeeName Java EE name obtained from ComponentMetaData.getName()
+     * @param jeeName JEE name of the form APP#MODULE or APP.
+     *                    // TODO EJBs and component level
      * @return list of the form [qualifiers -> ResourceFactory for ContextService,
      *         . . . . . . . . . qualifiers -> ResourceFactory for ManagedExecutorService,
      *         . . . . . . . . . qualifiers -> ResourceFactory for ManagedScheduledExecutorService,

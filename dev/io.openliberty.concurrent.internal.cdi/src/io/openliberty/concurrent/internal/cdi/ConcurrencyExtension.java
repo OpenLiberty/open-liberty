@@ -24,6 +24,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
@@ -107,87 +108,107 @@ public class ConcurrencyExtension implements Extension {
             qualifierSetsPerMTF.add(Collections.emptySet());
         }
 
-        // Add beans for Concurrency resources that have one or more qualifier annotations:
+        // Look for beans from the module and the application.
+        // TODO EJBs and component level?
 
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         if (cmd == null)
             throw new IllegalStateException(); // should be unreachable
 
-        List<Map<List<String>, ResourceFactory>> list = ext.removeAll(cmd.getName());
+        J2EEName jeeName = cmd.getJ2EEName();
 
-        if (list != null) {
-            Map<List<String>, ResourceFactory> qualifiedContextServices = //
-                            list.get(QualifiedResourceFactories.Type.ContextService.ordinal());
+        List<Map<List<String>, ResourceFactory>> listFromModule = ext.removeAll(cmd.getJ2EEName().toString());
 
-            for (Entry<List<String>, ResourceFactory> entry : qualifiedContextServices.entrySet()) {
+        if (listFromModule != null)
+            addBeans(event, listFromModule);
+
+        List<Map<List<String>, ResourceFactory>> listFromApp = ext.removeAll(jeeName.getApplication());
+        if (listFromApp != null)
+            addBeans(event, listFromApp);
+    }
+
+    /**
+     * Add beans for Concurrency resources that have one or more qualifier annotations:
+     *
+     * @param event event for AfterBeanDiscovery.
+     * @param list  list of qualifiers to resource factory for each type of resource and for each JEE name.
+     *                  JEEName -> [qualifiers -> ResourceFactory for ContextService,
+     *                  . . . . . . qualifiers -> ResourceFactory for ManagedExecutorService,
+     *                  . . . . . . qualifiers -> ResourceFactory for ManagedScheduledExecutorService,
+     *                  . . . . . . qualifiers -> ResourceFactory for ManagedThreadFactory ]
+     */
+    private void addBeans(AfterBeanDiscovery event, List<Map<List<String>, ResourceFactory>> list) {
+        Map<List<String>, ResourceFactory> qualifiedContextServices = //
+                        list.get(QualifiedResourceFactories.Type.ContextService.ordinal());
+
+        for (Entry<List<String>, ResourceFactory> entry : qualifiedContextServices.entrySet()) {
+            List<String> qualifierList = entry.getKey();
+            ResourceFactory factory = entry.getValue();
+            try {
+                event.addBean(new ContextServiceBean(factory, qualifierList));
+            } catch (Throwable x) {
+                // TODO NLS
+                System.out.println(" E Unable to create a bean for the " +
+                                   factory + " ContextServiceDefinition with the " + qualifierList + " qualifiers" +
+                                   " due to the following error: ");
+                x.printStackTrace();
+            }
+        }
+
+        Map<List<String>, ResourceFactory> qualifiedManagedExecutors = //
+                        list.get(QualifiedResourceFactories.Type.ManagedExecutorService.ordinal());
+
+        for (Entry<List<String>, ResourceFactory> entry : qualifiedManagedExecutors.entrySet()) {
+            List<String> qualifierList = entry.getKey();
+            ResourceFactory factory = entry.getValue();
+            try {
+                event.addBean(new ManagedExecutorBean(factory, qualifierList));
+            } catch (Throwable x) {
+                // TODO NLS
+                System.out.println(" E Unable to create a bean for the " +
+                                   factory + " ManagedExecutorDefinition with the " + qualifierList + " qualifiers" +
+                                   " due to the following error: ");
+                x.printStackTrace();
+            }
+        }
+
+        Map<List<String>, ResourceFactory> qualifiedManagedScheduledExecutors = //
+                        list.get(QualifiedResourceFactories.Type.ManagedScheduledExecutorService.ordinal());
+
+        for (Entry<List<String>, ResourceFactory> entry : qualifiedManagedScheduledExecutors.entrySet()) {
+            List<String> qualifierList = entry.getKey();
+            ResourceFactory factory = entry.getValue();
+            try {
+                event.addBean(new ManagedScheduledExecutorBean(factory, qualifierList));
+            } catch (Throwable x) {
+                // TODO NLS
+                System.out.println(" E Unable to create a bean for the " +
+                                   factory + " ManagedScheduledExecutorDefinition with the " + qualifierList + " qualifiers" +
+                                   " due to the following error: ");
+                x.printStackTrace();
+            }
+        }
+
+        Map<List<String>, ResourceFactory> qualifiedManagedThreadFactories = //
+                        list.get(QualifiedResourceFactories.Type.ManagedThreadFactory.ordinal());
+
+        int count = qualifiedManagedThreadFactories.size();
+        if (count > 0) {
+            qualifierSetsPerMTF = qualifierSetsPerMTF == null ? new ArrayList<>(count) : qualifierSetsPerMTF;
+
+            for (Entry<List<String>, ResourceFactory> entry : qualifiedManagedThreadFactories.entrySet()) {
                 List<String> qualifierList = entry.getKey();
                 ResourceFactory factory = entry.getValue();
                 try {
-                    event.addBean(new ContextServiceBean(factory, qualifierList));
+                    ManagedThreadFactoryBean bean = new ManagedThreadFactoryBean(factory, qualifierList);
+                    event.addBean(bean);
+                    qualifierSetsPerMTF.add(bean.getQualifiers());
                 } catch (Throwable x) {
                     // TODO NLS
                     System.out.println(" E Unable to create a bean for the " +
-                                       factory + " ContextServiceDefinition with the " + qualifierList + " qualifiers" +
+                                       factory + " ManagedThreadFactoryDefinition with the " + qualifierList + " qualifiers" +
                                        " due to the following error: ");
                     x.printStackTrace();
-                }
-            }
-
-            Map<List<String>, ResourceFactory> qualifiedManagedExecutors = //
-                            list.get(QualifiedResourceFactories.Type.ManagedExecutorService.ordinal());
-
-            for (Entry<List<String>, ResourceFactory> entry : qualifiedManagedExecutors.entrySet()) {
-                List<String> qualifierList = entry.getKey();
-                ResourceFactory factory = entry.getValue();
-                try {
-                    event.addBean(new ManagedExecutorBean(factory, qualifierList));
-                } catch (Throwable x) {
-                    // TODO NLS
-                    System.out.println(" E Unable to create a bean for the " +
-                                       factory + " ManagedExecutorDefinition with the " + qualifierList + " qualifiers" +
-                                       " due to the following error: ");
-                    x.printStackTrace();
-                }
-            }
-
-            Map<List<String>, ResourceFactory> qualifiedManagedScheduledExecutors = //
-                            list.get(QualifiedResourceFactories.Type.ManagedScheduledExecutorService.ordinal());
-
-            for (Entry<List<String>, ResourceFactory> entry : qualifiedManagedScheduledExecutors.entrySet()) {
-                List<String> qualifierList = entry.getKey();
-                ResourceFactory factory = entry.getValue();
-                try {
-                    event.addBean(new ManagedScheduledExecutorBean(factory, qualifierList));
-                } catch (Throwable x) {
-                    // TODO NLS
-                    System.out.println(" E Unable to create a bean for the " +
-                                       factory + " ManagedScheduledExecutorDefinition with the " + qualifierList + " qualifiers" +
-                                       " due to the following error: ");
-                    x.printStackTrace();
-                }
-            }
-
-            Map<List<String>, ResourceFactory> qualifiedManagedThreadFactories = //
-                            list.get(QualifiedResourceFactories.Type.ManagedThreadFactory.ordinal());
-
-            int count = qualifiedManagedThreadFactories.size();
-            if (count > 0) {
-                qualifierSetsPerMTF = qualifierSetsPerMTF == null ? new ArrayList<>(count) : qualifierSetsPerMTF;
-
-                for (Entry<List<String>, ResourceFactory> entry : qualifiedManagedThreadFactories.entrySet()) {
-                    List<String> qualifierList = entry.getKey();
-                    ResourceFactory factory = entry.getValue();
-                    try {
-                        ManagedThreadFactoryBean bean = new ManagedThreadFactoryBean(factory, qualifierList);
-                        event.addBean(bean);
-                        qualifierSetsPerMTF.add(bean.getQualifiers());
-                    } catch (Throwable x) {
-                        // TODO NLS
-                        System.out.println(" E Unable to create a bean for the " +
-                                           factory + " ManagedThreadFactoryDefinition with the " + qualifierList + " qualifiers" +
-                                           " due to the following error: ");
-                        x.printStackTrace();
-                    }
                 }
             }
         }

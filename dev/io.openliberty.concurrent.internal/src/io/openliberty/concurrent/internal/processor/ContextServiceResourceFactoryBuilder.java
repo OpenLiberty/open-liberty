@@ -371,20 +371,24 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
             contextServiceConfig.update(contextSvcProps);
 
             if (qualifierNames != null) {
-                ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-                if (cmd == null)
-                    throw new IllegalStateException(); // should be unreachable
+                String jeeName;
+                if (module == null) {
+                    jeeName = application;
+                } else {
+                    ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                    jeeName = cmd.getJ2EEName().toString();
+                }
 
                 ServiceReference<QualifiedResourceFactories> ref = bundleContext.getServiceReference(QualifiedResourceFactories.class);
 
-                if (ref == null)
-                    throw new UnsupportedOperationException("The " + cmd.getName() + " application cannot specify the " +
+                if (ref == null) // TODO message should include possibility of deployment descriptor element
+                    throw new UnsupportedOperationException("The " + jeeName + " application artifact cannot specify the " +
                                                             qualifierNames + " qualifiers on the " +
                                                             jndiName + " " + ContextServiceDefinition.class.getSimpleName() +
                                                             " because the " + "CDI" + " feature is not enabled."); // TODO NLS
 
                 QualifiedResourceFactories qrf = bundleContext.getService(ref);
-                qrf.add(cmd.getName(), QualifiedResourceFactories.Type.ContextService, qualifierNames, factory);
+                qrf.add(jeeName, QualifiedResourceFactories.Type.ContextService, qualifierNames, factory);
             }
         } catch (Exception x) {
             factory.destroy();
