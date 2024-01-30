@@ -65,4 +65,5 @@ Service-Component: \
   com.ibm.websphere.javaee.servlet.4.0;version=latest, \
   com.ibm.ws.logging.core, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-  com.ibm.wsspi.org.osgi.core
+  com.ibm.wsspi.org.osgi.core, \
+  com.ibm.ws.config;version=latest

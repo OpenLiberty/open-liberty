@@ -24,6 +24,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.cxf.common.logging.LogUtils;
+import java.util.logging.Logger;
 
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transport.http.HTTPConduitConfigurer;
@@ -61,6 +63,8 @@ import org.osgi.service.cm.ManagedServiceFactory;
  */
 class ConfigAdminHttpConduitConfigurer implements ManagedServiceFactory, HTTPConduitConfigurer {
     public static final String FACTORY_PID = "org.apache.cxf.http.conduits";
+
+    private static final Logger LOG = LogUtils.getL7dLogger(ConfigAdminHttpConduitConfigurer.class); // Liberty Change
 
     /**
      * Stores the configuration data index by matcher and sorted by order
@@ -133,7 +137,10 @@ class ConfigAdminHttpConduitConfigurer implements ManagedServiceFactory, HTTPCon
         if (name != null) {
             props.put(name, info);
         }
-        addToSortedInfos(info);
+        if (matcher != null) {  // Liberty Change start
+	   LOG.finest("Matcher is not null, add to sorted list");
+           addToSortedInfos(info);
+	}  // Liberty Change end
     }
 
     private synchronized void addToSortedInfos(PidInfo pi) {

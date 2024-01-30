@@ -174,7 +174,12 @@ public class ConduitConfigurer extends ConduitConfigurerService  implements HTTP
     if (name != null) {
         props.put(name, info);
     }
-    addToSortedInfos(info);
+    if (matcher != null) { // Liberty Change start
+       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+          Tr.debug(tc, "Matcher is not null, add to sorted list");
+       }
+       addToSortedInfos(info);
+    } // Liberty Change end
     }
 
     private synchronized void addToSortedInfos(PidInfo pi) {
