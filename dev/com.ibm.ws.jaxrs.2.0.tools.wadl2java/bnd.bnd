@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ Require-Compiler: true
 Require-Bundle: com.ibm.ws.jaxrs.2.0.tools; version="[1,1.0.100)", \
  com.ibm.websphere.javaee.jaxrs.2.0; version="[1,1.0.100)"; location="dev/api/spec/", \
  com.ibm.ws.jaxrs.2.0.common; version ="[1,1.0.100)", \
- com.ibm.ws.jaxb.tools.2.2.10; version="[1,1.0.100)", \
+ io.openliberty.jaxrs.2.0.wadl2java.jaxb.runtime; version="[1,1.0.100)", \
  com.ibm.websphere.javaee.activation.1.1; version="[1,1.0.100)"; location="dev/api/spec/", \
  com.ibm.websphere.javaee.jaxb.2.2; version="[1,1.0.100)"; location="dev/api/spec/", \
  com.ibm.ws.logging; version="[1,1.0.100)", \

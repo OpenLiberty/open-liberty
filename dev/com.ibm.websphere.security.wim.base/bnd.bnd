@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2022 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -56,8 +56,7 @@ instrument.classesExcludes: com/ibm/websphere/security/wim/util/resources/*.clas
     com.ibm.websphere.security;version=latest,\
     javax.activation:activation;version=1.1,\
     com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-    com.sun.xml.bind:jaxb-impl;version=2.2.10,\
-    com.sun.xml.bind:jaxb-core;version=2.2.10
+    com.ibm.ws.jaxb.tools;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
