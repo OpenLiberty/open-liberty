@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.upgradeHandler;
 
@@ -91,8 +88,7 @@ public class TestHttpUpgradeHandler implements HttpUpgradeHandler {
             }
             WriteListener writeListener = new TestUpgradeWriteListener(out, q, wc, "test_SmallData_UpgradeWL");
             out.setWriteListener(writeListener);
-        }
-        else if (getTestSet().equals("test_SmallDataInHandler_NoWriteListener")) {
+        } else if (getTestSet().equals("test_SmallDataInHandler_NoWriteListener")) {
             LOG.info("\n RUNNING TEST|test_SmallDataInHandler_NoWriteListener| In init method of TestHttpUpgradeHandler");
             try {
                 //printing out the numbers in test_SmallDataInHandler_NoWriteListener
@@ -116,8 +112,7 @@ public class TestHttpUpgradeHandler implements HttpUpgradeHandler {
                 throw e;
             }
 
-        }
-        else if (getTestSet().equals("test_Close_WebConnection_Container_UpgradeWL")) {
+        } else if (getTestSet().equals("test_Close_WebConnection_Container_UpgradeWL")) {
             try {
 
                 LOG.info("\n [RUNNING TEST|test_Close_WebConnection_Container_UpgradeWL| In init method of TestHttpUpgradeHandler");
@@ -135,8 +130,7 @@ public class TestHttpUpgradeHandler implements HttpUpgradeHandler {
             LOG.info("In TestHttpUpgradeHandler [test : test_Close_WebConnection_Container_UpgradeWL] Handler thread is now going to sleep for 60 milliseconds");
             Thread.sleep(60);
             LOG.info("In TestHttpUpgradeHandler [test : test_Close_WebConnection_Container_UpgradeWL] Handler thread has woken up after sleep ");
-        }
-        else if (getTestSet().equals("test_SingleWriteLargeData1000000__UpgradeWL")) {
+        } else if (getTestSet().equals("test_SingleWriteLargeData1000000__UpgradeWL")) {
             try {
 
                 LOG.info("\n RUNNING TEST|test_SingleWriteLargeData1000000__UpgradeWL| In init method of TestHttpUpgradeHandler");
@@ -185,8 +179,7 @@ public class TestHttpUpgradeHandler implements HttpUpgradeHandler {
             WriteListener writeListener = new TestUpgradeWriteListener(out, q, wc, "test_SingleWriteLargeData1000000__UpgradeWL");
             out.setWriteListener(writeListener);
 
-        } 
-        else if (getTestSet().equals("TestWrite_DontCheckisRedy_fromUpgradeWL")
+        } else if (getTestSet().equals("TestWrite_DontCheckisRedy_fromUpgradeWL")
                    || getTestSet().equals("TestWriteFromHandler_AftersetWL")
                    || getTestSet().equals("TestUpgrade_ISE_setSecondWriteListener")
                    || getTestSet().equals("TestUpgrade_NPE_setNullWriteListener")) {
@@ -264,8 +257,7 @@ public class TestHttpUpgradeHandler implements HttpUpgradeHandler {
 
             }
 
-        } 
-        else if (getTestSet().equals("test_LargeDataInChunks_UpgradeWL")){ //test for largeDataSizes in multiple chunks in queue, with writeListener going async
+        } else if (getTestSet().equals("test_LargeDataInChunks_UpgradeWL")) { //test for largeDataSizes in multiple chunks in queue, with writeListener going async
             try {
                 LOG.info("\n RUNNING TEST|test_LargeDataInChunks_UpgradeWL| In init method of TestHttpUpgradeHandler");
                 String postDataSize = ContentSize;
@@ -317,8 +309,7 @@ public class TestHttpUpgradeHandler implements HttpUpgradeHandler {
             //setting writeListener.
             WriteListener writeListener = new TestUpgradeWriteListener(out, q, wc, "test_LargeDataInChunks_UpgradeWL");
             out.setWriteListener(writeListener);
-        }
-        else if (getTestSet().equals("test_Timeout_UpgradeWL")) {
+        } else if (getTestSet().equals("test_Timeout_UpgradeWL")) {
             try {
                 LOG.info("\n RUNNING TEST| test_Timeout_UpgradeWL | In init method of TestHttpUpgradeHandler");
                 String postDataSize = "1000000";
@@ -370,8 +361,7 @@ public class TestHttpUpgradeHandler implements HttpUpgradeHandler {
             //setting writeListener.
             WriteListener writeListener = new TestUpgradeWriteListener(out, q, wc, "test_Timeout_UpgradeWL");
             out.setWriteListener(writeListener);
-        }
-        else if (getTestSet().equals("test_ContextTransferProperly_UpgradeWL")) {
+        } else if (getTestSet().equals("test_ContextTransferProperly_UpgradeWL")) {
             try {
                 LOG.info("\n [RUNNING TEST | test_ContextTransferProperly_UpgradeWL | In init method of TestHttpUpgradeHandler");
                 //setting writeListener
@@ -418,8 +408,7 @@ public class TestHttpUpgradeHandler implements HttpUpgradeHandler {
             ReadListener readListener = new TestUpgradeReadListener(input, wc, output, "testUpgradeReadListenerSmallData");
             input.setReadListener(readListener);
 
-        }
-        else if (getTestSet().equals("testUpgradeReadSmallDataInHandler")) {
+        } else if (getTestSet().equals("testUpgradeReadSmallDataInHandler")) {
             try {
 
                 LOG.info("\n [RUNNING TEST |testUpgradeReadSmallDataInHandler| In init method of TestHttpUpgradeHandler");
@@ -455,8 +444,7 @@ public class TestHttpUpgradeHandler implements HttpUpgradeHandler {
                 throw e;
             }
 
-        }
-        else if (getTestSet().equals("testUpgradeReadListenerLargeData")) {
+        } else if (getTestSet().equals("testUpgradeReadListenerLargeData")) {
             ServletInputStream input = null;
             ServletOutputStream output = null;
             try {
@@ -474,8 +462,7 @@ public class TestHttpUpgradeHandler implements HttpUpgradeHandler {
             ReadListener readListener = new TestUpgradeReadListener(input, wc, output, "testUpgradeReadListenerLargeData");
             input.setReadListener(readListener);
 
-        } 
-        else if (getTestSet().equals("testUpgradeReadListenerTimeout")) {
+        } else if (getTestSet().equals("testUpgradeReadListenerTimeout")) {
             ServletInputStream input = null;
             ServletOutputStream output = null;
 
@@ -493,8 +480,7 @@ public class TestHttpUpgradeHandler implements HttpUpgradeHandler {
             input.setReadListener(readListener);
             LOG.info("Finished with the testUpgradeReadListenerTimeout TestHttpUpgradeHandler init");
 
-        } 
-        else if (getTestSet().equals("testRead_ContextTransferProperly_WhenUpgradeRLSet")) {
+        } else if (getTestSet().equals("testRead_ContextTransferProperly_WhenUpgradeRLSet")) {
             ServletInputStream input = null;
             ServletOutputStream output = null;
 
@@ -511,8 +497,7 @@ public class TestHttpUpgradeHandler implements HttpUpgradeHandler {
                 throw e;
             }
             LOG.info("Finished with the testRead_ContextTransferProperly_WhenUpgradeRLSet TestHttpUpgradeHandler init");
-        }
-        else if (getTestSet().equals("testUpgrade_WriteListener_From_ReadListener")) {
+        } else if (getTestSet().equals("testUpgrade_WriteListener_From_ReadListener")) {
             ServletInputStream input = null;
             ServletOutputStream output = null;
             try {

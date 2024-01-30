@@ -7,9 +7,6 @@
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <html><head><title>A Form login authentication failure occurred</head></title>
     <body>
@@ -18,4 +15,3 @@
     </b><p>Authentication Form login failure occurred</p>
     </body>
 </html>
-

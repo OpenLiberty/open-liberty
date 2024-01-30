@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet_31_fat.libertywritelistenerfiltertest.war.writeListener;
 
@@ -31,7 +28,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.WriteListener;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -51,7 +47,6 @@ public class WriteListenerFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain fc) throws IOException, ServletException {
 
         HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) res;
         //Get the IP address of client machine.
         String ipAddress = request.getRemoteAddr();
 

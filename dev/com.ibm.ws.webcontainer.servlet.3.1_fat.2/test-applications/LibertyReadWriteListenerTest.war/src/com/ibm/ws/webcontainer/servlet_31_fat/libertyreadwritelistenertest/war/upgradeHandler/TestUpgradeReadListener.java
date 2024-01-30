@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet_31_fat.libertyreadwritelistenertest.war.upgradeHandler;
 
@@ -24,7 +21,6 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 import javax.servlet.http.WebConnection;
-import javax.sql.DataSource;
 
 /*
  * the handler sets a readListener for read requests, and this is  the implementation
@@ -256,7 +252,7 @@ public class TestUpgradeReadListener implements ReadListener {
 
                 LOG.info("Attempting a JNDI lookup");
                 Context ctx = new InitialContext();
-                DataSource ds = (DataSource) ctx.lookup("java:comp/UserTransaction");
+                ctx.lookup("java:comp/UserTransaction");
                 //We expect an exception here and don't expect to ever get to this point.
             } catch (Exception e) {
                 LOG.info("Caught the JNDI exception. Passing the exception back to the client for comparison");
