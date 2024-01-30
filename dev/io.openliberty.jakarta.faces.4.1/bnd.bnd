@@ -17,7 +17,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Bundle-SymbolicName: io.openliberty.jakarta.faces.4.1; singleton:=true
 Bundle-Description:  Jakarta Faces, MyFaces 4.1 API
-Implementation-Version: 4.1.0-RC1
+Implementation-Version: 4.1.0
 
 Export-Package: \
   jakarta.faces.*; version=${Implementation-Version}, \
@@ -29,16 +29,17 @@ DynamicImport-Package: \
   org.apache.myfaces.cdi.util, \
   org.apache.myfaces.spi
 
+# Use this format (4.1.0.RC#)  once we have an official release and not an RC Version
 -includeresource: \
-	@${repo;org.apache.myfaces.core:myfaces-api;${Implementation-Version};EXACT}!/!(META-INF/maven/*|module-info.class), \
-  META-INF=@src/META-INF
+	@${repo;org.apache.myfaces.core:myfaces-api;4.1.0.RC1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
+# Use this format (4.1.0.RC#) once we have an official release and not an RC Version
 -buildpath: \
-    org.apache.myfaces.core:myfaces-api;strategy=exact;version=${Implementation-Version}
+    org.apache.myfaces.core:myfaces-api;strategy=exact;version=4.1.0.RC1
     # org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9;strategy=exact, \
     # io.openliberty.jakarta.expressionLanguage.5.0;version=latest, \
     # io.openliberty.jakarta.servlet.6.0;version=latest, \
