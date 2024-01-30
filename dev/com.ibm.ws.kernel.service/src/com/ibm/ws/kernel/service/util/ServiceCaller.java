@@ -446,6 +446,17 @@ public class ServiceCaller<S> {
         if (current != null) {
             return Optional.of(current);
         }
+
+        if (System.getSecurityManager() != null) {
+            return AccessController.doPrivileged((PrivilegedAction<Optional<ReferenceAndService>>) () -> {
+                return trackCurrentInternal();
+            });
+        } else {
+            return trackCurrentInternal();
+        }
+    }
+
+    private Optional<ReferenceAndService> trackCurrentInternal() {
         return getCurrent().flatMap(r -> {
             synchronized (ServiceCaller.this) {
                 if (service != null) {
@@ -457,18 +468,36 @@ public class ServiceCaller<S> {
                 return r.track();
             }
         });
-
     }
 
     private Optional<ReferenceAndService> getCurrent() {
         BundleContext context = getContext();
+
+        if (System.getSecurityManager() != null) {
+            return AccessController.doPrivileged((PrivilegedAction<Optional<ReferenceAndService>>) () -> {
+                return getCurrentInternal(context);
+            });
+        } else {
+            return getCurrentInternal(context);
+        }
+    }
+
+    private Optional<ReferenceAndService> getCurrentInternal(final BundleContext context) {
         return getServiceReference(context).map(r -> {
             S current = context.getService(r);
             return current == null ? null : new ReferenceAndService(context, r, current);
         });
     }
 
-    private Optional<ServiceReference<S>> getServiceReference(BundleContext context) {
+    private Optional<ServiceReference<S>> getServiceReference(final BundleContext context) {
+        if (System.getSecurityManager() != null) {
+            return AccessController.doPrivileged((PrivilegedAction<Optional<ServiceReference<S>>>) () -> getServiceReferenceInternal(context));
+        } else {
+            return getServiceReferenceInternal(context);
+        }
+    }
+
+    private Optional<ServiceReference<S>> getServiceReferenceInternal(BundleContext context) {
         if (context == null) {
             return Optional.empty();
         }
@@ -495,4 +524,3 @@ public class ServiceCaller<S> {
         }
     }
 }
-
