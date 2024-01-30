@@ -117,7 +117,7 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
             String nextAppName = configAppsIt.next();
             if (apps.contains(nextAppName)) {
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "In performHealthCheck(): configAdminAppName = " + nextAppName);
+                    Tr.debug(tc, "In performHealthCheck(): configAdmin found an application that appTracker already found. configAdminAppName = " + nextAppName);
             } else {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "In performHealthCheck(): appTracker couldn't find application. configAdmin added appName = " + nextAppName);

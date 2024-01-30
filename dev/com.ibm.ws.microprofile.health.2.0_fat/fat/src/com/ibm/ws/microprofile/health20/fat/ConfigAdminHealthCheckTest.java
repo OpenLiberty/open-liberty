@@ -16,15 +16,16 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -37,12 +38,18 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.KafkaContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.exception.TopologyException;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -58,9 +65,13 @@ public class ConfigAdminHealthCheckTest {
     final static String SERVER_NAME = "ConfigAdminDropinsCheck";
     final static String SERVER_NAME2 = "ConfigAdminXmlCheck";
     final static String SERVER_NAME3 = "ConfigAdminWrongAppCheck";
+    final static String FAILS_TO_START_SERVER_NAME = "FailedConfigAdminApplicationStateHealthCheck";
+
     private static final String MESSAGE_LOG = "logs/messages.log";
 
     private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W", "CWWKE1106W", "CWWKE1107W" };
+    private static final String[] FAILS_TO_START_EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWM*H0053W", "CWMMH0052W", "CWMMH0053W", "CWWKZ0060E",
+                                                                       "CWWKZ0002E", "CWWKE1106W", "CWWKE1107W" };
 
     public static final String MULTIPLE_APP_NAME = "MultipleHealthCheckApp";
     public static final String DIFFERENT_APP_NAME = "DifferentApplicationNameHealthCheckApp";
@@ -80,6 +91,7 @@ public class ConfigAdminHealthCheckTest {
     private final int FAILED_RESPONSE_CODE = 503; // Response when port is open but Application is not ready
 
     public static final int APP_STARTUP_TIMEOUT = 120 * 1000;
+    public static KafkaContainer kafkaContainer = new KafkaContainer();
 
     private static enum HealthCheck {
         LIVE, READY, HEALTH;
@@ -108,6 +120,9 @@ public class ConfigAdminHealthCheckTest {
     @Server(SERVER_NAME2)
     public static LibertyServer server2;
 
+    @Server(FAILS_TO_START_SERVER_NAME)
+    public static LibertyServer server3;
+
     @Before
     public void setUp() throws Exception {
         server1.deleteAllDropinApplications();
@@ -119,10 +134,14 @@ public class ConfigAdminHealthCheckTest {
             server1.stopServer(EXPECTED_FAILURES);
         } else if (server2.isStarted()) {
             server2.stopServer(EXPECTED_FAILURES);
+        } else if (server3.isStarted()) {
+            server3.stopServer(FAILS_TO_START_EXPECTED_FAILURES);
         }
 
         server1.removeAllInstalledAppsForValidation();
         server2.removeAllInstalledAppsForValidation();
+        server3.removeAllInstalledAppsForValidation();
+
     }
 
     @AfterClass
@@ -131,6 +150,7 @@ public class ConfigAdminHealthCheckTest {
         // is fully stopped, in order to avoid conflicts with succeeding tests.
         server1.stopServer(EXPECTED_FAILURES);
         server2.stopServer(EXPECTED_FAILURES);
+        server3.stopServer(FAILS_TO_START_EXPECTED_FAILURES);
     }
 
     @Test
@@ -142,8 +162,8 @@ public class ConfigAdminHealthCheckTest {
         HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
         getJSONPayload(conReady);
 
-        String configAdminLine = server1.waitForStringInTrace(": configAdminAppName = ConfigAdminDropinsCheckApp");
-        String stateMapLine = server1.waitForStringInTrace(": appName = ConfigAdminDropinsCheckApp,");
+        String configAdminLine = server1.waitForStringInTrace(" configAdminAppName = ConfigAdminDropinsCheckApp");
+        String stateMapLine = server1.waitForStringInTrace(": appName = ConfigAdminDropinsCheckApp");
 
         assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
         assertNotNull("App was not detected by appTracker.", stateMapLine);
@@ -163,8 +183,8 @@ public class ConfigAdminHealthCheckTest {
         HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
         getJSONPayload(conReady);
 
-        String configAdminLine = server1.waitForStringInTrace(": configAdminAppName = ConfigAdminDropinsCheckApp");
-        String stateMapLine = server1.waitForStringInTrace(": appName = ConfigAdminDropinsCheckApp,");
+        String configAdminLine = server1.waitForStringInTrace("configAdminAppName = ConfigAdminDropinsCheckApp");
+        String stateMapLine = server1.waitForStringInTrace(": appName = ConfigAdminDropinsCheckApp");
 
         assertNull("App was detected by ConfigAdmin.", configAdminLine);
         assertNotNull("App was not detected by appTracker.", stateMapLine);
@@ -172,6 +192,7 @@ public class ConfigAdminHealthCheckTest {
     }
 
     @Test
+    @Mode(TestMode.FULL)
     public void testAppDetectionServerXml() throws Exception {
         log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the apps directory.");
 
@@ -187,7 +208,7 @@ public class ConfigAdminHealthCheckTest {
         HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
         getJSONPayload(conReady);
 
-        String configAdminLine = server2.waitForStringInTrace(": configAdminAppName = ConfigAdminXmlCheckApp");
+        String configAdminLine = server2.waitForStringInTrace("configAdminAppName = ConfigAdminXmlCheckApp");
         String stateMapLine = server2.waitForStringInTrace(": appName = ConfigAdminXmlCheckApp,");
 
         assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
@@ -211,7 +232,7 @@ public class ConfigAdminHealthCheckTest {
         HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
         getJSONPayload(conReady);
 
-        String configAdminLine = server2.waitForStringInTrace(": configAdminAppName = WrongAppNameCheckApp");
+        String configAdminLine = server2.waitForStringInTrace("configAdminAppName = WrongAppNameCheckApp");
         String stateMapLine = server2.waitForStringInTrace(": appName = WrongAppNameCheckApp,");
 
         assertNull("App was not detected by ConfigAdmin.", configAdminLine);
@@ -220,6 +241,55 @@ public class ConfigAdminHealthCheckTest {
     }
 
     @Test
+    @Mode(TestMode.FULL)
+    @SkipForRepeat("mpHealth-3.0")
+    @ExpectedFFDC({ "com.ibm.ws.container.service.state.StateChangeException",
+                    "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException",
+                    "org.jboss.weld.exceptions.DeploymentException" })
+    public void testFailsToStartApplicationHealthCheck() throws Exception {
+        log("testFailsToStartApplicationHealthCheckTest", "Pre-loading FailsToStartHealthCheckApp and starting the server");
+        loadServerAndApplication(server3, FAILS_TO_START_APP_NAME, "com.ibm.ws.microprofile.health20.fails.to.start.health.check.app", false);
+
+        log("testFailsToStartApplicationHealthCheckTest", "Testing health check endpoints after FailsToStartHealthCheckApp has been loaded");
+        expectHealthCheck(server3, HealthCheck.LIVE, Status.SUCCESS, 0);
+        expectFailsToStartApplicationNotStartedMessage(false);
+
+        expectHealthCheck(server3, HealthCheck.READY, Status.FAILURE, 0);
+        expectFailsToStartApplicationNotStartedMessage(true);
+
+        expectHealthCheck(server3, HealthCheck.HEALTH, Status.FAILURE, 0);
+        expectFailsToStartApplicationNotStartedMessage(true);
+
+        String configAdminLine = server3.waitForStringInTrace("configAdminAppName = FailsToStartHealthCheckApp");
+        String stateMapLine = server3.waitForStringInTrace(": appName = FailsToStartHealthCheckApp");
+
+        assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
+        assertNotNull("App was not detected by appTracker.", stateMapLine);
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
+    public void testFailedAppStart() throws Exception {
+        log("testAppDetectionDropinsTest", "Starting the server and dynamically adding " + APP_NAME2);
+
+        loadServerAndApplication(server1, APP_NAME, "com.ibm.ws.microprofile.health20.config.admin.dropins.checks.app", true);
+
+        server1.waitForStringInLog("CWWKT0016I: Web application available");
+
+        //Hitting health endpoint to trigger configAdmin app registration.
+        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
+        getJSONPayload(conReady);
+
+        String configAdminLine = server1.waitForStringInTrace("configAdminAppName = ConfigAdminDropinsCheckApp");
+        String stateMapLine = server1.waitForStringInTrace(": appName = ConfigAdminDropinsCheckApp");
+
+        assertNull("App was detected by ConfigAdmin.", configAdminLine);
+        assertNotNull("App was not detected by appTracker.", stateMapLine);
+
+    }
+
+    @Test
+    @Mode(TestMode.FULL)
     public void testReadinessEndpointOnServerStart() throws Exception {
         log("testReadinessEndpointOnServerStart", "Begin execution of testReadinessEndpointOnServerStart");
 
@@ -327,6 +397,12 @@ public class ConfigAdminHealthCheckTest {
                                 String line = server1.waitForStringInLog("Application MultiWarApps started", 70000);
                                 log("testReadinessEndpointOnServerStart", "Application started. Line Found : " + line);
                                 assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
+
+                                String configAdminLine = server2.waitForStringInTrace("configAdminAppName = MultiWarApps");
+                                String stateMapLine = server2.waitForStringInTrace(": appName = MultiWarApps,");
+
+                                assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
+                                assertNotNull("App was not detected by appTracker.", stateMapLine);
                             } else {
                                 log("testReadinessEndpointOnServerStart", "Application started but timeout still reached.");
                                 throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
@@ -371,37 +447,109 @@ public class ConfigAdminHealthCheckTest {
     }
 
     private void loadServerAndApplication(LibertyServer server, String appName, String packageName, boolean isDynamicallyLoaded) throws Exception {
-        loadServerAndApplications(server, Arrays.asList(appName), Arrays.asList(packageName), isDynamicallyLoaded);
+        loadServerAndApplications(server, appName, packageName, isDynamicallyLoaded);
     }
 
-    private void loadServerAndApplications(LibertyServer server, List<String> appNames, List<String> packageNames, boolean isDynamicallyLoaded) throws Exception {
+    private void loadServerAndApplications(LibertyServer server, String appName, String packageName, boolean isDynamicallyLoaded) throws Exception {
         if (isDynamicallyLoaded) {
-            startServer(server, appNames.contains(SERVER_NAME2));
+            startServer(server, true);
         }
 
-        for (int i = 0; i < appNames.size(); i++) {
-            log("loadApplications", "Adding " + appNames.get(i) + " to dropins");
-            addApplication(server, appNames.get(i), packageNames.get(i));
-        }
+        log("loadApplications", "Adding " + appName + " to dropins");
+        addApplication(server, appName, packageName);
 
         if (!isDynamicallyLoaded) {
-            startServer(server, appNames.contains(APP_NAME));
+            startServer(server, true);
         }
 
-        for (int i = 0; i < appNames.size(); i++) {
-            waitForApplication(server, appNames.get(i));
-        }
+        waitForApplication(server, appName);
+
     }
 
     private void addApplication(LibertyServer server, String appName, String packageName) throws Exception {
         log("addApplication", "Adding " + appName + " to the server");
         WebArchive app = ShrinkHelper.buildDefaultApp(appName, packageName);
-        ShrinkHelper.exportDropinAppToServer(server, app);
+
+        if (appName.equals(FAILS_TO_START_APP_NAME)) {
+            app = app.addAsManifestResource(ApplicationStateHealthCheckTest.class.getResource("permissions.xml"), "permissions.xml");
+            File libsDir = new File("lib/LibertyFATTestFiles/libs");
+            for (File file : libsDir.listFiles()) {
+                server.copyFileToLibertyServerRoot(file.getParent(), "kafkaLib", file.getName());
+            }
+            //Don't validate that FAILS_TO_START_APP_NAME starts correctly.
+            ShrinkHelper.exportAppToServer(server, app, DeployOptions.DISABLE_VALIDATION);
+        } else {
+            ShrinkHelper.exportDropinAppToServer(server, app);
+        }
     }
 
     private void waitForApplication(LibertyServer server, String appName) {
         log("waitForApplication", "Waiting for " + appName + " to start");
         server.waitForStringInLog("CWWKZ0001I.* " + appName, APP_STARTUP_TIMEOUT);
+    }
+
+    public void expectHealthCheck(LibertyServer server, HealthCheck expectedHealthCheck, Status expectedStatus, int expectedChecks) throws Exception {
+        log("expectHealthCheck", "Testing Health Check endpoint " + expectedHealthCheck.toString() + " ...");
+        HttpURLConnection con = null;
+        int numOfAttempts = 0;
+        int maxAttempts = 5;
+
+        while (numOfAttempts < maxAttempts) {
+            try {
+                if (expectedHealthCheck == HealthCheck.LIVE) {
+                    con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, LIVE_ENDPOINT);
+                    break;
+                } else if (expectedHealthCheck == HealthCheck.READY) {
+                    con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, READY_ENDPOINT);
+                    break;
+                } else {
+                    con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, HEALTH_ENDPOINT);
+                    break;
+                }
+            } catch (SocketTimeoutException ste) {
+                log("expectHealthCheck", "Encountered a SocketTimeoutException. Retrying connection. Exception: " + ste.getMessage());
+                numOfAttempts++;
+                continue;
+            } catch (SocketException se) {
+                log("expectHealthCheck", "Encountered a SocketException. Retrying connection. Exception: " + se.getMessage());
+                numOfAttempts++;
+                continue;
+            } catch (Exception e) {
+                fail("Encountered an issue while testing the " + expectedHealthCheck.toString() + " health endpoint ---> " + e.getMessage());
+            }
+        }
+
+        if (numOfAttempts == maxAttempts) {
+            log("expectHealthCheck",
+                "Reached maximum number of attempts, skipping connection test for " + expectedHealthCheck.toString()
+                                     + " endpoint as the connection could not be established, due to a timing issue, that causes the connection to not be available.");
+            return;
+        }
+
+        JsonObject jsonResponse = getJSONPayload(con);
+        JsonArray checks = (JsonArray) jsonResponse.get("checks");
+
+        if (expectedStatus == Status.SUCCESS) {
+            assertEquals("The response code of the health check was not " + SUCCESS_RESPONSE_CODE + ".", SUCCESS_RESPONSE_CODE, con.getResponseCode());
+            assertEquals("The status of the health check was not UP.", "UP", jsonResponse.getString("status"));
+        } else {
+            assertEquals("The response code of the health check was not " + FAILED_RESPONSE_CODE + ".", FAILED_RESPONSE_CODE, con.getResponseCode());
+            assertEquals("The status of the health check was not DOWN.", "DOWN", jsonResponse.getString("status"));
+        }
+
+        assertEquals("The number of expected checks was not " + expectedChecks + "." + checks.toString(), expectedChecks, checks.size());
+
+    }
+
+    private void expectFailsToStartApplicationNotStartedMessage(boolean expectMessage) throws Exception {
+        if (expectMessage) {
+            List<String> notStartedMessages = server3.findStringsInLogs("CWM*H0053W");
+            assertTrue("The CWM*H0053W message for " + FAILS_TO_START_APP_NAME + " was not found in the logs.",
+                       notStartedMessages.size() == 1 && notStartedMessages.get(0).contains(FAILS_TO_START_APP_NAME));
+        } else {
+            assertEquals("The CWM*H0053W message for " + FAILS_TO_START_APP_NAME + " was found in the logs.",
+                         0, server3.findStringsInLogs("CWM*H0053W").size());
+        }
     }
 
     private void startServer(LibertyServer server, boolean isFailsToStartApp) throws Exception {
