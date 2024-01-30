@@ -34,8 +34,6 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-import java.util.Arrays;
-
 /**
  * Test invalid context service configuration
  */
@@ -55,7 +53,6 @@ public class KakfaInvalidContextTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         server.startServer();
     }
 

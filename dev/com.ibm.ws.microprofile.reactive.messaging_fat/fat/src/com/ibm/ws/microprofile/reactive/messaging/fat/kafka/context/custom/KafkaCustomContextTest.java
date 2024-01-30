@@ -35,8 +35,6 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-import java.util.Arrays;
-
 /**
  * Test context propagation with concurrent enabled and custom context services defined
  */
@@ -104,8 +102,6 @@ public class KafkaCustomContextTest extends FATServletClient {
         KafkaUtils.addKafkaTestFramework(war, PlaintextTests.connectionProperties());
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
 
         server.startServer();
     }
