@@ -944,6 +944,7 @@ class ConfigurationStore implements CheckpointHook {
             if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                 Tr.debug(tc, "Saving: Skipped; no task and restored");
             }
+
             return;
         }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,13 +16,8 @@ import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 import jakarta.enterprise.inject.spi.DeploymentException;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.spi.Connector;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -31,6 +26,7 @@ import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.ContextBeginnerEnder;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
@@ -148,21 +144,8 @@ public class OLReactiveMessaging30Extension extends ReactiveMessagingExtension i
 
     private ContextBeginnerEnder createContextBeginnerEnderIfCheckpointEnabled() {
         if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
-            Bundle b = FrameworkUtil.getBundle(ReactiveMessagingExtension.class);
-            if (b != null) {
-                BundleContext bc = b.getBundleContext();
-                ServiceReference<CDIService> sr = null;
-                try {
-                    sr = bc.getServiceReference(CDIService.class);
-                    CDIService service = bc.getService(sr);
-                    CDIRuntime cdiRuntime = (CDIRuntime) service;
-                    return cdiRuntime.cloneActiveContextBeginnerEnder();
-                } finally {
-                    if (sr != null) {
-                        bc.ungetService(sr);
-                    }
-                }
-            }
+            return ServiceCaller.callOnce(OLReactiveMessaging30Extension.class, CDIService.class, 
+                (cdiService) -> { return ((CDIRuntime) cdiService).cloneActiveContextBeginnerEnder(); }).get(); //Call get because if we can't get context from CDIservice inside a CDI extension throwing an exception is better than covering this up.
         }
         return null;
     }

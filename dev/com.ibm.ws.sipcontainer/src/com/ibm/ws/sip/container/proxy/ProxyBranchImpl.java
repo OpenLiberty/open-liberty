@@ -1185,7 +1185,9 @@ public class ProxyBranchImpl extends BranchManager
 	 * should be used to send the request out.
 	 * 
 	 */
-    public synchronized void proxyTimedOut(boolean isTimeout){
+
+	//remove synchronized as it caused deadlock 
+	public void proxyTimedOut(boolean isTimeout){
     	
     	if (c_logger.isTraceDebugEnabled()) {
 			c_logger.traceDebug(this, "proxyTimedOut", getMyInfo() );
@@ -1194,7 +1196,7 @@ public class ProxyBranchImpl extends BranchManager
     	_parentTimedOut = true;
     	
     	executeTimeOut(isTimeout);
-     }
+	}
 
     /**
      * Gets the branch Id of this Proxy Branch from the top via header. 

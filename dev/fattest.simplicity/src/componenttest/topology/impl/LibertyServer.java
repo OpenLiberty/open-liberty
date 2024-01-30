@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -115,6 +115,8 @@ import componenttest.custom.junit.runner.LogPolice;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
+import componenttest.rules.repeater.JakartaEE11Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
 import componenttest.topology.utils.FileUtils;
@@ -129,6 +131,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final String CLASS_NAME = c.getName();
     protected static Logger LOG = Logger.getLogger(CLASS_NAME); // why don't we always use the Logger directly?
     private final static String LS = System.getProperty("line.separator");
+    public final static String LIBERTY_ERROR_REGEX = "^.*[EW] .*\\d{4}[EW]:.*$";
 
     /** How frequently we poll the logs when waiting for something to happen */
     protected static final int WAIT_INCREMENT = 300;
@@ -272,6 +275,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final String EBCDIC_CHARSET_NAME = "IBM1047";
 
     protected volatile boolean isStarted = false;
+    protected volatile boolean startedWithJavaSecurity = false;
     protected boolean isStartedConsoleLogLevelOff = false;
 
     protected int osgiConsolePort = 5678; // The port number of the OSGi Console
@@ -543,6 +547,13 @@ public class LibertyServer implements LogMonitorClient {
 
     public LibertyServer addCheckpointRegexIgnoreMessage(String regEx) {
         checkpointInfo.checkpointRegexIgnoreMessages.add(regEx);
+        return this;
+    }
+
+    public LibertyServer addCheckpointRegexIgnoreMessages(String... regExs) {
+        for (String regEx : regExs) {
+            checkpointInfo.checkpointRegexIgnoreMessages.add(regEx);
+        }
         return this;
     }
 
@@ -1597,18 +1608,13 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
-        if (isJava2SecurityEnabled()) {
+        if (isJava2SecurityEnabled() && !isEE11Enabled()) {
             RemoteFile f = getServerBootstrapPropertiesFile();
             addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
             Log.info(c, "startServerWithArgs", "Java 2 Security enabled for server " + getServerName() + " because " + reason + "=true");
-
-            // If we are running on Java 18+, then we need to explicitly enable the security manager
-            if (info.majorVersion() >= 18) {
-                Log.info(c, "startServerWithArgs", "Java 18 + and java2security is global, setting -Djava.security.manager=allow");
-                JVM_ARGS += " -Djava.security.manager=allow";
-            }
-        } else if (info.majorVersion() >= 18) {
+            startedWithJavaSecurity = true;
+        } else {
             boolean bootstrapHasJava2SecProps = false;
             // Check if "websphere.java.security" has been added to bootstrapping.properties
             // as some tests will add it for their own security enable tests
@@ -1631,10 +1637,13 @@ public class LibertyServer implements LogMonitorClient {
                     reader.close();
             }
 
+            startedWithJavaSecurity = bootstrapHasJava2SecProps;
             if (bootstrapHasJava2SecProps) {
-                // If we are running on Java 18+, then we need to explicitly enable the security manager
-                Log.info(c, "startServerWithArgs", "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
-                JVM_ARGS += " -Djava.security.manager=allow";
+                if (info.majorVersion() >= 18) {
+                    // If we are running on Java 18+, then we need to explicitly enable the security manager
+                    Log.info(c, "startServerWithArgs", "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
+                    JVM_ARGS += " -Djava.security.manager=allow";
+                }
             }
         }
 
@@ -3036,6 +3045,27 @@ public class LibertyServer implements LogMonitorClient {
      *                                    logs that were not in the list of ignored warnings/errors.
      */
     public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, boolean skipArchives, String... ignoredFailuresRegExps) throws Exception {
+        List<String> failuresRegExps = Arrays.asList(LIBERTY_ERROR_REGEX);
+        return stopServer(postStopServerArchive, forceStop, true, failuresRegExps, ignoredFailuresRegExps);
+    }
+
+    /**
+     * Stops the server and checks for any warnings or errors that appeared in logs.
+     * If warnings/errors are found, an exception will be thrown after the server stops.
+     *
+     * @param  postStopServerArchive  true to collect server log files after the server is stopped; false to skip this step (sometimes, FATs back up log files on their own, so this
+     *                                    would be redundant)
+     * @param  forceStop              Force the server to stop, skipping the quiesce (default/usual value should be false)
+     * @param  skipArchives           Skip postStopServer collection of archives (WARs, EARs, JARs, etc.) - only used if postStopServerArchive is true
+     * @param  ignoredFailuresRegExps A list of reg expressions corresponding to warnings or errors that should be ignored.
+     *                                    If ignoredFailuresRegExps is null, logs will not be checked for warnings/errors
+     * @param  failuresRegExps        A list of reg expressions corresponding to warnings or errors that should be treated as test failures.
+     * @return                        the output of the stop command
+     * @throws Exception              if the stop operation fails or there are warnings/errors found in server
+     *                                    logs that were not in the list of ignored warnings/errors.
+     */
+    public ProgramOutput stopServer(boolean postStopServerArchive, boolean forceStop, boolean skipArchives, List<String> failuresRegExps,
+                                    String... ignoredFailuresRegExps) throws Exception {
         ProgramOutput output = null;
         boolean commandPortEnabled = true;
         final String method = "stopServer";
@@ -3135,7 +3165,7 @@ public class LibertyServer implements LogMonitorClient {
 
             this.isTidy = true;
 
-            checkLogsForErrorsAndWarnings(ignoredFailuresRegExps);
+            checkLogsForErrorsAndWarnings(failuresRegExps, ignoredFailuresRegExps);
 
             if (doCheckpoint() && checkpointInfo.isAssertNoAppRestartOnRestore() &&
                 checkpointInfo.checkpointPhase == CheckpointPhase.AFTER_APP_START) {
@@ -3173,12 +3203,13 @@ public class LibertyServer implements LogMonitorClient {
                 resetLogOffsets();
             }
 
-            if (isJava2SecurityEnabled()) {
+            if (startedWithJavaSecurity) {
                 try {
                     new ACEScanner(this).run();
                 } catch (Throwable t) {
                     LOG.logp(Level.WARNING, c.getName(), "stopServer", "Caught exception trying to scan for AccessControlExceptions", t);
                 }
+                startedWithJavaSecurity = false;
             }
             if (postStopServerArchive) {
                 postStopServerArchive(true, skipArchives);
@@ -3190,21 +3221,29 @@ public class LibertyServer implements LogMonitorClient {
         return output;
     }
 
+    @Deprecated
+    protected void checkLogsForErrorsAndWarnings(String... ignoredFailuresRegExps) throws Exception {
+        checkLogsForErrorsAndWarnings(Arrays.asList(LIBERTY_ERROR_REGEX), ignoredFailuresRegExps);
+    }
+
     /**
      * Checks server logs for any lines containing errors or warnings that
      * do not match any regular expressions provided in regIgnore.
      *
+     * @param  failuresRegExps        A list of reg expressions corresponding to warnings or errors that should be treated as test failures.
      * @param  ignoredFailuresRegExps A list of regex strings for errors/warnings that
      *                                    may be safely ignored.
      * @return                        A list of lines containing errors/warnings from server logs
      */
-    protected void checkLogsForErrorsAndWarnings(String... ignoredFailuresRegExps) throws Exception {
+    protected void checkLogsForErrorsAndWarnings(List<String> failuresRegExps, String... ignoredFailuresRegExps) throws Exception {
         final String method = "checkLogsForErrorsAndWarnings";
 
         // Get all warnings and errors in logs - default to an empty list
         List<String> errorsInLogs = new ArrayList<String>();
         try {
-            errorsInLogs = this.findStringsInLogs("^.*[EW] .*\\d{4}[EW]:.*$"); // uses getDefaultLogFile()
+            for (String failureRegExp : failuresRegExps) {
+                errorsInLogs.addAll(this.findStringsInLogs(failureRegExp)); // uses getDefaultLogFile()
+            }
             if (!errorsInLogs.isEmpty()) {
                 // There were unexpected errors in logs, print them
                 // and set an exception to return
@@ -3279,7 +3318,7 @@ public class LibertyServer implements LogMonitorClient {
                 sb.append("Java 2 security issues were found in logs");
                 boolean showJ2secErrors = true;
                 // If an ACE-report will be generated....
-                if (isJava2SecurityEnabled()) {
+                if (startedWithJavaSecurity) {
                     sb.append("  See autoFVT/ACE-report-*.log for details.");
                     if (j2secIssues.size() > 25)
                         showJ2secErrors = false;
@@ -3457,6 +3496,10 @@ public class LibertyServer implements LogMonitorClient {
         Log.exiting(c, method);
     }
 
+    public String getPathToAutoFVTOutputServersFolder() {
+        return pathToAutoFVTOutputServersFolder;
+    }
+
     protected void runJextract(RemoteFile serverFolder) throws Exception {
         RemoteFile[] files = serverFolder.list(false);
         if (files != null) {
@@ -3517,9 +3560,9 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    protected void recursivelyCopyDirectory(RemoteFile remoteSrcDir,
-                                            LocalFile localDstDir,
-                                            boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
+    public void recursivelyCopyDirectory(RemoteFile remoteSrcDir,
+                                         LocalFile localDstDir,
+                                         boolean ignoreFailures, boolean skipArchives, boolean moveFile) throws Exception {
 
         String method = "recursivelyCopyDirectory";
 
@@ -7153,6 +7196,43 @@ public class LibertyServer implements LogMonitorClient {
         boolean isJava2SecExempt = "true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt"));
         Log.info(c, "isJava2SecurityEnabled", "Is server " + getServerName() + " Java 2 Security exempt?  " + isJava2SecExempt);
         return !isJava2SecExempt;
+    }
+
+    private boolean isEE11Enabled() throws Exception {
+        if (JakartaEEAction.isEE11OrLaterActive()) {
+            return true;
+        }
+
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            return false;
+        }
+
+        // EE 11 which doesn't support Java security manager can run with Java 17.  As such we need to return false even if we are running
+        // with Java security enabled in the build.
+
+        RemoteFile serverXML = new RemoteFile(machine, serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
+        InputStreamReader in = new InputStreamReader(serverXML.openForReading());
+        try (Scanner s = new Scanner(in)) {
+            while (s.hasNextLine()) {
+                String line = s.nextLine();
+                if (line.contains("<featureManager>")) {//So has reached featureSets
+                    while (s.hasNextLine()) {
+                        line = s.nextLine();
+                        if (line.contains("</featureManager>"))
+                            break;
+
+                        line = line.replaceAll("<feature>", "");
+                        line = line.replaceAll("</feature>", "");
+                        line = line.trim();
+                        if (JakartaEE11Action.EE11_ONLY_FEATURE_SET_LOWERCASE.contains(line.toLowerCase())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     //FIPS 140-3

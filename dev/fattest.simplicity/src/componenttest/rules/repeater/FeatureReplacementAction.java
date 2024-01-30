@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -322,17 +322,17 @@ public class FeatureReplacementAction implements RepeatTestAction {
      * This method is helpful when you have a list of repeats and you want only one of them to run in lite mode. When running
      * with Jakarta EE 10, you would want to have a previous Jakarta EE repeat to have this method call passing {@link #GREATER_THAN_OR_EQUAL_JAVA_11}
      * in order that at least one of the repeats runs in LITE FAT mode. Otherwise with Java 8 builds, no tests will run in LITE mode which
-     * will produce an error. Similarly the same is true for Jakarta EE 11 repeats which require Java 21. If doing a repeat for Jakarta EE 11
-     * you will want to call this method and pass {@link #GREATER_THAN_OR_EQUAL_JAVA_21} for previous Jakarta feature repeats. Usually that would be
+     * will produce an error. Similarly the same is true for Jakarta EE 11 repeats which require Java 17. If doing a repeat for Jakarta EE 11
+     * you will want to call this method and pass {@link #GREATER_THAN_OR_EQUAL_JAVA_17} for previous Jakarta feature repeats. Usually that would be
      * a Jakarta EE 10 repeat because one of the previous Jakarta EE feature repeats would have {@link #GREATER_THAN_OR_EQUAL_JAVA_11} passed to it.
      *
-     * The example below will run EE 9 in lite mode with Java 8, EE 10 in lite mode with Java 11 and 17 and EE 11 in lite mode with Java 21.
+     * The example below will run EE 9 in lite mode with Java 8, EE 10 in lite mode with Java 11 and EE 11 in lite mode with Java 17 and 21.
      *
      * <pre>
      * RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().fullFATOnly())
      *                 .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
      *                 .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(GREATER_THAN_OR_EQUAL_JAVA_11))
-     *                 .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(GREATER_THAN_OR_EQUAL_JAVA_21))
+     *                 .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(GREATER_THAN_OR_EQUAL_JAVA_17))
      *                 .andWith(FeatureReplacementAction.EE11_FEATURES());
      * </pre>
      *

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -191,7 +191,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY", sql.remove(0));
                 } else {
@@ -233,7 +233,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY", sql.remove(0));
                 } else {
@@ -554,7 +554,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
                 } else {
@@ -574,7 +574,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
                 } else {
@@ -624,7 +624,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
                 } else {
@@ -652,7 +652,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(1))", sql.remove(0));
                 } else {
@@ -1343,7 +1343,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2) {
                     Assert.assertEquals("SELECT AVG(?) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(1)))", sql.remove(0));
                 } else if (isDB2Z || isDerby) {
@@ -1365,7 +1365,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT AVG(1) FROM OLGH17837ENTITY HAVING (? < AVG(DISTINCT(1)))", sql.remove(0));
                 } else if (isDB2) {
@@ -2111,7 +2111,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (? < COUNT(1))", sql.remove(0));
                 } else {
@@ -2171,7 +2171,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (? < COUNT(1))", sql.remove(0));
                 } else {
@@ -2859,7 +2859,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (? < COUNT(DISTINCT(1)))", sql.remove(0));
                 } else {
@@ -2919,7 +2919,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT COUNT(1) FROM OLGH17837ENTITY HAVING (? < COUNT(DISTINCT(1)))", sql.remove(0));
                 } else {
@@ -3265,7 +3265,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT DISTINCT 'HELLO' FROM OLGH17837ENTITY WHERE (STRVAL1 = ?)", sql.remove(0));
                 } else {
@@ -3311,7 +3311,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT DISTINCT 'HELLO' FROM OLGH17837ENTITY WHERE (STRVAL1 = ?)", sql.remove(0));
                 } else {
@@ -3638,7 +3638,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT MAX(1) FROM OLGH17837ENTITY HAVING (? < MAX(1))", sql.remove(0));
                 } else {
@@ -3698,7 +3698,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT MAX(1) FROM OLGH17837ENTITY HAVING (? < MAX(1))", sql.remove(0));
                 } else {
@@ -3932,7 +3932,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
                 } else {
@@ -3974,7 +3974,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
                 } else {
@@ -4046,7 +4046,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
                 } else {
@@ -4088,7 +4088,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MAX(INTVAL1) > ?)", sql.remove(0));
                 } else {
@@ -4391,7 +4391,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT MIN(1) FROM OLGH17837ENTITY HAVING (? < MIN(1))", sql.remove(0));
                 } else {
@@ -4451,7 +4451,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT MIN(1) FROM OLGH17837ENTITY HAVING (? < MIN(1))", sql.remove(0));
                 } else {
@@ -4685,7 +4685,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4723,7 +4723,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -4791,7 +4791,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
                 } else {
@@ -4833,7 +4833,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY GROUP BY INTVAL1 HAVING (MIN(INTVAL1) > ?)", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -5090,7 +5090,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY", sql.remove(0));
                 } else {
@@ -5132,7 +5132,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY", sql.remove(0));
                 } else {
@@ -5453,7 +5453,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(1))", sql.remove(0));
                 } else {
@@ -5473,7 +5473,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(1))", sql.remove(0));
                 } else if (isDB2) {
@@ -5525,7 +5525,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(1))", sql.remove(0));
                 } else {
@@ -5553,7 +5553,7 @@ public class TestAggregateLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDerby) {
                     Assert.assertEquals("SELECT SUM(1) FROM OLGH17837ENTITY HAVING (? < SUM(1))", sql.remove(0));
                 } else {

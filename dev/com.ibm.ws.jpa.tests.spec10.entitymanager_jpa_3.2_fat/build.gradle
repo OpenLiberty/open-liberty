@@ -1,0 +1,87 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  jpaFatTools
+}
+
+dependencies {
+  jpaFatTools project(':com.ibm.ws.jpa_testframework')
+  requiredLibs project(":com.ibm.ws.jpa.tests.spec10.entitymanager_fat.common")
+}
+
+task addJPAFATTools (type: Copy) {
+  mustRunAfter jar
+  from configurations.jpaFatTools
+  include "**/com.ibm.ws.jpa_testframework.jar"
+  into new File(autoFvtDir, 'lib')
+}
+
+task copyFAT {
+    dependsOn ':com.ibm.ws.jpa.tests.spec10.entitymanager_fat.common:build'
+    copy {
+      from project(':com.ibm.ws.jpa.tests.spec10.entitymanager_fat.common').file('fat/src/com/ibm/ws/jpa/tests/spec10/entitymanager/tests')
+      into new File('fat/src/com/ibm/ws/jpa/tests/spec10/entitymanager/tests')
+    }
+}
+
+task copyCommonFiles {
+  dependsOn ':com.ibm.ws.jpa.tests.spec10.entitymanager_fat.common:build'
+  doLast {
+    /*
+     * Copy test application resources.
+     */
+    copy {
+      from project(':com.ibm.ws.jpa.tests.spec10.entitymanager_fat.common').file('test-applications')
+      into new File('test-applications')
+    }
+    
+    /*
+     * Copy common publish files.
+     */
+    copy {
+      from project(':com.ibm.ws.jpa.tests.spec10.entitymanager_fat.common').file('publish')
+      into new File('publish')
+    }
+  }
+}
+
+addRequiredLibraries {
+  dependsOn copyJdbcDrivers
+  dependsOn addJakartaTransformer
+  dependsOn addJPAFATTools
+  dependsOn copyFAT
+  dependsOn copyTestContainers
+}
+
+jar {
+  dependsOn copyCommonFiles
+}
+
+autoFVT.dependsOn copyCommonFiles
+
+clean.doLast {
+  if (file('test-applications').exists()) {
+    file('test-applications').deleteDir()
+  }
+  if (file('build').exists()) {
+    file('build').deleteDir()
+  }
+  if (file('publish').exists()) {
+    file('publish').deleteDir()
+  }
+  if (file('fat/src/com/ibm/ws/jpa/tests/spec10/entitymanager/tests').exists()) {
+    file('fat/src/com/ibm/ws/jpa/tests/spec10/entitymanager/tests').deleteDir()
+  }
+}
+

@@ -48,6 +48,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -69,6 +70,7 @@ import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
  * Test mpTelemetry running with the OpenTelemetry Java Agent enabled
  */
 @RunWith(FATRunner.class)
+@MaximumJavaLevel(javaLevel = 20)
 public class Agent129Test {
 
     private static final Class<Agent129Test> c = Agent129Test.class;
@@ -97,7 +99,7 @@ public class Agent129Test {
         server.copyFileToLibertyServerRoot("agent-129/opentelemetry-javaagent.jar");
 
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
-        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOltpGrpcUrl());
+        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());
         server.addEnvVar("OTEL_METRICS_EXPORTER", "none");
         server.addEnvVar("OTEL_LOGS_EXPORTER", "none");
 

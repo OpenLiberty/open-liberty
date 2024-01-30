@@ -26,4 +26,6 @@ Command-Class: com.ibm.ws.kernel.feature.internal.generator.FeatureListGenerator
 
 -outputmask: ws-featurelist.jar
 
+-pom: false
+
 publish.tool.jar=ws-featurelist.jar

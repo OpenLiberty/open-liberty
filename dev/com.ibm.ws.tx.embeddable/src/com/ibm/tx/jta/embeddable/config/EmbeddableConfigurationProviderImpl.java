@@ -588,4 +588,9 @@ public class EmbeddableConfigurationProviderImpl implements ConfigurationProvide
     public String getBackendURL() {
         return null;
     }
+
+    @Override
+    public boolean peerRecoveryPrecedence() {
+        return false;
+    }
 }

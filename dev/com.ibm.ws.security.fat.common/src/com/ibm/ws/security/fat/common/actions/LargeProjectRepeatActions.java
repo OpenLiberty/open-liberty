@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.actions;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Set;
 
 import com.ibm.websphere.simplicity.Machine;
@@ -19,18 +23,24 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.RepeatActions.EEVersion;
 import componenttest.rules.repeater.RepeatTestAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.utils.LibertyServerUtils;
 
 public class LargeProjectRepeatActions {
 
     public static Class<?> thisClass = LargeProjectRepeatActions.class;
+
+    private static boolean doIDPTransform = false;
 
     /**
      * Create repeats for large security projects.
@@ -44,18 +54,51 @@ public class LargeProjectRepeatActions {
      * @return repeat test instances
      */
     public static RepeatTests createEE9OrEE10Repeats() {
-        return createEE9OrEE10Repeats(null, null, null, null);
+        doIDPTransform = false;
+        return createEE9OrEE10RepeatsWorker(null, null, null, null);
+    }
+
+    public static RepeatTests createEE9OrEE10SamlRepeats() {
+        doIDPTransform = true;
+        return createEE9OrEE10RepeatsWorker(null, null, null, null);
+
     }
 
     public static RepeatTests createEE9OrEE10Repeats(String addEE9Feature, String addEE10Feature) {
-        return createEE9OrEE10Repeats(addEE9Feature, addEE10Feature, null, null);
+        doIDPTransform = false;
+        return createEE9OrEE10RepeatsWorker(addEE9Feature, addEE10Feature, null, null);
+    }
+
+    public static RepeatTests createEE9OrEE10SamlRepeats(String addEE9Feature, String addEE10Feature) {
+        doIDPTransform = true;
+        return createEE9OrEE10RepeatsWorker(addEE9Feature, addEE10Feature, null, null);
     }
 
     public static RepeatTests createEE9OrEE10Repeats(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList) {
-        return createEE9OrEE10Repeats(addEE9Feature, addEE10Feature, removeFeatureList, insertFeatureList, null);
+        doIDPTransform = false;
+        return createEE9OrEE10RepeatsWorker(addEE9Feature, addEE10Feature, removeFeatureList, insertFeatureList, null);
+    }
+
+    public static RepeatTests createEE9OrEE10SamlRepeats(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList) {
+        doIDPTransform = true;
+        return createEE9OrEE10RepeatsWorker(addEE9Feature, addEE10Feature, removeFeatureList, insertFeatureList, null);
     }
 
     public static RepeatTests createEE9OrEE10Repeats(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList, String... serverPaths) {
+
+        doIDPTransform = false;
+        return createEE9OrEE10RepeatsWorker(addEE9Feature, addEE10Feature, removeFeatureList, insertFeatureList, serverPaths);
+
+    }
+
+    public static RepeatTests createEE9OrEE10SamlRepeats(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList, String... serverPaths) {
+
+        doIDPTransform = true;
+        return createEE9OrEE10RepeatsWorker(addEE9Feature, addEE10Feature, removeFeatureList, insertFeatureList, serverPaths);
+
+    }
+
+    public static RepeatTests createEE9OrEE10RepeatsWorker(String addEE9Feature, String addEE10Feature, Set<String> removeFeatureList, Set<String> insertFeatureList, String... serverPaths) {
 
         RepeatTests rTests = null;
 
@@ -75,9 +118,15 @@ public class LargeProjectRepeatActions {
                 if (TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) {
                     Log.info(thisClass, "createLargeProjectRepeats", "Enabling the EE9 test instance (Not on Windows, Java > 8, Lite Mode)");
                     rTests = addRepeat(rTests, adjustFeatures(JakartaEE9Action.ID, addEE9Feature, removeFeatureList, insertFeatureList, serverPaths));
+                    if (doIDPTransform) {
+                        idpWarTransform(EEVersion.EE9);
+                    }
                 } else {
                     Log.info(thisClass, "createLargeProjectRepeats", "Enabling the EE10 test instance (Not on Windows, Java > 8, FULL Mode)");
                     rTests = addRepeat(rTests, adjustFeatures(JakartaEE10Action.ID, addEE10Feature, removeFeatureList, insertFeatureList, serverPaths));
+                    if (doIDPTransform) {
+                        idpWarTransform(EEVersion.EE10);
+                    }
                 }
             } else {
                 Log.info(thisClass, "createLargeProjectRepeats", "Enabling the default EE7/EE8 test instance (Not on Windows, Java = 8, any Mode)");
@@ -132,4 +181,52 @@ public class LargeProjectRepeatActions {
         return featureAction;
     }
 
+    public static void idpWarTransform(EEVersion eeVersion) {
+
+        try {
+            List<RepeatTestAction> actions = RepeatTestFilter.getRepeatActions();
+
+            String currentPath = new java.io.File(".").getCanonicalPath();
+            Log.info(thisClass, "idpWarTransform", "Current dir :" + currentPath);
+            String shibDir = currentPath + "/publish/servers/com.ibm.ws.security.saml.sso-2.0_fat.shibboleth/idp-apps";
+            Log.info(thisClass, "idpWarTransform", "shibDir: " + shibDir);
+
+            File appDir = new java.io.File(LibertyServerUtils.makeJavaCompatible(shibDir));
+
+            File[] list = null;
+            try {
+                if (appDir.isDirectory()) {
+                    Log.info(thisClass, "idpWarTransform", "appDir is a directory");
+                    list = appDir.listFiles();
+                }
+            } catch (Exception e) {
+                Log.error(thisClass, "idpWarTransform", e);
+            }
+            if (list != null) {
+                Log.info(thisClass, "idpWarTransform", "list is not null");
+                for (File app : list) {
+                    String fullAppName = shibDir + "/" + app.getName();
+                    if (!app.getName().contains("3.3.1") && !app.getName().contains(eeVersion.toString())) {
+                        Path appPathName = Paths.get(fullAppName);
+                        Path appPathNewName = Paths.get(fullAppName + "." + eeVersion.toString());
+                        Log.info(thisClass, "idpWarTransform", "From IDP war name: " + appPathName.toString());
+                        Log.info(thisClass, "idpWarTransform", "To IDP war name: " + appPathNewName.toString());
+                        JakartaEEAction.transformApp(appPathName, appPathNewName, eeVersion);
+                    } else {
+                        Log.info(thisClass, "idpWarTransform", "Skipping transform since we will only use the 3.3.1 version with Java 8");
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            Log.info(thisClass, "idpWarTransform", "Failure trying to transform the idp wars" + e.getMessage());
+            e.getStackTrace();
+        }
+
+    }
+
+    public static String getParent(String dir) {
+        Log.info(thisClass, "getParent", "Starting path: " + dir);
+        return new java.io.File(dir).getParent();
+    }
 }

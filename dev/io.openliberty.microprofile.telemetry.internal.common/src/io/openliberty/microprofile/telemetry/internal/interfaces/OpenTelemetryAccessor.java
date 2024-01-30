@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,45 +12,28 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.interfaces;
 
+import java.lang.annotation.Annotation;
 import java.util.Optional;
+import java.util.Set;
 
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
+import javax.interceptor.InvocationContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 
-import io.openliberty.microprofile.telemetry.internal.common.helpers.OSGIHelpers;
 import io.openliberty.microprofile.telemetry.internal.common.info.ErrorOpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 
-@Component(immediate = true)
 public class OpenTelemetryAccessor {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryAccessor.class);
-
-    private static volatile Optional<OpenTelemetryAccessor> instance = Optional.empty();
-
-    @Reference
-    private CDIService cdiService;
-
-    @Activate
-    protected void activate() {
-        instance = Optional.of(this);
-    }
-
-    @Deactivate
-    protected void deactivate() {
-        if (instance.isPresent() && instance.get() == this) {
-            instance = Optional.empty();
-        }
-    }
+    private static final ServiceCaller<OpenTelemetryInfoFactory> openTelemetryInfoFactoryService = new ServiceCaller<OpenTelemetryInfoFactory>(OpenTelemetryAccessor.class, OpenTelemetryInfoFactory.class);
+    private static final ServiceCaller<CDIService> cdiService = new ServiceCaller<CDIService>(OpenTelemetryAccessor.class, CDIService.class);
 
     //See https://github.com/open-telemetry/opentelemetry-java-docs/blob/main/otlp/src/main/java/io/opentelemetry/example/otlp/ExampleConfiguration.java
     /**
@@ -60,12 +43,10 @@ public class OpenTelemetryAccessor {
      *         is disabled or the application has shut down.
      */
     public static OpenTelemetryInfo getOpenTelemetryInfo() {
-        try {
-            OpenTelemetryInfoFactory factory = OSGIHelpers.getService(OpenTelemetryInfoFactory.class, OpenTelemetryAccessor.class);
+        Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryInfoFactoryService.call((factory) -> {
             return factory.getOpenTelemetryInfo();
-        } catch (Exception e) {
-            return new ErrorOpenTelemetryInfo();
-        }
+        });
+        return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::new);
     }
 
     /**
@@ -97,13 +78,17 @@ public class OpenTelemetryAccessor {
     }
 
     /**
-     * Gets the CDIService service
+     * Returns all interceptor bindings which apply to the current invocation or lifecycle event by calling CDIService.getInterceptorBindingsFromInvocationContext().
      *
-     * @return the current CDIService instance
+     * @return a set of interceptor bindings which apply to the current invocation or lifecycle event. This will include all interceptor bindings that apply, not just those that
+     *         were used to bind the current interceptor.
+     * @throws IllegalArgumentException if InvocationContext is not an instance of org.jboss.weld.interceptor.proxy.AbstractInvocationContext;
      */
-    public static CDIService getCdiService() {
-        return instance.map(i -> i.cdiService)
-                       .orElseThrow(() -> new IllegalStateException("Unable to get CDIService"));
+    public static Set<Annotation> getInterceptorBindingsFromInvocationContext(final InvocationContext context) {
+        Optional<Set<Annotation>> bindings = cdiService.call((service) -> {
+            return service.getInterceptorBindingsFromInvocationContext(context);
+        });
+        return bindings.orElseThrow(() -> new IllegalStateException("Unable to get CDIService"));
     }
 
 }

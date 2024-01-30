@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -75,7 +75,7 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
                 will(returnValue(null));
             }
         });
-        boolean result = helper.hasClientWithBackchannelLogoutUri(provider);
+        boolean result = BackchannelLogoutRequestHelper.hasClientWithBackchannelLogoutUri(provider);
         assertFalse("Expected false because there is no client provider, so the clients cannot be checked.", result);
     }
 
@@ -90,7 +90,7 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
                 will(throwException(oidcServerException));
             }
         });
-        boolean result = helper.hasClientWithBackchannelLogoutUri(provider);
+        boolean result = BackchannelLogoutRequestHelper.hasClientWithBackchannelLogoutUri(provider);
         assertFalse("Expected false because there was an error getting the clients, so the clients cannot be checked.", result);
     }
 
@@ -105,7 +105,7 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
                 will(returnValue(clients));
             }
         });
-        boolean result = helper.hasClientWithBackchannelLogoutUri(provider);
+        boolean result = BackchannelLogoutRequestHelper.hasClientWithBackchannelLogoutUri(provider);
         assertFalse("Expected false because there are no clients.", result);
     }
 
@@ -128,7 +128,7 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
                 will(returnValue(null));
             }
         });
-        boolean result = helper.hasClientWithBackchannelLogoutUri(provider);
+        boolean result = BackchannelLogoutRequestHelper.hasClientWithBackchannelLogoutUri(provider);
         assertFalse("Expected false because the clients' back-channel logout uri's were null.", result);
     }
 
@@ -151,7 +151,7 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
                 will(returnValue(""));
             }
         });
-        boolean result = helper.hasClientWithBackchannelLogoutUri(provider);
+        boolean result = BackchannelLogoutRequestHelper.hasClientWithBackchannelLogoutUri(provider);
         assertFalse("Expected false because the clients' back-channel logout uri's were empty.", result);
     }
 
@@ -172,7 +172,7 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
                 will(returnValue("http://localhost:8941/oidcclient/backchannel_logout/client01"));
             }
         });
-        boolean result = helper.hasClientWithBackchannelLogoutUri(provider);
+        boolean result = BackchannelLogoutRequestHelper.hasClientWithBackchannelLogoutUri(provider);
         assertTrue("Expected true because at least one client had a back-channel logout uri configured.", result);
     }
 
@@ -195,7 +195,7 @@ public class BackchannelLogoutRequestHelperTest extends CommonTestClass {
                 will(returnValue("http://localhost:8941/oidcclient/backchannel_logout/client02"));
             }
         });
-        boolean result = helper.hasClientWithBackchannelLogoutUri(provider);
+        boolean result = BackchannelLogoutRequestHelper.hasClientWithBackchannelLogoutUri(provider);
         assertTrue("Expected true because at least one client had a back-channel logout uri configured.", result);
     }
 

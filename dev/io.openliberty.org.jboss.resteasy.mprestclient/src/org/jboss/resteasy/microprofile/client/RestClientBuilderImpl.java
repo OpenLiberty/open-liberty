@@ -120,7 +120,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         }
         if (getBeanManager() != null) {
             builderDelegate.getProviderFactory()
-                    .setInjectorFactory(new CdiInjectorFactory(getBeanManager()));
+                    .setInjectorFactory(new CdiInjectorFactory((jakarta.enterprise.inject.spi.BeanManager) getBeanManager())); // Liberty change for transformation
         }
         configurationWrapper = new ConfigurationWrapper(builderDelegate.getConfiguration());
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import javax.ws.rs.core.Response;
 
 import com.ibm.ws.jaxws.test.wsr.server.People;
 
+import io.openliberty.interop.util.InteropConstants;
+
 @WebService(serviceName = "PeopleService", portName = "BillPort", endpointInterface = "com.ibm.ws.jaxws.test.wsr.server.People",
             targetNamespace = "http://server.wsr.test.jaxws.ws.ibm.com")
 public class Bill implements People {
@@ -30,8 +32,8 @@ public class Bill implements People {
         // Implement JAX-RS call here
         // Increasing the timeouts for the rest client to prevent failures in slow builds
         ClientBuilder cb = ClientBuilder.newBuilder();
-        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", "50000");
-        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", "50000");
+        cb.property("com.ibm.ws.jaxrs.client.connection.timeout", InteropConstants.CONN_TIME_OUT);
+        cb.property("com.ibm.ws.jaxrs.client.receive.timeout", InteropConstants.CONN_TIME_OUT);
 
         Client client = cb.build();
         Response response = client.target(URI_CONTEXT_ROOT)

@@ -58,13 +58,14 @@ Subsystem-Name: Jakarta RESTful Web Services 3.1 Client
   io.openliberty.activation.internal-2.1, \
   io.openliberty.jsonp-2.1
 -bundles=\
-  io.openliberty.jaxrs30; location:="dev/api/ibm/,lib/", \
   com.ibm.ws.jaxrs.2.x.config, \
   io.openliberty.org.apache.commons.codec, \
   io.openliberty.org.apache.commons.logging, \
   com.ibm.ws.org.apache.httpcomponents, \
   io.openliberty.org.jboss.logging35, \
   io.openliberty.org.jboss.resteasy.common.ee10
+-jars=\
+  io.openliberty.jaxrs30; location:="dev/api/ibm/,lib/"
 -files=\
   dev/api/ibm/javadoc/io.openliberty.jaxrs30_1.0-javadoc.zip
 kind=ga

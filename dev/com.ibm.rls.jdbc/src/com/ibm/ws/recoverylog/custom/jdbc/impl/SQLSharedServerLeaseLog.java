@@ -86,11 +86,11 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
      * different for DB2, MS SQL Server, PostgreSQL and Oracle.
      */
     private final String genericTablePreString = "CREATE TABLE ";
-    private final String genericTablePostString = "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
+    private final String genericTablePostString = "( SERVER_IDENTITY VARCHAR(128) NOT NULL UNIQUE, RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
                                                   "LEASE_TIME BIGINT) ";
 
     private final String oracleTablePreString = "CREATE TABLE ";
-    private final String oracleTablePostString = "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
+    private final String oracleTablePostString = "( SERVER_IDENTITY VARCHAR(128) NOT NULL UNIQUE, RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
                                                  "LEASE_TIME NUMBER(19)) ";
 
     private final String postgreSQLTablePreString = "CREATE TABLE ";
@@ -648,14 +648,23 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                         // We have acquired the lock. If any other server is also trying to peer recover then
                         // they can fail. To make this happen, we'll update the lease time ourselves.
                     } else {
-                        // Lease has not expired, are we the owner or is some other server peer recovering
-                        // If the latter, then we should barf
+                        // This code is specific to home server startup. If the Lease has not expired, but we are NOT the owner
+                        // of the lease, that means that another server, a peer, is recovering our logs. In this case we will
+                        // allow processing to proceed. We will trace this occurrence but we will allow the lease to be updated
+                        // and will allow the home server to aggressively take over and recover its own logs, unless the
+                        // peerRecoveryPrecedence server.xml attribute has been set to "true".
                         if (!storedLeaseOwner.equals(recoveryIdentity)) {
-                            final String dbg = storedLeaseOwner + " is recovering our logs, we will fail our recovery";
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, dbg);
-                            final RecoveryFailedException rex = new RecoveryFailedException(dbg);
-                            throw rex;
+                            if (ConfigurationProviderManager.getConfigurationProvider().peerRecoveryPrecedence()) {
+                                final String dbg = storedLeaseOwner + " is recovering our logs and the peerRecoveryPrcedence flag has been set, we will fail our recovery";
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, dbg);
+                                final RecoveryFailedException rex = new RecoveryFailedException(dbg);
+                                throw rex;
+                            } else {
+                                final String dbg = storedLeaseOwner + " is recovering our logs. But we will update the lease and aggressively take over recovery";
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, dbg);
+                            }
                         }
                     }
                 }
@@ -946,13 +955,8 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Create Oracle Table using: " + oracleTableString);
                 createTableStmt.executeUpdate(oracleTableString);
-                String oracleIndexString = "CREATE INDEX IXWS_LEASE ON " + _leaseTableName + "( \"SERVER_IDENTITY\" ASC) ";
-
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Create SQL Server index using: " + oracleIndexString);
-
-                // Create index on the new table
-                createTableStmt.execute(oracleIndexString);
+                // Do not manually create an index as ORACLE automatically sets up an index because of the "UNIQUE" constraint on
+                // the SERVER_IDENTITY column
             } else if (_isPostgreSQL) {
                 String postgreSQLTableString = postgreSQLTablePreString + _leaseTableName + postgreSQLTablePostString;
                 if (tc.isDebugEnabled())

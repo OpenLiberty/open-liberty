@@ -49,7 +49,7 @@ Subsystem-Name: Jakarta Server Pages 3.0
  io.openliberty.org.apache.taglibs.standard
 -jars=com.ibm.websphere.appserver.spi.jsp; location:=dev/spi/ibm/, \
  io.openliberty.jakarta.pages.tld.3.0; location:=dev/api/spec/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.0-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.1-javadoc.zip
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

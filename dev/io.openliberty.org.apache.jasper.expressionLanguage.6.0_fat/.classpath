@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/EL60ArrayLengthTest.war/src"/>
-	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
-    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21">
+    <classpathentry kind="src" path="fat/src"/>
+    <classpathentry kind="src" path="test-applications/EL60ArrayLengthTest.war/src"/>
+    <classpathentry kind="src" path="test-applications/EL60RecordELResolverTest.war/src"/>
+    <classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
         <attributes>
             <attribute name="module" value="true"/>
         </attributes>
     </classpathentry>
-	<classpathentry kind="output" path="bin"/>
+    <classpathentry kind="output" path="bin"/>
 </classpath>

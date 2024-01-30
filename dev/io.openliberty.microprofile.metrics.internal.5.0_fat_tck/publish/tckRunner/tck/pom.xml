@@ -17,7 +17,7 @@
     <properties>
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
         <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
-        <microprofile.metrics.version>5.0.1</microprofile.metrics.version>
+        <microprofile.metrics.version>5.0.2</microprofile.metrics.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>
@@ -183,9 +183,6 @@
                                 <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-api-tck</dependency>
                                 <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-optional-tck</dependency>
                             </dependenciesToScan>
-                            <excludes>
-                                <exclude>**/MPMetricBaseMetricsTest.java</exclude>
-                            </excludes>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -223,7 +220,6 @@
                                 <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-optional-tck</dependency>
                             </dependenciesToScan>
                             <excludes>
-                                <exclude>**/MPMetricBaseMetricsTest.java</exclude>
                                 <exclude>**/TimerTest.java</exclude>
                                 <exclude>**/MeterTest.java</exclude>
                             </excludes>
@@ -264,7 +260,6 @@
                                 <dependency>org.eclipse.microprofile.metrics:microprofile-metrics-optional-tck</dependency>
                             </dependenciesToScan>
                             <excludes>
-                                <exclude>**/MPMetricBaseMetricsTest.java</exclude>
                                 <exclude>**/TimerTest.java</exclude>
                                 <exclude>**/MeterTest.java</exclude>
                             </excludes>

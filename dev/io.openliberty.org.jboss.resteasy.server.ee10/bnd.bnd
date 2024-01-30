@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -59,13 +59,11 @@ instrument.ffdc: false
 instrument.disabled: false
 
 Include-Resource:\
-  @${repo;org.jboss.resteasy:resteasy-cdi;${resteasy-version};EXACT}, \
   @${repo;org.jboss.resteasy:resteasy-servlet-initializer;${resteasy-version};EXACT}, \
   com/ibm/websphere=${bin}/com/ibm/websphere, \
   io/openliberty=${bin}/io/openliberty
 
 -buildpath: \
-  org.jboss.resteasy:resteasy-cdi;strategy=exact;version='${resteasy-version}',\
   org.jboss.resteasy:resteasy-core-spi;strategy=exact;version='${resteasy-version}',\
   org.jboss.resteasy:resteasy-core;strategy=exact;version='${resteasy-version}',\
   org.jboss.resteasy:resteasy-servlet-initializer;strategy=exact;version='${resteasy-version}',\

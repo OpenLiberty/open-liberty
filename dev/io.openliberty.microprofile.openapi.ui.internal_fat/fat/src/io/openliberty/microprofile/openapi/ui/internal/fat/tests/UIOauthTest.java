@@ -13,9 +13,9 @@ package io.openliberty.microprofile.openapi.ui.internal.fat.tests;
 import static componenttest.selenium.SeleniumWaits.waitForElement;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertNotNull;
 
 import java.time.Duration;
-import java.util.Arrays;
 
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -44,6 +44,7 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.openapi.ui.internal.fat.app.SecureTestResource;
+import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestApplication;
 
 @RunWith(FATRunner.class)
 public class UIOauthTest {
@@ -92,7 +93,7 @@ public class UIOauthTest {
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                                   .addClass(SecureTestResource.class);
+                                   .addClasses(SecureTestResource.class, TestApplication.class);
 
         ShrinkHelper.exportDropinAppToServer(server, war, ShrinkHelper.DeployOptions.SERVER_ONLY);
 
@@ -250,6 +251,18 @@ public class UIOauthTest {
         // so cannot be reused. however the button is kept, so that can be reused as the anchor
         lockSvg = lock.findElement(By.tagName("svg"));
         assertThat("Check that lock button is now in 'locked' state", lockSvg.getAttribute("class"), equalTo("locked"));
+
+        WebElement getOperationButton = getOperation.findElement(By.cssSelector("button"));
+        getOperationButton.click();
+        WebElement tryOutButton = waitForElement(getOperation, By.cssSelector("button.btn.try-out__btn"));
+        tryOutButton.click();
+        //get the GET `/test` operation from `default`
+        getOperation = waitForElement(driver, By.id("operations-default-get_test"));
+        WebElement executeButton = waitForElement(getOperation, By.cssSelector("button.btn.execute"));
+        executeButton.click();
+        getOperation = waitForElement(driver, By.id("operations-default-get_test"));
+        WebElement testGet200Response = waitForElement(getOperation, By.cssSelector("tr.response[data-code=\"200\"]"));
+        assertNotNull("200 response line", testGet200Response);
     }
 
 }

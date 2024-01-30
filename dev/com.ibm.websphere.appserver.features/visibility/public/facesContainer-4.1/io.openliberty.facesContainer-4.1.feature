@@ -11,7 +11,7 @@ IBM-API-Package: org.jboss.weld;type="internal",\
   org.jboss.weld.context.http;type="internal",\
   org.jboss.weld.context;type="internal"
 -bundles=\
-  io.openliberty.facesContainer.4.0.internal.classloading
+  io.openliberty.facesContainer.4.1.internal.classloading
 -features=io.openliberty.facesProvider-4.1.0.Container, \
   io.openliberty.cdi-4.1, \
   com.ibm.websphere.appserver.servlet-6.1, \

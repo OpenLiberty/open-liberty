@@ -35,6 +35,7 @@
         recoveryGroup="defaultGroup"
         leaseLength="300"
         leaseCheckInterval="25"
+        peerRecoveryPrecedence="true"
     />
 
     <application location="transactioncloud.war"/>

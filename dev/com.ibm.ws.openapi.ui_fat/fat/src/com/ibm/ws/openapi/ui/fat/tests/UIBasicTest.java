@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.time.Duration;
+import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -113,6 +114,8 @@ public class UIBasicTest {
 
     /**
      * Tests common to both the public and private UI
+     *
+     * @throws InterruptedException
      */
     private void testUI() {
         // Check the title loads
@@ -136,7 +139,51 @@ public class UIBasicTest {
 
         // Check the Required field renders correctly so we know the JS is being interpreted as UTF-8
         WebElement requiredField = waitForElement(testGetOpBlock, By.cssSelector("div.parameter__name.required"));
-        assertThat("Code page UTF-8 not being used",requiredField.getText(), is("id *"));
+        assertThat("Code page UTF-8 not being used", requiredField.getText(), is("id *"));
+
+        // test that all APIs are displayed correctly with correct colors
+        assertThat(testGetOpBlock.getCssValue("background"), startsWith("rgba(31, 111, 240, 0.1)"));
+        assertThat(testGetOpBlock.getCssValue("border-color"), is("rgb(31, 111, 240)"));
+        WebElement testGetIcon = testGetOpBlock.findElement(By.tagName("span"));
+        assertThat(testGetIcon.getCssValue("background"), startsWith("rgb(31, 111, 240)"));
+
+        WebElement testDeleteOpBlock = waitForElement(driver, By.id("operations-default-testDelete"));
+        assertThat(testDeleteOpBlock.getCssValue("background"), startsWith("rgba(224, 7, 7, 0.1)"));
+        assertThat(testDeleteOpBlock.getCssValue("border-color"), is("rgb(224, 7, 7)"));
+        WebElement testDeleteIcon = testDeleteOpBlock.findElement(By.tagName("span"));
+        assertThat(testDeleteIcon.getCssValue("background"), startsWith("rgb(224, 7, 7)"));
+
+        WebElement testPutOpBlock = waitForElement(driver, By.id("operations-default-testPut"));
+        assertThat(testPutOpBlock.getCssValue("background"), startsWith("rgba(177, 99, 3, 0.1)"));
+        assertThat(testPutOpBlock.getCssValue("border-color"), is("rgb(177, 99, 3)"));
+        WebElement testPutIcon = testPutOpBlock.findElement(By.tagName("span"));
+        assertThat(testPutIcon.getCssValue("background"), startsWith("rgb(177, 99, 3)"));
+
+        WebElement testPostOpBlock = waitForElement(driver, By.id("operations-default-testPost"));
+        assertThat(testPostOpBlock.getCssValue("background"), startsWith("rgba(32, 128, 80, 0.1)"));
+        assertThat(testPostOpBlock.getCssValue("border-color"), is("rgb(32, 128, 80)"));
+        WebElement testPostIcon = testPostOpBlock.findElement(By.tagName("span"));
+        assertThat(testPostIcon.getCssValue("background"), startsWith("rgb(32, 128, 80)"));
+
+        // Check that version stamp is present and color is correct
+        WebElement versionStamp = waitForElement(driver, By.cssSelector("small.version-stamp"));
+        assertThat(versionStamp.getCssValue("background"), startsWith("rgb(93, 130, 3)"));
+
+        // Test filter box works as expected
+        WebElement filterBox = waitForElement(driver, By.cssSelector("form.filter-wrapper"));
+        WebElement filterTextBox = waitForElement(filterBox, By.cssSelector("input.filter-input"));
+        WebElement filterButton = waitForElement(filterBox, By.cssSelector("button.filter-button"));
+        filterTextBox.sendKeys("app");
+        filterButton.click();
+        // Check that the results load with 4 matches
+        WebElement filterResults = waitForElement(driver, By.cssSelector("div.operation-tag-content"));
+        List<WebElement> results = filterResults.findElements(By.cssSelector("span.opblock-summary-method"));
+        assertThat(results.size(), is(4));
+
+        filterTextBox.sendKeys("incorrectFilter");
+        filterButton.click();
+        // Check that the results load with zero matches
+        waitForElement(driver, By.xpath("//*[text()=' No operations defined in spec!']"));
     }
 
 }

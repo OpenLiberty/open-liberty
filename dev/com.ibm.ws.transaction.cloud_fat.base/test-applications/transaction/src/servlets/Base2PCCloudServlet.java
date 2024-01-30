@@ -1276,4 +1276,27 @@ public class Base2PCCloudServlet extends FATServlet {
             XAResourceImpl.clear();
         }
     }
+
+    public void setupRecForAggressiveTakeover(HttpServletRequest request,
+                                              HttpServletResponse response) throws Exception {
+        final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
+        XAResourceImpl.clear();
+        final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
+        final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
+
+        try {
+            tm.begin();
+            final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
+            tm.enlist(xaRes1, recoveryId1);
+
+            final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo2).setRecoverAction(XAResourceImpl.SLEEP_RECOVER);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
+            tm.enlist(xaRes2, recoveryId2);
+
+            tm.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+bSymbolicName=io.openliberty.test.tld
+
+Bundle-Name: TEST TLD
+Bundle-SymbolicName: io.openliberty.test.tld
+Bundle-Description:  TEST TLD
+
+Private-Package: \
+  io.openliberty.test.tld
+
+Export-Package: \
+  io.openliberty.test.tag;version=1.0;thread-context=true, \
+  com.example;version=1.0;thread-context=true
+
+Service-Component: \
+  io.openliberty.test.global.taglib; \
+    implementation:=io.openliberty.test.tld.TestGlobalConfig; \
+    provide:='com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig'; \
+    properties:="service.vendor=IBM"
+
+Include-Resource: \
+    WEB-INF=test-bundle/resources/WEB-INF
+
+-buildpath: \
+  com.ibm.ws.jsp;version=latest,\
+  com.ibm.websphere.javaee.jsp.2.2;version=latest

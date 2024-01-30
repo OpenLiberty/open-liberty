@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     protected boolean closed = false;
     protected long bytesRead = 0L;
     private long bytesToCaller = 0L;
+
+    // 25279 - Required for reading from Channel during an HTTP2 upgrade. True means the buffer contains all data and shouldn't go down to channel on next call
+    private boolean dataAlreadyReadFromChannel = false;
 
     //Following are required to support MultiRead
     private boolean enableMultiReadofPostData = false; // custom property
@@ -105,7 +108,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
      * @throws IOException
      */
     protected boolean checkBuffer() throws IOException {
-        if (!enableMultiReadofPostData) {
+        if (!enableMultiReadofPostData && !dataAlreadyReadFromChannel) {
             if (null != this.buffer) {
                 if (this.buffer.hasRemaining()) {
                     return true;
@@ -139,11 +142,14 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
      * @throws IOException
      */
     private boolean checkMultiReadBuffer() throws IOException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.entry(tc, "checkMultiReadBuffer", " firstReadCompleteforMulti [" + firstReadCompleteforMulti + "] " + this);
+        }
         //first check existing buffer
         if (null != this.buffer) {
             if (this.buffer.hasRemaining()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "checkMultiReadBuffer, remaining ->" + this);
+                    Tr.debug(tc, "checkMultiReadBuffer Exit | return true ; has remaining ->" + this);
                 }
                 return true;
             }
@@ -164,7 +170,10 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "checkMultiReadBuffer ,index ->" + postDataIndex + " ,storage.size ->" + postDataBuffer.size());
             }
-            if (postDataBuffer.size() <= postDataIndex) {
+            if (postDataBuffer.size() <= postDataIndex && !dataAlreadyReadFromChannel) { // Don't need to read if data was already stored
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "checkMultiReadBuffer, requires more data, checking readRemainingFromChannel.");
+                }
                 //get remaining from channel now as read needs more than the stored
                 readRemainingFromChannel();
             }
@@ -176,7 +185,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 // record the new amount of data read from the store
                 this.bytesReadFromStore += this.buffer.remaining();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "checkMultiReadBuffer ->" + this);
+                    Tr.debug(tc, "checkMultiReadBuffer Exit | bytes read from store [" + this.bytesReadFromStore + "] , return true" + this);
                 }
                 return true;
             }
@@ -278,7 +287,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         if (null != this.buffer) {
             rc = this.buffer.remaining();
         } else {
-            if (!enableMultiReadofPostData) {
+            if (!enableMultiReadofPostData && !dataAlreadyReadFromChannel) {
                 rc = 0;
             } else {
                 // read the stored buffer(s) and return what all can be read in non-blocking way
@@ -322,12 +331,16 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
         //adding MultiRead option
         if (!this.enableMultiReadofPostData) {
+            if(dataAlreadyReadFromChannel){
+                // Read happened from channel so on close we need to clean up all remaning data
+                cleanupforMultiRead();
+            }
             if (null != this.buffer) {
                 this.buffer.release();
                 this.buffer = null;
             }
             validate();
-        } else {
+        }else {
             if (null != this.buffer) {
                 if (firstReadCompleteforMulti) {
                     this.buffer.rewind(); // make position 0, the buffer is ready for next read
@@ -468,6 +481,27 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
     }
 
+    public void setReadFromChannelComplete() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setReadFromChannelComplete", "Reseting indexes of data and setting all data read");
+        }
+        this.enableMultiReadofPostData = false;
+        dataAlreadyReadFromChannel = true;
+        firstReadCompleteforMulti = true;
+        bytesToCaller = 0;
+        postDataIndex = 0;
+    }
+
+    public void setupChannelMultiRead() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setupChannelMultiRead", "Adding everything necessary for reading from HTTP channel.");
+        }
+        this.enableMultiReadofPostData = true;
+        postDataBuffer = new ArrayList<WsByteBuffer>();
+        firstReadCompleteforMulti = false;
+        dataAlreadyReadFromChannel = false;
+    }
+
     @Override
     public void setISObserver(HttpInputStreamObserver obs) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -492,6 +526,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             postDataBuffer = new ArrayList<WsByteBuffer>();
             firstReadCompleteforMulti = false;
             readChannelComplete = false;
+            dataAlreadyReadFromChannel = false;
         }
     }
 
@@ -503,6 +538,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         bytesRead = 0L;
         bytesToCaller = 0L;
         firstReadCompleteforMulti = false;
+        dataAlreadyReadFromChannel = false;
 
         if (this.buffer != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

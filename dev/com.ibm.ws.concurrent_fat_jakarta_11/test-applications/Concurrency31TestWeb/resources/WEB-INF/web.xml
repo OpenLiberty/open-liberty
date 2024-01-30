@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app version="6.1" 
+	xmlns="https://jakarta.ee/xml/ns/jakartaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd">
+
+  <!-- TODO concurrency resources with virtual=true -->
+
+  <managed-thread-factory>
+    <name>java:global/concurrent/webdd/platform-thread-factory</name>
+    <priority>7</priority>
+    <virtual>false</virtual>
+  </managed-thread-factory>
+
+  <managed-thread-factory>
+    <name>java:comp/concurrent/webdd/virtual-thread-factory</name>
+    <virtual>true</virtual>
+  </managed-thread-factory>
+
+</web-app>

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -52,8 +52,9 @@ public class ServerClasspathTest {
                                                         "org.ietf.jgss", "jdk", // Java 9
                                                         "com.ibm.sharedclasses.spi", // Open JDK 9
                                                         "openj9",
-                                                        "com.ibm.gpu" // Semeru 11.0.15
-                                                        , "io.openliberty.checkpoint.spi" // added checkpoint stuff
+                                                        "com.ibm.gpu", // Semeru 11.0.15
+                                                        "io.openliberty.checkpoint.spi", // added checkpoint stuff
+                                                        "org.w3c.dom.ls" // Java 22 Hotspot
     };
 
     @BeforeClass

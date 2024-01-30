@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package servlets;
 
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -26,6 +27,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import javax.transaction.xa.XAResource;
+
+import com.ibm.tx.jta.ExtendedTransactionManager;
+import com.ibm.tx.jta.TransactionManagerFactory;
+import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
+import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
 
 @SuppressWarnings("serial")
 @WebServlet("/Simple2PCCloudServlet")
@@ -368,6 +376,142 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
             } catch (Exception ex) {
                 System.out.println("tidyupV1LeaseLog: caught exception in testSetup: " + ex);
             }
+        }
+    }
+
+    public void setupNonUniqueLeaseLog(HttpServletRequest request,
+                                       HttpServletResponse response) throws Exception {
+
+        final String genericTableString = "CREATE TABLE WAS_LEASES_LOG" +
+                                          "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
+                                          "LEASE_TIME BIGINT) ";
+
+        final String oracleTableString = "CREATE TABLE WAS_LEASES_LOG" +
+                                         "( SERVER_IDENTITY VARCHAR(128), RECOVERY_GROUP VARCHAR(128), LEASE_OWNER VARCHAR(128), " +
+                                         "LEASE_TIME NUMBER(19)) ";
+
+        final String postgreSQLTableString = "CREATE TABLE WAS_LEASES_LOG" +
+                                             "( SERVER_IDENTITY VARCHAR (128) UNIQUE NOT NULL, RECOVERY_GROUP VARCHAR (128) NOT NULL, LEASE_OWNER VARCHAR (128) NOT NULL, "
+                                             +
+                                             "LEASE_TIME BIGINT);";
+
+        try (Connection con = getConnection(dsTranLog)) {
+            con.setAutoCommit(false);
+            DatabaseMetaData mdata = con.getMetaData();
+            String dbName = mdata.getDatabaseProductName();
+            boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
+            boolean isOracle = dbName.toLowerCase().contains("oracle");
+            boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
+            Statement stmt = null;
+            // Statement used to drop table
+            try {
+                stmt = con.createStatement();
+                String dropTableString = "DROP TABLE WAS_LEASES_LOG";
+                System.out.println("setupNonIndexedLeaseLog: Drop table using: " + dropTableString);
+                int dropReturn = stmt.executeUpdate(dropTableString);
+                con.commit();
+            } catch (Exception ex) {
+                System.out.println("setupNonIndexedLeaseLog: caught exception in testSetup: " + ex);
+            }
+
+            try {
+                // Now set up old school WAS_LEASES_LOG table
+                stmt = con.createStatement();
+                if (isOracle) {
+                    System.out.println("setupNonIndexedLeaseLog: Create Oracle Table using: " + oracleTableString);
+                    stmt.executeUpdate(oracleTableString);
+                    String oracleIndexString = "CREATE INDEX IXWS_LEASE ON WAS_LEASES_LOG( \"SERVER_IDENTITY\" ASC) ";
+
+                    System.out.println("setupNonIndexedLeaseLog: Create SQL Server index using: " + oracleIndexString);
+
+                    // Create index on the new table
+                    stmt.execute(oracleIndexString);
+                } else if (isPostgreSQL) {
+                    System.out.println("setupNonIndexedLeaseLog: Create PostgreSQL Table using: " + postgreSQLTableString);
+                    stmt.execute(postgreSQLTableString);
+                    String postgresqlIndexString = "CREATE INDEX IXWS_LEASE ON WAS_LEASES_LOG( SERVER_IDENTITY ASC) ";
+
+                    System.out.println("setupNonIndexedLeaseLog: Create SQL Server index using: " + postgresqlIndexString);
+
+                    // Create index on the new table
+                    stmt.execute(postgresqlIndexString);
+                } else {
+                    System.out.println("setupNonIndexedLeaseLog: Create Generic Table using: " + genericTableString);
+                    stmt.executeUpdate(genericTableString);
+                    String genericIndexString = "CREATE INDEX IXWS_LEASE ON WAS_LEASES_LOG( \"SERVER_IDENTITY\" ASC) ";
+
+                    System.out.println("setupNonIndexedLeaseLog: Create SQL Server index using: " + genericIndexString);
+
+                    // Create index on the new table
+                    stmt.execute(genericIndexString);
+                }
+                con.commit();
+                System.out.println("setupNonIndexedLeaseLog: new table created");
+
+            } catch (Exception ex) {
+                System.out.println("setupNonIndexedLeaseLog: caught exception in testSetup: " + ex);
+            }
+        }
+    }
+
+    public void dropServer2Tables(HttpServletRequest request,
+                                  HttpServletResponse response) throws Exception {
+
+        try (Connection con = getConnection(dsTranLog)) {
+            con.setAutoCommit(false);
+            DatabaseMetaData mdata = con.getMetaData();
+            String dbName = mdata.getDatabaseProductName();
+            boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
+            boolean isOracle = dbName.toLowerCase().contains("oracle");
+            boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
+            Statement stmt = null;
+            // Statement used to drop table
+            try {
+                stmt = con.createStatement();
+                String dropTableString = "DROP TABLE WAS_TRAN_LOGCLOUD0021";
+                System.out.println("dropServer2Tables: Drop table using: " + dropTableString);
+                int dropReturn = stmt.executeUpdate(dropTableString);
+                dropTableString = "DROP TABLE WAS_PARTNER_LOGCLOUD0021";
+                System.out.println("dropServer2Tables: Drop table using: " + dropTableString);
+                dropReturn = stmt.executeUpdate(dropTableString);
+                con.commit();
+            } catch (Exception ex) {
+                System.out.println("dropServer2Tables: caught exception in testSetup: " + ex);
+            }
+
+        }
+    }
+
+    public void twoTrans(HttpServletRequest request,
+                         HttpServletResponse response) throws Exception {
+        final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
+        XAResourceImpl.clear();
+        final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
+        final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
+
+        try {
+            tm.begin();
+            final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1);
+            int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
+            tm.enlist(xaRes1, recoveryId1);
+
+            final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo2);
+            int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
+            tm.enlist(xaRes2, recoveryId2);
+
+            tm.commit();
+
+            tm.begin();
+
+            recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
+            tm.enlist(xaRes1, recoveryId1);
+
+            recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
+            tm.enlist(xaRes2, recoveryId2);
+
+            tm.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,8 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
+import java.util.Arrays;
+
 /**
  * Test context propagation with concurrent enabled and custom context services defined
  */
@@ -57,14 +59,14 @@ public class KafkaCustomContextTest extends FATServletClient {
     public static void setup() throws Exception {
         ConnectorProperties configuredDefaultInput = simpleIncomingChannel(PlaintextTests.connectionProperties(),
                                                                            KakfaCustomContextTestBean.DEFAULT_IN,
-                                                                           APP_NAME);
+                                                                           APP_NAME + KakfaCustomContextTestBean.DEFAULT_IN);
 
         ConnectorProperties configuredDefaultOutput = simpleOutgoingChannel(PlaintextTests.connectionProperties(),
                                                                             KakfaCustomContextTestBean.DEFAULT_OUT);
 
         ConnectorProperties propagateAllInput = simpleIncomingChannel(PlaintextTests.connectionProperties(),
                                                                       KakfaCustomContextTestBean.PROPAGATE_ALL_IN,
-                                                                      APP_NAME)
+                                                                      APP_NAME + KakfaCustomContextTestBean.PROPAGATE_ALL_IN)
                         .addProperty(KafkaConnectorConstants.CONTEXT_SERVICE, "propagateAll");
 
         ConnectorProperties propagateAllOutput = simpleOutgoingChannel(PlaintextTests.connectionProperties(),
@@ -72,7 +74,7 @@ public class KafkaCustomContextTest extends FATServletClient {
 
         ConnectorProperties propagateNoneInput = simpleIncomingChannel(PlaintextTests.connectionProperties(),
                                                                        KakfaCustomContextTestBean.PROPAGATE_NONE_IN,
-                                                                       APP_NAME)
+                                                                       APP_NAME + KakfaCustomContextTestBean.PROPAGATE_NONE_IN)
                         .addProperty(KafkaConnectorConstants.CONTEXT_SERVICE, "propagateNone");
 
         ConnectorProperties propagateNoneOutput = simpleOutgoingChannel(PlaintextTests.connectionProperties(),
@@ -80,7 +82,7 @@ public class KafkaCustomContextTest extends FATServletClient {
 
         ConnectorProperties propagateAppInput = simpleIncomingChannel(PlaintextTests.connectionProperties(),
                                                                       KakfaCustomContextTestBean.PROPAGATE_APP_IN,
-                                                                      APP_NAME);
+                                                                      APP_NAME + KakfaCustomContextTestBean.PROPAGATE_APP_IN);
 
         ConnectorProperties propagateAppOutput = simpleOutgoingChannel(PlaintextTests.connectionProperties(),
                                                                        KakfaCustomContextTestBean.PROPAGATE_APP_OUT);
@@ -102,6 +104,8 @@ public class KafkaCustomContextTest extends FATServletClient {
         KafkaUtils.addKafkaTestFramework(war, PlaintextTests.connectionProperties());
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
 
         server.startServer();
     }

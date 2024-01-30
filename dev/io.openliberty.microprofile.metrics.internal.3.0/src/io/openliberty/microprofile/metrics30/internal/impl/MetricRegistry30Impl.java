@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,16 +16,17 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -99,7 +100,7 @@ public class MetricRegistry30Impl implements MetricRegistry {
     protected final ConcurrentMap<MetricID, Metric> metricsMID;
     protected final ConcurrentMap<String, Metadata> metadataMID;
 
-    protected final ConcurrentHashMap<String, ConcurrentLinkedQueue<MetricID>> applicationMap;
+    protected final ConcurrentHashMap<String, Set<MetricID>> applicationMap;
 
     /**
      * This ConcurrentHashMap<String,Tag> holds the cached value of the MP Config mp.metrics.appName value for each appliation.
@@ -123,7 +124,7 @@ public class MetricRegistry30Impl implements MetricRegistry {
 
         this.metadataMID = new ConcurrentHashMap<String, Metadata>();
 
-        this.applicationMap = new ConcurrentHashMap<String, ConcurrentLinkedQueue<MetricID>>();
+        this.applicationMap = new ConcurrentHashMap<String, Set<MetricID>>();
 
         this.applicationMPConfigAppNameTagCache = new ConcurrentHashMap<String, Tag>();
 
@@ -267,14 +268,14 @@ public class MetricRegistry30Impl implements MetricRegistry {
         // If it is a base metric, the name will be null
         if (appName == null)
             return;
-        ConcurrentLinkedQueue<MetricID> list = applicationMap.get(appName);
-        if (list == null) {
-            ConcurrentLinkedQueue<MetricID> newList = new ConcurrentLinkedQueue<MetricID>();
-            list = applicationMap.putIfAbsent(appName, newList);
-            if (list == null)
-                list = newList;
+        Set<MetricID> metricIDSet = applicationMap.get(appName);
+        if (metricIDSet == null) {
+            Set<MetricID> newSet = new HashSet<MetricID>();
+            metricIDSet = applicationMap.putIfAbsent(appName, newSet);
+            if (metricIDSet == null)
+                metricIDSet = newSet;
         }
-        list.add(metricID);
+        metricIDSet.add(metricID);
     }
 
     public void unRegisterApplicationMetrics() {
@@ -292,7 +293,7 @@ public class MetricRegistry30Impl implements MetricRegistry {
             Tr.event(tc, "Application name is null. Cannot unregister metrics for null application.");
             return;
         }
-        ConcurrentLinkedQueue<MetricID> list = applicationMap.remove(appName);
+        Set<MetricID> list = applicationMap.remove(appName);
 
         if (list != null) {
             for (MetricID metricID : list) {
