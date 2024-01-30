@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -35,7 +37,6 @@ import com.ibm.ws.jsf22.fat.selenium_util.ExtendedWebDriver;
 import com.ibm.ws.jsf22.fat.selenium_util.WebPage;
 
 import componenttest.annotation.Server;
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -60,12 +61,13 @@ public class JSF22ClientWindowTests {
     @Server("jsfTestServer2")
     public static LibertyServer jsfTestServer2;
 
-    @Rule
-    public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
+    @ClassRule
+    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
                     .withAccessToHost(true)
-                    .withLogConsumer(new SimpleLogConsumer(JSF22ClientWindowTests.class, "selenium-driver"));
+                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
 
-    private ExtendedWebDriver driver;
+
+    private static ExtendedWebDriver driver;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -82,6 +84,8 @@ public class JSF22ClientWindowTests {
         jsfTestServer2.startServer(c.getSimpleName() + ".log");
 
         Testcontainers.exposeHostPorts(jsfTestServer2.getHttpDefaultPort(), jsfTestServer2.getHttpDefaultSecurePort());
+
+        driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
     }
 
     @AfterClass
@@ -90,11 +94,16 @@ public class JSF22ClientWindowTests {
         if (jsfTestServer2 != null && jsfTestServer2.isStarted()) {
             jsfTestServer2.stopServer();
         }
+        driver.quit(); // closes all sessions and terminutes the webdriver
     }
 
-    @Before
-    public void setupTest() {
-        driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
+    /*
+     * Clear cookies for the selenium webdriver, so that session don't carry over between tests
+     */
+    @After
+    public void clearCookies()
+    {
+        driver.getRemoteWebDriver().manage().deleteAllCookies();
     }
 
     /**
@@ -145,6 +154,7 @@ public class JSF22ClientWindowTests {
         page.findElement(By.id("testForm:link2")).click(); // opens new tab
         ArrayList<String> wid = new ArrayList<String>(driver.getWindowHandles());
         // switch to the new tab
+        driver.close(); // close current window
         wid.remove(currentHandle);
         driver.switchTo().window(wid.get(0));
         // Look for the correct results
@@ -174,10 +184,12 @@ public class JSF22ClientWindowTests {
         page.findElement(By.id("testForm:linkDisabled1")).click();
         ArrayList<String> wid = new ArrayList<String>(driver.getWindowHandles());
         // switch to the new tab
+        driver.close(); // close current window
         wid.remove(currentHandle);
         driver.switchTo().window(wid.get(0));
 
-        assertTrue(page.isInPage("Test Passed"));
+        String outputText = page.findElement(By.id("form2Disabled:outputPassed")).getText();
+        assertTrue("Test Passed".equals(outputText));
     }
 
     /**

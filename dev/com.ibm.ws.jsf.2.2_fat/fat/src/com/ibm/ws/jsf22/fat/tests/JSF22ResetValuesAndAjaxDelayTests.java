@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,10 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -41,7 +43,6 @@ import com.ibm.ws.jsf22.fat.selenium_util.ExtendedWebDriver;
 import com.ibm.ws.jsf22.fat.selenium_util.WebPage;
 
 import componenttest.annotation.Server;
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -64,10 +65,12 @@ public class JSF22ResetValuesAndAjaxDelayTests {
 
     private static BrowserVersion browser = BrowserVersion.CHROME;
 
-    @Rule
-    public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
-                                                                                  .withAccessToHost(true)
-                                                                                  .withLogConsumer(new SimpleLogConsumer(JSF22ResetValuesAndAjaxDelayTests.class, "selenium-driver"));
+    @ClassRule
+    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
+                    .withAccessToHost(true)
+                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
+
+   private static ExtendedWebDriver driver;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -80,6 +83,8 @@ public class JSF22ResetValuesAndAjaxDelayTests {
         jsf22TracingServer.startServer(c.getSimpleName() + ".log");
 
         Testcontainers.exposeHostPorts(jsf22TracingServer.getHttpDefaultPort(), jsf22TracingServer.getHttpDefaultSecurePort());
+
+        driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
     }
 
     @AfterClass
@@ -88,6 +93,16 @@ public class JSF22ResetValuesAndAjaxDelayTests {
         if (jsf22TracingServer != null && jsf22TracingServer.isStarted()) {
             jsf22TracingServer.stopServer();
         }
+        driver.quit(); // closes all sessions and terminutes the webdriver
+    }
+
+    /*
+     * Clear cookies for the selenium webdriver, so that session don't carry over between tests
+     */
+    @After
+    public void clearCookies()
+    {
+        driver.getRemoteWebDriver().manage().deleteAllCookies();
     }
 
     /**
@@ -97,9 +112,6 @@ public class JSF22ResetValuesAndAjaxDelayTests {
      */
     @Test
     public void testResetValues() throws Exception {
-
-        ExtendedWebDriver driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
-
         String url = JSFUtils.createSeleniumURLString(jsf22TracingServer, APP_NAME, "resetValuesTest.jsf");
         WebPage page = new WebPage(driver);
         Log.info(c, name.getMethodName(), "Navigating to: /" + APP_NAME + "/resetValuesTest.jsf");
@@ -186,9 +198,6 @@ public class JSF22ResetValuesAndAjaxDelayTests {
      */
     @Test
     public void testAjaxZeroDelay() throws Exception {
-
-            ExtendedWebDriver driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
-
             String url = JSFUtils.createSeleniumURLString(jsf22TracingServer, APP_NAME, "ajaxZeroDelayTest.jsf");
             WebPage page = new WebPage(driver);
 
@@ -224,8 +233,6 @@ public class JSF22ResetValuesAndAjaxDelayTests {
      */
       @Test
       public void testAjaxDelayNone() throws Exception {
-            ExtendedWebDriver driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
-
             String url = JSFUtils.createSeleniumURLString(jsf22TracingServer, APP_NAME, "ajaxDelayTestNone.jsf");
             WebPage page = new WebPage(driver);
 
