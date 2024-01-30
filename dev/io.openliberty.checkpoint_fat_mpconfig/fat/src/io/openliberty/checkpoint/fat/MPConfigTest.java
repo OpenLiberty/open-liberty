@@ -102,6 +102,9 @@ public class MPConfigTest extends FATServletClient {
                 case varDirValueTest:
                     server.copyFileToLibertyServerRoot("variables", "configVariables/req_scope_key");
                     break;
+                case providerEnvValueTest:
+                    configureEnvVariable(server, singletonMap("provider_req_scope_key", "providerEnvValue"));
+                    break;
                 case noDefaultEnvValueTest:
                     configureEnvVariable(server, singletonMap("optional_req_scope_key", "optionalEnvValue"));
                     break;
@@ -121,6 +124,9 @@ public class MPConfigTest extends FATServletClient {
                     break;
                 case appScopeVarDirValueTest:
                     server.copyFileToLibertyServerRoot("variables", "configVariables/app_scope_key");
+                    break;
+                case appScopeProviderEnvValueTest:
+                    configureEnvVariable(server, singletonMap("provider_app_scope_key", "providerEnvValue"));
                     break;
                 case appScopeNoDefaultEnvValueTest:
                     configureEnvVariable(server, singletonMap("optional_app_scope_key", "optionalEnvValue"));
@@ -196,6 +202,7 @@ public class MPConfigTest extends FATServletClient {
                 case envValueTest:
                 case serverValueTest:
                 case annoValueTest:
+                case providerEnvValueTest:
                 case noDefaultEnvValueTest:
                 case noDefaultServerValueTest:
                     assertNull("CWWKC0651W message not expected in logs", server.waitForStringInLog("CWWKC0651W:.*", 100));
@@ -279,6 +286,7 @@ public class MPConfigTest extends FATServletClient {
         annoValueTest,
         defaultValueTest,
         varDirValueTest,
+        providerEnvValueTest,
         noDefaultEnvValueTest,
         noDefaultServerValueTest,
 
@@ -287,6 +295,7 @@ public class MPConfigTest extends FATServletClient {
         appScopeAnnoValueTest,
         appScopeDefaultValueTest,
         appScopeVarDirValueTest,
+        appScopeProviderEnvValueTest,
         appScopeNoDefaultEnvValueTest,
         appScopeNoDefaultServerValueTest,
 

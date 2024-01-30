@@ -52,6 +52,11 @@ public class MPConfigServlet extends FATServlet {
     }
 
     @Test
+    public void providerEnvValueTest() {
+        reqScopeBean.providerEnvValueTest();
+    }
+
+    @Test
     public void serverValueTest() {
         reqScopeBean.serverValueTest();
     }
@@ -85,6 +90,11 @@ public class MPConfigServlet extends FATServlet {
     @Test
     public void appScopeEnvValueTest() {
         appScopeBean.appScopeEnvValueTest();
+    }
+
+    @Test
+    public void appScopeProviderEnvValueTest() {
+        appScopeBean.appScopeProviderEnvValueTest();
     }
 
     @Test
