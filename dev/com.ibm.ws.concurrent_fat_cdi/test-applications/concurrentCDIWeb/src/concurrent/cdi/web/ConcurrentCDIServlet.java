@@ -172,6 +172,12 @@ public class ConcurrentCDIServlet extends HttpServlet {
     ContextService withoutAppContext;
 
     @Inject
+    @PropagatingLocationContext
+    @ClearingAppContext
+    @IgnoringTransactionContext
+    ContextService withLocationContext;
+
+    @Inject
     @WithoutLocationContext
     @WithoutTransactionContext
     ContextService withoutLocationAndTxContext;
@@ -287,6 +293,50 @@ public class ConcurrentCDIServlet extends HttpServlet {
             fail("Application context should be cleared, preventing java:comp lookup. Instead found " + found2);
         } catch (NamingException x) {
             // expected
+        }
+    }
+
+    /**
+     * Inject qualified instances of ContextService and verify that the behavior of each
+     * matches the configuration that the qualifier points to. The qualifiers are defined
+     * on a context-service element in application.xml.
+     */
+    public void testInjectContextServiceQualifiedFromAppDD() throws Exception {
+        assertNotNull(withLocationContext);
+
+        Location.set("Rochester, Minnesota");
+        try {
+            // Location context must be propagated per configuration in application.xml
+            Supplier<String> supplier1 = withLocationContext.contextualSupplier(Location::get);
+            Location.set("Stewartville, Minnesota");
+            assertEquals("Rochester, Minnesota", supplier1.get());
+            assertEquals("Stewartville, Minnesota", Location.get());
+
+            // Application context must be cleared per configuration in application.xml
+            Callable<String> callable1 = withLocationContext.contextualCallable(() -> {
+                return InitialContext.doLookup("java:comp/env/entry2");
+            });
+            try {
+                String result = callable1.call();
+                fail("Unexpectedly was able to look up value: " + result);
+            } catch (NamingException x) {
+                // expected
+            }
+
+            // Application must ignore transaction context per configuration in application.xml
+            Callable<Integer> callable2;
+            tx.begin();
+            try {
+                callable2 = withLocationContext.contextualCallable(() -> tx.getStatus());
+
+                assertEquals(Integer.valueOf(Status.STATUS_ACTIVE), callable2.call());
+            } finally {
+                tx.rollback();
+            }
+            assertEquals(Integer.valueOf(Status.STATUS_NO_TRANSACTION), callable2.call());
+
+        } finally {
+            Location.clear();
         }
     }
 

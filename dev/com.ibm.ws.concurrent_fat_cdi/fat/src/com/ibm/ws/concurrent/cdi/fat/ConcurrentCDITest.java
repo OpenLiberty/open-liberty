@@ -15,7 +15,9 @@ package com.ibm.ws.concurrent.cdi.fat;
 import jakarta.enterprise.concurrent.spi.ThreadContextProvider;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,7 +56,14 @@ public class ConcurrentCDITest extends FATServletClient {
                                               "concurrent.cdi.context.location.LocationContextProvider");
         ShrinkHelper.exportToServer(server, "lib", locationContextProviderJar);
 
-        ShrinkHelper.defaultApp(server, APP_NAME, "concurrent.cdi.web");
+        WebArchive concurrentCDIWeb = ShrinkHelper.buildDefaultApp("concurrentCDIWeb", "concurrent.cdi.web");
+        ShrinkHelper.addDirectory(concurrentCDIWeb, "test-applications/concurrentCDIWeb/resources");
+
+        EnterpriseArchive concurrentCDIApp = ShrinkWrap.create(EnterpriseArchive.class, "concurrentCDIApp.ear");
+        concurrentCDIApp.addAsModule(concurrentCDIWeb);
+        ShrinkHelper.addDirectory(concurrentCDIApp, "test-applications/concurrentCDIApp/resources");
+        ShrinkHelper.exportAppToServer(server, concurrentCDIApp);
+
         // TODO Adding "concurrent.cu3.web" to the following would cause conflict with app-defined ManagedExecutorService.
         // There is a spec proposal to detect conflict and avoid automatically adding the bean.
         ShrinkHelper.defaultDropinApp(server, APP_NAME_EE10, "concurrent.cdi4.web");
@@ -82,6 +91,11 @@ public class ConcurrentCDITest extends FATServletClient {
 
     @Test
     public void testInjectContextServiceQualifiedFromAnno() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testInjectContextServiceQualifiedFromAppDD() throws Exception {
         runTest(server, APP_NAME, testName);
     }
 
