@@ -36,6 +36,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServicePermission;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.SynchronousBundleListener;
 import org.osgi.util.tracker.ServiceTracker;
@@ -118,6 +119,7 @@ import org.osgi.util.tracker.ServiceTracker;
  * @since 3.13
  */
 public class ServiceCaller<S> {
+
     /**
      * Calls an OSGi service by dynamically looking it up and passing it to the
      * given consumer.
@@ -293,7 +295,16 @@ public class ServiceCaller<S> {
                                                  + "(objectClass=" + serviceType.getName() + ")" // //$NON-NLS-1$ //$NON-NLS-2$
                                                  + (filter == null ? "" : filter) // //$NON-NLS-1$
                                                  + ")"); //$NON-NLS-1$
-                context.addBundleListener(this);
+
+                if (System.getSecurityManager() != null) {
+                    AccessController.doPrivileged(
+                                                  (PrivilegedAction<Void>) () -> {
+                                                      context.addBundleListener(this);
+                                                      return null;
+                                                  });
+                } else {
+                    context.addBundleListener(this);
+                }
                 if ((ref.getBundle() == null || context.getBundle() == null) && ServiceCaller.this.service == this) {
                     // service should have been untracked but we may have missed the event
                     // before we could added the listeners
@@ -339,6 +350,7 @@ public class ServiceCaller<S> {
     private final Bundle bundle;
     private final Class<S> serviceType;
     private final String filter;
+    private final ServicePermission servicePermission;
     private volatile ReferenceAndService service = null;
 
     /**
@@ -371,6 +383,8 @@ public class ServiceCaller<S> {
         this.serviceType = Objects.requireNonNull(serviceType);
         this.bundle = Optional.of(Objects.requireNonNull(caller)).map(FrameworkUtil::getBundle).orElseThrow(IllegalStateException::new);
         this.filter = filter;
+        this.servicePermission = new ServicePermission(serviceType.getName(), ServicePermission.GET);
+
         if (filter != null) {
             try {
                 FrameworkUtil.createFilter(filter);
@@ -462,6 +476,18 @@ public class ServiceCaller<S> {
 
     private Optional<ReferenceAndService> getCurrent() {
         BundleContext context = getContext();
+        //If we do not have the permission the else block will throw the necessary SecurityException
+        if (System.getSecurityManager() != null && bundle.hasPermission(servicePermission)) {
+            return AccessController.doPrivileged(
+                                                 (PrivilegedAction<Optional<ReferenceAndService>>) () -> {
+                                                     return getCurrentInternal(context);
+                                                 });
+        } else {
+            return getCurrentInternal(context);
+        }
+    }
+
+    private Optional<ReferenceAndService> getCurrentInternal(BundleContext context) {
         return getServiceReference(context).map(r -> {
             S current = context.getService(r);
             return current == null ? null : new ReferenceAndService(context, r, current);
@@ -472,6 +498,7 @@ public class ServiceCaller<S> {
         if (context == null) {
             return Optional.empty();
         }
+
         if (filter == null) {
             return Optional.ofNullable(context.getServiceReference(serviceType));
         }
@@ -495,4 +522,3 @@ public class ServiceCaller<S> {
         }
     }
 }
-
