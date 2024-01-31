@@ -234,7 +234,6 @@ final class ServletServerStream extends AbstractServerStream {
 
   private final class Sink implements AbstractServerStream.Sink {
     final TrailerSupplier trailerSupplier = new TrailerSupplier();
-	private int closedButNoFlush = 0;
 
     @Override
     public void writeHeaders(Metadata headers) {
@@ -252,18 +251,7 @@ final class ServletServerStream extends AbstractServerStream {
     public void writeFrame(
     		@Nullable 
     		WritableBuffer frame, boolean flush, int numMessages) {
-      
-      MessageFramer framer = ServletServerStream.this.framer();
-      if( framer != null && framer.isClosed() && !flush ) {
-    		  if( closedButNoFlush==0) {
-    			 // Liberty change - our stack needs a flush at this point which has been
-    			 // removed from later versions of GRPC. See:
-    			 // https://github.com/grpc/grpc-java/pull/9177/files#diff-2de04da34f7e35c085ca26dc596410983f5ded55a8de11eb97811264dea011f2
-    		     flush = true;
-    		  }
-     		  closedButNoFlush=closedButNoFlush+1;     		 
-      }
-    	
+
       if (frame == null && !flush) {
         return;
       }
@@ -312,7 +300,18 @@ final class ServletServerStream extends AbstractServerStream {
           trailerSupplier.get().putIfAbsent(key, newValue);
         }
       }
-
+      try {
+        // Liberty change - our stack now needs a flush at this point which has now been
+        // removed from later versions of GRPC.
+        // See:
+        //   https://github.com/grpc/grpc-java/pull/9177/files#diff-2de04da34f7e35c085ca26dc596410983f5ded55a8de11eb97811264dea011f2
+        // grpc-java: AbstractServerStream::deliverFrame:
+        //   "Since endOfStream is triggered by the sending of trailers, avoid flush here and just flush after the trailers."
+        // So the last deliverFrame will have flush parameter false, and so we also have to flush as part of writing the trailers: 
+        writer.flush();
+      }catch(IOException ioe) {
+        logger.warning( ioe.getMessage() );
+      }
       writer.complete();
     }
 
