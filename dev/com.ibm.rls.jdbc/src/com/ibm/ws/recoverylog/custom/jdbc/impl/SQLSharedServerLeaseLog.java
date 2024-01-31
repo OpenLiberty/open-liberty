@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,9 @@
 package com.ibm.ws.recoverylog.custom.jdbc.impl;
 
 import java.io.StringReader;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -112,6 +115,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     private Statement _claimPeerlockingStmt;
     private PreparedStatement _claimPeerUpdateStmt;
     private ResultSet _claimPeerLockingRS;
+    private boolean _noLockOnLeaseScans = false;
 
     public SQLSharedServerLeaseLog(CustomLogProperties logProperties) {
         if (tc.isEntryEnabled())
@@ -119,6 +123,22 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 
         // Cache the supplied information
         _customLogProperties = logProperties;
+
+        try {
+            _noLockOnLeaseScans = AccessController.doPrivileged(
+                                                                new PrivilegedExceptionAction<Boolean>() {
+                                                                    @Override
+                                                                    public Boolean run() {
+                                                                        return Boolean.getBoolean("com.ibm.ws.recoverylog.nolockonleasescans");
+                                                                    }
+                                                                });
+        } catch (PrivilegedActionException e) {
+            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLSharedServerLeaseLog", "136");
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Exception setting lease scan variable ", e);
+        }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "The _noLockOnLeaseScans flag has been set to: " + _noLockOnLeaseScans);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "SQLSharedServerStatusLog", this);
@@ -293,12 +313,23 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         synchronized (_CreateTableLock) // Guard against trying to create a table from multiple threads
         {
             try {
-                // Could use RDBMS SELECT FOR UPDATE semantics to lock table for recovery. The tradeoff is a performance impact.
-                String queryString = "SELECT SERVER_IDENTITY, LEASE_TIME" +
-                                     " FROM " + _leaseTableName +
-                                     " WHERE RECOVERY_GROUP = '" + recoveryGroup + "'";
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Attempt to select from the lease table - " + queryString);
+                String queryString = "";
+                // Use RDBMS SELECT FOR UPDATE semantics by default.
+                if (!_noLockOnLeaseScans) {
+                    queryString = "SELECT SERVER_IDENTITY, LEASE_TIME" +
+                                  " FROM " + _leaseTableName +
+                                  (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                  ((_isSQLServer) ? "" : " FOR UPDATE") +
+                                  ((_isPostgreSQL || _isSQLServer) ? "" : " OF LEASE_TIME");
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Attempt to select the row for UPDATE using - " + queryString);
+                } else {
+                    queryString = "SELECT SERVER_IDENTITY, LEASE_TIME" +
+                                  " FROM " + _leaseTableName +
+                                  " WHERE RECOVERY_GROUP = '" + recoveryGroup + "'";
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Attempt to select from the lease table - " + queryString);
+                }
                 _peerLockingRS = _peerLockingStmt.executeQuery(queryString);
 
                 newTable = false;
@@ -1810,7 +1841,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             } catch (Exception e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "setTransactionIsolation to RR threw Exception. Transaction isolation level was " + initialIsolation + " ", e);
-                FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.SQLMultiScopeRecoveryLog.prepareConnectionForBatch", "3668", this);
+                FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLSharedServerLeaseLog.prepareConnectionForBatch", "3668", this);
                 if (!isolationFailureReported) {
                     isolationFailureReported = true;
                     Tr.warning(tc, "CWRLS0024_EXC_DURING_RECOVERY", e);
@@ -1840,7 +1871,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 } catch (Exception e) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "setTransactionIsolation threw Exception. Specified transaction isolation level was " + initialIsolation + " ", e);
-                    FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.SQLMultiScopeRecoveryLog.closeConnectionAfterBatch", "3696", this);
+                    FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLSharedServerLeaseLog.closeConnectionAfterBatch", "3696", this);
                     if (!isolationFailureReported) {
                         isolationFailureReported = true;
                         Tr.warning(tc, "CWRLS0024_EXC_DURING_RECOVERY", e);
