@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,16 +45,16 @@ public class MPConfigBean {
         check("envValue");
     }
 
-    public void envValueChangeTest() {
-        check("envValueChange");
-    }
-
     public void serverValueTest() {
         check("serverValue");
     }
 
     public void annoValueTest() {
         check("annoValue");
+    }
+
+    public void varDirValueTest() {
+        check("varDirValue");
     }
 
     public void noDefaultEnvValueTest() {
@@ -65,8 +65,8 @@ public class MPConfigBean {
         checkOptionalKey("optionalServerValue");
     }
 
-    public void providerEnvValueChangeTest() {
-        checkProviderKey("providerEnvValueChange");
+    public void providerEnvValueTest() {
+        checkProviderKey("providerEnvValue");
     }
 
     private void check(String expected) {

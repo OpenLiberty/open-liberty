@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,16 +45,16 @@ public class MPConfigBeanWithApplicationScope {
         check("envValue");
     }
 
-    public void appScopeEnvValueChangeTest() {
-        check("envValueChange");
-    }
-
     public void appScopeServerValueTest() {
         check("serverValue");
     }
 
     public void appScopeAnnoValueTest() {
         check("annoValue");
+    }
+
+    public void varDirValueTest() {
+        check("varDirValue");
     }
 
     public void appScopeNoDefaultEnvValueTest() {
@@ -65,8 +65,8 @@ public class MPConfigBeanWithApplicationScope {
         checkOptionalKey("optionalServerValue");
     }
 
-    public void appScopeProviderEnvValueChangeTest() {
-        checkProviderKey("providerEnvValueChange");
+    public void appScopeProviderEnvValueTest() {
+        checkProviderKey("providerEnvValue");
     }
 
     private void check(String expected) {

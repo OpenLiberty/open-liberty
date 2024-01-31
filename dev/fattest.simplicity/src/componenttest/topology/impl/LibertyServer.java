@@ -330,6 +330,8 @@ public class LibertyServer implements LogMonitorClient {
 
     private String openLibertyVersion;
 
+    private String archiveMarker = null;
+
     /**
      * This returns whether or not debugging is "programatically" allowed
      * for this server. It must still be combined with a port supplied by
@@ -3493,6 +3495,15 @@ public class LibertyServer implements LogMonitorClient {
 
         deleteServerMarkerFile();
 
+        // create archive marker file
+        if (archiveMarker != null) {
+            try {
+                new File(new LocalFile(logFolder, archiveMarker).getAbsolutePath()).createNewFile();
+            } catch (Exception e) {
+                // avoid blowing up on any exception here creating the archive marker
+                Log.error(c, "_postStopServerArchive", e);
+            }
+        }
         Log.exiting(c, method);
     }
 
@@ -4115,6 +4126,18 @@ public class LibertyServer implements LogMonitorClient {
      */
     public void setHttpDefaultSecurePort(int httpDefaultSecurePort) {
         this.httpDefaultSecurePort = httpDefaultSecurePort;
+    }
+
+    /**
+     * If set the archiveMarker will be used to create an empty marker file
+     * in the server archive location. This allows for archive servers
+     * to be located easily according to a test marker name.
+     *
+     * @param archiveMarker the name of the marker file to be created each
+     *                          time a server is archived
+     */
+    public void setArchiveMarker(String archiveMarker) {
+        this.archiveMarker = archiveMarker;
     }
 
     /**
