@@ -56,7 +56,7 @@ public class KdcResource extends ExternalResource {
     private static final String SUN_JDK_KRB5_LOGIN = "sunKrb5Login";
     private static final String KDC_REALM = LdapKerberosUtils.DOMAIN;
     private static final String KDC_HOSTNAME = LdapKerberosUtils.HOSTNAME;
-    private static final String JAAS_CONF_FILE = SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
+    private static final String JAAS_CONF_FILE = (System.getProperty("os.name") == "z/OS")? SPNEGOConstants.ZOS_CLIENT_JAAS_CONFIG_FILE:SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
 
     private boolean ibmJdkV8Lower;
     private boolean sunOracleJdkV8Higher;
@@ -389,6 +389,7 @@ public class KdcResource extends ExternalResource {
 
         String loginContextEntry = IBM_JDK_KRB5_LOGIN;
         String jaasLoginConfig = server.getServerRoot() + JAAS_CONF_FILE;
+        Log.info(c, thisMethod, "jaasLoginConfig: " + jaasLoginConfig);
 
         if (realm != null && !realm.isEmpty()) {
             Log.info(c, thisMethod, "Setting system properties java.security.krb5.realm and java.security.krb5.kdc");

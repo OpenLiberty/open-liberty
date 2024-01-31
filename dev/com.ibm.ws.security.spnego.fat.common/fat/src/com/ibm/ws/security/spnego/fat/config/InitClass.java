@@ -336,8 +336,9 @@ public class InitClass {
                 rdnString.append(chars.charAt(index));
             }
             rndHostName = rdnString.toString();
+            rndHostName = "zrock052";
             libertyHostMap.put(canonicalHostName, rndHostName);
-            isRndHostName = true;
+            isRndHostName = false;
         }
         Log.info(c, methodName, "Canonical hostname " + canonicalHostName + " mapped to the random generated hostname " + rndHostName);
         return rndHostName;
