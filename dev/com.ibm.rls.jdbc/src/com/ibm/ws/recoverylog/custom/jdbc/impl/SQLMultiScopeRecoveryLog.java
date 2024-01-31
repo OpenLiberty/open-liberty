@@ -2741,6 +2741,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 if (_currentProcessServerName.equalsIgnoreCase(storedServerName)) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "This server OWNS the HA lock row");
+                    takeLock = true;
                 } else {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "ANOTHER server OWNS the lock");
@@ -2770,23 +2771,23 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             throw ple;
                         }
                     }
+                }
 
-                    if (takeLock) {
-                        updateStmt = conn.createStatement();
-                        // Claim the logs by updating the server name and timestamp.
-                        long fir1 = System.currentTimeMillis();
-                        String updateString = "UPDATE " +
-                                              _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                                              " SET SERVER_NAME = '" + _currentProcessServerName +
-                                              "', RUSECTION_ID = " + fir1 +
-                                              " WHERE RU_ID = -1";
+                if (takeLock) {
+                    updateStmt = conn.createStatement();
+                    // Claim the logs by updating the server name and timestamp.
+                    long fir1 = System.currentTimeMillis();
+                    String updateString = "UPDATE " +
+                                          _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
+                                          " SET SERVER_NAME = '" + _currentProcessServerName +
+                                          "', RUSECTION_ID = " + fir1 +
+                                          " WHERE RU_ID = -1";
 
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Updating HA Lock using update string - " + updateString);
-                        int ret = updateStmt.executeUpdate(updateString);
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Have updated HA Lock row with return: " + ret);
-                    }
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Updating HA Lock using update string - " + updateString);
+                    int ret = updateStmt.executeUpdate(updateString);
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Have updated HA Lock row with return: " + ret);
                 }
             } else {
                 // This is unexpected under the new locking scheme
