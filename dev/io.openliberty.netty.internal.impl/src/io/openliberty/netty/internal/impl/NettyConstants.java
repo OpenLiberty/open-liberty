@@ -28,5 +28,7 @@ public interface NettyConstants {
     public final String MAX_OPEN_CONNECTIONS_HANDLER_NAME = "maxConnectionHandler";
     /** Max Connections Handler Name  */
     public final String ACCESSLIST_HANDLER_NAME = "accessListHandler";
+    /** Logging for Channels that are based on LocalAddress rather than Host:Port  */
+    public final String LOCAL_LOGGING_HANDLER_NAME = "localLoggingHander";
 
 }
