@@ -59,11 +59,10 @@ The ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chi
 
 ### **Prioritization**
 - [ ] Feature added to the "New" column of the [Open Liberty project board](https://github.com/orgs/OpenLiberty/projects/2)
-  - Epics can be added to the board in one of two ways:
-    - From this issue, use the "Projects" section to select the appropriate project board.
-    - From the appropriate project board click "Add card" and select your Feature Epic issue
+  - Feature owner adds label `Prioritization - Requested`
 - [ ] Priority assigned
   - Attend the Liberty Backlog Prioritization meeting
+  - `Prioritization - Requested` label removed
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Design** (Complete Before Development Starts)
@@ -122,7 +121,7 @@ Code may not GA until this feature has obtained the `Design Approved` or `No Des
 
 ## **Legal and Translation**
 
-In order to avoid last minute blockers and significant disruptions to the feature, the **legal items need to be done as early in the feature process as possible**, either in design or as early into the development as possible.  Similarly, translation is to be done concurrently with development.  Both **MUST** be completed before Beta or GA is requested.
+In order to avoid last minute blockers and significant disruptions to the feature, the **legal items need to be done as early in the feature process as possible**, either in design or as early into the development as possible.  Similarly, translation is to be done concurrently with development.  All items below **MUST** be completed before Beta or GA is requested.
 
 ### **Legal** (Complete before Feature Complete Date)
 - [ ] Changed or new open source libraries are cleared and approved, or N/A. (Legal Release Services/Cass Tucker/Release PM).
@@ -167,7 +166,7 @@ A feature is ready to GA after it is Feature Complete and has obtained all neces
   - If missing translation does not cause a break in functionality, nor a security or production outage risk, feature owner adds label `Translation - Missing`.
     - Once all missing translations are delivered, the `Translation - Missing` label is replaced with `Translation - Complete`.
   - If missing translation could cause a break in functionality or a security or production outage risk, feature owner adds the `Translation - Blocked` label.
-    - Featues with `Translation - Blocked` may **NOT** proceed to GA until the label has been replaced with either `Translation - Missing` or `Translation - Complete`.
+    - Features with `Translation - Blocked` may **NOT** proceed to GA until the label has been replaced with either `Translation - Missing` or `Translation - Complete`.
   - For further guidance, contact [Globalization focal point](https://github.com/orgs/OpenLiberty/teams/globalization-approvers) or the [Release Architect](https://github.com/orgs/OpenLiberty/teams/release-architect).
 - [ ] GA development complete and feature ready for inclusion in a GA release
   - Add label `target:ga` and the appropriate `target:YY00X` (where YY00X is the targeted GA version).
