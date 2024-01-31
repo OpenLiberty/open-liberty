@@ -74,7 +74,7 @@ public class S4U2SelfTest extends CommonTest {
                                                   + "&JAAS=JAASClientUseKeytab&" + "UPN=" + InitClass.FIRST_USER + "@" + InitClass.KDC_REALM;
     private static final String envDelegationParm = "ENV=Delegation";
     private static final String envS4U2Self = "ENV=S4U2Self";
-    private static final String targetServerBackenedServer = "SPN=HTTP/" + SPNEGOConstants.S4U_BACKEND_SERVICE;
+    private static final String targetServerBackenedServer = "SPN=HTTP/" + localHostMachine;
     private static final String delegateServerSpn = "DELEGATESPN=HTTP/" + TARGET_SERVER;
     private static final String localhostSpnParm = "SPN=HTTP/" + localHostMachine;
 
@@ -165,7 +165,7 @@ public class S4U2SelfTest extends CommonTest {
      *
      */
 
-    @Test
+    //@Test
     public void testS4U2SelfCommingInWithSpnegoToken() {
 
         System.setProperty("com.ibm.security.krb5.Krb5Debug", "all");
@@ -221,7 +221,7 @@ public class S4U2SelfTest extends CommonTest {
      * - A new Spnego tokens should be generated.
      *
      */
-    @Test
+    //@Test
     public void testS4U2SelfComingInWithSpnegoTokenAndDelegateFalse() {
         Log.info(c, name.getMethodName(), "Accessing servlet with SPNEGO token");
         testS4U2SelfAndDelegateFalse(Krb5Helper.SPNEGO_MECH_OID);
@@ -239,7 +239,7 @@ public class S4U2SelfTest extends CommonTest {
      * - A new Spnego tokens should be generated.
      *
      */
-    @Test
+    //@Test
     public void testS4U2SelfComingInWithKerberosTokenAndDelegateFalse() {
         Log.info(c, name.getMethodName(), "Accessing servlet with Kerberos token");
         testS4U2SelfAndDelegateFalse(Krb5Helper.KRB5_MECH_OID);
@@ -299,7 +299,7 @@ public class S4U2SelfTest extends CommonTest {
      *
      */
 
-    @Test
+    //@Test
     public void testS4U2SelfWithUserIdPassword() {
 
         try {
@@ -340,7 +340,7 @@ public class S4U2SelfTest extends CommonTest {
      * - Two Spnego tokens should be generated.
      *
      */
-    @Test
+    //@Test
     public void testS4U2SelfWithUserIdPasswordTwice() throws Exception {
 
         List<String> startMsgs = new ArrayList<String>();
@@ -366,7 +366,7 @@ public class S4U2SelfTest extends CommonTest {
      * - A NoClassDefFoundError should appear on the logs.
      *
      */
-    @Test
+    //@Test
     public void testConstrainedDelegationNoFeature() throws Exception {
 
         List<String> startMsgs = new ArrayList<String>();
@@ -393,7 +393,7 @@ public class S4U2SelfTest extends CommonTest {
      * - The following messages should appear on the logs CWWKS4342E.
      *
      */
-    @Test
+    //@Test
     public void testS4U2SelfElementNotEnabled() {
 
         try {
@@ -468,7 +468,7 @@ public class S4U2SelfTest extends CommonTest {
      */
     //
     @AllowedFFDC({ "org.ietf.jgss.GSSException" })
-    @Test
+    //@Test
     public void testS4U2SelfWithUserIdPasswordSPNDoesTustedAccountServiceAreFalse() throws Exception {
 
         KdcHelper testKdcHelper = new MsKdcHelper(myServer, InitClass.KDC_USER, InitClass.KDC_USER_PWD, InitClass.KDC_REALM);

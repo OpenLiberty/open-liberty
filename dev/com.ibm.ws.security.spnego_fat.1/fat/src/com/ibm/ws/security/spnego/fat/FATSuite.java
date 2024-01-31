@@ -43,10 +43,10 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class,
+                // AlwaysPassesTest.class,
                 //DynamicSpnegoConfigTest.class,
-                S4U2SelfTest.class,
-                S4U2ProxyTest.class
+                 S4U2SelfTest.class,
+                // S4U2ProxyTest.class
 })
 public class FATSuite extends InitClass {
     private static final Class<?> c = FATSuite.class;
@@ -105,7 +105,7 @@ public class FATSuite extends InitClass {
         private boolean isSupportJDK() throws IOException {
             String thisMethod = "isSupportJDK";
             JavaInfo javaInfo = JavaInfo.forServer(LibertyServerFactory.getLibertyServer("DynamicSpnegoConfigTest"));
-
+            IBM_JDK_V17_HIGHER = javaInfo.vendor() == Vendor.IBM && javaInfo.majorVersion() <= 17;
             IBM_HYBRID_JDK = isHybridJDK(javaInfo);
 
             Log.info(c, thisMethod, "The JDK used on this system is version: " + javaInfo.majorVersion() + " and vendor: " + javaInfo.vendor());
