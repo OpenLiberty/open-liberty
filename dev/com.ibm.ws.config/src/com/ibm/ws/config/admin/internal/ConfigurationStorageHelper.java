@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,6 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.admin.ConfigID;
 import com.ibm.ws.config.admin.ConfigurationDictionary;
 import com.ibm.ws.config.admin.ExtendedConfiguration;
@@ -44,7 +47,7 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
  * A helper class for storing and retrieving the persisted config information.
  * <p>
  * {@link #load(File, ConfigStorageConsumer)} / {@link #store(File, Collection)} format: <br>
- * byte - version, set to constant {@link #VERSION} <br>
+ * byte - version <br>
  * int - number of configurations <br>
  * followed by the list of conditions as loaded by {@link #load(DataInputStream, Set, Set, ConfigurationDictionary)}
  * <p>
@@ -70,14 +73,69 @@ import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
  * - maps are written the same way as the main config dictionary <br>
  */
 public class ConfigurationStorageHelper {
+    private static final TraceComponent tc = Tr.register(ConfigurationStorageHelper.class,
+                                                         ConfigAdminConstants.TR_GROUP, ConfigAdminConstants.NLS_PROPS);
 
-    public static interface ConfigStorageConsumer<K, T> {
-        T consumeConfigData(String location, Set<String> uniqueVars, Set<ConfigID> references, ConfigurationDictionary dict);
+    //
 
-        K getKey(T consumerType);
+    /**
+     * API for receiving stored configurations.
+     *
+     * The API has two steps: Loaded configuration data consists of a location
+     * and several data structures. The location is usually a bundle location. The
+     * data structures are major subsets of configuration data: Unique variables defined
+     * by the configuration, reference IDs used by the configuration, and the table of
+     * configuration data. The first step of processing a loaded configuration is
+     * marshaling the loaded data into a configuration object. The second step of
+     * processing the loaded data is generating a key for the marshaled configuration
+     * and storing that configuration in an externally supplied table.
+     *
+     * In the current implementation, a particular value of the configuration is obtained
+     * as a particular value of the configuration data. For example, see
+     * {@link com.ibm.ws.config.admin.internal.ConfigurationStore#loadConfigurationDatas(File)},
+     * which uses the {@link Constants#SERVICE_PID} value:
+     *
+     * <code>
+     * String pid = (String) dict.get(Constants.SERVICE_PID);
+     * </code>
+     *
+     * @param <K> The type of keys used to access the loaded configurations.
+     * @param <C> The type of loaded configurations.
+     */
+    public static interface ConfigStorageConsumer<K, C> {
+        /**
+         * Consume just read configuration data.
+         *
+         * @param location The location of the configuration. Usually a bundle location.
+         * @param uniqueVars The unique variables of the configuration.
+         * @param references The reference IDs used by the configuration.
+         * @param dict The actual data of the configuration.
+         *
+         * @return The marshaled configuration data.
+         */
+        C consumeConfigData(String location,
+                            Set<String> uniqueVars,
+                            Set<ConfigID> references,
+                            ConfigurationDictionary dict);
+
+        /**
+         * Answer the key of the configuration data. This is usually a particular value of the
+         * data.
+         *
+         * @param config The configuration from which to obtain a key value.
+         * @return A key used to store the configuration.
+         */
+        K getKey(C config);
     }
 
-    private static final byte VERSION = 0;
+    /**
+     * The storage version. This is not being used with the
+     * usual meaning for storage format versions, since persisted
+     * configurations should always be read with the same
+     * implementation that was used to write them.
+     */
+    public static final byte VERSION = 0;
+
     private static final byte BYTE = 0;
     private static final byte SHORT = 1;
     private static final byte BOOLEAN = 2;
@@ -86,8 +144,18 @@ public class ConfigurationStorageHelper {
     private static final byte LONG = 5;
     private static final byte FLOAT = 6;
     private static final byte INTEGER = 7;
+
+    /** String type value for 'short' strings. See {@link DataOutputStream#writeUTF}. */
     private static final byte STRING = 8;
+
+    /**
+     * String type value for 'short' protected strings. See {@link DataOutputStream#writeUTF}.
+     *
+     * Protected strings are not implemented directly as strings, and
+     * have a distinct storage format.
+     */
     private static final byte PROTECTED_STRING = 9;
+
     private static final byte COLLECTION = 10;
     private static final byte MAP = 11;
     private static final byte ARRAY = 12;
@@ -95,30 +163,200 @@ public class ConfigurationStorageHelper {
     private static final byte NULL = 14;
     private static final byte OBJECT = 15;
 
-    public static <K, T> Map<K, T> load(File configFile, ConfigStorageConsumer<K, T> consumer) throws IOException {
-        Map<K, T> result = new HashMap<>();
-        try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(configFile)))) {
-            if (dis.readByte() == VERSION) {
+    /**
+     * String type value for 'long' strings. See {@link DataOutputStream#writeUTF}.
+     *
+     * 'long' string types were added because 'writeUTF' does not handle strings
+     * that have a write size of more than 64K. There are rare occasions where
+     * strings occur in the configuration data which exceed this write size.
+     *
+     * Note that the storage version was not updated. Reads of configuration data
+     * should always use the same helper implementation that was used to write
+     * the data.
+     */
+    private static final byte LONG_STRING = 16;
+
+    /**
+     * String type value for 'long' protected strings. See
+     * {@link DataOutputStream#writeUTF}.
+     *
+     * Protected strings are not implemented directly as strings, and
+     * have a distinct storage format.
+     *
+     * The same problems of writing 'long' values occur for protected
+     * strings, requiring a similar 'long' protected string type. See
+     * the comment on {@link #LONG_STRING} applies
+     */
+    private static final byte LONG_PROTECTED_STRING = 17;
+
+    //
+
+    private static boolean isValidVersion(int version) {
+        if (version != VERSION) {
+            Tr.warning(tc, "Unsupported configuration storage version [ " + version + " ]:" +
+                           " The version should be [ " + VERSION + " ]");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * The storage format version. Currently, a value of
+     * {@link #VERSION} is always used.
+     */
+    private final int version;
+
+    public int getVersion() {
+        return version;
+    }
+
+    /**
+     * The location of the data which is being persisted. This
+     * is NOT the persistence resource location.
+     *
+     * For writes, the location must be supplied with other data.
+     *
+     * For reads, the location is read with other data.
+     */
+    private String location;
+
+    // 'store' sets this to a dictionary,
+    // while 'load' sets it to a 'ConfigurationDictionary'.
+    private final Dictionary<String, ?> readOnlyProps;
+    private final Set<String> uniqueVars;
+    private final Set<ConfigID> references;
+
+    public String getLocation() {
+        return location;
+    }
+
+    public Dictionary<String, ?> getReadOnlyProps() {
+        return readOnlyProps;
+    }
+
+    public Set<String> getUniqueVars() {
+        return uniqueVars;
+    }
+
+    public Set<ConfigID> getReferences() {
+        return references;
+    }
+
+    /**
+     * Initializer for loading configurations.
+     */
+    public ConfigurationStorageHelper() {
+        this.version = VERSION;
+
+        this.location = null;
+
+        this.readOnlyProps = new ConfigurationDictionary();
+        this.uniqueVars = new HashSet<>();
+        this.references = new HashSet<>();
+    }
+
+    @FFDCIgnore(IllegalStateException.class)
+    private static ConfigurationStorageHelper newWriteHelper(ExtendedConfiguration config) {
+        // Guard against non-valid configurations:
+        // Those with null read-only properties and those which are deleted.
+
+        try {
+            Dictionary<String, ?> readOnlyProps = config.getReadOnlyProperties();
+            if (readOnlyProps == null) {
+                return null;
+            } else {
+                return new ConfigurationStorageHelper(config, readOnlyProps);
+            }
+
+        } catch (IllegalStateException e) {
+            // Thrown when attempting to access a deleted configuration.
+            return null; // ignore
+        }
+    }
+
+    /**
+     * Initializer for saving configurations.
+     *
+     * @param config A configuration which is to be saved.
+     * @param readOnlyProps Read only properties of the configuration.
+     */
+    private ConfigurationStorageHelper(
+                                       ExtendedConfiguration config,
+                                       Dictionary<String, ?> readOnlyProps) {
+
+        this(config.getBundleLocation(), readOnlyProps, config.getUniqueVariables(), config.getReferences());
+    }
+
+    // Used for testing.
+
+    public ConfigurationStorageHelper(String location,
+                                      Dictionary<String, ?> readOnlyProps,
+                                      Set<String> uniqueVars,
+                                      Set<ConfigID> references) {
+
+        this.version = VERSION;
+
+        this.location = location;
+
+        this.readOnlyProps = readOnlyProps;
+        this.uniqueVars = uniqueVars;
+        this.references = references;
+    }
+
+    public <K, C> void storeConfiguration(ConfigStorageConsumer<K, C> consumer, Map<K, C> storage) {
+        // Ugly type-cast.  'store' uses a Dictionary, while 'load' uses a ConfigurationDictionary.
+        C config = consumer.consumeConfigData(location, uniqueVars, references, (ConfigurationDictionary) readOnlyProps);
+        storage.put(consumer.getKey(config), config);
+    }
+
+    /**
+     * Load (read) configurations from a file.
+     *
+     * The read expects data to be formatted according to {@link #store(File, Collection, int)}.
+     *
+     * Data is returned as a table of configurations, marshaled and keyed according to the
+     * {@link ConfigStorageConsumer}.
+     *
+     * No data is read if the file contains data in an unsupported format.
+     * A warning is displayed if this happens.
+     *
+     * @param configFile The configuration file which is to be read.
+     * @param consumer A consumer of the read configuration data.
+     *
+     * @return A table of marshaled configuration, stored according to the consumer.
+     *
+     * @throws IOException Thrown if any of the reads fails.
+     */
+    public static <K, C> Map<K, C> load(File configFile, ConfigStorageConsumer<K, C> consumer) throws IOException {
+        Map<K, C> storage = new HashMap<>();
+
+        try (FileInputStream fis = new FileInputStream(configFile);
+                        BufferedInputStream bis = new BufferedInputStream(fis);
+                        DataInputStream dis = new DataInputStream(bis)) {
+
+            int version = dis.readByte();
+            if (isValidVersion(version)) {
                 int numConfigs = dis.readInt();
                 for (int i = 0; i < numConfigs; i++) {
-                    Set<String> uniqueVars = new HashSet<>();
-                    Set<ConfigID> references = new HashSet<>();
-                    ConfigurationDictionary dict = new ConfigurationDictionary();
-                    String location = load(dis, uniqueVars, references, dict);
-                    T value = consumer.consumeConfigData(location, uniqueVars, references, dict);
-                    result.put(consumer.getKey(value), value);
+                    ConfigurationStorageHelper helper = new ConfigurationStorageHelper();
+                    helper.load(dis);
+                    helper.storeConfiguration(consumer, storage);
                 }
             }
         }
-        return result;
+
+        return storage;
     }
 
-    static String load(DataInputStream dis, Set<String> uniqueVars, Set<ConfigID> references, ConfigurationDictionary dict) throws IOException {
-        String location = (String) readObject(dis);
+    protected void load(DataInputStream dis) throws IOException {
+        location = (String) readObject(dis);
+
         int len = dis.readInt();
         for (int i = 0; i < len; i++) {
             uniqueVars.add(dis.readUTF());
         }
+
         len = dis.readInt();
         List<ConfigID> ids = new ArrayList<>();
         for (int i = 0, j = 0, cursor = 0; i < len + cursor; i++, j++) {
@@ -143,50 +381,64 @@ public class ConfigurationStorageHelper {
                 references.add(thisId);
             }
         }
-        readMapInternal(dis, toMapOrDictionary(dict));
-        return location;
 
+        readMapInternal(dis, toMapOrDictionary(readOnlyProps));
     }
 
-    @FFDCIgnore(IllegalStateException.class)
+    /**
+     * Store (write) configurations to a file.
+     *
+     * The file is truncated before performing the write.
+     *
+     * Write the version to the file, then write the count of configurations, then write each of the configurations.
+     *
+     * Configurations which are not valid are not counted and are not written.
+     *
+     * @param configFile The file which receives the configurations.
+     * @param configs The configurations which are to be written.
+     *
+     * @throws IOException Thrown if any of the writes fails.
+     */
     public static void store(File configFile, Collection<? extends ExtendedConfiguration> configs) throws IOException {
-        try (DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(configFile, false)))) {
+
+        try (FileOutputStream fos = new FileOutputStream(configFile, false);
+                        BufferedOutputStream bos = new BufferedOutputStream(fos);
+                        DataOutputStream dos = new DataOutputStream(bos)) {
+
             dos.writeByte(VERSION);
-            // This secondary list is needed so we can collect the valid number of configs:
-            // non-null properties and not deleted (indicated with an IllegalStateException)
-            List<Object[]> configDatas = new ArrayList<>(configs.size());
+
+            // Determine valid configurations.  This must before doing any of the
+            // saves since the count is stored first.
+
+            // Allocate approximate storage assuming that all of the configurations are valid.
+
+            List<ConfigurationStorageHelper> helpers = new ArrayList<>(configs.size());
             for (ExtendedConfiguration config : configs) {
-                try {
-                    Dictionary<String, ?> properties = config.getReadOnlyProperties();
-                    Set<ConfigID> references = config.getReferences();
-                    Set<String> uniqueVars = config.getUniqueVariables();
-                    String bundleLocation = config.getBundleLocation();
-                    if (properties != null) {
-                        configDatas.add(new Object[] { properties, references, uniqueVars, bundleLocation });
-                    }
-                } catch (IllegalStateException e) {
-                    // ignore FFDC
+                ConfigurationStorageHelper helper = newWriteHelper(config);
+                if (helper != null) {
+                    helpers.add(helper);
                 }
             }
-            // now we have all the valid configs and their dictionaries to save
-            dos.writeInt(configDatas.size());
-            for (Object[] configData : configDatas) {
-                @SuppressWarnings("unchecked")
-                Dictionary<String, ?> properties = (Dictionary<String, ?>) configData[0];
-                @SuppressWarnings("unchecked")
-                Set<ConfigID> references = (Set<ConfigID>) configData[1];
-                @SuppressWarnings("unchecked")
-                Set<String> uniqueVars = (Set<String>) configData[2];
-                String bundleLocation = (String) configData[3];
-                store(dos, properties, bundleLocation, references, uniqueVars);
+
+            dos.writeInt(helpers.size());
+
+            for (ConfigurationStorageHelper helper : helpers) {
+                helper.store(dos);
             }
         }
     }
 
-    static void store(DataOutputStream dos, Dictionary<String, ?> properties, String bundleLocation,
-                      Set<ConfigID> references, Set<String> uniqueVars) throws IOException {
+    /**
+     * Write a single configuration. That is, write the location, the unique variables,
+     * the references, and the read-only properties of the configuration.
+     *
+     * @param dos A data output stream which receives the configuration.
+     *
+     * @throws IOException Thrown if any of the writes fail.
+     */
+    protected void store(DataOutputStream dos) throws IOException {
+        writeObject(dos, location);
 
-        writeObject(dos, bundleLocation);
         if (uniqueVars != null) {
             dos.writeInt(uniqueVars.size());
             for (String var : uniqueVars) {
@@ -195,6 +447,7 @@ public class ConfigurationStorageHelper {
         } else {
             dos.writeInt(0);
         }
+
         if (references != null) {
             dos.writeInt(references.size());
             int count = 0;
@@ -205,14 +458,28 @@ public class ConfigurationStorageHelper {
         } else {
             dos.writeInt(0);
         }
-        writeMapInternal(dos, toMapOrDictionary(properties));
+
+        writeMapInternal(dos, toMapOrDictionary(readOnlyProps));
     }
 
+    //
+
+    /**
+     * Read a configuration map.
+     *
+     * Start by reading a version byte. If this is valid, proceed to read
+     * the map.
+     *
+     * @param dis A data input stream which is to be read.
+     * @param props Properties which are populated by the read.
+     *
+     * @throws IOException Thrown if the read fails.
+     */
     public static void readMap(DataInputStream dis, MapIterable props) throws IOException {
-        if (dis.readByte() != VERSION) {
-            return;
+        int version = dis.readByte();
+        if (isValidVersion(version)) {
+            readMapInternal(dis, props);
         }
-        readMapInternal(dis, props);
     }
 
     private static void readMapInternal(DataInputStream dis, MapIterable props) throws IOException {
@@ -267,6 +534,16 @@ public class ConfigurationStorageHelper {
             value = primitive ? readPFloatArray(dis, size) : readFloatArray(dis, size);
         } else if (type == INTEGER) {
             value = primitive ? readIntArray(dis, size) : readIntegerArray(dis, size);
+
+            // When writing strings, a type byte is written for both the
+            // array and for all of the array elements.
+            //
+            // That is to say, a 'STRING' array can have array elements
+            // which use any of the STRING type values.
+            //
+            // When reading strings, array elements are read according
+            // to the type value stored for each element.
+
         } else if (type == STRING) {
             value = readStringArray(dis, size);
         } else if (type == PROTECTED_STRING) {
@@ -465,32 +742,46 @@ public class ConfigurationStorageHelper {
                 return dis.readFloat();
             case INTEGER:
                 return dis.readInt();
+
             case STRING:
                 return dis.readUTF();
+            case LONG_STRING:
+                return readLongString(dis);
+
             case PROTECTED_STRING:
                 return new SerializableProtectedString(dis.readUTF().toCharArray());
+            case LONG_PROTECTED_STRING:
+                return new SerializableProtectedString(readLongProtectedString(dis).toCharArray());
+
             case ONERROR:
                 return OnError.values()[dis.readInt()];
             default:
                 break;
         }
+
         throw new IllegalArgumentException("Unsupported object type: " + type);
     }
 
+    //
+
     public static void writeMap(DataOutputStream dos, MapIterable map) throws IOException {
         dos.writeByte(VERSION);
-        writeMapInternal(dos, map);
+
+        ConfigurationStorageHelper helper = new ConfigurationStorageHelper();
+        helper.writeMapInternal(dos, map);
     }
 
-    private static void writeMapInternal(DataOutputStream dos, MapIterable map) throws IOException {
+    private void writeMapInternal(DataOutputStream dos, MapIterable map) throws IOException {
         if (map == null) {
             dos.writeInt(-1);
             return;
         }
+
         dos.writeInt(map.size());
         for (Map.Entry<String, Object> entry : map) {
             dos.writeUTF(entry.getKey());
             Object obj = entry.getValue();
+
             if (obj instanceof Collection) {
                 dos.writeByte(COLLECTION);
                 Collection<?> data = (Collection<?>) obj;
@@ -533,7 +824,7 @@ public class ConfigurationStorageHelper {
         return null;
     }
 
-    private static void writeArrayType(DataOutputStream dos, Class<?> type) throws IOException {
+    private void writeArrayType(DataOutputStream dos, Class<?> type) throws IOException {
         if (type == Byte.class || type == byte.class) {
             dos.writeByte(BYTE);
         } else if (type == Short.class || type == short.class) {
@@ -550,10 +841,21 @@ public class ConfigurationStorageHelper {
             dos.writeByte(FLOAT);
         } else if (type == Integer.class || type == int.class) {
             dos.writeByte(INTEGER);
+
+            // When writing strings, a type byte is written for both the
+            // array and for all of the array elements.
+            //
+            // That is to say, a 'STRING' array can have array elements
+            // which use any of the STRING type values.
+            //
+            // When reading strings, array elements are read according
+            // to the type value stored for each element.
+
         } else if (type == String.class) {
             dos.writeByte(STRING);
         } else if (type == SerializableProtectedString.class) {
             dos.writeByte(PROTECTED_STRING);
+
         } else if (type == OnError.class) {
             dos.writeByte(ONERROR);
         } else {
@@ -561,7 +863,7 @@ public class ConfigurationStorageHelper {
         }
     }
 
-    private static void writePrimitive(DataOutputStream dos, Object obj) throws IOException {
+    private void writePrimitive(DataOutputStream dos, Object obj) throws IOException {
         if (obj instanceof Byte) {
             dos.writeByte((byte) obj);
         } else if (obj instanceof Short) {
@@ -583,7 +885,7 @@ public class ConfigurationStorageHelper {
         }
     }
 
-    private static void writeObject(DataOutputStream dos, Object obj) throws IOException {
+    private void writeObject(DataOutputStream dos, Object obj) throws IOException {
         if (obj == null) {
             dos.writeByte(NULL);
             return;
@@ -613,12 +915,12 @@ public class ConfigurationStorageHelper {
         } else if (type == Integer.class) {
             dos.writeByte(INTEGER);
             dos.writeInt((int) obj);
+
         } else if (type == String.class) {
-            dos.writeByte(STRING);
-            dos.writeUTF((String) obj);
+            writeString(dos, (String) obj);
         } else if (type == SerializableProtectedString.class) {
-            dos.writeByte(PROTECTED_STRING);
-            dos.writeUTF(new String(((SerializableProtectedString) obj).getChars()));
+            writeProtectedString(dos, (SerializableProtectedString) obj);
+
         } else if (type == OnError.class) {
             dos.writeByte(ONERROR);
             dos.writeInt(((OnError) obj).ordinal());
@@ -627,8 +929,8 @@ public class ConfigurationStorageHelper {
         }
     }
 
-    private static int writeConfigID(DataOutputStream dos, ConfigID id, int count,
-                                     int depth, Map<ConfigID, Integer> writtenConfigIds) throws IOException {
+    private int writeConfigID(DataOutputStream dos, ConfigID id, int count,
+                              int depth, Map<ConfigID, Integer> writtenConfigIds) throws IOException {
         ConfigID parent = id.getParent();
         int parentIndex = -1;
 
@@ -684,13 +986,13 @@ public class ConfigurationStorageHelper {
     }
 
     private static class DictionaryMapIterableImpl implements MapIterable {
-        private final Dictionary<String, Object> dict;
+        protected final Dictionary<String, Object> dict;
 
         public DictionaryMapIterableImpl(Dictionary<String, Object> dict) {
             this.dict = dict;
         }
 
-        private class MyIterator implements Iterator<Map.Entry<String, Object>> {
+        public class MyIterator implements Iterator<Map.Entry<String, Object>> {
             Enumeration<String> keys = dict.keys();
 
             @Override
@@ -725,5 +1027,161 @@ public class ConfigurationStorageHelper {
         public void put(String name, Object val) {
             dict.put(name, val);
         }
+    }
+
+    // String operations ...
+
+    /**
+     * Write a string to a data output stream. Format the string
+     * according to the storage format version and according to the
+     * size of the string.
+     *
+     * @param dos A data output stream which will receive the string.
+     * @param str A string which is to be written.
+     *
+     * @throws IOException Thrown if the write fails.
+     */
+    private final void writeString(DataOutputStream dos, String str) throws IOException {
+        // This could be collapsed with 'writeProtectedString', but has been
+        // kept separate because it a frequently used method, and because it
+        // has different logging requirements.
+
+        // The 'isShort' test is hard to avoid.  'writeUTF' knows,
+        // but that doesn't help when writing the type value before
+        // invoking 'writeUTF'.
+
+        if (isShort(str)) {
+            dos.writeByte(STRING);
+            dos.writeUTF(str);
+
+        } else {
+            byte[] bytes = str.getBytes("UTF-8");
+            dos.writeByte(LONG_STRING);
+            dos.writeInt(bytes.length);
+            dos.write(bytes);
+        }
+    }
+
+    /**
+     * Write a protected string to a data output stream. Format the string
+     * according to the storage format version and according to the
+     * size of the string.
+     *
+     * This method is nearly the same as {@link #writeString(DataOutputStream, String)},
+     * except that logging is disabled.
+     *
+     * @param dos A data output stream which will receive the string.
+     * @param str A string which is to be written.
+     *
+     * @throws IOException Thrown if the write fails.
+     */
+    @Trivial // Don't log protected strings.
+    private final void writeProtectedString(DataOutputStream dos, SerializableProtectedString str) throws IOException {
+        // The same as 'writeString', except, different type codes
+        // are written, and logging is disabled.
+
+        // This could be collapsed with 'writeString', but has been
+        // kept separate because it a frequently used method, and
+        // because it has different logging requirements.
+
+        // The 'isShort' test is hard to avoid.  'writeUTF' knows,
+        // but that doesn't help when writing the type value before
+        // invoking 'writeUTF'.
+
+        String rawStr = new String(str.getChars());
+        if (isShort(rawStr)) {
+            dos.writeByte(PROTECTED_STRING);
+            dos.writeUTF(rawStr);
+        } else {
+            byte[] bytes = rawStr.getBytes("UTF-8");
+            dos.writeByte(LONG_PROTECTED_STRING);
+            dos.writeInt(bytes.length);
+            dos.write(bytes);
+        }
+    }
+
+    private static final int MAX_LENGTH = 65535;
+
+    /**
+     * Test if a string is a short string.
+     *
+     * This is based on modified UTF-8 byte conversion,
+     * as done by {@link DataOutputStream#writeUTF}.
+     *
+     * @param str The string to test.
+     *
+     * @return True or false telling if the string is 'short'.
+     */
+    private static boolean isShort(String str) {
+        // Do a quick test first: At worst, the byte conversion
+        // uses 3 bytes per character.
+
+        int strlen = str.length();
+        if (strlen < MAX_LENGTH / 3) {
+            return true;
+        }
+
+        // Only for 'moderately' long strings must the length
+        // be computed.  While expensive, and done again by 'writeUTF',
+        // the vast majority of strings are not expected to need
+        // this additional step.
+
+        // These computations are exactly the same as are done
+        // by 'writeUTF'.  That embeds knowledge of the 'writeUTF'
+        // implementation.  However, since the data format cannot
+        // change without breaking many programs, the implementation
+        // is unlikely to change.
+
+        int utflen = 0;
+        for (int charNo = 0; charNo < strlen; charNo++) {
+            char c = str.charAt(charNo);
+            if ((c >= 0x0001) && (c <= 0x007F)) {
+                utflen++;
+            } else if (c > 0x07FF) {
+                utflen += 3;
+            } else {
+                utflen += 2;
+            }
+        }
+
+        return (utflen <= 65535);
+    }
+
+    /**
+     * Read a 'long' string. Long strings have a write size
+     * longer than 64K and cannot use {@link DataOutputStream#writeUTF}.
+     *
+     * @param dis The data input stream which is to be read.
+     *
+     * @return A long string value read from the stream.
+     *
+     * @throws IOException Thrown if the read fails.
+     */
+    private static String readLongString(DataInputStream dis) throws IOException {
+        int length = dis.readInt();
+        byte[] strBytes = new byte[length];
+        dis.readFully(strBytes);
+        return new String(strBytes, "UTF-8");
+    }
+
+    /**
+     * Read a 'long' protected string. Long strings have a write size
+     * longer than 64K and cannot use {@link DataOutputStream#writeUTF}.
+     *
+     * This is the same as {@link #readLongString}, but with logging
+     * disabled for the method.
+     *
+     * @param dis The data input stream which is to be read.
+     *
+     * @return A long string value read from the stream.
+     *
+     * @throws IOException Thrown if the read fails.
+     */
+    @Trivial // Don't log protected values
+    private static String readLongProtectedString(DataInputStream dis) throws IOException {
+        int length = dis.readInt();
+        byte[] strBytes = new byte[length];
+        dis.readFully(strBytes);
+        return new String(strBytes, "UTF-8");
     }
 }
