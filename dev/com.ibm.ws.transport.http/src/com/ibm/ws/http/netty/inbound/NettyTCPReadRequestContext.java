@@ -12,6 +12,8 @@ package com.ibm.ws.http.netty.inbound;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.ibm.ws.http.netty.MSP;
@@ -24,6 +26,7 @@ import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.util.concurrent.EventExecutor;
 
 /**
  *
@@ -85,11 +88,14 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         if (nettyContext.pipeline().get(NettyServletUpgradeHandler.class) == null) {
             MSP.log("upgradeHandler not present, adding now");
             NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(nettyContext.channel());
-            
+
             nettyContext.channel().pipeline().addLast("ServletUpgradeHandler", upgradeHandler);
+
+
         }
 
         NettyServletUpgradeHandler upgrade = this.nettyContext.pipeline().get(NettyServletUpgradeHandler.class);
+
 
         MSP.log("setting callback for read");
         upgrade.setReadListener(callback);
@@ -99,30 +105,50 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         MSP.log("TCP READ REQUEST CONTEXT - Before read: had data? " + upgrade.containsQueuedData());
         MSP.log("TCP READ REQUEST CONTEXT - Before read: data size: " + upgrade.queuedDataSize());
         MSP.log("TCP READ REQUEST CONTEXT - numBytes requested: "+ numBytes);
-        
-        
 
-        boolean dataAvailable = upgrade.containsQueuedData() || upgrade.awaitReadReady(numBytes, 30, TimeUnit.SECONDS);
+        // Use a separate ExecutorService for potentially blocking operations
+        //TODO Change to liberty's executor
+        ExecutorService blockingTaskExecutor = Executors.newCachedThreadPool();
 
-        if (dataAvailable) {
-            
-            upgrade.setToBuffer();
-            //TODO: if -1 do infinite
-            MSP.log("TCP READ REQUEST - SHOULD HAVE STORED DATA: " + this.getBuffer().limit());
-            
-            
-            if (callback != null) {
-                callback.complete(vc, this);
+        blockingTaskExecutor.submit(() -> {
+            boolean dataAvailable = upgrade.containsQueuedData() || upgrade.awaitReadReady(numBytes, timeout, TimeUnit.SECONDS);
+
+            if (dataAvailable) {
+
+                upgrade.setToBuffer();
+                //TODO: if -1 do infinite
+                MSP.log("TCP READ REQUEST - SHOULD HAVE STORED DATA: " + this.getBuffer().limit());
+
+
+                if (callback != null) {
+
+                    if (!forceQueue) {
+                        callback.complete(vc, this);
+                    }
+                    else {
+                        // Get the EventExecutor from the current context
+                        EventExecutor executor = nettyContext.executor();
+
+                        
+                        executor.execute(() -> {
+                            try {
+                                callback.complete(vc, this);
+                            } catch (Exception e) {
+                                // Log or handle the exception
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+                } else {
+                    MSP.log("CALLBACK IS NULL - NOT SUPPORTED");
+                    //throw new IOException ("BETA - unexpected null callback provided");
+                }
             } else {
-                MSP.log("CALLBACK IS NULL - NOT SUPPORTED");
-                //throw new IOException ("BETA - unexpected null callback provided");
+                MSP.log("BETA TIMED OUT");
+                //throw new IOException("BETA - Timed out waiting on read");
             }
-        } else {
-            MSP.log("BETA TIMED OUT");
-            //throw new IOException("BETA - Timed out waiting on read");
-        }
 
-
+        });
         return vc;
     }
 

@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -78,7 +79,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     public void setBuffers(WsByteBuffer[] bufs) {
         this.buffers = bufs;
 
-        // reset arrays to free memory quicker. defect 457362
+        // reset arrays to free memory quicker. 
         if (this.byteBufferArray != null) {
             // reset references
             for (int i = 0; i < this.byteBufferArray.length; i++) {
@@ -97,8 +98,8 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         if (bufs != null) {
             int numBufs;
             // reuse an existing byteBufferArray if one was already created
-            // kind of hokey, but this allows us to avoid construction of a
-            // new array object unless absolutely neccessary
+            // kind of hacky, but this allows us to avoid construction of a
+            // new array object unless absolutely necessary
 
             // following loop will count the number of buffers in
             // the input array rather than relying on the array length
@@ -198,45 +199,84 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     @Override
     public long write(long numBytes, int timeout) throws IOException {
+            long writtenBytes = 0;
 
-        long writtenBytes = 0;
-        for (WsByteBuffer buffer : buffers) {
-            if (buffer != null) {
-                ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                writtenBytes += nettyBuf.readableBytes();
-                ChannelFuture writeFuture = this.nettyContext.write(nettyBuf);
-                writeFuture.addListener((ChannelFutureListener) future -> {
-                    if (!future.isSuccess()) {
-                        //TODO "write operation has failed"
+            for (WsByteBuffer buffer : buffers) {
+                if (buffer != null) {
+                    ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+                    writtenBytes += nettyBuf.readableBytes();
 
-                    }
-                    //Release buffer
-                   // ReferenceCountUtil.release(nettyBuf);
-                });
+                    ChannelFuture writeFuture = this.nettyContext.write(nettyBuf);
+
+                    // Add a listener to handle the completion of the write operation
+                    writeFuture.addListener((ChannelFutureListener) future -> {
+                        if (!future.isSuccess()) {
+                            // Handle write operation failure
+                            Throwable cause = future.cause();
+                            if (cause != null) {
+                                // Log the error or handle it according to your application's needs
+                                cause.printStackTrace();
+                            }
+                        }
+                        // Release the buffer if the write operation was successful or failed
+                        ReferenceCountUtil.release(nettyBuf);
+                    });
+                }
             }
+
+            // Call flush after writing all the buffers
+            this.nettyContext.flush();
+            
+            return writtenBytes;
         }
-
-        this.nettyContext.flush();
-        return writtenBytes;
-
-        //TODO send only numBytes, for now write everything
+        
+//        MSP.log("NETTY TCP WRITE CONTEXT -> sync, timeout: "+ timeout);
+//        long writtenBytes = 0;
+//
 //        for (WsByteBuffer buffer : buffers) {
-//            if (Objects.nonNull(buffer)) {
-//                MSP.log("Writing Netty TCP write Context bytes: [" + buffer.remaining()+"]");
+//            if (buffer != null) {
+//                ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+//                writtenBytes += nettyBuf.readableBytes();
+//                
+//                MSP.log("WRITING -> " + nettyBuf.readableBytes() + " bytes.");
 //
-//                this.nettyContext.channel().write(Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer)));
+//                ChannelFuture writeFuture = this.nettyContext.write(nettyBuf);
+//                
 //
-
-        //this.nettyContext.pipeline().context(NettyServletUpgraUnpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer)));
-        // this.nettyContext.pipeline().writeAndFlush(WsByteBufferUtils.asByteArray(buffer));
-        //this.nettyContext.write(buffer);
-        //    }
-        //}
-
-    }
+//                try {
+//                    if (timeout > 0) {
+//                        // Wait for the write operation to complete with timeout
+//                        if (!writeFuture.await(timeout)) {
+//                            throw new IOException("Write operation timed out");
+//                        }
+//                    } else if (timeout == -1) {
+//                        // Wait indefinitely for the write operation to complete
+//                        writeFuture.sync();
+//                    }
+//                    // No need to handle timeout == 0 case, it implies no waiting
+//                } catch (InterruptedException e) {
+//                    Thread.currentThread().interrupt(); // Restore the interrupted status
+//                    throw new IOException("Thread was interrupted while writing", e);
+//                }
+//
+//                if (!writeFuture.isSuccess()) {
+//                    Throwable cause = writeFuture.cause();
+//                    if (cause != null) {
+//                        throw new IOException("Write operation failed", cause);
+//                    }
+//                }
+//
+//                // Release the buffer if the write operation was successful
+//               // ReferenceCountUtil.release(nettyBuf);
+//            }
+//        }
+//        this.nettyContext.flush();
+//        return writtenBytes;
+ //   }
 
     @Override
     public VirtualConnection write(long numBytes, TCPWriteCompletedCallback callback, boolean forceQueue, int timeout) {
+        MSP.log("NETTY TCP WRITE CONTEXT -> async");
         AtomicInteger pendingWrites = new AtomicInteger(buffers.length);
         try {
             for (WsByteBuffer buffer : buffers) {
