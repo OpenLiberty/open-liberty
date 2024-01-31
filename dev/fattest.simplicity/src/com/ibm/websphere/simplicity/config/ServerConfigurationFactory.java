@@ -124,7 +124,9 @@ public class ServerConfigurationFactory {
      * Converts a server configuration XML file into a series of Java objects.
      * Synchronized to ensure two threads do not attempt to call unmarshall concurrently
      * to avoid the following bug in javax.xml.xpath: https://bugs.openjdk.org/browse/JDK-8047329
-     * This has been fixed in JDK 9+
+     * The bug itself is in Apache Xerces which is the JAXP implementation that can either
+     * come from the JDK or provided on the classpath which does not have a resolution.
+     * https://issues.apache.org/jira/browse/XERCESJ-432
      *
      * @param  inputStream
      *                         a server configuration XML file as a stream
