@@ -79,7 +79,7 @@ public class NpTimerConfigRetryServlet extends FATServlet {
     private boolean verifyRetryIntervalAcceptable(long timestampForFirstAttempt, long timestampForSecondAttempt, long minimumDifference) {
         long difference = timestampForSecondAttempt - timestampForFirstAttempt;
         // allow longer timer delay for longer minimum differences; especially on Mac OS X
-        long timer_delay = (minimumDifference <= 2 * LONG_TIMER_DELAY) ? TIMER_DELAY : LONG_TIMER_DELAY;
+        long timer_delay = (minimumDifference < 2 * LONG_TIMER_DELAY) ? TIMER_DELAY : LONG_TIMER_DELAY;
         // 500 ms fudge factor for Windows time math and preInvoke delays
         long maxDifference = minimumDifference + timer_delay + 500;
         minimumDifference = minimumDifference - 500;
