@@ -46,7 +46,7 @@ The process steps occur roughly in the order as presented. Process steps occasio
 
 Each process step has a number of tasks which must be completed or must be marked as not applicable ("N/A").
 
-Unless otherwise indicated, the tasks are the responsibility of the Feature Owner or a Delegate of the Feature Owner.
+Unless otherwise indicated, the tasks are the responsibility of the feature owner or a delegate of the feature owner.
 
 If you need assistance, reach out to the [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect).
 
@@ -60,9 +60,10 @@ The ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chi
 ### **Prioritization**
 - [ ] Feature added to the "New" column of the [Open Liberty project board](https://github.com/orgs/OpenLiberty/projects/2)
   - Feature owner adds label `Prioritization - Requested`
+  - Feature added to "New" column of the Open Liberty Roadmap. ([OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager))
 - [ ] Priority assigned
   - Attend the Liberty Backlog Prioritization meeting
-  - `Prioritization - Requested` label removed
+  - `Prioritization - Requested` label removed ([OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager) or feature owner)
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Design** (Complete Before Development Starts)
@@ -74,7 +75,7 @@ Design preliminaries determine whether a formal design, which will be provided b
 - [ ] Accessibility requirements identified, or N/A. (Feature owner and [Accessibility focal point](https://github.com/orgs/OpenLiberty/teams/accessibility-approvers))
 - [ ] ID requirements identified, or N/A. (Feature owner and [ID focal point](https://github.com/orgs/OpenLiberty/teams/id-approvers))
    - Refer to [Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty).
-   - Feature Owner adds label `ID Required`, if non-trivial documentation needs to be created by the ID team.
+   - Feature owner adds label `ID Required`, if non-trivial documentation needs to be created by the ID team.
    - ID adds label `ID Required - Trivial`, if no design will be performed and only trivial ID updates are needed.
 - [ ] Serviceability requirements identified, or N/A. (Feature owner and [Serviceability focal point](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
 - [ ] SVT requirements identified, or N/A. (Feature owner and [SVT focal point](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
