@@ -88,6 +88,10 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
 //                MSP.log("had data? " + containsQueuedData());
 //                MSP.log("data size: " + queuedDataSize());
                 
+                if (totalBytesRead >= minBytesToRead) {
+                    signalReadReady(); // Signal only if minimum bytes are read
+                }
+                
             } catch (Exception e) {
                 ctx.fireExceptionCaught(e);
             } finally {
@@ -135,19 +139,29 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
     }
 
     public boolean awaitReadReady(long numBytes, int timeout, TimeUnit unit) {
-        MSP.log("UPGRADE HANDLER - minBytes: " + numBytes + " Waiting for "+ timeout + " " + unit);
+        MSP.log("UPGRADE HANDLER - minBytes: " + numBytes + " Waiting for " + timeout + " " + unit);
         
-        minBytesToRead  = numBytes; // Set the minimum number of bytes to read
+        minBytesToRead = numBytes; // Set the minimum number of bytes to read
         
         readLock.lock();
         boolean dataReady = false;
         try {
-            long waitTime = unit.toNanos(timeout);
+            long waitTime = timeout == -1 ? Long.MAX_VALUE : unit.toNanos(timeout);
             long endTime = System.nanoTime() + waitTime;
             MSP.log("Beginning wait");
-            while (totalBytesRead < minBytesToRead && waitTime > 0) {
-                readCondition.awaitNanos(waitTime);
-                waitTime = endTime - System.nanoTime(); // Recalculate remaining wait time
+            while (totalBytesRead < minBytesToRead) {
+                if (timeout != -1) { // If timeout is not -1, calculate the remaining wait time
+                    waitTime = endTime - System.nanoTime();
+                    if (waitTime <= 0) break; // Exit if the wait time has expired
+                }
+                
+                // If timeout is -1, this will wait indefinitely until signalled
+                if (timeout == -1) {
+                    readCondition.await();
+                } else {
+                    readCondition.awaitNanos(waitTime);
+                }
+                
                 MSP.debug(" totalBytesRead: " + totalBytesRead);
                 MSP.log(" minBytesToRead: "+ minBytesToRead);
             }

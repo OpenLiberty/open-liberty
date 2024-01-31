@@ -512,7 +512,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         }
 
         if ((isc != null) && (isc instanceof HttpInboundServiceContextImpl)) {
-            if (!((HttpInboundServiceContextImpl) isc).getHttpConfig().useNetty()) {
+           // if (!((HttpInboundServiceContextImpl) isc).getHttpConfig().useNetty()) {
                 if (this.isc.getResponse() == null) {
                     IOException x = new IOException("response Object(s) (e.g. getObjectFactory()) are null");
                     throw x;
@@ -528,7 +528,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
 
                     this.isc.getResponse().setCommitted();
                 }
-            }
+           // }
         }
 
         if (this.ignoreFlush) {
