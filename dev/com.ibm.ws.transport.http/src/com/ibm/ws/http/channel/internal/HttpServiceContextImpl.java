@@ -2276,8 +2276,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         this.nettyContext.channel().writeAndFlush(this.nettyResponse);
         this.setHeadersSent();
         try {
-            System.out.println("waiting 10 secs");
-            Thread.sleep(10000);
         }catch(Exception e) {
         
             System.out.println("done waiting 10 secs to simulate sync write");

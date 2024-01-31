@@ -1656,7 +1656,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Connection Not closed because Servlet Upgrade detected.");
                 }
-                if (usingNetty)
+                if (usingNetty) {
                     
                     this.prepareForUpgrade();
 
@@ -1675,6 +1675,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 //                 TransportOutboundHandler#0, DefaultChannelPipeline$TailContext#0]
 
                 System.out.println(nettyContext.pipeline().names());
+                }
 
 //                try {
 //                    this.isc.finishResponseMessage(null);
