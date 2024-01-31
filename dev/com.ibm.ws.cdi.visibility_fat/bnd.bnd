@@ -1,14 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2022 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
@@ -23,27 +20,46 @@ src: \
 fat.project: true
 
 tested.features:\
-	cdi-2.0,\
-	servlet-4.0,\
-	servlet-5.0,\
-	cdi-3.0,\
-	connectors-2.0,\
-	restfulwsclient-3.0,\
-	restfulws-3.0,\
-	jsonp-2.0,\
-	appclientsupport-2.0,\
-	enterprisebeans-4.0,\
-	enterprisebeansremote-4.0,\
-	jdbc-4.2,\
-	enterprisebeanshome-4.0,\
-	enterprisebeanslite-4.0,\
-	enterprisebeanspersistenttimer-4.0,\
-	cdi-4.0,\
-	connectors-2.1,\
-	jakartaee-10.0,\
-	servlet-6.0,\
-	mpConfig-3.0,\
-	mpFaultTolerance-4.0
+        cdi-2.0,\
+        servlet-4.0,\
+        servlet-5.0,\
+        cdi-3.0,\
+        connectors-2.0,\
+        restfulwsclient-3.0,\
+        restfulws-3.0,\
+        jsonp-2.0,\
+        appclientsupport-2.0,\
+        enterprisebeans-4.0,\
+        enterprisebeansremote-4.0,\
+        jdbc-4.2,\
+        enterprisebeanshome-4.0,\
+        enterprisebeanslite-4.0,\
+        enterprisebeanspersistenttimer-4.0,\
+        cdi-4.0,\
+        connectors-2.1,\
+        jakartaee-10.0,\
+        servlet-6.0,\
+        mpConfig-3.0,\
+        mpFaultTolerance-4.0,\
+        data-1.0,\
+        webprofile-11.0,\
+        expressionlanguage-6.0,\
+        restfulwsclient-4.0,\
+        faces-4.1,\
+        persistence-3.2,\
+        websocket-2.2,\
+        appauthentication-3.1,\
+        appauthorization-3.0,\
+        pages-4.0,\
+        concurrent-3.1,\
+        persistencecontainer-3.2,\
+        appsecurity-6.0,\
+        restfulws-4.0,\
+        noship-1.0,\
+        jakartaee-11.0,\
+        cdi-4.1,\
+        beanvalidation-3.1,\
+        servlet-6.1
 
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
