@@ -13,6 +13,7 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.partitions;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,7 +129,7 @@ public class KafkaPartitionTest {
     @AfterClass
     public static void shutdown() throws Exception {
         try {
-            server.stopServer();
+            kafkaStopServer(server);
         } finally {
             KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
         }

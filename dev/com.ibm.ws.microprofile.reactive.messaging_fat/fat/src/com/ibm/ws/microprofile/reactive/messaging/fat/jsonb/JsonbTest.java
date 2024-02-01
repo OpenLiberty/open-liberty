@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.jsonb;
 
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -60,7 +62,7 @@ public class JsonbTest extends FATServletClient {
 
     @AfterClass
     public static void cleanup() throws Exception {
-        server.stopServer();
+        kafkaStopServer(server);
     }
 
 }
