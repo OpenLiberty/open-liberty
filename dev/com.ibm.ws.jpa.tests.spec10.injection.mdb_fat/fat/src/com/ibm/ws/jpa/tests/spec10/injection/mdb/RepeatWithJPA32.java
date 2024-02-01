@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,27 +10,33 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jpa.tests.spec10.injection.dpu;
+package com.ibm.ws.jpa.tests.spec10.injection.mdb;
 
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE11Action;
 import componenttest.rules.repeater.RepeatTestAction;
 
-public class RepeatWithJPA31 extends JakartaEE10Action implements RepeatTestAction {
-    public static final String ID = "JPA31";
+public class RepeatWithJPA32 extends JakartaEE11Action implements RepeatTestAction {
+    public static final String ID = "JPA32";
 
-//     @Override
-//     public boolean isEnabled() {
-//         return true;
-//     }
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
     @Override
     public String toString() {
-        return "JPA 3.1";
+        return "JPA 3.2";
     }
 
     @Override
     public void setup() throws Exception {
         super.setup();
-        FATSuite.repeatPhase = "jpa31.xml";
+        RepeaterInfo.repeatPhase = "jpa32.xml";
     }
+
+//    @Override
+//    public String getID() {
+//        return ID;
+//    }
+
 }
