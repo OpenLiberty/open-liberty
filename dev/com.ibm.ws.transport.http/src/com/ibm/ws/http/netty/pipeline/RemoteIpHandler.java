@@ -100,7 +100,8 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
 
             Tr.debug(tc, "channelRead0", this);
 
-        }
+        } else
+            System.out.println("Errors were found with remote ip!");
 
         context.fireChannelRead(request);
 
@@ -118,6 +119,16 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
         this.forwardedPort = null;
         this.forwardedProto = null;
         this.noErrors = Boolean.FALSE;
+    }
+
+    public void resetState() {
+        MSP.log("reset state");
+        this.forwardedBy = null;
+        this.forwardedFor = null;
+        this.forwardedHost = null;
+        this.forwardedPort = null;
+        this.forwardedProto = null;
+        this.noErrors = Boolean.TRUE;
     }
 
     private void parseForwarded(FullHttpRequest request) {
@@ -220,6 +231,7 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
             MSP.log("using forwarded for list");
             list = this.forwardedFor;
             MSP.log("list is null or empty? " + Objects.isNull(this.forwardedFor));
+            MSP.log("list is empty? " + (Objects.nonNull(this.forwardedFor) && this.forwardedFor.isEmpty()));
         }
         MSP.log("processForwardedAddress 2");
         String extract = address.replaceAll("\"", "").trim();
