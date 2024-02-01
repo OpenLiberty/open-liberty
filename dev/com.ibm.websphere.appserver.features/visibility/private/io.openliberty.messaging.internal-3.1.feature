@@ -4,7 +4,7 @@ singleton=true
 IBM-App-ForceRestart: uninstall
 IBM-API-Package: jakarta.jms; version="3.1"; type="spec"
 -features=io.openliberty.jakartaeePlatform-10.0, \
-  io.openliberty.connectors-2.1.internal, \
+  io.openliberty.connectors.internal-2.1, \
   io.openliberty.jakarta.messaging-3.1, \
   com.ibm.websphere.appserver.transaction-2.0, \
   io.openliberty.jakarta.connectors-2.1

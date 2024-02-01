@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,11 +26,7 @@ import componenttest.rules.repeater.RepeatActions.SEVersion;
  * <li>Update all server.xml configs under the autoFVT/publish/ folder to use EE 11 features</li>
  * </ol>
  */
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// This class and its constructor are purposely not public to force people to use the JakartaEEAction class and  //
-// the FeatureReplacementAction.EE11_FEATURES() method instead of referencing this class directly                //
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class JakartaEE11Action extends JakartaEEAction {
+public class JakartaEE11Action extends JakartaEEAction {
     private static final Map<String, String> DEFAULT_TRANSFORMATION_RULES = new HashMap<>();
     private static final Map<String, String> TRANSFORMATION_RULES_APPEND = new HashMap<>();
     private static boolean WIDEN = false;
@@ -88,8 +84,8 @@ class JakartaEE11Action extends JakartaEEAction {
                                                   "jsonb-3.0",
                                                   "jsonpContainer-2.1",
                                                   "jsonbContainer-3.0",
-                                                  "faces-5.0",
-                                                  "facesContainer-5.0",
+                                                  "faces-4.1",
+                                                  "facesContainer-4.1",
                                                   "pages-4.0",
                                                   "mdb-4.0",
                                                   "messaging-3.1",
@@ -105,9 +101,37 @@ class JakartaEE11Action extends JakartaEEAction {
                                                   "xmlWS-4.0"
     };
 
-    public static final Set<String> EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_FEATURES_ARRAY)));
+    private static final String[] EE11_ONLY_FEATURES_ARRAY_LOWERCASE = {
+                                                                         "jakartaee-11.0",
+                                                                         "webprofile-11.0",
+                                                                         "jakartaeeclient-11.0",
+                                                                         "appauthentication-3.1",
+                                                                         "appauthorization-3.0",
+                                                                         "appsecurity-6.0",
+                                                                         "beanvalidation-3.1",
+                                                                         "cdi-4.1",
+                                                                         "concurrent-3.1",
+                                                                         "data-1.0",
+                                                                         "expressionlanguage-6.0",
+                                                                         "persistence-3.2",
+                                                                         "persistencecontainer-3.2",
+                                                                         "faces-4.1",
+                                                                         "facescontainer-4.1",
+                                                                         "pages-4.0",
+                                                                         "restfulws-4.0",
+                                                                         "restfulwsclient-4.0",
+                                                                         "servlet-6.1",
+                                                                         "websocket-2.2"
+    };
 
-    JakartaEE11Action() {
+    public static final Set<String> EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_FEATURES_ARRAY)));
+    public static final Set<String> EE11_ONLY_FEATURE_SET_LOWERCASE = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_ONLY_FEATURES_ARRAY_LOWERCASE)));
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // This constructor is purposely not public to force people to use the JakartaEEAction class and                 //
+    // the FeatureReplacementAction.EE11_FEATURES() method instead of referencing this class directly                //
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected JakartaEE11Action() {
         // Remove the EE7, EE8, EE9 and EE10 features; replace them with the EE11 features
         super(EE11_FEATURE_SET);
         removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET);
@@ -116,7 +140,7 @@ class JakartaEE11Action extends JakartaEEAction {
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
         removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         forceAddFeatures(false);
-        withMinJavaLevel(SEVersion.JAVA21);
+        withMinJavaLevel(SEVersion.JAVA17);
         withID(EE11_ACTION_ID);
     }
 

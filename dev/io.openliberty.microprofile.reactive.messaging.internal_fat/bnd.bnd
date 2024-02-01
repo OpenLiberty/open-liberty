@@ -29,7 +29,15 @@ fat.test.container.images: confluentinc/cp-kafka:7.1.1
 tested.features:\
   concurrent-3.0,\
   cdi-4.0,\
-  servlet-6.0
+  servlet-6.0,\
+  mpConfig-3.1,\
+  restfulws-3.0,\
+  mpTelemetry-1.1,\
+  mpmetrics-5.0,\
+  mpmetrics-5.1,\
+  restfulwsclient-3.0, \
+  restfulws-3.0, \
+  jsonp-2.0
 
 -buildpath: \
     io.openliberty.microprofile.reactive.messaging.internal_fat.common.jakarta;version=latest,\
@@ -39,6 +47,7 @@ tested.features:\
     io.openliberty.org.eclipse.microprofile.config.3.0;version=latest,\
     io.openliberty.jakarta.cdi.3.0;version=latest,\
     io.openliberty.jakarta.servlet.5.0;version=latest,\
+    io.openliberty.jakarta.restfulWS.3.0;version=latest,\
     org.apache.kafka:kafka-clients;version=3.5.1,\
     io.openliberty.org.testcontainers;version=latest,\
     com.ibm.ws.componenttest.2.0;version=latest

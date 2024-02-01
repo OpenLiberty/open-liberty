@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,7 +44,8 @@ public class FATSuite extends TestContainerSuite {
                     .andWith(new RepeatWithJPA20())
                     .andWith(new RepeatWithJPA22Hibernate())
                     .andWith(new RepeatWithJPA30())
-                    .andWith(new RepeatWithJPA31());
+                    .andWith(new RepeatWithJPA31())
+                    .andWith(new RepeatWithJPA32());
 
     public static String repeatPhase = "";
 }

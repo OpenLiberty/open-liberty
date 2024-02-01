@@ -25,6 +25,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 ClientWithNoCdi.class,
                 JaxRsIntegration.class,
                 JaxRsIntegrationWithConcurrency.class,
+                ReactiveMessageThatTriggersClientTest.class,
                 Telemetry10.class,
                 TelemetryAloneTest.class,
                 TelemetryBeanTest.class,

@@ -1,19 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_OR_LATER_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
 import static org.junit.Assert.assertTrue;
 
@@ -109,7 +106,7 @@ public class WCServerTest {
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat(EE9_OR_LATER_FEATURES)
     public void testServletXPoweredByHeader() throws Exception {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet";
         String expectedResponse = "Hello World";
@@ -176,7 +173,7 @@ public class WCServerTest {
      *                       if something goes horribly wrong
      */
     @Test
-    @SkipForRepeat({ NO_MODIFICATION, EE10_FEATURES })
+    @SkipForRepeat({ NO_MODIFICATION, EE10_OR_LATER_FEATURES })
     public void testServletXPoweredByHeader_Servlet50_Enabled() throws Exception {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet";
         String expectedResponse = "Hello World";
@@ -231,7 +228,6 @@ public class WCServerTest {
 
     @Test
     public void testServletContextMajorMinorVersion() throws Exception {
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + SERVLET_40_APP_JAR_NAME;
         String majorVersionExpectedResult = "majorVersion: 4";
         if (JakartaEEAction.isEE9Active()) {
             majorVersionExpectedResult = "majorVersion: 5";
@@ -240,7 +236,11 @@ public class WCServerTest {
         }
         HttpUtils.findStringInReadyUrl(server, "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet?TestMajorMinorVersion=true", majorVersionExpectedResult);
 
-        HttpUtils.findStringInReadyUrl(server, "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet?TestMajorMinorVersion=true", "minorVersion: 0");
+        if (JakartaEEAction.isEE11Active()) {
+            HttpUtils.findStringInReadyUrl(server, "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet?TestMajorMinorVersion=true", "minorVersion: 1");
+        } else {
+            HttpUtils.findStringInReadyUrl(server, "/" + SERVLET_40_APP_JAR_NAME + "/MyServlet?TestMajorMinorVersion=true", "minorVersion: 0");
+        }
     }
 
     /**

@@ -31,4 +31,23 @@
 		</application-bnd>
 	</application>
 
+	<application
+		type="war"
+		id="unprotectedformlogin"
+		name="unprotectedformlogin"
+		location="${server.config.dir}/test-apps/formlogin.war"
+	>
+		<application-bnd>
+			<security-role name="Employee">
+				<special-subject type="EVERYONE" />
+			</security-role>
+			<security-role name="Manager">
+				<special-subject type="EVERYONE" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="EVERYONE" />
+			</security-role>
+		</application-bnd>
+	</application>
+
 </server>

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -51,6 +51,8 @@ import com.ibm.wsspi.security.wim.exception.EntityNotFoundException;
 import com.ibm.wsspi.security.wim.exception.InvalidInitPropertyException;
 import com.ibm.wsspi.security.wim.exception.OperationNotSupportedException;
 import com.ibm.wsspi.security.wim.exception.WIMSystemException;
+
+import componenttest.topology.impl.JavaInfo;
 
 @SuppressWarnings("restriction")
 public class ContextManagerTest {
@@ -769,6 +771,10 @@ public class ContextManagerTest {
             } catch (NamingException e) {
                 // javax.naming.NamingException: LDAP response read timed out, timeout used:500ms.
                 time = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - time);
+                if (JavaInfo.JAVA_VERSION >= 21) {
+                    // With Java 21+, the JDK changed to try each URL (2 in this case) and not just fail on the first one.
+                    expectedTimeout *= 2;
+                }
                 assertTrue("Expected connect timeout to be " + expectedTimeout + " ms but was " + time,
                            time >= expectedTimeout && time <= (expectedTimeout + 200));
             }
@@ -787,6 +793,10 @@ public class ContextManagerTest {
             } catch (NamingException e) {
                 // javax.naming.NamingException: LDAP response read timed out, timeout used:1000ms.
                 time = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - time);
+                if (JavaInfo.JAVA_VERSION >= 21) {
+                    // With Java 21+, the JDK changed to try each URL (2 in this case) and not just fail on the first one.
+                    expectedTimeout *= 2;
+                }
                 assertTrue("Expected connect timeout to be " + expectedTimeout + " millisecond but was " + time,
                            time >= expectedTimeout && time <= (expectedTimeout + 200));
             }

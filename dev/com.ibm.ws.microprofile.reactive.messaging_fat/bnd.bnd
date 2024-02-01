@@ -41,6 +41,8 @@ fat.project: true
 
 fat.test.container.images: confluentinc/cp-kafka:7.1.1
 
+Import-Package: *
+
 -buildpath: \
 	io.openliberty.microprofile.reactive.messaging.internal_fat.common;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.reactive.messaging.1.0;version=latest,\
@@ -58,6 +60,7 @@ fat.test.container.images: confluentinc/cp-kafka:7.1.1
 	com.ibm.ws.io.smallrye.reactive.streams-operators;version=latest,\
 	com.ibm.ws.microprofile.reactive.messaging.kafka;version=latest,\
 	com.ibm.ws.microprofile.reactive.messaging.kafka.adapter;version=latest,\
+	io.openliberty.microprofile.reactive.messaging.internal;version=latest,\
 	com.ibm.ws.crypto.passwordutil;version=latest
 
 -dependson.1: \

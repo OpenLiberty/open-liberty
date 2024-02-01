@@ -19,6 +19,25 @@ bVersion=1.0
 cxfImportVersion=3.5.5
 cxfExportVersion=3.4.3
 
+instrument.classesExcludes: \
+    org/apache/cxf/binding/soap/model/SoapBindingInfo.class, \
+    org/apache/cxf/binding/soap/model/SoapBodyInfo.class, \
+    org/apache/cxf/binding/soap/model/SoapOperationInfo.class, \
+    org/apache/cxf/binding/soap/saaj/SAAJStreamWriter.class, \
+    org/apache/cxf/binding/soap/saaj/SAAJUtils.class, \
+    org/apache/cxf/binding/soap/HeaderUtil.class, \
+    org/apache/cxf/binding/soap/SOAPBindingUtil.class, \
+    org/apache/cxf/binding/soap/Soap11.class, \
+    org/apache/cxf/binding/soap/Soap12.class, \
+    org/apache/cxf/binding/soap/SoapBindingConfiguration.class, \
+    org/apache/cxf/binding/soap/SoapBindingConstants.class, \
+    org/apache/cxf/binding/soap/SoapFault.class, \
+    org/apache/cxf/binding/soap/SoapHeader.class, \
+    org/apache/cxf/binding/soap/SoapTransportFactory.class, \
+    org/apache/cxf/binding/soap/SoapVersion.class, \
+    org/apache/cxf/binding/soap/SoapVersionEditor.class, \
+    org/apache/cxf/binding/soap/SoapVersionFactoy.class
+
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.

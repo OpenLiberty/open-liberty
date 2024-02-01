@@ -46,7 +46,24 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
     }
   }
-    
+
+  copy {
+    from new File(project(':com.ibm.ws.wssecurity.example.cbh').buildDir, 'com.ibm.ws.wssecurity.example.cbh.jar')
+    into new File(autoFvtDir, 'publish/files/bundles/')
+  }
+  copy {
+    from new File(project(':com.ibm.ws.wssecurity.example.cbh').buildDir, 'com.ibm.ws.wssecurity.example.cbh.jar')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles/')
+  }
+  copy {
+    from new File(project(':com.ibm.ws.wssecurity.example.cbhwss4j').buildDir, 'com.ibm.ws.wssecurity.example.cbhwss4j.jar')
+    into new File(autoFvtDir, 'publish/files/bundles/')
+  }
+  copy {
+    from new File(project(':com.ibm.ws.wssecurity.example.cbhwss4j').buildDir, 'com.ibm.ws.wssecurity.example.cbhwss4j.jar')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles/')
+  }
+
 /* issue 23599 Copy CBH resource to this server only */
 
   servers = [

@@ -175,6 +175,18 @@ elements={0}{1} elements
 
 enable_batch_operations_as_true_not_supported=WLS native CMP setting "enable-batch-operations-as-true" is not directly supported in EclipseLink CMP. See migration doc for details.
 
+encryptor_decrypt_old_algorithm=The Database password used in {0} was encrypted by a deprecated algorithm.
+Reencrypt it by `passwordUpdate.sh` from eclipselink.zip bundle.
+
+encryptor_decrypt_old_algorithm_without_session_name=The Database password was encrypted by a deprecated algorithm.
+Reencrypt it by `passwordUpdate.sh` from eclipselink.zip bundle.
+
+encryptor_script_description=This application internally decrypts an old encrypted password that was used by a previous EclipseLink version and encrypts it by the latest algorithm.
+
+encryptor_script_output=Reencrypted password is: {0}
+
+encryptor_script_usage=Usage is `passwordUpdate.sh|.cmd -ip <old encrypted password>`
+
 entity_manager_ignores_jta_data_source=Persistence unit does not use JTA, therefore the EntityManager ignores jta data source. 
 
 entity_manager_ignores_nonjta_data_source=Persistence unit uses JTA, therefore the EntityManager ignores non jta data source. 

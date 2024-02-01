@@ -35,7 +35,7 @@ repo.featureTasks.path: ${path;\
     ${repo;wlp-featureTasks},\
     ${repo;com.ibm.ws.kernel.boot.core},\
     ${repo;com.ibm.ws.logging.core},\
-    ${repo;biz.aQute.bnd:biz.aQute.bnd;6.3.0},\
+    ${repo;biz.aQute.bnd:biz.aQute.bnd;7.0.0},\
     ${repo;com.ibm.ws.org.apache.ant},\
     ${repo;com.ibm.ws.componenttest:infra.buildtasks-core;7.0.2},\
     ${repo;org.jsoup:jsoup;1.7.2},\

@@ -49,7 +49,6 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
 
-import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
@@ -276,7 +275,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * @return the same list with passwords masked for debugging.
      *         masked values: "*null*" or "*not null*"
      */
-    private List<Properties> maskKeysPasswords(@Sensitive List<Properties> originalList) {
+    protected List<Properties> maskKeysPasswords(@Sensitive List<Properties> originalList) {
         if (originalList == null)
             return null;
 
@@ -563,22 +562,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
 
     private void submitTaskToCreateLTPAKeys() {
-        CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
-        if (checkpointPhase != CheckpointPhase.INACTIVE) {
-            // conditionally create hook if checkpoint phase is active
-            CheckpointHook hook = new CheckpointHook() {
-                @Override
-                public void restore() {
-                    executorService.getService().execute(createTask);
-                }
-            };
-            if (checkpointPhase.addMultiThreadedHook(hook)) {
-                // will run createTask later, upon restore
-                return;
-            }
-        }
-        // run the create task now, not in a checkpoint
-        executorService.getService().execute(createTask);
+        CheckpointPhase.onRestore(() -> executorService.getService().execute(createTask));
     }
 
     /**
@@ -810,10 +794,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     @Override
     public List<Properties> getValidationKeys() {
         return validationKeys;
-    }
-
-    protected List<Properties> testMaskKeysPasswords(List<Properties> originalList) {
-        return maskKeysPasswords(originalList);
     }
 
     /*

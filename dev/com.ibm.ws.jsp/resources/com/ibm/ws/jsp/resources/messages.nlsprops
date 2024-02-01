@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
 #COMPONENTPREFIX JSPG CWWJS
@@ -1273,8 +1270,22 @@ jsp.isthreadsafe.warning=CWWJS0003W: The Pages 3.1 specification strongly advise
 jsp.isthreadsafe.warning.explanation=SingleThreadModel was removed from Servlet 6.0. Pages 3.1 deprecated isThreadSafe with plans to remove it in a future Pages update.
 jsp.isthreadsafe.warning.useraction=Remove the isThreadSafe directive from all pages.
 
-
 jsp.useinmemory.warning=CWWJS0004W: The 'useInMemory' JSP Option is not supported. The JSPs will be compiled and saved on disk instead.
 jsp.useinmemory.warning.explanation=This feature was never ported from Traditional WebSphere for historical reasons.
 jsp.useinmemory.warning.useraction=Remove the useInMemory option from the server.xml, ibm-web-bnd.xml, or the ibm-web-ext.xmi files.
 
+pages.removed.element.error=CWWJS0005E: The {0} element was removed in Pages 4.0 and therefore is no longer supported.
+pages.removed.element.error.explanation=The jsp plugin and related actions were deprecated in Pages 3.1 and removed in 4.0. 
+pages.removed.element.error.useraction= Remove the jsp plugin, fallback, and params elements from your web app.
+
+jsp.javasourcelevel.warning=CWWJS0006W: The specified javaSourceLevel={0} value exceeds the {1} installed Java level. Therefore, the default Java level is set to {1}.
+jsp.javasourcelevel.warning.explanation=File cannot be compiled with a higher source than the available JDK level. 
+jsp.javasourcelevel.warning.useraction=Specify a javaSourceLevel value that is less than or equal to the available JDK level.
+
+jsp.bothsourcelevelset.warning=CWWJS0007W: Both javaSourceLevel={0} and jdkSourceLevel={1} are specified. Defaulting to javaSourceLevel={0}.
+jsp.bothsourcelevelset.warning.explanation=Only one source level attribute can be used at a time.
+jsp.bothsourcelevelset.warning.useraction=Specify only the javaSourceLevel attribute. The jdkSourceLevel attribute is stabilized. 
+
+jsp.javasourcelevel.value=CWWJS0008I: The value of the JSP attribute javaSourceLevel is \"{0}\".
+jsp.javasourcelevel.value.explanation =
+jsp.javasourcelevel.value.useraction =

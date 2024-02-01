@@ -7,7 +7,7 @@ IBM-ShortName: webProfile-11.0
 Subsystem-Version: 11.0.0
 Subsystem-Name: Jakarta EE Web Profile 11.0
 -features=io.openliberty.cdi-4.1, \
-  io.openliberty.faces-5.0, \
+  io.openliberty.faces-4.1, \
   io.openliberty.appSecurity-6.0, \
   io.openliberty.appAuthentication-3.1, \
   io.openliberty.jsonb-3.0, \

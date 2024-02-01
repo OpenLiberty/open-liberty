@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2023 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -10,12 +10,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-#This should be set to 21 but at the moment we can only run unit tests through gradle with Java 17
-#The eclipse and runtime settings are left as Java 21
 javac.source: 17
 javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 -include= jar:${fileuri;${repo;org.jboss.weld:weld-osgi-bundle;[6.0,6.1)}}!/META-INF/MANIFEST.MF,check-me-in-if-i-change.bnd
 

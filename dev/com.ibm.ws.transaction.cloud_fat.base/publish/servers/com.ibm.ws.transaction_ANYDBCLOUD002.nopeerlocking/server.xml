@@ -27,6 +27,8 @@
                   httpPort="${bvt.prop.HTTP_secondary}"
                   httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
 
+	<tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
+
     <application location="transaction.war">
         <classloader commonLibraryRef="AnonymousJDBCLib"/>
     </application>

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -174,9 +174,21 @@ public class OAuth20DynamicConfig01 extends OAuth20TestCommon {
                                             + firstClientUrl);
             request = new GetMethodWebRequest(firstClientUrl);
 
-            // Invoke the client
-            response = wc.getResponse(request);
-
+            // the apps are restarted sometimes (not all of the time, so, we can't just wait for the restart) - retry if we get a 404 indicating that a restart hasn't completed yet
+            for (int i = 0; i <= 6; i++) {
+                try {
+                    // Invoke the client
+                    response = wc.getResponse(request);
+                } catch (Exception e) {
+                    if (e.getMessage().contains("404") && i < 6) {
+                        Log.info(thisClass, thisMethod, "Config update not really completed yet - test apps have not fully restarted - will sleep for 30 seconds and try again");
+                        Thread.sleep(30000);
+                        // sleep and try again
+                    } else {
+                        throw (e);
+                    }
+                }
+            }
             // Read the response page from client jsp
             respReceived = response.getText();
             Log.info(thisClass, thisMethod, "Response from OAuth client: "

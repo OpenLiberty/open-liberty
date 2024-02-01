@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -65,7 +65,7 @@ public class ExternalTestService {
         JsonObject serviceData = data.getJsonObject("Service");
         JsonObject nodeData = data.getJsonObject("Node");
         String networkLocationProp = getNetworkLocation() + "_address";
-        String address;
+        String address = null;
 
         if (props.get(networkLocationProp) != null) {
             //The service has a private IP on the same network, so use that
@@ -121,6 +121,7 @@ public class ExternalTestService {
                 if (!propertyObject.containsKey("Value")) {
                     throw new Exception("Property " + propertyName + " was found but contained no value. Full JSON is: " + propertyObject);
                 }
+
                 ServiceProperty prop = new ServiceProperty("", propertyName, propertyObject.getString("Value"));
                 return prop.getStringValue();
             } catch (Exception e) {
@@ -463,6 +464,56 @@ public class ExternalTestService {
         return null;
     }
 
+    private interface RetryPolicy {
+
+        /**
+         * @return true if the operation should be retried; false otherwise.
+         */
+        boolean retryable();
+
+    }
+
+    private static class CappedExponentialSleeps implements RetryPolicy {
+
+        private int sleepMsecs;
+        private final int numSleeps;
+        private int completedSleeps;
+        private final int capMsecs;
+
+        /**
+         * @param sleepMsecs initial sleep time in msecs (doubles on each retry)
+         * @param numSleeps number of times to do a sleep before it becomes non-retryable
+         * @param capMsecs maximum number of msecs to sleep
+         */
+        public CappedExponentialSleeps(int sleepMsecs, int numSleeps, int capMsecs) {
+            this.sleepMsecs = sleepMsecs;
+            this.numSleeps = numSleeps;
+            this.capMsecs = capMsecs;
+            this.completedSleeps = 0;
+        }
+
+        /*
+         */
+        @Override
+        public boolean retryable() {
+            if (completedSleeps < numSleeps) {
+                sleepMsecs *= 2;
+                if (sleepMsecs > capMsecs)
+                    sleepMsecs = capMsecs;
+
+                completedSleeps++;
+                try {
+                    Thread.sleep(sleepMsecs);
+                } catch (InterruptedException e) {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+    }
+
     /**
      * @param  encryptedValue
      * @return                decryptedValue
@@ -480,11 +531,21 @@ public class ExternalTestService {
                                 + "', this property is needed to decrypt secure properties, see https://github.ibm.com/websphere/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
         }
 
+        RetryPolicy retry = new CappedExponentialSleeps(1000, 8, 128000);
+
         // Locate Properties Decrypter Instance
         String decrypted = null;
         while (decrypted == null) {
-            if (propertiesDecrypter == null) {
-                propertiesDecrypter = ExternalTestService.getService("liberty-properties-decrypter");
+            while (propertiesDecrypter == null) {
+                try {
+                    propertiesDecrypter = ExternalTestService.getService("liberty-properties-decrypter");
+                } catch(Exception e) {
+                    if (retry.retryable()) {
+                        continue;
+                     } else {
+                        throw e;
+                     }
+                }
             }
 
             // Decrypt Properties
@@ -497,8 +558,25 @@ public class ExternalTestService {
             try {
                 decrypted = propsRequest.run(String.class);
             } catch (Exception e) {
-                propertiesDecrypter.reportUnhealthy(e.getMessage());
-                propertiesDecrypter = null;
+                switch (propsRequest.getResponseCode()) {
+                    case HttpsURLConnection.HTTP_INTERNAL_ERROR:
+                    case HttpsURLConnection.HTTP_BAD_GATEWAY:
+                    case HttpsURLConnection.HTTP_UNAVAILABLE:
+                    case HttpsURLConnection.HTTP_NOT_IMPLEMENTED:
+                        propertiesDecrypter.reportUnhealthy(e.getMessage());
+                        propertiesDecrypter = null;
+                        if (retry.retryable()) {
+                            break;
+                        } else {
+                            ; //fall through
+                        }
+
+                    default:
+                        propertiesDecrypter.reportUnhealthy(e.getMessage());
+                        propertiesDecrypter = null;
+                        break;
+                }
+
             }
             switch (propsRequest.getResponseCode()) {
                 case HttpsURLConnection.HTTP_UNAUTHORIZED:

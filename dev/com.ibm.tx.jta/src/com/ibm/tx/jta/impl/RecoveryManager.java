@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2023 IBM Corporation and others.
+ * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ import com.ibm.ws.recoverylog.spi.InvalidFailureScopeException;
 import com.ibm.ws.recoverylog.spi.LogAllocationException;
 import com.ibm.ws.recoverylog.spi.LogCursor;
 import com.ibm.ws.recoverylog.spi.LogIncompatibleException;
+import com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException;
 import com.ibm.ws.recoverylog.spi.NotSupportedException;
 import com.ibm.ws.recoverylog.spi.PeerLostLogOwnershipException;
 import com.ibm.ws.recoverylog.spi.RecoverableUnit;
@@ -521,6 +522,11 @@ public class RecoveryManager implements Runnable {
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
                                 throw ple;
+                            } catch (LogsUnderlyingTablesMissingException lutme) {
+                                // No FFDC in this case
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "LogsUnderlyingTablesMissingException raised", lutme);
+                                throw lutme;
                             } catch (Exception e) {
                                 FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.preShutdown", "359", this);
                                 Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
@@ -554,6 +560,11 @@ public class RecoveryManager implements Runnable {
                                     Tr.debug(tc, "PeerLostLogOwnershipException raised forcing tranlog at shutdown", ple);
 
                                 throw ple;
+                            } catch (LogsUnderlyingTablesMissingException lutme) {
+                                // No FFDC in this case
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "LogsUnderlyingTablesMissingException raised forcing tranlog at shutdown", lutme);
+                                throw lutme;
                             } catch (Exception e) {
                                 // We were unable to force the tranlog, so just return as if we had crashed
                                 // (or did an immediate shutdown) and we will recover everything at the next restart.
@@ -593,6 +604,11 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "preShutdown", ple);
                     throw ple;
+                } catch (LogsUnderlyingTablesMissingException lutme) {
+                    // No FFDC in this case
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "preShutdown", lutme);
+                    throw lutme;
                 } catch (Exception e) {
                     FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.preShutdown", "360", this);
                     Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
@@ -631,6 +647,10 @@ public class RecoveryManager implements Runnable {
                             // No FFDC in this case
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                        } catch (LogsUnderlyingTablesMissingException lutme) {
+                            // No FFDC in this case
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "LogsUnderlyingTablesMissingException raised", lutme);
                         } catch (Exception e) {
                             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "779", this);
                             if (tc.isEventEnabled())
@@ -656,6 +676,10 @@ public class RecoveryManager implements Runnable {
                                 // No FFDC in this case
                                 if (tc.isDebugEnabled())
                                     Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                            } catch (LogsUnderlyingTablesMissingException lutme) {
+                                // No FFDC in this case
+                                if (tc.isDebugEnabled())
+                                    Tr.debug(tc, "LogsUnderlyingTablesMissingException raised", lutme);
                             } catch (Exception e) {
                                 FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "793", this);
                                 if (tc.isEventEnabled())
@@ -683,6 +707,10 @@ public class RecoveryManager implements Runnable {
                     // No FFDC in this case
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                } catch (LogsUnderlyingTablesMissingException lutme) {
+                    // No FFDC in this case
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "LogsUnderlyingTablesMissingException raised", lutme);
                 } catch (Exception e) {
                     FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.postShutdown", "824", this);
                     Tr.error(tc, "WTRN0029_ERROR_CLOSE_LOG_IN_SHUTDOWN");
@@ -718,7 +746,10 @@ public class RecoveryManager implements Runnable {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Ignoring exception: ", e);
             } else {
-                FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.deleteServerLease", "701", this);
+                // Issue a warning but allow processing to continue
+                Tr.audit(tc,
+                         "WTRN0107W: Server {0} attempted but failed to delete the lease for server with identity {1}",
+                         _failureScopeController.serverName(), recoveryIdentity);
             }
         }
         if (tc.isEntryEnabled())
@@ -729,26 +760,42 @@ public class RecoveryManager implements Runnable {
      * When we are operating in a peer recovery environment it is desirable to be able to delete the home server's
      * recovery logs where it has shutdown cleanly. This method accomplishes this operation.
      */
-    public void deleteRecoveryLogsIfPeerRecoveryEnv() {
+    public boolean deleteRecoveryLogsIfPeerRecoveryEnv() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "deleteRecoveryLogsIfPeerRecoveryEnv", this);
 
-        if (_leaseLog != null && _localRecoveryIdentity != null && _localRecoveryIdentity.equals(_failureScopeController.serverName())) {
+        boolean success = false;
+        if (_leaseLog != null) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "The recovery logs of home server {0} with identity {1} are being processed", _failureScopeController.serverName(), _localRecoveryIdentity);
 
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Should home recovery logs be retained {0}", _retainHomeLogs);
-            if (!_retainHomeLogs) {
-                // Delete the home server's recovery logs.
-                if (_tranLog.delete()) {
-                    _xaLog.delete();
+            // Check that we are processing the home server. It would be unexpected if we were not
+            if (_localRecoveryIdentity != null && _localRecoveryIdentity.equals(_failureScopeController.serverName())) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Should home recovery logs be retained {0}", _retainHomeLogs);
+                if (!_retainHomeLogs) {
+                    // Delete the home server's recovery logs.
+                    if (_tranLog.delete()) {
+                        success = _xaLog.delete();
+                    }
+                } else {
+                    success = true; // configured to retain logs
                 }
             }
+        } else {
+            success = true; // Not peer recovery env.
         }
 
+        // FFDC if attempt to delete failed
+        if (!success) {
+            // Issue a warning but allow processing to continue
+            Tr.audit(tc,
+                     "WTRN0107W: Server {0} with identity {1} attempted but failed to delete its recovery logs",
+                     _failureScopeController.serverName(), _localRecoveryIdentity);
+        }
         if (tc.isEntryEnabled())
-            Tr.exit(tc, "deleteRecoveryLogsIfPeerRecoveryEnv");
+            Tr.exit(tc, "deleteRecoveryLogsIfPeerRecoveryEnv", success);
+        return success;
     }
 
     protected void checkPartnerServiceData(RecoverableUnit ru) throws IOException {
@@ -1140,6 +1187,10 @@ public class RecoveryManager implements Runnable {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "updateTranLogServiceData", ple);
             throw ple;
+        } catch (LogsUnderlyingTablesMissingException lutme) {
+            // No FFDC in this case
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "updateTranLogServiceData", lutme);
         } catch (Exception e) {
             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.updateTranLogSeviceData", "1130", this);
             if (tc.isEntryEnabled())
@@ -1223,6 +1274,10 @@ public class RecoveryManager implements Runnable {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "updateServerState", ple);
             throw ple;
+        } catch (LogsUnderlyingTablesMissingException lutme) {
+            // No FFDC in this case
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "updateServerState", lutme);
         } catch (Exception e) {
             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.RecoveryManager.updateServerState", "1250", this);
             if (tc.isEntryEnabled())
@@ -1643,19 +1698,32 @@ public class RecoveryManager implements Runnable {
 
                     // Recovery is complete. This is a noop if peer recovery is not enabled.
                     if (_leaseLog != null && _localRecoveryIdentity != null && !_localRecoveryIdentity.equals(_failureScopeController.serverName())) {
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Server with identity " + _localRecoveryIdentity + " has recovered the logs of server " + _failureScopeController.serverName());
+                        // Careful, recovery may have been attempted and failed
+                        if (_tranLog != null && !_tranLog.failed() && _xaLog != null && !_xaLog.failed()) {
+                            Tr.audit(tc,
+                                     "WTRN0108I: Server with identity " + _localRecoveryIdentity + " has recovered the logs of peer server "
+                                         + _failureScopeController.serverName());
 
-                        deleteServerLease(_failureScopeController.serverName(), true);
-
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Should peer recovery logs be retained {0}", _retainPeerLogs);
-                        if (!_retainPeerLogs) {
-                            // Delete the peer recovery logs.
-                            // Don't delete the partner log if the tranlog delete faileded
-                            if (_tranLog.delete()) {
-                                _xaLog.delete();
+                            boolean shouldDeleteLease = true;
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "Should peer recovery logs be retained {0}", _retainPeerLogs);
+                            if (!_retainPeerLogs) {
+                                // Delete the peer recovery logs.
+                                // Don't delete the partner log if the tran log delete failed
+                                if (_tranLog.delete()) {
+                                    shouldDeleteLease = _xaLog.delete();
+                                } else {
+                                    shouldDeleteLease = false;
+                                }
                             }
+
+                            // Don't delete lease if recovery log deletion was attempted and failed
+                            if (shouldDeleteLease)
+                                deleteServerLease(_failureScopeController.serverName(), true);
+                        } else {
+                            Tr.audit(tc,
+                                     "WTRN0107W: Server with identity " + _localRecoveryIdentity + " attempted but failed to recover the logs of peer server "
+                                         + _failureScopeController.serverName());
                         }
                     }
                 } else /* @PK31789A */
@@ -1676,6 +1744,11 @@ public class RecoveryManager implements Runnable {
                             // No FFDC in this case
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "keypoint of transaction log failed ... partner log will not be tidied", ple);
+                            failed = true;
+                        } catch (LogsUnderlyingTablesMissingException lutme) {
+                            // No FFDC in this case
+                            if (tc.isDebugEnabled())
+                                Tr.debug(tc, "keypoint of transaction log failed ... partner log will not be tidied", lutme);
                             failed = true;
                         } catch (Exception exc2) /* @PK31789A */
                         { /* @PK31789A */
@@ -1902,6 +1975,18 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "run");
                     return;
+                } catch (PeerLostLogOwnershipException ple) {
+                    // No messaging in this case
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                    closeLogs();
+
+                    recoveryFailed(ple);
+                    Tr.audit(tc,
+                             "WTRN0107W: Server with identity " + _localRecoveryIdentity + " attempted but failed to recover the logs of peer server "
+                                 + serverName);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "run");
                 } catch (InternalLogException exc) {
                     if (!localRecovery && _shutdownInProgress) {
                         if (tc.isDebugEnabled())
@@ -2003,6 +2088,18 @@ public class RecoveryManager implements Runnable {
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "run");
                     return;
+                } catch (PeerLostLogOwnershipException ple) {
+                    // No messaging in this case
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "PeerLostLogOwnershipException raised", ple);
+                    closeLogs();
+
+                    recoveryFailed(ple);
+                    Tr.audit(tc,
+                             "WTRN0107W: Server with identity " + _localRecoveryIdentity + " attempted but failed to recover the logs of peer server "
+                                 + serverName);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "run");
                 } catch (InternalLogException exc) {
                     if (!localRecovery && _shutdownInProgress) {
                         if (tc.isDebugEnabled())
@@ -2189,6 +2286,16 @@ public class RecoveryManager implements Runnable {
                         Tr.event(tc, "Caught PeerLostLogOwnershipException during keypointing: " + ple);
 
                     recoveryFailed(ple); // @254326C
+
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "run");
+                    return;
+                } catch (LogsUnderlyingTablesMissingException lutme) {
+                    // No FFDC or error messaging in this case
+                    if (tc.isDebugEnabled())
+                        Tr.event(tc, "Caught LogsUnderlyingTablesMissingException during keypointing: " + lutme);
+
+                    recoveryFailed(lutme); // @254326C
 
                     if (tc.isEntryEnabled())
                         Tr.exit(tc, "run");

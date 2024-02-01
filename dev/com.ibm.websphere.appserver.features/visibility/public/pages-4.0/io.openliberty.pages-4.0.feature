@@ -37,15 +37,15 @@ Subsystem-Name: Jakarta Server Pages 4.0
   com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.jakarta.pages-4.0, \
   io.openliberty.expressionLanguage-6.0
--bundles=com.ibm.ws.org.eclipse.jdt.core, \
+-bundles=io.openliberty.org.eclipse.jdt.core.java17; require-java:=17, \
  io.openliberty.jakarta.tags.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0", \
- io.openliberty.pages.3.1.internal.factories, \
+ io.openliberty.pages.4.0.internal.factories, \
  com.ibm.ws.jsp.jakarta, \
  io.openliberty.tags.3.0.facade; start-phase:=CONTAINER_EARLY, \
  io.openliberty.org.apache.taglibs.standard.3.0
 -jars=com.ibm.websphere.appserver.spi.jsp; location:=dev/spi/ibm/, \
  io.openliberty.jakarta.pages.tld.3.1; location:=dev/api/spec/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.0-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.jsp_1.1-javadoc.zip
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

@@ -1,23 +1,33 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 dependencies {
     requiredLibs project(':io.openliberty.org.apache.commons.codec'),
       project(':io.openliberty.org.apache.commons.codec'),
       project(':io.openliberty.org.apache.commons.logging'),
+      project(':com.ibm.ws.jsp.2.3_fat'),
       'net.sf.jtidy:jtidy:9.3.8',
       'org.apache.httpcomponents:httpclient:4.1.2',
       'org.apache.httpcomponents:httpcore:4.1.2',
       'httpunit:httpunit:1.5.4'
     }
-    
+
+
+task copyFeatureBundle(type: Copy) {
+  dependsOn jar
+  from buildDir
+  into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
+  include 'io.openliberty.test.tld.jar'
+}
+
+autoFVT {
+  dependsOn copyFeatureBundle
+}
+
 addRequiredLibraries.dependsOn addJakartaTransformer

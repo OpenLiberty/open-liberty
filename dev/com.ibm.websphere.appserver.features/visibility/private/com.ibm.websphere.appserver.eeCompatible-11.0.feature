@@ -4,7 +4,7 @@ visibility=private
 singleton=true
 Subsystem-Version: 11.0.0
 -bundles=com.ibm.ws.javaee.version, \
-  io.openliberty.java21.internal
+  io.openliberty.java17.internal
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

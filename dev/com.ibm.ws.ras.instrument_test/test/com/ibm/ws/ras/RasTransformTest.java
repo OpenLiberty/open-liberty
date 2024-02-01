@@ -429,7 +429,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 		try {
 			//LibertyRuntimeTransformer.setInjectAtTransform(false);
 			
-			byte[] staticInject = staticTransform.transform(pre);
+			byte[] staticInject = staticTransform.transform(className, pre);
 			byte[] postDynamic = LibertyRuntimeTransformer.transform(pre, false);
 			
 			//Case that tries to fully emulate what the runtime ends up doing.
@@ -490,7 +490,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 	private boolean invokeIsTransformPossible(byte[] bytes) throws Exception {
 		Method isTransformPossible = LibertyRuntimeTransformer.class.getDeclaredMethod("isTransformPossible", byte[].class);
 		isTransformPossible.setAccessible(true);
-		return (boolean) isTransformPossible.invoke(null, bytes);
+		return (isTransformPossible.invoke(null, bytes) == null);
 	}
 	
 }

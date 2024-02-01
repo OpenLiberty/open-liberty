@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,6 +35,7 @@ import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.jmock.lib.concurrent.Synchroniser;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -55,6 +56,7 @@ import com.ibm.websphere.event.ExecutorServiceFactory;
 import com.ibm.websphere.event.Topic;
 
 import test.common.SharedOutputManager;
+import test.common.junit.rules.JavaInfo;
 
 public class EventEngineImplTest {
 
@@ -493,6 +495,8 @@ public class EventEngineImplTest {
 
     @Test
     public void testCheckTopicPublishPermission() {
+        // SecurityManager cannot be set on Java versions that are greater than 17
+        Assume.assumeTrue(JavaInfo.JAVA_VERSION < 18);
         final List<Permission> permissions = new ArrayList<Permission>();
         final SecurityManager sm = new SecurityManager() {
             @Override
@@ -514,6 +518,8 @@ public class EventEngineImplTest {
 
     @Test
     public void testCheckTopicSubscribePermission() {
+        // SecurityManager cannot be set on Java versions that are greater than 17
+        Assume.assumeTrue(JavaInfo.JAVA_VERSION < 18);
         final ServiceReference subscriber = context.mock(ServiceReference.class, "subscriber");
         context.checking(new Expectations() {
             {

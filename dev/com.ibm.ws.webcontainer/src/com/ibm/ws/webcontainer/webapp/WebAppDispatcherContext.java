@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
 @SuppressWarnings("unchecked")
 public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispatcherContext
 {
-    private static TraceNLS nls = TraceNLS.getTraceNLS(WebAppDispatcherContext.class, "com.ibm.ws.webcontainer.resources.Messages");
+    protected static TraceNLS nls = TraceNLS.getTraceNLS(WebAppDispatcherContext.class, "com.ibm.ws.webcontainer.resources.Messages");
     protected static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer.webapp");
     private static final String CLASS_NAME="com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext";
 
@@ -670,8 +670,12 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
     /**
      * convert a relative URI to a full URL.
      */
-    private String convertRelativeURIToURL(String relativeURI)
+    protected String convertRelativeURIToURL(String relativeURI)
     {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME,"convertRelativeURIToURL", "relativeURI ["+ relativeURI +"] ,this -> " + this);
+        }
+        
         String location = null;
         if (relativeURI == null)
         {

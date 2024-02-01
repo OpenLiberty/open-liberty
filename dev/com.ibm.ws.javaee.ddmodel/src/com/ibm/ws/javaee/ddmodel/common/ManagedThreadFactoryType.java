@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,6 +30,8 @@ import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
 //   <xsd:element name="name" type="jakartaee:jndi-nameType"/>
 //   <xsd:element name="context-service-ref" type="jakartaee:jndi-nameType" minOccurs="0" maxOccurs="1"/>
 //   <xsd:element name="priority" type="jakartaee:priorityType" minOccurs="0" maxOccurs="1"/>
+//   <xsd:element name="virtual" type="jakartaee:true-falseType" minOccurs="0" maxOccurs="1"/>
+//   <xsd:element name="qualifier" type="jakartaee:fully-qualified-classType" minOccurs="0" maxOccurs="unbounded"/>
 //   <xsd:element name="property" type="jakartaee:propertyType" minOccurs="0" maxOccurs="unbounded"/>
 // </xsd:sequence>
 // <xsd:attribute name="id" type="xsd:ID"/>
@@ -46,13 +48,13 @@ public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements 
     @SuppressWarnings("unchecked")
     @Override
     public List<Description> getDescriptions() {
-        if ( descriptions != null ) {
+        if (descriptions != null) {
             return (List<Description>) descriptions;
         } else {
             return Collections.emptyList();
         }
     }
-    
+
     @Override
     public String getContextServiceRef() {
         return contextServiceRef == null ? null : contextServiceRef.getValue();
@@ -69,6 +71,25 @@ public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements 
     }
 
     @Override
+    public boolean isSetVirtual() {
+        return AnySimpleType.isSet(virtual);
+    }
+
+    @Override
+    public boolean isVirtual() {
+        return virtual != null ? virtual.getBooleanValue() : false;
+    }
+
+    @Override
+    public String[] getQualifiers() {
+        if (qualifiers != null) {
+            return qualifiers.getArray();
+        } else {
+            return XSDTokenType.ListType.EMPTY_ARRAY;
+        }
+    }
+
+    @Override
     public List<Property> getProperties() {
         if (properties != null) {
             return properties.getList();
@@ -76,14 +97,16 @@ public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements 
             return Collections.emptyList();
         }
     }
-    
+
     //
 
     private List<? extends Description> descriptions;
-    private JNDINameType contextServiceRef;    
+    private JNDINameType contextServiceRef;
     private XSDIntegerType priority;
+    private XSDBooleanType virtual;
+    private XSDTokenType.ListType qualifiers;
     private PropertyType.ListType properties;
-    
+
     public ManagedThreadFactoryType() {
         super("name");
     }
@@ -106,7 +129,6 @@ public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements 
             descriptions = Collections.singletonList(description);
             return true;
         }
-        
 
         if ("context-service-ref".equals(localName)) {
             if (contextServiceRef == null) {
@@ -123,6 +145,23 @@ public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements 
             return true;
         }
 
+        if ("virtual".equals(localName)) {
+            XSDBooleanType virtual = new XSDBooleanType();
+            parser.parse(virtual);
+            this.virtual = virtual;
+            return true;
+        }
+
+        if ("qualifier".equals(localName)) {
+            XSDTokenType unchanged_element = new XSDTokenType();
+            parser.parse(unchanged_element);
+            if (qualifiers == null) {
+                qualifiers = new XSDTokenType.ListType();
+            }
+            qualifiers.add(unchanged_element);
+            return true;
+        }
+
         if ("property".equals(localName)) {
             PropertyType property = new PropertyType();
             parser.parse(property);
@@ -131,7 +170,7 @@ public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements 
             }
             properties.add(property);
             return true;
-        }        
+        }
 
         return false;
     }
@@ -140,8 +179,8 @@ public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements 
 
     @Override
     public void describeHead(DDParser.Diagnostics diag) {
-        if ( descriptions != null ) {
-            diag.describe( "description", (DescriptionType) (descriptions.get(0)) );
+        if (descriptions != null) {
+            diag.describe("description", (DescriptionType) (descriptions.get(0)));
         }
         super.describeHead(diag);
     }
@@ -149,13 +188,16 @@ public class ManagedThreadFactoryType extends JNDIEnvironmentRefType implements 
     @Override
     public void describeBody(DDParser.Diagnostics diag) {
         super.describeBody(diag);
-        diag.describe("context-service-ref", contextServiceRef);        
+        diag.describe("context-service-ref", contextServiceRef);
         diag.describeIfSet("priority", priority);
+        diag.describeIfSet("virtual", virtual);
+        diag.describeIfSet("qualifier", qualifiers);
     }
-    
+
     @Override
     public void describeTail(DDParser.Diagnostics diag) {
         super.describeTail(diag);
         diag.describeIfSet("property", properties);
     }
+
 }

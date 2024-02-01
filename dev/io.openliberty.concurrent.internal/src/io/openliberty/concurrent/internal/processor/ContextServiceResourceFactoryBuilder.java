@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -37,11 +38,14 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
@@ -214,6 +218,14 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         String[] propagated = (String[]) contextSvcProps.remove("propagated");
         String[] unchanged = (String[]) contextSvcProps.remove("unchanged");
         String[] properties = (String[]) contextSvcProps.remove("properties"); // TODO process these?
+        String[] qualifiers = (String[]) contextSvcProps.remove("qualifiers");
+
+        // Convert qualifier array to list attribute if present
+        List<String> qualifierNames = null;
+        if (qualifiers != null && qualifiers.length > 0) {
+            qualifierNames = Arrays.asList(qualifiers);
+            contextSvcProps.put("qualifiers", qualifierNames);
+        }
 
         if (cleared == null)
             cleared = new String[0];
@@ -357,6 +369,27 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
 
             Configuration contextServiceConfig = configAdmin.createFactoryConfiguration("com.ibm.ws.context.service", bundleLocation);
             contextServiceConfig.update(contextSvcProps);
+
+            if (qualifierNames != null) {
+                String jeeName;
+                if (module == null) {
+                    jeeName = application;
+                } else {
+                    ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                    jeeName = cmd.getJ2EEName().toString();
+                }
+
+                ServiceReference<QualifiedResourceFactories> ref = bundleContext.getServiceReference(QualifiedResourceFactories.class);
+
+                if (ref == null) // TODO message should include possibility of deployment descriptor element
+                    throw new UnsupportedOperationException("The " + jeeName + " application artifact cannot specify the " +
+                                                            qualifierNames + " qualifiers on the " +
+                                                            jndiName + " " + ContextServiceDefinition.class.getSimpleName() +
+                                                            " because the " + "CDI" + " feature is not enabled."); // TODO NLS
+
+                QualifiedResourceFactories qrf = bundleContext.getService(ref);
+                qrf.add(jeeName, QualifiedResourceFactories.Type.ContextService, qualifierNames, factory);
+            }
         } catch (Exception x) {
             factory.destroy();
             throw x;

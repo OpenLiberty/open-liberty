@@ -1,0 +1,100 @@
+#*******************************************************************************
+# Copyright (c) 2023, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+Bundle-Name: Open Liberty Pages 4.0 Factories
+Bundle-SymbolicName: io.openliberty.pages.4.0.internal.factories
+Bundle-Description: WAS Pages 4.0, version ${bVersion}
+
+-dsannotations: com.ibm.ws.jsp23.webcontainerext.JspVersionFactoryImpl, \
+com.ibm.ws.jsp23.webcontainerext.ws.PrepareJspHelper23Factory, \
+com.ibm.ws.jsp23.translator.visitor.validator.ElValidatorExtFactoryImpl, \
+com.ibm.ws.jsp23.translator.visitor.generator.GeneratorUtilsExtFactoryImpl
+
+Export-Package: \
+	com.ibm.ws.jsp.speclevel, \
+	com.ibm.ws.jsp23.webcontainerext;version="4.0", \
+	com.ibm.ws.jsp23.webcontainerext.ws;version="4.0", \
+	com.ibm.ws.jsp23.translator.visitor.validator;version="4.0", \
+	com.ibm.ws.jsp23.translator.visitor.generator;version="4.0", \
+	org.apache.jasper;version="4.0", \
+	org.apache.jasper.el;thread-context=true;version="4.0", \
+	org.apache.jasper.runtime;thread-context=true;version="4.0"
+
+Import-Package: \
+   !com.ibm.ws.jsp23.translator.visitor.generator, \
+   !com.ibm.ws.jsp23.translator.visitor.validator, \
+   !com.ibm.ws.jsp23.webcontainerext, \
+   !com.ibm.ws.jsp23.webcontainerext.ws, \
+   org.apache.xml.*;resolution:=optional, \
+   org.apache.xpath.*;resolution:=optional, \
+   jakarta.el;version="[6.0,7)", \
+   jakarta.servlet;version="[6.0,7)", \
+   jakarta.servlet.http;version="[6.0,7)", \
+   jakarta.servlet.resources;version="[6.0,7)", \
+   jakarta.servlet.jsp;version="[3.1,5)", \
+   jakarta.servlet.jsp.el;version="[3.1,5)", \
+   jakarta.servlet.jsp.resources;version="[3.1,5)", \
+   jakarta.servlet.jsp.tagext;version="[3.1,5)", \
+   com.ibm.websphere.servlet.*;version=!, \
+   com.ibm.wsspi.webcontainer.osgi.*;version=1.0, \
+   com.ibm.wsspi.webcontainer, \
+   com.ibm.wsspi.webcontainer.*, \
+   com.ibm.ws.webcontainer.extension, \
+   com.ibm.ws.webcontainer.util, \
+   com.ibm.ws.webcontainer.servlet,\
+   com.ibm.ws.webcontainer, \
+   com.ibm.ws.jsp;version="[2.2,2.3)", \
+   com.ibm.ws.jsp.webcontainerext;version=2.2, \
+   com.ibm.ws.jsp.translator;version=2.2, \
+   com.ibm.ws.jsp.translator.utils;version=2.2, \
+   com.ibm.ws.jsp.translator.visitor.validator;version=2.2, \
+   com.ibm.ws.jsp.translator.visitor.generator;version=2.2, \
+   com.ibm.wsspi.webcontainer31.servlet;version=1.0, \
+   com.ibm.websphere.servlet31.response;version=1.0, \
+   com.ibm.jtc.adapter;resolution:=optional, \
+   com.sun.tools.javac;resolution:=optional, \
+   org.apache.webbeans.el;resolution:=optional, \
+   com.ibm.ws.managedobject;resolution:=optional, \
+   org.apache.el; version="5.0.0", \
+   org.apache.el.lang; version="5.0.0", \
+   org.apache.el.parser; version="5.0.0", \
+   org.apache.el.util; version="5.0.0", \
+   org.eclipse.jdt.core.compiler;usage="JSP", \
+   org.eclipse.jdt.internal.compiler;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.classfmt;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.env;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.impl;usage="JSP", \
+   org.eclipse.jdt.internal.compiler.problem;usage="JSP", \
+   sun.io;resolution:=optional, \
+   *
+
+instrument.classesExcludes: org/apache/**/*.class
+
+-buildpath: \
+   io.openliberty.jakarta.expressionLanguage.6.0;version=latest,\
+   io.openliberty.jakarta.pages.4.0;version=latest,\
+   io.openliberty.jakarta.servlet.6.0;version=latest,\
+   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+   com.ibm.ws.container.service;version=latest,\
+   com.ibm.ws.logging.core,\
+   com.ibm.wsspi.org.osgi.service.component.annotations, \
+   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+   com.ibm.ws.javaee.version;version=latest, \
+   io.openliberty.el.internal.cdi;version=latest,\
+   com.ibm.ws.webcontainer.jakarta;version=latest,\
+   com.ibm.ws.webcontainer.servlet.3.1.jakarta;version=latest,\
+   com.ibm.ws.jsp.jakarta;version=latest

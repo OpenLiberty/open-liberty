@@ -246,8 +246,9 @@ public class AuthenticateApi {
     /**
      * @param req
      * @param res
+     * @throws ServletException
      */
-    void logoutUnprotectedResourceServiceRef(HttpServletRequest req, HttpServletResponse res) {
+    void logoutUnprotectedResourceServiceRef(HttpServletRequest req, HttpServletResponse res) throws ServletException {
         boolean bInitUserName = false;
         String userName = null;
         Set<String> serviceIds = unprotectedResourceServiceRef.keySet();

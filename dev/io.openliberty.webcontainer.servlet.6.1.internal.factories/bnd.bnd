@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@ bVersion=1.0
 javac.source: 17
 javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Bundle-Name: WAS WebContainer
 Bundle-SymbolicName: io.openliberty.webcontainer.servlet.6.1.internal.factories
@@ -80,7 +80,6 @@ Import-Package: \
     io.openliberty.webcontainer60.session.impl, \
     io.openliberty.webcontainer60.osgi.request, \
     io.openliberty.webcontainer60.osgi.response, \
-    io.openliberty.webcontainer60.osgi.srt, \
     *
 
 -buildpath: \

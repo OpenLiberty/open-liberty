@@ -41,5 +41,8 @@ public class MessageConstants {
     public static final String SRVE8114W_CANNOT_SET_SESSION_COOKIE = "SRVE8114W";
 
     public static final String SSL_NOT_RESTARTED_PROPERLY = "SSL may not have started properly";
+    
+    public static final String CWWKS5215E_NO_AVAILABLE_SP = "CWWKS5215E";
+
 
 }

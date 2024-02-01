@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,14 +21,17 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
 import org.junit.rules.ExternalResource;
 
+import com.ibm.websphere.simplicity.LocalFile;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.ValidationData.validationData;
@@ -754,9 +757,40 @@ public class TestServer extends ExternalResource {
             // ignore ssl message - runtime retries and can proceed (sometimes) when it can't tests will fail when they don't get the correct response
             server.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKO0801E_UNABLE_TO_INIT_SSL));
 
+            shibbolehtBackup(server);
+
             server.stopServer(ignoredServerExceptions);
         }
         unInstallCallbackHandler(callback, callbackFeature);
+    }
+
+    /**
+     * backup shibboleth config
+     */
+    private void shibbolehtBackup(LibertyServer server) throws Exception {
+        final String method = "shibbolehtBackup";
+        Log.entering(thisClass, method, server.getServerName());
+
+        if (server.getServerName().contains("shibboleth")) {
+            Log.info(thisClass, method, "Need to back up shibboleth-idp directory");
+        } else {
+            Log.info(thisClass, method, "There is no shibboleth-idp directory to backup");
+            return;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy-HH-mm-ss");
+        Date d = new Date(System.currentTimeMillis());
+
+        String logDirectoryName = "";
+        logDirectoryName = server.getPathToAutoFVTOutputServersFolder() + "/" + server.getServerNameWithRepeatAction().replace("shibboleth", "shibboleth-idp") + "-" + sdf.format(d);
+        LocalFile logFolder = new LocalFile(logDirectoryName);
+        String shibbolethDir = new File(".").getAbsoluteFile().getCanonicalPath().replace("\\", "/") + "/shibboleth-idp";
+        RemoteFile serverFolder = new RemoteFile(server.getMachine(), shibbolethDir);
+
+        // Copy the log files: try to move them instead if we can
+        server.recursivelyCopyDirectory(serverFolder, logFolder, false, false, true);
+
+        Log.exiting(thisClass, method);
     }
 
     /**
@@ -945,19 +979,32 @@ public class TestServer extends ExternalResource {
      * @throws exception
      */
     public void waitForValueInServerLog(validationData expected) throws Exception {
-        String thisMethod = "waitForValueInServerLog";
+        // same as superclass, but validationData class type is different
+        String thisMethod = "waitForValueInServerLog - oidc";
+        if (expected == null) {
+            throw new Exception("Cannot search for expected value in server log: The provided expectation is null!");
+        }
+        String expectedValue = expected.getValidationValue();
         try {
             Log.info(thisClass, thisMethod, "checkType is: " + expected.getCheckType());
 
             String logName = getGenericLogName(expected.getWhere());
-            String expectedValue = expected.getValidationValue();
             Log.info(thisClass, thisMethod, "Searching for [" + expectedValue + "] in " + logName);
 
-            String searchResult = server.waitForStringInLogUsingMark(expectedValue, server.getMatchingLogFile(logName));
-            msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting to find " + expectedValue + " in " + logName + ", but did not find it there!",
-                    searchResult != null);
-            Log.info(thisClass, thisMethod, "Found message: " + expectedValue);
+            String searchResult = null;
+            if (expected.getCheckType().equals(Constants.MSG_NOT_LOGGED)) {
+                searchResult = server.verifyStringNotInLogUsingMark(expectedValue, 2000); // short timeout because we already expect the msg to "not" be there
+            } else {
+                searchResult = server.waitForStringInLogUsingMark(expectedValue, server.getMatchingLogFile(logName));
+            }
 
+            if (expected.getCheckType().equals(Constants.STRING_DOES_NOT_CONTAIN) || expected.getCheckType().equals(Constants.STRING_DOES_NOT_MATCH) || expected.getCheckType().equals(Constants.MSG_NOT_LOGGED)) {
+                msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting NOT to find [" + expectedValue + "] in " + logName + ", but did find it there!", searchResult == null);
+                Log.info(thisClass, thisMethod, "DID NOT find message: " + expectedValue);
+            } else {
+                msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting to find [" + expectedValue + "] in " + logName + ", but did not find it there!", searchResult != null);
+                Log.info(thisClass, thisMethod, "Found message: " + expectedValue);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Log.error(thisClass, thisMethod, e, "Failure searching for string [" + expected.getValidationValue() + "] in " + expected.getWhere());

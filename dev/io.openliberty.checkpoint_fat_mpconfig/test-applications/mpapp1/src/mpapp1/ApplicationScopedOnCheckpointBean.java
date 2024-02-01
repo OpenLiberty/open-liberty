@@ -41,7 +41,7 @@ public class ApplicationScopedOnCheckpointBean {
     @ConfigProperty(name = "early_access_provider_optional_app_scope_key")
     Provider<Optional<String>> earlyAccessProviderOptionalTestKey;
 
-    public void applicationScopedValueTest() {
+    public void appScopedValueTest() {
         // The value of test_key was not updated here because the property was accessed during the checkpoint.
         // A warning CWWKC0651W is logged to let the user know that the updated value of the property might not be used during restore.
         check("defaultValue");

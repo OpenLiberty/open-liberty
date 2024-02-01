@@ -171,9 +171,9 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
                 testFailed = true;
                 testFailureString = "Second server did not attempt peer recovery at least 2 times, attempted " + numStringOccurrences;
             }
-            if (!testFailed && (longPeerStaleTimeServer2.waitForStringInLog("HADB Peer Recovery failed for server") == null)) {
+            if (!testFailed && (longPeerStaleTimeServer2.waitForStringInLog("Peer recovery will not be attempted, this server was unable to claim the logs") == null)) {
                 testFailed = true;
-                testFailureString = "Server2 did not report that HADB Peer recovery had failed";
+                testFailureString = "Server2 did not report that Peer recovery had failed";
             }
 
             //Stop server2
@@ -281,7 +281,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
             longPeerStaleTimeServer1.startServerAndValidate(false, true, true);
 
             // wait for server to attempt to perform local recovery
-            if (!testFailed && (longPeerStaleTimeServer1.waitForStringInTrace("Claim the logs for the local server") == null)) {
+            if (!testFailed && (longPeerStaleTimeServer1.waitForStringInTrace("Claim the partner_log for the local server") == null)) {
                 testFailed = true;
                 testFailureString = "Server failed to claim logs";
             }
@@ -347,7 +347,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
                 testFailureString = "Recovery incomplete on first server";
             }
 
-            if (!testFailed && (peerLockingEnabledServer1.waitForStringInTrace("Claim the logs for the local server") == null)) {
+            if (!testFailed && (peerLockingEnabledServer1.waitForStringInTrace("Claim the partner_log for the local server") == null)) {
                 testFailed = true;
                 testFailureString = "Server failed to claim logs";
             }
@@ -440,7 +440,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
                 testFailureString = "Second server did not perform peer recovery";
             }
 
-            if (!testFailed && (secondServer.waitForStringInTrace("Claim peer logs from a peer server") == null)) {
+            if (!testFailed && (secondServer.waitForStringInTrace("Claim peer partner_log from a peer server") == null)) {
                 testFailed = true;
                 testFailureString = "Server failed to claim peer logs";
             }

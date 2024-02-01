@@ -471,4 +471,9 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     public String getBackendURL() {
         return null;
     }
+
+    @Override
+    public boolean peerRecoveryPrecedence() {
+        return false;
+    }
 }

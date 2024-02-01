@@ -1,16 +1,22 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.reactive.messaging30.tck;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -21,11 +27,6 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -53,7 +54,11 @@ public class ReactiveMessagingTCKLauncher {
 
     @Test
     @Mode(TestMode.FULL)
-    @AllowedFFDC({ "org.jboss.weld.exceptions.DeploymentException", "com.ibm.ws.container.service.state.StateChangeException", "jakarta.enterprise.inject.spi.DeploymentException" }) // The tested deployment exceptions cause FFDC so we have to allow for this.
+    @AllowedFFDC({ "javax.management.InstanceNotFoundException", "org.jboss.weld.exceptions.DeploymentException", "com.ibm.ws.container.service.state.StateChangeException",
+                   "jakarta.enterprise.inject.spi.DeploymentException" })
+    // The tested deployment exceptions cause FFDC so we have to allow for this.
+    // InstanceNotFoundException is allowed as it is possible for mpmetrics to be queried during server shutdown when
+    // the MBean is not present, this is an expected FFDC in the metrics FAT so we must allow for it here as these tests interact with metrics.
     public void launchReactiveMessaging30Tck() throws Exception {
         String bucketName = "io.openliberty.microprofile.reactive.messaging30.internal_fat_tck";
         String testName = this.getClass() + ":launchReactiveMessaging30Tck";

@@ -60,7 +60,7 @@ public class PaginatedIterator<T> implements Iterator<T> {
                         pagination.mode() == Pageable.Mode.CURSOR_NEXT ? queryInfo.jpqlAfterKeyset : //
                                         queryInfo.jpqlBeforeKeyset;
 
-        EntityManager em = queryInfo.entityInfo.persister.createEntityManager();
+        EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
             TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryInfo.entityInfo.entityClass);

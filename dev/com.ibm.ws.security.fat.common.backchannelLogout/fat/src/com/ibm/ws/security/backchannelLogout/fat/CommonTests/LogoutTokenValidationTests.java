@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -123,6 +123,31 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
         List<endpointSettings> parms = createParmFromBuilder(builder);
 
         List<validationData> expectations = setInvalidBCLRequestExpectations(errorMsg);
+
+        invokeBcl(logutOutEndpoint, parms, expectations);
+
+    }
+
+    /**
+     * This method contains the common steps that a test case validating behavior when the iat or exp claim contains an invalid value.
+     * 
+     * @param iat
+     *            the iat claim value
+     * @param exp
+     *            the exp claim value
+     * @throws Exception
+     */
+    public void genericInvalidIatOrExpClaimTest(long iat, long exp) throws Exception {
+
+    	JWTTokenBuilder builder = loginAndReturnIdTokenData(defaultClient);
+        builder.setClaim(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, iat);
+        builder.setClaim(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS, exp);
+
+        String logutOutEndpoint = buildBackchannelLogoutUri(defaultClient);
+
+        List<endpointSettings> parms = createParmFromBuilder(builder);
+
+        List<validationData> expectations = setInvalidBCLRequestExpectations(MessageConstants.CWWKS1773E_TOKEN_EXPIRED);
 
         invokeBcl(logutOutEndpoint, parms, expectations);
 
@@ -515,8 +540,10 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenValidationTests_invalid_iat() throws Exception {
 
-        // set an invalid iat (future date - 2/21/2035)
-        genericInvalidClaimTest(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, 2055696852, MessageConstants.CWWKS1773E_TOKEN_EXPIRED);
+        long iat = System.currentTimeMillis() / 1000 + hoursToSeconds(24 * 365 * 10);
+        long exp = iat + minutesToSeconds(2);
+
+        genericInvalidIatOrExpClaimTest(iat, exp);
 
     }
 
@@ -529,9 +556,10 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     public void LogoutTokenValidationTests_invalid_iat_future_beyond_clockSkew() throws Exception {
 
         long clockSkew = 5;
-        long justBeyondClockSkew = System.currentTimeMillis() / 1000 + minutesToSeconds(clockSkew + 5);
+        long iat = System.currentTimeMillis() / 1000 + minutesToSeconds(clockSkew + 5); // just beyond clockSkew
+        long exp = iat + minutesToSeconds(2);
 
-        genericInvalidClaimTest(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, justBeyondClockSkew, MessageConstants.CWWKS1773E_TOKEN_EXPIRED);
+        genericInvalidIatOrExpClaimTest(iat, exp);
 
     }
 
@@ -543,9 +571,10 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenValidationTests_invalid_iat_tomorrow() throws Exception {
 
-        long tomorrow = System.currentTimeMillis() / 1000 + hoursToSeconds(24);
+        long iat = System.currentTimeMillis() / 1000 + hoursToSeconds(24); // tomorrow
+        long exp = iat + minutesToSeconds(2);
 
-        genericInvalidClaimTest(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, tomorrow, MessageConstants.CWWKS1773E_TOKEN_EXPIRED);
+        genericInvalidIatOrExpClaimTest(iat, exp);
 
     }
 
@@ -599,6 +628,133 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
         genericAddedUpdatedClaimsTest(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, 36010452);
 
     }
+    
+    /**
+     * Test that the backchannelLogout fails when we omit the required exp claim from the logout token.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void LogoutTokenValidationTests_missing_required_exp() throws Exception {
+
+        genericMissingRequiredClaimTest(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS);
+
+    }
+    
+    /**
+     * Test that the backchannelLogout fails when we specify an exp that is before the iat
+     *
+     * @throws Exception
+     */
+    @Test
+    public void LogoutTokenValidationTests_invalid_exp_before_iat() throws Exception {
+
+    	long iat = System.currentTimeMillis() / 1000;
+        long exp = iat - hoursToSeconds(1);
+
+        genericInvalidIatOrExpClaimTest(iat, exp);
+
+    }
+
+    /**
+     * Test that the backchannelLogout fails when we specify an exp that is way in the past
+     *
+     * @throws Exception
+     */
+    @Test
+    public void LogoutTokenValidationTests_invalid_exp_1971() throws Exception {
+
+        long exp = 36010452; // 02/21/1971
+        long iat = exp - minutesToSeconds(2);
+
+        genericInvalidIatOrExpClaimTest(iat, exp);
+
+    }
+
+    /**
+     * Test that the backchannelLogout fails when we specify an exp that is from yesterday
+     *
+     * @throws Exception
+     */
+    @Test
+    public void LogoutTokenValidationTests_invalid_exp_yesterday() throws Exception {
+
+        long exp = System.currentTimeMillis() / 1000 - hoursToSeconds(24);
+        long iat = exp - minutesToSeconds(2);
+
+        genericInvalidIatOrExpClaimTest(iat, exp);
+
+    }
+
+    /**
+     * Test that the backchannelLogout fails when we specify an exp that is just in the past (just beyond the clockskew)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void LogoutTokenValidationTests_invalid_exp_past_beyond_clockSkew() throws Exception {
+
+        long clockSkew = 5;
+        long exp = System.currentTimeMillis() / 1000 - minutesToSeconds(clockSkew);
+        long iat = exp - minutesToSeconds(2);
+
+        genericInvalidIatOrExpClaimTest(iat, exp);
+
+    }
+
+    /**
+     * Test that the backchannelLogout passes when we specify an exp that is the current time (due to the clowSkew)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void LogoutTokenValidationTests_valid_exp_now() throws Exception {
+
+        long exp = System.currentTimeMillis() / 1000;
+        long iat = exp - minutesToSeconds(2);
+
+        JWTTokenBuilder builder = loginAndReturnIdTokenData(defaultClient);
+        builder.setClaim(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS, iat);
+        builder.setClaim(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS, exp);
+
+        String logutOutEndpoint = buildBackchannelLogoutUri(defaultClient);
+
+        List<endpointSettings> parms = createParmFromBuilder(builder);
+
+        List<validationData> expectations = vData.addResponseStatusExpectation(null, Constants.INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT, Constants.OK_STATUS);
+
+        invokeBcl(logutOutEndpoint, parms, expectations);
+
+    }
+
+    /**
+     * Test that the backchannelLogout passes when we specify an exp that is tomorrow
+     *
+     * @throws Exception
+     */
+    @Test
+    public void LogoutTokenValidationTests_valid_exp_tomorrow() throws Exception {
+
+        long tomorrow = System.currentTimeMillis() / 1000 + hoursToSeconds(24);
+        
+        genericAddedUpdatedClaimsTest(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS, tomorrow);
+
+    }
+
+    /**
+     * Test that the backchannelLogout passes when we specify an exp that is way in the future
+     *
+     * @throws Exception
+     */
+    @Test
+    public void LogoutTokenValidationTests_valid_exp_farInFuture() throws Exception {
+
+        long futureTime = System.currentTimeMillis() / 1000 + hoursToSeconds(24 * 365 * 10);
+
+        genericAddedUpdatedClaimsTest(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS, futureTime);
+
+    }
+
 
     /**
      * Test that the backchannelLogout fails when we omit the required jti claim from the logout token.
@@ -711,7 +867,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     public void LogoutTokenValidationTests_include_optional_sub_omit_sid() throws Exception {
 
         JWTTokenBuilder builder = loginAndReturnIdTokenData(defaultClient);
-        // remvoe sid
+        // remove sid
         builder.unsetClaim(Constants.PAYLOAD_SESSION_ID);
 
         String logutOutEndpoint = buildBackchannelLogoutUri(defaultClient);
@@ -843,7 +999,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     //     *
     //     * @throws Exception
     //     */
-    //    // TODO backchannelLogoutSessionRequired is not supporte/used in the RP config, so, we'll always allow sid, but never require it as far as the RP is concerned
+    //    // TODO backchannelLogoutSessionRequired is not supported/used in the RP config, so, we'll always allow sid, but never require it as far as the RP is concerned
     //    //@Test
     //    public void LogoutTokenValidationTests_omit_sid_when_config_requires_it() throws Exception {
     //
@@ -918,7 +1074,6 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
         HashMap<String, Object> claimMap = new HashMap<String, Object>() {
             {
 
-                put(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS, System.currentTimeMillis() / 1000 - hoursToSeconds(1)); // time is outside clockskew
                 put(Constants.PAYLOAD_NOT_BEFORE_TIME_IN_SECS, 2056387597);
                 put("email", "joe@something.com");
                 put(Constants.PAYLOAD_AUTHZ_TIME_IN_SECS, 478550797);

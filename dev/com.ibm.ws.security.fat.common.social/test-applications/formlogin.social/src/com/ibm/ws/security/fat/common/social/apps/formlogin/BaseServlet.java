@@ -14,6 +14,7 @@
 package com.ibm.ws.security.fat.common.social.apps.formlogin;
 
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 
 import javax.security.auth.Subject;
 
@@ -40,17 +41,38 @@ public abstract class BaseServlet extends com.ibm.ws.security.fat.common.apps.fo
     }
 
     private void printJwtCredential(Subject callerSubject, StringBuffer sb) {
-        JwtToken jwtCredential = callerSubject.getPrivateCredentials(JwtToken.class).iterator().next();
-        Claims jwtClaims = jwtCredential.getClaims();
+
+        Claims jwtClaims = null;
+        try {
+            JwtToken jwtCredential = callerSubject.getPrivateCredentials(JwtToken.class).iterator().next();
+            jwtClaims = jwtCredential.getClaims();
+        } catch (NoSuchElementException e) {
+            writeLine(sb, "NoSuchElementException for JwtToken: " + e);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
         writeLine(sb, "JWT Claims: " + jwtClaims);
     }
 
     private void printUserProfileCredential(Subject callerSubject, StringBuffer sb) {
-        UserProfile userProfileCredential = callerSubject.getPrivateCredentials(UserProfile.class).iterator().next();
-        if (userProfileCredential == null) {
+
+        UserProfile userProfileCredential = null;
+        try {
+            userProfileCredential = callerSubject.getPrivateCredentials(UserProfile.class).iterator().next();
+            if (userProfileCredential == null) {
+                writeLine(sb, "UserInfo: null");
+                return;
+            }
+        } catch (NoSuchElementException e) {
+            writeLine(sb, "NoSuchElementException for UserInfo: " + e);
+            writeLine(sb, "UserInfo: null");
+            return;
+        } catch (Throwable t) {
+            t.printStackTrace();
             writeLine(sb, "UserInfo: null");
             return;
         }
+
         String userInfo = userProfileCredential.getUserInfo();
         writeLine(sb, OUTPUT_PREFIX + "string: " + userInfo);
         String accessToken = userProfileCredential.getAccessToken();

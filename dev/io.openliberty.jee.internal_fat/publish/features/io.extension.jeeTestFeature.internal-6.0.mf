@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+Subsystem-Version: 1.0.0.201311011651
+Subsystem-Content: com.ibm.websphere.appserver.servlet-3.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-1.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jdbc-4.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jaxrs-1.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jaxws-2.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jaxb-2.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jsf-2.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jsp-2.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.cdi-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.beanValidation-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.ejbLite-3.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jca-1.6; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jpa-2.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.mdb-3.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jms-1.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.appSecurity-2.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.managedBeans-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.webProfile-6.0; type="osgi.subsystem.feature"
+Subsystem-SymbolicName: io.extension.jeeTestFeature.internal-6.0;visibility:=private; singleton:=true
+Subsystem-ManifestVersion: 1.0
+

@@ -37,7 +37,7 @@ public class BasicReactiveMessagingTest extends FATServletClient {
     public static final String SERVER_NAME = "SimpleRxMessagingServer";
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30, ReactiveMessagingActions.MP61_RM30);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30);
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = SimpleReactiveMessagingServlet.class, contextRoot = APP_NAME)
@@ -50,7 +50,7 @@ public class BasicReactiveMessagingTest extends FATServletClient {
         // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackages(true, "com.ibm.ws.microprofile.reactive.messaging.fat.apps.simple");
+                        .addPackages(true, SimpleReactiveMessagingServlet.class.getPackage());
 
         ShrinkHelper.exportDropinAppToServer(server, war, DeployOptions.SERVER_ONLY);
 

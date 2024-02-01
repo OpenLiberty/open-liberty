@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,6 +45,7 @@ public class TCKResultsWriter {
         String osVersion = resultInfo.getOsVersion();
         String specName = resultInfo.getSpecName();
         String specVersion = resultInfo.getSpecVersion();
+        String repeat = resultInfo.getRepeat();
 
         SAXParserFactory factory = null;
         SAXParser saxParser = null;
@@ -74,7 +75,20 @@ public class TCKResultsWriter {
             specURL = "https://jakarta.ee/specifications/" + specName + "/" + specVersion;
             tckURL = "https://download.eclipse.org/ee4j/" + specName + "/jakartaee10/promoted/eftl/" + specName + "-tck-" + specVersion + ".zip"; //just a placeholder, needs to be manually updated
         }
-        String filename = openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + "-TCKResults.adoc";
+        String filename = null;
+        if (repeat.contains("FeatureReplacementAction")) {
+            String newRepeat = repeat.replaceAll("FeatureReplacementAction.*REMOVE", "remove")
+                            .replaceAll("\\[", "")
+                            .replaceAll("\\]", "")
+                            .replaceAll("ADD", "add")
+                            .replaceAll("  ", " ")
+                            .replaceAll(" ", "_");
+            filename = (openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + newRepeat + "-TCKResults.adoc").replace("_", "-");
+        } else {
+            filename = (openLibertyVersion + "-" + fullSpecName.replace(" ", "-") + "-Java" + javaMajorVersion + repeat + "-TCKResults.adoc").replace("_", "-");
+        }
+        // Replace the "_" with "-" in filename to keep consistency
+
         Path outputPath = Paths.get("results", filename);
         File outputFile = outputPath.toFile();
         String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osName, osVersion, tckURL, tckSHA1, tckSHA256);
@@ -94,7 +108,16 @@ public class TCKResultsWriter {
             }
             output.write(adocContent);
             for (TestSuiteResult result : xmlParser.getResults()) {
-                output.write(result.toString());
+                /*
+                 * Checking if the result is for the correct repeat (avoiding adding wrong repeat results to wrong TCK report repeat files)
+                 * This will never be null because when calling RepeatTestFilter.getRepeatActionsAsString()
+                 * if REPEAT_ACTION_STACK is empty it will return an empty string instead ("")
+                 */
+                if (result.toString().contains(repeat)) {
+                    // Removing repeat ID from the test results
+                    String newResult = result.toString().replace(repeat, "");
+                    output.write(newResult);
+                }
             }
             output.write("----");
 

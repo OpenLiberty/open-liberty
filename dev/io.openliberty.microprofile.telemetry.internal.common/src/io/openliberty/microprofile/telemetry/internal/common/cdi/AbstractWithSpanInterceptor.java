@@ -175,7 +175,7 @@ public abstract class AbstractWithSpanInterceptor {
      * @return the WithSpan annotation, or an empty {@code Optional} if one could not be found
      */
     private Optional<WithSpan> getWithSpanBinding(InvocationContext context) {
-        Set<Annotation> bindings = OpenTelemetryAccessor.getCdiService().getInterceptorBindingsFromInvocationContext(context);
+        Set<Annotation> bindings = OpenTelemetryAccessor.getInterceptorBindingsFromInvocationContext(context);
         for (Annotation binding : bindings) {
             if (binding.annotationType().equals(WithSpan.class)) {
                 return Optional.of((WithSpan) binding);

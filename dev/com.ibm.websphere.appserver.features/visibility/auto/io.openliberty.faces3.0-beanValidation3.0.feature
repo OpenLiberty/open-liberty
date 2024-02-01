@@ -2,7 +2,7 @@
 symbolicName=io.openliberty.faces3.0-beanValidation3.0
 IBM-App-ForceRestart: install, \
  uninstall
-IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.faces-3.0)(osgi.identity=io.openliberty.faces-4.0)(osgi.identity=io.openliberty.faces-5.0)))", \
+IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.faces-3.0)(osgi.identity=io.openliberty.faces-4.0)(osgi.identity=io.openliberty.faces-4.1)))", \
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.beanValidation-3.0)(osgi.identity=io.openliberty.beanValidation-3.1)))"
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jsf.beanvalidation.jakarta

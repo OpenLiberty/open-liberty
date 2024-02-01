@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,8 +12,10 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.processor;
 
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
@@ -31,9 +33,14 @@ import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
+
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
+import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
            property = "creates.objectClass=jakarta.enterprise.concurrent.ManagedScheduledExecutorService") //  TODO more types?
@@ -133,10 +140,19 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
         String component = (String) execSvcProps.get("component");
         String jndiName = (String) execSvcProps.get(ResourceFactory.JNDI_NAME);
         String contextSvcJndiName = (String) execSvcProps.remove("context");
+        String[] qualifiers = (String[]) execSvcProps.remove("qualifiers");
+
+        // Convert qualifier array to list attribute if present
+        List<String> qualifierNames = null;
+        if (qualifiers != null && qualifiers.length > 0) {
+            qualifierNames = Arrays.asList(qualifiers);
+            execSvcProps.put("qualifiers", qualifierNames);
+        }
 
         Long hungTaskThreshold = (Long) execSvcProps.remove("hungTaskThreshold");
         Integer maxAsync = (Integer) execSvcProps.remove("maxAsync");
         String[] properties = (String[]) execSvcProps.remove("properties"); // TODO use these properties?
+        Boolean virtual = (Boolean) execSvcProps.remove("virtual");
 
         String managedScheduledExecutorServiceID = getManagedScheduledExecutorServiceID(application, module, component, jndiName);
         String concurrencyPolicyId = managedScheduledExecutorServiceID + "/concurrencyPolicy";
@@ -185,9 +201,18 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
             else if (maxAsync != -1) // unbounded
                 throw new IllegalArgumentException(jndiName + " maxAsync=" + maxAsync);
 
-        concurrencyPolicyProps.put("maxPolicy", "loose");
         concurrencyPolicyProps.put("maxWaitForEnqueue", 0L);
         concurrencyPolicyProps.put("runIfQueueFull", false);
+
+        if (Boolean.TRUE.equals(virtual)) { // only available in Concurrency 3.1+
+            concurrencyPolicyProps.put("virtual", virtual);
+            // maxPolicy unspecified makes the policy conditional on whether or not the submitter thread is virtual
+            // TODO remove the following once unspecified is supported
+            concurrencyPolicyProps.put("maxPolicy", "loose");
+        } else {
+            // virtual = false is the default
+            concurrencyPolicyProps.put("maxPolicy", "loose");
+        }
 
         BundleContext concurrencyBundleCtx = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(WSManagedExecutorService.class));
         BundleContext concurrencyPolicyBundleCtx = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(ConcurrencyPolicy.class));
@@ -208,6 +233,27 @@ public class ManagedScheduledExecutorResourceFactoryBuilder implements ResourceF
             Configuration managedScheduledExecutorSvcConfig = configAdmin.createFactoryConfiguration("com.ibm.ws.concurrent.managedScheduledExecutorService",
                                                                                                      concurrencyBundleLocation);
             managedScheduledExecutorSvcConfig.update(execSvcProps);
+
+            if (qualifierNames != null) {
+                String jeeName;
+                if (module == null) {
+                    jeeName = application;
+                } else {
+                    ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                    jeeName = cmd.getJ2EEName().toString();
+                }
+
+                ServiceReference<QualifiedResourceFactories> ref = concurrencyBundleCtx.getServiceReference(QualifiedResourceFactories.class);
+
+                if (ref == null) // TODO message should include possibility of deployment descriptor element
+                    throw new UnsupportedOperationException("The " + jeeName + " application artifact cannot specify the " +
+                                                            qualifierNames + " qualifiers on the " +
+                                                            jndiName + " " + ManagedScheduledExecutorDefinition.class.getSimpleName() +
+                                                            " because the " + "CDI" + " feature is not enabled."); // TODO NLS
+
+                QualifiedResourceFactories qrf = concurrencyBundleCtx.getService(ref);
+                qrf.add(jeeName, QualifiedResourceFactories.Type.ManagedScheduledExecutorService, qualifierNames, factory);
+            }
         } catch (Exception x) {
             factory.destroy();
             throw x;

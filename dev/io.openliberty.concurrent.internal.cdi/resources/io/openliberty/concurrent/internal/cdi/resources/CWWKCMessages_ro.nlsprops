@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022,2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,20 +24,5 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1400 to CWWCK1499
+# All messages must use the range CWWCK1410 to CWWCK1499
 
-CWWKC1400.unsupported.return.type=CWWKC1400E: {0} nu este un tip de returnare valabil pentru metoda {1} a clasei {2}. Tipurile de returnare valide pentru metodele adnotate cu {3} sunt: {4}.
-CWWKC1400.unsupported.return.type.explanation=Politica de concuren\u021b\u0103 Jakarta Concurrency limiteaz\u0103 gama de tipuri de returnare valide pentru metodele care includ aceast\u0103 adnotare.
-CWWKC1400.unsupported.return.type.useraction=Actualiza\u021bi metoda \u00een cadrul aplica\u021biei pentru a comuta la unul dintre tipurile de returnare suportate, sau elimina\u021bi adnotarea din metod\u0103.
-
-CWWKC1401.class.anno.disallowed=CWWKC1401E: Adnotarea {0} este permis\u0103 la nivel de metod\u0103. Aceasta nu poate fi folosit\u0103 la nivel de clas\u0103 pentru clasa {1}.
-CWWKC1401.class.anno.disallowed.explanation=Aceast\u0103 adnotare nu trebuie specificat\u0103 la nivelul clasei.
-CWWKC1401.class.anno.disallowed.useraction=Muta\u021bi adnotarea la metodele individuale ale clasei.
-
-CWWKC1402.not.managed.executor=CWWKC1402E: Adnotarea {0} pentru metoda {1} a clasei {2} specific\u0103 numele JNDI {3}, care apeleaz\u0103 la resursa {4}, care nu este interfa\u021ba ManagedExecutorService sau interfa\u021ba ManagedScheduledExecutorService. Interfe\u021bele implementate de resurs\u0103 sunt: {5}.
-CWWKC1402.not.managed.executor.explanation=Numele JNDI trebuie s\u0103 apeleze la o resurs\u0103 care implementeaz\u0103 interfa\u021ba ManagedExecutorService sau interfa\u021ba ManagedScheduledExecutorService.
-CWWKC1402.not.managed.executor.useraction=Corecta\u021bi numele JNDI pentru a specifica o resurs\u0103 care poate fi accesat\u0103 de componenta aplica\u021biei \u0219i implementeaz\u0103 interfa\u021ba ManagedExecutorService sau interfa\u021ba ManagedScheduledExecutorService.
-
-CWWKC1403.unsupported.tx.type=CWWKC1403E: Adnotarea {0} specific\u0103 valoarea {1}, care nu este permis\u0103 \u00een combina\u021bie cu adnotarea {2} prezent\u0103 \u00een metoda {3} a clasei {4}. Valorile permise sunt: {5}.
-CWWKC1403.unsupported.tx.type.explanation=Utilizarea combinat\u0103 a dou\u0103 adnot\u0103ri este posibil\u0103 dac\u0103 valoarea primei adnot\u0103ri specificate este permis\u0103 cu cea de-a doua adnotare.
-CWWKC1403.unsupported.tx.type.useraction=Actualiza\u021bi aplica\u021bia pentru a comuta la una dintre valorile acceptate sau elimina\u021bi una dintre adnot\u0103ri.

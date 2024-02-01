@@ -15,6 +15,7 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.partitions;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class KafkaPartitionTest {
 
     private static final String APP_NAME = "KafkaPartitionTest";
 
-    public static final String SERVER_NAME = "SimpleRxMessagingServer";
+    public static final String SERVER_NAME = "ConcurrentRxMessagingServer";
 
     @Server(SERVER_NAME)
     @TestServlets({
@@ -66,7 +67,7 @@ public class KafkaPartitionTest {
 
     @ClassRule
     public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10,
-                                                                  ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
+                                                                  ReactiveMessagingActions.MP50_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -118,6 +119,8 @@ public class KafkaPartitionTest {
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+
+        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
 
         server.startServer();
     }

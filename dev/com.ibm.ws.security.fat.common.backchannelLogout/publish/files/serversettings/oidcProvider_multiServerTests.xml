@@ -1,0 +1,35 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<variable name="bclRoot" value="notSet"/>
+
+	<openidConnectProvider
+		id="OidcConfigSample_multiServer1"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keyStoreRef="key_allSigAlg"
+		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
+		allowPublicClients="true"
+		oauthProviderRef="OAuthConfigSample_multiServer1" />
+
+	<openidConnectProvider
+		id="OidcConfigSample_multiServer2"
+		signatureAlgorithm="RS256"
+		keyAliasName="rs256"
+		keyStoreRef="key_allSigAlg"
+		tokenEndpointAuthMethodsSupported="client_secret_post, client_secret_basic, none"
+		allowPublicClients="true"
+		oauthProviderRef="OAuthConfigSample_multiServer2" />
+
+	</server>

@@ -12,36 +12,50 @@
  *******************************************************************************/
 package tests;
 
-import java.util.Hashtable;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.SSL;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.transaction.fat.util.FATSecurityUtils;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 public class SSLRerouteTest extends SSLTest {
+	
+	static {
+		startServers = false;
+	}
 
 	@Server("WSATSSL_Server3")
 	public static LibertyServer server3;
 	
 	@BeforeClass
 	public static void startThirdServer() throws Exception {
+		Log.info(SSLRerouteTest.class, "startThirdServer", "");
 		server3.setHttpDefaultPort(9083);
+		
+		// Create keys
 		FATUtils.startServers(runner, server3);
+		FATUtils.stopServers(server3);
+
+//		FATSecurityUtils.createKeys(server3);
+		FATSecurityUtils.extractPublicCertifcate(server3);
+		FATSecurityUtils.establishTrust(client, server3);
+		FATSecurityUtils.establishTrust(server1, server3);
+		FATSecurityUtils.establishTrust(server2, server3);
+		FATSecurityUtils.establishTrust(server3, client);
+		FATSecurityUtils.establishTrust(server3, server1);
+		FATSecurityUtils.establishTrust(server3, server2);
+
+		// Start servers
+		FATUtils.startServers(runner, client, server1, server2, server3);
 	}
 	
 	@AfterClass

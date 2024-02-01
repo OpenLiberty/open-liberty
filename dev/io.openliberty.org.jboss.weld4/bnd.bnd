@@ -23,6 +23,7 @@ Bundle-SymbolicName: io.openliberty.org.jboss.weld4; singleton:=true
 instrument.disabled: true
 
 -buildpath: \
+	com.ibm.ws.logging;version=latest, \
 	org.jboss.weld:weld-osgi-bundle;version=4.0.3, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 

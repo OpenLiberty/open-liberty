@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 #
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -60,36 +57,53 @@ fat.test.container.images: kyleaure/db2-ssl:3.0
 # Define additional tested features that are NOT present in any XML files in this bucket.
 # In this case, osgiConsole-1.0 is added programmatically at runtime.
 tested.features: \
-	osgiConsole-1.0,\
-	mpOpenTracing-2.0,\
-	microProfile-4.1,\
-	microProfile-5.0,\
-	microProfile-6.0,\
-	webProfile-8.0,\
-	webProfile-9.1,\
-	webProfile-10.0,\
-	jsf-2.3,\
-	ssl-1.0,\
-	transportSecurity-1.0,\
-	xmlWS-3.0,\
-	xmlws-4.0,\
-	xmlbinding-4.0,\
-	connectors-2.0,\
-	connectors-2.1,\
-	sessiondatabase-1.0,\
-	oauth-2.0,\
-	openidconnectclient-1.0,\
-	sociallogin-1.0,\
-	mpMetrics-5.1,\
-	passwordUtilities-1.0,\
-	appSecurity-1.0,\
-	mpTelemetry-1.1,\
-	mpConfig-3.1,\
-	restfulWS-3.1,\
-	servlet-5.0,\
-	servlet-6.0,\
-	mpOpenAPI-2.0,\
-	mpOpenAPI-3.0
+        appauthentication-3.1,\
+        appSecurity-1.0,\
+        appsecurity-6.0,\
+        beanvalidation-3.1,\
+        cdi-4.1,\
+        concurrent-3.1,\
+        connectors-2.0,\
+        connectors-2.1,\
+        data-1.0,\
+        expressionlanguage-6.0,\
+        faces-4.1,\
+        jsf-2.3,\
+        microProfile-4.1,\
+        microProfile-5.0,\
+        microProfile-6.0,\
+        mpConfig-3.1,\
+        mpMetrics-5.1,\
+        mpOpenAPI-2.0,\
+        mpOpenAPI-3.0,\
+        mpOpenTracing-2.0,\
+        mpTelemetry-1.1,\
+        noship-1.0,\
+        oauth-2.0,\
+        openidconnectclient-1.0,\
+        osgiConsole-1.0,\
+        pages-4.0,\
+        passwordUtilities-1.0,\
+        persistence-3.2,\
+        persistencecontainer-3.2,\
+        restfulWS-3.1,\
+        restfulws-4.0,\
+        restfulwsclient-4.0,\
+        servlet-5.0,\
+        servlet-6.0,\
+        servlet-6.1,\
+        sessiondatabase-1.0,\
+        sociallogin-1.0,\
+        ssl-1.0,\
+        transportSecurity-1.0,\
+        webProfile-10.0,\
+        webprofile-11.0,\
+        webProfile-8.0,\
+        webProfile-9.1,\
+        websocket-2.2,\
+        xmlbinding-4.0,\
+        xmlWS-3.0,\
+        xmlws-4.0
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}

@@ -17,7 +17,7 @@ Subsystem-Category: JakartaEE10Application
 -features= com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0", \
   io.openliberty.jakartaeePlatform-10.0, \
   io.openliberty.appserver.connectors-2.1, \
-  io.openliberty.connectors-2.1.internal, \
+  io.openliberty.connectors.internal-2.1, \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=com.ibm.ws.app.manager.rar, \
  com.ibm.ws.jca.1.7.jakarta

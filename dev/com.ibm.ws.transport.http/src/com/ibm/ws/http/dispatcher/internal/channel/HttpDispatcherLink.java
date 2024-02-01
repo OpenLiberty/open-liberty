@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundChannel;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.dispatcher.classify.DecoratedExecutorThread;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.internal.VirtualHostImpl;
@@ -1346,7 +1347,43 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         HttpInboundChannel channel = link.getChannel();
         VirtualConnection vc = link.getVirtualConnection();
         H2InboundLink h2Link = new H2InboundLink(channel, vc, getTCPConnectionContext());
-
+        boolean bodyReadAndQueued = false;
+        if(this.isc != null) {
+            if(this.isc.isIncomingBodyExpected() && !this.isc.isBodyComplete()){
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Body needed for request. Queueing data locally before upgrade.");
+                }
+                HttpInputStreamImpl body = this.request.getBody();
+                body.setupChannelMultiRead();
+                byte[] inBytes = new byte[1024];
+                try{
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Starting request read loop.");
+                    }
+                    for (int n; (n = body.read(inBytes)) != -1;) {}
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Finished request read loop.");
+                    }
+                }catch(Exception e){
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Got exception reading request and queueing up data. Can't handle request upgrade to HTTP2.", e);
+                    }
+                    body.cleanupforMultiRead();
+                    vc.getStateMap().put(h2InitError, true);
+                    return false;
+                }
+                body.setReadFromChannelComplete();
+                bodyReadAndQueued = true;
+            }else{
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No body needed for request. Continuing upgrade as normal.");
+                }
+            }
+        }else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Failed to get isc, Null value received which could cause issues expecting data. Continuing upgrade as normal.");
+            }
+        }
         boolean upgraded = h2Link.handleHTTP2UpgradeRequest(http2Settings, link);
         if (upgraded) {
             h2Link.startAsyncRead(true);
@@ -1361,7 +1398,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             // A problem occurred with the connection start up, a trace message will be issued from waitForConnectionInit()
             vc.getStateMap().put(h2InitError, true);
         }
-
+        if(bodyReadAndQueued)
+            isc.setBodyComplete();
         return rc;
     }
 

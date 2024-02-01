@@ -230,6 +230,15 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: S
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=Konfiguracja serwera zawiera nieobs\u0142ugiwan\u0105 kombinacj\u0119 sk\u0142adnik\u00f3w wskazanych modeli programowania.  Ten konflikt mo\u017ce wyst\u0105pi\u0107, je\u015bli dwa niekompatybilne sk\u0142adniki zostan\u0105 okre\u015blone bezpo\u015brednio w konfiguracji serwera lub je\u015bli skonfigurowane sk\u0142adniki maj\u0105 niekompatybilne wersje.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Spr\u00f3buj okre\u015bli\u0107 w pliku server.xml kompatybiln\u0105 wersj\u0119 skonfigurowanych sk\u0142adnik\u00f3w, kt\u00f3re spowodowa\u0142y konflikt.  Je\u015bli nie s\u0105 dost\u0119pne inne wersje, skonfigurowane sk\u0142adniki nie s\u0105 ze sob\u0105 kompatybilne i nie mo\u017cna ich skonfigurowa\u0107 w tym samym czasie.
 
+UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: Nie mo\u017cna znale\u017a\u0107 warto\u015bci dla zmiennej \u015brodowiskowej PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=W konfiguracji istniej\u0105 sk\u0142adniki bez wersji i nie mo\u017cna znale\u017a\u0107 zmiennej \u015brodowiskowej PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=Sprawd\u017a, czy zmienna \u015brodowiskowa PREFERRED_FEATURE_VERSIONS istnieje i jest poprawnie zapisana.
+
+# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: Zmienna \u015brodowiskowa PREFERRED_FEATURE_VERSIONS nie zawiera warto\u015bci dla {0}
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=Dla ka\u017cdego sk\u0142adnika bez wersji w konfiguracji musi istnie\u0107 preferowana warto\u015b\u0107 wersji w PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=Dodaj warto\u015b\u0107 w PREFERRED_FEATURE_VERSIONS dla sk\u0142adnika
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: Sk\u0142adnik {0} ju\u017c istnieje. Nie zostanie on ponownie zainstalowany. Aby zmodyfikowa\u0107 istniej\u0105cy sk\u0142adnik, nale\u017cy najpierw r\u0119cznie go zdeinstalowa\u0107.

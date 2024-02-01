@@ -17,7 +17,7 @@ export PERSISTENCE_JAR=$(find $WLP_SPEC -name 'com.ibm.websphere.javaee.persiste
 export SERVLET_JAR=$(find $WLP_SPEC -name 'com.ibm.websphere.javaee.servlet.4.0*' -print)
 export TRANSACTION_JAR=$(find $WLP_SPEC -name 'com.ibm.websphere.javaee.transaction.1.2*' -print)
 
-export JUNIT_JAR=$PWD/../../cnf/cache/6.4.0/bnd-cache/biz.aQute.junit/biz.aQute.junit-6.4.0.jar
+export JUNIT_JAR=$PWD/../../cnf/cache/7.0.0/bnd-cache/biz.aQute.junit/biz.aQute.junit-7.0.0.jar
 export COMPONENTTEST_JAR=$PWD/../../com.ibm.ws.componenttest/build/libs/com.ibm.ws.componenttest.jar
 
 export LIB_CLASSPATH=$ANNOTATION_JAR:$EJB_JAR:$PERSISTENCE_JAR:$SERVLET_JAR:$TRANSACTION_JAR:$JUNIT_JAR:$COMPONENTTEST_JAR

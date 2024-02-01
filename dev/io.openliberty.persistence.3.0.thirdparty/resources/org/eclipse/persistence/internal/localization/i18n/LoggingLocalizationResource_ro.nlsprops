@@ -119,6 +119,10 @@ connected_user_database=Conectat: {3}{4}Utilizator: {0}{3}{4}Baz\u0103 de date: 
 
 connected_user_database_driver=Conectat: {0}{6}Utilizator: {1}{6}Baz\u0103 de date: {2}  Versiune: {3}{6}Driver: {4}  Versiune: {5}
 
+corrupt_object=obiect corupt: {0}
+
+corrupt_object_referenced_through_mapping=obiect corupt referit prin mapare: {0}
+
 corrupted_session_announcement=SessionID: {0} Managerul de descoperire a primit un anun\u0163 de sesiune corupt - se ignor\u0103.
 
 create_default_dbms_tables_not_supported=Setarea WLS native CMP "create-default-dbms-tables" nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
@@ -707,6 +711,8 @@ sop_object_wrong_version=Se \u00eenl\u0103tur\u0103 sopObject-ul serializat de p
 
 src_pm_name_first_argument=Trebuie s\u0103 specifica\u0163i numele PM surs\u0103 la primul argument de intrare ca: -sOc4j-native sau -sWeblogic.
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=stiva de obiecte vizitate care fac referire la obiectul corupt {0}
+
 table_existed_during_creation=A e\u015fuat crearea tabelului. Dac\u0103 exist\u0103 deja, trebuie abandonat mai \u00eent\u00e2i. Aceasta se poate face manual sau set\u00e2nd atributul db-table-gen \u00een orion-ejb-jar.xml.
 
 template_orion_ejb_jar_created=S-a creat un fi\u015fier orion-ejb-jar.xml \u015fablonat
@@ -737,7 +743,12 @@ toplink_warning=[EL Warning]:
 
 unit_of_work_thread_info=Unitatea curent\u0103 de lucru din sesiunea ({0}) a fost creat\u0103 de un fir (id: {1} nume: {2}), diferit de firul curent (id: {3} nume: {4})
 
-unit_of_work_thread_info_thread_dump=Creare fir (id: {0} nume: {1}): urm\u0103rire stiv\u0103 {2}Fir curent (id: {3} nume: {4}): urm\u0103rire stiv\u0103 {5}\n
+unit_of_work_thread_info_thread_dump=Creare thread (id: {0} : {1}):
+#{2}
+
+Current Fir (id: {3} : {4}
+#{5}
+
 unitofwork_identity_hashcode={0}Cod hash identitate UnitOfWork: {1}
 
 update_all_fields_not_supported=Caracteristica Oc4j native CMP "update-all-fields" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
@@ -747,6 +758,8 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nu poate fol
 validate_db_schema_with_not_supported=Setarea WLS native CMP "validate-db-schema-with" nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 
 validate_ejb_jar=Validarea ejb-jar.xml porne\u015fte, ar putea dura c\u00e2tva timp...
+
+validate_object_space=validare spa\u021biu de obiecte.
 
 validity_timeout_not_supported=Setarea Oc4j native CMP "validity-timeout" pe entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 

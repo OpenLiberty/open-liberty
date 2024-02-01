@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,6 +26,7 @@ import com.ibm.ws.jpa.tests.spec10.injection.common.RepeatWithJPA22Hibernate;
 import com.ibm.ws.jpa.tests.spec10.injection.common.RepeatWithJPA22OpenJPA312;
 import com.ibm.ws.jpa.tests.spec10.injection.common.RepeatWithJPA30;
 import com.ibm.ws.jpa.tests.spec10.injection.common.RepeatWithJPA31;
+import com.ibm.ws.jpa.tests.spec10.injection.common.RepeatWithJPA32;
 
 import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.RepeatTests;
@@ -52,6 +53,7 @@ public class FATSuite extends TestContainerSuite {
                     .andWith(new RepeatWithJPA22Hibernate())
                     .andWith(new RepeatWithJPA22OpenJPA312())
                     .andWith(new RepeatWithJPA30())
-                    .andWith(new RepeatWithJPA31());
+                    .andWith(new RepeatWithJPA31())
+                    .andWith(new RepeatWithJPA32());
 
 }

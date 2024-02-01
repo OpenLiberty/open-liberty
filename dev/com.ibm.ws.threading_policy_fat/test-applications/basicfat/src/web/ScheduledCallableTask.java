@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020,2021 IBM Corporation and others.
+ * Copyright (c) 2020,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,13 +15,13 @@ package web;
 import java.util.concurrent.CountDownLatch;
 
 import com.ibm.ws.threading.PolicyExecutor;
-import com.ibm.ws.threading.ScheduledPolicyExecutorTask;
+import com.ibm.ws.threading.ScheduledCustomExecutorTask;
 
 /**
  * A subclass of CountDownTask that directs its execution to the specified PolicyExecutor
  * when submitted to the Liberty scheduled executor.
  */
-public class ScheduledCallableTask extends CountDownTask implements ScheduledPolicyExecutorTask {
+public class ScheduledCallableTask extends CountDownTask implements ScheduledCustomExecutorTask {
     private final PolicyExecutor executor;
 
     public ScheduledCallableTask(PolicyExecutor executor, CountDownLatch beginLatch, CountDownLatch continueLatch) {

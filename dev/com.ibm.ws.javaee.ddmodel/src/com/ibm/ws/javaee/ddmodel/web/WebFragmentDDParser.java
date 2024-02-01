@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,15 +25,16 @@ public class WebFragmentDDParser extends DDParserSpec {
         new VersionData("4.0", null, NAMESPACE_JCP_JAVAEE, WebApp.VERSION_4_0, VERSION_8_0_INT),
 
         new VersionData("5.0", null, NAMESPACE_JAKARTA, WebApp.VERSION_5_0, VERSION_9_0_INT),
-        new VersionData("6.0", null, NAMESPACE_JAKARTA, WebApp.VERSION_6_0, VERSION_10_0_INT)
+        new VersionData("6.0", null, NAMESPACE_JAKARTA, WebApp.VERSION_6_0, VERSION_10_0_INT),
+        new VersionData("6.1", null, NAMESPACE_JAKARTA, WebApp.VERSION_6_1, VERSION_11_0_INT)
     };
 
     public static int getMaxTolerated() {
-        return WebApp.VERSION_6_0;
+        return WebApp.VERSION_6_1;
     }
     
     public static int getMaxImplemented() {
-        return WebApp.VERSION_5_0;
+        return WebApp.VERSION_5_0; //TODO should this be updated to 6.0?
     }
     
     @Override

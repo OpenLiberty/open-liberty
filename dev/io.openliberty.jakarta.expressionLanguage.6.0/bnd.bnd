@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ Bundle-Description: Jakarta Expression Language, version 6.0
 javac.source: 17
 javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Export-Package: \
  jakarta.el;thread-context=true; version="6.0.0"
@@ -30,12 +30,13 @@ Export-Package: \
        uses:="jakarta.el"
 
 -includeresource: \
-    @${repo;org.apache.tomcat:tomcat-el-api;11.0.0.M13;EXACT}!/!(META-INF/maven/*|module-info.class),\
-    jakarta=resources/jakarta
+    @${repo;org.apache.tomcat:tomcat-el-api;11.0.0.M16;EXACT}!/!(META-INF/maven/*|module-info.class),\
+    jakarta=resources/jakarta,\
+    jakarta/el=${bin}/jakarta/el
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-   org.apache.tomcat:tomcat-el-api;strategy=exact;version=11.0.0.M13
+   org.apache.tomcat:tomcat-el-api;strategy=exact;version=11.0.0.M16

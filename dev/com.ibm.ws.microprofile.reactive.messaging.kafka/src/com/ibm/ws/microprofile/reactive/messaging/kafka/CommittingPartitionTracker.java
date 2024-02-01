@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,7 +22,6 @@ import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
@@ -30,6 +29,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.OffsetAndMetadata;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.TopicPartition;
+
+import io.openliberty.microprofile.reactive.messaging.internal.interfaces.RMAsyncProvider;
+import io.openliberty.microprofile.reactive.messaging.internal.interfaces.RMContext;
 
 /**
  * Tracks the assignment of a partition to this consumer and commits message offsets to that partition
@@ -49,7 +51,7 @@ public class CommittingPartitionTracker extends PartitionTracker {
     private static final TraceComponent tc = Tr.register(CommittingPartitionTracker.class);
 
     private final KafkaAdapterFactory factory;
-    private final ScheduledExecutorService executor;
+    private final RMAsyncProvider asyncProvider;
     private final KafkaInput<?, ?> kafkaInput;
     private final int maxCommitBatchSize;
     private final Duration maxCommitBatchInterval;
@@ -97,20 +99,20 @@ public class CommittingPartitionTracker extends PartitionTracker {
                                       KafkaAdapterFactory factory,
                                       KafkaInput<?, ?> kafkaInput,
                                       long initialCommittedOffset,
-                                      ScheduledExecutorService executor,
+                                      RMAsyncProvider asyncProvider,
                                       int maxCommitBatchSize,
                                       Duration maxCommitBatchInterval) {
         super(topicPartition);
         this.factory = factory;
         this.kafkaInput = kafkaInput;
-        this.executor = executor;
+        this.asyncProvider = asyncProvider;
         this.committedOffset = initialCommittedOffset;
         this.maxCommitBatchSize = maxCommitBatchSize;
         this.maxCommitBatchInterval = maxCommitBatchInterval;
     }
 
     @Override
-    public CompletionStage<Void> recordDone(long offset, Optional<Integer> leaderEpoch) {
+    public CompletionStage<Void> recordDone(long offset, Optional<Integer> leaderEpoch, RMContext context) {
 
         CompletableFuture<Void> result = new CompletableFuture<>();
         try {
@@ -120,7 +122,7 @@ public class CommittingPartitionTracker extends PartitionTracker {
                 if (offset < committedOffset) {
                     isNewOffset = false;
                 } else {
-                    isNewOffset = completedWork.add(new CompletedWork(offset, leaderEpoch, result));
+                    isNewOffset = completedWork.add(new CompletedWork(offset, leaderEpoch, result, context));
                 }
 
                 if (isNewOffset) {
@@ -163,7 +165,8 @@ public class CommittingPartitionTracker extends PartitionTracker {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Scheduling deferred commit task", this);
                 }
-                pendingCommitTask = executor.schedule(this::commitCompletedWork, maxCommitBatchInterval.toNanos(), TimeUnit.NANOSECONDS);
+                pendingCommitTask = asyncProvider.getScheduledExecutorService()
+                                                 .schedule(this::commitCompletedWork, maxCommitBatchInterval.toNanos(), TimeUnit.NANOSECONDS);
             }
         }
     }
@@ -213,7 +216,7 @@ public class CommittingPartitionTracker extends PartitionTracker {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(this, tc, "Committing from " + originalCommitOffset + " to " + finalCommitOffset, this);
                 }
-                commitUpTo(newestWork).whenCompleteAsync((r, t) -> processCommittedWork(originalCommitOffset, finalCommitOffset, t), executor);
+                commitUpTo(newestWork).whenCompleteAsync((r, t) -> processCommittedWork(originalCommitOffset, finalCommitOffset, t), asyncProvider.getExecutorService());
             }
 
             outstandingUncommittedWork -= newCommitOffset - committedOffset;
@@ -288,7 +291,7 @@ public class CommittingPartitionTracker extends PartitionTracker {
 
                     // lastWork _should_ always be non-null, but if it isn't then presumably it's already been committed (maybe if we've somehow committed this offset twice?)
                     if (lastWork != null) {
-                        commitUpTo(lastWork).whenCompleteAsync((r, t) -> processCommittedWork(originalOffset, committedOffset, t), executor);
+                        commitUpTo(lastWork).whenCompleteAsync((r, t) -> processCommittedWork(originalOffset, committedOffset, t), asyncProvider.getExecutorService());
                     } else {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(this, tc, "Would retry commit to " + committedOffset + " but completedWork contains nothing before this offset");
@@ -320,11 +323,16 @@ public class CommittingPartitionTracker extends PartitionTracker {
 
             if (exception == null) {
                 for (CompletedWork work : committedWork) {
-                    work.completion.complete(null);
+                    work.context.execute(() -> {
+                        work.completion.complete(null);
+                    });
                 }
             } else {
                 for (CompletedWork work : committedWork) {
-                    work.completion.completeExceptionally(exception);
+                    work.context.execute(() -> {
+                        work.completion.completeExceptionally(exception);
+                    });
+
                 }
             }
         }
@@ -355,12 +363,14 @@ public class CommittingPartitionTracker extends PartitionTracker {
         private final long offset;
         private final CompletableFuture<Void> completion;
         private final Optional<Integer> leaderEpoch;
+        private final RMContext context;
 
-        public CompletedWork(long offset, Optional<Integer> leaderEpoch, CompletableFuture<Void> completion) {
+        public CompletedWork(long offset, Optional<Integer> leaderEpoch, CompletableFuture<Void> completion, RMContext context) {
             super();
             this.offset = offset;
             this.leaderEpoch = leaderEpoch;
             this.completion = completion;
+            this.context = context;
         }
 
         public CompletableFuture<Void> getCompletion() {
@@ -369,6 +379,10 @@ public class CommittingPartitionTracker extends PartitionTracker {
 
         public Optional<Integer> getLeaderEpoch() {
             return this.leaderEpoch;
+        }
+
+        public RMContext getContext() {
+            return context;
         }
 
         @Override

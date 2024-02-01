@@ -1,0 +1,43 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<variable name="bclRoot" value="notSet"/>
+
+	<oauthProvider
+		id="OAuthConfigSample_multiServer1"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>bcl_multiServer_client1-1</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_multiServer_client1-2</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_multiServer_client1-3</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_multiServer_client1-4</autoAuthorizeClient>
+		
+	</oauthProvider>
+		
+	<oauthProvider
+		id="OAuthConfigSample_multiServer2"
+		tokenFormat="${oidcTokenFormat}"
+		autoAuthorize="true"
+	>
+		<customStore storeId="mongoDbStore" />
+		<autoAuthorizeClient>bcl_multiServer_client2-1</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_multiServer_client2-2</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_multiServer_client2-3</autoAuthorizeClient>
+		<autoAuthorizeClient>bcl_multiServer_client2-4</autoAuthorizeClient>
+		
+	</oauthProvider>
+		
+	</server>

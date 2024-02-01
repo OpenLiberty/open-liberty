@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -62,6 +62,7 @@ public abstract class CommonTests {
     public static final String JAKARTA_SUFFIX = "_j"; // application
     public static final String JAKARTA9_SUFFIX = "_j9"; // package, resource
     public static final String JAKARTA10_SUFFIX = "_j10"; // package, resource
+    public static final String JAKARTA11_SUFFIX = "_j11"; // package, resource
 
     protected static FileAsset addResource(
             Archive<?> archive,
@@ -207,6 +208,13 @@ public abstract class CommonTests {
                     JAKARTA_SUFFIX, JAKARTA10_SUFFIX,
                     INCLUDE_NO_BND, !USE_XMI_EJB);
         };
+        
+    protected static FailableBiConsumer<Class<?>, LibertyServer> setUpTestModules_J11 =
+            (Class<?> testClass, LibertyServer server) -> {
+                setUpTestModules(testClass, server,
+                        JAKARTA_SUFFIX, JAKARTA11_SUFFIX,
+                        INCLUDE_NO_BND, !USE_XMI_EJB);
+            };
   
     protected static FailableBiConsumer<Class<?>, LibertyServer> setUpTestModulesPartialHeaders =
         (Class<?> testClass, LibertyServer server) -> {
@@ -291,6 +299,13 @@ public abstract class CommonTests {
                          JAKARTA_SUFFIX, JAKARTA10_SUFFIX, JAKARTA_SUFFIX,
                          INCLUDE_NO_BND, !USE_XMI_EJB);
         };
+        
+    protected static FailableBiConsumer<Class<?>, LibertyServer> setUpTestApp_J11 =
+            (Class<?> testClass, LibertyServer server) -> {
+                setUpTestApp(testClass, server,
+                             JAKARTA_SUFFIX, JAKARTA11_SUFFIX, JAKARTA_SUFFIX,
+                             INCLUDE_NO_BND, !USE_XMI_EJB);
+            };
 
     protected static FailableBiConsumer<Class<?>, LibertyServer> setUpTestAppPartialHeaders =
         (Class<?> testClass, LibertyServer server) -> {

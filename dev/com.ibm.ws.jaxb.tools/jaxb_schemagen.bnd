@@ -18,7 +18,7 @@ Bundle-Name: IBM JAXB SchemaGen Tool
 
 Require-Compiler: true
 
-Require-Bundle: com.ibm.ws.jaxb.tools.2.2.10; version="[1,1.0.100)", \
+Require-Bundle: com.ibm.ws.jaxb.tools; version="[1,1.0.100)", \
  com.ibm.websphere.javaee.jaxb.2.2; version="[1,1.0.100)"; location="dev/api/spec/", \
  com.ibm.ws.logging; version="[1,1.0.100)"
  

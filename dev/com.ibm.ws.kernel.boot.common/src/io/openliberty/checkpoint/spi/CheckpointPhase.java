@@ -211,6 +211,62 @@ public enum CheckpointPhase {
         return THE_PHASE;
     }
 
+    /**
+     * A function to call on restore after the JVM has reentered multi-threaded
+     * mode.
+     *
+     * @param <T> Exception thrown by the call method
+     */
+    @FunctionalInterface
+    public static interface OnRestore<T extends Throwable> {
+        /**
+         * Called after on restore after the JVM has reentered multi-threaded
+         * mode.
+         *
+         * @throws T on a restore error. Any exception throw will result in a failure
+         *               to restore the process.
+         */
+        public void call() throws T;
+    }
+
+    /**
+     * Runs the given function on restore if the runtime has been configured to perform
+     * a checkpoint, the function is run after the JVM has re-entered multi-threaded mode;
+     * otherwise the function is run immediately from the calling thread synchronously.
+     *
+     * @param <T>   The type of throwable the function may throw
+     * @param toRun The function to run on restore.
+     * @throws T any errors that occur while running the function. If an exception is thrown during
+     *               restore then the process restore will fail.
+     */
+    public static <T extends Throwable> void onRestore(OnRestore<T> toRun) throws T {
+        CheckpointPhase phase = getPhase();
+        if (phase.restored()) {
+            // Already restored or not doing a checkpoint; call toRun now
+            toRun.call();
+            return;
+        }
+        // On the checkpoint side; try to add the hook to call toRun on restore
+        if (!phase.addMultiThreadedHook(new CheckpointHook() {
+            @Override
+            public void restore() {
+                try {
+                    toRun.call();
+                } catch (Throwable e) {
+                    sneakyThrow(e);
+                }
+            }
+        })) {
+            // Hook did not get added successfully; call toRun now
+            toRun.call();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    static <E extends Throwable> void sneakyThrow(Throwable e) throws E {
+        throw (E) e;
+    }
+
     private final static boolean DEBUG = debugEnabled();
 
     private static boolean debugEnabled() {
@@ -249,7 +305,7 @@ public enum CheckpointPhase {
             hooks = phase.getAndClearHooks(multiThreaded);
 
             for (CheckpointHook hook : hooks) {
-                debug(() -> "prepare operation on static hook: " + hook);
+                debug(() -> "prepare operation on static " + (multiThreaded ? "multi-threaded" : "single-threaded") + " hook: " + hook);
                 hook.prepare();
             }
             // reverse for restore call during checkpoint
@@ -271,7 +327,7 @@ public enum CheckpointPhase {
         @Override
         public void restore() {
             for (CheckpointHook hook : hooks) {
-                debug(() -> "prepare operation on static hook: " + hook);
+                debug(() -> "restore operation on static " + (multiThreaded ? "multi-threaded" : "single-threaded") + " hook: " + hook);
                 hook.restore();
             }
             // release references to hooks now

@@ -1,0 +1,37 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+Bundle-Name: Superclasses for Concurrency 3.1 and above
+Bundle-SymbolicName: io.openliberty.concurrent.internal.compat31
+Bundle-Description: Superclasses for Concurrency 3.1 and above; version=${bVersion}
+
+WS-TraceGroup: concurrent
+
+Export-Package: \
+  io.openliberty.concurrent.internal.compat
+
+Private-Package: \
+  io.openliberty.concurrent.internal.compat.impl.*
+
+-buildpath: \
+  com.ibm.websphere.appserver.spi.logging,\
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.concurrent,\
+  com.ibm.ws.context

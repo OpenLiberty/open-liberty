@@ -28,6 +28,9 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
  * An interface for reading ConsumerRecords from a Kafka topic. The key and message types are dependent on the KafkaConsumer which is passed in.
  * <p>
  * This reader doesn't commit any offsets so each new reader will start reading from the start of the topic.
+ * <p>
+ * Once an instance of KafkaReader is no longer required. It must be closed by KafkaReader.close()
+ *
  */
 public class KafkaReader<K, V> implements AutoCloseable {
 
@@ -69,7 +72,7 @@ public class KafkaReader<K, V> implements AutoCloseable {
      */
     public List<ConsumerRecord<K, V>> assertReadRecords(int count, Duration timeout) {
         List<ConsumerRecord<K, V>> records = readRecords(count, timeout);
-        assertThat("Wrong number of records fetched from kafka", records, hasSize(count));
+        assertThat("Wrong number of records fetched from kafka. We found: " + System.lineSeparator() + listToString(records), records, hasSize(count));
         return records;
     }
 
@@ -108,4 +111,7 @@ public class KafkaReader<K, V> implements AutoCloseable {
         kafkaConsumer.close();
     }
 
+    private String listToString(List<?> list) {
+        return list.stream().map(Object::toString).collect(Collectors.joining(System.lineSeparator()));
+    }
 }

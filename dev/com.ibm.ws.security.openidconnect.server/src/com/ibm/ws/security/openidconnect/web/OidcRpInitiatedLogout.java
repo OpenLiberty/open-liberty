@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.oauth20.web.OAuthClientTracker;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
+import io.openliberty.security.openidconnect.backchannellogout.BackchannelLogoutRequestException;
 import io.openliberty.security.openidconnect.backchannellogout.BackchannelLogoutRequestHelper;
 
 /**
@@ -52,10 +53,10 @@ public class OidcRpInitiatedLogout {
     private final HttpServletResponse response;
 
     /**
-     * @param oauth20Provider extracted from the request
+     * @param oauth20Provider  extracted from the request
      * @param oidcServerConfig is the object of oidc server configuration object
-     * @param request is the incoming HttpServletRequest
-     * @param response WAS OIDC response for a given provider
+     * @param request          is the incoming HttpServletRequest
+     * @param response         WAS OIDC response for a given provider
      */
     public OidcRpInitiatedLogout(OidcEndpointServices endpointServices, OAuth20Provider oauth20Provider, OidcServerConfig oidcServerConfig, HttpServletRequest request,
                                  HttpServletResponse response) {
@@ -221,9 +222,14 @@ public class OidcRpInitiatedLogout {
         }
     }
 
-    void sendBackchannelLogoutRequests(String userName, String idTokenString) {
-        BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
-        bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
+    @FFDCIgnore(BackchannelLogoutRequestException.class)
+    void sendBackchannelLogoutRequests(String userName, String idTokenString) throws ServletException {
+        try {
+            BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
+            bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
+        } catch (BackchannelLogoutRequestException e) {
+            throw new ServletException();
+        }
     }
 
     void sendPostEndSessionRedirect(String redirectUri) throws IOException {

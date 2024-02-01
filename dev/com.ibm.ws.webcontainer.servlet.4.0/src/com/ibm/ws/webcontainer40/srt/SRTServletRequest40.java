@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -194,8 +194,13 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
                 case PATH:
                     // in the case of /* mapping, skip the pathInfo.substring.
                     if (!dispatchContext.hasSlashStarMapping()) {
-                        // matchValue is the pathInfo after the last "/" and pattern is the servletPath + "/*"
-                        matchValue = pathInfo.substring(pathInfo.lastIndexOf("/") + 1);
+                        if (com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_61) {
+                            // matchValue should not start with "/"
+                            matchValue = pathInfo.startsWith("/") ? pathInfo.substring(1) : pathInfo;
+                        } else {
+                            // matchValue is the pathInfo after the last "/" and pattern is the servletPath + "/*"
+                            matchValue = pathInfo.substring(pathInfo.lastIndexOf("/") + 1);
+                        }
                     } else {
                         matchValue = servletPath + pathInfo;
 

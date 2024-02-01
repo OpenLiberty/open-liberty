@@ -20,7 +20,7 @@ Subsystem-Name: MicroProfile Health 2.2
   com.ibm.websphere.appserver.cdi-2.0; ibm.tolerates:="1.2", \
   com.ibm.websphere.appserver.jndi-1.0
 -bundles=\
- com.ibm.websphere.jsonsupport, \
+ io.openliberty.jsonsupport.internal, \
  com.ibm.ws.microprofile.health.2.0; apiJar=false; location:="lib/", \
  com.ibm.ws.org.joda.time.1.6.2
 kind=ga
