@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ configurations {
 }
 
 dependencies {
-  junitdependencies 'com.sun.xml.ws:jaxws-rt:2.2.10',
+  junitdependencies project(':com.ibm.ws.jaxws.tools'),
   		'com.sun.xml.messaging.saaj:saaj-impl:1.4.0',
   		'com.sun.xml.ws:policy:2.4',
   		'com.sun.xml.stream.buffer:streambuffer:1.5.3',
