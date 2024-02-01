@@ -48,7 +48,11 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
 
     private static final String SECRETS_PREFIX = "/etc/kafka/secrets/";
     private static final String KEYSTORE_FILENAME = "kafkakey.jks";
+    private static final String KEYSTORE_FILENAME2 = "kafkakey2.jks";
     private static final String KEYSTORE_FILEPATH = SECRETS_PREFIX + KEYSTORE_FILENAME;
+    private static final String KEYSTORE_FILEPATH2 = SECRETS_PREFIX + KEYSTORE_FILENAME2;
+    private static final String KEYSTORE_FILENAME_COMBINED = "kafkakey_combined.jks";
+    private static final String KEYSTORE_FILEPATH_COMBINED = SECRETS_PREFIX + KEYSTORE_FILENAME_COMBINED;
     private static final String KEYSTORE_PASSWORD_FILENAME = "kafkakey-pass";
     private static final String KEYSTORE_PASSWORD_FILEPATH = SECRETS_PREFIX + KEYSTORE_PASSWORD_FILENAME;
 
@@ -58,6 +62,8 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
 
     private String listenerScheme = "PLAINTEXT";
     private boolean tls = false;
+    private boolean mtls = false;
+    private boolean mergeKeystores = false;
     private String kafkaJaasConfig = null;
     private String zookeeperJaasConfig = null;
 
@@ -92,6 +98,34 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
         return this;
     }
 
+    /**
+     * Enable MTLS
+     *
+     * This also enables TLS and all related TLS objects are created.
+     *
+     * @return
+     */
+    public ExtendedKafkaContainer withMTls(){
+        this.mtls = true;
+        withTls();
+        return this;
+    }
+
+    /**
+     * Set that keystore 1 and 2 are to be merged into a separate single truststore
+     *
+     * By Default the primary key/truststore will only contain the contents of keystore 1, not keystore 2
+     * So if a server uses the contents of 2 it should be rejected by the other side for not being trusted
+     *
+     * the merge store is for use as a truststore only.
+     *
+     * @return
+     */
+    public ExtendedKafkaContainer mergeKeyStores(){
+        this.mergeKeystores = true;
+        return this;
+    }
+
     public ExtendedKafkaContainer withListenerScheme(String listenerScheme) {
         this.listenerScheme = listenerScheme;
         return this;
@@ -111,8 +145,45 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
         return this;
     }
 
+    /**
+     * Get Primary Keystore file
+     *
+     * If TLS has not been enabled returns null
+     *
+     * The contents of this keystore is used as the basis of trust and key stores for both Liberty and Kafka
+     * therefore its contents should always be trusted if used on either side of the communication
+     *
+     * This will return null if at least TLS is not enabled on the kafka definition
+     *
+     * @return
+     */
     public File getKeystoreFile() {
-        return new File(KEYSTORE_FILENAME);
+        if(tls) {
+            return new File(KEYSTORE_FILENAME);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Gets a secondary Keystore file if MTLS has been enabled, otherwise returns null
+     *
+     * This should be used for Client keystores such as RM Channels or connector
+     *
+     * By default, this keystore is not included in the truststores of either Liberty or Kafka. If used as the keystore
+     * for either server or client sides should result in a SSL Handshake error
+     *
+     * If you want to include the contents of this keystore in the truststore used for kafka, then `mergeKeyStores()` must be used
+     * to created a merged server truststore.
+     *
+     * @return
+     */
+    public File getKeystoreFile2() {
+        if(mtls) {
+            return new File(KEYSTORE_FILENAME2);
+        } else {
+            return null;
+        }
     }
 
     public String getKeystorePassword() {
@@ -143,6 +214,21 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
             withEnv("KAFKA_SSL_TRUSTSTORE_FILENAME", KEYSTORE_FILENAME);
             withEnv("KAFKA_SSL_TRUSTSTORE_CREDENTIALS", KEYSTORE_PASSWORD_FILENAME);
             withEnv("KAFKA_SSL_ENABLED_PROTOCOLS", "TLSv1.2");
+            // MTLS only works if TLS is enabled.
+            if (mtls) {
+                // Enable Client Authentication - by default this is `requested`, which allows non-cert based requests to succeed
+                withEnv("KAFKA_SSL_CLIENT_AUTH", "required");
+                // Generate Second Keystore
+                // Second key store contents is not included in the Kafka server truststore so is by default rejected
+                subCommands.add(getCertGenerationCommand(KEYSTORE_FILEPATH2, KEYSTORE_PASSWORD, getHost()));
+                // Combine the keys into a single store that can be used by the kafka server
+                if (mergeKeystores) {
+                    subCommands.add(mergeKeyStoresCommand(KEYSTORE_FILEPATH, KEYSTORE_FILEPATH_COMBINED, "kafka-testcontainers", KEYSTORE_PASSWORD));
+                    subCommands.add(mergeKeyStoresCommand(KEYSTORE_FILEPATH2, KEYSTORE_FILEPATH_COMBINED, "kafka-testcontainers2", KEYSTORE_PASSWORD));
+                    // Change Kafka Server TrustStore location to combined store
+                    withEnv("KAFKA_SSL_TRUSTSTORE_FILENAME", KEYSTORE_FILENAME_COMBINED);
+                }
+            }
         }
 
         subCommands.add("printf '" + getZookeeperProperties() + "' > " + ZOOKEEPER_PROPERTIES_FILENAME);
@@ -171,6 +257,9 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
         super.doStart();
         if (tls) {
             copyFileFromContainer(KEYSTORE_FILEPATH, KEYSTORE_FILENAME);
+        }
+        if (mtls) {
+            copyFileFromContainer(KEYSTORE_FILEPATH2, KEYSTORE_FILENAME2);
         }
     }
 
@@ -231,6 +320,26 @@ public class ExtendedKafkaContainer extends GenericContainer<ExtendedKafkaContai
                                          "-sigalg", "SHA256withRSA",
                                          "-keyalg", "RSA",
                                          "-keysize", "4096");
+        return String.join(" ", cmd);
+    }
+
+    /**
+     * Combine Keystore files into a single one to use as a truststore
+     * @param keystoreFilePath
+     * @param outputFilePath
+     * @param password will be used for both the extraction and for the output store
+     * @return
+     */
+    private String mergeKeyStoresCommand(String keystoreFilePath, String outputFilePath, String destAlias, String password){
+        List <String> cmd = Arrays.asList("keytool",
+                "-importkeystore",
+                "-srckeystore", keystoreFilePath,
+                "-destkeystore", outputFilePath,
+                "-srcalias", "kafka-testcontainers",
+                "-destalias", destAlias,
+                "-srcstorepass", password,
+                "-deststorepass", password
+                );
         return String.join(" ", cmd);
     }
 

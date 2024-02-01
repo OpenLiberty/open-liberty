@@ -1,16 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tls;
+ ******************************************************************************/
+
+package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.mtls.single;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleIncomingChannel;
@@ -18,6 +16,9 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.Connec
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import org.apache.kafka.common.config.SslConfigs;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -31,11 +32,10 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.apps.kafka.BasicMessagingB
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.Direction;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.MtlsTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.TlsTests;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -43,23 +43,21 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
-/**
- * Basic test using a kafka broker with TLS enabled
- */
-@RunWith(FATRunner.class)
-public class KafkaTlsTest {
 
-    private static final String APP_NAME = "kafkaTlsTest";
-    private static final String APP_GROUP_ID = "tls-test-group";
+@RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
+public class KafkaMtlsConnectorTest {
+
+    private static final String APP_NAME = "kafkaMtlsConnectorTest";
+    private static final String APP_GROUP_ID = "mtls-connector-test-group";
     private static final String SERVER_NAME = "SimpleRxMessagingServer";
 
     @Server(SERVER_NAME)
-    @TestServlet(contextRoot = APP_NAME, servlet = KafkaTlsTestServlet.class)
+    @TestServlet(contextRoot = APP_NAME, servlet = KafkaMtlsTestServlet.class)
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10,
-                                                                  ReactiveMessagingActions.MP50_RM30);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -67,27 +65,31 @@ public class KafkaTlsTest {
 
         ConnectorProperties incomingProperties = simpleIncomingChannel(null, BasicMessagingBean.CHANNEL_IN, APP_GROUP_ID);
 
-        ConnectorProperties connectorProperties = new ConnectorProperties(Direction.CONNECTOR, "liberty-kafka")
-                        .addAll(TlsTests.connectionProperties());
+        ConnectorProperties connectorProperties = new ConnectorProperties(ConnectorProperties.Direction.CONNECTOR, "liberty-kafka")
+                .addAll(MtlsTests.testConnectionProperties())
+                // Add Keystore properties to the connector to complete the certificate authentication
+                .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE_FILENAME)
+                .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsTests.kafkaContainer.getKeystorePassword());
 
         PropertiesAsset appConfig = new PropertiesAsset()
-                        .addProperty(KafkaTestClientProvider.CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(TlsTests.connectionProperties()))
-                        .include(incomingProperties)
-                        .include(outgoingProperties)
-                        .include(connectorProperties);
+                .addProperty(KafkaTestClientProvider.CONNECTION_PROPERTIES_KEY, KafkaTestClientProvider.encodeProperties(MtlsTests.connectionProperties()))
+                .include(incomingProperties)
+                .include(outgoingProperties)
+                .include(connectorProperties);
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addAsLibraries(kafkaClientLibs())
-                        .addAsManifestResource(kafkaPermissions(), "permissions.xml")
-                        .addPackage(KafkaTlsTestServlet.class.getPackage())
-                        .addPackage(BasicMessagingBean.class.getPackage())
-                        .addPackage(AbstractKafkaTestServlet.class.getPackage())
-                        .addPackage(KafkaTestConstants.class.getPackage())
-                        .addAsResource(appConfig, "META-INF/microprofile-config.properties");
+                .addAsLibraries(kafkaClientLibs())
+                .addAsManifestResource(kafkaPermissions(), "permissions.xml")
+                .addPackage(KafkaMtlsTestServlet.class.getPackage())
+                .addPackage(BasicMessagingBean.class.getPackage())
+                .addPackage(AbstractKafkaTestServlet.class.getPackage())
+                .addPackage(KafkaTestConstants.class.getPackage())
+                .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
-        KafkaUtils.copyTrustStore(TlsTests.kafkaContainer, server);
+        KafkaUtils.copyTrustStore(MtlsTests.kafkaContainer, server);
+        KafkaUtils.copyKeyStoresToServer(MtlsTests.kafkaContainer, server);
 
         server.startServer();
     }
@@ -97,7 +99,7 @@ public class KafkaTlsTest {
         try {
             server.stopServer();
         } finally {
-            KafkaUtils.deleteKafkaTopics(TlsTests.getAdminClient());
+            KafkaUtils.deleteKafkaTopics(MtlsTests.getAdminClient());
         }
     }
 
