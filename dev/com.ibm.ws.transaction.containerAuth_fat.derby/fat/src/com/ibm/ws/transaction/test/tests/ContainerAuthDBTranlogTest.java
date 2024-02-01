@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,7 +95,7 @@ public class ContainerAuthDBTranlogTest extends FATServletClient {
     @BeforeClass
     public static void init() throws Exception {
         Log.info(c, "init", "BeforeClass");
-        TxTestContainerSuite.beforeSuite();
+
         ShrinkHelper.defaultApp(serverBase, APP_NAME, "com.ibm.ws.transaction.web.*");
         ShrinkHelper.defaultApp(serverConAuth, APP_NAME, "com.ibm.ws.transaction.web.*");
         ShrinkHelper.defaultApp(serverConAuthBadUser, APP_NAME, "com.ibm.ws.transaction.web.*");

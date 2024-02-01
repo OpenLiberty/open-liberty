@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,9 +28,10 @@ import componenttest.topology.database.container.DatabaseContainerType;
 })
 public class FATSuite extends TxTestContainerSuite {
 
-    static {
-        databaseContainerType = DatabaseContainerType.SQLServer;
-    }
+	static {
+		beforeSuite(DatabaseContainerType.SQLServer);
+	}
+
     // Using the RepeatTests @ClassRule will cause all tests to be run twice.
     // First without any modifications, then again with all features upgraded to their EE8 equivalents.
     @ClassRule

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,8 +34,6 @@ public class FATSuite extends TxTestContainerSuite {
     private static final String POSTGRES_PASS = "superSecret";
 
     static {
-        databaseContainerType = DatabaseContainerType.Postgres;
-
         /*
          * The image here is generated using the Dockerfile in com.ibm.ws.jdbc_fat_postgresql/publish/files/postgresql-ssl
          * The command used in that directory was: docker build -t jonhawkes/postgresql-ssl:1.0 .
@@ -47,6 +45,8 @@ public class FATSuite extends TxTestContainerSuite {
                         .withPassword(POSTGRES_PASS)
                         .withSSL()
                         .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "postgre-ssl"));
+
+        beforeSuite(DatabaseContainerType.Postgres);
     }
 
     // Using the RepeatTests @ClassRule will cause all tests to be run twice.

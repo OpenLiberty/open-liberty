@@ -663,7 +663,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                     _authTypeConfigured = true;
                 }
 
-               if (isStartupEnabled() && serviceRef != null) {
+                if (isStartupEnabled() && serviceRef != null) {
                     tmsRef.doStartup(this, _isSQLRecoveryLog);
                 }
             }
@@ -1127,6 +1127,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     public boolean peerRecoveryPrecedence() {
         return (Boolean) _props.get("peerRecoveryPrecedence");
+    }
 
     /*
      * Called by DS to inject ResourceConfigFactory reference from the com.ibm.ws.jdbc component
