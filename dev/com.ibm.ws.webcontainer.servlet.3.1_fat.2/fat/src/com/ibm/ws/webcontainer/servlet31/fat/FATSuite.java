@@ -57,16 +57,17 @@ public class FATSuite {
     static {
         // EE10 requires Java 11.
         // EE11 requires Java 17
-        // If we only specify EE10/EE11 for lite mode it will cause no tests to run which causes an error.
-        // If we are running on Java 8 have EE9 be the lite mode test to run.
+        // If we only specify EE10/EE11 for lite mode it will cause no tests to run with lower Java versions which causes an error.
         if (isWindows && !FATRunner.FAT_TEST_LOCALRUN) {
             // Repeating the full fat for all features may exceed the 3 hour limit on Fyre Windows and causes random build breaks.
             // Skip EE9 on the windows platform when not running locally.
+            // If we are running with a Java version less than 11 have EE8 be the lite mode test to run.
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE8_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                             .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                             .andWith(FeatureReplacementAction.EE11_FEATURES());
         } else {
+            // If we are running with a Java version less than 11 have EE9 be the lite mode test to run.
             repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                             .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                             .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
