@@ -87,8 +87,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
-        System.out.println("Closing context because of: ");
-        cause.printStackTrace();
         if (cause instanceof Http2Exception.StreamException) {
             System.out.println("Got a HTTP2 stream exception!! Need to close the stream");
             StreamException c = (Http2Exception.StreamException) cause;

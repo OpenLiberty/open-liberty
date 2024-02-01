@@ -414,7 +414,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public int getVirtualPort() {
-
+        // TODO Missing proper implementation
         return context.getLocalPort();
     }
 
