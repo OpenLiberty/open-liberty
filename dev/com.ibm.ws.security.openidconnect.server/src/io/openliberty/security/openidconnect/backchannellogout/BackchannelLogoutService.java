@@ -135,13 +135,14 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
     }
 
     private OidcServerConfig getMatchingConfig(String requestUri, String idTokenHintString) throws ServletException {
-        String issuerFromIdTokenHint = null;
-        try {
-            issuerFromIdTokenHint = getIssuerFromIdTokenHint(idTokenHintString);
-        } catch (Exception e) {
-            Tr.error(tc, Tr.formatMessage(tc, "LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN", new Object[] { e }));
-            throw new ServletException();
+        OidcServerConfig config = getMatchingConfigFromRequestUri(requestUri);
+        if (config == null) {
+            config = getMatchingConfigFromIdTokenHint(idTokenHintString);
         }
+        return config;
+    }
+
+    private OidcServerConfig getMatchingConfigFromRequestUri(String requestUri) {
         Iterator<ServiceAndServiceReferencePair<OidcServerConfig>> servicesWithRefs = oidcServerConfigRef.getServicesWithReferences();
         while (servicesWithRefs.hasNext()) {
             ServiceAndServiceReferencePair<OidcServerConfig> configServiceAndRef = servicesWithRefs.next();
@@ -150,7 +151,27 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
             if (isEndpointThatMatchesConfig(requestUri, configId) || isDelegatedLogoutRequestForConfig(requestUri, configId)) {
                 return config;
             }
-            if (issuerFromIdTokenHint != null && !issuerFromIdTokenHint.isEmpty() && isIdTokenHintIssuedByConfig(configId, config, issuerFromIdTokenHint)) {
+        }
+        return null;
+    }
+
+    private OidcServerConfig getMatchingConfigFromIdTokenHint(String idTokenHintString) throws ServletException {
+        String issuerFromIdTokenHint = null;
+        try {
+            issuerFromIdTokenHint = getIssuerFromIdTokenHint(idTokenHintString);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN", new Object[] { e }));
+            throw new ServletException();
+        }
+        if (issuerFromIdTokenHint == null || issuerFromIdTokenHint.isEmpty()) {
+            return null;
+        }
+        Iterator<ServiceAndServiceReferencePair<OidcServerConfig>> servicesWithRefs = oidcServerConfigRef.getServicesWithReferences();
+        while (servicesWithRefs.hasNext()) {
+            ServiceAndServiceReferencePair<OidcServerConfig> configServiceAndRef = servicesWithRefs.next();
+            OidcServerConfig config = configServiceAndRef.getService();
+            String configId = config.getProviderId();
+            if (isIdTokenHintIssuedByConfig(configId, config, issuerFromIdTokenHint)) {
                 return config;
             }
         }
@@ -168,7 +189,8 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
 
     boolean isEndpointThatMatchesConfig(String requestUri, String providerId) {
         return (requestUri.endsWith("/" + providerId + "/" + EndpointType.end_session.name())
-                || requestUri.endsWith("/" + providerId + "/" + EndpointType.logout.name()));
+                || requestUri.endsWith("/" + providerId + "/" + EndpointType.logout.name())
+                || requestUri.endsWith("/" + providerId + "/ibm_security_logout"));
     }
 
     /**
