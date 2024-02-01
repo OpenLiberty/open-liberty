@@ -2788,7 +2788,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "prepareOutgoing: partial: " + isPartialBody() + " chunked: " + msg.isChunkedEncodingSet() + " cl: " + msg.getContentLength());
                 }
-                System.out.println("prepareOutgoing: partial: " + isPartialBody() + " chunked: " + msg.isChunkedEncodingSet() + " cl: " + msg.getContentLength());
 
                 boolean complete = false;
 
@@ -2798,7 +2797,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 // Content-Length values by caller
                 // PK48697 - only update these if the message allows it
                 if (!isPartialBody() && msg.shouldUpdateBodyHeaders()) {
-                    System.out.println("Setting content length!");
                     complete = true;
                     msg.setContentLength(GenericUtils.sizeOf(buffers));
                     if (msg.isChunkedEncodingSet()) {
@@ -2900,14 +2898,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (!headersSent()) {
             boolean complete = false;
             HttpResponseMessage msg = getResponse();
-            System.out.println("Checking and sending headers!");
-            System.out.println("sendOutgoing: partial: " + isPartialBody() + " chunked: " + msg.isChunkedEncodingSet() + " cl: " + msg.getContentLength());
             if (!isPartialBody() && !getRequest().getMethod().equals(MethodValues.HEAD.getName())) {
 //                complete = true;
-                System.out.println("Setting content length!!");
                 msg.setContentLength(GenericUtils.sizeOf(buffers));
             } else if (addedCompressionContentLength || (!msg.isChunkedEncodingSet() && msg.getContentLength() == HttpGenerics.NOT_SET)) {
-                System.out.println("Setting transfer encoding due to no content length or transfer header!!");
                 HttpUtil.setTransferEncodingChunked(nettyResponse, true);
             }
 
@@ -2957,9 +2951,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
         if (Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
 
-            for (
-
-            WsByteBuffer buffer : buffers) {
+            for (WsByteBuffer buffer : buffers) {
                 if (Objects.nonNull(buffer)) { // Write buffer
                     if (buffer.remaining() == 0) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -2980,7 +2972,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
         }
         if (getResponse().getContentLength() != HttpGenerics.NOT_SET && getResponse().getContentLength() == getNumBytesWritten()) {
-            System.out.println("Writing out last http content due to finished content length");
             NettyResponseMessage resp = (NettyResponseMessage) getResponse();
             HttpHeaders trailers = resp.getNettyTrailers();
             DefaultLastHttpContent lastContent;
@@ -3271,8 +3262,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (!headersSent()) {
             boolean complete = false;
             HttpResponseMessage msg = getResponse();
-            System.out.println("Checking and sending headers!");
-            System.out.println("sendOutgoing: partial: " + isPartialBody() + " chunked: " + msg.isChunkedEncodingSet() + " cl: " + msg.getContentLength());
 
             // if a finishMessage started this write, then always set the
             // Content-Length header to the input size... removes chunked
@@ -3281,7 +3270,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             // PK48697 - only update these if the message allows it
             if (!isPartialBody() && !getRequest().getMethod().equals(MethodValues.HEAD.getName())) {
 //                complete = true;
-                System.out.println("Setting content length!!");
                 getResponse().setContentLength(GenericUtils.sizeOf(buffers));
             } else if (!msg.isChunkedEncodingSet() && msg.getContentLength() == HttpGenerics.NOT_SET) {
                 System.out.println("Setting transfer encoding due to no content length or transfer header!!");
@@ -3376,7 +3364,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
                                                                                                             "-1")), trailers);
             }
-            System.out.println("Sending last http content!");
             this.nettyContext.channel().write(lastContent);
         }
         this.nettyContext.channel().flush();
