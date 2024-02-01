@@ -1159,8 +1159,8 @@ public class InstallKernelMap implements Map {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
             } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
-            } else if (((String) envMap.get(protocol + ".proxyPassword")).isEmpty() ||
-                       envMap.get(protocol + ".proxyPassword") == null) {
+            } else if (envMap.get(protocol + "proxyUser") != null && (envMap.get(protocol + ".proxyPassword") == null
+                                                                      || ((String) envMap.get(protocol + ".proxyPassword")).isEmpty())) {
                 throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
             }
         }

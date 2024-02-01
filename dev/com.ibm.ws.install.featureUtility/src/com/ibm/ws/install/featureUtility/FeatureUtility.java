@@ -315,7 +315,7 @@ public class FeatureUtility {
 
 		// override no_proxy settings
 		if (FeatureUtilityProperties.getNoProxySetting() != null) {
-		    overrideMap.put("no_proxy", FeatureUtilityProperties.getNoProxySetting());
+		    overrideMap.put("http.nonProxyHosts", FeatureUtilityProperties.getNoProxySetting());
 		}
 
         // override the local feature repo

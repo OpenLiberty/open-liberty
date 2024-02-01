@@ -20,7 +20,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Properties;
 
 import org.junit.After;
@@ -52,10 +51,9 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	 * Also wait for log "Started Sonatype Nexus.*" to make sure repository is up and running.
 	 */
 	public static GenericContainer<?> nexusContainer = new GenericContainer<>("jiwoo/nexus:1.0")
-		.withStartupTimeout(Duration.of(5, ChronoUnit.MINUTES))
-        .waitingFor(Wait.forLogMessage("Started Sonatype Nexus.*", 1))
         .withNetwork(network)
-        .withNetworkAliases("nexus");
+		.withNetworkAliases("nexus").waitingFor(
+			Wait.forLogMessage("Started Sonatype Nexus.*", 1).withStartupTimeout(Duration.ofMinutes(10)));
 
 	@ClassRule
 	public static GenericContainer<?> container = new GenericContainer<>("jiwoo/simple-keyserver:1.0")
@@ -98,6 +96,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 		if (!isZos) {
 			resetOriginalWlpProps();
 		}
+		nexusContainer.stop();
 	}
 
 	/**
@@ -718,8 +717,6 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	public void testVerifyhttpKeyServer() throws Exception {
 	    final String METHOD_NAME = "testVerifyhttpKeyServer";
 	    Log.entering(c, METHOD_NAME);
-	    Properties envProps = new Properties();
-	    envProps.put("FEATURE_VERIFY", "all");
 
 	    String containerUrl = "http://" + container.getHost() + ":" + container.getMappedPort(8080)
 		    + "/validKey.asc";
@@ -979,7 +976,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	  
 	    try {
 		checkCommandOutput(po, 0, null, filesList);
-	    } catch(Exception e) {
+	    } catch (AssertionError e) {
 		checkProxyLog(METHOD_NAME, proxyContainer);
 		  throw e;
 	    }
@@ -1010,13 +1007,13 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.user", "admin");
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.password", "golf");
 	    
-	    String[] param1s = { "installFeature", "json-1.0", "--verbose" };
+	    String[] param1s = { "installFeature", "json-1.0", "--verbose", "--noCache" };
 	    String[] filesList = { "/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
 	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
 	    try {
 		checkCommandOutput(po, 0, null, filesList);
-	    } catch (Exception e) {
+	    } catch (AssertionError e) {
 		checkProxyLog(METHOD_NAME, proxyContainer);
 		  throw e;
 	    }
@@ -1049,13 +1046,13 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.password",
 		    "{xor}ODAzOQ==");
 
-	    String[] param1s = { "installFeature", "json-1.0", "--verbose" };
+	    String[] param1s = { "installFeature", "json-1.0", "--verbose", "--noCache" };
 	    String[] filesList = { "/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
 	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
 	    try {
 		checkCommandOutput(po, 0, null, filesList);
-	    } catch (Exception e) {
+	    } catch (AssertionError e) {
 		checkProxyLog(METHOD_NAME, proxyContainer);
 		throw e;
 	    }
@@ -1063,5 +1060,86 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    Log.exiting(c, METHOD_NAME);
 	    
 	}
+
+	/*
+	 * Test no proxy using environment variable Try downloading public key from
+	 * external key server. It should fail because keyserver can only be connected
+	 * through proxy. (testcontainer network)
+	 */
+	@Test
+	public void testnoProxyEnv() throws Exception {
+	    final String METHOD_NAME = "testnoProxyEnv";
+	    Log.entering(c, METHOD_NAME);
+
+	    String proxyHost = "http://" + proxyContainer.getHost();
+	    String proxyPort = proxyContainer.getMappedPort(3128).toString();
+	    String containerUrl = "http://keyserver:8080/validKey.asc";
+
+	    Properties envProps = new Properties();
+	    envProps.put("no_proxy", "keyserver");
+
+
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyHost", proxyHost);
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyPort", proxyPort);
+	    
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
+
+	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
+
+	    String[] param1s = { "installFeature", "testesa1",
+		    "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+
+	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s, envProps);
+
+	    try {
+		checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1506E", null);
+	    } catch (AssertionError e) {
+		checkProxyLog(METHOD_NAME, proxyContainer);
+		throw e;
+	    }
+
+	    Log.exiting(c, METHOD_NAME);
+
+	}
+
+	/*
+	 * Test no proxy using properties
+	 */
+	@Test
+	public void testnoProxyProps() throws Exception {
+	    final String METHOD_NAME = "testnoProxyProps";
+	    Log.entering(c, METHOD_NAME);
+
+	    String proxyHost = "http://" + proxyContainer.getHost();
+	    String proxyPort = proxyContainer.getMappedPort(3128).toString();
+	    String containerUrl = "http://keyserver:8080/validKey.asc";
+
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyHost", proxyHost);
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyPort", proxyPort);
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "http.nonProxyHosts", "keyserver");
+
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
+
+	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
+
+	    String[] param1s = { "installFeature", "testesa1",
+		    "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+
+	    try {
+		checkCommandOutput(po, InstallException.SIGNATURE_VERIFICATION_FAILED, "CWWKF1506E", null);
+	    } catch (AssertionError e) {
+		checkProxyLog(METHOD_NAME, proxyContainer);
+		throw e;
+	    }
+
+	    Log.exiting(c, METHOD_NAME);
+
+	}
+
 
 }

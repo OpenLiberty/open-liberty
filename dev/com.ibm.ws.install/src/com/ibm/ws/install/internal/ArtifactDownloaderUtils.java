@@ -112,7 +112,6 @@ public class ArtifactDownloaderUtils {
     public static int exists(String URLName, Map<String, Object> envMap, MavenRepository repository) throws IOException {
         try {
             URL url = new URL(URLName);
-            logger.fine("heelo");
             String proxyEncodedAuth = "";
             if (url.getProtocol().equals("https") && envMap.get("https.proxyHost") != null) {
                 proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword"));
