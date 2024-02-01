@@ -344,7 +344,6 @@ public class ArtifactDownloader implements AutoCloseable {
         }
 
         conn.connect();
-        logger.fine(conn.getHeaderFields().toString());
 
         destination.getParentFile().mkdirs();
         File tempFile = File.createTempFile(destination.getName(), null, destination.getParentFile());
