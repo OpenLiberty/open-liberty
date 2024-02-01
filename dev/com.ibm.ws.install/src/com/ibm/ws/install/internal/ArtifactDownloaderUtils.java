@@ -19,11 +19,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -108,53 +106,14 @@ public class ArtifactDownloaderUtils {
     }
 
     public static int exists(String URLName, Map<String, Object> envMap) throws IOException {
-        try {
-            URL url = new URL(URLName);
-            if (url.getProtocol().equals("https")) {
-                HttpsURLConnection.setFollowRedirects(true);
-                HttpsURLConnection conn;
+        URL url = new URL(URLName);
+        Proxy proxy = ArtifactDownloaderUtils.getProxy(url, envMap);
 
-                if (envMap.get("https.proxyHost") != null) {
-                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
-                    conn = (HttpsURLConnection) url.openConnection(proxy);
-                } else if (envMap.get("http.proxyHost") != null) {
-                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
-                    conn = (HttpsURLConnection) url.openConnection(proxy);
-                } else {
-                    conn = (HttpsURLConnection) url.openConnection();
-                }
-                conn.setRequestMethod("HEAD");
-                conn.setConnectTimeout(10000);
-                conn.connect();
-                int responseCode = conn.getResponseCode();
-                conn.setInstanceFollowRedirects(true);
-                return responseCode;
-            } else {
-                HttpURLConnection.setFollowRedirects(true);
-                HttpURLConnection conn;
-                if (envMap.get("https.proxyHost") != null) {
-                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
-                    conn = (HttpURLConnection) url.openConnection(proxy);
-                } else if (envMap.get("http.proxyHost") != null) {
-                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
-                    conn = (HttpURLConnection) url.openConnection(proxy);
-                } else {
-                    conn = (HttpURLConnection) url.openConnection();
-                }
-                conn.setRequestMethod("HEAD");
-                conn.setConnectTimeout(10000);
-                conn.connect();
-                int responseCode = conn.getResponseCode();
-                conn.setInstanceFollowRedirects(true);
-                return responseCode;
-            }
-        } catch (ConnectException e) {
-            throw e;
-        } catch (SocketTimeoutException e) {
-            throw e;
-        } catch (IOException e) {
-            throw e;
-        }
+        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection(proxy);
+        conn.setRequestMethod("HEAD");
+        conn.setConnectTimeout(10000);
+        conn.connect();
+        return conn.getResponseCode();
     }
 
     public static void acquireFeatureURLs(List<String> mavenCoords, String repo, Map<String, String> urltoMavenCoord, VerifyOption verifyOption, boolean downloadSignaturesOnly) {
@@ -296,6 +255,62 @@ public class ArtifactDownloaderUtils {
         String version = resSplit[(resSplit.length - 2)];
         result = groupID + ":" + artifactID + ":" + version;
         return result;
+    }
+
+    /**
+     * @param address
+     * @param environment properties map
+     * @return
+     */
+    public static Proxy getProxy(URL address, Map<String, Object> envMap) {
+        Proxy proxy;
+        if (envMap.get("https.proxyHost") != null) {
+            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
+        } else if (envMap.get("http.proxyHost") != null) {
+            proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
+        } else {
+            proxy = Proxy.NO_PROXY;
+        }
+        //check if url is part of no proxy list
+        if (envMap.get("NO_PROXY") != null) {
+            if (isNoProxyURL(address, envMap)) {
+                logger.fine(address.getHost() + "is part of NO_PROXY exclusion list");
+                proxy = Proxy.NO_PROXY;
+            }
+
+        }
+        return proxy;
+    }
+
+    /**
+     * @param address
+     * @param envMap
+     * @param proxy
+     * @return
+     */
+    protected static boolean isNoProxyURL(URL address, Map<String, Object> envMap) {
+        String[] noProxyHosts = ((String) envMap.get("NO_PROXY")).split(",");
+        for (String noProxyHost : noProxyHosts) {
+            String host = address.getHost();
+            int port = address.getPort();
+            String noProxyPattern = noProxyHost.split(":")[0];
+
+            //check if port is set
+            if (port > 0) {
+                if (noProxyHost.split(":").length > 1) {
+                    int noProxyPort = Integer.parseInt(noProxyHost.split(":")[1]);
+                    if (port != noProxyPort) {
+                        return false;
+                    }
+
+                }
+            }
+            noProxyPattern = ".*" + noProxyPattern.replace(".", "\\.").replace("*", ".*");
+            if (host.matches(noProxyPattern)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
