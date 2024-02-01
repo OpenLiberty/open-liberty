@@ -47,6 +47,7 @@ import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
+import com.ibm.ws.http.netty.pipeline.RemoteIpHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
@@ -305,9 +306,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
                 return;
             }
+            if (this.nettyContext.pipeline().get(RemoteIpHandler.class) != null)
+                this.nettyContext.pipeline().get(RemoteIpHandler.class).resetState();
             try {
                 // Hopefully should close after write finishes
+                System.out.println("Before sync");
                 this.nettyContext.channel().closeFuture().sync();
+                System.out.println("After sync");
             } catch (InterruptedException exception) {
                 exception.printStackTrace();
             }
