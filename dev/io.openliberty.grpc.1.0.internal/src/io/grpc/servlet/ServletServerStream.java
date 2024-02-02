@@ -300,19 +300,7 @@ final class ServletServerStream extends AbstractServerStream {
           trailerSupplier.get().putIfAbsent(key, newValue);
         }
       }
-      try {
-        // Liberty change - our stack now needs a flush at this point which has now been
-        // removed from later versions of GRPC.
-        // See:
-        //   https://github.com/grpc/grpc-java/pull/9177/files#diff-2de04da34f7e35c085ca26dc596410983f5ded55a8de11eb97811264dea011f2
-        // grpc-java: AbstractServerStream::deliverFrame:
-        //   "Since endOfStream is triggered by the sending of trailers, avoid flush here and just flush after the trailers."
-        // So the last deliverFrame will have flush parameter false, and so we also have to flush as part of writing the trailers: 
-        writer.flush();
-      }catch(IOException ioe) {
-        logger.warning( ioe.getMessage() );
-      }
-      writer.complete();
+      writer.completeWithFlush();
     }
 
     @Override
