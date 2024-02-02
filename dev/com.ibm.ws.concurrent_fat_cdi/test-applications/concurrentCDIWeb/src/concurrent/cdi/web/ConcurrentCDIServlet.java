@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -69,6 +70,10 @@ import concurrent.cdi.context.location.Location;
 @ContextServiceDefinition(name = "java:app/concurrent/with-app-context",
                           qualifiers = WithAppContext.class,
                           propagated = APPLICATION, cleared = ALL_REMAINING)
+@ContextServiceDefinition(name = "java:app/concurrent/with-app-context-override-qualifiers",
+                          qualifiers = { OverriddenQualifier1.class, // replaced
+                                         OverriddenQualifier2.class // both replaced by OverridingQualifier1
+                          })
 @ContextServiceDefinition(name = "java:app/concurrent/with-location-and-tx-context",
                           qualifiers = { WithLocationContext.class, WithTransactionContext.class },
                           propagated = { Location.CONTEXT_NAME, TRANSACTION }, cleared = ALL_REMAINING)
@@ -166,6 +171,10 @@ public class ConcurrentCDIServlet extends HttpServlet {
     @Inject
     @WithAppContext
     ContextService withAppContext;
+
+    @Inject
+    @OverridingQualifier1
+    ContextService withAppContextDDOverride;
 
     @Inject
     @WithoutAppContext
@@ -700,6 +709,58 @@ public class ConcurrentCDIServlet extends HttpServlet {
         } finally {
             Location.clear();
         }
+    }
+
+    /**
+     * Specify qualifiers on a ContextServiceDefinition.
+     * Specify a different qualifier on a matching context-service element in web.xml.
+     * Expect the qualifier from web.xml to resolve the instance.
+     * Expect the qualifiers from the ContextServiceDefinition to not resolve the instance.
+     * Verify the instance behaves consistently with the configured context propagation.
+     */
+    public void testOverrideContextServiceQualifiersViaDD() throws Exception {
+        // Expect application context to be propagated
+        Supplier<String> lookup = () -> {
+            try {
+                return InitialContext.doLookup("java:comp/env/entry2");
+            } catch (NamingException x) {
+                throw new CompletionException(x);
+            }
+        };
+
+        assertNotNull(withAppContextDDOverride);
+        Supplier<String> contextualSupplier = withAppContextDDOverride.contextualSupplier(lookup);
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(contextualSupplier);
+
+        // Overridden qualifiers from @ContextServiceDefinition must not resolve the instance:
+
+        assertEquals(false, CDI.current()
+                        .select(ContextService.class, OverriddenQualifier1.Literal.INSTANCE)
+                        .isResolvable());
+
+        assertEquals(false, CDI.current()
+                        .select(ContextService.class, OverriddenQualifier2.Literal.INSTANCE)
+                        .isResolvable());
+
+        // The overriding qualifier from context-service must resolve the instance:
+
+        Instance<ContextService> instance = CDI.current()
+                        .select(ContextService.class, OverridingQualifier1.Literal.INSTANCE);
+        assertEquals(true, instance.isResolvable());
+
+        Location.set("Pine Island, MN");
+        try {
+            // Expect Location context to be cleared
+            ContextService contextSvc = instance.get();
+            String location = contextSvc.contextualSupplier(Location::get).get();
+            assertEquals(null, location);
+
+            assertEquals("Pine Island, MN", Location.get());
+        } finally {
+            Location.clear();
+        }
+
+        assertEquals("value2", future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**
