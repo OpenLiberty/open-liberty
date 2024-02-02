@@ -86,11 +86,21 @@ import concurrent.cdi.context.location.Location;
 @ManagedExecutorDefinition(name = "java:app/concurrent/executor-without-app-context",
                            qualifiers = WithoutAppContext.class,
                            context = "java:app/concurrent/without-app-context")
+@ManagedExecutorDefinition(name = "java:comp/concurrent/executor-web-dd-override-qualifiers",
+                           qualifiers = { WithoutAppContext.class, // replaced by OverrdingQualifier1
+                                          OverriddenQualifier2.class, // replaced by OverridingQualifier2
+                           },
+                           context = "java:app/concurrent/with-location-and-without-app-context")
 @ManagedScheduledExecutorDefinition(name = "java:app/concurrent/scheduled-executor-with-app-context",
                                     qualifiers = WithAppContext.class,
                                     context = "java:app/concurrent/with-app-context")
 @ManagedScheduledExecutorDefinition(name = "java:app/concurrent/scheduled-executor-without-app-context",
                                     qualifiers = WithoutAppContext.class,
+                                    context = "java:app/concurrent/without-app-context")
+@ManagedScheduledExecutorDefinition(name = "java:comp/concurrent/scheduled-executor-web-dd-override-qualifiers",
+                                    qualifiers = { OverriddenQualifier1.class, // removed by web.xml
+                                                   OverriddenQualifier2.class, // removed by web.xml
+                                    },
                                     context = "java:app/concurrent/without-app-context")
 @ManagedThreadFactoryDefinition(name = "java:app/concurrent/thread-factory-with-app-context",
                                 qualifiers = WithAppContext.class,
@@ -104,6 +114,10 @@ import concurrent.cdi.context.location.Location;
                                 qualifiers = WithoutAppContext.class,
                                 context = "java:app/concurrent/without-app-context",
                                 priority = 6)
+@ManagedThreadFactoryDefinition(name = "java:comp/concurrent/thread-factory-web-dd-override-qualifiers",
+                                qualifiers = OverriddenQualifier2.class, // replaced by OverridingQualifier2
+                                priority = 3,
+                                virtual = true) // replaced with false
 @SuppressWarnings("serial")
 @ApplicationScoped
 @WebServlet("/*")
@@ -761,6 +775,147 @@ public class ConcurrentCDIServlet extends HttpServlet {
         }
 
         assertEquals("value2", future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Specify qualifiers on a ManagedExecutorDefinition.
+     * Specify different qualifiers on a matching managed-executor element in web.xml.
+     * Expect the qualifier from web.xml to resolve the instance.
+     * Expect the qualifiers from the ManagedExecutorDefinition to not resolve the instance.
+     * Verify the instance is usable.
+     */
+    public void testOverrideManagedExecutorQualifiersViaWebDD() throws Exception {
+
+        // Overridden qualifiers from ManagedExecutorDefinition must not resolve the instance:
+
+        assertEquals(false, CDI.current()
+                        .select(ManagedExecutorService.class,
+                                OverriddenQualifier2.Literal.INSTANCE)
+                        .isResolvable());
+
+        assertEquals(false, CDI.current()
+                        .select(ManagedExecutorService.class,
+                                WithoutAppContext.Literal.INSTANCE,
+                                OverriddenQualifier2.Literal.INSTANCE)
+                        .isResolvable());
+
+        // The overriding qualifiers from managed-executor must resolve the instance:
+
+        Instance<ManagedExecutorService> instance = CDI.current()
+                        .select(ManagedExecutorService.class,
+                                OverridingQualifier1.Literal.INSTANCE,
+                                OverridingQualifier2.Literal.INSTANCE);
+        assertEquals(true, instance.isResolvable());
+
+        ManagedExecutorService executor = instance.get();
+
+        // Instance must be usable
+        Location.set("Oronoco, MN");
+        try {
+            CompletableFuture<String> future = executor.supplyAsync(Location::get);
+
+            Location.set("Mazeppa, MN");
+            assertEquals("Oronoco, MN", future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals("Mazeppa, MN", Location.get());
+        } finally {
+            Location.clear();
+        }
+    }
+
+    /**
+     * Specify qualifiers on a ManagedScheduledExecutorDefinition.
+     * Specify an empty qualifiers element on a matching managed-scheduled-executor element in web.xml.
+     * Expect the qualifiers from the ManagedScheduledExecutorDefinition to not resolve the instance.
+     * Verify the instance can be looked up. There is no way to obtain it via qualifiers.
+     */
+    public void testOverrideManagedScheduledExecutorQualifiersViaWebDD() throws Exception {
+
+        // Overridden qualifiers from ManagedScheduledExecutorDefinition must not resolve the instance:
+
+        assertEquals(false, CDI.current()
+                        .select(ManagedScheduledExecutorService.class,
+                                OverriddenQualifier1.Literal.INSTANCE,
+                                OverriddenQualifier2.Literal.INSTANCE)
+                        .isResolvable());
+
+        assertEquals(false, CDI.current()
+                        .select(ManagedScheduledExecutorService.class,
+                                OverriddenQualifier1.Literal.INSTANCE)
+                        .isResolvable());
+
+        assertEquals(false, CDI.current()
+                        .select(ManagedScheduledExecutorService.class,
+                                OverriddenQualifier2.Literal.INSTANCE)
+                        .isResolvable());
+
+        // Look up an instance and use it. There is no way to obtain it via qualifiers.
+
+        ManagedScheduledExecutorService executor = InitialContext //
+                        .doLookup("java:comp/concurrent/scheduled-executor-web-dd-override-qualifiers");
+
+        // Instance must be usable
+        Location.set("Kasson, MN");
+        try {
+            ScheduledFuture<Object[]> future = executor.schedule(() -> {
+                Object[] results = new Object[2];
+                results[0] = Location.get();
+                try {
+                    results[1] = InitialContext.doLookup("java:comp/env/entry2");
+                } catch (NamingException x) {
+                    results[1] = x;
+                }
+                return results;
+            }, 150, TimeUnit.MILLISECONDS);
+
+            Location.set("Mantorville, MN");
+
+            Object[] results = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            assertEquals("Kasson, MN", results[0]);
+            if (results[1] instanceof NamingException)
+                ; // pass
+            else if (results[1] instanceof Throwable)
+                throw new AssertionError("Task failed.", (Throwable) results[1]);
+            else
+                fail("Should not be able to look up from java:comp because application context should be cleared. Found: "
+                     + results[1]);
+
+            assertEquals("Mantorville, MN", Location.get());
+        } finally {
+            Location.clear();
+        }
+    }
+
+    /**
+     * Specify a qualifier on a ManagedThreadFactoryDefinition.
+     * Specify a different qualifier on a matching managed-thread-factory element in web.xml.
+     * Expect the qualifier from web.xml to resolve the instance.
+     * Expect the qualifier from the ManagedThreadFactoryDefinition to not resolve the instance.
+     * Verify the instance creates threads with the configured priority.
+     */
+    public void testOverrideManagedThreadFactoryQualifiersViaWebDD() throws Exception {
+
+        // Overridden qualifiers from ManagedThreadFactoryDefinition must not resolve the instance:
+
+        assertEquals(false, CDI.current()
+                        .select(ManagedThreadFactory.class,
+                                OverriddenQualifier2.Literal.INSTANCE)
+                        .isResolvable());
+
+        // The overriding qualifiers from managed-thread-factory must resolve the instance:
+
+        Instance<ManagedThreadFactory> instance = CDI.current()
+                        .select(ManagedThreadFactory.class,
+                                OverridingQualifier2.Literal.INSTANCE);
+        assertEquals(true, instance.isResolvable());
+
+        ManagedThreadFactory threadFactory = instance.get();
+
+        // Instance must be usable
+        CompletableFuture<Thread> future = new CompletableFuture<>();
+        Thread thread = threadFactory.newThread(() -> future.complete(Thread.currentThread()));
+        thread.start();
+        assertEquals(3, thread.getPriority());
+        assertEquals(thread, future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**

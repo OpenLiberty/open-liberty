@@ -160,6 +160,21 @@ public class ConcurrentCDITest extends FATServletClient {
     }
 
     @Test
+    public void testOverrideManagedExecutorQualifiersViaWebDD() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testOverrideManagedScheduledExecutorQualifiersViaWebDD() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
+    public void testOverrideManagedThreadFactoryQualifiersViaWebDD() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
     public void testQualifierEquals() throws Exception {
         runTest(server, APP_NAME, testName);
     }

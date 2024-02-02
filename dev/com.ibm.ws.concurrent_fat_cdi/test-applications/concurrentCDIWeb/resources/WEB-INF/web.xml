@@ -59,4 +59,21 @@
     <unchanged>Remaining</unchanged>
   </context-service>
 
+  <managed-executor>
+    <name>java:comp/concurrent/executor-web-dd-override-qualifiers</name>
+    <qualifier>concurrent.cdi.web.OverridingQualifier1</qualifier>
+    <qualifier>concurrent.cdi.web.OverridingQualifier2</qualifier>
+  </managed-executor>
+
+  <managed-scheduled-executor>
+    <name>java:comp/concurrent/scheduled-executor-web-dd-override-qualifiers</name>
+    <qualifier/>
+  </managed-scheduled-executor>
+
+  <managed-thread-factory>
+    <name>java:comp/concurrent/thread-factory-web-dd-override-qualifiers</name>
+    <qualifier>concurrent.cdi.web.OverridingQualifier2</qualifier>
+    <virtual>false</virtual>
+  </managed-thread-factory>
+
 </web-app>
