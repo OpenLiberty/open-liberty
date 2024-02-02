@@ -206,6 +206,8 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
         Map<String, WebFragmentItemImpl> webFragmentItemMap = new LinkedHashMap<String, WebFragmentItemImpl>(classesContainers.size());
 
         String internalGeneratedWebFragmentNamePrefix = "ibm_liberty_webfragment_";
+        int internalPrefixLength = internalGeneratedWebFragmentNamePrefix.length();
+        StringBuilder stringBuilder = null;
         int nameSuffix = 0;
         Set<String> usedWebFragmentNames = new HashSet<String>();
         for (ContainerInfo containerInfo : classesContainers) {
@@ -241,12 +243,20 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
                     }
                 }
                 if (webFragmentName == null) {
-                    webFragmentName = internalGeneratedWebFragmentNamePrefix + nameSuffix;
-                    while (usedWebFragmentNames.contains(webFragmentName)) {
-                        nameSuffix++;
-                        webFragmentName = internalGeneratedWebFragmentNamePrefix + nameSuffix;
+                    if (stringBuilder == null) {
+                        stringBuilder = new StringBuilder(internalPrefixLength + 8);
+                        stringBuilder.append(internalGeneratedWebFragmentNamePrefix);
+                    } else {
+                        stringBuilder.setLength(internalPrefixLength);
                     }
-                    usedWebFragmentNames.add(webFragmentName);
+                    stringBuilder.append(nameSuffix);
+                    webFragmentName = stringBuilder.toString();
+                    while (!usedWebFragmentNames.add(webFragmentName)) {
+                        nameSuffix++;
+                        stringBuilder.setLength(internalPrefixLength);
+                        stringBuilder.append(nameSuffix);
+                        webFragmentName = stringBuilder.toString();
+                    }
                 }
 
                 webFragmentItemMap.put(webFragmentName, new WebFragmentItemImpl(container, webFragment, libraryURI, webFragmentName, isSeed));

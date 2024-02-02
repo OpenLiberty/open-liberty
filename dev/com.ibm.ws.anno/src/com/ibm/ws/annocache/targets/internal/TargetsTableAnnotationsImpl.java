@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,20 +45,16 @@ public class TargetsTableAnnotationsImpl
 
     public static final String CLASS_NAME = TargetsTableAnnotationsImpl.class.getSimpleName();
 
-    protected final String hashText;
-
     @Override
     @Trivial
     public String getHashText() {
-        return hashText;
+        return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
     }
 
     //
 
     protected TargetsTableAnnotationsImpl(TargetsTableAnnotationsImpl otherTable, UtilImpl_InternMap classNameInternMap) {
         String methodName = "<init>";
-
-        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 
         this.utilFactory = otherTable.getUtilFactory();
         this.classNameInternMap = classNameInternMap;
@@ -71,7 +67,7 @@ public class TargetsTableAnnotationsImpl
         this.i_methodAnnotations = internAnnotations( "Classes with method annotations", otherTable.i_methodAnnotations );
 
         if ( logger.isLoggable(Level.FINER) ) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.hashText);
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.getHashText());
         }
     }
 
@@ -97,8 +93,6 @@ public class TargetsTableAnnotationsImpl
     protected TargetsTableAnnotationsImpl(UtilImpl_Factory utilFactory, UtilImpl_InternMap classNameInternMap) {
         String methodName = "<init>";
 
-        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
-
         this.utilFactory = utilFactory;
         this.classNameInternMap = classNameInternMap;
 
@@ -112,7 +106,7 @@ public class TargetsTableAnnotationsImpl
                                                                          "annotations", classNameInternMap);
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.hashText);
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.getHashText());
         }
     }
 

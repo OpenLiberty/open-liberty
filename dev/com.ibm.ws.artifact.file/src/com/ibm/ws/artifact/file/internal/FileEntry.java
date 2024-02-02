@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,6 +35,7 @@ public class FileEntry implements com.ibm.wsspi.artifact.ArtifactEntry {
     private final ArtifactContainer enclosingContainer;
     private final File file;
     private final FileContainer root;
+    private final String fileName;
 
     /**
      * Builds an Entry for a given File.
@@ -46,6 +47,7 @@ public class FileEntry implements com.ibm.wsspi.artifact.ArtifactEntry {
      */
     FileEntry(ArtifactContainer e, File f, FileContainer r, ContainerFactoryHolder c) {
         file = f;
+        fileName = file.getName();
         enclosingContainer = e;
         if (enclosingContainer == null) {
             throw new IllegalArgumentException("Null enclosing container");
@@ -63,17 +65,19 @@ public class FileEntry implements com.ibm.wsspi.artifact.ArtifactEntry {
     public String getPath() {
         //determine this Entries path by using path for the enclosing container & adding our name
         String path = enclosingContainer.getPath();
-        if (!path.equals("/")) {
-            path += "/" + file.getName();
-        } else {
-            path += file.getName();
+        int pathLength = path.length();
+        StringBuilder pathBuilder = new StringBuilder(pathLength + fileName.length() + 1);
+        pathBuilder.append(path);
+        if (pathLength != 1 || !path.equals("/")) {
+            pathBuilder.append('/');
         }
-        return path;
+        pathBuilder.append(fileName);
+        return pathBuilder.toString();
     }
 
     @Override
     public String getName() {
-        return file.getName();
+        return fileName;
     }
 
     @Override

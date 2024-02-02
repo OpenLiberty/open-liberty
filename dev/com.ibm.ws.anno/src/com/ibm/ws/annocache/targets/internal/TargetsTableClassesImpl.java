@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -63,12 +63,10 @@ public class TargetsTableClassesImpl
 
     public static final String CLASS_NAME = TargetsTableClassesImpl.class.getSimpleName(); 
 
-    protected final String hashText;
-
     @Override
     @Trivial
     public String getHashText() {
-        return hashText;
+        return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
     }
 
     //
@@ -78,8 +76,6 @@ public class TargetsTableClassesImpl
                                       String classSourceName) {
 
         String methodName = "<init>";
-
-        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 
         this.utilFactory = otherTable.getUtilFactory();
         this.classNameInternMap = classNameInternMap;
@@ -102,7 +98,7 @@ public class TargetsTableClassesImpl
         this.i_allImplementers = new IdentityHashMap<String, Set<String>>();
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.hashText);
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.getHashText());
         }
     }
 
@@ -174,8 +170,6 @@ public class TargetsTableClassesImpl
 
         String methodName = "<init>";
 
-        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
-
         this.utilFactory = utilFactory;
         this.classNameInternMap = classNameInternMap;
 
@@ -195,7 +189,7 @@ public class TargetsTableClassesImpl
         this.i_allImplementers = new IdentityHashMap<String, Set<String>>();
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.hashText);
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.getHashText());
         }
     }
 
@@ -848,7 +842,7 @@ public class TargetsTableClassesImpl
 
         Object[] logParms;
         if ( logger.isLoggable(Level.FINER) ) {
-            logParms = new Object[] { this.hashText, null };
+            logParms = new Object[] { this.getHashText(), null };
         } else {
             logParms = null;
         }
@@ -1022,7 +1016,7 @@ public class TargetsTableClassesImpl
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] [ {1} ] ({2})",
-                        new Object[] { hashText, Boolean.valueOf(sameAs), sameAsReason });
+                        new Object[] { getHashText(), Boolean.toString(sameAs), sameAsReason });
         }
         return sameAs;
     }
@@ -1281,6 +1275,7 @@ public class TargetsTableClassesImpl
         i_addModifiers( otherClassTable.i_getModifiers(), i_newlyAddedClassNames );
 
         if ( logger.isLoggable(Level.FINER) ) {
+            String hashText = getHashText();
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ]", hashText);
             logger.logp(Level.FINER, CLASS_NAME, methodName,

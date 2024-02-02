@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -260,7 +260,8 @@ public abstract class AnnotationsImpl implements Annotations {
                     targetPath = useModName;
                     targetPathCase = "Mod name replaces empty target path";
                 } else {
-                    targetPath = useModName + "_" + targetPath;
+                    StringBuilder targetPathBuilder = new StringBuilder(useModName.length() + targetPath.length() + 1);
+                    targetPath = targetPathBuilder.append(useModName).append('_').append(targetPath).toString();
                     targetPathCase = "Mod name prefix to non-local target path";
                 }
             }
@@ -269,10 +270,12 @@ public abstract class AnnotationsImpl implements Annotations {
             targetPathCase = "Full local path";
         }
 
-        String message = getClass().getSimpleName() + ".getContainerPath:" +
-            " Container [ " + targetContainer + " ]" +
-            " Path [ " + targetPath + " ]: " + targetPathCase;
-        Tr.debug(tc, message);
+        if (tc.isDebugEnabled()) {
+            String message = getClass().getSimpleName() + ".getContainerPath:" +
+                " Container [ " + targetContainer + " ]" +
+                " Path [ " + targetPath + " ]: " + targetPathCase;
+            Tr.debug(tc, message);
+        }
 
         return targetPath;
     }
