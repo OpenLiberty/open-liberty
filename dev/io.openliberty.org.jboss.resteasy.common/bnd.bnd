@@ -107,8 +107,8 @@ Export-Package: \
   org.jboss.resteasy.spi;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.statistics;version=${resteasy-version}, \
   org.jboss.resteasy.test;version=${resteasy-version}, \
-  org.jboss.resteasy.tracing.api.providers;version=1.0.0, \
-  org.jboss.resteasy.tracing.api;version=1.0.0, \
+  org.jboss.resteasy.tracing.api.providers;version=${resteasy-tracing-api-version},\
+  org.jboss.resteasy.tracing.api;version=${resteasy-tracing-api-version},\
   org.jboss.resteasy.tracing;version=${resteasy-version}, \
   org.jboss.resteasy.util.snapshot;version=${resteasy-version}, \
   org.jboss.resteasy.util;version=${resteasy-version}
