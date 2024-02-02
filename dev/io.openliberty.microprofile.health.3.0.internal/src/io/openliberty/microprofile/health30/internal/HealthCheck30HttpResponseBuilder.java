@@ -70,7 +70,7 @@ public class HealthCheck30HttpResponseBuilder {
         httpResponse.setStatus(overallStatus == Status.UP ? 200 : 503);
 
         // Populate the payload with the overall status and checks array
-        payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, overallStatus.toString());
+        payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, overallStatus.name());
         payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_CHECKS, checks);
 
         // Convert it into a JSON payload
@@ -92,6 +92,8 @@ public class HealthCheck30HttpResponseBuilder {
         check.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_NAME, response.getName());
 
         Status checkStatus = response.getStatus();
+        check.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, checkStatus == null ? checkStatus : checkStatus.name());
+
         if (checkStatus != null) {
             if (checkStatus.equals(Status.DOWN))
                 overallStatus = Status.DOWN;
@@ -99,10 +101,7 @@ public class HealthCheck30HttpResponseBuilder {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "setChecks(): checkStatus is null");
             overallStatus = Status.DOWN; // treat as fail case
-            checkStatus = Status.DOWN;
         }
-
-        check.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, checkStatus.toString());
 
         Optional<Map<String, Object>> data = response.getData();
         if ((data != null) && data.isPresent()) {
