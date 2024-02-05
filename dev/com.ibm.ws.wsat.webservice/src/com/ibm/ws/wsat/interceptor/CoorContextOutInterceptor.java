@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,11 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
+import com.ibm.tx.remote.RemoteTransactionController;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -48,6 +52,23 @@ public class CoorContextOutInterceptor extends AbstractPhaseInterceptor<Message>
     final TraceComponent tc = Tr.register(
                                           CoorContextOutInterceptor.class, WSCoorConstants.TRACE_GROUP, null);
     private AssertionStatus isOptional;
+
+    private final RemoteTransactionController tranService = getService(RemoteTransactionController.class);
+
+    private <T> T getService(Class<T> service) {
+        T impl = null;
+        BundleContext context = FrameworkUtil.getBundle(service).getBundleContext();
+        ServiceReference<T> ref = context.getServiceReference(service);
+        if (ref != null) {
+            impl = context.getService(ref);
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Unable to locate service: {0}", service);
+            }
+            //throw new WSATException("Cannot locate service " + service);
+        }
+        return impl;
+    }
 
     /**
      * @param phase
@@ -88,7 +109,7 @@ public class CoorContextOutInterceptor extends AbstractPhaseInterceptor<Message>
                                  + "/"
                                  + WSCoorConstants.COORDINATION_REGISTRATION_ENDPOINT;
 
-                EndpointReferenceType localRegEpr = WSATUtil.createEpr(regHost);
+                EndpointReferenceType localRegEpr = WSATUtil.createEpr(regHost, tranService != null ? tranService.getRecoveryId() : null);
 
                 WSATContext ctx = WSCoorUtil.getHandlerService().handleClientRequest();
                 EndpointReferenceType regEpr = ctx.getRegistration();
@@ -107,7 +128,8 @@ public class CoorContextOutInterceptor extends AbstractPhaseInterceptor<Message>
                              "handleMessage",
                              "Generate wsat application registration url",
                              regHost,
-                             regEpr.getAddress().getValue());
+                             regEpr.getAddress().getValue(),
+                             tranService);
                 }
 
                 regEpr.getAddress().setValue(regHost);
