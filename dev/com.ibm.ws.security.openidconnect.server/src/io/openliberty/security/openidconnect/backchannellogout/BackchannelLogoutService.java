@@ -134,7 +134,7 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
         return userName;
     }
 
-    private OidcServerConfig getMatchingConfig(String requestUri, String idTokenHintString) throws ServletException {
+    OidcServerConfig getMatchingConfig(String requestUri, String idTokenHintString) throws ServletException {
         OidcServerConfig config = getMatchingConfigFromRequestUri(requestUri);
         if (config == null) {
             config = getMatchingConfigFromIdTokenHint(idTokenHintString);
@@ -142,7 +142,7 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
         return config;
     }
 
-    private OidcServerConfig getMatchingConfigFromRequestUri(String requestUri) {
+    OidcServerConfig getMatchingConfigFromRequestUri(String requestUri) {
         Iterator<ServiceAndServiceReferencePair<OidcServerConfig>> servicesWithRefs = oidcServerConfigRef.getServicesWithReferences();
         while (servicesWithRefs.hasNext()) {
             ServiceAndServiceReferencePair<OidcServerConfig> configServiceAndRef = servicesWithRefs.next();
@@ -155,7 +155,7 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
         return null;
     }
 
-    private OidcServerConfig getMatchingConfigFromIdTokenHint(String idTokenHintString) throws ServletException {
+    OidcServerConfig getMatchingConfigFromIdTokenHint(String idTokenHintString) throws ServletException {
         String issuerFromIdTokenHint = null;
         try {
             issuerFromIdTokenHint = getIssuerFromIdTokenHint(idTokenHintString);
