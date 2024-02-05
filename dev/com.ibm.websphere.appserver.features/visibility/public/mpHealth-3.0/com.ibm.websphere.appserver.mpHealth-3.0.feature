@@ -19,8 +19,7 @@ Subsystem-Name: MicroProfile Health 3.0
   com.ibm.websphere.appserver.org.eclipse.microprofile.health-3.0, \
   com.ibm.websphere.appserver.cdi-2.0, \
   com.ibm.websphere.appserver.jndi-1.0
--bundles=io.openliberty.jsonsupport.internal, \
- io.openliberty.microprofile.health.3.0.internal; apiJar=false; location:="lib/", \
+-bundles=io.openliberty.microprofile.health.3.0.internal; apiJar=false; location:="lib/", \
  com.ibm.ws.org.joda.time.1.6.2
 kind=ga
 edition=core
