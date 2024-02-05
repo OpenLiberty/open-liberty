@@ -34,9 +34,11 @@ Export-Package: \
 
 Import-Package: \
   !*.internal.*, \
+  io.openliberty.netty.internal*, \
   !com.ibm.ws.kernel.boot.cmdline, \
   io.openliberty.wsoc.speclevel, \
   io.openliberty.wsoc.ssl, \
+  com.ibm.ws.http.netty.inbound, \
   *
 
 Private-Package: \
@@ -80,6 +82,7 @@ Service-Component: \
   com.ibm.ws.wsoc.outbound.wsocOutbound;\
     implementation:=com.ibm.ws.wsoc.outbound.WsocOutboundChain;\
     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
+    nettyBundle=io.openliberty.netty.internal.NettyFramework;\
     tcpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     httpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     sslOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
@@ -118,9 +121,12 @@ instrument.classesExcludes: \
 	com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-	io.openliberty.wsoc.ssl.internal;version=latest
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.wsoc.ssl.internal;version=latest,\
+	io.openliberty.netty.internal;version=latest,\
+	io.openliberty.io.netty,\
+	io.openliberty.io.netty.ssl
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

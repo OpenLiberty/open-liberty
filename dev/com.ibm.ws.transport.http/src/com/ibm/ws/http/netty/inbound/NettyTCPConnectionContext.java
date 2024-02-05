@@ -19,7 +19,7 @@ import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.Channel;
 import io.netty.handler.ssl.SslHandler;
 
 /**
@@ -30,26 +30,27 @@ public class NettyTCPConnectionContext implements TCPConnectionContext {
     private final NettyTCPReadRequestContext readContext;
     private final NettyTCPWriteRequestContext writeContext;
     private final VirtualConnection vc;
-    private final ChannelHandlerContext nettyContext;
+    private final Channel nettyChannel;
     private SSLConnectionContext sslContext;
+    
 
-    public NettyTCPConnectionContext(ChannelHandlerContext nettyContext, VirtualConnection vc) {
+    public NettyTCPConnectionContext(Channel channel, VirtualConnection vc) {
 
         this.vc = vc;
-        this.nettyContext = nettyContext;
+        this.nettyChannel = channel;
 
-        this.readContext = new NettyTCPReadRequestContext(this, nettyContext);
+        this.readContext = new NettyTCPReadRequestContext(this, nettyChannel);
         this.readContext.setVC(this.vc);
-        this.writeContext = new NettyTCPWriteRequestContext(this, nettyContext);
+        this.writeContext = new NettyTCPWriteRequestContext(this, nettyChannel);
         initializeSSLContext();
 
     }
 
     private void initializeSSLContext() {
-        SslHandler sslHandler = nettyContext.pipeline().get(SslHandler.class);
+        SslHandler sslHandler = nettyChannel.pipeline().get(SslHandler.class);
 
         if (sslHandler != null) {
-            this.sslContext = new NettySSLConnectionContext(nettyContext.channel(), nettyContext.channel().attr(NettyHttpConstants.IS_OUTBOUND_KEY).get());
+            this.sslContext = new NettySSLConnectionContext(nettyChannel, nettyChannel.attr(NettyHttpConstants.IS_OUTBOUND_KEY).get());
         }
     }
 
@@ -65,7 +66,7 @@ public class NettyTCPConnectionContext implements TCPConnectionContext {
 
     @Override
     public InetAddress getRemoteAddress() {
-        InetSocketAddress remoteAddress = (InetSocketAddress) nettyContext.channel().remoteAddress();
+        InetSocketAddress remoteAddress = (InetSocketAddress) nettyChannel.remoteAddress();
 
         return remoteAddress.getAddress();
     }
@@ -73,27 +74,27 @@ public class NettyTCPConnectionContext implements TCPConnectionContext {
     @Override
     public int getRemotePort() {
 
-        InetSocketAddress remoteAddress = (InetSocketAddress) nettyContext.channel().remoteAddress();
+        InetSocketAddress remoteAddress = (InetSocketAddress) nettyChannel.remoteAddress();
         return remoteAddress.getPort();
     }
 
     @Override
     public InetAddress getLocalAddress() {
-        InetSocketAddress localAddress = (InetSocketAddress) nettyContext.channel().localAddress();
+        InetSocketAddress localAddress = (InetSocketAddress) nettyChannel.localAddress();
 
         return localAddress.getAddress();
     }
 
     @Override
     public int getLocalPort() {
-        InetSocketAddress localAddress = (InetSocketAddress) nettyContext.channel().localAddress();
+        InetSocketAddress localAddress = (InetSocketAddress) nettyChannel.localAddress();
         return localAddress.getPort();
     }
 
     @Override
     public SSLConnectionContext getSSLContext() {
         // TODO Auto-generated method stub
-        return null;
+        return sslContext;
     }
 
 }
