@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,9 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE8_OR_LATER_FEATURES;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
@@ -49,7 +47,7 @@ import junit.framework.Assert;
  * As a result, these tests were modified to run in the JSF 2.3 FAT bucket without constructor injection.
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
+@SkipForRepeat(EE8_OR_LATER_FEATURES)
 public class CDITests extends CDITestBase {
     @Rule
     public TestName name = new TestName();
