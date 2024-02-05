@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/BT11AddNumbersImplService/src"/>
+	<classpathentry kind="src" path="test-applications/BT12AddNumbersImplService/src"/>
+	<classpathentry kind="src" path="test-applications/cxfclient/src"/>
+	<classpathentry kind="src" path="test-applications/defaultpackage/src"/>
+	<classpathentry kind="src" path="test-applications/simpleservice/src"/>
+	<classpathentry kind="src" path="test-applications/jaxws22mtom/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

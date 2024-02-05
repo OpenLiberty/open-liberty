@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="MTOMDDOnlyService" targetNamespace="http://server.mtom.jaxws22.cxf.fats/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://server.mtom.jaxws22.cxf.fats/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://server.mtom.jaxws22.cxf.fats/" schemaLocation="mtom.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="echobyte">
+    <part name="parameters" element="tns:echobyte">
+    </part>
+  </message>
+  <message name="echobyteResponse">
+    <part name="parameters" element="tns:echobyteResponse">
+    </part>
+  </message>
+  <portType name="MTOMDDOnly">
+    <operation name="echobyte">
+      <input message="tns:echobyte">
+    </input>
+      <output message="tns:echobyteResponse">
+    </output>
+    </operation>
+  </portType>
+  <binding name="MTOMDDOnlyPortBinding" type="tns:MTOMDDOnly">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="echobyte">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="MTOMDDOnlyService">
+    <port name="MTOMDDOnlyPort" binding="tns:MTOMDDOnlyPortBinding">
+      <soap:address location="http://tbd:59080/webservicefeaturetests/MTOMDDOnlyService"/>
+    </port>
+  </service>
+</definitions>
