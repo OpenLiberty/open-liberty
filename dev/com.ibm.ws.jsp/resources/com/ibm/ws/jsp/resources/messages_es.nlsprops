@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
 #COMPONENTPREFIX JSPG CWWJS
@@ -1273,8 +1270,22 @@ jsp.isthreadsafe.warning=CWWJS0003W: La especificaci\u00f3n Pages 3.1 recomienda
 jsp.isthreadsafe.warning.explanation=SingleThreadModel se ha eliminado de Servlet 6.0. Pages 3.1 ha puesto en desuso isThreadSafe con planes para eliminarlo en una futura actualizaci\u00f3n de Pages.
 jsp.isthreadsafe.warning.useraction=Elimine la directiva isThreadSafe de todas las p\u00e1ginas.
 
-
 jsp.useinmemory.warning=CWWJS0004W: La opci\u00f3n JSP 'useInMemory' no est\u00e1 soportada. En su lugar, las JSP se compilar\u00e1n y se guardar\u00e1n en el disco.
 jsp.useinmemory.warning.explanation=Esta caracter\u00edstica nunca se ha portado desde WebSphere tradicional por razones hist\u00f3ricas.
 jsp.useinmemory.warning.useraction=Elimine la opci\u00f3n useInMemory de los archivos server.xml, ibm-web-bnd.xmlo ibm-web-ext.xmi .
 
+pages.removed.element.error=CWWJS0005E: El elemento {0} se ha eliminado en las p\u00e1ginas 4.0 y, por lo tanto, ya no est\u00e1 soportado.
+pages.removed.element.error.explanation=El plug-in jsp y las acciones relacionadas han quedado en desuso en las p\u00e1ginas 3.1 y se han eliminado en 4.0. 
+pages.removed.element.error.useraction= Elimine los elementos jsp plugin, fallback y params de la app web.
+
+jsp.javasourcelevel.warning=CWWJS0006W: El valor de javaSourceLevel ={0} especificado supera el nivel de Java instalado {1} . Por lo tanto, el nivel de Java predeterminado se establece en {1}.
+jsp.javasourcelevel.warning.explanation=El archivo no se puede compilar con un origen superior al nivel de JDK disponible. 
+jsp.javasourcelevel.warning.useraction=Especifique un valor de nivel javaSourceque sea menor o igual que el nivel de JDK disponible.
+
+jsp.bothsourcelevelset.warning=CWWJS0007W: Se han especificado tanto javaSourceLevel ={0} como jdkSourceLevel ={1} . El valor predeterminado es javaSourceLevel ={0}.
+jsp.bothsourcelevelset.warning.explanation=S\u00f3lo se puede utilizar un atributo de nivel de origen a la vez.
+jsp.bothsourcelevelset.warning.useraction=Especifique s\u00f3lo el atributo de nivel javaSource. El atributo de nivel jdkSourcese ha estabilizado. 
+
+jsp.javasourcelevel.value=CWWJS0008I: El valor del atributo JSP javaSourceLevel es "{0}".
+jsp.javasourcelevel.value.explanation=
+jsp.javasourcelevel.value.useraction=

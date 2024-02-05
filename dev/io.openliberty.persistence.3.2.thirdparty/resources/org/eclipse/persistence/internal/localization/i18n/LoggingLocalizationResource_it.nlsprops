@@ -709,7 +709,12 @@ toplink_warning=[EL Avvertenza]:
 
 unit_of_work_thread_info=L''unit\u00e0 di lavoro corrente nella sessione ({0}) \u00e8 stata creata da un altro thread (id: {1} nome: {2}), rispetto al thread corrente (id: {3} nome: {4})
 
-unit_of_work_thread_info_thread_dump=Thread di creazione (id: {0} nome: {1}) traccia stack: {2}Thread corrente (id: {3} nome: {4}) traccia stack:{5}\n
+unit_of_work_thread_info_thread_dump=Creazione della traccia di stack del thread (id: {0} nome: {1}):
+#{2}
+
+Current traccia stack thread (id: {3} nome: {4}):
+#{5}
+
 unitofwork_identity_hashcode={0}Codice hash identit\u00e0 UnitOfWork: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery non pu\u00f2 utilizzare il bind su questa piattaforma database. Modificate le impostazioni di query per esecuzione senza bind.

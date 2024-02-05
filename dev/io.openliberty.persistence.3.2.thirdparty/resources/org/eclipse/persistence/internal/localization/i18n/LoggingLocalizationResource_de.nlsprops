@@ -709,7 +709,12 @@ toplink_warning=[EL Warning]:
 
 unit_of_work_thread_info=Die aktuelle Arbeitseinheit in Sitzung ({0}) wurde von einem anderen Thread erstellt (ID: {1}, Name: {2}) als der aktuelle Thread (ID: {3}, Name: {4}).
 
-unit_of_work_thread_info_thread_dump=Erstellungsthread (ID: {0}, Name: {1}) Stack-Trace: {2} Aktueller Thread (ID: {3}, Name: {4}) Stack-Trace {5}\n
+unit_of_work_thread_info_thread_dump=Erstellungsthread (ID: {0} Name: {1}) Stack-Trace:
+#{2}
+
+Current Thread (ID: {3} Name: {4}) Stack-Trace:
+#{5}
+
 unitofwork_identity_hashcode={0}-Arbeitseinheits-ID-Hash-Code: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery kann f\u00fcr diese Datenbankplattform keine Bindung verwenden. Die Abfrageeinstellung wurde ge\u00e4ndert, um eine Ausf\u00fchrung ohne Bindung zu erm\u00f6glichen.

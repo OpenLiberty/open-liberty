@@ -29,7 +29,7 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-61000=\u5728\u6301\u7e8c\u6027\u55ae\u5143 {2} \u4e2d\u627e\u4e0d\u5230 ID \u70ba {1} \u7684\u5be6\u9ad4\u985e\u578b {0}\u3002
+61000=\u5728\u6301\u7e8c\u6027\u55ae\u5143 {2} \u4e2d\u627e\u4e0d\u5230 ID \ufffd\ufffd\ufffd {1} \u7684\u5be6\u9ad4\u985e\u578b {0}\u3002
 
 61001=\u93c8\u7d50\u6240\u53c3\u7167\u7684\u5be6\u9ad4\u4e0d\u5b58\u5728\uff0c\u5be6\u9ad4\u985e\u578b\u70ba {0}\uff0cID \u70ba {1}\u3002
 
