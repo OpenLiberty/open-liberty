@@ -127,7 +127,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         super();
         nettyContext = context;
 
-        TCPConnectionContext tsc = new NettyTCPConnectionContext(context, vc);
+        TCPConnectionContext tsc = new NettyTCPConnectionContext(context.channel(), vc);
 
         super.init(tsc, context);
 

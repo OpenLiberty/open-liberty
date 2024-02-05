@@ -24,6 +24,7 @@ import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.util.concurrent.EventExecutor;
@@ -34,7 +35,7 @@ import io.netty.util.concurrent.EventExecutor;
 public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
     private final NettyTCPConnectionContext connectionContext;
-    private final ChannelHandlerContext nettyContext;
+    private final Channel nettyChannel;
 
     private WsByteBuffer[] buffers;
     private ByteBuffer byteBufferArray[] = null;
@@ -52,10 +53,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
     private VirtualConnection vc = null;
 
-    public NettyTCPReadRequestContext(NettyTCPConnectionContext connectionContext, ChannelHandlerContext nettyContext) {
+    public NettyTCPReadRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel) {
 
         this.connectionContext = connectionContext;
-        this.nettyContext = nettyContext;
+        this.nettyChannel = nettyChannel;
 
     }
 
@@ -85,16 +86,16 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         // TODO Auto-generated method stub
         //Start a new thread that waits to be notified by the handler when enough data is accumulated. On completion, use the callback complete and return null
 
-        if (nettyContext.pipeline().get(NettyServletUpgradeHandler.class) == null) {
+        if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) == null) {
             MSP.log("upgradeHandler not present, adding now");
-            NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(nettyContext.channel());
+            NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(nettyChannel);
 
-            nettyContext.channel().pipeline().addLast("ServletUpgradeHandler", upgradeHandler);
+            nettyChannel.pipeline().addLast("ServletUpgradeHandler", upgradeHandler);
 
 
         }
 
-        NettyServletUpgradeHandler upgrade = this.nettyContext.pipeline().get(NettyServletUpgradeHandler.class);
+        NettyServletUpgradeHandler upgrade = this.nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);
 
 
         MSP.log("setting callback for read");
@@ -106,7 +107,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         MSP.log("TCP READ REQUEST CONTEXT - Before read: data size: " + upgrade.queuedDataSize());
         MSP.log("TCP READ REQUEST CONTEXT - numBytes requested: "+ numBytes);
 
-        // Use a separate ExecutorService for potentially blocking operations
+        
         //TODO Change to liberty's executor
         ExecutorService blockingTaskExecutor = Executors.newCachedThreadPool();
 
@@ -126,11 +127,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                         callback.complete(vc, this);
                     }
                     else {
-                        // Get the EventExecutor from the current context
-                        EventExecutor executor = nettyContext.executor();
+                       
 
                         
-                        executor.execute(() -> {
+                        nettyChannel.eventLoop().execute(() -> {
                             try {
                                 callback.complete(vc, this);
                             } catch (Exception e) {

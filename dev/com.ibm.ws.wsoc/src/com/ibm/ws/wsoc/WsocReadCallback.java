@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -60,6 +60,7 @@ public class WsocReadCallback extends BaseCallback implements TCPReadCompletedCa
         ClassLoader originalCL = pushContexts();
 
         try {
+            //popContexts(originalCL);
             connLink.processRead(rrc);
         } finally {
             popContexts(originalCL);
@@ -95,13 +96,12 @@ public class WsocReadCallback extends BaseCallback implements TCPReadCompletedCa
         // setup the classloader and Component Metadata for the app to use during onMessage (or onError or onClose). reset when done.
         // Not sure this this hits on liberty - but outbound session (idle) close read cancel could hit this with user code stack...
         ClassLoader originalCL = AccessController.doPrivileged(
-                        new PrivilegedAction<ClassLoader>() {
-                            @Override
-                            public ClassLoader run() {
-                                return pushContexts();
-                            }
-                        }
-                        );
+                                                               new PrivilegedAction<ClassLoader>() {
+                                                                   @Override
+                                                                   public ClassLoader run() {
+                                                                       return pushContexts();
+                                                                   }
+                                                               });
         boolean startAsyncRead = false;
 
         try {
@@ -109,14 +109,13 @@ public class WsocReadCallback extends BaseCallback implements TCPReadCompletedCa
         } finally {
             final ClassLoader origCL = originalCL;
             AccessController.doPrivileged(
-                            new PrivilegedAction<Void>() {
-                                @Override
-                                public Void run() {
-                                    popContexts(origCL);
-                                    return null;
-                                }
-                            }
-                            );
+                                          new PrivilegedAction<Void>() {
+                                              @Override
+                                              public Void run() {
+                                                  popContexts(origCL);
+                                                  return null;
+                                              }
+                                          });
 
             WsByteBuffer buf = rrc.getBuffer();
 
