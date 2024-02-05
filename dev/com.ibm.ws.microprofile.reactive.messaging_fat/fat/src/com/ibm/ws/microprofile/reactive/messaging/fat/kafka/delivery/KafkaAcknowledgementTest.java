@@ -15,6 +15,9 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
+
+import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -36,8 +39,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-
-import java.util.Arrays;
 
 @RunWith(FATRunner.class)
 public class KafkaAcknowledgementTest {
@@ -82,7 +83,7 @@ public class KafkaAcknowledgementTest {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        kafkaStopServer(server);
     }
 
 }

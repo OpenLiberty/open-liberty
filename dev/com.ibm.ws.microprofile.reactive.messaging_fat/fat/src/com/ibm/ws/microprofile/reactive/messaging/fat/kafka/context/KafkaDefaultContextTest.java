@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.context;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleIncomingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleOutgoingChannel;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -85,7 +86,7 @@ public class KafkaDefaultContextTest extends FATServletClient {
     @AfterClass
     public static void teardown() throws Exception {
         try {
-            server.stopServer();
+            kafkaStopServer(server);
         } finally {
             KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
         }
