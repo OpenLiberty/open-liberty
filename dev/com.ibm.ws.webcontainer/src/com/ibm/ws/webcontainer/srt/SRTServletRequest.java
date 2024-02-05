@@ -4149,9 +4149,8 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     protected WebAppDispatcherContext getDispatchContext() {
         SRTServletRequestThreadData localThreadData = verifyThreadData();
         WebAppDispatcherContext dc=(WebAppDispatcherContext)localThreadData.getDispatchContext();
-        if (dc==null) {
+        if (dc==null)
             dc = _dispatchContext;
-        }
         
         return dc;
     }
