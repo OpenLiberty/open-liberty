@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -93,6 +93,19 @@ public class ValidationData {
 
         public void setIsExceptionHandled(boolean isExceptionHandled) {
             this.isExceptionHandled = isExceptionHandled;
+        }
+
+        public void printValidationData() throws Exception {
+
+            Log.info(thisClass, "printValidationData", "action: " + action);
+            Log.info(thisClass, "printValidationData", "serverRef: " + serverRef);
+            Log.info(thisClass, "printValidationData", "where: " + where);
+            Log.info(thisClass, "printValidationData", " checkType: " + checkType);
+            Log.info(thisClass, "printValidationData", "printMsg: " + printMsg);
+            Log.info(thisClass, "printValidationData", "validationKey: " + validationKey);
+            Log.info(thisClass, "printValidationData", "validationValue: " + validationValue);
+            Log.info(thisClass, "printValidationData", "isExcetionHandled: " + Boolean.toString(isExceptionHandled));
+
         }
     }
 
@@ -255,4 +268,5 @@ public class ValidationData {
         expectations = addExpectation(expectations, action, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not found " + token + " in the response", null, token);
         return expectations;
     }
+
 }
