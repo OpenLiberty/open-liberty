@@ -1730,7 +1730,7 @@ public class HttpChannelConfig {
      */
     protected void parseHeaders(Map<Object, Object> options) {
 
-        if (Objects.nonNull(options)) {
+        if (Objects.nonNull(options) && options.containsKey(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS)) {
             this.useHeadersOptions = convertBoolean(options.get(HttpConfigConstants.PROPNAME_RESPONSE_HEADERS));
 
             if (this.useHeadersOptions) {

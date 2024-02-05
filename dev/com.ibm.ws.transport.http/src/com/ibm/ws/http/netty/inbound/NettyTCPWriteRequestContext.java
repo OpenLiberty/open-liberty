@@ -24,6 +24,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -35,7 +36,7 @@ import io.netty.util.ReferenceCountUtil;
 public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     private final NettyTCPConnectionContext connectionContext;
-    private final ChannelHandlerContext nettyContext;
+    private final Channel nettyChannel;
 
     private WsByteBuffer[] buffers;
     private final WsByteBuffer[] defaultBuffers = new WsByteBuffer[1];
@@ -47,10 +48,10 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     private ByteBuffer byteBufferArrayOf3[] = null;
     private ByteBuffer byteBufferArrayOf4[] = null;
 
-    public NettyTCPWriteRequestContext(NettyTCPConnectionContext connectionContext, ChannelHandlerContext nettyContext) {
+    public NettyTCPWriteRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel) {
 
         this.connectionContext = connectionContext;
-        this.nettyContext = nettyContext;
+        this.nettyChannel = nettyChannel;
 
     }
 
@@ -206,7 +207,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                     ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
                     writtenBytes += nettyBuf.readableBytes();
 
-                    ChannelFuture writeFuture = this.nettyContext.write(nettyBuf);
+                    ChannelFuture writeFuture = this.nettyChannel.write(nettyBuf);
 
                     // Add a listener to handle the completion of the write operation
                     writeFuture.addListener((ChannelFutureListener) future -> {
@@ -225,7 +226,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             }
 
             // Call flush after writing all the buffers
-            this.nettyContext.flush();
+            this.nettyChannel.flush();
             
             return writtenBytes;
         }
@@ -282,7 +283,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             for (WsByteBuffer buffer : buffers) {
                 if (buffer != null) {
                     ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                    ChannelFuture writeFuture = this.nettyContext.write(nettyBuf);
+                    ChannelFuture writeFuture = this.nettyChannel.write(nettyBuf);
                     writeFuture.addListener((ChannelFutureListener) future -> {
                         if (future.isSuccess()) {
                             if (pendingWrites.decrementAndGet() == 0) {
@@ -296,7 +297,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
                 }
             }
-            this.nettyContext.flush();
+            this.nettyChannel.flush();
         } catch (Exception e) {
             //callback.error(null, this, e);
         }
