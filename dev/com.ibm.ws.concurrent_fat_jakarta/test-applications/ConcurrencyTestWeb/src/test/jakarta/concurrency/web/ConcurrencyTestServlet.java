@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -182,6 +182,10 @@ import test.jakarta.concurrency.ejb.MTFDBean;
 @ManagedThreadFactoryDefinition(name = "java:app/concurrent/merged/web/LTThreadFactory",
                                 context = "java:app/concurrent/merged/web/LTContextService",
                                 priority = 4) // web.xml replaces with 8
+
+//Merged with application.xml?
+@ManagedThreadFactoryDefinition(name = "java:app/concurrent/merged/application/ThreadFactory",
+                                priority = 3) // application.xml replaces with 6
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -1966,6 +1970,16 @@ public class ConcurrencyTestServlet extends FATServlet {
         assertNotNull(result = results.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         if (result instanceof Throwable)
             throw new AssertionError().initCause((Throwable) result);
+    }
+
+    @Test
+    public void testManagedThreadFactoryDefinitionAppMerged() throws Throwable {
+        ManagedThreadFactory threadFactory = InitialContext.doLookup("java:app/concurrent/merged/application/ThreadFactory");
+
+        Thread thread = threadFactory.newThread(() -> {
+            //NO_OP
+        });
+        assertEquals(6, thread.getPriority());
     }
 
     /**

@@ -52,5 +52,10 @@
     <context-service-ref>java:app/concurrent/appContextSvc</context-service-ref>
     <priority>4</priority>
   </managed-thread-factory>
+  
+    <managed-thread-factory>
+    <name>java:app/concurrent/merged/application/ThreadFactory</name>
+    <priority>6</priority>
+  </managed-thread-factory>
 
 </application>
