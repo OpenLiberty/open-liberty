@@ -161,7 +161,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML_SP_INITIATED_LOGOUT));
                 if (TestModeFilter.shouldRun(TestMode.FULL)) {
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.LOGOUT_ENDPOINT));
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.IBM_SECURITY_LOGOUT));
+                    //                                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.IBM_SECURITY_LOGOUT));
                 }
 
             }

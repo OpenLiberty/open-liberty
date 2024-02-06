@@ -932,7 +932,11 @@ public class BackChannelLogoutCommonTests extends CommonTest {
                         expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on Logout page.", null, Constants.LOGOUT_TITLE);
                         expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not get the successful logout message.", null, "Logout successful");
                     } else {
-                        expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on Web Login Service.", null, "Web Login Service");
+                        if (vSettings.logoutMethodTested.equals(Constants.IBM_SECURITY_LOGOUT)) {
+                            expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on Web Login Service.", null, Constants.ibm_security_logout_default_page);
+                        } else {
+                            expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on Web Login Service.", null, "Web Login Service");
+                        }
                         if (bclForm == BCL_FORM.TEST_BCL && vSettings.isLogoutEndpointInvoked) {
                             expectations = vData.addExpectation(expectations, Constants.PROCESS_LOGOUT_PROPAGATE_YES, Constants.RESPONSE_URL, Constants.STRING_MATCHES, "Did not land on the post back channel logout test app", null, "https://localhost:" + testOPServer.getServer().getBvtSecurePort() + "/ibm/saml20/spOP/slo");
                         } else {
