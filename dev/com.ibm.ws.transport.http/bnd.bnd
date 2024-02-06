@@ -46,6 +46,7 @@ Export-Package: \
 	com.ibm.ws.http2.upgrade,\
 	com.ibm.ws.netty.upgrade,\
 	com.ibm.ws.http.netty.inbound,\
+	com.ibm.ws.http.netty,\
 	io.openliberty.http.ext
 
 Import-Package: \
