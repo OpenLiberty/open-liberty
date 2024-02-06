@@ -252,8 +252,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 // nettyContext.channel().pipeline().addBefore(nettyContext.channel().pipeline().context(httpHandler).name(), "ServletUpgradeHandler", upgradeHandler);
                 //nettyContext.channel().pipeline().addLast(new WebSocketServerProtocolHandler("/websocket")); // Handles the WebSocket upgrade and control frames
                 nettyContext.channel().pipeline().addLast("ServletUpgradeHandler", upgradeHandler);
-                
-               // nettyContext.channel().pipeline().remove(LibertyHttpObjectAggregator.class);
+
+                // nettyContext.channel().pipeline().remove(LibertyHttpObjectAggregator.class);
 
                 // if(nettyContext.channel().pipeline().get(HttpDispatcherHandler.class)
                 // nettyContext.channel().pipeline().remove(HttpDispatcherHandler.class);
@@ -286,11 +286,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
         if (nettyContext.pipeline().get("httpKeepAlive") != null) {
             this.nettyContext.pipeline().remove("httpKeepAlive");
-        }
-        if (nettyContext.pipeline().get("HTTP_SERVER_HANDLER") != null) {
-            this.nettyContext.pipeline().remove("HTTP_SERVER_HANDLER");
-        }
-        return;
+        //}
+        // if (nettyContext.pipeline().get("HTTP_SERVER_HANDLER") != null) {
+        //   this.nettyContext.pipeline().remove("HTTP_SERVER_HANDLER");
+    }return;
 
     }
 
@@ -1657,7 +1656,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     Tr.debug(tc, "Connection Not closed because Servlet Upgrade detected.");
                 }
                 if (usingNetty) {
-                    
+
                     this.prepareForUpgrade();
 
 //                this.nettyContext.pipeline().remove(HttpDispatcherHandler.class);
@@ -1674,7 +1673,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 //                 chunkLoggingHandler, chunkWriteHandler, ByteBufferCodec#0, TransportInboundHandler#0,
 //                 TransportOutboundHandler#0, DefaultChannelPipeline$TailContext#0]
 
-                System.out.println(nettyContext.pipeline().names());
+                    System.out.println(nettyContext.pipeline().names());
                 }
 
 //                try {
