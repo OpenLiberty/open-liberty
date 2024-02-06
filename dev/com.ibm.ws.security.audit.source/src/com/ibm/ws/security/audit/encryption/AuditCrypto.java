@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,13 @@ package com.ibm.ws.security.audit.encryption;
  *
  */
 import java.math.BigInteger;
+import java.security.AccessController;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
+import java.security.PrivilegedAction;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
@@ -42,6 +45,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.wsspi.security.audit.AuditSigningException;
 
 final class AuditCrypto {
 
@@ -49,9 +54,36 @@ final class AuditCrypto {
     private static final String CRYPTO_ALGORITHM = "RSA";
     private static final String ENCRYPT_ALGORITHM = "DESede";
     private static final String CIPHER = "DESede/ECB/PKCS5Padding";
+    private static final String DESEDE_ECB_CIPHER = "DESede/ECB/PKCS5Padding";
+    private static final String AES_CBC_CIPHER = "AES/CBC/PKCS5Padding";
     private static IvParameterSpec ivs8 = null;
     private static IvParameterSpec ivs16 = null;
     private static SecureRandom random = null;
+
+    private static final String IBMJCE_NAME = "IBMJCE";
+    private static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
+    //private static final String provider = getProvider();
+
+    private static final String SIGNATURE_ALGORITHM_SHA256WITHRSA = "SHA256withRSA";
+    //private static final String signatureAlgorithm = getSignatureAlgorithm();
+
+    private static final String CRYPTO_ALGORITHM_RSA = "RSA";
+
+    private static final String ENCRYPT_ALGORITHM_DESEDE = "DESede";
+    private static final String ENCRYPT_ALGORITHM_RSA = "RSA";
+    private static boolean fips140_3Enabled = false;
+
+    public static boolean ibmJCEPlusFIPSAvailable = false;
+    public static boolean ibmJCEPlusFIPSProviderChecked = false;
+
+    private static boolean issuedBetaMessage = false;
+
+    /**
+     * @param provider
+     */
+    public AuditCrypto() {
+        fips140_3Enabled = isFIPSEnabled();
+    }
 
     static final boolean cmp(byte[] b1, int off1, byte[] b2, int off2, int n) {
         while (--n >= 0)
@@ -1055,7 +1087,7 @@ final class AuditCrypto {
             if (off != 0)
                 hashcode *= off;
 
-            if (useJCE) {
+            if (fips140_3Enabled || useJCE) {
                 hashcode *= 2;
             }
         }
@@ -1132,10 +1164,10 @@ final class AuditCrypto {
             if (off != ck.off) {
                 return false;
             }
-
-            if (useJCE != ck.useJCE) {
-                return false;
-            }
+//TODO: UT ??
+//            if (useJCE != ck.useJCE) {
+//                return false;
+//            }
 
             return true;
         }
@@ -1196,7 +1228,7 @@ final class AuditCrypto {
         }
 
         byte[] sig = null;
-        if (useJCE) {
+        if (fips140_3Enabled || useJCE) {
             try {
                 BigInteger n = new BigInteger(key[0]);
                 BigInteger e = new BigInteger(key[2]);
@@ -1204,12 +1236,23 @@ final class AuditCrypto {
                 BigInteger q = new BigInteger(key[4]);
                 BigInteger d = e.modInverse((p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE)));
                 KeyFactory kFact = null;
-                kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM);
-
+                if (fips140_3Enabled)
+                    kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM_RSA, IBMJCE_PLUS_FIPS_NAME);
+                else
+                    kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM_RSA);
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "kFact FIPS140-3 enabled: " + fips140_3Enabled + " Provider: " + kFact.getProvider() + " Algorithm: " + kFact.getAlgorithm());
                 RSAPrivateKeySpec privKeySpec = new RSAPrivateKeySpec(n, d);
                 PrivateKey privKey = kFact.generatePrivate(privKeySpec);
                 Signature rsaSig = null;
-                rsaSig = Signature.getInstance("SHA256withRSA");
+                if (fips140_3Enabled)
+                    rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM_SHA256WITHRSA, IBMJCE_PLUS_FIPS_NAME);
+                else
+                    rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM_SHA256WITHRSA);
+
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "rsaSig FIPS140-3 enabled: " + fips140_3Enabled + " Provider: " + rsaSig.getProvider() + " Algorithm: " + rsaSig.getAlgorithm());
+
                 rsaSig.initSign(privKey);
                 rsaSig.update(data, off, len);
                 sig = rsaSig.sign();
@@ -1228,6 +1271,9 @@ final class AuditCrypto {
                 Tr.debug(tc, "Error: Signature operation failed");
                 Tr.error(tc, "security.ltpa.noalgorithm", new Object[] { e });
                 com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.audit.AuditCryptoCrypto", "1312");
+            } catch (NoSuchProviderException e1) {
+                Tr.debug(tc, "Error: No Such Provider");
+                Tr.error(tc, "security.ltpa.noalgorithm", new Object[] { e1 });
             }
 
         } else {
@@ -1241,6 +1287,72 @@ final class AuditCrypto {
         }
 
         return sig;
+    }
+
+    /**
+     * @return
+     */
+    public boolean isFips140_3Enabled() {
+        Tr.debug(tc, "UTLE>>> hardcode return true");
+
+        //return (isFIPSEnabled() && isIBMJCEPlusFIPSAvailable());
+        return true;
+    }
+
+    public static boolean isFIPSEnabled() {
+        return true;
+//        String fipsON = AccessController.doPrivileged(new PrivilegedAction<String>() {
+//            @Override
+//            public String run() {
+//                return System.getProperty("com.ibm.jsse2.usefipsprovider");
+//            }
+//        });
+//        if (fipsON != null && fipsON.equals("true")) {
+//            return true;
+//        } else {
+//            return false;
+//        }
+    }
+
+    public static boolean isIBMJCEPlusFIPSAvailable() {
+        //TODO: UTLE not working
+        if (ibmJCEPlusFIPSProviderChecked) {
+            return ibmJCEPlusFIPSAvailable;
+        } else {
+            String ibmjceplusfipsprovider = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return System.getProperty("com.ibm.jsse2.usefipsProviderName");
+                }
+            });
+            ibmJCEPlusFIPSProviderChecked = true;
+            //TODO: UTLE
+//            if (ibmjceplusfipsprovider == "IBMJCEPlusFIPS" && isRunningBetaMode()) {
+            if (ibmjceplusfipsprovider == "IBMJCEPlusFIPS") {
+                ibmJCEPlusFIPSAvailable = true;
+                return ibmJCEPlusFIPSAvailable;
+            } else {
+                if (isFIPSEnabled()) {
+                    // UTLE TODO: error msg - FIPS is enabled but the IBMJCEPlusFIPS is not
+                    // available
+                }
+                return false;
+            }
+        }
+    }
+
+    static boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for
+            // this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class LTPAKeyUtil for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+            return true;
+        }
     }
 
     static final boolean verifyISO9796(byte[][] key, byte[] data, int off, int len,
@@ -1305,7 +1417,7 @@ final class AuditCrypto {
             if (off != 0)
                 hashcode *= off;
 
-            if (useJCE) {
+            if (fips140_3Enabled || useJCE) {
                 hashcode *= 2;
             }
         }
@@ -1475,7 +1587,6 @@ final class AuditCrypto {
 
         CachingVerifyKey ck = new CachingVerifyKey(key, data, off, len, sig, sigOff, sigLen, useJCE);
         CachingVerifyKey result = (CachingVerifyKey) verifyKeysMap.get(ck);
-
         if (tc.isDebugEnabled())
             Tr.debug(tc, "v.size:" + verifyKeysMap.size());
 
@@ -1514,16 +1625,29 @@ final class AuditCrypto {
         }
 
         boolean verified = false;
-        if (useJCE) {
+        if (fips140_3Enabled || useJCE) {
             try {
                 BigInteger n = new BigInteger(key[0]);
                 BigInteger e = new BigInteger(key[1]);
                 KeyFactory kFact = null;
-                kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM, "IBMJCE");
+                if (fips140_3Enabled)
+                    kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM_RSA, IBMJCE_PLUS_FIPS_NAME);
+                else
+                    kFact = KeyFactory.getInstance(CRYPTO_ALGORITHM_RSA, IBMJCE_NAME);
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "kFact FIPS140-3 enabled: " + fips140_3Enabled + " Provider: " + kFact.getProvider() + " Algorithm: " + kFact.getAlgorithm());
+
                 RSAPublicKeySpec pubKeySpec = new RSAPublicKeySpec(n, e);
                 PublicKey pubKey = kFact.generatePublic(pubKeySpec);
                 Signature rsaSig = null;
-                rsaSig = Signature.getInstance("SHA256withRSA");
+                if (fips140_3Enabled)
+                    rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM_SHA256WITHRSA, IBMJCE_PLUS_FIPS_NAME);
+                else
+                    rsaSig = Signature.getInstance(SIGNATURE_ALGORITHM_SHA256WITHRSA);
+
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "rsaSig FIPS140-3 enabled: " + fips140_3Enabled + " Provider: " + rsaSig.getProvider() + " Algorithm: " + rsaSig.getAlgorithm());
+
                 rsaSig.initVerify(pubKey);
                 rsaSig.update(data, off, len);
                 verified = rsaSig.verify(sig);
@@ -1567,7 +1691,7 @@ final class AuditCrypto {
 
     static final byte[] padISO9796(byte[] data, int off, int len, int sigbits, boolean useJCE) {
         byte[] pad = null;
-        if (useJCE) {
+        if (fips140_3Enabled || useJCE) {
             // ISO9796 Padding is not supported by IBMJCEFIPS and is not FIPS approvable
         } else {
             sigbits--;
@@ -1630,7 +1754,11 @@ final class AuditCrypto {
         KeyPairGenerator keyGen = null;
 
         try {
-            keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM);
+            if (fips140_3Enabled)
+                keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM_RSA, IBMJCE_PLUS_FIPS_NAME);
+            else
+                keyGen = KeyPairGenerator.getInstance(CRYPTO_ALGORITHM_RSA);
+
             keyGen.initialize(len * 8, new SecureRandom());
             pair = keyGen.generateKeyPair();
             RSAPublicKey rsaPubKey = (RSAPublicKey) pair.getPublic();
@@ -1658,6 +1786,9 @@ final class AuditCrypto {
         } catch (java.security.NoSuchAlgorithmException e) {
             Tr.error(tc, "security.ltpa.noalgorithm", new Object[] { e });
             com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.audit.AuditCrypto", "1796");
+        } catch (NoSuchProviderException e1) {
+            Tr.error(tc, "No Such Provider");
+            Tr.error(tc, "security.ltpa.noalgorithm", new Object[] { e1 });
         }
 
         return key;
@@ -1872,14 +2003,21 @@ final class AuditCrypto {
         return new SecureRandom().getSeed(length);
     }
 
+    //TODO: UTLE Rename this method
     static final byte[] generate3DESKey() {
         byte[] rndSeed = null;
         try {
-            KeyGenerator keyGen = null;
-            keyGen = KeyGenerator.getInstance(ENCRYPT_ALGORITHM);
-            keyGen.init(new SecureRandom());
-            SecretKey key = keyGen.generateKey();
-            rndSeed = key.getEncoded();
+            if (fips140_3Enabled) {
+                int len = 24; // 3DES
+                rndSeed = new byte[len];
+                random(rndSeed, 0, len);
+            } else {
+                KeyGenerator keyGen = null;
+                keyGen = KeyGenerator.getInstance(ENCRYPT_ALGORITHM_RSA);
+                keyGen.init(new SecureRandom());
+                SecretKey key = keyGen.generateKey();
+                rndSeed = key.getEncoded();
+            }
         } catch (java.security.NoSuchAlgorithmException e) {
             Tr.error(tc, "security.ltpa.noalgorithm", new Object[] { e });
             com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.audit.AuditCrypto", "2157");
@@ -1889,7 +2027,10 @@ final class AuditCrypto {
     }
 
     static final byte[] encrypt(byte[] data, byte[] key) {
-        return encrypt(data, key, CIPHER, true);
+        String cipher = DESEDE_ECB_CIPHER;
+        if (fips140_3Enabled)
+            cipher = AES_CBC_CIPHER;
+        return encrypt(data, key, cipher, true);
     }
 
     static final byte[] encrypt(byte[] data, byte[] key, String cipher, boolean useJCE) {
@@ -1904,7 +2045,7 @@ final class AuditCrypto {
         }
 
         byte[] mesg = null;
-        if (useJCE) {
+        if (fips140_3Enabled || useJCE) {
             try {
                 if (null == data) {
                     if (tc.isDebugEnabled())
@@ -1914,13 +2055,14 @@ final class AuditCrypto {
 
                 SecretKey sKey = null;
 
-                if (cipher.indexOf("AES") != -1) {
+                if (fips140_3Enabled || cipher.indexOf("AES") != -1) {
                     // 16 bytes = 128 bit key
                     sKey = new SecretKeySpec(key, 0, 16, "AES");
                 } else {
                     DESedeKeySpec kSpec = new DESedeKeySpec(key);
                     SecretKeyFactory kFact = null;
-                    kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
+                    kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM_DESEDE);
+
                     sKey = kFact.generateSecret(kSpec);
                 }
 
@@ -1932,7 +2074,7 @@ final class AuditCrypto {
                     Tr.debug(tc, "The Algorithm Cipher used to encrypt: " + ci.getAlgorithm());
                 }
                 if (cipher.indexOf("ECB") == -1) {
-                    if (cipher.indexOf("AES") != -1) {
+                    if (fips140_3Enabled || cipher.indexOf("AES") != -1) {
                         if (ivs16 == null) {
                             setIVS16(key);
                         }
@@ -2012,7 +2154,7 @@ final class AuditCrypto {
         }
 
         byte[] tmpMesg = null;
-        if (useJCE) {
+        if (fips140_3Enabled || useJCE) {
             try {
                 if (null == mesg) {
                     if (tc.isDebugEnabled())
@@ -2022,13 +2164,13 @@ final class AuditCrypto {
 
                 SecretKey sKey = null;
 
-                if (cipher.indexOf("AES") != -1) {
+                if (fips140_3Enabled || cipher.indexOf("AES") != -1) {
                     // 16 bytes = 128 bit key
                     sKey = new SecretKeySpec(key, 0, 16, "AES");
                 } else {
                     DESedeKeySpec kSpec = new DESedeKeySpec(key);
                     SecretKeyFactory kFact = null;
-                    kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
+                    kFact = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM_DESEDE);
                     sKey = kFact.generateSecret(kSpec);
                 }
 
@@ -2242,4 +2384,28 @@ final class AuditCrypto {
             }
         }
     }
+
+    Signature getSignature() throws AuditSigningException {
+        Signature signature = null;
+        try {
+            if (fips140_3Enabled)
+                signature = Signature.getInstance(SIGNATURE_ALGORITHM_SHA256WITHRSA, IBMJCE_PLUS_FIPS_NAME);
+            else
+                signature = Signature.getInstance(SIGNATURE_ALGORITHM_SHA256WITHRSA);
+
+        } catch (Exception e) {
+            Tr.error(tc, "security.audit.signing.init.error", new Object[] { e });
+            throw new AuditSigningException(e.getMessage());
+        }
+
+        return signature;
+    }
+
+    String Cipher() {
+        String cipher = "DESede/ECB/PKCS5Padding";
+        if (fips140_3Enabled)
+            cipher = AES_CBC_CIPHER;
+        return cipher;
+    }
+
 }

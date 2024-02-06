@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -51,6 +51,17 @@ public class AuditSigningImpl implements AuditSigning {
     private static String keyStoreName = "auditSignerKeyStore_";
     private static String certLabelPrefix = "auditcert";
     private static String CRYPTO_ALGORITHM = "SHA256withRSA";
+
+    private static boolean fips140_3Enabled = false;
+
+    private static final String IBMJCE_NAME = "IBMJCE";
+    private static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
+    private static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
+    //private static final String provider = getProvider();
+
+    private static final String SIGNATURE_ALGORITHM_SHA256WITHRSA = "SHA256withRSA";
+    //private static final String signatureAlgorithm = getSignatureAlgorithm();
+
     private Signature signature = null;
     private final byte[] sigBytes = null;
     private final int signerKeyStoreIncrement = 1;
@@ -95,17 +106,18 @@ public class AuditSigningImpl implements AuditSigning {
 
         crypto = new AuditCrypto();
 
-        String JCEProvider = null;
+//        try {
+//            if (fips140_3Enabled)
+//                signature = Signature.getInstance(SIGNATURE_ALGORITHM_SHA256WITHRSA, IBMJCE_PLUS_FIPS_NAME);
+//            else
+//                signature = Signature.getInstance(SIGNATURE_ALGORITHM_SHA256WITHRSA);
+//
+//        } catch (Exception e) {
+//            Tr.error(tc, "security.audit.signing.init.error", new Object[] { e });
+//            throw new AuditSigningException(e.getMessage());
+//        }
+        signature = crypto.getSignature();
 
-        try {
-            signature = Signature.getInstance(CRYPTO_ALGORITHM);
-
-        } catch (Exception e) {
-            Tr.error(tc, "security.audit.signing.init.error", new Object[] { e });
-            throw new AuditSigningException(e.getMessage());
-        }
-
-        long begin_time = 0;
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Initializing audit signer at " + new java.util.Date(System.currentTimeMillis()));
         }

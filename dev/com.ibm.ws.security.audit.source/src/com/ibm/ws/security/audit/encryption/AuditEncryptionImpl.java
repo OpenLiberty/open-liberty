@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -62,6 +62,9 @@ public class AuditEncryptionImpl implements AuditEncrypting {
     private String _provider = null;
     private String _password = null;
     private String _alias = null;
+
+    private static final String ALGORITHM_DESEDE = "DESede";
+    private static final String ALGORITHM_RSA = "RSA";
 
     /**
      * <p>
@@ -170,7 +173,10 @@ public class AuditEncryptionImpl implements AuditEncrypting {
         try {
             if (crypto != null) {
                 try {
-                    sharedKey = new javax.crypto.spec.SecretKeySpec(AuditCrypto.generate3DESKey(), 0, 24, "DESede");
+                    if (crypto.isFips140_3Enabled())
+                        sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generate3DESKey(), 0, 24, ALGORITHM_RSA);
+                    else
+                        sharedKey = new javax.crypto.spec.SecretKeySpec(crypto.generate3DESKey(), 0, 24, ALGORITHM_DESEDE);
                 } catch (Exception me) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "me.getMessage: " + me.getMessage());
