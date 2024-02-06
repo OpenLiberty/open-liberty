@@ -156,7 +156,7 @@ public class ConfigAdminHealthCheckTest {
     @Test
     public void testMatchingAppNamesDropinsTest() throws Exception {
         log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the dropins directory.");
-        loadServerAndApplication(server1, APP_NAME, "com.ibm.ws.microprofile.health20.config.admin.dropins.checks.app", false);
+        loadServerAndApplication(server1, APP_NAME, "io.openliberty.microprofile.health31.config.admin.dropins.checks.app", false);
 
         //Hitting health endpoint to trigger configAdmin app registration.
         HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
@@ -176,7 +176,7 @@ public class ConfigAdminHealthCheckTest {
 
         log("testAppDetectionDropinsTest", "Starting the server and dynamically adding " + APP_NAME2);
 
-        loadServerAndApplication(server1, APP_NAME, "com.ibm.ws.microprofile.health20.config.admin.dropins.checks.app", true);
+        loadServerAndApplication(server1, APP_NAME, "io.openliberty.microprofile.health31.config.admin.dropins.checks.app", true);
 
         server1.waitForStringInLog("CWWKT0016I: Web application available");
 
@@ -197,7 +197,7 @@ public class ConfigAdminHealthCheckTest {
     public void testAppDetectionServerXml() throws Exception {
         log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the apps directory.");
 
-        WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME2, "com.ibm.ws.microprofile.health20.config.admin.xml.checks.app");
+        WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME2, "io.openliberty.microprofile.health31.config.admin.xml.checks.app");
         ShrinkHelper.exportAppToServer(server2, app);
 
         if (!server2.isStarted())
@@ -222,7 +222,7 @@ public class ConfigAdminHealthCheckTest {
     public void testWrongAppNameServerXml() throws Exception {
         log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the apps directory.");
 
-        WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME2, "com.ibm.ws.microprofile.health20.config.admin.xml.checks.app");
+        WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME2, "io.openliberty.microprofile.health31.config.admin.xml.checks.app");
         ShrinkHelper.exportAppToServer(server2, app);
 
         if (!server2.isStarted())
@@ -249,7 +249,7 @@ public class ConfigAdminHealthCheckTest {
                     "org.jboss.weld.exceptions.DeploymentException" })
     public void testFailsToStartApplicationHealthCheck() throws Exception {
         log("testFailsToStartApplicationHealthCheckTest", "Pre-loading FailsToStartHealthCheckApp and starting the server");
-        loadServerAndApplication(server3, FAILS_TO_START_APP_NAME, "com.ibm.ws.microprofile.health20.fails.to.start.health.check.app", false);
+        loadServerAndApplication(server3, FAILS_TO_START_APP_NAME, "io.openliberty.microprofile.health31.fails.to.start.health.check.app", false);
 
         log("testFailsToStartApplicationHealthCheckTest", "Testing health check endpoints after FailsToStartHealthCheckApp has been loaded");
         expectHealthCheck(server3, HealthCheck.LIVE, Status.SUCCESS, 0);
@@ -273,7 +273,7 @@ public class ConfigAdminHealthCheckTest {
     public void testFailedAppStart() throws Exception {
         log("testAppDetectionDropinsTest", "Starting the server and dynamically adding " + APP_NAME2);
 
-        loadServerAndApplication(server1, APP_NAME, "com.ibm.ws.microprofile.health20.config.admin.dropins.checks.app", true);
+        loadServerAndApplication(server1, APP_NAME, "io.openliberty.microprofile.health31.config.admin.dropins.checks.app", true);
 
         server1.waitForStringInLog("CWWKT0016I: Web application available");
 
@@ -298,7 +298,7 @@ public class ConfigAdminHealthCheckTest {
             public void run() {
                 try {
                     WebArchive war1 = ShrinkHelper.buildDefaultApp(DELAYED_APP_NAME, "io.openliberty.microprofile.health31.delayed.health.check.app");
-                    WebArchive war2 = ShrinkHelper.buildDefaultApp(APP_NAME, "com.ibm.ws.microprofile.health20.config.admin.dropins.checks.app");
+                    WebArchive war2 = ShrinkHelper.buildDefaultApp(APP_NAME, "io.openliberty.microprofile.health31.config.admin.dropins.checks.app");
                     EnterpriseArchive testEar = ShrinkWrap.create(EnterpriseArchive.class, "MultiWarApps.ear");
                     testEar.addAsModule(war2);
                     testEar.addAsModule(war1);
