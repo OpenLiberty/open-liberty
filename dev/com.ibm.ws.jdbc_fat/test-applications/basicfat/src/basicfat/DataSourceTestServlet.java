@@ -131,6 +131,15 @@ import componenttest.app.FATServlet;
                                                                       "createDatabase=create",
                                                                       "enableContainerAuthForDirectLookups=false",
                                                                       "validationTimeout=10s"
+                                                       }),
+                                 @DataSourceDefinition(name = "java:app/env/jdbc/merged/datasource",
+                                                       className = "org.apache.derby.jdbc.EmbeddedDataSource40",
+                                                       databaseName = "memory:dsmerged",
+                                                       user = "dsuser1",
+                                                       password = "{xor}Oz0vKDtu",
+                                                       loginTimeout = 77, // application.xml overrides with 70
+                                                       properties = {
+                                                                      "createDatabase=create"
                                                        })
 
 })
@@ -1126,6 +1135,11 @@ public class DataSourceTestServlet extends FATServlet {
         } finally {
             con.close();
         }
+    }
+
+    public void testDataSourceDefintionAppMerge() throws Exception {
+        DataSource ds = InitialContext.doLookup("java:app/env/jdbc/merged/datasource");
+        assertEquals(70, ds.getLoginTimeout());
     }
 
     /**

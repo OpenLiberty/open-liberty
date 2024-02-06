@@ -1362,6 +1362,11 @@ public class ConfigTest extends FATServletClient {
         cleanUpExprs = JDBCAPP_RECYCLE_EXPR_LIST;
     }
 
+    @Test
+    public void testDataSourceDefintionAppMerge() throws Throwable {
+        runTest(basicfat, "testDataSourceDefintionAppMerge");
+    }
+
     /**
      * Update the JDBC driver configuration while the server is running.
      * Uses Automatic Library which is not defined in server.xml.

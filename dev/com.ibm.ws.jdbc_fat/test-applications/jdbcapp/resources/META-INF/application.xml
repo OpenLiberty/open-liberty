@@ -28,5 +28,10 @@
     <property><name>queryTimeout</name><value>1h4m60s</value></property>
     <property><name>reapTime</name><value>2000ms</value></property>
   </data-source>
+  
+  <data-source>
+    <name>java:app/env/jdbc/merged/datasource</name>
+    <login-timeout>70</login-timeout>
+  </data-source>
 
 </application>
