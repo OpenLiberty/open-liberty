@@ -72,6 +72,7 @@ public class SPNEGOConstants {
     public final static String SERVER_KRB5_CONFIG_FILE = KRB_RESOURCE_LOCATION + "krb5.conf";
     public final static String CLIENT_JAAS_CONFIG_FILE = KRB_RESOURCE_LOCATION + "jaas.conf";
     public final static String SERVER_KRB5_CONFIG_FILE_BACKUP = KRB_RESOURCE_LOCATION + "KDCbackup-krb5.conf";
+    public final static String ZOS_CLIENT_JAAS_CONFIG_FILE = KRB_RESOURCE_LOCATION + "zjaas.conf";
 
     // User access control command line parameters
     public final static String ARG_ENABLE_TRUSTED_FOR_DELEGATION = "-enableTrustedForDelegation";
