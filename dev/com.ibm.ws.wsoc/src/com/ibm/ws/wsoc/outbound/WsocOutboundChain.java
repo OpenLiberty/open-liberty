@@ -13,7 +13,6 @@
 package com.ibm.ws.wsoc.outbound;
 
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -36,7 +35,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.NettyFramework;
-import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.tls.NettyTlsProvider;
 
 public class WsocOutboundChain {
 
@@ -67,10 +66,12 @@ public class WsocOutboundChain {
 
     /** Required, static Netty framework reference */
     private static NettyFramework nettyBundle;
+    private static NettyTlsProvider nettyTlsProvider;
 
     private static boolean useNettyTransport = false;
     protected static BootstrapExtended unsecureBootstrap;
     protected static BootstrapExtended secureBootstrap;
+    protected static Map<String, Object> currentSSL;
 
     public static VirtualConnection getVCFactory(WsocAddress addr) throws ChainException, ChannelException {
         if (addr.isSecure()) {
@@ -81,7 +82,7 @@ public class WsocOutboundChain {
 
     }
 
-    public static BootstrapExtended getBootstrap(WsocAddress addr) throws NettyException, InterruptedException, ExecutionException {
+    public static BootstrapExtended getBootstrap(WsocAddress addr) {
         if (addr.isSecure()) {
             return secureBootstrap;
         }
@@ -90,6 +91,10 @@ public class WsocOutboundChain {
 
     public static boolean isUsingNetty() {
         return useNettyTransport;
+    }
+    
+    public static Map<String, Object> getCurrentSslOptions() {
+        return currentSSL;
     }
 
     /**
@@ -255,6 +260,20 @@ public class WsocOutboundChain {
         }
         return chfw.getFramework();
 
+    }
+    
+    @Reference(name = "nettyTlsProvider")
+    protected void setNettyTlsProvider(NettyTlsProvider bundle) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "Setting nettyTlsBundle " + bundle);
+        nettyTlsProvider = bundle;
+    }
+
+    /**
+     * @return ChannelFramework associated with the CHFWBundle service.
+     */
+    public static NettyTlsProvider getNettyTlsProvider() {
+        return nettyTlsProvider;
     }
 
     /**

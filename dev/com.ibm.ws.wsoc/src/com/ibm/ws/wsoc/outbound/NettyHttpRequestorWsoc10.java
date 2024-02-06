@@ -21,6 +21,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+import javax.net.ssl.SSLEngine;
 
 import javax.websocket.ClientEndpointConfig;
 import javax.websocket.Extension;
@@ -28,6 +32,7 @@ import javax.websocket.Extension.Parameter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.wsoc.Constants;
 import com.ibm.ws.wsoc.HandshakeProcessor;
 import com.ibm.ws.wsoc.ParametersOfInterest;
@@ -45,6 +50,7 @@ import com.ibm.wsspi.http.channel.values.StatusCodes;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -56,6 +62,8 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslHandler;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.exception.NettyException;
@@ -85,6 +93,8 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
     private Map<String, List<String>> responseHeaders = null;
 
     protected final ClientEndpointConfig config;
+    
+    private ChannelPromise responsePromise;
 
     private FullHttpResponse resp;
 
@@ -121,6 +131,7 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
         int port = remoteAddress.getPort();
         factory.handler(new WsocClientInitializer(factory.getBaseInitializer(), this));
         connection = WsocOutboundChain.getNettyFramework().startOutbound(factory, host, port, null).get().sync().channel();
+        responsePromise = connection.newPromise();
     }
 
     @Override
@@ -284,17 +295,6 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
         // TODO Send HTTP Upgrade request here
         connection.writeAndFlush(request);
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            e.printStackTrace();
-        }
-
-        // Save channel future?
-        // When completed we do everything else?
-
         // PH10279
         // client side needs to store query string and path parameters for later retrieval from the session object
         if (poi != null) {
@@ -314,6 +314,11 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
     @Override
     public WsByteBuffer completeResponse() throws IOException {
         System.out.println("Completing response!");
+        try {
+            responsePromise.get(5000, TimeUnit.MILLISECONDS);
+        }catch (InterruptedException | ExecutionException | TimeoutException e1) {
+            e1.printStackTrace();
+        }
         if (resp == null) {
             throw new IOException("Don't have a response yet! Do we need to wait for it?");
         }
@@ -447,23 +452,34 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                 Tr.debug(this, tc, "initChannel: Constructing pipeline");
             parent.init(ch);
             ChannelPipeline pipeline = ch.pipeline();
-//            if(sslOptions != null) {
-//                    if (tc.isDebugEnabled())
-//                            Tr.debug(ch, tc, "initChannel","Adding SSL Support");
-//                    InetSocketAddress remoteAddress = addr.getRemoteAddress();
-//                    String host = remoteAddress.getHostString();
-//                    int port = remoteAddress.getPort();
-//                    if (tc.isDebugEnabled()) Tr.debug(this, tc, "Create SSL", new Object[] {tlsProvider, host, port, sslOptions});
-//                    SslContext context = tlsProvider.getOutboundSSLContext(sslOptions, host, port);
-//                    if(context == null) {
-//                            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.entry(this, tc, "initChannel","Error adding TLS Support");
-//                            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) Tr.exit(this, tc, "initChannel");
-//                            ch.close();
-//                            return;
-//                    }
-//                    SSLEngine engine = context.newEngine(ch.alloc());
-//                    pipeline.addFirst("SSLHandler", new SslHandler(engine, false));
-//            }
+
+         // TODO enable SSL
+            if (requestor.endpointAddress.isSecure()) {
+                if (WsocOutboundChain.currentSSL == null || WsocOutboundChain.getNettyTlsProvider() == null) { // This shouldn't happen
+                    System.out.println("Oh no, secure address requested but no SSL Options found!");
+                    throw new IllegalStateException("This ");
+                }
+                if (tc.isDebugEnabled())
+                    Tr.debug(ch, tc, "initChannel", "Adding SSL Support");
+                InetSocketAddress remoteAddress = requestor.endpointAddress.getRemoteAddress();
+                String host = remoteAddress.getHostString();
+                int port = remoteAddress.getPort();
+                if (tc.isDebugEnabled())
+                    Tr.debug(this, tc, "Create SSL", new Object[] { WsocOutboundChain.getNettyTlsProvider(), host, port, WsocOutboundChain.currentSSL });
+                SslContext context = WsocOutboundChain.getNettyTlsProvider().getOutboundSSLContext(WsocOutboundChain.currentSSL, host, Integer.toString(port));
+                if (context == null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                        Tr.entry(this, tc, "initChannel", "Error adding TLS Support");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                        Tr.exit(this, tc, "initChannel");
+                    ch.close();
+                    return;
+                }
+                SSLEngine engine = context.newEngine(ch.alloc());
+                pipeline.addFirst("SSLHandler", new SslHandler(engine, false));
+
+            }
+            ch.attr(NettyHttpConstants.IS_OUTBOUND_KEY).set(true);
             // ADD HTTP CODEC for first upgrade request
             pipeline.addLast(new HttpClientCodec());
             pipeline.addLast(new HttpObjectAggregator(Integer.MAX_VALUE));
@@ -475,6 +491,7 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                     requestor.resp = res;
                     ctx.pipeline().remove(this);
                     requestor.updatePipelineToWebsocket();
+                    requestor.responsePromise.setSuccess();
                 }
             });
         }

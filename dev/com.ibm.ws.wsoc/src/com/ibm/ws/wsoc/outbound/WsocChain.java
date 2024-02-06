@@ -387,8 +387,10 @@ public class WsocChain {
         try {
             nettyBootstrap = nettyBundle.createTCPBootstrapOutbound(tcpOptions);
 //            nettyBootstrap.handler(new WsocClientInitializer(nettyBootstrap.getBaseInitializer(), target));
-            if (isHttps)
+            if (isHttps) {
                 owner.secureBootstrap = nettyBootstrap;
+                owner.currentSSL = sslOptions;
+            }
             else
                 owner.unsecureBootstrap = nettyBootstrap;
         } catch (NettyException e) {

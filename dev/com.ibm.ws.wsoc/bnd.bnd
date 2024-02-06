@@ -33,11 +33,12 @@ Export-Package: \
   com.ibm.ws.wsoc.configurator.*;thread-context=true
 
 Import-Package: \
-  !*.internal.*, \
   io.openliberty.netty.internal*, \
+  !*.internal.*, \
   !com.ibm.ws.kernel.boot.cmdline, \
   io.openliberty.wsoc.speclevel, \
   io.openliberty.wsoc.ssl, \
+  com.ibm.ws.http.netty,\
   com.ibm.ws.http.netty.inbound, \
   *
 
@@ -83,13 +84,14 @@ Service-Component: \
     implementation:=com.ibm.ws.wsoc.outbound.WsocOutboundChain;\
     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle; \
     nettyBundle=io.openliberty.netty.internal.NettyFramework;\
+    nettyTlsProvider=io.openliberty.netty.internal.tls.NettyTlsProvider;\
     tcpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     httpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     sslOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
     configuration-policy:=require;\
     dynamic:='tcpOptions,httpOptions,sslOptions';\
     modified:='modified'; \
-    optional:='sslOptions,sslSupport';\
+    optional:='sslOptions,sslSupport,nettyTlsProvider';\
     greedy:='tcpOptions,httpOptions,sslOptions'; \
     properties:='service.vendor=IBM', \
   ${bSymbolicName}_${replace;${bVersion};\\.;_}.ResourceProvider; \
