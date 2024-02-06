@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
 #COMPONENTPREFIX JSPG CWWJS
@@ -1273,8 +1270,22 @@ jsp.isthreadsafe.warning=CWWJS0003W: Specifica\u021bia Pages 3.1 recomand\u0103 
 jsp.isthreadsafe.warning.explanation=SingleThreadModel a fost \u00eenl\u0103turat de la Servlet 6.0. Pages 3.1 a perimat isThreadSafe \u0219i are \u00een vedere s\u0103-l \u00eenl\u0103ture \u00eentr-o actualizare Pages viitoare.
 jsp.isthreadsafe.warning.useraction=\u00cenl\u0103tura\u021bi directiva isThreadSafe din toate paginile.
 
-
 jsp.useinmemory.warning=CWWJS0004W: Op\u021biunea "useIn JSP-urile vor fi compilate \u0219i salvate pe disc \u00een schimb.
 jsp.useinmemory.warning.explanation=Aceast\u0103 caracteristic\u0103 nu a fost niciodat\u0103 portat de la tradi\u021bional WebSphere din motive istorice.
 jsp.useinmemory.warning.useraction=Elimina\u021bi op\u021biunea de memorie useInde la server.xml, ibm-web-bnd.xml, sau fi\u0219ierele ibm-web-ext.xmi .
 
+pages.removed.element.error=CWWJS0005E: {0} 0} a fost eliminat \u00een Pages 4.0 prin urmare, nu mai este acceptat.
+pages.removed.element.error.explanation=Plugin-ul jsp \u0219i ac\u021biunile conexe au fost depreciate \u00een Pages 3.1 eliminate \u00een 4.0 
+pages.removed.element.error.useraction= Scoate\u021bi plugin-ul jsp, fallback, \u0219i params elemente din aplica\u021bia web.
+
+jsp.javasourcelevel.warning=CWWJS0006W: Valoarea specificat\u0103 a javaSource{0} dep\u0103\u0219e\u0219te {1} nivel Java. Prin urmare, nivelul implicit Java este setat la {1}.
+jsp.javasourcelevel.warning.explanation=Fi\u0219ierul nu poate fi compilat cu o surs\u0103 mai mare dec\u00e2t nivelul JDK disponibil. 
+jsp.javasourcelevel.warning.useraction=Specifica\u021bi o valoare a nivelului de javaSourcecare este mai mic\u0103 sau egal\u0103 cu nivelul JDK disponibil.
+
+jsp.bothsourcelevelset.warning=CWWJS0007W: Both javaSourceLevel ={0} and jdkSourceLevel ={1} are specificat. Defaulting to javaSourceLevel ={0}.
+jsp.bothsourcelevelset.warning.explanation=Doar un singur atribut de nivel surs\u0103 poate fi folosit la un moment dat.
+jsp.bothsourcelevelset.warning.useraction=Specifica\u021bi numai atributul de javaSource Atributul jdkSourcestabilizat. 
+
+jsp.javasourcelevel.value=CWWJS0008I: Valoarea atributului JSP este javaSource{0}".
+jsp.javasourcelevel.value.explanation=
+jsp.javasourcelevel.value.useraction=

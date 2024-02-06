@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
 #COMPONENTPREFIX JSPG CWWJS
@@ -1273,8 +1270,22 @@ jsp.isthreadsafe.warning=CWWJS0003W: Im Rahmen der Spezifikation f\u00fcr Pages 
 jsp.isthreadsafe.warning.explanation='SingleThreadModel' wurde aus Servlet 6.0 entfernt. Pages 3.1 unterst\u00fctzt 'isThreadSafe' nicht weiter und sieht vor, diese Anweisung im Rahmen einer zuk\u00fcnftigen Aktualisierung von Pages zu entfernen.
 jsp.isthreadsafe.warning.useraction=Entfernen Sie die Anweisung 'isThreadSafe' aus allen Seiten.
 
-
 jsp.useinmemory.warning=CWWJS0004W: Die JSP-Option 'useInMemory' wird nicht unterst\u00fctzt. Die JSPs werden stattdessen kompiliert und auf der Platte gespeichert.
 jsp.useinmemory.warning.explanation=Diese Funktion wurde aus historischen Gr\u00fcnden nie aus dem traditionellen WebSphere portiert.
 jsp.useinmemory.warning.useraction=Entfernen Sie die Speicheroption useInaus der Datei server.xml, ibm-web-bnd.xmloder ibm-web-ext.xmi .
 
+pages.removed.element.error=CWWJS0005E: Das Element {0} wurde in den Seiten 4.0 entfernt und wird daher nicht mehr unterst\u00fctzt.
+pages.removed.element.error.explanation=Das JSP-Plug-in und zugeh\u00f6rige Aktionen wurden in Seiten 3.1 als veraltet markiert und in 4.0entfernt. 
+pages.removed.element.error.useraction= Entfernen Sie die JSP-Plug-in-, Fallback-und Params-Elemente aus Ihrer Webanwendung.
+
+jsp.javasourcelevel.warning=CWWJS0006W: Der angegebene Wert f\u00fcr javaSourceStufe{0} \u00fcberschreitet die installierte Java-Stufe {1} . Daher ist die Java-Standardversion auf {1}gesetzt.
+jsp.javasourcelevel.warning.explanation=Die Datei kann nicht mit einer h\u00f6heren Quelle als der verf\u00fcgbaren JDK-Version kompiliert werden. 
+jsp.javasourcelevel.warning.useraction=Geben Sie einen Wert f\u00fcr die javaSource-Stufe an, der kleiner-gleich der verf\u00fcgbaren JDK-Stufe ist.
+
+jsp.bothsourcelevelset.warning=CWWJS0007W: Es wurden sowohl javaSourceals auch jdkSource={1} angegeben. Standardm\u00e4\u00dfig wird javaSourceStufe ={0}angenommen.
+jsp.bothsourcelevelset.warning.explanation=Es kann jeweils nur ein Attribut auf Quellenebene verwendet werden.
+jsp.bothsourcelevelset.warning.useraction=Geben Sie nur das Ebenenattribut javaSourcean. Das Ebenenattribut jdkSourcewurde stabilisiert. 
+
+jsp.javasourcelevel.value=CWWJS0008I: Der Wert des JSP-Attributs javaSourceist "{0}".
+jsp.javasourcelevel.value.explanation=
+jsp.javasourcelevel.value.useraction=

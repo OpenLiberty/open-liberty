@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
 #COMPONENTPREFIX JSPG CWWJS
@@ -1273,8 +1270,22 @@ jsp.isthreadsafe.warning=CWWJS0003W: A especifica\u00e7\u00e3o do Pages 3.1 acon
 jsp.isthreadsafe.warning.explanation=SingleThreadModel foi removido do Servlet 6.0. O Pages 3.1 descontinuou o isThreadSafe com planos de remov\u00ea-lo em uma atualiza\u00e7\u00e3o futura do Pages.
 jsp.isthreadsafe.warning.useraction=Remova a diretiva isThreadSafe de todas as p\u00e1ginas.
 
-
 jsp.useinmemory.warning=CWWJS0004W: A Op\u00e7\u00e3o JSP 'useInMemory' n\u00e3o \u00e9 suportada As JSPs ser\u00e3o compiladas e salvas no disco.
 jsp.useinmemory.warning.explanation=Esse recurso nunca foi portado do WebSphere tradicional por motivos hist\u00f3ricos..
 jsp.useinmemory.warning.useraction=Remova a op\u00e7\u00e3o useInMemory dos arquivos server.xml, ibm-web-bnd.xmlou ibm-web-ext.xmi .
 
+pages.removed.element.error=CWWJS0005E: O elemento {0} foi removido nas P\u00e1ginas 4.0 e, portanto, n\u00e3o \u00e9 mais suportado.
+pages.removed.element.error.explanation=O plug-in jsp e as a\u00e7\u00f5es relacionadas foram descontinuados no Pages 3.1 e removidos no 4.0 
+pages.removed.element.error.useraction= Remova os elementos jsp plugin, fallback e params do seu aplicativo da Web.
+
+jsp.javasourcelevel.warning=CWWJS0006W: O valor javaSourceLevel ={0} especificado excede o n\u00edvel Java instalado de {1} . Portanto, o n\u00edvel Java padr\u00e3o \u00e9 configurado como {1}.
+jsp.javasourcelevel.warning.explanation=O arquivo n\u00e3o pode ser compilado com uma origem superior ao n\u00edvel de JDK dispon\u00edvel. 
+jsp.javasourcelevel.warning.useraction=Especifique um valor de N\u00edvel javaSourceque seja menor ou igual ao n\u00edvel de JDK dispon\u00edvel.
+
+jsp.bothsourcelevelset.warning=CWWJS0007W: javaSourceLevel ={0} e jdkSourceLevel ={1} s\u00e3o especificados. O padr\u00e3o \u00e9 javaSourceLevel ={0}.
+jsp.bothsourcelevelset.warning.explanation=Apenas um atributo de n\u00edvel de origem pode ser usado por vez..
+jsp.bothsourcelevelset.warning.useraction=Especifique apenas o atributo de N\u00edvel javaSource O atributo de N\u00edvel jdkSource\u00e9 estabilizado 
+
+jsp.javasourcelevel.value=CWWJS0008I: O valor do atributo JSP javaSourceLevel \u00e9 "{0}".
+jsp.javasourcelevel.value.explanation=
+jsp.javasourcelevel.value.useraction=

@@ -709,7 +709,12 @@ toplink_warning=[EL \u2013 ostrze\u017cenia]:
 
 unit_of_work_thread_info=Bie\u017c\u0105ca jednostka pracy w sesji ({0}) zosta\u0142a utworzona przez inny w\u0105tek (identyfikator: {1}, nazwa: {2}), ni\u017c bie\u017c\u0105cy w\u0105tek (identyfikator: {3}, nazwa: {4})
 
-unit_of_work_thread_info_thread_dump=W\u0105tek tworzenia (identyfikator: {0}, nazwa: {1}), stos wywo\u0142a\u0144: {2}Bie\u017c\u0105cy w\u0105tek (identyfikator: {3}, nazwa: {4}), stos wywo\u0142a\u0144:{5}\n
+unit_of_work_thread_info_thread_dump=W\u0105tek tworzenia (identyfikator: {0} , nazwa: {1}), stos wywo\u0142a\u0144:
+#{2}
+
+Current w\u0105tek (identyfikator: {3} nazwa: {4}) stos wywo\u0142a\u0144:
+#{5}
+
 unitofwork_identity_hashcode={0} Kod mieszaj\u0105cy to\u017csamo\u015bci jednostki pracy: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=Zapytanie UpdateAllQuery nie mo\u017ce u\u017cywa\u0107 powi\u0105zania na tej platformie bazy danych. Ustawienia zapytania zosta\u0142y zmienione tak, aby wykona\u0107 zapytanie bez powi\u0105zania.

@@ -46,7 +46,7 @@ The process steps occur roughly in the order as presented. Process steps occasio
 
 Each process step has a number of tasks which must be completed or must be marked as not applicable ("N/A").
 
-Unless otherwise indicated, the tasks are the responsibility of the Feature Owner or a Delegate of the Feature Owner.
+Unless otherwise indicated, the tasks are the responsibility of the feature owner or a delegate of the feature owner.
 
 If you need assistance, reach out to the [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect).
 
@@ -55,15 +55,15 @@ If you need assistance, reach out to the [OpenLiberty/release-architect](https:/
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Prioritization** (Complete Before Development Starts)
 
-The ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) and area leads are responsible for prioritizing the features and determining which features are being actively worked on.
+The [OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) and area leads are responsible for prioritizing the features and determining which features are being actively worked on.
 
 ### **Prioritization**
 - [ ] Feature added to the "New" column of the [Open Liberty project board](https://github.com/orgs/OpenLiberty/projects/2)
-  - Epics can be added to the board in one of two ways:
-    - From this issue, use the "Projects" section to select the appropriate project board.
-    - From the appropriate project board click "Add card" and select your Feature Epic issue
+  - Feature owner adds label `Prioritization - Requested`
+  - Feature added to "New" column of the Open Liberty Roadmap. ([OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager))
 - [ ] Priority assigned
   - Attend the Liberty Backlog Prioritization meeting
+  - `Prioritization - Requested` label removed ([OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager) or feature owner)
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Design** (Complete Before Development Starts)
@@ -75,7 +75,7 @@ Design preliminaries determine whether a formal design, which will be provided b
 - [ ] Accessibility requirements identified, or N/A. (Feature owner and [Accessibility focal point](https://github.com/orgs/OpenLiberty/teams/accessibility-approvers))
 - [ ] ID requirements identified, or N/A. (Feature owner and [ID focal point](https://github.com/orgs/OpenLiberty/teams/id-approvers))
    - Refer to [Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty).
-   - Feature Owner adds label `ID Required`, if non-trivial documentation needs to be created by the ID team.
+   - Feature owner adds label `ID Required`, if non-trivial documentation needs to be created by the ID team.
    - ID adds label `ID Required - Trivial`, if no design will be performed and only trivial ID updates are needed.
 - [ ] Serviceability requirements identified, or N/A. (Feature owner and [Serviceability focal point](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
 - [ ] SVT requirements identified, or N/A. (Feature owner and [SVT focal point](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
@@ -122,15 +122,15 @@ Code may not GA until this feature has obtained the `Design Approved` or `No Des
 
 ## **Legal and Translation**
 
-In order to avoid last minute blockers and significant disruptions to the feature, the **legal items need to be done as early in the feature process as possible**, either in design or as early into the development as possible.  Similarly, translation is to be done concurrently with development.  Both **MUST** be completed before Beta or GA is requested.
+In order to avoid last minute blockers and significant disruptions to the feature, the **legal items need to be done as early in the feature process as possible**, either in design or as early into the development as possible.  Similarly, translation is to be done concurrently with development.  All items below **MUST** be completed before beta & GA is requested.
 
-### **Legal** (Complete before Feature Complete Date)
-- [ ] Changed or new open source libraries are cleared and approved, or N/A. (Legal Release Services/Cass Tucker/Release PM).
-
-### **Innovation** (Complete 1 week before Feature Complete Date)
+### **Innovation** (Complete 1 week before Beta & GA Feature Complete Date)
 - [ ] Consider whether any aspects of the feature may be patentable. If any identified, disclosures have been submitted.
 
-### **Translation** (Complete by Feature Complete Date)
+### **Legal** (Complete before Beta & GA Feature Complete Date)
+- [ ] Changed or new open source libraries are cleared and approved, or N/A. (Legal Release Services/Cass Tucker/Release PM).
+
+### **Translation** (Complete by Beta & GA Feature Complete Date)
 - [ ] PII (Program Integrated Information) updates are merged (i.e. all English strings due for translation have been delivered), or N/A.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -162,12 +162,13 @@ A feature is ready to GA after it is Feature Complete and has obtained all neces
   - [ ] All related/child issues are closed.
   - [ ] All stop ship issues are completed.
 - [ ] Legal: all necessary approvals granted.
+- [ ] Innovation: IP identified and any applicable disclosures submitted
 - [ ] Translation: Feature may only proceed to GA if it has either `Translation - Complete` or `Translation - Missing` label
   - If all translation has been delivered to `release` branch, feature owner adds label `Translation - Complete`.
   - If missing translation does not cause a break in functionality, nor a security or production outage risk, feature owner adds label `Translation - Missing`.
     - Once all missing translations are delivered, the `Translation - Missing` label is replaced with `Translation - Complete`.
   - If missing translation could cause a break in functionality or a security or production outage risk, feature owner adds the `Translation - Blocked` label.
-    - Featues with `Translation - Blocked` may **NOT** proceed to GA until the label has been replaced with either `Translation - Missing` or `Translation - Complete`.
+    - Features with `Translation - Blocked` may **NOT** proceed to GA until the label has been replaced with either `Translation - Missing` or `Translation - Complete`.
   - For further guidance, contact [Globalization focal point](https://github.com/orgs/OpenLiberty/teams/globalization-approvers) or the [Release Architect](https://github.com/orgs/OpenLiberty/teams/release-architect).
 - [ ] GA development complete and feature ready for inclusion in a GA release
   - Add label `target:ga` and the appropriate `target:YY00X` (where YY00X is the targeted GA version).

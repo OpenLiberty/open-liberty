@@ -1227,6 +1227,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             FeatureDefinition fd = getFeatureDefinition(feature);
 
             if (fd != null && fd.getVisibility() == Visibility.PUBLIC) {
+                if(fd.getSymbolicName().contains("versionless")){
+                    continue;
+                }
                 // get name from feature definition.
                 // input ones come from the cache which is lower case.
                 // If we don't want to include auto features, then check each feature before adding it.

@@ -15,6 +15,7 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.ack.auto;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
 
 import java.util.Map;
 
@@ -87,7 +88,7 @@ public class KafkaAutoAckTest {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        kafkaStopServer(server);
     }
 
 }

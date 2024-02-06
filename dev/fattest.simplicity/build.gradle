@@ -21,6 +21,7 @@ task assembleBootstrap(type: Copy) {
 }
 
 task assembleBinaryDependencies() {
+    dependsOn ':com.ibm.ws.jaxb.tools:jar'
     File buildDirLib = new File(buildDir, 'lib')
     outputs.dir buildDirLib
     doLast {

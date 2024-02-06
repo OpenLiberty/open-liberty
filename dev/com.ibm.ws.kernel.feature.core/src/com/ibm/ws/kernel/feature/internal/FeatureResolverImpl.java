@@ -99,7 +99,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         String[] preferredVersions = (preferedFeatureVersions == null) ? new String[] {} : preferedFeatureVersions.split(",");
         String[][] parsedVersions = new String[preferredVersions.length][2];
         for (int i = 0; i < preferredVersions.length; i++) {
-            parsedVersions[i] = parseNameAndVersion(preferredVersions[i]);
+            parsedVersions[i] = parseNameAndVersion(preferredVersions[i].trim());
         }
         parsedPreferedVersions = parsedVersions;
     }

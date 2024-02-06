@@ -175,6 +175,16 @@ elements={0}{1} prvk\u016f
 
 enable_batch_operations_as_true_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "enable-batch-operations-as-true" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 
+encryptor_decrypt_old_algorithm=Heslo datab\u00e1ze pou\u017eit\u00e9 v {0} bylo \u0161ifrov\u00e1no zam\u00edtnut\u00fdm algoritmem algorithm.Reencrypt pomoc\u00ed skriptu `passwordUpdate.sh ` z bal\u00edku eclipselink.zip .
+
+encryptor_decrypt_old_algorithm_without_session_name=Heslo datab\u00e1ze bylo \u0161ifrov\u00e1no zam\u00edtnut\u00fdm algoritmem algorithm.Reencrypt pomoc\u00ed skriptu `passwordUpdate.sh ` z bal\u00edku eclipselink.zip .
+
+encryptor_script_description=Tato aplikace intern\u011b de\u0161ifruje star\u00e9 \u0161ifrovan\u00e9 heslo, kter\u00e9 bylo pou\u017eito p\u0159edchoz\u00ed verz\u00ed EclipseLink , a za\u0161ifruje je nejnov\u011bj\u0161\u00edm algoritmem.
+
+encryptor_script_output=Znovu za\u0161ifrovan\u00e9 heslo je: {0}
+
+encryptor_script_usage=Pou\u017eit\u00ed je `passwordUpdate.sh | .cmd -ip < star\u00e9 \u0161ifrovan\u00e9 heslo> `
+
 entity_manager_ignores_jta_data_source=Jednotka perzistence nepou\u017e\u00edv\u00e1 JTA, a proto bude spr\u00e1vce entit ignorovat zdroj dat JTA. 
 
 entity_manager_ignores_nonjta_data_source=Jednotka perzistence pou\u017e\u00edv\u00e1 JTA, a proto spr\u00e1vce entit bude ignorovat v\u0161echny ostatn\u00ed zdroje dat krom\u011b JTA. 
@@ -737,7 +747,11 @@ toplink_warning=[EL varov\u00e1n\u00ed]:
 
 unit_of_work_thread_info=Aktu\u00e1ln\u00ed jednotka pr\u00e1ce v relaci ({0}) byla vytvo\u0159ena jin\u00fdm podprocesem (ID: {1} n\u00e1zev: {2}), ne\u017e je aktu\u00e1ln\u00ed podproces (ID: {3} n\u00e1zev: {4})
 
-unit_of_work_thread_info_thread_dump=Trasov\u00e1n\u00ed z\u00e1sobn\u00edku podprocesu vytvo\u0159en\u00ed (ID: {0} n\u00e1zev: {1}): {2} Trasov\u00e1n\u00ed z\u00e1sobn\u00edku aktu\u00e1ln\u00edho podprocesu (ID: {3} n\u00e1zev: {4}): {5}
+unit_of_work_thread_info_thread_dump=Trasov\u00e1n\u00ed z\u00e1sobn\u00edku podprocesu vytvo\u0159en\u00ed (ID: {0} n\u00e1zev: {1}):
+#{2}
+
+Current podproces (ID: {3} n\u00e1zev: {4}) trasov\u00e1n\u00ed z\u00e1sobn\u00edku:
+#{5}
 
 unitofwork_identity_hashcode={0}Ha\u0161ovac\u00ed k\u00f3d identity UnitOfWork: {1}
 

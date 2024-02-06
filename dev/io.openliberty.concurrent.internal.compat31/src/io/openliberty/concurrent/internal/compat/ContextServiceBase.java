@@ -30,6 +30,8 @@ public abstract class ContextServiceBase {
     protected abstract ThreadContextDescriptor captureThreadContext();
 
     public <T> Subscriber<T> contextualSubscriber(Subscriber<T> subscriber) {
+        if (subscriber instanceof ContextualProcessor)
+            throw new IllegalArgumentException(ContextualProcessor.class.getSimpleName());
         if (subscriber instanceof ContextualSubscriber)
             throw new IllegalArgumentException(ContextualSubscriber.class.getSimpleName());
 

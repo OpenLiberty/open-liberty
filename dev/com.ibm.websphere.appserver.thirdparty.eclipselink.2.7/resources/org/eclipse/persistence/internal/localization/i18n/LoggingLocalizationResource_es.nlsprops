@@ -175,6 +175,16 @@ elements={0}{1} elementos
 
 enable_batch_operations_as_true_not_supported=El valor CMP nativa de WLS "habilitar-operaciones-lotes-como-verdadero" no est\u00e1 soportado directamente en la CMP de EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
 
+encryptor_decrypt_old_algorithm=La contrase\u00f1a de base de datos utilizada en {0} se ha cifrado mediante un algoritmo algorithm.Reencrypt mediante `passwordUpdate.sh ` del paquete eclipselink.zip .
+
+encryptor_decrypt_old_algorithm_without_session_name=La contrase\u00f1a de base de datos se ha cifrado mediante un algoritmo algorithm.Reencrypt mediante `passwordUpdate.sh ` del paquete eclipselink.zip .
+
+encryptor_script_description=Esta aplicaci\u00f3n descifra internamente una contrase\u00f1a cifrada antigua que utilizaba una versi\u00f3n anterior de EclipseLink y la cifra el algoritmo m\u00e1s reciente.
+
+encryptor_script_output=La contrase\u00f1a recifrada es: {0}
+
+encryptor_script_usage=El uso es `passwordUpdate.sh | .cmd -ip < contrase\u00f1a cifrada antigua> `
+
 entity_manager_ignores_jta_data_source=La unidad de persistencia no utiliza JTA, por lo tanto, EntityManager ignora el origen de datos jta. 
 
 entity_manager_ignores_nonjta_data_source=La unidad de persistencia utiliza JTA, por lo tanto, EntityManager ignora los or\u00edgenes de datos no jta. 
@@ -737,7 +747,11 @@ toplink_warning=[Aviso de EL]:
 
 unit_of_work_thread_info=La unidad de trabajo actual en la sesi\u00f3n ({0}) ha sido creada por una hebra (id: {1}, nombre: {2}) distinta de la hebra actual (id: {3}, nombre: {4})
 
-unit_of_work_thread_info_thread_dump=Rastreo de pila de la hebra de creaci\u00f3n (id: {0}, nombre: {1}): {2}Rastreo de pila de la hebra actual (id: {3}, nombre: {4}):{5}
+unit_of_work_thread_info_thread_dump=Rastreo de pila de hebra de creaci\u00f3n (id: {0} nombre: {1}):
+#{2}
+
+Current thread (id: {3} nombre: {4}) stack trace:
+#{5}
 
 unitofwork_identity_hashcode={0}C\u00f3digo hash de identidad de UnitOfWork: {1}
 

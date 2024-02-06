@@ -12,13 +12,13 @@ package io.openliberty.microprofile.reactive.messaging.fat.kafka.nack;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider.CONNECTION_PROPERTIES_KEY;
 import static java.util.Arrays.asList;
 
 import java.util.Collections;
 import java.util.Map;
 
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 
@@ -97,8 +98,8 @@ public class KafkaNackTest extends FATServletClient {
     @AfterClass
     public static void teardown() throws Exception {
         try {
-            server.stopServer("CWMRX1003E.*nack-test-channel", // CWMRX1003E: An error occurred when sending a message to the Kafka broker. The error is: org.apache.kafka.common.errors.TimeoutException: Topic nack-test-channel not present in metadata after 5000 ms.
-                    "CWMRX1011E.*KafkaNackTestException");
+            kafkaStopServer(server, "CWMRX1003E.*nack-test-channel", // CWMRX1003E: An error occurred when sending a message to the Kafka broker. The error is: org.apache.kafka.common.errors.TimeoutException: Topic nack-test-channel not present in metadata after 5000 ms.
+                            "CWMRX1011E.*KafkaNackTestException");
         } finally {
             KafkaUtils.deleteKafkaTopics(KafkaTests.getAdminClient());
         }

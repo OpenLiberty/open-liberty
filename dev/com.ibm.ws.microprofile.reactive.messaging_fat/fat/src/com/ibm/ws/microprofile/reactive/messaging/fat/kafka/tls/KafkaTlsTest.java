@@ -17,6 +17,7 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.Connec
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleOutgoingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -29,9 +30,9 @@ import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.apps.kafka.BasicMessagingBean;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.Direction;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
-import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.Direction;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
@@ -95,7 +96,7 @@ public class KafkaTlsTest {
     @AfterClass
     public static void teardownTest() throws Exception {
         try {
-            server.stopServer();
+            kafkaStopServer(server);
         } finally {
             KafkaUtils.deleteKafkaTopics(TlsTests.getAdminClient());
         }

@@ -12,6 +12,9 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.context.custom;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleIncomingChannel;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleOutgoingChannel;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
+
+import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -34,8 +37,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-
-import java.util.Arrays;
 
 /**
  * Test context propagation with concurrent enabled and custom context services defined
@@ -113,7 +114,7 @@ public class KafkaCustomContextTest extends FATServletClient {
     @AfterClass
     public static void teardown() throws Exception {
         try {
-            server.stopServer();
+            kafkaStopServer(server);
         } finally {
             KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
         }
