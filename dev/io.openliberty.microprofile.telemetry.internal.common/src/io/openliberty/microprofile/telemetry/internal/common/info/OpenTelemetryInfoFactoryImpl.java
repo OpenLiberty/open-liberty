@@ -175,8 +175,8 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
         //In order to enable any of the tracing aspects, the configuration otel.sdk.disabled=false must be specified in any of the configuration sources available via MicroProfile Config.
         if (oTelConfigs.get(OpenTelemetryConstants.ENV_DISABLE_PROPERTY) != null) {
             return Boolean.valueOf(oTelConfigs.get(OpenTelemetryConstants.ENV_DISABLE_PROPERTY));
-        } else if (oTelConfigs.get(OpenTelemetryConstants.CONFIG__DISABLE_PROPERTY) != null) {
-            return Boolean.valueOf(oTelConfigs.get(OpenTelemetryConstants.CONFIG__DISABLE_PROPERTY));
+        } else if (oTelConfigs.get(OpenTelemetryConstants.CONFIG_DISABLE_PROPERTY) != null) {
+            return Boolean.valueOf(oTelConfigs.get(OpenTelemetryConstants.CONFIG_DISABLE_PROPERTY));
         }
         return true;
     }
