@@ -14,6 +14,8 @@
 //     Oracle - initial API and implementation
 package org.eclipse.persistence.asm;
 
+import org.eclipse.persistence.asm.internal.Util;
+
 import org.eclipse.persistence.config.SystemProperties;
 import org.eclipse.persistence.exceptions.ValidationException;
 import org.eclipse.persistence.internal.security.PrivilegedAccessHelper;
@@ -26,6 +28,7 @@ import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,17 +36,36 @@ import java.util.regex.Pattern;
 
 public class ASMFactory {
 
-    private final static SessionLog LOG = AbstractSessionLog.getLog();
-
+    // This block must be first - begin
     public final static String ASM_SERVICE_ECLIPSELINK = "eclipselink";
     public final static String ASM_SERVICE_OW2 = "ow2";
+
     private final static String ASM_OW2_CLASS_VISITOR = "org.objectweb.asm.ClassVisitor";
     private final static String ASM_ECLIPSELINK_CLASS_VISITOR = "org.eclipse.persistence.internal.libraries.asm.ClassVisitor";
 
-    //Should be changed in case of ASM upgrade
-    public final static int ASM_API_SELECTED = Opcodes.ASM9;
-    public final static int JAVA_CLASS_VERSION = Opcodes.V1_8;
+    private final static String ASM_OPCCODES_OW2 = "org.objectweb.asm.Opcodes";
+    private final static String ASM_OPCCODES_ECLIPSELINK = "org.eclipse.persistence.internal.libraries.asm.Opcodes";
+
+    private final static Map<String, String> ASM_OPCCODES_MAP = new HashMap<>();
+
+    static {
+        ASM_OPCCODES_MAP.put(ASMFactory.ASM_SERVICE_OW2, ASM_OPCCODES_OW2);
+        ASM_OPCCODES_MAP.put(ASMFactory.ASM_SERVICE_ECLIPSELINK, ASM_OPCCODES_ECLIPSELINK);
+    }
+
+    private final static SessionLog LOG = AbstractSessionLog.getLog();
+    // This block must be first - end
+
+    // Do not reference static fields in Opcodes to avoid circular static initialization
+
+    // Should be changed in case of ASM upgrade
+    public final static int ASM_API_SELECTED = valueOpcodesInt("ASM9");
+    public final static int JAVA_CLASS_VERSION = valueOpcodesInt("V1_8");
     public final static int JAVA_CLASS_LATEST_VERSION = ASMFactory.getLatestOPCodeVersion();
+
+    private static int valueOpcodesInt(String fieldName) {
+        return ((int) Util.getFieldValue(ASM_OPCCODES_MAP, fieldName, Integer.TYPE));
+    }
 
     public static AnnotationVisitor createAnnotationVisitor(final int api) {
         String asmService = ASMFactory.getAsmService();
