@@ -41,7 +41,8 @@ Service-Component: \
 # Need an explicit import for api.common because it gets used by weld proxies
 # created for other API classes
 Import-Package: \
-  io.opentelemetry.api.common,\
+  io.opentelemetry.api.common;version="[1.2,3)",\
+  io.opentelemetry.*;version="[1.2,3)",\
   io.opentelemetry.context.propagation,\
   com.ibm.websphere.ras,\
   com.ibm.websphere.ras.annotation,\
