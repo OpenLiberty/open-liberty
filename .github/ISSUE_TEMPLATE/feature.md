@@ -55,7 +55,7 @@ If you need assistance, reach out to the [OpenLiberty/release-architect](https:/
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Prioritization** (Complete Before Development Starts)
 
-The ([OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect)) and area leads are responsible for prioritizing the features and determining which features are being actively worked on.
+The [OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) and area leads are responsible for prioritizing the features and determining which features are being actively worked on.
 
 ### **Prioritization**
 - [ ] Feature added to the "New" column of the [Open Liberty project board](https://github.com/orgs/OpenLiberty/projects/2)
