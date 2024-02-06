@@ -287,10 +287,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * We only want one client at a time to attempt to create a new
      * Database table.
      */
-    private static final Object _CreateTableLock = new Object();
+    private final Object _CreateTableLock = new Object();
 
     // This is "lock A".  We can lock A then lock B, or just lock A or just lock B but we can't lock B then lock A.  Lock B is 'this'.
-    private static final Object _DBAccessIntentLock = new Object();
+    private final Object _DBAccessIntentLock = new Object();
     // Could use separate locks eg private static final Object _CacheLock = new Object();
     // Could replace synchronized this with the above object lock (in case a caller synchs on our reference)
     // We only really care about failed() being accurate when using the database.
