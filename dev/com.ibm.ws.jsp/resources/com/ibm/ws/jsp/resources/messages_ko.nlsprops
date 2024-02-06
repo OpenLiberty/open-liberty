@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
 #COMPONENTPREFIX JSPG CWWJS
@@ -1273,8 +1270,22 @@ jsp.isthreadsafe.warning=CWWJS0003W: Pages 3.1 \uc2a4\ud399\uc740 Pages \uac1c\u
 jsp.isthreadsafe.warning.explanation=SingleThreadModel\uc774 Servlet 6.0\uc5d0\uc11c \uc81c\uac70\ub418\uc5c8\uc2b5\ub2c8\ub2e4. Pages 3.1\uc740 isThreadSafe\ub97c \ub354 \uc774\uc0c1 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc73c\uba70 \ud5a5\ud6c4 Pages \uc5c5\ub370\uc774\ud2b8\uc5d0\uc11c \uc81c\uac70\ud560 \uacc4\ud68d\uc785\ub2c8\ub2e4.
 jsp.isthreadsafe.warning.useraction=\ubaa8\ub4e0 \ud398\uc774\uc9c0\uc5d0\uc11c isThreadSafe \uc9c0\uc2dc\ubb38\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
 
-
 jsp.useinmemory.warning=CWWJS0004W: 'useIn\uba54\ubaa8\ub9ac' JSP \uc635\uc158\uc740 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ub300\uc2e0 JSP\uac00 \ucef4\ud30c\uc77c\ub418\uc5b4 \ub514\uc2a4\ud06c\uc5d0 \uc800\uc7a5\ub429\ub2c8\ub2e4.
 jsp.useinmemory.warning.explanation=\uc774 \uae30\ub2a5\uc740 \ud788\uc2a4\ud1a0\ub9ac\uc0c1\uc758 \uc774\uc720\ub85c \uae30\uc874 WebSphere \uc5d0\uc11c \uc774\uc2dd\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
 jsp.useinmemory.warning.useraction=server.xml, ibm-web-bnd.xml\ub610\ub294 ibm-web-ext.xmi \ud30c\uc77c\uc5d0\uc11c useIn\uba54\ubaa8\ub9ac \uc635\uc158\uc744 \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
 
+pages.removed.element.error=CWWJS0005E: {0} \uc694\uc18c\uac00 4.0 \ud398\uc774\uc9c0\uc5d0\uc11c \uc81c\uac70\ub418\uc5c8\uc73c\ubbc0\ub85c \ub354 \uc774\uc0c1 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+pages.removed.element.error.explanation=jsp \ud50c\ub7ec\uadf8\uc778 \ubc0f \uad00\ub828 \uc870\uce58\ub294 \ud398\uc774\uc9c0 3.1 \uc5d0\uc11c \ub354 \uc774\uc0c1 \uc0ac\uc6a9\ub418\uc9c0 \uc54a\uc73c\uba70 4.0\uc5d0\uc11c \uc81c\uac70\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 
+pages.removed.element.error.useraction= \uc6f9 \uc571\uc5d0\uc11c jsp \ud50c\ub7ec\uadf8\uc778, \ud3f4\ubc31 \ubc0f params \uc694\uc18c\ub97c \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+jsp.javasourcelevel.warning=CWWJS0006W: \uc9c0\uc815\ub41c javaSource\ub808\ubca8 ={0} \uac12\uc774 {1} \uc124\uce58\ub41c Java \ub808\ubca8\uc744 \ucd08\uacfc\ud569\ub2c8\ub2e4. \ub530\ub77c\uc11c \uae30\ubcf8 Java \ub808\ubca8\uc740 {1}(\uc73c) \ub85c \uc124\uc815\ub429\ub2c8\ub2e4.
+jsp.javasourcelevel.warning.explanation=\uc0ac\uc6a9 \uac00\ub2a5\ud55c JDK \ub808\ubca8\ubcf4\ub2e4 \ub192\uc740 \uc18c\uc2a4\ub97c \uc0ac\uc6a9\ud558\uc5ec \ud30c\uc77c\uc744 \ucef4\ud30c\uc77c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+jsp.javasourcelevel.warning.useraction=\uc0ac\uc6a9 \uac00\ub2a5\ud55c JDK \ub808\ubca8\ubcf4\ub2e4 \uc791\uac70\ub098 \uac19\uc740 javaSource\ub808\ubca8 \uac12\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+jsp.bothsourcelevelset.warning=CWWJS0007W: javaSource\ub808\ubca8 ={0} \ubc0f jdkSource\ub808\ubca8 ={1} \uc774 (\uac00) \ubaa8\ub450 \uc9c0\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4. javaSource\ub808\ubca8 ={0}(\uc73c) \ub85c \uae30\ubcf8 \uc124\uc815\ub429\ub2c8\ub2e4.
+jsp.bothsourcelevelset.warning.explanation=\ud55c \ubc88\uc5d0 \ud558\ub098\uc758 \uc18c\uc2a4 \ub808\ubca8 \uc18d\uc131\ub9cc \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+jsp.bothsourcelevelset.warning.useraction=javaSource\ub808\ubca8 \uc18d\uc131\ub9cc \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624. jdkSource\ub808\ubca8 \uc18d\uc131\uc774 \uc548\uc815\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 
+
+jsp.javasourcelevel.value=CWWJS0008I: JSP \uc18d\uc131 javaSource\ub808\ubca8\uc758 \uac12\uc740 "{0}" \uc785\ub2c8\ub2e4.
+jsp.javasourcelevel.value.explanation=
+jsp.javasourcelevel.value.useraction=

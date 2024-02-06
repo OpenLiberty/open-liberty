@@ -175,6 +175,16 @@ elements={0}{1} elementos
 
 enable_batch_operations_as_true_not_supported=A configura\u00e7\u00e3o do CMP \u201cativar-opera\u00e7\u00f5es-de-lote-como-verdadeiras\u201d do WLS nativo n\u00e3o \u00e9 diretamente suportada no EclipseLink CMP. Consulte o documento de migra\u00e7\u00e3o para obter detalhes.
 
+encryptor_decrypt_old_algorithm=A senha do Banco de dados usada no {0} foi criptografada por um algoritmo algorithm.Reencrypt por `passwordUpdate.sh ` do pacote configur\u00e1vel eclipselink.zip .
+
+encryptor_decrypt_old_algorithm_without_session_name=A senha do Banco de Dados foi criptografada por um algoritmo algorithm.Reencrypt por `passwordUpdate.sh ` do pacote configur\u00e1vel eclipselink.zip .
+
+encryptor_script_description=Esse aplicativo decriptografa internamente uma senha criptografada antiga que foi usada pela vers\u00e3o anterior do EclipseLink e a criptografa pelo algoritmo mais recente.
+
+encryptor_script_output=A senha criptografada novamente \u00e9: {0}
+
+encryptor_script_usage=O uso \u00e9 `passwordUpdate.sh | .cmd -ip < old encrypted password> `.
+
 entity_manager_ignores_jta_data_source=A unidade de persist\u00eancia n\u00e3o usa JTA; portanto, o EntityManager ignora a origem de dados JTA. 
 
 entity_manager_ignores_nonjta_data_source=A unidade de persist\u00eancia usa JTA; portanto, o EntityManager ignora a origem de dados n\u00e3o JTA. 
@@ -737,7 +747,11 @@ toplink_warning=[Aviso EL]:
 
 unit_of_work_thread_info=A unidade de trabalho atual na sess\u00e3o ({0}) foi criada por outro encadeamento (ID: {1} nome: {2}) que n\u00e3o o encadeamento atual (ID: {3} nome: {4})
 
-unit_of_work_thread_info_thread_dump=Rastreio de pilha do encadeamento de cria\u00e7\u00e3o (ID: {0} nome: {1}): {2} Rastreio de pilha do encadeamento atual (ID: {3} nome: {4}): {5}
+unit_of_work_thread_info_thread_dump=Rastreio de pilha de encadeamento de cria\u00e7\u00e3o (ID: {0} nome: {1}):
+#{2}
+
+Current encadeamento (ID: {3} nome: {4}) rastreio de pilha:
+#{5}
 
 unitofwork_identity_hashcode={0}C\u00f3digo hash de identidade UnitOfWork: {1}
 

@@ -34,7 +34,7 @@
 7501=Bean-Validierungsmodus f\u00fcr {0}Marshaller wurde auf einen nicht unterst\u00fctzten Wert ("{1}") gesetzt.
 
 7510=Nicht eingehaltene Bedingungen f\u00fcr {0}Marshalling-Bean:
-{1}{2}
+#{1}{2}
 
 7525=Es ist nicht m\u00f6glich, ein Parsing f\u00fcr die Eigenschaft "{0}" durchzuf\u00fchren, da sie sowohl mit @NotNull annotiert ist als auch das Attribut "xs:nillable=true" aufweist.
 

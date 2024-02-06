@@ -175,6 +175,16 @@ elements={0}{1} elem
 
 enable_batch_operations_as_true_not_supported=A WLS "enable-batch-operations-as-true" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
+encryptor_decrypt_old_algorithm=A {0} alkalmaz\u00e1sban haszn\u00e1lt adatb\u00e1zis jelsz\u00f3t egy elavult algorithm.Reencrypt , a eclipselink.zip k\u00f6tegb\u0151l ''passwordUpdate.sh'' haszn\u00e1lja.
+
+encryptor_decrypt_old_algorithm_without_session_name=Az adatb\u00e1zis jelsz\u00f3t egy elavult algorithm.Reencrypt jelsz\u00f3:passwordUpdate.sh: eclipselink.zip k\u00f6teg.
+
+encryptor_script_description=Ez az alkalmaz\u00e1s bels\u0151leg visszafejti a kor\u00e1bbi EclipseLink v\u00e1ltozat \u00e1ltal haszn\u00e1lt r\u00e9gi titkos\u00edtott jelsz\u00f3t, \u00e9s titkos\u00edtja a leg\u00fajabb algoritmussal.
+
+encryptor_script_output=A titkos\u00edtott jelsz\u00f3: {0}
+
+encryptor_script_usage=Haszn\u00e1lat: "passwordUpdate.sh | .cmd -ip < r\u00e9gi titkos\u00edtott jelsz\u00f3 >"
+
 entity_manager_ignores_jta_data_source=A perzisztencia egys\u00e9g nem haszn\u00e1l JTA-t, ez\u00e9rt az EntityManager figyelmen k\u00edv\u00fcl hagyja a jta adatforr\u00e1st. 
 
 entity_manager_ignores_nonjta_data_source=A perzisztencia egys\u00e9g JTA-t haszn\u00e1l, ez\u00e9rt az EntityManager figyelmen k\u00edv\u00fcl hagyja a nem jta adatforr\u00e1st. 
@@ -737,7 +747,11 @@ toplink_warning=[EL Warning]:
 
 unit_of_work_thread_info=A(z) ({0}) munkamenet aktu\u00e1lis egys\u00e9g\u00e9t egy, az aktu\u00e1list\u00f3l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) elt\u00e9r\u0151 sz\u00e1l hozta l\u00e9tre (azonos\u00edt\u00f3: {1} n\u00e9v: {2}).
 
-unit_of_work_thread_info_thread_dump=Sz\u00e1l l\u00e9trehoz\u00e1sa (azonos\u00edt\u00f3: {0} n\u00e9v: {1}) veremnyomk\u00f6vet\u00e9s: {2} Aktu\u00e1lis sz\u00e1l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) veremnyomk\u00f6vet\u00e9s:{5}
+unit_of_work_thread_info_thread_dump=L\u00e9trehoz\u00e1si sz\u00e1l (azonos\u00edt\u00f3: {0} n\u00e9v: {1}) verem nyomk\u00f6vet\u00e9s:
+#{2}
+
+Current Sz\u00e1l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) verem nyomk\u00f6vet\u00e9s:
+#{5}
 
 unitofwork_identity_hashcode={0}UnitOfWork azonoss\u00e1g kivonatk\u00f3d: {1}
 

@@ -175,6 +175,16 @@ elements=Liczba element\u00f3w: {0}{1}
 
 enable_batch_operations_as_true_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS enable-batch-operations-as-true nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
 
+encryptor_decrypt_old_algorithm=Has\u0142o bazy danych u\u017cyte w {0} zosta\u0142o zaszyfrowane za pomoc\u0105 nieaktualnego algorytmu algorithm.Reencrypt za pomoc\u0105 skryptu `passwordUpdate.sh ` z pakunku eclipselink.zip .
+
+encryptor_decrypt_old_algorithm_without_session_name=Has\u0142o bazy danych zosta\u0142o zaszyfrowane za pomoc\u0105 nieaktualnego algorytmu algorithm.Reencrypt je za pomoc\u0105 skryptu `passwordUpdate.sh ` z pakunku eclipselink.zip .
+
+encryptor_script_description=Ta aplikacja wewn\u0119trznie deszyfruje stare zaszyfrowane has\u0142o, kt\u00f3re by\u0142o u\u017cywane przez poprzedni\u0105 wersj\u0119 \u015brodowiska EclipseLink , i szyfruje je przy u\u017cyciu najnowszego algorytmu.
+
+encryptor_script_output=Ponownie zaszyfrowane has\u0142o: {0}
+
+encryptor_script_usage=Sk\u0142adnia: `passwordUpdate.sh | .cmd -ip < stare zaszyfrowane has\u0142o> `
+
 entity_manager_ignores_jta_data_source=Jednostka trwa\u0142o\u015bci nie u\u017cywa interfejsu JTA, wi\u0119c interfejs EntityManager ignoruje \u017ar\u00f3d\u0142o danych JTA. 
 
 entity_manager_ignores_nonjta_data_source=Jednostka trwa\u0142o\u015bci u\u017cywa interfejsu JTA, wi\u0119c interfejs EntityManager ignoruje \u017ar\u00f3d\u0142o danych inne ni\u017c JTA. 
@@ -737,7 +747,11 @@ toplink_warning=[EL \u2013 ostrze\u017cenia]:
 
 unit_of_work_thread_info=Bie\u017c\u0105ca jednostka pracy w sesji ({0}) zosta\u0142a utworzona przez inny w\u0105tek (identyfikator: {1}, nazwa: {2}), ni\u017c bie\u017c\u0105cy w\u0105tek (identyfikator: {3}, nazwa: {4})
 
-unit_of_work_thread_info_thread_dump=W\u0105tek tworzenia (identyfikator: {0}, nazwa: {1}), stos wywo\u0142a\u0144: {2}Bie\u017c\u0105cy w\u0105tek (identyfikator: {3}, nazwa: {4}), stos wywo\u0142a\u0144:{5}
+unit_of_work_thread_info_thread_dump=W\u0105tek tworzenia (identyfikator: {0} , nazwa: {1}), stos wywo\u0142a\u0144:
+#{2}
+
+Current w\u0105tek (identyfikator: {3} nazwa: {4}) stos wywo\u0142a\u0144:
+#{5}
 
 unitofwork_identity_hashcode={0} Kod mieszaj\u0105cy to\u017csamo\u015bci jednostki pracy: {1}
 

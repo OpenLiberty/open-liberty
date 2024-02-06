@@ -75,7 +75,7 @@
 
 50023=Napotkano warto\u015b\u0107 null dla klucza [{0}] podczas przetwarzania metadanych zewn\u0119trznych za po\u015brednictwem mapy w\u0142a\u015bciwo\u015bci.  Wymagane jest, aby warto\u015b\u0107 by\u0142a r\u00f3\u017cna od null i mia\u0142a jeden z nast\u0119puj\u0105cych typ\u00f3w [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node lub org.xml.sax.InputSource] (uchwyt do pliku metadanych).
 
-50024=Napotkano klucz o warto\u015bci null podczas przetwarzania metadanych zewn\u0119trznych za po\u015brednictwem mapy w\u0142a\u015bciwo\u015bci.  Wymagane jest, aby klucz mia\u0142 warto\u015b\u0107 r\u00f3\u017cn\u0105 od null i by\u0142 typu [String] (musi wskazywa\u0107 nazw\u0119 pakietu).
+50024=Napotkano klucz o warto\u015bci null podczas przetwarzania metadanych zewn\u0119trznych za po\u015brednictwem mapy w\u0142a\u015bciwo\u015bci.  Wymagane jest, aby klucz mia\u0142 warto\u015b\u0107 r\u00f3\u017cn\u0105 od null i by\u0142 typu [String] (musi wskazywa\ufffd\ufffd nazw\u0119 pakietu).
 
 50025=Nie mo\u017cna za\u0142adowa\u0107 klasy [{0}] zadeklarowanej w zewn\u0119trznym pliku metadanych.  Sprawd\u017a, czy nazwa klasy jest poprawna oraz czy ustawiono poprawny program \u0142aduj\u0105cy klasy.
 
