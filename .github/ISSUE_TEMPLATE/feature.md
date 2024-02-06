@@ -122,15 +122,15 @@ Code may not GA until this feature has obtained the `Design Approved` or `No Des
 
 ## **Legal and Translation**
 
-In order to avoid last minute blockers and significant disruptions to the feature, the **legal items need to be done as early in the feature process as possible**, either in design or as early into the development as possible.  Similarly, translation is to be done concurrently with development.  All items below **MUST** be completed before Beta or GA is requested.
+In order to avoid last minute blockers and significant disruptions to the feature, the **legal items need to be done as early in the feature process as possible**, either in design or as early into the development as possible.  Similarly, translation is to be done concurrently with development.  All items below **MUST** be completed before beta & GA is requested.
 
-### **Legal** (Complete before Feature Complete Date)
-- [ ] Changed or new open source libraries are cleared and approved, or N/A. (Legal Release Services/Cass Tucker/Release PM).
-
-### **Innovation** (Complete 1 week before Feature Complete Date)
+### **Innovation** (Complete 1 week before Beta & GA Feature Complete Date)
 - [ ] Consider whether any aspects of the feature may be patentable. If any identified, disclosures have been submitted.
 
-### **Translation** (Complete by Feature Complete Date)
+### **Legal** (Complete before Beta & GA Feature Complete Date)
+- [ ] Changed or new open source libraries are cleared and approved, or N/A. (Legal Release Services/Cass Tucker/Release PM).
+
+### **Translation** (Complete by Beta & GA Feature Complete Date)
 - [ ] PII (Program Integrated Information) updates are merged (i.e. all English strings due for translation have been delivered), or N/A.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -162,6 +162,7 @@ A feature is ready to GA after it is Feature Complete and has obtained all neces
   - [ ] All related/child issues are closed.
   - [ ] All stop ship issues are completed.
 - [ ] Legal: all necessary approvals granted.
+- [ ] Innovation: IP identified and any applicable disclosures submitted
 - [ ] Translation: Feature may only proceed to GA if it has either `Translation - Complete` or `Translation - Missing` label
   - If all translation has been delivered to `release` branch, feature owner adds label `Translation - Complete`.
   - If missing translation does not cause a break in functionality, nor a security or production outage risk, feature owner adds label `Translation - Missing`.
