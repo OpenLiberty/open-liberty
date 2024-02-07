@@ -22,7 +22,7 @@
         <!-- Servlet required since we cannot use rest protocol because rest requests create spans which results in more spans than the tests expect -->
         <!-- See https://github.com/eclipse/microprofile-telemetry/issues/72 -->
         <feature>servlet-6.0</feature>
-        <feature>mpTelemetry-2.0</feature>
+        <feature>mpTelemetry-1.0</feature>
         <feature>concurrent-3.0</feature>
     </featureManager>
 
