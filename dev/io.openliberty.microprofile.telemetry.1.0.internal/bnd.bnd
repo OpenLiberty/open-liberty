@@ -28,7 +28,7 @@ src: src, resources
 
 -dsannotations: \
   io.openliberty.microprofile.telemetry10.internal.cdi.SPIMetaData,\
-  io.openliberty.microprofile.telemetry20.internal.config.OpenTelemetryVersionedConfigurationImpl,\
+  io.openliberty.microprofile.telemetry10.internal.config.OpenTelemetryVersionedConfigurationImpl,\
   io.openliberty.microprofile.telemetry10.internal.rest.TelemetryClientBuilderListener,\
   io.openliberty.microprofile.telemetry10.internal.rest.TelemetryServletContainerInitializer
 
