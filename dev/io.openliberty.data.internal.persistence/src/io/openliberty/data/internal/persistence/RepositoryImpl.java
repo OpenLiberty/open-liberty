@@ -94,6 +94,7 @@ import io.openliberty.data.repository.update.Divide;
 import io.openliberty.data.repository.update.Multiply;
 import io.openliberty.data.repository.update.SubtractFrom;
 import jakarta.data.Limit;
+import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.Streamable;
 import jakarta.data.exceptions.DataConnectionException;
@@ -154,7 +155,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = new HashSet<>(Arrays.asList //
-    (Limit.class, Pageable.class, Sort.class, Sort[].class));
+    (Limit.class, Order.class, Pageable.class, Sort.class, Sort[].class));
 
     // Valid types for when a repository method computes an update count
     private static final Set<Class<?>> UPDATE_COUNT_TYPES = new HashSet<>(Arrays.asList //
@@ -234,7 +235,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @return the same builder for the JPQL query.
      */
     @Trivial
-    private void appendSort(StringBuilder q, String o, Sort sort, boolean sameDirection) {
+    private void appendSort(StringBuilder q, String o, Sort<?> sort, boolean sameDirection) {
 
         q.append(sort.ignoreCase() ? "LOWER(" : "").append(o).append('.').append(sort.property());
 
@@ -444,7 +445,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @throws DataException with chained IllegalArgumentException if the offset exceeds Integer.MAX_VALUE
      *                           or the Pageable requests keyset pagination.
      */
-    static int computeOffset(Pageable pagination) {
+    static int computeOffset(Pageable<?> pagination) {
         if (pagination.mode() != Pageable.Mode.OFFSET)
             throw new DataException(new IllegalArgumentException("Keyset pagination mode " + pagination.mode() +
                                                                  " can only be used with repository methods with the following return types: " +
@@ -1448,7 +1449,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (b != null)
                 b.append(i == 0 ? "(" : " OR (");
             for (int k = 0; k <= i; k++) {
-                Sort keyInfo = queryInfo.sorts.get(k);
+                Sort<?> keyInfo = queryInfo.sorts.get(k);
                 String name = keyInfo.property();
                 boolean asc = keyInfo.isAscending();
                 boolean lower = keyInfo.ignoreCase();
@@ -1501,7 +1502,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         StringBuilder prev = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
 
         boolean first = true;
-        for (Sort sort : queryInfo.sorts) {
+        for (Sort<?> sort : queryInfo.sorts) {
             fwd.append(first ? " ORDER BY " : ", ");
             appendSort(fwd, queryInfo.entityVar, sort, true);
 
@@ -2312,36 +2313,48 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     case FIND:
                     case FIND_AND_DELETE: {
                         Limit limit = null;
-                        Pageable pagination = null;
-                        List<Sort> sortList = null;
+                        Pageable<?> pagination = null;
+                        List<Sort<Object>> sortList = null;
 
                         // Jakarta Data allows the method parameter positions after those used as query parameters
                         // to be used for purposes such as pagination and sorting.
                         for (int i = queryInfo.paramCount - queryInfo.paramAddedCount; i < (args == null ? 0 : args.length); i++) {
                             Object param = args[i];
-                            if (param instanceof Limit)
+                            if (param instanceof Limit) {
                                 if (limit == null)
                                     limit = (Limit) param;
                                 else
                                     throw new DataException("Repository method " + method + " cannot have multiple Limit parameters."); // TODO NLS
-                            else if (param instanceof Pageable)
+                            } else if (param instanceof Order) {
+                                @SuppressWarnings("unchecked")
+                                Order<Object> order = (Order<Object>) param;
+                                sortList = queryInfo.combineSorts(sortList, order);
+                            } else if (param instanceof Pageable) {
                                 if (pagination == null)
-                                    pagination = (Pageable) param;
+                                    pagination = (Pageable<?>) param;
                                 else
                                     throw new DataException("Repository method " + method + " cannot have multiple Pageable parameters."); // TODO NLS
-                            else if (param instanceof Sort)
-                                sortList = queryInfo.combineSorts(sortList, (Sort) param);
-                            else if (param instanceof Sort[])
-                                sortList = queryInfo.combineSorts(sortList, (Sort[]) param);
+                            } else if (param instanceof Sort) {
+                                @SuppressWarnings("unchecked")
+                                List<Sort<Object>> newList = queryInfo.combineSorts(sortList, (Sort<Object>) param);
+                                sortList = newList;
+                            } else if (param instanceof Sort[]) {
+                                @SuppressWarnings("unchecked")
+                                List<Sort<Object>> newList = queryInfo.combineSorts(sortList, (Sort<Object>[]) param);
+                                sortList = newList;
+                            }
                         }
 
                         if (pagination != null) {
                             if (limit != null)
                                 throw new DataException("Repository method " + method + " cannot have both Limit and Pageable as parameters."); // TODO NLS
-                            if (sortList == null)
-                                sortList = queryInfo.combineSorts(sortList, pagination.sorts());
-                            else if (sortList != null && !pagination.sorts().isEmpty())
+                            if (sortList == null) {
+                                @SuppressWarnings("unchecked")
+                                List<Sort<Object>> pageRequestSorts = (List<Sort<Object>>) (List<?>) pagination.sorts();
+                                sortList = queryInfo.combineSorts(null, pageRequestSorts);
+                            } else if (!pagination.sorts().isEmpty()) {
                                 throw new DataException("Repository method " + method + " cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO NLS
+                            }
                         }
 
                         if (sortList == null && queryInfo.hasDynamicSortCriteria())
@@ -2351,7 +2364,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             boolean forward = pagination == null || pagination.mode() != Pageable.Mode.CURSOR_PREVIOUS;
                             StringBuilder q = new StringBuilder(queryInfo.jpql);
                             StringBuilder order = null; // ORDER BY clause based on Sorts
-                            for (Sort sort : sortList) {
+                            for (Sort<?> sort : sortList) {
                                 order = order == null ? new StringBuilder(100).append(" ORDER BY ") : order.append(", ");
                                 appendSort(order, queryInfo.entityVar, sort, forward);
                             }
@@ -3098,7 +3111,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @return Pageable.
      * @throws DataException with chained IllegalArgumentException if the Limit is a range with a starting point above 1.
      */
-    private static final Pageable toPageable(Limit limit) {
+    private static final <T> Pageable<T> toPageable(Limit limit) {
         if (limit.startAt() != 1L)
             throw new DataException(new IllegalArgumentException("Limit with starting point " + limit.startAt() +
                                                                  ", which is greater than 1, cannot be used to request pages or slices."));

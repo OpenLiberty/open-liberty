@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -204,7 +204,7 @@ class EntityInfo {
      * @return a Sort instance with the corresponding entity attribute name.
      */
     @Trivial
-    Sort getWithAttributeName(String name, Sort sort) {
+    <T> Sort<T> getWithAttributeName(String name, Sort<T> sort) {
         name = getAttributeName(name, true);
         if (name == sort.property())
             return sort;
