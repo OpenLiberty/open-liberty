@@ -16,7 +16,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.security.auth.Subject;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -35,7 +34,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
@@ -84,7 +82,7 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
     }
 
     @Override
-    public boolean logout(HttpServletRequest request, HttpServletResponse response, String userName) throws ServletException {
+    public boolean logout(HttpServletRequest request, HttpServletResponse response, String userName) {
         if (!ProductInfo.getBetaEdition()) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Beta mode is not enabled; back-channel logout will not be performed.");
@@ -134,7 +132,7 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
         return userName;
     }
 
-    OidcServerConfig getMatchingConfig(String requestUri, String idTokenHintString) throws ServletException {
+    OidcServerConfig getMatchingConfig(String requestUri, String idTokenHintString) {
         OidcServerConfig config = getMatchingConfigFromRequestUri(requestUri);
         if (config == null) {
             config = getMatchingConfigFromIdTokenHint(idTokenHintString);
@@ -155,13 +153,13 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
         return null;
     }
 
-    OidcServerConfig getMatchingConfigFromIdTokenHint(String idTokenHintString) throws ServletException {
+    OidcServerConfig getMatchingConfigFromIdTokenHint(String idTokenHintString) {
         String issuerFromIdTokenHint = null;
         try {
             issuerFromIdTokenHint = getIssuerFromIdTokenHint(idTokenHintString);
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN", new Object[] { e }));
-            throw new ServletException();
+            return null;
         }
         if (issuerFromIdTokenHint == null || issuerFromIdTokenHint.isEmpty()) {
             return null;
@@ -241,14 +239,9 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
         return null;
     }
 
-    @FFDCIgnore(BackchannelLogoutRequestException.class)
-    void sendBackchannelLogoutRequests(HttpServletRequest request, OidcServerConfig oidcServerConfig, String userName, String idTokenString) throws ServletException {
-        try {
-            BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
-            bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
-        } catch (BackchannelLogoutRequestException e) {
-            throw new ServletException();
-        }
+    void sendBackchannelLogoutRequests(HttpServletRequest request, OidcServerConfig oidcServerConfig, String userName, String idTokenString) {
+        BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
+        bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
     }
 
 }

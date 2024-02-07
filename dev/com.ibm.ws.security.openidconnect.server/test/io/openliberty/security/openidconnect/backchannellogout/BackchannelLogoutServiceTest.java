@@ -16,13 +16,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.Hashtable;
 import java.util.Set;
 
 import javax.security.auth.Subject;
-import javax.servlet.ServletException;
 
 import org.jmock.Expectations;
 import org.junit.After;
@@ -557,7 +555,7 @@ public class BackchannelLogoutServiceTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getMatchingConfigFromIdTokenHint_withoutIssuerIdentifier_matches() throws ServletException {
+    public void test_getMatchingConfigFromIdTokenHint_withoutIssuerIdentifier_matches() {
         mockery.checking(new Expectations() {
             {
                 one(oidcServerConfig).getProviderId();
@@ -571,7 +569,7 @@ public class BackchannelLogoutServiceTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getMatchingConfigFromIdTokenHint_withIssuerIdentifier_matches() throws ServletException {
+    public void test_getMatchingConfigFromIdTokenHint_withIssuerIdentifier_matches() {
         final String idTokenFromMyIssuer = "eyJraWQiOiJHd0d3YUJFeHJIMVlVYWxhZGtDMSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJ0ZXN0dXNlciIsImF0X2hhc2giOiJ0YXBKT21HWVdyeTBTaWlxVUNVZUVnIiwicmVhbG1OYW1lIjoiQmFzaWNSZWFsbSIsInVuaXF1ZVNlY3VyaXR5TmFtZSI6InRlc3R1c2VyIiwic2lkIjoiQjNKTE5MQlpiekFIbVBRQmhFSVciLCJpc3MiOiJteUlzc3VlciIsImF1ZCI6ImNsaWVudDAxIiwiZXhwIjoxNzA3MTcwOTU4LCJpYXQiOjE3MDcxNjM3NTh9.xyz";
         mockery.checking(new Expectations() {
             {
@@ -586,7 +584,7 @@ public class BackchannelLogoutServiceTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getMatchingConfigFromIdTokenHint_withoutIssuerIdentifier_noMatches() throws ServletException {
+    public void test_getMatchingConfigFromIdTokenHint_withoutIssuerIdentifier_noMatches() {
         mockery.checking(new Expectations() {
             {
                 one(oidcServerConfig).getProviderId();
@@ -600,7 +598,7 @@ public class BackchannelLogoutServiceTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getMatchingConfigFromIdTokenHint_withIssuerIdentifier_noMatches() throws ServletException {
+    public void test_getMatchingConfigFromIdTokenHint_withIssuerIdentifier_noMatches() {
         mockery.checking(new Expectations() {
             {
                 one(oidcServerConfig).getProviderId();
@@ -615,16 +613,13 @@ public class BackchannelLogoutServiceTest extends CommonTestClass {
 
     @Test
     public void test_getMatchingConfigFromIdTokenHint_idTokenIsNotJWT() {
-        try {
-            OidcServerConfig config = service.getMatchingConfigFromIdTokenHint("abc.def.xyz");
-            fail("Should have thrown an exception but got: " + config);
-        } catch (ServletException e) {
-            verifyLogMessage(outputMgr, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*org.jose4j.jwt.consumer.InvalidJwtException");
-        }
+        OidcServerConfig config = service.getMatchingConfigFromIdTokenHint("abc.def.xyz");
+        assertNull("Should not have found a matching config, but did.", config);
+        verifyLogMessage(outputMgr, CWWKS1643E_LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN + ".*org.jose4j.jwt.consumer.InvalidJwtException");
     }
 
     @Test
-    public void test_getMatchingConfig_fromRequestUri() throws ServletException {
+    public void test_getMatchingConfig_fromRequestUri() {
         BackchannelLogoutService service = new BackchannelLogoutService() {
 
             @Override
@@ -633,7 +628,7 @@ public class BackchannelLogoutServiceTest extends CommonTestClass {
             }
 
             @Override
-            OidcServerConfig getMatchingConfigFromIdTokenHint(String idTokenHintString) throws ServletException {
+            OidcServerConfig getMatchingConfigFromIdTokenHint(String idTokenHintString) {
                 return null;
             }
 
@@ -645,7 +640,7 @@ public class BackchannelLogoutServiceTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getMatchingConfig_fromIdTokenHint() throws ServletException {
+    public void test_getMatchingConfig_fromIdTokenHint() {
         BackchannelLogoutService service = new BackchannelLogoutService() {
 
             @Override
@@ -654,7 +649,7 @@ public class BackchannelLogoutServiceTest extends CommonTestClass {
             }
 
             @Override
-            OidcServerConfig getMatchingConfigFromIdTokenHint(String idTokenHintString) throws ServletException {
+            OidcServerConfig getMatchingConfigFromIdTokenHint(String idTokenHintString) {
                 return oidcServerConfig;
             }
 
@@ -666,7 +661,7 @@ public class BackchannelLogoutServiceTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getMatchingConfig_notFound_withoutIdTokenHint() throws ServletException {
+    public void test_getMatchingConfig_notFound_withoutIdTokenHint() {
         BackchannelLogoutService service = new BackchannelLogoutService() {
 
             @Override
@@ -682,7 +677,7 @@ public class BackchannelLogoutServiceTest extends CommonTestClass {
     }
 
     @Test
-    public void test_getMatchingConfig_notFound_withIdTokenHint() throws ServletException {
+    public void test_getMatchingConfig_notFound_withIdTokenHint() {
         BackchannelLogoutService service = new BackchannelLogoutService() {
 
             @Override
@@ -691,7 +686,7 @@ public class BackchannelLogoutServiceTest extends CommonTestClass {
             }
 
             @Override
-            OidcServerConfig getMatchingConfigFromIdTokenHint(String idTokenHintString) throws ServletException {
+            OidcServerConfig getMatchingConfigFromIdTokenHint(String idTokenHintString) {
                 return null;
             }
 
