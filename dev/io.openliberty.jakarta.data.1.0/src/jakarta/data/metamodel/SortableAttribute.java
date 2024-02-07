@@ -17,9 +17,9 @@ import jakarta.data.Sort;
 /**
  * Method signatures are copied from Jakarta Data.
  */
-public interface SortableAttribute extends Attribute {
+public interface SortableAttribute<T> extends Attribute {
 
-    Sort asc();
+    Sort<T> asc();
 
-    Sort desc();
+    Sort<T> desc();
 }
