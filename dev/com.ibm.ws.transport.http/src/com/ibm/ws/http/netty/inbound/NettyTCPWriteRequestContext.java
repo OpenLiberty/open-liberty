@@ -11,8 +11,13 @@ package com.ibm.ws.http.netty.inbound;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -27,7 +32,6 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.ReferenceCountUtil;
 
 /**
@@ -44,9 +48,9 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     private ByteBuffer byteBufferArrayDirect[] = null;
     // define reusable arrrays of most common sizes
     private ByteBuffer byteBufferArrayOf1[] = null;
-    private ByteBuffer byteBufferArrayOf2[] = null;
-    private ByteBuffer byteBufferArrayOf3[] = null;
-    private ByteBuffer byteBufferArrayOf4[] = null;
+    private final ByteBuffer byteBufferArrayOf2[] = null;
+    private final ByteBuffer byteBufferArrayOf3[] = null;
+    private final ByteBuffer byteBufferArrayOf4[] = null;
 
     public NettyTCPWriteRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel) {
 
@@ -78,81 +82,129 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     @Override
     public void setBuffers(WsByteBuffer[] bufs) {
+        MSP.log("Setting buffers on, have X buffers: " + bufs.length);
+        // Assign the new buffers
         this.buffers = bufs;
 
-        // reset arrays to free memory quicker. 
-        if (this.byteBufferArray != null) {
-            // reset references
-            for (int i = 0; i < this.byteBufferArray.length; i++) {
-                this.byteBufferArray[i] = null;
+        // If buffers are not null, ensure they're compacted to remove any trailing nulls
+        if (bufs != null) {
+            // Determine the actual number of non-null buffers
+            int numBufs = 0;
+            for (WsByteBuffer buf : bufs) {
+                if (buf == null) {
+                    break;
+                }
+                numBufs++;
             }
+
+            // If there are trailing nulls, create a new array without them
+            if (numBufs != bufs.length) {
+                this.buffers = new WsByteBuffer[numBufs];
+                System.arraycopy(bufs, 0, this.buffers, 0, numBufs);
+            }
+        }
+
+        // Reset arrays to free memory quicker.
+        if (this.byteBufferArray != null) {
+            Arrays.fill(this.byteBufferArray, null); // Efficiently set all elements to null
+            this.byteBufferArray = null;
         }
 
         if (this.byteBufferArrayDirect != null) {
-            // reset references
-            for (int i = 0; i < this.byteBufferArrayDirect.length; i++) {
-                this.byteBufferArrayDirect[i] = null;
-            }
+            Arrays.fill(this.byteBufferArrayDirect, null); // Efficiently set all elements to null
             this.byteBufferArrayDirect = null;
         }
 
-        if (bufs != null) {
-            int numBufs;
-            // reuse an existing byteBufferArray if one was already created
-            // kind of hacky, but this allows us to avoid construction of a
-            // new array object unless absolutely necessary
-
-            // following loop will count the number of buffers in
-            // the input array rather than relying on the array length
-            for (numBufs = 0; numBufs < bufs.length; numBufs++) {
-                if (bufs[numBufs] == null) {
-                    break;
-                }
+        // Update byteBufferArray based on the new buffers
+        if (this.buffers != null && this.buffers.length > 0) {
+            this.byteBufferArray = new ByteBuffer[this.buffers.length];
+            for (int i = 0; i < this.buffers.length; i++) {
+                this.byteBufferArray[i] = this.buffers[i].getWrappedByteBufferNonSafe();
             }
-
-//            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                Tr.debug(tc, "setBuffers number of buffers is " + numBufs);
-//            }
-
-            if (numBufs == 1) {
-                if (this.byteBufferArrayOf1 == null) {
-                    this.byteBufferArrayOf1 = new ByteBuffer[1];
-                }
-                this.byteBufferArray = this.byteBufferArrayOf1;
-            } else if (numBufs == 2) {
-                if (this.byteBufferArrayOf2 == null) {
-                    this.byteBufferArrayOf2 = new ByteBuffer[2];
-                }
-                this.byteBufferArray = this.byteBufferArrayOf2;
-            } else if (numBufs == 3) {
-                if (this.byteBufferArrayOf3 == null) {
-                    this.byteBufferArrayOf3 = new ByteBuffer[3];
-                }
-                this.byteBufferArray = this.byteBufferArrayOf3;
-            } else if (numBufs == 4) {
-                if (this.byteBufferArrayOf4 == null) {
-                    this.byteBufferArrayOf4 = new ByteBuffer[4];
-                }
-                this.byteBufferArray = this.byteBufferArrayOf4;
-
-            } else {
-                // more than 4 buffers in request, allocate array as needed
-                this.byteBufferArray = new ByteBuffer[numBufs];
-            }
-
-            if (numBufs > 1) {
-                for (int i = 0; i < numBufs; i++) {
-                    this.byteBufferArray[i] = bufs[i].getWrappedByteBufferNonSafe();
-                }
-            } else if (numBufs == 1) {
-                this.byteBufferArray[0] = bufs[0].getWrappedByteBufferNonSafe();
-            }
-
         } else {
-            // buffers == null, so set byteBufferArray to null also
+            // If there are no buffers, set byteBufferArray to null
             this.byteBufferArray = null;
         }
+
+        MSP.log("How many buffers do we have: " + this.buffers.length);
+
     }
+//    public void setBuffers(WsByteBuffer[] bufs) {
+//        this.buffers = bufs;
+//
+//        // reset arrays to free memory quicker.
+//        if (this.byteBufferArray != null) {
+//            // reset references
+//            for (int i = 0; i < this.byteBufferArray.length; i++) {
+//                this.byteBufferArray[i] = null;
+//            }
+//        }
+//
+//        if (this.byteBufferArrayDirect != null) {
+//            // reset references
+//            for (int i = 0; i < this.byteBufferArrayDirect.length; i++) {
+//                this.byteBufferArrayDirect[i] = null;
+//            }
+//            this.byteBufferArrayDirect = null;
+//        }
+//
+//        if (bufs != null) {
+//            int numBufs;
+//            // reuse an existing byteBufferArray if one was already created
+//            // kind of hacky, but this allows us to avoid construction of a
+//            // new array object unless absolutely necessary
+//
+//            // following loop will count the number of buffers in
+//            // the input array rather than relying on the array length
+//            for (numBufs = 0; numBufs < bufs.length; numBufs++) {
+//                if (bufs[numBufs] == null) {
+//                    break;
+//                }
+//            }
+//
+////            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+////                Tr.debug(tc, "setBuffers number of buffers is " + numBufs);
+////            }
+//
+//            if (numBufs == 1) {
+//                if (this.byteBufferArrayOf1 == null) {
+//                    this.byteBufferArrayOf1 = new ByteBuffer[1];
+//                }
+//                this.byteBufferArray = this.byteBufferArrayOf1;
+//            } else if (numBufs == 2) {
+//                if (this.byteBufferArrayOf2 == null) {
+//                    this.byteBufferArrayOf2 = new ByteBuffer[2];
+//                }
+//                this.byteBufferArray = this.byteBufferArrayOf2;
+//            } else if (numBufs == 3) {
+//                if (this.byteBufferArrayOf3 == null) {
+//                    this.byteBufferArrayOf3 = new ByteBuffer[3];
+//                }
+//                this.byteBufferArray = this.byteBufferArrayOf3;
+//            } else if (numBufs == 4) {
+//                if (this.byteBufferArrayOf4 == null) {
+//                    this.byteBufferArrayOf4 = new ByteBuffer[4];
+//                }
+//                this.byteBufferArray = this.byteBufferArrayOf4;
+//
+//            } else {
+//                // more than 4 buffers in request, allocate array as needed
+//                this.byteBufferArray = new ByteBuffer[numBufs];
+//            }
+//
+//            if (numBufs > 1) {
+//                for (int i = 0; i < numBufs; i++) {
+//                    this.byteBufferArray[i] = bufs[i].getWrappedByteBufferNonSafe();
+//                }
+//            } else if (numBufs == 1) {
+//                this.byteBufferArray[0] = bufs[0].getWrappedByteBufferNonSafe();
+//            }
+//
+//        } else {
+//            // buffers == null, so set byteBufferArray to null also
+//            this.byteBufferArray = null;
+//        }
+//    }
 
     @Override
     public WsByteBuffer getBuffer() {
@@ -200,80 +252,67 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     @Override
     public long write(long numBytes, int timeout) throws IOException {
-            long writtenBytes = 0;
+    MSP.log("Trying to write synchronously: numBytes->" + numBytes + " timeout->" + timeout);
+    AtomicLong writtenBytes = new AtomicLong(0);
 
-            for (WsByteBuffer buffer : buffers) {
-                if (buffer != null) {
-                    ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                    writtenBytes += nettyBuf.readableBytes();
+    //
 
-                    ChannelFuture writeFuture = this.nettyChannel.write(nettyBuf);
+    if(!nettyChannel.isWritable()) {
+        MSP.log("not writable, wrote 0, not waiting");
+        return writtenBytes.get();
+    }
 
-                    // Add a listener to handle the completion of the write operation
-                    writeFuture.addListener((ChannelFutureListener) future -> {
-                        if (!future.isSuccess()) {
-                            // Handle write operation failure
-                            Throwable cause = future.cause();
-                            if (cause != null) {
-                                // Log the error or handle it according to your application's needs
-                                cause.printStackTrace();
-                            }
-                        }
-                        // Release the buffer if the write operation was successful or failed
-                        ReferenceCountUtil.release(nettyBuf);
-                    });
-                }
+    // Use a CountDownLatch for the flush operation
+    CountDownLatch latch = new CountDownLatch(1);
+
+    final AtomicReference<Throwable> writeFailure = new AtomicReference<>(null);
+
+    try {
+        for (WsByteBuffer buffer : buffers) {
+            if (buffer != null) {
+                ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+                writtenBytes.addAndGet(nettyBuf.readableBytes());
+                MSP.log("WRITING -> " + nettyBuf.readableBytes() + " bytes.");
+
+                this.nettyChannel.write(nettyBuf); // Write data to the channel
             }
-
-            // Call flush after writing all the buffers
-            this.nettyChannel.flush();
-            
-            return writtenBytes;
         }
         
-//        MSP.log("NETTY TCP WRITE CONTEXT -> sync, timeout: "+ timeout);
-//        long writtenBytes = 0;
-//
-//        for (WsByteBuffer buffer : buffers) {
-//            if (buffer != null) {
-//                ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-//                writtenBytes += nettyBuf.readableBytes();
-//                
-//                MSP.log("WRITING -> " + nettyBuf.readableBytes() + " bytes.");
-//
-//                ChannelFuture writeFuture = this.nettyContext.write(nettyBuf);
-//                
-//
-//                try {
-//                    if (timeout > 0) {
-//                        // Wait for the write operation to complete with timeout
-//                        if (!writeFuture.await(timeout)) {
-//                            throw new IOException("Write operation timed out");
-//                        }
-//                    } else if (timeout == -1) {
-//                        // Wait indefinitely for the write operation to complete
-//                        writeFuture.sync();
-//                    }
-//                    // No need to handle timeout == 0 case, it implies no waiting
-//                } catch (InterruptedException e) {
-//                    Thread.currentThread().interrupt(); // Restore the interrupted status
-//                    throw new IOException("Thread was interrupted while writing", e);
-//                }
-//
-//                if (!writeFuture.isSuccess()) {
-//                    Throwable cause = writeFuture.cause();
-//                    if (cause != null) {
-//                        throw new IOException("Write operation failed", cause);
-//                    }
-//                }
-//
-//                // Release the buffer if the write operation was successful
-//               // ReferenceCountUtil.release(nettyBuf);
-//            }
-//        }
-//        this.nettyContext.flush();
-//        return writtenBytes;
- //   }
+        // Flush all pending writes
+        ChannelFuture flushFuture = this.nettyChannel.writeAndFlush(Unpooled.EMPTY_BUFFER);
+        
+        // Add listener to the flush operation
+        flushFuture.addListener(future -> {
+            if (!future.isSuccess()) {
+                writeFailure.set(future.cause());
+            }
+            // Countdown latch once flush operation completes
+            latch.countDown();
+        });
+
+        // Set default timeout to 30 seconds if USE_CHANNEL_TIMEOUT is specified
+        if (timeout == USE_CHANNEL_TIMEOUT) {
+            timeout = 30000; // 30 seconds in milliseconds
+        }
+
+        if (timeout == IMMED_TIMEOUT) { // Check for immediate timeout
+            return 0; // Return immediately
+        } else if (timeout != NO_TIMEOUT) { // Check if a timeout value is specified
+            if (!latch.await(timeout, TimeUnit.MILLISECONDS)) {
+                throw new IOException("Write operation timed out");
+            }
+        }
+
+        if (writeFailure.get() != null) {
+            throw new IOException("Write operation failed", writeFailure.get());
+        }
+    } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        throw new IOException("Thread was interrupted while waiting for write to complete", e);
+    }
+
+    return writtenBytes.get(); // Return the total written bytes
+}
 
     @Override
     public VirtualConnection write(long numBytes, TCPWriteCompletedCallback callback, boolean forceQueue, int timeout) {
@@ -285,14 +324,17 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                     ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
                     ChannelFuture writeFuture = this.nettyChannel.write(nettyBuf);
                     writeFuture.addListener((ChannelFutureListener) future -> {
-                        if (future.isSuccess()) {
-                            if (pendingWrites.decrementAndGet() == 0) {
-                                callback.complete(null, this);
+                        try {
+                            if (future.isSuccess()) {
+                                if (pendingWrites.decrementAndGet() == 0) {
+                                    callback.complete(null, this);
+                                }
+                            } else {
+                                //callback.error(null, future.cause());
                             }
-                        } else {
-                            //callback.error(null, future.cause());
+                        } finally {
+                            ReferenceCountUtil.release(nettyBuf);
                         }
-                        //ReferenceCountUtil.release(nettyBuf);
                     });
 
                 }

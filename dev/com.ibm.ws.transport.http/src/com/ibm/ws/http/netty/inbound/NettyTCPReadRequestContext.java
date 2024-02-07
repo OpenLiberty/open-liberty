@@ -10,6 +10,7 @@
 package com.ibm.ws.http.netty.inbound;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -83,7 +84,13 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
     @Override
     public VirtualConnection read(long numBytes, TCPReadCompletedCallback callback, boolean forceQueue, int timeout) {
-        // TODO Auto-generated method stub
+
+        if (!nettyChannel.isActive()) {
+            // Channel is not active, do not proceed with the callback
+            MSP.log("Netty channel is not active. Skipping callback execution.");
+            return vc; // Return
+        }
+
         //Start a new thread that waits to be notified by the handler when enough data is accumulated. On completion, use the callback complete and return null
 
         if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) == null) {
@@ -99,7 +106,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
 
         MSP.log("setting callback for read");
+       
+        if(Objects.nonNull(callback)) {
         upgrade.setReadListener(callback);
+        }
         upgrade.setTCPReadContext(this);
         upgrade.setVC(vc);
 
@@ -114,11 +124,18 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         blockingTaskExecutor.submit(() -> {
             boolean dataAvailable = upgrade.containsQueuedData() || upgrade.awaitReadReady(numBytes, timeout, TimeUnit.SECONDS);
 
+            if (!nettyChannel.isActive()) {
+                // Channel became inactive while waiting for data, skip callback execution
+                MSP.log("Netty channel became inactive. Skipping callback execution.");
+                return; // Exit the task execution
+            }
+
             if (dataAvailable) {
 
                 upgrade.setToBuffer();
                 //TODO: if -1 do infinite
                 MSP.log("TCP READ REQUEST - SHOULD HAVE STORED DATA: " + this.getBuffer().limit());
+
 
 
                 if (callback != null) {
@@ -128,9 +145,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                     }
                     else {
                        
-
+                         //TODO change to liberty executor, dont use netty for this.
                         
-                        nettyChannel.eventLoop().execute(() -> {
+                        blockingTaskExecutor.submit(() -> {
                             try {
                                 callback.complete(vc, this);
                             } catch (Exception e) {
@@ -140,12 +157,33 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                         });
                     }
                 } else {
+
+                    //TODO: !isActive shoudl have its own clause/return 
                     MSP.log("CALLBACK IS NULL - NOT SUPPORTED");
                     //throw new IOException ("BETA - unexpected null callback provided");
                 }
             } else {
                 MSP.log("BETA TIMED OUT");
+                StringBuilder error = new StringBuilder();
+                error.append("Socket operation timed out before it could be completed local=");
+                error.append(connectionContext.getLocalAddress().getHostName()).append("/");
+                error.append(connectionContext.getLocalAddress().getHostAddress()).append(":");
+                error.append(connectionContext.getLocalPort());
+                error.append(" remote=");
+                error.append(connectionContext.getRemoteAddress().getHostName()).append("/");
+                error.append(connectionContext.getRemoteAddress().getHostAddress()).append(":");
+                error.append(connectionContext.getRemotePort());
+                
+          
                 //throw new IOException("BETA - Timed out waiting on read");
+                nettyChannel.eventLoop().execute(() -> {
+                    try {
+                        upgrade.getReadListener().error(vc, this, new SocketTimeoutException(error.toString()));
+                    } catch (Exception e) {
+                        // Log or handle the exception
+                        e.printStackTrace();
+                    }
+                });
             }
 
         });
