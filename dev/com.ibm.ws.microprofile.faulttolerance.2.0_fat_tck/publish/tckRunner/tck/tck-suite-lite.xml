@@ -23,11 +23,6 @@
                     <include name="testAsyncTimeout"/>
                 </methods>
             </class>
-            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerBulkheadTest">
-                <methods>
-                    <include name="testCircuitBreakerAroundBulkheadSync"/>
-                </methods>
-            </class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerRetryTest">
                 <methods>
                     <exclude name="testRetriesSucceedWhenCircuitCloses"/>
