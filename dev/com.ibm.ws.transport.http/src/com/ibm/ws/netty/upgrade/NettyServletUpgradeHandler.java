@@ -263,6 +263,10 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
 //            callback.complete(null, null);
 //        }
     }
+    
+    public TCPReadCompletedCallback getReadListener() {
+        return this.callback;
+    }
 
     public void setVC(VirtualConnection vc) {
         this.vc = vc;
