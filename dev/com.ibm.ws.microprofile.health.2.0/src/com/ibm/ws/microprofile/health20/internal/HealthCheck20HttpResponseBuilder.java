@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.health.HealthCheckResponse;
@@ -69,7 +70,16 @@ public class HealthCheck20HttpResponseBuilder extends HealthCheckHttpResponseBui
         if ((dataMap != null) && dataMap.isPresent()) {
             JsonObjectBuilder data = jsonBuilderFactory.createObjectBuilder();
             for (Map.Entry<String, Object> entry : dataMap.get().entrySet()) {
-                data.add(entry.getKey(), entry.getValue().toString());
+                Object value = entry.getValue();
+                if (value == null) {
+                    data.add(entry.getKey(), JsonValue.NULL);
+                } else if (value instanceof String) {
+                    data.add(entry.getKey(), (String) value);
+                } else if (value instanceof Boolean) {
+                    data.add(entry.getKey(), (Boolean) value);
+                } else {
+                    data.add(entry.getKey(), (Long) value);
+                }
             }
             check.add(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_DATA, data.build());
         }
