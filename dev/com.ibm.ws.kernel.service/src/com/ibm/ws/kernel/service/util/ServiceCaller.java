@@ -338,7 +338,15 @@ public class ServiceCaller<S> {
                 }
                 try {
                     context.removeServiceListener(this);
-                    context.removeBundleListener(this);
+                    if (System.getSecurityManager() != null) {
+                        AccessController.doPrivileged(
+                                                      (PrivilegedAction<Void>) () -> {
+                                                          context.removeBundleListener(this);
+                                                          return null;
+                                                      });
+                    } else {
+                        context.removeBundleListener(this);
+                    }
                 } catch (IllegalStateException e) {
                     // context is invalid;
                     // ignore - the listeners already got cleaned up
