@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,17 @@ public class TxTestContainerSuite extends TestContainerSuite {
             	Log.info(TxTestContainerSuite.class, "dropTables", "DROP TABLE IF EXISTS " + table);
 				stmt.execute("DROP TABLE IF EXISTS " + table);
     		}
+        } catch (SQLException sqlex) {
+			if(databaseContainerType == DatabaseContainerType.Oracle) {
+		            if (sqlex.getErrorCode() == 942) {
+		            	Log.info(TxTestContainerSuite.class, "dropTables", table + " does not exist");
+		            } else if (sqlex.getErrorCode() == 16294) {
+		            	Log.info(TxTestContainerSuite.class, "dropTables", table + " is a LogMiner table");
+		            } else {
+		            	Log.error(TxTestContainerSuite.class, "dropTables", sqlex);   	// 	            	
+		            }
+			} else
+				Log.error(TxTestContainerSuite.class, "dropTables", sqlex);    	
 		} catch (Exception e) {
         	Log.error(TxTestContainerSuite.class, "dropTables", e);
 		}
