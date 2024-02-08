@@ -60,7 +60,6 @@ import com.ibm.ws.recoverylog.spi.RecoveryLogManager;
 import com.ibm.ws.recoverylog.spi.SharedServerLeaseLog;
 import com.ibm.ws.recoverylog.spi.TerminationFailedException;
 import com.ibm.wsspi.classloading.ClassLoadingService;
-import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 public class TxRecoveryAgentImpl implements RecoveryAgent {
@@ -92,7 +91,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
      */
     volatile private boolean _serverStopping;
 
-    protected TxRecoveryAgentImpl() {}
+    protected TxRecoveryAgentImpl() {
+    }
 
     private static ThreadLocal<Boolean> _replayThread = new ThreadLocal<Boolean>();
 
@@ -137,7 +137,8 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
     }
 
     @Override
-    public void agentReportedFailure(int clientId, FailureScope failureScope) {}
+    public void agentReportedFailure(int clientId, FailureScope failureScope) {
+    }
 
     @Override
     public int clientIdentifier() {
@@ -301,11 +302,6 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                             Tr.debug(tc, "Retrieved non tran DS Resource Factory, ", nontranDSResourceFactory);
                         ((CustomLogProperties) transactionLogProps).setResourceFactory(nontranDSResourceFactory);
                         ((CustomLogProperties) partnerLogProps).setResourceFactory(nontranDSResourceFactory);
-                        ResourceConfig resConfig = cp.getResourceConfig();
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "setResourceConfig for ", resConfig);
-                        ((CustomLogProperties) transactionLogProps).setResourceConfig(resConfig);
-                        ((CustomLogProperties) partnerLogProps).setResourceConfig(resConfig);
                     } else {
                         // Set up FileLogProperties
                         String tranLogDirStem = tlc.expandedLogDirectory();
@@ -1047,11 +1043,7 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                             Tr.debug(tc, "Retrieved non tran DS Resource Factory {0}", nontranDSResourceFactory);
 
                         ((CustomLogProperties) partnerLogProps).setResourceFactory(nontranDSResourceFactory);
-                        ResourceConfig resConfig = cp.getResourceConfig();
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "setResourceConfig for ", resConfig);
 
-                        ((CustomLogProperties) partnerLogProps).setResourceConfig(resConfig);
                         //
                         // Get the Partner (XAResources) log
                         //

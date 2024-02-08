@@ -138,7 +138,6 @@ task autoFVT {
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
   enabled project.file('fat').exists()
-  mustRunAfter cleanFat
 
   // For now we are just forcing the autoFVT create every time, this will be fixed
   // TODO: Be smart about when to recreate the autoFVT.zip
