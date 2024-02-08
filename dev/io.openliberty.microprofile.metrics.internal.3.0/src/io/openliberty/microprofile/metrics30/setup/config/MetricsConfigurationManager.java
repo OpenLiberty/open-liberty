@@ -9,16 +9,21 @@ import java.util.logging.Logger;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 
+//import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
+
 //@@@@@@@@@@@@@ This is the only use of the bnd new imports.
-import io.smallrye.metrics.SharedMetricRegistries;
-import io.smallrye.metrics.setup.ApplicationNameResolver;
+//import io.smallrye.metrics.SharedMetricRegistries;
+//import io.smallrye.metrics.setup.ApplicationNameResolver;
+
+//import io.openliberty.microprofile.metrics30.setup.ApplicationNameResolver;
+//import io.openliberty.microprofile.metrics30.SharedMetricRegistries;
+//import io.openliberty.microprofile.metrics30.SharedMetricRegistries;
+//import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
 public class MetricsConfigurationManager {
 
     private static final String CLASS_NAME = MetricsConfigurationManager.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
-
-    private final ApplicationNameResolver anr = SharedMetricRegistries.getAppNameResolver();
 
     static final String MP_PERCENTILES_PROP = "mp.metrics.distribution.percentiles";
     static final String MP_HISTOGRAM_BUCKET_PROP = "mp.metrics.distribution.histogram.buckets";
@@ -305,17 +310,34 @@ public class MetricsConfigurationManager {
         return null;
 
     }
+//
+//    /**
+//     *
+//     * @return the application name if it can be resolved, null otherwise
+//     */
+//    private String getApplicationName() {
+//        String appName = null;
+//        if (applicationName != null) {
+//            appName = applicationName;
+//        }
+//        return appName;
+//    }
+//
 
     /**
+     * Leveraging the Thread Context Class Loader to resolve the application name from the component metadata
      *
-     * @return the application name if it can be resolved, null otherwise
+     * @return String the application name; can be null
      */
     private String getApplicationName() {
-        String appName = null;
-        if (anr != null) {
-            appName = anr.getApplicationName();
+        com.ibm.ws.runtime.metadata.ComponentMetaData metaData = com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (metaData != null) {
+            com.ibm.websphere.csi.J2EEName name = metaData.getJ2EEName();
+            if (name != null) {
+                return name.getApplication();
+            }
         }
-        return appName;
+        return null;
     }
 
 }

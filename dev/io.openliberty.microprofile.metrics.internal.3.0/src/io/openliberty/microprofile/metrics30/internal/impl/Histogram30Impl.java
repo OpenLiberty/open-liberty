@@ -28,6 +28,7 @@ package io.openliberty.microprofile.metrics30.internal.impl;
 import java.util.Map;
 
 import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Snapshot;
 
 import com.ibm.ws.microprofile.metrics.impl.LongAdderAdapter;
@@ -53,12 +54,16 @@ public class Histogram30Impl implements Histogram {
      * Creates a new {@link Histogram30Impl} with the given reservoir.
      *
      * @param reservoir the reservoir to create a histogram from
+     * @param metadata
      */
-    public Histogram30Impl(Reservoir reservoir) {
+    public Histogram30Impl(Reservoir reservoir, Metadata metadata) {
+
+        //System.out.println("Current Metrics: " + metricName.getDisplayName() + " -- " + metricName.getName() + " -- " + metricID.getTagsAsArray() + " -- " + metricID.getName());
+
         this.reservoir = reservoir;
         this.count = LongAdderProxy.create();
         this.sum = LongAdderProxy.create();
-        this.manager = new BucketManager(new Double[] { 1.0, 2.0, 3.0, 4.0, 5.0 }); //read config here for buckets and perce
+        this.manager = new BucketManager(metadata); //read config here for buckets and perce
     }
 
     /**
@@ -100,7 +105,7 @@ public class Histogram30Impl implements Histogram {
         return reservoir.getSnapshot();
     }
 
-    public Map<Double, BucketValue> getBuckets() {
+    public Map<String, Map<Double, BucketValue>> getBuckets() {
         return manager.getBuckets();
     }
 

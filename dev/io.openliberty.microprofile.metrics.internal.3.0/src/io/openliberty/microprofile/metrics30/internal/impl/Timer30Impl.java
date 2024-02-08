@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.Snapshot;
 import org.eclipse.microprofile.metrics.Timer;
@@ -94,18 +95,21 @@ public class Timer30Impl implements Timer {
     /**
      * Creates a new {@link TimerImpl} using an {@link ExponentiallyDecayingReservoir} and the default
      * {@link Clock}.
+     *
+     * @param metadata
      */
-    public Timer30Impl() {
-        this(new ExponentiallyDecayingReservoir());
+    public Timer30Impl(Metadata metadata) {
+        this(new ExponentiallyDecayingReservoir(), metadata);
     }
 
     /**
      * Creates a new {@link TimerImpl} that uses the given {@link Reservoir}.
      *
      * @param reservoir the {@link Reservoir} implementation the timer should use
+     * @param metadata
      */
-    public Timer30Impl(Reservoir reservoir) {
-        this(reservoir, Clock.defaultClock());
+    public Timer30Impl(Reservoir reservoir, Metadata metadata) {
+        this(reservoir, Clock.defaultClock(), metadata);
     }
 
     /**
@@ -114,11 +118,11 @@ public class Timer30Impl implements Timer {
      * @param reservoir the {@link Reservoir} implementation the timer should use
      * @param clock     the {@link Clock} implementation the timer should use
      */
-    protected Timer30Impl(Reservoir reservoir, Clock clock) {
+    protected Timer30Impl(Reservoir reservoir, Clock clock, Metadata metadata) {
         this.meter = new MeterImpl(clock);
         this.clock = clock;
         this.histogram = new HistogramImpl(reservoir);
-        this.manager = new BucketManager(null);
+        this.manager = new BucketManager(metadata);
         this.elapsedTime = Duration.ZERO;
     }
 
@@ -133,7 +137,8 @@ public class Timer30Impl implements Timer {
         synchronized (this) {
             if (duration.toNanos() >= 0) {
                 histogram.update(duration.toNanos());
-                manager.update(duration.toNanos());
+                manager.update(duration.getSeconds());
+                System.out.println("Duration(default): " + duration + " -- toNanos: " + duration.toNanos() + " seconds:" + duration.getSeconds());
                 meter.mark();
                 elapsedTime = elapsedTime.plus(duration);
             }
@@ -223,7 +228,7 @@ public class Timer30Impl implements Timer {
         return elapsedTime;
     }
 
-    public Map<Double, BucketValue> getBuckets() {
+    public Map<String, Map<Double, BucketValue>> getBuckets() {
         return manager.getBuckets();
     }
 

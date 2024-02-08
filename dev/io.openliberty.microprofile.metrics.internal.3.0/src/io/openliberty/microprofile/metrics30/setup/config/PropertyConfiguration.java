@@ -15,9 +15,9 @@ public abstract class PropertyConfiguration {
     /**
      * Given a metric name and a collection of PropertyConfiguration objects, will return a match to the
      * metric name if it exists, otherwise a null is returned.
-     * 
-     * @param <T> extends PropertyConfiguration
-     * @param configs Collection of T
+     *
+     * @param <T>        extends PropertyConfiguration
+     * @param configs    Collection of T
      * @param metricName the metric name to find a matching configuration for
      * @return the matching configuration or null if non exists.
      */

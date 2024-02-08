@@ -14,6 +14,7 @@ package io.openliberty.microprofile.metrics30.internal.helper;
 
 import java.time.Duration;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.eclipse.microprofile.metrics.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.Counter;
@@ -37,6 +38,8 @@ import com.ibm.ws.microprofile.metrics23.helper.PrometheusBuilder23;
 import io.openliberty.microprofile.metrics30.internal.helper.BucketManager.BucketValue;
 import io.openliberty.microprofile.metrics30.internal.impl.Histogram30Impl;
 import io.openliberty.microprofile.metrics30.internal.impl.Timer30Impl;
+import io.openliberty.microprofile.metrics30.setup.config.MetricPercentileConfiguration;
+import io.openliberty.microprofile.metrics30.setup.config.MetricsConfigurationManager;
 
 /**
  *
@@ -243,71 +246,132 @@ public class PrometheusBuilder30 extends PrometheusBuilder23 {
             getPromValueLine(builder, lineName, stdDevVal, resolveTagsAsStringWithGlobalTags(mid), appendUnit);
         }
 
-        getPromTypeLine(builder, name, "summary", appendUnit); //Mock the hsitogram outptu here, check if histo buckets exist.
-        getPromHelpLine(builder, name, description, appendUnit);
         for (MetricID mid : currentMetricMap.keySet()) {
-            System.out.println("HELLOOO???");
+            boolean typePrinted = false;
+            try {
+                Map<String, Map<Double, BucketValue>> newManager = ((Histogram30Impl) currentMetricMap.get(mid)).getBuckets();
+
+                if (!newManager.isEmpty()) {
+                    typePrinted = true;
+                    String appName = name.replace("application_", "");
+                    getPromTypeLine(builder, appName, "histogram", appendUnit);
+                    getPromHelpLine(builder, appName, description, appendUnit);
+                }
+
+                for (String key : newManager.keySet()) {
+                    Map<Double, BucketValue> innerMap = newManager.get(key);
+
+                    for (Double innerKey : innerMap.keySet()) {
+                        double bucketKey = (!(Double.isNaN(conversionFactor))) ? innerKey * conversionFactor : innerKey;
+
+                        String applicationName;
+                        if (appendUnit == null)
+                            applicationName = "application_" + key.replace(".", "_") + "_bucket";
+                        else
+                            applicationName = "application_" + key.replace(".", "_") + "_" + appendUnit + "_bucket";
+
+                        String tagName = Double.isInfinite(bucketKey) ? "+Inf" : Double.toString(bucketKey);
+
+                        getPromValueLine(builder, applicationName, innerMap.get(innerKey).getValue(),
+                                         resolveTagsAsStringWithGlobalTags(mid),
+                                         new Tag("le", tagName),
+                                         "");//unit needed?
+
+                    }
+
+                }
+
+            } catch (Exception e) {
+
+                //Do nothing
+            }
+
+            try {
+                Map<String, Map<Double, BucketValue>> newManager = ((Timer30Impl) currentMetricMap.get(mid)).getBuckets();
+
+                if (!newManager.isEmpty()) {
+                    typePrinted = true;
+                    String appName = name.replace("application_", "");
+                    getPromTypeLine(builder, appName, "histogram", appendUnit);
+                    getPromHelpLine(builder, appName, description, appendUnit);
+                }
+
+                for (String key : newManager.keySet()) {
+                    Map<Double, BucketValue> innerMap = newManager.get(key);
+                    for (Double innerKey : innerMap.keySet()) {
+                        String tagName = Double.isInfinite(innerKey) ? "+Inf" : Double.toString(innerKey);
+
+                        getPromValueLine(builder, "application_" + key.replace(".", "_") + "_" + appendUnit + "_bucket", innerMap.get(innerKey).getValue(),
+                                         resolveTagsAsStringWithGlobalTags(mid),
+                                         new Tag("le", tagName),
+                                         "");//unit needed?
+                    }
+
+                }
+            } catch (Exception e) {
+                //Do nothing
+            }
+
+            if (!typePrinted) {
+                getPromTypeLine(builder, name, "summary", appendUnit);
+                getPromHelpLine(builder, name, description, appendUnit);
+            }
+
             Sampling sampling = (Sampling) currentMetricMap.get(mid);
             if (Counting.class.isInstance(sampling)) {
                 getPromValueLine(builder, name, ((Counting) sampling).getCount(), resolveTagsAsStringWithGlobalTags(mid), appendUnit == null ? "_count" : appendUnit + "_count");
             }
 
             if (Timer.class.isInstance(sampling)) {
-                getPromValueLine(builder, name, ((Timer) sampling).getElapsedTime().toNanos() * conversionFactor, resolveTagsAsStringWithGlobalTags(mid),
+                Double sumVal = (!(Double.isNaN(conversionFactor))) ? ((Timer) sampling).getElapsedTime().toNanos()
+                                                                      * conversionFactor : ((Timer) sampling).getElapsedTime().toNanos();
+                getPromValueLine(builder, name, sumVal, resolveTagsAsStringWithGlobalTags(mid),
                                  appendUnit == null ? "_sum" : appendUnit + "_sum");
             } else if (Histogram.class.isInstance(sampling)) {
-                getPromValueLine(builder, name, ((Histogram) sampling).getSum(), resolveTagsAsStringWithGlobalTags(mid), appendUnit == null ? "_sum" : appendUnit + "_sum");
+                Double sumVal = (!(Double.isNaN(conversionFactor))) ? ((Histogram) sampling).getSum() * conversionFactor : ((Histogram) sampling).getSum();
+                getPromValueLine(builder, name, sumVal, resolveTagsAsStringWithGlobalTags(mid),
+                                 appendUnit == null ? "_sum" : appendUnit + "_sum");
             }
 
             double medianVal = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getMedian() * conversionFactor : sampling.getSnapshot().getMedian();
             //double percentile75th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().get75thPercentile()
             //                                                            * conversionFactor : sampling.getSnapshot().get(0.75)get75thPercentile();             //DYNAMICALLY do this stuff. Quick loop to go through buckets adn get each percentile.
 
-            getPromValueLine(builder, name, medianVal, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, "0.5"), appendUnit);
+            MetricPercentileConfiguration percentilesConfig = MetricsConfigurationManager.getInstance().getPercentilesConfiguration(mid.getName());
 
-            System.out.println("SAMPLING: " + sampling.getSnapshot().getValues().toString());
-            try {
-                Map<Double, BucketValue> newManager = ((Histogram30Impl) currentMetricMap.get(mid)).getBuckets();
-                for (Double key : newManager.keySet()) {
-                    //System.out.println(key + " -- " + manager.getBuckets().get(key).getValue());
-                    getPromValueLine(builder, name, newManager.get(key).getValue(), resolveTagsAsStringWithGlobalTags(mid),
-                                     new Tag("le", key.toString()),
-                                     appendUnit);
+            if (percentilesConfig != null && percentilesConfig.getValues() != null
+                && percentilesConfig.getValues().length > 0) {
+                double[] vals = Stream.of(percentilesConfig.getValues()).mapToDouble(Double::doubleValue).toArray();
 
-                }
-            } catch (Exception e) {
-
-                Map<Double, BucketValue> newManager = ((Timer30Impl) currentMetricMap.get(mid)).getBuckets();
-                for (Double key : newManager.keySet()) {
-                    //System.out.println(key + " -- " + manager.getBuckets().get(key).getValue());
-                    getPromValueLine(builder, name, newManager.get(key).getValue(), resolveTagsAsStringWithGlobalTags(mid),
-                                     new Tag("le", key.toString()),
-                                     appendUnit);
+                for (Double value : vals) {
+                    double percentile = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(value)
+                                                                              * conversionFactor : sampling.getSnapshot().getValue(value);
+                    getPromValueLine(builder, name, percentile, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, Double.toString(value)), appendUnit);
 
                 }
+            } else if (percentilesConfig != null && percentilesConfig.getValues() == null
+                       && percentilesConfig.isDisabled()) {
+                //do nothing - percentiles were disabled
+            } else {
+                double percentile75th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(0.75)
+                                                                              * conversionFactor : sampling.getSnapshot().getValue(0.75);
+
+                double percentile95th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(0.95)
+                                                                              * conversionFactor : sampling.getSnapshot().getValue(0.95);
+                double percentile98th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(0.98)
+                                                                              * conversionFactor : sampling.getSnapshot().getValue(0.98);
+                double percentile99th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(0.99)
+                                                                              * conversionFactor : sampling.getSnapshot().getValue(0.99);
+                double percentile999th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(0.999)
+                                                                               * conversionFactor : sampling.getSnapshot().getValue(0.999);
+                getPromValueLine(builder, name, medianVal, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, "0.5"), appendUnit);
+                getPromValueLine(builder, name, percentile75th, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, "0.75"), appendUnit);
+                getPromValueLine(builder, name, percentile95th, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, "0.95"), appendUnit);
+                getPromValueLine(builder, name, percentile98th, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, "0.98"), appendUnit);
+                getPromValueLine(builder, name, percentile99th, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, "0.99"), appendUnit);
+                getPromValueLine(builder, name, percentile999th, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, "0.999"), appendUnit);
+
             }
-
-            // ((NewHistogram30Impl) sampling).get
-            //Map<Double, BucketValue> test = sampling.ge
-
-            //currentMetricMap.get(mid).g
-            double percentile75th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(0.75)
-                                                                          * conversionFactor : sampling.getSnapshot().getValue(0.75);
-
-            double percentile95th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(0.95)
-                                                                          * conversionFactor : sampling.getSnapshot().getValue(0.95);
-            double percentile98th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(0.98)
-                                                                          * conversionFactor : sampling.getSnapshot().getValue(0.98);
-            double percentile99th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(0.99)
-                                                                          * conversionFactor : sampling.getSnapshot().getValue(0.99);
-            double percentile999th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(0.999)
-                                                                           * conversionFactor : sampling.getSnapshot().getValue(0.999);
-            getPromValueLine(builder, name, medianVal, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, "0.5"), appendUnit);
-            getPromValueLine(builder, name, percentile75th, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, "0.75"), appendUnit);
-            getPromValueLine(builder, name, percentile95th, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, "0.95"), appendUnit);
-            getPromValueLine(builder, name, percentile98th, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, "0.98"), appendUnit);
-            getPromValueLine(builder, name, percentile99th, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, "0.99"), appendUnit);
-            getPromValueLine(builder, name, percentile999th, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, "0.999002"), appendUnit);
 
         }
         // sampling.getSnapshot2();

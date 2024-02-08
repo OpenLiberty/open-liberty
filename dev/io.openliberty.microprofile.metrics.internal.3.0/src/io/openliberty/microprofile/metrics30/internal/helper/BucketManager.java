@@ -9,82 +9,209 @@
  *******************************************************************************/
 package io.openliberty.microprofile.metrics30.internal.helper;
 
+import java.time.Duration;
+import java.util.AbstractMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NavigableSet;
+import java.util.Optional;
+import java.util.TreeSet;
+import java.util.stream.Stream;
 
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Snapshot;
 
-import io.smallrye.metrics.setup.config.DefaultBucketConfiguration;
-import io.smallrye.metrics.setup.config.HistogramBucketConfiguration;
-import io.smallrye.metrics.setup.config.MetricPercentileConfiguration;
-import io.smallrye.metrics.setup.config.MetricsConfigurationManager;
+import com.ibm.ws.microprofile.metrics.Constants;
 
-//import io.openliberty.microprofile.metrics30.setup.config.DefaultBucketConfiguration;
-//import io.openliberty.microprofile.metrics30.setup.config.HistogramBucketConfiguration;
-//import io.openliberty.microprofile.metrics30.setup.config.MetricPercentileConfiguration;
-//import io.openliberty.microprofile.metrics30.setup.config.MetricsConfigurationManager;
+import io.openliberty.microprofile.metrics30.internal.micrometer.PercentileHistogramBuckets;
+import io.openliberty.microprofile.metrics30.setup.config.DefaultBucketConfiguration;
+import io.openliberty.microprofile.metrics30.setup.config.HistogramBucketConfiguration;
+import io.openliberty.microprofile.metrics30.setup.config.HistogramBucketMaxConfiguration;
+import io.openliberty.microprofile.metrics30.setup.config.HistogramBucketMinConfiguration;
+import io.openliberty.microprofile.metrics30.setup.config.MetricsConfigurationManager;
+import io.openliberty.microprofile.metrics30.setup.config.TimerBucketConfiguration;
+import io.openliberty.microprofile.metrics30.setup.config.TimerBucketMaxConfiguration;
+import io.openliberty.microprofile.metrics30.setup.config.TimerBucketMinConfiguration;
 
 public class BucketManager {
-    private final Map<Double, BucketValue> buckets;
+    private Map<Double, BucketValue> buckets;
+    private final Map<String, Map<Double, BucketValue>> allBuckets = new LinkedHashMap<>();
     private final BucketValue infiniteObject;
-//    private final BucketValue bucket1;
-//    private final BucketValue bucket2;
-//    private final BucketValue bucket3;
-//    private final BucketValue bucket4;
-//    private final BucketValue bucket5;
-//    private final BucketValue bucket6;
 
-    public BucketManager(Double[] bucketArr) {
-        buckets = new LinkedHashMap<>();
-        infiniteObject = new BucketValue(0);
-//        bucket1 = new BucketValue(0);
-//        buckets.put(0.0005, bucket1);
-//        bucket2 = new BucketValue(0);
-//        buckets.put(0.75, bucket2);
-//        bucket3 = new BucketValue(0);
-//        buckets.put(0.95, bucket3);
-//        bucket4 = new BucketValue(0);
-//        buckets.put(0.98, bucket4);
-//        bucket5 = new BucketValue(0);
-//        buckets.put(0.99, bucket5);
-//        bucket6 = new BucketValue(0);
-//        buckets.put(0.999, bucket6);
+    public BucketManager(Metadata metadata) {
+        String metricName = metadata.getName();
+        infiniteObject = new BucketValue(0, metadata.getUnit());
 
-        Double[] defaultBuckets = new Double[] { 0.0005, 0.75, 0.95, 0.98, 0.999 };
+        double[] bucketArr = null;
 
-        //Figure out how to get all the default buckets set here, whether we're allowed to use the micrometer algo to create the default 69 and 250+ buckets or not.
-        //Maybe have a separate array for the defaults and a separate array for the configured buckets? Do we separate the output or merge them
-        if (bucketArr == null || bucketArr.length == 0) {
-            bucketArr = defaultBuckets;
+        Optional<String> defaultHistogramOption = ConfigProvider.getConfig().getOptionalValue("mp.metrics.distribution.percentiles-histogram.enabled", String.class);
+
+        if (defaultHistogramOption.isPresent()) {
+
+            buckets = new LinkedHashMap<>();
+            DefaultBucketConfiguration defaultBucketConfig = MetricsConfigurationManager.getInstance().getDefaultBucketConfiguration(metricName);
+
+            if (defaultBucketConfig != null && defaultBucketConfig.isEnabled()) {
+                if (metadata.getType().equals("histogram")) {
+                    NavigableSet<Double> defaultBucketsMicrometer = new TreeSet<>();
+                    System.out.println("IN HERE---1");
+                    HistogramBucketMaxConfiguration defaultBucketMaxConfig = MetricsConfigurationManager.getInstance().getDefaultHistogramMaxBucketConfiguration(metricName);
+                    HistogramBucketMinConfiguration defaultBucketMinConfig = MetricsConfigurationManager.getInstance().getDefaultHistogramMinBucketConfiguration(metricName);
+
+                    System.out.println("IN HERE---2 -- " + defaultBucketMinConfig.getValue());
+                    double minHistogramValue = defaultBucketMinConfig != null ? defaultBucketMinConfig.getValue() : 0.00;
+                    double maxHistogramValue = defaultBucketMaxConfig != null ? defaultBucketMaxConfig.getValue() : Double.MAX_VALUE;
+
+//                    if (defaultBucketMinConfig != null && defaultBucketMinConfig.getValue() != null
+//                        && defaultBucketMinConfig.getValue() != Double.NaN)
+                    System.out.println("IN HERE---3 -- " + minHistogramValue);
+                    defaultBucketsMicrometer.addAll(PercentileHistogramBuckets.getDefaultBuckets(minHistogramValue, maxHistogramValue, false));
+
+                    System.out.println("IN HERE---4");
+                    Iterator<Double> itr = defaultBucketsMicrometer.iterator();
+
+                    while (itr.hasNext()) {
+                        buckets.put(itr.next(), new BucketValue(0, metadata.getUnit()));
+
+                    }
+                } else if (metadata.getType().equals("timer")) {
+                    NavigableSet<Double> defaultBucketsMicrometer = new TreeSet<>();
+
+                    TimerBucketMaxConfiguration defaultTimerMaxConfig = MetricsConfigurationManager.getInstance().getDefaultTimerMaxBucketConfiguration(metricName);
+                    TimerBucketMinConfiguration defaultTimerMinConfig = MetricsConfigurationManager.getInstance().getDefaultTimerMinBucketConfiguration(metricName);
+
+                    double minTimerValue = defaultTimerMinConfig != null ? defaultTimerMinConfig.getValue().getSeconds() : 0.001;
+                    double maxTimerValue = defaultTimerMaxConfig != null ? defaultTimerMaxConfig.getValue().getSeconds() : 30;
+//                        if (defaultBucketMinConfig != null && defaultBucketMinConfig.getValue() != null
+//                            && defaultBucketMinConfig.getValue() != Double.NaN)
+                    defaultBucketsMicrometer.addAll(PercentileHistogramBuckets.getDefaultBuckets(minTimerValue, maxTimerValue, true));
+
+                    Iterator<Double> itr = defaultBucketsMicrometer.iterator();
+
+                    while (itr.hasNext()) {
+                        buckets.put(itr.next(), new BucketValue(0, metadata.getUnit()));
+
+                    }
+                }
+
+            }
 
         }
 
-        for (Double value : bucketArr) {
-            buckets.put(value, new BucketValue(0));
-        }
-        buckets.put(Double.POSITIVE_INFINITY, infiniteObject);
+        Optional<String> input3 = ConfigProvider.getConfig().getOptionalValue("mp.metrics.distribution.histogram.buckets", String.class);
 
-        MetricPercentileConfiguration percentilesConfig = MetricsConfigurationManager.getInstance().getPercentilesConfiguration("Name");
+        if (input3.isPresent()) {
 
-        HistogramBucketConfiguration bucketsConfig = MetricsConfigurationManager.getInstance().getHistogramBucketConfiguration("Name");
+            // for (HistogramBucketConfiguration test : HistogramBucketConfiguration.parse(input3.get())) {
+            //  buckets = new LinkedHashMap<>();
+            HistogramBucketConfiguration bucketsConfig = MetricsConfigurationManager.getInstance().getHistogramBucketConfiguration(metricName);
 
-        DefaultBucketConfiguration defaultBucketConfig = MetricsConfigurationManager.getInstance().getDefaultBucketConfiguration("Name");
+            TimerBucketConfiguration timerBucketsConfig = MetricsConfigurationManager.getInstance().getTimerBucketConfiguration(metricName);
 
-        System.out.println("Percentiles Config: " + percentilesConfig.getValues());
-        System.out.println("Buckets Config: " + bucketsConfig.getValues());
+            if (bucketsConfig != null && bucketsConfig.getValues() != null
+                && bucketsConfig.getValues().length > 0) {
+                double[] vals = Stream.of(bucketsConfig.getValues()).mapToDouble(Double::doubleValue).toArray();
+                // System.out.println("Bucket values: " + vals);
+                bucketArr = vals;
+                System.out.println(bucketsConfig.getValues());
+
+                for (Double value : bucketArr) {
+                    System.out.println("VALUE: " + value + " -- " + metadata.getUnit());
+
+                    buckets.put(value, new BucketValue(0, metadata.getUnit()));
+
+                }
+                buckets.put(Double.POSITIVE_INFINITY, infiniteObject);
+
+                System.out.println("Name(histogram): " + metadata);
+
+            } else if (timerBucketsConfig != null && timerBucketsConfig.getValues() != null
+                       && timerBucketsConfig.getValues().length > 0) {
+
+                Duration[] vals = timerBucketsConfig.getValues(); //DURATION
+
+                System.out.println("Bucket values: " + vals);
+                //bucketArr = vals;
+
+                for (Duration value : vals) {
+
+//                    String unit = metadata.getUnit();
+//                    System.out.println("TIMER UNIT: " + unit);
+                    // if (unit == "null" || unit == "none")
+                    //unit = MetricUnits.MILLISECONDS;
+                    buckets.put((double) value.getSeconds(), new BucketValue(0, metadata.getUnit()));
+
+                }
+                buckets.put(Double.POSITIVE_INFINITY, infiniteObject);
+
+                System.out.println("Name(timer): " + metadata);
+
+            }
+//                else if (bucketsConfig != null && percentilesConfig.getValues() == null
+//                                && bucketsConfig.isDisabled()) {
+//                            //do nothing - percentiles were disabled
+//                        }
+
+            //}
+        } else
+            System.out.println("CONFIG DOES NOT EXIST1111!!");
+
+        if (metadata != null && buckets != null)
+            allBuckets.put(metricName, buckets);
+        //  MetricPercentileConfiguration percentilesConfig = MetricsConfigurationManager.getInstance().getPercentilesConfiguration("myHisto.histogram");
+
+        //BucketsConfig individual call for hardcoded metrics
+        //HistogramBucketConfiguration bucketsConfig = MetricsConfigurationManager.getInstance().getHistogramBucketConfiguration("myHistoo.buckets");
+
+        // DefaultBucketConfiguration defaultBucketConfig = MetricsConfigurationManager.getInstance().getDefaultBucketConfiguration("myHisto.histogram");
+
+        //System.out.println("Percentiles Config: " + percentilesConfig.getValues());
+
+//        for (String key : allBuckets.keySet()) {
+//
+//            Map<Double, BucketValue> innerMap = allBuckets.get(key);
+//
+//            for (Double innerKey : innerMap.keySet()) {
+//                System.out.println("Inner key: " + innerKey + ", Value: " + innerMap.get(innerKey));
+//            }
+//        }
+
+        // buckets.put(Double.POSITIVE_INFINITY, infiniteObject);
 
     }
 
-    public BucketValue createObject(double value) {
-        BucketValue object = new BucketValue(0);
-        buckets.put(value, object);
-        return object;
-    }
+//    public BucketValue createObject(double value) {
+//        BucketValue object = new BucketValue(0, "");
+//        buckets.put(value, object);
+//        return object;
+//    }
 
     public void update(long value) {
-        for (Map.Entry<Double, BucketValue> entry : buckets.entrySet()) {
-            if (entry.getKey() >= (double) value / 1000000000) {
-                entry.getValue().increment();
+//        for (Entry<String, Map<Double, BucketValue>> entry : allBuckets.entrySet()) {
+//
+////            if (entry.getKey() >= (double) value / 1000000000) {
+////                entry.getValue().increment();
+////            }
+//        }
+
+        for (Map.Entry<String, Map<Double, BucketValue>> entry : allBuckets.entrySet()) {
+            String outerKey = entry.getKey();
+            Map<Double, BucketValue> innerMap = entry.getValue();
+            for (Map.Entry<Double, BucketValue> innerEntry : innerMap.entrySet()) {
+                //   System.out.println("Unit: -- " + resolveConversionFactorXappendUnitEntry(innerEntry.getValue().getUnit()) + " -- Key: " + innerEntry.getKey() + " -- Value:"
+                //                    + innerEntry.getValue().getValue());
+
+                Entry<String, Double> test = resolveConversionFactorXappendUnitEntry(innerEntry.getValue().getUnit());
+                //System.out.println("Conversion info: " + test.getKey() + " -- " + test.getValue());
+                //if (innerEntry.getKey() >= (double) value / 1000000000)
+                //System.out.println("updating with vlaue: " + innerEntry.getKey() + " -- " + value + " -- " + test.getValue());
+                //if (innerEntry.getKey() >= (value * (test.getValue())))
+                if (innerEntry.getKey() >= (value))
+                    innerEntry.getValue().increment();
             }
         }
         //infiniteObject.increment();
@@ -92,13 +219,20 @@ public class BucketManager {
 
     public static class BucketValue {
         private long value;
+        private final String unit;
 
-        public BucketValue(long value) {
+        public BucketValue(long value, String unit) {
             this.value = value;
+            this.unit = unit;
+
         }
 
         public double getValue() {
             return value;
+        }
+
+        public String getUnit() {
+            return unit;
         }
 
         public void increment() {
@@ -106,49 +240,111 @@ public class BucketManager {
         }
     }
 
-    public Map<Double, BucketValue> getBuckets2() {
-        return buckets;
+    public static class Bucket {
+        private final double value;
+        private final BucketValue bucketValue;
+
+        public Bucket(double value, BucketValue newBucket) {
+            this.value = value;
+            this.bucketValue = newBucket;
+        }
+
     }
 
-    public Map<Double, BucketValue> getBuckets6() {
-        return buckets;
-    }
-
-    public Map<Double, BucketValue> getBuckets() {
-        return buckets;
+    public Map<String, Map<Double, BucketValue>> getBuckets() {
+        return allBuckets;
     }
 
     public Snapshot getBucketsSnap() {
         return (Snapshot) buckets;
     }
 
+    /**
+     * Calculates the unit String suffix and conversion factor used for later calculations
+     *
+     * @param unit String that encompasses the unit needed to calculate appropriate conversion factor and value to append
+     * @return Map.Entry<String, Double> that contains the unit string suffix and conversion factor
+     */
+    protected Map.Entry<String, Double> resolveConversionFactorXappendUnitEntry(String unit) {
+
+        if (unit == null || unit.trim().isEmpty() || unit.equals(MetricUnits.NONE)) {
+            return new AbstractMap.SimpleEntry<String, Double>(null, Double.NaN);
+
+        } else if (unit.equals(MetricUnits.NANOSECONDS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.NANOSECONDCONVERSION);
+
+        } else if (unit.equals(MetricUnits.MICROSECONDS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.MICROSECONDCONVERSION);
+        } else if (unit.equals(MetricUnits.SECONDS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.SECONDCONVERSION);
+
+        } else if (unit.equals(MetricUnits.MINUTES)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.MINUTECONVERSION);
+
+        } else if (unit.equals(MetricUnits.HOURS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.HOURCONVERSION);
+
+        } else if (unit.equals(MetricUnits.DAYS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.DAYCONVERSION);
+
+        } else if (unit.equals(MetricUnits.PERCENT)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDPERCENT, Double.NaN);
+
+        } else if (unit.equals(MetricUnits.BYTES)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.BYTECONVERSION);
+
+        } else if (unit.equals(MetricUnits.KILOBYTES)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.KILOBYTECONVERSION);
+
+        } else if (unit.equals(MetricUnits.MEGABYTES)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.MEGABYTECONVERSION);
+
+        } else if (unit.equals(MetricUnits.GIGABYTES)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.GIGABYTECONVERSION);
+
+        } else if (unit.equals(MetricUnits.KILOBITS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.KILOBITCONVERSION);
+
+        } else if (unit.equals(MetricUnits.MEGABITS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.MEGABITCONVERSION);
+        } else if (unit.equals(MetricUnits.GIGABITS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.GIGABITCONVERSION);
+
+        } else if (unit.equals(MetricUnits.KIBIBITS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.KIBIBITCONVERSION);
+        } else if (unit.equals(MetricUnits.MEBIBITS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.MEBIBITCONVERSION);
+        } else if (unit.equals(MetricUnits.GIBIBITS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.GIBIBITCONVERSION);
+        } else if (unit.equals(MetricUnits.MILLISECONDS)) {
+            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.MILLISECONDCONVERSION);
+        } else {
+            return new AbstractMap.SimpleEntry<String, Double>("_" + unit, Double.NaN);
+        }
+    }
+
     public static void main(String[] args) {
         BucketManager manager = new BucketManager(null);
-
-        //BucketValue bucket1 = manager.createObject(225);
-//        BucketValue bucket2 = manager.createObject(50);
-//        BucketValue bucket3 = manager.createObject(75);
-//        BucketValue bucket4 = manager.createObject(100);
-
-        System.out.println(manager.getBuckets2());
 
         manager.update(7783548);
         // manager.update((long) 0.76);
 
         System.out.println("--------------Updated .45 & .74 ---------------");
-        for (Double key : manager.getBuckets().keySet()) {
-            System.out.println("Bucket " + key + ": " + manager.getBuckets().get(key).getValue());
+        for (String key : manager.getBuckets().keySet()) {
+
+            Map<Double, BucketValue> innerMap = manager.getBuckets().get(key);
+
+            for (Double innerKey : innerMap.keySet()) {
+                System.out.println("Inner key: " + innerKey + ", Value: " + innerMap.get(innerKey));
+            }
         }
 
-        for (Double key : manager.getBuckets2().keySet()) {
-            System.out.println(key + " -- " + manager.getBuckets().get(key).getValue());
-        }
         manager.update((long) 0.95);
         manager.update((long) 0.988);
 
-        for (Double key : manager.getBuckets().keySet()) {
-            System.out.println("Bucket " + key + ": " + manager.getBuckets().get(key).getValue());
-        }
+//        for (Double key : manager.getBuckets().keySet()) {
+//            System.out.println("Bucket " + key + ": " + manager.getBuckets().get(key).getValue());
+//        }
         //System.out.println("Bucket inf: " + manager.infiniteObject.getValue());
 
 //        System.out.println("--------------Updated buckets 100 & 200---------------");
