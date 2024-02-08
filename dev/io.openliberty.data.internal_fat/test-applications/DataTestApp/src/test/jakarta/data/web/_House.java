@@ -22,31 +22,31 @@ import jakarta.data.metamodel.TextAttribute;
  */
 @StaticMetamodel(House.class)
 public class _House {
-    public static volatile SortableAttribute AREA;
+    public static volatile SortableAttribute<House> AREA;
 
     public static volatile Attribute garage;
 
-    public static volatile SortableAttribute GARAGE_AREA;
+    public static volatile SortableAttribute<House> GARAGE_AREA;
 
-    public static volatile SortableAttribute garage_door_height;
+    public static volatile SortableAttribute<House> garage_door_height;
 
-    public static volatile SortableAttribute Garage_Door_Width;
+    public static volatile SortableAttribute<House> Garage_Door_Width;
 
-    public static volatile SortableAttribute garage_type;
+    public static volatile SortableAttribute<House> garage_type;
 
     public static volatile Attribute kitchen;
 
-    public static volatile SortableAttribute kitchen_length;
+    public static volatile SortableAttribute<House> kitchen_length;
 
-    public static volatile SortableAttribute kitchen_width;
+    public static volatile SortableAttribute<House> kitchen_width;
 
-    public static volatile TextAttribute id;
+    public static volatile TextAttribute<House> id;
 
-    public static volatile SortableAttribute LotSize;
+    public static volatile SortableAttribute<House> LotSize;
 
     public static final String NUM_BEDROOMS = "numBedrooms";
 
-    public static volatile SortableAttribute numBedrooms;
+    public static volatile SortableAttribute<House> numBedrooms;
 
-    public static volatile TextAttribute parcelid;
+    public static volatile TextAttribute<House> parcelid;
 }

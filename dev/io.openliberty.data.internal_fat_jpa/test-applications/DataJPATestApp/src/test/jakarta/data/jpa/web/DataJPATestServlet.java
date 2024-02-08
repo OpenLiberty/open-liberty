@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.OffsetDateTime;
+import java.time.Period;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +50,7 @@ import java.util.stream.StreamSupport;
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.Limit;
+import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.Streamable;
 import jakarta.data.exceptions.EntityExistsException;
@@ -351,7 +353,7 @@ public class DataJPATestServlet extends FATServlet {
         cityNames.add("Mitchell");
         cityNames.add("Pierre");
 
-        Sort[] orderByCityName = supportsOrderByForUpdate ? new Sort[] { Sort.asc("name") } : null;
+        Order<City> orderByCityName = supportsOrderByForUpdate ? Order.by(Sort.asc("name")) : Order.by();
         Iterator<CityId> ids = cities.deleteFirst3ByStateName("South Dakota", orderByCityName).iterator();
         CityId id;
 
@@ -381,7 +383,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(false, ids.hasNext());
 
-        Sort[] orderByPopulation = supportsOrderByForUpdate ? new Sort[] { Sort.asc("population") } : null;
+        Order<City> orderByPopulation = supportsOrderByForUpdate ? Order.by(Sort.asc("population")) : Order.by();
         id = cities.deleteFirstByStateName("South Dakota", orderByPopulation).orElseThrow();
         assertEquals("South Dakota", id.stateName);
         if (supportsOrderByForUpdate)
@@ -880,35 +882,35 @@ public class DataJPATestServlet extends FATServlet {
     public void testEntitiesAsParameters() throws Exception {
         orders.deleteAll();
 
-        Order o1 = new Order();
+        PurchaseOrder o1 = new PurchaseOrder();
         o1.purchasedBy = "testEntitiesAsParameters-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 10.99f;
 
-        Order o2 = new Order();
+        PurchaseOrder o2 = new PurchaseOrder();
         o2.purchasedBy = "testEntitiesAsParameters-Customer2";
         o2.purchasedOn = OffsetDateTime.now();
         o2.total = 20.99f;
 
-        Order[] created = orders.create(o1, o2);
+        PurchaseOrder[] created = orders.create(o1, o2);
         o1 = created[0];
         o2 = created[1];
         int o1_v1 = o1.versionNum;
 
-        Order o3 = new Order();
+        PurchaseOrder o3 = new PurchaseOrder();
         o3.purchasedBy = "testEntitiesAsParameters-Customer3";
         o3.purchasedOn = OffsetDateTime.now();
         o3.total = 30.99f;
         orders.insert(o3);
         o3 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer3").orElseThrow();
 
-        Order o4 = new Order();
+        PurchaseOrder o4 = new PurchaseOrder();
         o4.purchasedBy = "testEntitiesAsParameters-Customer4";
         o4.purchasedOn = OffsetDateTime.now();
         o4.total = 40.99f;
         o4 = orders.create(o4);
 
-        Order o5 = new Order();
+        PurchaseOrder o5 = new PurchaseOrder();
         o5.purchasedBy = "testEntitiesAsParameters-Customer5";
         o5.purchasedOn = OffsetDateTime.now();
         o5.total = 50.99f;
@@ -927,7 +929,7 @@ public class DataJPATestServlet extends FATServlet {
 
             // Update in separate transaction:
             CompletableFuture.supplyAsync(() -> {
-                Order o1updated = orders.findById(o1id).orElseThrow();
+                PurchaseOrder o1updated = orders.findById(o1id).orElseThrow();
                 o1updated.total = 11.99f;
                 return orders.save(o1updated);
             }).get(30, TimeUnit.SECONDS);
@@ -944,7 +946,7 @@ public class DataJPATestServlet extends FATServlet {
             tran.rollback();
         }
 
-        Order o2old = new Order();
+        PurchaseOrder o2old = new PurchaseOrder();
         o2old.id = o2.id;
         o2old.purchasedBy = o2.purchasedBy;
         o2old.purchasedOn = o2.purchasedOn;
@@ -958,19 +960,19 @@ public class DataJPATestServlet extends FATServlet {
         // attempt to save second entity at an old version
         o2old.total = 99.22f;
         try {
-            Order unexpected = orders.save(o2old);
+            PurchaseOrder unexpected = orders.save(o2old);
             fail("Should not be able to update old version of entity: " + unexpected);
         } catch (OptimisticLockingFailureException x) {
             // expected
         }
 
         // attempt to save second entity at an old version in combination with addition of another entity
-        Order o6 = new Order();
+        PurchaseOrder o6 = new PurchaseOrder();
         o6.purchasedBy = "testEntitiesAsParameters-Customer6";
         o6.purchasedOn = OffsetDateTime.now();
         o6.total = 60.99f;
         try {
-            Iterable<Order> unexpected = orders.saveAll(List.of(o6, o2old));
+            Iterable<PurchaseOrder> unexpected = orders.saveAll(List.of(o6, o2old));
             fail("Should not be able to update old version of entity: " + unexpected);
         } catch (OptimisticLockingFailureException x) {
             // expected
@@ -984,13 +986,13 @@ public class DataJPATestServlet extends FATServlet {
 
         orders.deleteAll(List.of(o3, o2));
 
-        Map<String, Order> map = orders.findAll()
+        Map<String, PurchaseOrder> map = orders.findAll()
                         .collect(Collectors.toMap(o -> o.purchasedBy, // key
                                                   o -> o)); // value
 
         assertEquals(map.toString(), 2, map.size());
 
-        Order o;
+        PurchaseOrder o;
         assertNotNull(o = map.get("testEntitiesAsParameters-Customer1"));
         assertEquals(11.99f, o.total, 0.001f);
         assertEquals(o1_v1 + 1, o.versionNum); // updated once
@@ -999,7 +1001,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(50.99f, o.total, 0.001f);
         assertEquals(o5_v1, o.versionNum); // never updated
 
-        Order o7 = new Order();
+        PurchaseOrder o7 = new PurchaseOrder();
         o7.purchasedBy = "testEntitiesAsParameters-Customer7";
         o7.purchasedOn = OffsetDateTime.now();
         o7.total = 70.99f;
@@ -1013,7 +1015,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(false, orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer7").isPresent());
 
-        Order o8 = new Order();
+        PurchaseOrder o8 = new PurchaseOrder();
         o8.purchasedBy = "testEntitiesAsParameters-Customer8";
         o8.purchasedOn = OffsetDateTime.now();
         o8.total = 80.99f;
@@ -1145,13 +1147,13 @@ public class DataJPATestServlet extends FATServlet {
     public void testGeneratedKey() {
         ZoneOffset MDT = ZoneOffset.ofHours(-6);
 
-        Order o1 = new Order();
+        PurchaseOrder o1 = new PurchaseOrder();
         o1.purchasedBy = "testGeneratedKey-Customer1";
         o1.purchasedOn = OffsetDateTime.of(2022, 6, 1, 9, 30, 0, 0, MDT);
         o1.total = 25.99f;
         o1 = orders.save(o1);
 
-        Order o2 = new Order();
+        PurchaseOrder o2 = new PurchaseOrder();
         o2.purchasedBy = "testGeneratedKey-Customer2";
         o2.purchasedOn = OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT);
         o2.total = 148.98f;
@@ -1314,7 +1316,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByAnnotationWithKeysetPagination() {
-        Pageable pagination = Pageable.ofSize(3).afterKeyset(CityId.of("Rochester", "Minnesota"));
+        Pageable<?> pagination = Pageable.ofSize(3).afterKeyset(CityId.of("Rochester", "Minnesota"));
 
         KeysetAwareSlice<City> slice1 = cities.findByStateNameNotEndsWith("o", pagination);
         assertIterableEquals(List.of("Rochester New York",
@@ -1344,7 +1346,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByAnnotationWithKeysetPaginationAndNamedParameters() {
-        Pageable pagination = Pageable.ofSize(2);
+        Pageable<City> pagination = Pageable.ofSize(2);
 
         KeysetAwarePage<City> page1 = cities.sizedWithin(100000, 1000000, pagination);
         assertIterableEquals(List.of("Springfield Missouri",
@@ -1376,7 +1378,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByNamePatternWithKeysetPagination() {
-        Pageable pagination = Pageable.ofSize(5);
+        Pageable<City> pagination = Pageable.ofSize(5);
 
         KeysetAwareSlice<City> slice1 = cities.findByStateNameNotNullOrderById(pagination);
         assertIterableEquals(List.of("Kansas City Kansas",
@@ -1396,7 +1398,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(null, slice2.nextPageable());
 
         Cursor springfieldMO = slice2.getKeysetCursor(1);
-        pagination = Pageable.ofSize(3).beforeKeysetCursor(springfieldMO);
+        pagination = pagination.size(3).beforeKeysetCursor(springfieldMO);
 
         KeysetAwareSlice<City> beforeSpringfieldMO = cities.findByStateNameNotNullOrderById(pagination);
         assertIterableEquals(List.of("Rochester New York",
@@ -1419,7 +1421,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByNamePatternWithKeysetPaginationDescending() {
-        Pageable pagination = Pageable.ofSize(3).afterKeyset(CityId.of("Springfield", "Tennessee"));
+        Pageable<?> pagination = Pageable.ofSize(3).afterKeyset(CityId.of("Springfield", "Tennessee"));
 
         KeysetAwarePage<City> page1 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", pagination);
         assertIterableEquals(List.of("Springfield Oregon",
@@ -1453,7 +1455,7 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testIdClassOrderByPaginationWithKeyset() {
         // ascending:
-        Pageable pagination = Pageable.ofSize(5).sortBy(Sort.asc("id"));
+        Pageable<City> pagination = Pageable.of(City.class).size(5).sortBy(Sort.asc("id"));
 
         KeysetAwarePage<City> page1 = cities.findByStateNameGreaterThan("Iowa", pagination);
         assertIterableEquals(List.of("Kansas City Kansas",
@@ -1472,7 +1474,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(null, page2.nextPageable());
 
         // descending:
-        pagination = Pageable.ofSize(4).sortBy(Sort.descIgnoreCase("id"));
+        pagination = Pageable.of(City.class).size(4).sortBy(Sort.descIgnoreCase("id"));
         page1 = cities.findByStateNameGreaterThan("Idaho", pagination);
         assertIterableEquals(List.of("Springfield Oregon",
                                      "Springfield Ohio",
@@ -2702,10 +2704,10 @@ public class DataJPATestServlet extends FATServlet {
     public void testStaticMetamodelIgnoresNonJPAEntity() {
         // Must have same values that were set by the user:
 
-        Sort desc = _EntityModelUnknown.days.desc();
+        Sort<Period> desc = _EntityModelUnknown.days.desc();
         assertEquals("Days", desc.property());
 
-        Sort asc = _EntityModelUnknown.months.asc();
+        Sort<Period> asc = _EntityModelUnknown.months.asc();
         assertEquals("Mon", asc.property());
 
         assertEquals(null, _EntityModelUnknown.years);
@@ -2994,37 +2996,37 @@ public class DataJPATestServlet extends FATServlet {
     public void testUpdateWithEntityResults() {
         orders.deleteAll();
 
-        Order o1 = new Order();
+        PurchaseOrder o1 = new PurchaseOrder();
         o1.purchasedBy = "testUpdateWithEntityResults-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 1.00f;
         o1 = orders.create(o1);
 
-        Order o2 = new Order();
+        PurchaseOrder o2 = new PurchaseOrder();
         o2.purchasedBy = "testUpdateWithEntityResults-Customer2";
         o2.purchasedOn = OffsetDateTime.now();
         o2.total = 2.00f;
         o2 = orders.create(o2);
 
-        Order o3 = new Order();
+        PurchaseOrder o3 = new PurchaseOrder();
         o3.purchasedBy = "testUpdateWithEntityResults-Customer3";
         o3.purchasedOn = OffsetDateTime.now();
         o3.total = 3.00f;
         o3 = orders.create(o3);
 
-        Order o4 = new Order();
+        PurchaseOrder o4 = new PurchaseOrder();
         o4.purchasedBy = "testUpdateWithEntityResults-Customer4";
         o4.purchasedOn = OffsetDateTime.now();
         o4.total = 4.00f;
         o4 = orders.create(o4);
 
-        Order o5 = new Order();
+        PurchaseOrder o5 = new PurchaseOrder();
         o5.purchasedBy = "testUpdateWithEntityResults-Customer5";
         o5.purchasedOn = OffsetDateTime.now();
         o5.total = 5.00f;
         o5 = orders.create(o5);
 
-        Order o6 = new Order();
+        PurchaseOrder o6 = new PurchaseOrder();
         o6.purchasedBy = "testUpdateWithEntityResults-Customer6";
         o6.purchasedOn = OffsetDateTime.now();
         o6.total = 6.00f;
@@ -3039,7 +3041,7 @@ public class DataJPATestServlet extends FATServlet {
         // update multiple in a variable arguments array
         o1.total = 1.01f;
         o3.total = 3.01f;
-        Order[] modified = orders.modifyAll(o3, o1);
+        PurchaseOrder[] modified = orders.modifyAll(o3, o1);
         assertEquals("testUpdateWithEntityResults-Customer3", modified[0].purchasedBy);
         assertEquals(3.01f, modified[0].total, 0.001f);
         assertEquals(o3_initialVersion + 1, modified[0].versionNum);
@@ -3055,7 +3057,7 @@ public class DataJPATestServlet extends FATServlet {
         o3.versionNum = o3_initialVersion;
         o3.total = 3.02f;
         o5.total = 5.02f;
-        Vector<Order> results = orders.modifyMultiple(List.of(o3, o5, o1));
+        Vector<PurchaseOrder> results = orders.modifyMultiple(List.of(o3, o5, o1));
         assertEquals(2, results.size());
 
         o5 = results.get(0);
@@ -3120,7 +3122,7 @@ public class DataJPATestServlet extends FATServlet {
     public void testVersionedDelete() {
         orders.deleteAll();
 
-        Order o1 = new Order();
+        PurchaseOrder o1 = new PurchaseOrder();
         o1.purchasedBy = "testVersionedDelete-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 1.09f;
@@ -3138,7 +3140,7 @@ public class DataJPATestServlet extends FATServlet {
         Long id = o1.id;
 
         // Attempt deletion at old version
-        o1 = new Order();
+        o1 = new PurchaseOrder();
         o1.id = id;
         o1.purchasedBy = "testVersionedDelete-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
@@ -3146,17 +3148,17 @@ public class DataJPATestServlet extends FATServlet {
         o1.versionNum = oldVersion;
         assertEquals(0, orders.cancel(o1));
 
-        Order o2 = new Order();
+        PurchaseOrder o2 = new PurchaseOrder();
         o2.purchasedBy = "testVersionedDelete-Customer2";
         o2.purchasedOn = OffsetDateTime.now();
         o2.total = 2.09f;
 
-        Order o3 = new Order();
+        PurchaseOrder o3 = new PurchaseOrder();
         o3.purchasedBy = "testVersionedDelete-Customer3";
         o3.purchasedOn = OffsetDateTime.now();
         o3.total = 3.09f;
 
-        LinkedList<Order> created = orders.create(List.of(o2, o3));
+        LinkedList<PurchaseOrder> created = orders.create(List.of(o2, o3));
         o2 = created.get(0);
         o3 = created.get(1);
 
@@ -3204,7 +3206,7 @@ public class DataJPATestServlet extends FATServlet {
     public void testVersionedUpdate() {
         orders.deleteAll();
 
-        Order o1 = new Order();
+        PurchaseOrder o1 = new PurchaseOrder();
         o1.purchasedBy = "testVersionedUpdate-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 10.09f;
@@ -3222,7 +3224,7 @@ public class DataJPATestServlet extends FATServlet {
         int newVersion = o1.versionNum;
         Long id = o1.id;
 
-        o1 = new Order();
+        o1 = new PurchaseOrder();
         o1.id = id;
         o1.purchasedBy = "testVersionedUpdate-Customer1";
         o1.purchasedOn = OffsetDateTime.now();

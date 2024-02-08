@@ -65,7 +65,7 @@ import io.openliberty.data.repository.function.Trimmed;
 @Repository
 public interface Primes {
     @Query("SELECT (num.name) FROM Prime As num")
-    Slice<String> all(Pageable pagination);
+    Slice<String> all(Pageable<?> pagination);
 
     @Exists
     boolean anyLessThanEndingWithBitPattern(@By("numberId") @LessThan long upperLimit,
@@ -78,7 +78,7 @@ public interface Primes {
 
     Integer countByNumberIdBetween(long first, long last);
 
-    Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort... sorts);
+    Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort<?>... sorts);
 
     @Query("SELECT p.numberId FROM Prime p WHERE p.numberId >= ?1 AND p.numberId <= ?2")
     long findAsLongBetween(long min, long max);
@@ -116,7 +116,8 @@ public interface Primes {
     @OrderBy("even")
     @OrderBy("sumOfBits")
     @OrderBy("id")
-    Iterator<Prime> findByNameStartsWithAndIdLessThanOrNameContainsAndIdLessThan(String prefix, long max1, String contains, long max2, Pageable pagination);
+    Iterator<Prime> findByNameStartsWithAndIdLessThanOrNameContainsAndIdLessThan(String prefix, long max1, String contains, long max2,
+                                                                                 Pageable<?> pagination);
 
     List<Prime> findByNameTrimmedCharCountAndIdBetween(int length, long min, long max);
 
@@ -128,17 +129,17 @@ public interface Primes {
     KeysetAwarePage<Prime> findByNumberIdBetween(long min, long max, Limit limit);
 
     @OrderBy("id")
-    KeysetAwarePage<Prime> findByNumberIdBetween(long min, long max, Pageable pagination);
+    KeysetAwarePage<Prime> findByNumberIdBetween(long min, long max, Pageable<?> pagination);
 
-    List<Prime> findByNumberIdBetween(long min, long max, Sort... orderBy);
+    List<Prime> findByNumberIdBetween(long min, long max, Sort<?>... orderBy);
 
-    KeysetAwarePage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort... orderBy); // Lacks Pageable
+    KeysetAwarePage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort<?>... orderBy); // Lacks Pageable
 
-    KeysetAwareSlice<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, Pageable pagination);
+    KeysetAwareSlice<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, Pageable<?> pagination);
 
-    Page<Prime> findByNumberIdBetweenAndSumOfBitsNotNull(long min, long max, Pageable pagination);
+    Page<Prime> findByNumberIdBetweenAndSumOfBitsNotNull(long min, long max, Pageable<?> pagination);
 
-    KeysetAwarePage<Prime> findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(long min, long max, Pageable pagination);
+    KeysetAwarePage<Prime> findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(long min, long max, Pageable<?> pagination);
 
     List<Prime> findByNumberIdBetweenOrderByNameIgnoreCaseDesc(long min, long max);
 
@@ -164,34 +165,34 @@ public interface Primes {
 
     @OrderBy("even")
     @OrderBy("sumOfBits")
-    Page<Prime> findByNumberIdLessThan(long max, Pageable pagination);
+    Page<Prime> findByNumberIdLessThan(long max, Pageable<?> pagination);
 
-    Streamable<Prime> findByNumberIdLessThanEqualOrderByIdAsc(long max, Pageable pagination);
+    Streamable<Prime> findByNumberIdLessThanEqualOrderByIdAsc(long max, Pageable<?> pagination);
 
     Streamable<Prime> findByNumberIdLessThanEqualOrderByIdDesc(long max, Limit limit);
 
-    Page<Prime> findByNumberIdLessThanEqualOrderByNumberIdDesc(long max, Pageable pagination);
+    Page<Prime> findByNumberIdLessThanEqualOrderByNumberIdDesc(long max, Pageable<?> pagination);
 
-    Stream<Prime> findByNumberIdLessThanOrderByEven(long max, Sort... sorts);
+    Stream<Prime> findByNumberIdLessThanOrderByEven(long max, Sort<?>... sorts);
 
-    KeysetAwareSlice<Prime> findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(long max, Pageable pagination);
+    KeysetAwareSlice<Prime> findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(long max, Pageable<?> pagination);
 
     @Asynchronous
-    CompletionStage<KeysetAwarePage<Prime>> findByNumberIdLessThanOrderByIdDesc(long max, Pageable pagination);
+    CompletionStage<KeysetAwarePage<Prime>> findByNumberIdLessThanOrderByIdDesc(long max, Pageable<?> pagination);
 
-    Iterator<Prime> findByNumberIdNotGreaterThan(long max, Pageable pagination);
+    Iterator<Prime> findByNumberIdNotGreaterThan(long max, Pageable<?> pagination);
 
-    Iterator<Prime> findByNumberIdNotGreaterThan(long max, Sort... order);
+    Iterator<Prime> findByNumberIdNotGreaterThan(long max, Sort<?>... order);
 
-    Slice<Prime> findByRomanNumeralEndsWithAndIdLessThan(String ending, long max, Limit limit, Sort... orderBy);
+    Slice<Prime> findByRomanNumeralEndsWithAndIdLessThan(String ending, long max, Limit limit, Sort<?>... orderBy);
 
-    Slice<Prime> findByRomanNumeralEndsWithAndIdLessThan(String ending, long max, Pageable pagination, Sort... orderBy);
+    Slice<Prime> findByRomanNumeralEndsWithAndIdLessThan(String ending, long max, Pageable<?> pagination, Sort<?>... orderBy);
 
     @OrderBy(value = "sumOfBits", descending = true)
     @OrderBy("name")
-    Slice<Prime> findByRomanNumeralStartsWithAndIdLessThan(String prefix, long max, Pageable pagination);
+    Slice<Prime> findByRomanNumeralStartsWithAndIdLessThan(String prefix, long max, Pageable<?> pagination);
 
-    Prime findFirst(Sort sort, Limit limitOf1);
+    Prime findFirst(Sort<Prime> sort, Limit limitOf1);
 
     Stream<Prime> findFirst2147483648ByIdGreaterThan(long min); // Exceeds Integer.MAX_VALUE by 1
 
@@ -202,7 +203,7 @@ public interface Primes {
 
     Optional<Prime> findHexadecimal(String hex);
 
-    List<Object[]> findIdAndNameBy(Sort... sort);
+    List<Object[]> findIdAndNameBy(Sort<?>... sort);
 
     @OrderBy(value = "id", descending = true)
     Set<Long> findIdByIdBetween(long min, long max);
@@ -288,11 +289,11 @@ public interface Primes {
 
     @Query(value = "SELECT NEW java.util.AbstractMap.SimpleImmutableEntry(p.numberId, p.name) FROM Prime p WHERE p.numberId <= ?1 ORDER BY p.name",
            count = "SELECT COUNT(p) FROM Prime p WHERE p.numberId <= ?1")
-    Page<Map.Entry<Long, String>> namesByNumber(long maxNumber, Pageable pagination);
+    Page<Map.Entry<Long, String>> namesByNumber(long maxNumber, Pageable<?> pagination);
 
     @Query("SELECT prime.name, prime.hex FROM  Prime  prime  WHERE prime.numberId <= ?1")
     @OrderBy("numberId")
-    Page<Object[]> namesWithHex(long maxNumber, Pageable pagination);
+    Page<Object[]> namesWithHex(long maxNumber, Pageable<?> pagination);
 
     @OrderBy("id")
     List<Long> notWithinButBelow(@By("id") @LessThan int rangeMin,
@@ -306,12 +307,12 @@ public interface Primes {
     void persist(Prime... primes);
 
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")
-    Page<Integer> romanNumeralLengths(long maxNumber, Pageable pagination);
+    Page<Integer> romanNumeralLengths(long maxNumber, Pageable<?> pagination);
 
     @Query("SELECT prime_ FROM Prime AS prime_ WHERE (prime_.numberId <= ?1)")
     @OrderBy(value = "even", descending = true)
     @OrderBy(value = "sumOfBits", descending = true)
-    KeysetAwarePage<Prime> upTo(long maxNumber, Pageable pagination);
+    KeysetAwarePage<Prime> upTo(long maxNumber, Pageable<?> pagination);
 
     @OrderBy("name")
     Stream<Prime> whereNameLengthWithin(@By("name") @CharCount @GreaterThanEqual int minLength,

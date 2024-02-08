@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,15 +21,15 @@ import jakarta.data.metamodel.SortableAttribute;
  * Attribute information for the static metamodel.
  */
 @Trivial
-public record SortableAttributeImpl(
+public record SortableAttributeImpl<T>(
                 String name,
-                Sort asc,
-                Sort desc)
-                implements SortableAttribute {
+                Sort<T> asc,
+                Sort<T> desc)
+                implements SortableAttribute<T> {
 
-    public static SortableAttributeImpl create(String name) {
-        return new SortableAttributeImpl(name, //
-                        Sort.asc(name), //
-                        Sort.desc(name));
+    public static <T> SortableAttributeImpl<T> create(String name) {
+        return new SortableAttributeImpl<>(name, //
+                        Sort.<T> asc(name), //
+                        Sort.<T> desc(name));
     }
 }

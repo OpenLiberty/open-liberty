@@ -19,7 +19,7 @@ import jakarta.data.metamodel.TextAttribute;
  */
 @StaticMetamodel(City.class)
 public class CityAttrNames1 {
-    public static volatile TextAttribute name;
-    public static volatile TextAttribute stateName;
-    public static volatile SortableAttribute population;
+    public static volatile TextAttribute<City> name;
+    public static volatile TextAttribute<City> stateName;
+    public static volatile SortableAttribute<City> population;
 }

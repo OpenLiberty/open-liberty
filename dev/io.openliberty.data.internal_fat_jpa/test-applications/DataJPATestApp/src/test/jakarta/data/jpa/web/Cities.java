@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import jakarta.data.Limit;
+import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.Streamable;
 import jakarta.data.page.KeysetAwarePage;
@@ -60,9 +61,9 @@ public interface Cities {
 
     CityId deleteByStateName(String state, Limit limitOf1);
 
-    Optional<CityId> deleteFirstByStateName(String state, Sort... sorts);
+    Optional<CityId> deleteFirstByStateName(String state, Order<City> sorts);
 
-    Iterable<CityId> deleteFirst3ByStateName(String state, Sort... sorts);
+    Iterable<CityId> deleteFirst3ByStateName(String state, Order<City> sorts);
 
     @Delete
     Streamable<CityId> deleteSome(@By("stateName") String state,
@@ -96,19 +97,19 @@ public interface Cities {
     @OrderBy("stateName")
     CityId[] findByStateNameEndsWith(String ending);
 
-    KeysetAwarePage<City> findByStateNameGreaterThan(String stateNameAfter, Pageable pagination);
+    KeysetAwarePage<City> findByStateNameGreaterThan(String stateNameAfter, Pageable<City> pagination);
 
-    Stream<City> findByStateNameLessThan(String stateNameBefore, Sort... sorts);
+    Stream<City> findByStateNameLessThan(String stateNameBefore, Sort<?>... sorts);
 
     @OrderBy(value = "id", descending = true, ignoreCase = true)
     Stream<City> findByStateNameNot(String exclude);
 
     @OrderBy("id")
-    KeysetAwareSlice<City> findByStateNameNotEndsWith(String postfix, Pageable pagination);
+    KeysetAwareSlice<City> findByStateNameNotEndsWith(String postfix, Pageable<?> pagination);
 
-    KeysetAwareSlice<City> findByStateNameNotNullOrderById(Pageable pagination);
+    KeysetAwareSlice<City> findByStateNameNotNullOrderById(Pageable<City> pagination);
 
-    KeysetAwarePage<City> findByStateNameNotStartsWithOrderByIdDesc(String prefix, Pageable pagination);
+    KeysetAwarePage<City> findByStateNameNotStartsWithOrderByIdDesc(String prefix, Pageable<?> pagination);
 
     CityId findFirstByNameOrderByPopulationDesc(String name);
 
@@ -147,7 +148,7 @@ public interface Cities {
     @OrderBy(value = "id", descending = true)
     KeysetAwarePage<City> sizedWithin(@By("population") @GreaterThanEqual int minPopulation,
                                       @By("population") @LessThanEqual int maxPopulation,
-                                      Pageable pagination);
+                                      Pageable<City> pagination);
 
     @Save
     City save(City c);

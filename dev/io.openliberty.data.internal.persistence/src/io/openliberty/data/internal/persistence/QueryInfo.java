@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,6 +34,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Select;
+import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
@@ -191,7 +193,7 @@ public class QueryInfo {
      * or lacking either of those, an empty list.
      * If none of the above, the value of this field is null, which can also mean it has not been initialized yet.
      */
-    List<Sort> sorts;
+    List<Sort<Object>> sorts;
 
     /**
      * Categorization of query type.
@@ -268,11 +270,13 @@ public class QueryInfo {
      * @return the combined list that the sort criteria was added to.
      */
     @Trivial
-    List<Sort> combineSorts(List<Sort> combined, List<Sort> additional) {
+    List<Sort<Object>> combineSorts(List<Sort<Object>> combined, Iterable<Sort<Object>> additional) {
+        Iterator<Sort<Object>> addIt = additional.iterator();
         boolean hasIdClass = entityInfo.idClassAttributeAccessors != null;
-        if (combined == null && !additional.isEmpty())
+        if (combined == null && addIt.hasNext())
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
-        for (Sort sort : additional) {
+        while (addIt.hasNext()) {
+            Sort<Object> sort = addIt.next();
             if (sort == null)
                 throw new DataException(new IllegalArgumentException("Sort: null"));
             else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
@@ -294,11 +298,11 @@ public class QueryInfo {
      * @return the combined list that the sort criteria was added to.
      */
     @Trivial
-    List<Sort> combineSorts(List<Sort> combined, Sort... additional) {
+    List<Sort<Object>> combineSorts(List<Sort<Object>> combined, @SuppressWarnings("unchecked") Sort<Object>... additional) {
         boolean hasIdClass = entityInfo.idClassAttributeAccessors != null;
         if (combined == null && additional.length > 0)
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
-        for (Sort sort : additional) {
+        for (Sort<Object> sort : additional) {
             if (sort == null)
                 throw new DataException(new IllegalArgumentException("Sort: null"));
             else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
@@ -378,7 +382,7 @@ public class QueryInfo {
                                        " type query result. Queries that use keyset pagination must return results of the same type as the entity type, which is " +
                                        entityInfo.getType().getName() + "."); // TODO NLS
         ArrayList<Object> keyValues = new ArrayList<>();
-        for (Sort keyInfo : sorts)
+        for (Sort<?> keyInfo : sorts)
             try {
                 List<Member> accessors = entityInfo.attributeAccessors.get(keyInfo.property());
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -461,7 +465,10 @@ public class QueryInfo {
         boolean hasDynamicSort = false;
         Class<?>[] paramTypes = method.getParameterTypes();
         for (int i = paramCount - paramAddedCount; i < paramTypes.length && !hasDynamicSort; i++)
-            hasDynamicSort = Pageable.class.equals(paramTypes[i]) || Sort[].class.equals(paramTypes[i]) || Sort.class.equals(paramTypes[i]);
+            hasDynamicSort = Pageable.class.equals(paramTypes[i])
+                             || Order.class.equals(paramTypes[i])
+                             || Sort[].class.equals(paramTypes[i])
+                             || Sort.class.equals(paramTypes[i]);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "hasDynamicSortCriteria? " + hasDynamicSort);
@@ -832,7 +839,7 @@ public class QueryInfo {
     /**
      * Copy of query information, but with updated JPQL and sort criteria.
      */
-    QueryInfo withJPQL(String jpql, List<Sort> sorts) {
+    QueryInfo withJPQL(String jpql, List<Sort<Object>> sorts) {
         QueryInfo q = new QueryInfo(method, entityParamType, returnArrayType, returnTypeAtDepth);
         q.entityInfo = entityInfo;
         q.entityVar = entityVar;

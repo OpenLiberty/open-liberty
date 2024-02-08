@@ -50,31 +50,31 @@ public interface Packages extends PageableRepository<Package, Integer> {
 
     Optional<Package> deleteByDescription(String description);
 
-    Package[] deleteByDescriptionEndsWith(String ending, Sort... sorts);
+    Package[] deleteByDescriptionEndsWith(String ending, Sort<?>... sorts);
 
-    Optional<Integer> deleteFirstBy(Sort sort);
+    Optional<Integer> deleteFirstBy(Sort<Package> sort);
 
-    int[] deleteFirst2By(Sort... sorts);
+    int[] deleteFirst2By(Sort<?>... sorts);
 
-    LinkedList<?> deleteFirst2ByHeightLessThan(float maxHeight, Sort... sorts);
+    LinkedList<?> deleteFirst2ByHeightLessThan(float maxHeight, Sort<?>... sorts);
 
-    long[] deleteFirst3By(Sort sort); // invalid return type is not the entity or id
+    long[] deleteFirst3By(Sort<Package> sort); // invalid return type is not the entity or id
 
-    List<String> deleteFirst4By(Sort sort); // invalid return type is not the entity or id
+    List<String> deleteFirst4By(Sort<Package> sort); // invalid return type is not the entity or id
 
-    Collection<Number> deleteFirst5By(Sort sort); // invalid return type is not the entity or id
+    Collection<Number> deleteFirst5By(Sort<Package> sort); // invalid return type is not the entity or id
 
     @Delete
-    Object[] destroy(Limit limit, Sort sort);
+    Object[] destroy(Limit limit, Sort<Package> sort);
 
     List<Package> findByHeightBetween(float minHeight, float maxHeight);
 
     @OrderBy(value = "width", descending = true)
     @OrderBy(value = "height")
     @OrderBy(value = "id", descending = true)
-    KeysetAwareSlice<Package> findByHeightGreaterThan(float minHeight, Pageable pagination);
+    KeysetAwareSlice<Package> findByHeightGreaterThan(float minHeight, Pageable<?> pagination);
 
-    KeysetAwareSlice<Package> findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(float minHeight, Pageable pagination);
+    KeysetAwareSlice<Package> findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(float minHeight, Pageable<?> pagination);
 
     @OrderBy(value = "id")
     List<Integer> findIdByHeightRoundedDown(int height);
@@ -120,13 +120,13 @@ public interface Packages extends PageableRepository<Package, Integer> {
 
     KeysetAwarePage<Package> whereHeightNotWithin(@By("height") @LessThan float minToExclude,
                                                   @Or @By("height") @GreaterThan float maxToExclude,
-                                                  Pageable pagination);
+                                                  Pageable<?> pagination);
 
     @Query("SELECT p FROM Package p WHERE (p.length * p.width * p.height >= ?1 AND p.length * p.width * p.height <= ?2)")
     @OrderBy(value = "width", descending = true)
     @OrderBy(value = "length")
     @OrderBy(value = "id")
-    KeysetAwarePage<Package> whereVolumeWithin(float minVolume, float maxVolume, Pageable pagination);
+    KeysetAwarePage<Package> whereVolumeWithin(float minVolume, float maxVolume, Pageable<?> pagination);
 
     @OrderBy(value = "id")
     List<Integer> withHeightAbout(@Rounded float height);
