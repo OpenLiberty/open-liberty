@@ -51,7 +51,7 @@ import componenttest.containers.TestContainerSuite;
 @RunWith(Suite.class)
 @SuiteClasses({
                 // AcceptInputFileTest.class,
-                // AjaxRenderExecuteThisTest.class,
+                AjaxRenderExecuteThisTest.class,
                 // AnnotationLiteralsTest.class,
                 // ClientWindowScopedTest.class,
                 // ExtensionlessMappingTest.class,
@@ -62,7 +62,7 @@ import componenttest.containers.TestContainerSuite;
                 // FacesContextGetLifecycleTest.class,
                 // InputTextTypeTest.class,
                 // LayoutAttributeTests.class,
-                MultipleInputFileTest.class,
+                // MultipleInputFileTest.class,
                 // ProgrammaticFaceletTests.class,
                 // SelectItemTests.class,
                 // SubscribeToEventTest.class,
