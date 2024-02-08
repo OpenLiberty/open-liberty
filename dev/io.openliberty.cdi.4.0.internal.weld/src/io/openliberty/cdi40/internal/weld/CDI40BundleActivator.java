@@ -24,6 +24,7 @@ public class CDI40BundleActivator implements BundleActivator {
 
     @Override
     public void start(BundleContext ctx) throws Exception {
+        //register BuildServicesImpl as an OSGi Service
         registration = ctx.registerService(BuildServices.class, new BuildServicesImpl(), null);
     }
 

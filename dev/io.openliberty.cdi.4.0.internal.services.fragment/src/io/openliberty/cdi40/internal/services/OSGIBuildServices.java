@@ -17,7 +17,7 @@ import jakarta.enterprise.inject.build.compatible.spi.AnnotationBuilderFactory;
 import jakarta.enterprise.inject.build.compatible.spi.BuildServices;
 
 /**
- *
+ * A service loaded implementation of BuildServices which looks up the real implementation via OSGi
  */
 public class OSGIBuildServices implements BuildServices {
 
@@ -30,6 +30,8 @@ public class OSGIBuildServices implements BuildServices {
     /** {@inheritDoc} */
     @Override
     public AnnotationBuilderFactory annotationBuilderFactory() {
+        //Use OSGi to lookup an instance of BuildServices
+        //OSGIBuildServices itself will not be found because it is only Service Loaded and is not an OSGi Service
         Optional<AnnotationBuilderFactory> factoryOpt = ServiceCaller.callOnce(OSGIBuildServices.class, BuildServices.class,
                                                                                (bs) -> {
                                                                                    return bs.annotationBuilderFactory();
