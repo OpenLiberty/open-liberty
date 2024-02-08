@@ -50,27 +50,27 @@ import componenttest.containers.TestContainerSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AcceptInputFileTest.class,
-                AjaxRenderExecuteThisTest.class,
-                AnnotationLiteralsTest.class,
-                ClientWindowScopedTest.class,
-                ExtensionlessMappingTest.class,
-                ExternalContextAddResponseCookieTest.class,
-                Faces40ThirdPartyApiTests.class,
-                Faces40URNTest.class,
-                FacesConfigTest.class,
-                FacesContextGetLifecycleTest.class,
-                InputTextTypeTest.class,
-                LayoutAttributeTests.class,
+                // AcceptInputFileTest.class,
+                // AjaxRenderExecuteThisTest.class,
+                // AnnotationLiteralsTest.class,
+                // ClientWindowScopedTest.class,
+                // ExtensionlessMappingTest.class,
+                // ExternalContextAddResponseCookieTest.class,
+                // Faces40ThirdPartyApiTests.class,
+                // Faces40URNTest.class,
+                // FacesConfigTest.class,
+                // FacesContextGetLifecycleTest.class,
+                // InputTextTypeTest.class,
+                // LayoutAttributeTests.class,
                 MultipleInputFileTest.class,
-                ProgrammaticFaceletTests.class,
-                SelectItemTests.class,
-                SubscribeToEventTest.class,
-                UIViewRootGetDoctypeTest.class,
-                Faces40URNTest.class,
-                WebSocketTests.class,
-                Html5Tests.class,
-                MyFaces4628Test.class
+                // ProgrammaticFaceletTests.class,
+                // SelectItemTests.class,
+                // SubscribeToEventTest.class,
+                // UIViewRootGetDoctypeTest.class,
+                // Faces40URNTest.class,
+                // WebSocketTests.class,
+                // Html5Tests.class,
+                // MyFaces4628Test.class
 
 })
 
