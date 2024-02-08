@@ -883,6 +883,27 @@ public class FeatureResolverImpl implements FeatureResolver {
             // The decision of one postpone may effect the path of the
             // dependency in such a way to make later postponed decisions
             // unnecessary
+
+            //if a versionless feature is postponed, process that first
+            if(isBeta){
+                if(_current._postponed.keySet().contains("io.openliberty.internal.versionless.mpMetrics")){
+                    Chain selected = _current._postponed.get("io.openliberty.internal.versionless.mpMetrics").select("io.openliberty.internal.versionless.mpMetrics", this);
+                    if (selected != null) {
+                        _current._selected.put("io.openliberty.internal.versionless.mpMetrics", selected);
+                    }
+                    _current._postponed.clear();
+                    return;
+                }
+                else if(_current._postponed.keySet().contains("io.openliberty.internal.versionless.mpHealth")){
+                    Chain selected = _current._postponed.get("io.openliberty.internal.versionless.mpHealth").select("io.openliberty.internal.versionless.mpHealth", this);
+                    if (selected != null) {
+                        _current._selected.put("io.openliberty.internal.versionless.mpHealth", selected);
+                    }
+                    _current._postponed.clear();
+                    return;
+                }
+            }
+
             Map.Entry<String, Chains> firstPostponed = _current._postponed.entrySet().iterator().next();
             // try to find a good selection
             Chain selected = firstPostponed.getValue().select(firstPostponed.getKey(), this);
