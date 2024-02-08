@@ -30,8 +30,7 @@ Subsystem-Name: Jakarta Transactions 2.0
  com.ibm.rls.jdbc.jakarta, \
  com.ibm.ws.tx.embeddable.jakarta, \
  com.ibm.ws.recoverylog, \
- com.ibm.ws.cdi.interfaces.jakarta, \
- com.ibm.ws.security.auth.data.common
+ com.ibm.ws.cdi.interfaces.jakarta
 -jars=com.ibm.websphere.appserver.spi.transaction; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.transaction_1.1-javadoc.zip
 kind=ga

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.Properties;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 //------------------------------------------------------------------------------
@@ -89,7 +88,6 @@ public class CustomLogProperties implements LogProperties {
      * The Resource Factory associated with this log implementation
      */
     private ResourceFactory _resourceFactory;
-    private ResourceConfig _resourceConfig;
 
     //------------------------------------------------------------------------------
     // Method: CustomLogProperties.CustomLogProperties
@@ -105,7 +103,7 @@ public class CustomLogProperties implements LogProperties {
      * </p>
      *
      * @param logIdentifier The unique RLI value.
-     * @param logName The unique RLN value.
+     * @param logName       The unique RLN value.
      */
     public CustomLogProperties(int logIdentifier, String logName, String pluginId, Properties props) {
         if (tc.isEntryEnabled())
@@ -268,28 +266,5 @@ public class CustomLogProperties implements LogProperties {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "resourceFactory", _resourceFactory);
         return _resourceFactory;
-    }
-
-    public void setResourceConfig(ResourceConfig conf) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "setResourceConfig", this);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "setResourceConfig", conf);
-        _resourceConfig = conf;
-    }
-
-    /**
-     * Returns the Resource Config associated with this log
-     * implementation
-     *
-     * @return ResourceConfig associated with this log
-     *         implementation
-     */
-    public ResourceConfig resourceConfig() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "resourceConfig", this);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "resourceConfig", _resourceConfig);
-        return _resourceConfig;
     }
 }
