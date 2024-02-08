@@ -30,10 +30,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.websphere.jsonsupport.JSON;
-import com.ibm.websphere.jsonsupport.JSONFactory;
-import com.ibm.websphere.jsonsupport.JSONSettings;
-import com.ibm.websphere.jsonsupport.JSONSettings.Include;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.health.internal.AppTracker;
@@ -52,8 +48,6 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
 
     private AppTracker appTracker;
     private HealthCheck20Executor hcExecutor;
-
-    JSON json = null;
 
     final AtomicBoolean warningAlreadyShown = new AtomicBoolean(false);
     AtomicInteger unstartedAppsCounter = new AtomicInteger(0);
@@ -107,11 +101,11 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
         Set<String> apps = appTracker.getAllAppNames();
         Iterator<String> appsIt = apps.iterator();
         boolean anyAppsInstalled = false;
-        HealthCheckHttpResponseBuilder hcHttpResponseBuilder = new HealthCheck20HttpResponseBuilder(getJSON());
+        HealthCheckHttpResponseBuilder hcHttpResponseBuilder = new HealthCheck20HttpResponseBuilder();
 
         while (appsIt.hasNext()) {
             String appName = appsIt.next();
-            if(appTracker.isInstalled(appName)) {
+            if (appTracker.isInstalled(appName)) {
                 anyAppsInstalled = true;
                 if (!healthCheckProcedure.equals(HealthCheckConstants.HEALTH_CHECK_LIVE) && !unstartedAppsSet.contains(appName)) {
                     unstartedAppsSet.add(appName);
@@ -192,18 +186,5 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
         if (hcExecutor != null) {
             hcExecutor.removeModuleReferences(appName, moduleName);
         }
-    }
-
-    /**
-     * Utility that returns a JSON object from a factory
-     *
-     * @return the JSON object providing POJO-JSON serialization and deserialization
-     */
-    private JSON getJSON() {
-        if (json == null) {
-            JSONSettings settings = new JSONSettings(Include.NON_NULL);
-            json = JSONFactory.newInstance(settings);
-        }
-        return json;
     }
 }
