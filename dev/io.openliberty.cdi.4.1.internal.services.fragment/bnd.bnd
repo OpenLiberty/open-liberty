@@ -10,22 +10,22 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 11
-javac.target: 11
+javac.source: 17
+javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
-Bundle-Name: io.openliberty.cdi.4.0.internal.services.fragment
-Bundle-SymbolicName: io.openliberty.cdi.4.0.internal.services.fragment
+Bundle-Name: io.openliberty.cdi.4.1.internal.services.fragment
+Bundle-SymbolicName: io.openliberty.cdi.4.1.internal.services.fragment
 
-Fragment-Host: io.openliberty.jakarta.cdi.4.0
+Fragment-Host: io.openliberty.jakarta.cdi.4.1
 
-Bundle-Description:cdi 4.0 services fragment, version ${bVersion}
+Bundle-Description:cdi 4.1 services fragment, version ${bVersion}
 
 Include-Resource: \
   META-INF=resources/META-INF
 
 -buildpath: \
-	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	io.openliberty.jakarta.cdi.4.1;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.kernel.service;version=latest
