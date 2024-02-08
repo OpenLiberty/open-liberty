@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,9 +32,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ibm.websphere.crypto.InvalidPasswordDecodingException;
-import com.ibm.websphere.crypto.PasswordUtil;
-import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.ws.install.RepositoryConfigValidationResult.ValidationFailedReason;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.InstallUtils;
@@ -123,11 +120,12 @@ public class RepositoryConfigUtils {
     }
 
     /**
+     * TODO: Use HTTP "Proxy-Authorization" request header and remove this method
      * Set Proxy Authenticator Default
      *
-     * @param proxyHost The proxy host
-     * @param proxyPort The proxy port
-     * @param proxyUser the proxy username
+     * @param proxyHost  The proxy host
+     * @param proxyPort  The proxy port
+     * @param proxyUser  the proxy username
      * @param decodedPwd the proxy password decoded
      */
     public static void setProxyAuthenticator(final String proxyHost, final String proxyPort, final String proxyUser, final String decodedPwd) {
@@ -196,23 +194,11 @@ public class RepositoryConfigUtils {
                     //Trim any trailing whitespaces
                     proxyUser = proxyUser.trim();
                     proxyPwd = proxyPwd.trim();
-                    String decodedPwd = proxyPwd;
-                    try {
-                        //Decode encrypted proxy server password
-                        decodedPwd = PasswordUtil.decode(proxyPwd);
-                        //Check proxy server credentials for Authentication
-                        setProxyAuthenticator(proxyHost, proxyPort, proxyUser, decodedPwd);
-                    } catch (InvalidPasswordDecodingException ipde) {
-                        decodedPwd = proxyPwd;
-                        logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_PASSWORD_NOT_ENCODED_PROXY", proxyURL) + InstallUtils.NEWLINE);
-                        setProxyAuthenticator(proxyHost, proxyPort, proxyUser, decodedPwd);
-                    } catch (UnsupportedCryptoAlgorithmException ucae) {
-                        throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED"), ucae, InstallException.RUNTIME_EXCEPTION);
-                    }
                 }
 
                 try {
-                    proxyInfo = new RestRepositoryConnectionProxy(proxyURL);
+                    //create RestRepositoryConnectionProxy with proxy url, user and password
+                    proxyInfo = new RestRepositoryConnectionProxy(proxyURL, proxyUser, proxyPwd);
                 } catch (RepositoryException e) {
                     StringWriter sw = new StringWriter();
                     PrintWriter pw = new PrintWriter(sw);
@@ -402,7 +388,7 @@ public class RepositoryConfigUtils {
      * Gets the name of the repository by connection and properties
      *
      * @param repoProperties The repository properties
-     * @param repoConn The repository connection
+     * @param repoConn       The repository connection
      * @return The name of the Repository
      * @throws InstallException
      */
@@ -442,7 +428,7 @@ public class RepositoryConfigUtils {
     /**
      * Checks if the inputed Repository Connection is a liberty repository
      *
-     * @param lie The RestRepositoryConnection connection
+     * @param lie            The RestRepositoryConnection connection
      * @param repoProperties The repository properties
      * @return True of the repository location is a liberty location
      * @throws InstallException

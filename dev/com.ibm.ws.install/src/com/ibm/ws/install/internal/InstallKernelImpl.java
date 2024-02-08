@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,7 +36,6 @@ import com.ibm.ws.install.InstallProgressEvent;
 import com.ibm.ws.install.InstalledFeature;
 import com.ibm.ws.install.InstalledFeatureCollection;
 import com.ibm.ws.install.ReapplyFixException;
-import com.ibm.ws.install.RepositoryConfigUtils;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.asset.ServerAsset;
 import com.ibm.ws.install.internal.asset.ServerPackageAsset;
@@ -535,7 +534,6 @@ public class InstallKernelImpl implements InstallKernel, InstallKernelInteractiv
         Map<String, Collection<String>> installed;
         try {
             this.director.refresh();
-            RepositoryConfigUtils.setProxyAuthenticator(proxyHost, proxyPort, proxyUser, proxyPwd);
             try {
                 this.director.installAssets(assetIds, loginInfo);
             } catch (InstallException e) {

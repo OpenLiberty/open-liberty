@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,8 @@ import com.ibm.ws.repository.transport.client.LoginInfoClientProxy;
 public class RestRepositoryConnectionProxy {
 
     final URL proxyURL;
+    String proxyUser = "";
+    String proxyPassword = "";
 
     /**
      * Constructor for a proxy
@@ -34,6 +36,20 @@ public class RestRepositoryConnectionProxy {
      */
     public RestRepositoryConnectionProxy(URL proxyURL) throws RepositoryIllegalArgumentException {
         this.proxyURL = setURL(proxyURL);
+    }
+
+    /**
+     * Constructor for a proxy
+     *
+     * @param proxyURL      - the proxy url including port e.g. http://xxxx.ibm.com:3128
+     * @param proxyUser     - the proxy username
+     * @param proxyPassword - the proxy password
+     * @throws RepositoryException
+     */
+    public RestRepositoryConnectionProxy(URL proxyURL, String proxyUser, String proxyPassword) throws RepositoryIllegalArgumentException {
+        this.proxyURL = setURL(proxyURL);
+        this.proxyUser = proxyUser;
+        this.proxyPassword = proxyPassword;
     }
 
     /**
@@ -49,7 +65,7 @@ public class RestRepositoryConnectionProxy {
      * @return LoginInfoClientProxy
      */
     public LoginInfoClientProxy getLoginInfoClientProxy() {
-        return new LoginInfoClientProxy(proxyURL);
+        return new LoginInfoClientProxy(proxyURL, proxyUser, proxyPassword);
     }
 
     /**
