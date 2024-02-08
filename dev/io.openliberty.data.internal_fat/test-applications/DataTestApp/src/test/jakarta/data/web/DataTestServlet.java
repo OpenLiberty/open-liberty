@@ -4292,7 +4292,7 @@ public class DataTestServlet extends FATServlet {
 
         packages.delete(p3);
 
-        Page<Package> page = packages.findAll(Pageable.ofSize(3).sortBy(Sort.desc("id")));
+        Page<Package> page = packages.findAll(Pageable.of(Package.class).size(3).sortBy(Sort.desc("id")));
         assertIterableEquals(List.of(990006, 990005, 990004),
                              page.stream().map(pack -> pack.id).collect(Collectors.toList()));
 

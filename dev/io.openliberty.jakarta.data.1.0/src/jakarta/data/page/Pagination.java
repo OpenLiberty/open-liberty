@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.page;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +50,29 @@ record Pagination<T>(long page,
         return new Pagination<T>(page, size, sorts, Mode.CURSOR_NEXT, cursor);
     }
 
+    private static final <E> List<E> append(List<E> list, E element) {
+        int size = list.size();
+        if (size == 0) {
+            return List.of(element);
+        } else {
+            Object[] array = list.toArray(new Object[size + 1]);
+            array[size] = element;
+            @SuppressWarnings("unchecked")
+            List<E> newList = (List<E>) Collections.unmodifiableList(Arrays.asList(array));
+            return newList;
+        }
+    }
+
+    @Override
+    public Pageable<T> asc(String property) {
+        return new Pagination<T>(page, size, append(sorts, Sort.asc(property)), mode, type);
+    }
+
+    @Override
+    public Pageable<T> ascIgnoreCase(String attribute) {
+        return new Pagination<T>(page, size, append(sorts, Sort.ascIgnoreCase(attribute)), mode, type);
+    }
+
     @Override
     public Pageable<T> beforeKeyset(Object... keyset) {
         return new Pagination<T>(page, size, sorts, Mode.CURSOR_PREVIOUS, new KeysetCursor(keyset));
@@ -62,6 +86,16 @@ record Pagination<T>(long page,
     @Override
     public Optional<Cursor> cursor() {
         return type == null ? Optional.empty() : Optional.of(type);
+    }
+
+    @Override
+    public Pageable<T> desc(String attribute) {
+        return new Pagination<T>(page, size, append(sorts, Sort.desc(attribute)), mode, type);
+    }
+
+    @Override
+    public Pageable<T> descIgnoreCase(String attribute) {
+        return new Pagination<T>(page, size, append(sorts, Sort.descIgnoreCase(attribute)), mode, type);
     }
 
     @Override
