@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,8 @@ import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH19998_EJB;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH19998_Web;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH20890_EJB;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH20890_Web;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH23677_EJB;
+import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH23677_Web;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH8014_EJB;
 import com.ibm.ws.jpa.tests.spec10.query.tests.olgh.TestOLGH8014_Web;
 
@@ -68,9 +70,8 @@ import componenttest.rules.repeater.RepeatTests;
                 TestOLGH19998_Web.class,
                 TestOLGH20890_EJB.class,
                 TestOLGH20890_Web.class,
-                // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/23679 is delivered
-//              TestOLGH23677_EJB.class,
-//              TestOLGH23677_Web.class,
+                TestOLGH23677_EJB.class,
+                TestOLGH23677_Web.class,
                 TestSVLQuery_Web.class,
                 TestSVLQuery_Bulkupdate_Web.class,
                 TestSVLLoopAnoQuery_Web.class,
