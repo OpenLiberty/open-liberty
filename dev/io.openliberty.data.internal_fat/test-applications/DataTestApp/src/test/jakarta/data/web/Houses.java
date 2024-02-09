@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import jakarta.data.Order;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
@@ -60,6 +61,7 @@ public interface Houses {
     @OrderBy("area")
     DoubleStream findPurchasePriceByLotSizeGreaterThan(float minLotSize);
 
+    @Find
     List<House> findWithGarageDoorDimensions(int garage_door_width, int garage_door_height);
 
     @Insert

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Pageable;
 import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -67,10 +68,12 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     @OrderBy("id")
     Business findFirstByName(String name);
 
+    @Find
     @OrderBy(descending = true, ignoreCase = true, value = "name")
     Stream<Business> in(@By("location_address.city") String city,
                         @By("location.address_state") String state);
 
+    @Find
     @OrderBy("name") // Business.name, not Business.Location.Address.Street.name
     @Select("name")
     List<String> onSouthSideOf(@By("locationAddressCity") String city,
@@ -87,6 +90,7 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     @Query("UPDATE Business b SET b.location=?1, b.name=?2 WHERE b.id=?3")
     boolean updateWithJPQL(Location newLocation, String newName, long id);
 
+    @Find
     List<Business> withLongitudeIgnoringSignWithin(@By("location.longitude") @AbsoluteValue @GreaterThanEqual float min,
                                                    @By("location.longitude") @AbsoluteValue @LessThanEqual float max);
 }

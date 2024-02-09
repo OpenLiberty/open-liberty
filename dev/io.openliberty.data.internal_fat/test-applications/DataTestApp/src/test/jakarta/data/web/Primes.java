@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import jakarta.data.page.Page;
 import jakarta.data.page.Pageable;
 import jakarta.data.page.Slice;
 import jakarta.data.repository.By;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
@@ -78,11 +79,13 @@ public interface Primes {
 
     Integer countByNumberIdBetween(long first, long last);
 
+    @Find
     Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort<?>... sorts);
 
     @Query("SELECT p.numberId FROM Prime p WHERE p.numberId >= ?1 AND p.numberId <= ?2")
     long findAsLongBetween(long min, long max);
 
+    @Find
     Optional<Prime> findByBinary(@By("binaryDigits") String binary);
 
     @OrderBy("id")
@@ -192,6 +195,7 @@ public interface Primes {
     @OrderBy("name")
     Slice<Prime> findByRomanNumeralStartsWithAndIdLessThan(String prefix, long max, Pageable<?> pagination);
 
+    @Find
     Prime findFirst(Sort<Prime> sort, Limit limitOf1);
 
     Stream<Prime> findFirst2147483648ByIdGreaterThan(long min); // Exceeds Integer.MAX_VALUE by 1
@@ -201,6 +205,7 @@ public interface Primes {
 
     Prime findFirstByNameLikeOrderByNumberId(String namePattern);
 
+    @Find
     Optional<Prime> findHexadecimal(String hex);
 
     List<Object[]> findIdAndNameBy(Sort<?>... sort);
@@ -223,6 +228,7 @@ public interface Primes {
     Long howManyBetweenExclusive(@By("NumberId") @GreaterThan long exclusiveMin,
                                  @By("NumberId") @LessThan long exclusiveMax);
 
+    @Find
     @OrderBy(value = "id", descending = true)
     List<Long> inRangeHavingNumeralLikeAndSubstringOfName(@By("id") @GreaterThanEqual long min,
                                                           @By("id") @LessThanEqual long max,
@@ -232,6 +238,7 @@ public interface Primes {
     @Exists
     boolean isFoundWith(long id, String hex);
 
+    @Find
     @OrderBy(value = "numberId", descending = true)
     Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(@By("id") @LessThan long numLessThan,
                                                         @By("name") @EndsWith String firstSuffix,
@@ -295,6 +302,7 @@ public interface Primes {
     @OrderBy("numberId")
     Page<Object[]> namesWithHex(long maxNumber, Pageable<?> pagination);
 
+    @Find
     @OrderBy("id")
     List<Long> notWithinButBelow(@By("id") @LessThan int rangeMin,
                                  @Or @By("id") @GreaterThan int rangeMax,
@@ -314,16 +322,20 @@ public interface Primes {
     @OrderBy(value = "sumOfBits", descending = true)
     KeysetAwarePage<Prime> upTo(long maxNumber, Pageable<?> pagination);
 
+    @Find
     @OrderBy("name")
     Stream<Prime> whereNameLengthWithin(@By("name") @CharCount @GreaterThanEqual int minLength,
                                         @By("name") @CharCount @LessThanEqual int maxLength);
 
+    @Find
     Optional<Prime> withAnyCaseName(@By("name") @Trimmed @IgnoreCase String name);
 
+    @Find
     List<Prime> withNameLengthAndWithin(@By("name") @Trimmed @CharCount int length,
                                         @By("id") @GreaterThanEqual long min,
                                         @By("id") @LessThanEqual long max);
 
+    @Find
     @Select("name")
     List<String> withRomanNumeralSuffixAndWithoutNameSuffix(@By("romanNumeral") @EndsWith String numeralSuffix,
                                                             @By("name") @Not @EndsWith String nameSuffixToExclude,

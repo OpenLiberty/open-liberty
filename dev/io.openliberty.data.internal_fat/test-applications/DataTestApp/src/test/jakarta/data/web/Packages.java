@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,10 +27,12 @@ import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Pageable;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.PageableRepository;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Update;
 
 import io.openliberty.data.repository.Or;
 import io.openliberty.data.repository.comparison.GreaterThan;
@@ -85,14 +87,17 @@ public interface Packages extends PageableRepository<Package, Integer> {
     @OrderBy(value = "id")
     List<Integer> findIdByWidthRounded(int width);
 
+    @Update
     int reduceBy(int id,
                  @Divide("height") float heightDivisor,
                  @Add("description") String additionalDescription);
 
+    @Update
     boolean shorten(int id,
                     @SubtractFrom float height,
                     @Add String description);
 
+    @Update
     void shortenBy(@SubtractFrom("height") int reduction,
                    @Add("description") String moreDescription,
                    int id);
@@ -118,6 +123,7 @@ public interface Packages extends PageableRepository<Package, Integer> {
     long updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(float maxLength, float minHeight, float maxHeight,
                                                                                          float lengthMultiplier, float widthMultiplier, float newHeight);
 
+    @Find
     KeysetAwarePage<Package> whereHeightNotWithin(@By("height") @LessThan float minToExclude,
                                                   @Or @By("height") @GreaterThan float maxToExclude,
                                                   Pageable<?> pagination);
@@ -128,12 +134,15 @@ public interface Packages extends PageableRepository<Package, Integer> {
     @OrderBy(value = "id")
     KeysetAwarePage<Package> whereVolumeWithin(float minVolume, float maxVolume, Pageable<?> pagination);
 
+    @Find
     @OrderBy(value = "id")
     List<Integer> withHeightAbout(@Rounded float height);
 
+    @Find
     @OrderBy(value = "id")
     List<Integer> withLengthFloored(@Rounded(DOWN) float length);
 
+    @Find
     @OrderBy(value = "id")
     List<Integer> withWidthCeiling(@Rounded(UP) float width);
 }

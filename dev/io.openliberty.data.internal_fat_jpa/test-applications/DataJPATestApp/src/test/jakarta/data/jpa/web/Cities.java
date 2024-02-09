@@ -24,9 +24,11 @@ import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Pageable;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.comparison.GreaterThan;
@@ -117,6 +119,7 @@ public interface Cities {
     boolean isBiggerThan(@By("population") @GreaterThan int minPopulation,
                          CityId id);
 
+    @Find
     @OrderBy("stateName")
     @OrderBy("name")
     Stream<City> largerThan(@By("population") @GreaterThan int minPopulation,
@@ -130,6 +133,7 @@ public interface Cities {
 
     Streamable<City> removeByStateNameOrderByName(String state);
 
+    @Update
     int replace(CityId id,
                 @Assign("name") String newCityName,
                 @Assign("stateName") String newStateName,
@@ -138,6 +142,7 @@ public interface Cities {
                 @Assign("population") int newPopulation,
                 @Assign("areaCodes") Set<Integer> newAreaCodes);
 
+    @Update
     int replace(String name,
                 String stateName,
                 @Assign("name") String newCityName,
@@ -145,6 +150,7 @@ public interface Cities {
                 @Assign("areaCodes") Set<Integer> newAreaCodes,
                 @Assign("population") int newPopulation);
 
+    @Find
     @OrderBy(value = "id", descending = true)
     KeysetAwarePage<City> sizedWithin(@By("population") @GreaterThanEqual int minPopulation,
                                       @By("population") @LessThanEqual int maxPopulation,
@@ -156,6 +162,7 @@ public interface Cities {
     int updateByIdAndPopulationSetIdSetPopulationSetAreaCodes(CityId oldId, int oldPopulation,
                                                               CityId newId, int newPopulation, Set<Integer> newAreaCodes);
 
+    @Find
     @OrderBy("stateName")
     Stream<City> withNameOf(String name);
 }
