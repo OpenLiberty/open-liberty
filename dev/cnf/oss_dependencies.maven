@@ -129,6 +129,7 @@ io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations:2.0.0
 io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-incubator:2.0.0-alpha
 io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv:1.19.0-alpha
 io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv:1.29.0-alpha
+io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv:1.32.0-alpha
 io.opentelemetry.instrumentation:opentelemetry-instrumentation-api:1.19.0
 io.opentelemetry.instrumentation:opentelemetry-instrumentation-api:1.29.0
 io.opentelemetry.instrumentation:opentelemetry-instrumentation-api:2.0.0

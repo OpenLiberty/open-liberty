@@ -60,6 +60,7 @@ Export-Package: \
   io.opentelemetry.internal.shaded.jctools.util;version=${openTelemetryVersion},\
   !io.opentelemetry.internal.shaded.*;version=${openTelemetryVersion},\
   io.opentelemetry.api.common;version=${openTelemetryVersion},\
+  io.opentelemetry.instrumentation.api.instrumenter.util;version=${openTelemetryVersion};thread-context=true,\
   io.opentelemetry.*;version=${openTelemetryVersion}
 
 Include-Resource: \
@@ -89,6 +90,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations;version='${openTelemetryInstrumentationVersion}';strategy=exact,\
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api;version='${openTelemetryInstrumentationVersion}';strategy=exact,\
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-incubator;version='${alphaOpenTelemetryInstrumentationVersion}';strategy=exact,\
+	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv;version='1.32.0.alpha';strategy=exact,\
 	io.opentelemetry:opentelemetry-api;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-api-events;version='${alphaOpenTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-context;version='${openTelemetryVersion}';strategy=exact,\
