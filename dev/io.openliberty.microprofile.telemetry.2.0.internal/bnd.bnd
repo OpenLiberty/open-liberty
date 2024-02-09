@@ -43,7 +43,7 @@ Service-Component: \
 # Need an explicit import for api.common because it gets used by weld proxies
 # created for other API classes
 Import-Package: \
-	io.opentelemetry.api.common,\
+	io.opentelemetry.api.common;version="[1.2,3)",\
 	io.openliberty.microprofile.telemetry.internal.common.resources,\
 	javax.annotation;version="[1.2,2)",\
 	javax.enterprise.event;version="[2.0,3)",\
