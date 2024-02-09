@@ -39,6 +39,7 @@ public class SPIMetaData implements CDIExtensionMetadata, CDIExtensionMetadataIn
         //Referencing a class in another jar like this is not best practice, but it works
         //and will avoid the performance overhead of creating two BDAs for mpTelemetry
         beans.add(OpenTelemetryProducer.class);
+        beans.add(OpenTelemetryMeterProducer.class);
         beans.add(WithSpanInterceptor.class);
         beans.add(TelemetryClientFilter.class);
         beans.add(TelemetryContainerFilter.class);

@@ -31,12 +31,6 @@ public class ErrorOpenTelemetryInfo implements OpenTelemetryInfo {
 
     /** {@inheritDoc} */
     @Override
-    public Tracer getTracer() {
-        return OpenTelemetry.noop().getTracer("");
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void dispose() {
         // No op
 
