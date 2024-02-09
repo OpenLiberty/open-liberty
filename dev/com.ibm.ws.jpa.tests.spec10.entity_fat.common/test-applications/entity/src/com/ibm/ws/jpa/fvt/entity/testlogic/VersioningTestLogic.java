@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -85,14 +85,7 @@ public class VersioningTestLogic extends AbstractTestLogic {
 
         final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
-        /*
-         * TODO: Disabling these tests until the issue is is delivered:
-         * https://github.com/OpenLiberty/open-liberty/issues/23949
-         * https://github.com/OpenLiberty/open-liberty/issues/23951
-         * https://github.com/OpenLiberty/open-liberty/issues/23952
-         */
-        if (isDB2ZOS && JPAPersistenceProvider.ECLIPSELINK.equals(provider)
-            && (isUsingJPA21Feature() || isUsingJPA30Feature() || isUsingJPA31Feature())) {
+        if (isDB2ZOS && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
             System.out.println("Skipping test; platform (" + dbProductName + ", " + dbProductVersion + ")");
             return;
         }
@@ -383,11 +376,10 @@ public class VersioningTestLogic extends AbstractTestLogic {
         /*
          * TODO: Disabling these tests until the issue is is delivered:
          * https://github.com/OpenLiberty/open-liberty/issues/23949
-         * https://github.com/OpenLiberty/open-liberty/issues/23951
          * https://github.com/OpenLiberty/open-liberty/issues/23952
          */
         if (isDB2ZOS && JPAPersistenceProvider.ECLIPSELINK.equals(provider)
-            && (isUsingJPA21Feature() || isUsingJPA30Feature() || isUsingJPA31Feature())) {
+            && (isUsingJPA21Feature() || isUsingJPA31Feature())) {
             System.out.println("Skipping test; platform (" + dbProductName + ", " + dbProductVersion + ")");
             return;
         }
@@ -675,11 +667,10 @@ public class VersioningTestLogic extends AbstractTestLogic {
         /*
          * TODO: Disabling these tests until the issue is is delivered:
          * https://github.com/OpenLiberty/open-liberty/issues/23949
-         * https://github.com/OpenLiberty/open-liberty/issues/23951
          * https://github.com/OpenLiberty/open-liberty/issues/23952
          */
         if (isDB2ZOS && JPAPersistenceProvider.ECLIPSELINK.equals(provider)
-            && (isUsingJPA21Feature() || isUsingJPA30Feature() || isUsingJPA31Feature())) {
+            && (isUsingJPA21Feature() || isUsingJPA31Feature())) {
             System.out.println("Skipping test; platform (" + dbProductName + ", " + dbProductVersion + ")");
             return;
         }
