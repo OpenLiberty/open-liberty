@@ -111,6 +111,7 @@ import jakarta.data.page.Pageable;
 import jakarta.data.page.Slice;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
@@ -284,6 +285,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         // spec-defined annotation types
         Delete delete = method.getAnnotation(Delete.class);
+        Find find = method.getAnnotation(Find.class);
         Insert insert = method.getAnnotation(Insert.class);
         Update update = method.getAnnotation(Update.class);
         Save save = method.getAnnotation(Save.class);
@@ -295,7 +297,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
         Exists exists = method.getAnnotation(Exists.class);
         Select select = method.getAnnotation(Select.class);
 
-        Annotation methodTypeAnno = queryInfo.validateAnnotationCombinations(delete, insert, update, save, query, orderBy,
+        Annotation methodTypeAnno = queryInfo.validateAnnotationCombinations(delete, insert, update, save,
+                                                                             find, query, orderBy,
                                                                              count, exists, select);
 
         if (query != null) { // @Query annotation
@@ -317,9 +320,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                         " annotations were found: " + Arrays.toString(method.getAnnotations()));
             }
         } else {
-            // Query by method name or Query by parameters
-            q = generateQueryFromMethod(queryInfo, methodTypeAnno, countPages);//keyset queries before orderby
+            if (methodTypeAnno != null) {
+                // Query by Parameters
+                q = generateQueryFromMethodParams(queryInfo, methodTypeAnno, countPages);//keyset queries before orderby
+            } else {
+                // Query by Method Name
+                q = generateQueryFromMethodName(queryInfo, countPages);
+            }
 
+            // TODO did we break the following? Maybe move this into the above methods?
             // @Select annotation only
             if (q == null && queryInfo.type == null && select != null) {
                 queryInfo.type = QueryInfo.Type.FIND;
@@ -1166,14 +1175,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
     /**
      * Generates JPQL based on method parameters.
-     * Method parameters with annotations such as Assign, Add, Multiply, and Divide indicate an update method.
-     * Method annotations such as Count, Delete, and Exists indicate the respective type of method if present.
-     * Methods with a none of the above are considered find methods.
-     * Find methods can have special type parameters (Pageable, Limit, Sort, Sort[]). Other methods cannot.
+     * Method annotations Count, Delete, Exists, Find, and Update indicate the respective type of method.
+     * Find methods can have special type parameters (Pageable, Limit, Order, Sort, Sort[]). Other methods cannot.
      *
      * @param queryInfo      query information
      * @param q              JPQL query to which to append the WHERE clause. Or null to create a new JPQL query.
-     * @param methodAnno     Count, Delete, Exists, or Update annotation on the method. Otherwise null.
+     * @param methodAnno     Count, Delete, Exists, Find, or Update annotation on the method. Never null.
      * @param countPages     indicates whether or not to count pages. Only applies for find queries.
      * @param hasUpdateParam indicates if the method has an parameters that are annotated to perform updates.
      * @param allParamInfo   information about method parameters.
@@ -1190,11 +1197,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
         while (numAttributeParams > 0 && SPECIAL_PARAM_TYPES.contains(paramTypes[numAttributeParams - 1]))
             numAttributeParams--;
 
-        if (numAttributeParams < paramTypes.length && !(methodAnno instanceof Delete) && (methodAnno != null || hasUpdateParam))
+        if (numAttributeParams < paramTypes.length && !(methodAnno instanceof Find) && !(methodAnno instanceof Delete))
             throw new MappingException("The special parameter types " + SPECIAL_PARAM_TYPES +
                                        " must not be used on the " + queryInfo.method.getName() + " method of the " +
                                        repositoryInterface.getName() + " repository because the repository method is a " +
-                                       (methodAnno == null ? "Update" : methodAnno.annotationType().getSimpleName()) + " operation."); // TODO NLS
+                                       methodAnno.annotationType().getSimpleName() + " operation."); // TODO NLS
 
         // Identify IdClass parameters
         if (queryInfo.entityInfo.idClassAttributeAccessors != null) {
@@ -1520,15 +1527,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Handles Query by Method Name and Query by Parameters patterns.
+     * Handles Query by Method Name.
      *
-     * @param queryInfo      query information to populate.
-     * @param methodTypeAnno Count, Delete, Exists, or Update annotation if present. Otherwise null.
-     *                           The Insert, Save, and Query annotations are never supplied to this method.
-     * @param countPages     whether to generate a count query (for Page.totalElements and Page.totalPages).
+     * @param queryInfo  query information to populate.
+     * @param countPages whether to generate a count query (for Page.totalElements and Page.totalPages).
      * @return the generated query written to a StringBuilder.
      */
-    private StringBuilder generateQueryFromMethod(QueryInfo queryInfo, Annotation methodTypeAnno, boolean countPages) {
+    private StringBuilder generateQueryFromMethodName(QueryInfo queryInfo, boolean countPages) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         EntityInfo entityInfo = queryInfo.entityInfo;
@@ -1536,7 +1541,107 @@ public class RepositoryImpl<R> implements InvocationHandler {
         String o = queryInfo.entityVar;
         StringBuilder q = null;
 
-        boolean isParameterBased = methodTypeAnno != null;
+        int by = methodName.indexOf("By");
+
+        if (methodName.startsWith("find")) {
+            Select select = queryInfo.method.getAnnotation(Select.class);
+            List<String> selections = select == null ? new ArrayList<>() : null;
+            int c = by < 0 ? 4 : (by + 2);
+            parseFindBy(queryInfo, methodName, by, selections);
+            q = generateSelectClause(queryInfo, select, selections == null ? null : selections.toArray(new String[selections.size()]));
+
+            int orderBy = methodName.indexOf("OrderBy", by + 2);
+            if (orderBy > c || orderBy == -1 && methodName.length() > c) {
+                int where = q.length();
+                generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
+                if (countPages)
+                    generateCount(queryInfo, q.substring(where));
+            }
+            if (orderBy >= c)
+                parseOrderBy(queryInfo, orderBy, q);
+            queryInfo.type = QueryInfo.Type.FIND;
+        } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
+            int c = by < 0 ? 6 : (by + 2);
+            boolean isFindAndDelete = queryInfo.isFindAndDelete();
+            if (isFindAndDelete) {
+                if (queryInfo.type != null)
+                    throw new UnsupportedOperationException("The " + queryInfo.method.getGenericReturnType() +
+                                                            " return type is not supported for the " + methodName +
+                                                            " repository method."); // TODO NLS
+                queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
+                parseDeleteBy(queryInfo, by);
+                Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
+                q = generateSelectClause(queryInfo, select);
+                queryInfo.jpqlDelete = generateDeleteById(queryInfo);
+            } else { // DELETE
+                queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
+                q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
+            }
+
+            int orderBy = isFindAndDelete && by > 0 ? methodName.indexOf("OrderBy", by + 2) : -1;
+            if (orderBy > c || orderBy == -1 && methodName.length() > c)
+                generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
+            if (orderBy >= c)
+                parseOrderBy(queryInfo, orderBy, q);
+
+            queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
+        } else if (methodName.startsWith("update")) {
+            int c = by < 0 ? 6 : (by + 2);
+            q = generateUpdateClause(queryInfo, methodName, c);
+            queryInfo.type = QueryInfo.Type.UPDATE;
+        } else if (methodName.startsWith("count")) {
+            int c = by < 0 ? 5 : (by + 2);
+            q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
+            if (methodName.length() > c)
+                generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
+            queryInfo.type = QueryInfo.Type.COUNT;
+        } else if (methodName.startsWith("exists")) {
+            int c = by < 0 ? 6 : (by + 2);
+            String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
+            String attrName = entityInfo.getAttributeName(name, true);
+            q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
+                            .append(" FROM ").append(entityInfo.name).append(' ').append(o);
+            if (methodName.length() > c)
+                generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
+            queryInfo.type = QueryInfo.Type.EXISTS;
+        } else {
+            throw new UnsupportedOperationException("The name of the " + methodName + " method of the " +
+                                                    queryInfo.method.getDeclaringClass().getName() +
+                                                    " repository does not meet the requirements for Query by Method Name." +
+                                                    " Method names for Query by Method Name must begin with one of the " +
+                                                    "(count, delete, exists, find, update)" +
+                                                    " keywords, followed by 0 or more additional characters," +
+                                                    " followed by the 'By' keyword." +
+                                                    " If you are not using Query by Method Name, " +
+                                                    " query methods must be annotated with one of: " +
+                                                    "(Delete, Find, Insert, Query, Save, Update)" + "."); // TODO NLS
+        }
+
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, methodName + " is identified as a " + queryInfo.type + " method");
+
+        return q;
+    }
+
+    /**
+     * Handles the Query by Parameters pattern,
+     * which requires one of the following annotations:
+     * Count, Delete, Exists, Find, or Update.
+     *
+     * @param queryInfo      query information to populate.
+     * @param methodTypeAnno Count, Delete, Exists, Find, or Update annotation.
+     *                           The Insert, Save, and Query annotations are never supplied to this method.
+     * @param countPages     whether to generate a count query (for Page.totalElements and Page.totalPages).
+     * @return the generated query written to a StringBuilder.
+     */
+    private StringBuilder generateQueryFromMethodParams(QueryInfo queryInfo, Annotation methodTypeAnno, boolean countPages) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        EntityInfo entityInfo = queryInfo.entityInfo;
+        String methodName = queryInfo.method.getName();
+        String o = queryInfo.entityVar;
+        StringBuilder q = null;
+
         boolean hasUpdateParam = false;
 
         // Identify parameter annotations
@@ -1580,7 +1685,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         }
                     }
                 allParamInfo[p] = paramInfo;
-                isParameterBased |= paramInfo != null;
             }
 
         if (methodTypeAnno instanceof Update) {
@@ -1590,115 +1694,46 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                            "a single parameter that is the entity type or an Iterable, Stream, or array of entity, " +
                                            "Or it must have at least one parameter that is annotated with one of " +
                                            List.of(Assign.class, Add.class, Multiply.class, Divide.class) + "."); // TODO
-        } else if (methodTypeAnno != null && hasUpdateParam) {
+        } else if (hasUpdateParam) {
             throw new MappingException("Parameters of the " + methodName + " method of the " +
                                        repositoryInterface.getName() + " repository must not be annotated with annotations from the " +
-                                       UPDATE_ANNO_PACKAGE + " package because the repository method is not an update method."); // TODO NLS
+                                       UPDATE_ANNO_PACKAGE + " package because the repository method is not annotated with " +
+                                       Update.class.getName() + "."); // TODO NLS
         }
 
-        int by = isParameterBased ? -1 : methodName.indexOf("By");
-        isParameterBased = by < 4; // shortest prefix for Query by Method Name is "find"
-
-        if (!isParameterBased) {
-            // Query by method name
-
-            if (methodName.startsWith("find")) {
-                Select select = queryInfo.method.getAnnotation(Select.class);
-                List<String> selections = select == null ? new ArrayList<>() : null;
-                int c = by + 2;
-                parseFindBy(queryInfo, methodName, by, selections);
-                q = generateSelectClause(queryInfo, select, selections == null ? null : selections.toArray(new String[selections.size()]));
-
-                int orderBy = methodName.indexOf("OrderBy", by + 2);
-                if (orderBy > c || orderBy == -1 && methodName.length() > c) {
-                    int where = q.length();
-                    generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
-                    if (countPages)
-                        generateCount(queryInfo, q.substring(where));
-                }
-                if (orderBy >= c)
-                    parseOrderBy(queryInfo, orderBy, q);
-                queryInfo.type = QueryInfo.Type.FIND;
-            } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
-                int c = by + 2;
-                boolean isFindAndDelete = queryInfo.isFindAndDelete();
-                if (isFindAndDelete) {
-                    if (queryInfo.type != null)
-                        throw new UnsupportedOperationException("The " + queryInfo.method.getGenericReturnType() +
-                                                                " return type is not supported for the " + methodName +
-                                                                " repository method."); // TODO NLS
-                    queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
-                    parseDeleteBy(queryInfo, by);
-                    Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
-                    q = generateSelectClause(queryInfo, select);
-                    queryInfo.jpqlDelete = generateDeleteById(queryInfo);
-                } else { // DELETE
-                    queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
-                    q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
-                }
-
-                int orderBy = isFindAndDelete && by > 0 ? methodName.indexOf("OrderBy", by + 2) : -1;
-                if (orderBy > c || orderBy == -1 && methodName.length() > c)
-                    generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
-                if (orderBy >= c)
-                    parseOrderBy(queryInfo, orderBy, q);
-
-                queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
-            } else if (methodName.startsWith("update")) {
-                q = generateUpdateClause(queryInfo, methodName, by + 2);
-                queryInfo.type = QueryInfo.Type.UPDATE;
-            } else if (methodName.startsWith("count")) {
-                int c = by + 2;
-                q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
-                if (methodName.length() > c)
-                    generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
-                queryInfo.type = QueryInfo.Type.COUNT;
-            } else if (methodName.startsWith("exists")) {
-                int c = by + 2;
-                String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
-                String attrName = entityInfo.getAttributeName(name, true);
-                q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
-                                .append(" FROM ").append(entityInfo.name).append(' ').append(o);
-                if (methodName.length() > c)
-                    generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
-                queryInfo.type = QueryInfo.Type.EXISTS;
-            } else {
-                isParameterBased = true;
+        if (methodTypeAnno instanceof Find || methodTypeAnno instanceof Update) {
+            q = generateFromParameters(queryInfo, null, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
+        } else if (methodTypeAnno instanceof Delete) {
+            if (queryInfo.isFindAndDelete()) {
+                queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
+                q = generateSelectClause(queryInfo, null);
+                queryInfo.jpqlDelete = generateDeleteById(queryInfo);
+            } else { // DELETE
+                queryInfo.type = QueryInfo.Type.DELETE;
+                q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
             }
-        }
-
-        if (isParameterBased) {
-            if (methodTypeAnno instanceof Delete) {
-                if (queryInfo.isFindAndDelete()) {
-                    queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
-                    q = generateSelectClause(queryInfo, null);
-                    queryInfo.jpqlDelete = generateDeleteById(queryInfo);
-                } else { // DELETE
-                    queryInfo.type = QueryInfo.Type.DELETE;
-                    q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
-                }
-                if (queryInfo.method.getParameterCount() > 0)
-                    generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
-            } else if (methodTypeAnno instanceof Count) {
-                queryInfo.type = QueryInfo.Type.COUNT;
-                q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
-                if (queryInfo.method.getParameterCount() > 0)
-                    generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
-            } else if (methodTypeAnno instanceof Exists) {
-                queryInfo.type = QueryInfo.Type.EXISTS;
-                String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
-                String attrName = entityInfo.getAttributeName(name, true);
-                q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
-                                .append(" FROM ").append(entityInfo.name).append(' ').append(o);
-                if (queryInfo.method.getParameterCount() > 0)
-                    generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
-            } else { // Update or no method annotation
-                q = generateFromParameters(queryInfo, null, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
-            }
+            if (queryInfo.method.getParameterCount() > 0)
+                generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
+        } else if (methodTypeAnno instanceof Count) {
+            queryInfo.type = QueryInfo.Type.COUNT;
+            q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
+            if (queryInfo.method.getParameterCount() > 0)
+                generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
+        } else if (methodTypeAnno instanceof Exists) {
+            queryInfo.type = QueryInfo.Type.EXISTS;
+            String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
+            String attrName = entityInfo.getAttributeName(name, true);
+            q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
+                            .append(" FROM ").append(entityInfo.name).append(' ').append(o);
+            if (queryInfo.method.getParameterCount() > 0)
+                generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
+        } else {
+            // TODO should be unreachable
+            throw new UnsupportedOperationException("Unexpected annotation " + methodTypeAnno + " for parameter-based query.");
         }
 
         if (trace && tc.isDebugEnabled())
-            Tr.debug(this, tc, queryInfo.method.getName() + " is identified as a " + queryInfo.type + " method");
+            Tr.debug(this, tc, methodName + " is identified as a " + queryInfo.type + " method");
 
         return q;
     }
