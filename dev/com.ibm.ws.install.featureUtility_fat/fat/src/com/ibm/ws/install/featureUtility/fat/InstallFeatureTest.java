@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Properties;
 
 import org.junit.After;
@@ -47,13 +48,14 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	
 	@ClassRule
 	/*
-	 * Increased startup timeout because nexus container might take more than 60 seconds (default start up time) to start.
-	 * Also wait for log "Started Sonatype Nexus.*" to make sure repository is up and running.
+	 * Increased startup timeout because nexus container might take more than 60
+	 * seconds (default start up time) to start. Also wait for log
+	 * "Started Sonatype Nexus.*" to make sure repository is up and running.
 	 */
 	public static GenericContainer<?> nexusContainer = new GenericContainer<>("jiwoo/nexus:1.0")
-        .withNetwork(network)
-		.withNetworkAliases("nexus").waitingFor(
-			Wait.forLogMessage("Started Sonatype Nexus.*", 1).withStartupTimeout(Duration.ofMinutes(10)));
+		.withStartupTimeout(Duration.of(5, ChronoUnit.MINUTES))
+		.waitingFor(Wait.forLogMessage("Started Sonatype Nexus.*", 1)).withNetwork(network)
+		.withNetworkAliases("nexus");
 
 	@ClassRule
 	public static GenericContainer<?> container = new GenericContainer<>("jiwoo/simple-keyserver:1.0")
