@@ -19,9 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
-import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.time.Instant;
@@ -147,16 +145,20 @@ public class VerifySignatureUtility {
             try {
                 logger.fine("Downloading key... " + key.getValue());
                 URL keyUrl = new URL(key.getValue());
-                Proxy proxy;
-                if (envMap.get("https.proxyHost") != null) {
-                    proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
+                String proxyEncodedAuth = "";
+                if (keyUrl.getProtocol().equals("https") && envMap.get("https.proxyHost") != null) {
+                    proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword"));
                 } else if (envMap.get("http.proxyHost") != null) {
-                    proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
-                } else {
-                    proxy = Proxy.NO_PROXY;
+                    proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("http.proxyUser"), (String) envMap.get("http.proxyPassword"));
                 }
-                conn = keyUrl.openConnection(proxy);
+
+                conn = keyUrl.openConnection();
                 conn.setConnectTimeout(10000);
+
+                if (!proxyEncodedAuth.isEmpty()) {
+                    logger.fine("encoded proxy auth: " + proxyEncodedAuth);
+                    conn.setRequestProperty("Proxy-Authorization", proxyEncodedAuth);
+                }
 
                 try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream())) {
                     File tempFile = File.createTempFile("signature", ".asc", Utils.getInstallDir());

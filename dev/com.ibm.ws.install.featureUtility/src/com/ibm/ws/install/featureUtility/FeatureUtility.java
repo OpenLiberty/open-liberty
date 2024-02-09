@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -284,11 +286,17 @@ public class FeatureUtility {
 
         String protocol = null;
 		if (host != null && !host.isEmpty()) {
-			if (host.toLowerCase().startsWith("https://")) {
-				protocol = "https";
-			} else {
-				protocol = "http";
+			try {
+			    URL hostURL = new URL(host);
+			    protocol = hostURL.getProtocol();
+			    host = hostURL.getHost();
+			} catch (MalformedURLException e) {
+			    // If protocol is not defined, assume http protocol.
+			    logger.fine("Proxy protocol is not defined: " + e.getMessage());
+			    protocol = "http";
+
 			}
+
 		}
 
 		if (protocol != null && !protocol.isEmpty()) {
@@ -303,6 +311,11 @@ public class FeatureUtility {
 			overrideMap.put(protocol + ".proxyUser", username);
 			overrideMap.put(protocol + ".proxyPassword", password);
 
+		}
+
+		// override no_proxy settings
+		if (FeatureUtilityProperties.getNoProxySetting() != null) {
+		    overrideMap.put("http.nonProxyHosts", FeatureUtilityProperties.getNoProxySetting());
 		}
 
         // override the local feature repo
@@ -339,6 +352,13 @@ public class FeatureUtility {
         }
 
 	map.put(InstallConstants.OVERRIDE_ENVIRONMENT_VARIABLES, overrideMap);
+
+	if (map.get(InstallConstants.ACTION_ERROR_MESSAGE) != null) {
+	    // error with installation
+	    fine("action.exception.stacktrace: " + map.get(InstallConstants.ACTION_EXCEPTION_STACKTRACE));
+	    String exceptionMessage = (String) map.get(InstallConstants.ACTION_ERROR_MESSAGE);
+	    throw new InstallException(exceptionMessage);
+	}
     }
 
     /**
