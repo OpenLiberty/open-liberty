@@ -1851,7 +1851,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         }
         if (vSettings.logoutMethodTested == Constants.LOGOUT_ENDPOINT) {
             logoutStep = Constants.LOGOUT;
-            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did fail to logout.", null, "An exception occurred during logout");
+            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not get the successful logout message.", null, "Logout successful");
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to validate the id_token.", MessageConstants.CWWKS1643E_BACK_CHANNEL_LOGOUT_CANNOT_EXTRACT_CLAIMS);
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to build the logout token.", MessageConstants.CWWKS1642E_BACK_CHANNEL_LOGOUT_FAILURE_BUILDING_LOGOUT_TOKEN);
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
@@ -1862,16 +1862,14 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
         }
         if (vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint != null && vSettings.sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
-            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did fail to logout.", null, "An exception occurred during logout");
+            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not get the successful logout message.", null, "Logout successful");
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to validate the id_token.", MessageConstants.CWWKS1643E_BACK_CHANNEL_LOGOUT_CANNOT_EXTRACT_CLAIMS);
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to build the logout token.", MessageConstants.CWWKS1642E_BACK_CHANNEL_LOGOUT_FAILURE_BUILDING_LOGOUT_TOKEN);
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
         }
 
         if (vSettings.logoutMethodTested == Constants.IBM_SECURITY_LOGOUT) {
-            expectations = vData.addSuccessStatusCodes(null, logoutStep);
-            expectations = vData.addResponseStatusExpectation(expectations, logoutStep, Constants.INTERNAL_SERVER_ERROR_STATUS);
-            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did fail to logout.", null, MessageConstants.CWOAU0073E_FRONT_END_ERROR);
+            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not get the successful logout message.", null, "Successful Logout");
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to validate the id_token.", MessageConstants.CWWKS1643E_BACK_CHANNEL_LOGOUT_CANNOT_EXTRACT_CLAIMS);
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to build the logout token.", MessageConstants.CWWKS1642E_BACK_CHANNEL_LOGOUT_FAILURE_BUILDING_LOGOUT_TOKEN);
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
@@ -1895,7 +1893,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             states.setIsAppSessionAccess(true);
             states.setIsAccessTokenValid(true);
             states.setIsRefreshTokenValid(true);
-            states.setOPNoCookiesRemoved(isUsingSaml());
+            states.setOPAllCookiesRemoved();
             states.setClientNoCookiesRemoved();
         }
         if (vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint != null && vSettings.sessionLogoutEndpoint.equals(Constants.END_SESSION_ENDPOINT)) {
@@ -1907,11 +1905,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             states.setClientCookieMatchesPrevious(false);
         }
         if (vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint != null && vSettings.sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
-            states.setIsAppSessionAccess(true);
+            states.setIsAppSessionAccess(false);
             states.setIsAccessTokenValid(true);
             states.setIsRefreshTokenValid(true);
-            states.setOPNoCookiesRemoved(isUsingSaml());
-            states.setClientCookieExists(true);
+            states.setOPAllCookiesRemoved();
+            states.setClientCookieExists(false);
             states.setClientCookieMatchesPrevious(false);
         }
 
@@ -1927,7 +1925,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             states.setIsAppSessionAccess(true);
             states.setIsAccessTokenValid(true);
             states.setIsRefreshTokenValid(true);
-            states.setOPNoCookiesRemoved(isUsingSaml());
+            states.setOPAllCookiesRemoved();
             states.setClientCookieExists(true);
             states.setClientCookieMatchesPrevious(true);
         }
