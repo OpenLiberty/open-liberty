@@ -32,6 +32,9 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.websphere.crypto.InvalidPasswordDecodingException;
+import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.ws.install.RepositoryConfigValidationResult.ValidationFailedReason;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 import com.ibm.ws.install.internal.InstallUtils;
@@ -194,6 +197,16 @@ public class RepositoryConfigUtils {
                     //Trim any trailing whitespaces
                     proxyUser = proxyUser.trim();
                     proxyPwd = proxyPwd.trim();
+                    //Check proxy password
+                    try {
+                        //Decode encrypted proxy server password
+                        PasswordUtil.decode(proxyPwd);
+                        //Check proxy server credentials for Authentication
+                    } catch (InvalidPasswordDecodingException ipde) {
+                        logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("LOG_PASSWORD_NOT_ENCODED_PROXY", proxyURL) + InstallUtils.NEWLINE);
+                    } catch (UnsupportedCryptoAlgorithmException ucae) {
+                        throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PROXY_PWD_CRYPTO_UNSUPPORTED"), ucae, InstallException.RUNTIME_EXCEPTION);
+                    }
                 }
 
                 try {
