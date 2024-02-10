@@ -814,10 +814,18 @@ public abstract class WebContainer extends BaseContainer {
             String reqURI = req.getRequestURI();
             String decodedReqURI = null;
            
-            if (WCCustomProperties.DECODE_URL_PLUS_SIGN) {
-                decodedReqURI = URLDecoder.decode(reqURI, encoding);
-            } else {
-                decodedReqURI = WSURLDecoder.decode(reqURI, encoding);
+            try {
+                if (WCCustomProperties.DECODE_URL_PLUS_SIGN) {
+                    decodedReqURI = URLDecoder.decode(reqURI, encoding);
+                } else {
+                    decodedReqURI = WSURLDecoder.decode(reqURI, encoding);
+                }
+            }
+            catch (Exception e) {
+                logger.logp(Level.FINE, CLASS_NAME, "handleRequest", "cannot decode URI; sending 400 [" + e.getMessage() + "]");
+
+                sendBadRequestResponse(req, res);
+                return;
             }
 
             //Servlet 6.0 - process after decoded uri
