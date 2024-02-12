@@ -26,49 +26,50 @@
 
   <dataSource id="DefaultDataSource"
               enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
-    <jdbcDriver libraryRef="D43Lib"/>
+    <jdbcDriver libraryRef="D43Lib" javax.sql.Driver="org.test.d43.jdbc.D43Driver"/>
     <properties url="jdbc:d43:memory:testdb;create=true" user="user43" password="{xor}Lyg7a2w="/>
   </dataSource>
 
   <dataSource jndiName="jdbc/defaultShardingMatchCurrentState" type="javax.sql.DataSource" connectionSharing="MatchCurrentState"
               containerAuthDataRef="user43Auth">
-    <jdbcDriver libraryRef="D43Lib"/>
+    <jdbcDriver libraryRef="D43Lib" javax.sql.DataSource="org.test.d43.jdbc.D43DataSource"/>
     <properties databaseName="memory:testdb;create=true" shardingKey="CHAR:DefaultShardingKey;" superShardingKey="VARCHAR:DefaultSuperKey;"/>
   </dataSource>
 
   <dataSource jndiName="jdbc/ds" type="javax.sql.DataSource">
-    <jdbcDriver libraryRef="D43Lib"/>
+    <jdbcDriver libraryRef="D43Lib" javax.sql.DataSource="org.test.d43.jdbc.D43DataSource"/>
     <properties databaseName="memory:testdb;create=true"/>
   </dataSource>
 
   <dataSource jndiName="jdbc/matchCurrentState" type="javax.sql.ConnectionPoolDataSource" connectionSharing="MatchCurrentState">
-    <jdbcDriver libraryRef="D43Lib"/>
+    <jdbcDriver libraryRef="D43Lib" javax.sql.ConnectionPoolDataSource="org.test.d43.jdbc.D43ConnectionPoolDataSource"/>
     <properties databaseName="memory:testdb;create=true"/>
   </dataSource>
 
   <dataSource id="poolOf1" jndiName="jdbc/poolOf1" type="javax.sql.ConnectionPoolDataSource"
               enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
     <connectionManager maxPoolSize="1" connectionTimeout="0" autoCloseConnections="false"/>
-    <jdbcDriver libraryRef="D43Lib"/>
+    <jdbcDriver libraryRef="D43Lib" javax.sql.ConnectionPoolDataSource="org.test.d43.jdbc.D43ConnectionPoolDataSource"/>
     <properties databaseName="memory:testdb;create=true"/>
     <containerAuthData user="user43" password="{xor}Lyg7a2w="/>
   </dataSource>
 
   <dataSource id="poolOf2" jndiName="jdbc/poolOf2" >
     <connectionManager maxPoolSize="2" connectionTimeout="0"/> <!-- autoCloseConnections="true" is default -->
-    <jdbcDriver libraryRef="D43Lib"/>
+    <jdbcDriver libraryRef="D43Lib" javax.sql.ConnectionPoolDataSource="org.test.d43.jdbc.D43ConnectionPoolDataSource"/>
     <properties databaseName="memory:testdb;create=true"/>
     <containerAuthData user="user43" password="{xor}Lyg7a2w="/>
   </dataSource>
 
   <dataSource jndiName="jdbc/xa"
               enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
-    <jdbcDriver libraryRef="D43Lib"/>
+    <jdbcDriver libraryRef="D43Lib" javax.sql.XADataSource="org.test.d43.jdbc.D43XADataSource"/>
     <properties databaseName="memory:testdb;create=true"/>
     <containerAuthData user="user43" password="{xor}Lyg7a2w="/>
   </dataSource>
 
-  <!-- JDBC driver that only supports the 4.2 spec level -->
+  <!-- JDBC driver that only supports the 4.2 spec level. Using properties.derby.embedded instead of just properties will
+       direct liberty to derby's jdbc 4.2 implementation instead of the jdbc 4.3 wrapper-->
   <dataSource jndiName="jdbc/xaDerby42" containerAuthDataRef="user43Auth"
               enableBeginEndRequest="true"> <!-- Not a supported property. Only for internal testing/experimentation. -->
     <jdbcDriver libraryRef="D43Lib"/>
