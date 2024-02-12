@@ -14,6 +14,7 @@ import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.CLIENT_
 import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.DESCRIPTION_TAG;
 import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.INPUT_TAG;
 import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.KERNEL_TAG;
+import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.MULTIPLE_TAG;
 import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.NAME_TAG;
 import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.OUTPUT_TAG;
 import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.RESOLVED_TAG;
@@ -75,6 +76,9 @@ public class VerifyXML extends BaseXML {
 
         public void write(VerifyInput verifyInput) {
             withinElement(INPUT_TAG, () -> {
+                if (verifyInput.isMultiple) {
+                    printElement(MULTIPLE_TAG);
+                }
                 if (verifyInput.isClient) {
                     printElement(CLIENT_TAG);
                 }
@@ -132,6 +136,8 @@ public class VerifyXML extends BaseXML {
 
             } else if (pushElement(localName, INPUT_TAG, CASE_TAG)) {
                 // ignore
+            } else if (pushElement(localName, MULTIPLE_TAG, INPUT_TAG)) {
+                // ignore
             } else if (pushElement(localName, CLIENT_TAG, INPUT_TAG)) {
                 // ignore
             } else if (pushElement(localName, SERVER_TAG, INPUT_TAG)) {
@@ -164,6 +170,8 @@ public class VerifyXML extends BaseXML {
 
             } else if (oldLast.equals(INPUT_TAG)) {
                 // Ignore
+            } else if (oldLast.contentEquals(MULTIPLE_TAG)) {
+                verifyCase.input.setMultiple();
             } else if (oldLast.contentEquals(CLIENT_TAG)) {
                 verifyCase.input.setClient();
             } else if (oldLast.contentEquals(SERVER_TAG)) {

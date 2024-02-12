@@ -38,8 +38,14 @@ public class BaseXML {
     }
 
     public static void write(File file, FailableConsumer<PrintWriter, Exception> writer) throws Exception {
+
+        file.mkdirs();
+        if (!file.exists()) {
+            throw new IOException("Failed to create directories for [ " + file.getAbsolutePath() + " ]");
+        }
+
         try (FileWriter fW = new FileWriter(file, !DO_APPEND);
-                        PrintWriter pW = new PrintWriter(fW)) {
+             PrintWriter pW = new PrintWriter(fW)) {
             writer.accept(pW);
         }
     }

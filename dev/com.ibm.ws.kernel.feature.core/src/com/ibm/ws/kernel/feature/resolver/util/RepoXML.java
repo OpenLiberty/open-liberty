@@ -29,7 +29,7 @@ import static com.ibm.ws.kernel.feature.resolver.util.RepoXMLConstants.VISIBILIT
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
 
 import com.ibm.ws.kernel.feature.ProcessType;
@@ -49,6 +49,21 @@ public class RepoXML extends BaseXML {
 
     public static boolean isServer(ProvisioningFeatureDefinition def) {
         return (def.getProcessTypes().contains(ProcessType.SERVER));
+    }
+
+    /**
+     * Compare two features by their symbolic name.
+     *
+     * Use a case insensitive comparison.
+     *
+     * @param def1 A feature definition which is to be compared.
+     * @param def2 Another feature definition which is to be compared.
+     *
+     * @return The features compared by their symbolic name.
+     */
+    private static int compare(ProvisioningFeatureDefinition def1,
+                               ProvisioningFeatureDefinition def2) {
+        return def1.getSymbolicName().compareToIgnoreCase(def2.getSymbolicName());
     }
 
     public static void write(File file, Stream<ProvisioningFeatureDefinition> features) throws Exception {
@@ -79,7 +94,8 @@ public class RepoXML extends BaseXML {
         }
 
         public void write(Repository repo) {
-            Collection<ProvisioningFeatureDefinition> features = repo.select(RepoXML::isPublic);
+            List<ProvisioningFeatureDefinition> features = repo.select(RepoXML::isPublic);
+            features.sort(RepoXML::compare);
 
             withinElement(REPOSITORY_TAG, () -> {
                 features.forEach((ProvisioningFeatureDefinition def) -> write(def));
