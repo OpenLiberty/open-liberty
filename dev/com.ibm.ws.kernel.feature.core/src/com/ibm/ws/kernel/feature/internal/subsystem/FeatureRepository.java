@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Predicate;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -69,6 +70,7 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
  */
 public final class FeatureRepository implements FeatureResolver.Repository {
     private static final TraceComponent tc = Tr.register(FeatureRepository.class);
+
     private static final int FEATURE_CACHE_VERSION = 3;
     private static final String EMPTY = "";
 
@@ -197,8 +199,6 @@ public final class FeatureRepository implements FeatureResolver.Repository {
      * <p>
      * Note that for update operations (rather than initial provisioning), cachedFeatures will
      * be pre-populated..
-     *
-     * @see #storeCache()
      */
     private void readCache(boolean firstInit) {
         if (cacheOk && cacheRes != null && cacheRes.exists()) {
@@ -305,8 +305,6 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
     /**
      * Write the feature cache file
-     *
-     * @see #readCache()
      */
     public void storeCache() {
         if (cacheOk && cacheRes != null && isDirty) {
@@ -484,11 +482,6 @@ public final class FeatureRepository implements FeatureResolver.Repository {
                                        hasSpiPackages, isSingleton, disableOnConflict, processTypes, activationType);
     }
 
-    /**
-     * @param in
-     * @return
-     * @throws IOException
-     */
     static ProvisioningDetails loadProvisioningDetails(DataInputStream in, ImmutableAttributes iAttr) throws IOException {
         String autoFeatureCapability = iAttr.isAutoFeature ? readLongString(in) : null;
         String apiServices = iAttr.hasApiServices ? readLongString(in) : null;
@@ -725,16 +718,11 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
     /**
      * Copies the active list of installed features into the given set.
-     *
-     * @param features the set to copy to.
      */
     public void copyInstalledFeaturesTo(Set<String> features) {
         features.addAll(installedFeatures);
     }
 
-    /**
-     * @return
-     */
     public boolean emptyFeatures() {
         return installedFeatures.isEmpty();
     }
@@ -746,9 +734,6 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         return !isDirty && newFeatureSet.equals(installedFeatures);
     }
 
-    /**
-     * @return
-     */
     @Override
     public Collection<ProvisioningFeatureDefinition> getAutoFeatures() {
         if (autoFeatures == null)
@@ -777,10 +762,26 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         return builder.toString();
     }
 
-    /**
-     * @param featureName
-     * @return
-     */
+    @Override
+    public Collection<ProvisioningFeatureDefinition> select(Predicate<ProvisioningFeatureDefinition> selector) {
+        if (selector == null) {
+            return new ArrayList<>(cachedFeatures.values());
+        } else {
+            List<ProvisioningFeatureDefinition> selected = new ArrayList<>(cachedFeatures.size());
+            cachedFeatures.values().forEach((ProvisioningFeatureDefinition def) -> {
+                if (selector.test(def)) {
+                    selected.add(def);
+                }
+            });
+            return selected;
+        }
+    }
+
+    @Override
+    public Collection<ProvisioningFeatureDefinition> getFeatures() {
+        return new ArrayList<>(cachedFeatures.values());
+    }
+
     @Override
     public ProvisioningFeatureDefinition getFeature(String featureName) {
         SubsystemFeatureDefinitionImpl result = cachedFeatures.get(featureName);
@@ -851,9 +852,6 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
     }
 
-    /**
-     * @param bundleContext
-     */
     public void updateServices() {
         if (bundleContext == null) {
             // do nothing; not really in a running system (unit tests etc.)
@@ -963,9 +961,6 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         }
     }
 
-    /**
-     * @return
-     */
     public boolean isDirty() {
         return isDirty;
     }
