@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.srt;
 
@@ -17,6 +14,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.inputstream.HttpInputStreamConnectWeb;
 import com.ibm.ws.http.channel.inputstream.HttpInputStreamObserver;
@@ -31,10 +29,9 @@ public class SRTInputStream extends WSServletInputStream
   protected HttpInputStreamConnectWeb inStream = null;
   
   protected long contentLength;
-  //private static TraceNLS nls = TraceNLS.getTraceNLS(SRTInputStream.class, "com.ibm.ws.webcontainer.resources.Messages");
+  protected static TraceNLS nls = TraceNLS.getTraceNLS(SRTInputStream.class, "com.ibm.ws.webcontainer.resources.Messages");
   private static final String CLASS_NAME="com.ibm.ws.webcontainer.srt.SRTInputStream";
   protected static final Logger logger = LoggerFactory.getInstance().getLogger(CLASS_NAME);
-
 
   @Override
   public void finish() throws IOException
@@ -88,7 +85,7 @@ public class SRTInputStream extends WSServletInputStream
   {
       if(this.in != null && this.inStream != null){
           if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
-              logger.logp(Level.FINE, CLASS_NAME,"close", "close called->"+this);
+              logger.logp(Level.FINE, CLASS_NAME,"close()", "closing underlying input stream [" + in + "] , this [" + this +"]");
           }
           this.in.close();
       }
