@@ -10,18 +10,49 @@
 package com.ibm.ws.kernel.feature.resolver.util;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class VerifyData {
-    public final List<VerifyCase> cases = new ArrayList<>();
-
     public VerifyData() {
         // Empty
     }
 
     public VerifyData(Stream<VerifyCase> cases) {
         cases.forEach((VerifyCase verifyCase) -> this.cases.add(verifyCase));
+    }
+
+    public final List<VerifyCase> cases = new ArrayList<>();
+
+    /**
+     * Answer an ordered table of the contained cases.
+     *
+     * Keys are case keys, obtained from {@link VerifyCase#asKey(StringBuilder)}.
+     *
+     * Values are the cases.
+     *
+     * The mapping is ordered, and preserves the original ordering of the cases.
+     *
+     * @return An ordered table of the contained cases.
+     */
+    public Map<String, VerifyCase> mapCases() {
+        Map<String, VerifyCase> mappedCases = new LinkedHashMap<>();
+
+        StringBuilder keyBuilder = new StringBuilder();
+        cases.forEach((VerifyCase verifyCase) -> {
+            mappedCases.put(verifyCase.asKey(keyBuilder), verifyCase);
+        });
+
+        return mappedCases;
+    }
+
+    private static void append(StringBuilder builder, String text, char sep) {
+        if (builder.length() != 0) {
+            builder.append(sep);
+        }
+        builder.append(text);
     }
 
     public VerifyCase addCase() {
@@ -36,14 +67,48 @@ public class VerifyData {
 
         public final VerifyInput input = new VerifyInput();
         public final VerifyOutput output = new VerifyOutput();
+
+        // Multiple Process:Client Kernel:kname1 Roots:rname1:rname2
+
+        public String asKey(StringBuilder keyBuilder) {
+            char spaceSep = ' ';
+            char colonSep = ':';
+
+            if (input.isMultiple) {
+                append(keyBuilder, "Multiple", spaceSep);
+            }
+
+            append(keyBuilder, "Process", spaceSep);
+            if (input.isClient) {
+                append(keyBuilder, "Client", colonSep);
+            }
+            if (input.isServer) {
+                append(keyBuilder, "Server", colonSep);
+            }
+
+            append(keyBuilder, "Kernel", spaceSep);
+            input.kernel.forEach((String kernelName) -> append(keyBuilder, kernelName, colonSep));
+
+            append(keyBuilder, "Roots", spaceSep);
+            input.roots.forEach((String rootName) -> append(keyBuilder, rootName, colonSep));
+
+            String key = keyBuilder.toString();
+            keyBuilder.setLength(0);
+            return key;
+        }
     }
 
     public static class VerifyInput {
+        public boolean isMultiple;
         public boolean isClient;
         public boolean isServer;
 
         public final List<String> kernel = new ArrayList<>();
         public final List<String> roots = new ArrayList<>();
+
+        public void setMultiple() {
+            isMultiple = true;
+        }
 
         public void setClient() {
             isClient = true;

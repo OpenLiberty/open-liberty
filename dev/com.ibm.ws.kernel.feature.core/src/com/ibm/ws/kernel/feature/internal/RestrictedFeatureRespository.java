@@ -46,7 +46,7 @@ public class RestrictedFeatureRespository implements Repository {
     private final Collection<String> restrictedAttempts;
 
     @Override
-    public Collection<ProvisioningFeatureDefinition> select(Predicate<ProvisioningFeatureDefinition> selector) {
+    public List<ProvisioningFeatureDefinition> select(Predicate<ProvisioningFeatureDefinition> selector) {
         return repo.select((ProvisioningFeatureDefinition def) -> (!restricted.contains(def.getSymbolicName()) && selector.test(def)));
     }
 

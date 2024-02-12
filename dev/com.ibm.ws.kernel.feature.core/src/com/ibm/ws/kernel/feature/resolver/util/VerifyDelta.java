@@ -10,42 +10,83 @@
 package com.ibm.ws.kernel.feature.resolver.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.ibm.ws.kernel.feature.resolver.util.VerifyData.VerifyCase;
 
-public class VerifyUtil {
-    public static List<String> compare(VerifyData expectedCases, VerifyData actualCases) {
-        List<String> errors = new ArrayList<>();
-        compare(expectedCases, actualCases, errors);
+public class VerifyDelta {
+    public static Map<String, List<String>> compare(VerifyData expectedCases, VerifyData actualCases) {
+        VerifyDelta delta = new VerifyDelta();
+        delta.doCompare(expectedCases, actualCases);
+        return delta.getErrors();
+    }
+
+    public VerifyDelta() {
+        this.errors = new LinkedHashMap<>();
+    }
+
+    private final Map<String, List<String>> errors;
+
+    public boolean isEmpty() {
+        return errors.isEmpty();
+    }
+
+    public int size() {
+        return errors.size();
+    }
+
+    public int totalSize() {
+        int total = 0;
+
+        for (List<String> caseErrors : errors.values()) {
+            total += caseErrors.size();
+        }
+
+        return total;
+    }
+
+    public Map<String, List<String>> getErrors() {
         return errors;
     }
 
-    public static void compare(VerifyData expectedCases, VerifyData actualCases, List<String> errors) {
+    public void clear() {
+        errors.clear();
+    }
+
+    private void addError(String name, String error) {
+        List<String> caseErrors = errors.computeIfAbsent(name, (String useName) -> new ArrayList<>());
+        caseErrors.add(error);
+    }
+
+    public static final String GLOBAL_CASE_KEY = "global results";
+
+    public void doCompare(VerifyData expectedCases, VerifyData actualCases) {
         int actualSize = actualCases.cases.size();
         int expectedSize = expectedCases.cases.size();
         if (actualSize != expectedSize) {
-            errors.add("Incorrect count of cases; expected [ " + expectedSize + " ] actual [ " + actualSize + " ]");
+            addError(GLOBAL_CASE_KEY, "Incorrect case count; expected [ " + expectedSize + " ] actual [ " + actualSize + " ]");
         }
 
-        Map<String, VerifyCase> actual = mapCases(actualCases.cases);
-        Map<String, VerifyCase> expected = mapCases(expectedCases.cases);
+        // The actual and expected case mappings are kept in the original case order.
+
+        Map<String, VerifyCase> actual = actualCases.mapCases();
+        Map<String, VerifyCase> expected = expectedCases.mapCases();
 
         actual.forEach((String caseKey, VerifyCase actualCase) -> {
             VerifyCase expectedCase = expected.get(caseKey);
             if (expectedCase == null) {
-                errors.add("Extra case [ " + caseKey + " ]");
+                addError(GLOBAL_CASE_KEY, "Extra case [ " + caseKey + " ]");
             }
         });
 
         expected.forEach((String caseKey, VerifyCase expectedCase) -> {
             VerifyCase actualCase = actual.get(caseKey);
             if (actualCase == null) {
-                errors.add("Missing case [ " + caseKey + " ]");
+                addError(GLOBAL_CASE_KEY, "Missing case [ " + caseKey + " ]");
             }
         });
 
@@ -54,21 +95,21 @@ public class VerifyUtil {
             if (expectedCase == null) {
                 return;
             }
-            compare(caseKey, expectedCase, actualCase, errors);
+            compare(caseKey, expectedCase, actualCase);
         });
     }
 
-    public static void compare(String caseKey, VerifyCase expectedCase, VerifyCase actualCase, List<String> errors) {
-        compare(caseKey, "Resolved", expectedCase.output.resolved, actualCase.output.resolved, errors);
+    public void compare(String caseKey, VerifyCase expectedCase, VerifyCase actualCase) {
+        compare(caseKey, "Resolved", expectedCase.output.resolved, actualCase.output.resolved);
     }
 
-    public static void compare(String caseKey, String tag, List<String> expected, List<String> actual, List<String> errors) {
+    public void compare(String caseKey, String tag, List<String> expected, List<String> actual) {
         String prefix = "Error [ " + tag + caseKey + " ]: ";
 
         int actualSize = actual.size();
         int expectedSize = expected.size();
         if (actualSize != expectedSize) {
-            errors.add(prefix + "Incorrect count: expected [ " + expectedSize + " ] actual [ " + actualSize + " ]");
+            addError(caseKey, "Incorrect count: expected [ " + expectedSize + " ] actual [ " + actualSize + " ]");
         }
 
         Set<String> expectedSet = new HashSet<>(expected);
@@ -76,13 +117,13 @@ public class VerifyUtil {
 
         expectedSet.forEach((String expectedElement) -> {
             if (!actualSet.contains(expectedElement)) {
-                errors.add(prefix + "Missing [ " + expectedElement + " ]");
+                addError(caseKey, prefix + "Missing [ " + expectedElement + " ]");
             }
         });
 
         actualSet.forEach((String actualElement) -> {
             if (!expectedSet.contains(actualElement)) {
-                errors.add(prefix + "Extra [ " + actualElement + " ]");
+                addError(caseKey, prefix + "Extra       [ " + actualElement + " ]");
             }
         });
 
@@ -101,38 +142,7 @@ public class VerifyUtil {
         }
 
         if (orderError == null) {
-            errors.add(prefix + orderError);
+            addError(caseKey, prefix + orderError);
         }
-    }
-
-    public static Map<String, VerifyCase> mapCases(List<VerifyCase> cases) {
-        Map<String, VerifyCase> mappedCases = new HashMap<>();
-
-        StringBuilder keyBuilder = new StringBuilder();
-        cases.forEach((VerifyCase verifyCase) -> {
-            mappedCases.put(caseKey(verifyCase, keyBuilder), verifyCase);
-        });
-
-        return mappedCases;
-    }
-
-    public static String caseKey(VerifyCase verifyCase, StringBuilder keyBuilder) {
-        verifyCase.input.kernel.forEach((String name) -> {
-            if (keyBuilder.length() != 0) {
-                keyBuilder.append(':');
-            }
-            keyBuilder.append(name);
-        });
-
-        verifyCase.input.roots.forEach((String name) -> {
-            if (keyBuilder.length() != 0) {
-                keyBuilder.append(':');
-            }
-            keyBuilder.append(name);
-        });
-
-        String key = keyBuilder.toString();
-        keyBuilder.setLength(0);
-        return key;
     }
 }

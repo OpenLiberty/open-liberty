@@ -763,7 +763,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     }
 
     @Override
-    public Collection<ProvisioningFeatureDefinition> select(Predicate<ProvisioningFeatureDefinition> selector) {
+    public List<ProvisioningFeatureDefinition> select(Predicate<ProvisioningFeatureDefinition> selector) {
         if (selector == null) {
             return new ArrayList<>(cachedFeatures.values());
         } else {

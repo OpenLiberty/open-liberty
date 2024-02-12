@@ -12,22 +12,17 @@
  *******************************************************************************/
 package com.ibm.ws.feature.tests;
 
-import static com.ibm.ws.kernel.feature.resolver.util.VerifyData.VerifyCase;
-
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.kernel.feature.resolver.util.VerifyData;
-import com.ibm.ws.kernel.feature.resolver.util.VerifyUtil;
+import com.ibm.ws.kernel.feature.resolver.util.VerifyDelta;
+import com.ibm.ws.kernel.feature.resolver.util.VerifyEnv;
 import com.ibm.ws.kernel.feature.resolver.util.VerifyXML;
 
 import componenttest.custom.junit.runner.FATRunner;
@@ -35,21 +30,19 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
-public class VerifyBaseLineTest {
+public class VerifyFeaturesTest {
 
-    public static final String SERVER_NAME = "verifyBase";
+    public static final String SERVER_NAME = "verify";
 
-    public static final String CASES_DATA_PATH = "verify/cases.xml";
-    public static final String ACTUAL_OUTPUT_DATA_PATH = "verify/actualOutputs.xml";
-
-    public static final String CASES_PROPERTY_NAME = "feature.verify.cases";
-    public static final String ACTUAL_OUTPUT_PROPERTY_NAME = "feature.verify.actual";
+    public static final String EXPECTED_PATH = "data/verify/expected.xml";
+    public static final String ACTUAL_PATH = "build/verify/actual.xml";
+    public static final String REPO_PATH = "build/verify/repo.xml";
 
     @Test
-    public void verifyBaseTest() throws Exception {
+    public void verifyResolution() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
-        server.addEnvVar(CASES_PROPERTY_NAME, CASES_DATA_PATH);
-        server.addEnvVar(ACTUAL_OUTPUT_PROPERTY_NAME, ACTUAL_OUTPUT_DATA_PATH);
+        server.addEnvVar(VerifyEnv.REPO_PROPERTY_NAME, REPO_PATH);
+        server.addEnvVar(VerifyEnv.RESULTS_PROPERTY_NAME, ACTUAL_PATH);
 
         server.startServer();
         try {
@@ -58,27 +51,30 @@ public class VerifyBaseLineTest {
             server.stopServer("CWWKF0001E");
         }
 
-        verify(CASES_DATA_PATH, ACTUAL_OUTPUT_DATA_PATH);
+        verify(EXPECTED_PATH, ACTUAL_PATH);
     }
 
-    protected void verify(String inputPath, String outputPath) throws Exception {
-        System.out.println("Verifying [ " + inputPath + " ] against [ " + outputPath + " ]");
+    protected void verify(String expectedPath, String actualPath) throws Exception {
+        System.out.println("Verifying: Expected [ " + expectedPath + " ]; Actual [ " + actualPath + " ]");
 
-        VerifyData expectedCases = load("Input", inputPath);
+        VerifyData expectedCases = load("Input", expectedPath);
         System.out.println("Expected cases [ " + expectedCases.cases.size() + " ]");
 
-        VerifyData actualCases = load("Actual", outputPath);
+        VerifyData actualCases = load("Actual", actualPath);
         System.out.println("Actual cases [ " + actualCases.cases.size() + " ]");
 
-        List<String> errors = VerifyUtil.compare(expectedCases, actualCases);
+        Map<String, List<String>> errors = VerifyDelta.compare(expectedCases, actualCases);
 
-        if ( errors.isEmpty() ) {
+        if (errors.isEmpty()) {
             System.out.println("All cases pass");
         } else {
-            for ( String error : errors ) {
-                System.out.println("Error [ " + error + " ]");
-            }
-            Assert.fail("Incorrect resolutions detected.")
+            errors.forEach((String caseName, List<String> caseErrors) -> {
+                System.out.println("Case errors [ " + caseName + " ]:");
+                for (String caseError : caseErrors) {
+                    System.out.println("  [ " + caseError + " ]");
+                }
+            });
+            Assert.fail("Incorrect resolutions detected.");
         }
     }
 

@@ -37,6 +37,7 @@ import org.osgi.framework.Version;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.Visibility;
@@ -153,11 +154,18 @@ public class FeatureResolverImpl implements FeatureResolver {
                                supportedProcessTypes);
     }
 
-    /*
-     * Here are the steps this uses to resolve:
-     * 1) Primes the selected features with the pre-resolved and the root features (conflicts are reported, but no permutations for backtracking)
-     * 2) Resolve the root features
-     * 3) Check if there are any auto features to resolve; if so return to step 2 and resolve the auto-features as root features
+    // @formatter:off
+
+    /**
+     * Intercept {@link #doResolve} to inject test actions.
+     *
+     * When {@link VerifyEnv#REPO_FILE_NAME} is specified, write the
+     * repository.
+     *
+     * When {@link VerifyEnv#RESULTS_FILE_NAME} is specified, perform
+     * test resolutions and write the results.
+     *
+     * After performing test actions, proceed to {@link #doResolve}.
      */
     @Override
     public Result resolveFeatures(Repository repository,
@@ -171,14 +179,24 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         if (VerifyEnv.RESULTS_FILE_NAME != null) {
-            generate(repository, kernelFeatures, VerifyEnv.RESULTS_FILE_NAME);
+            generate(repository,
+                     allowedMultipleVersions,
+                     kernelFeatures,
+                     VerifyEnv.RESULTS_FILE_NAME);
         }
 
-        return resolveFeatures(repository,
-                               kernelFeatures, rootFeatures, preResolved,
-                               allowedMultipleVersions, supportedProcessTypes);
+        return doResolve(repository,
+                         kernelFeatures, rootFeatures, preResolved,
+                         allowedMultipleVersions, supportedProcessTypes);
     }
 
+    /**
+     * Write the feature repository to the specified file.
+     *
+     * @param repository The repository which is to be written.
+     *
+     * @param repoFileName The file which is to be written.
+     */
     private void write(Repository repository, String repoFileName) {
         File repoFile = new File(repoFileName);
         String repoFilePath = repoFile.getAbsolutePath();
@@ -195,69 +213,165 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
     }
 
-    // @formatter:off
+    /**
+     * Perform resolutions using the supplied parameters.  Write
+     * the results.
+     *
+     * @param repository The repository used to perform resolutions.
+     * @param allowedMultiple Control parameters: When non-null, allow
+     *     multiple features.
+     * @param kernelFeatures Kernel features to be used to perform the
+     *     resolution.
+     * @param resultsFileName File which is to receive the resolution
+     *     results.
+     */
+    private void generate(Repository repository,
+                          Set<String> allowedMultiple,
+                          Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                          String resultsFileName) {
 
+        File resultsFile = new File(resultsFileName);
+        String resultsFilePath = resultsFile.getAbsolutePath();
+
+        info("Performing feature resolution ...");
+
+        info("Resolving and writing to [ {} ] ...", resultsFilePath);
+        Stream<VerifyCase> cases = generate(repository, allowedMultiple, kernelFeatures);
+        try {
+            VerifyXML.write(resultsFile, cases);
+            info("Resolving and writing to [ {} ] ... done", resultsFilePath);
+        } catch ( Exception e ) {
+            // FFDC
+            error("Failed resolving and writing to [ {} ] ...", resultsFilePath);
+        }
+    }
+
+    /**
+     * Compare two features by their short name.
+     *
+     * This is valid only for public features.
+     *
+     * Use a case insensitive comparison.
+     *
+     * @param def1 A feature definition which is to be compared.
+     * @param def2 Another feature definition which is to be compared.
+     *
+     * @return The features compared by their short name.
+     */
+    private static int comparePublic(ProvisioningFeatureDefinition def1,
+                              ProvisioningFeatureDefinition def2) {
+        return def1.getIbmShortName().compareToIgnoreCase(def2.getIbmShortName());
+    }
+    /**
+     * Generate resolution results for the specified parameters.  Generate
+     * results for each single public feature and for each supported process
+     * type of that feature.
+     *
+     * The results placed with server results then with client results.
+     * Both results collections are sorted by feature short name.
+     *
+     * @param repository The repository used to resolve the features.
+     * @param allowedMultiple Control parameters: When non-null, allow
+     *     multiple features.
+     * @param kernelFeatures Kernel features to be used to perform the
+     *     resolution.
+     *
+     * @return A stream across the resolution case data.
+     */
     private Stream<VerifyCase> generate(Repository repository,
+                                        Set<String> allowedMultiple,
                                         Collection<ProvisioningFeatureDefinition> kernelFeatures) {
 
-        Collection<ProvisioningFeatureDefinition> publicDefs =
+        List<ProvisioningFeatureDefinition> publicDefs =
             repository.select(RepoXML::isPublic);
+        publicDefs.sort(FeatureResolverImpl::comparePublic);
 
         Stream<ProvisioningFeatureDefinition> publicServerDefs =
             publicDefs.stream().filter(RepoXML::isServer);
         Stream<VerifyCase> serverResults = publicServerDefs.map(
             (ProvisioningFeatureDefinition def) ->
-                createResult(repository, kernelFeatures, def, ProcessType.SERVER));
+                createResult(repository, allowedMultiple, kernelFeatures, def, ProcessType.SERVER));
 
         Stream<ProvisioningFeatureDefinition> publicClientDefs =
             publicDefs.stream().filter(RepoXML::isClient);
         Stream<VerifyCase> clientResults = publicClientDefs.map(
             (ProvisioningFeatureDefinition featureDef) ->
-                createResult(repository, kernelFeatures, featureDef, ProcessType.CLIENT));
+                createResult(repository, allowedMultiple, kernelFeatures, featureDef, ProcessType.CLIENT));
 
         return Stream.concat(serverResults, clientResults);
     }
 
-    private void generate(Repository repository,
-                          Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                          String expectedFileName) {
-
-        File expectedFile = new File(expectedFileName);
-        String expectedFilePath = expectedFile.getAbsolutePath();
-
-        info("Generating feature resolution expected results");
-        info("Writing expected to [ {} ] ...", expectedFilePath);
-
-        Stream<VerifyCase> cases = generate(repository, kernelFeatures);
-
-        VerifyXML.write(expectedFile, cases);
-
-        info("Writing expected to [ {} ] ... done", expectedFilePath);
-    }
-
+    /**
+     * Perform resolution then convert the resolution result to a verification
+     * case.
+     *
+     * @param repository The repository used to resolve the features.
+     * @param allowedMultiple Control parameters: When non-null, allow
+     *     multiple features.
+     * @param kernelFeatures Kernel features to be used to perform the
+     *     resolution.
+     * @param featureDef A single public feature used as the root resolution
+     *     feature.
+     * @param processType Control parameter: Sets the process type active
+     *     during resolution.
+     *
+     * @return The resolution result converted into a verification case.
+     */
     private VerifyCase createResult(Repository repository,
+                                    Set<String> allowedMultiple,
                                     Collection<ProvisioningFeatureDefinition> kernelFeatures,
                                     ProvisioningFeatureDefinition featureDef,
                                     ProcessType processType) {
 
         Collection<String> rootFeatures = Collections.singleton(featureDef.getSymbolicName());
         Set<String> preResolved = Collections.emptySet();
-        Set<String> allowMultipleVersions = Collections.emptySet();
         EnumSet<ProcessType> processTypes = EnumSet.of(processType);
 
-        Result result = doResolveFeatures(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions, processTypes);
+        info("Creating test result ... ");
+        Result result = doResolve(repository,
+                                  kernelFeatures, rootFeatures, preResolved,
+                                  allowedMultiple, processTypes);
+        info("Creating test result ... done");
 
-        return asCase(kernelFeatures, featureDef, processType, result);
+        return asCase(allowedMultiple, processType, kernelFeatures, featureDef, result);
     }
 
-    private VerifyCase asCase(Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                              ProvisioningFeatureDefinition publicDef,
+    /**
+     * Create a verification case from resolution parameters and from
+     * the result of resolving those parameters.
+     *
+     * @param allowedMultiple Control parameters: When non-null, allow
+     *     multiple features.
+     * @param processType Control parameter: Sets the process type active
+     *     during resolution.
+     * @param kernelFeatures Kernel features to be used to perform the
+     *     resolution.
+     * @param featureDef A single public feature used as the root resolution
+     *     feature.
+     * @param result The feature resolution result.
+     *
+     * @return A verification case created from the resolution parameters and
+     * the resolution result.
+     */
+    private VerifyCase asCase(Set<String> allowedMultiple,
                               ProcessType processType,
+                              Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                              ProvisioningFeatureDefinition publicDef,
                               Result result) {
+
+        // For now, only handle the distinction between null and an empty set.
+        boolean allowMultiple = (allowedMultiple != null);
+
         VerifyCase verifyCase = new VerifyCase();
 
-        verifyCase.name = "Resolution [ " + publicDef.getSymbolicName() + " ] [ " + processType + " ]";
+        verifyCase.name = "Resolution [ " + publicDef.getSymbolicName() + " ]" +
+                          " Multiple [ " + allowMultiple + " ]" +
+                          " Process [ " + processType + " ]";
         verifyCase.description = "Singleton feature resolution";
+
+        if ( allowMultiple ) {
+            verifyCase.input.setMultiple();
+        }
 
         if (processType == ProcessType.CLIENT) {
             verifyCase.input.setClient();
@@ -273,15 +387,23 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         result.getResolvedFeatures().forEach(
             (String featureName) -> verifyCase.output.addResolved(featureName) );
+
+        return verifyCase;
     }
 
     // @formatter:on
 
-    private Result doResolveFeatures(Repository repository,
-                                     Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                                     Collection<String> rootFeatures, Set<String> preResolved,
-                                     Set<String> allowedMultipleVersions,
-                                     EnumSet<ProcessType> supportedProcessTypes) {
+    /*
+     * Here are the steps this uses to resolve:
+     * 1) Primes the selected features with the pre-resolved and the root features (conflicts are reported, but no permutations for backtracking)
+     * 2) Resolve the root features
+     * 3) Check if there are any auto features to resolve; if so return to step 2 and resolve the auto-features as root features
+     */
+    private Result doResolve(Repository repository,
+                             Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                             Collection<String> rootFeatures, Set<String> preResolved,
+                             Set<String> allowedMultipleVersions,
+                             EnumSet<ProcessType> supportedProcessTypes) {
 
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
@@ -901,7 +1023,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         ResultImpl getResult() {
             return _current._result;
-        };
+        }
 
         void processCandidates(Collection<String> chain, List<String> candidateNames, String symbolicName, String baseSymbolicName, String preferredVersion, boolean isSingleton) {
             // first check for container type

@@ -66,7 +66,7 @@ public interface FeatureResolver {
          *
          * @return All feature definitions which match the predicate.
          */
-        Collection<ProvisioningFeatureDefinition> select(Predicate<ProvisioningFeatureDefinition> selector);
+        List<ProvisioningFeatureDefinition> select(Predicate<ProvisioningFeatureDefinition> selector);
 
         /**
          * Answer the feature which matches a specified feature name.

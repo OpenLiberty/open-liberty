@@ -29,11 +29,11 @@ public interface VerifyXMLConstants {
     String DESCRIPTION_TAG = "description";
 
     String INPUT_TAG = "input";
-    String KERNEL_TAG = "kernel";
-    String ROOT_TAG = "root";
-
+    String MULTIPLE_TAG = "multiple";
     String CLIENT_TAG = "client";
     String SERVER_TAG = "server";
+    String KERNEL_TAG = "kernel";
+    String ROOT_TAG = "root";
 
     String OUTPUT_TAG = "output";
     String RESOLVED_TAG = "resolved";
