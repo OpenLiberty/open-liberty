@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,14 +12,17 @@
  *******************************************************************************/
 package jakarta.data.repository;
 
-import jakarta.data.page.Page;
-import jakarta.data.page.Pageable;
-import jakarta.data.repository.Find;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Interface methods copied from the Jakarta Data git repository.
+ * Copied from Jakarta Data.
  */
-public interface PageableRepository<T, K> extends BasicRepository<T, K> {
-    @Find
-    Page<T> findAll(Pageable<T> pageable);
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Find {
 }

@@ -122,9 +122,7 @@ class EntityInfo {
         String lowerName = name.toLowerCase();
         String attributeName = attributeNames.get(lowerName);
         if (attributeName == null)
-            if ("All".equals(name)) // TODO we might be able to remove special case logic like this now that we have the entity parameter pattern
-                attributeName = null; // Special case for BasicRepository.deleteAll and BasicRepository.findAll
-            else if ("id".equals(lowerName))
+            if ("id".equals(lowerName))
                 if (idClassAttributeAccessors == null && failIfNotFound)
                     throw new MappingException("Entity class " + getType().getName() + " does not have a property named " + name +
                                                " or which is designated as the @Id."); // TODO NLS
@@ -141,6 +139,8 @@ class EntityInfo {
                     lowerName = lowerName.replace("_", "");
                     attributeName = attributeNames.get(lowerName);
                     if (attributeName == null && failIfNotFound)
+                        // TODO If attempting to parse Query by Method Name without a By keyword, then the message
+                        // should also include the possibility that repository method is missing an annotation.
                         throw new MappingException("Entity class " + getType().getName() + " does not have a property named " + name +
                                                    ". The following are valid property names for the entity: " +
                                                    attributeTypes.keySet()); // TODO NLS

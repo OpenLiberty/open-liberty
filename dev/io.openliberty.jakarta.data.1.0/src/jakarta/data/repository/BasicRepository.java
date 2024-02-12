@@ -36,6 +36,7 @@ public interface BasicRepository<T, K> extends DataRepository<T, K> {
 
     boolean existsById(K id);
 
+    @Find
     Stream<T> findAll();
 
     Stream<T> findByIdIn(Iterable<K> ids);

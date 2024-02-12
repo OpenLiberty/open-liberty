@@ -38,6 +38,7 @@ import jakarta.data.page.Page;
 import jakarta.data.page.Pageable;
 import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 
@@ -56,6 +57,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     long deleteByHostNot(String host);
 
+    @Find
     @Select("meetingId")
     @OrderBy("id")
     List<Long> endsAtSecond(@By("stop") @Extract(SECOND) int second);
@@ -123,6 +125,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     int removeByHostNotIn(Collection<String> hosts);
 
+    @Find
     @Select("meetingId")
     @OrderBy("host")
     List<Long> startsWithinHoursWithMinute(@By("start") @Extract(HOUR) @GreaterThanEqual int minHour,
@@ -133,6 +136,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     boolean updateByMeetingIDSetHost(long meetingID, String newHost);
 
+    @Find
     @OrderBy("id")
     Stream<Reservation> withInviteeCount(@By("invitees") @ElementCount int size);
 }

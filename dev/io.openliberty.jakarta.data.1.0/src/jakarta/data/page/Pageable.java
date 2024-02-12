@@ -48,11 +48,19 @@ public interface Pageable<T> {
 
     public Pageable<T> afterKeysetCursor(Pageable.Cursor cursor);
 
+    public Pageable<T> asc(String property);
+
+    public Pageable<T> ascIgnoreCase(String property);
+
     public Pageable<T> beforeKeyset(Object... keyset);
 
     public Pageable<T> beforeKeysetCursor(Pageable.Cursor cursor);
 
     public Optional<Cursor> cursor();
+
+    public Pageable<T> desc(String property);
+
+    public Pageable<T> descIgnoreCase(String property);
 
     public Mode mode();
 
