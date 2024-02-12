@@ -33,4 +33,6 @@ public interface Slice<T> extends Streamable<T> {
     Pageable<T> nextPageable();
 
     <E> Pageable<E> nextPageable(Class<E> entityClass);
+
+    <E> Pageable<E> pageable(Class<E> entityClass);
 }

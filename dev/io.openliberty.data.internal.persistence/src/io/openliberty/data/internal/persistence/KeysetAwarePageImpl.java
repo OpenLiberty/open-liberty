@@ -167,6 +167,13 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <E> Pageable<E> pageable(Class<E> entityClass) {
+        // KeysetAwareSlice/Page must always have the same type result as sort criteria per the API.
+        return (Pageable<E>) pagination;
+    }
+
+    @Override
     public long totalElements() {
         if (totalElements == -1)
             totalElements = countTotalElements();

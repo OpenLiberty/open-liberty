@@ -35,7 +35,7 @@ public class PageImpl<T> implements Page<T> {
     private static final TraceComponent tc = Tr.register(PageImpl.class);
 
     private final Object[] args;
-    private final Pageable<T> pagination;
+    private final Pageable<?> pagination;
     private final QueryInfo queryInfo;
     private final List<T> results;
     private long totalElements = -1;
@@ -115,8 +115,15 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Pageable<T> pageable() {
-        return pagination;
+        return (Pageable<T>) pagination;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E> Pageable<E> pageable(Class<E> entityClass) {
+        return (Pageable<E>) pagination;
     }
 
     @Override
@@ -146,17 +153,21 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Pageable<T> nextPageable() {
         if (results.size() <= pagination.size() && pagination.size() < Integer.MAX_VALUE)
             return null;
 
-        return pagination.next();
+        return (Pageable<T>) pagination.next();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <E> Pageable<E> nextPageable(Class<E> entityClass) {
-        return (Pageable<E>) nextPageable();
+        if (results.size() <= pagination.size() && pagination.size() < Integer.MAX_VALUE)
+            return null;
+
+        return (Pageable<E>) pagination.next();
     }
 
     @Override
