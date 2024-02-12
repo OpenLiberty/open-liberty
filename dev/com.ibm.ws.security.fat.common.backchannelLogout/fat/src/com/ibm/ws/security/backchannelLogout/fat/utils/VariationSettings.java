@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -120,8 +120,8 @@ public class VariationSettings extends CommonTest {
                     logoutMethodTested = Constants.REVOCATION_ENDPOINT;
                     finalAppWithoutPostRedirect = Constants.defaultLogoutPage;
                     isRevokeEndpointInvoked = true;
-                    flowUsesBCL = true;
-                    isOPReqLogoutInvoked = true;
+                    flowUsesBCL = false;
+                    isOPReqLogoutInvoked = false;
                 } else {
                     if (currentRepeatAction.contains(Constants.SAML_IDP_INITIATED_LOGOUT)) {
                         logoutMethodTested = Constants.SAML_IDP_INITIATED_LOGOUT;
@@ -129,16 +129,24 @@ public class VariationSettings extends CommonTest {
                         isOPReqLogoutInvoked = true;
                         flowUsesBCL = true;
                     } else {
-                        logoutMethodTested = Constants.LOGOUT_ENDPOINT;
-                        flowUsesBCL = true;
-                        isOPReqLogoutInvoked = true;
-                        if (currentRepeatAction.toUpperCase().contains(Constants.SAML)) {
-                            finalAppWithoutPostRedirect = "/ibm/saml20/spOP/slo"; // all tests should be using the same provider spOP
-                            isLogoutEndpointInvoked = true;
-                        } else {
-                            finalAppWithoutPostRedirect = "/oidc/endpoint/.*/logout";
-                            // logout doesn't redirect to the post logout uri
+                        if (currentRepeatAction.contains(Constants.IBM_SECURITY_LOGOUT)) {
+                            logoutMethodTested = Constants.IBM_SECURITY_LOGOUT;
+                            isOPReqLogoutInvoked = true; 
+                            finalAppWithoutPostRedirect = ".*/ibm_security_logout";
                             finalAppWithPostRedirect = finalAppWithoutPostRedirect;
+                            flowUsesBCL = true;
+                        } else {
+                            logoutMethodTested = Constants.LOGOUT_ENDPOINT;
+                            flowUsesBCL = true;
+                            isOPReqLogoutInvoked = true;
+                            if (currentRepeatAction.toUpperCase().contains(Constants.SAML)) {
+                                finalAppWithoutPostRedirect = "/ibm/saml20/spOP/slo"; // all tests should be using the same provider spOP
+                                isLogoutEndpointInvoked = true;
+                            } else {
+                                finalAppWithoutPostRedirect = "/oidc/endpoint/.*/logout";
+                                // logout doesn't redirect to the post logout uri
+                                finalAppWithPostRedirect = finalAppWithoutPostRedirect;
+                            }
                         }
                     }
                 }

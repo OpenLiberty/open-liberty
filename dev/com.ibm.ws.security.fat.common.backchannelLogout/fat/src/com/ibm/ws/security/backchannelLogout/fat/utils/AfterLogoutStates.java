@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ package com.ibm.ws.security.backchannelLogout.fat.utils;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
+
+import componenttest.custom.junit.runner.RepeatTestFilter;
 
 /**
  * This class supplies methods to set the expected states of token and cookies after logout or end_session is invoked.
@@ -77,6 +79,8 @@ public class AfterLogoutStates {
     boolean isUsingHttpLogoutOnOP = false;
     boolean isUsingEndSessionWithHttpLogout = false;
     boolean isUsingLogoutWithHttpLogout = false;
+    boolean isUsingRevokeNotLogout = false;
+    boolean isUsingIbmSecurityLogout = false;
     //    boolean isUsingJwtToken = true;
     boolean isUsingIntrospect = true;
     boolean isUsingInvalidIntrospect = false;
@@ -135,22 +139,32 @@ public class AfterLogoutStates {
                 isUsingLogoutNotHttpLogout = true;
                 Log.info(thisClass, "AfterLogoutStates", "2");
             } else {
-                Log.info(thisClass, "AfterLogoutStates", "reqLogoutServer: " + vSettings.reqLogoutServer);
-                Log.info(thisClass, "AfterLogoutStates", "3");
-                if (vSettings.reqLogoutServer.equals(Constants.OIDC_RP)) {
-                    Log.info(thisClass, "AfterLogoutStates", "4");
-                    isUsingHttpLogoutOnRP = true;
-                    isUsingHttpLogoutOnOP = false;
+                if (vSettings.logoutMethodTested.equals(Constants.IBM_SECURITY_LOGOUT)) {
+                    isUsingLogoutNotHttpLogout = false;
+                    isUsingIbmSecurityLogout = true;
+                    Log.info(thisClass, "AfterLogoutStates", "3");
                 } else {
-                    Log.info(thisClass, "AfterLogoutStates", "5");
-                    isUsingHttpLogoutOnRP = false;
-                    isUsingHttpLogoutOnOP = true;
-                }
-                if (vSettings.sessionLogoutEndpoint != null) {
-                    if (vSettings.sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
-                        isUsingLogoutWithHttpLogout = true;
+                    if (vSettings.logoutMethodTested.equals(Constants.REVOCATION_ENDPOINT)) {
+                        isUsingRevokeNotLogout = true;
                     } else {
-                        isUsingEndSessionWithHttpLogout = true;
+                        Log.info(thisClass, "AfterLogoutStates", "reqLogoutServer: " + vSettings.reqLogoutServer);
+                        Log.info(thisClass, "AfterLogoutStates", "4");
+                        if (vSettings.reqLogoutServer.equals(Constants.OIDC_RP)) {
+                            Log.info(thisClass, "AfterLogoutStates", "5");
+                            isUsingHttpLogoutOnRP = true;
+                            isUsingHttpLogoutOnOP = false;
+                        } else {
+                            Log.info(thisClass, "AfterLogoutStates", "6");
+                            isUsingHttpLogoutOnRP = false;
+                            isUsingHttpLogoutOnOP = true;
+                        }
+                        if (vSettings.sessionLogoutEndpoint != null) {
+                            if (vSettings.sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
+                                isUsingLogoutWithHttpLogout = true;
+                            } else {
+                                isUsingEndSessionWithHttpLogout = true;
+                            }
+                        }
                     }
                 }
             }
@@ -251,7 +265,7 @@ public class AfterLogoutStates {
      */
     public void setRefreshTokenExpectedStateAfterLogout(BCL_FORM bcl_form, VariationSettings vSettings) {
 
-        if ((bcl_form != BCL_FORM.OMITTED && vSettings.flowUsesBCL) || vSettings.isEndSessionEndpointInvoked || vSettings.isRevokeEndpointInvoked) {
+        if ((bcl_form != BCL_FORM.OMITTED && vSettings.flowUsesBCL) || vSettings.isEndSessionEndpointInvoked) {
             refreshTokenValid = false;
         } else {
             refreshTokenValid = true;
@@ -321,9 +335,15 @@ public class AfterLogoutStates {
         // TODO - verify this
         // the cookies are cleaned up when req.logout is invoked on the RP, or we using the real bcl endpoint - end_session will invalidate the client cookie in a round about way
         if (vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint == null) {
-            clientCookieExists = true;
-            clientCookieStillValid = false;
-            clientCookieMatchesPrevious = false;
+            if (RepeatTestFilter.getRepeatActionsAsString().contains(Constants.OIDC__OP)) {
+                clientCookieExists = true;
+                clientCookieStillValid = true;
+                clientCookieMatchesPrevious = true;
+            } else {
+                clientCookieExists = true;
+                clientCookieStillValid = false;
+                clientCookieMatchesPrevious = false;
+            }
             return;
         }
         if (vSettings.isOPReqLogoutInvoked && (bcl_form == BCL_FORM.VALID) || vSettings.isRPReqLogoutInvoked) {

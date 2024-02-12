@@ -31,27 +31,22 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.backchannelLogout.fat.utils.AfterLogoutStates;
 import com.ibm.ws.security.backchannelLogout.fat.utils.AfterLogoutStates.BCL_FORM;
-import com.ibm.ws.security.backchannelLogout.fat.utils.BackChannelLogout_RegisterClients;
 import com.ibm.ws.security.backchannelLogout.fat.utils.Constants;
 import com.ibm.ws.security.backchannelLogout.fat.utils.TokenKeeper;
-import com.ibm.ws.security.backchannelLogout.fat.utils.VariationSettings;
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 import com.ibm.ws.security.fat.common.social.SocialConstants;
 import com.ibm.ws.security.fat.common.utils.ConditionalIgnoreRule;
-import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.AppPasswordsAndTokensCommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.AppPasswordsAndTokensCommonTest.TokenValues;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestServer;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings.StoreType;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServerWrapper;
@@ -72,8 +67,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     protected static Class<?> thisClass = BasicBCLTests.class;
 
     protected static AppPasswordsAndTokensCommonTest appPTcommon = new AppPasswordsAndTokensCommonTest();
-
-    private final static String localStore = "LOCALSTORE";
 
     @Rule
     public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
@@ -117,10 +110,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
                 if (!theOS.equals("ISERIES")) {
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
                 }
-
-                //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC + "_" + Constants.REVOCATION_ENDPOINT + "_" + localStore));
-                //                // needs resolution of issue https://github.com/OpenLiberty/open-liberty/issues/26615
-                //                //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC__OP + "_" + Constants.HTTP_SESSION));
+                // needs resolution of issue https://github.com/OpenLiberty/open-liberty/issues/26615 and additional updates
+                //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC__OP + "_" + Constants.HTTP_SESSION));
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.HTTP_SESSION));
             }
         } else {
@@ -129,7 +120,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
                 // LITE mode only run one instance
                 if (TestModeFilter.shouldRun(TestMode.FULL)) {
 
-                    //                    //                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.REVOCATION_ENDPOINT));
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION));
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
 
@@ -138,6 +128,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML_IDP_INITIATED_LOGOUT));
                 if (TestModeFilter.shouldRun(TestMode.FULL)) {
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.END_SESSION));
+                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.OIDC_RP + "_" + Constants.HTTP_SESSION));
                 }
 
             }
@@ -156,6 +147,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             if (TestModeFilter.shouldRun(TestMode.FULL)) {
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.HTTP_SESSION + "_" + Constants.LOGOUT_ENDPOINT));
+                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.IBM_SECURITY_LOGOUT));
             }
         } else {
             if (callingProject.equals(Constants.SOCIAL)) {
@@ -163,12 +155,13 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
                 // LITE mode only run one instance
                 if (TestModeFilter.shouldRun(TestMode.FULL)) {
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.HTTP_SESSION + "_" + Constants.END_SESSION));
+                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(SocialConstants.SOCIAL + "_" + Constants.IBM_SECURITY_LOGOUT));
                 }
             } else {
                 rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML_SP_INITIATED_LOGOUT));
                 if (TestModeFilter.shouldRun(TestMode.FULL)) {
                     rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.LOGOUT_ENDPOINT));
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.OIDC_RP + "_" + Constants.HTTP_SESSION));
+                    //                                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.SAML + "_" + Constants.IBM_SECURITY_LOGOUT));
                 }
 
             }
@@ -180,148 +173,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
-        currentRepeatAction = RepeatTestFilter.getRepeatActionsAsString();
-
-        makeRandomSettingSelections();
-
-        vSettings = new VariationSettings(currentRepeatAction);
-
-        // Start a normal OP, or an OP that uses SAML to authorize (in this case, we need to fire up a server running Shibboleth
-        startProviderBasedOnRepeat(tokenType);
-
-        // start an OIDC RP or a Social oidc client
-        startClientBasedOnRepeat(tokenType);
-
-        registerClientsIfNeeded();
-
-    }
-
-    /**
-     * If the current repeat is a SAML variation, start a Shibboleth IDP and an OP with a samlWebSso20 client. That client will be
-     * used to authorize using the SAML IDP.
-     * Otherwise, start a standard OIDC OP.
-     *
-     * @param tokenType
-     *            flag to be passed to common tooling to set config settings in the OP to have it create opaque or jwt
-     *            access_tokens
-     * @throws Exception
-     */
-    public static void startProviderBasedOnRepeat(String tokenType) throws Exception {
-
-        List<String> serverApps = new ArrayList<String>() {
-            {
-                add(Constants.OAUTHCLIENT_APP); // need this app to get the refresh forms
-            }
-        };
-
-        // For tests using httpsessionlogout, we need an intermediate app to perform the logout (including making calls to individual bcl endpoints on the RPs)
-        if (currentRepeatAction.contains(Constants.HTTP_SESSION)) {
-            serverApps.add(Constants.simpleLogoutApp);
-        }
-
-        if (vSettings.loginMethod.equals(Constants.SAML)) {
-            Log.info(thisClass, "setUp", "pickAnIDP: " + pickAnIDP);
-            testIDPServer = commonSetUp("com.ibm.ws.security.saml.sso-2.0_fat.shibboleth", "server_orig.xml", Constants.IDP_SERVER_TYPE, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.SKIP_CHECK_FOR_SECURITY_STARTED, true);
-            pickAnIDP = true; // tells commonSetup to update the OP server files with current/this instance IDP server info
-            testIDPServer.setRestoreServerBetweenTests(false);
-            testOPServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.op.saml", adjustServerConfig("op_server_basicTests.xml"), Constants.OIDC_OP, serverApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
-            // now, we need to update the IDP files
-            shibbolethHelpers.fixSPInfoInShibbolethServer(testOPServer, testIDPServer);
-            shibbolethHelpers.fixVarsInShibbolethServerWithDefaultValues(testIDPServer);
-            // now, start the shibboleth app with the updated config info
-            shibbolethHelpers.startShibbolethApp(testIDPServer);
-            testOPServer.addIgnoredServerException(MessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES);
-        } else {
-            useLdap = false;
-            Log.info(thisClass, "beforeClass", "Set useLdap to: " + useLdap);
-            if (currentRepeatAction.contains(Constants.MONGODB)) {
-                List<String> extraMsgs = new ArrayList<String>();
-                extraMsgs.add("CWWKZ0001I.*" + Constants.OAUTHCONFIGMONGO_START_APP);
-                testOPServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.op.mongo", adjustServerConfig("op_server_basicTests.xml"), Constants.OIDC_OP, serverApps, Constants.DO_NOT_USE_DERBY, Constants.USE_MONGODB, extraMsgs, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT, Constants.JUNIT_REPORTING);
-                // register clients after all servers are started and we know everyone's ports
-                testSettings.setStoreType(StoreType.CUSTOM);
-            } else {
-                testOPServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.op", adjustServerConfig("op_server_basicTests.xml"), Constants.OIDC_OP, serverApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
-            }
-        }
-
-        Map<String, String> vars = new HashMap<String, String>();
-
-        if (currentRepeatAction.contains(SocialConstants.SOCIAL)) {
-            // social client
-            vars.put("bclRoot", "ibm/api/social-login/backchannel_logout");
-        } else {
-            // openidconnect client
-            vars.put("bclRoot", "oidcclient/backchannel_logout");
-        }
-
-        updateServerSettings(testOPServer, vars);
-
-        testOPServer.setRestoreServerBetweenTests(false);
-        SecurityFatHttpUtils.saveServerPorts(testOPServer.getServer(), Constants.BVT_SERVER_1_PORT_NAME_ROOT);
-        testOPServer.addIgnoredServerExceptions(MessageConstants.CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI, MessageConstants.CWWKS5215E_NO_AVAILABLE_SP, "CWWKE0702E", "CWWKF0029E");
-
-    }
-
-    /**
-     * If the current repeat is an OIDC or SAML variation, start an OIDC RP client, otherwise, start a Social oidc client
-     *
-     * @param tokenType
-     *            flag to be passed to common tooling to set config settings in the OP to have it create opaque or jwt
-     *            access_tokens
-     * @throws Exception
-     */
-    public static void startClientBasedOnRepeat(String tokenType) throws Exception {
-
-        List<String> clientApps = new ArrayList<String>() {
-            {
-                add(Constants.APP_FORMLOGIN);
-                add(Constants.backchannelLogoutApp);
-            }
-        };
-
-        // For tests using httpsessionlogout, we need an intermediate app to perform the logout (including making calls to individual bcl endpoints on the RPs)
-        if (currentRepeatAction.contains(Constants.HTTP_SESSION)) {
-            clientApps.add(Constants.simpleLogoutApp);
-        }
-
-        Map<String, String> vars = new HashMap<String, String>();
-        if (vSettings.loginMethod.equals(Constants.OIDC) || vSettings.loginMethod.equals(Constants.SAML)) {
-            clientServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.rp", adjustServerConfig("rp_server_basicTests.xml"), Constants.OIDC_RP, clientApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
-            vars = updateClientCookieNameAndPort(clientServer, "clientCookieName", Constants.clientCookieName);
-            testSettings.setFlowType(Constants.RP_FLOW);
-        } else {
-            clientServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.social", adjustServerConfig("social_server_basicTests.xml"), Constants.OIDC_RP, clientApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
-            vars = updateClientCookieNameAndPort(clientServer, "clientCookieName", Constants.clientCookieName);
-            testSettings.setFlowType(SocialConstants.SOCIAL);
-            clientServer.addIgnoredServerExceptions(MessageConstants.CWWKG0058E_CONFIG_MISSING_REQUIRED_ATTRIBUTE, MessageConstants.CWWKS1740W_RS_REDIRECT_TO_RP, MessageConstants.CWWKS1725E_VALIDATION_ENDPOINT_URL_NOT_VALID_OR_FAILED); // the social client isn't happy with the public client not having a secret
-        }
-
-        updateServerSettings(clientServer, vars);
-
-        SecurityFatHttpUtils.saveServerPorts(clientServer.getServer(), Constants.BVT_SERVER_2_PORT_NAME_ROOT);
-
-        clientServer.addIgnoredServerExceptions(MessageConstants.CWWKS1541E_BACK_CHANNEL_LOGOUT_ERROR, MessageConstants.CWWKS1543E_BACK_CHANNEL_LOGOUT_REQUEST_VALIDATION_ERROR);
-
-        if (currentRepeatAction.contains(Constants.HTTP_SESSION)) {
-            if (currentRepeatAction.contains(Constants.OIDC_RP) || currentRepeatAction.contains(SocialConstants.SOCIAL)) {
-                logoutApp = clientServer.getHttpsString() + "/simpleLogoutTestApp/simpleLogout";
-            } else {
-                logoutApp = testOPServer.getHttpsString() + "/simpleLogoutTestApp/simpleLogout";
-            }
-        }
-
-    }
-
-    public static void registerClientsIfNeeded() throws Exception {
-
-        if (currentRepeatAction.contains(Constants.MONGODB)) {
-            Log.info(thisClass, "setUP", "Setting up mongo clients");
-            regClients = new BackChannelLogout_RegisterClients(testOPServer, clientServer, null);
-            regClients.registerClientsForBasicBCLTests();
-
-        }
+        sharedSetUp();
     }
 
     /**
@@ -336,21 +188,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     protected void resetBCL400AppCounter() throws Exception {
         genericInvokeEndpoint(_testName, getAndSaveWebClient(true), null, clientServer.getHttpsString() + "/backchannelLogoutTestApp/backChannelLogout400",
                 Constants.GETMETHOD, "resetBCLCounter", null, null, vData.addSuccessStatusCodes(), testSettings);
-
-    }
-
-    /**
-     * Invoke the back channel logout app that logs a message and counts the number of times it is invoked
-     * Each time the app is called (during a logout), it logs a message and increments a counter.
-     * When we have tests that expect multiple bcl logouts to occur, we check the count created by this app to verify that the
-     * correct number of logouts occurred.
-     * This method causes that counter to be reset.
-     *
-     * @throws Exception
-     */
-    protected void resetBCLAppCounter() throws Exception {
-        genericInvokeEndpoint(_testName, getAndSaveWebClient(true), null, clientServer.getHttpsString() + "/backchannelLogoutTestApp/backChannelLogoutLogMsg",
-                Constants.PUTMETHOD, "resetBCLCounter", null, null, vData.addSuccessStatusCodes(), testSettings);
 
     }
 
@@ -970,7 +807,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      */
     @Mode(TestMode.LITE)
     @Test
-    //    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_confirmBCLUriCalledForEachLogin_withIdTokenHint() throws Exception {
 
         starIt = true;
@@ -1038,7 +874,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      */
     @Mode(TestMode.LITE)
     @Test
-    //    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_confirmBCLUriCalledForEachLogin_withoutIdTokenHint() throws Exception {
 
         starIt = true;
@@ -1064,7 +899,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
         // logout expectations
         List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithoutPostRedirect);
-        if (!((currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null) || currentRepeatAction.contains(Constants.SAML_SP_INITIATED_LOGOUT))) {
+        if (!((currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null) || currentRepeatAction.contains(Constants.IBM_SECURITY_LOGOUT) || currentRepeatAction.contains(Constants.SAML_SP_INITIATED_LOGOUT))) {
             logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings1, null);
             logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings2, null);
             logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings3, null);
@@ -1144,7 +979,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogoutOrSAMLSPInitiatedLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_confirmBCLUriCalledForEachUserLogin_withoutIdTokenHint() throws Exception {
 
         starIt = true;
@@ -1167,7 +1001,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
         // logout expectations
         List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithoutPostRedirect);
-        logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings1, "1");
+        if (!((currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null))) {
+            logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings1, "1");
+        } else {
+            logoutExpectations = addDidNotInvokeBCLExpectation(logoutExpectations, updatedTestSettings1, "1");
+        }
         logoutExpectations = addDidNotInvokeBCLExpectation(logoutExpectations, updatedTestSettings2, "2");
         logoutExpectations = addDidNotInvokeBCLExpectation(logoutExpectations, updatedTestSettings3, "3");
 
@@ -1234,7 +1072,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
+    // chc @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_idTokenCacheEnabled_false_withIdTokenHint() throws Exception {
 
         starIt = true;
@@ -1360,7 +1198,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogoutOrSAMLSPInitiatedLogout.class) // bcl wouldn't be invoked using this logout, so skip test
     public void BasicBCLTests_accessTokenCacheEnabled_false_withoutIdTokenHint() throws Exception {
 
         starIt = true;
@@ -1389,9 +1226,15 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
         // logout expectations
         List<validationData> logoutExpectations = initLogoutExpectations(vSettings.finalAppWithoutPostRedirect);
-        logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings1, null);
-        logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings2, null);
-        logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings3, null);
+        if (!((currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null))) {
+            logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings1, null);
+            logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings2, null);
+            logoutExpectations = addDidInvokeBCLExpectation(logoutExpectations, updatedTestSettings3, null);
+        } else {
+            logoutExpectations = addDidNotInvokeBCLExpectation(logoutExpectations, updatedTestSettings1, null);
+            logoutExpectations = addDidNotInvokeBCLExpectation(logoutExpectations, updatedTestSettings2, null);
+            logoutExpectations = addDidNotInvokeBCLExpectation(logoutExpectations, updatedTestSettings3, null);
+        }
 
         // Logout
         invokeLogout(webClient1, updatedTestSettings1, logoutExpectations, null);
@@ -1401,9 +1244,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
         // to set the origin mark correctly before calling this method
         clientServer.getServer().resetLogMarks();
 
-        validateCorrectBCLUrisCalled(clientServer, updatedTestSettings1, keeper1.getSessionId());
-        validateCorrectBCLUrisCalled(clientServer, updatedTestSettings2, keeper2.getSessionId());
-        validateCorrectBCLUrisCalled(clientServer, updatedTestSettings3, keeper3.getSessionId());
+        if (!((currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null) || currentRepeatAction.contains(Constants.IBM_SECURITY_LOGOUT) || currentRepeatAction.contains(Constants.SAML_SP_INITIATED_LOGOUT))) {
+            validateCorrectBCLUrisCalled(clientServer, updatedTestSettings1, keeper1.getSessionId());
+            validateCorrectBCLUrisCalled(clientServer, updatedTestSettings2, keeper2.getSessionId());
+            validateCorrectBCLUrisCalled(clientServer, updatedTestSettings3, keeper3.getSessionId());
+        }
 
     }
 
@@ -1553,6 +1398,43 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     }
 
     /**
+     * Start up a server with a provider that has an invalid back channel url - this test will reconfigure the back channel url to
+     * a valid value.
+     * Test shows that the back channel logout url that was dynamically updated is the value that is used.
+     *
+     * @throws Exception
+     */
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsesMongoDB.class) // we can't dynamically update the clients in the mongodb, so skip
+    public void BasicBCLTests_invalidBackchannelLogoutUri_withReconfig() throws Exception {
+
+        // update the OP server config - server is started with an invalid bcl endpoint, but now update it to a valid one.
+        Map<String, String> vars = new HashMap<String, String>();
+        vars.put("invalidBCLUri", bclRoot + "/bcl_reconfig_invalidUri");
+        updateServerSettings(testOPServer, vars);
+
+        WebClient webClient = getAndSaveWebClient(true);
+
+        TestSettings updatedTestSettings = updateTestSettingsProviderAndClient("OidcConfigSample_invalidBCL", "bcl_reconfig_invalidUri", false);
+
+        Object response = accessProtectedApp(webClient, updatedTestSettings);
+
+        TokenKeeper tokens = setTokenKeeperFromUnprotectedApp(webClient, updatedTestSettings, 1);
+
+        // logout expectations - just make sure we landed on the logout page - always with a good status code
+        invokeLogout(webClient, updatedTestSettings, initLogoutExpectations(vSettings.finalAppWithoutPostRedirect), response);
+
+        // Test uses the standard backchannelLogoutUri - so end_session with bcl steps should be performed - set expected states accordingly
+        AfterLogoutStates states = new AfterLogoutStates(BCL_FORM.VALID, updatedTestSettings, vSettings);
+        //states.setIsUsingIntrospect(true);
+
+        webClient.getOptions().setJavaScriptEnabled(true);
+        // Make sure that all cookies and tokens have been cleaned up
+        validateLogoutResult(webClient, updatedTestSettings, tokens, states);
+
+    }
+
+    /**
      * Configure a client without a backchannelLogoutUri - show that with the id_token included in the request that the
      * access_token and refresh_token are still cleaned up when end_session is used, but that the refresh_token is NOT cleaned up
      * when logout is used
@@ -1625,7 +1507,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
         // don't pass the response from login - that will prevent the id_token from being sent on the logout
         testOPServer.addIgnoredServerException(MessageConstants.CWWKS1636E_POST_LOGOUT_REDIRECT_MISMATCH);
-        invokeLogout(webClient, updatedTestSettings, logoutExpectations, null, false);
+        invokeLogout(webClient, updatedTestSettings, logoutExpectations, (String) null, false);
 
         // Make sure that we do NOT need to log in to gain access to the app after we've only logged out on the OP (still have client cookie)
         // test uses a bcl uri that just sleeps
@@ -1940,8 +1822,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
     /**
      * invoke end_session on a provider that didn't issue the id_token - make sure failure about the wrong issuer is issued
      **/
-    @AllowedFFDC({ "io.openliberty.security.openidconnect.backchannellogout.LogoutTokenBuilderException", "jakarta.servlet.ServletException", "javax.servlet.ServletException" })
-    @ConditionalIgnoreRule.ConditionalIgnore(condition = SkipIfUsingJustReqLogout.class) // there is nothing in the req.logout() that would really tie us to a provider
+    @AllowedFFDC({ "io.openliberty.security.openidconnect.backchannellogout.LogoutTokenBuilderException", "jakarta.servlet.ServletException", "javax.servlet.ServletException", "java.security.PrivilegedActionException", "com.ibm.websphere.servlet.error.ServletErrorReport" })
     @Mode(TestMode.LITE)
     @Test
     public void BasicBCLTests_invokeLogoutOfDifferentProvider() throws Exception {
@@ -1969,7 +1850,8 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
         }
         if (vSettings.logoutMethodTested == Constants.LOGOUT_ENDPOINT) {
-            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did fail to logout.", null, "An exception occurred during logout");
+            logoutStep = Constants.LOGOUT;
+            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not get the successful logout message.", null, "Logout successful");
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to validate the id_token.", MessageConstants.CWWKS1643E_BACK_CHANNEL_LOGOUT_CANNOT_EXTRACT_CLAIMS);
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to build the logout token.", MessageConstants.CWWKS1642E_BACK_CHANNEL_LOGOUT_FAILURE_BUILDING_LOGOUT_TOKEN);
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
@@ -1980,7 +1862,14 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
         }
         if (vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint != null && vSettings.sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
-            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did fail to logout.", null, "An exception occurred during logout");
+            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not get the successful logout message.", null, "Logout successful");
+            expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to validate the id_token.", MessageConstants.CWWKS1643E_BACK_CHANNEL_LOGOUT_CANNOT_EXTRACT_CLAIMS);
+            expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to build the logout token.", MessageConstants.CWWKS1642E_BACK_CHANNEL_LOGOUT_FAILURE_BUILDING_LOGOUT_TOKEN);
+            expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
+        }
+
+        if (vSettings.logoutMethodTested == Constants.IBM_SECURITY_LOGOUT) {
+            expectations = vData.addExpectation(expectations, logoutStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not get the successful logout message.", null, "Successful Logout");
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to validate the id_token.", MessageConstants.CWWKS1643E_BACK_CHANNEL_LOGOUT_CANNOT_EXTRACT_CLAIMS);
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the provider failed to build the logout token.", MessageConstants.CWWKS1642E_BACK_CHANNEL_LOGOUT_FAILURE_BUILDING_LOGOUT_TOKEN);
             expectations = validationTools.addMessageExpectation(testOPServer, expectations, logoutStep, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Message log did not contain message indicating that the issuer did not match.", MessageConstants.CWWKS1646E_BACK_CHANNEL_LOGOUT_ISSUER_MISMATCH);
@@ -2004,7 +1893,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             states.setIsAppSessionAccess(true);
             states.setIsAccessTokenValid(true);
             states.setIsRefreshTokenValid(true);
-            states.setOPNoCookiesRemoved(isUsingSaml());
+            states.setOPAllCookiesRemoved();
             states.setClientNoCookiesRemoved();
         }
         if (vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint != null && vSettings.sessionLogoutEndpoint.equals(Constants.END_SESSION_ENDPOINT)) {
@@ -2016,11 +1905,11 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             states.setClientCookieMatchesPrevious(false);
         }
         if (vSettings.logoutMethodTested == Constants.HTTP_SESSION && vSettings.sessionLogoutEndpoint != null && vSettings.sessionLogoutEndpoint.equals(Constants.LOGOUT_ENDPOINT)) {
-            states.setIsAppSessionAccess(true);
+            states.setIsAppSessionAccess(false);
             states.setIsAccessTokenValid(true);
             states.setIsRefreshTokenValid(true);
-            states.setOPNoCookiesRemoved(isUsingSaml());
-            states.setClientCookieExists(true);
+            states.setOPAllCookiesRemoved();
+            states.setClientCookieExists(false);
             states.setClientCookieMatchesPrevious(false);
         }
 
@@ -2032,6 +1921,15 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             states.setClientAllCookiesRemoved();
             states.setClient2CookieStillValid(false);
         }
+        if (vSettings.logoutMethodTested == Constants.IBM_SECURITY_LOGOUT) {
+            states.setIsAppSessionAccess(true);
+            states.setIsAccessTokenValid(true);
+            states.setIsRefreshTokenValid(true);
+            states.setOPAllCookiesRemoved();
+            states.setClientCookieExists(true);
+            states.setClientCookieMatchesPrevious(true);
+        }
+
         states.setIsUsingInvalidIntrospect(false);
 
         // Make sure that all cookies and tokens have been cleaned up
