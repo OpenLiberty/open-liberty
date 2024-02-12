@@ -85,7 +85,13 @@ public class VersioningTestLogic extends AbstractTestLogic {
 
         final boolean isDB2ZOS = DatabaseVendor.checkDBProductName(dbProductName, dbProductVersion, DatabaseVendor.DB2ZOS);
 
-        if (isDB2ZOS && JPAPersistenceProvider.ECLIPSELINK.equals(provider)) {
+        /*
+         * TODO: Disabling these tests until the issue is is delivered:
+         * https://github.com/OpenLiberty/open-liberty/issues/23949
+         * https://github.com/OpenLiberty/open-liberty/issues/23952
+         */
+        if (isDB2ZOS && JPAPersistenceProvider.ECLIPSELINK.equals(provider)
+            && (isUsingJPA21Feature() || isUsingJPA31Feature())) {
             System.out.println("Skipping test; platform (" + dbProductName + ", " + dbProductVersion + ")");
             return;
         }
