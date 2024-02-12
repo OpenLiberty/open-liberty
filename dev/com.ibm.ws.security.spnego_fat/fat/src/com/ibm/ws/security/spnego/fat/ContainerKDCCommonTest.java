@@ -35,7 +35,6 @@ import javax.security.auth.login.LoginException;
 
 import org.ietf.jgss.Oid;
 import org.junit.AfterClass;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
@@ -86,6 +85,9 @@ public class ContainerKDCCommonTest {
     protected static String krbUser1 = "user1";
     protected static String krbUser1Pwd = "password";
 
+    protected static String krbUser2 = "user2";
+    protected static String krbUser2Pwd = "password";
+
     protected static String SPN = "HTTP/libertyhost";
     protected static String libertyHostName = "libertyhost";
 
@@ -96,14 +98,13 @@ public class ContainerKDCCommonTest {
     public static void preClassCheck() throws Exception {
         String thisMethod = "preClassCheck";
 
-        Log.info(c, thisMethod, "Checking the assumption that the tests for this class should be run.");
-        Assume.assumeTrue(InitClass.RUN_TESTS);
-        if (InitClass.OTHER_SUPPORT_JDKS && !InitClass.IBM_HYBRID_JDK) {
-            expectation = new JDK11Expectations();
-            Log.info(c, thisMethod, "Using JDK 11 Expectations.");
-        } else {
+        if (krb5Helper.IBM_KRB5_LOGIN_MODULE_AVAILABLE) {
             expectation = new JDK8Expectations();
-            Log.info(c, thisMethod, "Using IBM hybrid or IBM JDK 8 or lower Expectations.");
+            Log.info(c, thisMethod, "Using ibm krb5 login module.");
+        } else {
+            //if the IBM KRB5 login module is not available then the sun login module is used instead.
+            expectation = new JDK11Expectations();
+            Log.info(c, thisMethod, "Using sun krb5 login module.");
         }
 
         //// testContainer from jdbc FAT
@@ -171,15 +172,20 @@ public class ContainerKDCCommonTest {
     //@Before
     public void preTestCheck() throws Exception {
         String thisMethod = "preTestCheck";
-        Log.info(c, thisMethod, "Checking if new SPNEGO token should be created.");
-        wasCommonTokenRefreshed = false;
+        //Log.info(c, thisMethod, "Checking if new SPNEGO token should be created.");
+        //wasCommonTokenRefreshed = false;
 
-        if (shouldCommonTokenBeRefreshed()) {
-            Log.info(c, thisMethod, "Creating new SPNEGO token.");
-            createNewSpnegoToken(SPNEGOConstants.SET_AS_COMMON_TOKEN);
-        } else {
-            Log.info(c, thisMethod, "re-using existing SPNEGO token.");
-        }
+        //TODO: Since most of the currently tested JDKs will use the sun krb5 classes,
+        // It is more efficient to just re-create the SPNEGO every request, instead of checking.
+        Log.info(c, thisMethod, "Creating new SPNEGO token.");
+        createNewSpnegoToken(SPNEGOConstants.SET_AS_COMMON_TOKEN);
+
+        //if (shouldCommonTokenBeRefreshed()) {
+        //    Log.info(c, thisMethod, "Creating new SPNEGO token.");
+        //    createNewSpnegoToken(SPNEGOConstants.SET_AS_COMMON_TOKEN);
+        //} else {
+        //    Log.info(c, thisMethod, "re-using existing SPNEGO token.");
+        //}
     }
 
     public void spnegoTestSetupChecks() throws Exception {
@@ -523,7 +529,6 @@ public class ContainerKDCCommonTest {
             //TARGET_SERVER = fullyQualifiedDomainName;
             //TARGET_SERVER = ApacheKDCforSPNEGO.canonicalHostname;
             TARGET_SERVER = libertyHostName;
-            //todo change dbuser
         } else {
             Log.info(c, thisMethod, "Using the short host name in the target server SPN");
 //            String shortHostName = getKdcHelper().getShortHostName(fullyQualifiedDomainName, true);
@@ -840,7 +845,7 @@ public class ContainerKDCCommonTest {
      * @return
      */
     public String successfulSpnegoServletCall(Map<String, String> headers) {
-        return successfulSpnegoServletCall(headers, ApacheKDCforSPNEGO.COMMON_TOKEN_USER, ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_EMPLOYEE,
+        return successfulSpnegoServletCall(headers, krbUser1, ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_EMPLOYEE,
                                            ApacheKDCforSPNEGO.COMMON_TOKEN_USER_IS_MANAGER);
     }
 
@@ -1114,7 +1119,7 @@ public class ContainerKDCCommonTest {
     protected Spnego setDefaultSpnegoConfigValues(Spnego spnego) throws Exception {
         spnego.krb5Config = configFile;
         spnego.krb5Keytab = keytabFile;
-        spnego.servicePrincipalNames = "dbuser";//ApacheKDCforSPNEGO.SPN;
+        spnego.servicePrincipalNames = libertyHostName;//ApacheKDCforSPNEGO.SPN;
         spnego.canonicalHostName = "false";
         spnego.skipForUnprotectedURI = null;
         spnego.spnegoAuthenticationErrorPageURL = null;
@@ -1151,8 +1156,7 @@ public class ContainerKDCCommonTest {
     }
 
     protected void setDefaultSpnegoServerConfig(boolean enableInfoLogging) throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, "dbuser", "false", null, null, null, false);
-        //todo update dbuser
+        setSpnegoServerConfig(configFile, keytabFile, libertyHostName, "false", null, null, null, false);
     }
 
     protected void setSpnegoServerConfig(String config, String keytab, String spn, String useCanonicalHost, String authErrorPage, String notSupportedErrorPage,

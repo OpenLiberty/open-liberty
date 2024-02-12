@@ -27,13 +27,14 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 import org.testcontainers.DockerClientFactory;
-import org.testcontainers.containers.FixedHostPortGenericContainer;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.InternetProtocol;
+import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -41,7 +42,7 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FileUtils;
 
-public class KerberosContainer extends FixedHostPortGenericContainer<KerberosContainer> {
+public class KerberosContainer extends GenericContainer<KerberosContainer> {
 
     private static final Class<?> c = KerberosContainer.class;
 
@@ -54,16 +55,16 @@ public class KerberosContainer extends FixedHostPortGenericContainer<KerberosCon
     //private static final String IMAGE = "kyleaure/krb5-server:1.0";
     private static final String IMAGE = "fbicodex/spnego-kdc-server:1.0";
 
-    private int udp_88;
+    private int udp_99;
 
     public KerberosContainer(Network network) {
         super(IMAGE);
         withNetwork(network);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void configure() {
-        withExposedPorts(88, 464, 749);
         withNetworkAliases(KRB5_KDC);
         withCreateContainerCmdModifier(cmd -> {
             cmd.withHostName(KRB5_KDC);
@@ -78,36 +79,36 @@ public class KerberosContainer extends FixedHostPortGenericContainer<KerberosCon
                         .withStartupTimeout(Duration.ofSeconds(FATRunner.FAT_TEST_LOCALRUN ? 15 : 300)));
         withCreateContainerCmdModifier(cmd -> {
             //Add previously exposed ports and UDP port
-            List<ExposedPort> exposedPorts = new ArrayList<>();
+
+            List<ExposedPort> exposedPorts = new ArrayList<ExposedPort>();
             for (ExposedPort p : cmd.getExposedPorts()) {
                 Log.info(c, "configure", "ExposedPort=" + p.getPort());
                 exposedPorts.add(p);
             }
-            exposedPorts.add(ExposedPort.udp(88));
+            exposedPorts.add(ExposedPort.udp(99));
             cmd.withExposedPorts(exposedPorts);
 
-            //Add previous port bindings and UDP port binding
+            // Add previous port bindings and UDP port binding
             Ports ports = cmd.getPortBindings();
-            //ports.bind(ExposedPort.udp(88), Ports.Binding.empty());
-            ports.bind(ExposedPort.udp(88), Ports.Binding.empty());
+            int containerPort = 99;
+            int hostPort = 88;
+
+            String kdcPortMapping = String.format("%d:%d/%s", hostPort, containerPort, InternetProtocol.UDP);
+            Log.info(c, "configure", "adding KDC port mapping: " + kdcPortMapping);
+
+            Log.info(c, "configure", "PortBinding.parse(kdcPortMapping): " + PortBinding.parse(kdcPortMapping));
+            ports.add(PortBinding.parse(kdcPortMapping));
+
+            Log.info(c, "configure", "ports: " + ports);
             cmd.withPortBindings(ports);
             cmd.withHostName(KRB5_KDC);
-
-            //cmd.withPortBindings(Collections.singletonList("88:88/udp")));
-
-            List<String> portBindings = new ArrayList<>();
-            portBindings.add("88:88/udp"); // hostPort:containerPort
-            //portBindings.add("15673:15672"); // hostPort:containerPort
-            this.setPortBindings(portBindings);
-
-            this.addFixedExposedPort(88, 88);
         });
     }
 
     @Override
     protected void containerIsStarted(InspectContainerResponse containerInfo) {
-        String udp88 = containerInfo.getNetworkSettings().getPorts().getBindings().get(new ExposedPort(88, InternetProtocol.UDP))[0].getHostPortSpec();
-        udp_88 = Integer.valueOf(udp88);
+        String udp99 = containerInfo.getNetworkSettings().getPorts().getBindings().get(new ExposedPort(99, InternetProtocol.UDP))[0].getHostPortSpec();
+        udp_99 = Integer.valueOf(udp99);
     }
 
     @Override
@@ -123,8 +124,8 @@ public class KerberosContainer extends FixedHostPortGenericContainer<KerberosCon
     @Override
     public Integer getMappedPort(int originalPort) {
         // For this container assume we always want the UDP port when we ask for port 88
-        if (originalPort == 88) {
-            return udp_88;
+        if (originalPort == 99) {
+            return udp_99;
         } else {
             return super.getMappedPort(originalPort);
         }
@@ -137,7 +138,7 @@ public class KerberosContainer extends FixedHostPortGenericContainer<KerberosCon
                       "        ticket_lifetime = 24h\n" +
                       "        dns_lookup_realm = false\n" +
                       "        default_realm = " + KRB5_REALM.toUpperCase() + "\n" +
-                      "        kdc_ports = " + getMappedPort(88) + "\n" +
+                      "        kdc_ports = " + getMappedPort(99) + "\n" +
                       "\n" +
                       "# The following krb5.conf variables are only for MIT Kerberos.\n" +
                       "        kdc_timesync = 1\n" +
@@ -150,7 +151,7 @@ public class KerberosContainer extends FixedHostPortGenericContainer<KerberosCon
                       "\n" +
                       "[realms]\n" +
                       "        " + KRB5_REALM.toUpperCase() + " = {\n" +
-                      "                kdc = " + getHost() + ":" + getMappedPort(88) + "\n" +
+                      "                kdc = " + getHost() + ":" + getMappedPort(99) + "\n" +
                       "                admin_server = " + getHost() + "\n" +
                       "        }\n" +
                       "\n" +
@@ -176,7 +177,7 @@ public class KerberosContainer extends FixedHostPortGenericContainer<KerberosCon
         krbConf = configureProperty(krbConf, "libdefaults", "forwardable", "true");
         krbConf = configureProperty(krbConf, "libdefaults", "rdns", "false");
 
-        krbConf = configureProperty(krbConf, "libdefaults", "kdc_ports", "" + getMappedPort(88));
+        krbConf = configureProperty(krbConf, "libdefaults", "kdc_ports", "" + getMappedPort(99));
 
         if (!krbConf.contains("[realms]")) {
             krbConf += "\n\n[realms]";
@@ -184,7 +185,7 @@ public class KerberosContainer extends FixedHostPortGenericContainer<KerberosCon
         if (!krbConf.contains(KRB5_REALM + " = {")) {
             krbConf = krbConf.replace("[realms]", "[realms]\n\t" +
                                                   KRB5_REALM + " = {\n\t\t" +
-                                                  "kdc = " + getHost() + ":" + getMappedPort(88) + "\n\t\t" +
+                                                  "kdc = " + getHost() + ":" + getMappedPort(99) + "\n\t\t" +
                                                   "admin_server = " + getHost() + "\n\t}\n");
         }
 

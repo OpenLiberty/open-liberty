@@ -41,7 +41,7 @@ public class FATSuite extends TestContainerSuite {
 
     ///////////////////////////////////////////////////////////////
     //todo remove old properties
-    //private static final Class<?> c = ApacheKDCforSPNEGO.class;
+    private static final Class<?> c = FATSuite.class;
 
     public static String SPN;
 

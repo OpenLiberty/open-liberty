@@ -427,10 +427,11 @@ public class ApacheKDCCommonTest {
         //String fullyQualifiedDomainName = testHelper.getTestSystemFullyQualifiedDomainName();
         //String fullyQualifiedDomainName = InitClass.getServerCanonicalHostName();
         if (useCanonicalHostName) {
-            Log.info(c, thisMethod, "Using the canonical host name in the target server SPN: " + "rndhostname");
+            Log.info(c, thisMethod, "Using the canonical host name in the target server SPN: " + "libertyhost");
             //TARGET_SERVER = fullyQualifiedDomainName;
             //TARGET_SERVER = ApacheKDCforSPNEGO.canonicalHostname;
-            TARGET_SERVER = "dbuser";
+            //TARGET_SERVER = "dbuser";
+            TARGET_SERVER = "libertyhost";
             //todo change dbuser
         } else {
             Log.info(c, thisMethod, "Using the short host name in the target server SPN");
