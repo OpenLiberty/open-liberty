@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal;
 
+import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +31,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import org.osgi.framework.Version;
 
@@ -42,6 +44,10 @@ import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
+import com.ibm.ws.kernel.feature.resolver.util.RepoXML;
+import com.ibm.ws.kernel.feature.resolver.util.VerifyData.VerifyCase;
+import com.ibm.ws.kernel.feature.resolver.util.VerifyEnv;
+import com.ibm.ws.kernel.feature.resolver.util.VerifyXML;
 
 /**
  * A feature resolver that determines the set of features that should be installed
@@ -65,15 +71,43 @@ import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
  * one run to the next.
  */
 public class FeatureResolverImpl implements FeatureResolver {
+    private static final Object tc;
 
-    /**
-     * An exception that happens when copying a Chains object
-     * to indicate that the chains within the Chains object
-     * have no more valid options to try.
-     */
-    static class DeadEndChain extends Exception {
-        private static final long serialVersionUID = 1L;
+    static {
+        Object temp = null;
+        try {
+            temp = Tr.register(FeatureResolverImpl.class,
+                               ProvisionerConstants.TR_GROUP, ProvisionerConstants.NLS_PROPS);
+        } catch (Throwable t) {
+            // ignore
+        }
+        tc = temp;
     }
+
+    @Trivial
+    private static void trace(String message) {
+        if (tc != null) {
+            if (TraceComponent.isAnyTracingEnabled() && ((TraceComponent) tc).isDebugEnabled()) {
+                Tr.debug((TraceComponent) tc, message);
+            }
+        }
+    }
+
+    @Trivial
+    private static void error(String message, Object... parms) {
+        if (tc != null) {
+            Tr.error((TraceComponent) tc, message, parms);
+        }
+    }
+
+    @Trivial
+    private static void info(String message, Object... parms) {
+        if (tc != null) {
+            Tr.info((TraceComponent) tc, message, parms);
+        }
+    }
+
+    //
 
     private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
@@ -85,20 +119,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     private static Map<String, String[]> parseNAV = new HashMap<String, String[]>();
 
-    private static final Object tc;
-
     static {
-        Object temp = null;
-        try {
-            temp = Tr.register(FeatureResolverImpl.class, com.ibm.ws.kernel.feature.internal.ProvisionerConstants.TR_GROUP,
-                               com.ibm.ws.kernel.feature.internal.ProvisionerConstants.NLS_PROPS);
-        } catch (Throwable t) {
-            // nothing
-        }
-        tc = temp;
-    }
-
-    private void verifyVersionlessEnvVar(FeatureResolver.Repository repository){
         String[] preferredVersions = (preferedFeatureVersions == null) ? new String[] {} : preferedFeatureVersions.split(",");
         String[][] parsedVersions = new String[preferredVersions.length][2];
         String invalid = "";
@@ -123,11 +144,6 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     @Override
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection, java.util.Set)
-     */
     public Result resolveFeatures(FeatureResolver.Repository repository, Collection<String> rootFeatures, Set<String> preResolved, boolean allowMultipleVersions) {
         // Note that when no process type is passed we support all process types.
         return resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), rootFeatures, preResolved,
@@ -136,12 +152,7 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     @Override
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection,
-     * java.util.Collection, java.util.Set)
-     */
+
     public Result resolveFeatures(FeatureResolver.Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures,
                                   Set<String> preResolved, boolean allowMultipleVersions) {
         // Note that when no process type is passed we support all process types.
@@ -149,13 +160,6 @@ public class FeatureResolverImpl implements FeatureResolver {
                                EnumSet.allOf(ProcessType.class));
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection,
-     * java.util.Collection, java.util.Set,
-     * boolean, java.util.EnumSet)
-     */
     @Override
     public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
                                   boolean allowMultipleVersions,
@@ -165,20 +169,135 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection,
-     * java.util.Collection, java.util.Set,
-     * java.util.Set, java.util.EnumSet)
      * Here are the steps this uses to resolve:
      * 1) Primes the selected features with the pre-resolved and the root features (conflicts are reported, but no permutations for backtracking)
      * 2) Resolve the root features
      * 3) Check if there are any auto features to resolve; if so return to step 2 and resolve the auto-features as root features
      */
     @Override
-    public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
+    public Result resolveFeatures(Repository repository,
+                                  Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                                  Collection<String> rootFeatures, Set<String> preResolved,
                                   Set<String> allowedMultipleVersions,
                                   EnumSet<ProcessType> supportedProcessTypes) {
+
+        if (VerifyEnv.REPO_FILE_NAME != null) {
+            write(repository, VerifyEnv.REPO_FILE_NAME);
+        }
+
+        if (VerifyEnv.RESULTS_FILE_NAME != null) {
+            generate(repository, kernelFeatures, VerifyEnv.RESULTS_FILE_NAME);
+        }
+
+        return resolveFeatures(repository,
+                               kernelFeatures, rootFeatures, preResolved,
+                               allowedMultipleVersions, supportedProcessTypes);
+    }
+
+    private void write(Repository repository, String repoFileName) {
+        File repoFile = new File(repoFileName);
+        String repoFilePath = repoFile.getAbsolutePath();
+
+        info("Writing feature repository to [ {} ] ...", repoFilePath);
+
+        try {
+            RepoXML.write(new File(repoFileName), repository);
+            info("Writing feature repository to [ {} ] ... done", repoFilePath);
+
+        } catch (Exception e) {
+            // FFDC
+            error("Error writing feature repository to [ {} ]", repoFilePath);
+        }
+    }
+
+    // @formatter:off
+
+    private Stream<VerifyCase> generate(Repository repository,
+                                        Collection<ProvisioningFeatureDefinition> kernelFeatures) {
+
+        Collection<ProvisioningFeatureDefinition> publicDefs =
+            repository.select(RepoXML::isPublic);
+
+        Stream<ProvisioningFeatureDefinition> publicServerDefs =
+            publicDefs.stream().filter(RepoXML::isServer);
+        Stream<VerifyCase> serverResults = publicServerDefs.map(
+            (ProvisioningFeatureDefinition def) ->
+                createResult(repository, kernelFeatures, def, ProcessType.SERVER));
+
+        Stream<ProvisioningFeatureDefinition> publicClientDefs =
+            publicDefs.stream().filter(RepoXML::isClient);
+        Stream<VerifyCase> clientResults = publicClientDefs.map(
+            (ProvisioningFeatureDefinition featureDef) ->
+                createResult(repository, kernelFeatures, featureDef, ProcessType.CLIENT));
+
+        return Stream.concat(serverResults, clientResults);
+    }
+
+    private void generate(Repository repository,
+                          Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                          String expectedFileName) {
+
+        File expectedFile = new File(expectedFileName);
+        String expectedFilePath = expectedFile.getAbsolutePath();
+
+        info("Generating feature resolution expected results");
+        info("Writing expected to [ {} ] ...", expectedFilePath);
+
+        Stream<VerifyCase> cases = generate(repository, kernelFeatures);
+
+        VerifyXML.write(expectedFile, cases);
+
+        info("Writing expected to [ {} ] ... done", expectedFilePath);
+    }
+
+    private VerifyCase createResult(Repository repository,
+                                    Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                                    ProvisioningFeatureDefinition featureDef,
+                                    ProcessType processType) {
+
+        Collection<String> rootFeatures = Collections.singleton(featureDef.getSymbolicName());
+        Set<String> preResolved = Collections.emptySet();
+        Set<String> allowMultipleVersions = Collections.emptySet();
+        EnumSet<ProcessType> processTypes = EnumSet.of(processType);
+
+        Result result = doResolveFeatures(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions, processTypes);
+
+        return asCase(kernelFeatures, featureDef, processType, result);
+    }
+
+    private VerifyCase asCase(Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                              ProvisioningFeatureDefinition publicDef,
+                              ProcessType processType,
+                              Result result) {
+        VerifyCase verifyCase = new VerifyCase();
+
+        verifyCase.name = "Resolution [ " + publicDef.getSymbolicName() + " ] [ " + processType + " ]";
+        verifyCase.description = "Singleton feature resolution";
+
+        if (processType == ProcessType.CLIENT) {
+            verifyCase.input.setClient();
+        } else if (processType == ProcessType.SERVER) {
+            verifyCase.input.setServer();
+        }
+
+        kernelFeatures.forEach(
+            (ProvisioningFeatureDefinition kernelDef) ->
+                verifyCase.input.addKernel(kernelDef.getSymbolicName()));
+
+        verifyCase.input.addRoot(publicDef.getIbmShortName());
+
+        result.getResolvedFeatures().forEach(
+            (String featureName) -> verifyCase.output.addResolved(featureName) );
+    }
+
+    // @formatter:on
+
+    private Result doResolveFeatures(Repository repository,
+                                     Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                                     Collection<String> rootFeatures, Set<String> preResolved,
+                                     Set<String> allowedMultipleVersions,
+                                     EnumSet<ProcessType> supportedProcessTypes) {
+
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
         if(isBeta){
@@ -526,11 +645,10 @@ public class FeatureResolverImpl implements FeatureResolver {
                     if (!shownVersionlessError) {
                         shownVersionlessError = true;
                         if (preferedFeatureVersions == null) {
-                            Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_ENV_VAR");
-                        }
-                        else {
+                            error("UPDATE_MISSING_VERSIONLESS_ENV_VAR");
+                        } else {
                             String shortName = baseSymbolicName.replace("io.openliberty.internal.versionless.", "");
-                            Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_FEATURE_VAL", new Object[] { shortName });
+                            error("UPDATE_MISSING_VERSIONLESS_FEATURE_VAL", shortName);
                         }
                     }
                     selectionContext.addConflict(includingFeature.getFeatureName(), null);
@@ -587,25 +705,11 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
     }
 
-    /**
-     * @param includingFeature
-     * @param preferredCandidateDef
-     * @return
-     */
     private boolean isAccessible(ProvisioningFeatureDefinition includingFeature, ProvisioningFeatureDefinition candidateDef) {
         return !!!candidateDef.getFeatureName().startsWith("io.openliberty.versionless.")
                && (candidateDef.getVisibility() != Visibility.PRIVATE || includingFeature.getBundleRepositoryType().equals(candidateDef.getBundleRepositoryType()));
     }
 
-    /**
-     * @param selectionContext
-     * @param toleratedCandidateDef
-     * @param allowedTolerations
-     * @param overrideTolerates
-     * @param baseSymbolicName
-     * @param tolerate
-     * @return
-     */
     private boolean isAllowedToleration(SelectionContext selectionContext, ProvisioningFeatureDefinition toleratedCandidateDef, Set<String> allowedTolerations,
                                         List<String> overrideTolerates,
                                         String baseSymbolicName, String tolerate, Deque<String> chain) {
@@ -633,11 +737,6 @@ public class FeatureResolverImpl implements FeatureResolver {
         return false;
     }
 
-    /**
-     * @param preferredCandidateDef
-     * @param symbolicName
-     * @param includingFeature
-     */
     private void checkForFullSymbolicName(ProvisioningFeatureDefinition candidateDef, String symbolicName, String includingFeature) {
         if (!!!symbolicName.equals(candidateDef.getSymbolicName())) {
             throw new IllegalArgumentException("A feature is not allowed to use short feature names when including other features. "
@@ -681,6 +780,10 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         return autoFeaturesToProcess;
+    }
+
+    static class DeadEndChain extends Exception {
+        private static final long serialVersionUID = 1L;
     }
 
     /*
@@ -1107,11 +1210,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             return false;
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-         */
         @Override
         public int compare(Chain o1, Chain o2) {
             // We sort by preferred version where lowest sorts first
@@ -1187,11 +1285,6 @@ public class FeatureResolverImpl implements FeatureResolver {
         final Map<String, Collection<Chain>> _conflicts = new HashMap<String, Collection<Chain>>();
         final Map<String, Chain> _wrongProcessTypes = new HashMap<String, Chain>();
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result#getResolvedFeatures()
-         */
         @Override
         public Set<String> getResolvedFeatures() {
             return _resolved;
@@ -1228,11 +1321,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             _conflicts.put(baseFeatureName, conflicts);
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result#getNonPublicRoots()
-         */
         @Override
         public Set<String> getNonPublicRoots() {
             return _nonPublicRoots;
@@ -1244,11 +1332,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result#getWrongProcessTypes()
-         */
         @Override
         public Map<String, Chain> getWrongProcessTypes() {
             return _wrongProcessTypes;
@@ -1260,22 +1343,9 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
         }
 
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result#hasErrors()
-         */
         @Override
         public boolean hasErrors() {
             return !!!(_missing.isEmpty() && _nonPublicRoots.isEmpty() && _conflicts.isEmpty() && _wrongProcessTypes.isEmpty());
-        }
-    }
-
-    static void trace(String message) {
-        if (tc != null) {
-            if (TraceComponent.isAnyTracingEnabled() && ((TraceComponent) tc).isDebugEnabled()) {
-                Tr.debug((TraceComponent) tc, message);
-            }
         }
     }
 }

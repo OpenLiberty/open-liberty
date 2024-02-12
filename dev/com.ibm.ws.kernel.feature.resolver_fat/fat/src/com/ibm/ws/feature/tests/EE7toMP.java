@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,28 +12,19 @@
  *******************************************************************************/
 package com.ibm.ws.feature.tests;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.List;
-
 import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EERepeatActions;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
-public class ee7toMP {
+public class EE7toMP {
 
     public static final String SERVER_NAME = "ee7toMP";
 
@@ -55,8 +46,10 @@ public class ee7toMP {
         server.addEnvVar("PREFERRED_FEATURE_VERSIONS", envVar);
         server.startServer();
 
-        assertNotNull("Expected mpMetrics-2.3 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("mpMetrics-2.3"));
-        assertNotNull("Expected mpHealth-2.2 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("mpHealth-2.2"));
+        assertNotNull("Expected mpMetrics-2.3 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"),
+                      server.waitForStringInLog("mpMetrics-2.3"));
+        assertNotNull("Expected mpHealth-2.2 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"),
+                      server.waitForStringInLog("mpHealth-2.2"));
 
         server.stopServer("CWWKF0001E");
     }
@@ -71,8 +64,10 @@ public class ee7toMP {
         server.addEnvVar("PREFERRED_FEATURE_VERSIONS", envVar);
         server.startServer();
 
-        assertNotNull("Expected mpMetrics-1.0 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("mpMetrics-1.0"));
-        assertNotNull("Expected mpHealth-1.0 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("mpHealth-1.0"));
+        assertNotNull("Expected mpMetrics-1.0 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"),
+                      server.waitForStringInLog("mpMetrics-1.0"));
+        assertNotNull("Expected mpHealth-1.0 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"),
+                      server.waitForStringInLog("mpHealth-1.0"));
 
         server.stopServer("CWWKF0001E");
     }
