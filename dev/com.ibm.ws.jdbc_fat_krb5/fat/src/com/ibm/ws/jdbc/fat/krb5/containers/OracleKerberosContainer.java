@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_REALM;
 import java.time.Duration;
 
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.OracleContainer;
+import org.testcontainers.oracle.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import componenttest.containers.SimpleLogConsumer;
@@ -30,7 +30,7 @@ public class OracleKerberosContainer extends OracleContainer {
 
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
     private static final String IMAGE_NAME_STRING = "kyleaure/oracle-21.3.0-faststart:1.0.full.krb5";
-    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe");
+    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-free");
 
     public OracleKerberosContainer(Network network) {
         super(IMAGE_NAME);

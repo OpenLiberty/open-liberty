@@ -134,17 +134,17 @@
     <dependency>
       <groupId>com.github.docker-java</groupId>
       <artifactId>docker-java-api</artifactId>
-      <version>3.3.1</version>
+      <version>3.3.4</version>
     </dependency>
     <dependency>
       <groupId>com.github.docker-java</groupId>
       <artifactId>docker-java-transport-zerodep</artifactId>
-      <version>3.3.1</version>
+      <version>3.3.4</version>
     </dependency>
     <dependency>
       <groupId>com.github.docker-java</groupId>
       <artifactId>docker-java-transport</artifactId>
-      <version>3.3.1</version>
+      <version>3.3.4</version>
     </dependency>
     <dependency>
       <groupId>com.google.errorprone</groupId>
@@ -1694,7 +1694,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
-      <version>1.21</version>
+      <version>1.24.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -4449,52 +4449,52 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>database-commons</artifactId>
-      <version>1.18.3</version>
+      <version>1.19.5</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>db2</artifactId>
-      <version>1.18.3</version>
+      <version>1.19.5</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>jdbc</artifactId>
-      <version>1.18.3</version>
+      <version>1.19.5</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>kafka</artifactId>
-      <version>1.18.3</version>
+      <version>1.19.5</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>mongodb</artifactId>
-      <version>1.18.3</version>
+      <version>1.19.5</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>mssqlserver</artifactId>
-      <version>1.18.3</version>
+      <version>1.19.5</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
-      <artifactId>oracle-xe</artifactId>
-      <version>1.18.3</version>
+      <artifactId>oracle-free</artifactId>
+      <version>1.19.5</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
-      <version>1.18.3</version>
+      <version>1.19.5</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>selenium</artifactId>
-      <version>1.18.3</version>
+      <version>1.19.5</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-      <version>1.18.3</version>
+      <version>1.19.5</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>

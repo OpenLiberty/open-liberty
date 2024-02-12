@@ -3,8 +3,8 @@
 alpine:3.16
 confluentinc/cp-kafka:7.1.1
 elastic/logstash:7.16.3
-gvenzl/oracle-xe:21.3.0-full-faststart
-gvenzl/oracle-xe:21.3.0-slim-faststart
+gvenzl/oracle-free:23.3-full-faststart
+gvenzl/oracle-free:23.3-slim-faststart
 infinispan/server:10.0.1.Final
 infinispan/server:13.0.10.Final
 jaegertracing/all-in-one:1.54
