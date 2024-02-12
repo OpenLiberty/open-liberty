@@ -141,9 +141,10 @@ public class HttpTraceTestServlet extends FATServlet {
                         .withAttribute(SemanticAttributes.NET_HOST_PORT, Long.valueOf(serverPort))
 
         );
-        // Make sure the duration is longer than 2 seconds as there is a sleep for 2 seconds in the servlet
+        // Make sure the duration is longer than 1.90 seconds as there is a sleep for 2 seconds in the servlet
+        // The leeway is because Thread.sleep depends on precision and accuracy of system timers and schedulers.
         long duration = servletSpan.getEndEpochNanos() - servletSpan.getStartEpochNanos();
-        assertTrue(duration > TimeUnit.SECONDS.toNanos(2));
+        assertTrue(duration > TimeUnit.NANOSECONDS.toNanos(1900000000));
 
     }
 
