@@ -1847,7 +1847,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testIgnoreCaseInKeysetPagination() {
-        Pageable<?> pagination = Pageable.ofSize(3).sortBy(Sort.asc("sumOfBits"), Sort.descIgnoreCase("name"));
+        Pageable<Prime> pagination = Order.by(_Prime.sumOfBits.asc(), _Prime.name.descIgnoreCase()).pageSize(3);
         KeysetAwareSlice<Prime> page1 = primes.findByNumberIdBetweenAndEvenFalse(4000L, 4020L, pagination);
         assertIterableEquals(List.of("four thousand one", "four thousand three", "Four Thousand Thirteen"),
                              page1
@@ -1862,7 +1862,7 @@ public class DataTestServlet extends FATServlet {
                                              .map(p -> p.name)
                                              .collect(Collectors.toList()));
 
-        pagination = Pageable.ofSize(4).sortBy(Sort.ascIgnoreCase("name"));
+        pagination = Order.by(_Prime.name.ascIgnoreCase()).pageSize(4);
         page1 = primes.findByNumberIdBetweenAndEvenFalse(4000L, 4020L, pagination);
         assertIterableEquals(List.of("four thousand nineteen", "four thousand one", "four thousand seven", "Four Thousand Thirteen"),
                              page1
@@ -3380,6 +3380,72 @@ public class DataTestServlet extends FATServlet {
             else
                 throw x;
         }
+    }
+
+    /**
+     * Repository method where the page request type (Prime entity) differs
+     * from the data type of the slice that is returned (String) due to the use
+     * of query language that asks for results to be returned a String
+     * (one component of the entity).
+     */
+    @Test
+    public void testPageRequestTypeDiffersFromResultType() {
+        Pageable<Prime> page1Request = Order.by(_Prime.numberId.desc()).page(1).size(4);
+        Slice<String> page1 = primes.namesBelow(35, page1Request);
+
+        assertEquals(List.of("thirty-one", "twenty-nine", "twenty-three", "nineteen"),
+                     page1.content());
+
+        Pageable<Prime> page2Request = page1.nextPageable(Prime.class);
+        Slice<String> page2 = primes.namesBelow(35, page2Request);
+
+        assertEquals(List.of("seventeen", "thirteen", "eleven", "seven"),
+                     page2.content());
+
+        Pageable<Prime> page3Request = page2.nextPageable(Prime.class);
+        Slice<String> page3 = primes.namesBelow(35, page3Request);
+
+        assertEquals(List.of("five", "three", "two"),
+                     page3.content());
+
+        assertEquals(page3Request, page3.pageable(Prime.class));
+        assertEquals(page2Request, page2.pageable(Prime.class));
+        assertEquals(page1Request, page1.pageable(Prime.class));
+
+        // Re-request the second page
+        assertEquals(List.of("seventeen", "thirteen", "eleven", "seven"),
+                     primes.namesBelow(35, page2.pageable(Prime.class))
+                                     .content());
+    }
+
+    /***
+     * Covers the slice.nextPageable(EntityClass) and slice.pageable(EntityClass) methods
+     * when the result type matches the entity class.
+     */
+    @Test
+    public void testPageRequestTypeMatchesResultType() {
+        Pageable<Prime> page1Request = Order.by(_Prime.id.desc()).pageSize(5);
+        KeysetAwareSlice<Prime> page1 = primes.findByNumberIdBetweenAndEvenFalse(20, 50, page1Request);
+
+        assertEquals(List.of(47L, 43L, 41L, 37L, 31L),
+                     page1.stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
+
+        // Specifying the entity type here is unnecessary, but should still work
+        Pageable<Prime> page2Request = page1.nextPageable(Prime.class);
+        KeysetAwareSlice<Prime> page2 = primes.findByNumberIdBetweenAndEvenFalse(20, 50, page2Request);
+
+        assertEquals(List.of(29L, 23L),
+                     page2.stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
+
+        // Specifying the entity type here is unnecessary, but should still work
+        assertEquals(page2Request, page2.pageable(Prime.class));
+
+        // Specifying the entity type here is unnecessary, but should still work
+        assertEquals(null, page2.nextPageable(Prime.class));
     }
 
     /**
