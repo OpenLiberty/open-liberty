@@ -34,6 +34,7 @@ import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
@@ -94,7 +95,7 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
      * . . . . . . qualifiers -> ResourceFactory for ManagedScheduledExecutorService,
      * . . . . . . qualifiers -> ResourceFactory for ManagedThreadFactory ]
      */
-    final private Map<String, List<Map<List<String>, ResourceFactory>>> resourceFactories = new ConcurrentHashMap<>();
+    final private Map<String, List<Map<List<String>, QualifiedResourceFactory>>> resourceFactories = new ConcurrentHashMap<>();
 
     /**
      * Liberty Scheduled Executor.
@@ -113,15 +114,16 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
      * @param resourceFactory the resource factory
      */
     @Override
-    public void add(String jeeName, Type resourceType, List<String> qualifierNames, ResourceFactory resourceFactory) {
-        List<Map<List<String>, ResourceFactory>> list = resourceFactories.get(jeeName);
+    public void add(String jeeName, QualifiedResourceFactory.Type resourceType,
+                    List<String> qualifierNames, QualifiedResourceFactory resourceFactory) {
+        List<Map<List<String>, QualifiedResourceFactory>> list = resourceFactories.get(jeeName);
         if (list == null) {
             list = List.of(new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
             resourceFactories.put(jeeName, list);
         }
 
-        Map<List<String>, ResourceFactory> qualifiersToResourceFactory = list.get(resourceType.ordinal());
-        ResourceFactory conflict = qualifiersToResourceFactory.put(qualifierNames, resourceFactory);
+        Map<List<String>, QualifiedResourceFactory> qualifiersToResourceFactory = list.get(resourceType.ordinal());
+        QualifiedResourceFactory conflict = qualifiersToResourceFactory.put(qualifierNames, resourceFactory);
 
         if (conflict != null)
             throw new IllegalStateException("The " + jeeName + " application artifact defines multiple " + //
@@ -156,7 +158,7 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
      *         . . . . . . . . . qualifiers -> ResourceFactory for ManagedThreadFactory ]
      */
     @Override
-    public List<Map<List<String>, ResourceFactory>> removeAll(String jeeName) {
+    public List<Map<List<String>, QualifiedResourceFactory>> removeAll(String jeeName) {
         return resourceFactories.remove(jeeName);
     }
 

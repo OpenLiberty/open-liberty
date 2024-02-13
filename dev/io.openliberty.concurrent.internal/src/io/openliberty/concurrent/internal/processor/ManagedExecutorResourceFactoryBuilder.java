@@ -40,6 +40,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
@@ -61,6 +62,17 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
     private static final String CONFIG_SOURCE = "config.source";
 
     /**
+     * Name of property that identifies the application for java:global data sources.
+     */
+    static final String DECLARING_APPLICATION = "declaringApplication";
+
+    /**
+     * Name of property that identifies the class loader of the application artifact
+     * that defines the ManagedExecutorDefinition.
+     */
+    static final String DECLARING_CLASS_LOADER = "declaringClassLoader";
+
+    /**
      * Property value that indicates the configuration originated in a configuration file, such as server.xml,
      * rather than being programmatically created via ConfigurationAdmin.
      */
@@ -70,11 +82,6 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
      * Unique identifier attribute name.
      */
     private static final String ID = "id";
-
-    /**
-     * Name of property that identifies the application for java:global data sources.
-     */
-    static final String DECLARING_APPLICATION = "declaringApplication";
 
     /**
      * Name of internal property that enforces unique JNDI names.
@@ -134,6 +141,7 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
             execSvcProps.put(prop.getKey(), value);
         }
 
+        ClassLoader declaringClassLoader = (ClassLoader) execSvcProps.remove(DECLARING_CLASS_LOADER);
         String declaringApplication = (String) execSvcProps.remove(DECLARING_APPLICATION);
         String application = (String) execSvcProps.get("application");
         String module = (String) execSvcProps.get("module");
@@ -214,9 +222,10 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
         BundleContext concurrencyBundleCtx = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(WSManagedExecutorService.class));
         BundleContext concurrencyPolicyBundleCtx = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(ConcurrencyPolicy.class));
 
-        ResourceFactory factory = new AppDefinedResourceFactory(this, concurrencyBundleCtx, declaringApplication, //
+        QualifiedResourceFactory factory = new AppDefinedResourceFactory(this, concurrencyBundleCtx, declaringApplication, //
                         managedExecutorServiceID, jndiName, managedExecutorSvcFilter.toString(), //
-                        contextSvcJndiName, contextSvcFilter);
+                        contextSvcJndiName, contextSvcFilter, //
+                        declaringClassLoader, qualifierNames);
         try {
             String concurrencyBundleLocation = concurrencyBundleCtx.getBundle().getLocation();
             String concurrencyPolicyBundleLocation = concurrencyPolicyBundleCtx.getBundle().getLocation();
@@ -249,7 +258,7 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
                                                             " because the " + "CDI" + " feature is not enabled."); // TODO NLS
 
                 QualifiedResourceFactories qrf = concurrencyBundleCtx.getService(ref);
-                qrf.add(jeeName, QualifiedResourceFactories.Type.ManagedExecutorService, qualifierNames, factory);
+                qrf.add(jeeName, QualifiedResourceFactory.Type.ManagedExecutorService, qualifierNames, factory);
             }
         } catch (Exception x) {
             factory.destroy();
