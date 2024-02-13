@@ -138,7 +138,7 @@ public interface Primes {
 
     KeysetAwarePage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort<?>... orderBy); // Lacks Pageable
 
-    KeysetAwareSlice<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, Pageable<?> pagination);
+    KeysetAwareSlice<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, Pageable<Prime> pagination);
 
     Page<Prime> findByNumberIdBetweenAndSumOfBitsNotNull(long min, long max, Pageable<?> pagination);
 
@@ -293,6 +293,9 @@ public interface Primes {
 
     @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
     Stack<String> minMaxSumCountAverageStack(long numBelow);
+
+    @Query("SELECT o.name FROM Prime o WHERE o.numberId < ?1")
+    Slice<String> namesBelow(long numBelow, Pageable<Prime> pageRequest);
 
     @Query(value = "SELECT NEW java.util.AbstractMap.SimpleImmutableEntry(p.numberId, p.name) FROM Prime p WHERE p.numberId <= ?1 ORDER BY p.name",
            count = "SELECT COUNT(p) FROM Prime p WHERE p.numberId <= ?1")
