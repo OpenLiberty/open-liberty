@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_webserviceinterfaces"
+   		 xmlns="http://java.sun.com/xml/ns/javaee"
+   		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+   	     version="2.5">
+   	     
+	<display-name>BT11AddNumbersImplService</display-name>
+	<servlet id="bindingtype11">
+	      <servlet-name>fat.cxf.basic.jaxws.annotations.bindingtype.checkdefaults.server11.AddNumbersImplService_AddNumbersImplPortImpl</servlet-name>
+	      <servlet-class>fat.cxf.basic.jaxws.annotations.bindingtype.checkdefaults.server11.AddNumbersImplService_AddNumbersImplPortImpl</servlet-class>
+	      <load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+	      <servlet-name>fat.cxf.basic.jaxws.annotations.bindingtype.checkdefaults.server11.AddNumbersImplService_AddNumbersImplPortImpl</servlet-name>
+	      <url-pattern>/services/BT11AddNumbersImplService</url-pattern>
+	</servlet-mapping>
+	
+		<display-name>BT12AddNumbersImplService</display-name>
+	<servlet id="bindingtype12">
+	      <servlet-name>fat.cxf.basic.jaxws.annotations.bindingtype.checkdefaults.server12.AddNumbersImplService_AddNumbersImplPortImpl</servlet-name>
+	      <servlet-class>fat.cxf.basic.jaxws.annotations.bindingtype.checkdefaults.server12.AddNumbersImplService_AddNumbersImplPortImpl</servlet-class>
+	      <load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+	      <servlet-name>fat.cxf.basic.jaxws.annotations.bindingtype.checkdefaults.server12.AddNumbersImplService_AddNumbersImplPortImpl</servlet-name>
+	      <url-pattern>/services/BT12AddNumbersImplService</url-pattern>
+	</servlet-mapping>
+</web-app>
