@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -652,6 +652,11 @@ public class OSGiInjectionEngineImpl extends AbstractInjectionEngine implements 
 
         properties.put("declaringApplication", j2eeName.getApplication());
         properties.put("jndiName", InjectionScope.denormalize(refName));
+
+        // Instead of checking the type, we could provide this to all resource factory builders,
+        // and those which are not for Jakarta EE Concurrency could ignore it.
+        if (type.startsWith("jakarta.enterprise.concurrent."))
+            properties.put("declaringClassLoader", compNSConfig.getClassLoader());
 
         ResourceFactory resourceFactory = builder.createResourceFactory(properties);
         Reference ref = new ResourceFactoryReference(type, resourceFactory, properties);
