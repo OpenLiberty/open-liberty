@@ -34,6 +34,6 @@ postgres:14.1-alpine
 ryanesch/acme-boulder:1.2
 seleniarm/standalone-chromium:4.8.3
 selenium/standalone-chrome:4.8.3
-testcontainers/ryuk:0.5.1
+testcontainers/ryuk:0.6.0
 testcontainers/sshd:1.1.0
 testcontainers/vnc-recorder:1.3.0

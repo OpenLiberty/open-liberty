@@ -45,10 +45,12 @@ Import-Package: \
  @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/CharsetNames*, \
  @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/Charsets*, \
  @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/InputStreamStatistics*, \
- @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/IOUtils*
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/IOUtils*,\
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/TimeUtils*
+ 
 
 instrument.disabled: true
 
 -buildpath: \
-	com.ibm.ws.org.apache.commons.compress,\
+	com.ibm.ws.org.apache.commons.compress;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

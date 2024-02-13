@@ -18,19 +18,23 @@ import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_REALM;
 import java.time.Duration;
 
 import org.testcontainers.containers.Network;
-import org.testcontainers.oracle.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.OracleXEContainer;
 
-public class OracleKerberosContainer extends OracleContainer {
+/**
+ * Custom Oracle Kerberos Container class
+ * TODO replace with OracleFree
+ */
+public class OracleKerberosContainer extends OracleXEContainer {
 
     private static final Class<?> c = OracleKerberosContainer.class;
 
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
     private static final String IMAGE_NAME_STRING = "kyleaure/oracle-21.3.0-faststart:1.0.full.krb5";
-    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-free");
+    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe");
 
     public OracleKerberosContainer(Network network) {
         super(IMAGE_NAME);
@@ -62,7 +66,7 @@ public class OracleKerberosContainer extends OracleContainer {
     }
 
     @Override
-    public OracleContainer withUsername(String username) {
+    public OracleXEContainer withUsername(String username) {
         throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 
@@ -72,7 +76,7 @@ public class OracleKerberosContainer extends OracleContainer {
     }
 
     @Override
-    public OracleContainer withPassword(String password) {
+    public OracleXEContainer withPassword(String password) {
         throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 
@@ -82,7 +86,7 @@ public class OracleKerberosContainer extends OracleContainer {
     }
 
     @Override
-    public OracleContainer withDatabaseName(String dbName) {
+    public OracleXEContainer withDatabaseName(String dbName) {
         throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 }

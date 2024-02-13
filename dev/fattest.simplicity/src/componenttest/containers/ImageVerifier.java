@@ -46,7 +46,7 @@ public final class ImageVerifier {
         knownImages.addAll(DatabaseContainerType.images());
 
         //Add images from the testcontainers project
-        knownImages.addAll(Arrays.asList("testcontainers/ryuk:0.5.1", "testcontainers/sshd:1.1.0", "testcontainers/vnc-recorder:1.3.0"));
+        knownImages.addAll(Arrays.asList("testcontainers/ryuk:0.6.0", "testcontainers/sshd:1.1.0", "testcontainers/vnc-recorder:1.3.0"));
     }
 
     public static DockerImageName collectImage(DockerImageName image) {

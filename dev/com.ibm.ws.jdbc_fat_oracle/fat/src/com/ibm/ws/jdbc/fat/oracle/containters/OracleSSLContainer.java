@@ -14,24 +14,25 @@ package com.ibm.ws.jdbc.fat.oracle.containters;
 
 import java.time.Duration;
 
-import org.testcontainers.oracle.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.ws.jdbc.fat.oracle.FATSuite;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.OracleXEContainer;
 
 /**
  * Custom Oracle SSL Container class
+ * TODO replace with OracleFree
  */
-public class OracleSSLContainer extends OracleContainer {
+public class OracleSSLContainer extends OracleXEContainer {
 
     private static final int TCPS_PORT = 1522;
     private static final String WALLET_PASS = "WalletPasswd123";
 
     private static final String IMAGE_NAME_STRING = "kyleaure/oracle-21.3.0-faststart:1.0.full.ssl";
-    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-free");
+    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe");
 
     public OracleSSLContainer() {
         super(IMAGE_NAME);
@@ -44,7 +45,7 @@ public class OracleSSLContainer extends OracleContainer {
 
     //Do not allow developer to use a custom password
     @Override
-    public OracleContainer withPassword(String password) {
+    public OracleXEContainer withPassword(String password) {
         throw new UnsupportedOperationException("Oracle SSL container does not support use of a customer password.");
     }
 
