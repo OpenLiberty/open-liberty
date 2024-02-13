@@ -76,7 +76,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.bugfixes.MyFaces4628Test;
 public class FATSuite {
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                                                   .andWith(FeatureReplacementAction.EE11_FEATURES());
 
     /**
