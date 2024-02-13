@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package concurrent.cdi.web;
+package concurrent.cdi.ejb;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -24,12 +24,12 @@ import jakarta.inject.Qualifier;
 @Qualifier
 @Retention(RUNTIME)
 @Target(FIELD)
-public @interface ClearingAppContext {
+public @interface IgnoringTransactionContext {
 
-    public static class Literal extends AnnotationLiteral<ClearingAppContext> implements ClearingAppContext {
-        private static final long serialVersionUID = -6084827420591593705L;
+    public static class Literal extends AnnotationLiteral<IgnoringTransactionContext> implements IgnoringTransactionContext {
+        private static final long serialVersionUID = 1111215772967657236L;
 
-        public static final ClearingAppContext INSTANCE = new Literal();
+        public static final IgnoringTransactionContext INSTANCE = new Literal();
 
         private Literal() {
         }
