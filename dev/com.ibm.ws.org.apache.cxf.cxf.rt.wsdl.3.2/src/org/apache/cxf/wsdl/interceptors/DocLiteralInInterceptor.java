@@ -222,12 +222,14 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
 	    if (LOG.isLoggable(Level.FINEST)) {
 		LOG.finest("message.setContent() called with following parameters:");
 		for (Object o1 : parameters) {
-                   LOG.finest("param: " + o1.getClass().getCanonicalName());
-                   if (o1 instanceof Holder) {
-                      if (((Holder)o1).value != null) {
-                         LOG.finest("Holder type: " + ((Holder)o1).value.getClass());
+		   if (o1 != null) {
+                      LOG.finest("param: " + o1.getClass().getCanonicalName());
+                      if (o1 instanceof Holder) {
+                         if (((Holder)o1).value != null) {
+                            LOG.finest("Holder type: " + ((Holder)o1).value.getClass());
+                         }
                       }
-                   }
+		   }
             	}
 	    }
 	    // Liberty Change end

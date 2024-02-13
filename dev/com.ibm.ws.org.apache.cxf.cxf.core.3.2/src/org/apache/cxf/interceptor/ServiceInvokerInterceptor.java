@@ -169,12 +169,14 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
 	if (LOG.isLoggable(Level.FINEST)) {
 	   if (invokee instanceof List) {
               for (Object o1 : (List)invokee) {
-                 LOG.finest("Invokee param: " + o1.getClass().getCanonicalName());
-                 if (o1 instanceof Holder) {
-                    if (((Holder)o1).value != null) {
-                       LOG.finest("Invokee Holder type: " + ((Holder)o1).value.getClass());
+		 if (o1 != null) {
+                    LOG.finest("Invokee param: " + o1.getClass().getCanonicalName());
+                    if (o1 instanceof Holder) {
+                       if (((Holder)o1).value != null) {
+                          LOG.finest("Invokee Holder type: " + ((Holder)o1).value.getClass());
+                       }
                     }
-                 }
+		 }
               }
            }
 	}
