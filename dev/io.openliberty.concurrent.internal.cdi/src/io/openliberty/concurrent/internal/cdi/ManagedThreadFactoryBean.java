@@ -13,11 +13,8 @@
 package io.openliberty.concurrent.internal.cdi;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
@@ -25,6 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.resource.ResourceFactory;
 
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -56,24 +54,11 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
     /**
      * Construct a new bean for this resource.
      *
-     * @param factory        resource factory.
-     * @param qualifierNames names of qualifier annotations for the bean.
+     * @param factory resource factory.
      */
-    ManagedThreadFactoryBean(ResourceFactory factory, List<String> qualifierNames) throws ClassNotFoundException {
+    ManagedThreadFactoryBean(QualifiedResourceFactory factory) {
         this.factory = factory;
-        this.qualifiers = new LinkedHashSet<Annotation>();
-
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
-        for (String qualifierClassName : qualifierNames) {
-            Class<?> qualifierClass = loader.loadClass(qualifierClassName);
-            if (!qualifierClass.isInterface())
-                throw new IllegalArgumentException("The " + qualifierClassName + " class is not a valid qualifier class" +
-                                                   " because it is not an annotation."); // TODO NLS
-            qualifiers.add(Annotation.class.cast(Proxy.newProxyInstance(loader,
-                                                                        new Class<?>[] { Annotation.class, qualifierClass },
-                                                                        new QualifierProxy(qualifierClass))));
-        }
+        this.qualifiers = factory.getQualifiers();
     }
 
     /**

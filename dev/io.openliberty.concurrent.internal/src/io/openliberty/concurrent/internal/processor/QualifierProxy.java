@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.concurrent.internal.cdi;
+package io.openliberty.concurrent.internal.processor;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -85,31 +85,40 @@ public class QualifierProxy implements InvocationHandler {
                     s.append(name).append('=');
 
                     int h;
-                    if (value instanceof Object[] array) {
+                    if (value instanceof Object[]) {
+                        Object[] array = (Object[]) value;
                         h = Arrays.hashCode(array);
                         s.append(Arrays.toString(array));
-                    } else if (value instanceof int[] array) {
+                    } else if (value instanceof int[]) {
+                        int[] array = (int[]) value;
                         h = Arrays.hashCode(array);
                         s.append(Arrays.toString(array));
-                    } else if (value instanceof long[] array) {
+                    } else if (value instanceof long[]) {
+                        long[] array = (long[]) value;
                         h = Arrays.hashCode(array);
                         s.append(Arrays.toString(array));
-                    } else if (value instanceof boolean[] array) {
+                    } else if (value instanceof boolean[]) {
+                        boolean[] array = (boolean[]) value;
                         h = Arrays.hashCode(array);
                         s.append(Arrays.toString(array));
-                    } else if (value instanceof double[] array) {
+                    } else if (value instanceof double[]) {
+                        double[] array = (double[]) value;
                         h = Arrays.hashCode(array);
                         s.append(Arrays.toString(array));
-                    } else if (value instanceof float[] array) {
+                    } else if (value instanceof float[]) {
+                        float[] array = (float[]) value;
                         h = Arrays.hashCode(array);
                         s.append(Arrays.toString(array));
-                    } else if (value instanceof short[] array) {
+                    } else if (value instanceof short[]) {
+                        short[] array = (short[]) value;
                         h = Arrays.hashCode(array);
                         s.append(Arrays.toString(array));
-                    } else if (value instanceof byte[] array) {
+                    } else if (value instanceof byte[]) {
+                        byte[] array = (byte[]) value;
                         h = Arrays.hashCode(array);
                         s.append(Arrays.toString(array));
-                    } else if (value instanceof char[] array) {
+                    } else if (value instanceof char[]) {
+                        char[] array = (char[]) value;
                         h = Arrays.hashCode(array);
                         s.append(Arrays.toString(array));
                     } else {
@@ -165,15 +174,15 @@ public class QualifierProxy implements InvocationHandler {
                             if (trace && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "comparing " + method.getName(), value1, value2);
 
-                            equal = value1 instanceof Object[] array1 ? Arrays.equals(array1, (Object[]) value2) :
-                            /*   */ value1 instanceof int[] array1 ? Arrays.equals(array1, (int[]) value2) :
-                            /*   */ value1 instanceof long[] array1 ? Arrays.equals(array1, (long[]) value2) :
-                            /*   */ value1 instanceof boolean[] array1 ? Arrays.equals(array1, (boolean[]) value2) :
-                            /*   */ value1 instanceof double[] array1 ? Arrays.equals(array1, (double[]) value2) :
-                            /*   */ value1 instanceof float[] array1 ? Arrays.equals(array1, (float[]) value2) :
-                            /*   */ value1 instanceof short[] array1 ? Arrays.equals(array1, (short[]) value2) :
-                            /*   */ value1 instanceof byte[] array1 ? Arrays.equals(array1, (byte[]) value2) :
-                            /*   */ value1 instanceof char[] array1 ? Arrays.equals(array1, (char[]) value2) :
+                            equal = value1 instanceof Object[] ? Arrays.equals((Object[]) value1, (Object[]) value2) :
+                            /*   */ value1 instanceof int[] ? Arrays.equals((int[]) value1, (int[]) value2) :
+                            /*   */ value1 instanceof long[] ? Arrays.equals((long[]) value1, (long[]) value2) :
+                            /*   */ value1 instanceof boolean[] ? Arrays.equals((boolean[]) value1, (boolean[]) value2) :
+                            /*   */ value1 instanceof double[] ? Arrays.equals((double[]) value1, (double[]) value2) :
+                            /*   */ value1 instanceof float[] ? Arrays.equals((float[]) value1, (float[]) value2) :
+                            /*   */ value1 instanceof short[] ? Arrays.equals((short[]) value1, (short[]) value2) :
+                            /*   */ value1 instanceof byte[] ? Arrays.equals((byte[]) value1, (byte[]) value2) :
+                            /*   */ value1 instanceof char[] ? Arrays.equals((char[]) value1, (char[]) value2) :
                             /*   */ Objects.equals(value1, value2);
 
                             if (!equal)
