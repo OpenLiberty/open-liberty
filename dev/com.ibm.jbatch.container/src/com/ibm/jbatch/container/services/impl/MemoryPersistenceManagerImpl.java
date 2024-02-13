@@ -1294,6 +1294,30 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
     @Override
     public boolean purgeJobInstanceAndRelatedData(long jobInstanceId) {
         // TODO Auto-generated method stub
+        JobInstanceEntity jobInstance = data.jobInstanceData.get(jobInstanceId);
+
+//                for (StepThreadExecutionEntity stepThreadExecution : data.stepExecutionInstanceData.values()) {
+//                }
+//
+//                for (StepThreadInstanceEntity stepInstance : data.stepThreadInstanceData.values()) {
+//                }
+
+        for (JobExecutionEntity executionInstance : data.executionInstanceData.values()) {
+            if (executionInstance.getJobInstance().getInstanceId() == jobInstanceId) {
+                data.executionInstanceData.remove(executionInstance.getExecutionId());
+            }
+        }
+
+        //data.executionInstanceData.get
+        /*
+         * jobInstanceData = new ConcurrentHashMap<Long, JobInstanceEntity>();
+         * executionInstanceData = new ConcurrentHashMap<Long, JobExecutionEntity>(); -- done
+         * stepExecutionInstanceData = new ConcurrentHashMap<Long, StepThreadExecutionEntity>();
+         * stepThreadInstanceData = new ConcurrentHashMap<StepThreadInstanceKey, StepThreadInstanceEntity>();
+         * partitionData = new ConcurrentHashMap<RemotablePartitionKey, RemotablePartitionEntity>();
+         * splitFlowData = new ConcurrentHashMap<RemotableSplitFlowKey, RemotableSplitFlowEntity>();
+         */
+        data.jobInstanceData.remove(jobInstanceId);
         return false;
     }
 
