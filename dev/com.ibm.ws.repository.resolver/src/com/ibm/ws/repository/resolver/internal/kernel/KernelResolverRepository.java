@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,11 +15,10 @@ package com.ibm.ws.repository.resolver.internal.kernel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import org.osgi.framework.Version;
 
@@ -39,15 +38,12 @@ import com.ibm.ws.repository.resources.internal.RepositoryResourceImpl;
 /**
  * Implementation of {@link FeatureResolver.Repository} which is backed by a collection of {@link EsaResource}s.
  */
-@SuppressWarnings("restriction") // Ignore restricted use of RepositoryResourceImpl, it's ok here because the resolver doesn't run inside OSGi
+@SuppressWarnings("restriction")
+// Ignore restricted use of RepositoryResourceImpl.
+// It's ok here because the resolver doesn't run inside OSGi.
 public class KernelResolverRepository implements FeatureResolver.Repository {
 
-    /**
-     * Sorts features in descending order by their versions (i.e. most recent version first)
-     * <p>
-     * Features without a version are put after those with a version.
-     */
-    private final static Comparator<ProvisioningFeatureDefinition> VERSION_COMPARATOR = new VersionComparator();
+    private Collection<ProvisioningFeatureDefinition> allFeatureCache;
 
     private final Map<String, List<ProvisioningFeatureDefinition>> symbolicNameToFeature = new HashMap<>();
     private final Map<String, String> publicNameToSymbolicName = new HashMap<>();
@@ -57,8 +53,6 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
 
     private final Collection<ProductDefinition> productDefinitions;
     private final RepositoryConnectionList repositoryConnection;
-
-    private Collection<ProvisioningFeatureDefinition> allFeatureCache = null;
 
     public KernelResolverRepository(Collection<ProductDefinition> productDefinitions, RepositoryConnectionList repositoryConnection) {
         this.repositoryConnection = repositoryConnection;
@@ -87,39 +81,87 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
         }
     }
 
+    // @formatter:off
+
+    /**
+     * Add a feature to the resolver repository.
+     *
+     * Accept at most one installed feature. Addition of the first
+     * installed feature removes and previously added ESA features.
+     *
+     * Sort features which have the same symbolic name (which must be
+     * ESA features) by version, from highest to lowest.
+     *
+     * Map the feature name to the feature symbolic name, map the feature
+     * short name to the feature symbolic name, and map the feature symbolic
+     * name in all lower case to the feature symbolic name.
+     *
+     * If the feature is an auto-feature, add it to the collection of
+     * auto-features.
+     * 
+     * Clear the preferred features collection. It must be recomputed.
+     *
+     * @param feature The feature which is to be added.
+     */
     public void addFeature(ProvisioningFeatureDefinition feature) {
-        List<ProvisioningFeatureDefinition> featureList = symbolicNameToFeature.get(feature.getSymbolicName());
-        if (featureList == null) {
-            featureList = new ArrayList<>();
-            symbolicNameToFeature.put(feature.getSymbolicName(), featureList);
-        }
+        String symbolicName = feature.getSymbolicName();
 
-        // If the repository contains any installed features with this symbolic name,
-        // don't add the new feature
-        if (listContainsInstalledFeatures(featureList)) {
+        List<ProvisioningFeatureDefinition> features =
+            symbolicNameToFeature.computeIfAbsent(symbolicName,
+                                                  (String useName) -> new ArrayList<>());
+
+        // Don't add the feature if an installed feature is already present
+        // with the symbolic name.
+        //
+        // If the list was just created, it cannot contain any installed features.
+
+        if (containsInstalledFeatures(features)) {
             return;
         }
 
-        // If this is an installed feature, wipe out any repository features added earlier
+        // If the new feature is an installed feature, clear out the features
+        // already present.
+        //
+        // Otherwise, if we already have an ESA feature with this symbolic name
+        // and version, ignore the duplicate
+
         if (!(feature instanceof KernelResolverEsa)) {
-            featureList.clear();
-        }
+            features.clear();
+        } else if (containsDuplicate(features, feature)) {
+            // TODO: How is this possible?  That would mean
+            //       the features have the same symbolic names and
+            //       different versions.  But isn't the version a part
+            //       of the symbolic name?
+            //
+            // For example:
+            //   Subsystem-Name: Java Servlets 4.0
+            //   IBM-ShortName: servlet-4.0
+            //   Subsystem-SymbolicName: com.ibm.websphere.appserver.servlet-4.0;
+            //    visibility:=public;
+            //    singleton:=true
 
-        // If we already have a feature with this symbolic name and version, ignore the duplicate
-        if (listContainsDuplicate(featureList, feature)) {
             return;
         }
 
-        featureList.add(feature);
-        Collections.sort(featureList, VERSION_COMPARATOR);
+        features.add(feature);
 
-        // It's essential that we can always look up a feature by its feature name, the kernel resolver relies on this
-        publicNameToSymbolicName.put(feature.getFeatureName().toLowerCase(), feature.getSymbolicName());
+        if (features.size() > 1) {
+            // From highest to lowest.  Only possible when there are multiple
+            // ESA features present.
+            Collections.sort(features, KernelResolverRepository::compare);
+        }
 
-        if (feature.getVisibility() == Visibility.PUBLIC || feature.getVisibility() == Visibility.INSTALL) {
-            publicNameToSymbolicName.put(feature.getSymbolicName().toLowerCase(), feature.getSymbolicName());
+        // It's essential that we can always look up a feature by its feature name,
+        // the kernel resolver relies on this.
+        publicNameToSymbolicName.put(feature.getFeatureName().toLowerCase(), symbolicName);
+
+        if ((feature.getVisibility() == Visibility.PUBLIC) ||
+            (feature.getVisibility() == Visibility.INSTALL)) {
+
+            publicNameToSymbolicName.put(symbolicName.toLowerCase(), symbolicName);
+
             if (feature.getIbmShortName() != null) {
-                publicNameToSymbolicName.put(feature.getIbmShortName().toLowerCase(), feature.getSymbolicName());
+                publicNameToSymbolicName.put(feature.getIbmShortName().toLowerCase(), symbolicName);
             }
         }
 
@@ -130,39 +172,37 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
         allFeatureCache = null;
     }
 
+    // @formatter:on
+
     /**
-     * Checks whether {@code featureList} contains a feature with the same name and version as {@code feature}.
+     * Compare two features by version, from highest to lowest.
+     * (This inverts the usual comparison result.)
      *
-     * @param featureList the list of features
-     * @param feature     the feature
-     * @return {@code true} if {@code featureList} contains a feature with the same symbolic name and version as {@code feature}, otherwise {@code false}
+     * Features without a version are put after those with a version.
+     *
+     * See {@link Version#compareTo}.
+     *
+     * @param o1 A feature which is to be compared.
+     * @param o2 Another feature which is to be compared.
+     *
+     * @return The comparison result of the versions of the features, inverted.
      */
-    private boolean listContainsDuplicate(List<ProvisioningFeatureDefinition> featureList, ProvisioningFeatureDefinition feature) {
-        for (ProvisioningFeatureDefinition f : featureList) {
-            if (hasSameSymbolicNameAndVersion(feature, f)) {
-                return true;
+    private static int compare(ProvisioningFeatureDefinition o1, ProvisioningFeatureDefinition o2) {
+        Version v1 = o1.getVersion();
+        Version v2 = o2.getVersion();
+        if (v1 == null) {
+            if (v2 == null) {
+                return 0;
+            } else {
+                return 1; // The one with a version is higher.
+            }
+        } else {
+            if (v2 == null) {
+                return -1; // The one with a version is higher.
+            } else {
+                return -v1.compareTo(v2); // Inverted!
             }
         }
-        return false;
-    }
-
-    private boolean hasSameSymbolicNameAndVersion(ProvisioningFeatureDefinition f1, ProvisioningFeatureDefinition f2) {
-        if (f1.getSymbolicName() == null) {
-            if (f2.getSymbolicName() != null) {
-                return false;
-            }
-        } else if (!f1.getSymbolicName().equals(f2.getSymbolicName())) {
-            return false;
-        }
-
-        if (f1.getVersion() == null) {
-            if (f2.getVersion() != null) {
-                return false;
-            }
-        } else if (!f1.getVersion().equals(f2.getVersion())) {
-            return false;
-        }
-        return true;
     }
 
     @Override
@@ -173,6 +213,63 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
     @Override
     public List<String> getConfiguredTolerates(String featureName) {
         return Collections.emptyList();
+    }
+
+    /**
+     * Answer all features of this repository.
+     *
+     * Answer the features in the order as provided by {@link #getAllFeatures()}.
+     *
+     * A new result collection is obtained on each invocation.
+     *
+     * What meaning the result collection has depends on whether there are
+     * any ESA features present. Multiple ESA features can be present with
+     * the same
+     *
+     * @return All of the features of this repository.
+     */
+    @Override
+    public List<ProvisioningFeatureDefinition> getFeatures() {
+        int numFeatures = 0;
+        for (List<ProvisioningFeatureDefinition> features : symbolicNameToFeature.values()) {
+            numFeatures += features.size();
+        }
+        List<ProvisioningFeatureDefinition> allFeatures = new ArrayList<>(numFeatures);
+        for (List<ProvisioningFeatureDefinition> features : symbolicNameToFeature.values()) {
+            allFeatures.addAll(features);
+        }
+        return allFeatures;
+    }
+
+    /**
+     * Select features of this repository.
+     *
+     * Answer the features in the order as provided by {@link #getAllFeatures()}.
+     *
+     * A new result collection is obtained on each invocation, even when obtaining
+     * the entire collection of features.
+     *
+     * @param selector The selector of features. If null, select all features.
+     *
+     * @return The selected features.
+     */
+    @Override
+    public List<ProvisioningFeatureDefinition> select(Predicate<ProvisioningFeatureDefinition> selector) {
+        // DO NOT USE 'getAllFeatures': That selects the preferred version of each feature.
+
+        if (selector == null) {
+            return getFeatures();
+        }
+
+        List<ProvisioningFeatureDefinition> selected = new ArrayList<>();
+        for (List<ProvisioningFeatureDefinition> features : symbolicNameToFeature.values()) {
+            for (ProvisioningFeatureDefinition feature : features) {
+                if (selector.test(feature)) {
+                    selected.add(feature);
+                }
+            }
+        }
+        return selected;
     }
 
     @Override
@@ -299,22 +396,21 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
     }
 
     /**
-     * Return all the features in the repository, except where two features have the same symbolic name
-     * <p>
-     * If two features exist with the same symbolic name, only the one that would be returned from {@link #getFeature(String)} will be returned here.
+     * Answer the preferred versions of features in the repository.
      *
-     * @return a collection features
+     * See {@link #getPreferredVersion(String, List)}.
+     *
+     * @return The preferred versions of all features in the repository.
      */
     public Collection<ProvisioningFeatureDefinition> getAllFeatures() {
-        Collection<ProvisioningFeatureDefinition> result = allFeatureCache;
-        if (result == null) {
-            result = new ArrayList<>();
-            for (Entry<String, List<ProvisioningFeatureDefinition>> entry : symbolicNameToFeature.entrySet()) {
-                result.add(getPreferredVersion(entry.getKey(), entry.getValue()));
-            }
-            allFeatureCache = result;
+        if ( allFeatureCache == null ) {
+            List<ProvisioningFeatureDefinition> preferred = new ArrayList<>();
+            symbolicNameToFeature.forEach(
+                (String symbolicName, List<ProvisioningFeatureDefinition> features) ->
+                    preferred.add(getPreferredVersion(symbolicName, features)));
+            allFeatureCache = preferred;
         }
-        return result;
+        return allFeatureCache;
     }
 
     /**
@@ -383,45 +479,79 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
     }
 
     /**
-     * Return whether the list of features contain any from an installed product (rather than from the repository)
-     * <p>
-     * This is done by checking whether the {@link ProvisioningFeatureDefinition} is actually a {@link KernelResolverEsa} (which wraps an {@link EsaResource}).
+     * Tell if the features contain any from an installed product (rather than
+     * from the repository).
      *
-     * @param featureList the list of features to check
-     * @return {@code false} if all the features in the list are of type {@link KernelResolverEsa}, otherwise returns {@code true}
+     * This is done by testing if the feature is a {@link KernelResolverEsa},
+     * which wraps an {@link EsaResource}.
+     *
+     * @param features the list of features to check
+     *
+     * @return True or false telling if any of the features is not a {@link KernelResolverEsa}.
      */
-    private static boolean listContainsInstalledFeatures(List<ProvisioningFeatureDefinition> featureList) {
-        for (ProvisioningFeatureDefinition feature : featureList) {
+    private static boolean containsInstalledFeatures(List<ProvisioningFeatureDefinition> features) {
+        for (ProvisioningFeatureDefinition feature : features) {
             if (!(feature instanceof KernelResolverEsa)) {
                 return true;
             }
         }
-
         return false;
     }
 
     /**
-     * Sorts features in descending order by their versions (i.e. most recent version first)
-     * <p>
-     * Features without a version are put after those with a version.
+     * Tell if any feature of a supplied list has the same symbolic name and version
+     * as a supplied feature.
+     *
+     * @param features Features which are to be tested.
+     * @param f1       The feature to test against.
+     *
+     * @return If any of the features has the same symbolic name and version as the
+     *         supplied feature.
      */
-    private static class VersionComparator implements Comparator<ProvisioningFeatureDefinition> {
-
-        @Override
-        public int compare(ProvisioningFeatureDefinition o1, ProvisioningFeatureDefinition o2) {
-            Version v1 = o1.getVersion();
-            Version v2 = o2.getVersion();
-            if (v1 == null) {
-                if (v2 == null) {
-                    return 0;
-                } else {
-                    return 1;
-                }
-            } else {
-                return -v1.compareTo(v2);
+    private static boolean containsDuplicate(List<ProvisioningFeatureDefinition> features,
+                                             ProvisioningFeatureDefinition f1) {
+        for (ProvisioningFeatureDefinition f2 : features) {
+            if (isDuplicate(f1, f2)) {
+                return true;
             }
         }
-
+        return false;
     }
 
+    /**
+     * Tell if the symbolic name and version of the two features are the same.
+     *
+     * @param f1 A feature to test.
+     * @param f2 Another feature to test.
+     *
+     * @return True or false telling if the symbolic name and version of the two
+     *         features are the same.
+     */
+    private static boolean isDuplicate(ProvisioningFeatureDefinition f1,
+                                       ProvisioningFeatureDefinition f2) {
+
+        String f1Sym = f1.getSymbolicName();
+        String f2Sym = f2.getSymbolicName();
+
+        if (f1Sym == null) {
+            if (f2Sym != null) {
+                return false;
+            } else {
+                // Compare versions
+            }
+        } else if ((f2Sym == null) || !f1Sym.equals(f2Sym)) {
+            return false;
+        } else {
+            // Compare versions
+        }
+
+        Version f1Version = f1.getVersion();
+        Version f2Version = f2.getVersion();
+
+        if (f1Version == null) {
+            return (f2Version == null);
+        } else {
+            return ((f2Version != null) && f1Version.equals(f2Version));
+        }
+    }
 }
