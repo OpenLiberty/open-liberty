@@ -22,6 +22,7 @@ import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61EmptyURLPatternM
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61HTTPResponseCodesTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61HTTPServletMappingTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61RequestParameterTest;
+import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ResponseNoOpAfterCommit;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ResponseSendRedirectTest;
 
 @RunWith(Suite.class)
@@ -32,6 +33,7 @@ import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ResponseSendRedi
                 Servlet61HTTPResponseCodesTest.class,
                 Servlet61HTTPServletMappingTest.class,
                 Servlet61RequestParameterTest.class,
+                Servlet61ResponseNoOpAfterCommit.class,
                 Servlet61ResponseSendRedirectTest.class
 })
 public class FATSuite {
