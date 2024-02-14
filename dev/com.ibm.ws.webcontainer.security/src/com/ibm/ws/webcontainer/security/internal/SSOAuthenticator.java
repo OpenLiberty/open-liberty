@@ -189,12 +189,6 @@ public class SSOAuthenticator implements WebAuthenticator {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "handleSSO Exception: ", new Object[] { e });
                         }
-                        // Perform logout steps
-                        // If the ltpa.keys are changed, and an existing LTPA token cookie is no longer valid.
-                        // we will logout the user, so they are properly redirected to the login page to login again and get a new LTPA token
-                        //TODO - Only do this if the key rotation feature is enabled to
-                        cleanupLoggedOutToken(req, res, false);
-
                         //TODO - Remove authentication cache.
                     }
                 }
