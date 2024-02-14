@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.kernel.feature.resolver.util;
+package com.ibm.ws.kernel.feature.internal.util;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.ibm.ws.kernel.feature.resolver.util.VerifyData.VerifyCase;
+import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
 
 public class VerifyDelta {
     public static Map<String, List<String>> compare(VerifyData expectedCases, VerifyData actualCases) {
@@ -58,7 +58,10 @@ public class VerifyDelta {
     }
 
     private void addError(String name, String error) {
-        List<String> caseErrors = errors.computeIfAbsent(name, (String useName) -> new ArrayList<>());
+        List<String> caseErrors = errors.get(name);
+        if (caseErrors == null) {
+            errors.put(name, caseErrors = new ArrayList<>());
+        }
         caseErrors.add(error);
     }
 
@@ -76,27 +79,30 @@ public class VerifyDelta {
         Map<String, VerifyCase> actual = actualCases.mapCases();
         Map<String, VerifyCase> expected = expectedCases.mapCases();
 
-        actual.forEach((String caseKey, VerifyCase actualCase) -> {
-            VerifyCase expectedCase = expected.get(caseKey);
-            if (expectedCase == null) {
+        for (Map.Entry<String, VerifyCase> caseEntry : actual.entrySet()) {
+            String caseKey = caseEntry.getKey();
+            if (!expected.containsKey(caseKey)) {
                 addError(GLOBAL_CASE_KEY, "Extra case [ " + caseKey + " ]");
             }
-        });
+        }
 
-        expected.forEach((String caseKey, VerifyCase expectedCase) -> {
-            VerifyCase actualCase = actual.get(caseKey);
-            if (actualCase == null) {
+        for (Map.Entry<String, VerifyCase> caseEntry : expected.entrySet()) {
+            String caseKey = caseEntry.getKey();
+            if (!actual.containsKey(caseKey)) {
                 addError(GLOBAL_CASE_KEY, "Missing case [ " + caseKey + " ]");
             }
-        });
+        }
 
-        actual.forEach((String caseKey, VerifyCase actualCase) -> {
+        for (Map.Entry<String, VerifyCase> caseEntry : actual.entrySet()) {
+            String caseKey = caseEntry.getKey();
+            VerifyCase actualCase = caseEntry.getValue();
+
             VerifyCase expectedCase = expected.get(caseKey);
             if (expectedCase == null) {
                 return;
             }
             compare(caseKey, expectedCase, actualCase);
-        });
+        }
     }
 
     public void compare(String caseKey, VerifyCase expectedCase, VerifyCase actualCase) {
@@ -115,17 +121,17 @@ public class VerifyDelta {
         Set<String> expectedSet = new HashSet<>(expected);
         Set<String> actualSet = new HashSet<>(actual);
 
-        expectedSet.forEach((String expectedElement) -> {
+        for (String expectedElement : expectedSet) {
             if (!actualSet.contains(expectedElement)) {
                 addError(caseKey, prefix + "Missing [ " + expectedElement + " ]");
             }
-        });
+        }
 
-        actualSet.forEach((String actualElement) -> {
+        for (String actualElement : actualSet) {
             if (!expectedSet.contains(actualElement)) {
                 addError(caseKey, prefix + "Extra       [ " + actualElement + " ]");
             }
-        });
+        }
 
         int minSize = ((actualSize > expectedSize) ? expectedSize : actualSize);
         String orderError = null;

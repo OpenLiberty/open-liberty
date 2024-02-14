@@ -31,9 +31,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
-
-import org.osgi.framework.Version;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -41,14 +38,18 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.Visibility;
+import com.ibm.ws.kernel.feature.internal.util.LazySupplier;
+import com.ibm.ws.kernel.feature.internal.util.RepoXML;
+import com.ibm.ws.kernel.feature.internal.util.Transformer;
+import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
+import com.ibm.ws.kernel.feature.internal.util.VerifyEnv;
+import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
-import com.ibm.ws.kernel.feature.resolver.util.RepoXML;
-import com.ibm.ws.kernel.feature.resolver.util.VerifyData.VerifyCase;
-import com.ibm.ws.kernel.feature.resolver.util.VerifyEnv;
-import com.ibm.ws.kernel.feature.resolver.util.VerifyXML;
+
+import org.osgi.framework.Version;
 
 /**
  * A feature resolver that determines the set of features that should be installed
@@ -251,7 +252,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         info("Performing feature resolution ...");
 
         info("Resolving and writing to [ {} ] ...", resultsFilePath);
-        Stream<VerifyCase> cases = generate(repository, allowedMultiple, kernelFeatures);
+        List<LazySupplier<VerifyCase>> cases = generate(repository, allowedMultiple, kernelFeatures);
         try {
             VerifyXML.write(resultsFile, cases);
             info("Resolving and writing to [ {} ] ... done", resultsFilePath);
@@ -261,22 +262,26 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
     }
 
-    /**
-     * Compare two features by their short name.
-     *
-     * This is valid only for public features.
-     *
-     * Use a case insensitive comparison.
-     *
-     * @param def1 A feature definition which is to be compared.
-     * @param def2 Another feature definition which is to be compared.
-     *
-     * @return The features compared by their short name.
-     */
-    private static int comparePublic(ProvisioningFeatureDefinition def1,
-                              ProvisioningFeatureDefinition def2) {
-        return def1.getIbmShortName().compareToIgnoreCase(def2.getIbmShortName());
-    }
+    private static Comparator<ProvisioningFeatureDefinition> COMPARE_PUBLIC = new Comparator<ProvisioningFeatureDefinition>() {
+        /**
+         * Compare two features by their short name.
+         *
+         * This is valid only for public features.
+         *
+         * Use a case insensitive comparison.
+         *
+         * @param def1 A feature definition which is to be compared.
+         * @param def2 Another feature definition which is to be compared.
+         *
+         * @return The features compared by their short name.
+         */
+        @Override
+        public int compare(ProvisioningFeatureDefinition def1,
+                           ProvisioningFeatureDefinition def2) {
+            return def1.getIbmShortName().compareToIgnoreCase(def2.getIbmShortName());
+        }
+    };
+
     /**
      * Generate resolution results for the specified parameters.  Generate
      * results for each single public feature and for each supported process
@@ -291,29 +296,76 @@ public class FeatureResolverImpl implements FeatureResolver {
      * @param kernelFeatures Kernel features to be used to perform the
      *     resolution.
      *
-     * @return A stream across the resolution case data.
+     * @return A list of (lazy) case data.
      */
-    private Stream<VerifyCase> generate(Repository repository,
-                                        Set<String> allowedMultiple,
-                                        Collection<ProvisioningFeatureDefinition> kernelFeatures) {
+    private List<LazySupplier<VerifyCase>> generate(final Repository repository,
+                                                    final Set<String> allowedMultiple,
+                                                    final Collection<ProvisioningFeatureDefinition> kernelFeatures) {
 
-        List<ProvisioningFeatureDefinition> publicDefs =
-            repository.select(RepoXML::isPublic);
-        publicDefs.sort(FeatureResolverImpl::comparePublic);
+        List<ProvisioningFeatureDefinition> publicDefs = repository.select(RepoXML.IS_PUBLIC);
+        int numDefs = publicDefs.size();
+        ProvisioningFeatureDefinition[] publicDefsArray = publicDefs.toArray( new ProvisioningFeatureDefinition[numDefs]);
+        Arrays.sort(publicDefsArray, COMPARE_PUBLIC);
 
-        Stream<ProvisioningFeatureDefinition> publicServerDefs =
-            publicDefs.stream().filter(RepoXML::isServer);
-        Stream<VerifyCase> serverResults = publicServerDefs.map(
-            (ProvisioningFeatureDefinition def) ->
-                createResult(repository, allowedMultiple, kernelFeatures, def, ProcessType.SERVER));
+        List<ProvisioningFeatureDefinition> publicServerDefs = new ArrayList<>(numDefs);
+        List<ProvisioningFeatureDefinition> publicClientDefs = new ArrayList<>(numDefs);
 
-        Stream<ProvisioningFeatureDefinition> publicClientDefs =
-            publicDefs.stream().filter(RepoXML::isClient);
-        Stream<VerifyCase> clientResults = publicClientDefs.map(
-            (ProvisioningFeatureDefinition featureDef) ->
-                createResult(repository, allowedMultiple, kernelFeatures, featureDef, ProcessType.CLIENT));
+        for ( ProvisioningFeatureDefinition def : publicDefsArray ) {
+            if ( RepoXML.isServer(def) ) {
+                publicServerDefs.add(def);
+            }
+            if ( RepoXML.isClient(def) ) {
+                publicClientDefs.add(def);
+            }
+        }
 
-        return Stream.concat(serverResults, clientResults);
+        final Transformer<ProvisioningFeatureDefinition, VerifyCase> createServerResult =
+            new Transformer<ProvisioningFeatureDefinition, VerifyCase>() {
+                @Override
+                public VerifyCase apply(ProvisioningFeatureDefinition def) {
+                    return createResult(repository,
+                                        allowedMultiple,
+                                        kernelFeatures,
+                                        def,
+                                        ProcessType.SERVER);
+                }
+        };
+
+        final Transformer<ProvisioningFeatureDefinition, VerifyCase> createClientResult =
+            new Transformer<ProvisioningFeatureDefinition, VerifyCase>() {
+                @Override
+                public VerifyCase apply(ProvisioningFeatureDefinition def) {
+                    return createResult(repository,
+                                        allowedMultiple,
+                                        kernelFeatures,
+                                        def,
+                                        ProcessType.CLIENT);
+                }
+        };
+
+        List<LazySupplier<VerifyCase>> cases = new ArrayList<>( publicServerDefs.size() + publicClientDefs.size() );
+
+        for (ProvisioningFeatureDefinition def : publicServerDefs ) {
+            final ProvisioningFeatureDefinition useDef = def;
+            cases.add( new LazySupplier<VerifyCase>() {
+                @Override
+                public VerifyCase supply() {
+                    return createServerResult.apply(useDef);
+                }
+            });
+        }
+
+        for (ProvisioningFeatureDefinition def : publicClientDefs ) {
+            final ProvisioningFeatureDefinition useDef = def;            
+            cases.add( new LazySupplier<VerifyCase>() {
+                @Override
+                public VerifyCase supply() {
+                    return createClientResult.apply(useDef);
+                }
+            });
+        }
+
+        return cases;
     }
 
     /**
@@ -394,14 +446,15 @@ public class FeatureResolverImpl implements FeatureResolver {
             verifyCase.input.setServer();
         }
 
-        kernelFeatures.forEach(
-            (ProvisioningFeatureDefinition kernelDef) ->
-                verifyCase.input.addKernel(kernelDef.getSymbolicName()));
+        for ( ProvisioningFeatureDefinition kernelDef : kernelFeatures ) {
+            verifyCase.input.addKernel(kernelDef.getSymbolicName());
+        }
 
         verifyCase.input.addRoot(publicDef.getIbmShortName());
 
-        result.getResolvedFeatures().forEach(
-            (String featureName) -> verifyCase.output.addResolved(featureName) );
+        for ( String featureName : result.getResolvedFeatures() ) {
+            verifyCase.output.addResolved(featureName);
+        }
 
         return verifyCase;
     }
@@ -651,7 +704,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (selectedFeature.isSingleton() && !!!selectionContext.allowMultipleVersions(baseFeatureName)) {
             Chain existingSelection = selectionContext.getSelected(baseFeatureName);
             String selectedFeatureName = existingSelection == null ? null : existingSelection.getCandidates().get(0);
-            if (existingSelection == null || !!!featureName.equals(selectedFeatureName)) {
+            if ((existingSelection == null) || !!!featureName.equals(selectedFeatureName)) {
                 throw new IllegalStateException("Expected feature \"" + featureName + "\" to be selected instead feature of \"" + selectedFeatureName);
             }
         }
@@ -783,14 +836,14 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         // look for the preferred feature using the fully qualified symbolicName first
         ProvisioningFeatureDefinition preferredCandidateDef = selectionContext.getRepository().getFeature(symbolicName);
-        if (preferredCandidateDef != null && isAccessible(includingFeature, preferredCandidateDef)) {
+        if ((preferredCandidateDef != null) && isAccessible(includingFeature, preferredCandidateDef)) {
             checkForFullSymbolicName(preferredCandidateDef, symbolicName, chain.getLast());
             isSingleton = preferredCandidateDef.isSingleton();
             candidateNames.add(symbolicName);
         }
 
         // Check for tolerated versions; but only if the preferred version is a singleton or we did not find the preferred version
-        if (tolerates != null && (candidateNames.isEmpty() || isSingleton)) {
+        if ((tolerates != null) && (candidateNames.isEmpty() || isSingleton)) {
             for (String tolerate : tolerates) {
                 if (selectionContext.allowMultipleVersions(baseSymbolicName)) {
                     // if we are in minify mode (_allowMultipleVersions) then we only want to continue to look for
@@ -801,7 +854,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 }
                 String toleratedSymbolicName = baseSymbolicName + '-' + tolerate;
                 ProvisioningFeatureDefinition toleratedCandidateDef = selectionContext.getRepository().getFeature(toleratedSymbolicName);
-                if (toleratedCandidateDef != null && !!!candidateNames.contains(toleratedCandidateDef.getSymbolicName()) && isAccessible(includingFeature, toleratedCandidateDef)) {
+                if ((toleratedCandidateDef != null) && !!!candidateNames.contains(toleratedCandidateDef.getSymbolicName()) && isAccessible(includingFeature, toleratedCandidateDef)) {
                     checkForFullSymbolicName(toleratedCandidateDef, toleratedSymbolicName, chain.getLast());
                     isSingleton |= toleratedCandidateDef.isSingleton();
                     // Only check against the allowed tolerations if this candidate feature is public or protected (NOT private)
@@ -812,7 +865,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
         }
 
-        if (!!!isSingleton && candidateNames.size() > 1) {
+        if (!!!isSingleton && (candidateNames.size() > 1)) {
             // If the candidates are not singleton and there are multiple then that means
             // someone is using tolerates for a non-singleton feature (error case?).
             // For now just use the first candidate
@@ -829,7 +882,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     private boolean isAccessible(ProvisioningFeatureDefinition includingFeature, ProvisioningFeatureDefinition candidateDef) {
         return !!!candidateDef.getFeatureName().startsWith("io.openliberty.versionless.")
-               && (candidateDef.getVisibility() != Visibility.PRIVATE || includingFeature.getBundleRepositoryType().equals(candidateDef.getBundleRepositoryType()));
+               && ((candidateDef.getVisibility() != Visibility.PRIVATE) || includingFeature.getBundleRepositoryType().equals(candidateDef.getBundleRepositoryType()));
     }
 
     private boolean isAllowedToleration(SelectionContext selectionContext, ProvisioningFeatureDefinition toleratedCandidateDef, Set<String> allowedTolerations,
@@ -889,7 +942,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
             // if we haven't been here before, check the capability header against the list of
             // installed features to see if it should be auto-installed.
-            if (!seenAutoFeatures.contains(featureSymbolicName))
+            if (!seenAutoFeatures.contains(featureSymbolicName)) {
                 if (autoFeatureDef.isCapabilitySatisfied(filteredFeatureDefs)) {
 
                     // Add this auto feature to the list of auto features to ignore on subsequent recursions.
@@ -899,6 +952,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                         autoFeaturesToProcess.add(featureSymbolicName);
                     }
                 }
+            }
         }
 
         return autoFeaturesToProcess;
@@ -988,7 +1042,9 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         void restoreBestSolution() {
             // NOTE that the best solution is kept as the last permutation
-            while (popPermutation());
+            while (popPermutation()) {
+
+            }
             _current = _permutations.getFirst();
         }
 
@@ -1039,7 +1095,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         boolean allowMultipleVersions(String baseSymbolicName) {
-            return (_allowedMultipleVersions != null && (_allowedMultipleVersions.size() == 0 || _allowedMultipleVersions.contains(baseSymbolicName)));
+            return ((_allowedMultipleVersions != null) && ((_allowedMultipleVersions.size() == 0) || _allowedMultipleVersions.contains(baseSymbolicName)));
         }
 
         int getBlockedCount() {
@@ -1184,7 +1240,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         void primeSelected(Collection<String> features) {
-            if (_allowedMultipleVersions != null && _allowedMultipleVersions.size() == 0) {
+            if ((_allowedMultipleVersions != null) && (_allowedMultipleVersions.size() == 0)) {
                 // no need to do any selecting when allowing multiple versions
                 return;
             }
@@ -1197,7 +1253,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             for (Iterator<String> iFeatures = features.iterator(); iFeatures.hasNext();) {
                 String featureName = iFeatures.next();
                 ProvisioningFeatureDefinition featureDef = _repository.getFeature(featureName);
-                if (featureDef != null && featureDef.isSingleton()) {
+                if ((featureDef != null) && featureDef.isSingleton()) {
                     // Only need to prime selected for singletons.
                     // Be sure to get the real symbolic name; don't just use the feature name used to do the lookup
                     String featureSymbolicName = featureDef.getSymbolicName();
@@ -1289,7 +1345,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 // we do this by checking each insertion element to see if we are equal
                 // until we find one that is not
                 Chain existing;
-                while (insertion < _chains.size() && (existing = _chains.get(insertion)) != null && compare(existing, chain) == 0) {
+                while ((insertion < _chains.size()) && ((existing = _chains.get(insertion)) != null) && (compare(existing, chain) == 0)) {
                     insertion++;
                 }
             }

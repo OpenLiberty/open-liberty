@@ -13,6 +13,7 @@ task prebuild(type: Sync) {
                 "com/ibm/ws/kernel/feature/package-info.java",
                 "com/ibm/ws/kernel/feature/internal/FeatureResolverImpl.java",
                 "com/ibm/ws/kernel/feature/internal/ProvisionerConstants.java",
+                "com/ibm/ws/kernel/feature/internal/util/*.java",
                 "com/ibm/ws/kernel/feature/provisioning/*.java",
                 "com/ibm/ws/kernel/feature/resolver/*.java"
     }

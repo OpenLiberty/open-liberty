@@ -7,47 +7,53 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.kernel.feature.resolver.util;
+package com.ibm.ws.kernel.feature.internal.util;
 
-import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.CASE_TAG;
-import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.CLIENT_TAG;
-import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.DESCRIPTION_TAG;
-import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.INPUT_TAG;
-import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.KERNEL_TAG;
-import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.MULTIPLE_TAG;
-import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.NAME_TAG;
-import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.OUTPUT_TAG;
-import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.RESOLVED_TAG;
-import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.ROOT_TAG;
-import static com.ibm.ws.kernel.feature.resolver.util.VerifyXMLConstants.SERVER_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CASE_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CLIENT_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.DESCRIPTION_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.INPUT_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.KERNEL_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.MULTIPLE_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.NAME_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.OUTPUT_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.RESOLVED_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.ROOT_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.SERVER_TAG;
 
 import java.io.File;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.stream.Stream;
+import java.util.List;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import com.ibm.ws.kernel.feature.resolver.util.VerifyData.VerifyCase;
-import com.ibm.ws.kernel.feature.resolver.util.VerifyData.VerifyInput;
-import com.ibm.ws.kernel.feature.resolver.util.VerifyData.VerifyOutput;
+import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
+import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyInput;
+import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyOutput;
 
 public class VerifyXML extends BaseXML {
     //
 
-    public static void write(File file, Stream<VerifyCase> cases) throws Exception {
-        write(file, (PrintWriter pW) -> {
-            try (VerifyXMLWriter xW = new VerifyXMLWriter(pW)) {
-                xW.write(cases);
+    public static void write(File file, final List<LazySupplier<VerifyCase>> cases) throws Exception {
+        write(file, new FailableConsumer<PrintWriter, Exception>() {
+            @Override
+            public void accept(PrintWriter pW) throws Exception {
+                try (VerifyXMLWriter xW = new VerifyXMLWriter(pW)) {
+                    xW.write(cases);
+                }
             }
         });
     }
 
-    public static void write(File file, VerifyData verifyData) throws Exception {
-        write(file, (PrintWriter pW) -> {
-            try (VerifyXMLWriter xW = new VerifyXMLWriter(pW)) {
-                xW.write(verifyData);
+    public static void write(File file, final VerifyData verifyData) throws Exception {
+        write(file, new FailableConsumer<PrintWriter, Exception>() {
+            @Override
+            public void accept(PrintWriter pW) throws Exception {
+                try (VerifyXMLWriter xW = new VerifyXMLWriter(pW)) {
+                    xW.write(verifyData);
+                }
             }
         });
     }
@@ -58,42 +64,64 @@ public class VerifyXML extends BaseXML {
         }
 
         public void write(VerifyData verifyData) {
-            verifyData.cases.forEach(this::write);
+            for (VerifyCase verifyCase : verifyData.cases) {
+                write(verifyCase);
+            }
         }
 
-        public void write(Stream<VerifyCase> cases) {
-            cases.forEach(this::write);
+        public void write(List<LazySupplier<VerifyCase>> cases) throws Exception {
+            for (LazySupplier<VerifyCase> verifyCase : cases) {
+                write(verifyCase.get());
+            }
         }
 
         public void write(VerifyCase verifyCase) {
-            withinElement(CASE_TAG, () -> {
-                printElement(NAME_TAG, verifyCase.name);
-                printElement(DESCRIPTION_TAG, verifyCase.description);
-                write(verifyCase.input);
-                write(verifyCase.output);
-            });
+            openElement(CASE_TAG);
+            upIndent();
+
+            printElement(NAME_TAG, verifyCase.name);
+            printElement(DESCRIPTION_TAG, verifyCase.description);
+            write(verifyCase.input);
+            write(verifyCase.output);
+
+            downIndent();
+            closeElement(CASE_TAG);
         }
 
         public void write(VerifyInput verifyInput) {
-            withinElement(INPUT_TAG, () -> {
-                if (verifyInput.isMultiple) {
-                    printElement(MULTIPLE_TAG);
-                }
-                if (verifyInput.isClient) {
-                    printElement(CLIENT_TAG);
-                }
-                if (verifyInput.isServer) {
-                    printElement(SERVER_TAG);
-                }
-                verifyInput.kernel.forEach((String kernelFeature) -> printElement(KERNEL_TAG, kernelFeature));
-                verifyInput.roots.forEach((String root) -> printElement(ROOT_TAG, root));
-            });
+            openElement(INPUT_TAG);
+            upIndent();
+
+            if (verifyInput.isMultiple) {
+                printElement(MULTIPLE_TAG);
+            }
+            if (verifyInput.isClient) {
+                printElement(CLIENT_TAG);
+            }
+            if (verifyInput.isServer) {
+                printElement(SERVER_TAG);
+            }
+            for (String kernelFeature : verifyInput.kernel) {
+                printElement(KERNEL_TAG, kernelFeature);
+            }
+            for (String root : verifyInput.roots) {
+                printElement(ROOT_TAG, root);
+            }
+
+            downIndent();
+            closeElement(CASE_TAG);
         }
 
         public void write(VerifyOutput verifyOutput) {
-            withinElement(OUTPUT_TAG, () -> {
-                verifyOutput.resolved.forEach((String resolvedFeature) -> printElement(RESOLVED_TAG, resolvedFeature));
-            });
+            openElement(OUTPUT_TAG);
+            upIndent();
+
+            for (String resolved : verifyOutput.resolved) {
+                printElement(RESOLVED_TAG, resolved);
+            }
+
+            downIndent();
+            closeElement(CASE_TAG);
         }
     }
 
