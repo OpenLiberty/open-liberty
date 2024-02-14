@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -107,8 +107,8 @@ Export-Package: \
   org.jboss.resteasy.spi;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.statistics;version=${resteasy-version}, \
   org.jboss.resteasy.test;version=${resteasy-version}, \
-  org.jboss.resteasy.tracing.api.providers;version=1.0.0, \
-  org.jboss.resteasy.tracing.api;version=1.0.0, \
+  org.jboss.resteasy.tracing.api.providers;version=${resteasy-tracing-api-version},\
+  org.jboss.resteasy.tracing.api;version=${resteasy-tracing-api-version},\
   org.jboss.resteasy.tracing;version=${resteasy-version}, \
   org.jboss.resteasy.util.snapshot;version=${resteasy-version}, \
   org.jboss.resteasy.util;version=${resteasy-version}
@@ -117,7 +117,6 @@ Export-Package: \
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
 Import-Package: \
-  javax.activation;version=!, \
   javax.annotation;version=!, \
   javax.annotation.security;version=!, \
   javax.xml.bind;version=!, \
@@ -126,6 +125,7 @@ Import-Package: \
   javax.xml.bind.attachment;version=!, \
   javax.xml.bind.helpers;version=!, \
   javax.xml.bind.util;version=!, \
+  !javax.activation, \
   !javax.json.bind, \
   !javax.json.bind.spi, \
   !javax.mail, \
@@ -210,6 +210,7 @@ Include-Resource:\
 	com.ibm.websphere.javaee.jsonp.1.1,\
 	com.ibm.websphere.javaee.servlet.4.0,\
 	com.ibm.websphere.javaee.validation.2.0;version=latest,\
+	io.openliberty.jakarta.activation.2.0;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\

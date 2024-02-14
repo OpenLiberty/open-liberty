@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,13 +45,13 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
 
     private final Object[] args;
     private final boolean isForward;
-    private final Pageable pagination;
+    private final Pageable<T> pagination;
     private final QueryInfo queryInfo;
     private final List<T> results;
     private long totalElements = -1;
 
     @FFDCIgnore(Exception.class)
-    KeysetAwarePageImpl(QueryInfo queryInfo, Pageable pagination, Object[] args) {
+    KeysetAwarePageImpl(QueryInfo queryInfo, Pageable<T> pagination, Object[] args) {
 
         this.args = args;
         this.queryInfo = queryInfo;
@@ -132,7 +132,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
 
         final Object[] keyValues = new Object[queryInfo.sorts.size()];
         int k = 0;
-        for (Sort keyInfo : queryInfo.sorts)
+        for (Sort<?> keyInfo : queryInfo.sorts)
             try {
                 List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(keyInfo.property());
                 Object value = entity;
@@ -162,8 +162,15 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
-    public Pageable pageable() {
+    public Pageable<T> pageable() {
         return pagination;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E> Pageable<E> pageable(Class<E> entityClass) {
+        // KeysetAwareSlice/Page must always have the same type result as sort criteria per the API.
+        return (Pageable<E>) pagination;
     }
 
     @Override
@@ -193,25 +200,32 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
-    public Pageable nextPageable() {
+    public Pageable<T> nextPageable() {
         // The extra position is only available for identifying a next page if the current page was obtained in the forward direction
         int minToHaveNextPage = isForward ? (pagination.size() + (pagination.size() == Integer.MAX_VALUE ? 0 : 1)) : 1;
         if (results.size() < minToHaveNextPage)
             return null;
 
-        Pageable p = pagination.page() == Long.MAX_VALUE ? pagination : pagination.page(pagination.page() + 1);
+        Pageable<T> p = pagination.page() == Long.MAX_VALUE ? pagination : pagination.page(pagination.page() + 1);
         return p.afterKeyset(queryInfo.getKeysetValues(results.get(Math.min(results.size(), pagination.size()) - 1)));
     }
 
     @Override
-    public Pageable previousPageable() {
+    @SuppressWarnings("unchecked")
+    public <E> Pageable<E> nextPageable(Class<E> entityClass) {
+        // KeysetAwareSlice/Page must always have the same type result as sort criteria per the API.
+        return (Pageable<E>) nextPageable();
+    }
+
+    @Override
+    public Pageable<T> previousPageable() {
         // The extra position is only available for identifying a previous page if the current page was obtained in the reverse direction
         int minToHavePreviousPage = isForward ? 1 : (pagination.size() + (pagination.size() == Integer.MAX_VALUE ? 0 : 1));
         if (results.size() < minToHavePreviousPage)
             return null;
 
         // Decrement page number by 1 unless it would go below 1.
-        Pageable p = pagination.page() == 1 ? pagination : pagination.page(pagination.page() - 1);
+        Pageable<T> p = pagination.page() == 1 ? pagination : pagination.page(pagination.page() - 1);
         return p.beforeKeyset(queryInfo.getKeysetValues(results.get(0)));
     }
 
@@ -231,7 +245,6 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
             this.keyValues = keyValues;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public boolean equals(Object o) {
             return this == o || o != null

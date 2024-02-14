@@ -30,7 +30,8 @@ Import-Package: \
   *
 
 Export-Package: \
-  io.openliberty.concurrent.internal.messages
+  io.openliberty.concurrent.internal.messages,\
+  io.openliberty.concurrent.internal.qualified
 
 Private-Package: \
   io.openliberty.concurrent.internal.context,\

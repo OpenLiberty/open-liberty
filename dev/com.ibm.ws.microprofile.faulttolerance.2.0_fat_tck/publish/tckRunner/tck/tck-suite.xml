@@ -29,6 +29,12 @@
                     <exclude name="testBulkheadClassAsynchFutureDoneAfterGet"/>
                 </methods>
             </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerBulkheadTest">
+               <!-- This was removed because the test could legitimately take longer than the 2second timeout. This bug is fixed in TCK version 3 -->
+                <methods>
+                    <exclude name="testCircuitBreakerAroundBulkheadSync"/>
+                </methods>
+            </class>
         </classes>
     </test>
 </suite>

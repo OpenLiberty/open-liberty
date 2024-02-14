@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -117,6 +117,8 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
         private static final Set<ArtifactEntry> s = Collections.emptySet();
 
         private ArtifactEntry internalNext;
+        private StringBuilder baseIterBuilder = null;
+        int prefixLength = 0;
 
         /**
          * Build iterator for path, using overlay ArtifactContainer for data.
@@ -190,8 +192,17 @@ public class DirectoryBasedOverlayContainerImpl implements OverlayContainer {
                     //mask out entries as requested
                     //return overlaid entries if overlaid
                     //original entries if not
+                    if (baseIterBuilder == null) {
+                        baseIterBuilder = new StringBuilder(path);
+                        baseIterBuilder.append('/');
+                        prefixLength = baseIterBuilder.length();
+                    } else {
+                        baseIterBuilder.setLength(prefixLength);
+                    }
+
                     ArtifactEntry possible = baseIter.next();
-                    String possiblePath = path + "/" + possible.getName();
+                    baseIterBuilder.append(possible.getName());
+                    String possiblePath = baseIterBuilder.toString();
 
                     if (!overlay.getMaskedPaths().contains(possiblePath)) {
                         n = overlay.getEntry(possiblePath);

@@ -261,7 +261,7 @@
 
 7149=Atributul cheii primare compuse [{2}] de tipe [{4}] a clasei de intrare [{0}] ar trebui s\u0103 fie de acela\u015fi tip a\u015fa cum a fost definit \u00een clasa sa de chei primare [{1}]. Astfel, ar trebui s\u0103 fie de tip [{3}].
 
-7150=Specifica\u0163ie invalid\u0103 a cheii primare compuse. Numele c\u00e2mpurilor de chei primare sau propriet\u0103\u0163i din clasa de chei primare [{1}] \u015fi cele ale clasei de bean entitate [{0}] trebuie s\u0103 corespund\u0103 \u015fi tipurile acestea trebuiesc s\u0103 fie acelea\u015fi. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i specificat elementele ID pentru atributele corespunz\u0103toare \u00een XML \u015fi/sau un @Id \u00een c\u00e2mpurile corespunz\u0103toare sau propriet\u0103\u0163ile clasei de entit\u0103\u0163i.
+7150=Specifica\u0163ie invalid\u0103 a cheii primare compuse. Numele c\u00e2mpurilor de chei primare sau propriet\u0103\u0163i din clasa de chei primare [{1}] \u015fi cele ale clasei de bean entitate [{0}] trebuie s\u0103 corespund\u0103 \u015fi tipurile acestea trebuiesc s\u0103 fie acelea\u015fi. De asemenea, asigura\u0163i-v\u0103 c\u0103 a\u0163i specificat elementele ID pentru atributele corespunz\u0103toare \u00een XML \u015fi/sau un @Id \u00een c\u00e2mpurile corespunz\u0103toare sau propriet\u0103\ufffd\ufffdile clasei de entit\u0103\u0163i.
 
 7151=Tipul [{1}] pentru atributul [{0}] din clasa de entit\u0103\u0163i [{2}] nu este un tip valid pentru o mapare enumerat\u0103. Atributul trebuie definit ca \u015fi enumerare Java.
 

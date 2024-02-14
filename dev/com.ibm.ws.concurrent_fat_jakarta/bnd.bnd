@@ -15,7 +15,6 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/Concurrency31TestWeb/src,\
 	test-applications/ConcurrencyRestTestApp/src,\
 	test-applications/ConcurrencyTestEJB/src,\
 	test-applications/ConcurrencyTestWeb/src,\

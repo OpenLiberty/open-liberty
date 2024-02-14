@@ -13,9 +13,9 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.partitions;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +67,7 @@ public class KafkaPartitionTest {
 
     @ClassRule
     public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10,
-                                                                  ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
+                                                                  ReactiveMessagingActions.MP50_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -120,15 +120,13 @@ public class KafkaPartitionTest {
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
-
         server.startServer();
     }
 
     @AfterClass
     public static void shutdown() throws Exception {
         try {
-            server.stopServer();
+            kafkaStopServer(server);
         } finally {
             KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
         }

@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2022, 2023 IBM Corporation and others.
+    Copyright (c) 2022, 2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -130,6 +130,23 @@
 		userInfoEndpointEnabled="true"
 		hostNameVerificationEnabled="false"
 		authFilterRef="bcl_invalidBCLUri_filter"
+	>
+	</oidcLogin>
+
+	<oidcLogin
+		id="bcl_reconfig_invalidUri"
+		scope="profile email openid"
+		clientId="bcl_reconfig_invalidUri"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		signatureAlgorithm="HS256"
+		createSession="true"
+		redirectToRPHostAndPort="https://localhost:${bvt.prop.security_2_HTTP_default.secure}"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_invalidBCL/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_invalidBCL/token"
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_invalidBCL/userinfo"
+		userInfoEndpointEnabled="true"
+		hostNameVerificationEnabled="false"
+		authFilterRef="bcl_reconfig_invalidUri_filter"
 	>
 	</oidcLogin>
 
@@ -905,6 +922,25 @@
 	</openidConnectClient>
 
 	<openidConnectClient
+		id="bcl_reconfig_invalidUri"
+		scope="openid profile"
+		clientId="bcl_reconfig_invalidUri"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		inboundPropagation="supported"
+		jwtAccessTokenRemoteValidation="require"
+		httpsRequired="false"
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_invalidBCL/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_invalidBCL/token"
+		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_invalidBCL/userinfo"
+		userInfoEndpointEnabled="true"
+		validationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_invalidBCL/introspect"
+		authFilterRef="bcl_reconfig_invalidUri_oidc_filter"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
 		id="bcl_omittedBCLUri"
 		scope="openid profile"
 		clientId="bcl_omittedBCLUri"
@@ -1661,6 +1697,12 @@
 		<requestUrl
 			matchType="contains" 
 			urlPattern="/simple/oidc_bcl_invalidBCLUri" />
+	</authFilter>
+
+	<authFilter id="bcl_reconfig_invalidUri_oidc_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/oidc_bcl_reconfig_invalidUri" />
 	</authFilter>
 
 	<authFilter id="bcl_omittedBCLUri_oidc_filter">

@@ -60,7 +60,7 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.1
  com.ibm.ws.cdi.weld.jakarta, \
  com.ibm.ws.cdi.internal.jakarta, \
  io.openliberty.cdi.4.0.internal.weld, \
- io.openliberty.cdi.4.0.internal.services.fragment, \
+ io.openliberty.cdi.4.1.internal.services.fragment, \
  com.ibm.ws.cdi.interfaces.jakarta, \
  io.openliberty.cdi.4.0.internal.interfaces, \
  io.openliberty.cdi.spi; location:="dev/spi/ibm/,lib/"

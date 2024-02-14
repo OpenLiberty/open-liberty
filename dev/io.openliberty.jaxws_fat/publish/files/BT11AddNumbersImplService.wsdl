@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions targetNamespace="http://server11.checkdefaults.bindingtype.annotations.jaxws.basic.cxf.fat/" name="AddNumbersImplService" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://server11.checkdefaults.bindingtype.annotations.jaxws.basic.cxf.fat/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema>
+      <xsd:import namespace="http://server11.checkdefaults.bindingtype.annotations.jaxws.basic.cxf.fat/" schemaLocation="AddNumbersImplService_schema1.xsd"/>
+    </xsd:schema>
+  </types>
+  <message name="addTwoNumbers">
+    <part name="parameters" element="tns:addTwoNumbers"/>
+  </message>
+  <message name="addTwoNumbersResponse">
+    <part name="parameters" element="tns:addTwoNumbersResponse"/>
+  </message>
+  <portType name="AddNumbersImpl">
+    <operation name="addTwoNumbers">
+      <input message="tns:addTwoNumbers"/>
+      <output message="tns:addTwoNumbersResponse"/>
+    </operation>
+  </portType>
+  <binding name="AddNumbersImplPortBinding" type="tns:AddNumbersImpl">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <operation name="addTwoNumbers">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="AddNumbersImplService">
+    <port name="AddNumbersImplPort" binding="tns:AddNumbersImplPortBinding">
+      <soap:address location="http://localhost:8010/BT11AddNumbersImplService/services/BT11AddNumbersImplService"/>
+    </port>
+  </service>
+</definitions>
+

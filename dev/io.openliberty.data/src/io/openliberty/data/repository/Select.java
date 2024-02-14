@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
@@ -56,7 +57,7 @@ import jakarta.data.repository.Update;
  * </pre>
  *
  * <p>Do not use in combination with the {@link jakarta.data.repository.Query Query},
- * {@link Count}, {@link Delete}, {@link Exists}, {@link Insert}, {@link Save}, or {@link Update} annotation,
+ * {@link Count}, {@link Delete}, {@link Exists}, {@link Find}, {@link Insert}, {@link Save}, or {@link Update} annotation,
  * or with any annotation in the {@link io.openliberty.data.repository.update} package.</p>
  */
 @Retention(RetentionPolicy.RUNTIME)

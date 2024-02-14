@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -193,3 +193,13 @@ DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Usu\u0144 okre\u015blone w
 JWT_MISSING_ISSUER=CWWKS1784E: Token nie jest poprawny, poniewa\u017c nie zawiera \u017c\u0105dania wystawcy.
 JWT_MISSING_ISSUER.explanation=Znacznik musi zawiera\u0107 \u017c\u0105danie wystawcy, aby umo\u017cliwi\u0107 zidentyfikowanie, kto wystawi\u0142 znacznik.
 JWT_MISSING_ISSUER.useraction=Uzyskaj nowy znacznik, kt\u00f3ry zawiera \u017c\u0105danie wystawcy.
+
+# Do not translate "typ", "logout+jwt"
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER=CWWKS1785E: Token nie jest poprawny, poniewa\u017c nag\u0142\u00f3wek [{0}] ''typ '' tokenu wskazuje, \u017ce jest to token wylogowania.
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.explanation=Znacznik nie mo\u017ce by\u0107 znacznikiem wylogowania. Tokeny wylogowania mog\u0105 mie\u0107 parametr nag\u0142\u00f3wka "typ" (type) o warto\u015bci "logout + jwt".
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.useraction=Upewnij si\u0119, \u017ce u\u017cywany znacznik nie jest znacznikiem wylogowania.
+
+# Do not translate "events", "http://schemas.openid.net/event/backchannel-logout"
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM=CWWKS1786E: Znacznik jest niepoprawny, poniewa\u017c \u017c\u0105danie zdarze\u0144 o warto\u015bci [{0}] wskazuje, \u017ce znacznik jest znacznikiem wylogowania.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.explanation=Znacznik nie mo\u017ce by\u0107 znacznikiem wylogowania. Znaczniki wylogowania maj\u0105 roszczenie "events", kt\u00f3re jest obiektem JSON zawieraj\u0105cym \u0142a\u0144cuch "http://schemas.openid.net/event/backchannel-logout" jako jeden z jego element\u00f3w.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.useraction=Upewnij si\u0119, \u017ce u\u017cywany znacznik nie jest znacznikiem wylogowania.

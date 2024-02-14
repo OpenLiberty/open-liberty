@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package tests;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -60,7 +59,9 @@ public class MultiRecoveryTest {
     protected static WebArchive serverApp;
 
     @BeforeClass
-	public static void beforeTests() throws Exception {
+	public static void beforeClass() throws Exception {
+		Log.info(MultiRecoveryTest.class, "beforeClass", "");
+
 		//		System.getProperties().entrySet().stream().forEach(e -> Log.info(MultiRecoveryTest.class, "beforeTests", e.getKey() + " -> " + e.getValue()));
 
 		runner = new SetupRunner() {
@@ -83,17 +84,19 @@ public class MultiRecoveryTest {
         serverApp = ShrinkHelper.buildDefaultApp("recoveryServer", "server.*");
 		ShrinkHelper.exportDropinAppToServer(server1, serverApp);
 		ShrinkHelper.exportDropinAppToServer(server2, serverApp);
-
-		FATUtils.startServers(runner, server1, server2);
 	}
 	
 	@Before
 	public void before() throws Exception {
+		Log.info(MultiRecoveryTest.class, "before", "");
+		FATUtils.startServers(runner, server1, server2);
+
 		WSATTest.callClearResourcesServlet(recoveryServer, server1, server2);
 	}
 
-	@AfterClass
-	public static void tearDown() throws Exception {
+	@After
+	public void after() throws Exception {
+		Log.info(MultiRecoveryTest.class, "after", "");
 		FATUtils.stopServers(server1, server2);
 	}
 
@@ -115,10 +118,12 @@ public class MultiRecoveryTest {
 		// wait for crashing servers to have gone away
 		if ("both".equals(crashingServers) || crashingServers.equals("server1")) {
 			assertNotNull(server.getServerName() + " did not crash", server.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+			server.resetStarted();
 			server.postStopServerArchive();
 		}
 		if ("both".equals(crashingServers) || crashingServers.equals("server2")) {
 			assertNotNull(server2.getServerName() + " did not crash", server2.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+			server2.resetStarted();
 			server2.postStopServerArchive();
 		}
 

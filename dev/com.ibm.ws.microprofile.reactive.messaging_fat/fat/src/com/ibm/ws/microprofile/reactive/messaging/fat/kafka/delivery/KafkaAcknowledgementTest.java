@@ -15,6 +15,9 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
+
+import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -37,8 +40,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
-import java.util.Arrays;
-
 @RunWith(FATRunner.class)
 public class KafkaAcknowledgementTest {
 
@@ -54,8 +55,7 @@ public class KafkaAcknowledgementTest {
     public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME,
                                                                   ReactiveMessagingActions.MP61_RM30,
                                                                   ReactiveMessagingActions.MP20_RM10,
-                                                                  ReactiveMessagingActions.MP50_RM30,
-                                                                  ReactiveMessagingActions.MP60_RM30);
+                                                                  ReactiveMessagingActions.MP50_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -75,15 +75,13 @@ public class KafkaAcknowledgementTest {
                         .addPackage(AbstractKafkaTestServlet.class.getPackage())
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
-
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
         server.startServer();
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        kafkaStopServer(server);
     }
 
 }

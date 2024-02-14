@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,13 +35,13 @@ public class PageImpl<T> implements Page<T> {
     private static final TraceComponent tc = Tr.register(PageImpl.class);
 
     private final Object[] args;
-    private final Pageable pagination;
+    private final Pageable<?> pagination;
     private final QueryInfo queryInfo;
     private final List<T> results;
     private long totalElements = -1;
 
     @FFDCIgnore(Exception.class)
-    PageImpl(QueryInfo queryInfo, Pageable pagination, Object[] args) {
+    PageImpl(QueryInfo queryInfo, Pageable<T> pagination, Object[] args) {
         this.queryInfo = queryInfo;
         this.pagination = pagination == null ? Pageable.ofSize(100) : pagination;
         this.args = args;
@@ -115,8 +115,15 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
-    public Pageable pageable() {
-        return pagination;
+    @SuppressWarnings("unchecked")
+    public Pageable<T> pageable() {
+        return (Pageable<T>) pagination;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E> Pageable<E> pageable(Class<E> entityClass) {
+        return (Pageable<E>) pagination;
     }
 
     @Override
@@ -146,11 +153,21 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
-    public Pageable nextPageable() {
+    @SuppressWarnings("unchecked")
+    public Pageable<T> nextPageable() {
         if (results.size() <= pagination.size() && pagination.size() < Integer.MAX_VALUE)
             return null;
 
-        return pagination.next();
+        return (Pageable<T>) pagination.next();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E> Pageable<E> nextPageable(Class<E> entityClass) {
+        if (results.size() <= pagination.size() && pagination.size() < Integer.MAX_VALUE)
+            return null;
+
+        return (Pageable<E>) pagination.next();
     }
 
     @Override

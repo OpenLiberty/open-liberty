@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -55,12 +55,10 @@ public class TargetsTableImpl implements TargetsTable {
 
     public static final String CLASS_NAME = TargetsTableImpl.class.getSimpleName();
 
-    protected final String hashText;
-
     @Override
     @Trivial
     public String getHashText() {
-        return hashText;
+        return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
     }
 
     //
@@ -87,8 +85,6 @@ public class TargetsTableImpl implements TargetsTable {
 
         String methodName = "<init>";
 
-        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
-
         this.factory = sourceData.getFactory();
 
         this.classNameInternMap = classNameInternMap;
@@ -112,12 +108,13 @@ public class TargetsTableImpl implements TargetsTable {
         //
 
         if ( logger.isLoggable(Level.FINER) ) {
+            String hashText = getHashText();
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] [ {1} ]",
-                        new Object[] { this.hashText, this.classSourceName });
+                        new Object[] { hashText, this.classSourceName });
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] from [ {1} ]",
-                        new Object[] { this.hashText, sourceData.getHashText() });
+                        new Object[] { hashText, sourceData.getHashText() });
         }
     }
 
@@ -173,8 +170,6 @@ public class TargetsTableImpl implements TargetsTable {
 
         String methodName = "<init>";
 
-        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
-
         this.factory = factory;
 
         this.classNameInternMap = classNameInternMap;
@@ -198,18 +193,19 @@ public class TargetsTableImpl implements TargetsTable {
         //
 
         if ( logger.isLoggable(Level.FINER) ) {
+            String hashText = getHashText();
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] [ {1} ]", 
-                        new Object[] { this.hashText, this.classSourceName });
+                        new Object[] { hashText, this.classSourceName });
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] [ {1} ]",
-                        new Object[] { this.hashText, this.stampTable.getHashText() });
+                        new Object[] { hashText, this.stampTable.getHashText() });
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] [ {1} ]",
-                        new Object[] { this.hashText, this.classTable.getHashText() });
+                        new Object[] { hashText, this.classTable.getHashText() });
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] [ {1} ]",
-                        new Object[] { this.hashText, this.annotationTable.getHashText() });
+                        new Object[] { hashText, this.annotationTable.getHashText() });
         }
     }
 

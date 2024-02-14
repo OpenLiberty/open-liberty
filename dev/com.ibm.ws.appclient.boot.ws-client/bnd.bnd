@@ -21,4 +21,6 @@ Bundle-SymbolicName: com.ibm.ws.appclient.boot.ws-client
 
 -fixupmessages.empty: The JAR is empty
 
+-pom: false
+
 publish.tool.jar=ws-client.jar

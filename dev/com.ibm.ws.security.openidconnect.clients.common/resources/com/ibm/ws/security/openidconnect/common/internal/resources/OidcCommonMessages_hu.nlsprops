@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -193,3 +193,13 @@ DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=T\u00e1vol\u00edtsa el a m
 JWT_MISSING_ISSUER=CWWKS1784E: A token nem \u00e9rv\u00e9nyes, mert nem tartalmaz kibocs\u00e1t\u00f3 \u00e1ll\u00edt\u00e1st.
 JWT_MISSING_ISSUER.explanation=A tokennek tartalmaznia kell egy kibocs\u00e1t\u00f3 \u00e1ll\u00edt\u00e1st, amely a token kibocs\u00e1t\u00f3j\u00e1t azonos\u00edtja.
 JWT_MISSING_ISSUER.useraction=Szerezzen be egy \u00faj, kibocs\u00e1t\u00f3 \u00e1ll\u00edt\u00e1st is tartalmaz\u00f3 tokent.
+
+# Do not translate "typ", "logout+jwt"
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER=CWWKS1785E: A token nem \u00e9rv\u00e9nyes, mert a (z) [{0}] ''typ'' fejl\u00e9ce azt jelzi, hogy ez egy kijelentkez\u00e9si token.
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.explanation=A token nem lehet kijelentkez\u00e9si token. A kijelentkez\u00e9si tokenek a "logout + jwt" \u00e9rt\u00e9kkel rendelkez\u0151 "typ" (type) fejl\u00e9c param\u00e9terrel rendelkezhet.
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a haszn\u00e1lt token nem kijelentkez\u00e9si token.
+
+# Do not translate "events", "http://schemas.openid.net/event/backchannel-logout"
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM=CWWKS1786E: A token nem \u00e9rv\u00e9nyes, mert a (z) [{0}] \u00e9rt\u00e9kkel rendelkez\u0151 ''esem\u00e9nyek'' ig\u00e9nyl\u00e9se azt jelzi, hogy a token egy kijelentkez\u00e9si token.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.explanation=A token nem lehet kijelentkez\u00e9si token. A kijelentkez\u00e9si tokenek "esem\u00e9nyek" ig\u00e9nyl\u00e9st tartalmaznak, amely egy JSON objektum, amely a "http://schemas.openid.net/event/backchannel-logout" elemet tartalmazza egyik elemek\u00e9nt.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a haszn\u00e1lt token nem kijelentkez\u00e9si token.

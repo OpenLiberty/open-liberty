@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -541,7 +541,7 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 ASC", sql.remove(0));
                 } else {
@@ -600,7 +600,7 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 DESC", sql.remove(0));
                 } else {
@@ -1286,7 +1286,7 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 DESC", sql.remove(0));
                 } else {
@@ -1345,7 +1345,7 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 if (isDB2Z || isDB2 || isDerby) {
                     Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 DESC", sql.remove(0));
                 } else {
@@ -1575,7 +1575,7 @@ public class TestOrderingLogic extends AbstractTestLogic {
             } finally {
                 sql = SQLCallListener.getAndClearCallList();
                 Assert.assertEquals(1, sql.size());
-                if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+                if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature()) {
                     if (isDB2Z || isDB2 || isDerby) {
                         Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY ORDER BY 1", sql.remove(0));
                     } else {
@@ -1903,7 +1903,7 @@ public class TestOrderingLogic extends AbstractTestLogic {
             } finally {
                 sql = SQLCallListener.getAndClearCallList();
                 Assert.assertEquals(1, sql.size());
-                if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+                if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature()) {
                     if (isDB2Z || isDB2 || isDerby) {
                         Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY ORDER BY 1, 2", sql.remove(0));
                     } else {
@@ -1938,7 +1938,7 @@ public class TestOrderingLogic extends AbstractTestLogic {
             } finally {
                 sql = SQLCallListener.getAndClearCallList();
                 Assert.assertEquals(1, sql.size());
-                if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature()) {
+                if (isUsingJPA22Feature() || isUsingJPA30Feature() || isUsingJPA31Feature() || isUsingJPA32Feature()) {
                     if (isDB2Z || isDB2 || isDerby) {
                         Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY ORDER BY 1, 2", sql.remove(0));
                     } else {
@@ -2343,7 +2343,7 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY INTVAL2", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -2385,7 +2385,7 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY INTVAL2 DESC", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -2457,7 +2457,7 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY INTVAL2", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {
@@ -2499,7 +2499,7 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isUsingJPA31Feature()) {
+            if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY INTVAL2 DESC", sql.remove(0));
             } else {
                 if (isDB2Z || isDB2 || isDerby) {

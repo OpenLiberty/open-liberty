@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -231,6 +231,31 @@ public class FailoverServlet extends FATServlet {
             // didn't exist
         }
 
+        // UserTransaction Commit
+        con.setAutoCommit(false);
+
+        System.out.println("FAILOVERSERVLET: commit changes to database");
+        con.commit();
+
+    }
+
+    public void dropStaleRecoveryLogTables(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        System.out.println("FAILOVERSERVLET: drive dropStaleRecoveryLogTables");
+
+        Connection con = getConnection();
+        // Set up statement to use for table delete
+        Statement stmt = con.createStatement();
+        System.out.println("FAILOVERSERVLET: drop dropStaleRecoveryLogTables");
+        try {
+            stmt.executeUpdate("drop table WAS_PARTNER_LOGcloudstale");
+        } catch (SQLException x) {
+            // didn't exist
+        }
+        try {
+            stmt.executeUpdate("drop table WAS_TRAN_LOGcloudstale");
+        } catch (SQLException x) {
+            // didn't exist
+        }
         // UserTransaction Commit
         con.setAutoCommit(false);
 
@@ -524,6 +549,110 @@ public class FailoverServlet extends FATServlet {
                 }
             }
         }
+    }
+
+    public void setupBatchOfStaleLeases1(HttpServletRequest request,
+                                         HttpServletResponse response) throws Exception {
+
+        Connection con = getConnection();
+        con.setAutoCommit(false);
+        DatabaseMetaData mdata = con.getMetaData();
+        String dbName = mdata.getDatabaseProductName();
+        System.out.println("setupBatchOfStaleLeases1");
+        // Access the Database
+
+        Statement claimPeerlockingStmt = con.createStatement();
+        ResultSet claimPeerLockingRS = null;
+
+        PreparedStatement specStatement = null;
+        try {
+            for (int i = 0; i < 10; i++) {
+                String insertString = "INSERT INTO WAS_LEASES_LOG" +
+                                      " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
+                                      " VALUES (?,?,?,?)";
+
+                long fir1 = System.currentTimeMillis() - (1000 * 300);
+                String serverid = "cloudstale" + i;
+                System.out.println("setupBatchOfStaleLeases1: Using - " + insertString + ", and time: " + fir1);
+                specStatement = con.prepareStatement(insertString);
+                specStatement.setString(1, serverid);
+                specStatement.setString(2, "defaultGroup");
+                specStatement.setString(3, serverid);
+                specStatement.setLong(4, fir1);
+
+                int ret = specStatement.executeUpdate();
+
+                System.out.println("setupBatchOfStaleLeases1: Have inserted Server row with return: " + ret);
+                con.commit();
+            }
+        } catch (Exception ex) {
+            System.out.println("setupBatchOfStaleLeases1: caught exception in testSetup: " + ex);
+            // attempt rollback
+            con.rollback();
+        } finally {
+            if (specStatement != null && !specStatement.isClosed())
+                specStatement.close();
+            if (claimPeerlockingStmt != null && !claimPeerlockingStmt.isClosed())
+                claimPeerlockingStmt.close();
+            if (claimPeerLockingRS != null && !claimPeerLockingRS.isClosed())
+                claimPeerLockingRS.close();
+            if (con != null) {
+                con.close();
+            }
+        }
+
+    }
+
+    public void setupBatchOfStaleLeases2(HttpServletRequest request,
+                                         HttpServletResponse response) throws Exception {
+
+        Connection con = getConnection();
+        con.setAutoCommit(false);
+        DatabaseMetaData mdata = con.getMetaData();
+        String dbName = mdata.getDatabaseProductName();
+        System.out.println("setupBatchOfStaleLeases2");
+        // Access the Database
+
+        Statement claimPeerlockingStmt = con.createStatement();
+        ResultSet claimPeerLockingRS = null;
+
+        PreparedStatement specStatement = null;
+        try {
+            for (int i = 10; i < 20; i++) {
+                String insertString = "INSERT INTO WAS_LEASES_LOG" +
+                                      " (SERVER_IDENTITY, RECOVERY_GROUP, LEASE_OWNER, LEASE_TIME)" +
+                                      " VALUES (?,?,?,?)";
+
+                long fir1 = System.currentTimeMillis() - (1000 * 300);
+                String serverid = "cloudstale" + i;
+                System.out.println("setupBatchOfStaleLeases2: Using - " + insertString + ", and time: " + fir1);
+                specStatement = con.prepareStatement(insertString);
+                specStatement.setString(1, serverid);
+                specStatement.setString(2, "defaultGroup");
+                specStatement.setString(3, serverid);
+                specStatement.setLong(4, fir1);
+
+                int ret = specStatement.executeUpdate();
+
+                System.out.println("setupBatchOfStaleLeases2: Have inserted Server row with return: " + ret);
+                con.commit();
+            }
+        } catch (Exception ex) {
+            System.out.println("setupBatchOfStaleLeases2: caught exception in testSetup: " + ex);
+            // attempt rollback
+            con.rollback();
+        } finally {
+            if (specStatement != null && !specStatement.isClosed())
+                specStatement.close();
+            if (claimPeerlockingStmt != null && !claimPeerlockingStmt.isClosed())
+                claimPeerlockingStmt.close();
+            if (claimPeerLockingRS != null && !claimPeerLockingRS.isClosed())
+                claimPeerLockingRS.close();
+            if (con != null) {
+                con.close();
+            }
+        }
+
     }
 
     public void deleteStaleLease(HttpServletRequest request,

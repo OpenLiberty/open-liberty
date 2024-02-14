@@ -1,11 +1,11 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2019 IBM Corporation and others.
+* Copyright (c) 2017, 2024 IBM Corporation and others.
 *
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License 2.0
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
 *
 *******************************************************************************
@@ -29,18 +29,18 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.Vetoed;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
@@ -51,6 +51,8 @@ import org.eclipse.microprofile.metrics.MetricFilter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.Timer;
+
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * A registry of metric instances.
@@ -119,7 +121,7 @@ public class MetricRegistryImpl extends MetricRegistry {
 
     protected final ConcurrentMap<String, Metric> metrics;
     protected final ConcurrentMap<String, Metadata> metadata;
-    protected final ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> applicationMap;
+    protected final ConcurrentHashMap<String, Set<String>> applicationMap;
 
     /**
      * Creates a new {@link MetricRegistry}.
@@ -130,7 +132,7 @@ public class MetricRegistryImpl extends MetricRegistry {
         //initializing metadata in a separate list
         this.metadata = new ConcurrentHashMap<String, Metadata>();
 
-        this.applicationMap = new ConcurrentHashMap<String, ConcurrentLinkedQueue<String>>();
+        this.applicationMap = new ConcurrentHashMap<String, Set<String>>();
     }
 
     /**
@@ -190,18 +192,18 @@ public class MetricRegistryImpl extends MetricRegistry {
         // If it is a base metric, the name will be null
         if (appName == null)
             return;
-        ConcurrentLinkedQueue<String> list = applicationMap.get(appName);
-        if (list == null) {
-            ConcurrentLinkedQueue<String> newList = new ConcurrentLinkedQueue<String>();
-            list = applicationMap.putIfAbsent(appName, newList);
-            if (list == null)
-                list = newList;
+        Set<String> set = applicationMap.get(appName);
+        if (set == null) {
+            Set<String> newSet = new HashSet<String>();
+            set = applicationMap.putIfAbsent(appName, newSet);
+            if (set == null)
+                set = newSet;
         }
-        list.add(name);
+        set.add(name);
     }
 
     public void unRegisterApplicationMetrics(String appName) {
-        ConcurrentLinkedQueue<String> list = applicationMap.remove(appName);
+        Set<String> list = applicationMap.remove(appName);
         if (list != null) {
             for (String metricName : list) {
                 remove(metricName);
@@ -436,7 +438,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    @FFDCIgnore({java.lang.IllegalArgumentException.class})
+    @FFDCIgnore({ java.lang.IllegalArgumentException.class })
     private <T extends Metric> T getOrAdd(Metadata metadata, MetricBuilder<T> builder) {
         final Metric metric = metrics.get(metadata.getName());
         if (builder.isInstance(metric)) {

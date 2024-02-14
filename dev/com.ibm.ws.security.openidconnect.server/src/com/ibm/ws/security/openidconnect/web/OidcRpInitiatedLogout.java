@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,6 @@ import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.oauth20.web.OAuthClientTracker;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
-import io.openliberty.security.openidconnect.backchannellogout.BackchannelLogoutRequestException;
 import io.openliberty.security.openidconnect.backchannellogout.BackchannelLogoutRequestHelper;
 
 /**
@@ -222,14 +221,9 @@ public class OidcRpInitiatedLogout {
         }
     }
 
-    @FFDCIgnore(BackchannelLogoutRequestException.class)
-    void sendBackchannelLogoutRequests(String userName, String idTokenString) throws ServletException {
-        try {
-            BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
-            bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
-        } catch (BackchannelLogoutRequestException e) {
-            throw new ServletException(e.getMessage());
-        }
+    void sendBackchannelLogoutRequests(String userName, String idTokenString) {
+        BackchannelLogoutRequestHelper bclRequestCreator = new BackchannelLogoutRequestHelper(request, oidcServerConfig);
+        bclRequestCreator.sendBackchannelLogoutRequests(userName, idTokenString);
     }
 
     void sendPostEndSessionRedirect(String redirectUri) throws IOException {

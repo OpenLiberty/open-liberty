@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -12,16 +12,17 @@ bVersion=1.0
 
 src: \
     fat/src,\
-    test-applications/EL60ArrayLengthTest.war/src
+    test-applications/EL60ArrayLengthTest.war/src,\
+    test-applications/EL60RecordELResolverTest.war/src
 
 fat.project: true
 
-javac.source: 21
-javac.target: 21
+javac.source: 17
+javac.target: 17
 
-fat.minimum.java.level: 21
+fat.minimum.java.level: 17
 
 -buildpath: \
-    io.openliberty.jakarta.servlet.6.0;version=latest,\
+    io.openliberty.jakarta.servlet.6.1;version=latest,\
     com.ibm.ws.componenttest.2.0;version=latest,\
-    io.openliberty.jakarta.expressionLanguage.5.0;version=latest
+    io.openliberty.jakarta.expressionLanguage.6.0;version=latest

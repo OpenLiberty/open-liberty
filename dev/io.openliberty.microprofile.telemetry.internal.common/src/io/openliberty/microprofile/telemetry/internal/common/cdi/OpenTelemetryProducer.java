@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package io.openliberty.microprofile.telemetry.internal.common.cdi;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
@@ -24,8 +25,9 @@ import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import io.openliberty.microprofile.telemetry.internal.common.helpers.OSGIHelpers;
-import javax.annotation.PostConstruct;
+
+import java.util.Optional;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
@@ -33,11 +35,11 @@ import javax.enterprise.inject.Produces;
 public class OpenTelemetryProducer {
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryProducer.class);
+    private static final ServiceCaller<OpenTelemetryInfoFactory> openTelemetryInfoFactoryService = new ServiceCaller<OpenTelemetryInfoFactory>(OpenTelemetryProducer.class, OpenTelemetryInfoFactory.class);
 
-    private ApplicationMetaData metaData = null;
+    private final ApplicationMetaData metaData;
 
-    @PostConstruct
-    private void init() {
+    private OpenTelemetryProducer() {
         metaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData().getApplicationMetaData();
     }
 
@@ -51,12 +53,8 @@ public class OpenTelemetryProducer {
     @ApplicationScoped
     @Produces
     public OpenTelemetryInfo getOpenTelemetryInfo() {
-        try {
-            OpenTelemetryInfoFactory factory = OSGIHelpers.getService(OpenTelemetryInfoFactory.class, OpenTelemetryProducer.class);
-            return factory.getOpenTelemetryInfo(metaData);
-        } catch (Exception e) {
-            return new ErrorOpenTelemetryInfo();
-        }
+        Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryInfoFactoryService.call( (factory) -> {return factory.getOpenTelemetryInfo(metaData); });
+        return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::new);
     }
 
     /**

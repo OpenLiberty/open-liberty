@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -74,10 +74,12 @@ public abstract class ClassSourceImpl implements ClassSource {
      */
     @Trivial
     public String resourceAppend(String head, String tail) {
-        if ( head.isEmpty() ) {
+        int headLength = head.length();
+        if ( headLength == 0 ) {
             return tail;
         } else {
-            return (head + ClassSource.RESOURCE_SEPARATOR_CHAR + tail);
+            StringBuilder sb = new StringBuilder(headLength + tail.length() + 1);
+            return sb.append(head).append(ClassSource.RESOURCE_SEPARATOR_CHAR).append(tail).toString();
         }
     }    
 
@@ -155,9 +157,9 @@ public abstract class ClassSourceImpl implements ClassSource {
      */
     @Trivial
     public static String resourceNameFromClassName(String className) {
-        return
-            className.replace(ClassSource.CLASS_SEPARATOR_CHAR, RESOURCE_SEPARATOR_CHAR) +
-            ClassSource.CLASS_EXTENSION;
+        StringBuilder builder = new StringBuilder(className.length() + 6);
+        return builder.append(className.replace(ClassSource.CLASS_SEPARATOR_CHAR, RESOURCE_SEPARATOR_CHAR))
+                              .append(ClassSource.CLASS_EXTENSION).toString();
     }
 
     /**

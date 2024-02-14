@@ -208,19 +208,29 @@ public class BundleFactory extends ManifestFactory {
         }
     }
 
-    private static MessageDigest shaDigest;
+    // The message digest algorithm remains fixed over the server
+    // life cycle and is set during the first call to getShaDigest()
+    private static String shaAlgorithm;
 
     @FFDCIgnore(NoSuchAlgorithmException.class)
     private MessageDigest getShaDigest() throws NoSuchAlgorithmException {
-        if (shaDigest == null) {
+        if (shaAlgorithm == null) {
+            // Set the message digest algorithm
             try {
-                shaDigest = MessageDigest.getInstance(SHA_ALGORITHM);
+                return MessageDigest.getInstance(shaAlgorithm = SHA_ALGORITHM);
             } catch (NoSuchAlgorithmException e) {
-                // Preferred algorithm may be unavailable during server checkpoint
-                shaDigest = MessageDigest.getInstance(SHA_ALGORITHM_DEFAULT);
+                // The preferred algorithm may be unavailable during server checkpoint.
+                // Default to an available algorithm for checkpoint/restore.
+                try {
+                    return MessageDigest.getInstance(shaAlgorithm = SHA_ALGORITHM_DEFAULT);
+                } catch (NoSuchAlgorithmException e2) {
+                    shaAlgorithm = null;
+                    throw e2;
+                }
             }
+        } else {
+            return MessageDigest.getInstance(shaAlgorithm);
         }
-        return shaDigest;
     }
 
     static String getHexSHA(MessageDigest digest) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,9 @@ import java.util.Optional;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
-import jakarta.data.Sort;
+import jakarta.data.Order;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
@@ -43,7 +44,7 @@ public interface Houses {
 
     boolean existsById(String parcel);
 
-    Stream<House> findByAreaGreaterThan(int minArea, Sort... sorts);
+    Stream<House> findByAreaGreaterThan(int minArea, Order<House> sorts);
 
     List<House> findByGarageTypeOrderByGarageDoorWidthDesc(Garage.Type type);
 
@@ -60,6 +61,7 @@ public interface Houses {
     @OrderBy("area")
     DoubleStream findPurchasePriceByLotSizeGreaterThan(float minLotSize);
 
+    @Find
     List<House> findWithGarageDoorDimensions(int garage_door_width, int garage_door_height);
 
     @Insert

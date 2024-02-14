@@ -28,14 +28,30 @@ addRequiredLibraries.dependsOn addJakartaTransformer
 autoFVT.doLast {
 
 /* Copy common files to autoFVT */
-      
-    copy {
+
+  copy {
     from project.file('publish/files/serversettings')
     include '**'
     into new File(autoFvtDir, 'imports')
-    }
-    
-    
+  }
+  
+  copy {
+    from new File(project(':com.ibm.ws.wssecurity.example.cbh').buildDir, 'com.ibm.ws.wssecurity.example.cbh.jar')
+    into new File(autoFvtDir, 'publish/files/bundles/')
+  }
+  copy {
+    from new File(project(':com.ibm.ws.wssecurity.example.cbh').buildDir, 'com.ibm.ws.wssecurity.example.cbh.jar')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles/')
+  }
+  copy {
+    from new File(project(':com.ibm.ws.wssecurity.example.cbhwss4j').buildDir, 'com.ibm.ws.wssecurity.example.cbhwss4j.jar')
+    into new File(autoFvtDir, 'publish/files/bundles/')
+  }
+  copy {
+    from new File(project(':com.ibm.ws.wssecurity.example.cbhwss4j').buildDir, 'com.ibm.ws.wssecurity.example.cbhwss4j.jar')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles/')
+  }
+
 /* Copy common files to all servers */
 
   def servers = [

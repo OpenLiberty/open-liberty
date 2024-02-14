@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -217,6 +217,11 @@ public class SlowAppStartupHealthCheckTest {
             }
 
         }
+
+        log("testStartupEndpointOnServerStart", "Waiting for Application to start message, after Health check reports 200.");
+        String line = server1.waitForStringInLog("(CWWKZ0001I: Application DelayedHealthCheckApp started)+", 60000);
+        assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
+        log("testSlowAppStartUpHealthCheck", "Application Started message found: " + line);
 
         // Access an application endpoint to verify the application is actually started
         log("testStartupEndpointOnServerStart", "Testing an application endpoint, after server and application has started.");

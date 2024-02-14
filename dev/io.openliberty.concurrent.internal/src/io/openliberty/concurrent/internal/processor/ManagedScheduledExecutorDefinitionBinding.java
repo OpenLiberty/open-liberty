@@ -70,7 +70,7 @@ public class ManagedScheduledExecutorDefinitionBinding extends InjectionBinding<
 
     // Concurrent 3.1 attributes
 
-    private boolean virtual;
+    private Boolean virtual;
     private boolean XMLvirtual;
 
     private String[] qualifiers;

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2023 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -48,8 +48,8 @@ Private-Package: \
 
 -buildpath: \
   com.ibm.ws.logging;version=latest,\
-  io.smallrye.reactive:smallrye-reactive-messaging-api;version=4.11.0;strategy=exact, \
-  io.smallrye.reactive:smallrye-reactive-messaging-provider;version=4.11.0;strategy=exact, \
+  io.smallrye.reactive:smallrye-reactive-messaging-api;version=4.16.0;strategy=exact, \
+  io.smallrye.reactive:smallrye-reactive-messaging-provider;version=4.16.0;strategy=exact, \
   io.openliberty.jakarta.cdi.3.0;version=latest, \
   io.openliberty.jakarta.annotation.2.0;version=latest, \
   io.openliberty.jakarta.interceptor.2.0;version=latest, \
@@ -72,4 +72,5 @@ Private-Package: \
   com.ibm.websphere.org.osgi.core;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.ws.kernel.boot,\
+  com.ibm.ws.kernel.service,\
   com.ibm.ws.cdi.internal.jakarta

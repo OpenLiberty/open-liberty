@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -2252,7 +2252,12 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
                 throw new IllegalArgumentException("Cannot Set Content-Type to a Date value");
             }
             else {
-                setHeader(name, (createCompliantHttpDateString(date)));
+                if (com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() < com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_61) {
+                    setHeader(name, (createCompliantHttpDateString(date)));
+                }
+                else {
+                    addDateField(name, date);
+                }
             }
         }
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15

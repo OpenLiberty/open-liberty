@@ -16,6 +16,7 @@ dependencies {
 }
 
 task copyBundles {
+  dependsOn jar
   enabled project.file('test-bundles').exists()
   doFirst {
     new File(project.buildDir, 'buildfiles').eachLine { String line ->

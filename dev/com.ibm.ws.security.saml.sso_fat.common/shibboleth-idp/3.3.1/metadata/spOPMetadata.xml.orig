@@ -50,6 +50,9 @@
 				</ds:X509Data>
 			</ds:KeyInfo>
 		</md:KeyDescriptor>
+                <md:SingleLogoutService
+                        Location="https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/spOP/slo"
+                        Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" />
 		<md:AssertionConsumerService
 			Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
 			Location="https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/spOP/acs"

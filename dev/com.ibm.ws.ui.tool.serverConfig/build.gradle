@@ -13,6 +13,12 @@
 
 ant.importBuild 'import.xml'
 
+// Running javascript tasks in parallel can hang the build, so wait for other projects to finish before running ours.
+project.tasks['compile-js'].mustRunAfter(':com.ibm.ws.ui.tool.javaBatch:compile-js')
+project.tasks['compile-dojo'].mustRunAfter(':com.ibm.ws.ui.tool.javaBatch:compile-dojo')
+project.tasks['dojo-release-execute'].mustRunAfter(':com.ibm.ws.ui.tool.javaBatch:dojo-release-execute')
+project.tasks['post-compile'].mustRunAfter(':com.ibm.ws.ui.tool.javaBatch:post-compile')
+
 jar {
     dependsOn 'compile-js'
     dependsOn 'post-compile'

@@ -709,7 +709,12 @@ toplink_warning=[Aviso EL]:
 
 unit_of_work_thread_info=A unidade de trabalho atual na sess\u00e3o ({0}) foi criada por outro encadeamento (ID: {1} nome: {2}) que n\u00e3o o encadeamento atual (ID: {3} nome: {4})
 
-unit_of_work_thread_info_thread_dump=Rastreio de pilha do encadeamento de cria\u00e7\u00e3o (ID: {0} nome: {1}): {2} Rastreio de pilha do encadeamento atual (ID: {3} nome: {4}): {5}\n
+unit_of_work_thread_info_thread_dump=Rastreio de pilha de encadeamento de cria\u00e7\u00e3o (ID: {0} nome: {1}):
+#{2}
+
+Current encadeamento (ID: {3} nome: {4}) rastreio de pilha:
+#{5}
+
 unitofwork_identity_hashcode={0}C\u00f3digo hash de identidade UnitOfWork: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery n\u00e3o pode usar liga\u00e7\u00e3o nessa plataforma de banco de dados. Conjunto da consulta alterado para executar sem liga\u00e7\u00e3o.

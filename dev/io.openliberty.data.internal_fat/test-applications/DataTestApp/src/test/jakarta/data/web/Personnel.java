@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,12 @@ import java.util.stream.Stream;
 import jakarta.data.Streamable;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 import jakarta.enterprise.concurrent.Asynchronous;
 
 import io.openliberty.data.repository.Select;
@@ -40,6 +42,7 @@ import io.openliberty.data.repository.update.Assign;
 @Repository
 public interface Personnel {
     @Asynchronous
+    @Update
     CompletionStage<Integer> changeSurnames(@By("lastName") String oldSurname,
                                             @By("ssn_id") @In List<Long> ssnList,
                                             @Assign("lastName") String newSurname);
@@ -79,6 +82,7 @@ public interface Personnel {
     @Query("SELECT DISTINCT o.lastName FROM Person o ORDER BY o.lastName")
     CompletionStage<String[]> lastNames();
 
+    @Find
     @Select("firstName")
     Streamable<String> namesThatStartWith(@By("firstName") @StartsWith String beginningOfFirstName);
 
@@ -94,8 +98,10 @@ public interface Personnel {
     @Save
     CompletableFuture<List<Person>> save(Person... p);
 
+    @Update
     long setSurname(@By("ssn_id") long ssn, @Assign("lastName") String newSurname);
 
     @Asynchronous
+    @Update
     CompletableFuture<Boolean> setSurnameAsync(long ssn_id, @Assign String lastName);
 }

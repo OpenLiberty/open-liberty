@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,13 +30,13 @@ public class FATSuite {
     // 1) [FULL mode only] without any modifications
     // 2) [FULL mode only] again with all features upgraded to their EE8 equivalents
     // 3) [FULL mode if Java 11 or later, else LITE mode] again with all features _and applications_ upgrade to Jakarta EE 9 equivalents
-    // 4) [FULL mode if Java 21 or later, else LITE mode] again with all features _and applications_ upgrade to Jakarta EE 10 equivalents
-    // 5) [LITE mode if Java 21 or later] again with all features _and applications_ upgrade to Jakarta EE 11 equivalents
+    // 4) [FULL mode if Java 17 or later, else LITE mode] again with all features _and applications_ upgrade to Jakarta EE 10 equivalents
+    // 5) [LITE mode if Java 17 or later] again with all features _and applications_ upgrade to Jakarta EE 11 equivalents
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_21))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES());
 
 }

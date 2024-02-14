@@ -175,6 +175,16 @@ elements={0}{1} elementi
 
 enable_batch_operations_as_true_not_supported=L''impostazione CMP nativa  WLS "enable-batch-operations-as-true" non \u00e8 direttamente supportata in CMP EclipseLink. Per i dettagli consultare il documento sulla migrazione.
 
+encryptor_decrypt_old_algorithm=La password del database utilizzata in {0} \u00e8 stata codificata da un algoritmo algorithm.Reencrypt mediante `passwordUpdate.sh ` dal pacchetto eclipselink.zip .
+
+encryptor_decrypt_old_algorithm_without_session_name=La password del database \u00e8 stata crittografata da un algoritmo algorithm.Reencrypt mediante `passwordUpdate.sh ` dal pacchetto eclipselink.zip .
+
+encryptor_script_description=Questa applicazione decodifica internamente una vecchia password codificata utilizzata da una precedente versione di EclipseLink e la codifica mediante l''ultimo algoritmo.
+
+encryptor_script_output=La password codificata \u00e8: {0}
+
+encryptor_script_usage=L''utilizzo \u00e8 `passwordUpdate.sh | .cmd -ip < vecchia password codificata> `
+
 entity_manager_ignores_jta_data_source=L''unit\u00e0 di persistenza non utilizza JTA, quindi l''EntityManager ignora l''origine dati jta. 
 
 entity_manager_ignores_nonjta_data_source=L''unit\u00e0 di persistenza utilizza JTA, quindi l''EntityManager ignora l''origine dati non jta. 
@@ -737,7 +747,11 @@ toplink_warning=[EL Avvertenza]:
 
 unit_of_work_thread_info=L''unit\u00e0 di lavoro corrente nella sessione ({0}) \u00e8 stata creata da un altro thread (id: {1} nome: {2}), rispetto al thread corrente (id: {3} nome: {4})
 
-unit_of_work_thread_info_thread_dump=Thread di creazione (id: {0} nome: {1}) traccia stack: {2}Thread corrente (id: {3} nome: {4}) traccia stack:{5}
+unit_of_work_thread_info_thread_dump=Creazione della traccia di stack del thread (id: {0} nome: {1}):
+#{2}
+
+Current traccia stack thread (id: {3} nome: {4}):
+#{5}
 
 unitofwork_identity_hashcode={0}Codice hash identit\u00e0 UnitOfWork: {1}
 

@@ -275,6 +275,9 @@ goto:eof
   set SAVE_OPENJ9_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
   set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
   set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+
+  call:checkForVerboseGC
+
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
   set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
@@ -293,6 +296,9 @@ goto:eof
   set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
   set SAVE_OPENJ9_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
   set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+
+  call:checkForVerboseGC
+
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
   set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
@@ -340,6 +346,8 @@ goto:eof
     set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
     set SAVE_OPENJ9_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
     set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+	
+    call:checkForVerboseGC
 
     @REM Use javaw so command windows can be closed.
     start /min /b "" !JAVA_CMD_QUOTED!w !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED! >> "%X_LOG_DIR%\%X_LOG_FILE%" 2>&1
@@ -709,6 +717,23 @@ goto:eof
     set JVM_OPTION=!JVM_OPTION:"=!
     set JVM_TEMP_OPTIONS=!JVM_TEMP_OPTIONS! "%%i"
   )
+goto:eof
+
+@REM Check for any verbose:gc variable set by user
+@REM By default we set this to be true unless user specifies otherwise
+@REM if not jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc ( set SERVER_IBM_JAVA_OPTIONS=%SERVER_IBM_JAVA_OPTIONS% -Xverbosegclog:verbosegc.%seq.log,10,1024)
+:checkForVerboseGC
+    set TEMPJVMOPTIONS=!JVM_OPTIONS:"=!
+   
+    if not "!TEMPJVMOPTIONS:verbosegc=!"=="!TEMPJVMOPTIONS!" (
+      goto:eof
+    ) else if not "x!TEMPJVMOPTIONS:verbose:gc=!"=="x!TEMPJVMOPTIONS!" (
+      goto:eof
+    ) else if "!VERBOSEGC!"=="false" (
+      goto:eof
+    )
+
+    set OPENJ9_JAVA_OPTIONS=-Xverbosegclog:!X_LOG_DIR!\verbosegc.%%seq.log,10,1024 !OPENJ9_JAVA_OPTIONS!
 goto:eof
 
 @REM

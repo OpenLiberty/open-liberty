@@ -12,8 +12,10 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.processor;
 
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
@@ -30,9 +32,14 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
+
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
+import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
            property = "creates.objectClass=jakarta.enterprise.concurrent.ManagedThreadFactory") //  TODO more types?
@@ -132,6 +139,14 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         String jndiName = (String) threadFactoryProps.get(ResourceFactory.JNDI_NAME);
         String contextSvcJndiName = (String) threadFactoryProps.remove("context");
         Integer priority = (Integer) threadFactoryProps.remove("priority");
+        String[] qualifiers = (String[]) threadFactoryProps.remove("qualifiers");
+
+        // Convert qualifier array to list attribute if present
+        List<String> qualifierNames = null;
+        if (qualifiers != null && qualifiers.length > 0) {
+            qualifierNames = Arrays.asList(qualifiers);
+            threadFactoryProps.put("qualifiers", qualifierNames);
+        }
 
         String managedThreadFactoryID = getManagedThreadFactoryID(application, module, component, jndiName);
         String contextServiceId = contextSvcJndiName == null || "java:comp/DefaultContextService".equals(contextSvcJndiName) //
@@ -176,6 +191,27 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
 
             Configuration managedThreadFactorySvcConfig = configAdmin.createFactoryConfiguration("com.ibm.ws.concurrent.managedThreadFactory", bundleLocation);
             managedThreadFactorySvcConfig.update(threadFactoryProps);
+
+            if (qualifierNames != null) {
+                String jeeName;
+                if (module == null) {
+                    jeeName = application;
+                } else {
+                    ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                    jeeName = cmd.getJ2EEName().toString();
+                }
+
+                ServiceReference<QualifiedResourceFactories> ref = bundleContext.getServiceReference(QualifiedResourceFactories.class);
+
+                if (ref == null) // TODO message should include possibility of deployment descriptor element
+                    throw new UnsupportedOperationException("The " + jeeName + " application artifact cannot specify the " +
+                                                            qualifierNames + " qualifiers on the " +
+                                                            jndiName + " " + ManagedThreadFactoryDefinition.class.getSimpleName() +
+                                                            " because the " + "CDI" + " feature is not enabled."); // TODO NLS
+
+                QualifiedResourceFactories qrf = bundleContext.getService(ref);
+                qrf.add(jeeName, QualifiedResourceFactories.Type.ManagedThreadFactory, qualifierNames, factory);
+            }
         } catch (Exception x) {
             factory.destroy();
             throw x;

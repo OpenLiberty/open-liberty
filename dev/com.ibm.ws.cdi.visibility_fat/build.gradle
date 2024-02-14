@@ -26,6 +26,7 @@ task addjaxrsValidator(type: Copy) {
 
 //This task has a different output directory to the generic one in fat.gradle
 task copyCDIFeatureBundles {
+  dependsOn jar
   doLast {
     new File(project.buildDir, 'buildfiles').eachLine { String line ->
       if (!line.contains(project.name + '.jar')) {

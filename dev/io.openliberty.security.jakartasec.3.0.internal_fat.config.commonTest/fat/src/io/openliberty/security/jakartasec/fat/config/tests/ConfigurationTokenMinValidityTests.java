@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -108,7 +108,9 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps
 
         ShortTokenLifetimePrep s = new ShortTokenLifetimePrep();
-        s.shortTokenLifetimePrep(opServer, rpHttpsBase, "TokenMinValidity5s/TokenMinValidity5sServlet");
+        s.shortTokenLifetimePrep(opServer, rpHttpsBase, "TokenMinValidity5s/TokenMinValidity5sServlet", "TokenMinValidity20s/TokenMinValidity20sServlet",
+                                 "TokenMinValidity60s/TokenMinValidity60sServlet", "TokenMinValidity90s/TokenMinValidity90sServlet",
+                                 "TokenMinValidity0s/TokenMinValidity0sServlet");
 
     }
 

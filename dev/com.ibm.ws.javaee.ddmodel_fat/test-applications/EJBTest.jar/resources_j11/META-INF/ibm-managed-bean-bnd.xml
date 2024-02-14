@@ -1,0 +1,7 @@
+<managed-bean-bnd version="1.0" xmlns="http://websphere.ibm.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-managed-bean-bnd_1_0.xsd">
+
+    <managed-bean class="com.ibm.jcdi.libs.PojoTwo">
+        <resource-ref name="jdbc/myBinding" binding-name="jdbc/TestDataSource" />
+    </managed-bean>
+
+</managed-bean-bnd>

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011,2020 IBM Corporation and others.
+ * Copyright (c) 2011,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -525,11 +525,11 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
     protected File getCacheDir(ZipFileEntry entry) {
         File useNestedCacheDir = getNestedCacheDir();
 
-        String r_entryPath = entry.getRelativePath();
-        int slashLoc = r_entryPath.lastIndexOf('/');
-        if ( slashLoc != -1 ) { // Not immediately beneath the root.
-            // Since the entry path is relative, 'slashLoc' cannot be 0.
-            String r_entryParentPath = r_entryPath.substring(0,  slashLoc);
+        String a_entryPath = entry.getAbsolutePath();
+        int slashLoc = a_entryPath.lastIndexOf('/');
+        // Since the entry path is absolute, 'slashLoc' can be 0.
+        if ( slashLoc > 0 ) { // Not immediately beneath the root.
+            String r_entryParentPath = a_entryPath.substring(1, slashLoc);
             useNestedCacheDir = new File(useNestedCacheDir, r_entryParentPath);
         }
 
@@ -1159,15 +1159,14 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
                 entryName, a_entryPath);
 
         } else {
-            String r_entryPath = a_entryPath.substring(1);
             synchronized ( nestedContainerEntriesLock ) {
-                ZipFileEntry nestedContainerEntry = nestedContainerEntries.get(r_entryPath);
+                ZipFileEntry nestedContainerEntry = nestedContainerEntries.get(a_entryPath);
                 if ( nestedContainerEntry == null ) {
                     nestedContainerEntry = new ZipFileEntry(
                         this, nestedContainer,
                         useZipEntryData,
                         entryName, a_entryPath);                   
-                    nestedContainerEntries.put(r_entryPath,  nestedContainerEntry);
+                    nestedContainerEntries.put(a_entryPath,  nestedContainerEntry);
                 }
                 return nestedContainerEntry;
             }
@@ -1184,13 +1183,12 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
      * @return The zip entry for the zip file entry at the specified path.
      */
     @Trivial
-    protected ZipFileEntry createEntry(String entryName, String a_entryPath) {
+    protected ZipFileEntry createEntry(String entryName, String a_entryPath, String r_entryPath) {
         ZipEntryData[] useZipEntries = getZipEntryData();
         if ( useZipEntries.length == 0 ) {
             return null;
         }
 
-        String r_entryPath = a_entryPath.substring(1);
         int location = locatePath(r_entryPath);
 
         ZipEntryData entryData;
@@ -1324,7 +1322,8 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         // directly jump to any entry of the zip file.
 
         if ( a_entryPath == null ) {
-            a_entryPath = '/' + entryPath; // Can't put this off any longer.
+            StringBuilder sb = new StringBuilder(entryPath.length() + 1);
+            a_entryPath = sb.append('/').append(entryPath).toString(); // Can't put this off any longer.
         }
 
         // The null first parameter means that the enclosing container of the
@@ -1398,10 +1397,14 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
         //
         // See: http://stackoverflow.com/questions/9419658/normalising-possibly-encoded-uri-strings-in-java.
 
+        String protocol = getProtocol();
+        String archiveUriString = archiveUri.toString();
+        String encodedEntryPath = ParserUtils.encode(r_entryPath);
+        StringBuilder encodedUriBuilder = new StringBuilder(protocol.length() + archiveUriString.length() + encodedEntryPath.length() + 3);
         String encodedUriText =
-            getProtocol() + ":" +
-            archiveUri.toString() + "!/" +
-            ParserUtils.encode(r_entryPath);
+            encodedUriBuilder.append(protocol).append(':').
+            append(archiveUriString).append("!/").
+            append(encodedEntryPath).toString();
 
         try {
             return new URI(encodedUriText);

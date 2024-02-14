@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,8 @@ import com.ibm.ws.security.oauth20.util.CacheUtil;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
+import com.ibm.ws.security.openidconnect.server.internal.JwtUtils;
+import com.ibm.ws.security.openidconnect.token.JWT;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
@@ -75,11 +77,27 @@ public class LogoutTokenBuilder {
     }
 
     public Map<OidcBaseClient, Set<String>> buildLogoutTokensFromIdTokenString(String idTokenString) throws LogoutTokenBuilderException {
+        validateIdTokenSignature(idTokenString);
         JwtClaims idTokenClaims = getClaimsFromIdTokenString(idTokenString);
         try {
             return buildLogoutTokensForUser(idTokenClaims.getSubject());
         } catch (MalformedClaimException e) {
             String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN", e);
+            throw new LogoutTokenBuilderException(errorMsg, e);
+        }
+    }
+
+    void validateIdTokenSignature(String idTokenString) throws LogoutTokenBuilderException {
+        try {
+            String oauthProviderName = oidcServerConfig.getOauthProviderName();
+            OAuth20Provider oauthProvider = ProvidersService.getOAuth20Provider(oauthProviderName);
+            JWT jwt = JwtUtils.createJwt(idTokenString, oauthProvider, oidcServerConfig);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "JWT : " + jwt);
+            }
+            jwt.verifySignatureOnly();
+        } catch (Exception e) {
+            String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN", new Object[] { e });
             throw new LogoutTokenBuilderException(errorMsg, e);
         }
     }
@@ -129,12 +147,7 @@ public class LogoutTokenBuilder {
         } else {
             expectedIssuer = getIssuerFromRequest();
             if (!expectedIssuer.equals(issuerClaim)) {
-                String otherExpectedIssuer = expectedIssuer;
-                if (otherExpectedIssuer.contains("/oidc/providers/")) {
-                    otherExpectedIssuer = otherExpectedIssuer.replace("/oidc/providers/", "/oidc/endpoint/");
-                } else if (otherExpectedIssuer.contains("/oidc/endpoint/")) {
-                    otherExpectedIssuer = otherExpectedIssuer.replace("/oidc/endpoint/", "/oidc/providers/");
-                }
+                String otherExpectedIssuer = expectedIssuer.replace("/oidc/providers/", "/oidc/endpoint/");
                 if (!otherExpectedIssuer.equals(issuerClaim)) {
                     String errorMsg = Tr.formatMessage(tc, "ID_TOKEN_ISSUER_NOT_THIS_OP", new Object[] { issuerClaim, expectedIssuer, oidcServerConfig.getProviderId() });
                     throw new IdTokenDifferentIssuerException(errorMsg);
@@ -395,6 +408,7 @@ public class LogoutTokenBuilder {
         logoutTokenClaims.setIssuer(issuer);
         logoutTokenClaims.setAudience(client.getClientId());
         logoutTokenClaims.setIssuedAtToNow();
+        logoutTokenClaims.setExpirationTimeMinutesInTheFuture(2);
         logoutTokenClaims.setGeneratedJwtId();
 
         Map<String, Object> eventsClaim = new HashMap<>();
@@ -410,9 +424,7 @@ public class LogoutTokenBuilder {
         if (port != 80 && port != 443) {
             issuerIdentifier += ":" + port;
         }
-        String requestUri = request.getRequestURI();
-        requestUri = requestUri.substring(0, requestUri.lastIndexOf("/"));
-        issuerIdentifier += requestUri;
+        issuerIdentifier += "/oidc/providers/" + oidcServerConfig.getProviderId();
         return issuerIdentifier;
     }
 

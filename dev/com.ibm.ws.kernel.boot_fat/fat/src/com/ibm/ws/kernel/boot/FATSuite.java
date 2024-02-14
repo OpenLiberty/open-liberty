@@ -70,7 +70,8 @@ import com.ibm.wsspi.kernel.embeddable.EmbeddedServerTest;
                 EmbeddedServerMergeProductExtensionTest.class,
                 ServerEndpointControlMBeanTest.class,
                 OSGiEmbedManagerTest.class,
-                ServerCleanTest.class
+                ServerCleanTest.class,
+                VerboseLogTest.class
 })
 public class FATSuite {
     // Empty

@@ -29,11 +29,11 @@ public class StaticTraceTestTransformer extends LibertyTracePreprocessInstrument
     /**
      * Instrument the classes.
      */
-    public byte[] transform(byte[] classfileBuffer) throws IllegalClassFormatException {
+    public byte[] transform(String className, byte[] classfileBuffer) throws IllegalClassFormatException {
     	//setFfdc(true);
     	
         try {
-            return transform(new ByteArrayInputStream(classfileBuffer));
+            return transform(className, new ByteArrayInputStream(classfileBuffer));
         } catch (Throwable t) {
             t.printStackTrace();
             return null;

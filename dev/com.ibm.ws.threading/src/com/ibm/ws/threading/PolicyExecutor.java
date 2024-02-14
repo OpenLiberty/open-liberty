@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2023 IBM Corporation and others.
+ * Copyright (c) 2017,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,13 @@ public interface PolicyExecutor extends ExecutorService {
          * This policy does not allow running on the submitter's thread if already at maximum concurrency.
          */
         strict
+
+        /*
+         * Leaving the policy unspecified indicates that the policy is to be chosen on a case-by-case basis
+         * based on whether the submitter thread is a virtual thread (try to avoid running on the submitter's thread)
+         * or a platform thread (use a policy of loose).
+         */
+        // unspecified
     }
 
     /**

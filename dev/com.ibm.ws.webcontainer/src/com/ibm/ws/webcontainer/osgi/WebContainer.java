@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2023 IBM Corporation and others.
+ * Copyright (c) 2010, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1651,11 +1651,11 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     }
     
     public static boolean isServletLevel60orAbove() {
-        if(WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_60) {
-            return true;
-        }
-        
-        return false;
+        return (WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_60) ? true : false; 
+    }
+    
+    public static boolean isServlet61orAbove() {
+        return (WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_61) ? true : false; 
     }
     
     protected static class CompletedFuture implements Future {

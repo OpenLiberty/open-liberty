@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import com.ibm.ws.container.service.app.deploy.extended.AltDDEntryGetter;
 import com.ibm.ws.container.service.app.deploy.extended.ApplicationInfoFactory;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedModuleInfo;
+import com.ibm.ws.container.service.app.deploy.extended.ManifestClassPathHelper;
 import com.ibm.ws.container.service.app.deploy.extended.ModuleContainerInfo;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.MetaDataService;
@@ -77,7 +78,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
             if (containerInfos == null) {
                 Set<String> resolved = new HashSet<String>();
                 containerInfos = new ArrayList<ContainerInfo>();
-                ManifestClassPathUtils.processMFClasspath(moduleEntry, containerInfos, resolved);
+                ManifestClassPathHelper.processMFClasspath(moduleEntry, moduleContainer, containerInfos, resolved, false);
                 entryContainerInfosMap.put(entryIdentity, containerInfos);
             }
             return containerInfos;
@@ -276,7 +277,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                 };
                 this.classesContainerInfo.add(containerInfo);
                 Set<String> resolved = new HashSet<String>();
-                ManifestClassPathUtils.addCompleteJarEntryUrls(this.classesContainerInfo, entry, resolved);
+                ManifestClassPathHelper.addCompleteJarEntryUrls(this.classesContainerInfo, entry, jarContainer, resolved);
                 for (Entry childEntry : jarContainer) {
                     getEntryClassesInfo(childEntry);
                 }
@@ -431,7 +432,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                                 };
                                 this.classesContainerInfo.add(containerInfo);
 
-                                ManifestClassPathUtils.addCompleteJarEntryUrls(this.classesContainerInfo, entry, resolved);
+                                ManifestClassPathHelper.addCompleteJarEntryUrls(this.classesContainerInfo, entry, jarContainer, resolved);
                             }
                         }
                     }

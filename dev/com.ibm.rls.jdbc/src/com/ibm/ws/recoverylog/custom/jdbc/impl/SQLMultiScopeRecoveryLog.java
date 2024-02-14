@@ -59,6 +59,7 @@ import com.ibm.ws.recoverylog.spi.LogCursorCallback;
 import com.ibm.ws.recoverylog.spi.LogCursorImpl;
 import com.ibm.ws.recoverylog.spi.LogIncompatibleException;
 import com.ibm.ws.recoverylog.spi.LogProperties;
+import com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException;
 import com.ibm.ws.recoverylog.spi.MultiScopeLog;
 import com.ibm.ws.recoverylog.spi.PeerLostLogOwnershipException;
 import com.ibm.ws.recoverylog.spi.RLSUtils;
@@ -286,10 +287,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * We only want one client at a time to attempt to create a new
      * Database table.
      */
-    private static final Object _CreateTableLock = new Object();
+    private final Object _CreateTableLock = new Object();
 
     // This is "lock A".  We can lock A then lock B, or just lock A or just lock B but we can't lock B then lock A.  Lock B is 'this'.
-    private static final Object _DBAccessIntentLock = new Object();
+    private final Object _DBAccessIntentLock = new Object();
     // Could use separate locks eg private static final Object _CacheLock = new Object();
     // Could replace synchronized this with the above object lock (in case a caller synchs on our reference)
     // We only really care about failed() being accurate when using the database.
@@ -1323,17 +1324,17 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             if (tc.isEntryEnabled())
                                 Tr.exit(tc, "closeLog", ple);
                             throw ple;
+                        } catch (LogsUnderlyingTablesMissingException lutme) {
+                            // No FFDC in this case
+                            if (tc.isEntryEnabled())
+                                Tr.exit(tc, "closeLog", lutme);
+                            throw lutme;
                         } catch (InternalLogException exc) {
-                            if (_isTableDeleted) {
-                                if (tc.isDebugEnabled())
-                                    Tr.debug(tc, "Reserved Connection is NULL but the underlying tables have been deleted");
-                            } else {
-                                FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.closeLog", "948", this);
-                                markFailed(exc); // @MD19484C
-                                if (tc.isEntryEnabled())
-                                    Tr.exit(tc, "closeLog", exc);
-                                throw exc;
-                            }
+                            FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.closeLog", "948", this);
+                            markFailed(exc); // @MD19484C
+                            if (tc.isEntryEnabled())
+                                Tr.exit(tc, "closeLog", exc);
+                            throw exc;
                         } catch (Throwable exc) {
                             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.closeLog", "955", this);
                             markFailed(exc); // @MD19484C
@@ -1456,13 +1457,15 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         }
                     } else { // the log is in the right state, we can proceed
                         Connection conn = null;
+                        String tableToDrop = "PARTNER_LOG";
                         try {
                             conn = getConnection();
                             // Set autocommit FALSE and RR isolation on the connection
                             initialIsolation = prepareConnectionForBatch(conn);
-                            succeeded = dropDBTable(conn, "PARTNER_LOG");
+                            succeeded = dropDBTable(conn, tableToDrop);
                             if (succeeded) {
-                                succeeded = dropDBTable(conn, "TRAN_LOG");
+                                tableToDrop = "TRAN_LOG";
+                                succeeded = dropDBTable(conn, tableToDrop);
                             }
                             if (succeeded) {
                                 succeeded = false;
@@ -1475,10 +1478,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 conn.rollback();
                             }
                         } catch (Exception e) {
-                            // FFDC exception but allow processing to continue
-                            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.delete", "1286", this);
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "delete caught exception ", e);
+                            // Issue a warning but allow processing to continue
+                            Tr.audit(tc,
+                                     "WTRN0107W: Caught exception {0} when attempting to drop table {1} during deletion of recovery log {2} by server {3}",
+                                     e, tableToDrop, _logName, _serverName);
                         } finally {
                             // Attempt a close. If it fails, trace the failure but allow processing to continue
                             try {
@@ -2120,7 +2123,8 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                 Tr.debug(tc, "Home server and the underlying table may have been deleted");
                             if (isTableDeleted(sqlex)) {
                                 // The underlying table has been deleted, set exception variables to NOT retry
-                                nonTransientException = sqlex;
+                                LogsUnderlyingTablesMissingException lutme = new LogsUnderlyingTablesMissingException("Underlying table is missing", null);
+                                nonTransientException = lutme;
                                 currentSqlEx = null;
                                 _isTableDeleted = true;
                                 if (_associatedLog != null)
@@ -2149,6 +2153,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Caught PeerLostLogOwnershipException: " + ple);
                     nonTransientException = ple;
+                } catch (LogsUnderlyingTablesMissingException lutme) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Caught LogsUnderlyingTablesMissingException: " + lutme);
+                    nonTransientException = lutme;
                 } catch (Throwable exc) {
                     Tr.audit(tc, "WTRN0107W: " +
                                  "Caught non-SQLException Throwable when forcing SQL RecoveryLog " + _logName + " for server " + _serverName + " Throwable: " + exc);
@@ -2225,15 +2233,18 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                                         Tr.exit(tc, "internalForceSections", "PeerLostLogOwnershipException");
                                     PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException(nonTransientException);
                                     throw ple;
+                                } else if (nonTransientException instanceof LogsUnderlyingTablesMissingException) {
+                                    markFailed(nonTransientException, false, false); // second parameter "false" as we do not wish to fire out error messages
+                                    if (tc.isEntryEnabled())
+                                        Tr.exit(tc, "internalForceSections", "LogsUnderlyingTablesMissingException");
+                                    LogsUnderlyingTablesMissingException lutme = new LogsUnderlyingTablesMissingException(nonTransientException);
+                                    throw lutme;
                                 } else {
-                                    if (_isTableDeleted) {
-                                        markFailed(nonTransientException, false, false); // second parameter "false" as we do not wish to fire out error messages
-                                    } else {
-                                        Tr.audit(tc, "WTRN0100E: " +
-                                                     "Cannot recover from SQLException when forcing SQL RecoveryLog " + _logName + " for server " + _serverName + " Exception: "
-                                                     + nonTransientException);
-                                        markFailed(nonTransientException);
-                                    }
+                                    Tr.audit(tc, "WTRN0100E: " +
+                                                 "Cannot recover from SQLException when forcing SQL RecoveryLog " + _logName + " for server " + _serverName + " Exception: "
+                                                 + nonTransientException);
+                                    markFailed(nonTransientException);
+
                                     InternalLogException ile = new InternalLogException(nonTransientException);
                                     if (tc.isEntryEnabled())
                                         Tr.exit(tc, "internalForceSections", ile);
@@ -2730,6 +2741,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 if (_currentProcessServerName.equalsIgnoreCase(storedServerName)) {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "This server OWNS the HA lock row");
+                    takeLock = true;
                 } else {
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "ANOTHER server OWNS the lock");
@@ -2759,23 +2771,23 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                             throw ple;
                         }
                     }
+                }
 
-                    if (takeLock) {
-                        updateStmt = conn.createStatement();
-                        // Claim the logs by updating the server name and timestamp.
-                        long fir1 = System.currentTimeMillis();
-                        String updateString = "UPDATE " +
-                                              _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
-                                              " SET SERVER_NAME = '" + _currentProcessServerName +
-                                              "', RUSECTION_ID = " + fir1 +
-                                              " WHERE RU_ID = -1";
+                if (takeLock) {
+                    updateStmt = conn.createStatement();
+                    // Claim the logs by updating the server name and timestamp.
+                    long fir1 = System.currentTimeMillis();
+                    String updateString = "UPDATE " +
+                                          _recoveryTableName + _logIdentifierString + _recoveryTableNameSuffix +
+                                          " SET SERVER_NAME = '" + _currentProcessServerName +
+                                          "', RUSECTION_ID = " + fir1 +
+                                          " WHERE RU_ID = -1";
 
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Updating HA Lock using update string - " + updateString);
-                        int ret = updateStmt.executeUpdate(updateString);
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, "Have updated HA Lock row with return: " + ret);
-                    }
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Updating HA Lock using update string - " + updateString);
+                    int ret = updateStmt.executeUpdate(updateString);
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Have updated HA Lock row with return: " + ret);
                 }
             } else {
                 // This is unexpected under the new locking scheme
@@ -4215,13 +4227,16 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 }
             }
         } else {
-            // Alert the HeartbeatLogManager that the log is closing/closed or failed
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "heartbeat", "Log is not in a fit state for a heartbeat");
-            throw new LogClosedException();
+            if (_serverStopping || failed()) {
+                // Alert the HeartbeatLogManager that the server is stopping or the log is failed
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "heartbeat", "Log is not in a fit state for a heartbeat");
+                throw new LogClosedException();
+            }
+            // Otherwise, the log is closed (and maybe not even opened yet) allow processing to continue
         }
 
-        if (!sqlSuccess) {
+        if (!sqlSuccess && nonTransientException != null) {
             // Audit the failure (if not closed/failed log) but allow processing to continue
             if (!_serverStopping && !failed()) {
                 Tr.audit(tc, "WTRN0107W: " +
@@ -4680,7 +4695,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
      * @see com.ibm.ws.recoverylog.spi.HeartbeatLog#claimPeerRecoveryLogs()
      */
     @Override
-    public boolean claimPeerRecoveryLogs() {
+    public boolean claimPeerRecoveryLogs() throws LogsUnderlyingTablesMissingException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "claimPeerRecoveryLogs", this);
 
@@ -4733,10 +4748,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Check whether the underlying table has been deleted");
                 if (isTableDeleted(sqlex)) {
-                    // Slightly clunky, but prevents retries in this case
-                    PeerLostLogOwnershipException ple = new PeerLostLogOwnershipException("Underlying table is missing", null);
-                    nonTransientException = ple;
-                    currentSqlEx = null;
+                    // The underlying table has been deleted, throw an exception
+                    LogsUnderlyingTablesMissingException lutme = new LogsUnderlyingTablesMissingException("Underlying table is missing", null);
+                    if (tc.isEntryEnabled())
+                        Tr.exit(tc, "claimPeerRecoveryLogs", lutme);
+                    throw lutme;
                 }
             }
             if (currentSqlEx != null) {

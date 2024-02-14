@@ -65,7 +65,7 @@ public class ManagedThreadFactoryDefinitionBinding extends InjectionBinding<Mana
 
     // Concurrent 3.1 attributes
 
-    private boolean virtual;
+    private Boolean virtual;
     private boolean XMLvirtual;
 
     private String[] qualifiers;

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,12 +36,10 @@ public class TargetsTableTimeStampImpl
 
     public static final String CLASS_NAME = TargetsTableTimeStampImpl.class.getSimpleName();
 
-    protected final String hashText;
-
     @Override
     @Trivial
     public String getHashText() {
-        return hashText;
+        return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
     }
 
     //
@@ -49,20 +47,16 @@ public class TargetsTableTimeStampImpl
     public TargetsTableTimeStampImpl() {
         String methodName = "<init>";
 
-        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
-
         this.name = null;
         this.stamp = null;
 
         if (logger.isLoggable(Level.FINER)) {
-            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.hashText);
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ]", this.getHashText());
         }
     }
 
     public TargetsTableTimeStampImpl(String name) {
         String methodName = "<init>";
-
-        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 
         this.name = name;
         this.stamp = null;
@@ -70,14 +64,12 @@ public class TargetsTableTimeStampImpl
         if (logger.isLoggable(Level.FINER)) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] [ {1} ]",
-                        new Object[] { this.hashText, this.name });
+                        new Object[] { this.getHashText(), this.name });
         }
     }
 
     public TargetsTableTimeStampImpl(String name, String stamp) {
         String methodName = "<init>";
-
-        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 
         this.name = name;
         this.stamp = stamp;
@@ -85,7 +77,7 @@ public class TargetsTableTimeStampImpl
         if (logger.isLoggable(Level.FINER)) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                         "[ {0} ] [ {1} ] [ {2} ]",
-                        new Object[] { this.hashText, this.name, this.stamp });
+                        new Object[] { this.getHashText(), this.name, this.stamp });
         }
     }
 

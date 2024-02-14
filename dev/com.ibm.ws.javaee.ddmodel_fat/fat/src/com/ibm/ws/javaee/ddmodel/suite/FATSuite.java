@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,10 +29,12 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
     DDValidAppTests.class,
     DDValidAppTests_J9.class,
     DDValidAppTests_J10.class,
+    DDValidAppTests_J11.class,
 
     DDValidModTests.class,
     DDValidModTests_J9.class,
     DDValidModTests_J10.class,
+    DDValidModTests_J11.class,
 
     DDValidAppPartialHeaderTests.class,
     DDValidAppMinimalHeaderTests.class,

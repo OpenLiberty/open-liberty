@@ -545,20 +545,29 @@ public class DBRotationTest extends CloudFATServletClient {
     }
 
     @Test
-    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException",
+                           "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException",
+                           "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException", "java.lang.Exception" })
     public void testReactionToDeletedTables() throws Exception {
         final String method = "testReactionToDeletedTables";
+        StringBuilder sb = null;
         if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
 
             serversToCleanup = new LibertyServer[] { server2, noRecoveryGroupServer1 };
-            server2.setHttpDefaultPort(cloud2ServerPort);
-            FATUtils.startServers(runner, server2, noRecoveryGroupServer1);
+            //            server2.setHttpDefaultPort(cloud2ServerPort);
+            server2.useSecondaryHTTPPort();
+            FATUtils.startServers(runner, server2);
+            assertNotNull("Home server recovery failed", server2.waitForStringInTrace("Transaction recovery processing for this server is complete", LOG_SEARCH_TIMEOUT));
+            FATUtils.startServers(runner, noRecoveryGroupServer1);
 
-            runTest(noRecoveryGroupServer1, SERVLET_NAME, "dropServer2Tables");
+            sb = runTestWithResponse(noRecoveryGroupServer1, SERVLET_NAME, "dropServer2Tables");
+            Log.info(c, method, "testReactionToDeletedTables dropServer2Tables returned: " + sb);
 
+            assertNotNull("Failed to drop tables", noRecoveryGroupServer1.waitForStringInTrace("<<< END:   dropServer2Tables", LOG_SEARCH_TIMEOUT));
+
+            sb = runTestWithResponse(server2, SERVLET_NAME, "twoTrans");
+            Log.info(c, method, "testReactionToDeletedTables twoTrans returned: " + sb);
             assertNotNull("Home server tables are still present", server2.waitForStringInTrace("Underlying SQL tables missing", LOG_SEARCH_TIMEOUT));
-
-//            runTest(server2, SERVLET_NAME, "twoTrans");
         }
         Log.info(c, method, "testReactionToDeletedTables is complete");
     }

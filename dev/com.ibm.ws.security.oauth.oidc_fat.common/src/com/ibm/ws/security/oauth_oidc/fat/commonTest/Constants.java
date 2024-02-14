@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -358,6 +358,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String HTTP_SESSION = "http_session";
     public static final String SAML_IDP_INITIATED_LOGOUT = "saml_idp_initiated_logout";
     public static final String SAML_SP_INITIATED_LOGOUT = "saml_sp_initiated_logout";
+    public static final String IBM_SECURITY_LOGOUT = "ibm_security_logout";
 
     public static final String JSON_USERINFO_DATA = "json_userinfo_data";
     public static final String JWS_USERINFO_DATA = "jws_userinfo_data";
@@ -873,9 +874,9 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String PRIVATE_KEY_JWT_ASSERTION_TYPE = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
 
     /*********************************** Token Order ******************************************/
-    public static final String TOKEN_ORDER_IDTOKEN="IDToken";
-    public static final String TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO="AccessToken IDToken UserInfo";
-    public static final String TOKEN_TYPE_IDTOKEN="IDToken";
-    public static final String TOKEN_TYPE_ACCESSTOKEN="AccessToken";
-    public static final String TOKEN_TYPE_USERINFO="UserInfo";
+    public static final String TOKEN_ORDER_IDTOKEN = "IDToken";
+    public static final String TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO = "AccessToken IDToken UserInfo";
+    public static final String TOKEN_TYPE_IDTOKEN = "IDToken";
+    public static final String TOKEN_TYPE_ACCESSTOKEN = "AccessToken";
+    public static final String TOKEN_TYPE_USERINFO = "UserInfo";
 }

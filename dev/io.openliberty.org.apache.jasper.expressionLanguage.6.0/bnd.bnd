@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -14,10 +14,10 @@ Bundle-SymbolicName: io.openliberty.org.apache.jasper.expressionLanguage.6.0
 Bundle-Description: Jakarta Expression Language EE11 Implementation, version 6.0
 Implementation-Version: 6.0.0
 
-javac.source: 21
-javac.target: 21
+javac.source: 17
+javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Export-Package: org.apache.el;thread-context=true;version=${Implementation-Version}, \
    org.apache.el.lang;thread-context=true;version=${Implementation-Version}, \
@@ -33,8 +33,11 @@ Import-Package: \
 Require-Capability: osgi.contract;
  filter:="(&(osgi.contract=JavaEL)(version=5.0.0))"
 
+-includeresource: \
+    org/apache/el=${bin}/org/apache/el
+
 instrument.disabled: true
 
 -buildpath: \
-    org.apache.tomcat:tomcat-jasper-el;strategy=exact;version=11.0.0.M14,\
+    org.apache.tomcat:tomcat-jasper-el;strategy=exact;version=11.0.0.M16,\
     io.openliberty.jakarta.expressionLanguage.6.0;version=latest

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2023 IBM Corporation and others.
+ * Copyright (c) 2017,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ configurations {
     app19
     app20
     app21
+    app22
  }
  
  dependencies {
@@ -25,6 +26,7 @@ configurations {
     app19 'io.openliberty:java-apps:19.0.0'
     app20 'io.openliberty:java-apps:20.0.0'
     app21 'io.openliberty:java-apps:21.0.0'
+    app22 'io.openliberty:java-apps:22.0.0'
  }
 
 task copyKernelService(type: Copy) {
@@ -75,6 +77,12 @@ task copyApp21(type: Copy) {
   rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_21.war'
 }
 
+task copyApp22(type: Copy) {
+  from configurations.app22
+  into new File(autoFvtDir, 'publish/servers/java22-server/apps/')
+  rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_22.war'
+}
+
 addRequiredLibraries.dependsOn copyKernelService
 addRequiredLibraries.dependsOn copyApp17A
 addRequiredLibraries.dependsOn copyApp17B
@@ -83,3 +91,4 @@ addRequiredLibraries.dependsOn copyApp18B
 addRequiredLibraries.dependsOn copyApp19
 addRequiredLibraries.dependsOn copyApp20
 addRequiredLibraries.dependsOn copyApp21
+addRequiredLibraries.dependsOn copyApp22

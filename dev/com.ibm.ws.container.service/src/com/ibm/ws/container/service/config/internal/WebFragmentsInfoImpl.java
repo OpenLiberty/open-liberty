@@ -1,10 +1,10 @@
 /*********************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package com.ibm.ws.container.service.config.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -30,6 +31,7 @@ import com.ibm.ws.container.service.app.deploy.ContainerInfo.Type;
 import com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo;
 import com.ibm.ws.container.service.config.WebFragmentInfo;
 import com.ibm.ws.container.service.config.WebFragmentsInfo;
+import com.ibm.ws.javaee.dd.PlatformVersion;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.WebFragment;
 import com.ibm.ws.javaee.dd.web.common.AbsoluteOrdering;
@@ -47,6 +49,13 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
 
     //
 
+    private static final HashSet<Integer> METADATA_COMPLETE_SUPPORT = //
+                    new HashSet<>(Arrays.asList(WebApp.VERSION_2_5,
+                                                WebApp.VERSION_3_0, WebApp.VERSION_3_1,
+                                                WebApp.VERSION_4_0,
+                                                WebApp.VERSION_5_0,
+                                                WebApp.VERSION_6_0, WebApp.VERSION_6_1));
+
     /**
      * Create aggregate fragment information for a web module.
      *
@@ -61,13 +70,10 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
         this.servletSpecLevel = servletSpecLevel;
 
         // Web app ...
-
         WebApp webApp = containerToAdapt.adapt(WebApp.class); // throws UnableToAdaptException
         if (webApp != null) {
             this.servletSchemaLevel = webApp.getVersion();
-            if ("6.0".equals(servletSchemaLevel) || "5.0".equals(servletSchemaLevel) || "4.0".equals(servletSchemaLevel) || "3.1".equals(servletSchemaLevel)
-                || "3.0".equals(servletSchemaLevel)
-                || "2.5".equals(servletSchemaLevel)) {
+            if (isMetadataCompleteSupported(servletSchemaLevel)) {
                 this.isMetadataComplete = webApp.isSetMetadataComplete() && webApp.isMetadataComplete();
             } else {
                 this.isMetadataComplete = true; // Default to true for earlier versions.
@@ -120,6 +126,24 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
     @Override
     public String getServletSchemaLevel() {
         return servletSchemaLevel;
+    }
+
+    /**
+     * Verify if the web-app version supports metadata-complete elements.
+     * metadata-complete was added in version 2.5.
+     *
+     * @param version
+     *
+     * @return true if metadata-complete is supported,
+     *         false if metadata-complete is not supported or the schema version is unknown
+     */
+    private boolean isMetadataCompleteSupported(String version) {
+        try {
+            int intVersion = PlatformVersion.getVersionInt(version);
+            return METADATA_COMPLETE_SUPPORT.contains(intVersion);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     /** Cache of the 'metadata-complete' attribute of the web module descriptor. */
@@ -182,6 +206,8 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
         Map<String, WebFragmentItemImpl> webFragmentItemMap = new LinkedHashMap<String, WebFragmentItemImpl>(classesContainers.size());
 
         String internalGeneratedWebFragmentNamePrefix = "ibm_liberty_webfragment_";
+        int internalPrefixLength = internalGeneratedWebFragmentNamePrefix.length();
+        StringBuilder stringBuilder = null;
         int nameSuffix = 0;
         Set<String> usedWebFragmentNames = new HashSet<String>();
         for (ContainerInfo containerInfo : classesContainers) {
@@ -217,12 +243,20 @@ class WebFragmentsInfoImpl implements WebFragmentsInfo {
                     }
                 }
                 if (webFragmentName == null) {
-                    webFragmentName = internalGeneratedWebFragmentNamePrefix + nameSuffix;
-                    while (usedWebFragmentNames.contains(webFragmentName)) {
-                        nameSuffix++;
-                        webFragmentName = internalGeneratedWebFragmentNamePrefix + nameSuffix;
+                    if (stringBuilder == null) {
+                        stringBuilder = new StringBuilder(internalPrefixLength + 8);
+                        stringBuilder.append(internalGeneratedWebFragmentNamePrefix);
+                    } else {
+                        stringBuilder.setLength(internalPrefixLength);
                     }
-                    usedWebFragmentNames.add(webFragmentName);
+                    stringBuilder.append(nameSuffix);
+                    webFragmentName = stringBuilder.toString();
+                    while (!usedWebFragmentNames.add(webFragmentName)) {
+                        nameSuffix++;
+                        stringBuilder.setLength(internalPrefixLength);
+                        stringBuilder.append(nameSuffix);
+                        webFragmentName = stringBuilder.toString();
+                    }
                 }
 
                 webFragmentItemMap.put(webFragmentName, new WebFragmentItemImpl(container, webFragment, libraryURI, webFragmentName, isSeed));

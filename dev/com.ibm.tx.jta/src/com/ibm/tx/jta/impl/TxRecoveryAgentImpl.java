@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2023 IBM Corporation and others.
+ * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -794,17 +794,22 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 //Now extract a list of the peers that need to be recovered
                 peersToRecover = peerLeaseTable.getExpiredPeers();
 
-                // Discard the local server from the list
-                peersToRecover.remove(recoveryIdentity);
+                if (peersToRecover != null && !peersToRecover.isEmpty()) {
+                    // Discard the local server from the list
+                    peersToRecover.remove(recoveryIdentity);
 
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Have checked leases for " + peerLeaseTable.size() + " peer" + (peerLeaseTable.size() != 1 ? "s" : "") + " in recovery group "
-                                 + recoveryGroup);
-                    if (peersToRecover.size() > 0) {
-                        for (String peer : peersToRecover) {
-                            Tr.debug(tc, "Need to recover: " + peer);
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Have checked leases for " + peerLeaseTable.size() + " peer" + (peerLeaseTable.size() != 1 ? "s" : "") + " in recovery group "
+                                     + recoveryGroup);
+                        if (peersToRecover.size() > 0) {
+                            for (String peer : peersToRecover) {
+                                Tr.debug(tc, "Need to recover: " + peer);
+                            }
                         }
                     }
+                } else {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "No peer servers will be recovered");
                 }
             } catch (Exception e) {
                 System.out.println("Caught exception when trying to get leases for peers: " + e);
@@ -1206,4 +1211,14 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
         return _serverStopping;
     }
 
+    @Override
+    public void deleteServerLease(String recoveryIdentity, boolean isPeerServer) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "deleteServerLease", this, recoveryIdentity, isPeerServer);
+        if (_recoveryManager != null) {
+            _recoveryManager.deleteServerLease(recoveryIdentity, isPeerServer);
+        }
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "deleteServerLease");
+    }
 }

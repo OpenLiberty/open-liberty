@@ -11,6 +11,9 @@ package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.context.custom.inva
 
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
+
+import java.util.Arrays;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -34,8 +37,6 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
-import java.util.Arrays;
-
 /**
  * Test invalid context service configuration
  */
@@ -55,14 +56,13 @@ public class KakfaInvalidContextTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         server.startServer();
     }
 
     @AfterClass
     public static void teardown() throws Exception {
         try {
-            server.stopServer();
+            kafkaStopServer(server);
         } finally {
             KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
         }

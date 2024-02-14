@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,10 @@ import java.util.logging.Logger;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.srt.SRTServletResponse;
-import com.ibm.ws.webcontainer40.osgi.webapp.WebAppDispatcherContext40;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 
 import io.openliberty.webcontainer60.osgi.srt.SRTConnectionContext60;
+import io.openliberty.webcontainer61.osgi.webapp.WebAppDispatcherContext61;
 import io.openliberty.webcontainer61.srt.SRTServletRequest61;
 import io.openliberty.webcontainer61.srt.SRTServletResponse61;
 
@@ -37,8 +37,7 @@ public class SRTConnectionContext61 extends SRTConnectionContext60 {
             logger.logp(Level.FINE, CLASS_NAME, "init", "this [" + this + "] , request [" + _request + "]");
         }
 
-        //Reuse 4.0 until there is something new in servlet 6.1 dispatch context
-        this._dispatchContext = new WebAppDispatcherContext40(_request);
+        this._dispatchContext = new WebAppDispatcherContext61(_request);
         _request.setWebAppDispatcherContext(_dispatchContext);
     }
 

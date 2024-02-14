@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2023 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -103,7 +103,7 @@ instrument.classesExcludes: com/ibm/ws/wsat/resources/*.class
   ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
   com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
   com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
-  com.ibm.ws.jaxb.tools.2.2.10;version=latest,\
+  com.ibm.ws.jaxb.tools;version=latest,\
   com.ibm.ws.jaxws.2.3.common;version=latest,\
   com.ibm.ws.jaxws.2.3.clientcontainer;version=latest,\
   com.ibm.ws.jaxws.webcontainer;version=latest,\

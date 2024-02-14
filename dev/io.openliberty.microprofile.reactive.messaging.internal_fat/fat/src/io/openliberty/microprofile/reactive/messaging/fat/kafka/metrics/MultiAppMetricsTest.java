@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package io.openliberty.microprofile.reactive.messaging.fat.kafka.metrics;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -36,6 +37,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKa
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClientProvider;
 import com.ibm.ws.microprofile.reactive.messaging.fat.metrics.MetricsUtils;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -49,6 +51,9 @@ import io.openliberty.microprofile.reactive.messaging.fat.suite.ReactiveMessagin
  *
  */
 @RunWith(FATRunner.class)
+// Allowing InstanceNotFoundException as it is possible for mpmetrics to be queried during server shutdown when
+// the MBean is not present, this is an expected FFDC in the metrics FAT so we must allow for it here as these tests interact with metrics.
+@AllowedFFDC("javax.management.InstanceNotFoundException")
 public class MultiAppMetricsTest extends FATServletClient {
 
     public static final String APP_ONE_NAME = "MetricsTestOne";
@@ -118,7 +123,7 @@ public class MultiAppMetricsTest extends FATServletClient {
     @AfterClass
     public static void teardown() throws Exception {
         try {
-            server.stopServer();
+            kafkaStopServer(server);
         } finally {
             KafkaUtils.deleteKafkaTopics(KafkaTests.getAdminClient());
         }
