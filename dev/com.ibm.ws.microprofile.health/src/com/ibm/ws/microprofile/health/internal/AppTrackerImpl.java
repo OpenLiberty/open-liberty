@@ -115,7 +115,6 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
                     String[] appNameSplit = ((String) properties.get("location")).split("/");
 
                     if (properties.get("name") != null) {
-                        //testMap.put((String) properties.get("name"), "test");
                         appName = (String) properties.get("name");
                     } else {
                         appName = appNameSplit[appNameSplit.length - 1].replace(".war", "");
@@ -361,6 +360,8 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
         String state = "";
         try {
             ObjectName objectName = new ObjectName("WebSphere:service=com.ibm.websphere.application.ApplicationMBean,name=" + appName);
+            Tr.warning(tc, "Debug msg: WebSphere:service=com.ibm.websphere.application.ApplicationMBean,name=" + appName);
+            System.out.println("Debug msg: WebSphere:service=com.ibm.websphere.application.ApplicationMBean,name=" + appName);
             bean = mbeanServer.getMBeanInfo(objectName);
             state = (String) mbeanServer.getAttribute(objectName, "State");
         } catch (Exception e) {

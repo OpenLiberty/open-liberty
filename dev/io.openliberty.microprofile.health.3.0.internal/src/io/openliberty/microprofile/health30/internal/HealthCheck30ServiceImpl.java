@@ -126,10 +126,10 @@ public class HealthCheck30ServiceImpl implements HealthCheck30Service {
             String nextAppName = configAppsIt.next();
             if (apps.contains(nextAppName)) {
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "In performHealthCheck(): configAdmin found an application that appTracker already found. configAdminAppName = " + nextAppName);
+                    Tr.debug(tc, "In performHealthCheck(): configAdmin found an application that the applicationStateListener already found. configAdminAppName = " + nextAppName);
             } else {
                 if (tc.isDebugEnabled())
-                    Tr.debug(tc, "In performHealthCheck(): appTracker couldn't find application. configAdmin added appName = " + nextAppName);
+                    Tr.debug(tc, "In performHealthCheck(): applicationStateListener couldn't find application. configAdmin added appName = " + nextAppName);
                 appTracker.addAppName(nextAppName);
             }
         }

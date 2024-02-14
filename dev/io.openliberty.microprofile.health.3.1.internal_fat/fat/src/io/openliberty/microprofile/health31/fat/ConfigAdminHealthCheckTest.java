@@ -83,16 +83,16 @@ public class ConfigAdminHealthCheckTest {
     private final String HEALTH_ENDPOINT = "/health";
     private final String READY_ENDPOINT = "/health/ready";
     private final String LIVE_ENDPOINT = "/health/live";
+    private final String STARTED_ENDPOINT = "/health/started";
     private final String APP_ENDPOINT = "/DelayedHealthCheckApp/DelayedServlet";
 
     private final int SUCCESS_RESPONSE_CODE = 200;
     private final int FAILED_RESPONSE_CODE = 503; // Response when port is open but Application is not ready
 
     public static final int APP_STARTUP_TIMEOUT = 120 * 1000;
-    // public static KafkaContainer kafkaContainer = new KafkaContainer();
 
     private static enum HealthCheck {
-        LIVE, READY, HEALTH;
+        LIVE, READY, STARTED, HEALTH;
     }
 
     private static enum Status {
@@ -260,6 +260,9 @@ public class ConfigAdminHealthCheckTest {
 
         expectHealthCheck(server3, HealthCheck.HEALTH, Status.FAILURE, 0);
         expectFailsToStartApplicationNotStartedMessage(true);
+        
+        expectHealthCheck(server3, HealthCheck.STARTED, Status.FAILURE, 0);
+        expectFailsToStartApplicationNotStartedMessage(true);
 
         String configAdminLine = server3.waitForStringInTrace("configAdminAppName = FailsToStartHealthCheckApp");
         String stateMapLine = server3.waitForStringInTrace(": appName = FailsToStartHealthCheckApp");
@@ -397,8 +400,8 @@ public class ConfigAdminHealthCheckTest {
                                 log("testReadinessEndpointOnServerStart", "Application started. Line Found : " + line);
                                 assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
 
-                                String configAdminLine = server2.waitForStringInTrace("configAdminAppName = MultiWarApps");
-                                String stateMapLine = server2.waitForStringInTrace(": appName = MultiWarApps,");
+                                String configAdminLine = server1.waitForStringInTrace("configAdminAppName = MultiWarApps");
+                                String stateMapLine = server1.waitForStringInTrace(": appName = MultiWarApps,");
 
                                 assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
                                 assertNotNull("App was not detected by appTracker.", stateMapLine);
