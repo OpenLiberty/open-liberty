@@ -19,12 +19,11 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
-
-import org.osgi.framework.Version;
 
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
+
+import org.osgi.framework.Version;
 
 /**
  * A resolver for liberty features. The resolver has two modes:
@@ -39,16 +38,21 @@ import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
  * This second mode is used during installation.
  */
 public interface FeatureResolver {
+    /** Java7 predicate interface. */
+    public static interface Selector<T> {
+        boolean test(T input);
+    }
+    
     /**
      * A collection of features which are available for feature resolution.
      */
-    public interface Repository {
+    public static interface Repository {
         /**
          * Answer all feature within this repository.
          *
          * @return All features of this repository.
          */
-        Collection<ProvisioningFeatureDefinition> getFeatures();
+        List<ProvisioningFeatureDefinition> getFeatures();
 
         /**
          * Answer all auto-features of the repository.
@@ -66,7 +70,7 @@ public interface FeatureResolver {
          *
          * @return All feature definitions which match the predicate.
          */
-        List<ProvisioningFeatureDefinition> select(Predicate<ProvisioningFeatureDefinition> selector);
+        List<ProvisioningFeatureDefinition> select(Selector<ProvisioningFeatureDefinition> selector);
 
         /**
          * Answer the feature which matches a specified feature name.
@@ -98,7 +102,7 @@ public interface FeatureResolver {
     /**
      * A feature resolution result.
      */
-    public interface Result {
+    public static interface Result {
         Set<String> getResolvedFeatures();
 
         //

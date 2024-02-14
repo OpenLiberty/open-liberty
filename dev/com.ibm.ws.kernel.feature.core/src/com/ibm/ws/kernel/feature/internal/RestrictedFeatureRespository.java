@@ -15,10 +15,10 @@ package com.ibm.ws.kernel.feature.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
 
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 
 public class RestrictedFeatureRespository implements Repository {
     public RestrictedFeatureRespository(Repository repo, Collection<String> restricted) {
@@ -46,13 +46,23 @@ public class RestrictedFeatureRespository implements Repository {
     private final Collection<String> restrictedAttempts;
 
     @Override
-    public List<ProvisioningFeatureDefinition> select(Predicate<ProvisioningFeatureDefinition> selector) {
-        return repo.select((ProvisioningFeatureDefinition def) -> (!restricted.contains(def.getSymbolicName()) && selector.test(def)));
+    public List<ProvisioningFeatureDefinition> select(Selector<ProvisioningFeatureDefinition> selector) {
+        return repo.select( new Selector<ProvisioningFeatureDefinition>() {
+            @Override
+            public boolean test(ProvisioningFeatureDefinition def) {
+                return ( !restricted.contains(def.getSymbolicName()) && selector.test(def) );
+            }
+        });
     }
 
     @Override
-    public Collection<ProvisioningFeatureDefinition> getFeatures() {
-        return repo.select((ProvisioningFeatureDefinition def) -> (!restricted.contains(def.getSymbolicName())));
+    public List<ProvisioningFeatureDefinition> getFeatures() {
+        return repo.select( new Selector<ProvisioningFeatureDefinition>() {
+            @Override
+            public boolean test(ProvisioningFeatureDefinition def) {
+                return ( !restricted.contains(def.getSymbolicName()) );
+            }
+        });
     }
 
     @Override

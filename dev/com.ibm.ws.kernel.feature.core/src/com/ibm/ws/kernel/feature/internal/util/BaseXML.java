@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.kernel.feature.resolver.util;
+package com.ibm.ws.kernel.feature.internal.util;
 
 import java.io.Closeable;
 import java.io.File;
@@ -29,11 +29,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
+//Source restricted to java7.
+
 public class BaseXML {
     public static final boolean DO_APPEND = true;
 
-    @FunctionalInterface
-    public static interface FailableConsumer<T, E extends Exception> {
+    public interface FailableConsumer<T, E extends Exception> {
         void accept(T consumed) throws E;
     }
 

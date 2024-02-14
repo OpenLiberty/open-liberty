@@ -20,10 +20,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.ws.kernel.feature.resolver.util.VerifyData;
-import com.ibm.ws.kernel.feature.resolver.util.VerifyDelta;
-import com.ibm.ws.kernel.feature.resolver.util.VerifyEnv;
-import com.ibm.ws.kernel.feature.resolver.util.VerifyXML;
+import com.ibm.ws.kernel.feature.internal.util.VerifyData;
+import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
+import com.ibm.ws.kernel.feature.internal.util.VerifyEnv;
+import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;

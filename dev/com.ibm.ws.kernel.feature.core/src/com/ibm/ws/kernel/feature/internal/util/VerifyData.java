@@ -7,24 +7,29 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.kernel.feature.resolver.util;
+package com.ibm.ws.kernel.feature.internal.util;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
+
+//Source restricted to java7.
 
 public class VerifyData {
     public VerifyData() {
-        // Empty
+        this.cases = new ArrayList<>();
     }
 
-    public VerifyData(Stream<VerifyCase> cases) {
-        cases.forEach((VerifyCase verifyCase) -> this.cases.add(verifyCase));
+    public VerifyData(List<LazySupplier<VerifyCase>> cases) {
+        this.cases = new ArrayList<>(cases.size());
+
+        for (LazySupplier<VerifyCase> verifyCase : cases) {
+            this.cases.add(verifyCase.get());
+        }
     }
 
-    public final List<VerifyCase> cases = new ArrayList<>();
+    public final List<VerifyCase> cases;
 
     /**
      * Answer an ordered table of the contained cases.
@@ -38,12 +43,12 @@ public class VerifyData {
      * @return An ordered table of the contained cases.
      */
     public Map<String, VerifyCase> mapCases() {
-        Map<String, VerifyCase> mappedCases = new LinkedHashMap<>();
+        Map<String, VerifyCase> mappedCases = new LinkedHashMap<>(cases.size());
 
         StringBuilder keyBuilder = new StringBuilder();
-        cases.forEach((VerifyCase verifyCase) -> {
+        for (VerifyCase verifyCase : cases) {
             mappedCases.put(verifyCase.asKey(keyBuilder), verifyCase);
-        });
+        }
 
         return mappedCases;
     }
@@ -87,10 +92,14 @@ public class VerifyData {
             }
 
             append(keyBuilder, "Kernel", spaceSep);
-            input.kernel.forEach((String kernelName) -> append(keyBuilder, kernelName, colonSep));
+            for (String kernelName : input.kernel) {
+                append(keyBuilder, kernelName, colonSep);
+            }
 
             append(keyBuilder, "Roots", spaceSep);
-            input.roots.forEach((String rootName) -> append(keyBuilder, rootName, colonSep));
+            for (String rootName : input.roots) {
+                append(keyBuilder, rootName, colonSep);
+            }
 
             String key = keyBuilder.toString();
             keyBuilder.setLength(0);

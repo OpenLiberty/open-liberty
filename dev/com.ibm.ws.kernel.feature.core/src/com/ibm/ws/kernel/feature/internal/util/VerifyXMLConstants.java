@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.kernel.feature.resolver.util;
+package com.ibm.ws.kernel.feature.internal.util;
 
 // <case>
 //   <name>name</name>
