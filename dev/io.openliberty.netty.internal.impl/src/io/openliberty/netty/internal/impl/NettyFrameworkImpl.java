@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,8 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
+import io.netty.channel.local.LocalAddress;
+import io.netty.channel.local.LocalChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -55,12 +57,15 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import io.openliberty.netty.internal.BootstrapExtended;
+import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
 import io.openliberty.netty.internal.tcp.TCPUtils;
 import io.openliberty.netty.internal.udp.UDPUtils;
+import io.openliberty.netty.internal.local.LocalChannelInitializerWrapper;
+import io.openliberty.netty.internal.local.LocalUtils;
 import com.ibm.websphere.channelfw.EndPointMgr;
 
 /**
@@ -470,6 +475,28 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     @Override
+	public ServerBootstrapExtended createLocalBootstrap(ChannelInitializerWrapper initializer,
+			Map<String, Object> options) throws NettyException {
+		return LocalUtils.createLocalBootstrap(this, initializer, options);
+	}
+
+	@Override
+	public BootstrapExtended createLocalBootstrapOutbound(ChannelInitializerWrapper initializer,
+			Map<String, Object> options) throws NettyException {
+		return LocalUtils.createLocalBootstrapOutbound(this, initializer, options);
+	}
+
+    @Override
+	public ServerBootstrapExtended createLocalBootstrap(Map<String, Object> options) throws NettyException {
+		return LocalUtils.createLocalBootstrap(this, options);
+	}
+
+	@Override
+	public BootstrapExtended createLocalBootstrapOutbound(Map<String, Object> options) throws NettyException {
+		return LocalUtils.createLocalBootstrapOutbound(this, options);
+	}
+
+	@Override
     public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException {
         return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
@@ -612,4 +639,24 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     public EndPointMgr getEndpointManager() {
         return EndPointMgrImpl.getRef();
     }
+    
+
+	@Override
+	public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, LocalAddress localAddr,
+			ChannelFutureListener bindListener) throws NettyException {
+		return LocalUtils.start(this, bootstrap, null, 0, bindListener);
+	}
+
+	@Override
+	public FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, LocalAddress localAddr,
+			ChannelFutureListener bindListener) throws NettyException {
+		return LocalUtils.start(this, bootstrap, null, 0, bindListener);
+	}
+
+	@Override
+	public FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, LocalAddress localAddr,
+			ChannelFutureListener bindListener) throws NettyException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
