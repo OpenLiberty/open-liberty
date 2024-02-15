@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -169,7 +169,7 @@ public class MultipleInputFileTest {
 
     @Test
     @Mode(FULL)
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Skipped due to HTMLUnit / JavaScript incompatibility (New JS in RC5)
+    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION,SkipForRepeat.EE11_FEATURES}) // Skipped due to HTMLUnit / JavaScript incompatibility (New JS in RC5)
     public void testNoMultiple_WithAjax_SingleFile() throws Exception {
         URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/MutipleInputFile.xhtml" + "?" + Form.NO_MULTIPLE_WITH_AJAX.testParam);
 
@@ -185,7 +185,7 @@ public class MultipleInputFileTest {
 
     @Test
     @Mode(FULL)
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Skipped due to HTMLUnit / JavaScript incompatibility (New JS in RC5)
+    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION,SkipForRepeat.EE11_FEATURES}) // Skipped due to HTMLUnit / JavaScript incompatibility (New JS in RC5)
     public void testNoMultiple_WithAjax_MultipleFiles() throws Exception {
         URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/MutipleInputFile.xhtml" + "?" + Form.NO_MULTIPLE_WITH_AJAX.testParam);
 
@@ -201,7 +201,7 @@ public class MultipleInputFileTest {
 
     @Test
     @Mode(FULL)
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Skipped due to HTMLUnit / JavaScript incompatibility (New JS in RC5)
+    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION,SkipForRepeat.EE11_FEATURES}) // Skipped due to HTMLUnit / JavaScript incompatibility (New JS in RC5)
     public void testWithMultiple_WithAjax_SingleFile() throws Exception {
         URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/MutipleInputFile.xhtml" + "?" + Form.WITH_MULTIPLE_WITH_AJAX.testParam);
 
@@ -217,7 +217,7 @@ public class MultipleInputFileTest {
 
     @Test
     @Mode(FULL)
-    @SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Skipped due to HTMLUnit / JavaScript incompatibility (New JS in RC5)
+    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION,SkipForRepeat.EE11_FEATURES}) // Skipped due to HTMLUnit / JavaScript incompatibility (New JS in RC5)
     public void testWithMultiple_WithAjax_MultipleFiles() throws Exception {
         URL url = HttpUtils.createURL(server, "/" + APP_NAME + "/MutipleInputFile.xhtml" + "?" + Form.WITH_MULTIPLE_WITH_AJAX.testParam);
 
