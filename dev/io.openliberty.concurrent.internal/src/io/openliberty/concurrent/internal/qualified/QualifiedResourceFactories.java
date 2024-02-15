@@ -15,8 +15,6 @@ package io.openliberty.concurrent.internal.qualified;
 import java.util.List;
 import java.util.Map;
 
-import com.ibm.wsspi.resource.ResourceFactory;
-
 /**
  * Maintains associations of qualifiers to resource factory for
  * each type of resource and for each JEE name.
@@ -36,12 +34,6 @@ import com.ibm.wsspi.resource.ResourceFactory;
  * This interface is available as an OSGi service component for the above purpose.
  */
 public interface QualifiedResourceFactories {
-    /**
-     * Concurrency resource definition types where qualifiers can be specified.
-     */
-    enum Type {
-        ContextService, ManagedExecutorService, ManagedScheduledExecutorService, ManagedThreadFactory
-    };
 
     /**
      * The resource factory builder invokes this method to add a
@@ -54,7 +46,10 @@ public interface QualifiedResourceFactories {
      * @param qualifierNames  names of qualifier annotation classes
      * @param resourceFactory the resource factory
      */
-    void add(String jeeName, Type resourceType, List<String> qualifierNames, ResourceFactory resourceFactory);
+    void add(String jeeName,
+             QualifiedResourceFactory.Type resourceType,
+             List<String> qualifierNames,
+             QualifiedResourceFactory resourceFactory);
 
     /**
      * The concurrency CDI extension invokes this method to obtain all
@@ -68,5 +63,5 @@ public interface QualifiedResourceFactories {
      *         . . . . . . . . . qualifiers -> ResourceFactory for ManagedScheduledExecutorService,
      *         . . . . . . . . . qualifiers -> ResourceFactory for ManagedThreadFactory ]
      */
-    List<Map<List<String>, ResourceFactory>> removeAll(String jeeName);
+    List<Map<List<String>, QualifiedResourceFactory>> removeAll(String jeeName);
 }

@@ -23,11 +23,16 @@
       <context-root>/</context-root>
     </web>
   </module>
+
+  <module>
+    <ejb>concurrentCDIEJB.jar</ejb>
+  </module>
+
   <context-service>
     <name>java:app/concurrent/with-location-and-without-app-context</name>
-    <qualifier>concurrent.cdi.web.ClearingAppContext</qualifier>
-    <qualifier>concurrent.cdi.web.PropagatingLocationContext</qualifier>
-    <qualifier>concurrent.cdi.web.IgnoringTransactionContext</qualifier>
+    <qualifier>concurrent.cdi.ejb.ClearingAppContext</qualifier>
+    <qualifier>concurrent.cdi.ejb.PropagatingLocationContext</qualifier>
+    <qualifier>concurrent.cdi.ejb.IgnoringTransactionContext</qualifier>
     <cleared>Application</cleared>
     <propagated>Location</propagated>
     <unchanged>Remaining</unchanged>

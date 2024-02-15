@@ -39,6 +39,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
@@ -60,6 +61,17 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
     private static final String CONFIG_SOURCE = "config.source";
 
     /**
+     * Name of property that identifies the application for java:global data sources.
+     */
+    static final String DECLARING_APPLICATION = "declaringApplication";
+
+    /**
+     * Name of property that identifies the class loader of the application artifact
+     * that defines the ManagedThreadFactoryDefinition.
+     */
+    static final String DECLARING_CLASS_LOADER = "declaringClassLoader";
+
+    /**
      * Property value that indicates the configuration originated in a configuration file, such as server.xml,
      * rather than being programmatically created via ConfigurationAdmin.
      */
@@ -69,11 +81,6 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
      * Unique identifier attribute name.
      */
     private static final String ID = "id";
-
-    /**
-     * Name of property that identifies the application for java:global data sources.
-     */
-    static final String DECLARING_APPLICATION = "declaringApplication";
 
     /**
      * Name of internal property that enforces unique JNDI names.
@@ -132,6 +139,7 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
             threadFactoryProps.put(prop.getKey(), value);
         }
 
+        ClassLoader declaringClassLoader = (ClassLoader) threadFactoryProps.remove(DECLARING_CLASS_LOADER);
         String declaringApplication = (String) threadFactoryProps.remove(DECLARING_APPLICATION);
         String application = (String) threadFactoryProps.get("application");
         String module = (String) threadFactoryProps.get("module");
@@ -182,9 +190,10 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         managedThreadFactorySvcFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, managedThreadFactoryID));
         managedThreadFactorySvcFilter.append("(component.name=com.ibm.ws.concurrent.internal.ManagedThreadFactoryService)(jndiName=*))");
 
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, declaringApplication, //
+        QualifiedResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, declaringApplication, //
                         managedThreadFactoryID, jndiName, managedThreadFactorySvcFilter.toString(), //
-                        contextSvcJndiName, contextSvcFilter);
+                        contextSvcJndiName, contextSvcFilter, //
+                        declaringClassLoader, qualifierNames);
         try {
             String bundleLocation = bundleContext.getBundle().getLocation();
             ConfigurationAdmin configAdmin = configAdminRef.getService();
@@ -210,7 +219,7 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
                                                             " because the " + "CDI" + " feature is not enabled."); // TODO NLS
 
                 QualifiedResourceFactories qrf = bundleContext.getService(ref);
-                qrf.add(jeeName, QualifiedResourceFactories.Type.ManagedThreadFactory, qualifierNames, factory);
+                qrf.add(jeeName, QualifiedResourceFactory.Type.ManagedThreadFactory, qualifierNames, factory);
             }
         } catch (Exception x) {
             factory.destroy();
