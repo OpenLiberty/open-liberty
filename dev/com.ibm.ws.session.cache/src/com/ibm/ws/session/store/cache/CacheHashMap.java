@@ -134,8 +134,8 @@ public class CacheHashMap extends BackedHashMap {
         // We know we're running multi-row..if not writeAllProperties and not time-based writes,
         // we must keep the app data tables per thread (rather than per session)
         appDataTablesPerThread = (!_smc.writeAllProperties() && !_smc.getEnableTimeBasedWrite());
-
-        CheckpointPhase.onRestore(() -> AccessController.doPrivileged((PrivilegedAction<Void>) () -> { cacheInit(); return null; }));
+        // this MUST happen before the SessionContext starts the invalidator
+        CheckpointPhase.onRestore(0, () -> AccessController.doPrivileged((PrivilegedAction<Void>) () -> { cacheInit(); return null; }));
     }
 
     /**

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Phase which a checkpoint of the running process is being taken.
@@ -80,8 +81,24 @@ public enum CheckpointPhase {
 
     private volatile boolean restored = false;
     private volatile boolean noMoreAddHooks = false;
-    private final List<CheckpointHook> singleThreadedHooks = new ArrayList<>();
-    private final List<CheckpointHook> multiThreadedHooks = new ArrayList<>();
+    private final List<CheckpointHookHolder> singleThreadedHooks = new ArrayList<>();
+    private final List<CheckpointHookHolder> multiThreadedHooks = new ArrayList<>();
+
+    static final class CheckpointHookHolder implements Comparable<CheckpointHookHolder> {
+        private final int order;
+        private final CheckpointHook hook;
+
+        CheckpointHookHolder(int order, CheckpointHook hook) {
+            this.order = order;
+            this.hook = hook;
+        }
+
+        @Override
+        public int compareTo(CheckpointHookHolder o) {
+            return Integer.compare(order, o.order);
+        }
+
+    }
 
     /**
      * Convert a String to a checkpoint phase and then set the phase
@@ -141,7 +158,31 @@ public enum CheckpointPhase {
      * @see CheckpointHook#MULTI_THREADED_HOOK
      */
     final public boolean addSingleThreadedHook(CheckpointHook hook) {
-        return addHook(hook, false);
+        return addHook(hook, false, 0);
+    }
+
+    /**
+     * Adds a {@code CheckpointHook} for this checkpoint phase.
+     * The hook will be run to {@link CheckpointHook#prepare() prepare}
+     * and {@link CheckpointHook#restore() restore} a checkpoint
+     * process while the JVM is in single-threaded mode. If the
+     * checkpoint process is already {@link #restored() restored}
+     * then the hook is not added and {@code false} is returned,
+     * indicating that the hook will not be called.
+     * A return value of {@code true} indicates that the hook will
+     * be called for both {@link CheckpointHook#prepare() prepare}
+     * and {@link CheckpointHook#restore() restore}.
+     *
+     * @param order The order to run the hook on restore, lower order is run first
+     * @param hook  the hook to be used to prepare and restore
+     *                  a checkpoint process.
+     * @throws IllegalStateException if the phase is not in progress.
+     * @return true if the hook is successfully added; otherwise false
+     *         is returned.
+     * @see CheckpointHook#MULTI_THREADED_HOOK
+     */
+    final public boolean addSingleThreadedHook(int order, CheckpointHook hook) {
+        return addHook(hook, false, order);
     }
 
     /**
@@ -164,10 +205,34 @@ public enum CheckpointPhase {
      * @see CheckpointHook#MULTI_THREADED_HOOK
      */
     final public boolean addMultiThreadedHook(CheckpointHook hook) {
-        return addHook(hook, true);
+        return addHook(hook, true, 0);
     }
 
-    private synchronized boolean addHook(CheckpointHook hook, boolean multiThreaded) {
+    /**
+     * Adds a {@code CheckpointHook} for this checkpoint phase.
+     * The hook will be run to {@link CheckpointHook#prepare() prepare}
+     * and {@link CheckpointHook#restore() restore} a checkpoint
+     * process while the JVM is in multi-threaded mode. If the
+     * checkpoint process is already {@link #restored() restored}
+     * then the hook is not added and {@code false} is returned,
+     * indicating that the hook will not be called.
+     * A return value of {@code true} indicates that the hook will
+     * be called for both {@link CheckpointHook#prepare() prepare}
+     * and {@link CheckpointHook#restore() restore}.
+     *
+     * @param order The order to run the hook on restore, lower order is run first
+     * @param hook  the hook to be used to prepare and restore
+     *                  a checkpoint process.
+     * @throws IllegalStateException if the phase is not in progress.
+     * @return true if the hook is successfully added; otherwise false
+     *         is returned.
+     * @see CheckpointHook#MULTI_THREADED_HOOK
+     */
+    final public boolean addMultiThreadedHook(int order, CheckpointHook hook) {
+        return addHook(hook, true, order);
+    }
+
+    private synchronized boolean addHook(CheckpointHook hook, boolean multiThreaded, int order) {
         if (this != THE_PHASE) {
             throw new IllegalStateException("Cannot add hooks to a checkpoint phase that is not in progress.");
         }
@@ -184,9 +249,9 @@ public enum CheckpointPhase {
         }
         debug(() -> "Hook added: " + hook + " " + multiThreaded);
         if (multiThreaded) {
-            multiThreadedHooks.add(hook);
+            multiThreadedHooks.add(new CheckpointHookHolder(order, hook));
         } else {
-            singleThreadedHooks.add(hook);
+            singleThreadedHooks.add(new CheckpointHookHolder(order, hook));
         }
         return true;
     }
@@ -195,8 +260,9 @@ public enum CheckpointPhase {
         debug(() -> "Calling getHooks: " + multiThreaded);
         // once we get any hooks do not allow more adds
         noMoreAddHooks = true;
-        List<CheckpointHook> current = multiThreaded ? multiThreadedHooks : singleThreadedHooks;
-        ArrayList<CheckpointHook> hooks = new ArrayList<>(current);
+        List<CheckpointHookHolder> current = multiThreaded ? multiThreadedHooks : singleThreadedHooks;
+        Collections.sort(current);
+        List<CheckpointHook> hooks = current.stream().map((h) -> h.hook).collect(Collectors.toList());
         current.clear();
         return hooks;
     }
@@ -235,11 +301,26 @@ public enum CheckpointPhase {
      * otherwise the function is run immediately from the calling thread synchronously.
      *
      * @param <T>   The type of throwable the function may throw
+     * @param order The order to run the hook on restore, lower order is run first
      * @param toRun The function to run on restore.
      * @throws T any errors that occur while running the function. If an exception is thrown during
      *               restore then the process restore will fail.
      */
     public static <T extends Throwable> void onRestore(OnRestore<T> toRun) throws T {
+        onRestore(0, toRun);
+    }
+
+    /**
+     * Runs the given function on restore if the runtime has been configured to perform
+     * a checkpoint, the function is run after the JVM has re-entered multi-threaded mode;
+     * otherwise the function is run immediately from the calling thread synchronously.
+     *
+     * @param <T>   The type of throwable the function may throw
+     * @param toRun The function to run on restore.
+     * @throws T any errors that occur while running the function. If an exception is thrown during
+     *               restore then the process restore will fail.
+     */
+    public static <T extends Throwable> void onRestore(int order, OnRestore<T> toRun) throws T {
         CheckpointPhase phase = getPhase();
         if (phase.restored()) {
             // Already restored or not doing a checkpoint; call toRun now
@@ -247,7 +328,7 @@ public enum CheckpointPhase {
             return;
         }
         // On the checkpoint side; try to add the hook to call toRun on restore
-        if (!phase.addMultiThreadedHook(new CheckpointHook() {
+        if (!phase.addMultiThreadedHook(order, new CheckpointHook() {
             @Override
             public void restore() {
                 try {
