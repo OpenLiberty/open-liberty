@@ -39,12 +39,18 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.ContextualAction;
+import com.ibm.ws.concurrent.cdi.MTFBeanResourceInfo;
+import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
+import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaData;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.VirtualThreadOps;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -157,6 +163,14 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     private ThreadFactory virtualThreadFactory;
 
     /**
+     * Metadata factory for the web container.
+     */
+    @Reference(target = "(deferredMetaData=WEB)",
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected DeferredMetaDataFactory webMetadataFactory;
+
+    /**
      * The metadata identifier service.
      */
     private MetaDataIdentifierService metadataIdentifierService;
@@ -233,11 +247,102 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
      */
     @Override
     public Object createResource(ResourceInfo info) throws Exception {
-        ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        if (cData != null)
-            applications.add(cData.getJ2EEName().getApplication());
+        String appName = null;
+        String identifier = null;
 
-        return new ManagedThreadFactoryImpl(threadGroupTracker.serverAccessControlContext);
+        ClassLoader classLoaderToRestore = null;
+        boolean restoreClassLoader = false;
+        boolean restoreMetadata = false;
+
+        ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
+
+        try {
+            if (info instanceof MTFBeanResourceInfo) {
+                MTFBeanResourceInfo beanInfo = (MTFBeanResourceInfo) info;
+                MetaData metadata = beanInfo.getDeclaringMetaData();
+
+                ComponentMetaData cData;
+                if (metadata instanceof ComponentMetaData) {
+                    cData = (ComponentMetaData) metadata;
+                } else if (metadata instanceof ModuleMetaData) {
+                    ModuleMetaData mData = (ModuleMetaData) metadata;
+
+                    @SuppressWarnings("deprecation")
+                    ComponentMetaData[] c = mData.getComponentMetaDatas();
+                    if (c != null && c.length == 1) {
+                        cData = c[0];
+                    } else {
+                        // The DeferredMetaDataFactory for web module can construct ComponentMetaData without the component name.
+                        String webMetadataIdentifier = null;
+                        for (Class<?> ifc : mData.getClass().getInterfaces()) {
+                            if (ifc.getName().equals("com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData")) {
+                                J2EEName jeeName = mData.getJ2EEName();
+                                webMetadataIdentifier = webMetadataFactory.getMetaDataIdentifier(jeeName.getApplication(),
+                                                                                                 jeeName.getModule(),
+                                                                                                 null);
+                                break;
+                            }
+                        }
+                        if (webMetadataIdentifier == null)
+                            throw new IllegalArgumentException("Unrecognized module metadata " + mData +
+                                                               " of type " + mData.getClass().getName()); // internal error
+
+                        cData = webMetadataFactory.createComponentMetaData(webMetadataIdentifier);
+                        if (cData == null)
+                            throw new IllegalStateException("Web module " + mData.getJ2EEName() + " is not available."); // TODO NLS
+                    }
+                } else {
+                    // TODO implement
+                    throw new UnsupportedOperationException("Managed thread factory definitions are not supported in " +
+                                                            "application.xml yet. Metadata: " + metadata);
+                }
+
+                appName = cData.getJ2EEName().getApplication();
+                identifier = cData instanceof IdentifiableComponentMetaData //
+                                ? metadataIdentifierService.getMetaDataIdentifier(cData) //
+                                : null;
+                System.out.println("MTF createResource for " + identifier);
+                System.out.println("     with " + (cData == null ? null : cData.getClass().getSimpleName()) + " metadata " + cData);
+                System.out.println("     and class loader " + beanInfo.getDeclaringClassLoader());
+
+                // push class loader onto the thread for context capture
+                ClassLoader declaringClassLoader = beanInfo.getDeclaringClassLoader();
+                classLoaderToRestore = Thread.currentThread().getContextClassLoader();
+                if (classLoaderToRestore != declaringClassLoader) {
+                    Thread.currentThread().setContextClassLoader(declaringClassLoader);
+                    restoreClassLoader = true;
+                }
+
+                // push metadata onto the thread for context capture
+                if (accessor.getComponentMetaData() != cData) {
+                    accessor.beginContext(cData);
+                    restoreMetadata = true;
+                }
+
+                // TODO look into a shortcut to avoid push/recapture and instead supply directly to the context service
+            }
+
+            if (appName == null) {
+                ComponentMetaData cData = accessor.getComponentMetaData();
+                if (cData != null) {
+                    appName = cData.getJ2EEName().getApplication();
+
+                    if (identifier == null)
+                        identifier = metadataIdentifierService.getMetaDataIdentifier(cData);
+                }
+            }
+
+            if (appName != null)
+                applications.add(appName);
+
+            return new ManagedThreadFactoryImpl(identifier, threadGroupTracker.serverAccessControlContext);
+        } finally {
+            if (restoreMetadata)
+                accessor.endContext();
+
+            if (restoreClassLoader)
+                Thread.currentThread().setContextClassLoader(classLoaderToRestore);
+        }
     }
 
     /**
@@ -361,18 +466,19 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
         /**
          * Capture the current thread context and construct a ManagedThreadFactory.
          *
+         * @param identifier                 identifier of the component that created, looked up, or injected
+         *                                       this managed thread factory.
          * @param serverAccessControlContext server access control context, which we can use to run certain privileged operations
          *                                       that aren't available to application threads.
          */
         @SuppressWarnings("unchecked")
-        ManagedThreadFactoryImpl(AccessControlContext serverAccessControlContext) {
+        ManagedThreadFactoryImpl(String identifier, AccessControlContext serverAccessControlContext) {
+            this.identifier = identifier;
             this.serverAccessControlContext = serverAccessControlContext;
 
             WSContextService contextSvc = contextSvcRef.getServiceWithException();
             threadContextDescriptor = contextSvc.captureThreadContext(defaultExecutionProperties);
 
-            ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            identifier = cData == null ? null : metadataIdentifierService.getMetaDataIdentifier(cData);
             if (identifier == null)
                 threadGroup = ManagedThreadFactoryService.this.threadGroup;
             else

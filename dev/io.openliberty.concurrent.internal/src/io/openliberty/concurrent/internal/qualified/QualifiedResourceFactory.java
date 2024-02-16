@@ -16,6 +16,7 @@ import java.lang.annotation.Annotation;
 import java.util.Set;
 
 import com.ibm.ws.resource.ResourceFactory;
+import com.ibm.ws.runtime.metadata.MetaData;
 
 /**
  * A subclass of ResourceFactory that allows for obtaining a list of
@@ -29,6 +30,22 @@ public interface QualifiedResourceFactory extends ResourceFactory {
     enum Type {
         ContextService, ManagedExecutorService, ManagedScheduledExecutorService, ManagedThreadFactory
     };
+
+    /**
+     * Obtains the class loader of the application artifact that
+     * defines the resource definition.
+     *
+     * @return the class loader.
+     */
+    ClassLoader getDeclaringClassLoader();
+
+    /**
+     * Obtains the metadata of the application artifact that
+     * defines the resource definition.
+     *
+     * @return component metadata.
+     */
+    MetaData getDeclaringMetadata();
 
     /**
      * Returns instances of the qualifier annotations for this resource factory.

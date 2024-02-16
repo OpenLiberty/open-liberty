@@ -39,6 +39,7 @@ import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -91,9 +92,15 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
 
     /**
      * Name of property that identifies the class loader of the application artifact
-     * that defines the ContextServiceDefinition.
+     * that defines the context service definition.
      */
     static final String DECLARING_CLASS_LOADER = "declaringClassLoader";
+
+    /**
+     * Name of property that identifies the class loader of the application artifact
+     * that defines the context service definition.
+     */
+    static final String DECLARING_METADATA = "declaringMetadata";
 
     /**
      * Property value that indicates the configuration originated in a configuration file, such as server.xml,
@@ -199,6 +206,7 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         }
 
         ClassLoader declaringClassLoader = (ClassLoader) contextSvcProps.remove(DECLARING_CLASS_LOADER);
+        MetaData declaringMetadata = (MetaData) contextSvcProps.remove(DECLARING_METADATA);
         String declaringApplication = (String) contextSvcProps.remove(DECLARING_APPLICATION);
         String application = (String) contextSvcProps.get("application");
         String module = (String) contextSvcProps.get("module");
@@ -371,7 +379,7 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         QualifiedResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, declaringApplication, //
                         contextServiceID, jndiName, contextServiceFilter.toString(), //
                         null, null, //
-                        declaringClassLoader, qualifierNames);
+                        declaringMetadata, declaringClassLoader, qualifierNames);
         try {
             String bundleLocation = bundleContext.getBundle().getLocation();
             ConfigurationAdmin configAdmin = configAdminRef.getService();
