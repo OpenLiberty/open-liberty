@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.apache.commons.lang3.concurrent.LazyInitializer;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.osgi.service.component.annotations.Activate;
@@ -209,7 +210,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
-        OpenTelemetryInfoWrappedSupplier newSupplier = new OpenTelemetryInfoWrappedSupplier(this::createOpenTelemetryInfo, openTelemetryInfo -> openTelemetryInfo.dispose());
+        OpenTelemetryInfoWrappedSupplier newSupplier = LazyInitializer.builder().setInitializer(this::createOpenTelemetryInfo).setCloser(OpenTelemetryInfo::dispose).build();
 
         if (oTelRef == null) {
             oTelRef = new OpenTelemetryInfoReference();
@@ -275,53 +276,10 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
      * We protect against race conditions here by using an AtomicReference.
      *
      * Within the context of an application's lifecycle we need to ensure OpenTelemetryInfo
-     * is only created once. OpenTelemetryInfoReference handles this.
+     * is only created once. LazySupplier handles this.
      */
-    private class OpenTelemetryInfoReference extends AtomicReference<OpenTelemetryInfoWrappedSupplier> {
+    private class OpenTelemetryInfoReference extends AtomicReference<LazySupplier<OpenTelemetryInfo>> {
 
         private static final long serialVersionUID = -4884222080590544495L;
-    }
-
-    private class OpenTelemetryInfoWrappedSupplier {
-        private final Consumer<OpenTelemetryInfo> disposer;
-        private Supplier<OpenTelemetryInfo> supplier;
-        private volatile OpenTelemetryInfo openTelemetryInfo = null;
-
-        public OpenTelemetryInfoWrappedSupplier(Supplier<OpenTelemetryInfo> supplier, Consumer<OpenTelemetryInfo> disposer) {
-            this.disposer = disposer;
-            this.supplier = supplier;
-        }
-
-        public OpenTelemetryInfo get() throws InterruptedException, ExecutionException {
-            if (openTelemetryInfo != null) {
-                return openTelemetryInfo;
-            }
-
-            synchronized (this) {
-                if (openTelemetryInfo != null) {
-                    return openTelemetryInfo;
-                }
-
-                openTelemetryInfo = supplier.get();
-                return openTelemetryInfo;
-            }
-        }
-
-        /**
-         * Cleans up the contained OpenTelemetryInfo, prevents this from creating new ones.
-         *
-         * @return true if an OpenTelemetryInfo instance has previously been created and now disposed. False if not OpenTelemetryInfo instance has previously been created.
-         */
-        public boolean closeAndDisposeIfCreated() {
-            synchronized (this) {
-                supplier = OpenTelemetryInfoFactoryImpl::createDisposedOpenTelemetryInfo;
-                if (openTelemetryInfo != null) {
-                    disposer.accept(openTelemetryInfo);
-                    return true;
-                }
-                return false;
-            }
-        }
-
     }
 }
