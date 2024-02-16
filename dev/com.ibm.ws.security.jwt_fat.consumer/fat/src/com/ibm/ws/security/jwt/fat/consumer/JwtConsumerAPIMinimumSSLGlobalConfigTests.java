@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,8 +40,6 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class JwtConsumerAPIMinimumSSLGlobalConfigTests extends CommonSecurityFat {
 
-    public final String AppStartMsg = ".*CWWKZ0001I.*" + JwtConsumerConstants.JWT_CONSUMER_SERVLET + ".*";
-
     @Server("com.ibm.ws.security.jwt_fat.consumer")
     public static LibertyServer consumerServer;
 
@@ -58,6 +56,7 @@ public class JwtConsumerAPIMinimumSSLGlobalConfigTests extends CommonSecurityFat
 
         serverTracker.addServer(consumerServer);
         skipRestoreServerTracker.addServer(consumerServer);
+        consumerServer.addInstalledAppForValidation(JwtConsumerConstants.JWT_CONSUMER_SERVLET);
         consumerServer.startServerUsingExpandedConfiguration("server_minimumConfig_ServerWideSSL.xml");
         SecurityFatHttpUtils.saveServerPorts(consumerServer, JwtConsumerConstants.BVT_SERVER_1_PORT_NAME_ROOT);
 
