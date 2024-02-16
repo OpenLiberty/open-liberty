@@ -23,6 +23,7 @@ package com.ibm.ws.microprofile.health.internal;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.nio.file.Paths;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -112,7 +113,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
 
                     String appName;
 
-                    String[] appNameSplit = ((String) properties.get("location")).split("/");
+                    String[] appNameSplit = Paths.get((String) properties.get("location")).toString().split("\\\\|/");
 
                     if (properties.get("name") != null) {
                         appName = (String) properties.get("name");
