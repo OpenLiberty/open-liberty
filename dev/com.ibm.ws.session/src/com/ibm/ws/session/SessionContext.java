@@ -266,7 +266,7 @@ public class SessionContext {
         _invalidator = createInvalidator();
         final int reaperInterval = getReaperInterval(sessionTimeout);
         final IStore fStore = _store;
-        CheckpointPhase.onRestore(() -> _invalidator.start(fStore, reaperInterval));
+        CheckpointPhase.onRestore(1, () -> _invalidator.start(fStore, reaperInterval));
 
         // storer - handles manual write, eos, and time based differences
         _storer = createStorer(_smc, _store);
