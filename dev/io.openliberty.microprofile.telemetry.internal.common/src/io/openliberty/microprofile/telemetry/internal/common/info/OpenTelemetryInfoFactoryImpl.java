@@ -115,7 +115,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
                 //If it isn't throw something nicer than an NPE.
                 throw new IllegalStateException("Attempted to create openTelemetaryInfo for application " + j2EEName + " which has not gone through ApplicationStarting");
             }
-            OpenTelemetryInfoWrappedSupplier supplier = atomicRef.get();
+            LazyInitializer<OpenTelemetryInfo> supplier = atomicRef.get();
             return supplier.get();
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
@@ -210,7 +210,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
-        OpenTelemetryInfoWrappedSupplier newSupplier = LazyInitializer.builder().setInitializer(this::createOpenTelemetryInfo).setCloser(OpenTelemetryInfo::dispose).build();
+        LazyInitializer<OpenTelemetryInfo> newSupplier = LazyInitializer.<OpenTelemetryInfo>builder().setInitializer(this::createOpenTelemetryInfo).setCloser(info -> info.dispose()).get();
 
         if (oTelRef == null) {
             oTelRef = new OpenTelemetryInfoReference();
@@ -230,13 +230,13 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
         ExtendedApplicationInfo extAppInfo = (ExtendedApplicationInfo) appInfo;
         OpenTelemetryInfoReference oTelRef = (OpenTelemetryInfoReference) extAppInfo.getMetaData().getMetaData(slotForOpenTelemetryInfoHolder);
 
-        OpenTelemetryInfoWrappedSupplier newSupplier = new OpenTelemetryInfoWrappedSupplier(OpenTelemetryInfoFactoryImpl::createDisposedOpenTelemetryInfo, openTelemetryInfo -> {
-        });
+        LazyInitializer<OpenTelemetryInfo> newSupplier = LazyInitializer.<OpenTelemetryInfo>builder().setInitializer(OpenTelemetryInfoFactoryImpl::createDisposedOpenTelemetryInfo)
+                                                                                  .setCloser(info -> info.dispose()).get();
 
-        OpenTelemetryInfoWrappedSupplier oldSupplier = oTelRef.getAndSet(newSupplier);
+        LazyInitializer<OpenTelemetryInfo> oldSupplier = oTelRef.getAndSet(newSupplier);
 
         try {
-            oldSupplier.closeAndDisposeIfCreated();
+            oldSupplier.close();
         } catch (Exception e) {
             Tr.warning(tc, "applicationStopped", "failed to dispose of OpenTelemetry");//TODO better message
         }
@@ -278,7 +278,7 @@ public class OpenTelemetryInfoFactoryImpl implements ApplicationStateListener, O
      * Within the context of an application's lifecycle we need to ensure OpenTelemetryInfo
      * is only created once. LazySupplier handles this.
      */
-    private class OpenTelemetryInfoReference extends AtomicReference<LazySupplier<OpenTelemetryInfo>> {
+    private class OpenTelemetryInfoReference extends AtomicReference<LazyInitializer<OpenTelemetryInfo>> {
 
         private static final long serialVersionUID = -4884222080590544495L;
     }
