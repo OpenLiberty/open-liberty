@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.local;
 
+import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
@@ -40,338 +41,320 @@ import io.openliberty.netty.internal.impl.NettyConstants;
 
 public class LocalUtils {
 
-	private static final TraceComponent tc = Tr.register(LocalUtils.class, NettyConstants.NETTY_TRACE_NAME,
-			NettyConstants.BASE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(LocalUtils.class, NettyConstants.NETTY_TRACE_NAME,
+            NettyConstants.BASE_BUNDLE);
 
-	/**
-	 * Create a {@link ServerBootstrapExtended} for local channels that are not
-	 * based on host address/port addressing
-	 * 
-	 * @param framework
-	 * @param channel   class - this is the class of the channel that is added
-	 * @param options
-	 * @return
-	 * @throws NettyException
-	 */
-	@Deprecated
-	public static ServerBootstrapExtended createLocalBootstrap(NettyFrameworkImpl framework,
-			ChannelInitializerWrapper protocolInitializer, Map<String, Object> options) throws NettyException {
-	
-		LocalConfigurationImpl config = new LocalConfigurationImpl(options, true);
+    /**
+     * Create a {@link ServerBootstrapExtended} for local channels that are not
+     * based on host address/port addressing
+     * 
+     * @param framework
+     * @param channel   class - this is the class of the channel that is added
+     * @param options
+     * @return
+     * @throws NettyException
+     */
+    @Deprecated
+    public static ServerBootstrapExtended createLocalBootstrap(NettyFrameworkImpl framework,
+            ChannelInitializerWrapper protocolInitializer, Map<String, Object> options) throws NettyException {
 
-		ServerBootstrapExtended bs = new ServerBootstrapExtended();
-		bs.group(framework.getParentGroup(), framework.getChildGroup());
-		bs.channel(LocalServerChannel.class);
-		bs.applyConfiguration(config);
-		bs.setBaseInitializer(protocolInitializer);		
+        LocalConfigurationImpl config = new LocalConfigurationImpl(options, true);
 
-		//TODO GDH server concerns other than protocol needs?
-		// So we are going to 
-		//ChannelInitializerWrapper serverInitializer = new LocalChannelInitializerWrapper(config, framework);
+        ServerBootstrapExtended bs = new ServerBootstrapExtended();
+        bs.group(framework.getParentGroup(), framework.getChildGroup());
+        bs.channel(LocalServerChannel.class);
+        bs.applyConfiguration(config);
+        bs.setBaseInitializer(protocolInitializer);
 
-		return bs;
-	}
+        // TODO GDH server concerns other than protocol needs?
+        // So we are going to
+        // ChannelInitializerWrapper serverInitializer = new
+        // LocalChannelInitializerWrapper(config, framework);
 
-	/**
-	 * Create a {@link ServerBootstrapExtended} for local channels that are not
-	 * based on host address/port addressing
-	 * 
-	 * @param framework
-	 * @param channel   class - this is the class of the channel that is added
-	 * @param options
-	 * @return
-	 * @throws NettyException
-	 */
-	public static ServerBootstrapExtended createLocalBootstrap(NettyFrameworkImpl framework, Map<String, Object> options) throws NettyException {
-	
-		LocalConfigurationImpl config = new LocalConfigurationImpl(options, true);
+        return bs;
+    }
 
-		ServerBootstrapExtended bs = new ServerBootstrapExtended();
-		bs.group(framework.getParentGroup(), framework.getChildGroup());
-		bs.channel(LocalServerChannel.class);
-		bs.applyConfiguration(config);
-		ChannelInitializerWrapper serverInitializer = new LocalChannelInitializerWrapper(config, framework);
-		bs.setBaseInitializer(serverInitializer);
-		
-		return bs;
-	}
+    /**
+     * Create a {@link ServerBootstrapExtended} for local channels that are not
+     * based on host address/port addressing but can use {@link LocalAddress}
+     * 
+     * @param framework
+     * @param channel   class - this is the class of the channel that is added
+     * @param options
+     * @return the bootstrap to which a child handler can be added to deal with
+     *         protocol specific tasks
+     * @throws NettyException
+     */
+    public static ServerBootstrapExtended createLocalBootstrap(NettyFrameworkImpl framework,
+            Map<String, Object> options) throws NettyException {
 
-	/**
-	 * Create a {@link BootstrapExtended} for outbound local channels
-	 * TODO GDH - not found where we will use this from yet in WOLA.
-	 * @param framework
-	 * @param channel   class - this is the class of the channel that is added
-	 * @param options
-	 * @return
-	 * @throws NettyException
-	 */
-	@Deprecated
-	public static BootstrapExtended createLocalBootstrapOutbound(NettyFrameworkImpl framework,
-			ChannelInitializerWrapper protocolInitializer, Map<String, Object> options) throws NettyException {
+        LocalConfigurationImpl config = new LocalConfigurationImpl(options, true);
 
-		LocalConfigurationImpl config = new LocalConfigurationImpl(options, false);
-		
-		BootstrapExtended bs = new BootstrapExtended();
-		bs.group(framework.getChildGroup());
+        ServerBootstrapExtended bs = new ServerBootstrapExtended();
+        bs.group(framework.getParentGroup(), framework.getChildGroup());
+        bs.channel(LocalServerChannel.class);
+        bs.applyConfiguration(config);
+        ChannelInitializerWrapper serverInitializer = new LocalChannelInitializerWrapper(config, framework);
+        bs.setBaseInitializer(serverInitializer);
+
+        return bs;
+    }
+
+    /**
+     * Create a {@link BootstrapExtended} for outbound local channels TODO GDH - not
+     * found where we will use this from yet in WOLA.
+     * 
+     * @param framework
+     * @param channel   class - this is the class of the channel that is added
+     * @param options
+     * @return
+     * @throws NettyException
+     */
+    @Deprecated
+    public static BootstrapExtended createLocalBootstrapOutbound(NettyFrameworkImpl framework,
+            ChannelInitializerWrapper protocolInitializer, Map<String, Object> options) throws NettyException {
+
+        LocalConfigurationImpl config = new LocalConfigurationImpl(options, false);
+
+        BootstrapExtended bs = new BootstrapExtended();
+        bs.group(framework.getChildGroup());
         bs.channel(LocalChannel.class);
-		bs.applyConfiguration(config);
-		bs.setBaseInitializer(protocolInitializer);
-		
-		//TODO server concerns other than protocol needs?
-		// ChannelInitializerWrapper serverInitializer = new LocalChannelInitializerImpl(config, framework)
-		return bs;
-	}
-	
-	/**
-	 * Create a {@link BootstrapExtended} for outbound local channels
-	 * TODO GDH - not found where we will use this from yet in WOLA.
-	 * @param framework
-	 * @param channel   class - this is the class of the channel that is added
-	 * @param options
-	 * @return
-	 * @throws NettyException
-	 */
-	public static BootstrapExtended createLocalBootstrapOutbound(NettyFrameworkImpl framework, Map<String, Object> options) throws NettyException {
+        bs.applyConfiguration(config);
+        bs.setBaseInitializer(protocolInitializer);
 
-		LocalConfigurationImpl config = new LocalConfigurationImpl(options, false);
-		
-		BootstrapExtended bs = new BootstrapExtended();
-		bs.group(framework.getChildGroup());
+        // TODO server concerns other than protocol needs?
+        // ChannelInitializerWrapper serverInitializer = new
+        // LocalChannelInitializerImpl(config, framework)
+        return bs;
+    }
+
+    /**
+     * Create a {@link BootstrapExtended} for outbound local channels TODO GDH - not
+     * found where we will use this from yet in WOLA.
+     * 
+     * @param framework
+     * @param channel   class - this is the class of the channel that is added
+     * @param options
+     * @return
+     * @throws NettyException
+     */
+    public static BootstrapExtended createLocalBootstrapOutbound(NettyFrameworkImpl framework,
+            Map<String, Object> options) throws NettyException {
+
+        LocalConfigurationImpl config = new LocalConfigurationImpl(options, false);
+
+        BootstrapExtended bs = new BootstrapExtended();
+        bs.group(framework.getChildGroup());
         bs.channel(LocalChannel.class);
-		bs.applyConfiguration(config);
-		ChannelInitializerWrapper serverInitializer = new LocalChannelInitializerWrapper(config, framework);
-		bs.setBaseInitializer(serverInitializer);
-		return bs;
-	}
+        bs.applyConfiguration(config);
+        ChannelInitializerWrapper serverInitializer = new LocalChannelInitializerWrapper(config, framework);
+        bs.setBaseInitializer(serverInitializer);
+        return bs;
+    }
 
-	private static ChannelFuture open(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
-			final LocalConfigurationImpl config, LocalAddress localAddr, ChannelFutureListener openListener,
-			final int retryCount) {
-		
-	        ChannelFuture oFuture = null;
-	        
-	        if (config.isInbound()) {
-	            oFuture = ((ServerBootstrapExtended) bootstrap).bind(localAddr);
-	        } else {
-	            oFuture = ((BootstrapExtended) bootstrap).connect(localAddr);
-	        }
-	        final ChannelFuture openFuture = oFuture;
-	        if (openListener != null) {
-	            openFuture.addListener(openListener);
-	        }
+    private static ChannelFuture open(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
+            final LocalConfigurationImpl config, LocalAddress localAddr, ChannelFutureListener openListener,
+            final int retryCount) {
 
-	        final String newHost = inetHost;
+        ChannelFuture oFuture = null;
 
-	        openFuture.addListener(future -> {
-	            if (future.isSuccess()) {
+        if (config.isInbound()) {
+            oFuture = ((ServerBootstrapExtended) bootstrap).bind(localAddr);
+        } else {
+            oFuture = ((BootstrapExtended) bootstrap).connect(localAddr);
+        }
+        final ChannelFuture openFuture = oFuture;
+        if (openListener != null) {
+            openFuture.addListener(openListener);
+        }
 
-	                // add new channel to set of active channels, and set a close future to
-	                // remove it
-	            	// Get parent and increment active connections
-	                final Channel channel = openFuture.channel();
+        openFuture.addListener(future -> {
+            if (future.isSuccess()) {
 
-	                // set common channel attrs
-	                channel.attr(ConfigConstants.NAME_KEY).set(config.getExternalName());
-	                channel.attr(ConfigConstants.HOST_KEY).set(newHost);
-	                channel.attr(ConfigConstants.PORT_KEY).set(inetPort);
-	                channel.attr(ConfigConstants.IS_INBOUND_KEY).set(config.isInbound());
-	                
-	                // Listener to stop channel on close
-	                // This should just log that the channel stopped
-	                channel.closeFuture().addListener(innerFuture -> logChannelStopped(channel));
+                // add new channel to set of active channels, and set a close future to
+                // remove it
+                // Get parent and increment active connections
+                final Channel channel = openFuture.channel();
 
-	                if(config.isInbound()) {
-	                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	                        Tr.debug(tc, "Adding new channel group for " + channel);
-	                    }
-	                    framework.getActiveChannelsMap().put(channel, new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
-	                }else {
-	                	framework.getOutboundConnections().add(channel);
-	                }
+                // set common channel attrs
+                channel.attr(ConfigConstants.NAME_KEY).set(config.getExternalName());
+                // TODOchannel.attr(ConfigConstants.LOCAL_ADDR_KEY).set(localAddr);
+                channel.attr(ConfigConstants.IS_INBOUND_KEY).set(config.isInbound());
 
-	                // set up a helpful log message
-	                String hostLogString = newHost;
-	                SocketAddress addr = channel.localAddress();
-	                InetSocketAddress inetAddr = (InetSocketAddress)addr;
-	                String IPvType = "IPv4";
-	                if (inetAddr.getAddress() instanceof Inet6Address) {
-	                    IPvType = "IPv6";
-	                }
-	                if (newHost == NettyConstants.INADDR_ANY) {
-	                    hostLogString = "*  (" + IPvType + ")";
-	                } else {
-	                    hostLogString = config.getHostname() + "  (" + IPvType + ": "
-	                               + inetAddr.getAddress().getHostAddress() + ")";
-	                }
+                // Listener to stop channel on close
+                // This should just log that the channel stopped
+                channel.closeFuture().addListener(innerFuture -> logChannelStopped(channel));
 
-	                if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	                	Tr.debug(tc, "serverSocket getInetAddress is: " + inetAddr);
-	                    Tr.debug(tc, "serverSocket getLocalSocketAddress is: " + channel.localAddress());
-	                    Tr.debug(tc, "serverSocket getInetAddress hostname is: " + inetAddr.getAddress().getHostName());
-	                    Tr.debug(tc, "serverSocket getInetAddress address is: " + inetAddr.getAddress().getHostAddress());
-	                    Tr.debug(tc, "channelConfig.getHostname() is: " + config.getHostname());
-	                    Tr.debug(tc, "channelConfig.getPort() is: " + config.getPort());
-	                }
+                if (config.isInbound()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Adding new channel group for " + channel);
+                    }
+                    framework.getActiveChannelsMap().put(channel,
+                            new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
+                } else {
+                    framework.getOutboundConnections().add(channel);
+                }
 
-	                if (config.isInbound()) {
-	                    Tr.info(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
-	                            new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
-	                } else {
-	                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	                        Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
-	                                new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
-	                    }
-	                }
-	            } else {
-	                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	                    Tr.debug(tc,
-	                            "open failed for " + config.getExternalName() + " due to: " + future.cause().getMessage());
-	                }
+                // set up a helpful log message
+                String hostLogString = "local";
+                SocketAddress addr = channel.localAddress();
+//	              
+//	                    IPvType = "IPv6";
+//	                }
+//	                if (newHost == NettyConstants.INADDR_ANY) {
+//	                    hostLogString = "*  (" + IPvType + ")";
+//	                } else {
+//	                    hostLogString = config.getHostname() + "  (" + IPvType + ": "
+//	                               + inetAddr.getAddress().getHostAddress() + ")";
+//	                }
+//
+//	                if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//	                	Tr.debug(tc, "serverSocket getInetAddress is: " + inetAddr);
+//	                    Tr.debug(tc, "serverSocket getLocalSocketAddress is: " + channel.localAddress());
+//	                    Tr.debug(tc, "serverSocket getInetAddress hostname is: " + inetAddr.getAddress().getHostName());
+//	                    Tr.debug(tc, "serverSocket getInetAddress address is: " + inetAddr.getAddress().getHostAddress());
+//	                    Tr.debug(tc, "channelConfig.getHostname() is: " + config.getHostname());
+//	                    Tr.debug(tc, "channelConfig.getPort() is: " + config.getPort());
+//	                }
 
-	                if (retryCount > 0) {
-	                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	                        Tr.debug(tc, "attempt to bind again after a wait of " + timeBetweenRetriesMsec + "ms; "
-	                                + retryCount + " attempts remaining" + " for " + config.getExternalName());
-	                    }
-	                    // recurse until we either complete successfully or run out of retries;
-	                    try {
-	                        Thread.sleep(timeBetweenRetriesMsec);
-	                    } catch (InterruptedException x) {
-	                        // do nothing but debug
-	                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	                            Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
-	                        }
-	                    }
-	                    open(framework, bootstrap, config, newHost, inetPort, openListener, retryCount - 1);
-	                } else {
-	                    if (config.isInbound()) {
-	                        Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
-	                                String.valueOf(inetPort), openFuture.cause().getMessage() });
-	                    } else {
-	                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	                            Tr.debug(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(),
-	                                    newHost, String.valueOf(inetPort), openFuture.cause().getMessage() });
-	                        }
-	                    }
-	                }
-	            }
-	        });
-	        return openFuture;
-	    }
+//	                if (config.isInbound()) {
+//	                    Tr.info(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
+//	                            new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
+//	                } else {
+//	                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//	                        Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
+//	                                new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
+//	                    }
+//	                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc,
+                            "open failed for " + config.getExternalName() + " due to: " + future.cause().getMessage());
+                }
 
-	    private static FutureTask<ChannelFuture> startHelper(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
-	            TCPConfigurationImpl config, String inetHost, int inetPort, ChannelFutureListener openListener)
-	            throws NettyException {
-	    	if(framework.isStopping()){ // Framework already started and is no longer active
-	            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	                Tr.debug(tc, "server is stopping, channel will not be started");
-	            }
-	            return null;
-	        }else{
-	            try {
-	                return framework.runWhenServerStarted(new Callable<ChannelFuture>() {
-	                    @Override
-	                    public ChannelFuture call() {
-	                        return open(framework, bootstrap, config, inetHost, inetPort, openListener,
-	                                config.getPortOpenRetries());
-	                    }
-	                });
-	            } catch (Exception e) {
-	                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	                    Tr.debug(tc, "NettyFramework signaled- caught exception:: " + e.getMessage());
-	                }
-	            }
-	        }
-	        return null;
-	    }
+                if (retryCount > 0) {
+//	                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//	                        Tr.debug(tc, "attempt to bind again after a wait of " + timeBetweenRetriesMsec + "ms; "
+//	                                + retryCount + " attempts remaining" + " for " + config.getExternalName());
+//	                    }
+//	                    // recurse until we either complete successfully or run out of retries;
+//	                    try {
+//	                        Thread.sleep(timeBetweenRetriesMsec);
+//	                    } catch (InterruptedException x) {
+//	                        // do nothing but debug
+//	                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//	                            Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
+//	                        }
+//	                    }
+//	                    open(framework, bootstrap, config, newHost, inetPort, openListener, retryCount - 1);
+                } else {
+//	                    if (config.isInbound()) {
+//	                        Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
+//	                                String.valueOf(inetPort), openFuture.cause().getMessage() });
+//	                    } else {
+//	                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//	                            Tr.debug(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(),
+//	                                    newHost, String.valueOf(inetPort), openFuture.cause().getMessage() });
+//	                        }
+//	                    }
+                }
+            }
+        });
+        return openFuture;
+    }
 
-	    /**
-	     * Start an inbound TCP channel
-	     * 
-	     * @param framework
-	     * @param bootstrap
-	     * @param inetHost
-	     * @param inetPort
-	     * @param openListener
-	     * @return
-	     * @throws NettyException
-	     */
-	    public static FutureTask<ChannelFuture> start(NettyFrameworkImpl framework, ServerBootstrapExtended bootstrap, String inetHost,
-	            int inetPort, ChannelFutureListener openListener) throws NettyException {
-	        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	            Tr.debug(tc, "start (TCP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
-	        }
-	        TCPConfigurationImpl config = (TCPConfigurationImpl) bootstrap.getConfiguration();
-	        return startHelper(framework, bootstrap, config, inetHost, inetPort, openListener);
-	    }
+    private static FutureTask<ChannelFuture> startHelper(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
+            LocalConfigurationImpl config, LocalAddress localAddr, ChannelFutureListener openListener)
+            throws NettyException {
+        if (framework.isStopping()) { // Framework already started and is no longer active
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "server is stopping, channel will not be started");
+            }
+            return null;
+        } else {
+            try {
+                return framework.runWhenServerStarted(new Callable<ChannelFuture>() {
+                    @Override
+                    public ChannelFuture call() {
+                        return open(framework, bootstrap, config, localAddr, openListener, config.getOpenRetries());
+                    }
+                });
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "NettyFramework signaled- caught exception:: " + e.getMessage());
+                }
+            }
+        }
+        return null;
+    }
 
-	    /**
-	     * Start an outbound TCP channel
-	     * 
-	     * @param framework
-	     * @param bootstrap
-	     * @param inetHost
-	     * @param inetPort
-	     * @param openListener
-	     * @return
-	     * @throws NettyException
-	     */
-	    public static FutureTask<ChannelFuture> startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
-	            String inetHost, int inetPort, ChannelFutureListener openListener) throws NettyException {
-	        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	            Tr.debug(tc, "startOutbound (TCP): attempt to connect to host " + inetHost + " port " + inetPort);
-	        }
-	        TCPConfigurationImpl config = (TCPConfigurationImpl) bootstrap.getConfiguration();
-	        return startHelper(framework, bootstrap, config, inetHost, inetPort, openListener);
-	    }
+    /**
+     * Start an inbound TCP channel
+     * 
+     * @param framework
+     * @param bootstrap
+     * @param localAddr
+     * @param openListener
+     * @return
+     * @throws NettyException
+     */
+    public static FutureTask<ChannelFuture> start(NettyFrameworkImpl framework, ServerBootstrapExtended bootstrap,
+            LocalAddress localAddr, ChannelFutureListener openListener) throws NettyException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "start (LocalAddr): attempt to bind a channel at LocalAddr: " + localAddr.toString());
+        }
+        LocalConfigurationImpl config = (LocalConfigurationImpl) bootstrap.getConfiguration();
+        return startHelper(framework, bootstrap, config, localAddr, openListener);
+    }
 
-	    /**
-	     * Log a TCP channel stopped message. Inbound channels will log a INFO message,
-	     * and outbound channels will log DEBUG
-	     * 
-	     * @param channel
-	     */
-	    public static void logChannelStopped(Channel channel) {
-	        String channelName = channel.attr(ConfigConstants.NAME_KEY).get();
-	        String host = channel.attr(ConfigConstants.HOST_KEY).get();
-	        Integer port = channel.attr(ConfigConstants.PORT_KEY).get();
-	        Boolean inbound = channel.attr(ConfigConstants.IS_INBOUND_KEY).get();
-	        if (inbound != null && inbound) {
-	            Tr.info(tc, TCPMessageConstants.TCP_CHANNEL_STOPPED, channelName, host, String.valueOf(port));
-	        } else if (inbound != null && !inbound) {
-	        	if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-	        		Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STOPPED, channelName, host, String.valueOf(port));
-	        } else {
-	        	if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-	        		Tr.debug(tc, "Socket channel closed, local: " + channel.localAddress() + " remote: " + channel.remoteAddress());
-	        }
-	    }
+    /**
+     * Start an outbound TCP channel
+     * 
+     * @param framework
+     * @param bootstrap
+     * @param inetHost
+     * @param inetPort
+     * @param openListener
+     * @return
+     * @throws NettyException
+     */
+    public static FutureTask<ChannelFuture> startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
+            LocalAddress localAddr, ChannelFutureListener openListener) throws NettyException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "startOutbound : attempt to " + localAddr.toString());
+        }
+        LocalConfigurationImpl config = (LocalConfigurationImpl) bootstrap.getConfiguration();
+        return startHelper(framework, bootstrap, config, localAddr, openListener);
+    }
 
-	    /**
-	     * Log a TCP channel started message. Inbound channels will log a INFO message,
-	     * and outbound channels will log DEBUG
-	     * 
-	     * @param channel
-	     */
-	    public static void logChannelStarted(Channel channel) {
-	        String channelName = channel.attr(ConfigConstants.NAME_KEY).get();
-	        String host = channel.attr(ConfigConstants.HOST_KEY).get();
-	        Integer port = channel.attr(ConfigConstants.PORT_KEY).get();
-	        if (channel.attr(ConfigConstants.IS_INBOUND_KEY).get()) {
-	            Tr.info(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
-	                    new Object[] { channelName, host, String.valueOf(port) });
-	        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	                Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
-	                        new Object[] { channelName, host, String.valueOf(port) });
-	        }
-	    }
+    /**
+     * 
+     * @param channel
+     */
+    // TODO make more sophisticated cf TCP
+    public static void logChannelStopped(Channel channel) {
+        Tr.info(tc, "stopped" + channel.toString());
+    }
 
-		public static FutureTask<ChannelFuture> start(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
-				Object inetHost, int inetPort, ChannelFutureListener bindListener) {
-			// TODO Auto-generated method stub
-			return null;
-		}
+    /**
+     * 
+     * @param channel
+     */
+    // TODO make more sophisticated cf TCP
+    public static void logChannelStarted(Channel channel) {
+        Tr.info(tc, "started" + channel.toString());
+    }
 
-	}
+    public static FutureTask<ChannelFuture> start(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
+            Object inetHost, int inetPort, ChannelFutureListener bindListener) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	}
+    public static FutureTask<ChannelFuture> start(NettyFrameworkImpl nettyFrameworkImpl, BootstrapExtended bootstrap,
+            LocalAddress localAddr, ChannelFutureListener bindListener) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+}

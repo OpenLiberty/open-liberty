@@ -196,7 +196,7 @@ public class NettyChain extends HttpChain {
         }
     }
 
-    public synchronized void startNettyChannel() {
+    public synchronized void startNettyChannel() { // GDH this is linked from update and the wola one will come from WOLAChainBuilder::update to the equivalent of this
         startCount = startCount + 1;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
