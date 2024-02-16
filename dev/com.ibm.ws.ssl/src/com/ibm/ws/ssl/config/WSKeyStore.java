@@ -1722,6 +1722,7 @@ public class WSKeyStore extends Properties {
                     String host = InetAddress.getLocalHost().getCanonicalHostName();
                     if (isGoodDNSName(host))
                         san.add("dns:" + host);
+                    san.add("ip:" + InetAddress.getLocalHost().getHostAddress());
                 }
                 InetAddress addr;
                 // get the InetAddress if there is one
@@ -1732,11 +1733,14 @@ public class WSKeyStore extends Properties {
                     // If the hostname start with a digit keytool will not create a SAN with the value
                     if (isGoodDNSName(hostname))
                         san.add("dns:" + hostname);
+                    if (!hostname.equals("localhost"))
+                        san.add("ip:" + addr.getHostAddress());
                 }
             } else {
                 String host = InetAddress.getLocalHost().getCanonicalHostName();
                 if (isGoodDNSName(host))
                     san.add("dns:" + host);
+                san.add("ip:" + InetAddress.getLocalHost().getHostAddress());
             }
         } catch (UnknownHostException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
