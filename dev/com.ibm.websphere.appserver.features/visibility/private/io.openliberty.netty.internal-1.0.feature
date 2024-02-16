@@ -3,10 +3,9 @@ symbolicName=io.openliberty.netty.internal-1.0
 WLP-DisableAllFeatures-OnConflict: false
 Subsystem-Name: Netty internal implementation 1.0
 singleton=true
--features=\
-  io.openliberty.io.netty, \
-  io.openliberty.io.netty.ssl
 -bundles=\
+  io.openliberty.io.netty, \
+  io.openliberty.io.netty.ssl, \
   com.ibm.ws.wsbytebuffer, \
   io.openliberty.endpoint, \
   io.openliberty.netty.internal, \
