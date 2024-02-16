@@ -143,7 +143,7 @@ public class CacheHashMap extends BackedHashMap {
      * Only invoke this method from the CacheHashMap constructor, within a doPrivileged block.
      */
     @FFDCIgnore(CacheException.class)
-    private synchronized void cacheInit() {
+    private void cacheInit() {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         // Attempt lazy initialization if necessary
