@@ -114,5 +114,21 @@ public class LocalConfigurationImpl implements BootstrapConfiguration, FFDCSelfI
 		return new String[] {"There is probably more to be implemented here"};
 	}
 
+	/**
+	 * TODO 
+	 * @return
+	 */
+    public int getOpenRetries() {
+        return 0;
+    }
+
+    /**
+     * TODO
+     * @return
+     */
+    public String getExternalName() {
+        return toString();
+    }
+
 }
 
