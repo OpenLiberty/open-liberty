@@ -892,6 +892,7 @@ org.testcontainers:kafka:1.19.5
 org.testcontainers:mongodb:1.19.5
 org.testcontainers:mssqlserver:1.19.5
 org.testcontainers:oracle-free:1.19.5
+org.testcontainers:oracle-xe:1.19.5
 org.testcontainers:postgresql:1.19.5
 org.testcontainers:selenium:1.19.5
 org.testcontainers:testcontainers:1.19.5

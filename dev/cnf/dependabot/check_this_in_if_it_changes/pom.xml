@@ -4483,6 +4483,11 @@
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
+      <artifactId>oracle-xe</artifactId>
+      <version>1.19.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
       <version>1.19.5</version>
     </dependency>

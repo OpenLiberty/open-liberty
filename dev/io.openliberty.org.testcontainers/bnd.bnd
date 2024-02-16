@@ -47,6 +47,7 @@ generate.replacement: true
 # FATs include the version from io.openliberty.com.fasterxml.jackson. If Testcontainers ever depends on a version of
 # jackson-annotations that is not backwards compatible with this then we will need to upgrade
 # the version we include in FATs by updating /cnf/build.gradle configurations binaries.
+#TODO - remove org.testcontainers:oracle-xe once all containers have been re-built using oracle-free
 -buildpath: \
 	com.github.docker-java:docker-java-api;version=${dockerJavaVersion},\
 	com.github.docker-java:docker-java-transport;version=${dockerJavaVersion},\
@@ -60,6 +61,7 @@ generate.replacement: true
 	org.testcontainers:mongodb;version=${testContainerVersion},\
 	org.testcontainers:mssqlserver;version=${testContainerVersion},\
 	org.testcontainers:oracle-free;version=${testContainerVersion},\
+	org.testcontainers:oracle-xe;version=${testContainerVersion},\
 	org.testcontainers:postgresql;version=${testContainerVersion},\
 	org.testcontainers:selenium;version=${testContainerVersion},\
 	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
