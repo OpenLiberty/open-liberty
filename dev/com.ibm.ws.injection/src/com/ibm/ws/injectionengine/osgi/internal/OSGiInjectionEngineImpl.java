@@ -653,10 +653,18 @@ public class OSGiInjectionEngineImpl extends AbstractInjectionEngine implements 
         properties.put("declaringApplication", j2eeName.getApplication());
         properties.put("jndiName", InjectionScope.denormalize(refName));
 
-        // Instead of checking the type, we could provide this to all resource factory builders,
-        // and those which are not for Jakarta EE Concurrency could ignore it.
-        if (type.startsWith("jakarta.enterprise.concurrent."))
+        // Provide the declaring metadata and class loader only to the
+        // Jakarta EE Concurrency resource factory builders
+        if (type.startsWith("jakarta.enterprise.concurrent.")) {
+            MetaData declaringMetadata = compNSConfig.getComponentMetaData();
+            if (declaringMetadata == null) {
+                declaringMetadata = compNSConfig.getModuleMetaData();
+                if (declaringMetadata == null)
+                    declaringMetadata = compNSConfig.getApplicationMetaData();
+            }
+            properties.put("declaringMetadata", declaringMetadata);
             properties.put("declaringClassLoader", compNSConfig.getClassLoader());
+        }
 
         ResourceFactory resourceFactory = builder.createResourceFactory(properties);
         Reference ref = new ResourceFactoryReference(type, resourceFactory, properties);
