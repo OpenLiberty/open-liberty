@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,12 +22,12 @@ import java.util.Queue;
 
 public class FeatureFileList implements Iterable<File> {
 
-    private final String dirRoot;
+    private final String[] dirRoots;
     private final List<File> featureList = new ArrayList<File>();
     private boolean isInit = false;
 
-    public FeatureFileList(String root) {
-        this.dirRoot = root;
+    public FeatureFileList(String... roots) {
+        this.dirRoots = roots;
 
     }
 
@@ -38,28 +38,30 @@ public class FeatureFileList implements Iterable<File> {
 
         Queue<File> directories = new LinkedList<File>();
 
-        File root = new File(this.dirRoot);
+        for (String dirRoot : dirRoots) {
+            File root = new File(dirRoot);
 
-        directories.add(root);
+            directories.add(root);
 
-        while (!directories.isEmpty()) {
+            while (!directories.isEmpty()) {
 
-            File nextDirectory = directories.poll();
-            //System.out.println("inspecting directory: " + nextDirectory.getName());
-            File[] nextDirectoryListing = nextDirectory.listFiles();
-            if (nextDirectoryListing == null)
-                continue;
+                File nextDirectory = directories.poll();
+                //System.out.println("inspecting directory: " + nextDirectory.getName());
+                File[] nextDirectoryListing = nextDirectory.listFiles();
+                if (nextDirectoryListing == null)
+                    continue;
 
-            for (File file : nextDirectoryListing) {
-                if (file.isDirectory()) { //Going down just one step.
-                    for (File child : file.listFiles()) {
-                        if (child.getName().endsWith(".feature")) {
-                            this.featureList.add(child);
+                for (File file : nextDirectoryListing) {
+                    if (file.isDirectory()) { //Going down just one step.
+                        for (File child : file.listFiles()) {
+                            if (child.getName().endsWith(".feature")) {
+                                this.featureList.add(child);
+                            }
                         }
-                    }
-                    directories.add(file); //use this if we want to search every directory and subdirectory
-                    //By adding the directories we find into the queue of all directories
+                        directories.add(file); //use this if we want to search every directory and subdirectory
+                        //By adding the directories we find into the queue of all directories
 
+                    }
                 }
             }
         }
