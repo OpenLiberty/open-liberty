@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -221,7 +221,7 @@ public class CacheServiceImpl implements CacheService {
                              * expect some providers to throw an exception, so don't.
                              */
                             loadTimeMs = System.currentTimeMillis();
-                            Cache<Object, Object> jCache = (Cache<Object, Object>) cacheManager.getCache(cacheName);
+                            Cache<Object, Object> jCache = cacheManager.getCache(cacheName);
                             loadTimeMs = System.currentTimeMillis() - loadTimeMs;
 
                             if (jCache != null) {
