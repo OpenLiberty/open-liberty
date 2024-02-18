@@ -50,9 +50,7 @@ public class OpenTelemetryProducer {
      * @return An instance of OpenTelemetryInfo containing the instance of OpenTelemetry associated with this application. This instance will be a no-op OpenTelemetry if telemetry
      *         is disabled or the application has shut down.
      */
-    @ApplicationScoped
-    @Produces
-    public OpenTelemetryInfo getOpenTelemetryInfo() {
+    private OpenTelemetryInfo getOpenTelemetryInfo() {
         Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryInfoFactoryService.call( (factory) -> {return factory.getOpenTelemetryInfo(metaData); });
         return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::new);
     }
@@ -98,7 +96,7 @@ public class OpenTelemetryProducer {
      */
     @ApplicationScoped
     @Produces
-    public OpenTelemetry getOpenTelemetry(OpenTelemetryInfo openTelemetryInfo) {
-        return openTelemetryInfo.getOpenTelemetry();
+    public OpenTelemetry getOpenTelemetry() {
+        return getOpenTelemetryInfo().getOpenTelemetry();
     }
 }
