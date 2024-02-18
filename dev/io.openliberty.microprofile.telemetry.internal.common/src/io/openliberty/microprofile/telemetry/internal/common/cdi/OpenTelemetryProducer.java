@@ -98,7 +98,7 @@ public class OpenTelemetryProducer {
      */
     @ApplicationScoped
     @Produces
-    public OpenTelemetry getOpenTelemetry(OpenTelemetryInfo openTelemetryInfo) {
-        return openTelemetryInfo.getOpenTelemetry();
+    public OpenTelemetry getOpenTelemetry() {
+        return getOpenTelemetryInfo().getOpenTelemetry();
     }
 }
