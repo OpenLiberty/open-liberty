@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,12 +13,14 @@
 package test.checkpoint.config.bundle;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osgi.service.component.annotations.Component;
 
 import io.openliberty.checkpoint.fat.CheckpointSPITest;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import io.openliberty.checkpoint.spi.CheckpointPhase.OnRestore;
 
 @Component
 public class TestStaticHookRegister {
@@ -83,13 +85,47 @@ public class TestStaticHookRegister {
         }
     };
 
-    public TestStaticHookRegister() {
-        CheckpointPhase phase = CheckpointPhase.getPhase();
-        if (phase != null) {
-            phase.addSingleThreadedHook(single);
+    class OnRestoreHook implements OnRestore<Throwable> {
+        private final AtomicInteger priorRank;
+        private final AtomicInteger hookCallIndex;
+        private final int rank;
 
-            phase.addMultiThreadedHook(multiple);
-
+        public OnRestoreHook(int rank, AtomicInteger priorRank, AtomicInteger hookCallIndex) {
+            this.rank = rank;
+            this.priorRank = priorRank;
+            this.hookCallIndex = hookCallIndex;
         }
+
+        @Override
+        public void call() throws Throwable {
+            int priorHook = priorRank.getAndSet(rank);
+            if (priorHook <= rank) {
+                System.out.println(CheckpointSPITest.STATIC_ONRESTORE + rank + " " + hookCallIndex.addAndGet(1) + " SUCCESS");
+            } else {
+                System.out.println(CheckpointSPITest.STATIC_ONRESTORE + rank + " " + hookCallIndex.addAndGet(1) + " FAILED");
+            }
+        }
+
+    }
+
+    public TestStaticHookRegister() throws Throwable {
+        CheckpointPhase phase = CheckpointPhase.getPhase();
+        phase.addSingleThreadedHook(single);
+        phase.addMultiThreadedHook(multiple);
+
+        AtomicInteger prior = new AtomicInteger(Integer.MIN_VALUE);
+        AtomicInteger hookCallIndex50 = new AtomicInteger(0);
+        AtomicInteger hookCallIndex0 = new AtomicInteger(0);
+        AtomicInteger hookCallIndexNegative50 = new AtomicInteger(0);
+
+        CheckpointPhase.onRestore(50, new OnRestoreHook(50, prior, hookCallIndex50));
+        CheckpointPhase.onRestore(new OnRestoreHook(0, prior, hookCallIndex0));
+        CheckpointPhase.onRestore(-50, new OnRestoreHook(-50, prior, hookCallIndexNegative50));
+        CheckpointPhase.onRestore(50, new OnRestoreHook(50, prior, hookCallIndex50));
+        CheckpointPhase.onRestore(0, new OnRestoreHook(0, prior, hookCallIndex0));
+        CheckpointPhase.onRestore(-50, new OnRestoreHook(-50, prior, hookCallIndexNegative50));
+        CheckpointPhase.onRestore(50, new OnRestoreHook(50, prior, hookCallIndex50));
+        CheckpointPhase.onRestore(new OnRestoreHook(0, prior, hookCallIndex0));
+        CheckpointPhase.onRestore(-50, new OnRestoreHook(-50, prior, hookCallIndexNegative50));
     }
 }

@@ -1,1 +1,2 @@
 -Xdump:java:events=throw+systhrow,filter=org/eclipse/openj9/criu/JVMCheckpointException,request=exclusive+preempt
+-Dio.openliberty.checkpoint.debug=true

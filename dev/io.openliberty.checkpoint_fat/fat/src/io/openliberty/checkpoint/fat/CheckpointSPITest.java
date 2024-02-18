@@ -32,9 +32,9 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
@@ -48,8 +48,10 @@ public class CheckpointSPITest {
 
     public final static String STATIC_SINGLE_PREPARE = "STATIC SINGLE PREPARE - ";
     public final static String STATIC_SINGLE_RESTORE = "STATIC SINGLE RESTORE - ";
+
     public final static String STATIC_MULTI_PREPARE = "STATIC MULTI PREPARE - ";
     public final static String STATIC_MULTI_RESTORE = "STATIC MULTI RESTORE - ";
+    public final static String STATIC_ONRESTORE = "STATIC ONRESTORE - ";
 
     private static final String USER_FEATURE_PATH = "usr/extension/lib/features/";
     private static final String USER_BUNDLE_PATH = "usr/extension/lib/";
@@ -77,7 +79,6 @@ public class CheckpointSPITest {
         assertNotNull("No message prefix found: " + expectedPrefix, actual);
         actual = actual.substring(actual.indexOf(expectedPrefix));
         assertEquals("Unexpected: ", expectedPrefix + expectedPostfix, actual);
-
     }
 
     @Test
@@ -141,6 +142,16 @@ public class CheckpointSPITest {
         server.startServer(getTestMethodNameOnly(testName) + ".log");
         findLogMessage("Static single prepare method", STATIC_SINGLE_RESTORE, "SUCCESS", 500);
         findLogMessage("Static single prepare method", STATIC_MULTI_RESTORE, "SUCCESS", 500);
+
+        findLogMessage("Static onRestore methods", STATIC_ONRESTORE + "-50 1 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore methods", STATIC_ONRESTORE + "-50 2 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore methods", STATIC_ONRESTORE + "-50 3 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore methods", STATIC_ONRESTORE + "0 1 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore methods", STATIC_ONRESTORE + "0 2 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore methods", STATIC_ONRESTORE + "0 3 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore methods", STATIC_ONRESTORE + "50 1 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore methods", STATIC_ONRESTORE + "50 2 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore methods", STATIC_ONRESTORE + "50 3 ", "SUCCESS", 500);
     }
 
     @Test
