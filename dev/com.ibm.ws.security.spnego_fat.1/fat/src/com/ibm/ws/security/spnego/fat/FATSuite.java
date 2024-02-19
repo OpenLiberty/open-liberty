@@ -43,9 +43,9 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                // AlwaysPassesTest.class,
+                AlwaysPassesTest.class,
                 //DynamicSpnegoConfigTest.class,
-                //  S4U2SelfTest.class,
+                 S4U2SelfTest.class,
                  S4U2ProxyTest.class
 })
 public class FATSuite extends InitClass {
