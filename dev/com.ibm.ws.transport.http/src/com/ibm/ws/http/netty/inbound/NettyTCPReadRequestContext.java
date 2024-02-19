@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -119,7 +120,8 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
         
         //TODO Change to liberty's executor
-        ExecutorService blockingTaskExecutor = Executors.newCachedThreadPool();
+        ExecutorService blockingTaskExecutor = HttpDispatcher.getExecutorService();
+        
 
         blockingTaskExecutor.submit(() -> {
             boolean dataAvailable = upgrade.containsQueuedData() || upgrade.awaitReadReady(numBytes, timeout, TimeUnit.SECONDS);
@@ -176,7 +178,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                 
           
                 //throw new IOException("BETA - Timed out waiting on read");
-                nettyChannel.eventLoop().execute(() -> {
+                HttpDispatcher.getExecutorService().execute(() -> {
                     try {
                         upgrade.getReadListener().error(vc, this, new SocketTimeoutException(error.toString()));
                     } catch (Exception e) {

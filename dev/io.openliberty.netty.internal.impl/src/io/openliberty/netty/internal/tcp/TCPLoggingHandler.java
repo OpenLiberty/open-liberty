@@ -146,12 +146,12 @@ class TCPLoggingHandler extends LoggingHandler{
 	@Override
     public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
         // Log or dump caller information before closing
-        Exception callerInfo = new Exception("Closing channel triggered by:");
-        callerInfo.printStackTrace();
-        promise.setFailure(new IllegalStateException("Channel close is prevented"));
+     //   Exception callerInfo = new Exception("Closing channel triggered by:");
+     //   callerInfo.printStackTrace();
+     //   promise.setFailure(new IllegalStateException("Channel close is prevented"));
 
         // Proceed with the actual close operation
-       // super.close(ctx, promise);
+      super.close(ctx, promise);
     }
 	
 	@Override

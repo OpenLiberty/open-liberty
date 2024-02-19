@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
@@ -204,8 +205,12 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                 connection.close();
             }
         });
+        
+        String uriPath = endpointAddress.getURI().getPath();
+        String queryString = endpointAddress.getURI().getQuery();
+        String finalUri = uriPath + (queryString != null && !queryString.isEmpty() ? "?" + queryString : "");
 
-        FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, endpointAddress.getURI().getPath() + "?" + endpointAddress.getURI().getQuery());
+        FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, finalUri);
         HttpUtil.setContentLength(request, 0);
         request.headers().set(HttpHeaderKeys.HDR_HOST.getName(), endpointAddress.getURI().getHost() + ":" + endpointAddress.getURI().getPort());
 
@@ -299,7 +304,9 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
         // client side needs to store query string and path parameters for later retrieval from the session object
         if (poi != null) {
             Tr.debug(tc, "set query parms to " + endpointAddress.getURI().getQuery());
+            if(Objects.nonNull(queryString) && !queryString.isEmpty()) {
             poi.setQueryString(endpointAddress.getURI().getQuery());
+            }
 
             QueryStringDecoder query = new QueryStringDecoder(endpointAddress.getURI());
 
@@ -315,7 +322,7 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
     public WsByteBuffer completeResponse() throws IOException {
         System.out.println("Completing response!");
         try {
-            responsePromise.get(5000, TimeUnit.MILLISECONDS);
+            responsePromise.get(20000, TimeUnit.MILLISECONDS);
         }catch (InterruptedException | ExecutionException | TimeoutException e1) {
             e1.printStackTrace();
         }
@@ -434,6 +441,7 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
 
     @Override
     public void closeConnection(IOException ioe) {
+       if( Objects.nonNull(connection))
         connection.close();
     }
 
@@ -455,7 +463,16 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
 
          // TODO enable SSL
             if (requestor.endpointAddress.isSecure()) {
-                if (WsocOutboundChain.currentSSL == null || WsocOutboundChain.getNettyTlsProvider() == null) { // This shouldn't happen
+                SSLEngine engine = null;
+                if(requestor.endpointAddress instanceof Wsoc21Address) {
+                    System.out.println("Attempting to pull sslcontext from Wsoc21Address");
+                    engine = ((Wsoc21Address) requestor.endpointAddress).getSSLContext().createSSLEngine();
+                    engine.setUseClientMode(true);
+                    System.out.println("Pulled engine: " + Objects.nonNull(engine));
+                }
+                
+                
+                if (Objects.isNull(engine) &&( WsocOutboundChain.currentSSL == null || WsocOutboundChain.getNettyTlsProvider() == null)) { // This shouldn't happen
                     System.out.println("Oh no, secure address requested but no SSL Options found!");
                     throw new IllegalStateException("This ");
                 }
@@ -466,7 +483,10 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                 int port = remoteAddress.getPort();
                 if (tc.isDebugEnabled())
                     Tr.debug(this, tc, "Create SSL", new Object[] { WsocOutboundChain.getNettyTlsProvider(), host, port, WsocOutboundChain.currentSSL });
+                
+                if(Objects.isNull(engine)) {
                 SslContext context = WsocOutboundChain.getNettyTlsProvider().getOutboundSSLContext(WsocOutboundChain.currentSSL, host, Integer.toString(port));
+                
                 if (context == null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                         Tr.entry(this, tc, "initChannel", "Error adding TLS Support");
@@ -475,7 +495,8 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                     ch.close();
                     return;
                 }
-                SSLEngine engine = context.newEngine(ch.alloc());
+                engine = context.newEngine(ch.alloc());
+                }
                 pipeline.addFirst("SSLHandler", new SslHandler(engine, false));
 
             }
