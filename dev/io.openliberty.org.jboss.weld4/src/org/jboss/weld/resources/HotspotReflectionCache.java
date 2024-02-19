@@ -134,7 +134,7 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
             FileLogger.fileLog(className, methodName, "Element [ " + element + " ] [ " + numAnno + " ]");
             return anno;
 
-        } catch (IllegalArgumentException e) {
+        } catch (Throwable e) {
             String text = "Constant Pool GREP:";
             Class<?> clazz = null;
 
