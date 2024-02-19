@@ -9,10 +9,15 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal.util;
 
-public interface VerifyEnv {
-    String REPO_PROPERTY_NAME = "featureVerify_repo";
-    String REPO_FILE_NAME = System.getProperty(REPO_PROPERTY_NAME);
+public abstract class LazySupplier<T> {
+    private T supplied;
 
-    String RESULTS_PROPERTY_NAME = "featureVerify_results";
-    String RESULTS_FILE_NAME = System.getProperty(RESULTS_PROPERTY_NAME);
+    public abstract T supply();
+
+    public T get() {
+        if (supplied == null) {
+            supplied = supply();
+        }
+        return supplied;
+    }
 }

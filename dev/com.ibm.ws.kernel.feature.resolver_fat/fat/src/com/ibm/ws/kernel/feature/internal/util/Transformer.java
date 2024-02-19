@@ -9,10 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal.util;
 
-public interface VerifyEnv {
-    String REPO_PROPERTY_NAME = "featureVerify_repo";
-    String REPO_FILE_NAME = System.getProperty(REPO_PROPERTY_NAME);
-
-    String RESULTS_PROPERTY_NAME = "featureVerify_results";
-    String RESULTS_FILE_NAME = System.getProperty(RESULTS_PROPERTY_NAME);
+public interface Transformer<I, O> {
+    O apply(I input);
 }

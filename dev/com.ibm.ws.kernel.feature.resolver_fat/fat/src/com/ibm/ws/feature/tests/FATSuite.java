@@ -18,22 +18,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                VerifyFeaturesTest.class,
-
-                Servlet3toMetrics.class,
-                // Servlet4toMetrics.class,
-                // Servlet5toMetrics.class,
-                // Servlet6toMetrics.class,
-                // Servlet3toHealth.class,
-                // Servlet4toHealth.class,
-                // Servlet5toHealth.class,
-                // Servlet6toHealth.class,
-
-                // EE7toMP.class,
-                EE8toMP.class,
-                // EE9toMP.class,
-                // EE10toMP.class,
-
-                // TestErrorMessages.class
+                VersionlessServletToMicroProfileTest.class,
+                VersionlessResolutionTest.class,
+                // VersionlessJavaEEToMicroProfileTest.class,
+                // VersionlessEnvVarErrorTest.class,
 })
 public class FATSuite {}

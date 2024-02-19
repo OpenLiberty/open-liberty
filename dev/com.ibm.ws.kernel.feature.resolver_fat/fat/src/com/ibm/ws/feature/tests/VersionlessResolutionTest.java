@@ -30,7 +30,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
-public class VerifyFeaturesTest {
+public class VersionlessResolutionTest {
 
     public static final String SERVER_NAME = "verify";
 
