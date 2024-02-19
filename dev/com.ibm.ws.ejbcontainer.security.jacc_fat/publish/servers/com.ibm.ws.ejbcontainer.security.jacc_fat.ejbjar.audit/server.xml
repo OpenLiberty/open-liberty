@@ -17,7 +17,8 @@
 		<feature>ejbLite-3.2</feature>
 		<feature>appSecurity-2.0</feature>
 		<feature>usr:jaccTestProvider-1.0</feature>
-		<feature>audit-1.0</feature>		
+		<feature>audit-2.0</feature>
+		<feature>restConnector-2.0</feature>	
 	</featureManager>
 	
 	<auditFileHandler 
