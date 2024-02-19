@@ -41,7 +41,7 @@ IBM-API-Package: \
   io.openliberty.org.jetbrains.annotation,\
   io.openliberty.io.zipkin.zipkin2
 -jars=io.openliberty.mpTelemetry.2.0.thirdparty; location:="dev/api/third-party/,lib/"
-kind=ga
+kind=noship
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

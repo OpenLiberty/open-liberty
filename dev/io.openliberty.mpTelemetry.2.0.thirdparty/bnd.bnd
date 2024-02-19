@@ -16,8 +16,8 @@ Bundle-SymbolicName: io.openliberty.mpTelemetry.2.0.thirdparty; singleton:=true
 javac.source: 11
 javac.target: 11
 
-openTelemetryVersion=1.34.0
-alphaOpenTelemetryVersion=1.34.0.alpha
+openTelemetryVersion=1.35.0
+alphaOpenTelemetryVersion=1.35.0.alpha
 
 Private-Package: \
   io.opentelemetry.api; version=${openTelemetryVersion},\
