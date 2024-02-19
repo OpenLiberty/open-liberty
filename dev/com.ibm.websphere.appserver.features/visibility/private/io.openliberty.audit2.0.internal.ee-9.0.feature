@@ -1,6 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 
-symbolicName = io.openliberty.audit1.0.internal.ee-9.0
+symbolicName = io.openliberty.audit2.0.internal.ee-9.0
 singleton=true
 visibility = private
 
@@ -9,9 +9,7 @@ visibility = private
   io.openliberty.appSecurity-4.0
   
 -bundles=\
-  com.ibm.ws.request.probe.audit.servlet.jakarta, \
-  com.ibm.ws.request.probe.audit.rest.jakarta, \
-  com.ibm.ws.security.audit.rest.jakarta
+  com.ibm.ws.request.probe.audit.servlet.jakarta
 
 kind=ga
 edition=core

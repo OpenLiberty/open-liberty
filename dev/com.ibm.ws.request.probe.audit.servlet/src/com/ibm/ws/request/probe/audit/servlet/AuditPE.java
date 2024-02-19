@@ -42,6 +42,9 @@ import com.ibm.websphere.security.audit.AuditAuthenticationResult;
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.websphere.security.audit.context.AuditManager;
+import com.ibm.ws.request.probe.audit.rest.injection.AuditPERestInjector;
+import com.ibm.ws.request.probe.audit.rest.consumer.AuditPERestConsumer;
+import com.ibm.ws.request.probe.audit.rest.injection.AuditPERestInjectorImpl;
 import com.ibm.ws.security.audit.Audit;
 import com.ibm.ws.security.audit.event.ApiAuthnEvent;
 import com.ibm.ws.security.audit.event.ApiAuthnTerminateEvent;
@@ -63,8 +66,6 @@ import com.ibm.ws.security.audit.event.JMXMBeanAttributeEvent;
 import com.ibm.ws.security.audit.event.JMXMBeanEvent;
 import com.ibm.ws.security.audit.event.JMXMBeanRegisterEvent;
 import com.ibm.ws.security.audit.event.JMXNotificationEvent;
-import com.ibm.ws.security.audit.event.MemberManagementEvent;
-import com.ibm.ws.security.audit.event.RESTAuthorizationEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationDetailsEvent;
 import com.ibm.ws.security.audit.event.SAFAuthorizationEvent;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
@@ -174,6 +175,8 @@ public class AuditPE implements ProbeExtension {
 	// @FFDCIgnore(ClassCastException.class)
 	public void processCounter(Event event) {
         Object[] methodParams = (Object[]) event.getContextInfo();
+		AuditPERestInjector restInjector = null;
+		AuditPERestConsumer restConsumer = null;
         if (methodParams != null && methodParams.length > 0) {
 
 			if ((methodParams[0].toString()).equals("JMX_NOTIFICATION_01")) {
@@ -226,7 +229,9 @@ public class AuditPE implements ProbeExtension {
 					auditEventAuthnFailover01(methodParams);
 					break;
 				case SECURITY_MEMBER_MGMT_01:
-					auditEventMemberMgmt01(methodParams);
+				restInjector = new AuditPERestInjectorImpl();
+				restConsumer = restInjector.getConsumer();
+				restConsumer.exec_auditEventMemberMgmt01(auditServiceRef, methodParams);
 					break;
 				case SECURITY_JMS_AUTHN_01:
 					auditEventJMSAuthn01(methodParams);
@@ -247,7 +252,9 @@ public class AuditPE implements ProbeExtension {
 					auditEventSafAuth(methodParams);
 					break;
 				case SECURITY_REST_HANDLER_AUTHZ:
-					auditEventRESTAuthz(methodParams);
+					restInjector = new AuditPERestInjectorImpl();
+					restConsumer = restInjector.getConsumer();
+					restConsumer.exec_auditEventRESTAuthz(auditServiceRef, methodParams);
 					break;
 				default:
 					// TODO: emit error message
@@ -515,34 +522,6 @@ public class AuditPE implements ProbeExtension {
 		}
 	}
 
-	private void auditEventMemberMgmt01(Object[] methodParams) {
-		Object[] varargs = (Object[]) methodParams[1];
-		Object req = varargs[0];
-		String action = (String) varargs[1];
-		String repositoryId = (String) varargs[2];
-		String uniqueName = (String) varargs[3];
-		String realmName = (String) varargs[4];
-		Object root = varargs[5];
-		Integer statusCode = (Integer) varargs[6];
-		String serviceType = null;
-		if (varargs.length > 7) {
-			serviceType = (String) varargs[7];
-		}
-		String outcome = statusCode.intValue() == 200 ? AuditConstants.SUCCESS : AuditConstants.FAILURE;
-
-		if (auditServiceRef.getService() != null && auditServiceRef.getService()
-				.isAuditRequired(AuditConstants.SECURITY_MEMBER_MGMT, outcome)) {
-			MemberManagementEvent av;
-			if (serviceType == null) {
-				av = new MemberManagementEvent(req, action, repositoryId, uniqueName, realmName, root, statusCode);
-			} else {
-				av = new MemberManagementEvent(req, action, repositoryId, uniqueName, realmName, root, statusCode,
-						serviceType);
-			}
-			auditServiceRef.getService().sendEvent(av);
-		}
-	}
-
 	private void auditEventJMSAuthn01(Object[] methodParams) {
 		Object[] varargs = (Object[]) methodParams[1];
 		String userName = (String) varargs[0];
@@ -717,21 +696,6 @@ public class AuditPE implements ProbeExtension {
 					principalName);
 			auditServiceRef.getService().sendEvent(safAuthDetails);
 		}
-	}
-
-	private void auditEventRESTAuthz(Object[] methodParams) {
-
-		Object[] varargs = (Object[]) methodParams[1];
-		Object req = varargs[0];
-		Object response = varargs[1];
-		int statusCode = (Integer) varargs[2];
-		if (auditServiceRef.getService() != null && auditServiceRef.getService()
-				.isAuditRequired(AuditConstants.SECURITY_REST_HANDLER_AUTHZ,
-						statusCode == HttpServletResponse.SC_OK ? AuditConstants.SUCCESS : AuditConstants.FAILURE)) {
-			RESTAuthorizationEvent av = new RESTAuthorizationEvent(req, response);
-			auditServiceRef.getService().sendEvent(av);
-		}
-
 	}
 
     private void auditEventSafAuth(Object[] methodParams) {

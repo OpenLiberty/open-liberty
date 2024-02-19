@@ -1,6 +1,6 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 
-symbolicName = io.openliberty.audit1.0.internal.ee-6.0
+symbolicName = io.openliberty.audit2.0.internal.ee-6.0
 singleton=true
 WLP-DisableAllFeatures-OnConflict: false
 visibility = private
@@ -9,9 +9,7 @@ visibility = private
   com.ibm.websphere.appserver.appSecurity-2.0; ibm.tolerates:="3.0"
 
 -bundles=\
-  com.ibm.ws.request.probe.audit.servlet, \
-  com.ibm.ws.request.probe.audit.rest, \
-  com.ibm.ws.security.audit.rest
+  com.ibm.ws.request.probe.audit.servlet
 
 kind=ga
 edition=core

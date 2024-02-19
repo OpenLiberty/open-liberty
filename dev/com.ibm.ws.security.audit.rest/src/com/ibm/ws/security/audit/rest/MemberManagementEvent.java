@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.audit.event;
+package com.ibm.ws.security.audit.rest;
 
 import java.net.URLDecoder;
 import java.util.List;
