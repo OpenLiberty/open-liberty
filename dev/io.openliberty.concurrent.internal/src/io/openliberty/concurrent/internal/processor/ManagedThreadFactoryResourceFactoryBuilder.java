@@ -33,6 +33,7 @@ import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -67,9 +68,15 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
 
     /**
      * Name of property that identifies the class loader of the application artifact
-     * that defines the ManagedThreadFactoryDefinition.
+     * that defines the managed thread factory definition.
      */
     static final String DECLARING_CLASS_LOADER = "declaringClassLoader";
+
+    /**
+     * Name of property that identifies the class loader of the application artifact
+     * that defines the managed thread factory definition.
+     */
+    static final String DECLARING_METADATA = "declaringMetadata";
 
     /**
      * Property value that indicates the configuration originated in a configuration file, such as server.xml,
@@ -140,6 +147,7 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         }
 
         ClassLoader declaringClassLoader = (ClassLoader) threadFactoryProps.remove(DECLARING_CLASS_LOADER);
+        MetaData declaringMetadata = (MetaData) threadFactoryProps.remove(DECLARING_METADATA);
         String declaringApplication = (String) threadFactoryProps.remove(DECLARING_APPLICATION);
         String application = (String) threadFactoryProps.get("application");
         String module = (String) threadFactoryProps.get("module");
@@ -193,7 +201,7 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         QualifiedResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, declaringApplication, //
                         managedThreadFactoryID, jndiName, managedThreadFactorySvcFilter.toString(), //
                         contextSvcJndiName, contextSvcFilter, //
-                        declaringClassLoader, qualifierNames);
+                        declaringMetadata, declaringClassLoader, qualifierNames);
         try {
             String bundleLocation = bundleContext.getBundle().getLocation();
             ConfigurationAdmin configAdmin = configAdminRef.getService();

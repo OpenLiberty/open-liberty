@@ -20,7 +20,9 @@ import java.util.Set;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.wsspi.resource.ResourceFactory;
+import com.ibm.wsspi.resource.ResourceInfo;
 
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
@@ -42,6 +44,17 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
     private final Set<Type> beanTypes = Set.of(ManagedThreadFactory.class);
 
     /**
+     * Class loader of the application artifact that defines the managed thread factory definition.
+     * Or, if a bean for a default instance then the class loader for the application.
+     */
+    private final ClassLoader declaringClassLoader;
+
+    /**
+     * Metadata of the application artifact that defines the managed thread factory definition.
+     */
+    private final MetaData declaringMetadata;
+
+    /**
      * Resource factory that creates the resource.
      */
     private final ResourceFactory factory;
@@ -59,6 +72,8 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
     ManagedThreadFactoryBean(QualifiedResourceFactory factory) {
         this.factory = factory;
         this.qualifiers = factory.getQualifiers();
+        this.declaringClassLoader = factory.getDeclaringClassLoader();
+        this.declaringMetadata = factory.getDeclaringMetadata();
     }
 
     /**
@@ -70,6 +85,8 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
     ManagedThreadFactoryBean(ResourceFactory factory, Set<Annotation> qualifiers) {
         this.factory = factory;
         this.qualifiers = qualifiers;
+        this.declaringClassLoader = null; // TODO class loader for app
+        this.declaringMetadata = null; // TODO dummy component metadata for app
     }
 
     @Override
@@ -81,9 +98,10 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
 
         ManagedThreadFactory instance;
         try {
-            // TODO send in signal to MTF to defer context capture until newThread?
-            // Or, send in context that we already obtained?
-            instance = (ManagedThreadFactory) factory.createResource(null);
+            // TODO remove null check and always send a resource info
+            // once we implement the code path for default instances
+            ResourceInfo info = declaringClassLoader == null ? null : new MTFBeanResourceInfoImpl(declaringClassLoader, declaringMetadata);
+            instance = (ManagedThreadFactory) factory.createResource(info);
         } catch (RuntimeException x) {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "create", x);

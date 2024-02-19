@@ -34,6 +34,7 @@ import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -68,9 +69,15 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
 
     /**
      * Name of property that identifies the class loader of the application artifact
-     * that defines the ManagedExecutorDefinition.
+     * that defines the managed executor definition.
      */
     static final String DECLARING_CLASS_LOADER = "declaringClassLoader";
+
+    /**
+     * Name of property that identifies the class loader of the application artifact
+     * that defines the managed executor definition.
+     */
+    static final String DECLARING_METADATA = "declaringMetadata";
 
     /**
      * Property value that indicates the configuration originated in a configuration file, such as server.xml,
@@ -142,6 +149,7 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
         }
 
         ClassLoader declaringClassLoader = (ClassLoader) execSvcProps.remove(DECLARING_CLASS_LOADER);
+        MetaData declaringMetadata = (MetaData) execSvcProps.remove(DECLARING_METADATA);
         String declaringApplication = (String) execSvcProps.remove(DECLARING_APPLICATION);
         String application = (String) execSvcProps.get("application");
         String module = (String) execSvcProps.get("module");
@@ -225,7 +233,7 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
         QualifiedResourceFactory factory = new AppDefinedResourceFactory(this, concurrencyBundleCtx, declaringApplication, //
                         managedExecutorServiceID, jndiName, managedExecutorSvcFilter.toString(), //
                         contextSvcJndiName, contextSvcFilter, //
-                        declaringClassLoader, qualifierNames);
+                        declaringMetadata, declaringClassLoader, qualifierNames);
         try {
             String concurrencyBundleLocation = concurrencyBundleCtx.getBundle().getLocation();
             String concurrencyPolicyBundleLocation = concurrencyPolicyBundleCtx.getBundle().getLocation();

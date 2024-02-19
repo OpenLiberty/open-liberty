@@ -35,6 +35,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.ws.resource.ResourceRefInfo;
+import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.resource.ResourceInfo;
@@ -73,6 +74,22 @@ public class AppDefinedResourceFactory implements QualifiedResourceFactory {
     private final String contextSvcJndiName;
 
     /**
+     * The class loader of the application artifact that defines the
+     * resource definition.
+     *
+     * @return the class loader.
+     */
+    private final ClassLoader declaringClassLoader;
+
+    /**
+     * Metadata of the application component that defines the
+     * resource definition if defined by a component.
+     *
+     * @return the metadata.
+     */
+    private final MetaData declaringMetadata;
+
+    /**
      * Unique identifier for the resource factory.
      */
     private final String id;
@@ -96,28 +113,32 @@ public class AppDefinedResourceFactory implements QualifiedResourceFactory {
     /**
      * Construct a Future-like wrapper for an application-defined resource factory.
      *
-     * @param builder               the resource factory builder
-     * @param bundleContext         the bundle context
-     * @param appName               name of the application that defines the resource factory
-     * @param id                    unique identifier for the resource factory
-     * @param jndiName              JNDI name of the resource factory
-     * @param filter                filter for the resource factory
-     * @param contextSvcJndiName    JNDI name of the context service that this resource depends on. Otherwise null.
-     * @param contextSvcFilter      filter for the context service that this resource depends on. Otherwise null.
-     * @param qualifiersClassLoader class loader for loading qualifiers.
-     * @param qualifierNames        names of qualifier annotation classes from the resource definition. Null indicates none.
+     * @param builder              the resource factory builder
+     * @param bundleContext        the bundle context
+     * @param appName              name of the application that defines the resource factory
+     * @param id                   unique identifier for the resource factory
+     * @param jndiName             JNDI name of the resource factory
+     * @param filter               filter for the resource factory
+     * @param contextSvcJndiName   JNDI name of the context service that this resource depends on. Otherwise null.
+     * @param contextSvcFilter     filter for the context service that this resource depends on. Otherwise null.
+     * @param declaringMetadata    metadata of the application artifact that defines the resource definition.
+     * @param declaringClassLoader class loader of the application artifact that defines the resource definition.
+     * @param qualifierNames       names of qualifier annotation classes from the resource definition. Null indicates none.
      * @throws InvalidSyntaxException if the filter has incorrect syntax
      */
     AppDefinedResourceFactory(ResourceFactoryBuilder builder, BundleContext bundleContext, String appName, //
                               String id, String jndiName, String filter, //
                               String contextSvcJndiName, String contextSvcFilter,
-                              ClassLoader qualifiersClassLoader, List<String> qualifierNames) throws ClassNotFoundException, InvalidSyntaxException {
+                              MetaData declaringMetadata, ClassLoader declaringClassLoader,
+                              List<String> qualifierNames) throws ClassNotFoundException, InvalidSyntaxException {
         this.appName = appName;
         this.builder = builder;
         this.id = id;
         this.jndiName = jndiName;
         this.contextSvcFilter = contextSvcFilter;
         this.contextSvcJndiName = contextSvcJndiName;
+        this.declaringClassLoader = declaringClassLoader;
+        this.declaringMetadata = declaringMetadata;
 
         if (qualifierNames == null) {
             qualifiers = Collections.emptySet();
@@ -125,11 +146,11 @@ public class AppDefinedResourceFactory implements QualifiedResourceFactory {
             qualifiers = new LinkedHashSet<Annotation>();
 
             for (String qualifierClassName : qualifierNames) {
-                Class<?> qualifierClass = qualifiersClassLoader.loadClass(qualifierClassName);
+                Class<?> qualifierClass = declaringClassLoader.loadClass(qualifierClassName);
                 if (!qualifierClass.isInterface())
                     throw new IllegalArgumentException("The " + qualifierClassName + " class is not a valid qualifier class" +
                                                        " because it is not an annotation."); // TODO NLS
-                qualifiers.add(Annotation.class.cast(Proxy.newProxyInstance(qualifiersClassLoader,
+                qualifiers.add(Annotation.class.cast(Proxy.newProxyInstance(declaringClassLoader,
                                                                             new Class<?>[] { Annotation.class, qualifierClass },
                                                                             new QualifierProxy(qualifierClass))));
             }
@@ -222,6 +243,28 @@ public class AppDefinedResourceFactory implements QualifiedResourceFactory {
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "destroy");
+    }
+
+    /**
+     * Returns the class loader of the application artifact that defines the
+     * resource definition.
+     *
+     * @return the class loader
+     */
+    @Override
+    public ClassLoader getDeclaringClassLoader() {
+        return declaringClassLoader;
+    }
+
+    /**
+     * Obtains the metadata of the application artifact that
+     * defines the resource definition.
+     *
+     * @return component metadata.
+     */
+    @Override
+    public MetaData getDeclaringMetadata() {
+        return declaringMetadata;
     }
 
     @Override

@@ -185,22 +185,15 @@ public class ConcurrencyExtension implements Extension {
         Map<List<String>, QualifiedResourceFactory> qualifiedManagedThreadFactories = //
                         list.get(QualifiedResourceFactory.Type.ManagedThreadFactory.ordinal());
 
-        int count = qualifiedManagedThreadFactories.size();
-        if (count > 0) {
-            qualifierSetsPerMTF = qualifierSetsPerMTF == null ? new ArrayList<>(count) : qualifierSetsPerMTF;
-
-            for (QualifiedResourceFactory factory : qualifiedManagedThreadFactories.values()) {
-                try {
-                    ManagedThreadFactoryBean bean = new ManagedThreadFactoryBean(factory);
-                    event.addBean(bean);
-                    qualifierSetsPerMTF.add(factory.getQualifiers());
-                } catch (Throwable x) {
-                    // TODO NLS
-                    System.out.println(" E Unable to create a bean for the " +
-                                       factory + " ManagedThreadFactoryDefinition with the " + factory.getQualifiers() + " qualifiers" +
-                                       " due to the following error: ");
-                    x.printStackTrace();
-                }
+        for (QualifiedResourceFactory factory : qualifiedManagedThreadFactories.values()) {
+            try {
+                event.addBean(new ManagedThreadFactoryBean(factory));
+            } catch (Throwable x) {
+                // TODO NLS
+                System.out.println(" E Unable to create a bean for the " +
+                                   factory + " ManagedThreadFactoryDefinition with the " + factory.getQualifiers() + " qualifiers" +
+                                   " due to the following error: ");
+                x.printStackTrace();
             }
         }
     }
@@ -212,13 +205,7 @@ public class ConcurrencyExtension implements Extension {
      * @param beanManager
      */
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
-        // TODO This approach needs to be replaced because it is unpredictable which module this method is invoked from
-        // when the application has multiple modules. One possibility could be to identify from the class loader
-        // of the class that defined the resource which application artifact it is, and capture the context based on it
-        // rather than capturing the context of the current thread, which is unreliable.
-        // It would also be more efficient to avoid forcing initialization just to capture the context.
-        // Maybe add the class loader identifier to the properties of the managed thread factory
-        // and use that as a signal.
+        // TODO remove this once we handle the default instances similar to the qualified instances
         if (qualifierSetsPerMTF != null) {
             CDI<Object> cdi = CDI.current();
 
