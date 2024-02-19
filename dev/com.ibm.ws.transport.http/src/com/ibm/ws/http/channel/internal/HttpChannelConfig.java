@@ -1083,7 +1083,7 @@ public class HttpChannelConfig {
         Object value = props.get(HttpConfigConstants.PROPNAME_LIMIT_FIELDSIZE);
         if (null != value) {
             try {
-                this.limitFieldSize = rangeLimit(convertInteger(value), HttpConfigConstants.MIN_LIMIT_FIELDSIZE, HttpConfigConstants.MAX_LIMIT_FIELDSIZE);
+                this.limitFieldSize = rangeLimit(convertInteger(value), HttpConfigConstants.MIN_LIMIT_FIELDSIZE, Integer.MAX_VALUE);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: field size limit is " + getLimitOfFieldSize());
                 }
