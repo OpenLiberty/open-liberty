@@ -14,55 +14,45 @@ package com.ibm.ws.feature.tests;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
-public class TestErrorMessages {
+public class VersionlessEnvVarErrorTest {
 
     public static final String SERVER_NAME = "ee7toMP";
 
-    @Server(SERVER_NAME)
-    public static LibertyServer server;
-
-    @After
-    public void tearDown() throws Exception {
-        server.stopServer("CWWKF0001E", "CWWKF0048E");
-    }
-
     @Test
     public void testNoEnvVar() throws Exception {
-        String envVar = "";
+        LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
 
-        //log out the method name "Entering methodName..."
-
-        server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         server.startServer();
+        try {
+            String errorMsg = server.waitForStringInLog("CWWKF0048E");
+            assertNotNull("Expected error message for no env var", errorMsg);
 
-        assertNotNull("Expected error message for no env var", server.waitForStringInLog("CWWKF0048E"));
-
-        server.stopServer("CWWKF0001E", "CWWKF0048E");
+        } finally {
+            server.stopServer("CWWKF0001E", "CWWKF0048E");
+        }
     }
 
     @Test
     public void testNoFeatureInEnvVar() throws Exception {
         String envVar = "mpHealth-1.0,mpHealth-2.0,mpHealth-2.1,mpHealth-2.2,mpHealth-3.0,mpHealth-3.1,mpHealth-4.0";
 
-        //log out the method name "Entering methodName..."
-
-        server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+        LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         server.addEnvVar("PREFERRED_FEATURE_VERSIONS", envVar);
+
         server.startServer();
-
-        assertNotNull("Expected error message for no mpMetrics in env var but instead installed features: "
-                      + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"), server.waitForStringInLog("CWWKF0049E"));
-
-        server.stopServer("CWWKF0001E", "CWWKF0049E");
+        try {
+            String errorMsg = server.waitForStringInLog("CWWKF0049E");
+            assertNotNull("Expected error message for no mpMetrics in env var", errorMsg);
+        } finally {
+            server.stopServer("CWWKF0001E", "CWWKF0049E");
+        }
     }
 }

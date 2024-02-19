@@ -36,7 +36,7 @@ Private-Package: \
 Export-Package: \
  com.ibm.ws.kernel.feature;                 provide:=true, \
  com.ibm.ws.kernel.feature.provisioning;    provide:=true, \
- com.ibm.ws.kernel.feature.resolver;        provide:=true \
+ com.ibm.ws.kernel.feature.resolver;        provide:=true
 
 Bundle-ActivationPolicy: lazy
 
