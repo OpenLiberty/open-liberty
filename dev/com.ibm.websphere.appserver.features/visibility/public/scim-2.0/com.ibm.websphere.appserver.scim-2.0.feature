@@ -1,6 +1,7 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.scim-2.0
 visibility=public
+singleton=true
 IBM-ShortName: scim-2.0
 Subsystem-Name: System for Cross-domain Identity Management 2.0
 -features=com.ibm.websphere.appserver.restHandler-1.0, \
