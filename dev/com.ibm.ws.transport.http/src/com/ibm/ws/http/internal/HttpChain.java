@@ -55,7 +55,7 @@ public class HttpChain implements ChainEventListener {
         STOPPED(3, "STOPPED"),
         QUIESCED(4, "QUIESCED"),
         STARTED(5, "STARTED"),
-        RESTARTING(6, "RESTARTING"),
+        STARTING(6, "STARTING"),
         STOPPING(7, "STOPPING");
 
         public final int val;
@@ -83,7 +83,9 @@ public class HttpChain implements ChainEventListener {
                 case 5:
                     return "STARTED";
                 case  6:
-                    return "RESTARTING";
+                    return "STARTING";
+                case  7:
+                    return "STOPPING";
             }
             return "UNKNOWN";
         }

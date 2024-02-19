@@ -73,16 +73,16 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
 //                    ctx.channel().attr(NettyHttpConstants.COMPRESSION_ENCODING).set(compressionHandler.getEncoding());
 //                }
 //            }
-            
+
             final boolean isSwitching = response.status() == HttpResponseStatus.SWITCHING_PROTOCOLS;
 
 //            if (response.status() == HttpResponseStatus.SWITCHING_PROTOCOLS) {
-////               
+////
 //                isSwitching = true;
 //
 //            }
             ChannelFuture future = ctx.writeAndFlush(msg);
-            
+
             future.addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture future) {
@@ -101,7 +101,7 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
                             NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(ctx.channel());
                             ctx.pipeline().addLast(upgradeHandler);
                         }
-                        
+
                         System.out.println(ctx.pipeline().names());
                     }
                 }
@@ -128,17 +128,17 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
         }
     }
 
-    @Override
-    public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
-        // Log or dump caller information before closing
-        MSP.log("Intercepting close");
-        Thread.dumpStack();
-        Exception callerInfo = new Exception("Closing channel triggered by:");
-        callerInfo.printStackTrace();
-        promise.setFailure(new IllegalStateException("Channel close is prevented"));
-
-        // Proceed with the actual close operation
-        // super.close(ctx, promise);
-    }
+//    @Override
+//    public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
+//        // Log or dump caller information before closing
+//        MSP.log("Intercepting close");
+//        Thread.dumpStack();
+//        Exception callerInfo = new Exception("Closing channel triggered by:");
+//        callerInfo.printStackTrace();
+//        promise.setFailure(new IllegalStateException("Channel close is prevented"));
+//
+//        // Proceed with the actual close operation
+//        // super.close(ctx, promise);
+//    }
 
 }

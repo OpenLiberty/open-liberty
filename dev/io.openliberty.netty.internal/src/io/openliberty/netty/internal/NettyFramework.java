@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.channelfw.EndPointMgr;
 
@@ -80,6 +81,9 @@ public interface NettyFramework {
      */
     FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
             ChannelFutureListener bindListener) throws NettyException;
+    
+    FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
+            ChannelFutureListener bindListener, AtomicBoolean cancelToken) throws NettyException;
 
     /**
      * Binds a Bootstrap to the given host and port, and registers the Channel with
