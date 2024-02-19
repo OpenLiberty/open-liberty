@@ -1,4 +1,4 @@
-/*******************************************************************************
+et*******************************************************************************
  * Copyright (c) 2003 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
@@ -670,7 +670,9 @@ public class SipSessionImplementation extends ReplicatableImpl implements IBMSip
     /**
      * Send notifications about invalidated SipSession
      */
-    public synchronized void invalidateSipSession() {
+     //remove synchronized as it can cause deadlock
+     //see open-liberty issue #27282
+    public void invalidateSipSession() {
     	if (c_logger.isTraceEntryExitEnabled()) {
     		c_logger.traceEntry(this, "invalidateSipSession", getId());
     	}
