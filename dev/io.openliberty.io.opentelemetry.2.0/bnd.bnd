@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -14,10 +14,10 @@
 
 bVersion=1.0
 
-openTelemetryVersion=1.34.0
-alphaOpenTelemetryVersion=1.34.0.alpha
-openTelemetryInstrumentationVersion=2.0.0
-alphaOpenTelemetryInstrumentationVersion=2.0.0.alpha
+openTelemetryVersion=1.35.0
+alphaOpenTelemetryVersion=1.35.0.alpha
+openTelemetryInstrumentationVersion=2.1.0
+alphaOpenTelemetryInstrumentationVersion=2.1.0.alpha
 
 javac.source: 11
 javac.target: 11
@@ -94,7 +94,6 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 	io.opentelemetry:opentelemetry-api;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-api-events;version='${alphaOpenTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-context;version='${openTelemetryVersion}';strategy=exact,\
-	io.opentelemetry:opentelemetry-exporter-jaeger;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-exporter-logging;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-exporter-otlp-common;version='${openTelemetryVersion}';strategy=exact,\
 	io.opentelemetry:opentelemetry-exporter-otlp;version='${openTelemetryVersion}';strategy=exact,\
