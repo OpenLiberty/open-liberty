@@ -38,7 +38,16 @@ public class LocalConfigurationImpl implements BootstrapConfiguration, FFDCSelfI
 	private Map<String, Object> channelProperties = null;
 
 
-	private final boolean inbound;
+	/**
+	 * Get a map of the config options as Objects
+	 * 
+	 * @return
+	 */
+	public Map<String, Object> getChannelProperties() {
+        return channelProperties;
+    }
+
+    private final boolean inbound;
 
 	/**
 	 * Constructor.
@@ -102,7 +111,7 @@ public class LocalConfigurationImpl implements BootstrapConfiguration, FFDCSelfI
     }
     //@formatter:on
 
-    
+    @Deprecated
 	protected ChannelData getChannelData() {
 		return this.channelData;
 	}
