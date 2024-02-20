@@ -14,5 +14,5 @@ singleton=true
   io.openliberty.io.opentelemetry.2.0.jakarta,\
   io.openliberty.microprofile.telemetry.internal.common.jakarta
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel 
