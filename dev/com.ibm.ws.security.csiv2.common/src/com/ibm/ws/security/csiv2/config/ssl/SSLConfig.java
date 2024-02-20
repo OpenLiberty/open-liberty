@@ -194,7 +194,7 @@ public class SSLConfig {
     }
 
     //static final Pattern p = Pattern.compile("(?:(SSL)|(TLS))_([A-Z0-9]*)(_anon)?(_[a-zA-Z0-9]*)??(_EXPORT)?_WITH_([A-Z0-9]*)(?:_(\\d*))?([_a-zA-Z0-9]*)?_(?:(?:(SHA)(\\d*))|(MD5))");
-    //Removed "WITH" from the above pattern to accommodate ciphers without the substring "WITH" 
+    //Made "WITH" as optional from the above pattern to accommodate ciphers without the substring "WITH" 
     static final Pattern p = Pattern.compile("(?:(SSL)|(TLS))_([A-Z0-9]*)(_anon)?(_[a-zA-Z0-9]*)??(_EXPORT)??_WITH_?([A-Z0-9]*)(?:_(\\d*))?([_a-zA-Z0-9]*)?_(?:(?:(SHA)(\\d*))|(MD5))");
     
     
