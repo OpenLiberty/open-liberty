@@ -12,7 +12,13 @@
 	<httpEndpoint httpPort="9988" httpsPort="9989"
 		id="defaultHttpEndpoint" />
 
-	<transaction recoverOnStartup="true" waitForRecovery="true"/>
+	<transaction
+      backendURL="http://localhost:9988"
+      recoveryIdentity="ThirdServer"
+      recoveryGroup="third-server-group"
+	  recoverOnStartup="true"
+	  waitForRecovery="true"
+	/>
 
  <javaPermission codebase="${server.config.dir}/dropins/endtoend.war" className="java.security.AllPermission"/>
 </server>

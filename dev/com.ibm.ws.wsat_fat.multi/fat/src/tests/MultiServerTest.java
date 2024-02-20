@@ -256,6 +256,8 @@ public class MultiServerTest extends WSATTest {
 				+ "&baseurl2=" + BASE_URL3;
 		Log.info(getClass(), method, "URL: " + urlStr);
 
+		server2.setTraceMarkToEndOfDefaultTrace();
+
 		HttpURLConnection con = getHttpConnection(new URL(urlStr), 
 				HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallCommit");
 		BufferedReader br = HttpUtils.getConnectionStream(con);
@@ -263,7 +265,7 @@ public class MultiServerTest extends WSATTest {
 		assertNotNull(result);
 
 		// Make sure server3 registered with server2
-		assertNotNull(server3.waitForStringInTrace("Action: http://docs.oasis-open.org/ws-tx/wscoor/2006/06/Register, To: http://.*" + ":" + server2.getHttpDefaultPort() + "/ibm/wsatservice/RegistrationService"));
+		assertNotNull(server2.waitForStringInTraceUsingMark("SERVER registered with Transaction"));
 
 		Log.info(getClass(), method, "Result : " + result);
 		assertTrue("Cannot get expected reply from server, result = '" + result + "'",

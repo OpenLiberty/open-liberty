@@ -112,29 +112,8 @@ public class CoorContextOutInterceptor extends AbstractPhaseInterceptor<Message>
                 EndpointReferenceType localRegEpr = WSATUtil.createEpr(regHost, tranService != null ? tranService.getRecoveryId() : null);
 
                 WSATContext ctx = WSCoorUtil.getHandlerService().handleClientRequest();
-                EndpointReferenceType regEpr = ctx.getRegistration();
-                if (regEpr == null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(
-                                 tc,
-                                 "We are here");
-                    }
-                    regEpr = localRegEpr; //regEpr is NULL so it is itself.
-                }
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(
-                             tc,
-                             "handleMessage",
-                             "Generate wsat application registration url",
-                             regHost,
-                             regEpr.getAddress().getValue(),
-                             tranService);
-                }
-
-                regEpr.getAddress().setValue(regHost);
-
-                CoordinationContext cc = WSCoorUtil.createCoordinationContext(ctx, regEpr);
+                CoordinationContext cc = WSCoorUtil.createCoordinationContext(ctx, localRegEpr);
                 dataBinding = new JAXBDataBinding(CoordinationContext.class);
                 QName qname = new QName(WSCoorConstants.NAMESPACE_WSCOOR, WSCoorConstants.COORDINATION_CONTEXT_ELEMENT_STRING);
                 header = new SoapHeader(qname, cc, dataBinding);

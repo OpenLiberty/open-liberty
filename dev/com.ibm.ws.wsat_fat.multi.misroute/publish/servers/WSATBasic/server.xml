@@ -10,7 +10,13 @@
 		<feature>jaxws-2.2</feature>
 	</featureManager>
 
-	<transaction recoverOnStartup="true" waitForRecovery="true"/>
+	<transaction
+      backendURL="http://localhost:8010"
+      recoveryIdentity="WSATBasic"
+      recoveryGroup="client-group"
+	  recoverOnStartup="true"
+	  waitForRecovery="true"
+	/>
 
 	<include location="../fatTestPorts.xml" />
 
