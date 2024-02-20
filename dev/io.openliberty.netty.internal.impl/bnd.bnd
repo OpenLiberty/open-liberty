@@ -22,7 +22,8 @@ WS-TraceGroup: Netty
 Export-Package: \
   io.openliberty.netty.internal.impl, \
   io.openliberty.netty.internal.tcp, \
-  io.openliberty.netty.internal.udp
+  io.openliberty.netty.internal.udp, \
+  io.openliberty.netty.internal.local
 
 Import-Package: \
   com.ibm.ws.channelfw.internal.chains, \
@@ -31,10 +32,11 @@ Import-Package: \
   io.openliberty.netty.internal.exception, \
   ${defaultPackageImport}
 
-# reuse the existing translated messages from the TCP Channel
+# reuse the existing translated messages from the Channel
 Private-Package: \
   com.ibm.ws.tcpchannel.internal.resources, \
-  com.ibm.ws.udpchannel.internal.resources
+  com.ibm.ws.udpchannel.internal.resources, \
+  com.ibm.ws.localchannel.internal.resources \
 
 -dsannotations: \
   io.openliberty.netty.internal.impl.NettyFrameworkImpl
