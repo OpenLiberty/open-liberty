@@ -36,7 +36,7 @@ Import-Package: \
 Private-Package: \
   com.ibm.ws.tcpchannel.internal.resources, \
   com.ibm.ws.udpchannel.internal.resources, \
-  com.ibm.ws.localchannel.internal.resources \
+  com.ibm.ws.localchannel.internal.resources
 
 -dsannotations: \
   io.openliberty.netty.internal.impl.NettyFrameworkImpl
