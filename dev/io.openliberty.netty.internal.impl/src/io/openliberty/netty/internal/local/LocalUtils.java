@@ -66,11 +66,6 @@ public class LocalUtils {
         bs.applyConfiguration(config);
         bs.setBaseInitializer(protocolInitializer);
 
-        // TODO GDH server concerns other than protocol needs?
-        // So we are going to
-        // ChannelInitializerWrapper serverInitializer = new
-        // LocalChannelInitializerWrapper(config, framework);
-
         return bs;
     }
 
@@ -307,6 +302,14 @@ public class LocalUtils {
         return startHelper(framework, bootstrap, config, localAddr, openListener);
     }
 
+    // Use startOutbound or start(...ServerBootstrapExtended)  TODO - not even for child channel?
+    @Deprecated 
+    public static FutureTask<ChannelFuture> start(NettyFrameworkImpl nettyFrameworkImpl, BootstrapExtended bootstrap,
+            LocalAddress localAddr, ChannelFutureListener bindListener) {
+        return null;
+    }
+
+
     /**
      * Start an outbound TCP channel
      * 
@@ -326,7 +329,7 @@ public class LocalUtils {
         LocalConfigurationImpl config = (LocalConfigurationImpl) bootstrap.getConfiguration();
         return startHelper(framework, bootstrap, config, localAddr, openListener);
     }
-
+    
     /**
      * 
      * @param channel
@@ -344,17 +347,4 @@ public class LocalUtils {
     public static void logChannelStarted(Channel channel) {
         Tr.info(tc, "started" + channel.toString());
     }
-
-    public static FutureTask<ChannelFuture> start(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
-            Object inetHost, int inetPort, ChannelFutureListener bindListener) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public static FutureTask<ChannelFuture> start(NettyFrameworkImpl nettyFrameworkImpl, BootstrapExtended bootstrap,
-            LocalAddress localAddr, ChannelFutureListener bindListener) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }
