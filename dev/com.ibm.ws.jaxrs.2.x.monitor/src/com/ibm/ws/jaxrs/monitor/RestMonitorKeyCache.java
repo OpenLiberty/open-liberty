@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,9 +29,21 @@ public class RestMonitorKeyCache {
     private final ConcurrentHashMap<RestResourceMethodKey, MonitorKey> routes = new ConcurrentHashMap<>();
     private final ReferenceQueue<Class<?>> referenceQueue = new ReferenceQueue<>();
 
+    static {
+    	/*
+    	 * Eagerly load the inner classes so that they are not loaded while calculating the amount of time a method took.
+    	 * The first request coming through the filter() logic will end up being way off due to the loading of the inner classes. 
+    	 */
+    	MonitorKey.init();
+    	RestResourceMethodKey.init();
+    	RestMonitorKeyWeakReference.init();
+    }
+
     @Trivial
     static class MonitorKey {
-        final String statsKey;
+    	static void init() {}
+
+    	final String statsKey;
         final String statsKeyPrefix;
         final String statsMethodName;
         MonitorKey(String statsKey, String statsKeyPrefix, String statsMethodName) {
@@ -80,7 +92,9 @@ public class RestMonitorKeyCache {
 
     @Trivial
     private static class RestResourceMethodKey {
-        private final RestMonitorKeyWeakReference<Class<?>> restClassRef;
+    	static void init() {}
+
+    	private final RestMonitorKeyWeakReference<Class<?>> restClassRef;
         private final RestMonitorKeyWeakReference<Method> restMethodRef;
         private final int hash;
 
@@ -122,7 +136,9 @@ public class RestMonitorKeyCache {
 
     @Trivial
     private static class RestMonitorKeyWeakReference<T> extends WeakReference<T> {
-        private final RestResourceMethodKey owningKey;
+    	static void init() {}
+
+    	private final RestResourceMethodKey owningKey;
 
         RestMonitorKeyWeakReference(T referent, RestResourceMethodKey owningKey) {
             super(referent);
