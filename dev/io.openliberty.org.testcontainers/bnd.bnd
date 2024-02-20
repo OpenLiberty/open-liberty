@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021, 2023 IBM Corporation and others.
+# Copyright (c) 2021, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -14,8 +14,8 @@
 bVersion: 1.0
 
 #Common Versions
-testContainerVersion: 1.18.3
-dockerJavaVersion: 3.3.1
+testContainerVersion: 1.19.5
+dockerJavaVersion: 3.3.4
 
 Bundle-Name: FAT Testcontainer Bundle
 Bundle-SymbolicName: io.openliberty.org.testcontainers
@@ -27,7 +27,7 @@ Bundle-Description: FAT Testcontainer Bundle; version=${bVersion}
 Export-Package: \
 	com.github.*;version="${dockerJavaVersion}",\
 	com.sun.jna.*;version="5.8.0",\
-	org.apache.commons.*;version="1.21",\
+	org.apache.commons.*;version="1.24.0",\
 	org.testcontainers.*;version="${testContainerVersion}";-split-package:=merge-last,\
 	org.rnorth.*;version="1.0.8"
 
@@ -47,10 +47,12 @@ generate.replacement: true
 # FATs include the version from io.openliberty.com.fasterxml.jackson. If Testcontainers ever depends on a version of
 # jackson-annotations that is not backwards compatible with this then we will need to upgrade
 # the version we include in FATs by updating /cnf/build.gradle configurations binaries.
+#TODO - remove org.testcontainers:oracle-xe once all containers have been re-built using oracle-free
 -buildpath: \
 	com.github.docker-java:docker-java-api;version=${dockerJavaVersion},\
 	com.github.docker-java:docker-java-transport;version=${dockerJavaVersion},\
 	com.github.docker-java:docker-java-transport-zerodep;version=${dockerJavaVersion},\
+	com.ibm.ws.org.apache.commons.compress;version=latest,\
 	org.testcontainers:testcontainers;version=${testContainerVersion},\
 	org.testcontainers:database-commons;version=${testContainerVersion},\
 	org.testcontainers:jdbc;version=${testContainerVersion},\
@@ -58,10 +60,10 @@ generate.replacement: true
 	org.testcontainers:kafka;version=${testContainerVersion},\
 	org.testcontainers:mongodb;version=${testContainerVersion},\
 	org.testcontainers:mssqlserver;version=${testContainerVersion},\
+	org.testcontainers:oracle-free;version=${testContainerVersion},\
 	org.testcontainers:oracle-xe;version=${testContainerVersion},\
 	org.testcontainers:postgresql;version=${testContainerVersion},\
 	org.testcontainers:selenium;version=${testContainerVersion},\
-	org.apache.commons:commons-compress;version=1.21,\
 	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
 	com.ibm.ws.org.slf4j.simple;version=latest,\
 	com.ibm.ws.org.slf4j.api;version=latest,\
