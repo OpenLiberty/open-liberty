@@ -9,21 +9,27 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal.util;
 
+import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.ACTIVATION_TYPE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.AUTO_TAG;
-import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.CHECKSUM_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.CLIENT_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.CONSTITUENT_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.FEATURE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.FILE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.IBM_VERSION_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.JAVA_RANGE_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.LOCATION_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.NAME_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.REPOSITORY_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.RESTART_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.SERVER_TAG;
-import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.SHORT_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.SHORT_NAME_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.SINGLETON_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.START_LEVEL_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.SUPPORTED_VERSION_TAG;
-import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.SYMBOLIC_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.SYMBOLIC_NAME_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.TOLERATE_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.TYPE_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.VERSION_RANGE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.VERSION_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.RepoXMLConstants.VISIBILITY_TAG;
 
@@ -155,29 +161,55 @@ public class RepoXML extends BaseXML {
             upIndent();
 
             printElement(FILE_TAG, def.getFeatureDefinitionFile().getName());
-            printElement(CHECKSUM_TAG, def.getFeatureChecksumFile().getName());
+            // printElement(CHECKSUM_TAG, def.getFeatureChecksumFile().getName());
 
             printElement(NAME_TAG, def.getFeatureName());
-            printElement(SYMBOLIC_TAG, def.getSymbolicName());
-            printElement(SHORT_TAG, def.getIbmShortName());
+            printElement(SYMBOLIC_NAME_TAG, def.getSymbolicName());
+            printOptionalElement(SHORT_NAME_TAG, def.getIbmShortName());
+
             printElement(VERSION_TAG, def.getVersion().toString());
             printElement(IBM_VERSION_TAG, Integer.toString(def.getIbmFeatureVersion()));
-            printElement(SUPPORTED_VERSION_TAG, def.isSupportedFeatureVersion());
+            printOptionalElement(SUPPORTED_VERSION_TAG, def.isSupportedFeatureVersion());
 
             printElement(VISIBILITY_TAG, def.getVisibility().toString());
-            printElement(AUTO_TAG, def.isAutoFeature());
-            printElement(SINGLETON_TAG, def.isSingleton());
-            printElement(SERVER_TAG, def.getProcessTypes().contains(SERVER_TAG));
-            printElement(CLIENT_TAG, def.getProcessTypes().contains(CLIENT_TAG));
+            printOptionalElement(AUTO_TAG, def.isAutoFeature());
+            printOptionalElement(SINGLETON_TAG, def.isSingleton());
+            printOptionalElement(SERVER_TAG, def.getProcessTypes().contains(SERVER_TAG));
+            printOptionalElement(CLIENT_TAG, def.getProcessTypes().contains(CLIENT_TAG));
 
             printElement(RESTART_TAG, def.getAppForceRestart().toString());
 
             for (FeatureResource resource : def.getConstituents(null)) {
-                printElement(CONSTITUENT_TAG, resource.getLocation());
+                write(resource);
             }
 
             downIndent();
             closeElement(FEATURE_TAG);
+        }
+
+        public void write(FeatureResource resource) {
+            openElement(CONSTITUENT_TAG);
+            upIndent();
+
+            printOptionalElement(SYMBOLIC_NAME_TAG, resource.getSymbolicName());
+            printOptionalElement(LOCATION_TAG, resource.getLocation());
+
+            printOptionalElement(START_LEVEL_TAG, resource.getStartLevel());
+            printOptionalElement(ACTIVATION_TYPE_TAG, resource.getActivationType());
+            printOptionalElement(TYPE_TAG, resource.getType());
+            printOptionalElement(JAVA_RANGE_TAG, resource.getJavaRange());
+            printOptionalElement(VERSION_RANGE_TAG, resource.getVersionRange());
+
+            List<String> tolerates = resource.getTolerates();
+            if ( (tolerates != null) && !tolerates.isEmpty() ) {
+                println();
+                for ( String tolerate : tolerates ) {
+                    printElement(TOLERATE_TAG, tolerate);
+                }
+            }
+
+            downIndent();
+            closeElement(CONSTITUENT_TAG);
         }
     }
 }

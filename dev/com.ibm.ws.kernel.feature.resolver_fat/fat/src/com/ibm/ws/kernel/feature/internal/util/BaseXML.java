@@ -39,14 +39,8 @@ public class BaseXML {
     }
 
     public static void write(File file, FailableConsumer<PrintWriter, Exception> writer) throws Exception {
-
-        file.mkdirs();
-        if (!file.exists()) {
-            throw new IOException("Failed to create directories for [ " + file.getAbsolutePath() + " ]");
-        }
-
         try (FileWriter fW = new FileWriter(file, !DO_APPEND);
-             PrintWriter pW = new PrintWriter(fW)) {
+                        PrintWriter pW = new PrintWriter(fW)) {
             writer.accept(pW);
         }
     }
@@ -179,8 +173,28 @@ public class BaseXML {
             println(assembleLine(element, value));
         }
 
+        public void printElement(String element, long value) {
+            printElement(element, Long.toString(value));
+        }
+
         public void printElement(String element, boolean value) {
             println(assembleLine(element, Boolean.toString(value)));
+        }
+
+        public String optionalToString(Object value) {
+            return ((value == null) ? null : value.toString());
+        }
+
+        public void printOptionalElement(String element, Object value) {
+            if (value != null) {
+                println(assembleLine(element, value.toString()));
+            }
+        }
+
+        public void printOptionalElement(String element, boolean value) {
+            if (value) {
+                printElement(element);
+            }
         }
 
         public void withinElement(String element, Runnable action) {
