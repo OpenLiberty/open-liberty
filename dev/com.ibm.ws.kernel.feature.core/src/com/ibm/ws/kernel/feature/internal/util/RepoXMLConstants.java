@@ -45,8 +45,8 @@ public interface RepoXMLConstants {
     String CHECKSUM_TAG = "checksum";
 
     String NAME_TAG = "name";
-    String SYMBOLIC_TAG = "symbolic";
-    String SHORT_TAG = "short";
+    String SYMBOLIC_NAME_TAG = "symbolic-name";
+    String SHORT_NAME_TAG = "short-name";
     String VERSION_TAG = "version";
     String IBM_VERSION_TAG = "ibm-version";
 
@@ -60,4 +60,13 @@ public interface RepoXMLConstants {
     String SUPPORTED_VERSION_TAG = "supported-version";
 
     String CONSTITUENT_TAG = "constituent";
+    String LOCATION_TAG = "location";
+
+    String START_LEVEL_TAG = "start-level";
+    String ACTIVATION_TYPE_TAG = "activation-type";
+    String TYPE_TAG = "type";
+    String JAVA_RANGE_TAG = "java-range";
+    String VERSION_RANGE_TAG = "version-range";
+
+    String TOLERATE_TAG = "tolerate";
 }

@@ -12,6 +12,7 @@ package com.ibm.ws.kernel.feature.internal.util;
 // <case>
 //   <name>name</name>
 //   <description>description</description>
+//   <duration>123456</duration>
 //   <input>
 //     <kernel>featureName</kernel>
 //     <root>featureName</root>
@@ -27,6 +28,7 @@ public interface VerifyXMLConstants {
     String CASE_TAG = "case";
     String NAME_TAG = "name";
     String DESCRIPTION_TAG = "description";
+    String DURATION_TAG = "duration";
 
     String INPUT_TAG = "input";
     String MULTIPLE_TAG = "multiple";

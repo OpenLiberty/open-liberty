@@ -41,6 +41,7 @@ import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.util.LazySupplier;
 import com.ibm.ws.kernel.feature.internal.util.RepoXML;
 import com.ibm.ws.kernel.feature.internal.util.Transformer;
+import com.ibm.ws.kernel.feature.internal.util.VerifyData;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
 import com.ibm.ws.kernel.feature.internal.util.VerifyEnv;
 import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
@@ -50,6 +51,8 @@ import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 
 import org.osgi.framework.Version;
+
+//import org.osgi.framework.Version;
 
 /**
  * A feature resolver that determines the set of features that should be installed
@@ -190,14 +193,6 @@ public class FeatureResolverImpl implements FeatureResolver {
                                   Set<String> allowedMultipleVersions,
                                   EnumSet<ProcessType> supportedProcessTypes) {
 
-        System.out.println("Feature verify: [ " + VerifyEnv.REPO_PROPERTY_NAME + " ]:");
-        System.out.println("  [ " + VerifyEnv.REPO_FILE_NAME + " ]");
-        System.out.println("  [ " + (new File(VerifyEnv.REPO_FILE_NAME)).getAbsolutePath() + " ]");
-
-        System.out.println("Feature verify: [ " + VerifyEnv.RESULTS_PROPERTY_NAME + " ]: [ " + VerifyEnv.RESULTS_FILE_NAME + " ]");
-        System.out.println("  [ " + VerifyEnv.RESULTS_FILE_NAME + " ]");
-        System.out.println("  [ " + (new File(VerifyEnv.RESULTS_FILE_NAME)).getAbsolutePath() + " ]");
-
         if (VerifyEnv.REPO_FILE_NAME != null) {
             write(repository, VerifyEnv.REPO_FILE_NAME);
         }
@@ -225,15 +220,15 @@ public class FeatureResolverImpl implements FeatureResolver {
         File repoFile = new File(repoFileName);
         String repoFilePath = repoFile.getAbsolutePath();
 
-        info("Writing feature repository to [ {} ] ...", repoFilePath);
+        info("Writing feature repository to [ " + repoFilePath + " ] ...");
 
         try {
             RepoXML.write(new File(repoFileName), repository);
-            info("Writing feature repository to [ {} ] ... done", repoFilePath);
+            info("Writing feature repository to [ " + repoFilePath + " ] ... done");
 
         } catch (Exception e) {
             // FFDC
-            error("Error writing feature repository to [ {} ]", repoFilePath);
+            error("Error writing feature repository to [ " + repoFilePath + " ]");
         }
     }
 
@@ -259,34 +254,35 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         info("Performing feature resolution ...");
 
-        info("Resolving and writing to [ {} ] ...", resultsFilePath);
+        info("Resolving and writing to [ " + resultsFilePath + " ] ...");
         List<LazySupplier<VerifyCase>> cases = generate(repository, allowedMultiple, kernelFeatures);
         try {
             VerifyXML.write(resultsFile, cases);
-            info("Resolving and writing to [ {} ] ... done", resultsFilePath);
+            info("Resolving and writing to [ " + resultsFilePath + " ] ... done");
         } catch ( Exception e ) {
             // FFDC
-            error("Failed resolving and writing to [ {} ] ...", resultsFilePath);
+            error("Failed resolving and writing to [ " + resultsFilePath + " ] ...");
         }
     }
 
-    private static Comparator<ProvisioningFeatureDefinition> COMPARE_PUBLIC = new Comparator<ProvisioningFeatureDefinition>() {
+    private static Comparator<ProvisioningFeatureDefinition> COMPARE_SYMBOLIC =
+        new Comparator<ProvisioningFeatureDefinition>() {
+
         /**
-         * Compare two features by their short name.
-         *
-         * This is valid only for public features.
+         * Compare two features by their symbolic name.
+         * (Not all public features have a short name.)
          *
          * Use a case insensitive comparison.
          *
          * @param def1 A feature definition which is to be compared.
          * @param def2 Another feature definition which is to be compared.
          *
-         * @return The features compared by their short name.
+         * @return The features compared by their symbolic name.
          */
         @Override
         public int compare(ProvisioningFeatureDefinition def1,
                            ProvisioningFeatureDefinition def2) {
-            return def1.getIbmShortName().compareToIgnoreCase(def2.getIbmShortName());
+            return def1.getSymbolicName().compareToIgnoreCase(def2.getSymbolicName());
         }
     };
 
@@ -313,7 +309,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         List<ProvisioningFeatureDefinition> publicDefs = repository.select(RepoXML.IS_PUBLIC);
         int numDefs = publicDefs.size();
         ProvisioningFeatureDefinition[] publicDefsArray = publicDefs.toArray( new ProvisioningFeatureDefinition[numDefs]);
-        Arrays.sort(publicDefsArray, COMPARE_PUBLIC);
+        Arrays.sort(publicDefsArray, COMPARE_SYMBOLIC);
 
         List<ProvisioningFeatureDefinition> publicServerDefs = new ArrayList<>(numDefs);
         List<ProvisioningFeatureDefinition> publicClientDefs = new ArrayList<>(numDefs);
@@ -403,12 +399,19 @@ public class FeatureResolverImpl implements FeatureResolver {
         EnumSet<ProcessType> processTypes = EnumSet.of(processType);
 
         info("Creating test result ... ");
+
+        long startTimeNs = VerifyData.getTimeNs();
+
         Result result = doResolve(repository,
                                   kernelFeatures, rootFeatures, preResolved,
                                   allowedMultiple, processTypes);
-        info("Creating test result ... done");
 
-        return asCase(allowedMultiple, processType, kernelFeatures, featureDef, result);
+        long endTimeNs = VerifyData.getTimeNs();
+        long durationNs = endTimeNs - startTimeNs;
+
+        info("Creating test result ... done [ " + Long.toString(durationNs) + " ns ]");
+
+        return asCase(allowedMultiple, processType, kernelFeatures, featureDef, result, durationNs);
     }
 
     /**
@@ -424,6 +427,7 @@ public class FeatureResolverImpl implements FeatureResolver {
      * @param featureDef A single public feature used as the root resolution
      *     feature.
      * @param result The feature resolution result.
+     * @param durationNS The resolution time, in nano-seconds.
      *
      * @return A verification case created from the resolution parameters and
      * the resolution result.
@@ -432,7 +436,8 @@ public class FeatureResolverImpl implements FeatureResolver {
                               ProcessType processType,
                               Collection<ProvisioningFeatureDefinition> kernelFeatures,
                               ProvisioningFeatureDefinition publicDef,
-                              Result result) {
+                              Result result,
+                              long durationNs) {
 
         // For now, only handle the distinction between null and an empty set.
         boolean allowMultiple = (allowedMultiple != null);
@@ -443,6 +448,8 @@ public class FeatureResolverImpl implements FeatureResolver {
                           " Multiple [ " + allowMultiple + " ]" +
                           " Process [ " + processType + " ]";
         verifyCase.description = "Singleton feature resolution";
+
+        verifyCase.durationNs = durationNs;
 
         if ( allowMultiple ) {
             verifyCase.input.setMultiple();
@@ -1051,7 +1058,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         void restoreBestSolution() {
             // NOTE that the best solution is kept as the last permutation
             while (popPermutation()) {
-
+                // EMPTY
             }
             _current = _permutations.getFirst();
         }

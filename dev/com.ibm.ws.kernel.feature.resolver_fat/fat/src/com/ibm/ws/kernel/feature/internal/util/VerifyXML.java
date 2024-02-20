@@ -12,6 +12,7 @@ package com.ibm.ws.kernel.feature.internal.util;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CASE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CLIENT_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.DESCRIPTION_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.DURATION_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.INPUT_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.KERNEL_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.MULTIPLE_TAG;
@@ -81,6 +82,8 @@ public class VerifyXML extends BaseXML {
 
             printElement(NAME_TAG, verifyCase.name);
             printElement(DESCRIPTION_TAG, verifyCase.description);
+            printElement(DURATION_TAG, verifyCase.durationNs);
+
             write(verifyCase.input);
             write(verifyCase.output);
 
@@ -109,7 +112,7 @@ public class VerifyXML extends BaseXML {
             }
 
             downIndent();
-            closeElement(CASE_TAG);
+            closeElement(INPUT_TAG);
         }
 
         public void write(VerifyOutput verifyOutput) {
@@ -121,7 +124,7 @@ public class VerifyXML extends BaseXML {
             }
 
             downIndent();
-            closeElement(CASE_TAG);
+            closeElement(OUTPUT_TAG);
         }
     }
 
@@ -195,6 +198,8 @@ public class VerifyXML extends BaseXML {
                 verifyCase.name = popBuilder();
             } else if (oldLast.equals(DESCRIPTION_TAG)) {
                 verifyCase.description = popBuilder();
+            } else if (oldLast.equals(DURATION_TAG)) {
+                verifyCase.durationNs = Long.parseLong(popBuilder());
 
             } else if (oldLast.equals(INPUT_TAG)) {
                 // Ignore

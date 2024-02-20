@@ -66,12 +66,21 @@ public class VerifyData {
         return Case;
     }
 
+    public static long getTimeNs() {
+        return System.nanoTime();
+    }
+
     public static class VerifyCase {
         public String name;
         public String description;
+        public long durationNs;
 
         public final VerifyInput input = new VerifyInput();
         public final VerifyOutput output = new VerifyOutput();
+
+        public void setDuration(long startNs) {
+            durationNs = getTimeNs() - startNs;
+        }
 
         // Multiple Process:Client Kernel:kname1 Roots:rname1:rname2
 

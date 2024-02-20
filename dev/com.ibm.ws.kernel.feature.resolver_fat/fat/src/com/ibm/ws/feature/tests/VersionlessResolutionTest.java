@@ -16,6 +16,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+// import org.junit.Assert;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,11 +40,40 @@ public class VersionlessResolutionTest {
     public static final String ACTUAL_PATH = "build/verify/actual.xml";
     public static final String REPO_PATH = "build/verify/repo.xml";
 
+    private static void ensureDirectory(File targetFile, String targetPath) {
+        File parentFile = targetFile.getParentFile();
+        if (!parentFile.exists()) {
+            parentFile.mkdirs();
+            if (!parentFile.exists()) {
+                Assert.fail("Target parent could not be created [ " + targetPath + " ]");
+            }
+        }
+
+        if (!parentFile.isDirectory()) {
+            Assert.fail("Target parent is not a directory [ " + targetPath + " ]");
+        }
+    }
+
     @Test
     public void verifyResolution() throws Exception {
+        File repoFile = new File(REPO_PATH);
+        String repoPath = repoFile.getAbsolutePath();
+        System.out.println("Verifying: Repo path [ " + repoPath + " ]");
+
+        File actualResultsFile = new File(ACTUAL_PATH);
+        String actualResultsPath = actualResultsFile.getAbsolutePath();
+        System.out.println("Verifying: Actual results path [ " + actualResultsPath + " ]");
+
+        File expectedResultsFile = new File(EXPECTED_PATH);
+        String expectedResultsPath = expectedResultsFile.getAbsolutePath();
+        System.out.println("Verifying: Results path [ " + expectedResultsPath + " ]");
+
+        ensureDirectory(repoFile, repoPath);
+        ensureDirectory(actualResultsFile, actualResultsPath);
+
         LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
-        server.addEnvVar(VerifyEnv.REPO_PROPERTY_NAME, REPO_PATH);
-        server.addEnvVar(VerifyEnv.RESULTS_PROPERTY_NAME, ACTUAL_PATH);
+        server.addEnvVar(VerifyEnv.REPO_PROPERTY_NAME, repoPath);
+        server.addEnvVar(VerifyEnv.RESULTS_PROPERTY_NAME, actualResultsPath);
 
         server.startServer();
         try {
@@ -51,7 +82,13 @@ public class VersionlessResolutionTest {
             server.stopServer("CWWKF0001E");
         }
 
-        verify(EXPECTED_PATH, ACTUAL_PATH);
+        if (!actualResultsFile.exists()) {
+            Assert.fail("Missing actual results [ " + actualResultsPath + " ]");
+        } else if (!expectedResultsFile.exists()) {
+            Assert.fail("Missing expected results [ " + expectedResultsPath + " ]");
+        } else {
+            verify(expectedResultsPath, actualResultsPath);
+        }
     }
 
     protected void verify(String expectedPath, String actualPath) throws Exception {
