@@ -230,7 +230,9 @@ public class AuditPE implements ProbeExtension {
 					break;
 				case SECURITY_MEMBER_MGMT_01:
 				restInjector = new AuditPERestInjectorImpl();
+				//TODO, check if resthandler is there
 				restConsumer = restInjector.getConsumer();
+				//TODO Only call this if resthandler is there. 
 				restConsumer.exec_auditEventMemberMgmt01(auditServiceRef, methodParams);
 					break;
 				case SECURITY_JMS_AUTHN_01:
@@ -253,7 +255,9 @@ public class AuditPE implements ProbeExtension {
 					break;
 				case SECURITY_REST_HANDLER_AUTHZ:
 					restInjector = new AuditPERestInjectorImpl();
+					//TODO, check if resthandler is there
 					restConsumer = restInjector.getConsumer();
+					//TODO Only call this if resthandler is there. 
 					restConsumer.exec_auditEventRESTAuthz(auditServiceRef, methodParams);
 					break;
 				default:
