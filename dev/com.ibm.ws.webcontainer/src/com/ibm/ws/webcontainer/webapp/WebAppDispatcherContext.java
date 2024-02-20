@@ -607,6 +607,9 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
 
     public void sendError(int sc, String message, boolean ignoreCommittedException) throws IOException
     {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "sendError", "ENTER ; sc [" +sc + "] : message [" + message + "] : ignoreCommittedException [", ignoreCommittedException + "]");
+        }
         // LIDB1234.3 - throw exception if response already committed.
         if (getResponse().isCommitted())
         {

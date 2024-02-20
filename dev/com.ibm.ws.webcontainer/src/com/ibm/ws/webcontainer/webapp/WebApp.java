@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -142,7 +142,6 @@ import com.ibm.ws.webcontainer.servlet.ServletWrapper;
 import com.ibm.ws.webcontainer.servlet.exception.NoTargetForURIException;
 import com.ibm.ws.webcontainer.session.IHttpSessionContext;
 import com.ibm.ws.webcontainer.spiadapter.collaborator.IInvocationCollaborator;
-import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer.util.DocumentRootUtils;
 import com.ibm.ws.webcontainer.util.EmptyEnumeration;
 import com.ibm.ws.webcontainer.util.IteratorEnumerator;
@@ -4122,7 +4121,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             logger.entering(CLASS_NAME, "sendError", "error :" + error.getMessage());
 
         req.setAttribute("javax.servlet.jsp.jspException", error);
-        
+
         WebContainerRequestState reqState = WebContainerRequestState.getInstance(true);   //PI80786
 
         // PK82794
@@ -4425,6 +4424,17 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
             reportRecursiveError(req, res, error, new WebAppErrorReport(th));
         }
+        finally {
+            //since Servlet 6.1 
+            if (com.ibm.ws.webcontainer.osgi.WebContainer.isServlet61orAbove()) {
+                String originalMethod = (String) req.getAttribute("jakarta.servlet.error.method");
+
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                    logger.logp(Level.FINE, CLASS_NAME, "sendError", "restore original request method from error.method attribute [" + originalMethod + "]");
+                }
+                ((IExtendedRequest) req).setMethod(originalMethod);
+            }
+        }
 
         try {
             // reset the error bean object
@@ -4436,6 +4446,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             /* ignore */
             com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, CLASS_NAME + ".handleError", "961", this);
         }
+        
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
             logger.exiting(CLASS_NAME, "sendError");
 
@@ -4638,7 +4649,15 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 req.setAttribute("javax.servlet.error.servlet_name", name);
             }
         }
+        
+        //since Servlet 6.1 
+        if (com.ibm.ws.webcontainer.osgi.WebContainer.isServlet61orAbove()) {
+            req.setAttribute("jakarta.servlet.error.method", httpServletReq.getMethod());
 
+            //All dispatches to error page MUST be GET method.
+            ((IExtendedRequest) req).setMethod("GET");
+        }
+        
         // LIDB1234.5 - end
 
         // Arguably, the request attributes are unnecessary if the configuration is unavailable,
