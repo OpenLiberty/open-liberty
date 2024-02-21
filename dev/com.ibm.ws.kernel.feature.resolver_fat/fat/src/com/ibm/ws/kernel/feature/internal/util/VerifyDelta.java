@@ -110,8 +110,6 @@ public class VerifyDelta {
     }
 
     public void compare(String caseKey, String tag, List<String> expected, List<String> actual) {
-        String prefix = "Error [ " + tag + caseKey + " ]: ";
-
         int actualSize = actual.size();
         int expectedSize = expected.size();
         if (actualSize != expectedSize) {
@@ -123,17 +121,18 @@ public class VerifyDelta {
 
         for (String expectedElement : expectedSet) {
             if (!actualSet.contains(expectedElement)) {
-                addError(caseKey, prefix + "Missing [ " + expectedElement + " ]");
+                addError(caseKey, "Missing [ " + expectedElement + " ]");
             }
         }
 
         for (String actualElement : actualSet) {
             if (!expectedSet.contains(actualElement)) {
-                addError(caseKey, prefix + "Extra       [ " + actualElement + " ]");
+                addError(caseKey, "Extra       [ " + actualElement + " ]");
             }
         }
 
         int minSize = ((actualSize > expectedSize) ? expectedSize : actualSize);
+
         String orderError = null;
 
         for (int elementNo = 0; (orderError == null) && (elementNo < minSize); elementNo++) {
@@ -147,8 +146,8 @@ public class VerifyDelta {
             }
         }
 
-        if (orderError == null) {
-            addError(caseKey, prefix + orderError);
+        if (orderError != null) {
+            addError(caseKey, orderError);
         }
     }
 }

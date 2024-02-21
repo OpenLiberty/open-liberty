@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal.util;
 
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CASES_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CASE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CLIENT_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.DESCRIPTION_TAG;
@@ -65,15 +66,27 @@ public class VerifyXML extends BaseXML {
         }
 
         public void write(VerifyData verifyData) {
+            openElement(CASES_TAG);
+            upIndent();
+
             for (VerifyCase verifyCase : verifyData.cases) {
                 write(verifyCase);
             }
+
+            downIndent();
+            closeElement(CASES_TAG);
         }
 
         public void write(List<LazySupplier<VerifyCase>> cases) throws Exception {
+            openElement(CASES_TAG);
+            upIndent();
+
             for (LazySupplier<VerifyCase> verifyCase : cases) {
                 write(verifyCase.get());
             }
+
+            downIndent();
+            closeElement(CASES_TAG);
         }
 
         public void write(VerifyCase verifyCase) {
@@ -82,7 +95,7 @@ public class VerifyXML extends BaseXML {
 
             printElement(NAME_TAG, verifyCase.name);
             printElement(DESCRIPTION_TAG, verifyCase.description);
-            printElement(DURATION_TAG, verifyCase.durationNs);
+            printElementNsAsS(DURATION_TAG, verifyCase.durationNs);
 
             write(verifyCase.input);
             write(verifyCase.output);
@@ -144,9 +157,17 @@ public class VerifyXML extends BaseXML {
 
         //
 
-        private final VerifyData verifyData = new VerifyData();
+        private VerifyData verifyData;
 
-        private VerifyCase verifyCase = null;
+        private void startData() {
+            verifyData = new VerifyData();
+        }
+
+        private void endData() {
+            // Nothing
+        }
+
+        private VerifyCase verifyCase;
 
         private void startCase() {
             verifyCase = verifyData.addCase();
@@ -158,51 +179,69 @@ public class VerifyXML extends BaseXML {
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
-            if (pushElement(localName, CASE_TAG, null)) {
+            // System.out.println("Start [ " + qName + " ]");
+
+            boolean whitespaceOnly = false;
+
+            if (pushElement(qName, CASES_TAG, null)) {
+                startData();
+                whitespaceOnly = true;
+
+            } else if (pushElement(qName, CASE_TAG, CASES_TAG)) {
                 startCase();
-            } else if (pushElement(localName, NAME_TAG, CASE_TAG)) {
-                pushBuilder();
-            } else if (pushElement(localName, DESCRIPTION_TAG, CASE_TAG)) {
-                pushBuilder();
+                whitespaceOnly = true;
+            } else if (pushElement(qName, NAME_TAG, CASE_TAG)) {
+                // ignore
+            } else if (pushElement(qName, DESCRIPTION_TAG, CASE_TAG)) {
+                // ignore
+            } else if (pushElement(qName, DURATION_TAG, CASE_TAG)) {
+                // ignore
 
-            } else if (pushElement(localName, INPUT_TAG, CASE_TAG)) {
+            } else if (pushElement(qName, INPUT_TAG, CASE_TAG)) {
+                whitespaceOnly = true;
+            } else if (pushElement(qName, MULTIPLE_TAG, INPUT_TAG)) {
                 // ignore
-            } else if (pushElement(localName, MULTIPLE_TAG, INPUT_TAG)) {
+            } else if (pushElement(qName, CLIENT_TAG, INPUT_TAG)) {
                 // ignore
-            } else if (pushElement(localName, CLIENT_TAG, INPUT_TAG)) {
+            } else if (pushElement(qName, SERVER_TAG, INPUT_TAG)) {
                 // ignore
-            } else if (pushElement(localName, SERVER_TAG, INPUT_TAG)) {
+            } else if (pushElement(qName, KERNEL_TAG, INPUT_TAG)) {
                 // ignore
-            } else if (pushElement(localName, KERNEL_TAG, INPUT_TAG)) {
-                pushBuilder();
-            } else if (pushElement(localName, ROOT_TAG, INPUT_TAG)) {
-                pushBuilder();
+            } else if (pushElement(qName, ROOT_TAG, INPUT_TAG)) {
+                // ignore
 
-            } else if (pushElement(localName, OUTPUT_TAG, CASE_TAG)) {
-                //ignore
-            } else if (pushElement(localName, RESOLVED_TAG, OUTPUT_TAG)) {
-                pushBuilder();
+            } else if (pushElement(qName, OUTPUT_TAG, CASE_TAG)) {
+                whitespaceOnly = true;
+            } else if (pushElement(qName, RESOLVED_TAG, OUTPUT_TAG)) {
+                // ignore
 
             } else {
                 super.startElement(uri, localName, qName, atts);
             }
+
+            pushBuilder(whitespaceOnly);
         }
 
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
+            // System.out.println("End [ " + qName + " ]");
+
+            String elementText = popBuilder();
             String oldLast = popElement();
 
-            if (oldLast.equals(CASE_TAG)) {
+            if (oldLast.equals(CASES_TAG)) {
+                endData();
+            } else if (oldLast.equals(CASE_TAG)) {
                 endCase();
             } else if (oldLast.equals(NAME_TAG)) {
-                verifyCase.name = popBuilder();
+                verifyCase.name = elementText;
             } else if (oldLast.equals(DESCRIPTION_TAG)) {
-                verifyCase.description = popBuilder();
+                verifyCase.description = elementText;
             } else if (oldLast.equals(DURATION_TAG)) {
-                verifyCase.durationNs = Long.parseLong(popBuilder());
+                verifyCase.durationNs = parseSAsNS(elementText);
 
             } else if (oldLast.equals(INPUT_TAG)) {
-                // Ignore
+                // ignore
             } else if (oldLast.contentEquals(MULTIPLE_TAG)) {
                 verifyCase.input.setMultiple();
             } else if (oldLast.contentEquals(CLIENT_TAG)) {
@@ -210,14 +249,14 @@ public class VerifyXML extends BaseXML {
             } else if (oldLast.contentEquals(SERVER_TAG)) {
                 verifyCase.input.setServer();
             } else if (oldLast.equals(KERNEL_TAG)) {
-                verifyCase.input.addKernel(popBuilder());
+                verifyCase.input.addKernel(elementText);
             } else if (oldLast.equals(ROOT_TAG)) {
-                verifyCase.input.addRoot(popBuilder());
+                verifyCase.input.addRoot(elementText);
 
             } else if (oldLast.equals(OUTPUT_TAG)) {
-                // Ignore
+                // ignore
             } else if (oldLast.equals(RESOLVED_TAG)) {
-                verifyCase.output.addResolved(popBuilder());
+                verifyCase.output.addResolved(elementText);
 
             } else {
                 super.endElement(uri, localName, qName);

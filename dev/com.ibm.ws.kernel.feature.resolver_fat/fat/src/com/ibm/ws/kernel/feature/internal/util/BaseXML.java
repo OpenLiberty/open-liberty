@@ -157,6 +157,28 @@ public class BaseXML {
             return line;
         }
 
+        // <element>text</element>
+        protected String assembleMultiLine(String element, String... values) {
+            lineBuilder.append(getIndentation());
+
+            lineBuilder.append(OPEN_BRACE_CHAR);
+            lineBuilder.append(element);
+            lineBuilder.append(CLOSE_BRACE_CHAR);
+
+            for (String value : values) {
+                lineBuilder.append(value);
+            }
+
+            lineBuilder.append(OPEN_BRACE_CHAR);
+            lineBuilder.append(SLASH_CHAR);
+            lineBuilder.append(element);
+            lineBuilder.append(CLOSE_BRACE_CHAR);
+
+            String line = lineBuilder.toString();
+            lineBuilder.setLength(0);
+            return line;
+        }
+
         public void openElement(String element) {
             println(assembleLine(element, !DO_CLOSE));
         }
@@ -173,8 +195,22 @@ public class BaseXML {
             println(assembleLine(element, value));
         }
 
+        public void printMultiElement(String element, String... values) {
+            println(assembleMultiLine(element, values));
+        }
+
         public void printElement(String element, long value) {
             printElement(element, Long.toString(value));
+        }
+
+        public void printElementNsAsS(String element, long valueNs) {
+            long ns = valueNs % NS_IN_S;
+            long s = (valueNs - ns) / NS_IN_S;
+
+            String nsText = Long.toString(ns);
+            String sText = Long.toString(s);
+
+            printMultiElement(element, sText, ".", gap(ns), nsText, " s");
         }
 
         public void printElement(String element, boolean value) {
@@ -225,6 +261,9 @@ public class BaseXML {
 
             this.builderPool = new ArrayList<>();
 
+            this.whitespaceStack = new ArrayList<>();
+            this.lastWhitespace = WHITESPACE_ONLY;
+
             this.builderStack = new ArrayList<>();
             this.lastBuilder = null;
         }
@@ -240,6 +279,29 @@ public class BaseXML {
 
         public Locator getDocumentLocator() {
             return locator;
+        }
+
+        public long parseSAsNS(String text) throws SAXException {
+            int len = text.length();
+            if ((len < 3) || (text.charAt(len - 1) != 's') || (text.charAt(len - 2) != ' ')) {
+                throw new SAXParseException("Incorrect seconds format [ " + text + " ]", getDocumentLocator());
+            }
+            len -= 2;
+
+            int dot = text.indexOf('.');
+            if ((dot == -1) || (dot == 0) || (dot == (len - 1))) {
+                throw new SAXParseException("Incorrect seconds format [ " + text + " ]", getDocumentLocator());
+            }
+
+            long s;
+            long ns;
+            try {
+                s = Long.parseLong(text.substring(0, dot), 10); // substring is needed before java 9
+                ns = Long.parseLong(text.substring(dot + 1, len), 10);
+            } catch (NumberFormatException e) {
+                throw new SAXParseException("Incorrect seconds format [ " + text + " ]", getDocumentLocator(), e);
+            }
+            return (s * NS_IN_S) + ns;
         }
 
         //
@@ -261,18 +323,28 @@ public class BaseXML {
 
         //
 
-        private final List<String> elementStack;
+        private final List<String> elementStack; // Contains all but the last element
         private String lastElement;
 
-        protected String popElement() {
+        protected String popElement() throws SAXParseException {
             String oldLast = lastElement;
+            if (oldLast == null) {
+                throw new SAXParseException("Pop with no element", getDocumentLocator());
+            }
+
             int size = elementStack.size();
-            lastElement = ((size > 1) ? elementStack.get(size - 2) : null);
+            lastElement = ((size == 0) ? null : elementStack.remove(size - 1));
+
+            // System.out.println("Pop [ " + oldLast + " ] leaving [ " + lastElement + " ]");
             return oldLast;
         }
 
         protected void pushElement(String newLastElement) {
-            elementStack.add(lastElement = newLastElement);
+            // System.out.println("Push [ " + newLastElement + " ] onto [ " + lastElement + " ]");
+            if (lastElement != null) {
+                elementStack.add(lastElement);
+            }
+            lastElement = newLastElement;
         }
 
         protected void pushElement(String newLastElement, String requiredElement) throws SAXParseException {
@@ -306,9 +378,9 @@ public class BaseXML {
             pushElement(newLastElement);
         }
 
-        protected boolean pushElement(String localName, String elementName, String requiredElement) throws SAXParseException {
-            if (localName.equals(elementName)) {
-                pushElement(localName, requiredElement);
+        protected boolean pushElement(String qName, String elementName, String requiredElement) throws SAXParseException {
+            if (qName.equals(elementName)) {
+                pushElement(qName, requiredElement);
                 return true;
             } else {
                 return false;
@@ -329,45 +401,87 @@ public class BaseXML {
             String text = builder.toString();
             builder.setLength(0);
             builderPool.add(builder);
+
+            // System.out.println("Release text [ " + text + " ]");
             return text;
         }
+
+        private final List<Boolean> whitespaceStack;
+        private boolean lastWhitespace;
 
         private final List<StringBuilder> builderStack;
         private StringBuilder lastBuilder;
 
-        protected String popBuilder() {
-            StringBuilder oldLast = lastBuilder;
+        protected static final boolean WHITESPACE_ONLY = true;
 
-            int size = builderStack.size();
-            lastBuilder = ((size > 1) ? builderStack.get(size - 2) : null);
+        protected void pushBuilder(boolean whitespaceOnly) {
+            whitespaceStack.add(lastWhitespace);
+            lastWhitespace = whitespaceOnly;
 
-            return releaseBuilder(oldLast);
+            if (!whitespaceOnly) {
+                if (lastBuilder != null) {
+                    builderStack.add(lastBuilder);
+                }
+                lastBuilder = acquireBuilder();
+            }
         }
 
-        protected void pushBuilder() {
-            builderStack.add(lastBuilder = acquireBuilder());
+        protected String popBuilder() {
+            boolean oldWhitespace = lastWhitespace;
+
+            int whiteSize = whitespaceStack.size();
+            if (whiteSize == 0) {
+                lastWhitespace = WHITESPACE_ONLY;
+            } else {
+                lastWhitespace = whitespaceStack.remove(whiteSize - 1);
+            }
+
+            if (oldWhitespace) {
+                return null;
+            }
+
+            StringBuilder oldBuilder = lastBuilder;
+            int builderSize = builderStack.size();
+            if (builderSize == 0) {
+                lastBuilder = null;
+            } else {
+                lastBuilder = builderStack.remove(builderSize - 1);
+            }
+            return releaseBuilder(oldBuilder);
         }
 
         protected void addText(String text) throws SAXParseException {
-            if (lastBuilder == null) {
-                throw new SAXParseException("Unexpected text [ " + text + " ]", getDocumentLocator());
+            if (lastWhitespace) {
+                if (text.trim().isEmpty()) {
+                    return;
+                } else {
+                    throw new SAXParseException("Unexpected non-whitespace text [ " + text + " ]", getDocumentLocator());
+                }
+
+            } else {
+                if (lastBuilder == null) {
+                    throw new SAXParseException("Unexpected text [ " + text + " ]", getDocumentLocator());
+                } else {
+                    lastBuilder.append(text);
+                }
             }
-            lastBuilder.append(text);
         }
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
-            throw new SAXParseException("Unknown element [ " + localName + " ]", getDocumentLocator());
+            throw new SAXParseException("Unknown element [ " + qName + " ]", getDocumentLocator());
         }
 
         @Override
         public void endElement(String uri, String localName, String qName) throws SAXException {
-            throw new SAXParseException("Unknown element [ " + localName + " ]", getDocumentLocator());
+            throw new SAXParseException("Unknown element [ " + qName + " ]", getDocumentLocator());
         }
 
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
-            addText(new String(ch, start, length)); // throws SAXParseException
+            String text = new String(ch, start, length);
+            // System.out.println("Characters [ " + text + " ]");
+            addText(text); // throws SAXParseException
         }
 
         //
@@ -449,5 +563,36 @@ public class BaseXML {
             println("Fatal", e);
             throw e;
         }
+    }
+
+    private static final long NS_IN_S = 1000000000L;
+
+    private static final long[] GAP_LIMIT =
+                { NS_IN_S / 10,           // 100,000,000
+                  NS_IN_S / 100,          //  10,000,000
+                  NS_IN_S / 1000,         //   1,000,000
+                  NS_IN_S / 10000,        //     100,000
+                  NS_IN_S / 100000,       //      10,000
+                  NS_IN_S / 1000000,      //       1,000
+                  NS_IN_S / 10000000,     //         100
+                  NS_IN_S / 100000000  }; //          10
+
+    private static final String[] GAPS =
+                { "",
+                  "0",
+                  "00",
+                  "000",
+                  "0000",
+                  "00000",
+                  "000000",
+                  "0000000",
+                  "00000000" };
+
+    public static String gap(long value) {
+        int limitNo = 0;
+        while ((limitNo < GAP_LIMIT.length) && (value < GAP_LIMIT[limitNo])) {
+            limitNo++;
+        }
+        return GAPS[limitNo];
     }
 }
