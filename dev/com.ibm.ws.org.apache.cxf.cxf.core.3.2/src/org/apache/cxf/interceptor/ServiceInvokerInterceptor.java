@@ -39,6 +39,7 @@ import org.apache.cxf.service.invoker.Invoker;
 import org.apache.cxf.common.logging.LogUtils;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import com.ibm.websphere.ras.annotation.Sensitive;
 
 /**
  * Invokes a Binding's invoker with the <code>INVOCATION_INPUT</code> from
@@ -52,7 +53,7 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
         super(Phase.INVOKE);
     }
 
-    public void handleMessage(final Message message) {
+    public void handleMessage(@Sensitive final Message message) {
         final Exchange exchange = message.getExchange();
         final Endpoint endpoint = exchange.getEndpoint();
         final Service service = endpoint.getService();
