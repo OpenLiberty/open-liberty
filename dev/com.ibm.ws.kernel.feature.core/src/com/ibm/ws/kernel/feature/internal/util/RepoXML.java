@@ -202,7 +202,6 @@ public class RepoXML extends BaseXML {
 
             List<String> tolerates = resource.getTolerates();
             if ( (tolerates != null) && !tolerates.isEmpty() ) {
-                println();
                 for ( String tolerate : tolerates ) {
                     printElement(TOLERATE_TAG, tolerate);
                 }

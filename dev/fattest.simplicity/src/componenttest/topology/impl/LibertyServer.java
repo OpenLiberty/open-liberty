@@ -3045,7 +3045,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public ProgramOutput stopServerAlways(String... ignoredFailures) throws Exception {
-        return stopServer(!IGNORE_STOPPED, POST_ARCHIVES, FORCE_STOP, SKIP_ARCHIVES,
+        return stopServer(IGNORE_STOPPED, POST_ARCHIVES, FORCE_STOP, SKIP_ARCHIVES,
                           Collections.emptyList(), ignoredFailures);
     }
 

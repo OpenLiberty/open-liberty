@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal.util;
 
+// <cases>
 // <case>
 //   <name>name</name>
 //   <description>description</description>
@@ -23,8 +24,10 @@ package com.ibm.ws.kernel.feature.internal.util;
 //     <resolved>FeatureName</kernel>
 //   </output>
 // </case>
+// </cases>
 
 public interface VerifyXMLConstants {
+    String CASES_TAG = "cases";
     String CASE_TAG = "case";
     String NAME_TAG = "name";
     String DESCRIPTION_TAG = "description";

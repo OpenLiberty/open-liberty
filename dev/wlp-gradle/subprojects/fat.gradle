@@ -16,7 +16,7 @@
  */
 // Global vars
 ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
-ext.distsDirectory= new File(project.buildDir, 'distributions')
+ext.distsDirectory = new File(project.buildDir, 'distributions')
 
 // Local vars
 File publishDir = new File(autoFvtDir, 'publish')
@@ -138,6 +138,17 @@ task autoFVT {
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
   enabled project.file('fat').exists()
+
+  ext.getFeature = { line ->
+    def fStart = line.indexOf('<feature>')
+    if (fStart == -1)
+      return null
+    fStart = fStart + '<feature>'.length()
+    def fEnd = line.indexOf('</feature>')
+    if ( fEnd == -1 )
+      return null
+    return line.substring(fStart, fEnd).trim().toLowerCase()
+  }
 
   // For now we are just forcing the autoFVT create every time, this will be fixed
   // TODO: Be smart about when to recreate the autoFVT.zip
@@ -328,36 +339,42 @@ task autoFVT {
 
     // Produce a list of features tested by this FAT
     def featureDeps = [] as Set
+
     // Include features added explictly via bnd.bnd
     def testedFeatures = bnd.get('tested.features')
     if(testedFeatures != null)
       testedFeatures.split(',').each{ featureDeps.add(it.trim().toLowerCase()) }
+
     // Scan publish/ dir for features
     if(publishDir.exists()) {
       publishDir.eachFileRecurse(groovy.io.FileType.FILES) {
         if(it.name.endsWith('.xml')) {
           file(it).eachLine { line ->
-            if(line.contains("<feature>")) {
-              def feature = (line =~ /.*<feature>(.*)<\/feature>.*/)[0][1]
-              featureDeps.add(feature.trim().toLowerCase())
+            def feature = getFeature(line)
+            if ( feature != null ) {
+              // println "Recording feature [ " + feature + " ]"
+              featureDeps.add(feature)
             }
           }
         }
       }
     }
+
     // Scan FAT files dir for features
     if(new File(autoFvtDir, 'lib/LibertyFATTestFiles').exists()){
       new File(autoFvtDir, 'lib/LibertyFATTestFiles').eachFileRecurse(groovy.io.FileType.FILES) {
         if(it.name.endsWith('.xml')) {
           file(it).eachLine { line ->
-            if(line.contains("<feature>")) {
-              def feature = (line =~ /.*<feature>(.*)<\/feature>.*/)[0][1]
-              featureDeps.add(feature.trim().toLowerCase())
+            def feature = getFeature(line)
+            if ( feature != null ) {
+              // println "Recording feature [ " + feature + " ]"
+              featureDeps.add(feature)
             }
           }
         }
       }
     }
+
     if(featureDeps.size() > 0) {
       println "This FAT tests the following features: " + featureDeps
       def fatDeps = new groovy.json.JsonBuilder()

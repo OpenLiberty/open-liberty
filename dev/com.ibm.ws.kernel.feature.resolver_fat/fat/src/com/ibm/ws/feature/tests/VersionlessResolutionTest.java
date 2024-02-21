@@ -15,12 +15,14 @@ package com.ibm.ws.feature.tests;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
-// import org.junit.Assert;
-
-import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.Assert;
+
+// import org.junit.Assert;
 
 import com.ibm.ws.kernel.feature.internal.util.VerifyData;
 import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
@@ -36,38 +38,70 @@ public class VersionlessResolutionTest {
 
     public static final String SERVER_NAME = "verify";
 
-    public static final String EXPECTED_PATH = "data/verify/expected.xml";
+    // Expected results:
+    //
+    // open-liberty/dev/com.ibm.ws.kernel.feature.resolver_fat/publish/verify/expected.xml
+    // -- as --
+    // open-liberty/dev/com.ibm.ws.kernel.feature.resolver_fat/build/libs/autoFVT/publish/verify/expected.xml
+    //
+    // Actual results:
+    //
+    // open-liberty/dev/com.ibm.ws.kernel.feature.resolver_fat/build/libs/autoFVT/build/verify/actual.xml
+    //
+    // When updating the expected results, copy the actual results to the root publish folder.
+
+    public static final String EXPECTED_PATH = "publish/verify/expected.xml";
     public static final String ACTUAL_PATH = "build/verify/actual.xml";
     public static final String REPO_PATH = "build/verify/repo.xml";
 
-    private static void ensureDirectory(File targetFile, String targetPath) {
-        File parentFile = targetFile.getParentFile();
-        if (!parentFile.exists()) {
-            parentFile.mkdirs();
-            if (!parentFile.exists()) {
-                Assert.fail("Target parent could not be created [ " + targetPath + " ]");
-            }
-        }
+    public static File repoFile;
+    public static String repoPath;
 
-        if (!parentFile.isDirectory()) {
-            Assert.fail("Target parent is not a directory [ " + targetPath + " ]");
+    public static File actualResultsFile;
+    public static String actualResultsPath;
+    public static VerifyData actualResults;
+
+    public static File expectedResultsFile;
+    public static String expectedResultsPath;
+    public static VerifyData expectedResults;
+
+    @BeforeClass
+    public static void setupXML() throws Exception {
+        repoFile = new File(REPO_PATH);
+        repoPath = repoFile.getAbsolutePath();
+        System.out.println("Verifying: Repo path [ " + repoPath + " ]");
+
+        actualResultsFile = new File(ACTUAL_PATH);
+        actualResultsPath = actualResultsFile.getAbsolutePath();
+        System.out.println("Verifying: Actual results path [ " + actualResultsPath + " ]");
+
+        expectedResultsFile = new File(EXPECTED_PATH);
+        expectedResultsPath = expectedResultsFile.getAbsolutePath();
+        System.out.println("Verifying: Expected results path [ " + expectedResultsPath + " ]");
+
+        if (expectedResultsFile.exists()) {
+            expectedResults = load("Expected Results", expectedResultsPath);
+            System.out.println("Expected cases [ " + expectedResults.cases.size() + " ]");
+        }
+    }
+
+    @Test
+    public void verifyExpected() throws Exception {
+        if (expectedResults == null) {
+            Assert.fail("No expected [ " + expectedResultsPath + " ]");
+
+        } else {
+
+            Map<String, List<String>> errors = VerifyDelta.compare(expectedResults, expectedResults);
+            if (!errors.isEmpty()) {
+                String firstError = displayErrors("Expected vs Expected", errors);
+                Assert.fail("Base comparison failure: First error: [ " + firstError + " ]");
+            }
         }
     }
 
     @Test
     public void verifyResolution() throws Exception {
-        File repoFile = new File(REPO_PATH);
-        String repoPath = repoFile.getAbsolutePath();
-        System.out.println("Verifying: Repo path [ " + repoPath + " ]");
-
-        File actualResultsFile = new File(ACTUAL_PATH);
-        String actualResultsPath = actualResultsFile.getAbsolutePath();
-        System.out.println("Verifying: Actual results path [ " + actualResultsPath + " ]");
-
-        File expectedResultsFile = new File(EXPECTED_PATH);
-        String expectedResultsPath = expectedResultsFile.getAbsolutePath();
-        System.out.println("Verifying: Results path [ " + expectedResultsPath + " ]");
-
         ensureDirectory(repoFile, repoPath);
         ensureDirectory(actualResultsFile, actualResultsPath);
 
@@ -83,44 +117,68 @@ public class VersionlessResolutionTest {
         }
 
         if (!actualResultsFile.exists()) {
-            Assert.fail("Missing actual results [ " + actualResultsPath + " ]");
-        } else if (!expectedResultsFile.exists()) {
-            Assert.fail("Missing expected results [ " + expectedResultsPath + " ]");
+            Assert.fail("No actual results [ " + actualResultsPath + " ]");
+        } else if (expectedResults == null) {
+            Assert.fail("No expected results [ " + expectedResultsPath + " ]");
         } else {
-            verify(expectedResultsPath, actualResultsPath);
+            actualResults = load("Actual", actualResultsPath);
+            System.out.println("Actual cases [ " + actualResults.cases.size() + " ]");
+
+            verify();
         }
     }
 
-    protected void verify(String expectedPath, String actualPath) throws Exception {
-        System.out.println("Verifying: Expected [ " + expectedPath + " ]; Actual [ " + actualPath + " ]");
+    protected void verify() throws Exception {
+        System.out.println("Verifying: Expected [ " + expectedResultsPath + " ]; Actual [ " + actualResultsPath + " ]");
 
-        VerifyData expectedCases = load("Input", expectedPath);
-        System.out.println("Expected cases [ " + expectedCases.cases.size() + " ]");
-
-        VerifyData actualCases = load("Actual", actualPath);
-        System.out.println("Actual cases [ " + actualCases.cases.size() + " ]");
-
-        Map<String, List<String>> errors = VerifyDelta.compare(expectedCases, actualCases);
+        Map<String, List<String>> errors = VerifyDelta.compare(expectedResults, actualResults);
 
         if (errors.isEmpty()) {
             System.out.println("All cases pass");
         } else {
-            errors.forEach((String caseName, List<String> caseErrors) -> {
-                System.out.println("Case errors [ " + caseName + " ]:");
-                for (String caseError : caseErrors) {
-                    System.out.println("  [ " + caseError + " ]");
-                }
-            });
-            Assert.fail("Incorrect resolutions detected.");
+            String firstError = displayErrors("Expected vs Actual", errors);
+            Assert.fail("Incorrect resolutions detected: First error: [ " + firstError + " ].");
         }
     }
 
-    protected VerifyData load(String tag, String path) throws Exception {
+    protected String displayErrors(String title, Map<String, List<String>> errors) {
+        final AtomicReference<String> firstError = new AtomicReference<>();
+
+        System.out.println(title);
+        errors.forEach((String caseName, List<String> caseErrors) -> {
+            System.out.println("Case errors [ " + caseName + " ]:");
+            for (String caseError : caseErrors) {
+                System.out.println("  [ " + caseError + " ]");
+
+                if (firstError.get() == null) {
+                    firstError.set(caseName + " : " + caseError);
+                }
+            }
+        });
+
+        return firstError.get();
+    }
+
+    protected static VerifyData load(String tag, String path) throws Exception {
         File file = new File(path);
         if (!file.exists()) {
             Assert.fail(tag + ": [ " + file.getAbsolutePath() + " ]: does not exist");
+            return null;
+        } else {
+            return VerifyXML.read(file);
         }
+    }
 
-        return VerifyXML.read(file);
+    private static void ensureDirectory(File targetFile, String targetPath) {
+        File parentFile = targetFile.getParentFile();
+        if (!parentFile.exists()) {
+            parentFile.mkdirs();
+            if (!parentFile.exists()) {
+                Assert.fail("Target parent could not be created [ " + targetPath + " ]");
+            }
+        }
+        if (!parentFile.isDirectory()) {
+            Assert.fail("Target parent is not a directory [ " + targetPath + " ]");
+        }
     }
 }
