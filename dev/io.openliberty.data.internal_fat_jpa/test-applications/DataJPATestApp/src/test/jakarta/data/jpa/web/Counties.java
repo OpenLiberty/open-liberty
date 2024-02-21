@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import jakarta.data.page.Page;
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
@@ -63,7 +63,7 @@ public interface Counties {
 
     @OrderBy("population")
     @OrderBy("name")
-    Page<int[]> findZipCodesByNameStartsWith(String beginning, Pageable pagination);
+    Page<int[]> findZipCodesByNameStartsWith(String beginning, PageRequest pagination);
 
     @OrderBy("population")
     Optional<Iterator<int[]>> findZipCodesByPopulationLessThanEqual(int maxPopulation);

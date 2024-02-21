@@ -58,8 +58,8 @@ import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.KeysetAwareSlice;
-import jakarta.data.page.Pageable;
-import jakarta.data.page.Pageable.Cursor;
+import jakarta.data.page.PageRequest;
+import jakarta.data.page.PageRequest.Cursor;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
@@ -669,7 +669,7 @@ public class DataJPATestServlet extends FATServlet {
         KeysetAwareSlice<Business> page;
         List<Integer> zipCodes = List.of(55906, 55902, 55901, 55976, 55905);
 
-        page = businesses.findByZipIn(zipCodes, Pageable.ofSize(4));
+        page = businesses.findByZipIn(zipCodes, PageRequest.ofSize(4));
 
         assertIterableEquals(List.of(345, 1421, 1016, 1600),
                              page
@@ -677,7 +677,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(b -> b.location.address.houseNum)
                                              .collect(Collectors.toList()));
 
-        page = businesses.findByZipIn(zipCodes, page.nextPageable());
+        page = businesses.findByZipIn(zipCodes, page.nextPageRequest());
 
         assertIterableEquals(List.of(2800, 2960, 3100, 3428),
                              page
@@ -685,10 +685,10 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(b -> b.location.address.houseNum)
                                              .collect(Collectors.toList()));
 
-        assertEquals(2L, page.pageable().page());
-        assertEquals(4, page.pageable().size());
+        assertEquals(2L, page.pageRequest().page());
+        assertEquals(4, page.pageRequest().size());
 
-        page = businesses.findByZipIn(zipCodes, page.nextPageable());
+        page = businesses.findByZipIn(zipCodes, page.nextPageRequest());
 
         assertIterableEquals(List.of(5201, 1661, 3706, 200),
                              page
@@ -698,7 +698,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(3, page.number());
 
-        page = businesses.findByZipIn(zipCodes, page.nextPageable());
+        page = businesses.findByZipIn(zipCodes, page.nextPageRequest());
 
         assertIterableEquals(List.of(1402, 3008),
                              page
@@ -708,9 +708,9 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(2, page.numberOfElements());
         assertEquals(4, page.number());
-        assertEquals(null, page.nextPageable());
+        assertEquals(null, page.nextPageRequest());
 
-        page = businesses.findByZipIn(zipCodes, page.previousPageable());
+        page = businesses.findByZipIn(zipCodes, page.previousPageRequest());
 
         assertIterableEquals(List.of(5201, 1661, 3706, 200),
                              page
@@ -1316,7 +1316,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByAnnotationWithKeysetPagination() {
-        Pageable<?> pagination = Pageable.ofSize(3).afterKeyset(CityId.of("Rochester", "Minnesota"));
+        PageRequest<?> pagination = PageRequest.ofSize(3).afterKeyset(CityId.of("Rochester", "Minnesota"));
 
         KeysetAwareSlice<City> slice1 = cities.findByStateNameNotEndsWith("o", pagination);
         assertIterableEquals(List.of("Rochester New York",
@@ -1324,20 +1324,20 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Massachusetts"),
                              slice1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwareSlice<City> slice2 = cities.findByStateNameNotEndsWith("o", slice1.nextPageable());
+        KeysetAwareSlice<City> slice2 = cities.findByStateNameNotEndsWith("o", slice1.nextPageRequest());
         assertIterableEquals(List.of("Springfield Missouri",
                                      "Springfield Oregon"),
                              slice2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, slice2.nextPageable());
+        assertEquals(null, slice2.nextPageRequest());
 
-        KeysetAwareSlice<City> slice0 = cities.findByStateNameNotEndsWith("o", slice1.previousPageable());
+        KeysetAwareSlice<City> slice0 = cities.findByStateNameNotEndsWith("o", slice1.previousPageRequest());
         assertIterableEquals(List.of("Kansas City Kansas",
                                      "Kansas City Missouri",
                                      "Rochester Minnesota"),
                              slice0.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, slice0.previousPageable());
+        assertEquals(null, slice0.previousPageRequest());
     }
 
     /**
@@ -1346,7 +1346,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByAnnotationWithKeysetPaginationAndNamedParameters() {
-        Pageable<City> pagination = Pageable.ofSize(2);
+        PageRequest<City> pagination = PageRequest.ofSize(2);
 
         KeysetAwarePage<City> page1 = cities.sizedWithin(100000, 1000000, pagination);
         assertIterableEquals(List.of("Springfield Missouri",
@@ -1356,21 +1356,21 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(4L, page1.totalPages());
         assertEquals(7L, page1.totalElements());
 
-        KeysetAwarePage<City> page2 = cities.sizedWithin(100000, 1000000, page1.nextPageable());
+        KeysetAwarePage<City> page2 = cities.sizedWithin(100000, 1000000, page1.nextPageRequest());
         assertIterableEquals(List.of("Springfield Illinois",
                                      "Rochester New York"),
                              page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwarePage<City> page3 = cities.sizedWithin(100000, 1000000, page2.nextPageable());
+        KeysetAwarePage<City> page3 = cities.sizedWithin(100000, 1000000, page2.nextPageRequest());
         assertIterableEquals(List.of("Rochester Minnesota",
                                      "Kansas City Missouri"),
                              page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwarePage<City> page4 = cities.sizedWithin(100000, 1000000, page3.nextPageable());
+        KeysetAwarePage<City> page4 = cities.sizedWithin(100000, 1000000, page3.nextPageRequest());
         assertIterableEquals(List.of("Kansas City Kansas"),
                              page4.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, page4.nextPageable());
+        assertEquals(null, page4.nextPageRequest());
     }
 
     /**
@@ -1378,7 +1378,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByNamePatternWithKeysetPagination() {
-        Pageable<City> pagination = Pageable.ofSize(5);
+        PageRequest<City> pagination = PageRequest.ofSize(5);
 
         KeysetAwareSlice<City> slice1 = cities.findByStateNameNotNullOrderById(pagination);
         assertIterableEquals(List.of("Kansas City Kansas",
@@ -1388,14 +1388,14 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Illinois"),
                              slice1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwareSlice<City> slice2 = cities.findByStateNameNotNullOrderById(slice1.nextPageable());
+        KeysetAwareSlice<City> slice2 = cities.findByStateNameNotNullOrderById(slice1.nextPageRequest());
         assertIterableEquals(List.of("Springfield Massachusetts",
                                      "Springfield Missouri",
                                      "Springfield Ohio",
                                      "Springfield Oregon"),
                              slice2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, slice2.nextPageable());
+        assertEquals(null, slice2.nextPageRequest());
 
         Cursor springfieldMO = slice2.getKeysetCursor(1);
         pagination = pagination.size(3).beforeKeysetCursor(springfieldMO);
@@ -1406,13 +1406,13 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Massachusetts"),
                              beforeSpringfieldMO.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwareSlice<City> beforeRochesterNY = cities.findByStateNameNotNullOrderById(beforeSpringfieldMO.previousPageable());
+        KeysetAwareSlice<City> beforeRochesterNY = cities.findByStateNameNotNullOrderById(beforeSpringfieldMO.previousPageRequest());
         assertIterableEquals(List.of("Kansas City Kansas",
                                      "Kansas City Missouri",
                                      "Rochester Minnesota"),
                              beforeRochesterNY.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, beforeRochesterNY.previousPageable());
+        assertEquals(null, beforeRochesterNY.previousPageRequest());
     }
 
     /**
@@ -1421,7 +1421,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByNamePatternWithKeysetPaginationDescending() {
-        Pageable<?> pagination = Pageable.ofSize(3).afterKeyset(CityId.of("Springfield", "Tennessee"));
+        PageRequest<?> pagination = PageRequest.ofSize(3).afterKeyset(CityId.of("Springfield", "Tennessee"));
 
         KeysetAwarePage<City> page1 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", pagination);
         assertIterableEquals(List.of("Springfield Oregon",
@@ -1429,20 +1429,20 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Missouri"),
                              page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwarePage<City> page2 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", page1.nextPageable());
+        KeysetAwarePage<City> page2 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", page1.nextPageRequest());
         assertIterableEquals(List.of("Springfield Illinois",
                                      "Rochester New York",
                                      "Rochester Minnesota"),
                              page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwarePage<City> page3 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", page2.nextPageable());
+        KeysetAwarePage<City> page3 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", page2.nextPageRequest());
         assertIterableEquals(List.of("Kansas City Missouri",
                                      "Kansas City Kansas"),
                              page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, page3.nextPageable());
+        assertEquals(null, page3.nextPageRequest());
 
-        page2 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", page3.previousPageable());
+        page2 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", page3.previousPageRequest());
         assertIterableEquals(List.of("Springfield Illinois",
                                      "Rochester New York",
                                      "Rochester Minnesota"),
@@ -1455,7 +1455,7 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testIdClassOrderByPaginationWithKeyset() {
         // ascending:
-        Pageable<City> pagination = Pageable.of(City.class).size(5).sortBy(Sort.asc("id"));
+        PageRequest<City> pagination = PageRequest.of(City.class).size(5).sortBy(Sort.asc("id"));
 
         KeysetAwarePage<City> page1 = cities.findByStateNameGreaterThan("Iowa", pagination);
         assertIterableEquals(List.of("Kansas City Kansas",
@@ -1465,16 +1465,16 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Massachusetts"),
                              page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwarePage<City> page2 = cities.findByStateNameGreaterThan("Iowa", page1.nextPageable());
+        KeysetAwarePage<City> page2 = cities.findByStateNameGreaterThan("Iowa", page1.nextPageRequest());
         assertIterableEquals(List.of("Springfield Missouri",
                                      "Springfield Ohio",
                                      "Springfield Oregon"),
                              page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, page2.nextPageable());
+        assertEquals(null, page2.nextPageRequest());
 
         // descending:
-        pagination = Pageable.of(City.class).size(4).sortBy(Sort.descIgnoreCase("id"));
+        pagination = PageRequest.of(City.class).size(4).sortBy(Sort.descIgnoreCase("id"));
         page1 = cities.findByStateNameGreaterThan("Idaho", pagination);
         assertIterableEquals(List.of("Springfield Oregon",
                                      "Springfield Ohio",
@@ -1482,18 +1482,18 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Massachusetts"),
                              page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        page2 = cities.findByStateNameGreaterThan("Idaho", page1.nextPageable());
+        page2 = cities.findByStateNameGreaterThan("Idaho", page1.nextPageRequest());
         assertIterableEquals(List.of("Springfield Illinois",
                                      "Rochester New York",
                                      "Rochester Minnesota",
                                      "Kansas City Missouri"),
                              page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwarePage<City> page3 = cities.findByStateNameGreaterThan("Idaho", page2.nextPageable());
+        KeysetAwarePage<City> page3 = cities.findByStateNameGreaterThan("Idaho", page2.nextPageRequest());
         assertIterableEquals(List.of("Kansas City Kansas"),
                              page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, page3.nextPageable());
+        assertEquals(null, page3.nextPageRequest());
     }
 
     /**
@@ -1959,7 +1959,7 @@ public class DataJPATestServlet extends FATServlet {
                              tariffs.findByLeviedAgainst("Canada").map(o -> o.leviedOn).sorted().collect(Collectors.toList()));
 
         // Iterator with offset pagination:
-        Iterator<Tariff> it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(3));
+        Iterator<Tariff> it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(3));
 
         Tariff t;
         assertEquals(true, it.hasNext());
@@ -1994,7 +1994,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, it.hasNext());
 
         // Iterator with keyset pagination:
-        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(2).afterKeyset(t8key));
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2).afterKeyset(t8key));
 
         assertNotNull(t = it.next());
         assertEquals(t6.leviedAgainst, t.leviedAgainst);
@@ -2019,7 +2019,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, it.hasNext());
 
         // Iterator with keyset pagination obtaining pages in reverse direction
-        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(2).beforeKeyset(t2key));
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2).beforeKeyset(t2key));
 
         assertEquals(true, it.hasNext());
         assertNotNull(t = it.next());
@@ -2041,7 +2041,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, it.hasNext());
 
         // Paginated iterator with no results:
-        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("A", Pageable.ofSize(3));
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("A", PageRequest.ofSize(3));
         assertEquals(false, it.hasNext());
 
         t = tariffs.findByLeviedByAndLeviedAgainstAndLeviedOn("USA", "Bangladesh", "Textiles");
@@ -2050,19 +2050,19 @@ public class DataJPATestServlet extends FATServlet {
         // List return type for Pagination only represents a single page, not all pages.
         // page 1:
         assertIterableEquals(List.of("China", "Germany", "India", "Japan"),
-                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4))
+                             tariffs.findByLeviedByOrderByKey("USA", PageRequest.ofSize(4))
                                              .stream()
                                              .map(o -> o.leviedAgainst)
                                              .collect(Collectors.toList()));
         // page 2:
         assertIterableEquals(List.of("Canada", "Bangladesh", "Mexico", "Canada"),
-                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4).page(2))
+                             tariffs.findByLeviedByOrderByKey("USA", PageRequest.ofSize(4).page(2))
                                              .stream()
                                              .map(o -> o.leviedAgainst)
                                              .collect(Collectors.toList()));
 
         // Random access to paginated list:
-        List<Tariff> list = tariffs.findByLeviedByOrderByKey("USA", Pageable.ofPage(1));
+        List<Tariff> list = tariffs.findByLeviedByOrderByKey("USA", PageRequest.ofPage(1));
         assertEquals(t4.leviedAgainst, list.get(3).leviedAgainst);
         assertEquals(t7.leviedAgainst, list.get(6).leviedAgainst);
         assertEquals(t2.leviedAgainst, list.get(1).leviedAgainst);
@@ -2864,7 +2864,7 @@ public class DataJPATestServlet extends FATServlet {
 
         // page of array attribute
         assertIterableEquals(List.of(Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
-                             counties.findZipCodesByNameStartsWith("W", Pageable.ofSize(10))
+                             counties.findZipCodesByNameStartsWith("W", PageRequest.ofSize(10))
                                              .stream()
                                              .map(Arrays::toString)
                                              .collect(Collectors.toList()));
@@ -2887,7 +2887,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(0, counties.findZipCodesByNameNotStartsWith("_").size());
 
         // page of array attribute with none found
-        assertEquals(0, counties.findZipCodesByNameStartsWith("Hous", Pageable.ofSize(5)).numberOfElements());
+        assertEquals(0, counties.findZipCodesByNameStartsWith("Hous", PageRequest.ofSize(5)).numberOfElements());
 
         // optional for iterator over array attribute with none found
         counties.findZipCodesByPopulationLessThanEqual(1) //
