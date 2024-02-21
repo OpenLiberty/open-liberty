@@ -34,6 +34,7 @@ import org.jose4j.jwt.consumer.JwtContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutConstants;
 import com.ibm.ws.security.openidconnect.clients.common.Constants;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
@@ -189,7 +190,7 @@ public class Jose4jValidator {
         }
 
         JwtConsumer jwtConsumer = builder.build();
-
+        Object token = ThreadIdentityManager.runAsServer();
         try {
             JwtContext validatedJwtContext = jwtConsumer.process(jwtString);
 
@@ -226,6 +227,8 @@ public class Jose4jValidator {
                 // otherwise throw original Exception
                 throw e;
             }
+        } finally {
+            ThreadIdentityManager.reset(token);
         }
 
         return jwtClaims;
@@ -327,6 +330,7 @@ public class Jose4jValidator {
         }
 
         JwtConsumer jwtConsumer = builder.build();
+        Object token = ThreadIdentityManager.runAsServer();
         try {
             JwtContext validatedJwtContext = jwtConsumer.process(jwtString);
             return validatedJwtContext.getJwtClaims();
@@ -344,6 +348,8 @@ public class Jose4jValidator {
             } else {
                 throw new JWTTokenValidationFailedException(e.getMessage(), e);
             }
+        } finally {
+            ThreadIdentityManager.reset(token);
         }
     }
 
