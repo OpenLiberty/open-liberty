@@ -34,7 +34,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.page.KeysetAwarePage;
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -45,22 +45,22 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
 
     private final Object[] args;
     private final boolean isForward;
-    private final Pageable<T> pagination;
+    private final PageRequest<T> pagination;
     private final QueryInfo queryInfo;
     private final List<T> results;
     private long totalElements = -1;
 
     @FFDCIgnore(Exception.class)
-    KeysetAwarePageImpl(QueryInfo queryInfo, Pageable<T> pagination, Object[] args) {
+    KeysetAwarePageImpl(QueryInfo queryInfo, PageRequest<T> pagination, Object[] args) {
 
         this.args = args;
         this.queryInfo = queryInfo;
-        this.pagination = pagination == null ? Pageable.ofSize(100) : pagination;
-        this.isForward = this.pagination.mode() != Pageable.Mode.CURSOR_PREVIOUS;
-        Optional<Pageable.Cursor> keysetCursor = this.pagination.cursor();
+        this.pagination = pagination == null ? PageRequest.ofSize(100) : pagination;
+        this.isForward = this.pagination.mode() != PageRequest.Mode.CURSOR_PREVIOUS;
+        Optional<PageRequest.Cursor> keysetCursor = this.pagination.cursor();
 
         int maxPageSize = this.pagination.size();
-        int firstResult = this.pagination.mode() == Pageable.Mode.OFFSET //
+        int firstResult = this.pagination.mode() == PageRequest.Mode.OFFSET //
                         ? RepositoryImpl.computeOffset(this.pagination) //
                         : 0;
 
@@ -124,7 +124,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
-    public Pageable.Cursor getKeysetCursor(int index) {
+    public PageRequest.Cursor getKeysetCursor(int index) {
         if (index < 0 || index >= pagination.size())
             throw new IllegalArgumentException("index: " + index);
 
@@ -162,15 +162,15 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
-    public Pageable<T> pageable() {
+    public PageRequest<T> pageRequest() {
         return pagination;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <E> Pageable<E> pageable(Class<E> entityClass) {
+    public <E> PageRequest<E> pageRequest(Class<E> entityClass) {
         // KeysetAwareSlice/Page must always have the same type result as sort criteria per the API.
-        return (Pageable<E>) pagination;
+        return (PageRequest<E>) pagination;
     }
 
     @Override
@@ -200,32 +200,32 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
-    public Pageable<T> nextPageable() {
+    public PageRequest<T> nextPageRequest() {
         // The extra position is only available for identifying a next page if the current page was obtained in the forward direction
         int minToHaveNextPage = isForward ? (pagination.size() + (pagination.size() == Integer.MAX_VALUE ? 0 : 1)) : 1;
         if (results.size() < minToHaveNextPage)
             return null;
 
-        Pageable<T> p = pagination.page() == Long.MAX_VALUE ? pagination : pagination.page(pagination.page() + 1);
+        PageRequest<T> p = pagination.page() == Long.MAX_VALUE ? pagination : pagination.page(pagination.page() + 1);
         return p.afterKeyset(queryInfo.getKeysetValues(results.get(Math.min(results.size(), pagination.size()) - 1)));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <E> Pageable<E> nextPageable(Class<E> entityClass) {
+    public <E> PageRequest<E> nextPageRequest(Class<E> entityClass) {
         // KeysetAwareSlice/Page must always have the same type result as sort criteria per the API.
-        return (Pageable<E>) nextPageable();
+        return (PageRequest<E>) nextPageRequest();
     }
 
     @Override
-    public Pageable<T> previousPageable() {
+    public PageRequest<T> previousPageRequest() {
         // The extra position is only available for identifying a previous page if the current page was obtained in the reverse direction
         int minToHavePreviousPage = isForward ? 1 : (pagination.size() + (pagination.size() == Integer.MAX_VALUE ? 0 : 1));
         if (results.size() < minToHavePreviousPage)
             return null;
 
         // Decrement page number by 1 unless it would go below 1.
-        Pageable<T> p = pagination.page() == 1 ? pagination : pagination.page(pagination.page() - 1);
+        PageRequest<T> p = pagination.page() == 1 ? pagination : pagination.page(pagination.page() - 1);
         return p.beforeKeyset(queryInfo.getKeysetValues(results.get(0)));
     }
 
@@ -238,7 +238,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
      * Keyset cursor
      */
     @Trivial
-    private static class Cursor implements Pageable.Cursor {
+    private static class Cursor implements PageRequest.Cursor {
         private final Object[] keyValues;
 
         private Cursor(Object[] keyValues) {
