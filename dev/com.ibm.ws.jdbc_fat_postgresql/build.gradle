@@ -25,7 +25,7 @@ dependencies {
            "software.amazon.awssdk:secretsmanager:${awsSDKVerion}", // Used for Secrets Manager
            "software.amazon.awssdk:rds:${awsSDKVerion}", // Used for Identity and Access Management
            project(':io.openliberty.com.fasterxml.jackson')
-  postgres 'org.postgresql:postgresql:42.4.2'
+  postgres 'org.postgresql:postgresql:42.7.2'
 }
 
 task copyAWS(type: Copy) {

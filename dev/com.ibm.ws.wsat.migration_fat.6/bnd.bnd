@@ -55,5 +55,4 @@ tested.features:\
 	com.ibm.ws.wsat.migration_fat.1;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	io.openliberty.org.testcontainers;version=latest,\
-	javax.activation:activation;version='1.1',\
-	org.postgresql:postgresql;version=42.4.2
+	javax.activation:activation;version='1.1'
