@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -193,8 +193,10 @@ public class SSLConfig {
                                        | clientAuthSupported), (short) (Integrity.value | Confidentiality.value | clientAuthRequired));
     }
 
-    static final Pattern p = Pattern.compile("(?:(SSL)|(TLS))_([A-Z0-9]*)(_anon)?(_[a-zA-Z0-9]*)??(_EXPORT)?_WITH_([A-Z0-9]*)(?:_(\\d*))?([_a-zA-Z0-9]*)?_(?:(?:(SHA)(\\d*))|(MD5))");
-//[1 null, 2 TLS, 3 ECDHE, 4 null, 5 _ECDSA, 6 null, 7 AES, 8 128, 9 _CBC, 10 SHA, 11 256, 12 null]
+    //static final Pattern p = Pattern.compile("(?:(SSL)|(TLS))_([A-Z0-9]*)(_anon)?(_[a-zA-Z0-9]*)??(_EXPORT)?_WITH_([A-Z0-9]*)(?:_(\\d*))?([_a-zA-Z0-9]*)?_(?:(?:(SHA)(\\d*))|(MD5))");
+    //Made "WITH" as optional in the above pattern to accommodate ciphers without the substring "WITH" in their cipher-names
+    static final Pattern p = Pattern.compile("(?:(SSL)|(TLS))_([A-Z0-9]*)(_anon)?(_[a-zA-Z0-9]*)??(_EXPORT)??_WITH_?([A-Z0-9]*)(?:_(\\d*))?([_a-zA-Z0-9]*)?_(?:(?:(SHA)(\\d*))|(MD5))");
+    //[1 null, 2 TLS, 3 ECDHE, 4 null, 5 _ECDSA, 6 null, 7 AES, 8 128, 9 _CBC, 10 SHA, 11 256, 12 null]
     private static final int SSL_INDEX = 1;
     private static final int TLS_INDEX = 2;
     private static final int KEY_NEGOTIATION_PROTOCOL_INDEX = 3;
