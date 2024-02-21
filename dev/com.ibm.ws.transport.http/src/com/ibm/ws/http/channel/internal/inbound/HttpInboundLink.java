@@ -42,6 +42,7 @@ import com.ibm.wsspi.channelfw.DiscriminationProcess;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.channelfw.base.InboundProtocolLink;
+import com.ibm.wsspi.genericbnf.exception.HeadersTooBigException;
 import com.ibm.wsspi.genericbnf.exception.MalformedMessageException;
 import com.ibm.wsspi.genericbnf.exception.MessageSentException;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedMethodException;
@@ -425,6 +426,15 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
             // no FFDC required
             sc.setHeadersParsed();
             sendErrorMessage(StatusCodes.ENTITY_TOO_LARGE);
+            setPartiallyParsed(false);
+            return true;
+        } catch (HeadersTooBigException htbe) {
+            //no FFDC required
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "parseMessage encountered a HeadersTooBigException : " + htbe);
+            }
+            sc.setHeadersParsed();
+            sendErrorMessage(StatusCodes.HEADER_FIELDS_TOO_LARGE);
             setPartiallyParsed(false);
             return true;
         } catch (MalformedMessageException mme) {

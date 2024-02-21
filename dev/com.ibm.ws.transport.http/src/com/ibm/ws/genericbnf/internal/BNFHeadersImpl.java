@@ -40,6 +40,7 @@ import com.ibm.wsspi.genericbnf.BNFHeaders;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.HeaderStorage;
+import com.ibm.wsspi.genericbnf.exception.HeadersTooBigException;
 import com.ibm.wsspi.genericbnf.exception.MalformedMessageException;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
@@ -3570,7 +3571,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "findCRLFTokenLength: length is too big: " + length);
                 }
-                throw new MalformedMessageException("Token length: " + length);
+                throw new HeadersTooBigException("Token length: " + length);
             }
         } // end of the while
 
@@ -3657,7 +3658,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "findTokenLength: length is too big: " + length);
                 }
-                throw new MalformedMessageException("Token length: " + length);
+                throw new HeadersTooBigException("Token length: " + length);
             }
         } // end of the while
 
@@ -3905,7 +3906,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "findTokenLength: length is too big: " + length);
                 }
-                throw new MalformedMessageException("Token length: " + length);
+                throw new HeadersTooBigException("Token length: " + length);
             }
         } // end of the while
 

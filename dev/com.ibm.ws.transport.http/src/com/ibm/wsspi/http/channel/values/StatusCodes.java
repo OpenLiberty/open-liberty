@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,8 @@ public class StatusCodes extends GenericKeys {
     public static final StatusCodes SWITCHING_PROTOCOLS = new StatusCodes(101, "Switching Protocols", false);
     /** Status code for 401 Unauthorized */
     public static final StatusCodes UNAUTHORIZED = new StatusCodes(401, "Unauthorized", false);
+    /** Status code for 431 Header Fields Too Large */
+    public static final StatusCodes HEADER_FIELDS_TOO_LARGE = new StatusCodes(431, "Request Header Fields Too Large", true);
     /** Status code for 503 Service Unavailable */
     public static final StatusCodes UNAVAILABLE = new StatusCodes(503, "Service Unavailable", true);
     /** Status code for 415 Unsupported Media Type */
