@@ -12,23 +12,23 @@ package com.ibm.ws.kernel.feature;
 import java.util.Set;
 
 /**
- * <p>The IFixManager is a service for getting a set of iFixes installed in the server.</p>
+ * <p>The FixManager is a service for getting a set of iFixes and tFixes installed in the server.</p>
  */
 public interface FixManager {
 
     /**
      * <p>Requests the set of iFixes that are installed on the server. The result reported
-     * to the caller is never null, but may be an empty set if no features are installed.</p>
+     * to the caller is never null, but may be an empty set if no iFixes are installed.</p>
      *
-     * @return the set of iFixes known to the iFix Manager.
+     * @return the set of iFixes known to the FixManager.
      */
     public Set<String> getIFixes();
 
     /**
      * <p>Requests the set of tFixes that are installed on the server. The result reported
-     * to the caller is never null, but may be an empty set if no features are installed.</p>
+     * to the caller is never null, but may be an empty set if no tFixes are installed.</p>
      *
-     * @return the set of tFixes known to the iFix Manager.
+     * @return the set of tFixes known to the FixManager.
      */
     public Set<String> getTFixes();
 
