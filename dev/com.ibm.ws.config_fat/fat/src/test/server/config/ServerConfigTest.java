@@ -270,6 +270,25 @@ public class ServerConfigTest {
     }
 
     @Test
+    public void testIncludeWithEmptyVariable() throws Exception {
+        LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import.empty.variable");
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
+        server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
+        server.setServerStartTimeout(SERVER_START_TIMEOUT);
+
+        try {
+            server.startServer("emptyimports.log");
+
+            // Wait for the application to be installed before proceeding
+            assertNotNull("The restart application never came up", server.waitForStringInLog("CWWKZ0001I.* restart"));
+
+            assertNotNull("No cannot resolve include warning", server.waitForStringInLog("CWWKG0084W.*"));
+        } finally {
+            server.stopServer("CWWKG0084W");
+        }
+    }
+
+    @Test
     public void testRefreshError() throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.refresh.error");
         ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);

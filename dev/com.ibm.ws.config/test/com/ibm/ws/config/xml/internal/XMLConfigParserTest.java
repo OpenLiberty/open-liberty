@@ -89,8 +89,8 @@ public class XMLConfigParserTest {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName);
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        configParser = new XMLConfigParser(wsLocation, variableRegistry);
         variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
+        configParser = new XMLConfigParser(wsLocation, variableRegistry);
     }
 
     private Dictionary<String, Object> evaluateToDictionary(ConfigElement entry) throws ConfigEvaluatorException {
