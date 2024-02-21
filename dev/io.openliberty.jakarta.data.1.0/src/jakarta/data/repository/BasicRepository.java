@@ -28,9 +28,6 @@ public interface BasicRepository<T, K> extends DataRepository<T, K> {
     void delete(T entity);
 
     @Delete
-    void deleteAll();
-
-    @Delete
     void deleteAll(Iterable<? extends T> entities);
 
     void deleteByIdIn(Iterable<K> ids);

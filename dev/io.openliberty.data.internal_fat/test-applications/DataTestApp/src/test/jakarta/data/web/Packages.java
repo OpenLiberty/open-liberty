@@ -50,6 +50,9 @@ import io.openliberty.data.repository.update.SubtractFrom;
 @Repository
 public interface Packages extends BasicRepository<Package, Integer> {
 
+    @Delete
+    long deleteAll();
+
     Optional<Package> deleteByDescription(String description);
 
     Package[] deleteByDescriptionEndsWith(String ending, Sort<?>... sorts);
