@@ -17,6 +17,7 @@
 package com.ibm.jbatch.container.services.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1295,30 +1296,21 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
     public boolean purgeJobInstanceAndRelatedData(long jobInstanceId) {
         // TODO Auto-generated method stub
         JobInstanceEntity jobInstance = data.jobInstanceData.get(jobInstanceId);
+        List<JobExecutionEntity> executions = jobInstance.getJobExecutions();
+        Collection<StepThreadInstanceEntity> stepThreadInstances = jobInstance.getStepThreadInstances();
 
-//                for (StepThreadExecutionEntity stepThreadExecution : data.stepExecutionInstanceData.values()) {
-//                }
-//
-//                for (StepThreadInstanceEntity stepInstance : data.stepThreadInstanceData.values()) {
-//                }
-
-        for (JobExecutionEntity executionInstance : data.executionInstanceData.values()) {
-            if (executionInstance.getJobInstance().getInstanceId() == jobInstanceId) {
-                data.executionInstanceData.remove(executionInstance.getExecutionId());
+        for (JobExecutionEntity executionInstance : executions) {
+            for (StepExecution stepExecution : executionInstance.getStepThreadExecutions()) {
+                data.stepExecutionInstanceData.remove(stepExecution.getStepExecutionId());
             }
+            data.executionInstanceData.remove(executionInstance.getExecutionId());
         }
-
-        //data.executionInstanceData.get
-        /*
-         * jobInstanceData = new ConcurrentHashMap<Long, JobInstanceEntity>();
-         * executionInstanceData = new ConcurrentHashMap<Long, JobExecutionEntity>(); -- done
-         * stepExecutionInstanceData = new ConcurrentHashMap<Long, StepThreadExecutionEntity>();
-         * stepThreadInstanceData = new ConcurrentHashMap<StepThreadInstanceKey, StepThreadInstanceEntity>();
-         * partitionData = new ConcurrentHashMap<RemotablePartitionKey, RemotablePartitionEntity>();
-         * splitFlowData = new ConcurrentHashMap<RemotableSplitFlowKey, RemotableSplitFlowEntity>();
-         */
+        for (StepThreadInstanceEntity stepInstance : jobInstance.getStepThreadInstances()) {
+            StepThreadInstanceKey keyToFind = new StepThreadInstanceKey(stepInstance);
+            data.stepThreadInstanceData.remove(keyToFind);
+        }
         data.jobInstanceData.remove(jobInstanceId);
-        return false;
+        return true;
     }
 
     @Override
