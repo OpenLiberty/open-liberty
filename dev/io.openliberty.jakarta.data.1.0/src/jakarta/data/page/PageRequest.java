@@ -19,9 +19,9 @@ import java.util.Optional;
 import jakarta.data.Sort;
 
 /**
- * Method signatures are copied from jakarta.data.repository.Pageable from the Jakarta Data repo.
+ * Method signatures are copied from jakarta.data.repository.PageRequest from the Jakarta Data repo.
  */
-public interface Pageable<T> {
+public interface PageRequest<T> {
     public static enum Mode {
         CURSOR_NEXT, CURSOR_PREVIOUS, OFFSET
     }
@@ -32,39 +32,39 @@ public interface Pageable<T> {
         public int size();
     }
 
-    public static <T> Pageable<T> of(Class<T> entityClass) {
+    public static <T> PageRequest<T> of(Class<T> entityClass) {
         return new Pagination<T>(1, 10, Collections.emptyList(), Mode.OFFSET, null);
     }
 
-    public static <T> Pageable<T> ofPage(long page) {
+    public static <T> PageRequest<T> ofPage(long page) {
         return new Pagination<T>(page, 10, Collections.emptyList(), Mode.OFFSET, null);
     }
 
-    public static <T> Pageable<T> ofSize(int size) {
+    public static <T> PageRequest<T> ofSize(int size) {
         return new Pagination<T>(1, size, Collections.emptyList(), Mode.OFFSET, null);
     }
 
-    public Pageable<T> afterKeyset(Object... keyset);
+    public PageRequest<T> afterKeyset(Object... keyset);
 
-    public Pageable<T> afterKeysetCursor(Pageable.Cursor cursor);
+    public PageRequest<T> afterKeysetCursor(PageRequest.Cursor cursor);
 
-    public Pageable<T> asc(String property);
+    public PageRequest<T> asc(String property);
 
-    public Pageable<T> ascIgnoreCase(String property);
+    public PageRequest<T> ascIgnoreCase(String property);
 
-    public Pageable<T> beforeKeyset(Object... keyset);
+    public PageRequest<T> beforeKeyset(Object... keyset);
 
-    public Pageable<T> beforeKeysetCursor(Pageable.Cursor cursor);
+    public PageRequest<T> beforeKeysetCursor(PageRequest.Cursor cursor);
 
     public Optional<Cursor> cursor();
 
-    public Pageable<T> desc(String property);
+    public PageRequest<T> desc(String property);
 
-    public Pageable<T> descIgnoreCase(String property);
+    public PageRequest<T> descIgnoreCase(String property);
 
     public Mode mode();
 
-    public Pageable<T> next();
+    public PageRequest<T> next();
 
     public long page();
 
@@ -72,19 +72,19 @@ public interface Pageable<T> {
 
     public List<Sort<T>> sorts();
 
-    public Pageable<T> page(long page);
+    public PageRequest<T> page(long page);
 
-    public Pageable<T> size(int size);
+    public PageRequest<T> size(int size);
 
-    public Pageable<T> sortBy(Iterable<Sort<T>> sorts);
+    public PageRequest<T> sortBy(Iterable<Sort<T>> sorts);
 
-    public Pageable<T> sortBy(Sort<T> sort);
+    public PageRequest<T> sortBy(Sort<T> sort);
 
-    public Pageable<T> sortBy(Sort<T> sort1, Sort<T> sort2);
+    public PageRequest<T> sortBy(Sort<T> sort1, Sort<T> sort2);
 
-    public Pageable<T> sortBy(Sort<T> sort1, Sort<T> sort2, Sort<T> sort3);
+    public PageRequest<T> sortBy(Sort<T> sort1, Sort<T> sort2, Sort<T> sort3);
 
-    public Pageable<T> sortBy(Sort<T> sort1, Sort<T> sort2, Sort<T> sort3, Sort<T> sort4);
+    public PageRequest<T> sortBy(Sort<T> sort1, Sort<T> sort2, Sort<T> sort3, Sort<T> sort4);
 
-    public Pageable<T> sortBy(Sort<T> sort1, Sort<T> sort2, Sort<T> sort3, Sort<T> sort4, Sort<T> sort5);
+    public PageRequest<T> sortBy(Sort<T> sort1, Sort<T> sort2, Sort<T> sort3, Sort<T> sort4, Sort<T> sort5);
 }

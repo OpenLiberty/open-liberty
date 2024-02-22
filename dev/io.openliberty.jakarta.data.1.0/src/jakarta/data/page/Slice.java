@@ -26,13 +26,13 @@ public interface Slice<T> extends Streamable<T> {
 
     int numberOfElements();
 
-    Pageable<T> pageable();
+    PageRequest<T> pageRequest();
 
     boolean hasContent();
 
-    Pageable<T> nextPageable();
+    PageRequest<T> nextPageRequest();
 
-    <E> Pageable<E> nextPageable(Class<E> entityClass);
+    <E> PageRequest<E> nextPageRequest(Class<E> entityClass);
 
-    <E> Pageable<E> pageable(Class<E> entityClass);
+    <E> PageRequest<E> pageRequest(Class<E> entityClass);
 }

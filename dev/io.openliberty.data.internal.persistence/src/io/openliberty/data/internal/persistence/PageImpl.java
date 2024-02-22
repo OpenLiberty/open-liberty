@@ -25,7 +25,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.data.page.Page;
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -35,22 +35,22 @@ public class PageImpl<T> implements Page<T> {
     private static final TraceComponent tc = Tr.register(PageImpl.class);
 
     private final Object[] args;
-    private final Pageable<?> pagination;
+    private final PageRequest<?> pagination;
     private final QueryInfo queryInfo;
     private final List<T> results;
     private long totalElements = -1;
 
     @FFDCIgnore(Exception.class)
-    PageImpl(QueryInfo queryInfo, Pageable<T> pagination, Object[] args) {
+    PageImpl(QueryInfo queryInfo, PageRequest<T> pagination, Object[] args) {
         this.queryInfo = queryInfo;
-        this.pagination = pagination == null ? Pageable.ofSize(100) : pagination;
+        this.pagination = pagination == null ? PageRequest.ofSize(100) : pagination;
         this.args = args;
 
-        // PageableRepository.findAll(Pageable) requires NullPointerException when Pageable is null.
+        // BasicRepository.findAll(PageRequest) requires NullPointerException when PageRequest is null.
         // TODO Should this apply in general?
         if (pagination == null && queryInfo.paramCount == 0 && queryInfo.method.getParameterCount() == 1
-            && Pageable.class.equals(queryInfo.method.getParameterTypes()[0]))
-            throw new NullPointerException("Pageable: null");
+            && PageRequest.class.equals(queryInfo.method.getParameterTypes()[0]))
+            throw new NullPointerException("PageRequest: null");
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
@@ -116,14 +116,14 @@ public class PageImpl<T> implements Page<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Pageable<T> pageable() {
-        return (Pageable<T>) pagination;
+    public PageRequest<T> pageRequest() {
+        return (PageRequest<T>) pagination;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <E> Pageable<E> pageable(Class<E> entityClass) {
-        return (Pageable<E>) pagination;
+    public <E> PageRequest<E> pageRequest(Class<E> entityClass) {
+        return (PageRequest<E>) pagination;
     }
 
     @Override
@@ -154,20 +154,20 @@ public class PageImpl<T> implements Page<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Pageable<T> nextPageable() {
+    public PageRequest<T> nextPageRequest() {
         if (results.size() <= pagination.size() && pagination.size() < Integer.MAX_VALUE)
             return null;
 
-        return (Pageable<T>) pagination.next();
+        return (PageRequest<T>) pagination.next();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <E> Pageable<E> nextPageable(Class<E> entityClass) {
+    public <E> PageRequest<E> nextPageRequest(Class<E> entityClass) {
         if (results.size() <= pagination.size() && pagination.size() < Integer.MAX_VALUE)
             return null;
 
-        return (Pageable<E>) pagination.next();
+        return (PageRequest<E>) pagination.next();
     }
 
     @Override

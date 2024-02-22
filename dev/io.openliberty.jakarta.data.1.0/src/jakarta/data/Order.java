@@ -15,7 +15,7 @@ package jakarta.data;
 import java.util.Iterator;
 import java.util.List;
 
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 
 /**
  * Method signatures copied from jakarta.data.Order from the Jakarta Data repo.
@@ -49,12 +49,12 @@ public class Order<T> implements Iterable<Sort<T>> {
         return sortBy.iterator();
     }
 
-    public Pageable<T> page(long pageNumber) {
-        return Pageable.<T> ofPage(pageNumber).sortBy(sortBy);
+    public PageRequest<T> page(long pageNumber) {
+        return PageRequest.<T> ofPage(pageNumber).sortBy(sortBy);
     }
 
-    public Pageable<T> pageSize(int size) {
-        return Pageable.<T> ofSize(size).sortBy(sortBy);
+    public PageRequest<T> pageSize(int size) {
+        return PageRequest.<T> ofSize(size).sortBy(sortBy);
     }
 
     @Override

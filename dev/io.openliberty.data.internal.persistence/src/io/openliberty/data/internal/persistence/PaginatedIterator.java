@@ -23,7 +23,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -37,12 +37,12 @@ public class PaginatedIterator<T> implements Iterator<T> {
     private int index;
     private Boolean hasNext;
     private List<T> page;
-    private Pageable pagination;
+    private PageRequest pagination;
     private final QueryInfo queryInfo;
 
-    PaginatedIterator(QueryInfo queryInfo, Pageable pagination, Object[] args) {
+    PaginatedIterator(QueryInfo queryInfo, PageRequest pagination, Object[] args) {
         this.queryInfo = queryInfo;
-        this.pagination = pagination == null ? Pageable.ofSize(100) : pagination;
+        this.pagination = pagination == null ? PageRequest.ofSize(100) : pagination;
         this.args = args;
 
         getPage();
@@ -54,11 +54,11 @@ public class PaginatedIterator<T> implements Iterator<T> {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(this, tc, "getPage " + pagination.page());
 
-        Optional<Pageable.Cursor> keysetCursor = pagination.cursor();
+        Optional<PageRequest.Cursor> keysetCursor = pagination.cursor();
         int maxPageSize = pagination.size();
         int startAt = keysetCursor.isEmpty() ? RepositoryImpl.computeOffset(pagination) : 0;
         String jpql = keysetCursor.isEmpty() ? queryInfo.jpql : //
-                        pagination.mode() == Pageable.Mode.CURSOR_NEXT ? queryInfo.jpqlAfterKeyset : //
+                        pagination.mode() == PageRequest.Mode.CURSOR_NEXT ? queryInfo.jpqlAfterKeyset : //
                                         queryInfo.jpqlBeforeKeyset;
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
@@ -78,17 +78,17 @@ public class PaginatedIterator<T> implements Iterator<T> {
             page = query.getResultList();
             index = -1;
             hasNext = !page.isEmpty();
-            if (hasNext && pagination.mode() == Pageable.Mode.CURSOR_PREVIOUS)
+            if (hasNext && pagination.mode() == PageRequest.Mode.CURSOR_PREVIOUS)
                 Collections.reverse(page);
             if (page.size() == maxPageSize) {
                 if (keysetCursor.isEmpty()) {
                     pagination = pagination.next();
-                } else if (pagination.mode() == Pageable.Mode.CURSOR_NEXT) {
-                    Pageable next = pagination.page() == Long.MAX_VALUE ? pagination : pagination.page(pagination.page() + 1);
+                } else if (pagination.mode() == PageRequest.Mode.CURSOR_NEXT) {
+                    PageRequest next = pagination.page() == Long.MAX_VALUE ? pagination : pagination.page(pagination.page() + 1);
                     pagination = next.afterKeyset(queryInfo.getKeysetValues(page.get(page.size() - 1)));
                 } else { // CURSOR_PREVIOUS
                     // Decrement page number by 1 unless it would go below 1.
-                    Pageable prev = pagination.page() == 1 ? pagination : pagination.page(pagination.page() - 1);
+                    PageRequest prev = pagination.page() == 1 ? pagination : pagination.page(pagination.page() - 1);
                     pagination = prev.beforeKeyset(queryInfo.getKeysetValues(page.get(0)));
                 }
             } else {

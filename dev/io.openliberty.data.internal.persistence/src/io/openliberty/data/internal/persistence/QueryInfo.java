@@ -38,7 +38,7 @@ import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
@@ -187,7 +187,7 @@ public class QueryInfo {
 
     /**
      * Ordered list of Sort criteria, which can be defined statically via the OrderBy annotation or keyword,
-     * or dynamically via Pageable Sort parameters or Sort parameters to the repository method,
+     * or dynamically via PageRequest Sort parameters or Sort parameters to the repository method,
      * or a combination of both static and dynamic.
      * If the Query annotation is used, it will be unknown whether its value hard-codes Sort criteria,
      * in which case this field gets set to any additional sort criteria that is added statically or dynamically,
@@ -260,7 +260,7 @@ public class QueryInfo {
     }
 
     /**
-     * Adds dynamically specified Sort criteria from the Pageable to the end of an existing list, or
+     * Adds dynamically specified Sort criteria from the PageRequest to the end of an existing list, or
      * if the combined list Sort criteria doesn't already exist, this method creates it
      * starting with the Sort criteria of this QueryInfo.
      *
@@ -466,7 +466,7 @@ public class QueryInfo {
         boolean hasDynamicSort = false;
         Class<?>[] paramTypes = method.getParameterTypes();
         for (int i = paramCount - paramAddedCount; i < paramTypes.length && !hasDynamicSort; i++)
-            hasDynamicSort = Pageable.class.equals(paramTypes[i])
+            hasDynamicSort = PageRequest.class.equals(paramTypes[i])
                              || Order.class.equals(paramTypes[i])
                              || Sort[].class.equals(paramTypes[i])
                              || Sort.class.equals(paramTypes[i]);
@@ -593,7 +593,7 @@ public class QueryInfo {
      * @param keysetCursor keyset cursor
      */
     @Trivial
-    private void keysetSizeMismatchError(Pageable.Cursor keysetCursor) {
+    private void keysetSizeMismatchError(PageRequest.Cursor keysetCursor) {
         List<String> keyTypes = new ArrayList<>();
         for (int i = 0; i < keysetCursor.size(); i++)
             keyTypes.add(keysetCursor.getKeysetElement(i) == null ? null : keysetCursor.getKeysetElement(i).getClass().getName());
@@ -611,7 +611,7 @@ public class QueryInfo {
      * @param keysetCursor keyset values
      * @throws Exception if an error occurs
      */
-    void setKeysetParameters(Query query, Pageable.Cursor keysetCursor) throws Exception {
+    void setKeysetParameters(Query query, PageRequest.Cursor keysetCursor) throws Exception {
         int paramNum = paramCount; // set to position before the first keyset parameter
         if (paramNames == null) // positional parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
