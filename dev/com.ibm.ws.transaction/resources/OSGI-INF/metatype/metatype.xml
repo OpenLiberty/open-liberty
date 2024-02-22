@@ -138,7 +138,7 @@
 
         <AD name="%default.max.shutdown.delay" description="%default.max.shutdown.delay.desc"
             id="defaultMaxShutdownDelay" required="false" type="String" ibm:type="duration(s)" min="0" default="2s" />
-               
+            
         <AD id="dataSourceRef" type="String" required="false" ibm:type="pid" 
             ibm:reference="com.ibm.ws.jdbc.dataSource" cardinality="1" 
             name="%dataSourceRef" description="%dataSourceRef.desc"/>
