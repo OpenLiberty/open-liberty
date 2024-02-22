@@ -127,8 +127,12 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
             }
 
         } catch (IOException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "configadmin had an issue collecting configured applications due to an IO exception.");
             e.printStackTrace();
         } catch (InvalidSyntaxException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "configadmin had an issue collecting configured applications due to invalid syntax.");
             e.printStackTrace();
         }
 

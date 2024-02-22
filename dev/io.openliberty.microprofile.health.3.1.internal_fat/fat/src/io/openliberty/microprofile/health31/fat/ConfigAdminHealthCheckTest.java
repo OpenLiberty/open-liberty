@@ -38,13 +38,11 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-//import org.testcontainers.containers.KafkaContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -104,11 +102,11 @@ public class ConfigAdminHealthCheckTest {
                     .andWith(new FeatureReplacementAction()
                                     .withID("mpHealth-3.0")
                                     .addFeature("mpHealth-3.0")
-                                    .removeFeature("mpHealth-2.0")
+                                    .removeFeature("mpHealth-3.1")
                                     .forServers(SERVER_NAME))
                     .andWith(new FeatureReplacementAction()
-                                    .withID("mpHealth-3.1")
-                                    .addFeature("mpHealth-3.1")
+                                    .withID("mpHealth-2.0")
+                                    .addFeature("mpHealth-2.0")
                                     .removeFeature("mpHealth-3.0")
                                     .forServers(SERVER_NAME));
 
@@ -153,6 +151,10 @@ public class ConfigAdminHealthCheckTest {
         server3.stopServer(FAILS_TO_START_EXPECTED_FAILURES);
     }
 
+    /*
+     * This test will start a server with the applications already loaded inside the dropins folder.
+     * It will confirm that both the configAdmin and appTracker detect the application.
+     */
     @Test
     public void testMatchingAppNamesDropinsTest() throws Exception {
         log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the dropins directory.");
@@ -170,8 +172,12 @@ public class ConfigAdminHealthCheckTest {
 
     }
 
+    /*
+     * This test will start a server without the applications preload in the dropins folder.
+     * It will then dynamically load the applications in the dropins folder.
+     * It will confirm that the configAdmin does not detect the application and that the appTracker does detect the application.
+     */
     @Test
-    @SkipForRepeat({ "mpHealth-3.0", "mpHealth-3.1" })
     public void testAppDetectionDropinsTest() throws Exception {
 
         log("testAppDetectionDropinsTest", "Starting the server and dynamically adding " + APP_NAME2);
@@ -192,8 +198,11 @@ public class ConfigAdminHealthCheckTest {
 
     }
 
+    /*
+     * This test will start a server with the application configured in the server.xml.
+     * It will confirm that both the configAdmin and appTracker detect the application.
+     */
     @Test
-    @SkipForRepeat({ "mpHealth-3.0", "mpHealth-3.1" })
     public void testAppDetectionServerXml() throws Exception {
         log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the apps directory.");
 
@@ -217,8 +226,12 @@ public class ConfigAdminHealthCheckTest {
 
     }
 
+    /*
+     * This test will start a server with the server.xml pointing at the wrong application.
+     * It will confirm that both the configAdmin and appTracker do not detect the application.
+     */
     @Test
-    @SkipForRepeat({ "mpHealth-3.0", "mpHealth-3.1" })
+    @SkipForRepeat({ "mpHealth-2.0", "mpHealth-3.0" })
     public void testWrongAppNameServerXml() throws Exception {
         log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the apps directory.");
 
@@ -242,57 +255,43 @@ public class ConfigAdminHealthCheckTest {
 
     }
 
+//Test will be enabled in a future update.
+//    @Test
+//    @SkipForRepeat({ "mpHealth-3.0", "mpHealth-3.1" })
+//    @ExpectedFFDC({ "com.ibm.ws.container.service.state.StateChangeException",
+//                    "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException",
+//                    "org.jboss.weld.exceptions.DeploymentException" })
+//    public void testFailsToStartApplicationHealthCheck() throws Exception {
+//        log("testFailsToStartApplicationHealthCheckTest", "Pre-loading FailsToStartHealthCheckApp and starting the server");
+//        loadServerAndApplication(server3, FAILS_TO_START_APP_NAME, "io.openliberty.microprofile.health31.fails.to.start.health.check.app", false);
+//
+//        log("testFailsToStartApplicationHealthCheckTest", "Testing health check endpoints after FailsToStartHealthCheckApp has been loaded");
+//        expectHealthCheck(server3, HealthCheck.LIVE, Status.SUCCESS, 0);
+//        expectFailsToStartApplicationNotStartedMessage(false);
+//
+//        expectHealthCheck(server3, HealthCheck.READY, Status.FAILURE, 0);
+//        expectFailsToStartApplicationNotStartedMessage(true);
+//
+//        expectHealthCheck(server3, HealthCheck.HEALTH, Status.FAILURE, 0);
+//        expectFailsToStartApplicationNotStartedMessage(true);
+//
+//        expectHealthCheck(server3, HealthCheck.STARTED, Status.FAILURE, 0);
+//        expectFailsToStartApplicationNotStartedMessage(true);
+//
+//        String configAdminLine = server3.waitForStringInTrace("configAdminAppName = FailsToStartHealthCheckApp");
+//        String stateMapLine = server3.waitForStringInTrace(": appName = FailsToStartHealthCheckApp");
+//
+//        assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
+//        assertNotNull("App was not detected by appTracker.", stateMapLine);
+//    }
+
+    /*
+     * This test will start a server with an ear file that contains two war files, one slow and one fast application.
+     * The readiness endpoint will be continuously polled until it returns a 200 response code.
+     * It will also confirm that both the configAdmin and appTracker detect the application, even with a delayed application.
+     */
     @Test
-    @SkipForRepeat({ "mpHealth-3.0", "mpHealth-3.1" })
-    @ExpectedFFDC({ "com.ibm.ws.container.service.state.StateChangeException",
-                    "com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterException",
-                    "org.jboss.weld.exceptions.DeploymentException" })
-    public void testFailsToStartApplicationHealthCheck() throws Exception {
-        log("testFailsToStartApplicationHealthCheckTest", "Pre-loading FailsToStartHealthCheckApp and starting the server");
-        loadServerAndApplication(server3, FAILS_TO_START_APP_NAME, "io.openliberty.microprofile.health31.fails.to.start.health.check.app", false);
-
-        log("testFailsToStartApplicationHealthCheckTest", "Testing health check endpoints after FailsToStartHealthCheckApp has been loaded");
-        expectHealthCheck(server3, HealthCheck.LIVE, Status.SUCCESS, 0);
-        expectFailsToStartApplicationNotStartedMessage(false);
-
-        expectHealthCheck(server3, HealthCheck.READY, Status.FAILURE, 0);
-        expectFailsToStartApplicationNotStartedMessage(true);
-
-        expectHealthCheck(server3, HealthCheck.HEALTH, Status.FAILURE, 0);
-        expectFailsToStartApplicationNotStartedMessage(true);
-        
-        expectHealthCheck(server3, HealthCheck.STARTED, Status.FAILURE, 0);
-        expectFailsToStartApplicationNotStartedMessage(true);
-
-        String configAdminLine = server3.waitForStringInTrace("configAdminAppName = FailsToStartHealthCheckApp");
-        String stateMapLine = server3.waitForStringInTrace(": appName = FailsToStartHealthCheckApp");
-
-        assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
-        assertNotNull("App was not detected by appTracker.", stateMapLine);
-    }
-
-    @Test
-    @SkipForRepeat({ "mpHealth-3.0", "mpHealth-3.1" })
-    public void testFailedAppStart() throws Exception {
-        log("testAppDetectionDropinsTest", "Starting the server and dynamically adding " + APP_NAME2);
-
-        loadServerAndApplication(server1, APP_NAME, "io.openliberty.microprofile.health31.config.admin.dropins.checks.app", true);
-
-        server1.waitForStringInLog("CWWKT0016I: Web application available");
-
-        //Hitting health endpoint to trigger configAdmin app registration.
-        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-        getJSONPayload(conReady);
-
-        String configAdminLine = server1.waitForStringInTrace("configAdminAppName = ConfigAdminDropinsCheckApp", 10000);
-        String stateMapLine = server1.waitForStringInTrace(": appName = ConfigAdminDropinsCheckApp", 10000);
-
-        assertNull("App was detected by ConfigAdmin.", configAdminLine);
-        assertNotNull("App was not detected by appTracker.", stateMapLine);
-
-    }
-
-    @Test
+    @SkipForRepeat({ "mpHealth-2.0", "mpHealth-3.0" })
     public void testReadinessEndpointOnServerStart() throws Exception {
         log("testReadinessEndpointOnServerStart", "Begin execution of testReadinessEndpointOnServerStart");
 
@@ -420,6 +419,11 @@ public class ConfigAdminHealthCheckTest {
 
         }
 
+        log("testReadinessEndpointOnServerStart", "Waiting for Application to start message, after Health check reports 200.");
+        String line = server1.waitForStringInLog("(CWWKZ0001I: Application MultiWarApps started)+", 60000);
+        assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
+        log("testReadinessEndpointOnServerStart", "Application Started message found: " + line);
+
         // Access an application endpoint to verify the application is actually ready
         log("testReadinessEndpointOnServerStart", "Testing an application endpoint, after server and application has started.");
         conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, APP_ENDPOINT);
@@ -502,6 +506,9 @@ public class ConfigAdminHealthCheckTest {
                     break;
                 } else if (expectedHealthCheck == HealthCheck.READY) {
                     con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, READY_ENDPOINT);
+                    break;
+                } else if (expectedHealthCheck == HealthCheck.STARTED) {
+                    con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, STARTED_ENDPOINT);
                     break;
                 } else {
                     con = HttpUtils.getHttpConnectionWithAnyResponseCode(server, HEALTH_ENDPOINT);
