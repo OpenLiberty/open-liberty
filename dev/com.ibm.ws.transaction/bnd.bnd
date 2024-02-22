@@ -23,13 +23,10 @@ Service-Component: com.ibm.ws.transaction; \
       implementation:=com.ibm.ws.transaction.services.JTMConfigurationProvider; \
       locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
       dataSourceFactory=com.ibm.wsspi.resource.ResourceFactory; \
-      resourceConfigFactory=com.ibm.wsspi.resource.ResourceConfigFactory; \
-      authData=com.ibm.websphere.security.auth.data.AuthData; \
       transactionSettingsProvider=com.ibm.tx.jta.embeddable.TransactionSettingsProvider ;\
       runningCondition='org.osgi.service.condition.Condition';\
-      optional:='dataSourceFactory,transactionSettingsProvider,runningCondition,authData';\
+      optional:='dataSourceFactory,transactionSettingsProvider,runningCondition';\
       dynamic:='dataSourceFactory,transactionSettingsProvider,runningCondition';\
-	  multiple:='authData';\
       configuration-policy:=require;\
       properties:='\
          service.vendor=IBM,\
@@ -131,8 +128,6 @@ instrument.classesExcludes: com/ibm/ws/transaction/services/TransactionMessages*
   com.ibm.ws.tx.embeddable;version=latest,\
   com.ibm.ws.tx.jta.extensions;version=latest,\
   com.ibm.ws.webcontainer;version=latest, \
-  com.ibm.ws.security.auth.data.common;version=latest,\
-  com.ibm.ws.security.jca;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations
 
 -testpath: \

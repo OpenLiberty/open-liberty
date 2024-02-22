@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -108,14 +108,6 @@ public class AuthData extends ConfigElement implements ModifiableConfigElement {
         this.user = bs.getValue(BootstrapProperty.DB_USER2.getPropertyName());
         this.password = bs.getValue(BootstrapProperty.DB_PASSWORD2.getPropertyName());
         Log.exiting(c, "updateAuthDataFromBootStrapDBUser2");
-    }
-
-    public void updateAuthData(String uName, String pWord) throws Exception {
-        Log.entering(c, "updateAuthData");
-
-        this.user = uName;
-        this.password = pWord;
-        Log.exiting(c, "updateAuthData");
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2024 IBM Corporation and others.
+ * Copyright (c) 2007, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import com.ibm.tx.config.ConfigurationProvider;
 import com.ibm.tx.config.RuntimeMetaDataProvider;
 import com.ibm.tx.jta.util.alarm.AlarmManagerImpl;
 import com.ibm.tx.util.alarm.AlarmManager;
-import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 public class DefaultConfigurationProvider implements ConfigurationProvider {
@@ -224,11 +223,6 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
 
     @Override
     public ResourceFactory getResourceFactory() {
-        return null;
-    }
-
-    @Override
-    public ResourceConfig getResourceConfig() {
         return null;
     }
 
