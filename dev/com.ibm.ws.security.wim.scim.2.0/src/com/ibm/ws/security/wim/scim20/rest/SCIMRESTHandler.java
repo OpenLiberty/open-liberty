@@ -428,6 +428,8 @@ public class SCIMRESTHandler implements RESTHandler {
         if (jsonResponse != null) {
             response.getWriter().write(jsonResponse);
         }
+        response.setResponseHeader("X-Content-Type-Options","nosniff");
+        response.setResponseHeader("Content-Security-Policy", "default-src 'self'");
         response.getWriter().flush();
         response.getWriter().close();
     }
