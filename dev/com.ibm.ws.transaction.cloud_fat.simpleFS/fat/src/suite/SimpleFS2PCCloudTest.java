@@ -268,19 +268,19 @@ public class SimpleFS2PCCloudTest extends CloudFATServletClient {
         server1.clearLogMarks();
         // Check whether the peer lease has been updated with the owner/backendURL combo.
         assertNotNull("Artificial lease not set up",
-                      server1.waitForStringInLogUsingMark("Originally " + server1.getServerName() + " lease file length " + s1Length,
-                                                          FATUtils.LOG_SEARCH_TIMEOUT));
+                      server1.waitForStringInTraceUsingMark("Originally " + server1.getServerName() + " lease file length " + s1Length,
+                                                            FATUtils.LOG_SEARCH_TIMEOUT));
         int newLength = Integer.parseInt(s1Length) + defaultBackendURL.length();
         assertNotNull("Artificial lease not updated",
-                      server1.waitForStringInLogUsingMark("On writing " + server1.getServerName() + " lease file length " + newLength, FATUtils.LOG_SEARCH_TIMEOUT));
+                      server1.waitForStringInTraceUsingMark("On writing " + server1.getServerName() + " lease file length " + newLength, FATUtils.LOG_SEARCH_TIMEOUT));
         // Check for key string to see whether the home lease has been updated with the owner/backendURL combo.
         assertNotNull("Home lease not set up",
-                      server1.waitForStringInLogUsingMark("On reading " + server2.getServerName() + " lease file length " + s2Length,
-                                                          FATUtils.LOG_SEARCH_TIMEOUT));
+                      server1.waitForStringInTraceUsingMark("On reading " + server2.getServerName() + " lease file length " + s2Length,
+                                                            FATUtils.LOG_SEARCH_TIMEOUT));
         newLength = Integer.parseInt(s2Length) + defaultBackendURL.length();
         // Check for key string to see whether the peer lease has been updated with the owner/backendURL combo.
         assertNotNull("Peer lease not updated",
-                      server1.waitForStringInLogUsingMark("On writing " + server2.getServerName() + " lease file length " + newLength, FATUtils.LOG_SEARCH_TIMEOUT));
+                      server1.waitForStringInTraceUsingMark("On writing " + server2.getServerName() + " lease file length " + newLength, FATUtils.LOG_SEARCH_TIMEOUT));
 
         FATUtils.stopServers(server1);
     }
