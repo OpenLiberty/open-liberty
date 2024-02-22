@@ -1832,7 +1832,30 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 // returning RR will prevent closeConnectionAfterBatch resetting isolation level
                 initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
             }
+        } else if (_isSQLServer) {
+            // SQL Server is predisposed to deadlock on lower isolation levels. The SERIALIZABLE isolation level should mean that deadlocks are
+            // considerably less likely but could lead to poorer performance. Poorer performance wrt lease access is hopefully a price worth paying
+            // to avoid (unexpected) deadlocks.
+            try {
+                initialIsolation = conn.getTransactionIsolation();
+                if (Connection.TRANSACTION_SERIALIZABLE != initialIsolation) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Transaction isolation level was " + initialIsolation + " , setting to TRANSACTION_SERIALIZABLE");
+                    conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+                }
+            } catch (Exception e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "setTransactionIsolation to SERIALIZABLE threw Exception. Transaction isolation level was " + initialIsolation + " ", e);
+                FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLSharedServerLeaseLog.prepareConnectionForBatch", "3670", this);
+                if (!isolationFailureReported) {
+                    isolationFailureReported = true;
+                    Tr.warning(tc, "CWRLS0024_EXC_DURING_RECOVERY", e);
+                }
+                // returning RR will prevent closeConnectionAfterBatch resetting isolation level
+                initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
+            }
         }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "prepareConnectionForBatch", initialIsolation);
         return initialIsolation;
