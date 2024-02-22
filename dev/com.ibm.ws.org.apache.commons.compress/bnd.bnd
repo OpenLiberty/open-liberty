@@ -10,8 +10,8 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.commons:commons-compress;1.24.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.apache.commons:commons-compress;1.26.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 publish.wlp.jar.disabled: true
 
--buildpath: org.apache.commons:commons-compress;version=1.24.0
+-buildpath: org.apache.commons:commons-compress;version=1.26.0
