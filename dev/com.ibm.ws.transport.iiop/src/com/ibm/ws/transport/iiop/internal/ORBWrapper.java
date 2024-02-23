@@ -36,6 +36,7 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.transport.iiop.spi.IIOPEndpoint;
+import com.ibm.ws.transport.iiop.spi.OrbConfigurator;
 import com.ibm.ws.transport.iiop.spi.ReadyListener;
 import com.ibm.ws.transport.iiop.spi.SubsystemFactory;
 
@@ -54,6 +55,8 @@ public final class ORBWrapper {
             ComponentFactory<ORBWrapperInternal> factory,
             @Reference(name="IIOPEndpoint", cardinality = MULTIPLE, policyOption = GREEDY)
             List<IIOPEndpoint> endpoints,
+            @Reference(name="OrbConfigurator")
+            List<OrbConfigurator> orbConfigurator,
             @Reference(name="SubsystemFactory", cardinality = MULTIPLE, policyOption = GREEDY)
             List<SubsystemFactory> subsystemFactories
             ) {
@@ -81,7 +84,6 @@ public final class ORBWrapper {
             this.factory = factory;
         }
 
-        /** {@inheritDoc} */
         @Override
         public void readyChanged(SubsystemFactory id, boolean ready) {
             try {
@@ -103,21 +105,15 @@ public final class ORBWrapper {
             };
         }
 
-        /** {@inheritDoc} */
         @Override
-        public String listenerId() {
-            return (String)properties.get("id");
-        }
+        public String listenerId() { return (String)properties.get("id"); }
 
-        void unregister() {
-            subsystemFactories.keySet().forEach(sf -> sf.unregister(this));
-        }
+        void unregister() { subsystemFactories.keySet().forEach(sf -> sf.unregister(this)); }
 
         private ComponentInstance<ORBWrapperInternal> newInstance() {
             final Hashtable<String, Object> h = new Hashtable<>();
             h.putAll(properties);
             return factory.newInstance(h);
         }
-
     }
 }
