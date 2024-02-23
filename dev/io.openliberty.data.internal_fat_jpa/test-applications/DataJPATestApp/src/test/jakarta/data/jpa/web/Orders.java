@@ -51,6 +51,9 @@ public interface Orders extends CrudRepository<PurchaseOrder, Long> {
     @Insert
     PurchaseOrder[] create(PurchaseOrder... orders);
 
+    @Delete
+    void deleteAll();
+
     @OrderBy("id")
     Optional<PurchaseOrder> findFirstByPurchasedBy(String purchaser);
 

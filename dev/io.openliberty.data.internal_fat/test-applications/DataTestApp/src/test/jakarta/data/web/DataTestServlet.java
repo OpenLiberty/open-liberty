@@ -841,7 +841,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testElementCountAndExtract() throws Exception {
-        reservations.deleteAll();
+        reservations.deleteByHostNot("nobody");
 
         final ZoneOffset MDT = ZoneOffset.ofHours(-6);
 
@@ -918,7 +918,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(113001L, 213002L, 413004L),
                              reservations.endsAtSecond(0));
 
-        reservations.deleteAll();
+        reservations.deleteByHostNot("nobody");
     }
 
     /**
@@ -3570,7 +3570,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testRecordBasicRepositoryMethods() {
-        receipts.deleteAll();
+        receipts.deleteByTotalLessThan(1000000.0f);
 
         receipts.save(new Receipt(100L, "C0013-00-031", 101.90f));
         receipts.saveAll(List.of(new Receipt(200L, "C0022-00-022", 202.40f),
@@ -3615,7 +3615,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(2L, receipts.countBy());
 
-        receipts.deleteAll();
+        assertEquals(true, receipts.deleteByTotalLessThan(1000000.0f));
 
         assertEquals(0L, receipts.countBy());
     }
@@ -3625,7 +3625,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testRecordCrudRepositoryMethods() {
-        receipts.deleteAll();
+        receipts.deleteByTotalLessThan(1000000.0f);
 
         receipts.insert(new Receipt(1200L, "C0002-12-002", 102.20f));
 
@@ -3684,7 +3684,7 @@ public class DataTestServlet extends FATServlet {
                                      .sorted(Comparator.comparing(Receipt::purchaseId))
                                      .collect(Collectors.toList()));
 
-        receipts.deleteAll();
+        assertEquals(true, receipts.deleteByTotalLessThan(1000000.0f));
 
         assertEquals(0L, receipts.countBy());
     }
