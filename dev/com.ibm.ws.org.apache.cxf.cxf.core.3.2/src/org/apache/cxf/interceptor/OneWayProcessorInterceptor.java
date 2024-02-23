@@ -36,6 +36,7 @@ import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.transport.Conduit;
 import org.apache.cxf.workqueue.WorkQueueManager;
+import com.ibm.websphere.ras.annotation.Sensitive;   // Liberty Change
 
 
 /**
@@ -70,7 +71,7 @@ public class OneWayProcessorInterceptor extends AbstractPhaseInterceptor<Message
 
         }
     }
-    public void handleMessage(Message message) {
+    public void handleMessage(@Sensitive Message message) {   // Liberty Change
 
         if (message.getExchange().isOneWay()
             && !isRequestor(message)

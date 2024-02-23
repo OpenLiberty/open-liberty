@@ -53,7 +53,7 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
         super(Phase.INVOKE);
     }
 
-    public void handleMessage(@Sensitive final Message message) {
+    public void handleMessage(@Sensitive final Message message) {  // Liberty Change
         final Exchange exchange = message.getExchange();
         final Endpoint endpoint = exchange.getEndpoint();
         final Service service = endpoint.getService();
