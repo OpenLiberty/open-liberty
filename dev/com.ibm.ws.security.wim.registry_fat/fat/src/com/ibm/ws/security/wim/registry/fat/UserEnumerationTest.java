@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -101,7 +101,7 @@ public class UserEnumerationTest {
     @AfterClass
     public static void teardownClass() throws Exception {
         if (libertyServer != null) {
-            libertyServer.stopServer("CWIML4537E", "CWIML4529E", "CWIMK0012W"); // Messages we get for invalid users
+            libertyServer.stopServer("CWIML4537E", "CWIML4529E", "CWIMK0012W", "CWWKG0075E"); // Messages we get for invalid users, and bad config value
         }
     }
 
@@ -233,6 +233,9 @@ public class UserEnumerationTest {
         federatedRepository.setFailedLoginDelayMin("10s");
 
         LDAPFatUtils.updateConfigDynamically(libertyServer, clone);
+
+        assertNotNull("The BadValue for login delay did not cause an expected CWWKG0075E error.",
+                      libertyServer.waitForStringInLog("CWWKG0075E:.*BadValue"));
 
         runLoginTestCommon(true);
     }

@@ -175,6 +175,16 @@ elements={0}{1}-Elemente
 
 enable_batch_operations_as_true_not_supported=Die native WLS-CMP-Einstellung "enable-batch-operations-as-true" wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
 
+encryptor_decrypt_old_algorithm=Das Datenbankkennwort, das in {0} verwendet wird, wurde durch einen veralteten algorithm.Reencrypt -Algorithmus von `passwordUpdate.sh ` aus dem Paket eclipselink.zip verschl\u00fcsselt.
+
+encryptor_decrypt_old_algorithm_without_session_name=Das Datenbankkennwort wurde von einem veralteten algorithm.Reencrypt -Algorithmus mit ''passwordUpdate.sh'' aus dem Bundle eclipselink.zip verschl\u00fcsselt.
+
+encryptor_script_description=Diese Anwendung entschl\u00fcsselt intern ein altes verschl\u00fcsseltes Kennwort, das von einer fr\u00fcheren EclipseLink -Version verwendet wurde, und verschl\u00fcsselt es mit dem neuesten Algorithmus.
+
+encryptor_script_output=Das erneut verschl\u00fcsselte Kennwort lautet: {0}
+
+encryptor_script_usage=Syntax: `passwordUpdate.sh | .cmd -ip < altes verschl\u00fcsseltes Kennwort> `
+
 entity_manager_ignores_jta_data_source=Die Persistenzeinheit verwendet keine JTA, daher wird die JTA-Datenquelle vom EntityManager ignoriert. 
 
 entity_manager_ignores_nonjta_data_source=Die Persistenzeinheit verwendet JTA, daher werden Nicht-JTA-Datenquellen vom EntityManager ignoriert. 
@@ -737,7 +747,11 @@ toplink_warning=[EL Warning]:
 
 unit_of_work_thread_info=Die aktuelle Arbeitseinheit in Sitzung ({0}) wurde von einem anderen Thread erstellt (ID: {1}, Name: {2}) als der aktuelle Thread (ID: {3}, Name: {4}).
 
-unit_of_work_thread_info_thread_dump=Erstellungsthread (ID: {0}, Name: {1}) Stack-Trace: {2} Aktueller Thread (ID: {3}, Name: {4}) Stack-Trace {5}
+unit_of_work_thread_info_thread_dump=Erstellungsthread (ID: {0} Name: {1}) Stack-Trace:
+#{2}
+
+Current Thread (ID: {3} Name: {4}) Stack-Trace:
+#{5}
 
 unitofwork_identity_hashcode={0}-Arbeitseinheits-ID-Hash-Code: {1}
 

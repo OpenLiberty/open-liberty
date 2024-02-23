@@ -3,11 +3,11 @@
 alpine:3.16
 confluentinc/cp-kafka:7.1.1
 elastic/logstash:7.16.3
-gvenzl/oracle-xe:21.3.0-full-faststart
-gvenzl/oracle-xe:21.3.0-slim-faststart
+gvenzl/oracle-free:23.3-full-faststart
+gvenzl/oracle-free:23.3-slim-faststart
 infinispan/server:10.0.1.Final
 infinispan/server:13.0.10.Final
-jaegertracing/all-in-one:1.39
+jaegertracing/all-in-one:1.54
 jboss/keycloak:16.1.1
 jiwoo/simple-keyserver:1.0
 jonhawkes/postgresql-ssl:1.0
@@ -34,6 +34,6 @@ postgres:14.1-alpine
 ryanesch/acme-boulder:1.2
 seleniarm/standalone-chromium:4.8.3
 selenium/standalone-chrome:4.8.3
-testcontainers/ryuk:0.5.1
+testcontainers/ryuk:0.6.0
 testcontainers/sshd:1.1.0
 testcontainers/vnc-recorder:1.3.0

@@ -53,6 +53,7 @@ public class EJBVisibilityTests extends FATServletClient {
     //Because this test includes Fault Tolerance, the repeat must be done using MicroProfileActions.
     //Fault Tolerance is included as a feature with CDI extension which can see application BDAs.
     //This previously caused issues with masked classes.
+    //At some point we need to repeat this test with EE11 but Fault Tolerance does not yet support EE11.
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
                                                              MicroProfileActions.MP61,

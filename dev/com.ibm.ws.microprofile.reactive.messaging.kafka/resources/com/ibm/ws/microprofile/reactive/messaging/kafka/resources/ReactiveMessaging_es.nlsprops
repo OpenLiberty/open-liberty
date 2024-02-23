@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,10 +83,10 @@ kafka.create.outgoing.retry.CWMRX1010W.explanation=Se ha producido un error al c
 kafka.create.outgoing.retry.CWMRX1010W.useraction=Revise el mensaje de error, el archivo messages.log del servidor y los registros FFDC para identificar si el problema era transitorio y se ha resuelto volviendo a intentar la configuraci\u00f3n de conector.
 
 # {0} = kafka record data, {1} = exception details
-# 'nack' is the name of a method and should not be translated 
+# 'nack' is the name of a method and should not be translated
 kafka.input.message.nacked.CWMRX1011E=CWMRX1011E: Se ha llamado al m\u00e9todo nack en un mensaje que se ha creado a partir de un registro Kafka , lo que indica que no se ha procesado correctamente. La corriente de mensajes reactiva se cerrar\u00e1. El registro era: {0}. La excepci\u00f3n ha sido: {1}.
-kafka.input.message.nacked.CWMRX1011E.explanation=Un mensaje del conector Kafka ha provocado una anomal\u00eda en alg\u00fan lugar de la aplicaci\u00f3n, lo que ha hecho que el mensaje se reconozca negativamente. Como el mensaje no se ha procesado correctamente, el desplazamiento confirmado no se ha avanzado para la partici\u00f3n de la que procede el mensaje. No se pueden procesar m\u00e1s mensajes desde esta partici\u00f3n.
-kafka.input.message.nacked.CWMRX1011E.useraction=Revise el mensaje de error y el archivo messages.log en el servidor para identificar el problema. Para evitar que el proceso de mensajes se detenga en una anomal\u00eda, implemente la l\u00f3gica dentro de la aplicaci\u00f3n que proporciona un manejo alternativo de los mensajes que se reconocen negativamente.
+kafka.input.message.nacked.CWMRX1011E.explanation=El conector Kafka ha enviado un mensaje que ha provocado una anomal\u00eda en la aplicaci\u00f3n, lo que ha hecho que el mensaje se reconozca negativamente. Como el mensaje no se ha procesado correctamente, el desplazamiento confirmado no es avanzado para la partici\u00f3n de la que procede el mensaje. Por lo tanto, no se pueden procesar m\u00e1s mensajes desde esta partici\u00f3n.
+kafka.input.message.nacked.CWMRX1011E.useraction=Revise el mensaje de error y el archivo messages.log en el servidor para determinar el problema. Para evitar la detenci\u00f3n del proceso de mensajes debido a una anomal\u00eda, implemente la l\u00f3gica en la aplicaci\u00f3n para un manejo alternativo de los mensajes que se reconocen negativamente.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

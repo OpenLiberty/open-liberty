@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<application version="11"
+             xmlns="https://jakarta.ee/xml/ns/jakartaee"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/application_11.xsd">
+  <display-name>Concurrency CDI Test Application</display-name>
+
+  <module>
+    <web>
+      <web-uri>concurrentCDIWeb.war</web-uri>
+      <context-root>/</context-root>
+    </web>
+  </module>
+
+  <module>
+    <ejb>concurrentCDIEJB.jar</ejb>
+  </module>
+
+  <context-service>
+    <name>java:app/concurrent/with-location-and-without-app-context</name>
+    <qualifier>concurrent.cdi.ejb.ClearingAppContext</qualifier>
+    <qualifier>concurrent.cdi.ejb.PropagatingLocationContext</qualifier>
+    <qualifier>concurrent.cdi.ejb.IgnoringTransactionContext</qualifier>
+    <cleared>Application</cleared>
+    <propagated>Location</propagated>
+    <unchanged>Remaining</unchanged>
+  </context-service>
+
+</application>

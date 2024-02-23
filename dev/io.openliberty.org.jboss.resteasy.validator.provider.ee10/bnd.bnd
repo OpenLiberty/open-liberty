@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ org/jboss/resteasy=${bin}/org/jboss/resteasy
   org.jboss.resteasy:resteasy-validator-provider;strategy=exact;version='${resteasy-version}',\
   io.openliberty.org.jboss.logging35,\
   io.openliberty.org.jboss.resteasy.common.ee10,\
-  io.openliberty.org.jboss.resteasy.server.ee10,\
+  io.openliberty.org.jboss.resteasy.cdi.ee10,\
   com.ibm.ws.com.fasterxml.classmate;version=latest,\
   io.openliberty.jakarta.cdi.4.0,\
   io.openliberty.jakarta.validation.3.0;version=latest,\

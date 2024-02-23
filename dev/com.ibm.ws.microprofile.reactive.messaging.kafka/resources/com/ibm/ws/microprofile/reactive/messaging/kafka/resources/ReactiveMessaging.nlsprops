@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,10 +83,10 @@ kafka.create.outgoing.retry.CWMRX1010W.explanation=An error occurred when the Ka
 kafka.create.outgoing.retry.CWMRX1010W.useraction=Review the error message, the messages.log file on the server, and FFDC logs to identify whether the problem was transient and was resolved by retrying the connector setup.
 
 # {0} = kafka record data, {1} = exception details
-# 'nack' is the name of a method and should not be translated 
+# 'nack' is the name of a method and should not be translated
 kafka.input.message.nacked.CWMRX1011E=CWMRX1011E: The nack method was called on a message that was created from a Kafka record, indicating that it was not processed successfully. The reactive message stream will be shut down. The record was: {0}. The exception was: {1}.
-kafka.input.message.nacked.CWMRX1011E.explanation=A message from the Kafka connector caused a failure somewhere in the application, resulting in the message being negatively acknowledged. As the message has not been successfully processed, the committed offset has not be advanced for the partition that the message came from. No more messages can be processed from this partition.
-kafka.input.message.nacked.CWMRX1011E.useraction=Review the error message and the messages.log file on the server to identify the problem. To avoid message processing stopping on a failure, implement logic within your application that provides alternative handling of messages that are negatively-acknowledged.
+kafka.input.message.nacked.CWMRX1011E.explanation=The Kafka connector sent a message that led to a failure within the application, causing the message to be negatively acknowledged. As the message was not successfully processed, the committed offset is not advanced for the partition that the message came from. So, no more messages can be processed from this partition.
+kafka.input.message.nacked.CWMRX1011E.useraction=Review the error message and the messages.log file on the server to determine the issue. To prevent the halting of message processing due to a failure, implement logic in your application for alternative handling of messages that are negatively acknowledged.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

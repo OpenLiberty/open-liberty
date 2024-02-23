@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,8 @@ public class FeatureList {
 
     private static File featureList = null;
 
+    private static final int TIMEOUT_MINUTES = 5;
+
     @SuppressWarnings("resource")
     public static synchronized File get(LibertyServer server) throws Exception {
         final String m = "createFeatureList";
@@ -43,14 +45,9 @@ public class FeatureList {
         Process featureListProc = new ProcessBuilder("java", "-jar", featureListJar, featureList.getAbsolutePath())
                         .redirectErrorStream(true)
                         .start();
-        int minutesToWait = 2;
-        if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
-            minutesToWait = 4;
-            // Windows is currently running slow. When we improve our automated Windows performance, this can be removed.
-        }
-        boolean completed = featureListProc.waitFor(minutesToWait, TimeUnit.MINUTES);
+        boolean completed = featureListProc.waitFor(TIMEOUT_MINUTES, TimeUnit.MINUTES);
         if (!completed) {
-            Exception e = new Exception("Generating " + FAT_FEATURE_LIST + " timed out after " + minutesToWait + " minutes. Aborting process.");
+            Exception e = new Exception("Generating " + FAT_FEATURE_LIST + " timed out after " + TIMEOUT_MINUTES + " minutes. Aborting process.");
             Log.error(c, m, e);
             featureListProc.destroyForcibly();
             featureListProc.waitFor();

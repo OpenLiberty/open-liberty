@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -369,8 +369,10 @@ def gaAndBetaAndNoShipPublicFeatures() {
 
 def webProfile8Features() { project.file("profiles/webProfile8/features.xml").readLines() }
 def webProfile10Features() { project.file("profiles/webProfile10/features.xml").readLines() }
+def webProfile11Features() { project.file("profiles/webProfile11/features.xml").readLines() }
 def javaee8Features() { project.file("profiles/javaee8/features.xml").readLines() }
 def jakartaee10Features() { project.file("profiles/jakartaee10/features.xml").readLines() }
+def jakartaee11Features() { project.file("profiles/jakartaee11/features.xml").readLines() }
 def microProfile4Features() { project.file("profiles/microProfile4/features.xml").readLines() }
 def microProfile6Features() { project.file("profiles/microProfile6/features.xml").readLines() }
 
@@ -559,6 +561,44 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
     
+    //GA
+    task packageOpenLibertyWebProfile11(type: PackageLibertyWithFeatures) {
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&webProfile11Features
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc"
+        outputTo new File(packageDir, "webProfile11")
+        doLast {
+            copy {
+                from "$packageDir/webProfile11/wlp/templates/servers/webProfile11/server.xml"
+                into "$packageDir/webProfile11/wlp/templates/servers/defaultServer"
+            }
+            copy {
+                from "$packageDir/webProfile11/wlp/templates/clients/jakartaeeClient11/client.xml"
+                into "$packageDir/webProfile11/wlp/templates/clients/defaultClient"
+            }
+        }
+    }
+
+    //GA
+    task packageOpenLibertyJakartaee11(type: PackageLibertyWithFeatures) {
+        dependsOn parent.subprojects.assemble
+        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
+        withFeatures this.&jakartaee11Features
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc"
+        outputTo new File(packageDir, "jakartaee11")
+        doLast {
+            copy {
+                from "$packageDir/jakartaee11/wlp/templates/servers/jakartaee11/server.xml"
+                into "$packageDir/jakartaee11/wlp/templates/servers/defaultServer"
+            }
+            copy {
+                from "$packageDir/jakartaee11/wlp/templates/clients/jakartaeeClient11/client.xml"
+                into "$packageDir/jakartaee11/wlp/templates/clients/defaultClient"
+            }
+        }
+    }
+
     //GA
     task packageOpenLibertyMicroProfile4(type: PackageLibertyWithFeatures) {
         doFirst {
@@ -765,6 +805,46 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn cleanupOpenLibertyJakartaee10Package
 
+    // GA: Includes only features listed in profiles/webProfile11/features.xml
+    task zipOpenLibertyWebProfile11(type: Zip) {
+        dependsOn packageOpenLibertyWebProfile11
+        dependsOn genChecksums
+        archiveBaseName = 'openliberty-webProfile11'
+        from(packageOpenLibertyWebProfile11)
+        destinationDirectory = distsDirectory
+        archiveVersion = releaseVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.webprofile11.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+
+    task cleanupOpenLibertyWebProfile11Package(type: Delete) {
+        dependsOn zipOpenLibertyWebProfile11
+        delete(packageOpenLibertyWebProfile11)
+    }
+    publish.dependsOn cleanupOpenLibertyWebProfile11Package
+
+    // GA: Includes only features listed in profiles/jakartaee11/features.xml
+    task zipOpenLibertyJakartaee11(type: Zip) {
+        dependsOn packageOpenLibertyJakartaee11
+        dependsOn genChecksums
+        archiveBaseName = 'openliberty-jakartaee11'
+        from(packageOpenLibertyJakartaee11)
+        destinationDirectory = distsDirectory
+        archiveVersion = releaseVersion
+        doLast {
+            rootProject.userProps.setProperty('zipopenliberty.jakartaee11.archivename', archivePath.toString())
+            rootProject.storeProps()
+        }
+    }
+
+    task cleanupOpenLibertyJakartaee11Package(type: Delete) {
+        dependsOn zipOpenLibertyJakartaee11
+        delete(packageOpenLibertyJakartaee11)
+    }
+    publish.dependsOn cleanupOpenLibertyJakartaee11Package
+
     // GA: Includes only features listed in profiles/microProfile4/features.xml
     task zipOpenLibertyMicroProfile4(type: Zip) {
         dependsOn packageOpenLibertyMicroProfile4
@@ -835,12 +915,14 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn cleanupOpenLibertyJavaee8Package
         dependsOn cleanupOpenLibertyJakartaee10Package
         dependsOn cleanupOpenLibertyWebProfile10Package
+        dependsOn cleanupOpenLibertyJakartaee11Package
+        dependsOn cleanupOpenLibertyWebProfile11Package
         dependsOn cleanupOpenLibertyMicroProfile4Package
         dependsOn cleanupOpenLibertyMicroProfile6Package
         dependsOn cleanupOpenLibertyBetaPackage
         doLast {
           generateZipChecksums(ant)
-          ant.calcZipChecksums(installRoot:"${distsDirectory}") {}
+          ant.calcZipChecksums(installRoot:"build/libs/distributions") {}
         }
     }   
     publish.dependsOn genZipChecksums

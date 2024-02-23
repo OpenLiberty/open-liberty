@@ -10,8 +10,9 @@ IBM-API-Package: javax.security.auth.message.callback; type="spec", \
   com.ibm.websphere.security.auth.callback; type="ibm-api"
 IBM-ShortName: jcaInboundSecurity-1.0
 Subsystem-Name: Java Connector Architecture Security Inflow 1.0
--features=com.ibm.websphere.appserver.jca-1.6; ibm.tolerates:="1.7", \
+-features=\
   com.ibm.websphere.appserver.eeCompatible-6.0; ibm.tolerates:="7.0,8.0", \
+  io.openliberty.jcaInboundSecurity1.0.internal.ee-6.0; ibm.tolerates:=7.0, \
   com.ibm.websphere.appserver.security-1.0, \
   io.openliberty.securityAPI.javaee-1.0, \
   com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:="1.2"

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="6.0"
+    xmlns="https://jakarta.ee/xml/ns/jakartaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+    id="WebApp_ID">
+
+  <display-name>Concurrent CDI FAT</display-name>
+  <description>FAT for Jakarta Concurrency and CDI</description>
+
+  <!-- ENV ENTRIES -->
+  <env-entry>
+    <env-entry-name>java:comp/env/entry2</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>value2</env-entry-value>
+  </env-entry>
+
+  <!-- Concurrency Resource Definitions -->
+
+  <context-service>
+    <name>java:module/concurrent/without-location-and-tx-context</name>
+    <qualifier>concurrent.cdi.web.WithoutLocationContext</qualifier>
+    <qualifier>concurrent.cdi.web.WithoutTransactionContext</qualifier>
+    <cleared>Location</cleared>
+    <cleared>Transaction</cleared>
+    <propagated>Remaining</propagated>
+  </context-service>
+
+  <managed-executor>
+    <name>java:module/concurrent/executor-without-location-and-tx-context</name>
+    <context-service-ref>java:module/concurrent/without-location-and-tx-context</context-service-ref>
+    <qualifier>concurrent.cdi.web.WithoutTransactionContext</qualifier>
+    <qualifier>concurrent.cdi.web.WithoutLocationContext</qualifier>
+  </managed-executor>
+
+  <managed-scheduled-executor>
+    <name>java:comp/concurrent/scheduled-executor-without-location-and-tx-context</name>
+    <context-service-ref>java:module/concurrent/without-location-and-tx-context</context-service-ref>
+    <qualifier>concurrent.cdi.web.WithoutLocationContext</qualifier>
+  </managed-scheduled-executor>
+
+  <managed-thread-factory>
+    <name>java:comp/concurrent/thread-factory-without-location-and-tx-context</name>
+    <context-service-ref>java:module/concurrent/without-location-and-tx-context</context-service-ref>
+    <qualifier>concurrent.cdi.web.WithoutLocationContext</qualifier>
+    <qualifier>concurrent.cdi.web.WithoutTransactionContext</qualifier>
+    <priority>3</priority>
+    <virtual>false</virtual>
+  </managed-thread-factory>
+
+  <!-- Concurrency Resource Definition overrides -->
+
+  <!-- TODO move this to application.xml to reproduce issue overriding from application deployment descriptor -->
+  <context-service>
+    <name>java:app/concurrent/with-app-context-override-qualifiers</name>
+    <qualifier>concurrent.cdi.web.OverridingQualifier1</qualifier>
+    <cleared>Location</cleared>
+    <propagated>Application</propagated>
+    <unchanged>Remaining</unchanged>
+  </context-service>
+
+  <managed-executor>
+    <name>java:comp/concurrent/executor-web-dd-override-qualifiers</name>
+    <qualifier>concurrent.cdi.web.OverridingQualifier1</qualifier>
+    <qualifier>concurrent.cdi.web.OverridingQualifier2</qualifier>
+  </managed-executor>
+
+  <managed-scheduled-executor>
+    <name>java:comp/concurrent/scheduled-executor-web-dd-override-qualifiers</name>
+    <qualifier/>
+  </managed-scheduled-executor>
+
+  <managed-thread-factory>
+    <name>java:comp/concurrent/thread-factory-web-dd-override-qualifiers</name>
+    <qualifier>concurrent.cdi.web.OverridingQualifier2</qualifier>
+    <virtual>false</virtual>
+  </managed-thread-factory>
+
+</web-app>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.joda.time.Instant;
@@ -33,9 +34,11 @@ import org.jose4j.jwt.consumer.JwtContext;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutConstants;
 import com.ibm.ws.security.openidconnect.clients.common.Constants;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientRequest;
 import com.ibm.ws.security.openidconnect.clients.common.OidcCommonClientRequest;
+import com.ibm.ws.security.openidconnect.token.HeaderConstants;
 import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.openidconnect.token.JWT;
 import com.ibm.ws.security.openidconnect.token.JWTTokenValidationFailedException;
@@ -72,6 +75,8 @@ public class Jose4jValidator {
     public JwtClaims parseJwtWithValidation(String jwtString,
             JwtContext jwtContext,
             JsonWebSignature signature) throws JWTTokenValidationFailedException, IllegalStateException, Exception {
+
+        verifyHeaderType(signature.getHeader(HeaderConstants.TYPE));
 
         // Let check the error situations here, so we can get similar error message like old jwt
         JwtClaims jwtClaims = jwtContext.getJwtClaims();
@@ -158,6 +163,8 @@ public class Jose4jValidator {
             }
         }
 
+        verifyEventsClaim(jwtClaims);
+
         verifySignAlgOnly(signature);
 
         JwtConsumerBuilder builder = new JwtConsumerBuilder();
@@ -224,6 +231,13 @@ public class Jose4jValidator {
         return jwtClaims;
     }
 
+    public void verifyHeaderType(String type) throws JWTTokenValidationFailedException {
+        if (BackchannelLogoutConstants.LOGOUT_TOKEN_TYPE.equals(type)) {
+            String errMsg = Tr.formatMessage(tc, "JWT_HAS_LOGOUT_TOKEN_TYP_HEADER", type);
+            throw new JWTTokenValidationFailedException(errMsg);
+        }
+    }
+
     public void verifyIssForIdToken(String issuer) throws IDTokenValidationFailedException, Exception {
         if (!JWT.checkIssuer(clientId, issuers, issuer)) {
             // issuer verification failed
@@ -283,6 +297,17 @@ public class Jose4jValidator {
                     throw JWTTokenValidationFailedException.format(tc, msgCode, objects);
                 }
             }
+        }
+    }
+
+    public void verifyEventsClaim(JwtClaims jwtClaims) throws MalformedClaimException, JWTTokenValidationFailedException {
+        Map<String, Object> events = jwtClaims.getClaimValue(PayloadConstants.EVENTS, Map.class);
+        if (events == null) {
+            return;
+        }
+        if (events.containsKey(BackchannelLogoutConstants.EVENTS_MEMBER_NAME)) {
+            String errMsg = Tr.formatMessage(tc, "JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM", events);
+            throw new JWTTokenValidationFailedException(errMsg);
         }
     }
 

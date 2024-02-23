@@ -37,7 +37,7 @@
 
 47003=Nie mo\u017cna znale\u017a\u0107 zapytania "[{0}]" dla sesji [{1}]
 
-47004=[{0}] typ parametru (dla operacji [{1}]) nie istnieje w schemacie
+47004=Typu parametru [{0}] (dla operacji [{1}]) nie ma w schemacie
 
 47005=[{0}] typ parametru (dla operacji [{1}]) nie ma odwzorowania O-X.
 

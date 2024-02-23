@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,9 +32,10 @@ import jakarta.data.Streamable;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 import jakarta.data.page.Slice;
 import jakarta.data.repository.By;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
@@ -65,7 +66,7 @@ import io.openliberty.data.repository.function.Trimmed;
 @Repository
 public interface Primes {
     @Query("SELECT (num.name) FROM Prime As num")
-    Slice<String> all(Pageable pagination);
+    Slice<String> all(PageRequest<?> pagination);
 
     @Exists
     boolean anyLessThanEndingWithBitPattern(@By("numberId") @LessThan long upperLimit,
@@ -78,11 +79,13 @@ public interface Primes {
 
     Integer countByNumberIdBetween(long first, long last);
 
-    Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort... sorts);
+    @Find
+    Stream<Prime> find(boolean even, int sumOfBits, Limit limit, Sort<?>... sorts);
 
     @Query("SELECT p.numberId FROM Prime p WHERE p.numberId >= ?1 AND p.numberId <= ?2")
     long findAsLongBetween(long min, long max);
 
+    @Find
     Optional<Prime> findByBinary(@By("binaryDigits") String binary);
 
     @OrderBy("id")
@@ -116,7 +119,8 @@ public interface Primes {
     @OrderBy("even")
     @OrderBy("sumOfBits")
     @OrderBy("id")
-    Iterator<Prime> findByNameStartsWithAndIdLessThanOrNameContainsAndIdLessThan(String prefix, long max1, String contains, long max2, Pageable pagination);
+    Iterator<Prime> findByNameStartsWithAndIdLessThanOrNameContainsAndIdLessThan(String prefix, long max1, String contains, long max2,
+                                                                                 PageRequest<?> pagination);
 
     List<Prime> findByNameTrimmedCharCountAndIdBetween(int length, long min, long max);
 
@@ -128,17 +132,17 @@ public interface Primes {
     KeysetAwarePage<Prime> findByNumberIdBetween(long min, long max, Limit limit);
 
     @OrderBy("id")
-    KeysetAwarePage<Prime> findByNumberIdBetween(long min, long max, Pageable pagination);
+    KeysetAwarePage<Prime> findByNumberIdBetween(long min, long max, PageRequest<?> pagination);
 
-    List<Prime> findByNumberIdBetween(long min, long max, Sort... orderBy);
+    List<Prime> findByNumberIdBetween(long min, long max, Sort<?>... orderBy);
 
-    KeysetAwarePage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort... orderBy); // Lacks Pageable
+    KeysetAwarePage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort<?>... orderBy); // Lacks PageRequest
 
-    KeysetAwareSlice<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, Pageable pagination);
+    KeysetAwareSlice<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, PageRequest<Prime> pagination);
 
-    Page<Prime> findByNumberIdBetweenAndSumOfBitsNotNull(long min, long max, Pageable pagination);
+    Page<Prime> findByNumberIdBetweenAndSumOfBitsNotNull(long min, long max, PageRequest<?> pagination);
 
-    KeysetAwarePage<Prime> findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(long min, long max, Pageable pagination);
+    KeysetAwarePage<Prime> findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(long min, long max, PageRequest<?> pagination);
 
     List<Prime> findByNumberIdBetweenOrderByNameIgnoreCaseDesc(long min, long max);
 
@@ -164,34 +168,35 @@ public interface Primes {
 
     @OrderBy("even")
     @OrderBy("sumOfBits")
-    Page<Prime> findByNumberIdLessThan(long max, Pageable pagination);
+    Page<Prime> findByNumberIdLessThan(long max, PageRequest<?> pagination);
 
-    Streamable<Prime> findByNumberIdLessThanEqualOrderByIdAsc(long max, Pageable pagination);
+    Streamable<Prime> findByNumberIdLessThanEqualOrderByIdAsc(long max, PageRequest<?> pagination);
 
     Streamable<Prime> findByNumberIdLessThanEqualOrderByIdDesc(long max, Limit limit);
 
-    Page<Prime> findByNumberIdLessThanEqualOrderByNumberIdDesc(long max, Pageable pagination);
+    Page<Prime> findByNumberIdLessThanEqualOrderByNumberIdDesc(long max, PageRequest<?> pagination);
 
-    Stream<Prime> findByNumberIdLessThanOrderByEven(long max, Sort... sorts);
+    Stream<Prime> findByNumberIdLessThanOrderByEven(long max, Sort<?>... sorts);
 
-    KeysetAwareSlice<Prime> findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(long max, Pageable pagination);
+    KeysetAwareSlice<Prime> findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(long max, PageRequest<?> pagination);
 
     @Asynchronous
-    CompletionStage<KeysetAwarePage<Prime>> findByNumberIdLessThanOrderByIdDesc(long max, Pageable pagination);
+    CompletionStage<KeysetAwarePage<Prime>> findByNumberIdLessThanOrderByIdDesc(long max, PageRequest<?> pagination);
 
-    Iterator<Prime> findByNumberIdNotGreaterThan(long max, Pageable pagination);
+    Iterator<Prime> findByNumberIdNotGreaterThan(long max, PageRequest<?> pagination);
 
-    Iterator<Prime> findByNumberIdNotGreaterThan(long max, Sort... order);
+    Iterator<Prime> findByNumberIdNotGreaterThan(long max, Sort<?>... order);
 
-    Slice<Prime> findByRomanNumeralEndsWithAndIdLessThan(String ending, long max, Limit limit, Sort... orderBy);
+    Slice<Prime> findByRomanNumeralEndsWithAndIdLessThan(String ending, long max, Limit limit, Sort<?>... orderBy);
 
-    Slice<Prime> findByRomanNumeralEndsWithAndIdLessThan(String ending, long max, Pageable pagination, Sort... orderBy);
+    Slice<Prime> findByRomanNumeralEndsWithAndIdLessThan(String ending, long max, PageRequest<?> pagination, Sort<?>... orderBy);
 
     @OrderBy(value = "sumOfBits", descending = true)
     @OrderBy("name")
-    Slice<Prime> findByRomanNumeralStartsWithAndIdLessThan(String prefix, long max, Pageable pagination);
+    Slice<Prime> findByRomanNumeralStartsWithAndIdLessThan(String prefix, long max, PageRequest<?> pagination);
 
-    Prime findFirst(Sort sort, Limit limitOf1);
+    @Find
+    Prime findFirst(Sort<Prime> sort, Limit limitOf1);
 
     Stream<Prime> findFirst2147483648ByIdGreaterThan(long min); // Exceeds Integer.MAX_VALUE by 1
 
@@ -200,9 +205,10 @@ public interface Primes {
 
     Prime findFirstByNameLikeOrderByNumberId(String namePattern);
 
+    @Find
     Optional<Prime> findHexadecimal(String hex);
 
-    List<Object[]> findIdAndNameBy(Sort... sort);
+    List<Object[]> findIdAndNameBy(Sort<?>... sort);
 
     @OrderBy(value = "id", descending = true)
     Set<Long> findIdByIdBetween(long min, long max);
@@ -222,6 +228,7 @@ public interface Primes {
     Long howManyBetweenExclusive(@By("NumberId") @GreaterThan long exclusiveMin,
                                  @By("NumberId") @LessThan long exclusiveMax);
 
+    @Find
     @OrderBy(value = "id", descending = true)
     List<Long> inRangeHavingNumeralLikeAndSubstringOfName(@By("id") @GreaterThanEqual long min,
                                                           @By("id") @LessThanEqual long max,
@@ -231,6 +238,7 @@ public interface Primes {
     @Exists
     boolean isFoundWith(long id, String hex);
 
+    @Find
     @OrderBy(value = "numberId", descending = true)
     Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(@By("id") @LessThan long numLessThan,
                                                         @By("name") @EndsWith String firstSuffix,
@@ -286,14 +294,18 @@ public interface Primes {
     @Query("SELECT MIN(o.numberId), MAX(o.numberId), SUM(o.numberId), COUNT(o.numberId), AVG(o.numberId) FROM Prime o WHERE o.numberId < ?1")
     Stack<String> minMaxSumCountAverageStack(long numBelow);
 
+    @Query("SELECT o.name FROM Prime o WHERE o.numberId < ?1")
+    Slice<String> namesBelow(long numBelow, PageRequest<Prime> pageRequest);
+
     @Query(value = "SELECT NEW java.util.AbstractMap.SimpleImmutableEntry(p.numberId, p.name) FROM Prime p WHERE p.numberId <= ?1 ORDER BY p.name",
            count = "SELECT COUNT(p) FROM Prime p WHERE p.numberId <= ?1")
-    Page<Map.Entry<Long, String>> namesByNumber(long maxNumber, Pageable pagination);
+    Page<Map.Entry<Long, String>> namesByNumber(long maxNumber, PageRequest<?> pagination);
 
     @Query("SELECT prime.name, prime.hex FROM  Prime  prime  WHERE prime.numberId <= ?1")
     @OrderBy("numberId")
-    Page<Object[]> namesWithHex(long maxNumber, Pageable pagination);
+    Page<Object[]> namesWithHex(long maxNumber, PageRequest<?> pagination);
 
+    @Find
     @OrderBy("id")
     List<Long> notWithinButBelow(@By("id") @LessThan int rangeMin,
                                  @Or @By("id") @GreaterThan int rangeMax,
@@ -306,23 +318,27 @@ public interface Primes {
     void persist(Prime... primes);
 
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")
-    Page<Integer> romanNumeralLengths(long maxNumber, Pageable pagination);
+    Page<Integer> romanNumeralLengths(long maxNumber, PageRequest<?> pagination);
 
     @Query("SELECT prime_ FROM Prime AS prime_ WHERE (prime_.numberId <= ?1)")
     @OrderBy(value = "even", descending = true)
     @OrderBy(value = "sumOfBits", descending = true)
-    KeysetAwarePage<Prime> upTo(long maxNumber, Pageable pagination);
+    KeysetAwarePage<Prime> upTo(long maxNumber, PageRequest<?> pagination);
 
+    @Find
     @OrderBy("name")
     Stream<Prime> whereNameLengthWithin(@By("name") @CharCount @GreaterThanEqual int minLength,
                                         @By("name") @CharCount @LessThanEqual int maxLength);
 
+    @Find
     Optional<Prime> withAnyCaseName(@By("name") @Trimmed @IgnoreCase String name);
 
+    @Find
     List<Prime> withNameLengthAndWithin(@By("name") @Trimmed @CharCount int length,
                                         @By("id") @GreaterThanEqual long min,
                                         @By("id") @LessThanEqual long max);
 
+    @Find
     @Select("name")
     List<String> withRomanNumeralSuffixAndWithoutNameSuffix(@By("romanNumeral") @EndsWith String numeralSuffix,
                                                             @By("name") @Not @EndsWith String nameSuffixToExclude,

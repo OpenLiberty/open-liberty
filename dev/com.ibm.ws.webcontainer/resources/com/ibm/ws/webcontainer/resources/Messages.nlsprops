@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2023 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1578,10 +1578,7 @@ uncaught.exception.during.AsyncListener.onComplete.explanation=The AsyncListener
 uncaught.exception.during.AsyncListener.onComplete.useraction=Verify the AsyncListener source code and the server logs for the root cause of the application error.
 
 # Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
-# 0001 - 0199 for Base
-# 0200 - 0299 for Servlet 3.0
-# 0300 - 0399 for Servlet 3.1
-# 0400 - 0499 for Servlet 4
+# Sequential increment the message number for all new releases and services
 
 #name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
 #name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
@@ -1624,3 +1621,15 @@ uri.has.backslash.character=URI has backslash character; encoded [%5C] or not.
 multipart.file.count.max.exceeded=CWWWC0006E: The request contained more files for upload than is permitted. The maximum number of files is [{0}].
 multipart.file.count.max.exceeded.explanation=The number of files that are uploaded by the multipart/form-data request exceeded the set limit.
 multipart.file.count.max.exceeded.useraction=Increase the maximum number of files that can be uploaded per request by setting the maxFileCount webContainer custom property in the server.xml file. The default value is 5000. For unlimited file upload, set the value to -1.
+
+cannot.sendRedirect.response.already.committed=CWWWC0007E: The response sendRedirect is not allowed after the response is committed.
+cannot.sendRedirect.response.already.committed.explanation=When a response is committed, it cannot send a redirect.
+cannot.sendRedirect.response.already.committed.useraction=Verify the sendRedirect logic to make sure that the response is not committed, either manually or automatically, before the sendRedirect is called.
+
+redirect.location.cannot.be.null=CWWWC0008E: The redirect location cannot be null.
+redirect.location.cannot.be.null.explanation=The redirect location URL needs to be a relative or an absolute URL. 
+redirect.location.cannot.be.null.useraction=Update the redirect location by specifying a URL value that is not empty. The URL can be either relative or absolute.
+
+sendRedirect.hyper.text.url=<html><body><p>Redirecting to <a href="{0}"></a></p></body></html>
+
+query.or.post.is.null=Request query string or post data is null.

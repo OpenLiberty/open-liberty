@@ -309,7 +309,8 @@ public class PolicyExecutorTest {
                                 + "  maxWaitForEnqueue = 30 ms" + EOL
                                 + "  runIfQueueFull = true" + EOL
                                 + "  startTimeout = 10 ms" + EOL
-                                + "  Total Enqueued to Global Executor = 0 (0 expedited)" + EOL
+                                + "  virtual = false" + EOL
+                                + "  Total Enqueued for Async Execution = 0 (0 expedited)" + EOL
                                 + "  withheldConcurrency = 0" + EOL
                                 + "  Remaining Queue Capacity = 3" + EOL
                                 + "  state = ACTIVE" + EOL

@@ -27,6 +27,8 @@
         host="*"
         httpPort="${bvt.prop.HTTP_secondary}"
         httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
+	<tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
 	    
     <transaction
       recoverOnStartup="true"

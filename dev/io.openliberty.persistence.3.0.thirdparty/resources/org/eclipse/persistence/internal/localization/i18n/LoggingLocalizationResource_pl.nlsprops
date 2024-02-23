@@ -119,6 +119,10 @@ connected_user_database=Nawi\u0105zano po\u0142\u0105czenie: {3}{4} U\u017cytkow
 
 connected_user_database_driver=Nawi\u0105zano po\u0142\u0105czenie: {0}{6} U\u017cytkownik: {1}{6} Baza danych: {2} Wersja: {3}{6} Sterownik: {4} Wersja: {5}
 
+corrupt_object=uszkodzony obiekt: {0}
+
+corrupt_object_referenced_through_mapping=Uszkodzony obiekt, do kt\u00f3rego odwo\u0142anie nast\u0119puje przez odwzorowanie: {0}
+
 corrupted_session_announcement=Identyfikator sesji: {0} mened\u017cer wykrywania odebra\u0142 uszkodzone og\u0142oszenie sesji \u2013 zignorowano.
 
 create_default_dbms_tables_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS create-default-dbms-tables nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
@@ -707,6 +711,8 @@ sop_object_wrong_version=Obiekt sopObject przekszta\u0142cony do postaci szerego
 
 src_pm_name_first_argument=Nale\u017cy okre\u015bli\u0107 nazw\u0119 \u017ar\u00f3d\u0142owego systemu PM w pierwszym argumencie wej\u015bciowym: -sOc4j-native lub -sWeblogic.
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=stos odwiedzonych obiekt\u00f3w, kt\u00f3re odwo\u0142uj\u0105 si\u0119 do uszkodzonego obiektu: {0}
+
 table_existed_during_creation=Tworzenie tabeli nie powiod\u0142o si\u0119. Je\u015bli tabela ju\u017c istnieje, nale\u017cy j\u0105 najpierw usun\u0105\u0107. Mo\u017cna to zrobi\u0107 r\u0119cznie, lub ustawiaj\u0105c atrybut db-table-gen w pliku orion-ejb-jar.xml.
 
 template_orion_ejb_jar_created=Utworzono szablon pliku orion-ejb-jar.xml.
@@ -737,7 +743,12 @@ toplink_warning=[EL \u2013 ostrze\u017cenia]:
 
 unit_of_work_thread_info=Bie\u017c\u0105ca jednostka pracy w sesji ({0}) zosta\u0142a utworzona przez inny w\u0105tek (identyfikator: {1}, nazwa: {2}), ni\u017c bie\u017c\u0105cy w\u0105tek (identyfikator: {3}, nazwa: {4})
 
-unit_of_work_thread_info_thread_dump=W\u0105tek tworzenia (identyfikator: {0}, nazwa: {1}), stos wywo\u0142a\u0144: {2}Bie\u017c\u0105cy w\u0105tek (identyfikator: {3}, nazwa: {4}), stos wywo\u0142a\u0144:{5}\n
+unit_of_work_thread_info_thread_dump=W\u0105tek tworzenia (identyfikator: {0} , nazwa: {1}), stos wywo\u0142a\u0144:
+#{2}
+
+Current w\u0105tek (identyfikator: {3} nazwa: {4}) stos wywo\u0142a\u0144:
+#{5}
+
 unitofwork_identity_hashcode={0} Kod mieszaj\u0105cy to\u017csamo\u015bci jednostki pracy: {1}
 
 update_all_fields_not_supported=Sk\u0142adnik komponentu CMP rodzimy dla produktu Oc4j update-all-fields dotycz\u0105cy jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwany w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
@@ -747,6 +758,8 @@ update_all_query_cannot_use_binding_on_this_platform=Zapytanie UpdateAllQuery ni
 validate_db_schema_with_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS validate-db-schema-with nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
 
 validate_ejb_jar=Rozpocz\u0119to sprawdzanie poprawno\u015bci pliku ejb-jar.xml. Mo\u017ce to zaj\u0105\u0107 troch\u0119 czasu...
+
+validate_object_space=sprawd\u017a poprawno\u015b\u0107 przestrzeni obiektu.
 
 validity_timeout_not_supported=Ustawienie komponentu CMP rodzime dla produktu Oc4j validity-timeout dotycz\u0105ce jednostki ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
 

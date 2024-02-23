@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.jsonb;
 
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -37,7 +39,7 @@ import componenttest.topology.utils.FATServletClient;
 public class JsonbTest extends FATServletClient {
 
     public static final String APP_NAME = "jsob-messaging";
-    public static final String SERVER_NAME = "SimpleRxMessagingServer";
+    public static final String SERVER_NAME = "JsonbRxMessagingServer";
 
     @ClassRule
     public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10);
@@ -60,7 +62,7 @@ public class JsonbTest extends FATServletClient {
 
     @AfterClass
     public static void cleanup() throws Exception {
-        server.stopServer();
+        kafkaStopServer(server);
     }
 
 }

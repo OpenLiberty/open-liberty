@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2021 IBM Corporation and others.
+ * Copyright (c) 2003, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -312,11 +312,13 @@ public class StatelessTimedBean implements SessionBean, TimedObject {
 
     /** Never called for Stateless Session Bean. **/
     @Override
-    public void ejbActivate() {}
+    public void ejbActivate() {
+    }
 
     /** Never called for Stateless Session Bean. **/
     @Override
-    public void ejbPassivate() {}
+    public void ejbPassivate() {
+    }
 
     /**
      * Test getTimerService()/TimerService access from a method on a Stateless
@@ -601,6 +603,14 @@ public class StatelessTimedBean implements SessionBean, TimedObject {
         // See if all except cancelled timers have expired once...
         for (int i = 0; i < timer.length; i++) {
             switch (i) {
+                case 2:
+                case 4:
+                    if (svTimeoutCounts[i] < 1) {
+                        successful = false;
+                        svLogger.info("Timer[" + i + "] not executed at least once: " + timer[i]);
+                    }
+                    break;
+
                 case 5:
                     if (svTimeoutCounts[i] != 0) {
                         successful = false;

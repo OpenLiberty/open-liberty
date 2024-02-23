@@ -71,6 +71,8 @@ public class KafkaTestClient {
      * Create a test client with the given set of connection properties
      * <p>
      * The connection properties are properties common to every consumer or producer connecting to this broker.
+     * <p>
+     * Once an instance of KafkaReader is no longer needed. It must be closed either via KafkaTestClient.cleanup() or KafkaReader.close()
      *
      * @param connectionProperties the connection properties
      */
@@ -82,6 +84,8 @@ public class KafkaTestClient {
      * Obtain a KafkaReader for the given topic name
      * <p>
      * The returned reader expects String messages and uses the {@value #TEST_GROUPID} consumer group
+     *
+     * Once and instance of KafkaReader is no longer needed. It must be closed either via KafkaTestClient.cleanup() or KafkaReader.close()
      *
      * @param topicName the topic to read from
      * @return the reader
@@ -101,6 +105,8 @@ public class KafkaTestClient {
      * <li>{@value ConsumerConfig#GROUP_ID_CONFIG} = {@value #TEST_GROUPID}</li>
      * <li>{@value ConsumerConfig#AUTO_OFFSET_RESET_CONFIG} = earliest</li>
      * </ul>
+     *
+     * Once and instance of KafkaReader is no longer needed. It must be closed either via KafkaTestClient.cleanup() or KafkaReader.close()
      *
      * @param config    the consumer config
      * @param topicName the topic to subscribe to
@@ -129,6 +135,8 @@ public class KafkaTestClient {
      * <p>
      * The returned writer writes String messages.
      *
+     * Once and instance of KafkaWriter is no longer needed. It must be closed either via KafkaTestClient.cleanup() or KafkaWriter.close()
+     *
      * @param topicName the topic to write to
      * @return the writer
      */
@@ -145,6 +153,8 @@ public class KafkaTestClient {
      * <li>{@value ProducerConfig#KEY_SERIALIZER_CLASS_CONFIG} = StringSerializer</li>
      * <li>{@value ProducerConfig#VALUE_SERIALIZER_CLASS_CONFIG} = StringSerializer</li>
      * </ul>
+     *
+     * Once and instance of KafkaWriter is no longer needed. It must be closed either via KafkaTestClient.cleanup() or KafkaWriter.close()
      *
      * @param <T>       the type of the message written to Kafka. This must match the type serialized by the class configured with
      *                      {@value ProducerConfig#VALUE_SERIALIZER_CLASS_CONFIG}

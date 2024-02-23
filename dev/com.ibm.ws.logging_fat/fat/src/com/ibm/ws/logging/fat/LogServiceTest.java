@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,8 +19,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.chrono.Chronology;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.FormatStyle;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -152,6 +156,44 @@ public class LogServiceTest {
         URL url = new URL(urlBuilder.toString());
         String resp = HttpUtils.getHttpResponseAsString(url);
         assertTrue("Unexpected resp: " + resp, resp.contains("DONE"));
+    }
+
+    // If this test fails, there is likely an update needed to the getFormatter method, BurstDateFormatterTest and to
+    // DateFormatHelper and DataFormatHelper.
+    // This test was added due to a change in Java 20 to add an additional space character to the format.  It is a duplicate
+    // of the BurstDateFormatterTest, but that is a unit test which is only run on one Java version until new LTS release and
+    // gradle is updated to support that Java version, etc.
+    // See https://bugs.openjdk.org/browse/JDK-8304925
+    @Test
+    public void testEnglishUnchanged() {
+        boolean aboveJava8 = !System.getProperty("java.version").startsWith("1.");
+        String pattern = DateTimeFormatterBuilder.getLocalizedDateTimePattern(FormatStyle.SHORT, FormatStyle.MEDIUM, Chronology.ofLocale(Locale.ENGLISH), Locale.ENGLISH);
+        pattern = getFormatter(pattern);
+        StringBuilder sb = new StringBuilder();
+        sb.append("M/d/yy");
+        if (aboveJava8) {
+            sb.append(',');
+        }
+        sb.append(" H:mm:ss:SSS z");
+        assertEquals(sb.toString(), pattern);
+    }
+
+    private String getFormatter(String pattern) {
+        // Append milliseconds and timezone after seconds
+        int patternLength = pattern.length();
+        int endOfSecsIndex = pattern.lastIndexOf('s') + 1;
+        String newPattern = pattern.substring(0, endOfSecsIndex) + ":SSS z";
+        if (endOfSecsIndex < patternLength)
+            newPattern += pattern.substring(endOfSecsIndex, patternLength);
+        // 0-23 hour clock (get rid of any other clock formats and am/pm)
+        newPattern = newPattern.replace('h', 'H');
+        newPattern = newPattern.replace('K', 'H');
+        newPattern = newPattern.replace('k', 'H');
+        newPattern = newPattern.replace('a', ' ');
+        // Java 20 added a narrow no-break space character into the format (Unicode 202F character)
+        newPattern = newPattern.replace('\u202f', ' ');
+        newPattern = newPattern.trim();
+        return newPattern;
     }
 
     @Test

@@ -28,6 +28,8 @@ Command-Class: io.openliberty.xmlbinding.tools.XJC
 
 -outputmask: ws-xjc.jar
 
+-pom: false
+
 publish.tool.script.subdir=xmlBinding/
 publish.tool.script.relative=..
 publish.tool.script.dir.length=16

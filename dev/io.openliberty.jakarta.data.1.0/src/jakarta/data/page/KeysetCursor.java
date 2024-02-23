@@ -14,11 +14,11 @@ package jakarta.data.page;
 
 import java.util.Arrays;
 
-import jakarta.data.page.Pageable.Cursor;
+import jakarta.data.page.PageRequest.Cursor;
 
 /**
  */
-public class KeysetCursor implements Pageable.Cursor {
+public class KeysetCursor implements PageRequest.Cursor {
     private final Object[] keyset;
 
     KeysetCursor(Object... keyset) {

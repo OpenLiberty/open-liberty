@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.cdi.visibility.tests.vistest;
 
@@ -137,7 +134,7 @@ public class VisTest extends FATServletClient {
     public static final String CLIENT_NAME = "visTestClient";
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE8, EERepeatActions.EE7);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE11, EERepeatActions.EE8, EERepeatActions.EE7);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -730,13 +727,13 @@ public class VisTest extends FATServletClient {
     public static void afterClass() throws Exception {
 
         //We put this in an AutoCloseable because try-with-resource will order the exceptions correctly.
-        //That means an exception from stopServer will by the primary exception, and any errors from 
+        //That means an exception from stopServer will by the primary exception, and any errors from
         //uninstallSystemFeature will be recorded as suppressed exceptions.
         AutoCloseable uninstallFeatures = () -> {
             server.uninstallSystemFeature("visTest-1.2");
             server.uninstallSystemFeature("visTest-3.0");
         };
-        
+
         try (AutoCloseable c = uninstallFeatures) {
             if (server != null) {
                 server.stopServer();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -325,6 +325,57 @@ public class VisibilityTest {
     }
 
     /**
+     * Tests that all features with the same base name have the same visibility
+     */
+    @Test
+    public void testMatchingVisibilitySingletonFeatures() {
+        StringBuilder errorMessage = new StringBuilder();
+
+        Map<String, Set<FeatureInfo>> baseFeatureNameMap = new HashMap<>();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            FeatureInfo featureInfo = entry.getValue();
+            if (!featureInfo.isSingleton()) {
+                continue;
+            }
+            String feature = entry.getKey();
+            int lastIndex = feature.indexOf('-');
+            if (lastIndex == -1) {
+                continue;
+            }
+            String baseFeatureName = feature.substring(0, lastIndex + 1);
+            Set<FeatureInfo> featureInfos = baseFeatureNameMap.get(baseFeatureName);
+            if (featureInfos == null) {
+                featureInfos = new HashSet<>();
+                baseFeatureNameMap.put(baseFeatureName, featureInfos);
+            }
+            featureInfos.add(featureInfo);
+        }
+
+        for (Entry<String, Set<FeatureInfo>> featureInfosEntry : baseFeatureNameMap.entrySet()) {
+            String baseFeatureName = featureInfosEntry.getKey();
+            Set<FeatureInfo> featureInfos = featureInfosEntry.getValue();
+            // Have fixed this one, but for now leaving the bad feature files in until can update a test
+            // that will think that it is a breaking change.
+            if (featureInfos.size() == 1 || baseFeatureName.equals("io.openliberty.connectors-")) {
+                continue;
+            }
+
+            String visibility = null;
+            for (FeatureInfo featureInfo : featureInfos) {
+                if (visibility == null) {
+                    visibility = featureInfo.getVisibility();
+                } else if (!visibility.equals(featureInfo.getVisibility())) {
+                    errorMessage.append("Mismatched visibility ").append(featureInfos).append("\n\n");
+                    break;
+                }
+            }
+        }
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features with the same base name with errors: " + '\n' + errorMessage.toString());
+        }
+    }
+
+    /**
      * Tests that an auto feature has more than one feature in its filter.
      */
     @Test
@@ -346,7 +397,7 @@ public class VisibilityTest {
                 } else {
                     errorMessage.append("     Auto feature filter only depends on one feature " + filterFeatures[0] + ".\n");
                     errorMessage.append("     The feature and/or bundle dependencies in this auto feature should just be a dependency of that feature\n");
-                    errorMessage.append("     OR this should be turned into a private feature that " + filterFeatures[0] + " depends on.");
+                    errorMessage.append("     OR this should be turned into a private feature that " + filterFeatures[0] + " depends on.\n");
                 }
             }
         }
@@ -472,6 +523,10 @@ public class VisibilityTest {
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
             String featureName = entry.getKey();
 
+            if (featureName.contains("versionless")) {
+                continue;
+            }
+
             FeatureInfo featureInfo = entry.getValue();
             Set<String> processedFeatures = new HashSet<>();
             Map<String, Attrs> depFeatures = featureInfo.getDependentFeatures();
@@ -538,6 +593,94 @@ public class VisibilityTest {
 
         if (errorMessage.length() != 0) {
             Assert.fail("Found features missing feature dependency due to tolerates not being transitive for public and protected features: " + '\n' + errorMessage.toString());
+        }
+    }
+
+    /**
+     * This test validates that jakarta and value-add features do not have public or protected tolerated features so that versionless
+     * features and product extension / user features that have tolerates in their features for all ee levels can do so and avoid
+     * having to do an auto feature.
+     */
+    @Test
+    public void testTolerates() {
+        StringBuilder errorMessage = new StringBuilder();
+        // appSecurity features are special because they have dependencies on each other and are not singleton.
+        // The other features in this list are public or protected features that did not change their feature base
+        // name for the EE 8 to EE 9 transition.
+        Set<String> allowedToleratedFeatures = new HashSet<>();
+        allowedToleratedFeatures.add("com.ibm.websphere.appserver.servlet-");
+        allowedToleratedFeatures.add("com.ibm.websphere.appserver.transaction-");
+        allowedToleratedFeatures.add("com.ibm.websphere.appserver.appSecurity-");
+        allowedToleratedFeatures.add("com.ibm.websphere.appserver.jdbc-");
+
+        // data-1.0 will be updated to not tolerate EE 10 features when it ships with EE 11.0 and
+        // can depend on EE 11 features because they are also in beta.
+        // restfulWSLogging-3.0 hopefully never will see the light of day and will be done differently.
+        Set<String> expectedFailingFeatures = new HashSet<>();
+        expectedFailingFeatures.add("io.openliberty.data-1.0");
+        expectedFailingFeatures.add("io.openliberty.restfulWSLogging-3.0");
+        Map<String, String> visibilityMap = new HashMap<>();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            FeatureInfo featureInfo = entry.getValue();
+            if (featureInfo.isAutoFeature()) {
+                continue;
+            }
+            String feature = entry.getKey();
+            int lastIndex = feature.indexOf('-');
+            if (lastIndex == -1) {
+                continue;
+            }
+            String baseFeatureName = feature.substring(0, lastIndex + 1);
+            String oldVisibility = visibilityMap.put(baseFeatureName, featureInfo.getVisibility());
+            if (oldVisibility != null && !oldVisibility.equals(featureInfo.getVisibility())) {
+                if (oldVisibility.equals("public")) {
+                    visibilityMap.put(baseFeatureName, "public");
+                }
+            }
+        }
+
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            String featureName = entry.getKey();
+
+            FeatureInfo featureInfo = entry.getValue();
+            if (featureInfo.isAutoFeature()) {
+                continue;
+            }
+
+            // MicroProfile features do not currently follow this convention.  They may need to in the future.
+            // openapi features are stabilized and were not updated to support EE 9.
+            // opentracing is also now stabilized and does not support running with EE 10+
+            if (featureInfo.getVisibility().equals("public") && (featureName.startsWith("io.openliberty.mp") || featureName.startsWith("com.ibm.websphere.appserver.mp")
+                                                                 || featureName.startsWith("com.ibm.websphere.appserver.opentracing")
+                                                                 || featureName.startsWith("com.ibm.websphere.appserver.openapi")
+                                                                 || featureName.startsWith("com.ibm.websphere.appserver.microProfile-1."))) {
+                continue;
+            }
+
+            Map<String, Attrs> depFeatures = featureInfo.getDependentFeatures();
+            for (Map.Entry<String, Attrs> depEntry : depFeatures.entrySet()) {
+                Attrs attrs = depEntry.getValue();
+                if (attrs.containsKey("ibm.tolerates:")) {
+                    String featureBaseName = depEntry.getKey().substring(0, depEntry.getKey().lastIndexOf('-') + 1);
+                    String visibility = visibilityMap.get(featureBaseName);
+                    if (!"private".equals(visibility) && !expectedFailingFeatures.remove(featureName) && !allowedToleratedFeatures.contains(featureBaseName)) {
+                        errorMessage.append(featureName).append(" tolerates a feature with base name of ").append(featureBaseName).append("\n\n");
+                    }
+                }
+            }
+        }
+
+        if (!expectedFailingFeatures.isEmpty()) {
+            errorMessage.append("This test needs to be updated to remove features that no longer fail:\n");
+            for (String featureName : expectedFailingFeatures) {
+                errorMessage.append("    ").append(featureName);
+            }
+            errorMessage.append("\n\n");
+        }
+
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found public or protected features with tolerated public or protected features.  Update to use private feature toleration: " + '\n'
+                        + errorMessage.toString());
         }
     }
 
@@ -1113,8 +1256,7 @@ public class VisibilityTest {
             if (APIs != null) {
                 for (ExternalPackageInfo packageInfo : APIs) {
                     String type = packageInfo.getType();
-                    // for now until we figure something out going to leave mpOpenTracing and openTracing feature wrong.
-                    if (!validAPITypes.contains(type) && !entry.getKey().toLowerCase().contains("opentracing")) {
+                    if (!validAPITypes.contains(type)) {
                         errorMessage.append(packageInfo.getPackageName()).append(" in feature ").append(entry.getKey()).append(" has an invalid type ").append(type).append('\n');
                     }
                 }

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2022 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -40,6 +40,7 @@ import com.ibm.ws.ejbcontainer.timer.persistent.core.web.TimerAccessOperationsSe
 import com.ibm.ws.ejbcontainer.timer.persistent.core.web.TimerSFOperationsServlet;
 import com.ibm.ws.ejbcontainer.timer.persistent.core.web.TimerSLOperationsServlet;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -130,6 +131,7 @@ public class PersistentTimerCoreTest extends FATServletClient {
     @Test
     @Mode(Mode.TestMode.FULL)
     //Full because test sleeps for over 5 minutes
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" }) // Tolerate security scans
     public void testDefaultLateTimerMessage() throws Exception {
         String warningRegExp = "CNTR0333W(?=.*LateWarning)(?=.*PersistentTimerCoreEJB.jar)(?=.*PersistentTimerCoreApp)";
         String timeoutRegExp = "WTRN0006W.*120";
@@ -152,6 +154,7 @@ public class PersistentTimerCoreTest extends FATServletClient {
     @Test
     @Mode(Mode.TestMode.FULL)
     //Full because test sleeps for over 5 minutes
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" }) // Tolerate security scans
     public void testDisabledLateTimerMessage() throws Exception {
         String warningRegExp = "CNTR0333W:.*";
         String timeoutRegExp = "WTRN0006W.*120";

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -96,9 +96,7 @@ public class HttpInputStreamEE7Extended extends HttpInputStreamEE7 {
 
     private boolean setNextBuffer() {
         if (this.postDataPos < this.postData.length) {
-            this.buffer = HttpDispatcher.getBufferManager().allocate(this.postData[this.postDataPos].length);
-            this.buffer.put(this.postData[this.postDataPos]);
-            this.buffer.flip();
+            this.buffer = HttpDispatcher.getBufferManager().wrap(this.postData[this.postDataPos]);
             this.postDataPos++;
             this.bytesRead += this.buffer.remaining();
 

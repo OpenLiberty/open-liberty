@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
@@ -50,13 +51,16 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     @Select(distinct = true, value = "debtorEmail")
     List<String> findByExpiresOnBetween(LocalDate expiresOnOrAfter, LocalDate expiresOnOrBefore);
 
+    @Find
     @OrderBy("number")
     Stream<CreditCard> expiresInQuarterOtherThan(@By("expiresOn") @Extract(QUARTER) @Not int quarterToExclude);
 
+    @Find
     @Select("number")
     @OrderBy("number")
     List<Long> expiringInOrBefore(@By("expiresOn") @Extract(YEAR) @LessThanEqual int maxYearOfExpiry);
 
+    @Find
     @OrderBy("number")
     List<CreditCard> expiringInWeek(@By("expiresOn") @Extract(WEEK) int weekNumber);
 
@@ -81,10 +85,12 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     @OrderBy("number")
     List<Long> findNumberByExpiresOnWithYearLessThanEqual(int maxYearOfExpiry);
 
+    @Find
     @OrderBy("number")
     Stream<CreditCard> issuedBetween(@By("issuedOn") @Extract(DAY) @GreaterThanEqual int minDayOfMonth,
                                      @By("issuedOn") @Extract(DAY) @LessThanEqual int maxDayOfMonth);
 
+    @Find
     @OrderBy("number")
     Stream<CreditCard> issuedInMonth(@By("issuedOn") @Extract(MONTH) @In Iterable<Integer> months);
 

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,8 +12,10 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.processor;
 
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
@@ -31,9 +33,16 @@ import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
+
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
+import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
            property = "creates.objectClass=jakarta.enterprise.concurrent.ManagedExecutorService") //  TODO more types?
@@ -54,6 +63,23 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
     private static final String CONFIG_SOURCE = "config.source";
 
     /**
+     * Name of property that identifies the application for java:global data sources.
+     */
+    static final String DECLARING_APPLICATION = "declaringApplication";
+
+    /**
+     * Name of property that identifies the class loader of the application artifact
+     * that defines the managed executor definition.
+     */
+    static final String DECLARING_CLASS_LOADER = "declaringClassLoader";
+
+    /**
+     * Name of property that identifies the class loader of the application artifact
+     * that defines the managed executor definition.
+     */
+    static final String DECLARING_METADATA = "declaringMetadata";
+
+    /**
      * Property value that indicates the configuration originated in a configuration file, such as server.xml,
      * rather than being programmatically created via ConfigurationAdmin.
      */
@@ -63,11 +89,6 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
      * Unique identifier attribute name.
      */
     private static final String ID = "id";
-
-    /**
-     * Name of property that identifies the application for java:global data sources.
-     */
-    static final String DECLARING_APPLICATION = "declaringApplication";
 
     /**
      * Name of internal property that enforces unique JNDI names.
@@ -127,16 +148,27 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
             execSvcProps.put(prop.getKey(), value);
         }
 
+        ClassLoader declaringClassLoader = (ClassLoader) execSvcProps.remove(DECLARING_CLASS_LOADER);
+        MetaData declaringMetadata = (MetaData) execSvcProps.remove(DECLARING_METADATA);
         String declaringApplication = (String) execSvcProps.remove(DECLARING_APPLICATION);
         String application = (String) execSvcProps.get("application");
         String module = (String) execSvcProps.get("module");
         String component = (String) execSvcProps.get("component");
         String jndiName = (String) execSvcProps.get(ResourceFactory.JNDI_NAME);
         String contextSvcJndiName = (String) execSvcProps.remove("context");
+        String[] qualifiers = (String[]) execSvcProps.remove("qualifiers");
+
+        // Convert qualifier array to list attribute if present
+        List<String> qualifierNames = null;
+        if (qualifiers != null && qualifiers.length > 0) {
+            qualifierNames = Arrays.asList(qualifiers);
+            execSvcProps.put("qualifiers", qualifierNames);
+        }
 
         Long hungTaskThreshold = (Long) execSvcProps.remove("hungTaskThreshold");
         Integer maxAsync = (Integer) execSvcProps.remove("maxAsync");
         String[] properties = (String[]) execSvcProps.remove("properties"); // TODO use these properties?
+        Boolean virtual = (Boolean) execSvcProps.remove("virtual");
 
         String managedExecutorServiceID = getManagedExecutorServiceID(application, module, component, jndiName);
         String concurrencyPolicyId = managedExecutorServiceID + "/concurrencyPolicy";
@@ -182,16 +214,26 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
             else if (maxAsync != -1) // unbounded
                 throw new IllegalArgumentException(jndiName + " maxAsync=" + maxAsync);
 
-        concurrencyPolicyProps.put("maxPolicy", "loose");
         concurrencyPolicyProps.put("maxWaitForEnqueue", 0L);
         concurrencyPolicyProps.put("runIfQueueFull", false);
+
+        if (Boolean.TRUE.equals(virtual)) { // only available in Concurrency 3.1+
+            concurrencyPolicyProps.put("virtual", virtual);
+            // maxPolicy unspecified makes the policy conditional on whether or not the submitter thread is virtual
+            // TODO remove the following once unspecified is supported
+            concurrencyPolicyProps.put("maxPolicy", "loose");
+        } else {
+            // virtual = false is the default
+            concurrencyPolicyProps.put("maxPolicy", "loose");
+        }
 
         BundleContext concurrencyBundleCtx = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(WSManagedExecutorService.class));
         BundleContext concurrencyPolicyBundleCtx = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(ConcurrencyPolicy.class));
 
-        ResourceFactory factory = new AppDefinedResourceFactory(this, concurrencyBundleCtx, declaringApplication, //
+        QualifiedResourceFactory factory = new AppDefinedResourceFactory(this, concurrencyBundleCtx, declaringApplication, //
                         managedExecutorServiceID, jndiName, managedExecutorSvcFilter.toString(), //
-                        contextSvcJndiName, contextSvcFilter);
+                        contextSvcJndiName, contextSvcFilter, //
+                        declaringMetadata, declaringClassLoader, qualifierNames);
         try {
             String concurrencyBundleLocation = concurrencyBundleCtx.getBundle().getLocation();
             String concurrencyPolicyBundleLocation = concurrencyPolicyBundleCtx.getBundle().getLocation();
@@ -205,6 +247,27 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
             Configuration managedExecutorSvcConfig = configAdmin.createFactoryConfiguration("com.ibm.ws.concurrent.managedExecutorService",
                                                                                             concurrencyBundleLocation);
             managedExecutorSvcConfig.update(execSvcProps);
+
+            if (qualifierNames != null) {
+                String jeeName;
+                if (module == null) {
+                    jeeName = application;
+                } else {
+                    ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                    jeeName = cmd.getJ2EEName().toString();
+                }
+
+                ServiceReference<QualifiedResourceFactories> ref = concurrencyBundleCtx.getServiceReference(QualifiedResourceFactories.class);
+
+                if (ref == null) // TODO message should include possibility of deployment descriptor element
+                    throw new UnsupportedOperationException("The " + jeeName + " application artifact cannot specify the " +
+                                                            qualifierNames + " qualifiers on the " +
+                                                            jndiName + " " + ManagedExecutorDefinition.class.getSimpleName() +
+                                                            " because the " + "CDI" + " feature is not enabled."); // TODO NLS
+
+                QualifiedResourceFactories qrf = concurrencyBundleCtx.getService(ref);
+                qrf.add(jeeName, QualifiedResourceFactory.Type.ManagedExecutorService, qualifierNames, factory);
+            }
         } catch (Exception x) {
             factory.destroy();
             throw x;

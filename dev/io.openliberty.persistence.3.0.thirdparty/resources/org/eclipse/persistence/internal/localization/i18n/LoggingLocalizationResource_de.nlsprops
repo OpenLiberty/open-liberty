@@ -119,6 +119,10 @@ connected_user_database=Verbunden: {3}{4}Benutzer: {0}{3}{4}Datenbank: {1} Versi
 
 connected_user_database_driver=Verbunden: {0}{6}Benutzer: {1}{6}Datenbank: {2}  Version: {3}{6}Treiber: {4}  Version: {5}
 
+corrupt_object=besch\u00e4digtes Objekt: {0}
+
+corrupt_object_referenced_through_mapping=Besch\u00e4digtes Objekt referenziert durch Zuordnung: {0}
+
 corrupted_session_announcement=Sitzungs-ID: {0}  Discovery Manager hat eine fehlerhafte Sitzungsank\u00fcndigung empfangen. Wird ignoriert.
 
 create_default_dbms_tables_not_supported=Die native WLS-CMP-Einstellung "create-default-dbms-tables" wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
@@ -707,6 +711,8 @@ sop_object_wrong_version=Serialisiertes sopObject wird aufgrund einer falschen V
 
 src_pm_name_first_argument=Sie m\u00fcssen den Quellen-PM-Namen beim ersten Eingabeargument entweder als -sOc4j-native oder -sWeblogic eingeben.
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=Stapel besuchter Objekte, die auf das besch\u00e4digte Objekt verweisen: {0}
+
 table_existed_during_creation=Die Erstellung der Tabelle ist fehlgeschlagen. Wenn sie bereits vorhanden ist, muss sie zuerst freigegeben werden. Dies kann manuell vorgenommen werden oder indem Sie das db-table-gen-Attribut in der Datei orion-ejb-jar.xml setzen.
 
 template_orion_ejb_jar_created=Eine Vorlagendatei mit dem Namen orion-ejb-jar.xml wurde erstellt.
@@ -737,7 +743,12 @@ toplink_warning=[EL Warning]:
 
 unit_of_work_thread_info=Die aktuelle Arbeitseinheit in Sitzung ({0}) wurde von einem anderen Thread erstellt (ID: {1}, Name: {2}) als der aktuelle Thread (ID: {3}, Name: {4}).
 
-unit_of_work_thread_info_thread_dump=Erstellungsthread (ID: {0}, Name: {1}) Stack-Trace: {2} Aktueller Thread (ID: {3}, Name: {4}) Stack-Trace {5}\n
+unit_of_work_thread_info_thread_dump=Erstellungsthread (ID: {0} Name: {1}) Stack-Trace:
+#{2}
+
+Current Thread (ID: {3} Name: {4}) Stack-Trace:
+#{5}
+
 unitofwork_identity_hashcode={0}-Arbeitseinheits-ID-Hash-Code: {1}
 
 update_all_fields_not_supported=Das native Oc4j-CMP-Feature "update-all-fields" f\u00fcr entity({0}) wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
@@ -747,6 +758,8 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery kann f\u00fc
 validate_db_schema_with_not_supported=Die native WLS-CMP-Einstellung "validate-db-schema-with" wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
 
 validate_ejb_jar=Die Validierung der Datei ejb-jar.xml beginnt. Die Verarbeitung kann einige Zeit dauern...
+
+validate_object_space=Objektbereich validieren.
 
 validity_timeout_not_supported=Die native Oc4j-CMP-Einstellung "validity-timeout" f\u00fcr entity({0}) wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
 

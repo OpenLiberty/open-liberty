@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,10 +83,10 @@ kafka.create.outgoing.retry.CWMRX1010W.explanation=Do\u0161lo k chyb\u011b, kter
 kafka.create.outgoing.retry.CWMRX1010W.useraction=Prozkoumejte chybovou zpr\u00e1vu, soubor messages.log na serveru a protokoly FFDC a zjist\u011bte, zda byl probl\u00e9m p\u0159echodn\u00fd a byl vy\u0159e\u0161en opakov\u00e1n\u00edm nastaven\u00ed konektoru.
 
 # {0} = kafka record data, {1} = exception details
-# 'nack' is the name of a method and should not be translated 
+# 'nack' is the name of a method and should not be translated
 kafka.input.message.nacked.CWMRX1011E=CWMRX1011E: Metoda nack byla vol\u00e1na na zpr\u00e1v\u011b, kter\u00e1 byla vytvo\u0159ena ze z\u00e1znamu Kafka , co\u017e znamen\u00e1, \u017ee nebyla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na. Reaktivn\u00ed proud zpr\u00e1v bude vypnut. Z\u00e1znam byl: {0}. \u0160lo o v\u00fdjimku: {1}.
-kafka.input.message.nacked.CWMRX1011E.explanation=Zpr\u00e1va z konektoru Kafka zp\u016fsobila n\u011bkde v aplikaci selh\u00e1n\u00ed, co\u017e vedlo k negativn\u00edmu potvrzen\u00ed zpr\u00e1vy. Vzhledem k tomu, \u017ee zpr\u00e1va nebyla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na, nebyl potvrzen\u00fd posun pro oblast, ze kter\u00e9 zpr\u00e1va poch\u00e1z\u00ed, roz\u0161\u00ed\u0159en. Z t\u00e9to oblasti nelze zpracovat \u017e\u00e1dn\u00e9 dal\u0161\u00ed zpr\u00e1vy.
-kafka.input.message.nacked.CWMRX1011E.useraction=P\u0159ezkoumejte chybovou zpr\u00e1vu a soubor messages.log na serveru, abyste identifikovali probl\u00e9m. Chcete-li se vyhnout zastaven\u00ed zpracov\u00e1n\u00ed zpr\u00e1v p\u0159i selh\u00e1n\u00ed, implementujte logiku v r\u00e1mci aplikace, kter\u00e1 poskytuje alternativn\u00ed zpracov\u00e1n\u00ed zpr\u00e1v, kter\u00e9 jsou negativn\u011b potvrzeny.
+kafka.input.message.nacked.CWMRX1011E.explanation=Konektor Kafka odeslal zpr\u00e1vu, kter\u00e1 vedla k selh\u00e1n\u00ed v r\u00e1mci aplikace, co\u017e zp\u016fsobilo, \u017ee zpr\u00e1va byla negativn\u011b potvrzena. Vzhledem k tomu, \u017ee zpr\u00e1va nebyla \u00fasp\u011b\u0161n\u011b zpracov\u00e1na, nen\u00ed potvrzen\u00fd posun pro oblast, ze kter\u00e9 zpr\u00e1va poch\u00e1z\u00ed, roz\u0161\u00ed\u0159en\u00fd. Z t\u00e9to oblasti tedy nelze zpracovat \u017e\u00e1dn\u00e9 dal\u0161\u00ed zpr\u00e1vy.
+kafka.input.message.nacked.CWMRX1011E.useraction=Zkontrolujte chybovou zpr\u00e1vu a soubor messages.log na serveru, abyste ur\u010dili probl\u00e9m. Chcete-li zabr\u00e1nit zastaven\u00ed zpracov\u00e1n\u00ed zpr\u00e1v v d\u016fsledku selh\u00e1n\u00ed, implementujte logiku ve sv\u00e9 aplikaci pro alternativn\u00ed zpracov\u00e1n\u00ed zpr\u00e1v, kter\u00e9 jsou negativn\u011b potvrzeny.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

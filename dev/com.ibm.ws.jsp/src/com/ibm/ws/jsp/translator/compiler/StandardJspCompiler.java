@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2004 IBM Corporation and others.
+ * Copyright (c) 1997, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.jsp.translator.compiler;
@@ -53,7 +50,8 @@ public class StandardJspCompiler implements JspCompiler  {
     protected boolean isDebugEnabled = false;
     protected boolean isVerbose = false;
     protected boolean isDeprecation = false; 
-    protected int jdkSourceLevel; 
+    protected int jdkSourceLevel;
+    protected Integer javaSourceLevel; 
     protected String javaEncoding = null; 
     protected String outputDir = null;
     protected JavaCompiler compiler;
@@ -76,6 +74,7 @@ public class StandardJspCompiler implements JspCompiler  {
         this.isDeprecation =  options.isDeprecation();
         this.javaEncoding = options.getJavaEncoding();
         this.jdkSourceLevel=  options.getJdkSourceLevel();
+        this.javaSourceLevel = options.getJavaSourceLevel();
         this.outputDir = options.getOutputDir().getPath();
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
@@ -184,29 +183,33 @@ public class StandardJspCompiler implements JspCompiler  {
             argList.add("-deprecation");
         }
         
-        //487396.1 jdkSourceLevel is 15 by default now ... should get into if statement
         argList.add("-source");
-        if (jdkSourceLevel == 14) {
-            argList.add("1.4");
-        }
-        else if (jdkSourceLevel == 15) {
-            argList.add("1.5");
-        }
-        //PM04610 start
-        else if (jdkSourceLevel == 16) {
-            argList.add("1.6");
-        }
-        //PM04610 end
-        else if (jdkSourceLevel == 17) {
-            argList.add("1.7");
-        }
-        //126902 start
-        else if (jdkSourceLevel == 18) {
-            argList.add("1.8");
-        }
-        //126902 end
-        else {
-            argList.add("1.3");
+        // issue 7183: look at javaSourceLevel first before using jdkSourceLevel
+        if (javaSourceLevel != -1) {
+            argList.add(javaSourceLevel.toString());
+        } else {
+            if (jdkSourceLevel == 14) {
+                argList.add("1.4");
+            }
+            else if (jdkSourceLevel == 15) {
+                argList.add("1.5");
+            }
+            //PM04610 start
+            else if (jdkSourceLevel == 16) {
+                argList.add("1.6");
+            }
+            //PM04610 end
+            else if (jdkSourceLevel == 17) {
+                argList.add("1.7");
+            }
+            //126902 start
+            else if (jdkSourceLevel == 18) {
+                argList.add("1.8");
+            }
+            //126902 end
+            else {
+                argList.add("1.3");
+            }
         }
         
         // Annotations don't need to be processed for JSPs.

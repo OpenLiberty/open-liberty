@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,10 +83,10 @@ kafka.create.outgoing.retry.CWMRX1010W.explanation=A survenit o eroare atunci c\
 kafka.create.outgoing.retry.CWMRX1010W.useraction=Examina\u0163i mesajul de eroare, fi\u015fierul message.log de pe server \u015fi istoricele FFDC pentru a verifica dac\u0103 problema a fost tranzitorie sau a fost rezolvat\u0103 prin re\u00eencercarea set\u0103rii conectorului.
 
 # {0} = kafka record data, {1} = exception details
-# 'nack' is the name of a method and should not be translated 
+# 'nack' is the name of a method and should not be translated
 kafka.input.message.nacked.CWMRX1011E=CWMRX1011E: Metoda nack a fost apelat\u0103 la un mesaj care a fost creat dintr-un Kafka faptul c\u0103 nu a fost procesat cu succes. Fluxul de mesaje reactive va fi oprit. Recordul a fost: {0}. Excep\u0163ia a fost: {1}.
-kafka.input.message.nacked.CWMRX1011E.explanation=Un mesaj de la conector Kafka un e\u0219ec undeva \u00een aplica\u021bie, rezult\u00e2nd \u00een mesajul fiind recunoscut negativ. Deoarece mesajul nu a fost procesat cu succes, offset-ul angajat nu a fost avansat pentru parti\u021bia de la care a venit mesajul. Nu mai pot fi procesate mesaje de pe aceast\u0103 parti\u021bie.
-kafka.input.message.nacked.CWMRX1011E.useraction=Revizui\u021bi mesajul de eroare \u0219i fi\u0219ierele de tip " messages.log pe server pentru a identifica problema. Pentru a evita procesarea mesajelor care se opresc asupra unui e\u0219ec, implementa\u021bi logica \u00een cadrul aplica\u021biei dvs. care ofer\u0103 o manipulare alternativ\u0103 a mesajelor care sunt recunoscute negativ.
+kafka.input.message.nacked.CWMRX1011E.explanation=Conectorul Kafka trimis un mesaj care a dus la un e\u0219ec \u00een cadrul aplica\u021biei, provoc\u00e2nd mesajul s\u0103 fie recunoscut negativ. Deoarece mesajul nu a fost procesat cu succes, offset-ul angajat nu este avansat pentru parti\u021bia de la care a venit mesajul. A\u0219adar, nu mai pot fi procesate mesaje de pe aceast\u0103 parti\u021bie.
+kafka.input.message.nacked.CWMRX1011E.useraction=Examina\u021bi mesajul de eroare \u0219i fi\u0219ierele de tip " messages.log pe server pentru a determina problema. Pentru a preveni oprirea proces\u0103rii mesajelor din cauza unei defec\u021biuni, implementa\u021bi logica \u00een aplica\u021bia dvs. pentru manipularea alternativ\u0103 a mesajelor care sunt recunoscute negativ.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

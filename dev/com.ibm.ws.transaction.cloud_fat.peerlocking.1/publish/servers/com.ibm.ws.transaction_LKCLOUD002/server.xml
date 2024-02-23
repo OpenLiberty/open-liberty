@@ -16,6 +16,8 @@
         httpPort="${bvt.prop.HTTP_secondary}"
         httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
 
+  <tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
+
   <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib" />
     <library id="DerbyLib" filesetRef="DerbyFileset" />
     <fileset id="DerbyFileset"

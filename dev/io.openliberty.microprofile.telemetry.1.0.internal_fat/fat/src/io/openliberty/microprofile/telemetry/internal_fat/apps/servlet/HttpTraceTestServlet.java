@@ -29,6 +29,12 @@ import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Response;
+
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -37,11 +43,6 @@ import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.In
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-import javax.inject.Inject;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.Response;
 
 @SuppressWarnings("serial")
 @WebServlet("/testHttpTrace")
@@ -94,7 +95,7 @@ public class HttpTraceTestServlet extends FATServlet {
         String serverName = request.getServerName();
         int serverPort = request.getServerPort();
         String pathAddition = "/traceID";
-        URL url = new URL(scheme + "://" + serverName + ":" + serverPort + "/" + APP_NAME + "/" + PLACEHOLDER_SERVLET+ pathAddition);
+        URL url = new URL(scheme + "://" + serverName + ":" + serverPort + "/" + APP_NAME + "/" + PLACEHOLDER_SERVLET + pathAddition);
 
         String traceId = httpGet(url); // The servlet outputs the traceId
 
@@ -140,9 +141,10 @@ public class HttpTraceTestServlet extends FATServlet {
                         .withAttribute(SemanticAttributes.NET_HOST_PORT, Long.valueOf(serverPort))
 
         );
-        // Make sure the duration is longer than 2 seconds as there is a sleep for 2 seconds in the servlet
+        // Make sure the duration is longer than 1.90 seconds as there is a sleep for 2 seconds in the servlet
+        // The leeway is because Thread.sleep depends on precision and accuracy of system timers and schedulers.
         long duration = servletSpan.getEndEpochNanos() - servletSpan.getStartEpochNanos();
-        assertTrue(duration > TimeUnit.SECONDS.toNanos(2));
+        assertTrue(duration > TimeUnit.NANOSECONDS.toNanos(1900000000));
 
     }
 
@@ -184,7 +186,7 @@ public class HttpTraceTestServlet extends FATServlet {
         );
         // Make sure the duration is longer than 2 seconds as there is a sleep for 2 seconds in the servlet
         long duration = servletSpan.getEndEpochNanos() - servletSpan.getStartEpochNanos();
-        assertTrue(duration > TimeUnit.SECONDS.toNanos(2));
+        assertTrue("Duration " + duration + "ns is less than 2 seconds", duration > TimeUnit.SECONDS.toNanos(2));
 
         SpanData taskSpan = spanDataList.get(3);
         assertThat(taskSpan, isSpan()

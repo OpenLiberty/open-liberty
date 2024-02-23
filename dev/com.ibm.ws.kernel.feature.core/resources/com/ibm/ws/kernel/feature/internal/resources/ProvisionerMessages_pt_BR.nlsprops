@@ -230,6 +230,15 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: O
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=A configura\u00e7\u00e3o do servidor cont\u00e9m uma combina\u00e7\u00e3o incompat\u00edvel de recursos para os modelos de programa\u00e7\u00e3o indicados. Esse conflito pode acontecer se os dois recursos incompat\u00edveis forem definidos diretamente na configura\u00e7\u00e3o do servidor ou se os recursos configurados inclu\u00edrem vers\u00f5es diferentes de um recurso que s\u00e3o incompat\u00edveis.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Tente especificar uma vers\u00e3o compat\u00edvel dos recursos configurados que causaram o conflito no arquivo server.xml. Se n\u00e3o houver outras vers\u00f5es dispon\u00edveis, os recursos configurados n\u00e3o ser\u00e3o compat\u00edveis uns com os outros e n\u00e3o poder\u00e3o ser configurados ao mesmo tempo.
 
+UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: N\u00e3o foi poss\u00edvel encontrar um valor para a vari\u00e1vel de ambiente PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=Voc\u00ea tem recursos sem vers\u00e3o em sua configura\u00e7\u00e3o e a vari\u00e1vel de ambiente PREFERRED_FEATURE_VERSIONS n\u00e3o p\u00f4de ser localizada
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=Verifique se a vari\u00e1vel de ambiente, PREFERRED_FEATURE_VERSIONS, existe e est\u00e1 escrita corretamente.
+
+# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: A vari\u00e1vel de ambiente, PREFERRED_FEATURE_VERSIONS, n\u00e3o cont\u00e9m um valor para {0}
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=Para cada recurso sem vers\u00e3o em sua configura\u00e7\u00e3o, deve haver um valor de vers\u00e3o preferencial para ele dentro de PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=Inclua um valor em PREFERRED_FEATURE_VERSIONS para o recurso
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: O recurso {0} j\u00e1 existe. Ele n\u00e3o ser\u00e1 reinstalado. Para modificar um recurso existente, \u00e9 necess\u00e1rio primeiro desinstal\u00e1-lo manualmente.

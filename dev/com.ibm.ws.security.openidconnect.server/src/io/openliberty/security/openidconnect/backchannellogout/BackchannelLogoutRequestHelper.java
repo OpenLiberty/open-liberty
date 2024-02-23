@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -60,6 +60,7 @@ public class BackchannelLogoutRequestHelper {
      * Uses the provided ID token string to build logout tokens and sends back-channel logout requests to all of the necessary
      * RPs. If the ID token contains multiple audiences, logout tokens are created for each client audience. Logout tokens are
      * also created for all RPs that the OP is aware of having active or recently valid sessions.
+     *
      */
     public void sendBackchannelLogoutRequests(String user, String idTokenString) {
         if (!shouldSendLogoutRequests(user, idTokenString)) {
@@ -93,7 +94,7 @@ public class BackchannelLogoutRequestHelper {
             }
             return false;
         }
-        if (!hasClientWithBackchannelLogoutUri()) {
+        if (!hasClientWithBackchannelLogoutUri(oidcServerConfig)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "No client has a back-channel logout uri set up, so back-channel logout will not be performed.");
             }
@@ -102,7 +103,7 @@ public class BackchannelLogoutRequestHelper {
         return true;
     }
 
-    boolean hasClientWithBackchannelLogoutUri() {
+    public static boolean hasClientWithBackchannelLogoutUri(OidcServerConfig oidcServerConfig) {
         String oauthProviderName = oidcServerConfig.getOauthProviderName();
         OAuth20Provider provider = ProvidersService.getOAuth20Provider(oauthProviderName);
         if (provider == null) {
@@ -112,7 +113,7 @@ public class BackchannelLogoutRequestHelper {
     }
 
     @FFDCIgnore(OidcServerException.class)
-    boolean hasClientWithBackchannelLogoutUri(OAuth20Provider provider) {
+    static boolean hasClientWithBackchannelLogoutUri(OAuth20Provider provider) {
         OidcOAuth20ClientProvider clientProvider = provider.getClientProvider();
         if (clientProvider == null) {
             return false;

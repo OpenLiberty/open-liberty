@@ -99,9 +99,9 @@ Import-Package: \
    org.apache.el.lang;version="2.2", \
    org.apache.el.parser;version="2.2", \
    org.apache.el.util;version="2.2", \
-   org.apache.jasper;version="[2.2,3.2)", \
-   org.apache.jasper.el;version="[2.2,3.2)", \
-   org.apache.jasper.runtime;version="[2.2,3.2)", \
+   org.apache.jasper;version="[2.2,5.0)", \
+   org.apache.jasper.el;version="[2.2,5.0)", \
+   org.apache.jasper.runtime;version="[2.2,5.0)", \
    io.openliberty.el.internal.cdi;version="2.2", \
    org.eclipse.jdt.core.compiler;usage="JSP", \
    org.eclipse.jdt.internal.compiler;usage="JSP", \

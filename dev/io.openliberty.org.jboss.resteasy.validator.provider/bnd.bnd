@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2020, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -52,11 +52,12 @@ org/jboss/resteasy=${bin}/org/jboss/resteasy
 	com.ibm.websphere.javaee.validation.2.0;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0,\
+	io.openliberty.jakarta.cdi.3.0; version=latest,\
 	com.ibm.websphere.javaee.jaxrs.2.1,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.org.jboss.logging,\
 	io.openliberty.org.jboss.resteasy.common,\
-	io.openliberty.org.jboss.resteasy.server,\
+	io.openliberty.org.jboss.resteasy.cdi,\
 	com.ibm.ws.com.fasterxml.classmate;version=latest
 
 instrument.ffdc: false

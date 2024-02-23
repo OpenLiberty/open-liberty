@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,27 +44,40 @@ configurations {
   jdbcDrivers { transitive = false; }
   testcontainers { transitive = false; }
   derby
-  jakartaTransformer
+  jakartaTransformer { transitive = false; }
+  jakartaTransformerPreJava17 { transitive = false; }
+  jakartaTransformerJava17Plus { transitive = false; }
 }
 
 dependencies {
   derby 'org.apache.derby:derby:10.11.1.1'
 
   jdbcDrivers 'com.ibm.db2:jcc:11.1.4.4',
-		'org.postgresql:postgresql:42.4.2',
+		'org.postgresql:postgresql:42.7.2',
 		'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
 		'org.apache.derby:derbyclient:10.11.1.1',
 		'org.apache.derby:derby:10.11.1.1',
 		'com.oracle.database.jdbc.debug:ojdbc8_g:21.8.0.0'
 
-  jakartaTransformer 'biz.aQute.bnd:biz.aQute.bnd.transform:6.3.0',
-       'commons-cli:commons-cli:1.5.0',
+  jakartaTransformer 'commons-cli:commons-cli:1.5.0',
        project(':com.ibm.ws.org.slf4j.api'),
        project(':com.ibm.ws.org.slf4j.simple'),
        'org.eclipse.transformer:org.eclipse.transformer:0.5.0',
        'org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0',
        'org.eclipse.transformer:org.eclipse.transformer.cli:0.5.0',
        'org.eclipse.transformer:org.eclipse.transformer.bnd.analyzer:0.5.0'
+
+  jakartaTransformerPreJava17('biz.aQute.bnd:biz.aQute.bnd.transform') {
+                         version {
+                            strictly '6.4.1'
+                         }
+                     }
+
+  jakartaTransformerJava17Plus('biz.aQute.bnd:biz.aQute.bnd.transform') {
+                         version {
+                            strictly '7.0.0'
+                         }
+                     }
 
   testcontainers project(':io.openliberty.org.testcontainers'),
         project(':com.ibm.ws.org.slf4j.api')
@@ -88,6 +101,8 @@ task addJakartaTransformer(type: Copy) {
   mustRunAfter jar
   dependsOn addJakartaTransformerRules
   from configurations.jakartaTransformer
+  from configurations.jakartaTransformerPreJava17
+  from configurations.jakartaTransformerJava17Plus
   into new File(autoFvtDir, 'lib')
 }
 
@@ -118,7 +133,7 @@ task copyJdbcDrivers(type: Copy) {
 }
 
 task copyFeatureBundles {
-  dependsOn assemble
+  dependsOn jar
   enabled project.file('test-bundles').exists()
   doLast {
     new File(project.buildDir, 'buildfiles').eachLine { String line ->

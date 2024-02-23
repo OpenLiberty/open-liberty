@@ -18,6 +18,7 @@ configurations {
 }
 
 task copyBundles {
+  dependsOn jar
   enabled project.file('test-bundles').exists()
   doFirst {
     new File(project.buildDir, 'buildfiles').eachLine { String line ->
@@ -69,6 +70,8 @@ dependencies {
   jsonbapi 'javax.json.bind:javax.json.bind-api:1.0',
   project(':com.ibm.ws.security.registry_test.servlet'),
   project(':com.ibm.ws.org.apache.directory.server')
+  requiredLibs project(':com.ibm.ws.microprofile.openapi')
+  requiredLibs project(path: ':com.ibm.websphere.org.eclipse.microprofile', configuration: 'openapi10')
 }
 
 autoFVT {

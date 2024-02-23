@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,7 @@ public class Constants extends com.ibm.ws.security.oauth_oidc.fat.commonTest.Con
     public static final String opJSessionIdName = "OPJSESSIONID";
     public static final String clientJSessionIdName = "clientJSESSIONID";
     public static final String client2JSessionIdName = "client2JSESSIONID";
+    public static final String ibm_security_logout_default_page = "Default Logout Exit Page";
 
     public static final boolean sidIsRequired = true;
     public static final boolean sidIsNotRequired = false;
@@ -42,8 +43,12 @@ public class Constants extends com.ibm.ws.security.oauth_oidc.fat.commonTest.Con
     public static final boolean refreshTokenInvalid = false;
 
     public static String opCookieName = "testOPCookie";
+    public static String opCookieNameWithSaml = "testOtherOPCookie";
     public static String clientCookieName = "clientCookie";
     public static String client2CookieName = "client2Cookie";
+    public static String genericServerCookieName = "testRSCookie";
+    public static String spCookieName = "testSPCookie";
+    public static String idpCookieName = "tbd";
 
     public static final boolean usesValidBCLEndpoint = true;
     public static final boolean usesFakeBCLEndpoint = false;

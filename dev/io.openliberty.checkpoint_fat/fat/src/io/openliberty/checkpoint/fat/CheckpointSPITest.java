@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,9 +32,9 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
@@ -48,8 +48,17 @@ public class CheckpointSPITest {
 
     public final static String STATIC_SINGLE_PREPARE = "STATIC SINGLE PREPARE - ";
     public final static String STATIC_SINGLE_RESTORE = "STATIC SINGLE RESTORE - ";
+
+    public final static String STATIC_SINGLE_PREPARE_RANK = "STATIC SINGLE PREPARE RANK - ";
+    public final static String STATIC_SINGLE_RESTORE_RANK = "STATIC SINGLE RESTORE RANK - ";
+
     public final static String STATIC_MULTI_PREPARE = "STATIC MULTI PREPARE - ";
     public final static String STATIC_MULTI_RESTORE = "STATIC MULTI RESTORE - ";
+
+    public final static String STATIC_MULTI_PREPARE_RANK = "STATIC MULTI PREPARE RANK - ";
+    public final static String STATIC_MULTI_RESTORE_RANK = "STATIC MULTI RESTORE RANK - ";
+
+    public final static String STATIC_ONRESTORE = "STATIC ONRESTORE - ";
 
     private static final String USER_FEATURE_PATH = "usr/extension/lib/features/";
     private static final String USER_BUNDLE_PATH = "usr/extension/lib/";
@@ -74,10 +83,9 @@ public class CheckpointSPITest {
 
     private void findLogMessage(String testMessage, String expectedPrefix, String expectedPostfix, long timeout) {
         String actual = server.waitForStringInLogUsingMark(expectedPrefix, timeout);
-        assertNotNull("No message prefix found: " + expectedPrefix, actual);
+        assertNotNull(testMessage + ": No message prefix found: " + expectedPrefix, actual);
         actual = actual.substring(actual.indexOf(expectedPrefix));
-        assertEquals("Unexpected: ", expectedPrefix + expectedPostfix, actual);
-
+        assertEquals(testMessage + ": Unexpected: ", expectedPrefix + expectedPostfix, actual);
     }
 
     @Test
@@ -139,8 +147,38 @@ public class CheckpointSPITest {
     @Test
     public void testStaticHook() throws Exception {
         server.startServer(getTestMethodNameOnly(testName) + ".log");
-        findLogMessage("Static single prepare method", STATIC_SINGLE_RESTORE, "SUCCESS", 500);
-        findLogMessage("Static single prepare method", STATIC_MULTI_RESTORE, "SUCCESS", 500);
+        findLogMessage("Static single restore method", STATIC_SINGLE_RESTORE, "SUCCESS", 500);
+        findLogMessage("Static single restore method", STATIC_MULTI_RESTORE, "SUCCESS", 500);
+
+        findLogMessage("Static onRestore method", STATIC_ONRESTORE + "-50 1 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore method", STATIC_ONRESTORE + "-50 2 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore method", STATIC_ONRESTORE + "-50 3 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore method", STATIC_ONRESTORE + "0 1 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore method", STATIC_ONRESTORE + "0 2 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore method", STATIC_ONRESTORE + "0 3 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore method", STATIC_ONRESTORE + "50 1 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore method", STATIC_ONRESTORE + "50 2 ", "SUCCESS", 500);
+        findLogMessage("Static onRestore method", STATIC_ONRESTORE + "50 3 ", "SUCCESS", 500);
+
+        findLogMessage("Static rank restore method multi threaded", STATIC_MULTI_RESTORE_RANK + "-50 4 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method multi threaded", STATIC_MULTI_RESTORE_RANK + "-50 5 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method multi threaded", STATIC_MULTI_RESTORE_RANK + "-50 6 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method multi threaded", STATIC_MULTI_RESTORE_RANK + "0 4 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method multi threaded", STATIC_MULTI_RESTORE_RANK + "0 5 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method multi threaded", STATIC_MULTI_RESTORE_RANK + "0 6 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method multi threaded", STATIC_MULTI_RESTORE_RANK + "50 4 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method multi threaded", STATIC_MULTI_RESTORE_RANK + "50 5 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method multi threaded", STATIC_MULTI_RESTORE_RANK + "50 6 ", "SUCCESS", 500);
+
+        findLogMessage("Static rank restore method single threaded", STATIC_SINGLE_RESTORE_RANK + "-50 4 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method single threaded", STATIC_SINGLE_RESTORE_RANK + "-50 5 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method single threaded", STATIC_SINGLE_RESTORE_RANK + "-50 6 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method single threaded", STATIC_SINGLE_RESTORE_RANK + "0 4 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method single threaded", STATIC_SINGLE_RESTORE_RANK + "0 5 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method single threaded", STATIC_SINGLE_RESTORE_RANK + "0 6 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method single threaded", STATIC_SINGLE_RESTORE_RANK + "50 4 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method single threaded", STATIC_SINGLE_RESTORE_RANK + "50 5 ", "SUCCESS", 500);
+        findLogMessage("Static rank restore method single threaded", STATIC_SINGLE_RESTORE_RANK + "50 6 ", "SUCCESS", 500);
     }
 
     @Test
@@ -242,6 +280,16 @@ public class CheckpointSPITest {
                 case testStaticHook:
                     findLogMessage("Static single prepare method", STATIC_SINGLE_PREPARE, "SUCCESS", 500);
                     findLogMessage("Static single prepare method", STATIC_MULTI_PREPARE, "SUCCESS", 500);
+
+                    findLogMessage("Static rank prepare method", STATIC_MULTI_PREPARE_RANK + "50 1 ", "SUCCESS", 500);
+                    findLogMessage("Static rank prepare method", STATIC_MULTI_PREPARE_RANK + "50 2 ", "SUCCESS", 500);
+                    findLogMessage("Static rank prepare method", STATIC_MULTI_PREPARE_RANK + "50 3 ", "SUCCESS", 500);
+                    findLogMessage("Static rank prepare method", STATIC_MULTI_PREPARE_RANK + "0 1 ", "SUCCESS", 500);
+                    findLogMessage("Static rank prepare method", STATIC_MULTI_PREPARE_RANK + "0 2 ", "SUCCESS", 500);
+                    findLogMessage("Static rank prepare method", STATIC_MULTI_PREPARE_RANK + "0 3 ", "SUCCESS", 500);
+                    findLogMessage("Static rank prepare method", STATIC_MULTI_PREPARE_RANK + "-50 1 ", "SUCCESS", 500);
+                    findLogMessage("Static rank prepare method", STATIC_MULTI_PREPARE_RANK + "-50 2 ", "SUCCESS", 500);
+                    findLogMessage("Static rank prepare method", STATIC_MULTI_PREPARE_RANK + "-50 3 ", "SUCCESS", 500);
                     break;
                 case testProtectedString:
                     findLogMessage("ProtectedString should be *****", "TESTING - ProtectedString prepare password: ", "*****", 500);

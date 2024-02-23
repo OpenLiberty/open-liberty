@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,10 +83,10 @@ kafka.create.outgoing.retry.CWMRX1010W.explanation=Si \u00e8 verificato un error
 kafka.create.outgoing.retry.CWMRX1010W.useraction=Esaminare il messaggio di errore, il file messages.log sul server e i log FFDC per identificare se il problema era transitorio ed \u00e8 stato risolto riprovando la configurazione del connettore.
 
 # {0} = kafka record data, {1} = exception details
-# 'nack' is the name of a method and should not be translated 
+# 'nack' is the name of a method and should not be translated
 kafka.input.message.nacked.CWMRX1011E=CWMRX1011E: Il metodo nack \u00e8 stato richiamato su un messaggio creato da un record Kafka , indicando che non \u00e8 stato elaborato correttamente. Il flusso di messaggi reattivo verr\u00e0 chiuso. Il record era: {0}. L'eccezione era: {1}.
-kafka.input.message.nacked.CWMRX1011E.explanation=Un messaggio dal connettore Kafka ha causato un malfunzionamento da qualche parte nell'applicazione, con il risultato che il messaggio \u00e8 stato riconosciuto negativamente. Poich\u00e9 il messaggio non \u00e8 stato elaborato correttamente, l'offset di cui \u00e8 stato eseguito il commit non \u00e8 stato avanzato per la partizione da cui proviene il messaggio. Non \u00e8 possibile elaborare ulteriori messaggi da questa partizione.
-kafka.input.message.nacked.CWMRX1011E.useraction=Esaminare il messaggio di errore e il file di log messages.log sul server per identificare il problema. Per evitare l'arresto dell'elaborazione dei messaggi in caso di errore, implementare la logica all'interno dell'applicazione che fornisce una gestione alternativa dei messaggi che sono riconosciuti negativamente.
+kafka.input.message.nacked.CWMRX1011E.explanation=Il connettore Kafka ha inviato un messaggio che ha causato un errore all'interno dell'applicazione, causando il riconoscimento negativo del messaggio. Poich\u00e9 il messaggio non \u00e8 stato elaborato correttamente, l'offset di cui \u00e8 stato eseguito il commit non \u00e8 avanzato per la partizione da cui proviene il messaggio. Quindi, non \u00e8 possibile elaborare ulteriori messaggi da questa partizione.
+kafka.input.message.nacked.CWMRX1011E.useraction=Esaminare il messaggio di errore e il file messages.log sul server per determinare il problema. Per impedire l'arresto dell'elaborazione dei messaggi a causa di un errore, implementare la logica nell'applicazione per la gestione alternativa dei messaggi che sono riconosciuti negativamente.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

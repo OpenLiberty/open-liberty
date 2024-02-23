@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,8 +12,10 @@
  *******************************************************************************/
 package io.openliberty.concurrent.internal.processor;
 
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.framework.BundleContext;
@@ -30,9 +32,16 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
+
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
+import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
            property = "creates.objectClass=jakarta.enterprise.concurrent.ManagedThreadFactory") //  TODO more types?
@@ -53,6 +62,23 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
     private static final String CONFIG_SOURCE = "config.source";
 
     /**
+     * Name of property that identifies the application for java:global data sources.
+     */
+    static final String DECLARING_APPLICATION = "declaringApplication";
+
+    /**
+     * Name of property that identifies the class loader of the application artifact
+     * that defines the managed thread factory definition.
+     */
+    static final String DECLARING_CLASS_LOADER = "declaringClassLoader";
+
+    /**
+     * Name of property that identifies the class loader of the application artifact
+     * that defines the managed thread factory definition.
+     */
+    static final String DECLARING_METADATA = "declaringMetadata";
+
+    /**
      * Property value that indicates the configuration originated in a configuration file, such as server.xml,
      * rather than being programmatically created via ConfigurationAdmin.
      */
@@ -62,11 +88,6 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
      * Unique identifier attribute name.
      */
     private static final String ID = "id";
-
-    /**
-     * Name of property that identifies the application for java:global data sources.
-     */
-    static final String DECLARING_APPLICATION = "declaringApplication";
 
     /**
      * Name of internal property that enforces unique JNDI names.
@@ -125,6 +146,8 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
             threadFactoryProps.put(prop.getKey(), value);
         }
 
+        ClassLoader declaringClassLoader = (ClassLoader) threadFactoryProps.remove(DECLARING_CLASS_LOADER);
+        MetaData declaringMetadata = (MetaData) threadFactoryProps.remove(DECLARING_METADATA);
         String declaringApplication = (String) threadFactoryProps.remove(DECLARING_APPLICATION);
         String application = (String) threadFactoryProps.get("application");
         String module = (String) threadFactoryProps.get("module");
@@ -132,6 +155,14 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         String jndiName = (String) threadFactoryProps.get(ResourceFactory.JNDI_NAME);
         String contextSvcJndiName = (String) threadFactoryProps.remove("context");
         Integer priority = (Integer) threadFactoryProps.remove("priority");
+        String[] qualifiers = (String[]) threadFactoryProps.remove("qualifiers");
+
+        // Convert qualifier array to list attribute if present
+        List<String> qualifierNames = null;
+        if (qualifiers != null && qualifiers.length > 0) {
+            qualifierNames = Arrays.asList(qualifiers);
+            threadFactoryProps.put("qualifiers", qualifierNames);
+        }
 
         String managedThreadFactoryID = getManagedThreadFactoryID(application, module, component, jndiName);
         String contextServiceId = contextSvcJndiName == null || "java:comp/DefaultContextService".equals(contextSvcJndiName) //
@@ -150,8 +181,8 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         threadFactoryProps.put(UNIQUE_JNDI_NAME, managedThreadFactoryID);
 
         String contextSvcFilter = FilterUtils.createPropertyFilter(ID, contextServiceId);
-        threadFactoryProps.put("contextService.target", contextSvcFilter);
-        threadFactoryProps.put("contextService.cardinality.minimum", 1);
+        threadFactoryProps.put("ContextService.target", contextSvcFilter);
+        threadFactoryProps.put("ContextService.cardinality.minimum", 1);
 
         threadFactoryProps.put("createDaemonThreads", false);
         threadFactoryProps.put("defaultPriority", priority == null ? Thread.NORM_PRIORITY : priority);
@@ -165,17 +196,39 @@ public class ManagedThreadFactoryResourceFactoryBuilder implements ResourceFacto
         // as non-ResourceFactories by the JNDI implementation
         StringBuilder managedThreadFactorySvcFilter = new StringBuilder(200);
         managedThreadFactorySvcFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, managedThreadFactoryID));
-        managedThreadFactorySvcFilter.append("(component.name=com.ibm.ws.concurrent.managedThreadFactory)(jndiName=*))");
+        managedThreadFactorySvcFilter.append("(component.name=com.ibm.ws.concurrent.internal.ManagedThreadFactoryService)(jndiName=*))");
 
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, declaringApplication, //
+        QualifiedResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, declaringApplication, //
                         managedThreadFactoryID, jndiName, managedThreadFactorySvcFilter.toString(), //
-                        contextSvcJndiName, contextSvcFilter);
+                        contextSvcJndiName, contextSvcFilter, //
+                        declaringMetadata, declaringClassLoader, qualifierNames);
         try {
             String bundleLocation = bundleContext.getBundle().getLocation();
             ConfigurationAdmin configAdmin = configAdminRef.getService();
 
             Configuration managedThreadFactorySvcConfig = configAdmin.createFactoryConfiguration("com.ibm.ws.concurrent.managedThreadFactory", bundleLocation);
             managedThreadFactorySvcConfig.update(threadFactoryProps);
+
+            if (qualifierNames != null) {
+                String jeeName;
+                if (module == null) {
+                    jeeName = application;
+                } else {
+                    ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+                    jeeName = cmd.getJ2EEName().toString();
+                }
+
+                ServiceReference<QualifiedResourceFactories> ref = bundleContext.getServiceReference(QualifiedResourceFactories.class);
+
+                if (ref == null) // TODO message should include possibility of deployment descriptor element
+                    throw new UnsupportedOperationException("The " + jeeName + " application artifact cannot specify the " +
+                                                            qualifierNames + " qualifiers on the " +
+                                                            jndiName + " " + ManagedThreadFactoryDefinition.class.getSimpleName() +
+                                                            " because the " + "CDI" + " feature is not enabled."); // TODO NLS
+
+                QualifiedResourceFactories qrf = bundleContext.getService(ref);
+                qrf.add(jeeName, QualifiedResourceFactory.Type.ManagedThreadFactory, qualifierNames, factory);
+            }
         } catch (Exception x) {
             factory.destroy();
             throw x;

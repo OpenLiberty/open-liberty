@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ import jakarta.data.repository.Update;
  * Experiments with auto-generated keys.
  */
 @Repository
-public interface Orders extends CrudRepository<Order, Long> {
+public interface Orders extends CrudRepository<PurchaseOrder, Long> {
 
     @Query("UPDATE Orders o SET o.total = o.total * :rate + :shipping WHERE o.id = :id")
     boolean addTaxAndShipping(@Param("id") long orderId,
@@ -40,34 +40,37 @@ public interface Orders extends CrudRepository<Order, Long> {
                               @Param("shipping") float shippingCost);
 
     @Delete
-    int cancel(Order... orders);
+    int cancel(PurchaseOrder... orders);
 
     @Insert
-    LinkedList<Order> create(Iterable<Order> order);
+    LinkedList<PurchaseOrder> create(Iterable<PurchaseOrder> order);
 
     @Insert
-    Order create(Order order);
+    PurchaseOrder create(PurchaseOrder order);
 
     @Insert
-    Order[] create(Order... orders);
+    PurchaseOrder[] create(PurchaseOrder... orders);
+
+    @Delete
+    void deleteAll();
 
     @OrderBy("id")
-    Optional<Order> findFirstByPurchasedBy(String purchaser);
+    Optional<PurchaseOrder> findFirstByPurchasedBy(String purchaser);
 
-    List<Float> findTotalByPurchasedByIn(Iterable<String> purchasers, Sort... sorts);
-
-    @Update
-    boolean modify(Order order);
+    List<Float> findTotalByPurchasedByIn(Iterable<String> purchasers, Sort<?>... sorts);
 
     @Update
-    Order[] modifyAll(Order... orders);
+    boolean modify(PurchaseOrder order);
 
     @Update
-    Optional<Order> modifyIfMatching(Order orders);
+    PurchaseOrder[] modifyAll(PurchaseOrder... orders);
 
     @Update
-    Vector<Order> modifyMultiple(Collection<Order> orders);
+    Optional<PurchaseOrder> modifyIfMatching(PurchaseOrder orders);
 
     @Update
-    Order modifyOne(Order orders);
+    Vector<PurchaseOrder> modifyMultiple(Collection<PurchaseOrder> orders);
+
+    @Update
+    PurchaseOrder modifyOne(PurchaseOrder orders);
 }

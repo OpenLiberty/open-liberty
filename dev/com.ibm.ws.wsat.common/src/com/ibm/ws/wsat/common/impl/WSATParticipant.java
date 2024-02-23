@@ -105,7 +105,7 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
      * Remove this participant from the coordinator transaction when complete.
      */
     public void remove() {
-        WSATCoordinatorTran tran = WSATTransaction.getCoordTran(globalId);
+        WSATTransaction tran = WSATTransaction.getCoordTran(globalId);
         if (tran != null) {
             tran.removeParticipant(participantId);
         }

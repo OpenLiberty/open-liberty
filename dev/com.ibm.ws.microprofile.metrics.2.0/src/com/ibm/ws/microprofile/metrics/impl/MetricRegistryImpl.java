@@ -1,11 +1,11 @@
 /*******************************************************************************
-* Copyright (c) 2019, 2021 IBM Corporation and others.
+* Copyright (c) 2019, 2024 IBM Corporation and others.
 *
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License 2.0
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
 *
 *******************************************************************************
@@ -30,15 +30,16 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.Vetoed;
@@ -69,7 +70,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     protected final ConcurrentMap<String, Metadata> metadata;
     protected final ConcurrentMap<MetricID, Metric> metricsMID;
     protected final ConcurrentMap<String, Metadata> metadataMID;
-    protected final ConcurrentHashMap<String, ConcurrentLinkedQueue<MetricID>> applicationMap;
+    protected final ConcurrentHashMap<String, Set<MetricID>> applicationMap;
     private final ConfigProviderResolver configResolver;
 
     private final static boolean usingJava2Security = System.getSecurityManager() != null;
@@ -87,7 +88,7 @@ public class MetricRegistryImpl extends MetricRegistry {
         this.metadata = new ConcurrentHashMap<String, Metadata>(); //duped
         this.metadataMID = new ConcurrentHashMap<String, Metadata>();
 
-        this.applicationMap = new ConcurrentHashMap<String, ConcurrentLinkedQueue<MetricID>>();
+        this.applicationMap = new ConcurrentHashMap<String, Set<MetricID>>();
 
         this.configResolver = configResolver;
     }
@@ -254,14 +255,14 @@ public class MetricRegistryImpl extends MetricRegistry {
         // If it is a base metric, the name will be null
         if (appName == null)
             return;
-        ConcurrentLinkedQueue<MetricID> list = applicationMap.get(appName);
-        if (list == null) {
-            ConcurrentLinkedQueue<MetricID> newList = new ConcurrentLinkedQueue<MetricID>();
-            list = applicationMap.putIfAbsent(appName, newList);
-            if (list == null)
-                list = newList;
+        Set<MetricID> metricIDSet = applicationMap.get(appName);
+        if (metricIDSet == null) {
+            Set<MetricID> newSet = new HashSet<MetricID>();
+            metricIDSet = applicationMap.putIfAbsent(appName, newSet);
+            if (metricIDSet == null)
+                metricIDSet = newSet;
         }
-        list.add(metricID);
+        metricIDSet.add(metricID);
     }
 
     public void unRegisterApplicationMetrics() {
@@ -269,7 +270,7 @@ public class MetricRegistryImpl extends MetricRegistry {
     }
 
     public void unRegisterApplicationMetrics(String appName) {
-        ConcurrentLinkedQueue<MetricID> list = applicationMap.remove(appName);
+        Set<MetricID> list = applicationMap.remove(appName);
 
         if (list != null) {
             for (MetricID metricID : list) {

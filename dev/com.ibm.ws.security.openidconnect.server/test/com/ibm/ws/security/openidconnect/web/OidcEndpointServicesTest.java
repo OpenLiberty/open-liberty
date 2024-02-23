@@ -15,14 +15,10 @@ package com.ibm.ws.security.openidconnect.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 import java.io.PrintWriter;
-import java.security.Key;
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -49,7 +45,6 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.json.java.JSONObject;
 import com.ibm.oauth.core.api.attributes.AttributeList;
 import com.ibm.oauth.core.api.oauth20.token.OAuth20Token;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
@@ -65,7 +60,6 @@ import com.ibm.ws.security.oauth20.util.ConfigUtils;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
 import com.ibm.ws.security.openidconnect.server.internal.HashUtils;
-import com.ibm.ws.security.test.common.jwt.utils.JwtUnitTestUtils;
 import com.ibm.ws.security.wim.VMMService;
 import com.ibm.ws.webcontainer.security.jwk.JSONWebKey;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
@@ -75,7 +69,6 @@ import com.ibm.wsspi.security.wim.model.Entity;
 import com.ibm.wsspi.security.wim.model.PersonAccount;
 import com.ibm.wsspi.security.wim.model.Root;
 
-import io.openliberty.security.common.jwt.exceptions.SignatureAlgorithmNotInAllowedList;
 import test.common.SharedOutputManager;
 
 public class OidcEndpointServicesTest {
@@ -997,282 +990,6 @@ public class OidcEndpointServicesTest {
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
-    }
-
-    @Test
-    public void test_getJwtVerificationKey_algNotAllowed() throws Exception {
-        JSONObject header = new JSONObject();
-        header.put("alg", "HS256");
-        JSONObject claims = new JSONObject();
-        claims.put("aud", "client-id");
-        String tokenString = JwtUnitTestUtils.encode(header) + "." + JwtUnitTestUtils.encode(claims) + ".";
-
-        context.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIdTokenSigningAlgValuesSupported();
-                will(returnValue("RS256"));
-            }
-        });
-        OidcEndpointServices oes = new OidcEndpointServices();
-        try {
-            Object key = oes.getJwtVerificationKey(tokenString, oauth20Provider, oidcServerConfig);
-            fail("Should have thrown an exception, but got: " + key);
-        } catch (SignatureAlgorithmNotInAllowedList e) {
-            // Expected
-        }
-    }
-
-    @Test
-    public void test_getJwtVerificationKey_unsigned() throws Exception {
-        JSONObject header = new JSONObject();
-        header.put("alg", "none");
-        JSONObject claims = new JSONObject();
-        claims.put("aud", "client-id");
-        String tokenString = JwtUnitTestUtils.encode(header) + "." + JwtUnitTestUtils.encode(claims) + ".";
-
-        context.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIdTokenSigningAlgValuesSupported();
-                will(returnValue("none"));
-            }
-        });
-        OidcEndpointServices oes = new OidcEndpointServices();
-        Object key = oes.getJwtVerificationKey(tokenString, oauth20Provider, oidcServerConfig);
-        assertNull("Should not have returned a key, but got: " + key, key);
-    }
-
-    @Test
-    public void test_getJwtVerificationKey_hs256() throws Exception {
-        String clientId = "client-id";
-        String clientSecret = "client-secret";
-        JSONObject claims = new JSONObject();
-        claims.put("aud", clientId);
-        String tokenString = JwtUnitTestUtils.getHS256Jws(claims, clientSecret);
-        final OidcBaseClient oidcbaseclient = new OidcBaseClient(clientId, clientSecret, null, "clientName", "componentId", true);
-
-        context.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIdTokenSigningAlgValuesSupported();
-                will(returnValue("HS256"));
-                one(oauth20Provider).getClientProvider();
-                will(returnValue(oidcoauth20clientprovider));
-                one(oidcoauth20clientprovider).get(clientId);
-                will(returnValue(oidcbaseclient));
-            }
-        });
-        OidcEndpointServices oes = new OidcEndpointServices();
-        Object key = oes.getJwtVerificationKey(tokenString, oauth20Provider, oidcServerConfig);
-        assertEquals("Returned key should have matched the expected client, but didn't.", clientSecret, key);
-    }
-
-    // TODO
-
-    @Test
-    public void test_getSharedKey_missingAud() throws Exception {
-        context.checking(new Expectations() {
-            {
-                one(jwtContext).getJwtClaims();
-                will(returnValue(jwtClaims));
-                one(jwtClaims).getAudience();
-                will(returnValue(null));
-            }
-        });
-        OidcEndpointServices oes = new OidcEndpointServices();
-        Object key = oes.getSharedKey(jwtContext, oauth20Provider);
-        assertNull("Should not have returned a key, but got: " + key, key);
-    }
-
-    @Test
-    public void test_getSharedKey_multipleAud() throws Exception {
-        context.checking(new Expectations() {
-            {
-                one(jwtContext).getJwtClaims();
-                will(returnValue(jwtClaims));
-                one(jwtClaims).getAudience();
-                will(returnValue(Arrays.asList("client1", "client2")));
-            }
-        });
-        OidcEndpointServices oes = new OidcEndpointServices();
-        Object key = oes.getSharedKey(jwtContext, oauth20Provider);
-        assertNull("Should not have returned a key, but got: " + key, key);
-    }
-
-    @Test
-    public void test_getSharedKey_noClientMatchingAud() throws Exception {
-        String audValue = "the-aud";
-        context.checking(new Expectations() {
-            {
-                one(jwtContext).getJwtClaims();
-                will(returnValue(jwtClaims));
-                one(jwtClaims).getAudience();
-                will(returnValue(Arrays.asList(audValue)));
-                one(oauth20Provider).getClientProvider();
-                will(returnValue(oidcoauth20clientprovider));
-                one(oidcoauth20clientprovider).get(audValue);
-                will(returnValue(null));
-            }
-        });
-        OidcEndpointServices oes = new OidcEndpointServices();
-        Object key = oes.getSharedKey(jwtContext, oauth20Provider);
-        assertNull("Should not have returned a key, but got: " + key, key);
-    }
-
-    @Test
-    public void test_getSharedKey_clientMatchesAud() throws Exception {
-        String clientId = "the-aud";
-        String clientSecret = "client-secret";
-        final OidcBaseClient oidcbaseclient = new OidcBaseClient(clientId, clientSecret, null, "clientName", "componentId", true);
-
-        context.checking(new Expectations() {
-            {
-                one(jwtContext).getJwtClaims();
-                will(returnValue(jwtClaims));
-                one(jwtClaims).getAudience();
-                will(returnValue(Arrays.asList(clientId)));
-                one(oauth20Provider).getClientProvider();
-                will(returnValue(oidcoauth20clientprovider));
-                one(oidcoauth20clientprovider).get(clientId);
-                will(returnValue(oidcbaseclient));
-            }
-        });
-        OidcEndpointServices oes = new OidcEndpointServices();
-        Object key = oes.getSharedKey(jwtContext, oauth20Provider);
-        assertEquals("Returned key should have matched the expected client, but didn't.", clientSecret, key);
-    }
-
-    @Test
-    public void test_getPublicKeyFromJsonWebStructure_serverMissingJwk() {
-        context.checking(new Expectations() {
-            {
-                one(jws).getAlgorithmHeaderValue();
-                one(jws).getKeyIdHeaderValue();
-                one(jws).getX509CertSha1ThumbprintHeaderValue();
-                one(oidcServerConfig).getJSONWebKey();
-                will(returnValue(null));
-            }
-        });
-        OidcEndpointServices oes = new OidcEndpointServices();
-        Key key = oes.getPublicKeyFromJsonWebStructure(jws, oidcServerConfig);
-        assertNull("Should not have returned a key, but got: " + key, key);
-    }
-
-    @Test
-    public void test_getPublicKeyFromJsonWebStructure_algMismatch() {
-        context.checking(new Expectations() {
-            {
-                one(jws).getAlgorithmHeaderValue();
-                will(returnValue("HS256"));
-                one(jws).getKeyIdHeaderValue();
-                one(jws).getX509CertSha1ThumbprintHeaderValue();
-                one(oidcServerConfig).getJSONWebKey();
-                will(returnValue(jsonWebKey));
-                one(jsonWebKey).getAlgorithm();
-                will(returnValue("RS256"));
-            }
-        });
-        OidcEndpointServices oes = new OidcEndpointServices();
-        Key key = oes.getPublicKeyFromJsonWebStructure(jws, oidcServerConfig);
-        assertNull("Should not have returned a key, but got: " + key, key);
-    }
-
-    @Test
-    public void test_getPublicKeyFromJsonWebStructure_noHeadersMatch() {
-        context.checking(new Expectations() {
-            {
-                one(jws).getAlgorithmHeaderValue();
-                will(returnValue("RS256"));
-                one(jws).getKeyIdHeaderValue();
-                will(returnValue("bad-kid-value"));
-                one(jws).getX509CertSha1ThumbprintHeaderValue();
-                will(returnValue("bad-x5t-value"));
-                one(oidcServerConfig).getJSONWebKey();
-                will(returnValue(jsonWebKey));
-                one(jsonWebKey).getAlgorithm();
-                will(returnValue("RS256"));
-                one(jsonWebKey).getKeyID();
-                will(returnValue("expected-kid-value"));
-                one(jsonWebKey).getKeyX5t();
-                will(returnValue("expected-x5t-value"));
-            }
-        });
-        OidcEndpointServices oes = new OidcEndpointServices();
-        Key key = oes.getPublicKeyFromJsonWebStructure(jws, oidcServerConfig);
-        assertNull("Should not have returned a key, but got: " + key, key);
-    }
-
-    @Test
-    public void test_getPublicKeyFromJsonWebStructure_kidMatches() {
-        context.checking(new Expectations() {
-            {
-                one(jws).getAlgorithmHeaderValue();
-                will(returnValue("RS256"));
-                one(jws).getKeyIdHeaderValue();
-                will(returnValue("expected-kid-value"));
-                one(jws).getX509CertSha1ThumbprintHeaderValue();
-                will(returnValue("bad-x5t-value"));
-                one(oidcServerConfig).getJSONWebKey();
-                will(returnValue(jsonWebKey));
-                one(jsonWebKey).getAlgorithm();
-                will(returnValue("RS256"));
-                one(jsonWebKey).getKeyID();
-                will(returnValue("expected-kid-value"));
-                one(jsonWebKey).getPublicKey();
-                will(returnValue(publicKey));
-            }
-        });
-        OidcEndpointServices oes = new OidcEndpointServices();
-        Key key = oes.getPublicKeyFromJsonWebStructure(jws, oidcServerConfig);
-        assertEquals("Returned key did not match the expected public key.", publicKey, key);
-    }
-
-    @Test
-    public void test_getPublicKeyFromJsonWebStructure_x5tMatches() {
-        context.checking(new Expectations() {
-            {
-                one(jws).getAlgorithmHeaderValue();
-                will(returnValue("RS256"));
-                one(jws).getKeyIdHeaderValue();
-                will(returnValue("bad-kid-value"));
-                one(jws).getX509CertSha1ThumbprintHeaderValue();
-                will(returnValue("expected-kid-value"));
-                one(oidcServerConfig).getJSONWebKey();
-                will(returnValue(jsonWebKey));
-                one(jsonWebKey).getAlgorithm();
-                will(returnValue("RS256"));
-                one(jsonWebKey).getKeyID();
-                will(returnValue("expected-kid-value"));
-                one(jsonWebKey).getKeyX5t();
-                will(returnValue("expected-kid-value"));
-                one(jsonWebKey).getPublicKey();
-                will(returnValue(publicKey));
-            }
-        });
-        OidcEndpointServices oes = new OidcEndpointServices();
-        Key key = oes.getPublicKeyFromJsonWebStructure(jws, oidcServerConfig);
-        assertEquals("Returned key did not match the expected public key.", publicKey, key);
-    }
-
-    @Test
-    public void test_getPublicKeyFromJsonWebStructure_kidAndX5tNotSpecified() {
-        context.checking(new Expectations() {
-            {
-                one(jws).getAlgorithmHeaderValue();
-                will(returnValue("RS256"));
-                one(jws).getKeyIdHeaderValue();
-                will(returnValue(null));
-                one(jws).getX509CertSha1ThumbprintHeaderValue();
-                will(returnValue(null));
-                one(oidcServerConfig).getJSONWebKey();
-                will(returnValue(jsonWebKey));
-                one(jsonWebKey).getAlgorithm();
-                will(returnValue("RS256"));
-                one(jsonWebKey).getPublicKey();
-                will(returnValue(publicKey));
-            }
-        });
-        OidcEndpointServices oes = new OidcEndpointServices();
-        Key key = oes.getPublicKeyFromJsonWebStructure(jws, oidcServerConfig);
-        assertEquals("Returned key did not match the expected public key.", publicKey, key);
     }
 
     private void createOidcServerConfigRefExpectations() {

@@ -37,7 +37,7 @@
 
 47003=Cannot locate "[{0}]" query for [{1}] session
 
-47004=[{0}] parameter type, for[{1}] operation, does not exist in the schema
+47004=[{0}] parameter type, for [{1}] operation, does not exist in the schema
 
 47005=[{0}] parameter type, for [{1}] operation, has no O-X mapping
 

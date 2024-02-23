@@ -8,7 +8,7 @@ Subsystem-Content:
 Subsystem-Type: osgi.subsystem.feature
 
 X-Comment: This is an autofeature because there's a hardcoded limitation on what features you can list in a client.xml
-IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.cdi-3.0)(osgi.identity=io.openliberty.cdi-4.0)))"
+IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.cdi-3.0)(osgi.identity=io.openliberty.cdi-4.0)(osgi.identity=io.openliberty.cdi-4.1)))"
 
 IBM-API-Package: 
   com.ibm.ws.cdi.visibility.tests.vistest.framework,

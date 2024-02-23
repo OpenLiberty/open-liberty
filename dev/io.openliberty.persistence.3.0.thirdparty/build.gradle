@@ -56,12 +56,6 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          // TODO: remove this for 3.0.4 update (https://github.com/OpenLiberty/open-liberty/issues/24978)
-          exclude(name: '**/BeanValidationExceptionResource.nlsprops')
-          exclude(name: '**/ConcurrencyExceptionResource.nlsprops')
-          exclude(name: '**/DBWSExceptionResource.nlsprops')
-          exclude(name: '**/ValidationExceptionResource.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops')
         }
       }
       delete fileTree(existingResourceDir){ 
@@ -72,12 +66,6 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          // TODO: remove this for 3.0.4 update (https://github.com/OpenLiberty/open-liberty/issues/24978)
-          exclude(name: '**/BeanValidationExceptionResource.nlsprops')
-          exclude(name: '**/ConcurrencyExceptionResource.nlsprops')
-          exclude(name: '**/DBWSExceptionResource.nlsprops')
-          exclude(name: '**/ValidationExceptionResource.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops')
         }
       }
     }
@@ -89,12 +77,6 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          // TODO: remove this for 3.0.4 update (https://github.com/OpenLiberty/open-liberty/issues/24978)
-          exclude(name: '**/BeanValidationExceptionResource.nlsprops')
-          exclude(name: '**/ConcurrencyExceptionResource.nlsprops')
-          exclude(name: '**/DBWSExceptionResource.nlsprops')
-          exclude(name: '**/ValidationExceptionResource.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops')
         }
       }
       delete fileTree(newResourcesDir){ 
@@ -105,12 +87,6 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          // TODO: remove this for 3.0.4 update (https://github.com/OpenLiberty/open-liberty/issues/24978)
-          exclude(name: '**/BeanValidationExceptionResource.nlsprops')
-          exclude(name: '**/ConcurrencyExceptionResource.nlsprops')
-          exclude(name: '**/DBWSExceptionResource.nlsprops')
-          exclude(name: '**/ValidationExceptionResource.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops')
         }
       }
     }

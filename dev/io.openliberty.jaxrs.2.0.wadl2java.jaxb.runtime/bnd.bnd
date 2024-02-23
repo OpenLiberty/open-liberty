@@ -1,0 +1,47 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: io.openliberty.jaxrs.2.0.wadl2java.jaxb.runtime
+Bundle-SymbolicName: io.openliberty.jaxrs.2.0.wadl2java.jaxb.runtime
+
+app-resources= \
+  META-INF/services/com.sun.tools.xjc.Plugin
+  
+Service-Component: \
+  io.openliberty.jaxrs.2.0.wadl2java.jaxb.runtime_${replace;${bVersion};\\.;_}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:= "resources=${app-resources}"
+  
+Export-Package: \
+  com.sun.codemodel.*;version=2.3.9;thread-context=true, \
+  com.sun.istack.*;version=2.3.9;thread-context=true, \
+  com.sun.tools.rngdatatype.*;version=2.3.9;thread-context=true, \
+  com.sun.tools.rngom.*;version=2.3.9;thread-context=true, \
+  com.sun.tools.xjc.*;version=2.3.9;thread-context=true, \
+  com.sun.xml.bind.*;version=2.3.9;thread-context=true, \
+  com.sun.xml.dtdparser.*;version=2.3.9;thread-context=true, \
+  com.sun.xml.txw2.*;version=2.3.9;thread-context=true, \
+  com.sun.xml.xmom.*;version=2.3.9;thread-context=true
+  
+  
+
+# The order matters here. Vanilla CXF's wadl2java tool works with just the jaxb-runtime-2.3.5.jar, but the 
+# our wrapper requires both the impl and the runtime, but the runtime version of XJC needs to overwrite
+# the version in the impl jar. 
+Include-Resource: \
+  @${repo;com.sun.xml.bind:jaxb-impl;2.3.9;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @${repo;org.glassfish.jaxb:jaxb-runtime;2.3.5;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @${repo;com.sun.xml.bind:jaxb-xjc;2.3.9;EXACT}!/!(META-INF/maven/*|module-info.class)
+
+instrument.disabled: true

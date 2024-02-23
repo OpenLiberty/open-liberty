@@ -19,6 +19,7 @@
 		<feature>ssl-1.0</feature>
 		<feature>openidConnectClient-1.0</feature>
 		<feature>jaxrs-2.0</feature>
+		<feature>jsonp-1.0</feature>
 	</featureManager>
 
 </server>

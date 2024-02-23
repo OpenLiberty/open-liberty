@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -75,6 +75,16 @@ public class FeatureResolverImpl implements FeatureResolver {
         private static final long serialVersionUID = 1L;
     }
 
+    private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
+
+    private static boolean shownVersionlessError = false;
+
+    private static final String preferedFeatureVersions = System.getenv("PREFERRED_FEATURE_VERSIONS");
+
+    private static String[][] parsedPreferedVersions;
+
+    private static Map<String, String[]> parseNAV = new HashMap<String, String[]>();
+
     private static final Object tc;
 
     static {
@@ -86,6 +96,12 @@ public class FeatureResolverImpl implements FeatureResolver {
             // nothing
         }
         tc = temp;
+        String[] preferredVersions = (preferedFeatureVersions == null) ? new String[] {} : preferedFeatureVersions.split(",");
+        String[][] parsedVersions = new String[preferredVersions.length][2];
+        for (int i = 0; i < preferredVersions.length; i++) {
+            parsedVersions[i] = parseNameAndVersion(preferredVersions[i].trim());
+        }
+        parsedPreferedVersions = parsedVersions;
     }
 
     @Override
@@ -331,6 +347,10 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     @FFDCIgnore(IllegalArgumentException.class)
     public static String[] parseNameAndVersion(String feature) {
+        String[] result = parseNAV.get(feature);
+        if (result != null) {
+            return result;
+        }
         // figure out the base symbolic name and 'version'
         // using last dash as a convention to determine the version and symbolic name
         String baseName = feature;
@@ -347,7 +367,9 @@ public class FeatureResolverImpl implements FeatureResolver {
                 version = null;
             }
         }
-        return new String[] { baseName, version };
+        result = new String[] { baseName, version };
+        parseNAV.put(feature, result);
+        return result;
     }
 
     private void processSelected(ProvisioningFeatureDefinition selectedFeature, Set<String> allowedTolerations, Deque<String> chain, Set<String> result,
@@ -448,6 +470,54 @@ public class FeatureResolverImpl implements FeatureResolver {
             // Note that we do not check for dups here, that is handled while getting the actual candidates below
             tolerates.addAll(overrideTolerates);
         }
+
+        //Gets the preferred feature version for a versionless feature from the PREFERRED_FEATURE_VERSIONS env var.
+        //PREFERRED_FEATURE_VERSIONS=mpMetrics-5.1,mpMetrics-5.0,mpMetrics-4.0,mpHealth-5.0,mpHealth-3.1
+        if (isBeta) {
+            if (baseSymbolicName.startsWith("io.openliberty.internal.versionless.")) {
+                // parse and cache versionless feature versions
+                if (parsedPreferedVersions.length == 0) {
+                    preferredVersion = "";
+                    tolerates = new ArrayList<String>();
+                } else if ((tolerates = selectionContext.copyVersionless(baseSymbolicName)) != null) {
+                    preferredVersion = tolerates.remove(0);
+                    symbolicName = baseSymbolicName + "-" + preferredVersion;
+                } else {
+                    preferredVersion = "";
+                    tolerates = new ArrayList<String>();
+                    for (String[] nAV : parsedPreferedVersions) {
+                        if (baseSymbolicName.endsWith(nAV[0])) {
+                            if (preferredVersion.isEmpty()) {
+                                preferredVersion = nAV[1];
+                                symbolicName = baseSymbolicName + "-" + nAV[1];
+                            } else {
+                                tolerates.add(nAV[1]);
+                            }
+                        }
+                    }
+                    List<String> allVersions = new ArrayList<String>(tolerates.size() + 1);
+                    allVersions.add(preferredVersion);
+                    allVersions.addAll(tolerates);
+                    selectionContext.putVersionless(baseSymbolicName, allVersions);
+                }
+                if (preferredVersion.isEmpty()) {
+                    if (!shownVersionlessError) {
+                        shownVersionlessError = true;
+                        if (preferedFeatureVersions == null) {
+                            Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_ENV_VAR");
+                        }
+                        else {
+                            String shortName = baseSymbolicName.replace("io.openliberty.internal.versionless.", "");
+                            Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_FEATURE_VAL", new Object[] { shortName });
+                        }
+                    }
+                    baseSymbolicName = "";
+                    symbolicName = "";
+                    return;
+                }
+            }
+        }
+
         List<String> candidateNames = new ArrayList<String>(1 + (tolerates == null ? 0 : tolerates.size()));
 
         // look for the preferred feature using the fully qualified symbolicName first
@@ -474,7 +544,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                     checkForFullSymbolicName(toleratedCandidateDef, toleratedSymbolicName, chain.getLast());
                     isSingleton |= toleratedCandidateDef.isSingleton();
                     // Only check against the allowed tolerations if this candidate feature is public or protected (NOT private)
-                    if (isAllowedToleration(selectionContext, toleratedCandidateDef, allowedTolerations, overrideTolerates, baseSymbolicName, tolerate)) {
+                    if (isAllowedToleration(selectionContext, toleratedCandidateDef, allowedTolerations, overrideTolerates, baseSymbolicName, tolerate, chain)) {
                         candidateNames.add(toleratedCandidateDef.getSymbolicName());
                     }
                 }
@@ -502,7 +572,8 @@ public class FeatureResolverImpl implements FeatureResolver {
      * @return
      */
     private boolean isAccessible(ProvisioningFeatureDefinition includingFeature, ProvisioningFeatureDefinition candidateDef) {
-        return candidateDef.getVisibility() != Visibility.PRIVATE || includingFeature.getBundleRepositoryType().equals(candidateDef.getBundleRepositoryType());
+        return !!!candidateDef.getFeatureName().startsWith("io.openliberty.versionless.")
+               && (candidateDef.getVisibility() != Visibility.PRIVATE || includingFeature.getBundleRepositoryType().equals(candidateDef.getBundleRepositoryType()));
     }
 
     /**
@@ -516,7 +587,7 @@ public class FeatureResolverImpl implements FeatureResolver {
      */
     private boolean isAllowedToleration(SelectionContext selectionContext, ProvisioningFeatureDefinition toleratedCandidateDef, Set<String> allowedTolerations,
                                         List<String> overrideTolerates,
-                                        String baseSymbolicName, String tolerate) {
+                                        String baseSymbolicName, String tolerate, Deque<String> chain) {
         // if in minify mode always allow (_allowMultipleVersions)
         if (selectionContext.allowMultipleVersions(baseSymbolicName)) {
             return true;
@@ -532,6 +603,11 @@ public class FeatureResolverImpl implements FeatureResolver {
         // otherwise if it is part of the override list
         if (overrideTolerates.contains(tolerate)) {
             return true;
+        }
+        if (Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"))) {
+            if (chain.peekFirst().startsWith("io.openliberty.versionless.")) {
+                return true;
+            }
         }
         return false;
     }
@@ -596,9 +672,11 @@ public class FeatureResolverImpl implements FeatureResolver {
         static class Permutation {
             final Map<String, Chain> _selected = new HashMap<String, Chain>();
             final Map<String, Chains> _postponed = new LinkedHashMap<String, Chains>();
+            final Set<String> _postponedVersionless = new HashSet<String>();
             final Set<String> _blockedFeatures = new HashSet<String>();
             final ResultImpl _result = new ResultImpl();
 
+            //possibly remove deadendchain
             Permutation copy(Map<String, Collection<Chain>> preResolveConflicts) throws DeadEndChain {
                 Permutation copy = new Permutation();
                 copy._selected.putAll(_selected);
@@ -630,6 +708,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         private final AtomicInteger _initialBlockedCount = new AtomicInteger(-1);
         private final Map<String, Collection<Chain>> _preResolveConflicts = new HashMap<String, Collection<Chain>>();
         private Permutation _current = _permutations.getFirst();
+        private final Map<String, List<String>> versionless = new HashMap<String, List<String>>();
 
         SelectionContext(FeatureResolver.Repository repository, Set<String> allowedMultipleVersions, EnumSet<ProcessType> supportedProcessTypes) {
             this._repository = repository;
@@ -745,7 +824,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 // keep only the selected candidates (it will be only one)
                 candidateNames.retainAll(selectedChain.getCandidates());
                 if (candidateNames.isEmpty()) {
-                    addConflict(baseSymbolicName, new ArrayList<Chain>(Arrays.asList(selectedChain, new Chain(chain, copyCandidates, preferredVersion, symbolicName))));
+                    addConflict(baseSymbolicName, asList(selectedChain, new Chain(chain, copyCandidates, preferredVersion, symbolicName)));
                     return;
                 }
             }
@@ -760,7 +839,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             // check if there is a postponed decision
             Chain conflict = getPostponedConflict(baseSymbolicName, selectedName);
             if (conflict != null) {
-                addConflict(baseSymbolicName, new ArrayList<Chain>(Arrays.asList(conflict, new Chain(chain, copyCandidates, preferredVersion, symbolicName))));
+                addConflict(baseSymbolicName, asList(conflict, new Chain(chain, copyCandidates, preferredVersion, symbolicName)));
                 // Note that we do not return here because we have a single candidate that must be selected
                 // and one or more postponed decisions that conflict with the single candidate.
                 // We must continue on here and select the single candidate, but record the confict
@@ -781,6 +860,13 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         }
 
+        List<Chain> asList(Chain chain1, Chain chain2) {
+            List<Chain> result = new ArrayList<Chain>(2);
+            result.add(chain1);
+            result.add(chain2);
+            return result;
+        }
+
         Chain getSelected(String baseName) {
             return _current._selected.get(baseName);
         }
@@ -798,6 +884,21 @@ public class FeatureResolverImpl implements FeatureResolver {
             // The decision of one postpone may effect the path of the
             // dependency in such a way to make later postponed decisions
             // unnecessary
+
+            //if a versionless feature is postponed, process that first
+            if(isBeta){
+                if(!!!_current._postponedVersionless.isEmpty()){
+                    String postponedVersionless = _current._postponedVersionless.iterator().next();
+                    Chain selected = _current._postponed.get(postponedVersionless).select(postponedVersionless, this);
+                    if (selected != null) {
+                        _current._selected.put(postponedVersionless, selected);
+                    }
+                    _current._postponed.clear();
+                    _current._postponedVersionless.clear();
+                    return;
+                }
+            }
+
             Map.Entry<String, Chains> firstPostponed = _current._postponed.entrySet().iterator().next();
             // try to find a good selection
             Chain selected = firstPostponed.getValue().select(firstPostponed.getKey(), this);
@@ -844,14 +945,12 @@ public class FeatureResolverImpl implements FeatureResolver {
                         // if so then it is a conflict also and we need to clean it up and block it
                         String selectedFeature = selectedChain.getCandidates().get(0);
                         if (features.contains(selectedFeature)) {
-                            Chain conflictedFeatureChain = new Chain(Collections.<String> emptyList(), Collections.singletonList(featureSymbolicName), preferredVersion,
-                                                                     featureSymbolicName);
-                            addConflict(base, new ArrayList<Chain>(Arrays.asList(selectedChain, conflictedFeatureChain)));
+                            Chain conflictedFeatureChain = new Chain(featureSymbolicName, preferredVersion, featureSymbolicName);
+                            addConflict(base, asList(selectedChain, conflictedFeatureChain));
                             conflicts.put(selectedFeature, base);
                         }
                     } else {
-                        _current._selected.put(base, new Chain(Collections.<String> emptyList(), Collections.singletonList(featureSymbolicName), preferredVersion,
-                                                               featureSymbolicName));
+                        _current._selected.put(base, new Chain(featureSymbolicName, preferredVersion, featureSymbolicName));
                     }
                 }
             }
@@ -867,6 +966,11 @@ public class FeatureResolverImpl implements FeatureResolver {
             if (existing == null) {
                 existing = new Chains();
                 _current._postponed.put(baseName, existing);
+                if(isBeta){
+                    if(baseName.startsWith("io.openliberty.internal.versionless.")){
+                        _current._postponedVersionless.add(baseName);
+                    }
+                }
             }
             existing.add(chain);
         }
@@ -879,6 +983,24 @@ public class FeatureResolverImpl implements FeatureResolver {
         void addConflict(String baseFeatureName, List<Chain> conflicts) {
             _current._blockedFeatures.add(baseFeatureName);
             _current._result.addConflict0(baseFeatureName, conflicts);
+        }
+
+        void putVersionless(String feature, List<String> tolerates) {
+            versionless.put(feature, tolerates);
+        }
+
+        List<String> copyVersionless(String feature) {
+            List<String> raw = versionless.get(feature);
+            return raw == null ? null : new ArrayList<>(raw);
+        }
+
+        Permutation getCurrent() {
+            try {
+                return _current.copy(_preResolveConflicts);
+            } catch (DeadEndChain e) {
+                // expected if we are at the end of our options on a chain
+            }
+            return null;
         }
     }
 

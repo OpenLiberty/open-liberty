@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,10 +83,10 @@ kafka.create.outgoing.retry.CWMRX1010W.explanation=Une erreur est survenue lors 
 kafka.create.outgoing.retry.CWMRX1010W.useraction=Consultez le message d'erreur, le fichier messages.log sur le serveur et les journaux de l'outil de diagnostic de premier niveau (FFDC) pour d\u00e9terminer si le probl\u00e8me est transitoire ou s'il a \u00e9t\u00e9 r\u00e9solu au cours de la nouvelle tentative de configuration du connecteur.
 
 # {0} = kafka record data, {1} = exception details
-# 'nack' is the name of a method and should not be translated 
+# 'nack' is the name of a method and should not be translated
 kafka.input.message.nacked.CWMRX1011E=CWMRX1011E: La m\u00e9thode nack a \u00e9t\u00e9 appel\u00e9e sur un message cr\u00e9\u00e9 \u00e0 partir d'un enregistrement Kafka , indiquant qu'il n'a pas \u00e9t\u00e9 trait\u00e9 correctement. Le flux de messages r\u00e9actifs sera arr\u00eat\u00e9. L'enregistrement \u00e9tait: {0}. Exception\nrenvoy\u00e9e : {1}.
-kafka.input.message.nacked.CWMRX1011E.explanation=Un message du connecteur Kafka a provoqu\u00e9 un \u00e9chec quelque part dans l'application, ce qui a entra\u00een\u00e9 un accus\u00e9 de r\u00e9ception n\u00e9gatif du message. Le message n'ayant pas \u00e9t\u00e9 correctement trait\u00e9, le d\u00e9calage valid\u00e9 n'a pas \u00e9t\u00e9 avanc\u00e9 pour la partition d'o\u00f9 provient le message. Aucun autre message ne peut \u00eatre trait\u00e9 \u00e0 partir de cette partition.
-kafka.input.message.nacked.CWMRX1011E.useraction=Consultez le message d'erreur et le fichier messages.log sur le serveur pour identifier le probl\u00e8me. Pour \u00e9viter que le traitement des messages ne s'arr\u00eate en cas d'\u00e9chec, impl\u00e9mentez une logique au sein de votre application qui offre un traitement alternatif des messages dont l'accus\u00e9 de r\u00e9ception est n\u00e9gatif.
+kafka.input.message.nacked.CWMRX1011E.explanation=Le connecteur Kafka a envoy\u00e9 un message qui a entra\u00een\u00e9 un \u00e9chec dans l'application, entra\u00eenant un accus\u00e9 de r\u00e9ception n\u00e9gatif du message. Le message n'ayant pas \u00e9t\u00e9 correctement trait\u00e9, le d\u00e9calage valid\u00e9 n'est pas avanc\u00e9 pour la partition d'o\u00f9 provient le message. Par cons\u00e9quent, aucun autre message ne peut \u00eatre trait\u00e9 \u00e0 partir de cette partition.
+kafka.input.message.nacked.CWMRX1011E.useraction=Consultez le message d'erreur et le fichier messages.log sur le serveur pour d\u00e9terminer le probl\u00e8me. Pour \u00e9viter l'arr\u00eat du traitement des messages en raison d'un \u00e9chec, impl\u00e9mentez une logique dans votre application pour le traitement alternatif des messages dont l'accus\u00e9 de r\u00e9ception est n\u00e9gatif.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

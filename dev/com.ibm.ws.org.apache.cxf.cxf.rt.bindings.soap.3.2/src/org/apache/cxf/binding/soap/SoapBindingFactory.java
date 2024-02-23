@@ -661,7 +661,9 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
                 String partElementQnameSpace = partElementQname.getNamespaceURI();
                 
                 // Correct Namespace while keeping everything else intact. 
-                if (partElementQnameSpace != null && !partElementQnameSpace.equals(minfo.getName().getNamespaceURI())) { // Use ElementQnameSpace to check for correct Namespace
+                // Use ElementQname to check for correct QName
+                // Fix 27103 prevents creation of MessagePartInfo (pi) when it's null in system
+                if (partElementQnameSpace != null && pi != null && !partElementQnameSpace.equals(minfo.getName().getNamespaceURI())) { 
                     QName newPartTypeQName = new QName(partElementQnameSpace, pqname.getLocalPart());
                     pi = minfo.addOutOfBandMessagePart(newPartTypeQName);
                  // Fix 26846 end

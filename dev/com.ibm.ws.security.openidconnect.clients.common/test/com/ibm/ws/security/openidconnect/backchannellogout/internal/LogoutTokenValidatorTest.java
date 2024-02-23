@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -220,7 +220,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
             validator.validateToken(logoutTokenString);
             fail("Should have thrown an exception but didn't.");
         } catch (BackchannelLogoutException e) {
-            verifyException(e, CWWKS1543E_BACKCHANNEL_LOGOUT_TOKEN_ERROR + ".*" + CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + "iss, aud, iat, jti, events");
+            verifyException(e, CWWKS1543E_BACKCHANNEL_LOGOUT_TOKEN_ERROR + ".*" + CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + "iss, aud, iat, exp, jti, events");
         }
     }
 
@@ -262,7 +262,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
             validator.validateToken(logoutTokenString);
             fail("Should have thrown an exception but didn't.");
         } catch (BackchannelLogoutException e) {
-            verifyException(e, CWWKS1543E_BACKCHANNEL_LOGOUT_TOKEN_ERROR + ".*" + CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + "iss, aud, iat, jti, events");
+            verifyException(e, CWWKS1543E_BACKCHANNEL_LOGOUT_TOKEN_ERROR + ".*" + CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + "iss, aud, iat, exp, jti, events");
         }
     }
 
@@ -288,7 +288,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
             validator.verifyAllRequiredClaimsArePresent(claims);
             fail("Should have thrown an exception but didn't.");
         } catch (BackchannelLogoutException e) {
-            verifyException(e, CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + "iss, aud, iat, jti, events");
+            verifyException(e, CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + "iss, aud, iat, exp, jti, events");
         }
     }
 
@@ -324,6 +324,20 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
     public void test_verifyAllRequiredClaimsArePresent_missingIat() throws Exception {
         JSONObject jsonClaims = getMinimumClaimsNoSid();
         String claimToRemove = Claims.ISSUED_AT;
+        jsonClaims.remove(claimToRemove);
+        JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
+        try {
+            validator.verifyAllRequiredClaimsArePresent(claims);
+            fail("Should have thrown an exception but didn't.");
+        } catch (BackchannelLogoutException e) {
+            verifyException(e, CWWKS1545E_LOGOUT_TOKEN_MISSING_CLAIMS + ".*" + claimToRemove + "[^,]");
+        }
+    }
+
+    @Test
+    public void test_verifyAllRequiredClaimsArePresent_missingExp() throws Exception {
+        JSONObject jsonClaims = getMinimumClaimsNoSid();
+        String claimToRemove = Claims.EXPIRATION;
         jsonClaims.remove(claimToRemove);
         JwtClaims claims = JwtClaims.parse(jsonClaims.toString());
         try {
@@ -381,7 +395,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         try {
             setConfigExpectations("HS256", null, 300L, ISSUER);
 
-            validator.verifyIssAudIatClaims(claims);
+            validator.verifyIssAudIatExpClaims(claims);
             fail("Should have thrown an exception but didn't.");
         } catch (IDTokenValidationFailedException e) {
             verifyException(e, CWWKS1751E_OIDC_IDTOKEN_VERIFY_ISSUER_ERR);
@@ -396,7 +410,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         try {
             setConfigExpectations("HS256", null, 300L, ISSUER);
 
-            validator.verifyIssAudIatClaims(claims);
+            validator.verifyIssAudIatExpClaims(claims);
             fail("Should have thrown an exception but didn't.");
         } catch (IDTokenValidationFailedException e) {
             verifyException(e, CWWKS1754E_OIDC_IDTOKEN_VERIFY_AUD_ERR);
@@ -900,6 +914,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
         claims.put(Claims.ISSUER, ISSUER);
         claims.put(Claims.AUDIENCE, CLIENT_ID);
         claims.put(Claims.ISSUED_AT, System.currentTimeMillis() / 1000);
+        claims.put(Claims.EXPIRATION, (long) claims.get(Claims.ISSUED_AT) + 120);
         claims.put(Claims.ID, testName.getMethodName());
         claims.put("events", getValidEventsEntry());
         claims.put(Claims.SUBJECT, SUBJECT);

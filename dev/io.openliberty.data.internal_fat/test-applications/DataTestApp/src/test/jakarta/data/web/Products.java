@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
@@ -58,20 +59,25 @@ public interface Products {
 
     Optional<Product> findById(UUID id);
 
+    @Find
     @Select(function = Aggregate.MAXIMUM, value = "price")
     float highestPrice();
 
+    @Update
     long inflateAllPrices(@Multiply("price") float rateOfIncrease);
 
+    @Update
     long inflatePrices(@By("name") @Contains String nameContains,
                        @Multiply("price") float rateOfIncrease);
 
     @Exists
     boolean isNotEmpty();
 
+    @Find
     @Select(function = Aggregate.MINIMUM, value = "price")
     float lowestPrice();
 
+    @Find
     @Select(function = Aggregate.AVERAGE, value = "price")
     float meanPrice();
 
@@ -93,16 +99,19 @@ public interface Products {
     @Save
     Product[] saveMultiple(Product... p);
 
+    @Update
     boolean setPrice(UUID id,
                      long version,
                      @Assign("price") float newPrice);
 
+    @Find
     @Select(function = Aggregate.COUNT, distinct = false, value = { "name", "description", "price" })
     ProductCount stats();
 
     @Count
     int total();
 
+    @Find
     @Select(function = Aggregate.SUM, distinct = true, value = "price")
     float totalOfDistinctPrices();
 

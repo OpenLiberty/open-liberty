@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2023, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.jakarta.websocket.client.2.2; singleton:=true
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+Export-Package: \
+	jakarta.websocket; version="2.2.0"
+
+-includeresource: \
+    @${repo;jakarta.websocket:jakarta.websocket-client-api;2.2.0.M1;EXACT}!/!(META-INF/maven/*|module-info.class)
+
+-maven-dependencies: \
+    dep1;groupId=jakarta.websocket;artifactId=jakarta.websocket-client-api;version=2.2.0-M1;scope=runtime

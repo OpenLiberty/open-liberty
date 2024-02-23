@@ -1,0 +1,4 @@
+/bootstrapping.properties
+/.DS_Store
+publish/servers/**/*.war
+publish/files/*.zip

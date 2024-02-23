@@ -1,0 +1,65 @@
+#*******************************************************************************
+# Copyright (c) 2023, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS WebContainer
+Bundle-SymbolicName: io.openliberty.webcontainer.servlet.6.1.internal
+Bundle-Description: WAS WebContainer with Servlet 6.1 support
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: \
+    io.openliberty.webcontainer61.facade*;provide:=true,\
+    io.openliberty.webcontainer61.osgi.srt*;provide:=true,\
+    io.openliberty.webcontainer61.osgi.webapp*;provide:=true,\
+    io.openliberty.webcontainer61.srt*;provide:=true
+    
+    
+
+Import-Package: \
+    com.ibm.websphere.security, \
+    com.ibm.ws.genericbnf, \
+    *
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.webcontainer.jakarta;version=latest,\
+	com.ibm.ws.webcontainer.servlet.3.1.jakarta;version=latest,\
+	com.ibm.ws.webcontainer.servlet.4.0.jakarta;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.managedobject;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.org.apache.commons.fileupload;version=latest,\
+	com.ibm.ws.session.jakarta;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	io.openliberty.webcontainer.servlet.6.0.internal,\
+	io.openliberty.jakarta.servlet.6.1;version=latest,\
+	io.openliberty.session.6.0.internal;version=latest

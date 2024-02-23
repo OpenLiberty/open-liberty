@@ -136,7 +136,7 @@ public class ImportHandler {
         standardPackages.put("jakarta.servlet.jsp", servletJspClassNames);
 
         Set<String> javaLangClassNames = new HashSet<>();
-        // Based on Java 21 EA24
+        // Based on Java 21 EA29
         // Interfaces
         javaLangClassNames.add("Appendable");
         javaLangClassNames.add("AutoCloseable");
@@ -185,6 +185,8 @@ public class ImportHandler {
         javaLangClassNames.add("Runtime");
         javaLangClassNames.add("Runtime.Version");
         javaLangClassNames.add("RuntimePermission");
+        javaLangClassNames.add("ScopedValue");
+        javaLangClassNames.add("ScopedValue.Carrier");
         javaLangClassNames.add("SecurityManager");
         javaLangClassNames.add("Short");
         javaLangClassNames.add("StackTraceElement");
@@ -286,7 +288,7 @@ public class ImportHandler {
     }
 
 
-    public void importStatic(String name) throws jakarta.el.ELException {
+    public void importStatic(String name) throws ELException {
         int lastPeriod = name.lastIndexOf('.');
 
         if (lastPeriod < 0) {
@@ -341,7 +343,7 @@ public class ImportHandler {
     }
 
 
-    public void importClass(String name) throws jakarta.el.ELException {
+    public void importClass(String name) throws ELException {
         int lastPeriodIndex = name.lastIndexOf('.');
 
         if (lastPeriodIndex < 0) {
@@ -373,7 +375,7 @@ public class ImportHandler {
     }
 
 
-    public java.lang.Class<?> resolveClass(String name) {
+    public Class<?> resolveClass(String name) {
         if (name == null || name.contains(".")) {
             return null;
         }
@@ -433,7 +435,7 @@ public class ImportHandler {
     }
 
 
-    public java.lang.Class<?> resolveStatic(String name) {
+    public Class<?> resolveStatic(String name) {
         return statics.get(name);
     }
 

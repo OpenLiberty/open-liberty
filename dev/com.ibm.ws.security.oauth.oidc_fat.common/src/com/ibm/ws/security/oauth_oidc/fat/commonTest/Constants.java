@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,7 +50,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String OIDC_OP = "OpenIDConnect_OP";
     public static final String ISAM_OP = "ISAM";
     // public static final String OAUTH = OAUTH_OP;
-    // public static final String OIDC = OIDC_OP ;
+    public static final String OIDC__OP = "OIDC_OP";
     public static final String OIDC_RP = "OIDC_RP";
     public static final String GENERIC_SERVER = "Generic_Server";
     public static final String JWT_CONSUMER = "JWT_Consumer";
@@ -145,6 +145,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String INVOKE_BACK_CHANNEL_LOGOUT_ENDPOINT = "invokeBackChannelLogoutEndpoint";
 
     public static final String PERFORM_IDP_LOGOUT = "performIDPLogout";
+    public static final String PERFORM_SP_LOGOUT = "performSPLogout";
     public static final String PROCESS_LOGOUT_CONTINUE = "processLogoutContinue";
     public static final String PROCESS_LOGOUT_PROPAGATE_YES = "processLogoutPropagateYes";
     public static final String PROCESS_LOGOUT_REDIRECT = "processLogoutRedirect";
@@ -220,6 +221,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String[] INVOKE_RS_PROTECTED_RESOURCE_LOGIN_ACTIONS = { INVOKE_RS_PROTECTED_RESOURCE, PERFORM_LOGIN };
     //    public static final String[] IDP_INITIATED_LOGOUT = { PERFORM_IDP_LOGOUT, PROCESS_LOGOUT_CONTINUE, PROCESS_LOGOUT_PROPAGATE_YES };
     public static final String[] IDP_INITIATED_LOGOUT = { PERFORM_IDP_LOGOUT, PROCESS_LOGOUT_PROPAGATE_YES };
+    public static final String[] SP_INITIATED_LOGOUT = { PERFORM_SP_LOGOUT, PROCESS_LOGOUT_PROPAGATE_YES };
 
     /* ******************** steps in the RP test process ***************** */
     public static final String SPECIFY_PROVIDER = "specifyProvider";
@@ -354,6 +356,9 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String CLIENTMETATYPE_ENDPOINT = "clientMetatype";
     public static final String CHECKSESSIONIFRAME_ENDPOINT = "check_session_iframe";
     public static final String HTTP_SESSION = "http_session";
+    public static final String SAML_IDP_INITIATED_LOGOUT = "saml_idp_initiated_logout";
+    public static final String SAML_SP_INITIATED_LOGOUT = "saml_sp_initiated_logout";
+    public static final String IBM_SECURITY_LOGOUT = "ibm_security_logout";
 
     public static final String JSON_USERINFO_DATA = "json_userinfo_data";
     public static final String JWS_USERINFO_DATA = "jws_userinfo_data";
@@ -869,9 +874,9 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String PRIVATE_KEY_JWT_ASSERTION_TYPE = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
 
     /*********************************** Token Order ******************************************/
-    public static final String TOKEN_ORDER_IDTOKEN="IDToken";
-    public static final String TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO="AccessToken IDToken UserInfo";
-    public static final String TOKEN_TYPE_IDTOKEN="IDToken";
-    public static final String TOKEN_TYPE_ACCESSTOKEN="AccessToken";
-    public static final String TOKEN_TYPE_USERINFO="UserInfo";
+    public static final String TOKEN_ORDER_IDTOKEN = "IDToken";
+    public static final String TOKEN_ORDER_ACCESSTOKEN_IDTOKEN_USERINFO = "AccessToken IDToken UserInfo";
+    public static final String TOKEN_TYPE_IDTOKEN = "IDToken";
+    public static final String TOKEN_TYPE_ACCESSTOKEN = "AccessToken";
+    public static final String TOKEN_TYPE_USERINFO = "UserInfo";
 }

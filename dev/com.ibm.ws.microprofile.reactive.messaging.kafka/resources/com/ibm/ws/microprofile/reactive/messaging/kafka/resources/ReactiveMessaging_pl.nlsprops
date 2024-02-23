@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,10 +83,10 @@ kafka.create.outgoing.retry.CWMRX1010W.explanation=Wyst\u0105pi\u0142 b\u0142\u0
 kafka.create.outgoing.retry.CWMRX1010W.useraction=Przejrzyj komunikat o b\u0142\u0119dzie, plik messages.log na serwerze oraz dzienniki FFDC, aby okre\u015bli\u0107, czy problem by\u0142 przej\u015bciowy, i zosta\u0142 rozwi\u0105zany w wyniku ponowienia pr\u00f3by skonfigurowania konektora.
 
 # {0} = kafka record data, {1} = exception details
-# 'nack' is the name of a method and should not be translated 
+# 'nack' is the name of a method and should not be translated
 kafka.input.message.nacked.CWMRX1011E=CWMRX1011E: Metoda nack zosta\u0142a wywo\u0142ana dla komunikatu utworzonego na podstawie rekordu Kafka , co wskazuje, \u017ce nie zosta\u0142 on pomy\u015blnie przetworzony. Strumie\u0144 komunikat\u00f3w reaktywnych zostanie zamkni\u0119ty. Rekord: {0}. Wyj\u0105tek: {1}.
-kafka.input.message.nacked.CWMRX1011E.explanation=Komunikat z konektora Kafka spowodowa\u0142 awari\u0119 w aplikacji, co spowodowa\u0142o, \u017ce komunikat zosta\u0142 potwierdzony negatywnie. Poniewa\u017c komunikat nie zosta\u0142 pomy\u015blnie przetworzony, zatwierdzone przesuni\u0119cie nie jest zaawansowane dla partycji, z kt\u00f3rej pochodzi komunikat. Z tej partycji nie mo\u017cna przetworzy\u0107 wi\u0119cej komunikat\u00f3w.
-kafka.input.message.nacked.CWMRX1011E.useraction=Przejrzyj komunikat o b\u0142\u0119dzie i plik messages.log na serwerze, aby zidentyfikowa\u0107 problem. Aby unikn\u0105\u0107 zatrzymywania przetwarzania komunikat\u00f3w w przypadku niepowodzenia, nale\u017cy zaimplementowa\u0107 w aplikacji logik\u0119 zapewniaj\u0105c\u0105 alternatywn\u0105 obs\u0142ug\u0119 komunikat\u00f3w, kt\u00f3re s\u0105 negatywnie potwierdzane.
+kafka.input.message.nacked.CWMRX1011E.explanation=Konektor Kafka wys\u0142a\u0142 komunikat, kt\u00f3ry doprowadzi\u0142 do niepowodzenia w aplikacji, co spowodowa\u0142o, \u017ce komunikat zosta\u0142 potwierdzony negatywnie. Poniewa\u017c komunikat nie zosta\u0142 pomy\u015blnie przetworzony, zatwierdzone przesuni\u0119cie nie jest zaawansowane dla partycji, z kt\u00f3rej pochodzi komunikat. Dlatego z tej partycji nie mo\u017cna przetwarza\u0107 wi\u0119cej komunikat\u00f3w.
+kafka.input.message.nacked.CWMRX1011E.useraction=Przejrzyj komunikat o b\u0142\u0119dzie i plik messages.log na serwerze, aby okre\u015bli\u0107 problem. Aby zapobiec zatrzymaniu przetwarzania komunikat\u00f3w z powodu niepowodzenia, nale\u017cy zaimplementowa\u0107 w aplikacji logik\u0119 alternatywnej obs\u0142ugi komunikat\u00f3w, kt\u00f3re s\u0105 potwierdzane negatywnie.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

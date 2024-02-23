@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2023 IBM Corporation and others.
+    Copyright (c) 2023, 2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -72,6 +72,8 @@
     </application>
 
     <authentication id="Basic" cacheEnabled="true" />
+    
+    <httpSession securityIntegrationEnabled="false"/>
 
     <ltpa monitorInterval = "10" monitorValidationKeysDir="true" expiration="10m" updateTrigger="polled" keysFileName="${server.config.dir}/resources/security/ltpa.keys" keysPassword="{xor}Lz4sLCgwLTs=">
         <validationKeys fileName="configuredValidation1.keys" password="{xor}Lz4sLCgwLTs=" validUntilDate="2099-01-01T00:00:00Z"/>

@@ -57,13 +57,13 @@
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: Konfiguracja przedrostka DatabaseStore {1} zawiera niedozwolone znaki.
+ILLEGAL_IDENTIFIER_CWWKD0200E=CWWKD0200E: Konfiguracja przedrostka DatabaseStore {0} zawiera niedozwolone znaki.
 ILLEGAL_IDENTIFIER_CWWKD0200E.explanation=Przedrostek DatabaseStore mo\u017ce zawiera\u0107 tylko liczby, litery i symbol podkre\u015blenia (_).
 ILLEGAL_IDENTIFIER_CWWKD0200E.useraction=Przedrostek DatabaseStore nale\u017cy zmodyfikowa\u0107 tak, aby zawiera\u0142 tylko liczby, litery i symbol podkre\u015blenia (_).
 
 #-------------------------------------------------------------------------------
 # DO NOT TRANSLATE "DatabaseStore", this is a server.xml configuration element.
-ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: Konfiguracja schematu DatabaseStore {1} zawiera niedozwolone znaki.
+ILLEGAL_IDENTIFIER_CWWKD0201E=CWWKD0201E: Konfiguracja schematu DatabaseStore {0} zawiera niedozwolone znaki.
 ILLEGAL_IDENTIFIER_CWWKD0201E.explanation=Schemat DatabaseStore mo\u017ce zawiera\u0107 tylko liczby, litery i symbol podkre\u015blenia (_).
 ILLEGAL_IDENTIFIER_CWWKD0201E.useraction=Schemat DatabaseStore nale\u017cy zmodyfikowa\u0107 tak, aby zawiera\u0142 tylko liczby, litery i symbol podkre\u015blenia (_).
 

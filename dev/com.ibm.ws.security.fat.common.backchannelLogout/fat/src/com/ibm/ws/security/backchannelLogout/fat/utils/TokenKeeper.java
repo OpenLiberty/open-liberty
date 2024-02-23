@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,6 +34,7 @@ public class TokenKeeper {
 
     public static CommonValidationTools validationTools = new CommonValidationTools();
 
+    private WebClient webClient = null;
     private String access_token = null;
     private String refresh_token = null;
     private String id_token = null;
@@ -45,9 +46,12 @@ public class TokenKeeper {
     private String opJSessionId = null;
     private String clientJSessionId = null;
     private String client2JSessionId = null;
+    private String spCookie = null;
+    private String idpCookie = null;
 
     public TokenKeeper(String token) throws Exception {
 
+        webClient = null;
         access_token = null;
         refresh_token = null;
         id_token = token;
@@ -59,38 +63,82 @@ public class TokenKeeper {
         opJSessionId = null;
         clientJSessionId = null;
         client2JSessionId = null;
+        spCookie = null;
+        idpCookie = null;
 
     }
 
-    public TokenKeeper(WebClient webClient) throws Exception {
+    //    public TokenKeeper(WebClient inWebClient) throws Exception {
+    //
+    //        webClient = inWebClient;
+    //        access_token = null;
+    //        refresh_token = null;
+    //        id_token = null;
+    //        headerClaims = null;
+    //        payloadClaims = null;
+    //        opCookie = getCookieValue(inWebClient, Constants.opCookieName);
+    //        clientCookie = getCookieValue(inWebClient, Constants.clientCookieName);
+    //        client2Cookie = getCookieValue(inWebClient, Constants.client2CookieName);
+    //        opJSessionId = getCookieValue(inWebClient, Constants.opJSessionIdName);
+    //        clientJSessionId = getCookieValue(inWebClient, Constants.clientJSessionIdName);
+    //        client2JSessionId = getCookieValue(inWebClient, Constants.client2JSessionIdName);
+    //
+    //    }
 
+    //    public TokenKeeper(WebClient inWebClient, Object response, String flowType) throws Exception {
+    //
+    //        webClient = inWebClient;
+    //        access_token = getAccessTokenFromResponse(response);
+    //        refresh_token = getRefreshTokenFromResponse(response);
+    //        id_token = getIdTokenFromResponse(response, flowType);
+    //        headerClaims = parseHeader(id_token);
+    //        payloadClaims = parseClaims(id_token);
+    //        opCookie = getCookieValue(inWebClient, Constants.opCookieName);
+    //        clientCookie = getCookieValue(inWebClient, Constants.clientCookieName);
+    //        client2Cookie = getCookieValue(inWebClient, Constants.client2CookieName);
+    //        opJSessionId = getCookieValue(inWebClient, Constants.opJSessionIdName);
+    //        clientJSessionId = getCookieValue(inWebClient, Constants.clientJSessionIdName);
+    //        client2JSessionId = getCookieValue(inWebClient, Constants.client2JSessionIdName);
+    //
+    //    }
+
+    public TokenKeeper(WebClient inWebClient, Object response) throws Exception {
+
+        webClient = inWebClient;
         access_token = null;
         refresh_token = null;
         id_token = null;
         headerClaims = null;
         payloadClaims = null;
-        opCookie = getCookieValue(webClient, Constants.opCookieName);
-        clientCookie = getCookieValue(webClient, Constants.clientCookieName);
-        client2Cookie = getCookieValue(webClient, Constants.client2CookieName);
-        opJSessionId = getCookieValue(webClient, Constants.opJSessionIdName);
-        clientJSessionId = getCookieValue(webClient, Constants.clientJSessionIdName);
-        client2JSessionId = getCookieValue(webClient, Constants.client2JSessionIdName);
+        // TODO - remove webclient from calls to getCookieValue
+        opCookie = getCookieValue(inWebClient, response, Constants.opCookieName);
+        clientCookie = getCookieValue(inWebClient, response, Constants.clientCookieName);
+        client2Cookie = getCookieValue(inWebClient, response, Constants.client2CookieName);
+        opJSessionId = getCookieValue(inWebClient, response, Constants.opJSessionIdName);
+        clientJSessionId = getCookieValue(inWebClient, response, Constants.clientJSessionIdName);
+        client2JSessionId = getCookieValue(inWebClient, response, Constants.client2JSessionIdName);
+        spCookie = getCookieValue(inWebClient, response, Constants.spCookieName);
+        idpCookie = getCookieValue(inWebClient, response, Constants.idpCookieName);
 
     }
 
-    public TokenKeeper(WebClient webClient, Object response, String flowType) throws Exception {
+    public TokenKeeper(WebClient inWebClient, Object response, String flowType) throws Exception {
 
+        webClient = inWebClient;
         access_token = getAccessTokenFromResponse(response);
         refresh_token = getRefreshTokenFromResponse(response);
         id_token = getIdTokenFromResponse(response, flowType);
         headerClaims = parseHeader(id_token);
         payloadClaims = parseClaims(id_token);
-        opCookie = getCookieValue(webClient, Constants.opCookieName);
-        clientCookie = getCookieValue(webClient, Constants.clientCookieName);
-        client2Cookie = getCookieValue(webClient, Constants.client2CookieName);
-        opJSessionId = getCookieValue(webClient, Constants.opJSessionIdName);
-        clientJSessionId = getCookieValue(webClient, Constants.clientJSessionIdName);
-        client2JSessionId = getCookieValue(webClient, Constants.client2JSessionIdName);
+        // TODO - remove webclient from calls to getCookieValue
+        opCookie = getCookieValue(inWebClient, response, Constants.opCookieName);
+        clientCookie = getCookieValue(inWebClient, response, Constants.clientCookieName);
+        client2Cookie = getCookieValue(inWebClient, response, Constants.client2CookieName);
+        opJSessionId = getCookieValue(inWebClient, response, Constants.opJSessionIdName);
+        clientJSessionId = getCookieValue(inWebClient, response, Constants.clientJSessionIdName);
+        client2JSessionId = getCookieValue(inWebClient, response, Constants.client2JSessionIdName);
+        spCookie = getCookieValue(inWebClient, response, Constants.spCookieName);
+        idpCookie = getCookieValue(inWebClient, response, Constants.idpCookieName);
 
     }
 
@@ -107,7 +155,7 @@ public class TokenKeeper {
 
     }
 
-    private String getIdTokenFromResponse(Object response, String flowType) throws Exception {
+    public String getIdTokenFromResponse(Object response, String flowType) throws Exception {
 
         String idTokenKey = Constants.ID_TOKEN_KEY;
 
@@ -122,7 +170,11 @@ public class TokenKeeper {
 
     private String getAccessTokenFromResponse(Object response) throws Exception {
 
-        String accessToken = validationTools.getTokenFromResponse(response, Constants.ACCESS_TOKEN_KEY);
+        String accessToken = null;
+        String rawAccessToken = validationTools.getTokenFromResponse(response, Constants.ACCESS_TOKEN_KEY);
+        if (rawAccessToken != null) {
+            accessToken = rawAccessToken.split("}")[0];
+        }
         Log.info(thisClass, "getAccessToken", "access_token:  " + accessToken);
         return accessToken;
 
@@ -135,22 +187,20 @@ public class TokenKeeper {
 
         try {
 
-            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                    .setSkipAllValidators()
-                    .setDisableRequireSignature()
-                    .setSkipSignatureVerification()
-                    .build();
+            if (id_token != null && !id_token.equals(Constants.NOT_FOUND)) {
+                JwtConsumer jwtConsumer = new JwtConsumerBuilder().setSkipAllValidators().setDisableRequireSignature().setSkipSignatureVerification().build();
 
-            JwtContext context = jwtConsumer.process(jwtTokenString);
-            List<JsonWebStructure> jsonStructures = context.getJoseObjects();
-            if (jsonStructures == null || jsonStructures.isEmpty()) {
-                throw new Exception("Invalid JsonWebStructure");
+                JwtContext context = jwtConsumer.process(jwtTokenString);
+                List<JsonWebStructure> jsonStructures = context.getJoseObjects();
+                if (jsonStructures == null || jsonStructures.isEmpty()) {
+                    throw new Exception("Invalid JsonWebStructure");
+                }
+                JsonWebStructure jsonStruct = jsonStructures.get(0);
+
+                jwtClaims.setClaim(Constants.HEADER_ALGORITHM, jsonStruct.getAlgorithmHeaderValue());
+
+                Log.info(thisClass, "getHeaderAlg", "JWT consumer populated succeeded! " + jwtClaims);
             }
-            JsonWebStructure jsonStruct = jsonStructures.get(0);
-
-            jwtClaims.setClaim(Constants.HEADER_ALGORITHM, jsonStruct.getAlgorithmHeaderValue());
-
-            Log.info(thisClass, "getHeaderAlg", "JWT consumer populated succeeded! " + jwtClaims);
         } catch (InvalidJwtException e) {
             // InvalidJwtException will be thrown, if the JWT failed processing or validation in anyway.
             // Hopefully with meaningful explanations(s) about what went wrong.
@@ -177,14 +227,12 @@ public class TokenKeeper {
 
         try {
 
-            JwtConsumer jwtConsumer = new JwtConsumerBuilder()
-                    .setSkipAllValidators()
-                    .setDisableRequireSignature()
-                    .setSkipSignatureVerification()
-                    .build();
+            if (jwtTokenString != null && !jwtTokenString.equals(Constants.NOT_FOUND)) {
+                JwtConsumer jwtConsumer = new JwtConsumerBuilder().setSkipAllValidators().setDisableRequireSignature().setSkipSignatureVerification().build();
 
-            jwtClaims = jwtConsumer.process(jwtTokenString).getJwtClaims();
-            Log.info(thisClass, "getClaims", "JWT consumer populated succeeded! " + jwtClaims);
+                jwtClaims = jwtConsumer.process(jwtTokenString).getJwtClaims();
+                Log.info(thisClass, "getClaims", "JWT consumer populated succeeded! " + jwtClaims);
+            }
         } catch (InvalidJwtException e) {
             // InvalidJwtException will be thrown, if the JWT failed processing or validation in anyway.
             // Hopefully with meaningful explanations(s) about what went wrong.
@@ -215,6 +263,28 @@ public class TokenKeeper {
         }
         Log.info(thisClass, "getCookieValue", "CookieName: " + cookieName + " CookieValue: " + cookieValue);
         return cookieValue;
+    }
+
+    public String getCookieValue(Object response, String cookieName) throws Exception {
+
+        if (response != null) {
+            String cookieValue = validationTools.getTokenFromResponse(response, "cookie: " + cookieName + " value:");
+            return cookieValue;
+        } else {
+            return null;
+        }
+    }
+
+    public String getCookieValue(WebClient webClient, Object response, String cookieName) throws Exception {
+        String cookieValue = getCookieValue(response, cookieName);
+        //        if (cookieValue == null || cookieValue.equals(Constants.NOT_FOUND)) {
+        //            return getCookieValue(webClient, cookieName);
+        //        }
+        return cookieValue;
+    }
+
+    public WebClient getWebClient() {
+        return webClient;
     }
 
     public String getRefreshToken() {
@@ -267,6 +337,14 @@ public class TokenKeeper {
 
     public String getClient2JSessionId() {
         return client2JSessionId;
+    }
+
+    public String getSPCookie() {
+        return spCookie;
+    }
+
+    public String getIDPCookie() {
+        return idpCookie;
     }
 
 }

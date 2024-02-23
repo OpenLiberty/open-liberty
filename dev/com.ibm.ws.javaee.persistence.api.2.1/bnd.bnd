@@ -22,3 +22,5 @@ Require-Bundle: com.ibm.ws.javaee.persistence.2.1
  javax.persistence.spi; \
    jpa="2.1"; version="2.1.0"
 
+-dependson: \
+    com.ibm.ws.javaee.persistence.2.1;version=latest

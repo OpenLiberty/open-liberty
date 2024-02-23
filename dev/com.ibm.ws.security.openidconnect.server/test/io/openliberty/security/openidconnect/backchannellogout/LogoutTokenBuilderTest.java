@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     private static final String CWWKS1647E_ID_TOKEN_MISSING_REQUIRED_CLAIMS = "CWWKS1647E";
     private static final String CWWKS1953E_ERROR_BUILDING_LOGOUT_TOKEN_BASED_ON_ID_TOKEN_CLAIMS = "CWWKS1953E";
 
+    private final String providerId = "OP";
     private final String issuerIdentifier = "https://localhost/oidc/endpoint/OP";
     private final String client1Id = "client1";
     private final String client2Id = "client2";
@@ -122,7 +123,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 one(oauth20provider).getTokenCache();
                 will(returnValue(tokenCache));
                 allowing(oidcServerConfig).getProviderId();
-                will(returnValue("OP"));
+                will(returnValue(providerId));
                 allowing(client1).getClientId();
                 will(returnValue(client1Id));
                 allowing(client2).getClientId();
@@ -478,11 +479,10 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     }
 
     @Test
-    public void test_verifyIssuer_matchingIss_noIssuerIdentifierConfigured_issOidcEndpoint_reqOidcEndpoint() {
+    public void test_verifyIssuer_matchingIss_noIssuerIdentifierConfigured_issOidcEndpoint() {
         final String scheme = "https";
         final String serverName = "localhost";
-        final String expectedIssuerPath = "/oidc/endpoint/OP";
-        final String requestUri = expectedIssuerPath + "/end_session";
+        final String expectedIssuerPath = "/oidc/endpoint/" + providerId;
         final String iss = scheme + "://" + serverName + expectedIssuerPath;
         JwtClaims claims = getClaims(subject, iss, client1Id);
 
@@ -496,8 +496,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 will(returnValue(serverName));
                 one(request).getServerPort();
                 will(returnValue(443));
-                one(request).getRequestURI();
-                will(returnValue(requestUri));
             }
         });
         try {
@@ -508,11 +506,10 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     }
 
     @Test
-    public void test_verifyIssuer_matchingIss_noIssuerIdentifierConfigured_issOidcEndpoint_reqOidcProviders() {
+    public void test_verifyIssuer_matchingIss_noIssuerIdentifierConfigured_issOidcProviders() {
         final String scheme = "https";
         final String serverName = "localhost";
-        final String expectedIssuerPath = "/oidc/endpoint/OP";
-        final String requestUri = "/oidc/providers/OP/end_session";
+        final String expectedIssuerPath = "/oidc/providers/" + providerId;
         final String iss = scheme + "://" + serverName + expectedIssuerPath;
         JwtClaims claims = getClaims(subject, iss, client1Id);
 
@@ -526,8 +523,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 will(returnValue(serverName));
                 one(request).getServerPort();
                 will(returnValue(443));
-                one(request).getRequestURI();
-                will(returnValue(requestUri));
             }
         });
         try {
@@ -538,13 +533,11 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     }
 
     @Test
-    public void test_verifyIssuer_matchingIss_noIssuerIdentifierConfigured_issOidcProviders_reqOidcProviders() {
+    public void test_verifyIssuer_notMatchingIss_noIssuerIdentifierConfigured() {
         final String scheme = "https";
         final String serverName = "localhost";
-        final String expectedIssuerPath = "/oidc/providers/OP";
-        final String requestUri = expectedIssuerPath + "/end_session";
-        final String iss = scheme + "://" + serverName + expectedIssuerPath;
-        JwtClaims claims = getClaims(subject, iss, client1Id);
+        final String issuer = scheme + "://" + serverName + "/oidc/providers/OP2";
+        JwtClaims claims = getClaims(subject, issuer, client1Id);
 
         mockery.checking(new Expectations() {
             {
@@ -556,99 +549,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 will(returnValue(serverName));
                 one(request).getServerPort();
                 will(returnValue(443));
-                one(request).getRequestURI();
-                will(returnValue(requestUri));
-            }
-        });
-        try {
-            builder.verifyIssuer(claims);
-        } catch (Exception e) {
-            fail("Should not have thrown an exception but got: " + e);
-        }
-    }
-
-    @Test
-    public void test_verifyIssuer_matchingIss_noIssuerIdentifierConfigured_issOidcProviders_reqOidcEndpoint() {
-        final String scheme = "https";
-        final String serverName = "localhost";
-        final String expectedIssuerPath = "/oidc/providers/OP";
-        final String requestUri = "/oidc/endpoint/OP/end_session";
-        final String iss = scheme + "://" + serverName + expectedIssuerPath;
-        JwtClaims claims = getClaims(subject, iss, client1Id);
-
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(null));
-                one(request).getScheme();
-                will(returnValue(scheme));
-                one(request).getServerName();
-                will(returnValue(serverName));
-                one(request).getServerPort();
-                will(returnValue(443));
-                one(request).getRequestURI();
-                will(returnValue(requestUri));
-            }
-        });
-        try {
-            builder.verifyIssuer(claims);
-        } catch (Exception e) {
-            fail("Should not have thrown an exception but got: " + e);
-        }
-    }
-
-    @Test
-    public void test_verifyIssuer_notMatchingIss_noIssuerIdentifierConfigured_reqOidcEndpoint() {
-        final String scheme = "https";
-        final String serverName = "localhost";
-        final String expectedIssuerPath = "/oidc/endpoint/OP2";
-        final String requestUri = expectedIssuerPath + "/end_session";
-        JwtClaims claims = getClaims(subject, issuerIdentifier, client1Id);
-
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(null));
-                one(request).getScheme();
-                will(returnValue(scheme));
-                one(request).getServerName();
-                will(returnValue(serverName));
-                one(request).getServerPort();
-                will(returnValue(443));
-                one(request).getRequestURI();
-                will(returnValue(requestUri));
-            }
-        });
-        try {
-            builder.verifyIssuer(claims);
-            fail("Should have thrown an exception but didn't.");
-        } catch (MalformedClaimException e) {
-            fail("Did not through the expected exception. Got: " + e);
-        } catch (IdTokenDifferentIssuerException e) {
-            verifyException(e, CWWKS1646E_ID_TOKEN_ISSUER_NOT_THIS_OP);
-        }
-    }
-
-    @Test
-    public void test_verifyIssuer_notMatchingIss_noIssuerIdentifierConfigured_reqOidcProviders() {
-        final String scheme = "https";
-        final String serverName = "localhost";
-        final String expectedIssuerPath = "/oidc/providers/OP2";
-        final String requestUri = expectedIssuerPath + "/end_session";
-        JwtClaims claims = getClaims(subject, issuerIdentifier, client1Id);
-
-        mockery.checking(new Expectations() {
-            {
-                one(oidcServerConfig).getIssuerIdentifier();
-                will(returnValue(null));
-                one(request).getScheme();
-                will(returnValue(scheme));
-                one(request).getServerName();
-                will(returnValue(serverName));
-                one(request).getServerPort();
-                will(returnValue(443));
-                one(request).getRequestURI();
-                will(returnValue(requestUri));
             }
         });
         try {
@@ -1508,8 +1408,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     public void test_getIssuerFromRequest_standardHttpPort() throws Exception {
         final String scheme = "http";
         final String serverName = "myserver";
-        final String expectedIssuerPath = "/some/path/to/the/OP";
-        final String requestUri = expectedIssuerPath + "/end_session";
+        final String expectedIssuerPath = "/oidc/providers/" + providerId;
         mockery.checking(new Expectations() {
             {
                 one(request).getScheme();
@@ -1518,8 +1417,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 will(returnValue(serverName));
                 one(request).getServerPort();
                 will(returnValue(80));
-                one(request).getRequestURI();
-                will(returnValue(requestUri));
             }
         });
         String expectedIssuer = scheme + "://" + serverName + expectedIssuerPath;
@@ -1531,8 +1428,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
     public void test_getIssuerFromRequest_standardHttpsPort() throws Exception {
         final String scheme = "https";
         final String serverName = "myserver";
-        final String expectedIssuerPath = "/some/path/to/the/OP";
-        final String requestUri = expectedIssuerPath + "/end_session";
+        final String expectedIssuerPath = "/oidc/providers/" + providerId;
         mockery.checking(new Expectations() {
             {
                 one(request).getScheme();
@@ -1541,8 +1437,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 will(returnValue(serverName));
                 one(request).getServerPort();
                 will(returnValue(443));
-                one(request).getRequestURI();
-                will(returnValue(requestUri));
             }
         });
         String expectedIssuer = scheme + "://" + serverName + expectedIssuerPath;
@@ -1555,8 +1449,7 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         final String scheme = "https";
         final String serverName = "myserver";
         final int port = 98765;
-        final String expectedIssuerPath = "/some/path/to/the/OP";
-        final String requestUri = expectedIssuerPath + "/end_session";
+        final String expectedIssuerPath = "/oidc/providers/" + providerId;
         mockery.checking(new Expectations() {
             {
                 one(request).getScheme();
@@ -1565,8 +1458,6 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
                 will(returnValue(serverName));
                 one(request).getServerPort();
                 will(returnValue(port));
-                one(request).getRequestURI();
-                will(returnValue(requestUri));
             }
         });
         String expectedIssuer = scheme + "://" + serverName + ":" + port + expectedIssuerPath;
@@ -1646,6 +1537,10 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         long timeFrameStart = now - 5;
         long timeFrameEnd = now + 5;
 
+        long logoutTokenLifetimeSeconds = 120;
+        long expTimeFrameStart = timeFrameStart + logoutTokenLifetimeSeconds;
+        long expTimeFrameEnd = timeFrameEnd + logoutTokenLifetimeSeconds;
+
         // iss
         assertNotNull("Token must have an iss claim, but did not. Claims were: " + result, result.getIssuer());
         assertEquals("Issuer did not match expected value. Claims were: " + result, issuerIdentifier, result.getIssuer());
@@ -1657,6 +1552,11 @@ public class LogoutTokenBuilderTest extends CommonTestClass {
         long issuedAt = result.getIssuedAt().getValue();
         assertTrue("Issued at time (" + issuedAt + ") is not in an expected reasonable time frame (" + timeFrameStart + " to " + timeFrameEnd + "). Claims were: " + result,
                    (timeFrameStart <= issuedAt) && (issuedAt <= timeFrameEnd));
+        // exp
+        assertNotNull("Token must have an exp claim, but did not. Claims were: " + result, result.getExpirationTime());
+        long exp = result.getExpirationTime().getValue();
+        assertTrue("Expiration time (" + exp + ") is not in an expected reasonable time frame (" + (expTimeFrameStart) + " to " + (expTimeFrameEnd) + "). Claims were: " + result,
+                   ((expTimeFrameStart) <= exp) && (exp <= (expTimeFrameEnd)));
         // jti
         assertNotNull("JTI claim should not have been null but was. Claims were: " + result, result.getJwtId());
         // events

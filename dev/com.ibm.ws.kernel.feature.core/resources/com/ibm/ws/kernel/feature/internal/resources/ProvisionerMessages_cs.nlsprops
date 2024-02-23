@@ -230,6 +230,15 @@ UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0047E: F
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.explanation=Konfigurace serveru obsahuje nekompatibiln\u00ed kombinaci funkc\u00ed pro uveden\u00e9 programovac\u00ed modely. K tomuto konfliktu doch\u00e1z\u00ed, pokud jsou dv\u011b nekompatibiln\u00ed funkce nakonfigurov\u00e1ny p\u0159\u00edmo v konfiguraci serveru nebo pokud nakonfigurovan\u00e9 funkce zahrnuj\u00ed r\u016fzn\u00e9 verze nekompatibiln\u00ed funkce.
 UPDATE_INDIRECT_CONFLICT_INCOMPATIBLE_FEATURES_SAME_PLATFORM_ERROR.useraction=Pokuste se zadat do souboru server.xml kompatibiln\u00ed verzi nakonfigurovan\u00fdch funkc\u00ed, kter\u00e9 zp\u016fsobuj\u00ed konflikt. Pokud nem\u00e1te k dispozici jin\u00e9 verze, nejsou nakonfigurovan\u00e9 funkce mezi sebou kompatibiln\u00ed a nelze je sou\u010dasn\u011b nakonfigurovat.
 
+UPDATE_MISSING_VERSIONLESS_ENV_VAR=CWWKF0048E: Pro prom\u011bnnou prost\u0159ed\u00ed PREFERRED_FEATURE_VERSIONS nebyla nalezena hodnota
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.explanation=V konfiguraci m\u00e1te funkce bez verze a prom\u011bnnou prost\u0159ed\u00ed PREFERRED_FEATURE_VERSIONS nelze nal\u00e9zt
+UPDATE_MISSING_VERSIONLESS_ENV_VAR.useraction=Zkontrolujte, zda prom\u011bnn\u00e1 prost\u0159ed\u00ed PREFERRED_FEATURE_VERSIONS existuje a je spr\u00e1vn\u011b zapsan\u00e1.
+
+# CWWKF0049E  {0} = the feature that needs to be specified within PREFERRED_FEATURE_VERSIONS
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL=CWWKF0049E: Prom\u011bnn\u00e1 prost\u0159ed\u00ed PREFERRED_FEATURE_VERSIONS neobsahuje hodnotu pro {0}
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.explanation=Pro ka\u017edou funkci bez verze ve va\u0161\u00ed konfiguraci mus\u00ed b\u00fdt v r\u00e1mci parametru PREFERRED_FEATURE_VERSIONS uvedena up\u0159ednost\u0148ovan\u00e1 hodnota verze.
+UPDATE_MISSING_VERSIONLESS_FEATURE_VAL.useraction=P\u0159idejte hodnotu v parametru PREFERRED_FEATURE_VERSIONS pro funkci
+
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 
 tool.feature.exists=CWWKF1000I: Funkce {0} ji\u017e existuje. Nebude p\u0159einstalov\u00e1na. Chcete-li upravit existuj\u00edc\u00ed funkci, mus\u00edte ji nejprve ru\u010dn\u011b odinstalovat.

@@ -6,55 +6,24 @@ triggers:
 - type: github
   triggerName: "ol-pb"
   triggerRank: 20
-  triggerMonitored: false
-  keyword: "#pb"
-
-- type: github
-  triggerName: "ol-exclamation-pb"
-  triggerRank: 20
-  triggerMonitored: false
+  groups: ["LibertyDev"]
   keyword: "!pb"
-
-#- type: github
-#  triggerName: "ol-pb-build"
-#  triggerRank: 20
-#  triggerMonitored: false
-#  keyword: "#build"
+  aliasKeywords:
+  - "#pb"
 
 - type: github
-  triggerName: "ol-pb-exclamation-build"
+  triggerName: "ol-pb-build"
   triggerRank: 20
-  triggerMonitored: false
+  groups: ["LibertyDev"]
   keyword: "!build"
 
 - type: github
   triggerName: "ol-fullpb"
   triggerRank: 20
-  triggerMonitored: false
-  keyword: "#fullpb"
-  propertyDefinitions:
-  - name: fat.test.mode
-    defaultValue: full
-    steps:
-    - stepName: Compile
-  - name: create.im.repo
-    defaultValue: true
-    steps:
-    - stepName: Compile
-  - name: spawn.zos
-    defaultValue: true
-    steps:
-    - stepName: Compile
-  - name: fat.buckets.to.run
-    defaultValue: all
-    steps:
-    - stepName: Compile
-
-- type: github
-  triggerName: "ol-exclamation-fullpb"
-  triggerRank: 20
-  triggerMonitored: false
+  groups: ["LibertyDev"]
   keyword: "!fullpb"
+  aliasKeywords:
+  - "#fullpb"
   propertyDefinitions:
   - name: fat.test.mode
     defaultValue: full

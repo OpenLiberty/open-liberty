@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2023 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,54 +13,61 @@
 package io.openliberty.concurrent.internal.cdi;
 
 import java.lang.annotation.Annotation;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.cdi.CDIServiceUtils;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.concurrent.internal.cdi.interceptor.AsyncInterceptor;
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Default;
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
+import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 import jakarta.enterprise.inject.spi.AnnotatedType;
-import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
-import jakarta.enterprise.inject.spi.InjectionPoint;
-import jakarta.enterprise.inject.spi.ProcessInjectionPoint;
-import jakarta.inject.Named;
 
+/**
+ * CDI Extension for Jakarta Concurrency 3.1+ in Jakarta EE 11+, which corresponds to CDI 4.1+
+ */
 public class ConcurrencyExtension implements Extension {
-    private static final TraceComponent tc = Tr.register(ConcurrencyExtension.class);
+    private static final Annotation[] DEFAULT_QUALIFIER_ARRAY = new Annotation[] { Default.Literal.INSTANCE };
 
-    private static final Set<Annotation> DEFAULT_QUALIFIER = Set.of(Default.Literal.INSTANCE);
-
-    /**
-     * Set of qualifier lists found on ContextService injection points.
-     */
-    private final Set<Set<Annotation>> contextServiceQualifiers = new HashSet<>();
+    private static final Set<Annotation> DEFAULT_QUALIFIER_SET = Set.of(Default.Literal.INSTANCE);
 
     /**
-     * Set of qualifier lists found on ManagedExecutorService injection points.
+     * List of the qualifier sets for each ManagedThreadFactory bean with qualifiers that is
+     * created during afterBeanDiscovery. Instances of these beans are obtained during
+     * afterDeploymentValidation to force context capture to occur.
      */
-    private final Set<Set<Annotation>> executorQualifiers = new HashSet<>();
+    private List<Set<Annotation>> qualifierSetsPerMTF;
 
     /**
-     * Set of qualifier lists found on ManagedScheduledExecutorService injection points.
+     * Register interceptors before bean discovery.
+     *
+     * @param beforeBeanDiscovery
+     * @param beanManager
      */
-    private final Set<Set<Annotation>> scheduledExecutorQualifiers = new HashSet<>();
-
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
         // register the interceptor binding and the interceptor
         AnnotatedType<Asynchronous> bindingType = beanManager.createAnnotatedType(Asynchronous.class);
@@ -70,159 +77,145 @@ public class ConcurrencyExtension implements Extension {
     }
 
     /**
-     * Invoked for each matching injection point:
+     * Register beans for default instances and qualified instances of concurrency resources after bean discovery.
      *
-     * @Inject {@Qualifier1 @Qualifier2 ...} ManagedExecutorService executor;
-     *
-     * @param <T>   bean class that has the injection point
-     * @param event event
+     * @param event
+     * @param beanManager
      */
-    public <T> void processContextServiceInjectionPoint(@Observes ProcessInjectionPoint<T, ContextService> event) {
-        if (ConcurrencyExtensionMetadata.eeVersion.getMajor() >= 11) {
-            InjectionPoint injectionPoint = event.getInjectionPoint();
-            Set<Annotation> qualifiers = injectionPoint.getQualifiers();
-            contextServiceQualifiers.add(qualifiers);
-        }
-    }
-
-    /**
-     * Invoked for each matching injection point:
-     *
-     * @Inject {@Qualifier1 @Qualifier2 ...} ManagedExecutorService executor;
-     *
-     * @param <T>   bean class that has the injection point
-     * @param event event
-     */
-    public <T> void processExecutorInjectionPoint(@Observes ProcessInjectionPoint<T, ManagedExecutorService> event) {
-        if (ConcurrencyExtensionMetadata.eeVersion.getMajor() >= 11) {
-            InjectionPoint injectionPoint = event.getInjectionPoint();
-            Set<Annotation> qualifiers = injectionPoint.getQualifiers();
-            executorQualifiers.add(qualifiers);
-        }
-    }
-
-    /**
-     * Invoked for each matching injection point:
-     *
-     * @Inject {@Qualifier1 @Qualifier2 ...} ManagedScheduledExecutorService scheduledExecutor;
-     *
-     * @param <T>   bean class that has the injection point
-     * @param event event
-     */
-    public <T> void processScheduledExecutorInjectionPoint(@Observes ProcessInjectionPoint<T, ManagedScheduledExecutorService> event) {
-        if (ConcurrencyExtensionMetadata.eeVersion.getMajor() >= 11) {
-            InjectionPoint injectionPoint = event.getInjectionPoint();
-            Set<Annotation> qualifiers = injectionPoint.getQualifiers();
-            scheduledExecutorQualifiers.add(qualifiers);
-        }
-    }
-
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        if (ConcurrencyExtensionMetadata.eeVersion.getMajor() >= 11) {
+        BundleContext bundleContext = FrameworkUtil.getBundle(ConcurrencyExtension.class).getBundleContext();
+        ServiceReference<QualifiedResourceFactories> ref = bundleContext.getServiceReference(QualifiedResourceFactories.class);
+        ConcurrencyExtensionMetadata ext = (ConcurrencyExtensionMetadata) bundleContext.getService(ref);
+
+        // Add beans for Concurrency default resources if not already present:
+
+        CDI<Object> cdi = CDI.current();
+
+        if (!cdi.select(ContextService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
+            event.addBean(new ContextServiceBean(ext.defaultContextServiceFactory, DEFAULT_QUALIFIER_SET));
+
+        if (!cdi.select(ManagedExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
+            event.addBean(new ManagedExecutorBean(ext.defaultManagedExecutorFactory, DEFAULT_QUALIFIER_SET));
+
+        if (!cdi.select(ManagedScheduledExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
+            event.addBean(new ManagedScheduledExecutorBean(ext.defaultManagedScheduledExecutorFactory, DEFAULT_QUALIFIER_SET));
+
+        if (!cdi.select(ManagedThreadFactory.class, DEFAULT_QUALIFIER_ARRAY).isResolvable()) {
+            event.addBean(new ManagedThreadFactoryBean(ext.defaultManagedThreadFactoryFactory, DEFAULT_QUALIFIER_SET));
+            qualifierSetsPerMTF = new ArrayList<>();
+            qualifierSetsPerMTF.add(Collections.emptySet());
+        }
+
+        // Look for beans from the module and the application.
+        // TODO EJBs and component level?
+
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (cmd == null)
+            throw new IllegalStateException(); // should be unreachable
+
+        J2EEName jeeName = cmd.getJ2EEName();
+
+        List<Map<List<String>, QualifiedResourceFactory>> listFromModule = ext.removeAll(cmd.getJ2EEName().toString());
+
+        if (listFromModule != null)
+            addBeans(event, listFromModule);
+
+        List<Map<List<String>, QualifiedResourceFactory>> listFromApp = ext.removeAll(jeeName.getApplication());
+        if (listFromApp != null)
+            addBeans(event, listFromApp);
+    }
+
+    /**
+     * Add beans for Concurrency resources that have one or more qualifier annotations:
+     *
+     * @param event event for AfterBeanDiscovery.
+     * @param list  list of qualifiers to resource factory for each type of resource and for each JEE name.
+     *                  JEEName -> [qualifiers -> ResourceFactory for ContextService,
+     *                  . . . . . . qualifiers -> ResourceFactory for ManagedExecutorService,
+     *                  . . . . . . qualifiers -> ResourceFactory for ManagedScheduledExecutorService,
+     *                  . . . . . . qualifiers -> ResourceFactory for ManagedThreadFactory ]
+     */
+    private void addBeans(AfterBeanDiscovery event, List<Map<List<String>, QualifiedResourceFactory>> list) {
+        Map<List<String>, QualifiedResourceFactory> qualifiedContextServices = //
+                        list.get(QualifiedResourceFactory.Type.ContextService.ordinal());
+
+        for (QualifiedResourceFactory factory : qualifiedContextServices.values()) {
+            try {
+                event.addBean(new ContextServiceBean(factory));
+            } catch (Throwable x) {
+                // TODO NLS
+                System.out.println(" E Unable to create a bean for the " +
+                                   factory + " ContextServiceDefinition with the " + factory.getQualifiers() + " qualifiers" +
+                                   " due to the following error: ");
+                x.printStackTrace();
+            }
+        }
+
+        Map<List<String>, QualifiedResourceFactory> qualifiedManagedExecutors = //
+                        list.get(QualifiedResourceFactory.Type.ManagedExecutorService.ordinal());
+
+        for (QualifiedResourceFactory factory : qualifiedManagedExecutors.values()) {
+            try {
+                event.addBean(new ManagedExecutorBean(factory));
+            } catch (Throwable x) {
+                // TODO NLS
+                System.out.println(" E Unable to create a bean for the " +
+                                   factory + " ManagedExecutorDefinition with the " + factory.getQualifiers() + " qualifiers" +
+                                   " due to the following error: ");
+                x.printStackTrace();
+            }
+        }
+
+        Map<List<String>, QualifiedResourceFactory> qualifiedManagedScheduledExecutors = //
+                        list.get(QualifiedResourceFactory.Type.ManagedScheduledExecutorService.ordinal());
+
+        for (QualifiedResourceFactory factory : qualifiedManagedScheduledExecutors.values()) {
+            try {
+                event.addBean(new ManagedScheduledExecutorBean(factory));
+            } catch (Throwable x) {
+                // TODO NLS
+                System.out.println(" E Unable to create a bean for the " +
+                                   factory + " ManagedScheduledExecutorDefinition with the " + factory.getQualifiers() + " qualifiers" +
+                                   " due to the following error: ");
+                x.printStackTrace();
+            }
+        }
+
+        Map<List<String>, QualifiedResourceFactory> qualifiedManagedThreadFactories = //
+                        list.get(QualifiedResourceFactory.Type.ManagedThreadFactory.ordinal());
+
+        for (QualifiedResourceFactory factory : qualifiedManagedThreadFactories.values()) {
+            try {
+                event.addBean(new ManagedThreadFactoryBean(factory));
+            } catch (Throwable x) {
+                // TODO NLS
+                System.out.println(" E Unable to create a bean for the " +
+                                   factory + " ManagedThreadFactoryDefinition with the " + factory.getQualifiers() + " qualifiers" +
+                                   " due to the following error: ");
+                x.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Force context to be initialized for each ManagedThreadFactory that we registered a bean for.
+     *
+     * @param event
+     * @param beanManager
+     */
+    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
+        // TODO remove this once we handle the default instances similar to the qualified instances
+        if (qualifierSetsPerMTF != null) {
             CDI<Object> cdi = CDI.current();
 
-            for (Set<Annotation> qualifiers : contextServiceQualifiers) {
-                if (cdi.select(ContextService.class, qualifiers.toArray(new Annotation[qualifiers.size()])).isResolvable()) {
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "ContextService already exists with qualifiers " + qualifiers);
-                } else {
-                    // It doesn't already exist, so try to add it:
-                    String filter = null;
-                    if (DEFAULT_QUALIFIER.equals(qualifiers))
-                        filter = "(id=DefaultContextService)";
-                    else // TODO replace with spec solution. Temporarily using @Named value to map to @ContextServiceDefinition name.
-                        for (Annotation q : qualifiers)
-                            if (Named.class.equals(q.annotationType())) {
-                                String name = ((Named) q).value();
-                                filter = new StringBuilder(name.length() + 21).append("(id=contextService[").append(name).append("])").toString();
-                            }
-
-                    if (filter == null) {
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "No producer or ContextServiceDefinition for qualifiers " + qualifiers);
-                    } else {
-                        Bean<ContextService> bean = new ConcurrencyResourceBean<>(ContextService.class, //
-                                        filter, //
-                                        Set.of(ContextService.class), //
-                                        qualifiers);
-                        event.addBean(bean);
-
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "Added ContextService bean with qualifiers " + qualifiers);
-                    }
-                }
+            for (Set<Annotation> qualifierSet : qualifierSetsPerMTF) {
+                Instance<ManagedThreadFactory> instance = cdi.select(ManagedThreadFactory.class, qualifierSet.toArray(new Annotation[qualifierSet.size()]));
+                ManagedThreadFactory mtf = instance.get();
+                // Force instantiation of the bean in order to cause context to be captured
+                mtf.toString();
             }
-            contextServiceQualifiers.clear();
-
-            for (Set<Annotation> qualifiers : executorQualifiers) {
-                if (cdi.select(ManagedExecutorService.class, qualifiers.toArray(new Annotation[qualifiers.size()])).isResolvable()) {
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "ManagedExecutorService already exists with qualifiers " + qualifiers);
-                } else {
-                    // It doesn't already exist, so try to add it:
-                    String filter = null;
-                    if (DEFAULT_QUALIFIER.equals(qualifiers))
-                        filter = "(id=DefaultManagedExecutorService)";
-                    else // TODO replace with spec solution. Temporarily using @Named value to map to @ContextServiceDefinition name.
-                        for (Annotation q : qualifiers)
-                            if (Named.class.equals(q.annotationType())) {
-                                String name = ((Named) q).value();
-                                filter = new StringBuilder(name.length() + 29).append("(id=managedExecutorService[").append(name).append("])").toString();
-                            }
-
-                    if (filter == null) {
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "No producer or ManagedExecutorDefinition for qualifiers " + qualifiers);
-                    } else {
-                        Bean<ManagedExecutorService> bean = new ConcurrencyResourceBean<>(ManagedExecutorService.class, //
-                                        filter, //
-                                        Set.of(ManagedExecutorService.class, ExecutorService.class, Executor.class), //
-                                        qualifiers);
-                        // TODO should ExecutorService.class, Executor.class be removed? If not, must avoid collisions with application's producers
-                        event.addBean(bean);
-
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "Added ManagedExecutorService bean with qualifiers " + qualifiers);
-                    }
-                }
-            }
-            executorQualifiers.clear();
-
-            for (Set<Annotation> qualifiers : scheduledExecutorQualifiers) {
-                if (cdi.select(ManagedScheduledExecutorService.class, qualifiers.toArray(new Annotation[qualifiers.size()])).isResolvable()) {
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "ManagedScheduledExecutorService already exists with qualifiers " + qualifiers);
-                } else {
-                    // It doesn't already exist, so try to add it:
-                    String filter = null;
-                    if (DEFAULT_QUALIFIER.equals(qualifiers))
-                        filter = "(id=DefaultManagedScheduledExecutorService)";
-                    else // TODO replace with spec solution. Temporarily using @Named value to map to @ManagedScheduledExecutorDefinition name.
-                        for (Annotation q : qualifiers)
-                            if (Named.class.equals(q.annotationType())) {
-                                String name = ((Named) q).value();
-                                filter = new StringBuilder(name.length() + 38).append("(id=managedScheduledExecutorService[").append(name).append("])").toString();
-                            }
-
-                    if (filter == null) {
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "No producer or ManagedScheduledExecutorDefinition for qualifiers " + qualifiers);
-                    } else {
-                        Bean<ManagedScheduledExecutorService> bean = new ConcurrencyResourceBean<>(ManagedScheduledExecutorService.class, //
-                                        filter, //
-                                        Set.of(ManagedScheduledExecutorService.class, ScheduledExecutorService.class), //
-                                        qualifiers);
-                        // TODO should ScheduledExecutorService.class be removed? If not, must avoid collisions with application's producers
-                        event.addBean(bean);
-
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "Added ManagedScheduledExecutorService bean with qualifiers " + qualifiers);
-                    }
-                }
-            }
-            scheduledExecutorQualifiers.clear();
+            qualifierSetsPerMTF = null;
         }
     }
 }

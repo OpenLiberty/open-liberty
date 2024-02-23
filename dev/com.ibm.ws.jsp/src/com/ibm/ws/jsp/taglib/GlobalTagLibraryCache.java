@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp.taglib;
 
@@ -43,15 +40,15 @@ import com.ibm.ws.jsp.configuration.JspXmlExtConfig;
 import com.ibm.ws.jsp.inputsource.JspInputSourceFactoryImpl;
 import com.ibm.ws.jsp.taglib.config.AvailabilityCondition;
 import com.ibm.ws.jsp.taglib.config.AvailabilityConditionType;
-import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig;
 import com.ibm.ws.jsp.taglib.config.ImplicitTagLibConfig;
 import com.ibm.ws.jsp.taglib.config.TagLibCacheConfigParser;
-import com.ibm.wsspi.jsp.taglib.config.TldPathConfig;
+import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.jsp.context.JspClassloaderContext;
 import com.ibm.wsspi.jsp.context.JspCoreContext;
 import com.ibm.wsspi.jsp.resource.JspInputSource;
 import com.ibm.wsspi.jsp.resource.JspInputSourceFactory;
+import com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig;
+import com.ibm.wsspi.jsp.taglib.config.TldPathConfig;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 
 public class GlobalTagLibraryCache extends Hashtable implements JspCoreContext, 
@@ -135,9 +132,9 @@ public class GlobalTagLibraryCache extends Hashtable implements JspCoreContext,
                     logger.logp(Level.FINE, CLASS_NAME, "GlobalTagLibraryCache", "Parsing taglibcacheconfig.tags.2.0.xml for pages version 3.0");
                 }
                 tagLibCacheConfigParser.parse(this.getClass().getResourceAsStream("/com/ibm/ws/jsp/resources/taglibcacheconfig.tags.2.0.xml"));
-            } else if(com.ibm.ws.jsp.PagesVersionHandler.isPages31Loaded()) {
+            } else if(com.ibm.ws.jsp.PagesVersionHandler.isPages31OrHigherLoaded()) {
                 if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)){
-                    logger.logp(Level.FINE, CLASS_NAME, "GlobalTagLibraryCache", "Parsing taglibcacheconfig.tags.3.0.xml for pages version 3.1");
+                    logger.logp(Level.FINE, CLASS_NAME, "GlobalTagLibraryCache", "Parsing taglibcacheconfig.tags.3.0.xml for pages 3.1 or higher");
                 }
                 tagLibCacheConfigParser.parse(this.getClass().getResourceAsStream("/com/ibm/ws/jsp/resources/taglibcacheconfig.tags.3.0.xml"));
             } else {
@@ -582,15 +579,31 @@ public class GlobalTagLibraryCache extends Hashtable implements JspCoreContext,
             try {
                 TagLibraryInfoImpl tli = tldParser.parseTLD(tldInputSource, is, globalTagLibConfig.getJarURL().toExternalForm());
                 if (tli.getReliableURN() != null) {
-                    if (containsKey(tli.getReliableURN()) == false) {
+                    
                         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                             logger.logp(Level.FINE, CLASS_NAME, "loadTldFromClassloader", "Global jar tld loaded for {0}", tli.getReliableURN());
                         }
-                        tli.setURI(tli.getReliableURN());
-                        put(tli.getReliableURN(), tli);
-                        tldPathConfig.setUri(tli.getReliableURN());
+
+                        if(tldPathConfig.isTLDURIOverridden()){ // override the URI within the TLD - see OLGH 26891
+                            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                                logger.logp(Level.FINE, CLASS_NAME, "loadTldFromClassloader", "overrideTLDURI is true");
+                            }
+                            if (containsKey(tldPathConfig.getUri()) == false) {
+                                tli.setURI(tldPathConfig.getUri());
+                                tli.setReliableURN(tldPathConfig.getUri());
+                                put(tldPathConfig.getUri(), tli);
+                            }
+                        } else { // continue as before (use the uri within the file)
+                            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                                logger.logp(Level.FINE, CLASS_NAME, "loadTldFromClassloader", "overrideTLDURI is false");
+                            }
+                            if (containsKey(tli.getReliableURN()) == false) {
+                                tli.setURI(tli.getReliableURN());
+                                put(tli.getReliableURN(), tli);
+                                tldPathConfig.setUri(tli.getReliableURN());
+                            }
+                        }
                         eventListenerList.addAll(tldParser.getEventListenerList());
-                    }
                 } else {
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.WARNING)) {
                         logger.logp(Level.WARNING, CLASS_NAME, "loadTldFromClassloader", "jsp warning failed to find a uri tag in [" + tldInputSource.getAbsoluteURL() + "]");

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,10 +83,10 @@ kafka.create.outgoing.retry.CWMRX1010W.explanation=Hiba t\u00f6rt\u00e9nt, amiko
 kafka.create.outgoing.retry.CWMRX1010W.useraction=A hiba\u00fczenetet, a kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s az FFDC napl\u00f3kat \u00e1ttekintve azonos\u00edtsa, hogy a probl\u00e9ma \u00e1tmeneti volt-e, \u00e9s megold\u00f3dott-e a csatol\u00f3 ism\u00e9telt be\u00e1ll\u00edt\u00e1s\u00e1val.
 
 # {0} = kafka record data, {1} = exception details
-# 'nack' is the name of a method and should not be translated 
+# 'nack' is the name of a method and should not be translated
 kafka.input.message.nacked.CWMRX1011E=CWMRX1011E: Az nack met\u00f3dus megh\u00edv\u00e1sa egy Kafka rekordb\u00f3l j\u00f6tt l\u00e9tre, ami azt jelzi, hogy az nem ker\u00fclt sikeresen feldolgoz\u00e1sra. Az akt\u00edv \u00fczenetfolyam le\u00e1ll\u00edt\u00e1sra ker\u00fcl. A rekord: {0}. Kiv\u00e9tel: {1}.
-kafka.input.message.nacked.CWMRX1011E.explanation=A Kafka csatlakoz\u00f3 \u00fczenet hib\u00e1t okozott valahol a alkalmaz\u00e1sban, \u00edgy az \u00fczenet negat\u00edvan lett nyugt\u00e1zva. Mivel az \u00fczenet feldolgoz\u00e1sa nem siker\u00fclt, a v\u00e9gleges\u00edtett eltol\u00e1s nem lett fejlett a part\u00edci\u00f3hoz, amelyb\u0151l az \u00fczenet sz\u00e1rmazik. A part\u00edci\u00f3b\u00f3l nem lehet t\u00f6bb \u00fczenetet feldolgozni.
-kafka.input.message.nacked.CWMRX1011E.useraction=Tekintse \u00e1t a hiba\u00fczenetet \u00e9s a messages.log f\u00e1jlt a kiszolg\u00e1l\u00f3n a probl\u00e9ma azonos\u00edt\u00e1s\u00e1hoz. Ha el szeretn\u00e9 ker\u00fclni az \u00fczenetfeldolgoz\u00e1s meghi\u00fasul\u00e1s\u00e1t, akkor hajtsa v\u00e9gre az alkalmaz\u00e1son bel\u00fcli logik\u00e1t, amely a negat\u00edvan nyugt\u00e1zott \u00fczenetek alternat\u00edv kezel\u00e9s\u00e9t biztos\u00edtja.
+kafka.input.message.nacked.CWMRX1011E.explanation=A Kafka csatlakoz\u00f3 k\u00fcld\u00f6tt egy \u00fczenetet, amely az alkalmaz\u00e1son bel\u00fcli hib\u00e1hoz vezetett, ami az \u00fczenetet negat\u00edvan ismerte el. Mivel az \u00fczenet feldolgoz\u00e1sa nem siker\u00fclt, a v\u00e9gleges\u00edtett eltol\u00e1s nem \u00e1ll rendelkez\u00e9sre a part\u00edci\u00f3hoz, amelyb\u0151l az \u00fczenet sz\u00e1rmazik. \u00cdgy nem lehet t\u00f6bb \u00fczenetet feldolgozni ebb\u0151l a part\u00edci\u00f3b\u00f3l.
+kafka.input.message.nacked.CWMRX1011E.useraction=A probl\u00e9ma meghat\u00e1roz\u00e1s\u00e1hoz tekintse \u00e1t a hiba\u00fczenetet \u00e9s a messages.log f\u00e1jlt a kiszolg\u00e1l\u00f3n. A hiba miatt az \u00fczenetfeldolgoz\u00e1s le\u00e1ll\u00edt\u00e1s\u00e1nak megakad\u00e1lyoz\u00e1s\u00e1hoz hajtsa v\u00e9gre az alkalmaz\u00e1sban a negat\u00edvan nyugt\u00e1zott \u00fczenetek alternat\u00edv kezel\u00e9s\u00e9re vonatkoz\u00f3 logik\u00e1t.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

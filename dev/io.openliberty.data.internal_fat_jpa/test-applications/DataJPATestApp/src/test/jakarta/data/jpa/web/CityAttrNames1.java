@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,16 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import jakarta.data.model.Attribute;
-import jakarta.data.model.StaticMetamodel;
+import jakarta.data.metamodel.SortableAttribute;
+import jakarta.data.metamodel.StaticMetamodel;
+import jakarta.data.metamodel.TextAttribute;
 
 /**
  * Static metamodel for the City entity.
  */
 @StaticMetamodel(City.class)
 public class CityAttrNames1 {
-    public static final Attribute name = Attribute.get();
-    public static final Attribute stateName = Attribute.get();
-    public static final Attribute population = Attribute.get();
+    public static volatile TextAttribute<City> name;
+    public static volatile TextAttribute<City> stateName;
+    public static volatile SortableAttribute<City> population;
 }

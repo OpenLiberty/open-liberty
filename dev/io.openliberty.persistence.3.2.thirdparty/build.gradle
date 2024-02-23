@@ -1,0 +1,117 @@
+/*******************************************************************************
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+apply plugin: 'java'
+
+def existingResourceDir = "${projectDir}/build/resources.existing"
+def newResourcesDir = "${projectDir}/build/resources.new"
+
+// Check incoming resource bundles in new binaries for changes. Compare the checksum of existing nlsprop files to the binaries resource bundles
+task validateNLS {
+  dependsOn jar
+  delete existingResourceDir, newResourcesDir
+
+  doLast {
+    // Copy (English) existing nlsprop files into a work directory
+    copy {
+      from "${projectDir}/resources"
+      into existingResourceDir
+      include '**/*Resource.nlsprops'
+      exclude '**/TraceLocalizationResource.nlsprops'
+      exclude '**/*Resource_*.nlsprops'
+      // Remove '#[A-Z]+ NON-TRANSLATABLE' string(S) from the existing nlsprop
+      filter {
+        it.contains("NON-TRANSLATABLE") ? null: it
+      }
+    }
+
+    // Run the ConvertRBtoNLSProps class which converts the translation class files to nlsprops files
+    javaexec {
+      sourceSets.main.java.srcDirs = ['src/com/ibm/ws/i18n/conversion/tools']
+      classpath = files(jar.archivePath, sourceSets.main.runtimeClasspath)
+      mainClass = "com.ibm.ws.i18n.conversion.tools.ConvertRBtoNLSProps"
+
+      args = [jar.archivePath, newResourcesDir, "org/eclipse/persistence/internal/localization/i18n/.*class", "org/eclipse/persistence/exceptions/i18n/.*class"]
+    }
+
+    task fixCRLF {
+      ant.fixcrlf(srcDir: existingResourceDir, eol: 'crlf')
+      ant.fixcrlf(srcDir: newResourcesDir, eol: 'crlf')
+    }
+
+    // Get checksum for existing nlsprops files
+    task existingCheckSum {
+      ant.checksum(totalproperty: 'resource.existing.checksum') {
+        fileset(dir: existingResourceDir) {
+          include(name: '**/*Resource.nlsprops')
+          exclude(name: '**/TraceLocalizationResource.nlsprops')
+          exclude(name: '**/*Resource_*.nlsprops')
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.2
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.2
+        }
+      }
+      delete fileTree(existingResourceDir){ 
+        include '**/*.MD5'
+      }
+      ant.resourcecount(property: 'resource.existing.count') {
+        fileset(dir: existingResourceDir) {
+          include(name: '**/*Resource.nlsprops')
+          exclude(name: '**/TraceLocalizationResource.nlsprops')
+          exclude(name: '**/*Resource_*.nlsprops')
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.2
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.2
+        }
+      }
+    }
+
+    // Get checksum for binary nlsprops files
+    task newCheckSum {
+      ant.checksum(totalproperty: 'resource.new.checksum') {
+        fileset(dir: newResourcesDir) {
+          include(name: '**/*Resource.nlsprops')
+          exclude(name: '**/TraceLocalizationResource.nlsprops')
+          exclude(name: '**/*Resource_*.nlsprops')
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.2
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.2
+        }
+      }
+      delete fileTree(newResourcesDir){ 
+        include '**/*.MD5'
+      }
+      ant.resourcecount(property: 'resource.new.count') {
+        fileset(dir: newResourcesDir) {
+          include(name: '**/*Resource.nlsprops')
+          exclude(name: '**/TraceLocalizationResource.nlsprops')
+          exclude(name: '**/*Resource_*.nlsprops')
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 4.0.2
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 4.0.2
+        }
+      }
+    }
+
+    if(ant.properties['resource.existing.checksum'] != ant.properties['resource.new.checksum']) {
+
+      // The script will fail if the new EclipseLink binaries include changes to the translation files. If that is the case, you must manually 
+      // change the translation files in the resources directory so it can be translated by the translation team. 
+      // Note: if you're running into issues where the tool is showing changes in the translation files when there aren't, try running .././gradlew clean or deleting the build directory
+      throw new GradleException("The current NLS files (" + ant.properties['resource.existing.count'] + " files, checksum: " + ant.properties['resource.existing.checksum'] 
+        + ") have changed (" + ant.properties['resource.new.count'] + " files, checksum: " + ant.properties['resource.new.checksum'] + ") since the last build - please update the NLS resources and notify the ID team that new translation may be required. To find what changed you need to diff ${projectDir}/build/resources.new to ${projectDir}/build/resources.existing.")
+    }
+    delete existingResourceDir, newResourcesDir
+  }
+}
+
+// Validate the NLS messages before the jar is published, but after the jar is created
+publishWLPJars {
+  dependsOn validateNLS
+}

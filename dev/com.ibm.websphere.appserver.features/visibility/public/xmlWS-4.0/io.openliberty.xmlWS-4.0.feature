@@ -48,6 +48,15 @@ IBM-SPI-Package: \
  com.ibm.ws.jaxws.web.jakarta, \
  com.ibm.ws.jaxws.wsat, \
  com.ibm.ws.webservices.javaee.common.jakarta
+# These jars are used for the xmlWS scripts below.
+-jars=\
+ io.openliberty.com.sun.xml.messaging.saaj.2.0, \
+ io.openliberty.jakarta.xmlBinding.3.0; location:="dev/api/spec/", \
+ io.openliberty.jakarta.activation.2.0; location:="dev/api/spec/", \
+ io.openliberty.jakarta.jws.3.0; location:="dev/api/spec/", \
+ io.openliberty.jakarta.soap.2.0; location:="dev/api/spec/", \
+ io.openliberty.jakarta.xmlWS.3.0; location:="dev/api/spec/", \
+ io.openliberty.xmlWS.3.0.internal.tools
 -files=\
  bin/xmlWS/wsgen; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/xmlWS/wsimport; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
@@ -60,4 +69,4 @@ kind=ga
 edition=base
 WLP-AlsoKnownAs: jaxws-4.0
 WLP-Activation-Type: parallel
-WLP-InstantOn-Enabled: true; type:=beta
+WLP-InstantOn-Enabled: true

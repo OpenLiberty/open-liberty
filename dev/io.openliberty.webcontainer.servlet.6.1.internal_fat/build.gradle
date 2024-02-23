@@ -10,7 +10,7 @@
 
 // Define G:A:V coordinates of each dependency
 dependencies {
-  //requiredLibs 'org.apache.httpcomponents.client5:httpclient5:5.0.2',
-  //  'org.apache.httpcomponents.core5:httpcore5:5.0.2',
-  //  project(':com.ibm.ws.org.slf4j.api')
+  requiredLibs 'org.apache.httpcomponents.client5:httpclient5:5.0.2',
+    'org.apache.httpcomponents.core5:httpcore5:5.0.2',
+    project(':com.ibm.ws.org.slf4j.api')
 }

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,12 +28,11 @@ public class UtilImpl_EmptyInternMap implements Util_InternMap {
     private static final Logger logger = Logger.getLogger("com.ibm.ws.annocache.util");
     public static final String CLASS_NAME = "UtilImpl_EmptyInternMap";
 
-    protected final String hashText;
-
     @Override
     @Trivial
     public String getHashText() {
-        return hashText;
+        return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) +
+                        "(" + this.name + ")";
     }
 
     @Override
@@ -59,16 +58,13 @@ public class UtilImpl_EmptyInternMap implements Util_InternMap {
 
         this.name = name;
 
-        this.hashText = getClass().getSimpleName() + "@" + Integer.toHexString(hashCode()) +
-                        "(" + this.name + ")";
-
         this.valueType = valueType;
         this.checkValues = logger.isLoggable(Level.FINER);
 
         if (logger.isLoggable(Level.FINER)) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                     "[ {0} ] Value type [ {1} ]",
-                    new Object[] { this.hashText, this.valueType });
+                    new Object[] { this.getHashText(), this.valueType });
         }
     }
 

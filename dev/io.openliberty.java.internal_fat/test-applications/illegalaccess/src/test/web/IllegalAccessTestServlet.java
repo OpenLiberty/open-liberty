@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,10 @@
  *******************************************************************************/
 package test.web;
 
+import java.net.InetAddress;
 import java.util.Properties;
 
+import javax.naming.CommunicationException;
 import javax.naming.Context;
 import javax.naming.NameNotFoundException;
 import javax.naming.directory.Attributes;
@@ -34,9 +36,15 @@ public class IllegalAccessTestServlet extends FATServlet {
             env.put(Context.PROVIDER_URL, "dns:");
             InitialDirContext dirContext = new InitialDirContext(env);
 
-            // This will cause an illegalAccessException FFDC if the proper entry is not in the java9.options file.
-            Attributes attrs = dirContext.getAttributes("dns:/www.github.com");
-        } catch (NameNotFoundException nnfe) { // dirContext.getAttributes may throw a NameNotFoundException, it can be ignored
+            // This will cause an illegalAccessException FFDC if the following entry is not in the java9.options file:
+            // --add-exports
+            // jdk.naming.dns/com.sun.jndi.url.dns=ALL-UNNAMED
+
+            // Attempt a DNS lookup of the local host name using the underlying machine's DNS config
+            // Intermittently, a javax.naming.CommunicationException is thrown when trying the DNS lookup and that is permissible (seems to vary from platform to platform)
+            // The purpose of this test is to attempt the DNS connection to ensure the illegalAccessException FFDC is not created, not to ensure the DNS resolution was successful
+            Attributes attrs = dirContext.getAttributes("dns:/" + InetAddress.getLocalHost().getHostName());
+        } catch (CommunicationException | NameNotFoundException ex) { // dirContext.getAttributes may also throw a NameNotFoundException and it can also be ignored
             // Ignore
         }
     }

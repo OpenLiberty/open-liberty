@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2023 IBM Corporation and others.
+ * Copyright (c) 2010, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.instrument.Instrumentation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.security.AccessController;
@@ -621,7 +620,6 @@ public class FrameworkManager {
             // only register the hooks if we are not the INACTIVE phase
             if (phase != CheckpointPhase.INACTIVE) {
                 fwkContext.registerService(CheckpointHook.class, new CheckpointHook() {
-                    Field restoredField = null;
                     boolean calledLogProviderStop = false;
 
                     @Override
@@ -633,8 +631,6 @@ public class FrameworkManager {
                                 // before the checkpoint happens.
                                 dumpJava(Collections.singleton(JavaDumpAction.THREAD));
                             }
-                            restoredField = CheckpointPhase.class.getDeclaredField("restored");
-                            restoredField.setAccessible(true);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -657,16 +653,6 @@ public class FrameworkManager {
 
                     @Override
                     public void restore() {
-                        try {
-                            // We use reflection here to set the restored state because we need this done
-                            // first and this hook is registered first and with the min ranking which
-                            // means it will be the first hook called on restore (and the last one called on checkpoint).
-                            // It is tempting to put this as a hook directly in the static hooks of the phase itself
-                            // but that would not be run as early as this hook on restore.
-                            restoredField.set(phase, Boolean.TRUE);
-                        } catch (IllegalArgumentException | IllegalAccessException e) {
-                            throw new RuntimeException(e);
-                        }
                         restoreLogging();
                         String consoleLogHeader = config.remove(BootstrapConstants.BOOTPROP_CONSOLE_LOG_HEADER);
                         if (consoleLogHeader != null) {
@@ -732,20 +718,10 @@ public class FrameworkManager {
     }
 
     private void registerCheckpointPhaseStaticHooks(CheckpointPhase phase, BundleContext fwkContext) {
-        fwkContext.registerService(CheckpointHook.class, createCheckpointPhaseHook(phase, true),
-                                   FrameworkUtil.asDictionary(Collections.singletonMap(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE)));
-        fwkContext.registerService(CheckpointHook.class, createCheckpointPhaseHook(phase, false), null);
-    }
-
-    /**
-     * @param b
-     * @return
-     */
-    private CheckpointHook createCheckpointPhaseHook(CheckpointPhase phase, boolean multiThreaded) {
         try {
-            Method createCheckpointHook = CheckpointPhase.class.getDeclaredMethod("createCheckpointHook", boolean.class);
-            createCheckpointHook.setAccessible(true);
-            return (CheckpointHook) createCheckpointHook.invoke(phase, multiThreaded);
+            Method setContext = CheckpointPhase.class.getDeclaredMethod("setContext", Object.class);
+            setContext.setAccessible(true);
+            setContext.invoke(phase, fwkContext);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

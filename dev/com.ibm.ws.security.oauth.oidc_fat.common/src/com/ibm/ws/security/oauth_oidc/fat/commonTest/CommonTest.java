@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -70,6 +70,7 @@ import com.ibm.ws.security.fat.common.TestHelpers;
 import com.ibm.ws.security.fat.common.apps.AppConstants;
 import com.ibm.ws.security.fat.common.servers.ServerBootstrapUtils;
 import com.ibm.ws.security.fat.common.utils.AutomationTools;
+import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings.endpointSettings;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -166,6 +167,8 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
     private static HashMap<String, String> miscBootstrapParms = null;
     protected static boolean skipServerStart = false;
     protected static List<TestServer> serverRefList = new ArrayList<TestServer>();
+    protected static List<CommonLocalLDAPServerSuite> ldapRefList = new ArrayList<CommonLocalLDAPServerSuite>();
+
     protected static ServerBootstrapUtils bootstrapUtils = new ServerBootstrapUtils();
 
     protected static final String IBMjdkBuilderAttribute = "org.apache.xerces.util.SecurityManager";
@@ -175,7 +178,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
     public static String classOverrideValidationEndpointValue = null;
 
     @Rule
-    public final TestName testName = new TestName();
+    public static final TestName testName = new TestName();
     public static String _testName = "";
 
     /**
@@ -309,6 +312,24 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
                 // this method will add properties to bootstrap.properties that will point to a hopefully working LDAP server
                 usingExternalLDAPServer = shibbolethHelpers.updateToUseExternalLDaPIfInMemoryIsBad(aTestServer);
                 shibbolethHelpers.setShibbolethPropertiesForTestMachine(aTestServer);
+                //                CommonLocalLDAPServerSuite one = new CommonLocalLDAPServerSuite();
+                //                CommonLocalLDAPServerSuite two = new CommonLocalLDAPServerSuite();
+                //                one.ldapSetUp();
+                //                ldapRefList.add(one);
+                //                two.ldapSetUp(1);
+                //                ldapRefList.add(two);
+                //                // we're having an issue with the in memory LDAP server on z/OS, added a method to see if it can accept requests,
+                //                // if NOT, we'll use a "external" LDAP server (Shibboleth allows for failover to additional LDAP servers, but,
+                //                // it doesn't allow different bindDN, bindPassword, ...)
+                //                // this method will add properties to bootstrap.properties that will point to a hopefully working LDAP server
+                //                //                int ldapPort = one.getLdapPort();
+                //                //                int ldapSSLPort = one.getLdapSSLPort();
+                //                //                Log.info(thisClass, "setupBeforeTest", "ldap Port in Common setup is: " + ldapPort);
+                //                usingExternalLDAPServer = shibbolethHelpers.updateToUseExternalLDaPIfInMemoryIsBad(aTestServer, Integer.toString(one.getLdapPort()),
+                //                        Integer.toString(one.getLdapSSLPort()), Integer.toString(two.getLdapPort()),
+                //                        Integer.toString(two.getLdapSSLPort()));
+                //                shibbolethHelpers.setShibbolethPropertiesForTestMachine(aTestServer);
+
             }
 
             Log.info(thisClass, thisMethod, "pickAnIDP: " + pickAnIDP);
@@ -929,6 +950,9 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
 
             if (validationTools.isInList(testActions, Constants.PERFORM_IDP_LOGOUT)) {
                 thePage = helpers.performIDPLogout(testcase, webClient, thePage, settings, expectations);
+            }
+            if (validationTools.isInList(testActions, Constants.PERFORM_SP_LOGOUT)) {
+                thePage = helpers.performSPLogout(testcase, webClient, thePage, settings, expectations);
             }
 
             if (validationTools.isInList(testActions, Constants.PROCESS_LOGOUT_CONTINUE)) {

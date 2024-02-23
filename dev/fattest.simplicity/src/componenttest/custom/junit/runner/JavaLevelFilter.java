@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,17 +41,6 @@ public class JavaLevelFilter extends Filter {
         return null;
     }
 
-    /**
-     * Like {@link Description#getTestClass}, but without initializing the class.
-     */
-    private static Class<?> getTestClass(Description desc) {
-        try {
-            return Class.forName(desc.getClassName(), false, getMyClass().getClassLoader());
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-
     /** {@inheritDoc} */
     @Override
     public boolean shouldRun(Description desc) {
@@ -59,7 +48,7 @@ public class JavaLevelFilter extends Filter {
         if (maximumJavaLevelAnnotation == null) {
             //there was no method level annotation
             //check for a test class level annotation
-            maximumJavaLevelAnnotation = getTestClass(desc).getAnnotation(MaximumJavaLevel.class);
+            maximumJavaLevelAnnotation = FilterUtils.getTestClass(desc, getMyClass()).getAnnotation(MaximumJavaLevel.class);
         }
         if (maximumJavaLevelAnnotation != null) {
             if (JavaInfo.JAVA_VERSION > maximumJavaLevelAnnotation.javaLevel()) {
@@ -78,12 +67,12 @@ public class JavaLevelFilter extends Filter {
         if (minimumJavaLevelAnnotation == null) {
             //there was no method level annotation
             //check for a test class level annotation
-            minimumJavaLevelAnnotation = getTestClass(desc).getAnnotation(MinimumJavaLevel.class);
+            minimumJavaLevelAnnotation = FilterUtils.getTestClass(desc, getMyClass()).getAnnotation(MinimumJavaLevel.class);
         }
         if (featureRequiresLevelAnnotation == null) {
             //there was no method level annotation
             //check for a test class level annotation
-            featureRequiresLevelAnnotation = getTestClass(desc).getAnnotation(FeatureRequiresMinimumJavaLevel.class);
+            featureRequiresLevelAnnotation = FilterUtils.getTestClass(desc, getMyClass()).getAnnotation(FeatureRequiresMinimumJavaLevel.class);
         }
 
         // If there's a minimum java level annotaton, that sets a global minimum level, so if we don't meet that, don't run tests

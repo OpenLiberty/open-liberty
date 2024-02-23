@@ -10,10 +10,6 @@
 
 package io.openliberty.microprofile.openapi.ui.internal.fat.app;
 
-import jakarta.annotation.security.RolesAllowed;
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType;
 import org.eclipse.microprofile.openapi.annotations.security.OAuthFlow;
 import org.eclipse.microprofile.openapi.annotations.security.OAuthFlows;
@@ -21,14 +17,16 @@ import org.eclipse.microprofile.openapi.annotations.security.OAuthScope;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme;
 
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 
 @SecurityScheme(securitySchemeName = "oauth", type = SecuritySchemeType.OAUTH2,
-        flows = @OAuthFlows(authorizationCode = @OAuthFlow(authorizationUrl = "/oauth2/endpoint/TestProvider/authorize",
-                tokenUrl = "/oauth2/endpoint/TestProvider/token",
-                scopes = @OAuthScope(name = "test"))))
+                flows = @OAuthFlows(authorizationCode = @OAuthFlow(authorizationUrl = "/oauth2/endpoint/TestProvider/authorize",
+                                                                   tokenUrl = "/oauth2/endpoint/TestProvider/token",
+                                                                   scopes = @OAuthScope(name = "test"))))
 @SecurityRequirement(name = "oauth", scopes = "test")
 @RolesAllowed("restricted")
-@ApplicationPath("/")
 @Path("/test")
 public class SecureTestResource {
 

@@ -34,8 +34,8 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -69,10 +69,11 @@ public class DB2Test extends FATServletClient {
                     .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "db2-ssl"))
                     .withReuse(true);
 
+    final static String SERVER_NAME = "io.openliberty.checkpoint.jdbc.fat.db2";
     @ClassRule
-    public static RepeatTests rt = RepeatTests.with(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.1").withID("JDBC4.1"))
-                    .andWith(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.2").withID("JDBC4.2").fullFATOnly())
-                    .andWith(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*"))
+    public static RepeatTests rt = RepeatTests.with(new FeatureReplacementAction().forServers(SERVER_NAME).removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.1").withID("JDBC4.1"))
+                    .andWith(new FeatureReplacementAction().forServers(SERVER_NAME).removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.2").withID("JDBC4.2").fullFATOnly())
+                    .andWith(new FeatureReplacementAction().forServers(SERVER_NAME).removeFeatures(Collections.singleton("jdbc-*"))
                                     .addFeature("jdbc-4.3")
                                     .withID("JDBC4.3")
                                     .withMinJavaLevel(SEVersion.JAVA11)
@@ -81,7 +82,7 @@ public class DB2Test extends FATServletClient {
     public static final String APP_NAME = "db2fat";
     public static final String SERVLET_NAME = "DB2TestServlet";
 
-    @Server("io.openliberty.checkpoint.jdbc.fat.db2")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = DB2TestServlet.class, path = APP_NAME + '/' + SERVLET_NAME)
     public static LibertyServer server;
 

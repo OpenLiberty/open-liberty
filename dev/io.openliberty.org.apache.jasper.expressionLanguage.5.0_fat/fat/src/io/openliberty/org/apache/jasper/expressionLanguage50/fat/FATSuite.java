@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,12 +52,12 @@ import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50Metho
 })
 public class FATSuite {
 
-    // EE11 requires Java 21
-    // If we only specify EE11 for lite mode it will cause no tests to run which causes an error.
-    // If we are running on Java 11 or 17 have EE10 be the lite mode test to run.
+    // EE11 requires Java 17
+    // If we only specify EE11 for lite mode it will cause no tests to run with lower Java versions which causes an error.
+    // If we are running on Java 11, have EE10 be the lite mode test to run.
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_21))
-                                                  .andWith(FeatureReplacementAction.EE11_FEATURES());
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES());
 
     /**
      * @see {@link FatLogHandler#generateHelpFile()}

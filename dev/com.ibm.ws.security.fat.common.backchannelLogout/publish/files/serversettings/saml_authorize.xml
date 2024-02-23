@@ -1,4 +1,16 @@
-<server>
+<!--
+    Copyright (c) 2023, 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+ <server>
 
 	<featureManager>
 			<feature>samlWeb-2.0</feature>
@@ -14,7 +26,7 @@
 		id="spOP"
 		authFilterRef="mySamlFilter"
 		wantAssertionsSigned="true"
-		signatureMethodAlgorithm="SHA1"
+		signatureMethodAlgorithm="SHA256"
 		authnRequestsSigned="true"
 		forceAuthn="false"
 		isPassive="false"
@@ -26,8 +38,9 @@
 		tokenReplayTimeout="30m"
 		includeTokenInSubject="true"
 		mapToUserRegistry="User"
-		spCookieName="WASSamlSP_spOP"
+		spCookieName="testSPCookie"
 		nameIDFormat="unspecified"
+		spLogout="true"
 	>
 	</samlWebSso20>
 
@@ -35,6 +48,14 @@
 		<requestUrl
 			id="myAuthRequestUrl"
 			matchType="contains"
-			urlPattern="/authorize" />
+			urlPattern="/authorize|/end_session" />
 	</authFilter>
+	
+	
+	<samlWebSso20
+		id="defaultSP"
+		enabled="false"
+	>
+	</samlWebSso20>
+	
 </server>    

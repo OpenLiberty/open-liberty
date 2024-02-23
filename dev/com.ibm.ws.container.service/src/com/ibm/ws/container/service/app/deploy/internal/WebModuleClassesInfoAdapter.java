@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,8 +18,8 @@ import java.util.List;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
-import com.ibm.ws.container.service.app.deploy.ManifestClassPathUtils;
 import com.ibm.ws.container.service.app.deploy.WebModuleClassesInfo;
+import com.ibm.ws.container.service.app.deploy.extended.ManifestClassPathHelper;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.Entry;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -36,7 +36,7 @@ public class WebModuleClassesInfoAdapter implements ContainerAdapter<WebModuleCl
 
     /*
      * This adapter processes JEE classpath locations..
-     * 
+     *
      * OSGi classpath locations are managed by the WAB installer,
      * and pre-cached to the overlay, to be returned by this adapter
      */
@@ -52,10 +52,10 @@ public class WebModuleClassesInfoAdapter implements ContainerAdapter<WebModuleCl
         ArrayList<String> resolved = new ArrayList<String>();
         final List<ContainerInfo> containerInfos = new ArrayList<ContainerInfo>();
 
-        //This should possibly be processing manifest classpath locations, like the old classloader did.. 
+        //This should possibly be processing manifest classpath locations, like the old classloader did..
         Entry moduleEntry = containerToAdapt.adapt(Entry.class);
         if (moduleEntry != null && !moduleEntry.getPath().isEmpty()) {
-            ManifestClassPathUtils.processMFClasspath(moduleEntry, containerInfos, resolved, true);
+            ManifestClassPathHelper.processMFClasspath(moduleEntry, containerToAdapt, containerInfos, resolved, true);
         }
 
         Entry classesEntry = containerToAdapt.getEntry("WEB-INF/classes");
@@ -86,11 +86,15 @@ public class WebModuleClassesInfoAdapter implements ContainerAdapter<WebModuleCl
         if (libEntry != null) {
             Container libContainer = libEntry.adapt(Container.class);
             if (libContainer != null) {
+                StringBuilder infoNameBuilder = new StringBuilder("WEB-INF/lib/");
+                int prefixLength = infoNameBuilder.length();
                 for (Entry entry : libContainer) {
                     if (entry.getName().toLowerCase().endsWith(".jar")) {
                         final String jarEntryName = entry.getName();
                         final Container jarContainer = entry.adapt(Container.class);
                         if (jarContainer != null) {
+                            infoNameBuilder.setLength(prefixLength);
+                            final String infoName = infoNameBuilder.append(jarEntryName).toString();
                             ContainerInfo containerInfo = new ContainerInfo() {
                                 @Override
                                 public Type getType() {
@@ -99,7 +103,7 @@ public class WebModuleClassesInfoAdapter implements ContainerAdapter<WebModuleCl
 
                                 @Override
                                 public String getName() {
-                                    return "WEB-INF/lib/" + jarEntryName;
+                                    return infoName;
                                 }
 
                                 @Override
@@ -109,7 +113,7 @@ public class WebModuleClassesInfoAdapter implements ContainerAdapter<WebModuleCl
                             };
                             containerInfos.add(containerInfo);
 
-                            ManifestClassPathUtils.addCompleteJarEntryUrls(containerInfos, entry, resolved);
+                            ManifestClassPathHelper.addCompleteJarEntryUrls(containerInfos, entry, jarContainer, resolved);
                         }
                     }
                 }

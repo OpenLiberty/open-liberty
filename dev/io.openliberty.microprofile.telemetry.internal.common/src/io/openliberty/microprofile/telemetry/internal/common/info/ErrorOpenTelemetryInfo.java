@@ -41,5 +41,4 @@ public class ErrorOpenTelemetryInfo implements OpenTelemetryInfo {
         // No op
 
     }
-
 }

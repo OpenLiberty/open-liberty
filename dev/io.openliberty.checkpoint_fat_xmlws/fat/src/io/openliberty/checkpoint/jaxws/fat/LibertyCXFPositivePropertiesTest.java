@@ -119,7 +119,8 @@ public class LibertyCXFPositivePropertiesTest {
                             configureEnvVariable(server, Collections.singletonMap("TEST_HOST", "localhost"));
                         });
 
-        // TODO need to fix the runtime to not do an application restart when configuring webservices-bnd
+        // TODO need to fix the runtime to not do an application restart when configuring webservices-bnd.
+        // Decided NOT to make any changes to runtime. Maintain the current behavior of restarting the application when a change in the webservices-bnd configuration is detected(https://github.com/OpenLiberty/open-liberty/issues/27089). 
         checkpointInfo.setAssertNoAppRestartOnRestore(false);
 
         server.setCheckpoint(checkpointInfo);

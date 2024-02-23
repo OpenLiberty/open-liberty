@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,9 +50,9 @@ public class ConcurrentTckLauncherFull {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        //TODO Remove once TCK is available from stagging repo
-        additionalProps.put("jakarta.concurrent.tck.groupid", "io.openliberty.jakarta.enterprise.concurrent");
-        additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-20230802");
+        //Comment out to use snapshot version
+        additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
+        additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-M1");
 
         //Jakarta TCK platform
         additionalProps.put("jakarta.tck.platform", "full");

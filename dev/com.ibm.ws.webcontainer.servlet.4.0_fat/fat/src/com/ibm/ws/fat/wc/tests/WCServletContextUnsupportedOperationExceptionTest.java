@@ -1,18 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.fat.wc.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.NO_MODIFICATION;
@@ -87,16 +84,19 @@ public class WCServletContextUnsupportedOperationExceptionTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void test_ProgrammaticListenerAddition_Throws_UnsupportedOperationException() throws Exception {
         // Ensure that the proper exception was output
-        String logMessage = server.waitForStringInLog("SRVE8011E:.*\\(Operation: getSessionTimeout \\| Listener: com.ibm.ws.webcontainer.servlet_40_fat.testprogrammaticlisteneraddition.jar.listeners.MyProgrammaticServletContextListener \\| Application: TestProgrammaticListenerAddition\\)");
+        String logMessage = server
+                        .waitForStringInLog("SRVE8011E:.*\\(Operation: getSessionTimeout \\| Listener: com.ibm.ws.webcontainer.servlet_40_fat.testprogrammaticlisteneraddition.jar.listeners.MyProgrammaticServletContextListener \\| Application: TestProgrammaticListenerAddition\\)");
         Assert.assertNotNull("The correct message was not logged for getDefaultSessionTrackingModes.", logMessage);
 
-        logMessage = server.waitForStringInLog("SRVE8011E:.*\\(Operation: getRequestCharacterEncoding \\| Listener: com.ibm.ws.webcontainer.servlet_40_fat.testprogrammaticlisteneraddition.jar.listeners.MyProgrammaticServletContextListener \\| Application: TestProgrammaticListenerAddition\\)");
+        logMessage = server
+                        .waitForStringInLog("SRVE8011E:.*\\(Operation: getRequestCharacterEncoding \\| Listener: com.ibm.ws.webcontainer.servlet_40_fat.testprogrammaticlisteneraddition.jar.listeners.MyProgrammaticServletContextListener \\| Application: TestProgrammaticListenerAddition\\)");
         Assert.assertNotNull("The correct message was not logged for getDefaultSessionTrackingModes.", logMessage);
 
-        logMessage = server.waitForStringInLog("SRVE8011E:.*\\(Operation: getResponseCharacterEncoding \\| Listener: com.ibm.ws.webcontainer.servlet_40_fat.testprogrammaticlisteneraddition.jar.listeners.MyProgrammaticServletContextListener \\| Application: TestProgrammaticListenerAddition\\)");
+        logMessage = server
+                        .waitForStringInLog("SRVE8011E:.*\\(Operation: getResponseCharacterEncoding \\| Listener: com.ibm.ws.webcontainer.servlet_40_fat.testprogrammaticlisteneraddition.jar.listeners.MyProgrammaticServletContextListener \\| Application: TestProgrammaticListenerAddition\\)");
         Assert.assertNotNull("The correct message was not logged for getDefaultSessionTrackingModes.", logMessage);
     }
 

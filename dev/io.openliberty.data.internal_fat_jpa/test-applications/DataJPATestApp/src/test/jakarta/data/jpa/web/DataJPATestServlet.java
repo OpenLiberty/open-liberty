@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.OffsetDateTime;
+import java.time.Period;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +50,7 @@ import java.util.stream.StreamSupport;
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.Limit;
+import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.Streamable;
 import jakarta.data.exceptions.EntityExistsException;
@@ -56,8 +58,8 @@ import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.KeysetAwareSlice;
-import jakarta.data.page.Pageable;
-import jakarta.data.page.Pageable.Cursor;
+import jakarta.data.page.PageRequest;
+import jakarta.data.page.PageRequest.Cursor;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceException;
@@ -351,7 +353,7 @@ public class DataJPATestServlet extends FATServlet {
         cityNames.add("Mitchell");
         cityNames.add("Pierre");
 
-        Sort[] orderByCityName = supportsOrderByForUpdate ? new Sort[] { Sort.asc("name") } : null;
+        Order<City> orderByCityName = supportsOrderByForUpdate ? Order.by(Sort.asc("name")) : Order.by();
         Iterator<CityId> ids = cities.deleteFirst3ByStateName("South Dakota", orderByCityName).iterator();
         CityId id;
 
@@ -381,7 +383,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(false, ids.hasNext());
 
-        Sort[] orderByPopulation = supportsOrderByForUpdate ? new Sort[] { Sort.asc("population") } : null;
+        Order<City> orderByPopulation = supportsOrderByForUpdate ? Order.by(Sort.asc("population")) : Order.by();
         id = cities.deleteFirstByStateName("South Dakota", orderByPopulation).orElseThrow();
         assertEquals("South Dakota", id.stateName);
         if (supportsOrderByForUpdate)
@@ -667,7 +669,7 @@ public class DataJPATestServlet extends FATServlet {
         KeysetAwareSlice<Business> page;
         List<Integer> zipCodes = List.of(55906, 55902, 55901, 55976, 55905);
 
-        page = businesses.findByZipIn(zipCodes, Pageable.ofSize(4));
+        page = businesses.findByZipIn(zipCodes, PageRequest.ofSize(4));
 
         assertIterableEquals(List.of(345, 1421, 1016, 1600),
                              page
@@ -675,7 +677,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(b -> b.location.address.houseNum)
                                              .collect(Collectors.toList()));
 
-        page = businesses.findByZipIn(zipCodes, page.nextPageable());
+        page = businesses.findByZipIn(zipCodes, page.nextPageRequest());
 
         assertIterableEquals(List.of(2800, 2960, 3100, 3428),
                              page
@@ -683,10 +685,10 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(b -> b.location.address.houseNum)
                                              .collect(Collectors.toList()));
 
-        assertEquals(2L, page.pageable().page());
-        assertEquals(4, page.pageable().size());
+        assertEquals(2L, page.pageRequest().page());
+        assertEquals(4, page.pageRequest().size());
 
-        page = businesses.findByZipIn(zipCodes, page.nextPageable());
+        page = businesses.findByZipIn(zipCodes, page.nextPageRequest());
 
         assertIterableEquals(List.of(5201, 1661, 3706, 200),
                              page
@@ -696,7 +698,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(3, page.number());
 
-        page = businesses.findByZipIn(zipCodes, page.nextPageable());
+        page = businesses.findByZipIn(zipCodes, page.nextPageRequest());
 
         assertIterableEquals(List.of(1402, 3008),
                              page
@@ -706,9 +708,9 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(2, page.numberOfElements());
         assertEquals(4, page.number());
-        assertEquals(null, page.nextPageable());
+        assertEquals(null, page.nextPageRequest());
 
-        page = businesses.findByZipIn(zipCodes, page.previousPageable());
+        page = businesses.findByZipIn(zipCodes, page.previousPageRequest());
 
         assertIterableEquals(List.of(5201, 1661, 3706, 200),
                              page
@@ -880,35 +882,35 @@ public class DataJPATestServlet extends FATServlet {
     public void testEntitiesAsParameters() throws Exception {
         orders.deleteAll();
 
-        Order o1 = new Order();
+        PurchaseOrder o1 = new PurchaseOrder();
         o1.purchasedBy = "testEntitiesAsParameters-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 10.99f;
 
-        Order o2 = new Order();
+        PurchaseOrder o2 = new PurchaseOrder();
         o2.purchasedBy = "testEntitiesAsParameters-Customer2";
         o2.purchasedOn = OffsetDateTime.now();
         o2.total = 20.99f;
 
-        Order[] created = orders.create(o1, o2);
+        PurchaseOrder[] created = orders.create(o1, o2);
         o1 = created[0];
         o2 = created[1];
         int o1_v1 = o1.versionNum;
 
-        Order o3 = new Order();
+        PurchaseOrder o3 = new PurchaseOrder();
         o3.purchasedBy = "testEntitiesAsParameters-Customer3";
         o3.purchasedOn = OffsetDateTime.now();
         o3.total = 30.99f;
         orders.insert(o3);
         o3 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer3").orElseThrow();
 
-        Order o4 = new Order();
+        PurchaseOrder o4 = new PurchaseOrder();
         o4.purchasedBy = "testEntitiesAsParameters-Customer4";
         o4.purchasedOn = OffsetDateTime.now();
         o4.total = 40.99f;
         o4 = orders.create(o4);
 
-        Order o5 = new Order();
+        PurchaseOrder o5 = new PurchaseOrder();
         o5.purchasedBy = "testEntitiesAsParameters-Customer5";
         o5.purchasedOn = OffsetDateTime.now();
         o5.total = 50.99f;
@@ -927,7 +929,7 @@ public class DataJPATestServlet extends FATServlet {
 
             // Update in separate transaction:
             CompletableFuture.supplyAsync(() -> {
-                Order o1updated = orders.findById(o1id).orElseThrow();
+                PurchaseOrder o1updated = orders.findById(o1id).orElseThrow();
                 o1updated.total = 11.99f;
                 return orders.save(o1updated);
             }).get(30, TimeUnit.SECONDS);
@@ -944,7 +946,7 @@ public class DataJPATestServlet extends FATServlet {
             tran.rollback();
         }
 
-        Order o2old = new Order();
+        PurchaseOrder o2old = new PurchaseOrder();
         o2old.id = o2.id;
         o2old.purchasedBy = o2.purchasedBy;
         o2old.purchasedOn = o2.purchasedOn;
@@ -958,19 +960,19 @@ public class DataJPATestServlet extends FATServlet {
         // attempt to save second entity at an old version
         o2old.total = 99.22f;
         try {
-            Order unexpected = orders.save(o2old);
+            PurchaseOrder unexpected = orders.save(o2old);
             fail("Should not be able to update old version of entity: " + unexpected);
         } catch (OptimisticLockingFailureException x) {
             // expected
         }
 
         // attempt to save second entity at an old version in combination with addition of another entity
-        Order o6 = new Order();
+        PurchaseOrder o6 = new PurchaseOrder();
         o6.purchasedBy = "testEntitiesAsParameters-Customer6";
         o6.purchasedOn = OffsetDateTime.now();
         o6.total = 60.99f;
         try {
-            Iterable<Order> unexpected = orders.saveAll(List.of(o6, o2old));
+            Iterable<PurchaseOrder> unexpected = orders.saveAll(List.of(o6, o2old));
             fail("Should not be able to update old version of entity: " + unexpected);
         } catch (OptimisticLockingFailureException x) {
             // expected
@@ -984,13 +986,13 @@ public class DataJPATestServlet extends FATServlet {
 
         orders.deleteAll(List.of(o3, o2));
 
-        Map<String, Order> map = orders.findAll()
+        Map<String, PurchaseOrder> map = orders.findAll()
                         .collect(Collectors.toMap(o -> o.purchasedBy, // key
                                                   o -> o)); // value
 
         assertEquals(map.toString(), 2, map.size());
 
-        Order o;
+        PurchaseOrder o;
         assertNotNull(o = map.get("testEntitiesAsParameters-Customer1"));
         assertEquals(11.99f, o.total, 0.001f);
         assertEquals(o1_v1 + 1, o.versionNum); // updated once
@@ -999,7 +1001,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(50.99f, o.total, 0.001f);
         assertEquals(o5_v1, o.versionNum); // never updated
 
-        Order o7 = new Order();
+        PurchaseOrder o7 = new PurchaseOrder();
         o7.purchasedBy = "testEntitiesAsParameters-Customer7";
         o7.purchasedOn = OffsetDateTime.now();
         o7.total = 70.99f;
@@ -1013,7 +1015,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(false, orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer7").isPresent());
 
-        Order o8 = new Order();
+        PurchaseOrder o8 = new PurchaseOrder();
         o8.purchasedBy = "testEntitiesAsParameters-Customer8";
         o8.purchasedOn = OffsetDateTime.now();
         o8.total = 80.99f;
@@ -1145,13 +1147,13 @@ public class DataJPATestServlet extends FATServlet {
     public void testGeneratedKey() {
         ZoneOffset MDT = ZoneOffset.ofHours(-6);
 
-        Order o1 = new Order();
+        PurchaseOrder o1 = new PurchaseOrder();
         o1.purchasedBy = "testGeneratedKey-Customer1";
         o1.purchasedOn = OffsetDateTime.of(2022, 6, 1, 9, 30, 0, 0, MDT);
         o1.total = 25.99f;
         o1 = orders.save(o1);
 
-        Order o2 = new Order();
+        PurchaseOrder o2 = new PurchaseOrder();
         o2.purchasedBy = "testGeneratedKey-Customer2";
         o2.purchasedOn = OffsetDateTime.of(2022, 6, 1, 14, 0, 0, 0, MDT);
         o2.total = 148.98f;
@@ -1314,7 +1316,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByAnnotationWithKeysetPagination() {
-        Pageable pagination = Pageable.ofSize(3).afterKeyset(CityId.of("Rochester", "Minnesota"));
+        PageRequest<?> pagination = PageRequest.ofSize(3).afterKeyset(CityId.of("Rochester", "Minnesota"));
 
         KeysetAwareSlice<City> slice1 = cities.findByStateNameNotEndsWith("o", pagination);
         assertIterableEquals(List.of("Rochester New York",
@@ -1322,20 +1324,20 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Massachusetts"),
                              slice1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwareSlice<City> slice2 = cities.findByStateNameNotEndsWith("o", slice1.nextPageable());
+        KeysetAwareSlice<City> slice2 = cities.findByStateNameNotEndsWith("o", slice1.nextPageRequest());
         assertIterableEquals(List.of("Springfield Missouri",
                                      "Springfield Oregon"),
                              slice2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, slice2.nextPageable());
+        assertEquals(null, slice2.nextPageRequest());
 
-        KeysetAwareSlice<City> slice0 = cities.findByStateNameNotEndsWith("o", slice1.previousPageable());
+        KeysetAwareSlice<City> slice0 = cities.findByStateNameNotEndsWith("o", slice1.previousPageRequest());
         assertIterableEquals(List.of("Kansas City Kansas",
                                      "Kansas City Missouri",
                                      "Rochester Minnesota"),
                              slice0.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, slice0.previousPageable());
+        assertEquals(null, slice0.previousPageRequest());
     }
 
     /**
@@ -1344,7 +1346,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByAnnotationWithKeysetPaginationAndNamedParameters() {
-        Pageable pagination = Pageable.ofSize(2);
+        PageRequest<City> pagination = PageRequest.ofSize(2);
 
         KeysetAwarePage<City> page1 = cities.sizedWithin(100000, 1000000, pagination);
         assertIterableEquals(List.of("Springfield Missouri",
@@ -1354,21 +1356,21 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(4L, page1.totalPages());
         assertEquals(7L, page1.totalElements());
 
-        KeysetAwarePage<City> page2 = cities.sizedWithin(100000, 1000000, page1.nextPageable());
+        KeysetAwarePage<City> page2 = cities.sizedWithin(100000, 1000000, page1.nextPageRequest());
         assertIterableEquals(List.of("Springfield Illinois",
                                      "Rochester New York"),
                              page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwarePage<City> page3 = cities.sizedWithin(100000, 1000000, page2.nextPageable());
+        KeysetAwarePage<City> page3 = cities.sizedWithin(100000, 1000000, page2.nextPageRequest());
         assertIterableEquals(List.of("Rochester Minnesota",
                                      "Kansas City Missouri"),
                              page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwarePage<City> page4 = cities.sizedWithin(100000, 1000000, page3.nextPageable());
+        KeysetAwarePage<City> page4 = cities.sizedWithin(100000, 1000000, page3.nextPageRequest());
         assertIterableEquals(List.of("Kansas City Kansas"),
                              page4.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, page4.nextPageable());
+        assertEquals(null, page4.nextPageRequest());
     }
 
     /**
@@ -1376,7 +1378,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByNamePatternWithKeysetPagination() {
-        Pageable pagination = Pageable.ofSize(5);
+        PageRequest<City> pagination = PageRequest.ofSize(5);
 
         KeysetAwareSlice<City> slice1 = cities.findByStateNameNotNullOrderById(pagination);
         assertIterableEquals(List.of("Kansas City Kansas",
@@ -1386,17 +1388,17 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Illinois"),
                              slice1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwareSlice<City> slice2 = cities.findByStateNameNotNullOrderById(slice1.nextPageable());
+        KeysetAwareSlice<City> slice2 = cities.findByStateNameNotNullOrderById(slice1.nextPageRequest());
         assertIterableEquals(List.of("Springfield Massachusetts",
                                      "Springfield Missouri",
                                      "Springfield Ohio",
                                      "Springfield Oregon"),
                              slice2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, slice2.nextPageable());
+        assertEquals(null, slice2.nextPageRequest());
 
         Cursor springfieldMO = slice2.getKeysetCursor(1);
-        pagination = Pageable.ofSize(3).beforeKeysetCursor(springfieldMO);
+        pagination = pagination.size(3).beforeKeysetCursor(springfieldMO);
 
         KeysetAwareSlice<City> beforeSpringfieldMO = cities.findByStateNameNotNullOrderById(pagination);
         assertIterableEquals(List.of("Rochester New York",
@@ -1404,13 +1406,13 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Massachusetts"),
                              beforeSpringfieldMO.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwareSlice<City> beforeRochesterNY = cities.findByStateNameNotNullOrderById(beforeSpringfieldMO.previousPageable());
+        KeysetAwareSlice<City> beforeRochesterNY = cities.findByStateNameNotNullOrderById(beforeSpringfieldMO.previousPageRequest());
         assertIterableEquals(List.of("Kansas City Kansas",
                                      "Kansas City Missouri",
                                      "Rochester Minnesota"),
                              beforeRochesterNY.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, beforeRochesterNY.previousPageable());
+        assertEquals(null, beforeRochesterNY.previousPageRequest());
     }
 
     /**
@@ -1419,7 +1421,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByNamePatternWithKeysetPaginationDescending() {
-        Pageable pagination = Pageable.ofSize(3).afterKeyset(CityId.of("Springfield", "Tennessee"));
+        PageRequest<?> pagination = PageRequest.ofSize(3).afterKeyset(CityId.of("Springfield", "Tennessee"));
 
         KeysetAwarePage<City> page1 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", pagination);
         assertIterableEquals(List.of("Springfield Oregon",
@@ -1427,20 +1429,20 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Missouri"),
                              page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwarePage<City> page2 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", page1.nextPageable());
+        KeysetAwarePage<City> page2 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", page1.nextPageRequest());
         assertIterableEquals(List.of("Springfield Illinois",
                                      "Rochester New York",
                                      "Rochester Minnesota"),
                              page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwarePage<City> page3 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", page2.nextPageable());
+        KeysetAwarePage<City> page3 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", page2.nextPageRequest());
         assertIterableEquals(List.of("Kansas City Missouri",
                                      "Kansas City Kansas"),
                              page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, page3.nextPageable());
+        assertEquals(null, page3.nextPageRequest());
 
-        page2 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", page3.previousPageable());
+        page2 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", page3.previousPageRequest());
         assertIterableEquals(List.of("Springfield Illinois",
                                      "Rochester New York",
                                      "Rochester Minnesota"),
@@ -1453,7 +1455,7 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testIdClassOrderByPaginationWithKeyset() {
         // ascending:
-        Pageable pagination = Pageable.ofSize(5).sortBy(Sort.asc("id"));
+        PageRequest<City> pagination = PageRequest.of(City.class).size(5).sortBy(Sort.asc("id"));
 
         KeysetAwarePage<City> page1 = cities.findByStateNameGreaterThan("Iowa", pagination);
         assertIterableEquals(List.of("Kansas City Kansas",
@@ -1463,16 +1465,16 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Massachusetts"),
                              page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwarePage<City> page2 = cities.findByStateNameGreaterThan("Iowa", page1.nextPageable());
+        KeysetAwarePage<City> page2 = cities.findByStateNameGreaterThan("Iowa", page1.nextPageRequest());
         assertIterableEquals(List.of("Springfield Missouri",
                                      "Springfield Ohio",
                                      "Springfield Oregon"),
                              page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, page2.nextPageable());
+        assertEquals(null, page2.nextPageRequest());
 
         // descending:
-        pagination = Pageable.ofSize(4).sortBy(Sort.descIgnoreCase("id"));
+        pagination = PageRequest.of(City.class).size(4).sortBy(Sort.descIgnoreCase("id"));
         page1 = cities.findByStateNameGreaterThan("Idaho", pagination);
         assertIterableEquals(List.of("Springfield Oregon",
                                      "Springfield Ohio",
@@ -1480,18 +1482,18 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Massachusetts"),
                              page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        page2 = cities.findByStateNameGreaterThan("Idaho", page1.nextPageable());
+        page2 = cities.findByStateNameGreaterThan("Idaho", page1.nextPageRequest());
         assertIterableEquals(List.of("Springfield Illinois",
                                      "Rochester New York",
                                      "Rochester Minnesota",
                                      "Kansas City Missouri"),
                              page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        KeysetAwarePage<City> page3 = cities.findByStateNameGreaterThan("Idaho", page2.nextPageable());
+        KeysetAwarePage<City> page3 = cities.findByStateNameGreaterThan("Idaho", page2.nextPageRequest());
         assertIterableEquals(List.of("Kansas City Kansas"),
                              page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        assertEquals(null, page3.nextPageable());
+        assertEquals(null, page3.nextPageRequest());
     }
 
     /**
@@ -1957,7 +1959,7 @@ public class DataJPATestServlet extends FATServlet {
                              tariffs.findByLeviedAgainst("Canada").map(o -> o.leviedOn).sorted().collect(Collectors.toList()));
 
         // Iterator with offset pagination:
-        Iterator<Tariff> it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(3));
+        Iterator<Tariff> it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(3));
 
         Tariff t;
         assertEquals(true, it.hasNext());
@@ -1992,7 +1994,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, it.hasNext());
 
         // Iterator with keyset pagination:
-        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(2).afterKeyset(t8key));
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2).afterKeyset(t8key));
 
         assertNotNull(t = it.next());
         assertEquals(t6.leviedAgainst, t.leviedAgainst);
@@ -2017,7 +2019,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, it.hasNext());
 
         // Iterator with keyset pagination obtaining pages in reverse direction
-        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", Pageable.ofSize(2).beforeKeyset(t2key));
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2).beforeKeyset(t2key));
 
         assertEquals(true, it.hasNext());
         assertNotNull(t = it.next());
@@ -2039,7 +2041,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, it.hasNext());
 
         // Paginated iterator with no results:
-        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("A", Pageable.ofSize(3));
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("A", PageRequest.ofSize(3));
         assertEquals(false, it.hasNext());
 
         t = tariffs.findByLeviedByAndLeviedAgainstAndLeviedOn("USA", "Bangladesh", "Textiles");
@@ -2048,19 +2050,19 @@ public class DataJPATestServlet extends FATServlet {
         // List return type for Pagination only represents a single page, not all pages.
         // page 1:
         assertIterableEquals(List.of("China", "Germany", "India", "Japan"),
-                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4))
+                             tariffs.findByLeviedByOrderByKey("USA", PageRequest.ofSize(4))
                                              .stream()
                                              .map(o -> o.leviedAgainst)
                                              .collect(Collectors.toList()));
         // page 2:
         assertIterableEquals(List.of("Canada", "Bangladesh", "Mexico", "Canada"),
-                             tariffs.findByLeviedByOrderByKey("USA", Pageable.ofSize(4).page(2))
+                             tariffs.findByLeviedByOrderByKey("USA", PageRequest.ofSize(4).page(2))
                                              .stream()
                                              .map(o -> o.leviedAgainst)
                                              .collect(Collectors.toList()));
 
         // Random access to paginated list:
-        List<Tariff> list = tariffs.findByLeviedByOrderByKey("USA", Pageable.ofPage(1));
+        List<Tariff> list = tariffs.findByLeviedByOrderByKey("USA", PageRequest.ofPage(1));
         assertEquals(t4.leviedAgainst, list.get(3).leviedAgainst);
         assertEquals(t7.leviedAgainst, list.get(6).leviedAgainst);
         assertEquals(t2.leviedAgainst, list.get(1).leviedAgainst);
@@ -2679,41 +2681,36 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(0L, CityAttrNames2.population);
         assertEquals(null, CityAttrNames2.name);
 
-        try {
-            String name = CityAttrNames2.id.name();
-            fail("Metamodel should not initialize an id field when the entity has a compound unique identifier (IdClass): " + name);
-        } catch (MappingException x) {
-            // expected
-        }
+        // Metamodel should not initialize an id field when the entity has a compound unique identifier (IdClass)
+        assertEquals(null, CityAttrNames2.id);
 
-        try {
-            Sort sort = CityAttrNames2.ignore.asc();
-            fail("Metamodel should not initialize fields that do not correspond to entity attributes: " + sort);
-        } catch (MappingException x) {
-            // expected
-        }
+        // Metamodel should not initialize fields that do not correspond to entity attributes
+        assertEquals(null, CityAttrNames2.ignore);
     }
 
     /**
-     * Tests that the StaticMetamodel annotation on a non-JPA entity is not populated by the JPA-based provider.
+     * Tests direct usage of StaticMetamodel auto-populated CollectionAttribute field.
+     */
+    @Test
+    public void testStaticMetamodelCollectionAttribute() {
+        assertEquals("bankAccounts", _TaxPayer.bankAccounts.name());
+    }
+
+    /**
+     * Tests that the StaticMetamodel annotation on a non-JPA entity is not populated by or overwritten by
+     * the Jakarta Persistence-based Jakarta Data provider.
      */
     @Test
     public void testStaticMetamodelIgnoresNonJPAEntity() {
-        try {
-            Sort sort = EntityModelUnknown_.days.desc();
-            fail("Metamodel should not initialize fields for a non-entity or unrecognized entity: " + sort);
-        } catch (MappingException x) {
-            // expected
-        }
+        // Must have same values that were set by the user:
 
-        try {
-            String name = EntityModelUnknown_.months.name();
-            fail("Metamodel should not initialize fields for a non-entity or unrecognized entity: " + name);
-        } catch (MappingException x) {
-            // expected
-        }
+        Sort<Period> desc = _EntityModelUnknown.days.desc();
+        assertEquals("Days", desc.property());
 
-        assertEquals(null, EntityModelUnknown_.years);
+        Sort<Period> asc = _EntityModelUnknown.months.asc();
+        assertEquals("Mon", asc.property());
+
+        assertEquals(null, _EntityModelUnknown.years);
     }
 
     /**
@@ -2867,7 +2864,7 @@ public class DataJPATestServlet extends FATServlet {
 
         // page of array attribute
         assertIterableEquals(List.of(Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
-                             counties.findZipCodesByNameStartsWith("W", Pageable.ofSize(10))
+                             counties.findZipCodesByNameStartsWith("W", PageRequest.ofSize(10))
                                              .stream()
                                              .map(Arrays::toString)
                                              .collect(Collectors.toList()));
@@ -2890,7 +2887,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(0, counties.findZipCodesByNameNotStartsWith("_").size());
 
         // page of array attribute with none found
-        assertEquals(0, counties.findZipCodesByNameStartsWith("Hous", Pageable.ofSize(5)).numberOfElements());
+        assertEquals(0, counties.findZipCodesByNameStartsWith("Hous", PageRequest.ofSize(5)).numberOfElements());
 
         // optional for iterator over array attribute with none found
         counties.findZipCodesByPopulationLessThanEqual(1) //
@@ -2999,37 +2996,37 @@ public class DataJPATestServlet extends FATServlet {
     public void testUpdateWithEntityResults() {
         orders.deleteAll();
 
-        Order o1 = new Order();
+        PurchaseOrder o1 = new PurchaseOrder();
         o1.purchasedBy = "testUpdateWithEntityResults-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 1.00f;
         o1 = orders.create(o1);
 
-        Order o2 = new Order();
+        PurchaseOrder o2 = new PurchaseOrder();
         o2.purchasedBy = "testUpdateWithEntityResults-Customer2";
         o2.purchasedOn = OffsetDateTime.now();
         o2.total = 2.00f;
         o2 = orders.create(o2);
 
-        Order o3 = new Order();
+        PurchaseOrder o3 = new PurchaseOrder();
         o3.purchasedBy = "testUpdateWithEntityResults-Customer3";
         o3.purchasedOn = OffsetDateTime.now();
         o3.total = 3.00f;
         o3 = orders.create(o3);
 
-        Order o4 = new Order();
+        PurchaseOrder o4 = new PurchaseOrder();
         o4.purchasedBy = "testUpdateWithEntityResults-Customer4";
         o4.purchasedOn = OffsetDateTime.now();
         o4.total = 4.00f;
         o4 = orders.create(o4);
 
-        Order o5 = new Order();
+        PurchaseOrder o5 = new PurchaseOrder();
         o5.purchasedBy = "testUpdateWithEntityResults-Customer5";
         o5.purchasedOn = OffsetDateTime.now();
         o5.total = 5.00f;
         o5 = orders.create(o5);
 
-        Order o6 = new Order();
+        PurchaseOrder o6 = new PurchaseOrder();
         o6.purchasedBy = "testUpdateWithEntityResults-Customer6";
         o6.purchasedOn = OffsetDateTime.now();
         o6.total = 6.00f;
@@ -3044,7 +3041,7 @@ public class DataJPATestServlet extends FATServlet {
         // update multiple in a variable arguments array
         o1.total = 1.01f;
         o3.total = 3.01f;
-        Order[] modified = orders.modifyAll(o3, o1);
+        PurchaseOrder[] modified = orders.modifyAll(o3, o1);
         assertEquals("testUpdateWithEntityResults-Customer3", modified[0].purchasedBy);
         assertEquals(3.01f, modified[0].total, 0.001f);
         assertEquals(o3_initialVersion + 1, modified[0].versionNum);
@@ -3060,7 +3057,7 @@ public class DataJPATestServlet extends FATServlet {
         o3.versionNum = o3_initialVersion;
         o3.total = 3.02f;
         o5.total = 5.02f;
-        Vector<Order> results = orders.modifyMultiple(List.of(o3, o5, o1));
+        Vector<PurchaseOrder> results = orders.modifyMultiple(List.of(o3, o5, o1));
         assertEquals(2, results.size());
 
         o5 = results.get(0);
@@ -3125,7 +3122,7 @@ public class DataJPATestServlet extends FATServlet {
     public void testVersionedDelete() {
         orders.deleteAll();
 
-        Order o1 = new Order();
+        PurchaseOrder o1 = new PurchaseOrder();
         o1.purchasedBy = "testVersionedDelete-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 1.09f;
@@ -3143,7 +3140,7 @@ public class DataJPATestServlet extends FATServlet {
         Long id = o1.id;
 
         // Attempt deletion at old version
-        o1 = new Order();
+        o1 = new PurchaseOrder();
         o1.id = id;
         o1.purchasedBy = "testVersionedDelete-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
@@ -3151,17 +3148,17 @@ public class DataJPATestServlet extends FATServlet {
         o1.versionNum = oldVersion;
         assertEquals(0, orders.cancel(o1));
 
-        Order o2 = new Order();
+        PurchaseOrder o2 = new PurchaseOrder();
         o2.purchasedBy = "testVersionedDelete-Customer2";
         o2.purchasedOn = OffsetDateTime.now();
         o2.total = 2.09f;
 
-        Order o3 = new Order();
+        PurchaseOrder o3 = new PurchaseOrder();
         o3.purchasedBy = "testVersionedDelete-Customer3";
         o3.purchasedOn = OffsetDateTime.now();
         o3.total = 3.09f;
 
-        LinkedList<Order> created = orders.create(List.of(o2, o3));
+        LinkedList<PurchaseOrder> created = orders.create(List.of(o2, o3));
         o2 = created.get(0);
         o3 = created.get(1);
 
@@ -3209,7 +3206,7 @@ public class DataJPATestServlet extends FATServlet {
     public void testVersionedUpdate() {
         orders.deleteAll();
 
-        Order o1 = new Order();
+        PurchaseOrder o1 = new PurchaseOrder();
         o1.purchasedBy = "testVersionedUpdate-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 10.09f;
@@ -3227,7 +3224,7 @@ public class DataJPATestServlet extends FATServlet {
         int newVersion = o1.versionNum;
         Long id = o1.id;
 
-        o1 = new Order();
+        o1 = new PurchaseOrder();
         o1.id = id;
         o1.purchasedBy = "testVersionedUpdate-Customer1";
         o1.purchasedOn = OffsetDateTime.now();

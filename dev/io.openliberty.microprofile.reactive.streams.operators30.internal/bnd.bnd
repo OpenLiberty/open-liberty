@@ -25,7 +25,7 @@ javac.target: 11
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 -dsannotations-inherit: true
--dsannotations: io.openliberty.microprofile.reactive.streams.operators30.spi.impl.LibertyReactiveStreamsEngineImpl
+-dsannotations: io.openliberty.microprofile.reactive.streams.operators30.spi.impl.LibertyReactiveStreamsEngineProvider
 
 Import-Package: \
   !io.openliberty.microprofile.reactive.streams.operators.spi.impl, \

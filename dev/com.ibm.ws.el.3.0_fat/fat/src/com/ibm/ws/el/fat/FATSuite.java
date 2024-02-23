@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,13 +64,13 @@ import componenttest.rules.repeater.RepeatTests;
 public class FATSuite {
 
     // EE10 requires Java 11.
-    // EE11 requires Java 21
-    // If we only specify EE10/EE11 for lite mode it will cause no tests to run which causes an error.
-    // If we are running on Java 8 have EE9 be the lite mode test to run.
+    // EE11 requires Java 17
+    // If we only specify EE10/EE11 for lite mode it will cause no tests to run with lower Java versions which causes an error.
+    // If we are running with a Java version less than 11, have EE9 be the lite mode test to run.
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_21))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES());
 
     /**

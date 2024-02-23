@@ -1,14 +1,11 @@
 <!--
-    Copyright (c) 2017, 2023 IBM Corporation and others.
+    Copyright (c) 2017, 2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-2.0/
-    
+
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <project name="standard.launch.tasks">
 
@@ -114,6 +111,7 @@
 				<and> <equals arg1="17" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
 				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
 				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="17"  arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="20"  arg2="${java.specification.version}"/> </and>
 		    </or>
 		</condition>
 		
@@ -220,6 +218,19 @@
 		</condition>
 		<property name="use.java.security.manager" value=""/>
 		
+		<!-- Reuse the is.java15.orHigher for Java 17 or higher because we no longer run with Java 15 or 16.
+		     This condition picks which of the bnd transform jars to exclude from the test path.  We want to use
+                     the BND 7.0.0 bundle for Java 17 or later and the 6.4.1 for Java 8 and 11 because 7.0.0 requires
+                     Java 17 since it is Java 17 byte code.  With Java 21 compiled code there is an issue with BND 6.4.1
+		     which is why we can't just use the 6.4.1 version everywhere.  Right now on the build systems we use
+                     Java 17 to build and run with Java 21 to run the FATs, but people can build and run with Java 21 for
+                     Open Liberty and run into this problem. -->
+		<condition property="bnd.transform.jar.to.exclude" value="biz.aQute.bnd.transform-6.4.1.jar" else="biz.aQute.bnd.transform-7.0.0.jar">
+			<and>
+				<istrue value="${is.java15.orHigher}"/>
+			</and>
+		</condition>
+
 		<!-- Replace LDAP ports of all 3 Apache DS instance in configuration with updated ports from port selector and kill any apache ds related processes -->
 		<replaceLdapPorts />
 		<iff if="unix.mac.environment">
@@ -227,7 +238,7 @@
 				<exec executable="sh">
 					<arg value="-c" />
 					<arg value="ps -ef | grep &quot;apacheds-2.0.0-M15&quot; | grep &quot;apacheds.controls&quot; | grep &quot;org.apache.directory.server.UberjarMain&quot; 
-  	  	  	| grep -v grep | awk '{ print $2 }' | xargs kill -9" />
+  	  	  	| grep -v grep | awk '{ print $2 }' | xargs --no-run-if-empty kill -9" />
 				</exec>
 			</then>
 		</iff>
@@ -257,6 +268,7 @@
 			<!-- We want our doctored simplicity high on the classpath -->
 			<fileset dir="${basedir}/lib/">
 				<include name="*.jar" />
+				<exclude name="${bnd.transform.jar.to.exclude}" />
 			</fileset>
 
 			<!-- shared libraries from bootstrapping.properties -->
@@ -626,7 +638,7 @@
 				<exec executable="sh">
 					<arg value="-c" />
 					<arg value="ps -ef | grep &quot;apacheds-2.0.0-M15&quot; | grep &quot;apacheds.controls&quot; | grep &quot;org.apache.directory.server.UberjarMain&quot; 
-      	  	| grep -v grep | awk '{ print $2 }' | xargs kill -9" />
+      	  	| grep -v grep | awk '{ print $2 }' | xargs --no-run-if-empty kill -9" />
 				</exec>
 			</then>
 		</iff>

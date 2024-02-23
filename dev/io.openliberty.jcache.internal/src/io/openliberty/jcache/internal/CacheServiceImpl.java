@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,6 +46,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.serialization.SerializationService;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.jcache.CacheManagerService;
 import io.openliberty.jcache.CacheService;
 import io.openliberty.jcache.DeserializationException;
@@ -91,12 +92,14 @@ public class CacheServiceImpl implements CacheService {
          * Schedule a task to initialize the cache in the background. This will
          * alleviate delays on the first request to the cache.
          */
-        getCacheFuture = scheduledExecutorService.schedule(new Runnable() {
-            @Override
-            public void run() {
-                getCache();
-            }
-        }, 0, TimeUnit.SECONDS);
+        CheckpointPhase.onRestore(() -> {
+            getCacheFuture = scheduledExecutorService.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    getCache();
+                }
+            }, 0, TimeUnit.SECONDS);
+        });
     }
 
     @Deactivate
@@ -218,7 +221,7 @@ public class CacheServiceImpl implements CacheService {
                              * expect some providers to throw an exception, so don't.
                              */
                             loadTimeMs = System.currentTimeMillis();
-                            Cache<Object, Object> jCache = (Cache<Object, Object>) cacheManager.getCache(cacheName);
+                            Cache<Object, Object> jCache = cacheManager.getCache(cacheName);
                             loadTimeMs = System.currentTimeMillis() - loadTimeMs;
 
                             if (jCache != null) {

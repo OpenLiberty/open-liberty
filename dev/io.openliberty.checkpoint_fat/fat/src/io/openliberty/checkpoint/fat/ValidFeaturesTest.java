@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,9 +34,10 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
@@ -78,6 +79,12 @@ public class ValidFeaturesTest {
 
     @Test
     public void testWebProfile10_0() throws Exception {
+        doSuccesfulRestoreTest();
+    }
+
+    @Test
+    @MinimumJavaLevel(javaLevel = 17)
+    public void testWebProfile11_0() throws Exception {
         doSuccesfulRestoreTest();
     }
 
@@ -186,6 +193,7 @@ public class ValidFeaturesTest {
         testWebProfile8_0("webProfile-8.0"),
         testWebProfile9_1("webProfile-9.1"),
         testWebProfile10_0("webProfile-10.0"),
+        testWebProfile11_0("webProfile-11.0"),
         testMicroProfile4_1("microProfile-4.1"),
         testMicroProfile5_0("microProfile-5.0"),
         testMicroProfile6_0("microProfile-6.0"),

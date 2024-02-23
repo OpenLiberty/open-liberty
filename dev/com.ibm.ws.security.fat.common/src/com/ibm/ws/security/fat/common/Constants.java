@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -147,6 +147,7 @@ public class Constants {
     public static final String BVT_SERVER_2_PORT_NAME_ROOT = "security_2_HTTP_default";
     public static final String BVT_SERVER_3_PORT_NAME_ROOT = "security_3_HTTP_default";
     public static final String BVT_SERVER_4_PORT_NAME_ROOT = "security_4_HTTP_default";
+    public static final String BVT_SERVER_5_PORT_NAME_ROOT = "security_5_HTTP_default";
 
     /* Signature contants */
     public static final String SIGALG_NONE = "none";
@@ -180,6 +181,7 @@ public class Constants {
 
     public static final String LOGOUT_TITLE = "Logout";
     public static final String SUCCESSFUL_LOGOUT_MSG = "You have successfully logged out";
+    public static final String UNSUCCESSFUL_LOGOUT_MSG = "Due to an integrity check failure, logout was unsuccessful.";
 
     public static final String SNOOP = "snoop";
     public static final String SNOOPING = "snooping";

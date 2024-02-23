@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -33,11 +34,13 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Select;
+import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Save;
@@ -184,14 +187,14 @@ public class QueryInfo {
 
     /**
      * Ordered list of Sort criteria, which can be defined statically via the OrderBy annotation or keyword,
-     * or dynamically via Pageable Sort parameters or Sort parameters to the repository method,
+     * or dynamically via PageRequest Sort parameters or Sort parameters to the repository method,
      * or a combination of both static and dynamic.
      * If the Query annotation is used, it will be unknown whether its value hard-codes Sort criteria,
      * in which case this field gets set to any additional sort criteria that is added statically or dynamically,
      * or lacking either of those, an empty list.
      * If none of the above, the value of this field is null, which can also mean it has not been initialized yet.
      */
-    List<Sort> sorts;
+    List<Sort<Object>> sorts;
 
     /**
      * Categorization of query type.
@@ -257,7 +260,7 @@ public class QueryInfo {
     }
 
     /**
-     * Adds dynamically specified Sort criteria from the Pageable to the end of an existing list, or
+     * Adds dynamically specified Sort criteria from the PageRequest to the end of an existing list, or
      * if the combined list Sort criteria doesn't already exist, this method creates it
      * starting with the Sort criteria of this QueryInfo.
      *
@@ -268,11 +271,13 @@ public class QueryInfo {
      * @return the combined list that the sort criteria was added to.
      */
     @Trivial
-    List<Sort> combineSorts(List<Sort> combined, List<Sort> additional) {
+    List<Sort<Object>> combineSorts(List<Sort<Object>> combined, Iterable<Sort<Object>> additional) {
+        Iterator<Sort<Object>> addIt = additional.iterator();
         boolean hasIdClass = entityInfo.idClassAttributeAccessors != null;
-        if (combined == null && !additional.isEmpty())
+        if (combined == null && addIt.hasNext())
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
-        for (Sort sort : additional) {
+        while (addIt.hasNext()) {
+            Sort<Object> sort = addIt.next();
             if (sort == null)
                 throw new DataException(new IllegalArgumentException("Sort: null"));
             else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
@@ -294,11 +299,11 @@ public class QueryInfo {
      * @return the combined list that the sort criteria was added to.
      */
     @Trivial
-    List<Sort> combineSorts(List<Sort> combined, Sort... additional) {
+    List<Sort<Object>> combineSorts(List<Sort<Object>> combined, @SuppressWarnings("unchecked") Sort<Object>... additional) {
         boolean hasIdClass = entityInfo.idClassAttributeAccessors != null;
         if (combined == null && additional.length > 0)
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
-        for (Sort sort : additional) {
+        for (Sort<Object> sort : additional) {
             if (sort == null)
                 throw new DataException(new IllegalArgumentException("Sort: null"));
             else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
@@ -378,7 +383,7 @@ public class QueryInfo {
                                        " type query result. Queries that use keyset pagination must return results of the same type as the entity type, which is " +
                                        entityInfo.getType().getName() + "."); // TODO NLS
         ArrayList<Object> keyValues = new ArrayList<>();
-        for (Sort keyInfo : sorts)
+        for (Sort<?> keyInfo : sorts)
             try {
                 List<Member> accessors = entityInfo.attributeAccessors.get(keyInfo.property());
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -461,7 +466,10 @@ public class QueryInfo {
         boolean hasDynamicSort = false;
         Class<?>[] paramTypes = method.getParameterTypes();
         for (int i = paramCount - paramAddedCount; i < paramTypes.length && !hasDynamicSort; i++)
-            hasDynamicSort = Pageable.class.equals(paramTypes[i]) || Sort[].class.equals(paramTypes[i]) || Sort.class.equals(paramTypes[i]);
+            hasDynamicSort = PageRequest.class.equals(paramTypes[i])
+                             || Order.class.equals(paramTypes[i])
+                             || Sort[].class.equals(paramTypes[i])
+                             || Sort.class.equals(paramTypes[i]);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "hasDynamicSortCriteria? " + hasDynamicSort);
@@ -585,7 +593,7 @@ public class QueryInfo {
      * @param keysetCursor keyset cursor
      */
     @Trivial
-    private void keysetSizeMismatchError(Pageable.Cursor keysetCursor) {
+    private void keysetSizeMismatchError(PageRequest.Cursor keysetCursor) {
         List<String> keyTypes = new ArrayList<>();
         for (int i = 0; i < keysetCursor.size(); i++)
             keyTypes.add(keysetCursor.getKeysetElement(i) == null ? null : keysetCursor.getKeysetElement(i).getClass().getName());
@@ -603,7 +611,7 @@ public class QueryInfo {
      * @param keysetCursor keyset values
      * @throws Exception if an error occurs
      */
-    void setKeysetParameters(Query query, Pageable.Cursor keysetCursor) throws Exception {
+    void setKeysetParameters(Query query, PageRequest.Cursor keysetCursor) throws Exception {
         int paramNum = paramCount; // set to position before the first keyset parameter
         if (paramNames == null) // positional parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
@@ -775,22 +783,27 @@ public class QueryInfo {
      * @param insert  The Insert annotation if present, otherwise null.
      * @param update  The Update annotation if present, otherwise null.
      * @param save    The Save annotation if present, otherwise null.
+     * @param find    The Find annotation if present, otherwise null.
      * @param query   The Query annotation if present, otherwise null.
      * @param orderBy array of OrderBy annotations if present, otherwise an empty array.
      * @param count   The Count annotation if present, otherwise null.
      * @param exists  The Exists annotation if present, otherwise null.
      * @param select  The Select annotation if present, otherwise null.
-     * @return Count, Delete, Exists, Insert, Query, Save, or Update annotation if present. Otherwise null.
+     * @return Count, Delete, Exists, Find, Insert, Query, Save, or Update annotation if present. Otherwise null.
      * @throws UnsupportedOperationException if the combination of annotations is not valid.
      */
     @Trivial
     Annotation validateAnnotationCombinations(Delete delete, Insert insert, Update update, Save save,
-                                              jakarta.data.repository.Query query, OrderBy[] orderBy,
+                                              Find find, jakarta.data.repository.Query query, OrderBy[] orderBy,
                                               Count count, Exists exists, Select select) {
         int o = orderBy.length == 0 ? 0 : 1;
+
+        // These can be paired with OrderBy:
+        int f = find == null ? 0 : 1;
         int q = query == null ? 0 : 1;
         int s = select == null ? 0 : 1;
 
+        // These cannot be paired with OrderBy or with each other:
         int ius = (insert == null ? 0 : 1) +
                   (update == null ? 0 : 1) +
                   (save == null ? 0 : 1);
@@ -800,22 +813,18 @@ public class QueryInfo {
                      (count == null ? 0 : 1) +
                      (exists == null ? 0 : 1);
 
-        if (ius > 1 // more than one of (Insert, Update, Save)
-            || iusdce > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists)
-            || iusdce + o > 1 // one of (Insert, Update, Save, Delete, Count, Exists) with OrderBy
+        if (iusdce + f > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists, Find)
+            || iusdce + o > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists, OrderBy)
             || iusdce + q + s > 1) { // one of (Insert, Update, Save, Delete, Count, Exists) with Query or Select, or both Query and Select
 
             // Invalid combination of multiple annotations
 
             List<String> annoClassNames = new ArrayList<String>();
-            for (Annotation anno : Arrays.asList(delete, insert, query, save, update)) // count, exists, select))
+            for (Annotation anno : Arrays.asList(count, delete, exists, find, insert, query, save, select, update))
                 if (anno != null)
                     annoClassNames.add(anno.annotationType().getName());
             if (orderBy.length > 0)
                 annoClassNames.add(OrderBy.class.getName());
-            for (Annotation anno : Arrays.asList(count, exists, select))
-                if (anno != null)
-                    annoClassNames.add(anno.annotationType().getName());
 
             throw new UnsupportedOperationException("The " + method.getDeclaringClass().getName() + '.' + method.getName() +
                                                     " repository method cannot be annotated with the following combination of annotations: " +
@@ -826,13 +835,13 @@ public class QueryInfo {
                         ? (insert != null ? insert : update != null ? update : save) //
                         : iusdce == 1 //
                                         ? (delete != null ? delete : count != null ? count : exists) //
-                                        : (q == 1 ? query : null);
+                                        : (q == 1 ? query : f == 1 ? find : null);
     }
 
     /**
      * Copy of query information, but with updated JPQL and sort criteria.
      */
-    QueryInfo withJPQL(String jpql, List<Sort> sorts) {
+    QueryInfo withJPQL(String jpql, List<Sort<Object>> sorts) {
         QueryInfo q = new QueryInfo(method, entityParamType, returnArrayType, returnTypeAtDepth);
         q.entityInfo = entityInfo;
         q.entityVar = entityVar;

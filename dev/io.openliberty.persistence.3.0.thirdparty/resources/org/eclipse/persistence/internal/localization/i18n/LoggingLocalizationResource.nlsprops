@@ -119,6 +119,10 @@ connected_user_database=Connected: {3}{4}User: {0}{3}{4}Database: {1}  Version: 
 
 connected_user_database_driver=Connected: {0}{6}User: {1}{6}Database: {2}  Version: {3}{6}Driver: {4}  Version: {5}
 
+corrupt_object=corrupt object: {0}
+
+corrupt_object_referenced_through_mapping=corrupt object referenced through mapping: {0}
+
 corrupted_session_announcement=SessionID: {0}  Discovery manager received corrupted session announcement - ignoring.
 
 create_default_dbms_tables_not_supported=WLS native CMP setting "create-default-dbms-tables" is not directly supported in EclipseLink CMP. See migration doc for details.
@@ -707,6 +711,8 @@ sop_object_wrong_version=Removing serialized sopObject from the row because it h
 
 src_pm_name_first_argument=You must specify the source PM name at the first input argument as either: -sOc4j-native or -sWeblogic.
 
+stack_of_visited_objects_that_refer_to_the_corrupt_object=stack of visited objects that refer to the corrupt object: {0}
+
 table_existed_during_creation=Table creation failed. If it already exists, it must be dropped first. This can be done manually or by setting the db-table-gen attribute in orion-ejb-jar.xml.
 
 template_orion_ejb_jar_created=A templated orion-ejb-jar.xml file has been created
@@ -752,6 +758,8 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery cannot use b
 validate_db_schema_with_not_supported=WLS native CMP setting "validate-db-schema-with" is not directly supported in EclipseLink CMP. See migration doc for details.
 
 validate_ejb_jar=Validating ejb-jar.xml starts, it may take some times...
+
+validate_object_space=validate object space.
 
 validity_timeout_not_supported=Oc4j native CMP setting "validity-timeout" on entity({0}) is not directly supported in EclipseLink CMP. See migration doc for details.
 

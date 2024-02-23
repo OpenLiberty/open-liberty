@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,7 +21,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -85,13 +86,15 @@ public class GrpcMetricsTest extends FATServletClient {
 
         LOG.info("GrpcMetricsTest : setUp() : start the grpc servers");
         GrpcClientOnly.useSecondaryHTTPPort();
-        GrpcClientOnly.startServer(GrpcMetricsTest.class.getSimpleName() + ".client.log");
-        GrpcServerOnly.startServer(GrpcMetricsTest.class.getSimpleName() + ".server.log");
+    }
+
+    @Before
+    public void before() {
         clientCallCount = 0;
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
+    @After
+    public void after() throws Exception {
         GrpcClientOnly.stopServer();
         GrpcServerOnly.stopServer();
     }
@@ -103,6 +106,9 @@ public class GrpcMetricsTest extends FATServletClient {
      */
     @Test
     public void testGrpcMetricsSeparateServers() throws Exception {
+
+        GrpcClientOnly.startServer(GrpcMetricsTest.class.getSimpleName() + ".client.log");
+        GrpcServerOnly.startServer(GrpcMetricsTest.class.getSimpleName() + ".server.log");
 
         // enable mpMetrics-2.3 on both servers
         GrpcTestUtils.setServerConfiguration(GrpcClientOnly, null, GRPC_CLIENT_METRICS, appName, LOG);
@@ -166,6 +172,8 @@ public class GrpcMetricsTest extends FATServletClient {
      */
     @Test
     public void testGrpcMetricsSingleServer() throws Exception {
+
+        GrpcClientOnly.startServer(GrpcMetricsTest.class.getSimpleName() + ".client.log");
 
         // enable mpMetrics-2.3 along with grpc-1.0 and grpcClient-1.0 on GrpcClientOnly
         GrpcTestUtils.setServerConfiguration(GrpcClientOnly, null, GRPC_BOTH_METRICS, appName_srv, LOG);

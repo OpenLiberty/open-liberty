@@ -17,6 +17,8 @@ Bundle-Description: TLDs for the Jakarta Standard Tag Library; Version 2.0.0
 
 publish.wlp.jar.disabled: true
 
+-pom: false
+
 -includeresource: \
 	@${repo;org.glassfish.web:jakarta.servlet.jsp.jstl;2.0.0}!/META-INF/*.tld
 

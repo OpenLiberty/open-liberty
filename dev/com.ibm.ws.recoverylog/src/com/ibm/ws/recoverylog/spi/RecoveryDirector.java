@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -77,17 +77,17 @@ public interface RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent Client service identification and callback object.
-     * @param sequence Client service sequence value.
+     * @param sequence      Client service sequence value.
      *
      * @return RecoveryLogManager A RecoveryLogManager object that the client
      *         service can use to control recovery logging.
      *
      * @exception ConflictingCredentialsException Thrown if the RecoveryAgent identity or
-     *                name clashes with a client service that
-     *                is already registered
-     * @exception InvalidStateException Thrown if the registration occurs after
-     *                the first recovery process has been
-     *                started.
+     *                                                name clashes with a client service that
+     *                                                is already registered
+     * @exception InvalidStateException           Thrown if the registration occurs after
+     *                                                the first recovery process has been
+     *                                                started.
      */
     public RecoveryLogManager registerService(RecoveryAgent recoveryAgent, int sequence) throws ConflictingCredentialsException, InvalidStateException;
 
@@ -127,11 +127,11 @@ public interface RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The client services RecoveryAgent instance.
-     * @param failureScope The unit of recovery that is completed.
+     * @param failureScope  The unit of recovery that is completed.
      *
      * @exception InvalidFailureScope The supplied FailureScope was not recognized as
-     *                outstanding unit of recovery for the client
-     *                service.
+     *                                    outstanding unit of recovery for the client
+     *                                    service.
      */
     public void serialRecoveryComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException;
 
@@ -171,11 +171,11 @@ public interface RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The client services RecoveryAgent instance.
-     * @param failureScope The unit of recovery that is completed.
+     * @param failureScope  The unit of recovery that is completed.
      *
      * @exception InvalidFailureScope The supplied FailureScope was not recognized as
-     *                outstanding unit of recovery for the client
-     *                service.
+     *                                    outstanding unit of recovery for the client
+     *                                    service.
      */
     public void initialRecoveryComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException;
 
@@ -195,11 +195,11 @@ public interface RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The client services RecoveryAgent instance.
-     * @param failureScope The unit of recovery that is failed.
+     * @param failureScope  The unit of recovery that is failed.
      *
      * @exception InvalidFailureScope The supplied FailureScope was not recognized as
-     *                outstanding unit of recovery for the client
-     *                service.
+     *                                    outstanding unit of recovery for the client
+     *                                    service.
      */
     public void initialRecoveryFailed(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException;
 
@@ -219,11 +219,11 @@ public interface RecoveryDirector {
      * </p>
      *
      * @param recoveryAgent The client services RecoveryAgent instance.
-     * @param failureScope The unit of recovery that is completed.
+     * @param failureScope  The unit of recovery that is completed.
      *
      * @exception InvalidFailureScopeException The supplied FailureScope was not recognized as
-     *                outstanding unit of recovery for the client
-     *                service.
+     *                                             outstanding unit of recovery for the client
+     *                                             service.
      */
     public void terminationComplete(RecoveryAgent recoveryAgent, FailureScope failureScope) throws InvalidFailureScopeException;
 
@@ -263,7 +263,7 @@ public interface RecoveryDirector {
      * the transactions and cscopes logs.
      *
      * @param failureScope The failure scope for which recovery log configuration
-     *            is to be retrieved.
+     *                         is to be retrieved.
      *
      * @return Object The recovery log configuration.
      */
@@ -302,7 +302,7 @@ public interface RecoveryDirector {
      */
     public boolean isHAEnabled();
 
-    public void directInitialization(FailureScope failureScope) throws RecoveryFailedException;
+    public void directInitialization(FailureScope failureScope) throws RecoveryFailedException, PeerLostLogOwnershipException, LogsUnderlyingTablesMissingException;
 
     public void setRecoveryLogFactory(RecoveryLogFactory fac);
 

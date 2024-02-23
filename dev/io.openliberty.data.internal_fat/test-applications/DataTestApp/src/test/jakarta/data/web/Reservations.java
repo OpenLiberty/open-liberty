@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,9 +35,10 @@ import java.util.stream.Stream;
 import jakarta.data.Limit;
 import jakarta.data.Sort;
 import jakarta.data.page.Page;
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 
@@ -56,6 +57,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     long deleteByHostNot(String host);
 
+    @Find
     @Select("meetingId")
     @OrderBy("id")
     List<Long> endsAtSecond(@By("stop") @Extract(SECOND) int second);
@@ -85,7 +87,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     Stack<Reservation> findByStopGreaterThanOrderByLocationDescHostAscStopAsc(OffsetDateTime endAfter);
 
-    UserDefinedCollection<Reservation> findByStopLessThan(OffsetDateTime maxEndTime, Sort... sortBy);
+    UserDefinedCollection<Reservation> findByStopLessThan(OffsetDateTime maxEndTime, Sort<?>... sortBy);
 
     AbstractCollection<Reservation> findByStopLessThanEqual(OffsetDateTime maxEndTime);
 
@@ -103,7 +105,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     @Select({ "start", "stop" })
     Stream<ReservedTimeSlot> findByStopOrStopOrStop(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
 
-    Page<Reservation> findByHostStartsWith(String hostPrefix, Pageable pagination, Sort sort);
+    Page<Reservation> findByHostStartsWith(String hostPrefix, PageRequest<?> pagination, Sort<Reservation> sort);
 
     LinkedHashSet<Reservation> findByInviteesContainsOrderByMeetingID(String invitee);
 
@@ -123,6 +125,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     int removeByHostNotIn(Collection<String> hosts);
 
+    @Find
     @Select("meetingId")
     @OrderBy("host")
     List<Long> startsWithinHoursWithMinute(@By("start") @Extract(HOUR) @GreaterThanEqual int minHour,
@@ -133,6 +136,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     boolean updateByMeetingIDSetHost(long meetingID, String newHost);
 
+    @Find
     @OrderBy("id")
     Stream<Reservation> withInviteeCount(@By("invitees") @ElementCount int size);
 }

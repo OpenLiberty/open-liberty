@@ -17,12 +17,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.eclipse.microprofile.reactive.messaging.Message;
+import org.junit.BeforeClass;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.tck.PublisherVerification;
 import org.reactivestreams.tck.TestEnvironment;
@@ -44,7 +43,7 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
 
     private final KafkaTestClient kafkaTestClient = new KafkaTestClient(PlaintextTests.kafkaContainer.getBootstrapServers());
     private final KafkaAdapterFactory kafkaAdapterFactory = new TestKafkaAdapterFactory();
-    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
+    private static MockAsyncProvider asyncProvider;
     private static final int MESSAGE_LIMIT = 200;
     private static final int TIMEOUT_MILLIS = 5000;
     private int testNo = 0;
@@ -58,6 +57,17 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
 
     public KafkaPublisherVerification() {
         super(new TestEnvironment(TIMEOUT_MILLIS));
+    }
+
+    @BeforeClass
+    public static void setupClass() {
+        asyncProvider = new MockAsyncProvider();
+    }
+
+    public static void cleanupClass() {
+        if (asyncProvider != null) {
+            asyncProvider.close();
+        }
     }
 
     @BeforeMethod
@@ -101,9 +111,9 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
         config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         KafkaConsumer<String, String> kafkaConsumer = kafkaAdapterFactory.newKafkaConsumer(config);
         PartitionTrackerFactory trackerFactory = new PartitionTrackerFactory();
-        trackerFactory.setExecutor(executor);
+        trackerFactory.setAsyncProvider(asyncProvider);
         trackerFactory.setAutoCommitEnabled(false);
-        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, trackerFactory, kafkaConsumer, executor, topicName, 100, false);
+        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, trackerFactory, kafkaConsumer, asyncProvider, topicName, 100, false);
         kafkaInputs.add(kafkaInput);
         return kafkaInput.getPublisher().buildRs();
     }
@@ -137,9 +147,9 @@ public class KafkaPublisherVerification extends PublisherVerification<Message<St
         config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         KafkaConsumer<String, String> kafkaConsumer = kafkaAdapterFactory.newKafkaConsumer(config);
         PartitionTrackerFactory trackerFactory = new PartitionTrackerFactory();
-        trackerFactory.setExecutor(executor);
+        trackerFactory.setAsyncProvider(asyncProvider);
         trackerFactory.setAutoCommitEnabled(false);
-        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, trackerFactory, kafkaConsumer, executor, topicName, 100, false);
+        KafkaInput<String, String> kafkaInput = new KafkaInput<>(kafkaAdapterFactory, trackerFactory, kafkaConsumer, asyncProvider, topicName, 100, false);
         kafkaInputs.add(kafkaInput);
         return kafkaInput.getPublisher().buildRs();
     }

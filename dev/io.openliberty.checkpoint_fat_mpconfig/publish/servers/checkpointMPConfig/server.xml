@@ -26,4 +26,6 @@
     <variable name="config_object_app_scope_key" defaultValue="defaultValue" />
     <variable name="config_object_properties_app_scope_key" defaultValue="defaultValue" />
     <variable name="early_access_app_scope_key" defaultValue="defaultValue" />
+    <variable name="var_dir_req_scope_key" defaultValue="defaultValue" />
+    <variable name="var_dir_app_scope_key" defaultValue="defaultValue" />
 </server>

@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -13,17 +13,15 @@
 -include= ~../cnf/resources/bnd/bundle.props
 
 bVersion=1.0.${libertyBundleMicroVersion}
-bSymbolicName=com.ibm.ws.jaxb.tools.2.2.10
+bSymbolicName=com.ibm.ws.jaxb.tools
 
-Bundle-Name: com.ibm.ws.jaxb.tools.2.2.10
-Bundle-SymbolicName: com.ibm.ws.jaxb.tools.2.2.10; singleton:=true
+Bundle-Name: com.ibm.ws.jaxb.tools
+Bundle-SymbolicName: com.ibm.ws.jaxb.tools; singleton:=true
     
 # The SPI definition under META-INF/services
 # Do not publish RI javax.xml.bind.JAXBContext
 app-resources= \
-  META-INF/services/com.sun.tools.xjc.Plugin |\
-  META-INF/services/org.relaxng.datatype.DatatypeLibraryFactory | \
-  META-INF/services/org.iso_relax.verifier.VerifierFactoryLoader
+  META-INF/services/com.sun.tools.xjc.Plugin
 
 Service-Component: \
   com.ibm.ws.jaxb.tools_2_2_10_${replace;${bVersion};\\.;_}.ResourceProvider; \
@@ -41,7 +39,6 @@ Import-Package: \
   !org.apache.xerces*, \
   !org.jvnet*, \
   !com.sun.mirror.*, \
-  !com.sun.xml.bind.*, \
   !com.sun.source.tree.*, \
   !com.sun.source.util.*, \
   !com.sun.xml.fastinfoset.sax.*, \
@@ -55,13 +52,12 @@ DynamicImport-Package: \
   javax.activation
 
 Export-Package: \
-  com.sun.xml.bind*;version="2.2.10";thread-context=true
+  com.sun.xml.bind.*;version="2.3.9";thread-context=true
 
 Include-Resource: \
-  @${repo;com.sun.xml.bind:jaxb-core;2.2.10;EXACT}!/!META-INF/maven/*, \
-  @${repo;com.sun.xml.bind:jaxb-impl;2.2.10;EXACT}!/!META-INF/maven/*, \
-  @${repo;com.sun.xml.bind:jaxb-xjc;2.2.10;EXACT}!/!META-INF/maven/*, \
-  @${repo;com.sun.xml.bind:jaxb-jxc;2.2.10;EXACT}!/!META-INF/maven/*
+  @${repo;com.sun.xml.bind:jaxb-impl;2.3.9;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @${repo;com.sun.xml.bind:jaxb-xjc;2.3.9;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @${repo;com.sun.xml.bind:jaxb-jxc;2.3.9;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 Private-Package:\
   com.ibm.ws.jaxb.tools.*
@@ -69,8 +65,7 @@ Private-Package:\
 instrument.disabled: true
 
 -buildpath: \
-  com.sun.xml.bind:jaxb-core;strategy=exact;version=2.2.10,\
-  com.sun.xml.bind:jaxb-impl;strategy=exact;version=2.2.10,\
-  com.sun.xml.bind:jaxb-xjc;strategy=exact;version=2.2.10,\
-  com.sun.xml.bind:jaxb-jxc;strategy=exact;version=2.2.10,\
+  com.sun.xml.bind:jaxb-impl;strategy=exact;version=2.3.9,\
+  com.sun.xml.bind:jaxb-xjc;strategy=exact;version=2.3.9,\
+  com.sun.xml.bind:jaxb-jxc;strategy=exact;version=2.3.9,\
   com.ibm.ws.org.apache.ant;strategy=exact;version=latest

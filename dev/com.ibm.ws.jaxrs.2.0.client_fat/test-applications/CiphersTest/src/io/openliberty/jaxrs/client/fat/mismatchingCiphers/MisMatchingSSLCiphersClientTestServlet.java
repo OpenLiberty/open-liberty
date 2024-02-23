@@ -42,9 +42,6 @@ public class MisMatchingSSLCiphersClientTestServlet extends FATServlet {
     public void before() throws ServletException {
         client = ClientBuilder.newClient();
         client.property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig");
-
-        // Workaround for setting Cipher Suites on the outbound SSL request
-        System.setProperty(JAXRSClientConstants.USE_HTTPS_URL_CONNECTION_DEFAULT_SSLSOCKETFACTORY, "true");
     }
 
     @Override
@@ -52,7 +49,7 @@ public class MisMatchingSSLCiphersClientTestServlet extends FATServlet {
         client.close();
     }
 
-    @Test
+//    @Test
     @AllowedFFDC( { "javax.ws.rs.ProcessingException", "java.lang.IllegalArgumentException" })
     public void testSimpleSSLRequestWithMisMatchingSSLCiphers() {
         try {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,18 @@ public class DBRotationTest extends CloudFATServletClient {
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete")
     public static LibertyServer longLeaseCompeteServer1;
 
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.shortlease")
+    public static LibertyServer shortLeaseServer1;
+
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD002.shortlease")
+    public static LibertyServer shortLeaseServer2;
+
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.norecoverygroup")
+    public static LibertyServer noRecoveryGroupServer1;
+
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.peerServerPrecedence")
+    public static LibertyServer peerPrecedenceServer1;
+
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail")
     public static LibertyServer longLeaseLogFailServer1;
 
@@ -74,8 +86,12 @@ public class DBRotationTest extends CloudFATServletClient {
                                                         "com.ibm.ws.transaction_ANYDBCLOUD002",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD002.nopeerlocking",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.peerServerPrecedence",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.longleaselogfail",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.shortlease",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.norecoverygroup",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD002.shortlease",
     };
 
     private LibertyServer[] serversToCleanup;
@@ -100,6 +116,10 @@ public class DBRotationTest extends CloudFATServletClient {
         ShrinkHelper.exportAppToServer(server1, app, dO);
         ShrinkHelper.exportAppToServer(server2, app, dO);
         ShrinkHelper.exportAppToServer(longLeaseCompeteServer1, app, dO);
+        ShrinkHelper.exportAppToServer(shortLeaseServer1, app, dO);
+        ShrinkHelper.exportAppToServer(shortLeaseServer2, app, dO);
+        ShrinkHelper.exportAppToServer(noRecoveryGroupServer1, app, dO);
+        ShrinkHelper.exportAppToServer(peerPrecedenceServer1, app, dO);
         ShrinkHelper.exportAppToServer(longLeaseLogFailServer1, app, dO);
         ShrinkHelper.exportAppToServer(noShutdownServer1, app, dO);
         ShrinkHelper.exportAppToServer(server2nopeerlocking, app, dO);
@@ -260,7 +280,8 @@ public class DBRotationTest extends CloudFATServletClient {
      * ownership of the lease and is recovering Cloud001's logs. Finally the servlet halts the server leaving
      * an indoubt transaction.
      *
-     * Cloud001 is restarted but should fail to acquire the lease to its recovery logs as it is no longer the owner.
+     * The peerRecoveryPrecedence server.xml attribute is set to "true" to enable the "original" behaviour.
+     * So Cloud001 is restarted but should fail to acquire the lease to its recovery logs as it is no longer the owner.
      *
      * @throws Exception
      */
@@ -270,12 +291,80 @@ public class DBRotationTest extends CloudFATServletClient {
                            "java.lang.IllegalStateException" })
     // defect 227411, if cloud002 starts slowly, then access to cloud001's indoubt tx
     // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
+    public void testDBRecoveryCompeteForLogPeerPrecedence() throws Exception {
+
+        final String method = "testDBRecoveryCompeteForLogPeerPrecedence";
+        String id = "001";
+
+        serversToCleanup = new LibertyServer[] { peerPrecedenceServer1, server2 };
+
+        FATUtils.startServers(runner, peerPrecedenceServer1);
+        try {
+            runTest(peerPrecedenceServer1, SERVLET_NAME, "modifyLeaseOwner");
+
+            // We expect this to fail since it is gonna crash the server
+            runTest(peerPrecedenceServer1, SERVLET_NAME, "setupRec" + id);
+        } catch (IOException e) {
+        }
+
+        assertNotNull(peerPrecedenceServer1.getServerName() + " didn't crash properly", peerPrecedenceServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+        peerPrecedenceServer1.postStopServerArchive(); // must explicitly collect since crashed server
+        // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
+        // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.
+
+        // Now re-start server1 but we fully expect this to fail
+        try {
+            // The server has been halted but its status variable won't have been reset because we crashed it. In order to
+            // setup the server for a restart, set the server state manually.
+            peerPrecedenceServer1.setStarted(false);
+            setUp(peerPrecedenceServer1);
+            peerPrecedenceServer1.startServerExpectFailure("recovery-dblog-fail.log", false, true);
+        } catch (Exception ex) {
+            // Tolerate an exception here, as recovery is asynch and the "successful start" message
+            // may have been produced by the main thread before the recovery thread had completed
+            Log.info(c, method, "startServerExpectFailure threw exc: " + ex);
+        }
+
+        // Server appears to have failed as expected. Check for log failure string
+        if (peerPrecedenceServer1.waitForStringInLog("RECOVERY_LOG_FAILED", FATUtils.LOG_SEARCH_TIMEOUT) == null) {
+            Exception ex = new Exception("Recovery logs should have failed");
+            Log.error(c, "recoveryTestCompeteForLock", ex);
+            throw ex;
+        }
+        peerPrecedenceServer1.postStopServerArchive(); // must explicitly collect since server start failed
+        // defect 210055: Now start cloud2 so that we can tidy up the environment, otherwise cloud1
+        // is unstartable because its lease is owned by cloud2.
+        server2.setHttpDefaultPort(cloud2ServerPort);
+        FATUtils.startServers(runner, server2);
+
+        // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
+        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
+    }
+
+    /**
+     * The purpose of this test is to verify correct behaviour when peer servers compete for a log.
+     *
+     * The Cloud001 server is started and a servlet invoked. The servlet modifies the owner of the server's
+     * lease recored in the lease table. This simulates the situation where a peer server has acquired the
+     * ownership of the lease and is recovering Cloud001's logs. Finally the servlet halts the server leaving
+     * an indoubt transaction.
+     *
+     * The default behaviour is that Cloud001 is restarted and wil aggressively acquire the lease to its recovery logs
+     * even though it is not the owner.
+     *
+     * @throws Exception
+     */
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.tx.jta.XAResourceNotAvailableException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException",
+                           "java.lang.IllegalStateException" })
+    // defect 227411, if cloud002 starts slowly, then access to cloud001's indoubt tx
+    // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
     public void testDBRecoveryCompeteForLog() throws Exception {
 
         final String method = "testDBRecoveryCompeteForLog";
         String id = "001";
 
-        serversToCleanup = new LibertyServer[] { longLeaseCompeteServer1, server2 };
+        serversToCleanup = new LibertyServer[] { longLeaseCompeteServer1 };
 
         FATUtils.startServers(runner, longLeaseCompeteServer1);
         try {
@@ -291,33 +380,14 @@ public class DBRotationTest extends CloudFATServletClient {
         // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
         // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.
 
-        // Now re-start server1 but we fully expect this to fail
-        try {
-            // The server has been halted but its status variable won't have been reset because we crashed it. In order to
-            // setup the server for a restart, set the server state manually.
-            longLeaseCompeteServer1.setStarted(false);
-            setUp(longLeaseCompeteServer1);
-            longLeaseCompeteServer1.startServerExpectFailure("recovery-dblog-fail.log", false, true);
-        } catch (Exception ex) {
-            // Tolerate an exception here, as recovery is asynch and the "successful start" message
-            // may have been produced by the main thread before the recovery thread had completed
-            Log.info(c, method, "startServerExpectFailure threw exc: " + ex);
-        }
-
-        // Server appears to have failed as expected. Check for log failure string
-        if (longLeaseCompeteServer1.waitForStringInLog("RECOVERY_LOG_FAILED", FATUtils.LOG_SEARCH_TIMEOUT) == null) {
-            Exception ex = new Exception("Recovery logs should have failed");
-            Log.error(c, "recoveryTestCompeteForLock", ex);
-            throw ex;
-        }
-        longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since server start failed
-        // defect 210055: Now start cloud2 so that we can tidy up the environment, otherwise cloud1
-        // is unstartable because its lease is owned by cloud2.
-        server2.setHttpDefaultPort(cloud2ServerPort);
-        FATUtils.startServers(runner, server2);
+        // The server has been halted but its status variable won't have been reset because we crashed it. In order to
+        // setup the server for a restart, set the server state manually.
+        longLeaseCompeteServer1.setStarted(false);
+        // Now re-start server1
+        FATUtils.startServers(runner, longLeaseCompeteServer1);
 
         // Server appears to have started ok. Check for 2 key strings to see whether peer recovery has succeeded
-        assertNotNull("peer recovery failed", server2.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
+        assertNotNull("peer recovery failed", longLeaseCompeteServer1.waitForStringInTrace("Performed recovery for cloud0011", LOG_SEARCH_TIMEOUT));
     }
 
     @Test
@@ -421,6 +491,85 @@ public class DBRotationTest extends CloudFATServletClient {
 
         // Now tidy up after test
         runTest(server1, SERVLET_NAME, "tidyupV1LeaseLog");
+    }
+
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    public void testLeaseIndexBackwardCompatibility() throws Exception {
+        final String method = "testLeaseIndexBackwardCompatibility";
+
+        serversToCleanup = new LibertyServer[] { shortLeaseServer1 };
+
+        FATUtils.startServers(runner, noRecoveryGroupServer1);
+
+        runTest(noRecoveryGroupServer1, SERVLET_NAME, "setupNonUniqueLeaseLog");
+
+        FATUtils.stopServers(noRecoveryGroupServer1);
+
+        FATUtils.startServers(runner, shortLeaseServer1);
+
+        // Check for key strings to see whether the lease has been updated and read
+        shortLeaseServer1.setTraceMarkToEndOfDefaultTrace();
+        assertNotNull("Lease Renewer has not fired", shortLeaseServer1.waitForStringInTrace("Have updated Server row", LOG_SEARCH_TIMEOUT));
+        assertNotNull("Lease checker has not fired", shortLeaseServer1.waitForStringInTrace("Lease Table: read recoveryId", LOG_SEARCH_TIMEOUT));
+        Log.info(c, method, "testLeaseIndexBackwardCompatibility is complete");
+    }
+
+    @Test
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
+    public void testAggressiveDBRecoveryTakeover() throws Exception {
+        final String method = "testAggressiveDBRecoveryTakeover";
+        if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
+            StringBuilder sb = null;
+
+            serversToCleanup = new LibertyServer[] { server1, shortLeaseServer2 };
+
+            FATUtils.startServers(runner, server1);
+            try {
+                // We expect this to fail since it is gonna crash the server
+                runTest(server1, SERVLET_NAME, "setupRecForAggressiveTakeover");
+            } catch (IOException e) {
+            }
+
+            assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+
+            // Now start server2
+            shortLeaseServer2.setHttpDefaultPort(cloud2ServerPort);
+            FATUtils.startServers(runner, shortLeaseServer2);
+            FATUtils.startServers(runner, server1);
+
+            // Servers appear to have started ok. Check for key string to see whether peer recovery has succeeded
+            assertNotNull("peer unexpectedly recovered home server logs", server1.waitForStringInTrace("WTRN0140I: Recovered transaction", LOG_SEARCH_TIMEOUT));
+        }
+        Log.info(c, method, "test complete");
+    }
+
+    @Test
+    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException",
+                           "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException",
+                           "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException", "java.lang.Exception" })
+    public void testReactionToDeletedTables() throws Exception {
+        final String method = "testReactionToDeletedTables";
+        StringBuilder sb = null;
+        if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
+
+            serversToCleanup = new LibertyServer[] { server2, noRecoveryGroupServer1 };
+            //            server2.setHttpDefaultPort(cloud2ServerPort);
+            server2.useSecondaryHTTPPort();
+            FATUtils.startServers(runner, server2);
+            assertNotNull("Home server recovery failed", server2.waitForStringInTrace("Transaction recovery processing for this server is complete", LOG_SEARCH_TIMEOUT));
+            FATUtils.startServers(runner, noRecoveryGroupServer1);
+
+            sb = runTestWithResponse(noRecoveryGroupServer1, SERVLET_NAME, "dropServer2Tables");
+            Log.info(c, method, "testReactionToDeletedTables dropServer2Tables returned: " + sb);
+
+            assertNotNull("Failed to drop tables", noRecoveryGroupServer1.waitForStringInTrace("<<< END:   dropServer2Tables", LOG_SEARCH_TIMEOUT));
+
+            sb = runTestWithResponse(server2, SERVLET_NAME, "twoTrans");
+            Log.info(c, method, "testReactionToDeletedTables twoTrans returned: " + sb);
+            assertNotNull("Home server tables are still present", server2.waitForStringInTrace("Underlying SQL tables missing", LOG_SEARCH_TIMEOUT));
+        }
+        Log.info(c, method, "testReactionToDeletedTables is complete");
     }
 
     // Returns false if the server is alive, throws Exception otherwise

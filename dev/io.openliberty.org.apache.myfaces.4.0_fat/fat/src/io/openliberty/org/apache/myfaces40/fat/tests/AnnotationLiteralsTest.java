@@ -28,6 +28,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -37,6 +38,7 @@ import io.openliberty.org.apache.myfaces40.fat.FATSuite;
  * Tests to ensure new Annotation Literals can be used in an expected way.
  */
 @RunWith(FATRunner.class)
+@SkipForRepeat(SkipForRepeat.EE11_FEATURES) // Errors in EE11
 public class AnnotationLiteralsTest {
 
     private static final String APP_NAME = "AnnotationLiteralsTest";

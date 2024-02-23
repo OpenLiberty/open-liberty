@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,8 +61,8 @@ public class ApplicationListener50 implements ApplicationStateListener {
     public void applicationStopped(ApplicationInfo appInfo) {
 
         Set<String> scopeNamesSet = sharedMetricRegistry.getMetricRegistryScopeNames();
-        if (scopeNamesSet.contains(MetricRegistry.VENDOR_SCOPE)) {
-            scopeNamesSet.remove(MetricRegistry.VENDOR_SCOPE);
+        if (!scopeNamesSet.contains(MetricRegistry.VENDOR_SCOPE)) {
+            scopeNamesSet.add(MetricRegistry.VENDOR_SCOPE);
         } else if (!scopeNamesSet.contains(MetricRegistry.APPLICATION_SCOPE)) {
             scopeNamesSet.add(MetricRegistry.APPLICATION_SCOPE);
         } else if (!scopeNamesSet.contains(MetricRegistry.BASE_SCOPE)) {

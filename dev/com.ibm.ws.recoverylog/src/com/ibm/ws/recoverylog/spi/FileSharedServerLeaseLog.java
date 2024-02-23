@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -228,7 +228,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                                 fChannel.read(byteBuffer);
                                 byteBuffer.flip();
                                 String line = new String(byteBuffer.array());
-                                Tr.info(tc, "Originally {0} lease file length {1} contains {2}", recoveryIdentity, line.length(), line);
+                                Tr.debug(tc, "Originally {0} lease file length {1} contains {2}", recoveryIdentity, line.length(), line);
                             }
                             byteBuffer = ByteBuffer.wrap(_tranRecoveryLogDirStem.getBytes());
                             fChannel.position(0);
@@ -243,7 +243,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                                 fChannel.read(byteBuffer);
                                 byteBuffer.flip();
                                 String line = new String(byteBuffer.array());
-                                Tr.info(tc, "On writing {0} lease file length {1} contains {2}", recoveryIdentity, line.length(), line);
+                                Tr.debug(tc, "On writing {0} lease file length {1} contains {2}", recoveryIdentity, line.length(), line);
                             }
                         } catch (IOException iox) {
                             if (tc.isDebugEnabled())
@@ -817,6 +817,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     }
 
     @Override
+    @FFDCIgnore({ FileNotFoundException.class, IOException.class })
     public String getBackendURL(String recoveryId) {
         String filename = _serverInstallLeaseLogDir + File.separator + recoveryId;
         String ret = null;

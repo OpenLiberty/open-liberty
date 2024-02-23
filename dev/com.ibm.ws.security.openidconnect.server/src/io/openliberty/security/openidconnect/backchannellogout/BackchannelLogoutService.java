@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,10 @@ import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jose4j.jwt.JwtClaims;
+import org.jose4j.jwt.MalformedClaimException;
+import org.jose4j.jwt.consumer.InvalidJwtException;
+import org.jose4j.jwt.consumer.JwtContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
@@ -30,6 +34,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.web.OAuth20Request.EndpointType;
 import com.ibm.ws.security.sso.common.Constants;
@@ -37,6 +42,8 @@ import com.ibm.ws.webcontainer.security.UnprotectedResourceService;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
+
+import io.openliberty.security.common.jwt.JwtParsingUtils;
 
 @Component(service = UnprotectedResourceService.class)
 public class BackchannelLogoutService implements UnprotectedResourceService {
@@ -76,25 +83,45 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
 
     @Override
     public boolean logout(HttpServletRequest request, HttpServletResponse response, String userName) {
-        if (userName == null || userName.isEmpty()) {
+        if (!ProductInfo.getBetaEdition()) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "The userName is null or empty, so logout will not be performed.");
+                Tr.debug(tc, "Beta mode is not enabled; back-channel logout will not be performed.");
             }
-            return false;
+            return true;
         }
-        userName = normalizeUserName(userName);
+        if (!hasBackchannelLogoutConfigured()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "No client has a back-channel logout uri set up, so back-channel logout will not be performed.");
+            }
+            return true;
+        }
+        if (userName != null && !userName.isEmpty()) {
+            userName = normalizeUserName(userName);
+        }
+        String idTokenString = request.getParameter(OIDCConstants.OIDC_LOGOUT_ID_TOKEN_HINT);
+
         String requestUri = request.getRequestURI();
-        OidcServerConfig oidcServerConfig = getMatchingConfig(requestUri);
+        OidcServerConfig oidcServerConfig = getMatchingConfig(requestUri, idTokenString);
         if (oidcServerConfig == null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Failed to find a matching OIDC provider for the request sent to [" + requestUri + "]");
             }
             return false;
         }
-        String idTokenString = request.getParameter(OIDCConstants.OIDC_LOGOUT_ID_TOKEN_HINT);
-
         sendBackchannelLogoutRequests(request, oidcServerConfig, userName, idTokenString);
         return true;
+    }
+
+    boolean hasBackchannelLogoutConfigured() {
+        Iterator<ServiceAndServiceReferencePair<OidcServerConfig>> servicesWithRefs = oidcServerConfigRef.getServicesWithReferences();
+        while (servicesWithRefs.hasNext()) {
+            ServiceAndServiceReferencePair<OidcServerConfig> configServiceAndRef = servicesWithRefs.next();
+            OidcServerConfig config = configServiceAndRef.getService();
+            if (BackchannelLogoutRequestHelper.hasClientWithBackchannelLogoutUri(config)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     String normalizeUserName(String userName) {
@@ -105,7 +132,15 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
         return userName;
     }
 
-    private OidcServerConfig getMatchingConfig(String requestUri) {
+    OidcServerConfig getMatchingConfig(String requestUri, String idTokenHintString) {
+        OidcServerConfig config = getMatchingConfigFromRequestUri(requestUri);
+        if (config == null) {
+            config = getMatchingConfigFromIdTokenHint(idTokenHintString);
+        }
+        return config;
+    }
+
+    OidcServerConfig getMatchingConfigFromRequestUri(String requestUri) {
         Iterator<ServiceAndServiceReferencePair<OidcServerConfig>> servicesWithRefs = oidcServerConfigRef.getServicesWithReferences();
         while (servicesWithRefs.hasNext()) {
             ServiceAndServiceReferencePair<OidcServerConfig> configServiceAndRef = servicesWithRefs.next();
@@ -118,9 +153,42 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
         return null;
     }
 
+    OidcServerConfig getMatchingConfigFromIdTokenHint(String idTokenHintString) {
+        String issuerFromIdTokenHint = null;
+        try {
+            issuerFromIdTokenHint = getIssuerFromIdTokenHint(idTokenHintString);
+        } catch (Exception e) {
+            Tr.error(tc, Tr.formatMessage(tc, "LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN", new Object[] { e }));
+            return null;
+        }
+        if (issuerFromIdTokenHint == null || issuerFromIdTokenHint.isEmpty()) {
+            return null;
+        }
+        Iterator<ServiceAndServiceReferencePair<OidcServerConfig>> servicesWithRefs = oidcServerConfigRef.getServicesWithReferences();
+        while (servicesWithRefs.hasNext()) {
+            ServiceAndServiceReferencePair<OidcServerConfig> configServiceAndRef = servicesWithRefs.next();
+            OidcServerConfig config = configServiceAndRef.getService();
+            String configId = config.getProviderId();
+            if (isIdTokenHintIssuedByConfig(configId, config, issuerFromIdTokenHint)) {
+                return config;
+            }
+        }
+        return null;
+    }
+
+    String getIssuerFromIdTokenHint(String idTokenHint) throws InvalidJwtException, MalformedClaimException {
+        if (idTokenHint == null || idTokenHint.isEmpty()) {
+            return null;
+        }
+        JwtContext jwtContext = JwtParsingUtils.parseJwtWithoutValidation(idTokenHint);
+        JwtClaims claims = jwtContext.getJwtClaims();
+        return claims.getIssuer();
+    }
+
     boolean isEndpointThatMatchesConfig(String requestUri, String providerId) {
         return (requestUri.endsWith("/" + providerId + "/" + EndpointType.end_session.name())
-                || requestUri.endsWith("/" + providerId + "/" + EndpointType.logout.name()));
+                || requestUri.endsWith("/" + providerId + "/" + EndpointType.logout.name())
+                || requestUri.endsWith("/" + providerId + "/ibm_security_logout"));
     }
 
     /**
@@ -133,6 +201,14 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
         }
         String samlIdpFromSubject = getPropertyFromRunAsSubjectPrivateCredentials(Constants.WSCREDENTIAL_SAML_IDP_USED);
         return (samlIdpFromSubject != null && requestUri.endsWith("/" + samlIdpFromSubject + "/" + "slo"));
+    }
+
+    boolean isIdTokenHintIssuedByConfig(String providerId, OidcServerConfig config, String issuerFromIdTokenHint) {
+        String issuerIdentifier = config.getIssuerIdentifier();
+        if (issuerIdentifier != null && !issuerIdentifier.isEmpty() && issuerIdentifier.equals(issuerFromIdTokenHint)) {
+            return true;
+        }
+        return issuerFromIdTokenHint.endsWith("/" + providerId);
     }
 
     @SuppressWarnings("rawtypes")

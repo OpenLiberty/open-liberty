@@ -1,0 +1,17 @@
+<feature>jakartaee-11.0</feature>
+<feature>jakartaeeClient-11.0</feature>
+<feature>enterpriseBeans-4.0</feature>
+<feature>xmlBinding-4.0</feature>
+<feature>xmlWS-4.0</feature>
+<feature>jdbc-4.2</feature>
+<feature>jdbc-4.3</feature>
+<feature>appSecurityClient-1.0</feature>
+<feature>monitor-1.0</feature>
+<feature>ldapRegistry-3.0</feature>
+<feature>localConnector-1.0</feature>
+<feature>restConnector-2.0</feature>
+<feature>transportSecurity-1.0</feature>
+<feature>sessionCache-1.0</feature>
+<feature>sessionDatabase-1.0</feature>
+<feature>webCache-1.0</feature>
+<feature>requestTiming-1.0</feature>

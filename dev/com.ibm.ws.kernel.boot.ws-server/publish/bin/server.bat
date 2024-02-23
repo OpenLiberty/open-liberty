@@ -1,7 +1,7 @@
 @echo off
 @REM WebSphere Application Server liberty launch script
 @REM
-@REM Copyright (c) 2011, 2023 IBM Corporation and others.
+@REM Copyright (c) 2011, 2024 IBM Corporation and others.
 @REM All rights reserved. This program and the accompanying materials
 @REM are made available under the terms of the Eclipse Public License 2.0
 @REM which accompanies this distribution, and is available at
@@ -275,6 +275,9 @@ goto:eof
   set SAVE_OPENJ9_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
   set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
   set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+
+  call:checkForVerboseGC
+
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
   set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
@@ -293,6 +296,9 @@ goto:eof
   set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
   set SAVE_OPENJ9_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
   set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+
+  call:checkForVerboseGC
+
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
   set IBM_JAVA_OPTIONS=!SAVE_IBM_JAVA_OPTIONS!
@@ -340,6 +346,8 @@ goto:eof
     set IBM_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
     set SAVE_OPENJ9_JAVA_OPTIONS=!OPENJ9_JAVA_OPTIONS!
     set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
+	
+    call:checkForVerboseGC
 
     @REM Use javaw so command windows can be closed.
     start /min /b "" !JAVA_CMD_QUOTED!w !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED! >> "%X_LOG_DIR%\%X_LOG_FILE%" 2>&1
@@ -534,7 +542,8 @@ goto:eof
   if NOT defined JAVA_HOME (
     if NOT defined JRE_HOME (
       if NOT defined WLP_DEFAULT_JAVA_HOME (
-        call :findJavaInPath
+        @REM Use whatever java is on the path
+        set JAVA_CMD_QUOTED="java"
       ) else (
         if "!WLP_DEFAULT_JAVA_HOME:~0,17!" == "@WLP_INSTALL_DIR@" (
           set WLP_DEFAULT_JAVA_HOME=!WLP_INSTALL_DIR!!WLP_DEFAULT_JAVA_HOME:~17!
@@ -711,6 +720,23 @@ goto:eof
   )
 goto:eof
 
+@REM Check for any verbose:gc variable set by user
+@REM By default we set this to be true unless user specifies otherwise
+@REM if not jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc ( set SERVER_IBM_JAVA_OPTIONS=%SERVER_IBM_JAVA_OPTIONS% -Xverbosegclog:verbosegc.%seq.log,10,1024)
+:checkForVerboseGC
+    set TEMPJVMOPTIONS=!JVM_OPTIONS:"=!
+   
+    if not "!TEMPJVMOPTIONS:verbosegc=!"=="!TEMPJVMOPTIONS!" (
+      goto:eof
+    ) else if not "x!TEMPJVMOPTIONS:verbose:gc=!"=="x!TEMPJVMOPTIONS!" (
+      goto:eof
+    ) else if "!VERBOSEGC!"=="false" (
+      goto:eof
+    )
+
+    set OPENJ9_JAVA_OPTIONS=-Xverbosegclog:!X_LOG_DIR!\verbosegc.%%seq.log,10,1024 !OPENJ9_JAVA_OPTIONS!
+goto:eof
+
 @REM
 @REM Set the current working directory for an existing server.
 @REM
@@ -841,41 +867,3 @@ goto:eof
     set RC=0
   )
 goto:eof
-
-@REM Find the first place java.exe is found in the path.  If java is not found, just set
-@REM the command to "java", which will ultimately fail when executed. Since it's not in the path.
-@REM It would have been simpler to use the where command, but it does not work for directories in
-@REM the path containing spaces:     for /f "delims=" %%i in ('where java.exe 2^>nul') do (
-:findJavaInPath
-
-  call :findInPath "java.exe"
-  if defined foundInPath (
-    set JAVA_CMD_QUOTED="!foundInPath!\java"
-  ) else (
-    set JAVA_CMD_QUOTED="java"
-    goto:eof
-  )
-
-  @REM Set JAVA_HOME.  Loop is single iteration for removing "java" from the path.
-  for %%A in (!JAVA_CMD_QUOTED!) do (
-    pushd "%CD%" 
-    cd "%%~dpA.."
-    set JAVA_HOME=!CD!
-    popd
-  )
-goto:eof
-
-@REM Pass in an executable to find in the PATH.  If the executable is found
-@REM the foundInPath variable will be set to the first directory in which it is found.
-:findInPath
-  set foundInPath= 
-    
-  @REM Split the PATH variable by semicolons and iterate through directories
-  for %%i in (!PATH!) do (
-      
-    if exist "%%~i\%1" (
-      set foundInPath=%%~i
-      goto :eof
-    )
-  )
-goto eof

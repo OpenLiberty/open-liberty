@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,18 +10,20 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import jakarta.data.model.Attribute;
-import jakarta.data.model.StaticMetamodel;
+import jakarta.data.metamodel.Attribute;
+import jakarta.data.metamodel.SortableAttribute;
+import jakarta.data.metamodel.StaticMetamodel;
+import jakarta.data.metamodel.TextAttribute;
 
 /**
  * Static metamodel for the City entity.
  */
 @StaticMetamodel(City.class)
 public class CityAttrNames2 {
-    public static final Attribute areaCodes = Attribute.get();
-    public static final Attribute changeCount = Attribute.get();
-    public static final Attribute id = Attribute.get();
-    public static final Attribute ignore = Attribute.get();
+    public static volatile Attribute areaCodes;
+    public static volatile SortableAttribute<City> changeCount;
+    public static volatile Attribute id;
+    public static volatile SortableAttribute<City> ignore; // ignored because the entity has no attribute with this name
     public static volatile long population; // ignored due to data type
-    public static final Attribute name = null;
+    public static final TextAttribute<City> name = null; // ignored due to final
 }

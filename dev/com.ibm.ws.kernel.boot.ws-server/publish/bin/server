@@ -1115,6 +1115,14 @@ serverCmd()
   SAVE_OPENJ9_JAVA_OPTIONS=${OPENJ9_JAVA_OPTIONS}
   OPENJ9_JAVA_OPTIONS=${SERVER_IBM_JAVA_OPTIONS}
 
+  # Check for any verbose:gc variable set by user
+  # By default we set this to be true unless user specifies otherwise
+  # if [ ! jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc] then SERVER_IBM_JAVA_OPTIONS += -Xverbosegclog:verbosegc.%seq.log,10,1024
+  if [ -n "${JVM_OPTIONS_QUOTED##*"verbosegc"*}" ] && [ -n "${JVM_OPTIONS_QUOTED##*"verbose:gc"*}"  ] && ! [ "${VERBOSEGC}" = "false" ]
+  then
+    OPENJ9_JAVA_OPTIONS="-Xverbosegclog:${X_LOG_DIR}/verbosegc.%seq.log,10,1024 ${OPENJ9_JAVA_OPTIONS}"
+  fi
+
   if $os400lib; then
     serverCmdOS400 "${SERVER_CMD_BACKGROUND_LOG}" "${SERVER_NAME}" "$@"
     rc=$?
@@ -1449,59 +1457,62 @@ EOF
 # since they avoid forks.  Use eval (to hide the syntax from shells that don't
 # support them) in a subshell (to avoid exiting the shell process on error) to
 # test if the shell has support.
-if ${tryShellExtensions} && (eval 'true ${1//b/c} ${1#*=}') 2> /dev/null; then
-  # The shell has support.  Define the functions using eval, again to hide the
-  # syntax from shells that don't support it.
-  eval "
+defineEscapeForEvalFunctions()
+{
+  if ${tryShellExtensions} && (eval 'true ${1//b/c} ${1#*=}') 2> /dev/null; then
+    # The shell has support.  Define the functions using eval, again to hide the
+    # syntax from shells that don't support it.
+    eval "
+      escapeForEval()
+      {
+        escapeForEvalResult=\\'\${1//\\'/\\'\\\"\\'\\\"\\'}\\'
+      }
+  
+      extractValueAndEscapeForEval()
+      {
+        escapeForEval \"\${1#*=}\"
+      }
+  
+      substitutePrefixVar()
+      {
+        case \$1 in
+        @\$2@*) substitutePrefixVarResult=\$3\${1#@\$2@};;
+        *) substitutePrefixVarResult=\$1
+        esac
+      }
+    "
+  else
+    ##
+    ## escapeForEval: Escape the first parameter to be safe for use in eval,
+    ##                and set escapeForEvalResult with the result.
+    ##
     escapeForEval()
     {
-      escapeForEvalResult=\\'\${1//\\'/\\'\\\"\\'\\\"\\'}\\'
+      escapeForEvalResult=\'$(safeEcho "$1" | sed s/\'/\'\"\'\"\'/g)\'
     }
-
+  
+    ##
+    ## extractValueAndEscapeForEval: Extract the value of a var=value string,
+    ##                               and set escapeForEvalResult with the result.
+    ##
     extractValueAndEscapeForEval()
     {
-      escapeForEval \"\${1#*=}\"
+      escapeForEvalResult=\'`safeEcho "$1" | sed -e 's/[^=]*=//' -e s/\'/\'\"\'\"\'/g`\'
     }
-
+  
+    ##
+    ## substitutePrefixVar: If $1 has a prefix @$2@, set substitutePrefixVarResult
+    ##                      to $1 with the prefix replaced by $3.  Otherwise, set
+    ##                      to $1.
     substitutePrefixVar()
     {
-      case \$1 in
-      @\$2@*) substitutePrefixVarResult=\$3\${1#@\$2@};;
-      *) substitutePrefixVarResult=\$1
+      case $1 in
+      @$2@*) substitutePrefixVarResult=$3`safeEcho "$1" | sed -e "s/^@$2@//"`;;
+      *) substitutePrefixVarResult=$1
       esac
     }
-  "
-else
-  ##
-  ## escapeForEval: Escape the first parameter to be safe for use in eval,
-  ##                and set escapeForEvalResult with the result.
-  ##
-  escapeForEval()
-  {
-    escapeForEvalResult=\'$(safeEcho "$1" | sed s/\'/\'\"\'\"\'/g)\'
-  }
-
-  ##
-  ## extractValueAndEscapeForEval: Extract the value of a var=value string,
-  ##                               and set escapeForEvalResult with the result.
-  ##
-  extractValueAndEscapeForEval()
-  {
-    escapeForEvalResult=\'`safeEcho "$1" | sed -e 's/[^=]*=//' -e s/\'/\'\"\'\"\'/g`\'
-  }
-
-  ##
-  ## substitutePrefixVar: If $1 has a prefix @$2@, set substitutePrefixVarResult
-  ##                      to $1 with the prefix replaced by $3.  Otherwise, set
-  ##                      to $1.
-  substitutePrefixVar()
-  {
-    case $1 in
-    @$2@*) substitutePrefixVarResult=$3`safeEcho "$1" | sed -e "s/^@$2@//"`;;
-    *) substitutePrefixVarResult=$1
-    esac
-  }
-fi
+  fi
+}
 
 # ########################################################################### #
 # main()                                                                      #
@@ -1550,7 +1561,8 @@ case $OSTYPE in
 
       *)
         dirname=$(dirname "$0")
-        WLP_INSTALL_DIR=$(findRealPath "${dirname}/..")
+        WLP_INSTALL_DIR=$(unset CDPATH; cd "${dirname}/.." && pwd)
+        WLP_INSTALL_DIR=$(findRealPath "$WLP_INSTALL_DIR")
     esac
 esac
 
@@ -1603,6 +1615,8 @@ esac
 # Starting the server with a full tmp directory may prevent the server from
 # reading server.env during startup.
 safeEcho "" || exit $?
+
+defineEscapeForEvalFunctions
 
 ##
 ## Quote ${WLP_INSTALL_DIR} for eval.

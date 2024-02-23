@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -105,7 +105,7 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
 
         while (appsIt.hasNext()) {
             String appName = appsIt.next();
-            if(appTracker.isInstalled(appName)) {
+            if (appTracker.isInstalled(appName)) {
                 anyAppsInstalled = true;
                 if (!healthCheckProcedure.equals(HealthCheckConstants.HEALTH_CHECK_LIVE) && !unstartedAppsSet.contains(appName)) {
                     unstartedAppsSet.add(appName);

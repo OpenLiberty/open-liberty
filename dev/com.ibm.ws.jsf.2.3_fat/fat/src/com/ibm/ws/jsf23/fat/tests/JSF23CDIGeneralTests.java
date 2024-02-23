@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -18,8 +19,10 @@ import java.util.Arrays;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -48,7 +51,6 @@ import com.ibm.ws.jsf23.fat.selenium_util.WebPage;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -72,10 +74,12 @@ public class JSF23CDIGeneralTests {
     @Server("jsf23CDIGeneralServer")
     public static LibertyServer server;
 
-    @Rule
-    public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
+    @ClassRule
+    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
                     .withAccessToHost(true)
-                    .withLogConsumer(new SimpleLogConsumer(c, "selenium-driver"));
+                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
+
+    private static ExtendedWebDriver driver;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -102,6 +106,8 @@ public class JSF23CDIGeneralTests {
         server.startServer(c.getSimpleName() + ".log");
 
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
+
+        driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
     }
 
     @Before
@@ -117,6 +123,16 @@ public class JSF23CDIGeneralTests {
         if (server != null && server.isStarted()) {
             server.stopServer();
         }
+        driver.quit(); // closes all sessions and terminutes the webdriver
+    }
+
+    /*
+     * Clear cookies for the selenium webdriver, so that session don't carry over between tests
+     */
+    @After
+    public void clearCookies()
+    {
+        driver.getRemoteWebDriver().manage().deleteAllCookies();
     }
 
     /**
@@ -268,8 +284,6 @@ public class JSF23CDIGeneralTests {
      */
     @Test
     public void testInjectableELImplicitObjects() throws Exception {
-        ExtendedWebDriver driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
-
         checkInjectableELImplicitObjects(driver);
         // restart the app and test again
         Assert.assertTrue("The ELImplicitObjectsViaCDI.war application was not restarted.", server.restartDropinsApplication("ELImplicitObjectsViaCDI.war"));
@@ -436,7 +450,7 @@ public class JSF23CDIGeneralTests {
      *
      * @throws Exception
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // MYFACES-4461; Injection works regardless of @FacesConfig annotation
+    @SkipForRepeat(EE10_OR_LATER_FEATURES) // MYFACES-4461; Injection works regardless of @FacesConfig annotation
     @Mode(TestMode.FULL)
     @Test
     @ExpectedFFDC({ "org.jboss.weld.exceptions.DeploymentException", "com.ibm.ws.container.service.state.StateChangeException" })
@@ -486,7 +500,7 @@ public class JSF23CDIGeneralTests {
      */
     @Test
     public void testFacesConverterBeanInjection() throws Exception {
-        ExtendedWebDriver driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
+
         String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
         String url = JSFUtils.createSeleniumURLString(server, contextRoot, "index.xhtml");
         WebPage page = new WebPage(driver);
@@ -513,7 +527,7 @@ public class JSF23CDIGeneralTests {
      */
     @Test
     public void testFacesValidatorBeanInjection() throws Exception {
-        ExtendedWebDriver driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
+
         // Construct the URL for the test
         String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
         String url = JSFUtils.createSeleniumURLString(server, contextRoot, "index.xhtml");
@@ -553,7 +567,6 @@ public class JSF23CDIGeneralTests {
      */
     @Test
     public void testFacesBehaviorBeanInjection() throws Exception {
-        ExtendedWebDriver driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
         // Construct the URL for the test
         String contextRoot = "ConverterValidatorBehaviorInjectionTarget";
         String url = JSFUtils.createSeleniumURLString(server, contextRoot, "index.xhtml");
@@ -569,6 +582,8 @@ public class JSF23CDIGeneralTests {
 
         // Verify that the alert contains the expected message
         assertTrue(driver.switchTo().alert().getText().contains("Hello World"));
+
+        driver.switchTo().alert().dismiss(); // close alert
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,7 @@ import org.junit.AfterClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.testcontainers.containers.OracleContainer;
+import org.testcontainers.oracle.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import componenttest.containers.SimpleLogConsumer;
@@ -41,7 +41,7 @@ import oracle.jdbc.pool.OracleDataSource;
 })
 public class FATSuite extends TestContainerSuite {
 
-    private static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("gvenzl/oracle-xe:21.3.0-slim-faststart");
+    private static final DockerImageName ORACLE_IMAGE_NAME = DockerImageName.parse("gvenzl/oracle-free:23.3-slim-faststart");
     public static OracleContainer oracle = new OracleContainer(ORACLE_IMAGE_NAME)
                     .usingSid()
                     .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25))

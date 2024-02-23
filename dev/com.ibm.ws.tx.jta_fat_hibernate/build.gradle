@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,7 @@ dependencies {
     'org.jboss.logging:jboss-logging:3.3.1.Final',
     'javax.transaction:javax.transaction-api:1.2',
     'javax.xml.bind:jaxb-api:2.2.12-b140109.1041',
-    'com.sun.xml.bind:jaxb-core:2.2.11',
-    'com.sun.xml.bind:jaxb-impl:2.2.11',
+    project(':com.ibm.ws.jaxb.tools'),
     'javax.activation:activation:1.1'
 }
 
