@@ -13,6 +13,7 @@ IBM-API-Package: jakarta.decorator;  type="spec", \
  jakarta.enterprise.inject.literal;  type="spec", \
  jakarta.enterprise.inject.spi;  type="spec", \
  jakarta.enterprise.inject.spi.configurator;  type="spec", \
+ jakarta.enterprise.inject.spi.el;  type="spec", \
  jakarta.enterprise.inject.se;  type="spec", \
  jakarta.enterprise.util;  type="spec", \
  jakarta.inject;  type="spec", \
