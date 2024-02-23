@@ -19,6 +19,11 @@ package org.jboss.weld.resources;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Field;
+import java.lang.reflect.Parameter;
 import java.util.Properties;
 
 import org.jboss.weld.exceptions.WeldException;
@@ -138,10 +143,31 @@ public class HotspotReflectionCache extends DefaultReflectionCache {
 
         } catch ( Throwable e ) {
             String text = "Constant Pool GREP:";
-            Class<?> clazz = null;
+                        // AnnotatedElement
+            //   AccessibleObject
+            //     Executable
+            //       Constructor
+            //       Method
+            //     Field
+            //   Package
+            //   Parameter
 
-            if ( element instanceof Class<?> ) {
+            Class<?> clazz = null;
+            if (element instanceof Parameter) {
+                Executable executable = ((Parameter) element).getDeclaringExecutable();
+                if ( executable != null ) {
+                    clazz = executable.getDeclaringClass();
+                }
+            } else if (element instanceof Field) {
+                clazz = ((Field) element).getDeclaringClass();
+            } else if (element instanceof Method) {
+                clazz = ((Method) element).getDeclaringClass();
+            } else if (element instanceof Constructor) {
+                clazz = ((Constructor<?>) element).getDeclaringClass();
+            } else if (element instanceof Class<?>) {
                 clazz = (Class<?>) element;
+            }
+            if (clazz != null) {
                 text += " Class [ " + clazz.getName() + " ]:";
             }
 
