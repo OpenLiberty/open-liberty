@@ -49,7 +49,6 @@ import com.ibm.ws.security.spnego.fat.config.JDKExpectationTestClass;
 import com.ibm.ws.security.spnego.fat.config.KdcHelper;
 import com.ibm.ws.security.spnego.fat.config.Krb5Helper;
 import com.ibm.ws.security.spnego.fat.config.SPNEGOConstants;
-import com.ibm.ws.security.wim.adapter.ldap.fat.krb5.KerberosContainer;
 import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
 import com.ibm.ws.webcontainer.security.test.servlets.SSLBasicAuthClient;
 
