@@ -29,6 +29,7 @@ import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
 import java.util.logging.Logger;
 import org.apache.cxf.common.logging.LogUtils;
+import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
 
 public class StaxInEndingInterceptor extends AbstractPhaseInterceptor<Message> {
     //certain usages of CXF may require the Stax stream to remain open (example: streaming the stax stuff
@@ -46,7 +47,7 @@ public class StaxInEndingInterceptor extends AbstractPhaseInterceptor<Message> {
         super(phase);
     }
 
-    public void handleMessage(Message message) {
+    public void handleMessage(@Sensitive Message message) {  // Liberty Change
         XMLStreamReader xtr = message.getContent(XMLStreamReader.class);
 	LOG.finest("XMLStreamReader class: " + xtr.getClass().getCanonicalName()); // Liberty Change
         if (xtr != null && !MessageUtils.getContextualBoolean(message, STAX_IN_NOCLOSE, false)) {

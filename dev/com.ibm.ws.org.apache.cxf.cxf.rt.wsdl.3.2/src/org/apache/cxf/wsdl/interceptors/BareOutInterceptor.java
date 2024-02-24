@@ -62,7 +62,7 @@ public class BareOutInterceptor extends AbstractOutDatabindingInterceptor {
 
         if (!client) {
             if (operation.getOutput() != null) {
-		LOG.fine("BareOutInterceptor: Getoutput for operation: " + operation.getName());
+		// LOG.fine("BareOutInterceptor: Getoutput for operation: " + operation.getName());
                 bmsg = operation.getOutput();
                 parts = bmsg.getMessageParts();
             } else {
@@ -76,11 +76,13 @@ public class BareOutInterceptor extends AbstractOutDatabindingInterceptor {
             parts = bmsg.getMessageParts();
         }
 
+	/*
 	if (LOG.isLoggable(Level.FINEST)) {
 	   for (MessagePartInfo mp1 : parts) {
 	      LOG.finest("BareOutInterceptor: Msg Part: " + mp1.toString());
 	   }
 	}
+	*/
 
         writeParts(message, exchange, operation, objs, parts);
     }
