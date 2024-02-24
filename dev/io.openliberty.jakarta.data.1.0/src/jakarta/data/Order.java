@@ -39,7 +39,7 @@ public class Order<T> implements Iterable<Sort<T>> {
                other instanceof Order && sortBy.equals(((Order<?>) other).sortBy);
     }
 
-    public List<Sort<T>> getSorts() {
+    public List<Sort<T>> sorts() {
         return sortBy;
     }
 
