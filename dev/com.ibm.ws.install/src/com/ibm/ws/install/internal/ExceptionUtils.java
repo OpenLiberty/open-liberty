@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -438,6 +438,7 @@ public class ExceptionUtils {
 
         MissingRequirement missingRequirementWithMaxVersion = null;
         String newestVersion = null;
+        List productMatchers = new ArrayList<>();
         for (MissingRequirement mr : allRequirementsNotFound) {
             if (missingRequirementWithMaxVersion == null)
                 missingRequirementWithMaxVersion = mr;
@@ -449,25 +450,14 @@ public class ExceptionUtils {
                 Pattern validNumericVersionOrRange = Pattern.compile("\\d+\\.\\d+\\.\\d+\\.\\d+");
                 Matcher matcher = validNumericVersionOrRange.matcher(r);
                 String version = null;
+                String currentEdition = "";
                 while (matcher.find()) {
                     version = matcher.group();
                     break;
                 }
-                List productMatchers = SelfExtractor.parseAppliesTo(mr.getRequirementName());
-                wlp.lib.extract.ReturnCode validInstallRC = SelfExtractor.validateProductMatches(installDir, productMatchers);
-                String currentEdition = "";
-                String messageKey = validInstallRC.getMessageKey();
+                productMatchers.addAll(SelfExtractor.parseAppliesTo(mr.getRequirementName()));
 
-                if (messageKey != null) {
-                    if (messageKey.equals("invalidVersion") || messageKey.equals("invalidEdition")) {
-                        int productEdition = 2;
-                        if (messageKey.equals("invalidEdition")) {
-                            productEdition = 0;
-                        }
-                        currentEdition = (String) validInstallRC.getParameters()[productEdition];
-                    }
-                }
-                if (!!!currentEdition.equals("Liberty Early Access")) {
+                if (!r.contains("Liberty Early Access")) {
                     if (isNewerVersion(version, newestVersion, false)) {
                         missingRequirementWithMaxVersion = mr;
                         newestVersion = version;
@@ -478,7 +468,19 @@ public class ExceptionUtils {
                         newestVersion = version;
                     }
                 }
+            }
+        }
 
+        wlp.lib.extract.ReturnCode validInstallRC = SelfExtractor.validateProductMatches(installDir, productMatchers);
+
+        String messageKey = validInstallRC.getMessageKey();
+
+        if (messageKey != null) {
+            if (messageKey.equals("invalidVersion") || messageKey.equals("invalidEdition")) {
+                int productEdition = 2;
+                if (messageKey.equals("invalidEdition")) {
+                    productEdition = 0;
+                }
             }
         }
 
@@ -520,7 +522,6 @@ public class ExceptionUtils {
             missingRequirementWithMaxVersion.getRequirementName().contains("productEdition") ||
             missingRequirementWithMaxVersion.getRequirementName().contains("productVersion")) {
             @SuppressWarnings("rawtypes")
-            List productMatchers = SelfExtractor.parseAppliesTo(missingRequirementWithMaxVersion.getRequirementName());
             String feature = RepositoryDownloadUtil.getAssetNameFromMassiveResource(missingRequirementWithMaxVersion.getOwningResource());
             String errMsg = "";
             if (InstallUtils.containsIgnoreCase(assetNames, feature)) {
@@ -788,6 +789,7 @@ public class ExceptionUtils {
                     }
                     String version = (String) params[productVersion];
                     String appliesToVersion = (String) params[matchVersion];
+
                     if (appliesToVersion == null || version.equals(appliesToVersion))
                         appliesToVersion = "";
 
@@ -814,7 +816,14 @@ public class ExceptionUtils {
                         String editionName = "";
                         editionName = InstallUtils.getEditionName(e);
                         if (!productMap.containsKey(editionName)) {
-                            String product = "- " + productName + (editionName.isEmpty() ? "" : " ") + editionName + " " + appliesToVersion;
+                            String product;
+                            if (editionName.equalsIgnoreCase("open") && !isFeatureUtil) { //InstallUtility and featureManager are not available in Open Liberty so don't list it.
+                                continue;
+                            } else if (editionName.equalsIgnoreCase("open") && isFeatureUtil) {
+                                product = "- IBM Open Liberty " + appliesToVersion;
+                            } else {
+                                product = "- " + productName + (editionName.isEmpty() ? "" : " ") + editionName + " " + appliesToVersion;
+                            }
                             productMap.put(editionName, product);
                             applicableProducts.append(product);
                             applicableProducts.append(InstallUtils.NEWLINE);
@@ -825,20 +834,19 @@ public class ExceptionUtils {
                     if (dependency == null || dependency.isEmpty()) {
                         if (appliesToVersion.equals("")) { //installing asset has invalid product edition only
 
-                            if (((String) params[productEdition]).equalsIgnoreCase("Open_Web") && productName.equalsIgnoreCase("IBM WebSphere Application Server Liberty")) {
-                                errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_INVALID_PRODUCT_EDITION" : "ERROR_INVALID_PRODUCT_EDITION_FOR_OPEN_LIBERTY_FEATURE",
-                                                                                        new Object[] { feature });
-                            } else {
-
-                                errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_INVALID_PRODUCT_EDITION" : "ERROR_INVALID_PRODUCT_EDITION",
+                            if (installingAsset) {//print installUtility error message
+                                errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_ASSET_INVALID_PRODUCT_EDITION",
+                                                                                        new Object[] { feature, productName, edition, applicableProducts.toString(),
+                                                                                                       productName,
+                                                                                                       edition });
+                            } else if (isFeatureUtil) {
+                                errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY",
+                                                                                        new Object[] { feature, productName, edition, applicableProducts.toString() });
+                            } else {//print featureManager error message
+                                errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_INVALID_PRODUCT_EDITION",
                                                                                         new Object[] { feature, productName, edition, applicableProducts.toString(), productName,
                                                                                                        edition });
-                                if (isFeatureUtil) {
-                                    errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_INVALID_PRODUCT_EDITION" : "ERROR_INVALID_PRODUCT_EDITION_FEATURE_UTILITY",
-                                                                                            new Object[] { feature, productName, edition, applicableProducts.toString() });
-                                }
                             }
-
                         } else {
                             errMsg = Messages.INSTALL_KERNEL_MESSAGES.getLogMessage(installingAsset ? "ERROR_ASSET_INVALID_PRODUCT_EDITION_VERSION" : "ERROR_INVALID_PRODUCT_EDITION_VERSION",
                                                                                     new Object[] { feature, productName, edition, version, applicableProducts.toString() });
