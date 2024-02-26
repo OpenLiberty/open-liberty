@@ -41,7 +41,7 @@ public class FixManagerTest {
     private static final String INTERIM_FIX_BUNDLE_NAME = "ProvisioningInterimFixesTestBundle";
     private static final String INTERIM_FIX_FEATURE = "test.InterimFixManagerTest-1.0.mf";
     private static final String INTERIM_FIXES_FEATURE = "test.InterimFixesManagerTest-1.0.mf";
-    private static final String TEST_FIXES_FEATURE = "test.TestFixManagerTest-1.0.mf";
+    private static final String TEST_FIX_FEATURE = "test.TestFixManagerTest-1.0.mf";
 
     private static void deleteTestBundleJars() throws Exception {
         final String METHOD_NAME = "deleteTestBundleJars";
@@ -70,7 +70,7 @@ public class FixManagerTest {
         server.copyFileToLibertyInstallRoot(FEATURE_PATH, FEATURE_MF);
         server.copyFileToLibertyInstallRoot(FEATURE_PATH, INTERIM_FIX_FEATURE);
         server.copyFileToLibertyInstallRoot(FEATURE_PATH, INTERIM_FIXES_FEATURE);
-        server.copyFileToLibertyInstallRoot(FEATURE_PATH, TEST_FIXES_FEATURE);
+        server.copyFileToLibertyInstallRoot(FEATURE_PATH, TEST_FIX_FEATURE);
         server.saveServerConfiguration();
     }
 
@@ -108,16 +108,6 @@ public class FixManagerTest {
     }
 
     @Test
-    public void testSingleTFixOutput() throws Exception {
-        server.copyFileToLibertyInstallRoot("lib", "ProvisioningTestBundle_1.0.1.jar");
-        server.copyFileToLibertyInstallRoot("lib", "ProvisioningTestBundle_1.0.1.201204040001-TestAPAR0001.jar");
-        server.setServerConfigurationFile("singleTestFixServer.xml");
-        server.startServer();
-        runTest(server, FEATURE_MANAGER_CONTEXT_ROOT, "singleTFix");
-
-    }
-
-    @Test
     public void testMultiIFixOutput() throws Exception {
         server.copyFileToLibertyInstallRoot("lib", "ProvisioningInterimFixesTestBundle1_1.0.0.jar");
         server.copyFileToLibertyInstallRoot("lib", "ProvisioningInterimFixesTestBundle1_1.0.0.20130101.jar");
@@ -130,6 +120,26 @@ public class FixManagerTest {
         server.setServerConfigurationFile("interimFixesServer.xml");
         server.startServer();
         runTest(server, FEATURE_MANAGER_CONTEXT_ROOT, "multiIFixes");
+
+    }
+
+    @Test
+    public void testSingleTFixOutput() throws Exception {
+        server.copyFileToLibertyInstallRoot("lib", "ProvisioningTestBundle_1.0.1.jar");
+        server.copyFileToLibertyInstallRoot("lib", "ProvisioningTestBundle_1.0.1.201204040001-TestAPAR0001.jar");
+        server.setServerConfigurationFile("testFixesServer.xml");
+        server.startServer();
+        runTest(server, FEATURE_MANAGER_CONTEXT_ROOT, "singleTFix");
+
+    }
+
+    @Test
+    public void testMultipleTFixOutput() throws Exception {
+        server.copyFileToLibertyInstallRoot("lib", "ProvisioningTestBundle_1.0.1.jar");
+        server.copyFileToLibertyInstallRoot("lib", "ProvisioningTestBundle_1.0.1.201204040001-TestAPAR0001-TestAPAR0002.jar");
+        server.setServerConfigurationFile("testFixesServer.xml");
+        server.startServer();
+        runTest(server, FEATURE_MANAGER_CONTEXT_ROOT, "multiTFixes");
 
     }
 

@@ -1099,8 +1099,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                     out.print(b.getLocation());
                     out.print(": ");
                     out.println(tFixes);
-                    newTFixSet.addAll(Arrays.asList(tFixes.split("[,\\s]")));
-
+                    newTFixSet.addAll(Arrays.asList(tFixes.replaceAll(" ", "").split(",")));
                 }
                 if (hasIFixes) {
                     out = getFixWriter(out);
@@ -1108,7 +1107,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                     out.print(b.getLocation());
                     out.print(": ");
                     out.println(iFixes);
-                    newIFixSet.addAll(Arrays.asList(iFixes.split("[,\\s]")));
+                    newIFixSet.addAll(Arrays.asList(iFixes.replaceAll(" ", "").split(",")));
                 }
             }
 
