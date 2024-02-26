@@ -14,4 +14,6 @@
 
 publish.wlp.jar.disabled: true
 
--buildpath: org.apache.commons:commons-compress;version=1.26.0
+-buildpath: \
+	org.apache.commons:commons-compress;version=1.26.0, \
+	com.ibm.ws.org.apache.commons.io;version=latest
