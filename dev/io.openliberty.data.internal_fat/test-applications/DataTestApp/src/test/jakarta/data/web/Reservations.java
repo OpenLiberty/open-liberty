@@ -53,6 +53,9 @@ import io.openliberty.data.repository.function.Extract;
  */
 @Repository
 public interface Reservations extends BasicRepository<Reservation, Long> {
+
+    int countByLocationNotNull();
+
     boolean deleteByHostIn(List<String> hosts);
 
     long deleteByHostNot(String host);

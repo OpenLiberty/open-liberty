@@ -25,6 +25,8 @@ import jakarta.data.repository.Repository;
 @Repository
 public interface Receipts extends CrudRepository<Receipt, Long> {
 
+    long countByIdBetween(long minId, long maxId);
+
     boolean deleteByTotalLessThan(float max);
 
     Optional<Receipt> deleteByPurchaseId(long purchaseId);

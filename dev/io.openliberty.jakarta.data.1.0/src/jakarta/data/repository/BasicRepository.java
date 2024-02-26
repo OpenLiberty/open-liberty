@@ -22,7 +22,6 @@ import jakarta.data.page.PageRequest;
  * Interface methods copied from Jakarta Data.
  */
 public interface BasicRepository<T, K> extends DataRepository<T, K> {
-    long countBy();
 
     @Delete
     void delete(T entity);
