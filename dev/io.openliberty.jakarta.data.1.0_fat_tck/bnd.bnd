@@ -16,6 +16,8 @@ bVersion=1.0
 javac.source: 17
 javac.target: 17
 
+fat.minimum.java.level: 17
+
 src: \
 	fat/src
 
@@ -35,6 +37,8 @@ fat.test.databases: true
 # This is the same way the database rotation build sets the database. 
 # Options: Derby, Postgre, DB2, Oracle, SQLServer
 #fat.bucket.db.type: Postgre
+
+fat.test.container.images: mongo:6.0.6
 
 tested.features:\
 	data-1.0

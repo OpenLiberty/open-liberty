@@ -1,0 +1,53 @@
+<!--
+    Copyright (c) 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <!-- Core profile features (no super feature that contains these) -->
+    <feature>cdi-4.0</feature> <!-- Includes Annotations 2.1, Dependency Injection 2.0, and Interceptors 2.1 -->
+    <feature>restfulWS-3.1</feature>
+    
+    <!-- Features being tested -->
+    <feature>data-1.0</feature>
+    <feature>nosql-1.0</feature>
+    
+    <!-- JNoSQL Provided Dependences -->
+    <feature>mpConfig-3.0</feature>
+    <feature>jsonb-3.0</feature>
+    
+    <!-- Features needed for arquillan support -->
+    <feature>localConnector-1.0</feature>
+    <!-- Required by test infrastructure -->
+    <feature>timedexit-1.0</feature>
+    <!-- Convenience feature -->
+    <feature>arquillian-support-jakarta-2.1</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <!-- Allow Arquillian access to dropins directory for application installation -->
+  <remoteFileAccess>
+      <writeDir>${server.config.dir}/dropins</writeDir>
+  </remoteFileAccess>
+  
+  <library id="jnosql">
+    <fileset dir="${shared.resource.dir}/jnosql" includes="*.jar" />
+  </library>
+  
+  <variable name="jnosql.document.database" value="${MONGO_DBNAME}"/>
+  <variable name="jnosql.mongodb.host" value="${MONGO_HOST}"/>
+  
+  <!-- TODO: Should we still be testing with Java Security on Java 17+ since it's being deprecated? -->
+  <javaPermission codeBase="${shared.resource.dir}/jnosql/classgraph-4.8.151.jar" className="java.security.AllPermission"/>
+
+</server>
