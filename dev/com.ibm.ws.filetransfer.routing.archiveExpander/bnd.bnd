@@ -53,4 +53,5 @@ instrument.disabled: true
 
 -buildpath: \
 	com.ibm.ws.org.apache.commons.compress;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
