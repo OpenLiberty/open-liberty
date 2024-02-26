@@ -36,6 +36,7 @@
     backendURL="https://localhost:${bvt.prop.HTTP_default.secure}"
     recoveryGroup="recovery-group-ssl"
     recoveryIdentity="WSATSSL_Client"
+    totalTranLifetimeTimeout="5m"
   />
 
   <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
