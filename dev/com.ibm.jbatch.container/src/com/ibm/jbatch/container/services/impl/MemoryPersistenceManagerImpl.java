@@ -1293,8 +1293,29 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
      */
     @Override
     public boolean purgeJobInstanceAndRelatedData(long jobInstanceId) {
-        // TODO Auto-generated method stub
-        return false;
+
+        //Removing every Execution,StepExecution, StepThreadInstance related to the job
+        //with the specified jobInstanceID along with the JobInstance itself
+        JobInstanceEntity jobInstance = data.jobInstanceData.get(jobInstanceId);
+        List<JobExecutionEntity> executions = jobInstance.getJobExecutions();
+
+        // Removing StepExecutions using executions related to the job
+        for (JobExecutionEntity executionInstance : executions) {
+            for (StepExecution stepExecution : executionInstance.getStepThreadExecutions()) {
+                data.stepExecutionInstanceData.remove(stepExecution.getStepExecutionId());
+            }
+            data.executionInstanceData.remove(executionInstance.getExecutionId());
+        }
+
+        // Removing StepThreadInstances using the JobInstance
+        for (StepThreadInstanceEntity stepInstance : jobInstance.getStepThreadInstances()) {
+            StepThreadInstanceKey keyToFind = new StepThreadInstanceKey(stepInstance);
+            data.stepThreadInstanceData.remove(keyToFind);
+        }
+
+        //Finally the JobInstance can removed
+        data.jobInstanceData.remove(jobInstanceId);
+        return true;
     }
 
     @Override
