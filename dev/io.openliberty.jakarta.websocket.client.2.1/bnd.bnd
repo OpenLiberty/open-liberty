@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -28,7 +28,7 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -includeresource: \
-  @${repo;jakarta.websocket:jakarta.websocket-client-api;2.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.websocket:jakarta.websocket-client-api;2.1.1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -buildpath: \
-  jakarta.websocket:jakarta.websocket-client-api;version=2.1.0;strategy=exact
+  jakarta.websocket:jakarta.websocket-client-api;version=2.1.1;strategy=exact
