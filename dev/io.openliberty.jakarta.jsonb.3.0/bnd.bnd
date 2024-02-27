@@ -29,11 +29,11 @@ Export-Package: \
    jakarta.json.bind.spi;version="3.0"
 
 -includeresource: \
-  @${repo; jakarta.json.bind:jakarta.json.bind-api;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo; jakarta.json.bind:jakarta.json.bind-api;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	 jakarta.json.bind:jakarta.json.bind-api;version=3.0.0;strategy=exact
+	 jakarta.json.bind:jakarta.json.bind-api;version=3.0.1;strategy=exact
