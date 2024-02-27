@@ -2623,12 +2623,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             updateCount = remove(arg, queryInfo, em);
                         }
 
-                        if (updateCount < numExpected) {
-                            Class<?> singleType = queryInfo.getSingleResultType();
-                            if (void.class.equals(singleType) || Void.class.equals(singleType))
-                                throw new OptimisticLockingFailureException((numExpected - updateCount) + " of the " +
-                                                                            numExpected + " entities were not found for deletion."); // TODO NLS
-                        }
+                        if (updateCount < numExpected)
+                            throw new OptimisticLockingFailureException((numExpected - updateCount) + " of the " +
+                                                                        numExpected + " entities were not found for deletion."); // TODO NLS
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;

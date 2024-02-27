@@ -115,7 +115,7 @@ public class DataStoreTestServlet extends FATServlet {
         assertEquals("TestQualifiedDataSource-3", thirtyOnes.get(1).id);
 
         // Prove it went into the expected database by accessing it from another repository that uses ServerDataSource
-        assertEquals(true, serverDSIdRepo.remove(ServerDSEntity.of("TestQualifiedDataSource-1", 31)));
+        serverDSIdRepo.remove(ServerDSEntity.of("TestQualifiedDataSource-1", 31)); // raises an error if not found
     }
 
     /**
@@ -174,11 +174,11 @@ public class DataStoreTestServlet extends FATServlet {
     public void testServerDataSourceById() {
         ServerDSEntity eighty_seven = ServerDSEntity.of("eighty-seven", 87);
 
-        assertEquals(false, serverDSIdRepo.remove(eighty_seven));
+        assertEquals(false, serverDSIdRepo.existsById("eighty-seven"));
 
         serverDSJNDIRepo.insert(eighty_seven); // other repository with same data source used for the insert
 
-        assertEquals(true, serverDSIdRepo.remove(ServerDSEntity.of("eighty-seven", 87)));
+        serverDSIdRepo.remove(ServerDSEntity.of("eighty-seven", 87)); // raises an error if not found
     }
 
     /**

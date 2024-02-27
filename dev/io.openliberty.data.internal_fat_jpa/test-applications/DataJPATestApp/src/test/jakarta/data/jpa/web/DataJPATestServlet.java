@@ -2289,7 +2289,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(Integer.valueOf(initialVersion + 2), r1.version());
 
         // Delete
-        assertEquals(true, rebates.remove(r1));
+        rebates.remove(r1);
         // TODO allow entity return type on delete?
         //r1 = rebates.remove(r1);
         //assertEquals(Integer.valueOf(1), r1.id());
@@ -2478,10 +2478,21 @@ public class DataJPATestServlet extends FATServlet {
         }
 
         // Delete
-        assertEquals(2, rebates.removeAll(r4_old, r3, r2));
-        assertEquals(2, rebates.removeAll(r2, r3, r4, r5));
-        assertEquals(0, rebates.removeAll(r2, r5));
-        // TODO allow entity return type on delete?
+        try {
+            rebates.removeAll(r3, r4_old, r2);
+            fail("Attempt to delete multiple where one has an outdated version must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
+
+        rebates.removeAll(r2, r3, r4, r5);
+
+        try {
+            rebates.removeAll(r2, r5);
+            fail("Attempt to delete multiple where at least one is not found must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
     }
 
     /**
@@ -2661,10 +2672,21 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(Integer.valueOf(r6_initialVersion + 2), r6.version());
 
         // Delete
-        assertEquals(3, rebates.removeMultiple(new ArrayList<>(List.of(r9, r8_old, r7, r6))));
-        assertEquals(1, rebates.removeMultiple(new ArrayList<>(List.of(r6, r7, r8))));
-        assertEquals(0, rebates.removeMultiple(new ArrayList<>(List.of(r9, r7))));
-        // TODO allow entity return type on delete?
+        try {
+            rebates.removeMultiple(new ArrayList<>(List.of(r9, r8_old, r7, r6)));
+            fail("Attempt to delete multiple where one has an outdated version must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
+
+        rebates.removeMultiple(new ArrayList<>(List.of(r6, r9, r7, r8)));
+
+        try {
+            rebates.removeMultiple(new ArrayList<>(List.of(r9, r7)));
+            fail("Attempt to delete multiple where at leaset one is not found must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
     }
 
     /**
@@ -2756,11 +2778,16 @@ public class DataJPATestServlet extends FATServlet {
 
         // Try to delete with wrong version/timestamp (from other entity),
         mower.lastUpdated = timestamp;
-        assertEquals(false, counties.remove(mower));
+        try {
+            counties.remove(mower);
+            fail("Deletion attempt with wrong version did not raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
 
         // Use correct version/timestamp,
         mower = counties.findByName("Mower").orElseThrow();
-        assertEquals(true, counties.remove(mower));
+        counties.remove(mower);
     }
 
     /**
@@ -3126,7 +3153,12 @@ public class DataJPATestServlet extends FATServlet {
         o1.purchasedBy = "testVersionedDelete-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 1.09f;
-        assertEquals(0, orders.cancel(o1)); // doesn't exist yet
+        try {
+            orders.cancel(o1); // doesn't exist yet
+            fail("Attempt to delete an entity that doesn't exist yet, must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
 
         o1 = orders.create(o1);
 
@@ -3146,7 +3178,12 @@ public class DataJPATestServlet extends FATServlet {
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 1.19f;
         o1.versionNum = oldVersion;
-        assertEquals(0, orders.cancel(o1));
+        try {
+            orders.cancel(o1);
+            fail("Attempt to delete an outdated version must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
 
         PurchaseOrder o2 = new PurchaseOrder();
         o2.purchasedBy = "testVersionedDelete-Customer2";
@@ -3164,17 +3201,29 @@ public class DataJPATestServlet extends FATServlet {
 
         // Attempt deletion at correct version
         o1.versionNum = newVersion;
-        assertEquals(2, orders.cancel(o1, o2));
+        orders.cancel(o1, o2);
 
         // Entities o1 and o2 should no longer be in the database:
-        assertEquals(0, orders.cancel(o1, o2));
+        try {
+            orders.cancel(o1, o2);
+            fail("Attempt to delete multiple where entities are no longer in the database must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
 
         // Entity o3 should still be there:
         o3 = orders.findById(o3.id).orElseThrow();
         assertEquals(3.09f, o3.total, 0.001f);
 
         // Deletion where only 1 is found:
-        assertEquals(1, orders.cancel(o1, o3, o2));
+        try {
+            orders.cancel(o3, o1, o2);
+            fail("Attempt to delete multiple where at least one is no longer in the database must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
+
+        orders.cancel(o3);
     }
 
     /**
@@ -3192,10 +3241,15 @@ public class DataJPATestServlet extends FATServlet {
 
         duluth = new City("Duluth", "Minnesota", 86697, Set.of(218));
         duluth.changeCount = oldVersion;
-        assertEquals(false, cities.remove(duluth));
+        try {
+            cities.remove(duluth);
+            fail("Attempt to delete with an outdated version must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
 
         duluth.changeCount = newVersion;
-        assertEquals(true, cities.remove(duluth));
+        cities.remove(duluth);
     }
 
     /**
