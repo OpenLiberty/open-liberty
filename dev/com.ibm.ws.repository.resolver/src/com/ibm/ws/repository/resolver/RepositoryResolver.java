@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,7 @@ import com.ibm.ws.repository.resources.ApplicableToProduct;
 import com.ibm.ws.repository.resources.EsaResource;
 import com.ibm.ws.repository.resources.RepositoryResource;
 import com.ibm.ws.repository.resources.SampleResource;
+import com.ibm.ws.repository.transport.model.AppliesToFilterInfo;
 
 /**
  * Resolves a list of names into lists of {@link RepositoryResource} to be installed
@@ -906,7 +907,14 @@ public class RepositoryResolver {
         Set<ProductRequirementInformation> missingProductInformation = new HashSet<>();
 
         for (ApplicableToProduct esa : resourcesWrongProduct) {
-            missingRequirements.add(new MissingRequirement(esa.getAppliesTo(), (RepositoryResource) esa));
+            StringBuffer sb = new StringBuffer(";editions=\"");
+            if (esa instanceof EsaResource && ((EsaResource) esa).getAppliesToFilterInfo() != null) {
+                for (AppliesToFilterInfo atfi : ((EsaResource) esa).getAppliesToFilterInfo()) {
+                    sb.append(atfi.getEditions().toString().replace("[", "").replace("]", "").replace(" ", ""));
+                }
+            }
+            sb.append("\"");
+            missingRequirements.add(new MissingRequirement(esa.getAppliesTo().concat(sb.toString()), (RepositoryResource) esa));
             missingProductInformation.addAll(ProductRequirementInformation.createFromAppliesTo(esa.getAppliesTo()));
         }
 
