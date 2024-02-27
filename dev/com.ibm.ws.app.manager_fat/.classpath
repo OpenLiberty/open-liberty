@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
-	<classpathentry kind="src" path="test-applications/DataSourceApp.ear/DataSourceEJB.jar/src"/>
-	<classpathentry kind="src" path="test-applications/snoop.war/src"/>
-	<classpathentry kind="src" path="test-applications/testWarApplication.war/src"/>
 	<classpathentry kind="src" path="test-applications/app-j2ee.ear/src"/>
 	<classpathentry kind="src" path="test-applications/slowapp.war/src"/>
-	<classpathentry kind="src" path="test-bundles/test.app.notifications/src"/>
+	<classpathentry kind="src" path="test-applications/snoop.war/src"/>
+	<classpathentry kind="src" path="test-applications/testWarApplication.war/src"/>
+	<classpathentry kind="src" path="test-applications/DataSourceApp.ear/DataSourceEJB.jar/src"/>
 	<classpathentry kind="src" path="test-bundles/test.app.prereq/src"/>
+	<classpathentry kind="src" path="test-bundles/test.app.notifications/src"/>
+	<classpathentry kind="src" path="test-applications/sharedLibSnoop.war/src"/>
+	<classpathentry kind="src" path="test-applications/lib0/src"/>
+	<classpathentry kind="src" path="test-applications/lib0_alt/src"/>
+	<classpathentry kind="src" path="test-applications/lib1/src"/>
+	<classpathentry kind="src" path="test-applications/lib1_alt/src"/>
+	<classpathentry kind="src" path="test-applications/lib2/src"/>
+	<classpathentry kind="src" path="test-applications/lib3/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/fattest.simplicity"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
