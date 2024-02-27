@@ -241,8 +241,8 @@ public class BasicAuthTest extends ContainerKDCCommonTest {
             String userName = InitClass.FIRST_USER;
             String targetSpn = "HTTP/" + TARGET_SERVER;
             String krb5Config = myServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE;
-            String misMatchUserName = InitClass.SECOND_USER = "user2";
-            String misMatchUserPassword = InitClass.SECOND_USER_PWD = "user2pwd";
+            String misMatchUserName = InitClass.SECOND_USER;
+            String misMatchUserPassword = InitClass.SECOND_USER_PWD;
 
             //testHelper.reconfigureServer("spnegoServer.xml", name.getMethodName(), SPNEGOConstants.RESTART_SERVER);
             Subject subject = krb5Helper.kerberosLogin(myServer, misMatchUserName, misMatchUserPassword, krb5Config);

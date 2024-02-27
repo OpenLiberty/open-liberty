@@ -155,17 +155,20 @@ public class ContainerKDCCommonTest {
         InitClass.COMMON_TOKEN_USER = "user1"; //ApacheKDCforSPNEGO.COMMON_TOKEN_USER;
         InitClass.FQN = "@" + KerberosContainer.KRB5_REALM;
 
-        InitClass.SECOND_USER = "user2"; //ApacheKDCforSPNEGO.KRB5_USER2;
-        InitClass.SECOND_USER_PWD = "password"; //ApacheKDCforSPNEGO.KRB5_USER2_PWD;
+        InitClass.FIRST_USER = "user1";
+        InitClass.FIRST_USER_PWD = "password";
 
-        //must set to avoid NPE from re-using existing helper functions
-        InitClass.KDCP_VAR = InitClass.KDC_HOSTNAME;
-        InitClass.KDCS_VAR = InitClass.KDC2_HOSTNAME;
+        InitClass.SECOND_USER = "user2";
+        InitClass.SECOND_USER_PWD = InitClass.FIRST_USER_PWD;
 
         InitClass.KDC_REALM = KerberosContainer.KRB5_REALM;
         InitClass.KDC_HOSTNAME = KerberosContainer.KDC_HOSTNAME;
         Log.info(c, thisMethod, "KDC_REALM: " + InitClass.KDC_REALM);
         Log.info(c, thisMethod, "KDC_HOSTNAME: " + InitClass.KDC_HOSTNAME);
+
+        //must set to avoid NPE from re-using existing helper functions
+        InitClass.KDCP_VAR = InitClass.KDC_HOSTNAME;
+        InitClass.KDCS_VAR = InitClass.KDC2_HOSTNAME;
 
     }
 
