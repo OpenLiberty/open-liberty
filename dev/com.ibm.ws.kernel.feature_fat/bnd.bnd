@@ -22,6 +22,7 @@ src: \
 	test-applications/IgnoreAPI.ear/IgnoreAPIEJB.jar/src, \
 	test-bundles/test.feature.api/src, \
 	test-bundles/test.feature.provisioner/src, \
+	test-bundles/test.feature.fix.manager/src, \
 	test-bundles/test.service.consumer/src, \
 	test-bundles/test.service.provider/src, \
 	test-bundles/test.activation.type/src, \
