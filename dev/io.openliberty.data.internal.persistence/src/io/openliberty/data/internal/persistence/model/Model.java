@@ -23,9 +23,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import jakarta.data.metamodel.Attribute;
-import jakarta.data.metamodel.CollectionAttribute;
 import jakarta.data.metamodel.SortableAttribute;
 import jakarta.data.metamodel.TextAttribute;
+import jakarta.data.metamodel.impl.AttributeRecord;
+import jakarta.data.metamodel.impl.SortableAttributeRecord;
+import jakarta.data.metamodel.impl.TextAttributeRecord;
 
 /**
  * Utility class for the static metamodel.
@@ -36,7 +38,6 @@ public class Model {
     private static final Set<Class<?>> ATTRIBUTE_TYPES = new HashSet<>();
     static {
         ATTRIBUTE_TYPES.add(Attribute.class);
-        ATTRIBUTE_TYPES.add(CollectionAttribute.class);
         ATTRIBUTE_TYPES.add(SortableAttribute.class);
         ATTRIBUTE_TYPES.add(String.class);
         ATTRIBUTE_TYPES.add(TextAttribute.class);
@@ -67,13 +68,11 @@ public class Model {
                                 if (String.class.equals(fieldType))
                                     value = attrName;
                                 else if (SortableAttribute.class.equals(fieldType))
-                                    value = SortableAttributeImpl.create(fieldName);
+                                    value = new SortableAttributeRecord<>(fieldName);
                                 else if (TextAttribute.class.equals(fieldType))
-                                    value = TextAttributeImpl.create(fieldName);
-                                else if (CollectionAttribute.class.equals(fieldType))
-                                    value = CollectionAttributeImpl.create(fieldName);
+                                    value = new TextAttributeRecord<>(fieldName);
                                 else
-                                    value = AttributeImpl.create(fieldName);
+                                    value = new AttributeRecord(fieldName);
 
                                 field.set(null, value);
 

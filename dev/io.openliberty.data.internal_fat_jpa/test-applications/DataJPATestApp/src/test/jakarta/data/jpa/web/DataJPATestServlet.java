@@ -2689,7 +2689,7 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Tests direct usage of StaticMetamodel auto-populated CollectionAttribute field.
+     * Tests direct usage of StaticMetamodel auto-populated Attribute field for a collection type.
      */
     @Test
     public void testStaticMetamodelCollectionAttribute() {

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import jakarta.data.metamodel.CollectionAttribute;
+import jakarta.data.metamodel.Attribute;
 import jakarta.data.metamodel.SortableAttribute;
 import jakarta.data.metamodel.StaticMetamodel;
 
@@ -19,7 +19,7 @@ import jakarta.data.metamodel.StaticMetamodel;
  */
 @StaticMetamodel(TaxPayer.class)
 public class _TaxPayer {
-    public static volatile CollectionAttribute bankAccounts;
+    public static volatile Attribute bankAccounts;
     public static volatile SortableAttribute filingStatus;
     public static volatile SortableAttribute income;
     public static volatile SortableAttribute numDependents;

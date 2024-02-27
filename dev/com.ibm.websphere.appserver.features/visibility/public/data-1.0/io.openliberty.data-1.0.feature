@@ -11,6 +11,7 @@ IBM-API-Package: \
   jakarta.data; type="spec",\
   jakarta.data.exceptions; type="spec",\
   jakarta.data.metamodel; type="spec",\
+  jakarta.data.metamodel.impl; type="spec",\
   jakarta.data.page; type="spec",\
   jakarta.data.repository; type="spec"
 Subsystem-Name: Jakarta Data 1.0
