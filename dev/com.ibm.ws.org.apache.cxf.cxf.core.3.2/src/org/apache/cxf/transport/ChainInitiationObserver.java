@@ -186,7 +186,7 @@ public class ChainInitiationObserver implements MessageObserver {
                 exchange.put(Message.WSDL_INTERFACE, interfaceQName);
 
                 QName portQName = endpointInfo.getName();
-	        LOG.fine("setExchangeProperties: WSDL Port Qname: " + serviceQName);  // Liberty Change
+	        LOG.fine("setExchangeProperties: WSDL Port Qname: " + portQName);  // Liberty Change
                 exchange.put(Message.WSDL_PORT, portQName);
                 URI wsdlDescription = endpointInfo.getProperty("URI", URI.class);
                 if (wsdlDescription == null && !endpointInfo.hasProperty("URI")) {

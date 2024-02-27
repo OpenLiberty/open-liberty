@@ -45,15 +45,18 @@ import com.ibm.websphere.ras.annotation.Sensitive;
  * Invokes a Binding's invoker with the <code>INVOCATION_INPUT</code> from
  * the Exchange.
  */
+
 public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message> {
 
     private static final Logger LOG = LogUtils.getL7dLogger(ServiceInvokerInterceptor.class);  // Liberty Change
 
     public ServiceInvokerInterceptor() {
         super(Phase.INVOKE);
+	System.out.println("DEBUG-SI: Inside ServiceInvokerInterceptor constructor...");
     }
 
     public void handleMessage(@Sensitive final Message message) {  // Liberty Change
+	System.out.println("DEBUG-SI: Inside ServiceInvokerInterceptor handleMessage...");
         final Exchange exchange = message.getExchange();
         final Endpoint endpoint = exchange.getEndpoint();
         final Service service = endpoint.getService();

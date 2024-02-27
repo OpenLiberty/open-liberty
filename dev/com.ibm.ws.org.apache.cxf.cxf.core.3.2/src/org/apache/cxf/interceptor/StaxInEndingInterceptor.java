@@ -49,7 +49,7 @@ public class StaxInEndingInterceptor extends AbstractPhaseInterceptor<Message> {
 
     public void handleMessage(@Sensitive Message message) {  // Liberty Change
         XMLStreamReader xtr = message.getContent(XMLStreamReader.class);
-	LOG.finest("XMLStreamReader class: " + xtr.getClass().getCanonicalName()); // Liberty Change
+	LOG.finest("XMLStreamReader class: " + (xtr != null ? xtr.getClass().getCanonicalName() : "NULL")); // Liberty Change
         if (xtr != null && !MessageUtils.getContextualBoolean(message, STAX_IN_NOCLOSE, false)) {
             try {
                 StaxUtils.close(xtr);
