@@ -52,11 +52,9 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
 
     public ServiceInvokerInterceptor() {
         super(Phase.INVOKE);
-	System.out.println("DEBUG-SI: Inside ServiceInvokerInterceptor constructor...");
     }
 
     public void handleMessage(@Sensitive final Message message) {  // Liberty Change
-	System.out.println("DEBUG-SI: Inside ServiceInvokerInterceptor handleMessage...");
         final Exchange exchange = message.getExchange();
         final Endpoint endpoint = exchange.getEndpoint();
         final Service service = endpoint.getService();
