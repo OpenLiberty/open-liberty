@@ -10,6 +10,6 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;commons-codec:commons-codec;1.15}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;commons-codec:commons-codec;1.16.1}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--buildpath: commons-codec:commons-codec;version=1.15
+-buildpath: commons-codec:commons-codec;strategy=exact;version=1.16.1
