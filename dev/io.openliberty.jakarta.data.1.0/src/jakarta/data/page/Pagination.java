@@ -28,7 +28,7 @@ import jakarta.data.page.PageRequest.Mode;
  */
 record Pagination<T>(long page,
                 int size,
-                List<Sort<T>> sorts,
+                List<Sort<? super T>> sorts,
                 Mode mode,
                 Cursor type)
                 implements PageRequest<T> {
@@ -119,34 +119,40 @@ record Pagination<T>(long page,
     }
 
     @Override
-    public Pagination<T> sortBy(Iterable<Sort<T>> sorts) {
-        List<Sort<T>> sortList = sorts instanceof List ? List.copyOf((List<Sort<T>>) sorts) : sorts == null ? Collections.emptyList() : StreamSupport.stream(sorts.spliterator(),
-                                                                                                                                                             false).collect(Collectors.toUnmodifiableList());
+    public Pagination<T> sortBy(Iterable<Sort<? super T>> sorts) {
+        List<Sort<? super T>> sortList = sorts instanceof List //
+                        ? List.copyOf((List<Sort<? super T>>) sorts) //
+                        : sorts == null //
+                                        ? Collections.emptyList() //
+                                        : StreamSupport.stream(sorts.spliterator(), false) //
+                                                        .collect(Collectors.toUnmodifiableList());
         return new Pagination<T>(page, size, sortList, mode, type);
     }
 
     @Override
-    public PageRequest<T> sortBy(Sort<T> sort) {
+    public PageRequest<T> sortBy(Sort<? super T> sort) {
         return new Pagination<T>(page, size, List.of(sort), mode, type);
     }
 
     @Override
-    public PageRequest<T> sortBy(Sort<T> sort1, Sort<T> sort2) {
+    public PageRequest<T> sortBy(Sort<? super T> sort1, Sort<? super T> sort2) {
         return new Pagination<T>(page, size, List.of(sort1, sort2), mode, type);
     }
 
     @Override
-    public PageRequest<T> sortBy(Sort<T> sort1, Sort<T> sort2, Sort<T> sort3) {
+    public PageRequest<T> sortBy(Sort<? super T> sort1, Sort<? super T> sort2, Sort<? super T> sort3) {
         return new Pagination<T>(page, size, List.of(sort1, sort2, sort3), mode, type);
     }
 
     @Override
-    public PageRequest<T> sortBy(Sort<T> sort1, Sort<T> sort2, Sort<T> sort3, Sort<T> sort4) {
+    public PageRequest<T> sortBy(Sort<? super T> sort1, Sort<? super T> sort2, Sort<? super T> sort3,
+                                 Sort<? super T> sort4) {
         return new Pagination<T>(page, size, List.of(sort1, sort2, sort3, sort4), mode, type);
     }
 
     @Override
-    public PageRequest<T> sortBy(Sort<T> sort1, Sort<T> sort2, Sort<T> sort3, Sort<T> sort4, Sort<T> sort5) {
+    public PageRequest<T> sortBy(Sort<? super T> sort1, Sort<? super T> sort2, Sort<? super T> sort3,
+                                 Sort<? super T> sort4, Sort<? super T> sort5) {
         return new Pagination<T>(page, size, List.of(sort1, sort2, sort3, sort4, sort5), mode, type);
     }
 
@@ -157,7 +163,7 @@ record Pagination<T>(long page,
         if (type != null)
             b.append(", mode=").append(mode).append(", ").append(type.size()).append(" keys");
 
-        for (Sort<T> o : sorts) {
+        for (Sort<? super T> o : sorts) {
             b.append(", ").append(o.property()).append(o.ignoreCase() ? " IGNORE CASE" : "").append(o.isDescending() ? " DESC" : " ASC");
         }
 
