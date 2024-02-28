@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:h="jakarta.faces.html"
+      xmlns:composite="jakarta.faces.composite">
+
+<h:head>
+    <title>Testing Composite Extension</title>
+</h:head>
+
+<h:body>
+
+    <!-- Likely not the correct usage here, but the application still throws a warning here (as expected). -->
+    <composite:extension>
+    <!-- Deprecated, so we should see a warning in the logs -->
+    </composite:extension>
+
+</h:body>
+</html>

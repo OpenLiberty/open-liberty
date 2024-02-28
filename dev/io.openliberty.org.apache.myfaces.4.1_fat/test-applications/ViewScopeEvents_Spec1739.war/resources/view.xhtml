@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<!--
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="jakarta.faces.html">
+    <h:head>
+        <title>Spec 1739</title>
+    </h:head>
+    <h:body>
+        <h:form id="form"> 
+            ViewScope Bean Created: #{viewBean}
+            <h:message for="form"/>
+            <h:commandButton value="submit" id="goToView2" action="view2"/>
+        </h:form>
+    </h:body>
+</html>
