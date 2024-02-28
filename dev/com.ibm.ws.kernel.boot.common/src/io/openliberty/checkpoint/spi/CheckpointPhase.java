@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.spi;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public enum CheckpointPhase {
     private boolean blockAddHooks = false;
     final Map<Integer, StaticCheckpointHook> singleThreadedHooks = new HashMap<>();
     final Map<Integer, StaticCheckpointHook> multiThreadedHooks = new HashMap<>();
-    Object context;
+    WeakReference<Object> contextRef = new WeakReference<>(null);
     Method registerService;
     Method unregisterService;
 
@@ -249,8 +250,9 @@ public enum CheckpointPhase {
 
     private StaticCheckpointHook createStaticCheckpointHook(int rank, boolean multiThreaded) {
         final StaticCheckpointHook newHook = new StaticCheckpointHook(rank, multiThreaded);
+        Object context = contextRef.get();
         if (context != null) {
-            newHook.register();
+            newHook.register(context);
         }
         return newHook;
     }
@@ -362,15 +364,19 @@ public enum CheckpointPhase {
     }
 
     final synchronized void setContext(Object context) throws NoSuchMethodException {
-        this.context = context;
-        registerService = this.context.getClass().getMethod("registerService", Class.class, Object.class, Dictionary.class);
+        if (this == INACTIVE) {
+            // don't need anything unless we know we are going to do a checkpoint
+            return;
+        }
+        this.contextRef = new WeakReference<Object>(context);
+        registerService = context.getClass().getMethod("registerService", Class.class, Object.class, Dictionary.class);
         unregisterService = registerService.getReturnType().getMethod("unregister");
         // register any hooks already added
         for (Map.Entry<Integer, StaticCheckpointHook> hook : multiThreadedHooks.entrySet()) {
-            hook.getValue().register();
+            hook.getValue().register(context);
         }
         for (Map.Entry<Integer, StaticCheckpointHook> hook : singleThreadedHooks.entrySet()) {
-            hook.getValue().register();
+            hook.getValue().register(context);
         }
     }
 
@@ -391,7 +397,7 @@ public enum CheckpointPhase {
             this.multiThreaded = multiThreaded;
         }
 
-        void register() {
+        void register(Object context) {
             Dictionary<String, Object> props = new Hashtable<>();
             props.put(SERVICE_RANKING, Integer.valueOf(rank));
             props.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.valueOf(multiThreaded));
