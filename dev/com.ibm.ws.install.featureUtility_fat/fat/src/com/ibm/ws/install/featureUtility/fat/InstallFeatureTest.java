@@ -19,8 +19,6 @@ import static org.junit.Assert.assertTrue;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Properties;
 
 import org.junit.After;
@@ -29,6 +27,7 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
@@ -46,16 +45,18 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	private static String userFeatureSigPath = "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc";
 	static Network network = Network.newNetwork();
 	
-	@ClassRule
+//	@ClassRule
 	/*
-	 * Increased startup timeout because nexus container might take more than 60 seconds (default start up time) to start.
-	 * Also wait for log "Started Sonatype Nexus.*" to make sure repository is up and running.
+	 * Increased startup timeout because nexus container might take more than 60
+	 * seconds (default start up time) to start. Also wait for log
+	 * "Started Sonatype Nexus.*" to make sure repository is up and running.
+	 * Disabling due to intermittent time out
 	 */
-	public static GenericContainer<?> nexusContainer = new GenericContainer<>("jiwoo/nexus:1.0")
-		.withStartupTimeout(Duration.of(5, ChronoUnit.MINUTES))
-        .waitingFor(Wait.forLogMessage("Started Sonatype Nexus.*", 1))
-        .withNetwork(network)
-        .withNetworkAliases("nexus");
+//	public static GenericContainer<?> nexusContainer = new GenericContainer<>("jiwoo/nexus:1.0")
+//		.withStartupTimeout(Duration.of(5, ChronoUnit.MINUTES))
+//        .waitingFor(Wait.forLogMessage("Started Sonatype Nexus.*", 1))
+//        .withNetwork(network)
+//        .withNetworkAliases("nexus");
 
 	@ClassRule
 	public static GenericContainer<?> container = new GenericContainer<>("jiwoo/simple-keyserver:1.0")
@@ -988,11 +989,12 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	}
 	
 	@Test
+	@Ignore("Disabling due to intermittent nexusContianer startup timeout")
 	public void testProxyAndRepoAuth() throws Exception {
 	    final String METHOD_NAME = "testProxyAndRepoAuth";
 	    Log.entering(c, METHOD_NAME);
 	    
-	    container.dependsOn(nexusContainer).start();
+//	    container.dependsOn(nexusContainer).start();
 	    
 	    String proxyHost = "http://" + proxyContainer.getHost();
 	    String proxyPort = proxyContainer.getMappedPort(3128).toString();
@@ -1026,11 +1028,12 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	}
 
 	@Test
+	@Ignore("Disabling due to intermittent nexusContianer startup timeout")
 	public void testProxyAndRepoAuthEncoded() throws Exception {
 	    final String METHOD_NAME = "testProxyAndRepoAuthEncoded";
 	    Log.entering(c, METHOD_NAME);
 
-	    container.dependsOn(nexusContainer).start();
+//	    container.dependsOn(nexusContainer).start();
 
 	    String proxyHost = "http://" + proxyContainer.getHost();
 	    String proxyPort = proxyContainer.getMappedPort(3128).toString();
