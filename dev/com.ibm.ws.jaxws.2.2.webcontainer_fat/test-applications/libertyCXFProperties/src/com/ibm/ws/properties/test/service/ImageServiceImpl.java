@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import javax.xml.ws.soap.Addressing;
 import com.ibm.ws.properties.test.client.stub.ImageService;
 
 @WebService(targetNamespace = "http://jaxws.service/", endpointInterface = "com.ibm.ws.properties.test.service.ImageService", portName = "ImageServiceImplPort",
-            serviceName = "ImageServiceImplService", wsdlLocation = "WEB-INF/wsdl/service-image.wsdl")
+            serviceName = "ImageServiceImplService") // 27755 WSDL location is removed that might be causing NPE on z/OS
 @Addressing
 public class ImageServiceImpl implements ImageService {
 
