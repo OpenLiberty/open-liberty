@@ -69,6 +69,7 @@ Include-Resource: \
 app-resources= \
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.ConfigurablePropagatorProvider |\
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider |\
+  META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.metrics.ConfigurableMetricExporterProvider |\
   META-INF/services/io.opentelemetry.exporter.internal.grpc.GrpcSenderProvider |\
   META-INF/services/io.opentelemetry.exporter.internal.http.HttpSenderProvider |\
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.ResourceProvider
