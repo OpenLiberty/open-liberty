@@ -19,16 +19,15 @@ Bundle-SymbolicName: io.openliberty.jakarta.servlet.6.1; singleton:=true
 Bundle-Description: Jakarta Servlet, version 6.1
 
 Export-Package: \
-   	jakarta.servlet;thread-context=true;uses:="jakarta.servlet.annotation,jakarta.servlet.descriptor";version="6.1.0",\
-   	jakarta.servlet.annotation;thread-context=true;uses:="jakarta.servlet";version="6.1.0",\
-   	jakarta.servlet.descriptor;thread-context=true;version="6.1.0",\
-   	jakarta.servlet.http;thread-context=true;uses:="jakarta.servlet";version="6.1.0",\
-   	jakarta.servlet.resources;thread-context=true;version="6.1.0"
+    jakarta.servlet;thread-context=true;uses:="jakarta.servlet.annotation,jakarta.servlet.descriptor";version="6.1.0",\
+    jakarta.servlet.annotation;thread-context=true;uses:="jakarta.servlet";version="6.1.0",\
+    jakarta.servlet.descriptor;thread-context=true;version="6.1.0",\
+    jakarta.servlet.http;thread-context=true;uses:="jakarta.servlet";version="6.1.0",\
+    jakarta.servlet.resources;thread-context=true;version="6.1.0"
 
 -includeresource: \
-  @${repo;jakarta.servlet:jakarta.servlet-api;6.1.0.M1;EXACT}!/!(META-INF/maven/*|module-info.class),\
-  jakarta=resources/servlet-6.1/jakarta
+    @${repo;jakarta.servlet:jakarta.servlet-api;6.1.0.M2;EXACT}!/!(META-INF/maven/*|module-info.class),\
+    jakarta=resources/servlet-6.1/jakarta
 
 -maven-dependencies: \
-   dep1;groupId=jakarta.servlet;artifactId=jakarta.servlet-api;version=6.1.0-M1;scope=runtime
-
+    dep1;groupId=jakarta.servlet;artifactId=jakarta.servlet-api;version=6.1.0-M2;scope=runtime
