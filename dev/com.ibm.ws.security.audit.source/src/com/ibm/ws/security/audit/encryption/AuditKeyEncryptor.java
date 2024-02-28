@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ public class AuditKeyEncryptor {
     public static final String IBMJCE_NAME = "IBMJCE";
     public static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
     private String algorithm = MESSAGE_DIGEST_ALGORITHM_SHA;
+    private int len = 24;
     byte[] password;
     byte[] desKey;
     AuditCrypto des;
@@ -32,13 +33,14 @@ public class AuditKeyEncryptor {
         this.password = password;
         java.security.MessageDigest md = null;
         try {
-            if (isFips140_3Enabled())
+            if (isFips140_3Enabled()) {
                 algorithm = MESSAGE_DIGEST_ALGORITHM_SHA256;
+                len = 32;
+            }
 
             md = java.security.MessageDigest.getInstance(algorithm);
-            desKey = new byte[32]; // for 3DES
+            desKey = new byte[len];
             byte[] digest = md.digest(this.password);
-            System.out.print("digest length: " + digest.length);
             ByteArray.copy(digest, 0, digest.length, desKey, 0);
             desKey[20] = (byte) 0x00;
             desKey[21] = (byte) 0x00;

@@ -1164,7 +1164,7 @@ final class AuditCrypto {
             if (off != ck.off) {
                 return false;
             }
-//TODO: UT ??
+//TODO: UTLE ??
 //            if (useJCE != ck.useJCE) {
 //                return false;
 //            }
@@ -2027,10 +2027,7 @@ final class AuditCrypto {
     }
 
     static final byte[] encrypt(byte[] data, byte[] key) {
-        String cipher = DESEDE_ECB_CIPHER;
-        if (fips140_3Enabled)
-            cipher = AES_CBC_CIPHER;
-        return encrypt(data, key, cipher, true);
+        return encrypt(data, key, getCipher(), true);
     }
 
     static final byte[] encrypt(byte[] data, byte[] key, String cipher, boolean useJCE) {
@@ -2140,7 +2137,7 @@ final class AuditCrypto {
     }
 
     static final byte[] decrypt(byte[] mesg, byte[] key) {
-        return decrypt(mesg, key, CIPHER, true);
+        return decrypt(mesg, key, getCipher(), true);
     }
 
     static final byte[] decrypt(byte[] mesg, byte[] key, String cipher, boolean useJCE) {
@@ -2401,8 +2398,8 @@ final class AuditCrypto {
         return signature;
     }
 
-    String Cipher() {
-        String cipher = "DESede/ECB/PKCS5Padding";
+    static String getCipher() {
+        String cipher = DESEDE_ECB_CIPHER;
         if (fips140_3Enabled)
             cipher = AES_CBC_CIPHER;
         return cipher;
