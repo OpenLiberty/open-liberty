@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,7 @@ public class MessageConstants extends com.ibm.ws.security.fat.common.MessageCons
     public static final String CWWKS2500W_MISSING_CLIENTID_EL = "CWWKS2500W";
     public static final String CWWKS2504E_CREDENTIAL_VALIDATION_ERROR = "CWWKS2504E";
     public static final String CWWKS2507W_OIDC_MECH_CONFIG_NEGATIVE_INT = "CWWKS2507W";
+    public static final String CWWKS2509E_CALLER_MISSING = "CWWKS2509E";
 
     public static final String CWWKS2520E_SIGNATURE_NOT_ALLOWED = "CWWKS2520E";
     public static final String CWWKS2521E_SIGNING_KEY_MISSING = "CWWKS2521E";
