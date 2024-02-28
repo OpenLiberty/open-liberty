@@ -60,7 +60,7 @@ public interface Orders extends CrudRepository<PurchaseOrder, Long> {
     List<Float> findTotalByPurchasedByIn(Iterable<String> purchasers, Sort<?>... sorts);
 
     @Update
-    boolean modify(PurchaseOrder order);
+    void modify(PurchaseOrder order);
 
     @Update
     PurchaseOrder[] modifyAll(PurchaseOrder... orders);

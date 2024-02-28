@@ -571,13 +571,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
     /**
      * Finds and updates entities (or records) in the database.
-     * Entities that are not found are ignored.
      *
      * @param arg       the entity or record, or array or Iterable or Stream of entity or record.
      * @param queryInfo query information.
      * @param em        the entity manager.
      * @return the updated entities, using the return type that is required by the repository Update method signature.
-     * @throws Exception if an error occurs.
+     * @throws OptimisticLockingFailureException if an entity is not found in the database.
+     * @throws Exception                         if an error occurs.
      */
     private Object findAndUpdate(Object arg, QueryInfo queryInfo, EntityManager em) throws Exception {
         List<Object> results;
@@ -588,9 +588,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
             results = new ArrayList<>(length);
             for (int i = 0; i < length; i++) {
                 Object entity = findAndUpdateOne(Array.get(arg, i), queryInfo, em);
-                if (entity != null) {
+                if (entity == null)
+                    throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                else
                     results.add(entity);
-                }
             }
         } else {
             arg = arg instanceof Stream //
@@ -601,17 +602,19 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (arg instanceof Iterable) {
                 for (Object e : ((Iterable<?>) arg)) {
                     Object entity = findAndUpdateOne(e, queryInfo, em);
-                    if (entity != null) {
+                    if (entity == null)
+                        throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                    else
                         results.add(entity);
-                    }
                 }
             } else {
                 hasSingularEntityParam = true;
                 results = new ArrayList<>(1);
                 Object entity = findAndUpdateOne(arg, queryInfo, em);
-                if (entity != null) {
+                if (entity == null)
+                    throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                else
                     results.add(entity);
-                }
             }
         }
         em.flush();
@@ -2624,8 +2627,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         }
 
                         if (updateCount < numExpected)
-                            throw new OptimisticLockingFailureException((numExpected - updateCount) + " of the " +
-                                                                        numExpected + " entities were not found for deletion."); // TODO NLS
+                            if (numExpected == 1)
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                            else
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database for " +
+                                                                            (numExpected - updateCount) + " of the " +
+                                                                            numExpected + " entities."); // TODO NLS
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
@@ -2637,17 +2644,29 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                         ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
                                         : args[0];
                         int updateCount = 0;
+                        int numExpected = 0;
 
                         if (arg instanceof Iterable) {
-                            for (Object e : ((Iterable<?>) arg))
+                            for (Object e : ((Iterable<?>) arg)) {
+                                numExpected++;
                                 updateCount += update(e, queryInfo, em);
+                            }
                         } else if (queryInfo.entityParamType.isArray()) {
-                            int length = Array.getLength(arg);
-                            for (int i = 0; i < length; i++)
+                            numExpected = Array.getLength(arg);
+                            for (int i = 0; i < numExpected; i++)
                                 updateCount += update(Array.get(arg, i), queryInfo, em);
                         } else {
+                            numExpected = 1;
                             updateCount = update(arg, queryInfo, em);
                         }
+
+                        if (updateCount < numExpected)
+                            if (numExpected == 1)
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                            else
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database for " +
+                                                                            (numExpected - updateCount) + " of the " +
+                                                                            numExpected + " entities."); // TODO NLS
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
