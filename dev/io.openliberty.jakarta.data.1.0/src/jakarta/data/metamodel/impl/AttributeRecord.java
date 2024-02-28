@@ -17,5 +17,5 @@ import jakarta.data.metamodel.Attribute;
 /**
  * Method signatures are copied from Jakarta Data.
  */
-public record AttributeRecord(String name) implements Attribute {
+public record AttributeRecord<T>(String name) implements Attribute<T> {
 }

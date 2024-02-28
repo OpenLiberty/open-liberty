@@ -19,9 +19,9 @@ import jakarta.data.metamodel.StaticMetamodel;
  */
 @StaticMetamodel(TaxPayer.class)
 public class _TaxPayer {
-    public static volatile Attribute bankAccounts;
-    public static volatile SortableAttribute filingStatus;
-    public static volatile SortableAttribute income;
-    public static volatile SortableAttribute numDependents;
-    public static volatile SortableAttribute ssn; // the id attribute
+    public static volatile Attribute<TaxPayer> bankAccounts;
+    public static volatile SortableAttribute<TaxPayer> filingStatus;
+    public static volatile SortableAttribute<TaxPayer> income;
+    public static volatile SortableAttribute<TaxPayer> numDependents;
+    public static volatile SortableAttribute<TaxPayer> ssn; // the id attribute
 }

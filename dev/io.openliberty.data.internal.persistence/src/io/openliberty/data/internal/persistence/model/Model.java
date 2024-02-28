@@ -72,7 +72,7 @@ public class Model {
                                 else if (TextAttribute.class.equals(fieldType))
                                     value = new TextAttributeRecord<>(fieldName);
                                 else
-                                    value = new AttributeRecord(fieldName);
+                                    value = new AttributeRecord<>(fieldName);
 
                                 field.set(null, value);
 
