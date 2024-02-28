@@ -246,6 +246,11 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         }
 
         @Override
+        public List<?> elements() {
+            return List.of(keyValues);
+        }
+
+        @Override
         public boolean equals(Object o) {
             return this == o || o != null
                                 && getClass() == o.getClass()
