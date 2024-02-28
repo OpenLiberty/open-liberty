@@ -35,8 +35,8 @@
                              ssl="true" sslfactory="org.postgresql.ssl.DefaultJavaSSLFactory" sslMode="verify-ca"/>
     </dataSource>
     
-    <sslDefault outboundSSLRef="outboundConfig"/>
-    <ssl id="outboundConfig" keyStoreRef="outboundKeyStore"/>
+    <sslDefault outboundSSLRef="outboundConfig" httpHostNameVerification="false"/>
+    <ssl id="outboundConfig" keyStoreRef="outboundKeyStore" verifyHostname="false"/>
     <keyStore id="outboundKeyStore" location="resources/security/outboundKeys.p12" password="liberty"/>
     
     <include location="../fatTestPorts.xml"/>
