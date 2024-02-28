@@ -1122,7 +1122,7 @@ public class ContainerKDCCommonTest {
     protected Spnego setDefaultSpnegoConfigValues(Spnego spnego) throws Exception {
         spnego.krb5Config = configFile;
         spnego.krb5Keytab = keytabFile;
-        spnego.servicePrincipalNames = libertyHostName;//ApacheKDCforSPNEGO.SPN;
+        spnego.servicePrincipalNames = libertyHostName;
         spnego.canonicalHostName = "false";
         spnego.skipForUnprotectedURI = null;
         spnego.spnegoAuthenticationErrorPageURL = null;

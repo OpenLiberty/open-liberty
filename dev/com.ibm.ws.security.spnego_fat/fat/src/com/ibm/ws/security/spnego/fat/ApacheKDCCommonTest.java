@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,8 +15,6 @@ package com.ibm.ws.security.spnego.fat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +33,7 @@ import javax.security.auth.login.LoginException;
 import org.ietf.jgss.Oid;
 import org.junit.AfterClass;
 import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
@@ -84,8 +83,8 @@ public class ApacheKDCCommonTest {
     @Rule
     public TestName name = new TestName();
 
-    //@BeforeClass
-    public static void preClassCheck() throws Exception {
+    @BeforeClass
+    public static void preClassCheck() {
         String thisMethod = "preClassCheck";
 
         Log.info(c, thisMethod, "Checking the assumption that the tests for this class should be run.");
@@ -98,38 +97,19 @@ public class ApacheKDCCommonTest {
             Log.info(c, thisMethod, "Using IBM hybrid or IBM JDK 8 or lower Expectations.");
         }
 
-        //// testContainer from jdbc FAT
-        myServer = LibertyServerFactory.getLibertyServer("BasicAuthTest");
-        Path krbConfPath = Paths.get(myServer.getServerRoot(), "security", "krb5.conf");
-        Path krb5KeytabPath = Paths.get(myServer.getServerRoot(), "security", "krb5.keytab");
-        FATSuite.krb5.generateConf(krbConfPath);
-        //Cannot invoke "com.ibm.ws.security.wim.adapter.ldap.fat.krb5.KerberosContainer.generateConf(java.nio.file.Path)"
-        //because "com.ibm.ws.security.wim.adapter.ldap.fat.krb5.FATSuite.krb5" is null
-
-        myServer.addEnvVar("KRB5_USER", "user1@" + KerberosContainer.KRB5_REALM);
-        myServer.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
-        /////
-
-        configFile = krbConfPath.toAbsolutePath().toString(); //ApacheKDCforSPNEGO.getDefaultConfigFile();
+        configFile = ApacheKDCforSPNEGO.getDefaultConfigFile();
         assertNotNull("ConfigFile is null", configFile);
         Log.info(c, "setUp", "Config file: " + configFile);
 
-        keytabFile = krb5KeytabPath.toAbsolutePath().toString();; // ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
+        keytabFile = ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
         assertNotNull("Keytab is null", keytabFile);
         Log.info(c, "setUp", "Keytab file: " + keytabFile);
 
-        myServer.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
+        InitClass.COMMON_TOKEN_USER = ApacheKDCforSPNEGO.COMMON_TOKEN_USER;
+        InitClass.FQN = "@" + ApacheKDCforSPNEGO.DOMAIN;
 
-        List<String> jvmOpts = new ArrayList<>();
-        jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
-        jvmOpts.add("-Dsun.security.jgss.debug=true");
-        jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
-
-        InitClass.COMMON_TOKEN_USER = "user1"; //ApacheKDCforSPNEGO.COMMON_TOKEN_USER;
-        InitClass.FQN = "@" + KerberosContainer.KRB5_REALM;
-
-        InitClass.SECOND_USER = "user2"; //ApacheKDCforSPNEGO.KRB5_USER2;
-        InitClass.SECOND_USER_PWD = "password"; //ApacheKDCforSPNEGO.KRB5_USER2_PWD;
+        InitClass.SECOND_USER = ApacheKDCforSPNEGO.KRB5_USER2;
+        InitClass.SECOND_USER_PWD = ApacheKDCforSPNEGO.KRB5_USER2_PWD;
 
         //must set to avoid NPE from re-using existing helper functions
         InitClass.KDCP_VAR = InitClass.KDC_HOSTNAME;
@@ -165,9 +145,9 @@ public class ApacheKDCCommonTest {
      * setAsCommonSpnegoToken is false, user1 will always be the user selected.
      *
      * @param setAsCommonSpnegoToken - Boolean indicating whether the newly created token should be set as the common
-     *                                   SPNEGO token for all future tests and test classes.
+     *            SPNEGO token for all future tests and test classes.
      *
-     * @param selectUser1            - disables the randomUser and instead creates a token using user1
+     * @param selectUser1 - disables the randomUser and instead creates a token using user1
      * @throws Exception
      */
     public static void createNewSpnegoToken(boolean setAsCommonSpnegoToken, boolean selectUser1) throws Exception {
@@ -291,7 +271,7 @@ public class ApacheKDCCommonTest {
      * apps will be validated as ready, and no additional bootstrap properties will be set.
      *
      * @param testServerName
-     * @param startServer    - Boolean indicating whether the server should be started once setup is complete
+     * @param startServer - Boolean indicating whether the server should be started once setup is complete
      * @throws Exception
      */
     public static void commonSetUp(String testServerName, boolean startServer) throws Exception {
@@ -303,11 +283,11 @@ public class ApacheKDCCommonTest {
      * token will be created; the common SPN, keytab file, and SPNEGO token will be used.
      *
      * @param testServerName
-     * @param serverXml      - Server config file within the server's configs/ directory to use. If null, a server.xml file
-     *                           is expected to be present in the server's root directory.
-     * @param checkApps      - List of apps to be validated as ready upon server start
-     * @param testProps      - Map of bootstrap property names and values to be set so they can be used in server
-     *                           configurations
+     * @param serverXml - Server config file within the server's configs/ directory to use. If null, a server.xml file
+     *            is expected to be present in the server's root directory.
+     * @param checkApps - List of apps to be validated as ready upon server start
+     * @param testProps - Map of bootstrap property names and values to be set so they can be used in server
+     *            configurations
      * @throws Exception
      */
     public static void commonSetUp(String testServerName, String serverXml, List<String> checkApps, Map<String, String> testProps) throws Exception {
@@ -321,12 +301,12 @@ public class ApacheKDCCommonTest {
      * and SPNEGO token will be used.
      *
      * @param testServerName
-     * @param serverXml      - Server config file within the server's configs/ directory to use. If null, a server.xml file
-     *                           is expected to be present in the server's root directory.
-     * @param checkApps      - List of apps to be validated as ready upon server start
-     * @param testProps      - Map of bootstrap property names and values to be set so they can be used in server
-     *                           configurations
-     * @param startServer    - Boolean indicating whether the server should be started once setup is complete
+     * @param serverXml - Server config file within the server's configs/ directory to use. If null, a server.xml file
+     *            is expected to be present in the server's root directory.
+     * @param checkApps - List of apps to be validated as ready upon server start
+     * @param testProps - Map of bootstrap property names and values to be set so they can be used in server
+     *            configurations
+     * @param startServer - Boolean indicating whether the server should be started once setup is complete
      * @throws Exception
      */
     public static void commonSetUp(String testServerName, String serverXml, List<String> checkApps, Map<String, String> testProps, boolean startServer) throws Exception {
@@ -340,21 +320,21 @@ public class ApacheKDCCommonTest {
      * should be created, and whether the specified server should be started.
      *
      * @param testServerName
-     * @param serverXml            - Server config file within the server's configs/ directory to use. If null, a server.xml file
-     *                                 is expected to be present in the server's root directory.
-     * @param checkApps            - List of apps to be validated as ready upon server start
-     * @param testProps            - Map of bootstrap property names and values to be set so they can be used in server
-     *                                 configurations
+     * @param serverXml - Server config file within the server's configs/ directory to use. If null, a server.xml file
+     *            is expected to be present in the server's root directory.
+     * @param checkApps - List of apps to be validated as ready upon server start
+     * @param testProps - Map of bootstrap property names and values to be set so they can be used in server
+     *            configurations
      * @param createSslClient
      * @param createSpnAndKeytab
-     * @param spnRealm             - Realm to use for the SPN added to the keytab. If null, no realm will be appended to the SPN.
+     * @param spnRealm - Realm to use for the SPN added to the keytab. If null, no realm will be appended to the SPN.
      * @param createSpnegoToken
      * @param setCommonSpnegoToken - Boolean indicating whether the new SPNEGO token (if one is created) should be set
-     *                                 as the new common SPNEGO token for all future tests and test classes
+     *            as the new common SPNEGO token for all future tests and test classes
      * @param useCanonicalHostName
-     * @param copyCommonKeytab     - Boolean indicating whether the keytab file created during initial setup should be
-     *                                 copied into this server's respective Kerberos resources directory
-     * @param startServer          - Boolean indicating whether the server should be started once setup is complete
+     * @param copyCommonKeytab - Boolean indicating whether the keytab file created during initial setup should be
+     *            copied into this server's respective Kerberos resources directory
+     * @param startServer - Boolean indicating whether the server should be started once setup is complete
      * @throws Exception
      */
     public static void commonSetUp(String testServerName, String serverXml, List<String> checkApps, Map<String, String> testProps,
@@ -426,12 +406,9 @@ public class ApacheKDCCommonTest {
         //String fullyQualifiedDomainName = testHelper.getTestSystemFullyQualifiedDomainName();
         //String fullyQualifiedDomainName = InitClass.getServerCanonicalHostName();
         if (useCanonicalHostName) {
-            Log.info(c, thisMethod, "Using the canonical host name in the target server SPN: " + "libertyhost");
+            Log.info(c, thisMethod, "Using the canonical host name in the target server SPN: " + "rndhostname");
             //TARGET_SERVER = fullyQualifiedDomainName;
-            //TARGET_SERVER = ApacheKDCforSPNEGO.canonicalHostname;
-            //TARGET_SERVER = "dbuser";
-            TARGET_SERVER = "libertyhost";
-            //todo change dbuser
+            TARGET_SERVER = ApacheKDCforSPNEGO.canonicalHostname;
         } else {
             Log.info(c, thisMethod, "Using the short host name in the target server SPN");
 //            String shortHostName = getKdcHelper().getShortHostName(fullyQualifiedDomainName, true);
@@ -490,24 +467,24 @@ public class ApacheKDCCommonTest {
      * should be created, and whether the specified server should be started.
      *
      * @param testServerName
-     * @param serverXml            - Server config file within the server's configs/ directory to use. If null, a server.xml file
-     *                                 is expected to be present in the server's root directory.
-     * @param checkApps            - List of apps to be validated as ready upon server start
-     * @param testProps            - Map of bootstrap property names and values to be set so they can be used in server
-     *                                 configurations
+     * @param serverXml - Server config file within the server's configs/ directory to use. If null, a server.xml file
+     *            is expected to be present in the server's root directory.
+     * @param checkApps - List of apps to be validated as ready upon server start
+     * @param testProps - Map of bootstrap property names and values to be set so they can be used in server
+     *            configurations
      * @param createSslClient
      * @param createSpnAndKeytab
-     * @param spnRealm             - Realm to use for the SPN added to the keytab. If null, no realm will be appended to the SPN.
+     * @param spnRealm - Realm to use for the SPN added to the keytab. If null, no realm will be appended to the SPN.
      * @param createSpnegoToken
      * @param setCommonSpnegoToken - Boolean indicating whether the new SPNEGO token (if one is created) should be set
-     *                                 as the new common SPNEGO token for all future tests and test classes
+     *            as the new common SPNEGO token for all future tests and test classes
      * @param useCanonicalHostName
-     * @param copyCommonKeytab     - Boolean indicating whether the keytab file created during initial setup should be
-     *                                 copied into this server's respective Kerberos resources directory
-     * @param startServer          - Boolean indicating whether the server should be started once setup is complete
-     * @param servletName          - name of servlet (other than SimpleServlet) to be invoked
-     * @param rootContext          - the root context of servlet to be invoked
-     * @param useUser1             - use only user1 when creating spnego token.
+     * @param copyCommonKeytab - Boolean indicating whether the keytab file created during initial setup should be
+     *            copied into this server's respective Kerberos resources directory
+     * @param startServer - Boolean indicating whether the server should be started once setup is complete
+     * @param servletName - name of servlet (other than SimpleServlet) to be invoked
+     * @param rootContext - the root context of servlet to be invoked
+     * @param useUser1 - use only user1 when creating spnego token.
      * @throws Exception
      */
     public static void spnegoTokencommonSetUp(String testServerName, String serverXml, List<String> checkApps, Map<String, String> testProps,
@@ -878,7 +855,7 @@ public class ApacheKDCCommonTest {
      *
      * @param headers
      * @param ignoreErrorContent - If true, the response received is expected to be null. Otherwise, the response
-     *                               received is verified as unsuccessful and checked for the absence of GSS credentials.
+     *            received is verified as unsuccessful and checked for the absence of GSS credentials.
      * @return
      */
     public String unsuccessfulSpnegoServletCall(Map<String, String> headers, boolean ignoreErrorContent) {
@@ -890,7 +867,7 @@ public class ApacheKDCCommonTest {
      *
      * @param headers
      * @param ignoreErrorContent - If true, the response received is expected to be null. Otherwise, the response
-     *                               received is verified as unsuccessful and checked for the absence of GSS credentials.
+     *            received is verified as unsuccessful and checked for the absence of GSS credentials.
      * @param expectedStatusCode
      * @return
      */
@@ -1021,7 +998,7 @@ public class ApacheKDCCommonTest {
     protected Spnego setDefaultSpnegoConfigValues(Spnego spnego) throws Exception {
         spnego.krb5Config = configFile;
         spnego.krb5Keytab = keytabFile;
-        spnego.servicePrincipalNames = "dbuser";//ApacheKDCforSPNEGO.SPN;
+        spnego.servicePrincipalNames = ApacheKDCforSPNEGO.SPN;
         spnego.canonicalHostName = "false";
         spnego.skipForUnprotectedURI = null;
         spnego.spnegoAuthenticationErrorPageURL = null;
@@ -1031,12 +1008,12 @@ public class ApacheKDCCommonTest {
     }
 
     /**
-     * @param newServer        - server configuration
-     * @param authErrorPage    - Spnego Authentication ErrorPage URL
+     * @param newServer - server configuration
+     * @param authErrorPage - Spnego Authentication ErrorPage URL
      * @param useCanonicalHost
-     * @param spn              - krb5 servicePrincipalName
-     * @param keytab           - krb5Keytab
-     * @param config           - krb5Config
+     * @param spn - krb5 servicePrincipalName
+     * @param keytab - krb5Keytab
+     * @param config - krb5Config
      * @return
      */
     public Spnego setSpnegoConfigElement(ServerConfiguration newServer, String config, String keytab, String spn, String useCanonicalHost, String authErrorPage,
@@ -1058,8 +1035,7 @@ public class ApacheKDCCommonTest {
     }
 
     protected void setDefaultSpnegoServerConfig(boolean enableInfoLogging) throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, "dbuser", "false", null, null, null, false);
-        //todo update dbuser
+        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, null, null, false);
     }
 
     protected void setSpnegoServerConfig(String config, String keytab, String spn, String useCanonicalHost, String authErrorPage, String notSupportedErrorPage,
@@ -1103,8 +1079,8 @@ public class ApacheKDCCommonTest {
      * This method will the reset the log and trace marks for log and trace searches, update the
      * configuration and then wait for the server to re-initialize. Optionally it will then wait for the application to start.
      *
-     * @param server            The server to update.
-     * @param config            The configuration to use.
+     * @param server The server to update.
+     * @param config The configuration to use.
      * @param waitForAppToStart Wait for the application to start.
      * @throws Exception If there was an issue updating the server configuration.
      */
