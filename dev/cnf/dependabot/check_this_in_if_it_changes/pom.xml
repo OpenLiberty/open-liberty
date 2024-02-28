@@ -1349,7 +1349,7 @@
     <dependency>
       <groupId>jakarta.servlet.jsp</groupId>
       <artifactId>jakarta.servlet.jsp-api</artifactId>
-      <version>4.0.0-M1</version>
+      <version>4.0.0-M2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.servlet</groupId>
