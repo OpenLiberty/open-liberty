@@ -907,14 +907,21 @@ public class RepositoryResolver {
         Set<ProductRequirementInformation> missingProductInformation = new HashSet<>();
 
         for (ApplicableToProduct esa : resourcesWrongProduct) {
-            StringBuffer sb = new StringBuffer(";editions=\"");
-            if (esa instanceof EsaResource && ((EsaResource) esa).getAppliesToFilterInfo() != null) {
-                for (AppliesToFilterInfo atfi : ((EsaResource) esa).getAppliesToFilterInfo()) {
-                    sb.append(atfi.getEditions().toString().replace("[", "").replace("]", "").replace(" ", ""));
+            String appliesTo = esa.getAppliesTo();
+            if (appliesTo.contains("productEdition=Open")) { //Check if there are WebSphere editions and add
+                if (esa instanceof EsaResource && ((EsaResource) esa).getAppliesToFilterInfo() != null) {
+                    for (AppliesToFilterInfo atfi : ((EsaResource) esa).getAppliesToFilterInfo()) {
+                        if (!atfi.getEditions().toString().isEmpty()) {
+                            StringBuffer sb = new StringBuffer("; editions=\"");
+                            sb.append(atfi.getEditions().toString().replace("[", "").replace("]", "").replace(" ", ""));
+                            sb.append("\"");
+                            appliesTo = appliesTo.concat(sb.toString());
+                        }
+                    }
                 }
             }
-            sb.append("\"");
-            missingRequirements.add(new MissingRequirement(esa.getAppliesTo().concat(sb.toString()), (RepositoryResource) esa));
+
+            missingRequirements.add(new MissingRequirement(appliesTo, (RepositoryResource) esa));
             missingProductInformation.addAll(ProductRequirementInformation.createFromAppliesTo(esa.getAppliesTo()));
         }
 
