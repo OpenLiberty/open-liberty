@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2022 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -632,6 +632,12 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         if (traceOn && tc.isEventEnabled())
             Tr.event(tc, "(SPI) Transaction TIMEOUT occurred for TX: " + getLocalTID());
 
+        if (_alarmsCancelled) {
+            if (traceOn && tc.isEntryEnabled())
+                Tr.exit(tc, "timeoutTransaction", "Transaction already completing.");
+            return;
+        }
+
         _rollbackOnly = true;
         _timedOut = true; // mark
 
@@ -935,7 +941,7 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
      * Stop all active timers associated with this transaction.
      */
     @Override
-    protected void cancelAlarms() {
+    protected synchronized void cancelAlarms() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "cancelAlarms");
 
@@ -947,6 +953,9 @@ public class EmbeddableTransactionImpl extends com.ibm.tx.jta.impl.TransactionIm
         if (_inactivityTimerActive) {
             stopInactivityTimer();
         }
+
+        // Tell any queued up abort processing not to bother
+        _alarmsCancelled = true;
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "cancelAlarms");
