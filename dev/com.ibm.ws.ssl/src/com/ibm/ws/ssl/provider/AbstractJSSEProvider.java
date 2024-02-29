@@ -58,7 +58,6 @@ import com.ibm.ws.runtime.util.StreamHandlerUtils;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.LibertySSLContext;
 import com.ibm.ws.ssl.LibertySSLContextSpi;
-import com.ibm.ws.ssl.LibertySSLServerSocketFactoryWrapper;
 import com.ibm.ws.ssl.LibertySSLSocketFactoryWrapper;
 import com.ibm.ws.ssl.config.KeyStoreManager;
 import com.ibm.ws.ssl.config.SSLConfigManager;
@@ -104,7 +103,8 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
     /**
      * Constructor.
      */
-    public AbstractJSSEProvider() {}
+    public AbstractJSSEProvider() {
+    }
 
     protected void initialize(String keyMgr, String trustMgr, String cxtProvider, String keyProvider, String factory, String packageHandler, String protocolType) {
         this.keyManager = keyMgr;
@@ -599,12 +599,9 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         try {
             SSLContext context = getSSLContext(null, config);
             if (context != null) {
-                SSLServerSocketFactory factory = context.getServerSocketFactory();
-                // alias will be null if it hasn't been configured
-                LibertySSLServerSocketFactoryWrapper wrapper = new LibertySSLServerSocketFactoryWrapper(factory, config.getProperty(Constants.SSLPROP_ALIAS));
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                     Tr.exit(tc, "getSSLServerSocketFactory");
-                return wrapper;
+                return context.getServerSocketFactory();
             }
         } catch (Exception e) {
             FFDCFilter.processException(e, getClass().getName(), "getSSLServerSocketFactory", this);

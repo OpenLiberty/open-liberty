@@ -63,17 +63,17 @@ public class LibertySSLContextSpi extends SSLContextSpi {
 
     @Override
     protected SSLServerSocketFactory engineGetServerSocketFactory() {
-        return new LibertySSLServerSocketFactoryWrapper(delegate.getServerSocketFactory(), this.alias);
+        return delegate.getServerSocketFactory();
     }
 
     @Override
     protected SSLEngine engineCreateSSLEngine() {
-        return new LibertySSLEngineWrapper(delegate.createSSLEngine(), this.alias);
+        return delegate.createSSLEngine();
     }
 
     @Override
     protected SSLEngine engineCreateSSLEngine(String host, int port) {
-        return new LibertySSLEngineWrapper(delegate.createSSLEngine(host, port), this.alias);
+        return delegate.createSSLEngine(host, port);
     }
 
     @Override
