@@ -23,6 +23,7 @@ import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61DoTraceRemoveSen
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61EmptyURLPatternMappingTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61HTTPResponseCodesTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61HTTPServletMappingTest;
+import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ReadWriteByteBufferTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61RequestParameterTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ResponseNoOpAfterCommit;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ResponseSendRedirectTest;
@@ -36,6 +37,7 @@ import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ResponseSendRedi
     Servlet61EmptyURLPatternMappingTest.class,
     Servlet61HTTPResponseCodesTest.class,
     Servlet61HTTPServletMappingTest.class,
+    Servlet61ReadWriteByteBufferTest.class,
     Servlet61RequestParameterTest.class,
     Servlet61ResponseNoOpAfterCommit.class,
     Servlet61ResponseSendRedirectTest.class
