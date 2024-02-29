@@ -92,8 +92,7 @@ public abstract class AbstractBeanValidationTest {
     }
 
     /*
-     * This tests ensures validation will fail with the String parameter passed from the
-     * request fails when the max is set on the @Size annotation.
+     * This tests ensures validation will pass when both arg0, and arg1 are valid
      *
      * @Size(min = 4, max = 10)
      *
@@ -111,8 +110,8 @@ public abstract class AbstractBeanValidationTest {
     }
 
     /*
-     * This tests ensures validation will fail with the String parameter passed from the
-     * request fails when the max is set on the @Size annotation.
+     * This tests ensures validation will fail with the arg0 parameter passed from the
+     * request parameter, OneWayWithValidation, is set to nul
      *
      * @Size(min = 4, max = 10)
      *
