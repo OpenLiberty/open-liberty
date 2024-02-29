@@ -22,6 +22,7 @@ public class LibertyJaxWsWorkQueueThreadContextHelper {
         @Override
         protected LibertyJaxWsWorkQueueThreadContext initialValue() {
             LibertyJaxWsWorkQueueThreadContext wqtc = new LibertyJaxWsWorkQueueThreadContext();
+            LibertyJaxWsWorkQueueThreadContextHelper.setThreadContext(wqtc);
             return wqtc;
         }
     };
