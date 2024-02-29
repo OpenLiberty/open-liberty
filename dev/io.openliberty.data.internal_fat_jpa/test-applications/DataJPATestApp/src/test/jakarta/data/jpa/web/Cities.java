@@ -127,7 +127,7 @@ public interface Cities {
                             @By("stateName") @StartsWith String statePattern);
 
     @Delete
-    boolean remove(City city);
+    void remove(City city);
 
     Streamable<City> removeByStateName(String state);
 

@@ -1030,7 +1030,14 @@ public class DataJPATestServlet extends FATServlet {
         o1.total = 1.99f;
         o1.versionNum = o1_v1;
 
-        assertEquals(2, orders.updateAll(List.of(o8, o1, o7)));
+        try {
+            orders.updateAll(List.of(o8, o1, o7));
+            fail("Attempt to update multiple entities where one has an outdated version must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
+
+        orders.updateAll(List.of(o8, o7));
 
         List<Float> totals = orders.findTotalByPurchasedByIn(Set.of("testEntitiesAsParameters-Customer8",
                                                                     "testEntitiesAsParameters-Customer7",
@@ -1041,7 +1048,12 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(77.99f, totals.get(1), 0.001f);
         assertEquals(11.99f, totals.get(2), 0.001f); // not updated due to version mismatch
 
-        assertEquals(false, orders.update(o1));
+        try {
+            orders.update(o1);
+            fail("Attempt to update an outdated version of an entity must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
 
         assertEquals(11.99f, totals.get(2), 0.001f); // still not updated due to version mismatch
 
@@ -1049,7 +1061,7 @@ public class DataJPATestServlet extends FATServlet {
         o1 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer1").orElseThrow();
         o1.total = 0.99f;
 
-        assertEquals(true, orders.update(o1));
+        orders.update(o1);
 
         totals = orders.findTotalByPurchasedByIn(Set.of("testEntitiesAsParameters-Customer1"));
         assertEquals(totals.toString(), 1, totals.size());
@@ -2289,7 +2301,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(Integer.valueOf(initialVersion + 2), r1.version());
 
         // Delete
-        assertEquals(true, rebates.remove(r1));
+        rebates.remove(r1);
         // TODO allow entity return type on delete?
         //r1 = rebates.remove(r1);
         //assertEquals(Integer.valueOf(1), r1.id());
@@ -2387,7 +2399,15 @@ public class DataJPATestServlet extends FATServlet {
                         LocalDateTime.of(2023, Month.OCTOBER, 17, 8, 47, 0), //
                         r4.version());
 
-        r = rebates.modifyAll(r2, r5, r4);
+        try {
+            r = rebates.modifyAll(r2, r5, r4);
+            fail("An attempt to update multiple entities where one does not exist in the database " +
+                 "must raise OptimisticLockingFailureException. Instead: " + Arrays.toString(r));
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        r = rebates.modifyAll(r2, r4);
 
         assertEquals(2, r.length);
         Rebate r4_old = r4;
@@ -2478,10 +2498,21 @@ public class DataJPATestServlet extends FATServlet {
         }
 
         // Delete
-        assertEquals(2, rebates.removeAll(r4_old, r3, r2));
-        assertEquals(2, rebates.removeAll(r2, r3, r4, r5));
-        assertEquals(0, rebates.removeAll(r2, r5));
-        // TODO allow entity return type on delete?
+        try {
+            rebates.removeAll(r3, r4_old, r2);
+            fail("Attempt to delete multiple where one has an outdated version must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
+
+        rebates.removeAll(r2, r3, r4, r5);
+
+        try {
+            rebates.removeAll(r2, r5);
+            fail("Attempt to delete multiple where at least one is not found must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
     }
 
     /**
@@ -2636,7 +2667,15 @@ public class DataJPATestServlet extends FATServlet {
                         LocalDateTime.of(2023, Month.OCTOBER, 30, 12, 58, 0), //
                         r8_old.version()); // invalid update due to old version
 
-        List<Rebate> list = rebates.modifyMultiple(List.of(r7, r8_nonMatching, r6));
+        try {
+            List<Rebate> list = rebates.modifyMultiple(List.of(r7, r8_nonMatching, r6));
+            fail("An attempt to update multiple entities where one does not match the version in the database " +
+                 "must raise OptimisticLockingFailureException. Instead: " + list);
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        List<Rebate> list = rebates.modifyMultiple(List.of(r7, r6));
 
         assertEquals(2, list.size());
         r7 = list.get(0);
@@ -2661,10 +2700,21 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(Integer.valueOf(r6_initialVersion + 2), r6.version());
 
         // Delete
-        assertEquals(3, rebates.removeMultiple(new ArrayList<>(List.of(r9, r8_old, r7, r6))));
-        assertEquals(1, rebates.removeMultiple(new ArrayList<>(List.of(r6, r7, r8))));
-        assertEquals(0, rebates.removeMultiple(new ArrayList<>(List.of(r9, r7))));
-        // TODO allow entity return type on delete?
+        try {
+            rebates.removeMultiple(new ArrayList<>(List.of(r9, r8_old, r7, r6)));
+            fail("Attempt to delete multiple where one has an outdated version must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
+
+        rebates.removeMultiple(new ArrayList<>(List.of(r6, r9, r7, r8)));
+
+        try {
+            rebates.removeMultiple(new ArrayList<>(List.of(r9, r7)));
+            fail("Attempt to delete multiple where at leaset one is not found must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
     }
 
     /**
@@ -2756,11 +2806,16 @@ public class DataJPATestServlet extends FATServlet {
 
         // Try to delete with wrong version/timestamp (from other entity),
         mower.lastUpdated = timestamp;
-        assertEquals(false, counties.remove(mower));
+        try {
+            counties.remove(mower);
+            fail("Deletion attempt with wrong version did not raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
 
         // Use correct version/timestamp,
         mower = counties.findByName("Mower").orElseThrow();
-        assertEquals(true, counties.remove(mower));
+        counties.remove(mower);
     }
 
     /**
@@ -3052,12 +3107,21 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(1.01f, o1.total, 0.001f);
         assertEquals(o1_initialVersion + 1, o1.versionNum);
 
-        // update multiple in an Iterable where the first entity is non-matching due to its version
+        // attempt to update multiple in an Iterable where the first entity is non-matching due to its version
         o1.total = 1.02f;
         o3.versionNum = o3_initialVersion;
         o3.total = 3.02f;
         o5.total = 5.02f;
-        Vector<PurchaseOrder> results = orders.modifyMultiple(List.of(o3, o5, o1));
+        Vector<PurchaseOrder> results;
+        try {
+            results = orders.modifyMultiple(List.of(o3, o5, o1));
+            fail("An attempt to update multiple where the version of the first entity does not match the database " +
+                 "must raise OptimisticLockingFailureException");
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        results = orders.modifyMultiple(List.of(o5, o1));
         assertEquals(2, results.size());
 
         o5 = results.get(0);
@@ -3075,7 +3139,15 @@ public class DataJPATestServlet extends FATServlet {
         o4.total = 4.03f;
         o5.total = 5.03f;
         o6.total = 6.03f;
-        modified = orders.modifyAll(o5, o6, o4, o2);
+        try {
+            modified = orders.modifyAll(o5, o6, o4, o2);
+            fail("An attempt to update multiple where the second entity is not found in the database " +
+                 "must raise OptimisticLockingFailureException");
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        modified = orders.modifyAll(o5, o4, o2);
         assertEquals(3, modified.length);
 
         o5 = modified[0];
@@ -3100,19 +3172,41 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(4.04f, o4.total, 0.001f);
         assertEquals(o4_initialVersion + 2, o4.versionNum);
 
-        // update where no entities match, returning empty array
-        modified = orders.modifyAll(o3, o6);
-        assertEquals(0, modified.length);
+        // update where no entities match, with varargs array
+        try {
+            modified = orders.modifyAll(o3, o6);
+            fail("An attempt to update a varargs array of multiple with a mixture of entities where either the version does not match " +
+                 " or the entity is not found in the database must raise OptimisticLockingFailureException");
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
 
-        // update where no entities match, returning empty iterable
-        results = orders.modifyMultiple(List.of(o6, o3));
-        assertEquals(true, results.isEmpty());
+        // update where no entities match, with Iterable
+        try {
+            results = orders.modifyMultiple(List.of(o6, o3));
+            fail("An attempt to update an Iterable of multiple with a mixture of entities where either the version does not match " +
+                 " or the entity is not found in the database must raise OptimisticLockingFailureException");
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
 
-        // update where the only entity does not match, returning null
-        assertEquals(null, orders.modifyOne(o6));
+        // update where the only entity does not match
+        try {
+            orders.modifyOne(o6);
+            fail("An attempt to update a single entity that does not exist in the database " +
+                 "must raise OptimisticLockingFailureException");
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
 
-        // update where the only entity does not match, returning an empty optional
-        assertEquals(false, orders.modifyIfMatching(o3).isPresent());
+        // update where the only entity does not match
+        try {
+            orders.modifyIfMatching(o3);
+            fail("Another attempt to update a single entity that does not exist in the database " +
+                 "must raise OptimisticLockingFailureException");
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
     }
 
     /**
@@ -3126,14 +3220,19 @@ public class DataJPATestServlet extends FATServlet {
         o1.purchasedBy = "testVersionedDelete-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 1.09f;
-        assertEquals(0, orders.cancel(o1)); // doesn't exist yet
+        try {
+            orders.cancel(o1); // doesn't exist yet
+            fail("Attempt to delete an entity that doesn't exist yet, must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
 
         o1 = orders.create(o1);
 
         int oldVersion = o1.versionNum;
 
         o1.total = 1.19f;
-        assertEquals(true, orders.modify(o1));
+        orders.modify(o1);
 
         o1 = orders.findById(o1.id).orElseThrow();
         int newVersion = o1.versionNum;
@@ -3146,7 +3245,12 @@ public class DataJPATestServlet extends FATServlet {
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 1.19f;
         o1.versionNum = oldVersion;
-        assertEquals(0, orders.cancel(o1));
+        try {
+            orders.cancel(o1);
+            fail("Attempt to delete an outdated version must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
 
         PurchaseOrder o2 = new PurchaseOrder();
         o2.purchasedBy = "testVersionedDelete-Customer2";
@@ -3164,17 +3268,29 @@ public class DataJPATestServlet extends FATServlet {
 
         // Attempt deletion at correct version
         o1.versionNum = newVersion;
-        assertEquals(2, orders.cancel(o1, o2));
+        orders.cancel(o1, o2);
 
         // Entities o1 and o2 should no longer be in the database:
-        assertEquals(0, orders.cancel(o1, o2));
+        try {
+            orders.cancel(o1, o2);
+            fail("Attempt to delete multiple where entities are no longer in the database must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
 
         // Entity o3 should still be there:
         o3 = orders.findById(o3.id).orElseThrow();
         assertEquals(3.09f, o3.total, 0.001f);
 
         // Deletion where only 1 is found:
-        assertEquals(1, orders.cancel(o1, o3, o2));
+        try {
+            orders.cancel(o3, o1, o2);
+            fail("Attempt to delete multiple where at least one is no longer in the database must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
+
+        orders.cancel(o3);
     }
 
     /**
@@ -3192,10 +3308,15 @@ public class DataJPATestServlet extends FATServlet {
 
         duluth = new City("Duluth", "Minnesota", 86697, Set.of(218));
         duluth.changeCount = oldVersion;
-        assertEquals(false, cities.remove(duluth));
+        try {
+            cities.remove(duluth);
+            fail("Attempt to delete with an outdated version must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
 
         duluth.changeCount = newVersion;
-        assertEquals(true, cities.remove(duluth));
+        cities.remove(duluth);
     }
 
     /**
@@ -3210,14 +3331,19 @@ public class DataJPATestServlet extends FATServlet {
         o1.purchasedBy = "testVersionedUpdate-Customer1";
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 10.09f;
-        assertEquals(false, orders.modify(o1)); // doesn't exist yet
+        try {
+            orders.modify(o1); // doesn't exist yet
+            fail("Attempt to modify an entity that does not exist in the database must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
 
         o1 = orders.create(o1);
 
         int oldVersion = o1.versionNum;
 
         o1.total = 10.19f;
-        assertEquals(true, orders.modify(o1));
+        orders.modify(o1);
 
         o1 = orders.findById(o1.id).orElseThrow();
         assertEquals(10.19f, o1.total, 0.001f);
@@ -3230,16 +3356,26 @@ public class DataJPATestServlet extends FATServlet {
         o1.purchasedOn = OffsetDateTime.now();
         o1.total = 10.29f;
         o1.versionNum = oldVersion;
-        assertEquals(false, orders.update(o1));
+        try {
+            orders.update(o1);
+            fail("Attempt to update an outdated version of an entity must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
 
         o1.versionNum = newVersion;
-        assertEquals(true, orders.update(o1));
+        orders.update(o1);
         o1 = orders.findById(o1.id).orElseThrow();
         assertEquals(10.29f, o1.total, 0.001f);
 
         orders.delete(o1);
 
         o1.total = 10.39f;
-        assertEquals(false, orders.modify(o1)); // doesn't exist anymore
+        try {
+            orders.modify(o1); // doesn't exist anymore
+            fail("Attempt to update an entity that no longer exists in the database must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
     }
 }

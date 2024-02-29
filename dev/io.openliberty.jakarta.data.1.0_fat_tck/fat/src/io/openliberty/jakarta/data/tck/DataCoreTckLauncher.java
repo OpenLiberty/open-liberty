@@ -55,6 +55,7 @@ public class DataCoreTckLauncher {
     }
 
     @Test
+    @Ignore("Behavior change in spec after M3 caused failures") // TODO re-enable with M4 or RC1
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchDataTckCorePersistence() throws Exception {
 

@@ -3657,8 +3657,8 @@ public class DataTestServlet extends FATServlet {
         }
 
         // Ensure that insertAll inserted no entities when one had an Id that already exists
-        assertEquals(false, receipts.update(new Receipt(1700L, "C0017-17-007", 77.70f)));
-        assertEquals(false, receipts.update(new Receipt(1800L, "C0018-18-008", 88.80f)));
+        assertEquals(false, receipts.findById(1700L).isPresent());
+        assertEquals(false, receipts.findById(1800L).isPresent());
 
         // Ensure that the entity that already exists was not modified by insertAll
         r = receipts.findById(1500L).orElseThrow();
@@ -3667,12 +3667,20 @@ public class DataTestServlet extends FATServlet {
         assertEquals(105.50f, r.total(), 0.001f);
 
         // Update single entity that exists
-        assertEquals(true, receipts.update(new Receipt(1600L, "C0060-16-006", 600.16f)));
+        receipts.update(new Receipt(1600L, "C0060-16-006", 600.16f));
 
         // Update multiple entities, if they exist
-        assertEquals(2, receipts.updateAll(List.of(new Receipt(1400L, "C0040-14-044", 14.41f),
-                                                   new Receipt(1900L, "C0009-19-009", 199.99f),
-                                                   new Receipt(1200L, "C0002-12-002", 112.20f))));
+        try {
+            receipts.updateAll(List.of(new Receipt(1400L, "C0040-14-044", 14.49f),
+                                       new Receipt(1900L, "C0009-19-009", 199.99f),
+                                       new Receipt(1200L, "C0002-12-002", 112.29f)));
+            fail("Attempt to update multiple entities where one does not exist must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // pass
+        }
+
+        receipts.updateAll(List.of(new Receipt(1400L, "C0040-14-044", 14.41f),
+                                   new Receipt(1200L, "C0002-12-002", 112.20f)));
 
         // Verify the updates
         assertEquals(List.of(new Receipt(1200L, "C0002-12-002", 112.20f), // updated by updateAll
@@ -5610,6 +5618,7 @@ public class DataTestServlet extends FATServlet {
     /**
      * Use update methods with an entity parameter to make updates.
      */
+    @AllowedFFDC("jakarta.data.exceptions.OptimisticLockingFailureException")
     @Test
     public void testUpdateWithEntityParameter() {
         people.deleteByIdBetween(0L, 999999999L);
@@ -5646,7 +5655,12 @@ public class DataTestServlet extends FATServlet {
         ulysses.lastName = "Test-UpdateWithEntityParameter";
         assertEquals(true, persons.updateOne(ulysses));
 
-        assertEquals(false, persons.updateOne(urban)); // not in database
+        try {
+            persons.updateOne(urban); // not in database
+            fail("An attempt to update an entity that is not in the database must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
 
         // update multiple entities:
 
@@ -5654,7 +5668,14 @@ public class DataTestServlet extends FATServlet {
         ursula.lastName = "TestUpdate-WithEntityParameter";
         uriah.lastName = "TestUpdate-WithEntityParameter";
 
-        assertEquals(3, persons.updateSome(ulysses, urban, ursula, uriah)); // one is not in the database
+        try {
+            assertEquals(3, persons.updateSome(ulysses, urban, ursula, uriah)); // one is not in the database
+            fail("An attempt to update multiple entities where one is not in the database must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        assertEquals(3, persons.updateSome(ulysses, ursula, uriah));
 
         assertEquals(0, persons.updateSome());
 
@@ -5692,13 +5713,25 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Boolean.TRUE, products.update(prod1)); // current version
 
         prod1.price = 10.89f;
-        assertEquals(Boolean.FALSE, products.update(prod1)); // old version
+        try {
+            products.update(prod1); // old version
+            fail("An attempt to update an entity with an outdated version must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
 
         // versioned update to multiple entities:
 
         prod2.price = 12.89f;
         prod3.price = 13.89f;
-        assertEquals(Long.valueOf(2), products.update(Stream.of(prod1, prod2, prod3))); // 1 with old version
+        try {
+            assertEquals(Long.valueOf(2), products.update(Stream.of(prod2, prod3, prod1))); // 1 with old version
+            fail("An attempt to update multiple entities where one has an outdated version must raise OptimisticLockingFailureException.");
+        } catch (OptimisticLockingFailureException x) {
+            // expected
+        }
+
+        assertEquals(Long.valueOf(2), products.update(Stream.of(prod2, prod3)));
     }
 
     /**

@@ -40,7 +40,7 @@ public interface Orders extends CrudRepository<PurchaseOrder, Long> {
                               @Param("shipping") float shippingCost);
 
     @Delete
-    int cancel(PurchaseOrder... orders);
+    void cancel(PurchaseOrder... orders);
 
     @Insert
     LinkedList<PurchaseOrder> create(Iterable<PurchaseOrder> order);
@@ -60,7 +60,7 @@ public interface Orders extends CrudRepository<PurchaseOrder, Long> {
     List<Float> findTotalByPurchasedByIn(Iterable<String> purchasers, Sort<?>... sorts);
 
     @Update
-    boolean modify(PurchaseOrder order);
+    void modify(PurchaseOrder order);
 
     @Update
     PurchaseOrder[] modifyAll(PurchaseOrder... orders);
