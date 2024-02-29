@@ -386,11 +386,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
     private final VetoableChangeSupport vChangeSupport = new VetoableChangeSupport(this);
     protected Properties raMetaDataProps = null;
     protected Properties dsMetaDataProps = null;
-    public boolean callResourceAdapterStatMethods = false;
-    public int numberOfInuseConnections = 0;
-    public transient Object numberOfInuseConnectionsLockObject = new J2CLock();
-    public int numberOfFreeConnections = 0;
-    public transient Object numberOfFreeConnectionsLockObject = new J2CLock();
+
     protected transient Integer maxNumberOfMCsAllowableInThread = null;
     private transient boolean parkIfDissociateUnavailable;
     protected transient Boolean throwExceptionOnMCThreadCheck = null;
