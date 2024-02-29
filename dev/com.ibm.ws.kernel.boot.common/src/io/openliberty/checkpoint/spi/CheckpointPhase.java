@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.spi;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -87,10 +88,11 @@ public enum CheckpointPhase {
 
     private volatile boolean restored = false;
     private boolean blockAddHooks = false;
-    private final Map<Integer, StaticCheckpointHook> singleThreadedHooks = new HashMap<>();
-    private final Map<Integer, StaticCheckpointHook> multiThreadedHooks = new HashMap<>();
-    private Object context;
-    private Method registerService;
+    final Map<Integer, StaticCheckpointHook> singleThreadedHooks = new HashMap<>();
+    final Map<Integer, StaticCheckpointHook> multiThreadedHooks = new HashMap<>();
+    WeakReference<Object> contextRef = new WeakReference<>(null);
+    Method registerService;
+    Method unregisterService;
 
     /**
      * Convert a String to a checkpoint phase and then set the phase
@@ -239,32 +241,20 @@ public enum CheckpointPhase {
         if (blockAddHooks) {
             return false;
         }
-        debug(() -> "Adding hook: " + hook + (multiThreaded ? " multi-threaded" : " single-threaded") + " rank: " + rank);
 
+        debug(() -> "Adding hook: " + hook + (multiThreaded ? " multi-threaded" : " single-threaded") + " rank: " + rank);
         Map<Integer, StaticCheckpointHook> addToHooks = multiThreaded ? multiThreadedHooks : singleThreadedHooks;
-        StaticCheckpointHook staticCheckpointHook = addToHooks.computeIfAbsent(rank, (o) -> {
-            final StaticCheckpointHook newHook = new StaticCheckpointHook(rank, multiThreaded);
-            if (context != null) {
-                Dictionary<String, Object> props = new Hashtable<>();
-                props.put(SERVICE_RANKING, Integer.valueOf(rank));
-                props.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.valueOf(multiThreaded));
-                registerHook(context, registerService, newHook, props);
-            }
-            return newHook;
-        });
+        StaticCheckpointHook staticCheckpointHook = addToHooks.computeIfAbsent(rank, (r) -> createStaticCheckpointHook(rank, multiThreaded));
         return staticCheckpointHook.addHook(hook);
     }
 
-    private static void registerHook(Object context, Method registerService, CheckpointHook hook, Dictionary<String, Object> props) {
-        try {
-            debug(() -> "Registering CheckpointHook service for rank :" + props.get(SERVICE_RANKING)
-                        + (props.get(CheckpointHook.MULTI_THREADED_HOOK) == Boolean.TRUE ? " multi-threaded" : " single-threaded"));
-            registerService.invoke(context, CheckpointHook.class, hook, props);
-        } catch (IllegalAccessException | IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            sneakyThrow(e.getTargetException());
+    private StaticCheckpointHook createStaticCheckpointHook(int rank, boolean multiThreaded) {
+        final StaticCheckpointHook newHook = new StaticCheckpointHook(rank, multiThreaded);
+        Object context = contextRef.get();
+        if (context != null) {
+            newHook.register(context);
         }
+        return newHook;
     }
 
     /**
@@ -374,20 +364,19 @@ public enum CheckpointPhase {
     }
 
     final synchronized void setContext(Object context) throws NoSuchMethodException {
-        this.context = context;
-        registerService = this.context.getClass().getMethod("registerService", Class.class, Object.class, Dictionary.class);
-
+        if (this == INACTIVE) {
+            // don't need anything unless we know we are going to do a checkpoint
+            return;
+        }
+        this.contextRef = new WeakReference<Object>(context);
+        registerService = context.getClass().getMethod("registerService", Class.class, Object.class, Dictionary.class);
+        unregisterService = registerService.getReturnType().getMethod("unregister");
         // register any hooks already added
         for (Map.Entry<Integer, StaticCheckpointHook> hook : multiThreadedHooks.entrySet()) {
-            Dictionary<String, Object> props = new Hashtable<>();
-            props.put(SERVICE_RANKING, Integer.valueOf(hook.getKey()));
-            props.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
-            registerHook(this.context, registerService, hook.getValue(), props);
+            hook.getValue().register(context);
         }
         for (Map.Entry<Integer, StaticCheckpointHook> hook : singleThreadedHooks.entrySet()) {
-            Dictionary<String, Object> props = new Hashtable<>();
-            props.put(SERVICE_RANKING, Integer.valueOf(hook.getKey()));
-            registerHook(this.context, registerService, hook.getValue(), props);
+            hook.getValue().register(context);
         }
     }
 
@@ -395,16 +384,32 @@ public enum CheckpointPhase {
         this.blockAddHooks = true;
     }
 
-    final static class StaticCheckpointHook implements CheckpointHook {
+    final class StaticCheckpointHook implements CheckpointHook {
         private final List<CheckpointHook> addedHooks = new ArrayList<>();
         private final int rank;
         private final boolean multiThreaded;
         private volatile List<CheckpointHook> preparedHooks = Collections.emptyList();
         private boolean lockHooks = false;
+        private volatile Object serviceRegistration;
 
         public StaticCheckpointHook(int rank, boolean multiThreaded) {
             this.rank = rank;
             this.multiThreaded = multiThreaded;
+        }
+
+        void register(Object context) {
+            Dictionary<String, Object> props = new Hashtable<>();
+            props.put(SERVICE_RANKING, Integer.valueOf(rank));
+            props.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.valueOf(multiThreaded));
+            try {
+                debug(() -> "Registering CheckpointHook service for rank :" + props.get(SERVICE_RANKING)
+                            + (props.get(CheckpointHook.MULTI_THREADED_HOOK) == Boolean.TRUE ? " multi-threaded" : " single-threaded"));
+                serviceRegistration = registerService.invoke(context, CheckpointHook.class, this, props);
+            } catch (IllegalAccessException | IllegalArgumentException e) {
+                throw new RuntimeException(e);
+            } catch (InvocationTargetException e) {
+                sneakyThrow(e.getTargetException());
+            }
         }
 
         boolean addHook(CheckpointHook hook) {
@@ -426,6 +431,25 @@ public enum CheckpointPhase {
                 addedHooks.clear();
                 lockHooks = true;
             }
+
+            if (serviceRegistration != null) {
+                // clean up registration; a snapshot has been done, no need to stay registered
+                try {
+                    debug(() -> "unregistering static hook in prepare " + (multiThreaded ? "multi-threaded" : "single-threaded") + " rank: " + rank);
+                    unregisterService.invoke(serviceRegistration);
+                } catch (IllegalAccessException | IllegalArgumentException e) {
+                    throw new RuntimeException(e);
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException(e.getTargetException());
+                }
+            }
+            // clean up map entry for this rank
+            synchronized (CheckpointPhase.this) {
+                Map<Integer, StaticCheckpointHook> toRemoveMap = multiThreaded ? multiThreadedHooks : singleThreadedHooks;
+                toRemoveMap.remove(rank);
+                debug(() -> "removed static " + (multiThreaded ? "multi-threaded" : "single-threaded") + " hook rank: " + rank + " number hooks left: " + toRemoveMap.size());
+            }
+
             for (CheckpointHook hook : preparedHooks) {
                 debug(() -> "prepare operation on static " + (multiThreaded ? "multi-threaded" : "single-threaded") + " rank: " + rank + " hook: " + hook);
                 hook.prepare();
