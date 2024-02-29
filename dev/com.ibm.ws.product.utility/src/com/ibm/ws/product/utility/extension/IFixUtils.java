@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -58,7 +58,7 @@ public class IFixUtils {
      * This method will find which iFixes have been installed and return a list with all of the IDs of APARs that have been fixed by the iFixes.
      *
      * @param wlpInstallationDirectory The installation directory of the current install
-     * @param console The console for printing messages to
+     * @param console                  The console for printing messages to
      * @return The list of APAR IDs contained in the installed iFixes or an empty list if none were found.
      */
     public static Set<IFixInfo> getInstalledIFixes(File wlpInstallationDirectory, CommandConsole console) {
@@ -93,7 +93,7 @@ public class IFixUtils {
      * This method will find which iFixes have been installed and return a list with all of the IDs of APARs that have been fixed by the iFixes.
      *
      * @param wlpInstallationDirectory The installation directory of the current install
-     * @param console The console for printing messages to
+     * @param console                  The console for printing messages to
      * @return The Set of LibertyProfileMetadataFile objects from all the *.lpmf files in the supplied installation dir.
      */
     public static Set<LibertyProfileMetadataFile> getInstalledLibertyProfileMetadataFiles(File wlpInstallationDirectory, CommandConsole console) {
@@ -186,9 +186,9 @@ public class IFixUtils {
      * within the runtime.
      *
      * @param installDir - The install directory of the product extension (including core and usr).
-     * @param features - The list of ProvisioningFeatureDefinition found in the install dir.
-     * @param repo - This is the bundle repository that is mapped to the install location of the product extension.
-     * @param console - The CommandConsole to write messages to.
+     * @param features   - The list of ProvisioningFeatureDefinition found in the install dir.
+     * @param repo       - This is the bundle repository that is mapped to the install location of the product extension.
+     * @param console    - The CommandConsole to write messages to.
      * @return - A Set if the ifix IDs that need to be reapplied.
      */
     public static Set<String> getIFixesThatMustBeReapplied(File installDir, Map<String, ProvisioningFeatureDefinition> features,
@@ -280,7 +280,10 @@ public class IFixUtils {
                                             bundleVersion.getMajor() == entryVersion.getMajor() &&
                                             bundleVersion.getMinor() == entryVersion.getMinor() &&
                                             bundleVersion.getMicro() == entryVersion.getMicro()) {
-                                            found = true;
+                                            // if updateFile does not exist, the user needs to reinstall the ifix so that the file from the ifix payload is laid down.
+                                            // if updateFile does exist, we made it here because a newer file with the same major/minor/micro is being loaded at runtime
+                                            // which can happen if a newer ifix was installed. Reinstalling the iFix will have no effect, since it will be ignored at runtime
+                                            found = !updateFile.exists();
                                         }
                                     }
                                 }
@@ -300,7 +303,7 @@ public class IFixUtils {
      * This method calculates a hash of the required file and compares it against the supplied hash. It then returns
      * true if both hashes are equals.
      *
-     * @param fileToHash - The file to calculate the hash for.
+     * @param fileToHash    - The file to calculate the hash for.
      * @param hashToCompare - The hash to compare.
      * @return - A boolean indicating whether the hashes are equal.
      */
@@ -320,15 +323,15 @@ public class IFixUtils {
      * This method reads all of the Feature manifests supplied and finds the files that should be in the runtime. For bundles it also
      * stores the Base bundles so we can use that to see if we have the necessary base bundles available in the runtime for the ifix.
      *
-     * @param installDir - The installation directory of the runtime to search.
-     * @param features - The Map of features that are in the runtime.
-     * @param repo - The corresponding bundle repository that we use to get the latest versions of the bundles running in the server.
+     * @param installDir              - The installation directory of the runtime to search.
+     * @param features                - The Map of features that are in the runtime.
+     * @param repo                    - The corresponding bundle repository that we use to get the latest versions of the bundles running in the server.
      * @param allBaseBundleJarContent - A Map to store the results of all the Base Bundles we find in the features. The key is the file, and
-     *            the value is a map containing the symbolic name and version of this bundle.
-     * @param allBundleJarContent - A Set of files that contain the latest bundles, including ifix bundles, that running on the system. Static jars
-     *            are stored in this Set.
-     * @param allStaticFileContent - A Set of files that contain all the static content files in the system. This does not include static jars, which
-     *            are contained in allBundleJarContent.
+     *                                    the value is a map containing the symbolic name and version of this bundle.
+     * @param allBundleJarContent     - A Set of files that contain the latest bundles, including ifix bundles, that running on the system. Static jars
+     *                                    are stored in this Set.
+     * @param allStaticFileContent    - A Set of files that contain all the static content files in the system. This does not include static jars, which
+     *                                    are contained in allBundleJarContent.
      * @param console
      */
     private static void processSubsystemContent(File installDir, Map<String, ProvisioningFeatureDefinition> features, ContentBasedLocalBundleRepository repo,
@@ -409,8 +412,8 @@ public class IFixUtils {
      * comparisons on each file are based on the date associated with the file. The latest date means the latest update.
      *
      * @param wlpInstallationDirectory - The Liberty install dir.
-     * @param bundleFiles - A Map of all bundle file Ids and the BundleFiles from all lpmf xmls.
-     * @param console - The CommandConsole to write messages to.
+     * @param bundleFiles              - A Map of all bundle file Ids and the BundleFiles from all lpmf xmls.
+     * @param console                  - The CommandConsole to write messages to.
      * @return - A Map of all files in all ifix xmls, and the IfixInfos that contain the latest versions of the file.
      */
     private static Map<String, IFixInfo> processIFixXmls(File wlpInstallationDirectory, Map<String, BundleFile> bundleFiles, CommandConsole console) {
@@ -483,7 +486,7 @@ public class IFixUtils {
      * This method takes a ifix ID finds any existing IFix IDs that refer to the same base bundle. Because the ifix jars will have
      * different qualifiers, we need to be able to work out which ids are related.
      *
-     * @param bundleFile - The bundleFile that maps to the current jar file we're processing.
+     * @param bundleFile  - The bundleFile that maps to the current jar file we're processing.
      * @param existingIDs - A Set of Strings that represent the existing updateIds.
      * @param bundleFiles - All the known bundleFile objects.
      * @return - The existing key that maps to the same base bundle.
@@ -516,7 +519,7 @@ public class IFixUtils {
      * name and version of each bundle against the id of the file that matches the corresponding entry in the ifix.xml.
      *
      * @param wlpInstallationDirectory - The Liberty install dir.
-     * @param console - The CommandConsole to write messages to.
+     * @param console                  - The CommandConsole to write messages to.
      * @return - A Map of all bundle file Ids and the BundleFiles from all lpmf xmls.
      */
     private static Map<String, BundleFile> processLPMFXmls(File wlpInstallationDirectory, CommandConsole console) {
