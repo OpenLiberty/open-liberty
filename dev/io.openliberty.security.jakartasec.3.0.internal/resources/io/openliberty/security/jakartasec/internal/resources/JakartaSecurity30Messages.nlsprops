@@ -54,9 +54,9 @@ JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.explanation=The value of the at
 JAKARTASEC_WARNING_OIDC_MECH_CONFIG_NEGATIVE_INT.useraction=Update the attribute to use a non-negative integer. If the attribute value is an EL expression, update the referenced bean to resolve to a non-negative integer.
 
 CREDENTIAL_VALIDATION_OMISSION=CWWKS2508E: The credential cannot be validated due to missing data. Either the token response ''{0}'', client ''{1}'' or access token ''{2}'' were missing.
-CREDENTIAL_VALIDATION_OMISSION.explanation=Credential validation requires a value for the response token, client or access token.  At least one of these values was null.
+CREDENTIAL_VALIDATION_OMISSION.explanation=Credential validation requires a value for the response token, client or access token. At least one of these values was null.
 CREDENTIAL_VALIDATION_OMISSION.useraction=For more information, see the error in the message.
 
-CREDENTIAL_VALIDATION_CALLER_MISSING=CWWKS2509E: The credential could not be validated because the caller value is not set.
+CREDENTIAL_VALIDATION_CALLER_MISSING=CWWKS2509E: The credential cannot be validated because the caller value is not set.
 CREDENTIAL_VALIDATION_CALLER_MISSING.explanation=Credential validation requires a caller value and that is not set.
 CREDENTIAL_VALIDATION_CALLER_MISSING.useraction=For more information, see the error in the message.
