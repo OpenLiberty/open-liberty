@@ -113,7 +113,12 @@ public class JaxRsSSLManager {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<SSLContext>() {
                 @Override
                 public SSLContext run() throws SSLConfigurationNotAvailableException, SSLException {
-                    return jsseHelper.getSSLContext(sslRef, connectionInfo, null, false);
+                    if (sslRef != null) {
+                        return jsseHelper.getSSLContext(sslRef, connectionInfo, null, false);
+                    } else {
+                        // get the default ssl config
+                        return jsseHelper.getSSLContext(null, null, null);
+                    }
                 }
             });
         } catch (PrivilegedActionException pae) {
