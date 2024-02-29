@@ -2701,6 +2701,11 @@ public class DataTestServlet extends FATServlet {
             private final List<Object> keysetValues = List.of(21.0f, 42.0f, 240);
 
             @Override
+            public List<?> elements() {
+                return keysetValues;
+            }
+
+            @Override
             public Object getKeysetElement(int index) {
                 return keysetValues.get(index);
             }

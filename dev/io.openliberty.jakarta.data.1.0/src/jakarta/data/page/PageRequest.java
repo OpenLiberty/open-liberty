@@ -27,6 +27,8 @@ public interface PageRequest<T> {
     }
 
     public interface Cursor {
+        public List<?> elements();
+
         public Object getKeysetElement(int index);
 
         public int size();
