@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -515,8 +515,10 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     private boolean isInstantOnFeature(ManifestElement[] instantonEnabledHeader, Object featureName) {
+        if (allowedFeatures.contains(featureName)) {
+            return true;
+        }
         if (instantonEnabledHeader != null && instantonEnabledHeader.length > 0) {
-
             if (Boolean.parseBoolean(instantonEnabledHeader[0].getValue())) {
                 // check for beta
                 String type = instantonEnabledHeader[0].getDirective("type");
@@ -526,7 +528,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                 return true;
             }
         }
-        return allowedFeatures.contains(featureName);
+        return false;
     }
 
     public Type getUnknownType() {
