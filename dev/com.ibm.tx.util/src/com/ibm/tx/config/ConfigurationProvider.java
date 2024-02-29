@@ -212,11 +212,8 @@ public interface ConfigurationProvider {
     /**
      * Returns whether we will propagate the transaction timeout to XAResources
      */
-    public boolean getPropagateXAResourceTransactionTimeout();
+    public boolean isPropagateXAResourceTransactionTimeout();
 
-    /**
-     * @return
-     */
     public String getRecoveryIdentity();
 
     public String getRecoveryGroup();
