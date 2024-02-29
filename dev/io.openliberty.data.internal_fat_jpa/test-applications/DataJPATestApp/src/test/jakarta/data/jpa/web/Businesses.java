@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 import jakarta.data.Streamable;
 import jakarta.data.page.KeysetAwareSlice;
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Find;
@@ -58,7 +58,7 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     @OrderBy("location.address.zip")
     @OrderBy("houseNum")
     @OrderBy("id")
-    KeysetAwareSlice<Business> findByZipIn(Iterable<Integer> zipCodes, Pageable pagination);
+    KeysetAwareSlice<Business> findByZipIn(Iterable<Integer> zipCodes, PageRequest pagination);
 
     // embeddable 3 levels deep as result type
     @OrderBy("street")

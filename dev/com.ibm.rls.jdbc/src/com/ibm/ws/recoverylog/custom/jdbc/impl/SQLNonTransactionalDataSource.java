@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2021 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.TraceConstants;
-import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 //------------------------------------------------------------------------------
@@ -59,7 +58,7 @@ public class SQLNonTransactionalDataSource {
      * SQLNonTransactionalDataSource objects.
      * </p>
      *
-     * @param dsName The name of the Data Source.
+     * @param dsName              The name of the Data Source.
      * @param customLogProperties The custom properties of the log.
      */
     public SQLNonTransactionalDataSource(String dsName, CustomLogProperties customLogProperties) {
@@ -98,13 +97,7 @@ public class SQLNonTransactionalDataSource {
         }
 
         try {
-            // Retrieve the resourceConfig from the custom log properties. This may be null, in which case the "old"
-            // behaviour will pertain with application authentication. A non-null resourceConfig will have been
-            // configured if container authentication has been specified.
-            ResourceConfig resourceConfig = _customLogProperties.resourceConfig();
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "create resource with ResourceConfig ", resourceConfig);
-            nonTranDataSource = (DataSource) dataSourceFactory.createResource(resourceConfig);
+            nonTranDataSource = (DataSource) dataSourceFactory.createResource(null);
         } catch (Exception e) {
             //e.printStackTrace();
             if (tc.isEntryEnabled())

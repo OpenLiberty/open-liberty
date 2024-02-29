@@ -20,3 +20,4 @@ IBM-API-Package: \
  com.ibm.websphere.appserver.classloading-1.0
 kind=noship
 edition=full
+WLP-InstantOn-Enabled: true; type:=beta

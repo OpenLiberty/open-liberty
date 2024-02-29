@@ -20,6 +20,9 @@
     </Designate>
           
     <OCD description="%transaction.config.desc" name="%transaction.config" id="com.ibm.ws.transaction" ibm:alias="transaction">
+        <AD name="%propagate.timeout" description="%propagate.timeout.desc"
+            id="propagateXAResourceTransactionTimeout" required="false" type="Boolean" default="false" />
+
         <AD name="internal" description="%forcePrepare.desc"
             id="forcePrepare" required="false" type="Boolean" default="false" />
 
@@ -138,7 +141,7 @@
 
         <AD name="%default.max.shutdown.delay" description="%default.max.shutdown.delay.desc"
             id="defaultMaxShutdownDelay" required="false" type="String" ibm:type="duration(s)" min="0" default="2s" />
-               
+            
         <AD id="dataSourceRef" type="String" required="false" ibm:type="pid" 
             ibm:reference="com.ibm.ws.jdbc.dataSource" cardinality="1" 
             name="%dataSourceRef" description="%dataSourceRef.desc"/>

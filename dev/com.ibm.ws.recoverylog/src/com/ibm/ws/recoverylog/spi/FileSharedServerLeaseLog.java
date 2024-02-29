@@ -228,7 +228,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                                 fChannel.read(byteBuffer);
                                 byteBuffer.flip();
                                 String line = new String(byteBuffer.array());
-                                Tr.info(tc, "Originally {0} lease file length {1} contains {2}", recoveryIdentity, line.length(), line);
+                                Tr.debug(tc, "Originally {0} lease file length {1} contains {2}", recoveryIdentity, line.length(), line);
                             }
                             byteBuffer = ByteBuffer.wrap(_tranRecoveryLogDirStem.getBytes());
                             fChannel.position(0);
@@ -243,7 +243,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                                 fChannel.read(byteBuffer);
                                 byteBuffer.flip();
                                 String line = new String(byteBuffer.array());
-                                Tr.info(tc, "On writing {0} lease file length {1} contains {2}", recoveryIdentity, line.length(), line);
+                                Tr.debug(tc, "On writing {0} lease file length {1} contains {2}", recoveryIdentity, line.length(), line);
                             }
                         } catch (IOException iox) {
                             if (tc.isDebugEnabled())

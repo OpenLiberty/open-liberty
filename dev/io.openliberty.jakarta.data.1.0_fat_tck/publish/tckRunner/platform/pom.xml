@@ -19,7 +19,7 @@
 	    <version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>tck.runner.core</artifactId>
+	<artifactId>tck.runner.platform</artifactId>
 	<name>Jakarta Data TCK Runner TCK Module</name>
 
 	<repositories>
@@ -53,13 +53,13 @@
 		<!-- tck - data - external TCK -->
 		<dependency>
 			<groupId>${jakarta.data.groupid}</groupId>
-			<artifactId>jakarta-data-tck</artifactId>
+			<artifactId>jakarta.data-tck</artifactId>
 			<version>${jakarta.data.tck.version}</version>
 		</dependency>
 		<!-- api - data - internal bundle -->
 		<dependency>
 			<groupId>${jakarta.data.groupid}</groupId>
-			<artifactId>jakarta-data-api</artifactId>
+			<artifactId>jakarta.data-api</artifactId>
 			<version>${jakarta.data.version}</version>
 			<systemPath>${io.openliberty.jakarta.data.1.0}</systemPath>
 			<scope>system</scope>
@@ -67,7 +67,7 @@
 		<!-- impl - data - internal bundle -->
 		<dependency>
 			<groupId>${jakarta.data.groupid}</groupId>
-			<artifactId>jakarta-data-impl</artifactId>
+			<artifactId>jakarta.data-impl</artifactId>
 			<version>${jakarta.data.version}</version>
 			<scope>system</scope>
 			<systemPath>${io.openliberty.data.internal}</systemPath>
@@ -170,7 +170,7 @@
 				<configuration>
 					<argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
 					<dependenciesToScan>
-						<dependency>${jakarta.data.groupid}:jakarta-data-tck</dependency>
+						<dependency>${jakarta.data.groupid}:jakarta.data-tck</dependency>
 					</dependenciesToScan>
 					<statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
 						<usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>

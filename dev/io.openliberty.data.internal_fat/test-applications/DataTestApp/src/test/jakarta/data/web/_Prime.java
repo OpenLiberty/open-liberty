@@ -46,7 +46,7 @@ public class _Prime {
 
     public static volatile TextAttribute<Prime> romanNumeral;
 
-    public static volatile Attribute romanNumeralSymbols;
+    public static volatile Attribute<Prime> romanNumeralSymbols;
 
     public static volatile SortableAttribute<Prime> sumOfBits;
 

@@ -24,7 +24,7 @@ import jakarta.data.metamodel.TextAttribute;
 public class _House {
     public static volatile SortableAttribute<House> AREA;
 
-    public static volatile Attribute garage;
+    public static volatile Attribute<House> garage;
 
     public static volatile SortableAttribute<House> GARAGE_AREA;
 
@@ -34,7 +34,7 @@ public class _House {
 
     public static volatile SortableAttribute<House> garage_type;
 
-    public static volatile Attribute kitchen;
+    public static volatile Attribute<House> kitchen;
 
     public static volatile SortableAttribute<House> kitchen_length;
 

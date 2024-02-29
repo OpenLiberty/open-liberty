@@ -2707,6 +2707,15 @@ public class WSRdbManagedConnectionImpl extends WSManagedConnection implements
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(this, tc, "cleanup");
 
+		if (isAborted())
+		{
+			if (isTraceOn && tc.isEntryEnabled())
+			{
+				Tr.exit(tc, "cleanup", "ManagedConnection is aborted -- skipping cleanup");
+			}
+			return;
+		}
+
         // Save the first exception to occur, continue processing, and throw it later.
         // This allows us to ensure all handles are dissociated and transactions are
         // rolled back, even if something fails early on in the cleanup processing.

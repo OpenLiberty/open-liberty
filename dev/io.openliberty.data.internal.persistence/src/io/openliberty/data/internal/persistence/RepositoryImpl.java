@@ -107,7 +107,7 @@ import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 import jakarta.data.page.Slice;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
@@ -156,7 +156,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = new HashSet<>(Arrays.asList //
-    (Limit.class, Order.class, Pageable.class, Sort.class, Sort[].class));
+    (Limit.class, Order.class, PageRequest.class, Sort.class, Sort[].class));
 
     // Valid types for when a repository method computes an update count
     private static final Set<Class<?>> UPDATE_COUNT_TYPES = new HashSet<>(Arrays.asList //
@@ -452,15 +452,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param pagination requested pagination.
      * @return offset for the specified page.
      * @throws DataException with chained IllegalArgumentException if the offset exceeds Integer.MAX_VALUE
-     *                           or the Pageable requests keyset pagination.
+     *                           or the PageRequest requests keyset pagination.
      */
-    static int computeOffset(Pageable<?> pagination) {
-        if (pagination.mode() != Pageable.Mode.OFFSET)
+    static int computeOffset(PageRequest<?> pagination) {
+        if (pagination.mode() != PageRequest.Mode.OFFSET)
             throw new DataException(new IllegalArgumentException("Keyset pagination mode " + pagination.mode() +
                                                                  " can only be used with repository methods with the following return types: " +
                                                                  KeysetAwarePage.class.getName() + ", " + KeysetAwareSlice.class.getName() +
                                                                  ", " + Iterator.class.getName() +
-                                                                 ". For offset pagination, use a Pageable without a keyset.")); // TODO NLS
+                                                                 ". For offset pagination, use a PageRequest without a keyset.")); // TODO NLS
         int maxPageSize = pagination.size();
         long pageIndex = pagination.page() - 1; // zero-based
         if (Integer.MAX_VALUE / maxPageSize >= pageIndex)
@@ -571,13 +571,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
     /**
      * Finds and updates entities (or records) in the database.
-     * Entities that are not found are ignored.
      *
      * @param arg       the entity or record, or array or Iterable or Stream of entity or record.
      * @param queryInfo query information.
      * @param em        the entity manager.
      * @return the updated entities, using the return type that is required by the repository Update method signature.
-     * @throws Exception if an error occurs.
+     * @throws OptimisticLockingFailureException if an entity is not found in the database.
+     * @throws Exception                         if an error occurs.
      */
     private Object findAndUpdate(Object arg, QueryInfo queryInfo, EntityManager em) throws Exception {
         List<Object> results;
@@ -588,9 +588,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
             results = new ArrayList<>(length);
             for (int i = 0; i < length; i++) {
                 Object entity = findAndUpdateOne(Array.get(arg, i), queryInfo, em);
-                if (entity != null) {
+                if (entity == null)
+                    throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                else
                     results.add(entity);
-                }
             }
         } else {
             arg = arg instanceof Stream //
@@ -601,17 +602,19 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (arg instanceof Iterable) {
                 for (Object e : ((Iterable<?>) arg)) {
                     Object entity = findAndUpdateOne(e, queryInfo, em);
-                    if (entity != null) {
+                    if (entity == null)
+                        throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                    else
                         results.add(entity);
-                    }
                 }
             } else {
                 hasSingularEntityParam = true;
                 results = new ArrayList<>(1);
                 Object entity = findAndUpdateOne(arg, queryInfo, em);
-                if (entity != null) {
+                if (entity == null)
+                    throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                else
                     results.add(entity);
-                }
             }
         }
         em.flush();
@@ -1176,7 +1179,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     /**
      * Generates JPQL based on method parameters.
      * Method annotations Count, Delete, Exists, Find, and Update indicate the respective type of method.
-     * Find methods can have special type parameters (Pageable, Limit, Order, Sort, Sort[]). Other methods cannot.
+     * Find methods can have special type parameters (PageRequest, Limit, Order, Sort, Sort[]). Other methods cannot.
      *
      * @param queryInfo      query information
      * @param q              JPQL query to which to append the WHERE clause. Or null to create a new JPQL query.
@@ -2348,7 +2351,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     case FIND:
                     case FIND_AND_DELETE: {
                         Limit limit = null;
-                        Pageable<?> pagination = null;
+                        PageRequest<?> pagination = null;
                         List<Sort<Object>> sortList = null;
 
                         // Jakarta Data allows the method parameter positions after those used as query parameters
@@ -2362,13 +2365,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     throw new DataException("Repository method " + method + " cannot have multiple Limit parameters."); // TODO NLS
                             } else if (param instanceof Order) {
                                 @SuppressWarnings("unchecked")
-                                Order<Object> order = (Order<Object>) param;
+                                Iterable<Sort<Object>> order = (Iterable<Sort<Object>>) param;
                                 sortList = queryInfo.combineSorts(sortList, order);
-                            } else if (param instanceof Pageable) {
+                            } else if (param instanceof PageRequest) {
                                 if (pagination == null)
-                                    pagination = (Pageable<?>) param;
+                                    pagination = (PageRequest<?>) param;
                                 else
-                                    throw new DataException("Repository method " + method + " cannot have multiple Pageable parameters."); // TODO NLS
+                                    throw new DataException("Repository method " + method + " cannot have multiple PageRequest parameters."); // TODO NLS
                             } else if (param instanceof Sort) {
                                 @SuppressWarnings("unchecked")
                                 List<Sort<Object>> newList = queryInfo.combineSorts(sortList, (Sort<Object>) param);
@@ -2382,13 +2385,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (pagination != null) {
                             if (limit != null)
-                                throw new DataException("Repository method " + method + " cannot have both Limit and Pageable as parameters."); // TODO NLS
+                                throw new DataException("Repository method " + method + " cannot have both Limit and PageRequest as parameters."); // TODO NLS
                             if (sortList == null) {
                                 @SuppressWarnings("unchecked")
                                 List<Sort<Object>> pageRequestSorts = (List<Sort<Object>>) (List<?>) pagination.sorts();
                                 sortList = queryInfo.combineSorts(null, pageRequestSorts);
                             } else if (!pagination.sorts().isEmpty()) {
-                                throw new DataException("Repository method " + method + " cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO NLS
+                                throw new DataException("Repository method " + method + " cannot specify Sort parameters if PageRequest also has Sort parameters."); // TODO NLS
                             }
                         }
 
@@ -2396,7 +2399,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             sortList = queryInfo.sorts;
 
                         if (sortList != null && !sortList.isEmpty()) {
-                            boolean forward = pagination == null || pagination.mode() != Pageable.Mode.CURSOR_PREVIOUS;
+                            boolean forward = pagination == null || pagination.mode() != PageRequest.Mode.CURSOR_PREVIOUS;
                             StringBuilder q = new StringBuilder(queryInfo.jpql);
                             StringBuilder order = null; // ORDER BY clause based on Sorts
                             for (Sort<?> sort : sortList) {
@@ -2404,7 +2407,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 appendSort(order, queryInfo.entityVar, sort, forward);
                             }
 
-                            if (pagination == null || pagination.mode() == Pageable.Mode.OFFSET)
+                            if (pagination == null || pagination.mode() == PageRequest.Mode.OFFSET)
                                 queryInfo = queryInfo.withJPQL(q.append(order).toString(), sortList); // offset pagination can be a starting point for keyset pagination
                             else // CURSOR_NEXT or CURSOR_PREVIOUS
                                 generateKeysetQueries(queryInfo = queryInfo.withJPQL(null, sortList), q, forward ? order : null, forward ? null : order);
@@ -2419,9 +2422,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         if (pagination != null && Iterator.class.equals(multiType))
                             returnValue = new PaginatedIterator<>(queryInfo, pagination, args);
                         else if (KeysetAwareSlice.class.equals(multiType) || KeysetAwarePage.class.equals(multiType))
-                            returnValue = new KeysetAwarePageImpl<>(queryInfo, limit == null ? pagination : toPageable(limit), args);
+                            returnValue = new KeysetAwarePageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
                         else if (Slice.class.equals(multiType) || Page.class.equals(multiType) || pagination != null && Streamable.class.equals(multiType))
-                            returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageable(limit), args);
+                            returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
                         else {
                             em = entityInfo.builder.createEntityManager();
 
@@ -2623,12 +2626,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             updateCount = remove(arg, queryInfo, em);
                         }
 
-                        if (updateCount < numExpected) {
-                            Class<?> singleType = queryInfo.getSingleResultType();
-                            if (void.class.equals(singleType) || Void.class.equals(singleType))
-                                throw new OptimisticLockingFailureException((numExpected - updateCount) + " of the " +
-                                                                            numExpected + " entities were not found for deletion."); // TODO NLS
-                        }
+                        if (updateCount < numExpected)
+                            if (numExpected == 1)
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                            else
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database for " +
+                                                                            (numExpected - updateCount) + " of the " +
+                                                                            numExpected + " entities."); // TODO NLS
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
@@ -2640,17 +2644,29 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                         ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
                                         : args[0];
                         int updateCount = 0;
+                        int numExpected = 0;
 
                         if (arg instanceof Iterable) {
-                            for (Object e : ((Iterable<?>) arg))
+                            for (Object e : ((Iterable<?>) arg)) {
+                                numExpected++;
                                 updateCount += update(e, queryInfo, em);
+                            }
                         } else if (queryInfo.entityParamType.isArray()) {
-                            int length = Array.getLength(arg);
-                            for (int i = 0; i < length; i++)
+                            numExpected = Array.getLength(arg);
+                            for (int i = 0; i < numExpected; i++)
                                 updateCount += update(Array.get(arg, i), queryInfo, em);
                         } else {
+                            numExpected = 1;
                             updateCount = update(arg, queryInfo, em);
                         }
+
+                        if (updateCount < numExpected)
+                            if (numExpected == 1)
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                            else
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database for " +
+                                                                            (numExpected - updateCount) + " of the " +
+                                                                            numExpected + " entities."); // TODO NLS
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
@@ -3140,17 +3156,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Converts a Limit to a Pageable if possible.
+     * Converts a Limit to a PageRequest if possible.
      *
      * @param limit Limit.
-     * @return Pageable.
+     * @return PageRequest.
      * @throws DataException with chained IllegalArgumentException if the Limit is a range with a starting point above 1.
      */
-    private static final <T> Pageable<T> toPageable(Limit limit) {
+    private static final <T> PageRequest<T> toPageRequest(Limit limit) {
         if (limit.startAt() != 1L)
             throw new DataException(new IllegalArgumentException("Limit with starting point " + limit.startAt() +
                                                                  ", which is greater than 1, cannot be used to request pages or slices."));
-        return Pageable.ofSize(limit.maxResults());
+        return PageRequest.ofSize(limit.maxResults());
     }
 
     private static final Object toReturnValue(int i, Class<?> returnType, QueryInfo queryInfo) {

@@ -53,7 +53,7 @@ dependencies {
   derby 'org.apache.derby:derby:10.11.1.1'
 
   jdbcDrivers 'com.ibm.db2:jcc:11.1.4.4',
-		'org.postgresql:postgresql:42.4.2',
+		'org.postgresql:postgresql:42.7.2',
 		'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
 		'org.apache.derby:derbyclient:10.11.1.1',
 		'org.apache.derby:derby:10.11.1.1',
@@ -153,7 +153,6 @@ task autoFVT {
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
   enabled project.file('fat').exists()
-  mustRunAfter cleanFat
 
   // For now we are just forcing the autoFVT create every time, this will be fixed
   // TODO: Be smart about when to recreate the autoFVT.zip

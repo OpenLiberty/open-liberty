@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -58,6 +58,15 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
             + "duration within the previous completed full minute and lowest recorded time duration within the "
             + "previous completed full minute.";
 
+    static {
+    	/*
+    	 * Eagerly load the inner classes so that they are not loaded while calculating the amount of time a method took.
+    	 * The first request coming through the filter() logic will end up being way off due to the loading of the inner classes. 
+    	 */
+    	TimerContext.init();
+    	RestMetricInfo.init();
+    }
+
     @Context
     ResourceInfo resourceInfo;
 
@@ -70,6 +79,8 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
     private static final String TIMER_CONTEXT = "TIMER_CONTEXT";
 
     private static class TimerContext {
+    	static void init() {}
+
         final String timerKey;
         final long startTime;
         TimerContext(String timerKey, long startTime) {
@@ -326,7 +337,9 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
     }
 
     static class RestMetricInfo {
-        boolean isEar = false;
+    	static void init() {}
+
+    	boolean isEar = false;
         HashSet<String> keys = new HashSet<String>();
 
         void setIsEar() {

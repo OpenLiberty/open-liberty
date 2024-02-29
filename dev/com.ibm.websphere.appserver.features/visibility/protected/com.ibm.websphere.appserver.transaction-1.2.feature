@@ -29,8 +29,7 @@ IBM-API-Service: com.ibm.wsspi.uow.UOWManager, \
  com.ibm.rls.jdbc, \
  com.ibm.ws.tx.embeddable, \
  com.ibm.ws.recoverylog, \
- com.ibm.ws.cdi.interfaces, \
- com.ibm.ws.security.auth.data.common
+ com.ibm.ws.cdi.interfaces
 -jars=com.ibm.websphere.appserver.spi.transaction; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.transaction_1.1-javadoc.zip
 kind=ga

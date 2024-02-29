@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,6 +42,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.module.ApplicationNestedConfigHelper;
 import com.ibm.ws.app.manager.module.DeployedAppServices;
+import com.ibm.ws.app.manager.module.internal.CaptureCache.BaseCaptureSupplier;
+import com.ibm.ws.app.manager.module.internal.CaptureCache.CaptureSupplier;
 import com.ibm.ws.classloading.ClassLoaderConfigHelper;
 import com.ibm.ws.classloading.ClassLoadingButler;
 import com.ibm.ws.classloading.java2sec.PermissionManager;
@@ -53,6 +55,7 @@ import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.LibraryClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.extended.LibraryContainerInfo;
 import com.ibm.ws.container.service.app.deploy.extended.LibraryContainerInfo.LibraryType;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
@@ -72,6 +75,7 @@ import com.ibm.wsspi.library.Library;
 
 public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase implements ApplicationClassesContainerInfo, AppClassLoaderFactory, ModuleClassLoaderFactory {
     private static final TraceComponent _tc = Tr.register(DeployedAppInfoBase.class, "app.manager", "com.ibm.ws.app.manager.module.internal.resources.Messages");
+
     private static final String PERMISSION_XML = "permissions.xml";
 
     protected static final class SharedLibClassesContainerInfo implements LibraryClassesContainerInfo {
@@ -118,6 +122,127 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         }
     }
 
+    // Data for caching a container ...
+
+    protected static class LibraryContainerData {
+        public LibraryContainerData(String libraryPid, File libraryFile, String libraryPath,
+                                    long libraryFileSize, long libraryFileTime,
+                                    Container libraryContainer) {
+
+            this.libraryPid = libraryPid;
+            this.libraryFile = libraryFile;
+            this.libraryPath = libraryPath;
+
+            this.libraryFileSize = libraryFileSize;
+            this.libraryFileTime = libraryFileTime;
+
+            this.libraryContainer = libraryContainer;
+        }
+
+        public LibraryContainerData(LibraryContainerData other) {
+            this.libraryPid = other.libraryPid;
+            this.libraryFile = other.libraryFile;
+            this.libraryPath = other.libraryPath;
+
+            this.libraryFileSize = other.libraryFileSize;
+            this.libraryFileTime = other.libraryFileTime;
+
+            this.libraryContainer = other.libraryContainer;
+        }
+
+        public final String libraryPid;
+        public final File libraryFile;
+        public final String libraryPath;
+
+        public final long libraryFileSize;
+        public final long libraryFileTime;
+
+        public final Container libraryContainer;
+
+        //@formatter:off
+        @Override
+        public String toString() {
+            return (new StringBuilder(super.toString()))
+                .append("(")
+                .append(libraryPid)
+                .append(",").append(libraryPath)
+                .append(",").append(libraryFileSize)
+                .append(",").append(libraryFileTime)
+                .append(",").append(libraryContainer)
+                .append(")")
+                .toString();
+        }
+        //@formatter:on
+    }
+
+    /**
+     * Static cache of library containers.
+     *
+     * Keys are paths to the library containers.
+     *
+     * Use of a static cache requires that all library containers
+     * for a given file path are identical.
+     */
+    protected static final CaptureCache<LibraryContainerData> libraryContainerCache = new CaptureCache<>("container");
+
+    /**
+     * Capture creation of a library container.
+     *
+     * @param libPath The path to the library container.
+     * @param supplier The supplier of the library container.
+     *
+     * @return A new supplier of the library container which will capture the
+     *         result of the base supplier.
+     */
+    protected static CaptureSupplier<LibraryContainerData> captureLibraryContainer(String libPath,
+                                                                                   BaseCaptureSupplier<LibraryContainerData> baseSupplier) {
+        return libraryContainerCache.capture(libPath, baseSupplier);
+    }
+
+    /**
+     * Release all library containers registered by this deployed application.
+     *
+     * This clears the library list.
+     */
+    protected void releaseLibraryContainers() {
+        for (String libPath : sharedLibDeploymentInfo.consumeLibraryPaths()) {
+            libraryContainerCache.release(libPath);
+        }
+    }
+
+    /**
+     * Tie into the superclass uninstall API:
+     *
+     * Make sure to release any library containers
+     * held by this deployed application.
+     */
+    @Override
+    public boolean uninstallApp() {
+        boolean releaseResult;
+        try {
+            releaseLibraryContainers();
+            releaseResult = true;
+        } catch (Throwable t) {
+            releaseResult = false;
+            FFDCFilter.processException(t, getClass().getName(), "uninstallApp", this);
+        }
+
+        boolean superResult = super.uninstallApp();
+
+        return releaseResult && superResult;
+    }
+
+    /**
+     * Superclass API: Extend finalize to ensure that any referenced containers
+     * are released. Usually, this will be done when the application is un-installed.
+     * However, an failed initialization might never be uninstalled.
+     */
+    @Override
+    public void finalize() throws Throwable {
+        releaseLibraryContainers();
+        super.finalize();
+    }
+
     protected static final class SharedLibDeploymentInfo {
         private final WsLocationAdmin locAdmin;
         private final ArtifactContainerFactory artifactFactory;
@@ -125,8 +250,9 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
 
         private final List<ContainerInfo> classesContainerInfo = new ArrayList<ContainerInfo>();
 
-        public SharedLibDeploymentInfo(DeployedAppServices deployedAppServices, String parentPid) {
+        private final List<String> libraryPaths = new ArrayList<>();
 
+        public SharedLibDeploymentInfo(DeployedAppServices deployedAppServices, String parentPid) {
             this.locAdmin = deployedAppServices.getLocationAdmin();
             this.artifactFactory = deployedAppServices.getArtifactFactory();
             this.moduleFactory = deployedAppServices.getModuleFactory();
@@ -160,11 +286,9 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
                                          deployedAppServices.getGlobalSharedLibrary());
                 }
             } catch (IOException e) {
-                // Auto FFDC
-                return;
+                return; // Auto FFDC
             } catch (InvalidSyntaxException e) {
-                // Auto FFDC
-                return;
+                return; // Auto FFDC
             }
         }
 
@@ -175,87 +299,237 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         private void processLibraryPIDs(DeployedAppServices deployedAppServices, List<ContainerInfo> sharedLibContainers, String[] libraryPIDs,
                                         LibraryContainerInfo.LibraryType libType) throws InvalidSyntaxException {
             if (libraryPIDs != null) {
-                for (String pid : libraryPIDs) {
-                    Collection<Library> libraries = deployedAppServices.getLibrariesFromPid(pid);
+                for (String libraryPid : libraryPIDs) {
+                    Collection<Library> libraries = deployedAppServices.getLibrariesFromPid(libraryPid);
                     for (Library library : libraries) {
-                        addLibraryContainers(sharedLibContainers, pid, libType, library);
+                        addLibraryContainers(sharedLibContainers, libraryPid, libType, library);
                     }
                 }
             }
         }
 
-        private void addLibraryContainers(List<ContainerInfo> sharedLibContainers, String pid, LibraryContainerInfo.LibraryType libType, Library library) {
-            if (library != null) {
-                String libName = library.id();
-                SharedLibClassesContainerInfo libClassesInfo = new SharedLibClassesContainerInfo(libType, library, "/" + libName);
-                Collection<File> files = library.getFiles();
-                addContainers(libClassesInfo.getClassesContainerInfo(), pid, libName, files);
-                Collection<File> folders = library.getFolders();
-                addContainers(libClassesInfo.getClassesContainerInfo(), pid, libName, folders);
-                Collection<Fileset> filesets = library.getFilesets();
-                for (Fileset fileset : filesets) {
-                    addContainers(libClassesInfo.getClassesContainerInfo(), pid, libName, fileset.getFileset());
-                }
-                if (!libClassesInfo.getClassesContainerInfo().isEmpty()) {
-                    sharedLibContainers.add(libClassesInfo);
-                }
+        private void addLibraryContainers(List<ContainerInfo> sharedLibContainers,
+                                          String libraryPid, LibraryContainerInfo.LibraryType libType, Library library) {
+            if (library == null) {
+                return;
+            }
+
+            String libName = library.id();
+
+            SharedLibClassesContainerInfo libClassesInfo = new SharedLibClassesContainerInfo(libType, library, "/" + libName);
+            List<ContainerInfo> libContainerInfo = libClassesInfo.getClassesContainerInfo();
+
+            addContainers(libContainerInfo, libraryPid, libName, library.getFiles());
+            addContainers(libContainerInfo, libraryPid, libName, library.getFolders());
+            for (Fileset libFileset : library.getFilesets()) {
+                addContainers(libContainerInfo, libraryPid, libName, libFileset.getFileset());
+            }
+
+            if (!libContainerInfo.isEmpty()) {
+                sharedLibContainers.add(libClassesInfo);
             }
         }
 
-        private void addContainers(List<ContainerInfo> sharedLibContainers, String pid, String libName, Collection<File> files) {
-            if (files != null) {
-                for (File file : files) {
-                    final Container container = setupContainer(pid, file);
-                    if (container != null) {
-                        final String name = "/" + libName + "/" + file.getName();
-                        sharedLibContainers.add(new ContainerInfo() {
-                            @Override
-                            public Type getType() {
-                                return Type.SHARED_LIB;
-                            }
+        private void addContainers(List<ContainerInfo> libContainerInfo,
+                                   String libraryPid, String libName, Collection<File> libFiles) {
 
-                            @Override
-                            public String getName() {
-                                return name;
-                            }
+            if (libFiles == null) {
+                return;
+            }
 
-                            @Override
-                            public Container getContainer() {
-                                return container;
-                            }
-                        });
+            for (File libFile : libFiles) {
+                Container container = setupContainer(libraryPid, libFile);
+                if (container == null) {
+                    continue;
+                }
+
+                // TODO: 'name' is not guaranteed to be unique.
+                String name = "/" + libName + "/" + libFile.getName();
+                libContainerInfo.add(new ContainerInfo() {
+                    @Override
+                    public Type getType() {
+                        return Type.SHARED_LIB;
                     }
+
+                    @Override
+                    public String getName() {
+                        return name;
+                    }
+
+                    @Override
+                    public Container getContainer() {
+                        return container;
+                    }
+                });
+            }
+        }
+
+        //@formatter:off
+
+        // The first library which uses a specified library file has it's PID used by the shared
+        // library container, which is used by cache folders associated with the container.  The
+        // consequence is that any cached data is shared between all users of the container.
+        //
+        // This would matter for application containers, which store various data, such as the
+        // parsed descriptor, and which must have distinct caches.
+        //
+        // For shared libraries, there would be a problem if different users of the same library
+        // container store (cache) different data in association with the container.
+        //
+        // Note that sharing of cache data is not necessarily a problem, depending on whether the
+        // cache data was specific to the shared library, or if the cache data included context
+        // specific values.
+
+        // TODO: This seems different than the service API:
+        // com.ibm.ws.app.manager.module.
+        //   DeployedAppServices.setupContainer(String, File)
+        //   DeployedAppInfoFactoryBase.setupContainer(String, File)
+        //   DeployedAppServicesImpl.setupContainer(String, File)
+        // Those seem to create containers for the application itself.  Such
+        // containers will have data specific to the application, and likely
+        // cannot be shared.
+
+        private Container setupContainer(String libraryPid, File libraryFile) {
+            String libraryPath = libraryFile.getAbsolutePath();
+
+            addLibraryPath(libraryPath);
+
+            BaseCaptureSupplier<LibraryContainerData> baseSupplier =
+                (LibraryContainerData priorCapture) -> baseSetupContainer(libraryPid, libraryFile, libraryPath, priorCapture);
+
+            CaptureSupplier<LibraryContainerData> containerSupplier = captureLibraryContainer(libraryPath, baseSupplier);
+
+            try {
+                return containerSupplier.get().libraryContainer;
+            } catch ( Exception e ) {
+                return null;
+            }
+        }
+
+        protected void addLibraryPath(String libPath) {
+            libraryPaths.add(libPath);
+        }
+
+        protected List<String> consumeLibraryPaths() {
+            List<String> usePaths = new ArrayList<String>(libraryPaths);
+            libraryPaths.clear();
+            return usePaths;
+        }
+
+        @Trivial
+        private void debug(String methodName, String text) {
+            Tr.debug(_tc, methodName + ": " + text);
+        }
+
+        private LibraryContainerData baseSetupContainer(String libraryPid, File libraryFile, String libraryPath,
+                                                        LibraryContainerData priorCapture) {
+            String methodName = "baseSetupContainer";
+
+            boolean isDebugEnabled = _tc.isDebugEnabled();
+            if ( isDebugEnabled ) {
+                debug(methodName, "Creating library container [ " + libraryPid + " ]" + " at [ " + libraryPath + " ]");
+            }
+
+            long libraryFileSize;
+            long libraryFileTime;
+
+            if ( !FileUtils.fileExists(libraryFile) ) {
+                libraryFileSize = -1L;
+                libraryFileTime = -1L;
+                if ( isDebugEnabled ) {
+                    debug(methodName, "Null library container: Library file does not exist");
+                }
+            } else {
+                libraryFileSize = libraryFile.length();
+                libraryFileTime = libraryFile.lastModified();
+                if ( isDebugEnabled ) {
+                    debug(methodName, "Library size [ " + libraryFileSize + " ] time [ " + libraryFileTime + " ]");
                 }
             }
+
+            if ( (priorCapture != null) &&
+                 (priorCapture.libraryFileSize == libraryFileSize) &&
+                 (priorCapture.libraryFileTime == libraryFileTime) ) {
+
+                debug(methodName, "Obtained shared library container [ " + priorCapture.libraryContainer + " ]" +
+                                  " [ " + libraryPath + " ] [ " + libraryFile.getName() + " ] [ REUSE ]");
+                return priorCapture;
+            }
+
+            Container adaptableContainer =
+                ( (libraryFileSize == -1) ? null : baseCreateContainer(libraryPid, libraryFile, libraryPath) );
+
+            debug(methodName, "Obtained shared library container [ " + adaptableContainer + " ]" +
+                            " [ " + libraryPath + " ] [ " + libraryFile.getName() + " ] [ NEW ]");
+
+            return new LibraryContainerData(libraryPid, libraryFile, libraryPath,
+                                            libraryFileSize, libraryFileTime,
+                                            adaptableContainer);
         }
 
-        private Container setupContainer(String pid, File locationFile) {
-            if (!FileUtils.fileExists(locationFile)) {
+        private Container baseCreateContainer(String libraryPid, File libraryFile, String libraryPath) {
+            String methodName = "baseCreateContainer";
+            boolean isDebugEnabled = _tc.isDebugEnabled();
+
+            File cacheDir = new File(getCacheDir(), libraryPid);
+            if ( !FileUtils.ensureDirExists(cacheDir) ) {
+                if ( isDebugEnabled ) {
+                    debug(methodName, "Null library container: Cache directory [ " + cacheDir.getAbsolutePath() + " ] could not be created");
+                }
+                return null;
+            }
+            if ( isDebugEnabled ) {
+                debug(methodName, "Cache directory [ " + cacheDir.getAbsolutePath() + " ]");
+            }
+
+            ArtifactContainer artifactContainer = artifactFactory.getContainer(cacheDir, libraryFile);
+            if ( artifactContainer == null ) {
+                if ( isDebugEnabled ) {
+                    debug(methodName,  "Null library container: Artifact container creation failed");
+                }
+                return null;
+            }
+            if ( isDebugEnabled ) {
+                debug(methodName, "Artifact container [ " + artifactContainer + " ]");
+            }
+
+            File adaptDir = new File( getCacheAdaptDir(), libraryPid );
+            if ( !FileUtils.ensureDirExists(adaptDir) ) {
+                if ( isDebugEnabled ) {
+                    debug(methodName,  "Null library container: Adapt directory [ " + adaptDir.getAbsolutePath() + " ] could not be created");
+                }
+                return null;
+            }
+            if ( isDebugEnabled ) {
+                debug(methodName, "Adapt directory [ " + adaptDir.getAbsolutePath() + " ]");
+            }
+
+            File overlayDir = new File(getCacheOverlayDir(), libraryPid);
+            if ( !FileUtils.ensureDirExists(overlayDir) ) {
+                if ( isDebugEnabled ) {
+                    debug(methodName,  "Null library container: Overlay directory [ " + overlayDir.getAbsolutePath() + " ] could not be created");
+                }
+                return null;
+            }
+            if (isDebugEnabled) {
+                debug(methodName, "Overlay directory [ " + overlayDir.getAbsolutePath() + " ]");
+            }
+
+            Container adaptableContainer = moduleFactory.getContainer(adaptDir, overlayDir, artifactContainer);
+            if ( adaptableContainer == null ) {
+                if ( isDebugEnabled ) {
+                    debug(methodName,  "Null library container: Adaptable container creation failed");
+                }
                 return null;
             }
 
-            File cacheDir = new File(getCacheDir(), pid);
-            if (!FileUtils.ensureDirExists(cacheDir)) {
-                return null;
+            if ( isDebugEnabled ) {
+                debug(methodName, "Created library container: Adaptable container [ " + adaptableContainer + " ]");
             }
-
-            ArtifactContainer artifactContainer = artifactFactory.getContainer(cacheDir, locationFile);
-            if (artifactContainer == null) {
-                return null;
-            }
-
-            File cacheDirAdapt = new File(getCacheAdaptDir(), pid);
-            if (!FileUtils.ensureDirExists(cacheDirAdapt)) {
-                return null;
-            }
-
-            File cacheDirOverlay = new File(getCacheOverlayDir(), pid);
-            if (!FileUtils.ensureDirExists(cacheDirOverlay)) {
-                return null;
-            }
-
-            return moduleFactory.getContainer(cacheDirAdapt, cacheDirOverlay, artifactContainer);
+            return adaptableContainer;
         }
+
+        //@formatter:on
 
         private File getCacheAdaptDir() {
             return locAdmin.getBundleFile(this, "cacheAdapt");
@@ -382,9 +656,6 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         return success;
     }
 
-    /**
-     * @return
-     */
     @FFDCIgnore({ MalformedURLException.class })
     protected ProtectionDomain getProtectionDomain() {
         PermissionCollection perms = new Permissions();
@@ -451,10 +722,6 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         return new CodeSource(new URL("file://" + (loc.startsWith("/") ? "" : "/") + loc), (java.security.cert.Certificate[]) null);
     }
 
-    /**
-     * @param codeSource
-     * @param configuredPermissions
-     */
     private void addPermissions(CodeSource codeSource, List<com.ibm.ws.javaee.dd.permissions.Permission> configuredPermissions) {
         Permission[] permissions = new Permission[configuredPermissions.size()];
 
@@ -471,9 +738,6 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         }
     }
 
-    /**
-     * @return
-     */
     private boolean java2SecurityEnabled() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null)

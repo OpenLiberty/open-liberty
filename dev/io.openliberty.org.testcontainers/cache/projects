@@ -142,11 +142,6 @@ com.ibm.ws.transaction.cloud_fat.postgresql.2
 com.ibm.ws.transaction.cloud_fat.sqlserver.0
 com.ibm.ws.transaction.cloud_fat.sqlserver.1
 com.ibm.ws.transaction.cloud_fat.sqlserver.2
-com.ibm.ws.transaction.containerAuth_fat.db2
-com.ibm.ws.transaction.containerAuth_fat.derby
-com.ibm.ws.transaction.containerAuth_fat.oracle
-com.ibm.ws.transaction.containerAuth_fat.postgresql
-com.ibm.ws.transaction.containerAuth_fat.sqlserver
 com.ibm.ws.transaction.db_fat
 com.ibm.ws.transaction.hadb_fat.db2.1
 com.ibm.ws.transaction.hadb_fat.db2.2

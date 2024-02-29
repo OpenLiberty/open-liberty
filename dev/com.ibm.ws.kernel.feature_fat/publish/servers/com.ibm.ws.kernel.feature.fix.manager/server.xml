@@ -1,0 +1,10 @@
+<server>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+		<feature>test.featurefixmanager-1.0</feature>
+		<feature>componenttest-1.0</feature>
+    </featureManager>
+    
+</server>

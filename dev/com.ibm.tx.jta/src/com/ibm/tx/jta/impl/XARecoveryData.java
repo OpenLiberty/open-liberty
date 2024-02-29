@@ -76,7 +76,7 @@ public class XARecoveryData extends PartnerLogData {
     /**
      * This field says whether to call setTransactionTimeout on XAResources
      */
-    protected boolean _propagateXAResourceTransactionTimeout = ConfigurationProviderManager.getConfigurationProvider().getPropagateXAResourceTransactionTimeout();
+    protected boolean _propagateXAResourceTransactionTimeout = ConfigurationProviderManager.getConfigurationProvider().isPropagateXAResourceTransactionTimeout();
 
     /**
      * Ctor when called from registration of an XAResource

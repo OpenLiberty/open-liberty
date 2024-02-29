@@ -31,7 +31,6 @@ import com.ibm.tx.jta.XAResourceNotAvailableException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.wsat.Constants;
-import com.ibm.ws.wsat.common.impl.WSATCoordinatorTran;
 import com.ibm.ws.wsat.common.impl.WSATEndpoint;
 import com.ibm.ws.wsat.common.impl.WSATParticipant;
 import com.ibm.ws.wsat.common.impl.WSATTransaction;
@@ -105,7 +104,7 @@ public class ParticipantFactoryService implements XAResourceFactory {
         XAResource xaRes = null;
         WSATParticipant part = deserialize(xaResInfo);
         if (part != null) {
-            WSATCoordinatorTran wsatTran = reconstructTran(part);
+            WSATTransaction wsatTran = reconstructTran(part);
             WSATParticipant participant = reconstructParticipant(wsatTran, part);
             xaRes = new ParticipantResource(participant);
         } else {
@@ -128,9 +127,9 @@ public class ParticipantFactoryService implements XAResourceFactory {
     }
 
     // Rebuild the WSATTransaction details from the serialized representation
-    private WSATCoordinatorTran reconstructTran(WSATParticipant part) throws XAResourceNotAvailableException {
+    private WSATTransaction reconstructTran(WSATParticipant part) throws XAResourceNotAvailableException {
         String globalId = part.getGlobalId();
-        WSATCoordinatorTran wsatTran = WSATTransaction.getCoordTran(globalId);
+        WSATTransaction wsatTran = WSATTransaction.getCoordTran(globalId);
         if (wsatTran == null) {
             if (TC.isDebugEnabled()) {
                 Tr.debug(TC, "Cannot locate coordinator transaction, recovering state: {0}", globalId);
@@ -147,7 +146,7 @@ public class ParticipantFactoryService implements XAResourceFactory {
     }
 
     // Rebuild the WSATParticipant details from a serialized representation.
-    private WSATParticipant reconstructParticipant(WSATCoordinatorTran wsatTran, WSATParticipant part) throws XAResourceNotAvailableException {
+    private WSATParticipant reconstructParticipant(WSATTransaction wsatTran, WSATParticipant part) throws XAResourceNotAvailableException {
         WSATParticipant participant = wsatTran.getParticipant(part.getId());
         if (participant == null) {
             if (TC.isDebugEnabled()) {

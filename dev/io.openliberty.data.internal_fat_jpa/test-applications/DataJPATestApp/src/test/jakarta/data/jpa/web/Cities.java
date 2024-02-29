@@ -21,7 +21,7 @@ import jakarta.data.Sort;
 import jakarta.data.Streamable;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.KeysetAwareSlice;
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
@@ -99,7 +99,7 @@ public interface Cities {
     @OrderBy("stateName")
     CityId[] findByStateNameEndsWith(String ending);
 
-    KeysetAwarePage<City> findByStateNameGreaterThan(String stateNameAfter, Pageable<City> pagination);
+    KeysetAwarePage<City> findByStateNameGreaterThan(String stateNameAfter, PageRequest<City> pagination);
 
     Stream<City> findByStateNameLessThan(String stateNameBefore, Sort<?>... sorts);
 
@@ -107,11 +107,11 @@ public interface Cities {
     Stream<City> findByStateNameNot(String exclude);
 
     @OrderBy("id")
-    KeysetAwareSlice<City> findByStateNameNotEndsWith(String postfix, Pageable<?> pagination);
+    KeysetAwareSlice<City> findByStateNameNotEndsWith(String postfix, PageRequest<?> pagination);
 
-    KeysetAwareSlice<City> findByStateNameNotNullOrderById(Pageable<City> pagination);
+    KeysetAwareSlice<City> findByStateNameNotNullOrderById(PageRequest<City> pagination);
 
-    KeysetAwarePage<City> findByStateNameNotStartsWithOrderByIdDesc(String prefix, Pageable<?> pagination);
+    KeysetAwarePage<City> findByStateNameNotStartsWithOrderByIdDesc(String prefix, PageRequest<?> pagination);
 
     CityId findFirstByNameOrderByPopulationDesc(String name);
 
@@ -127,7 +127,7 @@ public interface Cities {
                             @By("stateName") @StartsWith String statePattern);
 
     @Delete
-    boolean remove(City city);
+    void remove(City city);
 
     Streamable<City> removeByStateName(String state);
 
@@ -154,7 +154,7 @@ public interface Cities {
     @OrderBy(value = "id", descending = true)
     KeysetAwarePage<City> sizedWithin(@By("population") @GreaterThanEqual int minPopulation,
                                       @By("population") @LessThanEqual int maxPopulation,
-                                      Pageable<City> pagination);
+                                      PageRequest<City> pagination);
 
     @Save
     City save(City c);

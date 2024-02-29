@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -266,7 +266,7 @@ public class SessionContext {
         _invalidator = createInvalidator();
         final int reaperInterval = getReaperInterval(sessionTimeout);
         final IStore fStore = _store;
-        CheckpointPhase.onRestore(() -> _invalidator.start(fStore, reaperInterval));
+        CheckpointPhase.onRestore(1, () -> _invalidator.start(fStore, reaperInterval));
 
         // storer - handles manual write, eos, and time based differences
         _storer = createStorer(_smc, _store);

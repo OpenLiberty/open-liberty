@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -248,21 +248,28 @@ public class MultiServerTest extends WSATTest {
 	}
 
 	@Test
-	public void testThreeServerTwoCallCommit() throws ProtocolException, MalformedURLException, IOException, URISyntaxException {
+	public void testThreeServerTwoCallCommit() throws Exception {
 		String method = "testThreeServerTwoCallCommit";
 
-			String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
-					+ "?baseurl=" + BASE_URL2
-					+ "&baseurl2=" + BASE_URL3;
-			Log.info(getClass(), method, "URL: " + urlStr);
-			HttpURLConnection con = getHttpConnection(new URL(urlStr), 
-					HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallCommit");
-			BufferedReader br = HttpUtils.getConnectionStream(con);
-			String result = br.readLine();
-			assertNotNull(result);
-			Log.info(getClass(), method, "Result : " + result);
-			assertTrue("Cannot get expected reply from server, result = '" + result + "'",
-					result.contains("Get expected result in the second call."));
+		String urlStr = BASE_URL + "/endtoend/EndToEndClientServlet"
+				+ "?baseurl=" + BASE_URL2
+				+ "&baseurl2=" + BASE_URL3;
+		Log.info(getClass(), method, "URL: " + urlStr);
+
+		server2.setTraceMarkToEndOfDefaultTrace();
+
+		HttpURLConnection con = getHttpConnection(new URL(urlStr), 
+				HttpURLConnection.HTTP_OK, REQUEST_TIMEOUT,"testThreeServerTwoCallCommit");
+		BufferedReader br = HttpUtils.getConnectionStream(con);
+		String result = br.readLine();
+		assertNotNull(result);
+
+		// Make sure server3 registered with server2
+		assertNotNull(server2.waitForStringInTraceUsingMark("SERVER registered with Transaction"));
+
+		Log.info(getClass(), method, "Result : " + result);
+		assertTrue("Cannot get expected reply from server, result = '" + result + "'",
+				result.contains("Get expected result in the second call."));
 	}
 
 	@Test

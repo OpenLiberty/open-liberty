@@ -357,7 +357,7 @@ public class Simple2PCCloudTest extends FATServletClient {
 
     @Test
     @Mode(TestMode.LITE)
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException" })
+    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException", "javax.resource.ResourceException" })
     public void datasourceChangeTest() throws Exception {
         final String method = "datasourceChangeTest";
         // Start Server1

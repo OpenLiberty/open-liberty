@@ -97,7 +97,7 @@ public class HandlerImpl {
             // need to set ourselves up as the coordinator.
             WSATTransaction wsatTran = WSATTransaction.getTran(globalId);
             try {
-                if (wsatTran == null) {
+                if (!(wsatTran instanceof WSATTransaction)) {
                     // First time we've seen this tran.  So invoke our (local-only) version
                     // of WS-AT activation to configure ourselves as the coordinator and
                     // get a CoordinationContext.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,9 @@ import jakarta.data.repository.Repository;
  */
 @Repository
 public interface Receipts extends CrudRepository<Receipt, Long> {
+
+    boolean deleteByTotalLessThan(float max);
+
     Optional<Receipt> deleteByPurchaseId(long purchaseId);
 
     @Delete
