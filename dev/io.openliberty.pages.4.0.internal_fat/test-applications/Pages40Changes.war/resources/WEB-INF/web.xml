@@ -16,7 +16,7 @@
 
 <!-- 
 isThreadSafe is removed from Pages 4.0
-jsp:plugin and relatd actions are removed from Pages 4.0
+jsp:plugin and related actions are removed from Pages 4.0
  -->
   <display-name> Pages 4.0 Changes App </display-name>
 

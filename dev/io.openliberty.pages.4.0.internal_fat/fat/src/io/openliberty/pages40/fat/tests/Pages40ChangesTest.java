@@ -26,10 +26,13 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.pages40.fat.JSPUtils;
 
 /**
+ * Various tests for Jakarta Pages 4.0.
  */
 @RunWith(FATRunner.class)
 public class Pages40ChangesTest {
@@ -42,10 +45,8 @@ public class Pages40ChangesTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ;
-
         ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war");
-        server.startServer();
+        server.startServer(Pages40ChangesTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
@@ -62,6 +63,7 @@ public class Pages40ChangesTest {
      * @throws Exception if something goes horribly wrong
      */
     @Test
+    @Mode(TestMode.FULL)
     public void verifyisThreadSafeIsRemoved() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -81,6 +83,7 @@ public class Pages40ChangesTest {
      * @throws Exception if something goes horribly wrong
      */
     @Test
+    @Mode(TestMode.FULL)
     public void verifyisJspPluginIsRemoved() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -101,6 +104,7 @@ public class Pages40ChangesTest {
      * @throws Exception if something goes horribly wrong
      */
     @Test
+    @Mode(TestMode.FULL)
     public void verifyisJspParamsIsRemoved() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -121,6 +125,7 @@ public class Pages40ChangesTest {
      * @throws Exception if something goes horribly wrong
      */
     @Test
+    @Mode(TestMode.FULL)
     public void verifyisJspFallbackIsRemoved() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
