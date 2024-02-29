@@ -150,11 +150,6 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     }
 
     @Override
-    public long number() {
-        return pagination.page();
-    }
-
-    @Override
     public int numberOfElements() {
         int size = results.size();
         int max = pagination.size();

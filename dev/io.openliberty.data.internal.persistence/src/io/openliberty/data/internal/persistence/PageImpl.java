@@ -103,11 +103,6 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
-    public long number() {
-        return pagination.page();
-    }
-
-    @Override
     public int numberOfElements() {
         int size = results.size();
         int max = pagination.size();

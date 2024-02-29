@@ -696,7 +696,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(b -> b.location.address.houseNum)
                                              .collect(Collectors.toList()));
 
-        assertEquals(3, page.number());
+        assertEquals(3, page.pageRequest().page());
 
         page = businesses.findByZipIn(zipCodes, page.nextPageRequest());
 
@@ -707,7 +707,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertEquals(2, page.numberOfElements());
-        assertEquals(4, page.number());
+        assertEquals(4, page.pageRequest().page());
         assertEquals(null, page.nextPageRequest());
 
         page = businesses.findByZipIn(zipCodes, page.previousPageRequest());
@@ -718,7 +718,7 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(b -> b.location.address.houseNum)
                                              .collect(Collectors.toList()));
 
-        assertEquals(3, page.number());
+        assertEquals(3, page.pageRequest().page());
     }
 
     /**
