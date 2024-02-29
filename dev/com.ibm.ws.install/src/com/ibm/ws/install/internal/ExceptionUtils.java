@@ -471,19 +471,6 @@ public class ExceptionUtils {
             }
         }
 
-        wlp.lib.extract.ReturnCode validInstallRC = SelfExtractor.validateProductMatches(installDir, productMatchers);
-
-        String messageKey = validInstallRC.getMessageKey();
-
-        if (messageKey != null) {
-            if (messageKey.equals("invalidVersion") || messageKey.equals("invalidEdition")) {
-                int productEdition = 2;
-                if (messageKey.equals("invalidEdition")) {
-                    productEdition = 0;
-                }
-            }
-        }
-
         /**
          * missing dependent case, keep the current message
          */
