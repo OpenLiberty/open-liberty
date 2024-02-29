@@ -1189,12 +1189,12 @@
     <dependency>
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.cdi-api</artifactId>
-      <version>4.1.0.Alpha1</version>
+      <version>4.1.0.Beta2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.cdi-el-api</artifactId>
-      <version>4.1.0.Alpha1</version>
+      <version>4.1.0.Beta2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
@@ -1204,7 +1204,7 @@
     <dependency>
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.lang-model</artifactId>
-      <version>4.1.0.Alpha1</version>
+      <version>4.1.0.Beta2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.inject</groupId>
@@ -3654,7 +3654,7 @@
     <dependency>
       <groupId>org.jboss.weld.environment</groupId>
       <artifactId>weld-environment-common</artifactId>
-      <version>6.0.0.Alpha1</version>
+      <version>6.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -3674,7 +3674,7 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>6.0.0.Alpha1</version>
+      <version>6.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>
@@ -3699,7 +3699,7 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
-      <version>6.0.0.Alpha1</version>
+      <version>6.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
