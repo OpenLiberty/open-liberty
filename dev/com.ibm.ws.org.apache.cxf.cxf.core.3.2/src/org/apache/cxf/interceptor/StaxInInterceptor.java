@@ -152,7 +152,6 @@ public class StaxInInterceptor extends AbstractPhaseInterceptor<Message> {
             xreader = StaxUtils.configureReader(xreader, message);
 	    LOG.finest("XMLStreamReader after configureReader: " + xreader.getClass().getCanonicalName());
 	    // Liberty Change end
-	    LOG.finest("XMLStreamReader before configureReader: " + xreader.getClass().getCanonicalName());
         } catch (XMLStreamException e) {
             throw new Fault(new org.apache.cxf.common.i18n.Message("STREAM_CREATE_EXC",
                                                                    LOG,
