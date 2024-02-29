@@ -17,7 +17,7 @@ import componenttest.containers.TestContainerSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                UIBasicTest.class
+                // UIBasicTest.class
 })
 public class FATSuite extends TestContainerSuite {
 

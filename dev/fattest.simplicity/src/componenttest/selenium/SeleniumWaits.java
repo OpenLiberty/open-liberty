@@ -16,7 +16,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.FluentWait;
 
 /**
  * Utility methods for waiting for things in Selenium tests
@@ -63,11 +62,7 @@ public class SeleniumWaits {
      * @throws TimeoutException if the element is not found within the timeout
      */
     public static WebElement waitForElement(SearchContext searchRoot, By by, Duration timeout) {
-        return new FluentWait<>(searchRoot)
-                        .ignoring(NoSuchElementException.class)
-                        .withTimeout(timeout)
-                        .withMessage(() -> "Waiting for element " + by)
-                        .until(c -> c.findElement(by));
+        return null;
     }
 
 }

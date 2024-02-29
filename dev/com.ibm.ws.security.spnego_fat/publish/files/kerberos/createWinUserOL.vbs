@@ -283,7 +283,7 @@ End Function
 
 Function enableAllowedToDelegate(ByRef objUserLDAP)
    '<<<<< msDS-AllowedToDelegateTo needs to get set >>>>>
-    strdelegateSPN = "HTTP/s4u_backend_service"
+    strdelegateSPN = "HTTP/localhost"
     objUserLDAP.put "msDS-AllowedToDelegateTo", strdelegateSPN 
  Wscript.Echo UserName&": allowed to delegate."
 End Function

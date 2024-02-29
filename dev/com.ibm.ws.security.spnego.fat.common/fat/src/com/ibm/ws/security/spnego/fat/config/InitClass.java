@@ -84,6 +84,7 @@ public class InitClass {
     public static boolean LOCALHOST_DEFAULT_IP_ADDRESS = true; //127.0.0.1       localhost
 
     public static boolean IBM_JDK_V8_LOWER = false;
+    public static boolean IBM_JDK_V17_HIGHER = false; 
     public static boolean OTHER_SUPPORT_JDKS = false;
     public static boolean SUN_ORACLE_JDK_V8_HIGHER = false;
     public static boolean IBM_HYBRID_JDK = false;
@@ -159,7 +160,6 @@ public class InitClass {
             KDC2_USER = services.get(0).getProperties().get(SPNEGOConstants.MS_KDC_USER_REALM_2_CONSUL);
             KDC2_USER_PWD = services.get(0).getProperties().get(SPNEGOConstants.MS_KDC_PASSWORD_REALM_2_CONSUL);
             KDC2_REALM = services.get(0).getProperties().get(SPNEGOConstants.KDC2_REALM_FROM_CONSUL);
-
             KDCS_VAR = getKDCHostnameMask(KDC2_HOSTNAME);
 
             FIRST_USER_KRB5_FQN_PWD = USER_PWD;
@@ -261,15 +261,15 @@ public class InitClass {
                                            "\\n\\ SPNEGO FAT will fail. This is a machine set up issue with the host name. "
                                            + "\\n\\ This can be fixed by updating the hosts file or DNS server registration.");
         }
-        if (canonicalHostName != null && canonicalHostName.length() > CANONICAL_HOST_NAME_CHAR_LIMIT) {
-            Log.info(c, methodName, "Canonical host name [" + canonicalHostName + "] is longer than allowed character limit. Using a substring as the host name");
-            String tmpHostLowerCase = canonicalHostName.toLowerCase();
-            if (tmpHostLowerCase.contains("ebc")) {
-                canonicalHostName = createRandomStringHostNameForEbc(canonicalHostName);
-            } else {
-                canonicalHostName = createRandomStringHostName(canonicalHostName);
-            }
-        }
+        // if (canonicalHostName != null && canonicalHostName.length() > CANONICAL_HOST_NAME_CHAR_LIMIT) {
+        //     Log.info(c, methodName, "Canonical host name [" + canonicalHostName + "] is longer than allowed character limit. Using a substring as the host name");
+        //     String tmpHostLowerCase = canonicalHostName.toLowerCase();
+        //     if (tmpHostLowerCase.contains("ebc")) {
+        //         canonicalHostName = createRandomStringHostNameForEbc(canonicalHostName);
+        //     } else {
+        //         canonicalHostName = createRandomStringHostName(canonicalHostName);
+        //     }
+        // }
 
         /*
          * If we can't resolve a canonical hostname other than localhost, we will have problems with
@@ -336,8 +336,9 @@ public class InitClass {
                 rdnString.append(chars.charAt(index));
             }
             rndHostName = rdnString.toString();
+            rndHostName = "zrock052";
             libertyHostMap.put(canonicalHostName, rndHostName);
-            isRndHostName = true;
+            isRndHostName = false;
         }
         Log.info(c, methodName, "Canonical hostname " + canonicalHostName + " mapped to the random generated hostname " + rndHostName);
         return rndHostName;

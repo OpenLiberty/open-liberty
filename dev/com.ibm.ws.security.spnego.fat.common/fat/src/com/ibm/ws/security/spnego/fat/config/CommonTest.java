@@ -65,7 +65,7 @@ public class CommonTest {
         String thisMethod = "preClassCheck";
         Log.info(c, thisMethod, "Checking the assumption that the tests for this class should be run.");
         Assume.assumeTrue(InitClass.RUN_TESTS);
-        if (InitClass.OTHER_SUPPORT_JDKS && !InitClass.IBM_HYBRID_JDK) {
+        if ((InitClass.OTHER_SUPPORT_JDKS && !InitClass.IBM_HYBRID_JDK) || InitClass.IBM_JDK_V17_HIGHER) {
             expectation = new JDK11Expectations();
             Log.info(c, thisMethod, "Using JDK 11 Expectations.");
         } else {

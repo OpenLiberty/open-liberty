@@ -48,7 +48,6 @@ import componenttest.topology.impl.LibertyServerFactory;
  *
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
 public class S4U2ProxyTest extends CommonTest {
 
     private static final Class<?> c = S4U2ProxyTest.class;
@@ -78,7 +77,7 @@ public class S4U2ProxyTest extends CommonTest {
                                                   + "&JAAS=JAASClientUseKeytab&" + "UPN=" + InitClass.FIRST_USER + "@" + InitClass.KDC_REALM;
     private static final String envDelegationParm = "ENV=Delegation";
     private static final String targetServerSpnParm = "SPN=HTTP/" + TARGET_SERVER;
-    private static final String targetServerBackenedServer = "SPN=HTTP/" + SPNEGOConstants.S4U_BACKEND_SERVICE;
+    private static final String targetServerBackenedServer = "SPN=HTTP/" + localHostMachine;
 
     private static final String localhostSpnParm = "SPN=HTTP/" + localHostMachine;
 

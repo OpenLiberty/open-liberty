@@ -74,7 +74,7 @@ public class S4U2SelfTest extends CommonTest {
                                                   + "&JAAS=JAASClientUseKeytab&" + "UPN=" + InitClass.FIRST_USER + "@" + InitClass.KDC_REALM;
     private static final String envDelegationParm = "ENV=Delegation";
     private static final String envS4U2Self = "ENV=S4U2Self";
-    private static final String targetServerBackenedServer = "SPN=HTTP/" + SPNEGOConstants.S4U_BACKEND_SERVICE;
+    private static final String targetServerBackenedServer = "SPN=HTTP/" + localHostMachine;
     private static final String delegateServerSpn = "DELEGATESPN=HTTP/" + TARGET_SERVER;
     private static final String localhostSpnParm = "SPN=HTTP/" + localHostMachine;
 
