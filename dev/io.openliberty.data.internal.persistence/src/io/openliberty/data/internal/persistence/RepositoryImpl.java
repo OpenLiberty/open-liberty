@@ -2365,7 +2365,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     throw new DataException("Repository method " + method + " cannot have multiple Limit parameters."); // TODO NLS
                             } else if (param instanceof Order) {
                                 @SuppressWarnings("unchecked")
-                                Order<Object> order = (Order<Object>) param;
+                                Iterable<Sort<Object>> order = (Iterable<Sort<Object>>) param;
                                 sortList = queryInfo.combineSorts(sortList, order);
                             } else if (param instanceof PageRequest) {
                                 if (pagination == null)

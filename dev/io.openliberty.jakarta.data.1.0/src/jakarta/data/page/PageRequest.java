@@ -72,21 +72,23 @@ public interface PageRequest<T> {
 
     public int size();
 
-    public List<Sort<T>> sorts();
+    public List<Sort<? super T>> sorts();
 
     public PageRequest<T> page(long page);
 
     public PageRequest<T> size(int size);
 
-    public PageRequest<T> sortBy(Iterable<Sort<T>> sorts);
+    public PageRequest<T> sortBy(Iterable<Sort<? super T>> sorts);
 
-    public PageRequest<T> sortBy(Sort<T> sort);
+    public PageRequest<T> sortBy(Sort<? super T> sort);
 
-    public PageRequest<T> sortBy(Sort<T> sort1, Sort<T> sort2);
+    public PageRequest<T> sortBy(Sort<? super T> sort1, Sort<? super T> sort2);
 
-    public PageRequest<T> sortBy(Sort<T> sort1, Sort<T> sort2, Sort<T> sort3);
+    public PageRequest<T> sortBy(Sort<? super T> sort1, Sort<? super T> sort2, Sort<? super T> sort3);
 
-    public PageRequest<T> sortBy(Sort<T> sort1, Sort<T> sort2, Sort<T> sort3, Sort<T> sort4);
+    public PageRequest<T> sortBy(Sort<? super T> sort1, Sort<? super T> sort2, Sort<? super T> sort3,
+                                 Sort<? super T> sort4);
 
-    public PageRequest<T> sortBy(Sort<T> sort1, Sort<T> sort2, Sort<T> sort3, Sort<T> sort4, Sort<T> sort5);
+    public PageRequest<T> sortBy(Sort<? super T> sort1, Sort<? super T> sort2, Sort<? super T> sort3,
+                                 Sort<? super T> sort4, Sort<? super T> sort5);
 }
