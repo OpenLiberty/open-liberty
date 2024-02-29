@@ -104,7 +104,7 @@ public final class AttachmentUtil {
             DataContentHandler dch = super.createDataContentHandler(mimeType);
             if (dch == null) {
 	        if (LOG.isLoggable(Level.FINE)) { //Liberty Change Start
-	           LOG.fine("createDataContentHandler using DEFAULT_COMMAND_MAP for DataSource: " + ds.getName());
+	           LOG.fine("createDataContentHandler using DEFAULT_COMMAND_MAP for DataSource: " + (ds != null ? ds.getName() : "NULL"));
 	        } //Liberty Change End
                 dch = DEFAULT_COMMAND_MAP.createDataContentHandler(mimeType, ds);
             }
