@@ -43,6 +43,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;  // Liberty Change
+import java.util.logging.Level;   // Liberty Change
 
 import javax.activation.CommandInfo;
 import javax.activation.CommandMap;
@@ -61,6 +63,7 @@ import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
+import org.apache.cxf.common.logging.LogUtils;  // Liberty Change
 
 // Liberty Change - Backport https://github.com/apache/cxf/pull/960
 // Liberty Changes - Could potentially be removed when updating to CXF 3.5.5
@@ -79,6 +82,7 @@ public final class AttachmentUtil {
     private static final Random BOUND_RANDOM = new Random();
     private static final CommandMap DEFAULT_COMMAND_MAP = CommandMap.getDefaultCommandMap();
     private static final MailcapCommandMap COMMAND_MAP = new EnhancedMailcapCommandMap();
+    private static final Logger LOG = LogUtils.getL7dLogger(AttachmentUtil.class);  // Liberty Change
 
     static final class EnhancedMailcapCommandMap extends MailcapCommandMap {
         @Override
@@ -86,6 +90,9 @@ public final class AttachmentUtil {
                 String mimeType) {
             DataContentHandler dch = super.createDataContentHandler(mimeType);
             if (dch == null) {
+	        if (LOG.isLoggable(Level.FINE)) { //Liberty Change Start
+	           LOG.fine("createDataContentHandler using DEFAULT_COMMAND_MAP");
+	        } //Liberty Change End
                 dch = DEFAULT_COMMAND_MAP.createDataContentHandler(mimeType);
             }
             return dch;
@@ -96,6 +103,9 @@ public final class AttachmentUtil {
                 DataSource ds) {
             DataContentHandler dch = super.createDataContentHandler(mimeType);
             if (dch == null) {
+	        if (LOG.isLoggable(Level.FINE)) { //Liberty Change Start
+	           LOG.fine("createDataContentHandler using DEFAULT_COMMAND_MAP for DataSource: " + (ds != null ? ds.getName() : "NULL"));
+	        } //Liberty Change End
                 dch = DEFAULT_COMMAND_MAP.createDataContentHandler(mimeType, ds);
             }
             return dch;
@@ -103,6 +113,7 @@ public final class AttachmentUtil {
 
         @Override
         public synchronized CommandInfo[] getAllCommands(String mimeType) {
+
             CommandInfo[] commands = super.getAllCommands(mimeType);
             CommandInfo[] defaultCommands = DEFAULT_COMMAND_MAP.getAllCommands(mimeType);
             List<CommandInfo> cmdList = new ArrayList<>(Arrays.asList(commands));
@@ -112,12 +123,21 @@ public final class AttachmentUtil {
                 String defCmdName = defCmdInfo.getCommandName();
                 boolean cmdNameExist = false;
                 for (CommandInfo cmdInfo : commands) {
+	            if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	               LOG.finest("getAllCommands: processing cmd: " + cmdInfo.getCommandName());
+	            } //Liberty Change End
                     if (cmdInfo.getCommandName().equals(defCmdName)) {
                         cmdNameExist = true;
+	                if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	                   LOG.finest("getAllCommands: Found command " + defCmdName);
+	                } //Liberty Change End
                         break;
                     }
                 }
                 if (!cmdNameExist) {
+	            if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	               LOG.finest("getAllCommands: Cmd does not exist, using default: " + defCmdName);
+	            } //Liberty Change End
                     cmdList.add(defCmdInfo);
                 }
             }
@@ -128,8 +148,12 @@ public final class AttachmentUtil {
 
         @Override
         public synchronized CommandInfo getCommand(String mimeType, String cmdName) {
+
             CommandInfo cmdInfo = super.getCommand(mimeType, cmdName);
             if (cmdInfo == null) {
+	        if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	           LOG.finest("super getCommand returned null, so using default");
+	        } //Liberty Change End
                 cmdInfo = DEFAULT_COMMAND_MAP.getCommand(mimeType, cmdName);
             }
             return cmdInfo;
@@ -166,12 +190,23 @@ public final class AttachmentUtil {
     }
 
     public static boolean isMtomEnabled(Message message) {
-        return MessageUtils.getContextualBoolean(message, Message.MTOM_ENABLED, false);
+	// Liberty Change Start
+        boolean mtomEnabled = false;	
+        // return MessageUtils.getContextualBoolean(message, Message.MTOM_ENABLED, false);
+        mtomEnabled = MessageUtils.getContextualBoolean(message, Message.MTOM_ENABLED, false);
+	if (LOG.isLoggable(Level.FINE)) { //Liberty Change Start
+	   LOG.fine("MTOM enabled: " + mtomEnabled);
+	}
+	return mtomEnabled;
+        //Liberty Change End
     }
 
     public static void setStreamedAttachmentProperties(Message message, CachedOutputStream bos)
         throws IOException {
         Object directory = message.getContextualProperty(AttachmentDeserializer.ATTACHMENT_DIRECTORY);
+	if (LOG.isLoggable(Level.FINEST)) {  //Liberty Change Start
+	   LOG.finest("setStreamedAttachmentProperties: Attachment directory: " + directory);
+	} //Liberty Change End
         if (directory != null) {
             if (directory instanceof File) {
                 bos.setOutputDir((File)directory);
@@ -181,6 +216,9 @@ public final class AttachmentUtil {
         }
 
         Object threshold = message.getContextualProperty(AttachmentDeserializer.ATTACHMENT_MEMORY_THRESHOLD);
+	if (LOG.isLoggable(Level.FINE)) {  //Liberty Change Start
+	   LOG.fine("setStreamedAttachmentProperties: Attachment memory threshold: " + threshold);
+	} //Liberty Change End
         if (threshold != null) {
             if (threshold instanceof Long) {
                 bos.setThreshold((Long)threshold);
@@ -192,6 +230,9 @@ public final class AttachmentUtil {
         }
 
         Object maxSize = message.getContextualProperty(AttachmentDeserializer.ATTACHMENT_MAX_SIZE);
+	if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	   LOG.finest("setStreamedAttachmentProperties: Attachment maxSize: " + maxSize);
+	} //Liberty Change End
         if (maxSize != null) {
             if (maxSize instanceof Long) {
                 bos.setMaxSize((Long) maxSize);
@@ -216,11 +257,17 @@ public final class AttachmentUtil {
                     cid = ns;
                 }
             } catch (Exception e) {
+	        if (LOG.isLoggable(Level.FINEST)) {  //Liberty Change Start
+	           LOG.finest("createContentID caught exception: "  + e + " setting cid to ns: " + ns);
+	        } //Liberty Change End
                 cid = ns;
             }
         }
-        return URLEncoder.encode(name, StandardCharsets.UTF_8.name()) + "@"
+
+	String ret_cid = URLEncoder.encode(name, StandardCharsets.UTF_8.name()) + "@"
             + URLEncoder.encode(cid, StandardCharsets.UTF_8.name());
+
+	return ret_cid;
     }
 
     public static String getUniqueBoundaryValue() {
@@ -243,10 +290,15 @@ public final class AttachmentUtil {
 
         UUID result = new UUID(mostSigBits, leastSigBits);
 
+	if (LOG.isLoggable(Level.FINEST)) {  //Liberty Change Start
+	   LOG.finest("getUniqueBoundaryValue returning : " + "uuid:" + result.toString());
+	} //Liberty Change End
+
         return "uuid:" + result.toString();
     }
 
     public static String getAttachmentPartHeader(Attachment att) {
+
         StringBuilder buffer = new StringBuilder(200);
         buffer.append(HttpHeaderHelper.getHeaderKey(HttpHeaderHelper.CONTENT_TYPE) + ": "
                 + att.getDataHandler().getContentType() + ";\r\n");
@@ -270,6 +322,11 @@ public final class AttachmentUtil {
                 dataHandlers = new DHMap(attachments);
             }
         }
+
+	if (LOG.isLoggable(Level.FINEST)) {  //Liberty Change Start
+	   LOG.finest("getDHMap: dataHandlers" + dataHandlers);
+	} //Liberty Change End
+
         return dataHandlers == null ? new LinkedHashMap<String, DataHandler>() : dataHandlers;
     }
 
@@ -335,6 +392,7 @@ public final class AttachmentUtil {
     }
 
     public static String cleanContentId(String id) {
+
         if (id != null) {
             if (id.startsWith("<")) {
                 // strip <>
@@ -348,6 +406,9 @@ public final class AttachmentUtil {
             try {
                 id = URLDecoder.decode(id, StandardCharsets.UTF_8.name());
             } catch (UnsupportedEncodingException e) {
+	        if (LOG.isLoggable(Level.FINEST)) {  //Liberty Change Start
+	           LOG.finest("cleanContentId ignoring UnsupportedEncodingException: " + e);
+	        } //Liberty Change End
                 //ignore, keep id as is
             }
         }
@@ -383,6 +444,7 @@ public final class AttachmentUtil {
     static String getHeader(Map<String, List<String>> headers, String h, String delim) {
         return getHeaderValue(headers.get(h), delim);
     }
+
     public static Attachment createAttachment(InputStream stream, Map<String, List<String>> headers)
         throws IOException {
 
@@ -394,10 +456,18 @@ public final class AttachmentUtil {
         String cd = getHeader(headers, "Content-Disposition");
         String fileName = getContentDispositionFileName(cd);
 
+	if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	   LOG.finest("createAttachment: Content-ID: " + id + ", Content-Type: " + 
+		       ct + ", Content-Disposition: " + cd + ", filename: " + fileName);
+	} //Liberty Change End
+
         String encoding = null;
 
         for (Map.Entry<String, List<String>> e : headers.entrySet()) {
             String name = e.getKey();
+	    if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	       LOG.finest("createAttachment processing header: " + name);
+	    } //Liberty Change End
             if (name.equalsIgnoreCase("Content-Transfer-Encoding")) {
                 encoding = getHeader(headers, name);
                 if ("binary".equalsIgnoreCase(encoding)) {
@@ -423,6 +493,9 @@ public final class AttachmentUtil {
 
     static String getContentDispositionFileName(String cd) {
         if (StringUtils.isEmpty(cd)) {
+	    if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	       LOG.finest("getContentDispositionFileName returning NULL");
+	    } //Liberty Change End
             return null;
         }
         ContentDisposition c = new ContentDisposition(cd);
@@ -453,6 +526,7 @@ public final class AttachmentUtil {
         }
     }
     public static boolean isTypeSupported(String contentType, List<String> types) {
+
         if (contentType == null) {
             return false;
         }
@@ -462,6 +536,7 @@ public final class AttachmentUtil {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -491,6 +566,7 @@ public final class AttachmentUtil {
 
     public static Attachment createMtomAttachmentFromDH(
         boolean isXop, DataHandler handler, String elementNS, int threshold) {
+
         if (!isXop) {
             return null;
         }
@@ -503,19 +579,31 @@ public final class AttachmentUtil {
                 FileDataSource fds = (FileDataSource)ds;
                 File file = fds.getFile();
                 if (file.length() < threshold) {
+	            if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	               LOG.finest("createMtomAttachmentFromDH: file.length is < threshold: " + file.length());
+	            } //Liberty Change End
                     return null;
                 }
             } else if (ds.getClass().getName().endsWith("ObjectDataSource")) {
                 Object o = handler.getContent();
                 if (o instanceof String
                     && ((String)o).length() < threshold) {
+	            if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	               LOG.finest("createMtomAttachmentFromDH: handler size is < threshold: " + ((String)o).length());
+	            } //Liberty Change End
                     return null;
                 } else if (o instanceof byte[] && ((byte[])o).length < threshold) {
+	            if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	               LOG.finest("createMtomAttachmentFromDH: byte size is < threshold: " +  ((byte[])o).length);
+	            } //Liberty Change End
                     return null;
                 }
             }
         } catch (IOException e1) {
-        //      ignore, just do the normal attachment thing
+	     if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	         LOG.finest("Ignoring IOException: "  +e1);
+	     } //Liberty Change End
+        //   ignore, just do the normal attachment thing
         }
 
         String id;
@@ -549,10 +637,14 @@ public final class AttachmentUtil {
         // remaining parts with an angle bracket pair, "<" and ">".
         //
         // Liberty Change - End
+
         if (contentId.startsWith("cid:")) {
             try {
                 contentId = URLDecoder.decode(contentId.substring(4), StandardCharsets.UTF_8.name());
             } catch (UnsupportedEncodingException ue) {
+	        if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	           LOG.finest("UnsupportedEncodingException occurred: "  + ue);
+	        } //Liberty Change End
                 contentId = contentId.substring(4);
             }
             // Liberty Change - Start
@@ -569,6 +661,9 @@ public final class AttachmentUtil {
                 try {
                     final boolean followUrls = Boolean.valueOf(SystemPropertyAction
                         .getProperty(ATTACHMENT_XOP_FOLLOW_URLS_PROPERTY, "false"));
+	            if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	                LOG.finest("org.apache.cxf.attachment.xop.follow.urls property is set to: "  + followUrls);
+	            } //Liberty Change End
                     if (followUrls) {
                         return new URLDataSource(new URL(contentId));
                     } else {

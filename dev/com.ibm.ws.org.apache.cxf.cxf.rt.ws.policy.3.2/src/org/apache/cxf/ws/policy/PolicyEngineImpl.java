@@ -121,6 +121,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
     public final void setBus(Bus b) {
         if (this.bus == b) {
             //avoid bus init twice through injection
+	    LOG.finest("setBus: Bus already initialized, returning");  // Liberty Change
             return;
         }
         bus = b;
@@ -129,6 +130,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
         if (fblm != null) {
             for (FactoryBeanListener l : fblm.getListeners()) {
                 if (l instanceof PolicyAnnotationListener) {
+		    LOG.finest("setBus: PolicyAnnotationListener instance found, returning");  // Liberty Change
                     return;
                 }
             }
@@ -266,6 +268,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
                     }
                 }
             }
+	    LOG.fine("Returning effectivePolicy for null incoming"); // Liberty Change
             return effectivePolicy;
         }
         EffectivePolicyImpl epi = createOutPolicyInfo();
@@ -316,6 +319,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
             boi = boi.getWrappedOperation();
             for (BindingFaultInfo bf2 : boi.getFaults()) {
                 if (bf2.getFaultInfo().getName().equals(bfi.getFaultInfo().getName())) {
+		    LOG.fine("bf1 and bf2 faultinfo is same, returning bf2");  // Liberty Change
                     return bf2;
                 }
             }
@@ -457,6 +461,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
         if (ignoreUnknownAssertions != null) {
             AssertionBuilderRegistry abr = bus.getExtension(AssertionBuilderRegistry.class);
             if (null != abr) {
+		LOG.fine("Setting ignoreUnknownAssertions to: " + ignoreUnknownAssertions);  // Liberty Change
                 abr.setIgnoreUnknownAssertions(ignoreUnknownAssertions);
             }
         }
@@ -553,9 +558,11 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
         if (Constants.TYPE_ASSERTION == pc.getType()) {
             Assertion a = (Assertion)pc;
             if (includeOptional || !a.isOptional()) {
+		LOG.finest("Adding required assertions 1: " + a.getName()); // Liberty Change
                 assertions.add(a);
             }
         } else {
+	    LOG.finest("Adding optional assertions 1: " + includeOptional); // Liberty Change
             addAssertions(pc, includeOptional, assertions);
         }
         return assertions;
@@ -583,6 +590,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
         if (Constants.TYPE_ASSERTION == pc.getType()) {
             Assertion a = (Assertion)pc;
             if (includeOptional || !a.isOptional()) {
+		LOG.finest("Adding required assertions 2: " + a.getName()); // Liberty Change
                 assertions.add((Assertion)pc);
             }
             return;
@@ -597,6 +605,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
 
         List<PolicyComponent> pcs = CastUtils.cast(po.getPolicyComponents(), PolicyComponent.class);
         for (PolicyComponent child : pcs) {
+	    LOG.finest("Adding optional assertions 2: " + includeOptional); // Liberty Change
             addAssertions(child, includeOptional, assertions);
         }
     }
@@ -677,6 +686,9 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
                             }
                             return true;
                         } else {
+                            if (doLog) {
+                               LOG.fine("ignoreUnsupportedPolicy is not set, returning false 1");
+			    }
                             return false;
                         } // Liberty Change End
                     }
@@ -694,12 +706,18 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
 			       }
                                return true;
                             } else {
+                               if (doLog) {
+                                  LOG.fine("ignoreUnsupportedPolicy is not set, returning false 2");
+			       }
                                return false;
                             } // Liberty Change End
                         }
                     }
                 }
             } else {
+                if (doLog) {
+                   LOG.fine("Not policy assertion, returning false");  // Liberty Change
+		}
                 return false;
             }
         }

@@ -23,7 +23,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger; // Liberty code change
+import java.util.logging.Logger;
+import java.util.List;
+import java.util.logging.Level;
+import javax.xml.ws.Holder;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.common.logging.LogUtils; // Liberty code change
@@ -111,8 +114,9 @@ public class MessageImpl extends StringMapImpl implements Message {
         // Liberty code change start - Add logging statments
         LOG.entering("MessageImpl", "getContent");
         for (int x = 0; x < index; x += 2) {
+	    LOG.finest("getContent processing class: " + contents[x].getClass().getCanonicalName());
             if (contents[x] == format) {
-                LOG.exiting("MessageImpl", "getContent");
+                LOG.finest("getContent returning class: " + contents[x+1].getClass().getCanonicalName());
                 return (T)contents[x + 1];
             }
         }
@@ -124,8 +128,13 @@ public class MessageImpl extends StringMapImpl implements Message {
     public <T> void setContent(Class<T> format, Object content) {
         // Liberty code change start
         LOG.entering("MessageImpl", "setContent");
+	if (LOG.isLoggable(Level.FINEST)) {
+	   LOG.finest("setContent: Logging content for format: " + (format != null ? format.getCanonicalName() : "null"));
+	   logContent(content);
+	}
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
+		LOG.finest("setContent: Found format: Setting contents[" + x+1 + "] to " + (content != null ? content.getClass().getCanonicalName() : "NULL"));
                 contents[x + 1] = content;
                 LOG.exiting("MessageImpl", "setContent");
                 return;
@@ -134,6 +143,7 @@ public class MessageImpl extends StringMapImpl implements Message {
         if (index >= contents.length) {
             //very unlikely to happen.   Haven't seen more than about 6,
             //but just in case we'll add a few more
+	    LOG.finest("Index: " + index + " is >= contents length: " + contents.length);
             Object[] tmp = new Object[contents.length + 10];
             System.arraycopy(contents, 0, tmp, 0, contents.length);
             contents = tmp;
@@ -146,18 +156,24 @@ public class MessageImpl extends StringMapImpl implements Message {
     }
 
     public <T> void removeContent(Class<T> format) {
+        LOG.entering("MessageImpl", "removeContent");  // Liberty Change begin
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
+	        LOG.finest("removeContent: Found content for format: " + 
+				(format != null ? format.getCanonicalName() : "null"));
                 index -= 2;
                 if (x != index) {
                     contents[x] = contents[index];
                     contents[x + 1] = contents[index + 1];
                 }
+	        LOG.finest("removeContent: " + (contents[index] != null ? contents[index].getClass().getCanonicalName() : "null"));
                 contents[index] = null;
                 contents[index + 1] = null;
+                LOG.exiting("MessageImpl", "removeContent");
                 return;
             }
         }
+	LOG.exiting("MessageImpl", "removeContent"); // Liberty change end
     }
 
     public Set<Class<?>> getContentFormats() {
@@ -178,6 +194,7 @@ public class MessageImpl extends StringMapImpl implements Message {
     }
 
     public void setId(String i) {
+        LOG.finest("MessageImpl:setId to " + i);
         this.id = i;
     }
 
@@ -194,8 +211,10 @@ public class MessageImpl extends StringMapImpl implements Message {
     public Object getContextualProperty(String key) {
         Object o = getOrDefault(key, NOT_FOUND);
         if (o != NOT_FOUND) {
+            LOG.finest("MessageImpl:getContextualProperty from default for "  + key );
             return o;
         }
+        LOG.finest("MessageImpl:getContextualProperty from Exchange for "  + key );
         return getFromExchange(key);
     }
 
@@ -237,6 +256,22 @@ public class MessageImpl extends StringMapImpl implements Message {
             }
         }
         return null;
+    }
+
+    private void logContent(Object content) {
+
+	if (content instanceof List) {
+           for (Object o1 : (List)content) {
+                if (o1 != null && o1.getClass() != null) {
+                   LOG.finest("Setcontent param: " + o1.getClass().getCanonicalName());
+                }
+                if (o1 instanceof Holder && o1 != null) {
+                   if (((Holder)o1).value != null) {
+                     LOG.finest("Setcontent Holder type: " + ((Holder)o1).value.getClass());
+                   }
+                }
+             }
+        }
     }
 
     private Set<String> getExchangeKeySet() {
@@ -287,7 +322,6 @@ public class MessageImpl extends StringMapImpl implements Message {
         s.addAll(keySet());
         return s;
     }
-    //Liberty code change end
     
     public static void copyContent(Message m1, Message m2) {
         for (Class<?> c : m1.getContentFormats()) {
@@ -295,7 +329,6 @@ public class MessageImpl extends StringMapImpl implements Message {
         }
     }
 
-    //Liberty code change start
     public void resetContextCache() {
     }
 
@@ -304,5 +337,4 @@ public class MessageImpl extends StringMapImpl implements Message {
             put(key, v);
         }
     }
-    //Liberty code change end
 }

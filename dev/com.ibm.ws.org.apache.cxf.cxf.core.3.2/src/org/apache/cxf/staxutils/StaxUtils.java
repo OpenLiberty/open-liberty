@@ -243,6 +243,7 @@ public final class StaxUtils {
             }
             return i;
         } catch (Throwable t) {
+            LOG.finest("getInteger: Ignoring exception: " + t);  // Liberty Change
             //ignore
         }
         return def;
@@ -259,6 +260,7 @@ public final class StaxUtils {
             }
             return i;
         } catch (Throwable t) {
+            LOG.finest("getLong: Ignoring exception: " + t);  // Liberty Change
             //ignore
         }
         return def;
@@ -390,6 +392,7 @@ public final class StaxUtils {
             f.setProperty(p,  o);
             return true;
         } catch (Throwable t) {
+	    LOG.finest("setProperty: Ignoring exception: " + t);  // Liberty Change
             //ignore
         }
         return false;
@@ -594,6 +597,7 @@ public final class StaxUtils {
             try {
                 writer.flush();
             } catch (XMLStreamException ex) {
+	        LOG.finest("copy: Ignoring XMLStreamException: " + ex); // Liberty Change
                 //ignore
             }
             StaxUtils.close(writer);
@@ -624,10 +628,12 @@ public final class StaxUtils {
                             reader.setFeature("http://xml.org/sax/features/namespaces", true);
                         } catch (Throwable t) {
                             //ignore
+	        	    LOG.finest("copy: Ignoring reader.setFeature exception: " + t);  // Liberty Change
                         }
                         try {
                             reader.setProperty("http://xml.org/sax/properties/lexical-handler", ch);
                         } catch (Throwable t) {
+	        	    LOG.finest("copy: Ignoring reader.setProperty exception: " + t); // Liberty Change
                             //ignore
                         }
                         reader.parse(((SAXSource)source).getInputSource());
@@ -666,6 +672,7 @@ public final class StaxUtils {
             d.setDocumentURI(doc.getDocumentURI());
         } catch (Exception ex) {
             //ignore - probably not DOM level 3
+	    LOG.finest("copy Doc: Ignoring d.setDocumentURI exception: " + ex);  // Liberty Change
         }
         return d;
     }
@@ -1116,6 +1123,7 @@ public final class StaxUtils {
                     writer.writeDTD(((DocumentType)n).getTextContent());
                 }
             } catch (UnsupportedOperationException ex) {
+	        LOG.finest("writeNode: Ignoring exception: " + ex);  // Liberty Change
                 //can we ignore?  DOM writers really don't allow this
                 //as there isn't a way to write a DTD in dom
             }
@@ -1133,6 +1141,7 @@ public final class StaxUtils {
             try {
                 reader.close();
             } catch (Exception ex) {
+	        LOG.finest("read Src: Ignoring exception: " + ex);  // Liberty Change
                 //ignore
             }
         }
@@ -1145,6 +1154,7 @@ public final class StaxUtils {
             try {
                 reader.close();
             } catch (Exception ex) {
+	        LOG.finest("read IS: Ignoring exception: " + ex);  // Liberty Change
                 //ignore
             }
         }
@@ -1157,6 +1167,7 @@ public final class StaxUtils {
             try {
                 reader.close();
             } catch (Exception ex) {
+	        LOG.finest("read Reader: Ignoring exception: " + ex);  // Liberty Change
                 //ignore
             }
         }
@@ -1184,6 +1195,7 @@ public final class StaxUtils {
             try {
                 doc.setDocumentURI(reader.getLocation().getSystemId());
             } catch (Exception e) {
+	        LOG.finest("read: Ignoring exception 1: " + e);  // Liberty Change
                 //ignore - probably not DOM level 3
             }
         }
@@ -1199,6 +1211,7 @@ public final class StaxUtils {
             try {
                 doc.setDocumentURI(reader.getLocation().getSystemId());
             } catch (Exception e) {
+	        LOG.finest("read: Ignoring exception 2: " + e);  // Liberty Change
                 //ignore - probably not DOM level 3
             }
         }
@@ -1719,6 +1732,7 @@ public final class StaxUtils {
                 ss.setPublicId(pubId);
                 return new AutoCloseableXMLStreamReader(createXMLStreamReader(ss), is);
             } catch (Exception ex) {
+	        LOG.finest("createXMLStreamReader: Ignoring exception: " + ex);  // Liberty Change
                 //ignore - not a valid URL
             }
         }
@@ -1809,6 +1823,7 @@ public final class StaxUtils {
                 try {
                     reader = factory.createXMLStreamReader(source);
                 } catch (UnsupportedOperationException e) {
+	            LOG.finest("createXMLStreamReader: Ignoring exception 2: " + e);	// Liberty Change
                     //ignore
                 }
                 if (reader == null && source instanceof StreamSource) {
@@ -2129,6 +2144,7 @@ public final class StaxUtils {
             try {
                 writer.close();
             } catch (Exception e) {
+	        LOG.finest("close writer: Ignoring exception: " + e);	// Liberty Change
                 //ignore
             }
         }
@@ -2143,6 +2159,7 @@ public final class StaxUtils {
                 return true;
             }
         } catch (Exception ex) {
+	    LOG.finest("isSecureReader: Ignoring exception: " + ex);	// Liberty Change
             //ignore
         }
         return false;
@@ -2222,7 +2239,7 @@ public final class StaxUtils {
         } catch (ClassCastException cce) {
             //not an XMLStreamReader2
             if (ALLOW_INSECURE_PARSER_VAL) {
-                LOG.warning("INSTANCE_NOT_XMLSTREAMREADER2");
+                LOG.finest("INSTANCE_NOT_XMLSTREAMREADER2");  // Liberty Change
             } else {
                 throw new XMLStreamException(cce.getMessage(), cce);
             }

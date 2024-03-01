@@ -46,7 +46,7 @@ import org.osgi.framework.SynchronousBundleListener;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore; // Liberty Change
 
 public class CXFExtensionBundleListener implements SynchronousBundleListener {
-    private static final Logger LOG = LogUtils.getL7dLogger(CXFActivator.class);
+    private static final Logger LOG = LogUtils.getL7dLogger(CXFExtensionBundleListener.class);
     private long id;
     private ConcurrentMap<Long, List<OSGiExtension>> extensions
         = new ConcurrentHashMap<>(16, 0.75f, 4);
@@ -62,14 +62,17 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
                 || bundle.getState() == Bundle.ACTIVE
                 || bundle.getState() == Bundle.STOPPING)
                 && bundle.getBundleId() != context.getBundle().getBundleId()) {
-            	// Start Liberty Change
+            	//Liberty Change Start
                 String bundleName = bundle.toString();
                 if(!bundleName.startsWith("com.ibm.ws.org.apache.cxf") && !bundleName.startsWith("com.ibm.ws.wssecurity")) {
                     // don't register non-cxf bundles
+                    LOG.finest("Non-CXF bundle: Do not register bundle " + bundleName);
                 }
-                else
+                else {
+                    LOG.finest("CXF bundle: Register bundle " + bundleName);
                     register(bundle);
-                //
+		}
+                //Liberty Change End
             }
         }
     }
@@ -77,8 +80,10 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
     /** {@inheritDoc}*/
     public void bundleChanged(BundleEvent event) {
         if (event.getType() == BundleEvent.RESOLVED && id != event.getBundle().getBundleId()) {
+            LOG.finest("bundleChanged: Register bundle " + event.getBundle()); //Liberty Change
             register(event.getBundle());
         } else if (event.getType() == BundleEvent.UNRESOLVED || event.getType() == BundleEvent.UNINSTALLED) {
+            LOG.finest("bundleChanged: Unregister bundle " + event.getBundle()); //Liberty Change
             unregister(event.getBundle().getBundleId());
         }
     }
@@ -93,20 +98,24 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
 
     private boolean addExtensions(final Bundle bundle, List<Extension> orig) {
         if (orig.isEmpty()) {
+            LOG.finest("Extension list is empty!");  //Liberty Change
             return false;
         }
 
         List<String> names = new ArrayList<>(orig.size());
         for (Extension ext : orig) {
+            LOG.finest("register: Adding extension: " + ext.toString()); //Liberty Change
             names.add(ext.getName());
         }
         LOG.finest("Adding the extensions from bundle " + bundle.getSymbolicName() // Liberty Change: Log at finest
                  + " (" + bundle.getBundleId() + ") " + names);
         List<OSGiExtension> list = extensions.get(bundle.getBundleId());
         if (list == null) {
+            LOG.finest("Extension list is NULL!");  // Liberty Change
             list = new CopyOnWriteArrayList<>();
             List<OSGiExtension> preList = extensions.putIfAbsent(bundle.getBundleId(), list);
             if (preList != null) {
+                LOG.finest("Setting list to preList");  //Liberty Change
                 list = preList;
             }
         }
@@ -194,6 +203,7 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
                     c = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
                         @Override
                         public Class<?> run() throws ClassNotFoundException {
+                            LOG.finest("tryClass: Loading class: " + className);  //Liberty Change
                             return bundle.loadClass(className);
                         }
                     });
@@ -207,6 +217,7 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
                 // End Liberty Change
 
             } catch (Throwable e) {
+                LOG.finest("tryClass: Setting origExc to: " + e);  // Liberty Change
                 origExc = e;
             }
             if (c == null) {

@@ -41,6 +41,8 @@ import org.apache.cxf.phase.PhaseManager;
 import org.apache.cxf.service.Service;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.transport.https.CertConstraintsInterceptor;
+import org.apache.cxf.common.logging.LogUtils;
+import java.util.logging.Logger;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -50,6 +52,7 @@ public class ChainInitiationObserver implements MessageObserver {
     protected ClassLoader loader;
 
     private final PhaseChainCache chainCache = new PhaseChainCache();
+    private static final Logger LOG = LogUtils.getL7dLogger(ChainInitiationObserver.class);  // Liberty Change
 
     public ChainInitiationObserver(Endpoint endpoint, Bus bus) {
         super();
@@ -67,12 +70,6 @@ public class ChainInitiationObserver implements MessageObserver {
         Bus origBus = BusFactory.getAndSetThreadDefaultBus(bus);
 
         try {
-	        // Liberty Change Start
-            // no need reset TCClassloader as already set to bus
-//            if (loader != null) {
-//                origLoader = ClassLoaderUtils.setThreadContextClassloader(loader);
-//            }
-            // Liberty Change End
             InterceptorChain phaseChain;
 
             if (m.getInterceptorChain() != null) {
@@ -81,6 +78,7 @@ public class ChainInitiationObserver implements MessageObserver {
                 synchronized (phaseChain) {
                     if (phaseChain.getState() == InterceptorChain.State.PAUSED
                         || phaseChain.getState() == InterceptorChain.State.SUSPENDED) {
+			LOG.fine("onMessage: Phase Chain was paused/suspended, resuming"); // Liberty Change
                         phaseChain.resume();
                         return;
                     }
@@ -128,17 +126,10 @@ public class ChainInitiationObserver implements MessageObserver {
             } catch (RuntimeException re) {
                 throw re;
             }
-			// Liberty Change End
-
         } finally {
             if (origBus != bus) {
                 BusFactory.setThreadDefaultBus(origBus);
             }
-			  // Liberty Change Start
-//            if (origLoader != null) {
-//                origLoader.reset();
-//            }
-              // Liberty Change End
         }
     }
 
@@ -154,6 +145,7 @@ public class ChainInitiationObserver implements MessageObserver {
 			// Liberty Change Start:
             // This helps us to detect if CertConstraintsInterceptor  needs to be added to chain
             String rqURL = (String) m.get(Message.REQUEST_URL);
+	    LOG.fine("addToChain: Request URL: " + rqURL);
             boolean isHttps = (rqURL != null && rqURL.indexOf("https:") > -1) ? true : false;
             for (Interceptor<? extends Message> i : is) {
                 if (i instanceof CertConstraintsInterceptor && isHttps == false) {
@@ -187,19 +179,23 @@ public class ChainInitiationObserver implements MessageObserver {
 
             if (endpointInfo.getService() != null) {
                 QName serviceQName = endpointInfo.getService().getName();
+	        LOG.fine("setExchangeProperties: WSDL service Qname: " + serviceQName);  // Liberty Change
                 exchange.put(Message.WSDL_SERVICE, serviceQName);
 
                 QName interfaceQName = endpointInfo.getService().getInterface().getName();
                 exchange.put(Message.WSDL_INTERFACE, interfaceQName);
 
                 QName portQName = endpointInfo.getName();
+	        LOG.fine("setExchangeProperties: WSDL Port Qname: " + portQName);  // Liberty Change
                 exchange.put(Message.WSDL_PORT, portQName);
                 URI wsdlDescription = endpointInfo.getProperty("URI", URI.class);
                 if (wsdlDescription == null && !endpointInfo.hasProperty("URI")) {
                     String address = endpointInfo.getAddress();
+	            LOG.fine("setExchangeProperties: Endpoint address: " + address);  // Liberty Change
                     try {
                         wsdlDescription = new URI(address + "?wsdl");
                     } catch (URISyntaxException e) {
+	                 LOG.fine("setExchangeProperties: Ignoring URISyntaxException: " + e);  // Liberty Change
                         // do nothing
                     }
                     endpointInfo.setProperty("URI", wsdlDescription);
@@ -207,6 +203,7 @@ public class ChainInitiationObserver implements MessageObserver {
                 exchange.put(Message.WSDL_DESCRIPTION, wsdlDescription);
             }
         } else {
+	    LOG.fine("setExchangeProperties: Setting Service.class to null");  // Liberty Change
             exchange.put(Service.class, null);
         }
     }

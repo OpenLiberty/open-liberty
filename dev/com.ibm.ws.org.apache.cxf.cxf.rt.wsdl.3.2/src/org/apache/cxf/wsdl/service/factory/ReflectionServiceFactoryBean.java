@@ -228,6 +228,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
                 return cls.getConstructor(Boolean.TYPE, Map.class)
                     .newInstance(this.isQualifyWrapperSchema(), this.getProperties());
             } catch (NoSuchMethodException nsme) {
+		LOG.fine("Ignoring NoSuchMethodException: " + nsme);  // Liberty Change
                 //ignore, use the no-arg constructor
             }
             return cls.newInstance();
@@ -646,8 +647,12 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
 
         Map<QName, Method> validMethods = new HashMap<>();
         for (Method m : methods) {
+	    // Liberty Change start
+	    LOG.finest("initializeWSDLOperations: for Method: " + m.getName());
             if (isValidMethod(m)) {
                 QName opName = getOperationName(intf, m);
+		LOG.finest("initializeWSDLOperations: Operation name: " + opName);
+	    // Liberty Change end
                 validMethods.put(opName, m);
             }
         }
@@ -660,6 +665,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
                 if (o.getName().getNamespaceURI().equals(opName.getNamespaceURI())
                     && isMatchOperation(o.getName().getLocalPart(), opName.getLocalPart())) {
                     selected = m.getValue();
+		    LOG.finest("Method selected: " + (selected != null ? selected.getName() : "null")); // Liberty Change
                     break;
                 }
             }
@@ -717,7 +723,17 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
      */
     protected boolean initializeClassInfo(OperationInfo o, Method method, List<String> paramOrder) {
         OperationInfo origOp = o;
+
+	// Liberty Change start
+	if (LOG.isLoggable(Level.FINEST)) {
+	   for (String p1 : paramOrder) {
+		LOG.finest("initializeClassInfo: paramOrder: " + p1);
+	   }
+	}
+	// Liberty Change end
+
         if (isWrapped(method)) {
+	    LOG.finest("initializeClassInfo: Method is wrapped");   // Liberty Change
             if (o.getUnwrappedOperation() == null) {
                 //the "normal" algorithm didn't allow for unwrapping,
                 //but the annotations say unwrap this.   We'll need to
@@ -725,6 +741,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
                 WSDLServiceBuilder.checkForWrapped(o, true);
             }
             if (o.getUnwrappedOperation() != null) {
+		LOG.finest("initializeClassInfo: Operation is Unwrapped");  // Liberty Change
                 if (o.hasInput()) {
                     MessageInfo input = o.getInput();
                     MessagePartInfo part = input.getFirstMessagePart();
@@ -747,6 +764,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
                 setFaultClassInfo(o, method);
             }
         } else if (o.isUnwrappedCapable()) {
+	    LOG.finest("initializeClassInfo: Operation is Unwrapped Capable");  // Liberty Change
             // remove the unwrapped operation because it will break the
             // the WrapperClassOutInterceptor, and in general makes
             // life more confusing
@@ -774,6 +792,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             Class<?> paramType = paramTypes[i];
             Type genericType = genericTypes[i];
             if (!initializeParameter(o, method, i, paramType, genericType)) {
+		LOG.finest("initializeClassInfo: initializeParameter 1 returning false.");  // Liberty Change
                 return false;
             }
         }
@@ -782,6 +801,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
         // Initialize return type
         if (o.hasOutput()
             && !initializeParameter(o, method, -1, method.getReturnType(), method.getGenericReturnType())) {
+	    LOG.finest("initializeClassInfo: initializeParameter 2 returning false.");  // Liberty Change
             return false;
         }
         if (o.hasOutput()) {
@@ -815,9 +835,11 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
         boolean isHeader = isHeader(method, i);
         Annotation[] paraAnnos = null;
         if (i != -1 && o.getProperty(METHOD_PARAM_ANNOTATIONS) != null) {
+	    LOG.fine("initializeParameter : Param Annotations"); // Liberty Change
             Annotation[][] anns = (Annotation[][])o.getProperty(METHOD_PARAM_ANNOTATIONS);
             paraAnnos = anns[i];
         } else if (i == -1 && o.getProperty(METHOD_ANNOTATIONS) != null) {
+	    LOG.fine("initializeParameter : Method Annotations"); // Liberty Change
             paraAnnos = (Annotation[])o.getProperty(METHOD_ANNOTATIONS);
         }
 
@@ -1829,7 +1851,11 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             Type c = getHolderType(rawClass, type);
             if (c != null) {
                 type = c;
+		// Liberty Change start
+		LOG.fine("initializeParameter: Holder type: " + c.getTypeName()); 
                 rawClass = getClass(type);
+		LOG.fine("initializeParameter: Holder rawClass: " + (rawClass != null ? rawClass.getCanonicalName() : "NULL") );
+		// Liberty Change end
             }
         }
         if (type instanceof TypeVariable) {
@@ -1854,6 +1880,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
         if (Collection.class.isAssignableFrom(rawClass)) {
             part.setProperty(RAW_CLASS, rawClass);
         }
+	LOG.fine("Calling setTypeClass 1 for : " + rawClass.getCanonicalName()); // Liberty Change
         part.setTypeClass(rawClass);
 
         if (part.getMessageInfo().getOperation().isUnwrapped()
@@ -1867,6 +1894,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
                 || Boolean.TRUE.equals(part.getProperty(ReflectionServiceFactoryBean.MODE_INOUT))) {
                 MessagePartInfo mpi = o.getOutput().getMessagePart(part.getName());
                 if (mpi != null) {
+	            LOG.fine("Calling setTypeClass 2 for : " + rawClass.getCanonicalName()); // Liberty Change
                     mpi.setTypeClass(rawClass);
                     mpi.setProperty(GENERIC_TYPE, type);
                     if (Collection.class.isAssignableFrom(rawClass)) {
@@ -1877,6 +1905,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             if (!Boolean.TRUE.equals(part.getProperty(ReflectionServiceFactoryBean.MODE_OUT))) {
                 MessagePartInfo mpi = o.getInput().getMessagePart(part.getName());
                 if (mpi != null) {
+	            LOG.fine("Calling setTypeClass 3 for : " + rawClass.getCanonicalName()); // Liberty Change
                     mpi.setTypeClass(rawClass);
                     mpi.setProperty(GENERIC_TYPE, type);
                     if (Collection.class.isAssignableFrom(rawClass)) {
@@ -2094,9 +2123,11 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             // Ignore XFireFaults because they don't need to be declared
             if (Fault.class.isAssignableFrom(exClazz)
                 || exClazz.equals(RuntimeException.class) || exClazz.equals(Throwable.class)) {
+		LOG.finest("initializeFaults: Ignoring fault class: " + exClazz.getCanonicalName()); // Liberty Change
                 continue;
             }
 
+	    LOG.finest("initializeFaults: Adding fault class: " + exClazz.getCanonicalName()); // Liberty Change
             addFault(service, op, exClazz);
         }
     }
@@ -2538,6 +2569,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             for (AbstractServiceConfiguration c : serviceConfigurations) {
                 defWrappedCache = c.isWrapped();
                 if (defWrappedCache != null) {
+		    LOG.finest("isWrapped: Returning defWrappedCache");  // Liberty Change
                     return defWrappedCache;
                 }
             }
@@ -2551,6 +2583,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             for (AbstractServiceConfiguration c : serviceConfigurations) {
                 styleCache = c.getStyle();
                 if (styleCache != null) {
+		    LOG.finest("Returning styleCache");	 // Liberty Change
                     return styleCache;
                 }
             }
@@ -2565,6 +2598,7 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             for (AbstractServiceConfiguration c : serviceConfigurations) {
                 b = c.isRPC(method);
                 if (b != null) {
+		    LOG.finest("isRPC: Adding method to RPC Cache: " + method.getName());  // Liberty Change
                     isRpcCache.put(method, b);
                     return b.booleanValue();
                 }

@@ -75,6 +75,7 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
 
         AssertionInfoMap aim = message.get(AssertionInfoMap.class);
         if (null == aim) {
+            LOG.fine("No AssertionInfoMap.");  // Liberty Change
             return;
         }
 
@@ -108,8 +109,10 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
         if (effectivePolicy == null) {
             EndpointInfo ei = e.getEndpointInfo();
             if (MessageUtils.isRequestor(message)) {
+                LOG.fine("Getting response effectivePolicy for client.");  // Liberty Change
                 effectivePolicy = pe.getEffectiveClientResponsePolicy(ei, boi, message);
             } else {
+                LOG.fine("Getting request effectivePolicy for server .");  // Liberty Change
                 effectivePolicy = pe.getEffectiveServerRequestPolicy(ei, boi, message);
             }
         }

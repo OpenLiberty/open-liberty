@@ -70,7 +70,7 @@ public class AttachmentSerializer {
 
         String unescapedAction = System.getProperty("cxf.support.unescaped.action");
         if (LOG.isLoggable(Level.FINE)) {
-           LOG.log(Level.FINE, "TS011473115: cxf.support.unescaped.action property is set to " + unescapedAction);
+           LOG.log(Level.FINE, "cxf.support.unescaped.action property is set to " + unescapedAction);
 	}
 
         if (unescapedAction != null 
@@ -164,10 +164,10 @@ public class AttachmentSerializer {
         if (writeOptionalTypeParameters || xop) {
             ct.append("; start-info=\"")
                 .append(bodyCt);
-		    // Liberty Change Start
+	    // Liberty Change Start
             if (supportSeparateAction) {
                if (LOG.isLoggable(Level.FINE)) {
-                  LOG.log(Level.FINE, "TS011473115: Format Content-Type using separate action attribute");
+                  LOG.log(Level.FINE, "Format Content-Type using separate action attribute");
 	       }
                if (bodyCtParams != null) {
                    ct.append("\"").append(bodyCtParams);
@@ -414,17 +414,31 @@ public class AttachmentSerializer {
     // URL decoder would also decode '+' but according to  RFC-2392 we need to convert
     // only the % encoded character to their equivalent US-ASCII characters. 
     private static String decode(String s, Charset charset) throws UnsupportedEncodingException {
-        return URLDecoder.decode(s.replaceAll("([^%])[+]", "$1%2B"), charset.name());
+	// Liberty Change Start
+        String dString = URLDecoder.decode(s.replaceAll("([^%])[+]", "$1%2B"), charset.name());
+        if (LOG.isLoggable(Level.FINEST)) {
+           LOG.finest("decode: Original string:  " + s + ", charset: " + charset + 
+			", Decoded string: " + dString);
+	}
+        return dString;
+	// Liberty Change End
     }
 
     // Try to decode the string assuming the decoding may fail, the original string is going to
     // be returned in this case.
     private static String tryDecode(String s, Charset charset) {
         try { 
-            return decode(s, charset);
+	    String dString = decode(s, charset); // Liberty Change Start
+            if (LOG.isLoggable(Level.FINEST)) {
+               LOG.finest("tryDecode: Original string:  " + s + ", charset: " + charset + 
+			", Decoded string: " + dString);
+	    }
+            return dString;  // Liberty Change End
         } catch (IllegalArgumentException ex) {
+            LOG.finest("tryDecode: IllegalArgumentException exception: " + ex); // Liberty Change
             return s;
         } catch (UnsupportedEncodingException ex) {
+            LOG.finest("tryDecode: UnsupportedEncodingException exception: " + ex); // Liberty Change
             return s;
         }
     }
