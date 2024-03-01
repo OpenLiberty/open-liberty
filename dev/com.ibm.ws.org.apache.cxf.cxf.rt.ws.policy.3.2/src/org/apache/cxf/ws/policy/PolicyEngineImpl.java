@@ -716,7 +716,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
                 }
             } else {
                 if (doLog) {
-                   LOG.fine("Not policy assertion, returning false");
+                   LOG.fine("Not policy assertion, returning false");  // Liberty Change
 		}
                 return false;
             }

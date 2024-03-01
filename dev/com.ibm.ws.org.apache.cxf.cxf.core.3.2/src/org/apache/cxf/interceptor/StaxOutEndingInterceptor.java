@@ -55,7 +55,7 @@ public class StaxOutEndingInterceptor extends AbstractPhaseInterceptor<Message> 
     public void handleMessage(Message message) {
         try {
             XMLStreamWriter xtw = message.getContent(XMLStreamWriter.class);
-	    LOG.finest("XMLStreamWriter class: " + xtw.getClass().getCanonicalName()); // Liberty Change
+	    LOG.finest("XMLStreamWriter class: " + (xtw != null ? xtw.getClass().getCanonicalName() : "NULL")); // Liberty Change
             if (xtw != null) {
                 try {
                     xtw.writeEndDocument();

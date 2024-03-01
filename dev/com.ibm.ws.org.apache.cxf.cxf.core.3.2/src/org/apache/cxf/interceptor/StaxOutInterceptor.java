@@ -108,7 +108,7 @@ public class StaxOutInterceptor extends AbstractPhaseInterceptor<Message> {
                 }
             }
 
-	    LOG.finest("XMLStreamWriter class: " + xwriter.getClass().getCanonicalName()); // Liberty Change
+	    LOG.finest("XMLStreamWriter class: " + (xwriter != null ? xwriter.getClass().getCanonicalName() : "NULL")); // Liberty Change
 
             if (MessageUtils.getContextualBoolean(message, FORCE_START_DOCUMENT, false)) {
                 xwriter.writeStartDocument(encoding, "1.0");

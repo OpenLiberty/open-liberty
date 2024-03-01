@@ -392,7 +392,7 @@ public final class StaxUtils {
             f.setProperty(p,  o);
             return true;
         } catch (Throwable t) {
-	    LOG.finest("setProperty: Ignoring exception: " + t);
+	    LOG.finest("setProperty: Ignoring exception: " + t);  // Liberty Change
             //ignore
         }
         return false;
@@ -597,7 +597,7 @@ public final class StaxUtils {
             try {
                 writer.flush();
             } catch (XMLStreamException ex) {
-	        LOG.finest("copy: Ignoring XMLStreamException: " + ex);
+	        LOG.finest("copy: Ignoring XMLStreamException: " + ex); // Liberty Change
                 //ignore
             }
             StaxUtils.close(writer);
@@ -628,12 +628,12 @@ public final class StaxUtils {
                             reader.setFeature("http://xml.org/sax/features/namespaces", true);
                         } catch (Throwable t) {
                             //ignore
-	        	    LOG.finest("copy: Ignoring exception 1: " + t);
+	        	    LOG.finest("copy: Ignoring reader.setFeature exception: " + t);  // Liberty Change
                         }
                         try {
                             reader.setProperty("http://xml.org/sax/properties/lexical-handler", ch);
                         } catch (Throwable t) {
-	        	    LOG.finest("copy: Ignoring exception 2: " + t);
+	        	    LOG.finest("copy: Ignoring reader.setProperty exception: " + t); // Liberty Change
                             //ignore
                         }
                         reader.parse(((SAXSource)source).getInputSource());
@@ -672,7 +672,7 @@ public final class StaxUtils {
             d.setDocumentURI(doc.getDocumentURI());
         } catch (Exception ex) {
             //ignore - probably not DOM level 3
-	    LOG.finest("copy Doc: Ignoring exception: " + ex);  // Liberty Change
+	    LOG.finest("copy Doc: Ignoring d.setDocumentURI exception: " + ex);  // Liberty Change
         }
         return d;
     }

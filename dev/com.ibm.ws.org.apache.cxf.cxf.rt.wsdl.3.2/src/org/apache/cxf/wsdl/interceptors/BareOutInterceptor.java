@@ -78,7 +78,7 @@ public class BareOutInterceptor extends AbstractOutDatabindingInterceptor {
 
 	if (LOG.isLoggable(Level.FINEST)) {
 	   for (MessagePartInfo mp1 : parts) {
-	      LOG.finest("BareOutInterceptor: Msg Part: " + mp1.toString());
+	      LOG.finest("BareOutInterceptor: Msg Part: " + mp1.toString());  // Liberty Change End
 	   }
 	}
 

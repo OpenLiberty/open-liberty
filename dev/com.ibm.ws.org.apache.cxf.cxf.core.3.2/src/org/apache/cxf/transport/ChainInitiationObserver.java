@@ -203,7 +203,7 @@ public class ChainInitiationObserver implements MessageObserver {
                 exchange.put(Message.WSDL_DESCRIPTION, wsdlDescription);
             }
         } else {
-	    LOG.fine("setExchangeProperties: Setting Service.class to null");
+	    LOG.fine("setExchangeProperties: Setting Service.class to null");  // Liberty Change
             exchange.put(Service.class, null);
         }
     }
