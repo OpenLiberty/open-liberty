@@ -523,23 +523,28 @@ public class SelfExtractor implements LicenseProvider {
      * @return A {@link ReturnCode} indicating if this was successful or not
      */
     public static ReturnCode validateProductMatches(File outputDir, List productMatches) {
+        ReturnCode rc = ReturnCode.OK;
+        List<Properties> props_list = getLibertyProperties(outputDir);
 
-        List<Properties> props_list;
-        try {
-            props_list = getLibertyProperties(outputDir);
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-            return new ReturnCode(ReturnCode.BAD_OUTPUT);
-        }
-
-        for (Properties props : props_list) {
-            ReturnCode rc = matchLibertyProperties(productMatches, props);
-            if (rc != ReturnCode.OK) {
-                return rc;
+        if (props_list.isEmpty()) {
+            rc = new ReturnCode(ReturnCode.BAD_OUTPUT);
+        } else {
+            for (int i = 0; i < props_list.size() && isReturnCodeOK(rc); i++) {
+                rc = matchLibertyProperties(productMatches, props_list.get(i));
             }
         }
-        return ReturnCode.OK;
+        return rc;
 
+    }
+
+    /**
+     * TODO move this to ReturnCode class
+     *
+     * @param rc
+     * @return
+     */
+    private static boolean isReturnCodeOK(ReturnCode rc) {
+        return rc.getCode() == ReturnCode.OK.getCode();
     }
 
     /**
@@ -547,56 +552,87 @@ public class SelfExtractor implements LicenseProvider {
      * @param props
      */
     protected static ReturnCode matchLibertyProperties(List productMatches, Properties props) {
-        Iterator matches = productMatches.iterator();
-        while (matches.hasNext()) {
-            ProductMatch match = (ProductMatch) matches.next();
+        Iterator<ProductMatch> matches = productMatches.iterator();
+        ReturnCode rc = ReturnCode.OK;
+        while (matches.hasNext() && isReturnCodeOK(rc)) {
+            ProductMatch match = matches.next();
             int result = match.matches(props);
-            if (result != ProductMatch.NOT_APPLICABLE) {
-                String currentLicenseType = props.getProperty("com.ibm.websphere.productLicenseType");
-                String currentInstallType = props.getProperty("com.ibm.websphere.productInstallType");
-                if (result == ProductMatch.INVALID_VERSION || result == ProductMatch.INVALID_EDITION) {
-                    List applicableEditions = InstallUtils.getEditionNameFromList(match.getEditions());
-                    String currentEdition = InstallUtils.getEditionName(props.getProperty("com.ibm.websphere.productEdition"));
-                    String currentVersion = props.getProperty("com.ibm.websphere.productVersion");
-                    if (result == ProductMatch.INVALID_VERSION) {
-                        return new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidVersion", currentVersion, match.getVersion(), currentEdition, applicableEditions, currentLicenseType);
-                    } else {
-                        return new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidEdition", currentEdition, applicableEditions, currentVersion, match.getVersion(), currentLicenseType);
-                    }
-                } else if (result == ProductMatch.INVALID_INSTALL_TYPE) {
-                    return new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidInstallType", currentInstallType, match.getInstallType());
-                } else if (result == ProductMatch.INVALID_LICENSE) {
-                    return new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidLicense", currentLicenseType, match.getLicenseType());
+            rc = getReturnCode(props, match, result);
+        }
+        return rc;
+    }
+
+    /**
+     * @param props
+     * @param match
+     * @param result
+     * @return
+     */
+    private static ReturnCode getReturnCode(Properties props, ProductMatch match, int result) {
+        String currentLicenseType = props.getProperty("com.ibm.websphere.productLicenseType");
+        String currentInstallType = props.getProperty("com.ibm.websphere.productInstallType");
+        String currentEdition = InstallUtils.getEditionName(props.getProperty("com.ibm.websphere.productEdition"));
+        String currentVersion = props.getProperty("com.ibm.websphere.productVersion");
+
+        ReturnCode rc = ReturnCode.OK;
+        if (result != ProductMatch.NOT_APPLICABLE) {
+            if (result == ProductMatch.INVALID_VERSION || result == ProductMatch.INVALID_EDITION) {
+                List<String> applicableEditions = InstallUtils.getEditionNameFromList(match.getEditions());
+                String matchVersion = match.getVersion();
+                if (result == ProductMatch.INVALID_VERSION) {
+                    rc = new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidVersion", currentVersion, matchVersion, currentEdition, applicableEditions, currentLicenseType);
+                } else {
+                    rc = new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidEdition", currentEdition, applicableEditions, currentVersion, matchVersion, currentLicenseType);
                 }
+            } else if (result == ProductMatch.INVALID_INSTALL_TYPE) {
+                rc = new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidInstallType", currentInstallType, match.getInstallType());
+            } else if (result == ProductMatch.INVALID_LICENSE) {
+                rc = new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidLicense", currentLicenseType, match.getLicenseType());
             }
         }
-        return ReturnCode.OK;
+        return rc;
     }
 
     /**
      * @param files
      */
-    protected static List<Properties> getLibertyProperties(File outputDir) throws IOException {
+    protected static List<Properties> getLibertyProperties(File outputDir) {
         List<Properties> props = new ArrayList<>();
+
         if (outputDir.exists()) {
             File directory = new File(outputDir, "lib/versions");
             File[] files = directory.listFiles((dir, name) -> name.endsWith(".properties"));
             if (files == null || files.length == 0) {
                 // output error
-//
-                return props;
             } else {
-                for (File f : files) {
-                    Properties prop = new Properties();
-                    try (InputStream is = new FileInputStream(f)) {
-                        prop.load(is);
-                        props.add(prop);
-                    }
+                try {
+                    props = getProperties(files);
+                } catch (IOException ioe) {
+                    System.err.println(ioe.getMessage());
                 }
             }
         }
 
         return props;
+    }
+
+    /**
+     * @param props
+     * @param files
+     * @return
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    private static List<Properties> getProperties(File[] files) throws IOException, FileNotFoundException {
+        List<Properties> propsFromFiles = new ArrayList<>();
+        for (File f : files) {
+            Properties prop = new Properties();
+            try (InputStream is = new FileInputStream(f)) {
+                prop.load(is);
+                propsFromFiles.add(prop);
+            }
+        }
+        return propsFromFiles;
     }
 
     public ReturnCode extract(File wlpInstallDir, ExtractProgress ep) {
