@@ -16,6 +16,7 @@ src: \
     test-applications/CharSetEncodingTest.jar/src,\
     test-applications/CharSetEncodingTest.war/src,\
     test-applications/DispatcherErrorMethodAttributeTest.war/src,\
+    test-applications/DoTraceRemoveSensitiveHeaders.war/src,\
     test-applications/EmptyURLPatternMappingTest.war/src,\
     test-applications/HTTPResponseCodesTest.war/src,\
     test-applications/HTTPServletMappingTest.war/src,\
