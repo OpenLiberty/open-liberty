@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -123,6 +123,9 @@ public class H2StreamProcessor {
 
     // handle various stream close conditions
     private boolean rstStreamSent = false;
+
+    // handle maximum size of header block
+    private int currentHeaderBlockSize = 0;
 
     /**
      * Create a stream processor initialized in idle state
@@ -380,9 +383,9 @@ public class H2StreamProcessor {
                 // This frame type is artificially generated, process it as a headers frame,
                 // as if it had come in off the wire
                 if (frameType == FrameTypes.PUSHPROMISEHEADERS) {
-                    getHeadersFromFrame();
-                    setHeadersComplete();
                     try {
+                        getHeadersFromFrame();
+                        setHeadersComplete();
                         processCompleteHeaders(true);
                         setReadyForRead();
                     } catch (Http2Exception he) {
@@ -1565,14 +1568,31 @@ public class H2StreamProcessor {
     /**
      * Appends the header block fragment in the current header frame to this stream's incomplete header block
      */
-    private void getHeadersFromFrame() {
+    private void getHeadersFromFrame() throws Http2Exception {
         byte[] hbf = null;
         if (currentFrame.getFrameType() == FrameTypes.HEADERS || currentFrame.getFrameType() == FrameTypes.PUSHPROMISEHEADERS) {
             hbf = ((FrameHeaders) currentFrame).getHeaderBlockFragment();
         } else if (currentFrame.getFrameType() == FrameTypes.CONTINUATION) {
             hbf = ((FrameContinuation) currentFrame).getHeaderBlockFragment();
         }
-
+        currentHeaderBlockSize += hbf.length;
+        System.out.println("Current header block size: "+currentHeaderBlockSize);
+        if (muxLink.maxHeaderBlockSize > 0 && currentHeaderBlockSize > muxLink.maxHeaderBlockSize) {
+            // Need to end here since headers read exceeded maximum header block size
+            Http2Exception headersTooBig;
+            muxLink.getH2RateState().incrementRefusedStreamCount();
+            muxLink.setContinuationExpected(false);
+            muxLink.setWriteContinuationExpected(false);
+            if (muxLink.getH2RateState().tooManyStreamsRefused()) {
+                Tr.debug(tc, "getHeadersFromFrame entry: Too many streams refused found while doing headers" + muxLink.getH2RateState().getRefusedStreamCount());
+                headersTooBig = new EnhanceYourCalmException("Too many streams refused caught exceed the maximum header block size.");
+                headersTooBig.setConnectionError(true);
+            }else {
+                headersTooBig = new EnhanceYourCalmException("Headers read exceed the maximum header block size configured!");
+                headersTooBig.setConnectionError(false);
+            }
+            throw headersTooBig;
+        }
         if (hbf != null && hbf.length > 0) {
             if (headerBlock == null) {
                 headerBlock = new ArrayList<byte[]>();

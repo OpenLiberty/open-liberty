@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -405,6 +405,7 @@ public class HttpConfigConstants {
     public static final String PROPNAME_H2_MAX_RESET_FRAMES = "maxResetFrames";
     public static final String PROPNAME_H2_RESET_FRAMES_WINDOW = "resetFramesWindow";
     public static final String PROPNAME_H2_MAX_STREAMS_REFUSED = "maxStreamsRefused";
+    public static final String PROPNAME_H2_MAX_HEADER_BLOCK_SIZE = "maxHeaderBlockSize";
 
     public static final String DEFAULT_PROXIES_REGEX = "10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|192\\.168\\.\\d{1,3}\\.\\d{1,3}|169\\.254\\.\\d{1,3}\\.\\d{1,3}|127\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|172\\.1[6-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.2[0-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.3[0-1]{1}\\.\\d{1,3}\\.\\d{1,3}|0:0:0:0:0:0:0:1|::1";
 

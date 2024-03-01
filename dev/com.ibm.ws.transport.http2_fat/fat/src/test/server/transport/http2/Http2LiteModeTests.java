@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -355,6 +355,48 @@ public class Http2LiteModeTests extends FATServletClient {
      */
     @Test
     public void testContFrameAfterDataSent() throws Exception {
+        runTest(continuationServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Connect to server via the insecure port and send out a header frame that exceeds established size.
+     * Start H2 connection
+     * Send large headers that exceed limit
+     * Test Outcome: The HTTP/2 stream should receive a reset after exceeding the maximum header size.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testHeaderLimitReached() throws Exception {
+        runTest(continuationServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Connect to server via the insecure port and send out a continuation frame that exceeds established size.
+     * Start H2 connection
+     * Send headers with end of headers flag unset
+     * Then send a continuation frame that exceeds limits
+     * Test Outcome: The HTTP/2 stream should receive a reset after exceeding the maximum header size.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testHeaderContinuationLimitReached() throws Exception {
+        runTest(continuationServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Connect to server via the insecure port and send out a header frame that exceeds established size.
+     * Start H2 connection
+     * Send large headers that exceed limit
+     * Expect reset
+     * Start new stream and send valid headers and expect valid response back
+     * Test Outcome: The HTTP/2 stream should receive a reset after exceeding the maximum header size and new stream should still be accepted
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testNewStreamAfterHeaderLimitReached() throws Exception {
         runTest(continuationServletPath, testName.getMethodName());
     }
 
