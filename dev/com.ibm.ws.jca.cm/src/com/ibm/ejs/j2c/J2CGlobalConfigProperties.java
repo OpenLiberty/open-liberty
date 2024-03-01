@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -386,11 +386,7 @@ public final class J2CGlobalConfigProperties implements PropertyChangeListener, 
     private final VetoableChangeSupport vChangeSupport = new VetoableChangeSupport(this);
     protected Properties raMetaDataProps = null;
     protected Properties dsMetaDataProps = null;
-    public boolean callResourceAdapterStatMethods = false;
-    public int numberOfInuseConnections = 0;
-    public transient Object numberOfInuseConnectionsLockObject = new J2CLock();
-    public int numberOfFreeConnections = 0;
-    public transient Object numberOfFreeConnectionsLockObject = new J2CLock();
+
     protected transient Integer maxNumberOfMCsAllowableInThread = null;
     private transient boolean parkIfDissociateUnavailable;
     protected transient Boolean throwExceptionOnMCThreadCheck = null;
