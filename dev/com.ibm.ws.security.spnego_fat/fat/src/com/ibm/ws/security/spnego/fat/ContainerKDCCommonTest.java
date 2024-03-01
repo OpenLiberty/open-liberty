@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,7 +75,7 @@ public class ContainerKDCCommonTest {
 
     protected static KdcHelper kdcHelper = null;
 
-    public static final String HOSTNAME = "localhost";
+    public static final String HOSTNAME = "libertyhost";
 
     public static final boolean ENABLE_INFO_LOGGING = true;
 
@@ -106,46 +107,6 @@ public class ContainerKDCCommonTest {
             expectation = new JDK11Expectations();
             Log.info(c, thisMethod, "Using sun krb5 login module.");
         }
-
-        //// testContainer from jdbc FAT
-        myServer = LibertyServerFactory.getLibertyServer("BasicAuthTest");
-        Path krbConfPath = Paths.get(myServer.getInstallRoot(), "krb5.ini");
-        Path krb5KeytabPath = Paths.get(myServer.getInstallRoot(), "HTTP_libertyhost.keytab");
-
-        FATSuite.krb5.generateConf(krbConfPath);
-        FATSuite.krb5.copyFileFromContainer("/etc/HTTP_libertyhost.keytab", krb5KeytabPath.toAbsolutePath().toString());
-
-        myServer.addEnvVar("KRB5_USER", "user1@" + KerberosContainer.KRB5_REALM);
-        myServer.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
-        /////
-
-        configFile = krbConfPath.toAbsolutePath().toString(); //ApacheKDCforSPNEGO.getDefaultConfigFile();
-        assertNotNull("ConfigFile is null", configFile);
-        Log.info(c, thisMethod, "Config file: " + configFile);
-
-        System.setProperty("KRB5_CONFIG", configFile);
-        Log.info(c, thisMethod, "set System property: KRB5_CONFIG=" + configFile);
-
-        keytabFile = krb5KeytabPath.toAbsolutePath().toString();; // ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
-        assertNotNull("Keytab is null", keytabFile);
-        Log.info(c, thisMethod, "Keytab file: " + keytabFile);
-
-        Log.info(c, thisMethod, "Print Config file contents: ");
-        BufferedReader br = new BufferedReader(new FileReader(configFile));
-        String line;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
-        }
-        br.close();
-
-        Log.info(c, thisMethod, "Print Keytab file contents: ");
-        br = new BufferedReader(new FileReader(keytabFile));
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
-        }
-        br.close();
-
-        myServer.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
 
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
@@ -444,47 +405,25 @@ public class ContainerKDCCommonTest {
         }
 
         //// testContainer from jdbc FAT
-        myServer = LibertyServerFactory.getLibertyServer("BasicAuthTest");
+        //myServer = LibertyServerFactory.getLibertyServer("BasicAuthTest");
         Path krbConfPath = Paths.get(myServer.getInstallRoot(), "krb5.ini");
         Path krb5KeytabPath = Paths.get(myServer.getInstallRoot(), "HTTP_libertyhost.keytab");
 
-        //File tempkrb5Config = File.createTempFile("krb5", "ini");
-        //File tempkrb5keytab = File.createTempFile("krb5", "keytab");
-
-        //FATSuite.krb5.generateConf(krbConfPath);
-        //Log.info(c, thisMethod, "tempkrb5Config.toPath(): " + tempkrb5Config.toPath());
-        //Log.info(c, thisMethod, "tempkrb5keytab.toPath(): " + tempkrb5keytab.toPath());
-        //FATSuite.krb5.generateConf(tempkrb5Config.toPath());
-        //FATSuite.krb5.copyFileFromContainer("/etc/HTTP_libertyhost.keytab", krb5KeytabPath.toAbsolutePath().toString());
-        //FATSuite.krb5.copyFileFromContainer("/etc/HTTP_libertyhost.keytab", tempkrb5keytab.getAbsolutePath().toString());
+        FATSuite.krb5.generateConf(krbConfPath);
+        FATSuite.krb5.copyFileFromContainer("/etc/HTTP_libertyhost.keytab", krb5KeytabPath.toAbsolutePath().toString());
 
         myServer.addEnvVar("KRB5_USER", "user1@" + KerberosContainer.KRB5_REALM);
         myServer.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
         /////
-        System.setProperty("KRB5_CONFIG", configFile);
-        Log.info(c, thisMethod, "set System property: KRB5_CONFIG=" + configFile);
 
-        Log.info(c, thisMethod, "Copy krb5.ini to server: ");
-        //myServer.copyFileToLibertyServerRoot("/resources/security/", tempkrb5Config.getAbsolutePath().toString());
-        //myServer.copyFileToLibertyServerRootUsingTmp(myServer.getServerRoot() + "/resources/security/", tempkrb5Config.getAbsolutePath().toString());
-        myServer.copyFileToLibertyServerRoot(krbConfPath.getParent().toAbsolutePath().toString(), "resources/security", "krb5.ini");
-
-        Log.info(c, thisMethod, "Copy HTTP_libertyhost.keytab to server: ");
-        //myServer.copyFileToLibertyServerRoot("/resources/security/", tempkrb5keytab.getAbsolutePath().toString());
-        //myServer.copyFileToLibertyServerRootUsingTmp(myServer.getServerRoot() + "/resources/security/", tempkrb5keytab.getAbsolutePath().toString());
-        myServer.copyFileToLibertyServerRoot(krb5KeytabPath.getParent().toAbsolutePath().toString(), "resources/security", "HTTP_libertyhost.keytab");
-
-        //update configFile and keytabfile paths from server installRoot to serverRoot/resources/security/
-        krbConfPath = Paths.get(myServer.getServerRoot(), "resources", "security", "krb5.ini");
-        krb5KeytabPath = Paths.get(myServer.getServerRoot(), "resources", "security", "HTTP_libertyhost.keytab");
-
-        //configFile = krbConfPath.toAbsolutePath().toString(); //ApacheKDCforSPNEGO.getDefaultConfigFile();
         configFile = krbConfPath.toAbsolutePath().toString(); //ApacheKDCforSPNEGO.getDefaultConfigFile();
         assertNotNull("ConfigFile is null", configFile);
         Log.info(c, thisMethod, "Config file: " + configFile);
 
-        keytabFile = krb5KeytabPath.toAbsolutePath().toString(); // ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
-        //keytabFile = tempkrb5keytab.getAbsolutePath().toString(); // ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
+        System.setProperty("KRB5_CONFIG", configFile);
+        Log.info(c, thisMethod, "set System property: KRB5_CONFIG=" + configFile);
+
+        keytabFile = krb5KeytabPath.toAbsolutePath().toString();; // ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
         assertNotNull("Keytab is null", keytabFile);
         Log.info(c, thisMethod, "Keytab file: " + keytabFile);
 
@@ -503,17 +442,28 @@ public class ContainerKDCCommonTest {
         }
         br.close();
 
-        /*
-         * Configure the KdcHelper appropriately.
-         */
+        Log.info(c, thisMethod, "Copy krb5.ini to server: ");
+        //myServer.copyFileToLibertyServerRoot("/resources/security/", tempkrb5Config.getAbsolutePath().toString());
+        //myServer.copyFileToLibertyServerRootUsingTmp(myServer.getServerRoot() + "/resources/security/", tempkrb5Config.getAbsolutePath().toString());
+        myServer.copyFileToLibertyServerRoot(krbConfPath.getParent().toAbsolutePath().toString(), "resources/security", "krb5.ini");
 
-        /*
-         * if (getKdcHelper() == null) {
-         * setKdcHelper(getKdcHelper(getMyServer()));
-         * } else {
-         * getKdcHelper().server = getMyServer();
-         * }
-         */
+        Log.info(c, thisMethod, "Copy HTTP_libertyhost.keytab to server: ");
+        //myServer.copyFileToLibertyServerRoot("/resources/security/", tempkrb5keytab.getAbsolutePath().toString());
+        //myServer.copyFileToLibertyServerRootUsingTmp(myServer.getServerRoot() + "/resources/security/", tempkrb5keytab.getAbsolutePath().toString());
+        myServer.copyFileToLibertyServerRoot(krb5KeytabPath.getParent().toAbsolutePath().toString(), "resources/security", "HTTP_libertyhost.keytab");
+
+        //update configFile and keytabfile paths from server installRoot to serverRoot/resources/security/
+        krbConfPath = Paths.get(myServer.getServerRoot(), "resources", "security", "krb5.ini");
+        krb5KeytabPath = Paths.get(myServer.getServerRoot(), "resources", "security", "HTTP_libertyhost.keytab");
+
+        configFile = krbConfPath.toAbsolutePath().toString(); //ApacheKDCforSPNEGO.getDefaultConfigFile();
+        assertNotNull("ConfigFile is null", configFile);
+        Log.info(c, thisMethod, "Config file: " + configFile);
+
+        keytabFile = krb5KeytabPath.toAbsolutePath().toString(); // ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
+        //keytabFile = tempkrb5keytab.getAbsolutePath().toString(); // ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
+        assertNotNull("Keytab is null", keytabFile);
+        Log.info(c, thisMethod, "Keytab file: " + keytabFile);
 
         if (createSpnAndKeytab) {
             try {
@@ -525,19 +475,8 @@ public class ContainerKDCCommonTest {
             }
         }
 
-        //String fullyQualifiedDomainName = testHelper.getTestSystemFullyQualifiedDomainName();
-        //String fullyQualifiedDomainName = InitClass.getServerCanonicalHostName();
-        if (useCanonicalHostName) {
-            Log.info(c, thisMethod, "Using the canonical host name in the target server SPN: " + libertyHostName);
-            //TARGET_SERVER = fullyQualifiedDomainName;
-            //TARGET_SERVER = ApacheKDCforSPNEGO.canonicalHostname;
-            TARGET_SERVER = libertyHostName;
-        } else {
-            Log.info(c, thisMethod, "Using the short host name in the target server SPN");
-//            String shortHostName = getKdcHelper().getShortHostName(fullyQualifiedDomainName, true);
-            TARGET_SERVER = ApacheKDCforSPNEGO.serverShortHostName;
-
-        }
+        Log.info(c, thisMethod, "Using the hardcoded host name in the target server SPN: " + libertyHostName);
+        TARGET_SERVER = libertyHostName;
 
         if (createSpnegoToken) {
             // Only set this as the new common token if told to do so, or if the common token needs to be refreshed
@@ -550,20 +489,12 @@ public class ContainerKDCCommonTest {
         Map<String, String> bootstrapProps = new HashMap<String, String>();
         bootstrapProps.put(SPNEGOConstants.PROP_TEST_SYSTEM_HOST_NAME, TARGET_SERVER);
         bootstrapProps.put("spnego.host.ipaddr", inetAddr);
-        //addConsulBootStrappingProps(bootstrapProps);
         if (testProps != null) {
             bootstrapProps.putAll(testProps);
         }
         testHelper.addBootstrapProperties(getMyServer(), bootstrapProps);
 
         getMyServer().copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
-
-        if (copyCommonKeytab) {
-            Log.info(c, thisMethod, "Copying common keytab file into " + SPNEGOConstants.KRB_RESOURCE_LOCATION);
-            // Liberty infrastructure already adds leading and trailing '/' characters when copying
-            //String sanitizedKrbResourcePath = SPNEGOConstants.KRB_RESOURCE_LOCATION.substring(1, SPNEGOConstants.KRB_RESOURCE_LOCATION.length() - 1);
-            //getMyServer().copyFileToLibertyServerRoot(sanitizedKrbResourcePath, ApacheDSandKDCforSPNEGO.KEYTAB_FILE_LOCATION);
-        }
 
         if (startServer) {
             testHelper.startServer(serverXml, checkApps);
@@ -753,6 +684,7 @@ public class ContainerKDCCommonTest {
                 getMyServer().stopServer();
                 return;
             }
+            Log.info(c, "commonTearDown", "testHelper.getShutdownMessages(): " + Arrays.toString(msgs));
             if (msgs != null && msgs.length > 0) {
                 getMyServer().stopServer(msgs);
             } else {
