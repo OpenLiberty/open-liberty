@@ -7263,18 +7263,20 @@ public class LibertyServer implements LogMonitorClient {
         String methodName = "isFIPS140_3EnabledAndSupported";
         JavaInfo serverJavaInfo = JavaInfo.forServer(this);
         boolean isIBMJVM8 = (serverJavaInfo.majorVersion() == 8) && (serverJavaInfo.VENDOR == Vendor.IBM);
+        boolean isIBMJVM17 = (serverJavaInfo.majorVersion() == 17) && (serverJavaInfo.VENDOR == Vendor.IBM);
         if (GLOBAL_FIPS_140_3) {
             Log.info(c, methodName, "Liberty server is running JDK version: " + serverJavaInfo.majorVersion() + " and vendor: " + serverJavaInfo.VENDOR);
             if (isIBMJVM8) {
                 Log.info(c, methodName, "global build properties FIPS_140_3 is set for server " + getServerName() +
-                                        " and IBM java 8 is available to run with FIPS 140-3 enabled.");
+                                        " and IBM java 8 or java 17 is available to run with FIPS 140-3 enabled.");
             } else {
                 Log.info(c, methodName, "The global build properties FIPS_140_3 is set for server " + getServerName() +
-                                        ",  but no IBM java 8 on liberty server to run with FIPS 140-3 enabled.");
+                                        ",  but no IBM java 8 or java 17 on liberty server to run with FIPS 140-3 enabled.");
             }
         }
-        return GLOBAL_FIPS_140_3 && isIBMJVM8;
+        return GLOBAL_FIPS_140_3 && (isIBMJVM8 || isIBMJVM17);
     }
+
 
     /**
      * No longer using bootstrap properties to update server config for database rotation.

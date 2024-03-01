@@ -3928,17 +3928,18 @@ public class LibertyClient {
     public boolean isFIPS140_3EnabledAndSupported() {
         String methodName = "isFIPS140_3EnabledAndSupported";
         boolean isIBMJVM8 = (javaInfo.majorVersion() == 8) && (javaInfo.VENDOR == Vendor.IBM);
+        boolean isIBMJVM17 = (javaInfo.majorVersion() == 17) && (javaInfo.VENDOR == Vendor.IBM);
         if (GLOBAL_CLIENT_FIPS_140_3) {
             Log.info(c, methodName, "Liberty client is running JDK version: " + javaInfo.majorVersion() + " and vendor: " + javaInfo.VENDOR);
             if (isIBMJVM8) {
                 Log.info(c, methodName, "global build properties FIPS_140_3 is set for client " + getClientName() +
-                                        " and IBM java 8 is available to run with FIPS 140-3 enabled.");
+                                        " and IBM java 8 or java 17 is available to run with FIPS 140-3 enabled.");
             } else {
                 Log.info(c, methodName, "The global build properties FIPS_140_3 is set for client " + getClientName() +
-                                        ",  but no IBM java 8 on liberty client to run with FIPS 140-3 enabled.");
+                                        ",  but no IBM java 8 or java 17 on liberty client to run with FIPS 140-3 enabled.");
             }
         }
-        return GLOBAL_CLIENT_FIPS_140_3 && isIBMJVM8;
+        return GLOBAL_CLIENT_FIPS_140_3 && (isIBMJVM8 || isIBMJVM17);
     }
 
     //FIPS 140-3
