@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2023 IBM Corporation and others.
+ * Copyright (c) 2010, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.osgi.response;
 
@@ -97,18 +94,22 @@ public class IResponseImpl implements IResponse
       WebContainerRequestState requestState = WebContainerRequestState.getInstance(false);
       if (requestState != null) {
           String cookieAttributes = requestState.getCookieAttributes(cookieName);
-          if (cookieAttributes != null) {
-              if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
-                  Tr.debug(tc, methodName, "cookieName: " + cookieName + " cookieAttribute: " + cookieAttributes);
-              }
+          if (cookieAttributes != null ) {
 
-              if(cookieAttributes.contains("=")) {
-                  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
-                      Tr.debug(tc, methodName, "Setting the cookieAttribute on the HttpCookie");
-                  }
+              for(String cookieAttribute : cookieAttributes.split(";")){
 
-                  String[] attribute = cookieAttributes.split("=");
-                  hc.setAttribute(attribute[0], attribute[1]);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
+                    Tr.debug(tc, methodName, "cookieName: " + cookieName + " cookieAttribute: " + cookieAttribute);
+                }
+
+                if(cookieAttribute.contains("=")) {  // is this needed?
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())  {
+                        Tr.debug(tc, methodName, "Setting the cookieAttribute on the HttpCookie");
+                    }
+
+                    String[] attribute = cookieAttribute.split("=");
+                    hc.setAttribute(attribute[0], attribute[1]);
+                }
               }
 
               // Remove the Cookie attribute that was used as it is no longer needed.
