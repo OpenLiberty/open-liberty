@@ -51,10 +51,6 @@ public class ExecutorServiceImplTest {
         }
     }
 
-    static {
-        ExecutorServiceImpl.isBeta = true;
-    }
-
     @Test
     public void testCreateExecutor() throws Exception {
         ExecutorServiceImpl executorService = new ExecutorServiceImpl();
@@ -138,15 +134,11 @@ public class ExecutorServiceImplTest {
         oldThreadPool.prestartAllCoreThreads();
 
         componentConfig.put("name", "testExecutor2");
-        componentConfig.put("quiesceTimeout", "31s");
         executorService.modified(componentConfig);
         ThreadPoolExecutor newThreadPool = executorService.getThreadPool();
-        int newQuiesceTimeout = executorService.getQuiesceTimeout();
 
         // ensure that a new pool got created when we modified the executor
         Assert.assertNotSame(oldThreadPool, newThreadPool);
-
-        // Beta: Assert.assertEquals("Quiesce timeout not modified as expected", 31, newQuiesceTimeout);
 
         // ensure that the old pool shrinks down to 0 size (the test will timeout
         // after a minute if the pool never shrinks)

@@ -17,11 +17,12 @@ package com.ibm.ws.threading;
  */
 public interface ThreadQuiesce {
 
+    @Deprecated
     boolean quiesceThreads();
+
+    boolean quiesceThreads(int quiesceTimeout);
 
     int getActiveThreads();
 
     boolean quiesceStarted();
-
-    int getQuiesceTimeout();
 }
