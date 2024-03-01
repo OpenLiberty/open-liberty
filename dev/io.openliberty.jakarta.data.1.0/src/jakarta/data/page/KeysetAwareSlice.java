@@ -18,6 +18,8 @@ package jakarta.data.page;
 public interface KeysetAwareSlice<T> extends Slice<T> {
     PageRequest.Cursor getKeysetCursor(int index);
 
+    boolean hasPrevious();
+
     @Override
     PageRequest<T> nextPageRequest();
 
