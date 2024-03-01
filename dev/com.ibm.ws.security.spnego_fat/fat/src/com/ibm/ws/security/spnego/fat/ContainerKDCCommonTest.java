@@ -133,17 +133,12 @@ public class ContainerKDCCommonTest {
 
     }
 
-    //@Before
-    public void preTestCheck() throws Exception {
-        String thisMethod = "preTestCheck";
-        //Log.info(c, thisMethod, "Checking if new SPNEGO token should be created.");
-        //wasCommonTokenRefreshed = false;
-
-        //TODO: Since most of the currently tested JDKs will use the sun krb5 classes,
-        // It is more efficient to just re-create the SPNEGO every request, instead of checking.
+    public void refreshCommonSpnegoToken() throws Exception {
+        String thisMethod = "refreshCommonSpnegoToken";
         Log.info(c, thisMethod, "Creating new SPNEGO token.");
         createNewSpnegoToken(SPNEGOConstants.SET_AS_COMMON_TOKEN);
 
+        // The SPNEGO token needs to be refreshed for each request when using the MIT KDC server test container
         //if (shouldCommonTokenBeRefreshed()) {
         //    Log.info(c, thisMethod, "Creating new SPNEGO token.");
         //    createNewSpnegoToken(SPNEGOConstants.SET_AS_COMMON_TOKEN);
@@ -153,7 +148,7 @@ public class ContainerKDCCommonTest {
     }
 
     public void spnegoTestSetupChecks() throws Exception {
-        preTestCheck();
+        refreshCommonSpnegoToken();
         setDefaultSpnegoServerConfig();
     }
 
@@ -443,25 +438,20 @@ public class ContainerKDCCommonTest {
         br.close();
 
         Log.info(c, thisMethod, "Copy krb5.ini to server: ");
-        //myServer.copyFileToLibertyServerRoot("/resources/security/", tempkrb5Config.getAbsolutePath().toString());
-        //myServer.copyFileToLibertyServerRootUsingTmp(myServer.getServerRoot() + "/resources/security/", tempkrb5Config.getAbsolutePath().toString());
         myServer.copyFileToLibertyServerRoot(krbConfPath.getParent().toAbsolutePath().toString(), "resources/security", "krb5.ini");
 
         Log.info(c, thisMethod, "Copy HTTP_libertyhost.keytab to server: ");
-        //myServer.copyFileToLibertyServerRoot("/resources/security/", tempkrb5keytab.getAbsolutePath().toString());
-        //myServer.copyFileToLibertyServerRootUsingTmp(myServer.getServerRoot() + "/resources/security/", tempkrb5keytab.getAbsolutePath().toString());
         myServer.copyFileToLibertyServerRoot(krb5KeytabPath.getParent().toAbsolutePath().toString(), "resources/security", "HTTP_libertyhost.keytab");
 
         //update configFile and keytabfile paths from server installRoot to serverRoot/resources/security/
         krbConfPath = Paths.get(myServer.getServerRoot(), "resources", "security", "krb5.ini");
         krb5KeytabPath = Paths.get(myServer.getServerRoot(), "resources", "security", "HTTP_libertyhost.keytab");
 
-        configFile = krbConfPath.toAbsolutePath().toString(); //ApacheKDCforSPNEGO.getDefaultConfigFile();
+        configFile = krbConfPath.toAbsolutePath().toString();
         assertNotNull("ConfigFile is null", configFile);
         Log.info(c, thisMethod, "Config file: " + configFile);
 
-        keytabFile = krb5KeytabPath.toAbsolutePath().toString(); // ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
-        //keytabFile = tempkrb5keytab.getAbsolutePath().toString(); // ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
+        keytabFile = krb5KeytabPath.toAbsolutePath().toString();
         assertNotNull("Keytab is null", keytabFile);
         Log.info(c, thisMethod, "Keytab file: " + keytabFile);
 
@@ -1005,11 +995,6 @@ public class ContainerKDCCommonTest {
     }
 
     protected static String getCommonSPNEGOToken() throws Exception {
-        /*
-         * if (shouldCommonTokenBeRefreshed()) {
-         * createNewSpnegoToken(SPNEGOConstants.SET_AS_COMMON_TOKEN);
-         * }
-         */
         return ApacheKDCforSPNEGO.COMMON_SPNEGO_TOKEN;
     }
 

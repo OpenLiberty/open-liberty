@@ -115,14 +115,14 @@ public class BasicAuthTest extends ContainerKDCCommonTest {
 
     @Test
     public void testSpnegoSuccessful() throws Exception {
-        preTestCheck();
+        refreshCommonSpnegoToken();
         setDefaultSpnegoServerConfig(ENABLE_INFO_LOGGING);
         commonSuccessfulSpnegoServletCall();
     }
 
     @Test
     public void testSpnegoSuccessful_withJwtSsoFeature() throws Exception {
-        preTestCheck();
+        refreshCommonSpnegoToken();
         setDefaultSpnegoServerConfig();
         ServerConfiguration newServerConfig = myServer.getServerConfiguration();
         newServerConfig.getFeatureManager().getFeatures().remove("servlet-3.1");
@@ -851,7 +851,7 @@ public class BasicAuthTest extends ContainerKDCCommonTest {
 
     @Test
     public void testTrimKerberosRealmNameFromPrincipalUsingCustomJaasLogin() throws Exception {
-        preTestCheck();
+        refreshCommonSpnegoToken();
 
         ServerConfiguration newServerConfig = myServer.getServerConfiguration().clone();
         newServerConfig.getFeatureManager().getFeatures().remove("spnego-1.0");

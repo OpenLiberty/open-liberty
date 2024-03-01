@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,18 +13,12 @@
 package com.ibm.ws.security.spnego.fat;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -40,7 +34,6 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.utils.FileUtils;
 
 public class KerberosContainer extends GenericContainer<KerberosContainer> {
 
@@ -52,7 +45,6 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     public static String KDC_HOSTNAME = "notSetYet";
 
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    //private static final String IMAGE = "kyleaure/krb5-server:1.0";
     private static final String IMAGE = "fbicodex/spnego-kdc-server:1.0";
 
     private int udp_99;
@@ -160,84 +152,5 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
                       "        " + KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase() + "\n";
         outputPath.getParent().toFile().mkdirs();
         Files.write(outputPath, conf.getBytes(StandardCharsets.UTF_8));
-    }
-
-    /**
-     * Use generateConf instead
-     */
-    @Deprecated
-    public void configureKerberos() throws IOException {
-        Path krbConfPath = Paths.get("/etc/krb5.conf");
-        String krbConf = FileUtils.readFile(krbConfPath.toAbsolutePath().toString());
-
-        krbConf = configureProperty(krbConf, "libdefaults", "default_realm", KRB5_REALM);
-        krbConf = configureProperty(krbConf, "libdefaults", "dns_lookup_realm", "false");
-        krbConf = configureProperty(krbConf, "libdefaults", "ticket_lifetime", "24h");
-        krbConf = configureProperty(krbConf, "libdefaults", "renew_lifetime", "7d");
-        krbConf = configureProperty(krbConf, "libdefaults", "forwardable", "true");
-        krbConf = configureProperty(krbConf, "libdefaults", "rdns", "false");
-
-        krbConf = configureProperty(krbConf, "libdefaults", "kdc_ports", "" + getMappedPort(99));
-
-        if (!krbConf.contains("[realms]")) {
-            krbConf += "\n\n[realms]";
-        }
-        if (!krbConf.contains(KRB5_REALM + " = {")) {
-            krbConf = krbConf.replace("[realms]", "[realms]\n\t" +
-                                                  KRB5_REALM + " = {\n\t\t" +
-                                                  "kdc = " + getHost() + ":" + getMappedPort(99) + "\n\t\t" +
-                                                  "admin_server = " + getHost() + "\n\t}\n");
-        }
-
-        if (!krbConf.contains("[domain_realm]")) {
-            krbConf += "\n\n[domain_realm]";
-        }
-        krbConf = configureProperty(krbConf, "domain_realm", KRB5_REALM.toLowerCase(), KRB5_REALM);
-        krbConf = configureProperty(krbConf, "domain_realm", "." + KRB5_REALM.toLowerCase(), KRB5_REALM);
-
-        Log.info(c, "configureKerberos", "Transformed kerberos config:\n" + krbConf);
-        Files.write(krbConfPath, krbConf.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
-    }
-
-    private static String configureProperty(String krbConf, String section, String key, String value) {
-        if (krbConf.contains(key + " = " + value)) {
-            // already correct
-        } else if (krbConf.contains(key + " = ")) {
-            krbConf = krbConf.replaceAll(key.replace(".", "\\.") + " = .*", key + " = " + value);
-        } else {
-            krbConf = krbConf.replace("[" + section + "]", "[" + section + "]\n\t" + key + " = " + value);
-        }
-        return krbConf;
-    }
-
-    /**
-     * This doesn't seem to be necessary because we can simply check in the keytab file
-     */
-    @Deprecated
-    public void generateKeytab(String username, Path output) throws Exception {
-        Files.deleteIfExists(output);
-        Process proc = Runtime.getRuntime().exec("ktutil");
-        OutputStream ktInput = proc.getOutputStream();
-        ktInput.write(("add_entry -password -p " + username + "@" + KRB5_REALM +
-                       " -k 1 -e aes256-cts\n" + KRB5_PASS + "\nwkt " + output.toAbsolutePath().toString()).getBytes());
-        ktInput.flush();
-        ktInput.close();
-        if (!proc.waitFor(15, TimeUnit.SECONDS)) {
-            Log.info(c, "generateKeytab", "Proc timed out... destroying forcibly");
-            proc.destroyForcibly();
-        }
-        Log.info(c, "generateKeytab", "Process stdout:");
-        String procOut = "STDOUT:\n" + readInputStream(proc.getInputStream());
-        procOut += "\nSTDERR:\n" + readInputStream(proc.getErrorStream());
-        Log.info(c, "generateKeytab", procOut);
-        if (proc.exitValue() != 0) {
-            throw new RuntimeException("Process failed with output: " + procOut);
-        }
-    }
-
-    private static String readInputStream(InputStream is) {
-        @SuppressWarnings("resource")
-        Scanner s = new Scanner(is).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
     }
 }
