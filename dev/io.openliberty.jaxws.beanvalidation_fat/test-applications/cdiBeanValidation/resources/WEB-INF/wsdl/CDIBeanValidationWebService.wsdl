@@ -1,0 +1,78 @@
+<?xml version="1.0" ?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://beanvalidation.cdi.jaxws.ws.ibm.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="CDIBeanValidationWebService" targetNamespace="http://beanvalidation.cdi.jaxws.ws.ibm.com/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://beanvalidation.cdi.jaxws.ws.ibm.com/" elementFormDefault="unqualified" targetNamespace="http://beanvalidation.cdi.jaxws.ws.ibm.com/" version="1.0">
+
+  <xs:element name="oneWayWithValidation" type="tns:oneWayWithValidation"></xs:element>
+
+  <xs:element name="twoWayWithValidation" type="tns:twoWayWithValidation"></xs:element>
+
+  <xs:element name="twoWayWithValidationResponse" type="tns:twoWayWithValidationResponse"></xs:element>
+
+  <xs:complexType name="oneWayWithValidation">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="twoWayWithValidation">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="twoWayWithValidationResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="oneWayWithValidation">
+    <wsdl:part element="tns:oneWayWithValidation" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="twoWayWithValidation">
+    <wsdl:part element="tns:twoWayWithValidation" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="twoWayWithValidationResponse">
+    <wsdl:part element="tns:twoWayWithValidationResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="CDIBeanValidationWebService">
+    <wsdl:operation name="oneWayWithValidation">
+      <wsdl:input message="tns:oneWayWithValidation" name="oneWayWithValidation">
+    </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="twoWayWithValidation">
+      <wsdl:input message="tns:twoWayWithValidation" name="twoWayWithValidation">
+    </wsdl:input>
+      <wsdl:output message="tns:twoWayWithValidationResponse" name="twoWayWithValidationResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CDIBeanValidationWebServiceSoapBinding" type="tns:CDIBeanValidationWebService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+    <wsdl:operation name="oneWayWithValidation">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="oneWayWithValidation">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+    </wsdl:operation>
+    <wsdl:operation name="twoWayWithValidation">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="twoWayWithValidation">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="twoWayWithValidationResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CDIBeanValidationWebService">
+    <wsdl:port binding="tns:CDIBeanValidationWebServiceSoapBinding" name="CDIBeanValidationWebServicePort">
+      <soap:address location="http://localhost:8010/cdiBeanValidation/CDIBeanValidationWebService"></soap:address>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
