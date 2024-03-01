@@ -1632,3 +1632,4 @@ redirect.location.cannot.be.null.useraction=Aktualizujte um\u00edst\u011bn\u00ed
 
 sendRedirect.hyper.text.url=<html><body><p>P\u0159esm\u011brov\u00e1n\u00ed na <a href="{0}"></a></p></body></html>
 
+query.or.post.is.null=\u0158et\u011bzec dotazu po\u017eadavku nebo data p\u0159\u00edsp\u011bvku maj\u00ed hodnotu null.
