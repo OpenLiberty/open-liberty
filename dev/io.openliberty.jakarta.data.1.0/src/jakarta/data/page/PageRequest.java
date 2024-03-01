@@ -27,6 +27,10 @@ public interface PageRequest<T> {
     }
 
     public interface Cursor {
+        public static Cursor forKeyset(Object... keysetValues) {
+            return new KeysetCursor(keysetValues);
+        }
+
         public List<?> elements();
 
         public Object getKeysetElement(int index);

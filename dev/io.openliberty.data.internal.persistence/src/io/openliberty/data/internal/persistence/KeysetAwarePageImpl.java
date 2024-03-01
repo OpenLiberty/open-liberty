@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.AbstractList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +34,7 @@ import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.PageRequest;
+import jakarta.data.page.PageRequest.Cursor;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -146,12 +146,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
                 throw new DataException(x.getCause());
             }
 
-        return new Cursor(keyValues);
-    }
-
-    @Override
-    public long number() {
-        return pagination.page();
+        return Cursor.forKeyset(keyValues);
     }
 
     @Override
@@ -233,53 +228,6 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     public Stream<T> stream() {
         return content().stream();
     }
-
-    /**
-     * Keyset cursor
-     */
-    @Trivial
-    private static class Cursor implements PageRequest.Cursor {
-        private final Object[] keyValues;
-
-        private Cursor(Object[] keyValues) {
-            this.keyValues = keyValues;
-        }
-
-        @Override
-        public List<?> elements() {
-            return List.of(keyValues);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return this == o || o != null
-                                && getClass() == o.getClass()
-                                && Arrays.equals(keyValues, ((Cursor) o).keyValues);
-        }
-
-        @Override
-        public Object getKeysetElement(int index) {
-            return keyValues[index];
-        }
-
-        @Override
-        public int hashCode() {
-            return Arrays.hashCode(keyValues);
-        }
-
-        @Override
-        public int size() {
-            return keyValues.length;
-        }
-
-        @Override
-        public String toString() {
-            return new StringBuilder(47) //
-                            .append("KeysetAwarePageImpl.Cursor@").append(Integer.toHexString(hashCode())) //
-                            .append(" with ").append(keyValues.length).append(" keys") //
-                            .toString();
-        }
-    };
 
     /**
      * Iterator that restricts the number of results to the specified amount.

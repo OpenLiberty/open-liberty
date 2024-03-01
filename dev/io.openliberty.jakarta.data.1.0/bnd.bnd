@@ -28,6 +28,7 @@ Export-Package: \
   jakarta.data.metamodel;version="1.0.0",\
   jakarta.data.metamodel.impl;version="1.0.0",\
   jakarta.data.page;version="1.0.0",\
+  jakarta.data.page.impl;version="1.0.0",\
   jakarta.data.repository;version="1.0.0"
 
 instrument.classesExcludes: jakarta/data/*.class
