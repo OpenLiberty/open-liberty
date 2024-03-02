@@ -42,6 +42,16 @@ public record KeysetAwarePageRecord<T>(
     }
 
     @Override
+    public boolean hasNext() {
+        return nextPageRequest != null;
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return previousPageRequest != null;
+    }
+
+    @Override
     public Iterator<T> iterator() {
         return content.iterator();
     }

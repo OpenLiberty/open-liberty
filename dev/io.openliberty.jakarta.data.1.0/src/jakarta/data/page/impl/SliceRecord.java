@@ -39,6 +39,11 @@ public record SliceRecord<T>(PageRequest<T> pageRequest,
     }
 
     @Override
+    public boolean hasNext() {
+        return moreResults;
+    }
+
+    @Override
     public Iterator<T> iterator() {
         return content.iterator();
     }

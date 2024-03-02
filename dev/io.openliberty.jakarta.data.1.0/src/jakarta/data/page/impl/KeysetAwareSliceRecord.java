@@ -41,6 +41,16 @@ public record KeysetAwareSliceRecord<T>(
     }
 
     @Override
+    public boolean hasNext() {
+        return nextPageRequest != null;
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return previousPageRequest != null;
+    }
+
+    @Override
     public Iterator<T> iterator() {
         return content.iterator();
     }

@@ -28,6 +28,8 @@ public interface Slice<T> extends Streamable<T> {
 
     boolean hasContent();
 
+    boolean hasNext();
+
     PageRequest<T> nextPageRequest();
 
     <E> PageRequest<E> nextPageRequest(Class<E> entityClass);
