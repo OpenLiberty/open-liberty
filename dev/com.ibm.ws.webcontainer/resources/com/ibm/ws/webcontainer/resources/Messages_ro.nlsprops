@@ -1632,3 +1632,4 @@ redirect.location.cannot.be.null.useraction=Actualiza\u021bi loca\u021bia redire
 
 sendRedirect.hyper.text.url=<html><body><p>Redirecting to <a href="{0}"></a></p></body></html>
 
+query.or.post.is.null=Cerere \u0219ir de interogare sau de date post este nul.

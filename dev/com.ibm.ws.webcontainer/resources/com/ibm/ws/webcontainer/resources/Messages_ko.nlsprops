@@ -1632,3 +1632,4 @@ redirect.location.cannot.be.null.useraction=\ube44\uc5b4 \uc788\uc9c0 \uc54a\uc7
 
 sendRedirect.hyper.text.url=<html><body><p>\uacbd\ub85c \uc7ac\uc9c0\uc815 \ub300\uc0c1 <a href="{0}"></a></p></body></html>
 
+query.or.post.is.null=\uc694\uccad \uc870\ud68c \ubb38\uc790\uc5f4 \ub610\ub294 \uac8c\uc2dc \ub370\uc774\ud130\uac00 \ub110\uc785\ub2c8\ub2e4.

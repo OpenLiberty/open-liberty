@@ -1632,3 +1632,4 @@ redirect.location.cannot.be.null.useraction=Zaktualizuj po\u0142o\u017cenie prze
 
 sendRedirect.hyper.text.url=<html><body><p>Przekierowanie do <a href="{0}"></a></p></body></html>
 
+query.or.post.is.null=\u0141a\u0144cuch zapytania \u017c\u0105dania lub dane \u017c\u0105dania POST maj\u0105 warto\u015b\u0107 NULL.
