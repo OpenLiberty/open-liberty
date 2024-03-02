@@ -483,6 +483,9 @@ publishing {
 
 afterEvaluate {
   publishLibertyVersionsPublicationToMavenRepository.dependsOn libertyReleaseVersions
+  if (isUsingArtifactory && isArtifactoryPublishing) {
+    publishLibertyVersionsPublicationToMaven2Repository.dependsOn libertyReleaseVersions
+  }
 }
 
 task printProjectDependencies() {

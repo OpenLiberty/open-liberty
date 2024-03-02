@@ -282,8 +282,6 @@ task updateIdp_4_0_x_WAR(type: Zip, dependsOn: copy_40x_IDP) {
 }
 
 task updateIdp_4_1_x_WAR(type: Zip, dependsOn: copy_41x_IDP) {
-
-  println "In updateIdp_4_1_x_WAR"
   
   def originalWar = new File(downloadDir, 'idp-war-4.1.0.war')
   

@@ -52,8 +52,6 @@ addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn addJakartaTransformer
 
 task addHazelcastToSharedDir(type: Copy) {
-  println configurations.hazelcast.resolve()
-
   from configurations.hazelcast
   into new File(autoFvtDir, 'publish/shared/resources/hazelcast')
   rename "hazelcast-${hazelcastVersion}.jar", 'hazelcast.jar'

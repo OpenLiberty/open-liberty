@@ -437,7 +437,6 @@ assemble {
    * so that we don't need to keep adding them in each external
    * project.
    */
-  println "in assemble"
   copy { 
     from configurations.collectedDeps
     into "${buildDir}/collectedJars"

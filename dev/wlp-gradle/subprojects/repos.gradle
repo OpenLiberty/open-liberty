@@ -19,6 +19,9 @@
  * Do not fall back to Maven Central and IBM DHE when there are Artifactory outages.
  */
 repositories {
+    maven {
+        url uri(cnf.file("release"))
+    }
     if (isUsingArtifactory) {
         maven {
             credentials {

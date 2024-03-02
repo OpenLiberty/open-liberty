@@ -80,7 +80,6 @@ task tokenEndpoint(type: War, dependsOn: classes) {
   destinationDirectory = file("${appBuildDir}")
   archiveFileName = "${appName}.war"
 
- println "In tokenEndpoint"
   from("test-applications/${appName}/resources") {
     include "**/*"
   }
