@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,6 @@
  *******************************************************************************/
 package io.openliberty.pages40.fat.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.logging.Logger;
@@ -34,7 +32,7 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.pages40.fat.JSPUtils;
 
 /**
-
+ * Various tests for Jakarta Pages 4.0.
  */
 @RunWith(FATRunner.class)
 public class Pages40ChangesTest {
@@ -47,10 +45,8 @@ public class Pages40ChangesTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ;
-
         ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war");
-        server.startServer();
+        server.startServer(Pages40ChangesTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
@@ -67,6 +63,7 @@ public class Pages40ChangesTest {
      * @throws Exception if something goes horribly wrong
      */
     @Test
+    @Mode(TestMode.FULL)
     public void verifyisThreadSafeIsRemoved() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -86,6 +83,7 @@ public class Pages40ChangesTest {
      * @throws Exception if something goes horribly wrong
      */
     @Test
+    @Mode(TestMode.FULL)
     public void verifyisJspPluginIsRemoved() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -97,7 +95,8 @@ public class Pages40ChangesTest {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
-        assertTrue("jsp:plugin should throw an error", response.getText().contains("CWWJS0005E: The jsp:plugin element was removed in Pages 4.0 and therefore is no longer supported."));
+        assertTrue("jsp:plugin should throw an error",
+                   response.getText().contains("CWWJS0005E: The jsp:plugin element was removed in Pages 4.0 and therefore is no longer supported."));
     }
 
     /**
@@ -105,6 +104,7 @@ public class Pages40ChangesTest {
      * @throws Exception if something goes horribly wrong
      */
     @Test
+    @Mode(TestMode.FULL)
     public void verifyisJspParamsIsRemoved() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -116,7 +116,8 @@ public class Pages40ChangesTest {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
-        assertTrue("jsp:params should throw an error", response.getText().contains("CWWJS0005E: The jsp:params element was removed in Pages 4.0 and therefore is no longer supported."));
+        assertTrue("jsp:params should throw an error",
+                   response.getText().contains("CWWJS0005E: The jsp:params element was removed in Pages 4.0 and therefore is no longer supported."));
     }
 
     /**
@@ -124,6 +125,7 @@ public class Pages40ChangesTest {
      * @throws Exception if something goes horribly wrong
      */
     @Test
+    @Mode(TestMode.FULL)
     public void verifyisJspFallbackIsRemoved() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -135,7 +137,8 @@ public class Pages40ChangesTest {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
-        assertTrue("jsp:fallback should throw an error", response.getText().contains("CWWJS0005E: The jsp:fallback element was removed in Pages 4.0 and therefore is no longer supported."));
+        assertTrue("jsp:fallback should throw an error",
+                   response.getText().contains("CWWJS0005E: The jsp:fallback element was removed in Pages 4.0 and therefore is no longer supported."));
     }
 
     /**
@@ -155,7 +158,7 @@ public class Pages40ChangesTest {
         LOG.info("Servlet response : " + response.getText());
 
         assertTrue("Query string not displayed on the error page!", response.getText().contains("queryString: test=true"));
-        
-        //TODO METHOD VALUE
+
+        assertTrue("Method not displayed on the error page!", response.getText().contains("errorMethod: GET"));
     }
 }
