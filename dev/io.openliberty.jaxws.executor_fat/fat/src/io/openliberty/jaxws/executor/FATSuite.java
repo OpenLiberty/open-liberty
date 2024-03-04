@@ -27,5 +27,5 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = 
         RepeatTests.with(new EmptyAction().fullFATOnly())
-                   .andWith(new JakartaEE9Action());
+                   .andWith(new JakartaEE9Action()).andWith(new JakartaEE10Action());
 }

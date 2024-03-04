@@ -18,17 +18,19 @@ src: \
 fat.project: true
 
 # These features get added programmatically
-tested.features: jaxws-2.2, \
+tested.features: \
+  concurrent-2.0, \
+  concurrent-3.0, \
   jsp-2.2, \
   servlet-3.1, \
   pages-3.0, \
   servlet-5.0, \
+  servlet-6.0, \
   xmlBinding-3.0, \
+  xmlbinding-4.0, \
   xmlWS-3.0, \
-  concurrent-2.0
+  xmlws-4.0
   
-
-
 -buildpath: \
   com.ibm.websphere.javaee.annotation.1.2;version=latest,\
   com.ibm.websphere.javaee.cdi.2.0;version=latest,\
