@@ -98,10 +98,29 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
     public void performHealthCheck(HttpServletRequest request, HttpServletResponse httpResponse, String healthCheckProcedure) {
         Set<HealthCheckResponse> hcResponses = null;
         Set<String> unstartedAppsSet = new HashSet<String>();
-        Set<String> apps = appTracker.getAllAppNames();
-        Iterator<String> appsIt = apps.iterator();
+
         boolean anyAppsInstalled = false;
         HealthCheckHttpResponseBuilder hcHttpResponseBuilder = new HealthCheck20HttpResponseBuilder();
+
+        Set<String> apps = appTracker.getAllAppNames();
+
+        Set<String> configApps = appTracker.getAllConfigAppNames();
+        Iterator<String> configAppsIt = configApps.iterator();
+
+        while (configAppsIt.hasNext()) {
+            String nextAppName = configAppsIt.next();
+            if (apps.contains(nextAppName)) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "In performHealthCheck(): configAdmin found an application that the applicationStateListener already found. configAdminAppName = " + nextAppName);
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "In performHealthCheck(): applicationStateListener couldn't find application. configAdmin added appName = " + nextAppName);
+                appTracker.addAppName(nextAppName);
+            }
+        }
+
+        apps = appTracker.getAllAppNames();
+        Iterator<String> appsIt = apps.iterator();
 
         while (appsIt.hasNext()) {
             String appName = appsIt.next();
@@ -132,6 +151,7 @@ public class HealthCheck20ServiceImpl implements HealthCheck20Service {
 
                     while (moduleIt.hasNext()) {
                         String moduleName = moduleIt.next();
+
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "In performHealthCheck(): appName = " + appName + ", moduleName = " + moduleName);
 

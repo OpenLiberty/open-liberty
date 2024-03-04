@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 Contributors to the Eclipse Foundation
+ * Copyright (c) 2017, 2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -21,7 +21,10 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.health.internal;
 
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.nio.file.Paths;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,11 +36,15 @@ import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.service.cm.Configuration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -64,6 +71,8 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
     private static final TraceComponent tc = Tr.register(AppTrackerImpl.class);
     private static final MBeanServer mbeanServer = ManagementFactory.getPlatformMBeanServer();
 
+    protected ConfigurationAdmin configAdmin;
+
     private final HashMap<String, Set<String>> appModules = new HashMap<String, Set<String>>();
 
     /**
@@ -75,6 +84,8 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
      * Tracks the state of starting/started applications.
      */
     private final Map<String, ApplicationState> appStateMap = new HashMap<String, ApplicationState>();
+
+    private final Map<String, ApplicationState> configAdminMap = new HashMap<String, ApplicationState>();
 
     private HealthCheckService healthCheckService;
 
@@ -90,6 +101,47 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
             Tr.debug(tc, "AppTrackerImpl is deactivated");
     }
 
+    @Reference(name = "configAdmin")
+    protected void setConfigAdmin(ConfigurationAdmin configAdmin) {
+        this.configAdmin = configAdmin;
+
+        try {
+            Configuration[] configuredApps = configAdmin.listConfigurations("(service.factoryPid=com.ibm.ws.app.manager)");
+            if (configuredApps != null) {
+                for (Configuration c : configuredApps) {
+                    Dictionary<String, Object> properties = c.getProperties();
+
+                    String appName;
+
+                    String[] appNameSplit = Paths.get((String) properties.get("location")).toString().split("\\\\|/");
+
+                    if (properties.get("name") != null) {
+                        appName = (String) properties.get("name");
+                    } else {
+                        appName = appNameSplit[appNameSplit.length - 1].replace(".war", "");
+                        appName = appName.replace(".ear", "");
+                    }
+
+                    configAdminMap.put(appName, ApplicationState.INSTALLED);
+                }
+            }
+
+        } catch (IOException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "configadmin had an issue collecting configured applications due to an IO exception.");
+            e.printStackTrace();
+        } catch (InvalidSyntaxException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "configadmin had an issue collecting configured applications due to invalid syntax.");
+            e.printStackTrace();
+        }
+
+    }
+
+    protected void unsetConfigAdmin(ConfigurationAdmin configAdmin) {
+        this.configAdmin = null;
+    }
+
     /** {@inheritDoc} */
     @Override
     public Set<String> getAppNames() {
@@ -100,6 +152,16 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
     @Override
     public Set<String> getAllAppNames() {
         return appStateMap.keySet();
+    }
+
+    @Override
+    public Set<String> getAllConfigAppNames() {
+        return configAdminMap.keySet();
+    }
+
+    @Override
+    public void addAppName(String appName) {
+        appStateMap.put(appName, ApplicationState.INSTALLED);
     }
 
     /** {@inheritDoc} */
@@ -315,7 +377,8 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
 
     /** {@inheritDoc} */
     @Override
-    public void applicationStopping(ApplicationInfo appInfo) {}
+    public void applicationStopping(ApplicationInfo appInfo) {
+    }
 
     /** {@inheritDoc} */
     @Override
