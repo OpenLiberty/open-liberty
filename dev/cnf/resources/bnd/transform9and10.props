@@ -1,0 +1,18 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+
+# Used to transform bundles so that imported versions work with Jakarta EE 9 and 10, but not necessarily with EE 11.
+
+-transformer: \
+   renames;value=${workspace}/wlp-jakartaee-transform/rules/jakarta-renames.properties, \
+   selection;value=${workspace}/wlp-jakartaee-transform/rules/jakarta-selections.properties, \
+   versions;value=${workspace}/wlp-jakartaee-transform/rules/jakarta-versions-ee9and10.properties, \
+   direct;value=${workspace}/wlp-jakartaee-transform/rules/jakarta-direct.properties, \
+   text;value=${workspace}/wlp-jakartaee-transform/rules/jakarta-text.properties
