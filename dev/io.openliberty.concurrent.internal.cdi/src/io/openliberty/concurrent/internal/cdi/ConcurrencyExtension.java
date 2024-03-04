@@ -56,6 +56,11 @@ public class ConcurrencyExtension implements Extension {
     private static final Set<Annotation> DEFAULT_QUALIFIER_SET = Set.of(Default.Literal.INSTANCE);
 
     /**
+     * OSGi service for the Concurrency extension;
+     */
+    private ConcurrencyExtensionMetadata extSvc;
+
+    /**
      * List of the qualifier sets for each ManagedThreadFactory bean with qualifiers that is
      * created during afterBeanDiscovery. Instances of these beans are obtained during
      * afterDeploymentValidation to force context capture to occur.
@@ -84,25 +89,31 @@ public class ConcurrencyExtension implements Extension {
      */
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
 
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (cmd == null)
+            throw new IllegalStateException(); // should be unreachable
+
+        J2EEName jeeName = cmd.getJ2EEName();
+
         BundleContext bundleContext = FrameworkUtil.getBundle(ConcurrencyExtension.class).getBundleContext();
         ServiceReference<QualifiedResourceFactories> ref = bundleContext.getServiceReference(QualifiedResourceFactories.class);
-        ConcurrencyExtensionMetadata ext = (ConcurrencyExtensionMetadata) bundleContext.getService(ref);
+        extSvc = (ConcurrencyExtensionMetadata) bundleContext.getService(ref);
 
         // Add beans for Concurrency default resources if not already present:
 
         CDI<Object> cdi = CDI.current();
 
         if (!cdi.select(ContextService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
-            event.addBean(new ContextServiceBean(ext.defaultContextServiceFactory, DEFAULT_QUALIFIER_SET));
+            event.addBean(new ContextServiceBean(extSvc.defaultContextServiceFactory, DEFAULT_QUALIFIER_SET));
 
         if (!cdi.select(ManagedExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
-            event.addBean(new ManagedExecutorBean(ext.defaultManagedExecutorFactory, DEFAULT_QUALIFIER_SET));
+            event.addBean(new ManagedExecutorBean(extSvc.defaultManagedExecutorFactory, DEFAULT_QUALIFIER_SET));
 
         if (!cdi.select(ManagedScheduledExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
-            event.addBean(new ManagedScheduledExecutorBean(ext.defaultManagedScheduledExecutorFactory, DEFAULT_QUALIFIER_SET));
+            event.addBean(new ManagedScheduledExecutorBean(extSvc.defaultManagedScheduledExecutorFactory, DEFAULT_QUALIFIER_SET));
 
         if (!cdi.select(ManagedThreadFactory.class, DEFAULT_QUALIFIER_ARRAY).isResolvable()) {
-            event.addBean(new ManagedThreadFactoryBean(ext.defaultManagedThreadFactoryFactory, DEFAULT_QUALIFIER_SET));
+            event.addBean(new ManagedThreadFactoryBean(cmd, extSvc, DEFAULT_QUALIFIER_SET));
             qualifierSetsPerMTF = new ArrayList<>();
             qualifierSetsPerMTF.add(Collections.emptySet());
         }
@@ -110,18 +121,12 @@ public class ConcurrencyExtension implements Extension {
         // Look for beans from the module and the application.
         // TODO EJBs and component level?
 
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        if (cmd == null)
-            throw new IllegalStateException(); // should be unreachable
-
-        J2EEName jeeName = cmd.getJ2EEName();
-
-        List<Map<List<String>, QualifiedResourceFactory>> listFromModule = ext.removeAll(cmd.getJ2EEName().toString());
+        List<Map<List<String>, QualifiedResourceFactory>> listFromModule = extSvc.removeAll(cmd.getJ2EEName().toString());
 
         if (listFromModule != null)
             addBeans(event, listFromModule);
 
-        List<Map<List<String>, QualifiedResourceFactory>> listFromApp = ext.removeAll(jeeName.getApplication());
+        List<Map<List<String>, QualifiedResourceFactory>> listFromApp = extSvc.removeAll(jeeName.getApplication());
         if (listFromApp != null)
             addBeans(event, listFromApp);
     }
@@ -187,7 +192,7 @@ public class ConcurrencyExtension implements Extension {
 
         for (QualifiedResourceFactory factory : qualifiedManagedThreadFactories.values()) {
             try {
-                event.addBean(new ManagedThreadFactoryBean(factory));
+                event.addBean(new ManagedThreadFactoryBean(factory, extSvc));
             } catch (Throwable x) {
                 // TODO NLS
                 System.out.println(" E Unable to create a bean for the " +
