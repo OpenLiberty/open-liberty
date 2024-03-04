@@ -195,9 +195,8 @@ public class SSLConfig {
 
     //static final Pattern p = Pattern.compile("(?:(SSL)|(TLS))_([A-Z0-9]*)(_anon)?(_[a-zA-Z0-9]*)??(_EXPORT)?_WITH_([A-Z0-9]*)(?:_(\\d*))?([_a-zA-Z0-9]*)?_(?:(?:(SHA)(\\d*))|(MD5))");
     //Made "WITH" as optional in the above pattern to accommodate ciphers without the substring "WITH" in their cipher-names
-    static final Pattern p = Pattern.compile("(?:(SSL)|(TLS))_([A-Z0-9]*)(_anon)?(_[a-zA-Z0-9]*)??(_EXPORT)?(_WITH_)?([A-Z0-9]*)(?:_(\\d*))?([_a-zA-Z0-9]*)?_(?:(?:(SHA)(\\d*))|(MD5))");
-
-    //[1 null, 2 TLS, 3 ECDHE, 4 null, 5 _ECDSA, 6 null, 87 AES, 9 128, 10 _CBC, 11 SHA, 12 256, 13 null]
+    static final Pattern p = Pattern.compile("(?:(SSL)|(TLS))_([A-Z0-9]*)?(_anon)?(_[a-zA-Z0-9]*)??(_EXPORT)?(_WITH_)?(AES|RC4|DES40|3DES|NULL)(?:_(\\d*))?([_a-zA-Z0-9]*)?_(?:(?:(SHA)(\\d*))|(MD5))");
+    //[1 null, 2 TLS, 3 ECDHE, 4 null, 5 _ECDSA, 6 null, 8 AES, 9 128, 10 _CBC, 11 SHA, 12 256, 13 null]
     private static final int SSL_INDEX = 1;
     private static final int TLS_INDEX = 2;
     private static final int KEY_NEGOTIATION_PROTOCOL_INDEX = 3;
