@@ -26,6 +26,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingAct
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -54,6 +55,7 @@ import static org.junit.Assert.assertNotNull;
  * This test covers the interactions that occur if at least one channel is using an incorrect certificate
  */
 @RunWith(FATRunner.class)
+@Mode(Mode.TestMode.FULL)
 public class KafkaMtlsIncorrectKeyTest {
 
     private static final String APP_NAME = "kafkaMtlsChannelTest";
@@ -130,7 +132,7 @@ public class KafkaMtlsIncorrectKeyTest {
 
         // We should have two messages on the Incoming channel, so show we still put some messages on the topics
         try(KafkaReader<String, String> reader = kafkaTestClient.readerFor(inTopicName)) {
-            List<String> messages = reader.assertReadMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
+            reader.assertReadMessages(2, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
         }
         try(KafkaReader<String, String> reader = kafkaTestClient.readerFor(outTopicName)) {
             reader.assertReadMessages(0, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT);
