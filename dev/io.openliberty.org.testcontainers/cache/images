@@ -9,7 +9,9 @@ infinispan/server:10.0.1.Final
 infinispan/server:13.0.10.Final
 jaegertracing/all-in-one:1.54
 jboss/keycloak:16.1.1
+jiwoo/nexus:1.0
 jiwoo/simple-keyserver:1.0
+jiwoo/squid-proxy:1.0
 jonhawkes/postgresql-ssl:1.0
 kyleaure/cloudant-developer:1.0
 kyleaure/couchdb-ssl:1.0

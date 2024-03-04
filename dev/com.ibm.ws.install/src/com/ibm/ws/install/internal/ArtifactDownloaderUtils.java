@@ -19,6 +19,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -28,6 +29,7 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +39,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.net.ssl.HttpsURLConnection;
-
+import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.ws.install.InstallConstants.VerifyOption;
 import com.ibm.ws.install.InstallException;
+import com.ibm.ws.install.internal.InstallLogUtils.Messages;
 
 public class ArtifactDownloaderUtils {
 
@@ -65,7 +68,8 @@ public class ArtifactDownloaderUtils {
         return thread_num;
     }
 
-    public static List<String> getMissingFiles(Set<String> featureURLs, Map<String, Object> envMap) throws IOException, InterruptedException, ExecutionException {
+    public static List<String> getMissingFiles(Set<String> featureURLs, Map<String, Object> envMap,
+                                               MavenRepository repository) throws InterruptedException, ExecutionException, InstallException {
         List<String> result = new Vector<String>();
         logger.fine("number of missing features: " + featureURLs.size());
 
@@ -76,7 +80,7 @@ public class ArtifactDownloaderUtils {
         for (String url : featureURLs) {
             Future<?> future = executor.submit(() -> {
                 try {
-                    if (!(exists(url, envMap) == HttpURLConnection.HTTP_OK)) {
+                    if (exists(url, envMap, repository) != HttpURLConnection.HTTP_OK) {
                         result.add(url);
                     }
                 } catch (IOException e) {
@@ -103,51 +107,40 @@ public class ArtifactDownloaderUtils {
         return result;
     }
 
-    public static boolean fileIsMissing(String url, Map<String, Object> envMap) throws IOException {
-        return !(exists(url, envMap) == HttpURLConnection.HTTP_OK);
+    public static boolean fileIsMissing(String url, Map<String, Object> envMap, MavenRepository repository) throws IOException {
+        return !(exists(url, envMap, repository) == HttpURLConnection.HTTP_OK);
     }
 
-    public static int exists(String URLName, Map<String, Object> envMap) throws IOException {
+    public static int exists(String URLName, Map<String, Object> envMap, MavenRepository repository) throws IOException {
         try {
             URL url = new URL(URLName);
-            if (url.getProtocol().equals("https")) {
-                HttpsURLConnection.setFollowRedirects(true);
-                HttpsURLConnection conn;
 
-                if (envMap.get("https.proxyHost") != null) {
-                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
-                    conn = (HttpsURLConnection) url.openConnection(proxy);
-                } else if (envMap.get("http.proxyHost") != null) {
-                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
-                    conn = (HttpsURLConnection) url.openConnection(proxy);
-                } else {
-                    conn = (HttpsURLConnection) url.openConnection();
-                }
-                conn.setRequestMethod("HEAD");
-                conn.setConnectTimeout(10000);
-                conn.connect();
-                int responseCode = conn.getResponseCode();
-                conn.setInstanceFollowRedirects(true);
-                return responseCode;
+            Proxy proxy;
+            String proxyEncodedAuth = "";
+            if (envMap.get("https.proxyHost") != null) {
+                proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
+                proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword"));
+            } else if (envMap.get("http.proxyHost") != null) {
+                proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
+                proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("http.proxyUser"), (String) envMap.get("http.proxyPassword"));
             } else {
-                HttpURLConnection.setFollowRedirects(true);
-                HttpURLConnection conn;
-                if (envMap.get("https.proxyHost") != null) {
-                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
-                    conn = (HttpURLConnection) url.openConnection(proxy);
-                } else if (envMap.get("http.proxyHost") != null) {
-                    Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
-                    conn = (HttpURLConnection) url.openConnection(proxy);
-                } else {
-                    conn = (HttpURLConnection) url.openConnection();
-                }
-                conn.setRequestMethod("HEAD");
-                conn.setConnectTimeout(10000);
-                conn.connect();
-                int responseCode = conn.getResponseCode();
-                conn.setInstanceFollowRedirects(true);
-                return responseCode;
+                proxy = Proxy.NO_PROXY;
             }
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
+            String repoEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication(repository.getUserId(), repository.getPassword());
+            if (!repoEncodedAuth.isEmpty()) {
+                conn.setRequestProperty("Authorization", repoEncodedAuth);
+            }
+            if (!proxyEncodedAuth.isEmpty()) {
+                conn.setRequestProperty("Proxy-Authorization", proxyEncodedAuth);
+            }
+            conn.setRequestMethod("HEAD");
+            conn.setConnectTimeout(10000);
+            conn.setInstanceFollowRedirects(true);
+            conn.connect();
+            return conn.getResponseCode();
+
         } catch (ConnectException e) {
             throw e;
         } catch (SocketTimeoutException e) {
@@ -296,6 +289,72 @@ public class ArtifactDownloaderUtils {
         String version = resSplit[(resSplit.length - 2)];
         result = groupID + ":" + artifactID + ":" + version;
         return result;
+    }
+
+    public static String getBasicAuthentication(String userId, String password) {
+        if (userId != null && password != null) {
+            return "Basic " + base64Encode(userId + ":" + PasswordUtil.passwordDecode(password));
+        } else {
+            return "";
+        }
+    }
+
+    private static String base64Encode(String userInfo) {
+        try {
+            return Base64.getEncoder().encodeToString(userInfo.getBytes("UTF-8"));
+        } catch (UnsupportedEncodingException encodingException) {
+            throw new RuntimeException("Failed to get bytes for user info using UTF-8.", encodingException);
+        }
+    }
+
+    public static void checkValidProxy(Map<String, Object> envMap) throws InstallException {
+        //set up basic auth HTTP tunnel
+        System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
+
+        String protocol = null;
+        if (envMap.get("https.proxyUser") != null) {
+            protocol = "https";
+        } else if (envMap.get("http.proxyUser") != null) {
+            protocol = "http";
+        }
+
+        String proxyPort = (String) envMap.get(protocol + ".proxyPort");
+        if (protocol != null) {
+            int proxyPortnum = Integer.parseInt(proxyPort);
+            if (((String) envMap.get(protocol + ".proxyHost")).isEmpty()) {
+                throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
+            } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
+                throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
+            } else if (((String) envMap.get(protocol + ".proxyPassword")).isEmpty() ||
+                       envMap.get(protocol + ".proxyPassword") == null) {
+                throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
+            }
+            verifyPassword((String) envMap.get(protocol) + ".proxyPassword");
+        }
+    }
+
+    /**
+     * @param pwd - repository password
+     * @return a formated password string
+     * @throws InstallException if decoding the password fails due to an unsupported algorithm or invalid password.
+     */
+    protected static void verifyPassword(String pwd) throws InstallException {
+        if (!PasswordUtil.isEncrypted(pwd)) {
+            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_NOT_ENCRYPTED")
+                                   + InstallUtils.NEWLINE);
+        }
+        String crypto_algorithm = PasswordUtil.getCryptoAlgorithm(pwd);
+        if (crypto_algorithm == null) {
+            return;
+        }
+        if (PasswordUtil.passwordDecode(pwd) == null) {
+            if (!PasswordUtil.isValidCryptoAlgorithm(crypto_algorithm)) {
+                // don't accept unsupported crypto algorithm
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED"));
+            } else {
+                throw new InstallException(Messages.PASSWORD_UTIL_MESSAGES.getLogMessage("PASSWORDUTIL_CYPHER_EXCEPTION"));
+            }
+        }
     }
 
 }
