@@ -36,6 +36,7 @@ import java.util.stream.Stream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
+import javax.xml.ws.Response;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -359,7 +360,7 @@ public class Reader {
                     if (StringUtils.isBlank(httpMethod)) {
                         continue;
                     }
-                    setPathItemOperation(pathItemObject, httpMethod, operation);
+                    
                     org.eclipse.microprofile.openapi.annotations.parameters.RequestBody methodRequestBody = method.getAnnotation(org.eclipse.microprofile.openapi.annotations.parameters.RequestBody.class);
                     List<Parameter> operationParameters = new ArrayList<>();
                     Annotation[][] paramAnnotations = ReflectionUtils.getParameterAnnotations(method);
@@ -449,6 +450,8 @@ public class Reader {
                     if (operation.getRequestBody() != null && operation.getRequestBody().getRef() != null) {
                         operation.setRequestBody(new RequestBodyImpl().ref(operation.getRequestBody().getRef()));
                     }
+
+                    setPathItemOperation(pathItemObject, httpMethod, operation);
 
                     paths.addPathItem(operationPath, pathItemObject);
                     if (openAPI.getPaths() != null) {
@@ -1020,33 +1023,85 @@ public class Reader {
     private void setPathItemOperation(PathItem pathItemObject, String method, Operation operation) {
         switch (method) {
             case POST_METHOD:
+                mergePathItems(pathItemObject.getPOST(), operation);
                 pathItemObject.POST(operation);
                 break;
             case GET_METHOD:
+                mergePathItems(pathItemObject.getGET(), operation);
                 pathItemObject.GET(operation);
                 break;
             case DELETE_METHOD:
+                mergePathItems(pathItemObject.getDELETE(), operation);
                 pathItemObject.DELETE(operation);
                 break;
             case PUT_METHOD:
+                mergePathItems(pathItemObject.getPUT(), operation);
                 pathItemObject.PUT(operation);
                 break;
             case PATCH_METHOD:
+                mergePathItems(pathItemObject.getPATCH(), operation);
                 pathItemObject.PATCH(operation);
                 break;
             case TRACE_METHOD:
+                mergePathItems(pathItemObject.getTRACE(), operation);
                 pathItemObject.TRACE(operation);
                 break;
             case HEAD_METHOD:
+                mergePathItems(pathItemObject.getHEAD(), operation);
                 pathItemObject.HEAD(operation);
                 break;
             case OPTIONS_METHOD:
+                mergePathItems(pathItemObject.getOPTIONS(), operation);
                 pathItemObject.OPTIONS(operation);
                 break;
             default:
                 // Do nothing here
                 break;
         }
+    }
+
+    private void mergePathItems(Operation pathItemOperation, Operation operation){
+        if (pathItemOperation == null){
+            return;
+        }
+        Content resContent;
+        if (operation.getRequestBody() != null && pathItemOperation.getRequestBody() != null){
+            resContent = mergeContents(operation.getRequestBody().getContent(), pathItemOperation.getRequestBody().getContent());
+            operation.getRequestBody().setContent(resContent);
+        }
+        if (operation.getResponses() != null && pathItemOperation.getResponses() != null){
+            APIResponses resResponses;
+            for (String key : pathItemOperation.getResponses().keySet()){
+                if (operation.getResponses().containsKey(key)){
+                    resContent = mergeContents(operation.getResponses().get(key).getContent(), pathItemOperation.getResponses().get(key).getContent());
+                    operation.getResponses().get(key).setContent(resContent);
+                }
+            }
+            resResponses = mergeResponses(operation.getResponses(), pathItemOperation.getResponses());
+            operation.setResponses(resResponses);
+        }
+    }
+
+    private Content mergeContents(Content resultMap, Content inMap) {
+        if (inMap == null || inMap.isEmpty()) {
+            return resultMap;
+        }
+        if (resultMap == null){
+            return inMap;
+        }
+        inMap.forEach( (key, value) -> resultMap.putIfAbsent(key, value));
+        return resultMap;
+    }
+
+    private APIResponses mergeResponses(APIResponses resultMap, APIResponses inMap) {
+        if (inMap == null || inMap.isEmpty()) {
+            return resultMap;
+        }
+        if (resultMap == null){
+            return inMap;
+        }
+        inMap.forEach( (key, value) -> resultMap.putIfAbsent(key, value));
+        return resultMap;
     }
 
     private void setOperationObjectFromApiOperationAnnotation(
