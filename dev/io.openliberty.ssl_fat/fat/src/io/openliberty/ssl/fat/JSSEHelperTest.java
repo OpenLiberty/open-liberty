@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs20.client.fat.test;
-
-import static org.junit.Assert.assertNotNull;
+package io.openliberty.ssl.fat;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -27,28 +25,30 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.jaxrs.client.fat.mismatchingCiphers.MisMatchingSSLCiphersClientTestServlet;
+import io.openliberty.ssl.fat.jssehelper.JSSEHelperClientTestServlet;
 
+/*
+ * Test getting the SSLContext and SSLSocketFactory from JSSEHelper to create an SSL
+ * connection that honors Liberty's SSL config.
+ */
 @RunWith(FATRunner.class)
-public class MisMatchingSSLCiphersTest extends FATServletClient {
+public class JSSEHelperTest extends FATServletClient {
 
-    private static final String appName = "simpleSSL";
+    private static final String appName = "jssehelper";
 
-    @Server("com.ibm.ws.jaxrs.2.0.client.fat.MisMatchingSSLCiphersTest")
-    @TestServlet(servlet = MisMatchingSSLCiphersClientTestServlet.class, contextRoot = appName)
+    @Server("JSSEHelperTestServer")
+    @TestServlet(servlet = JSSEHelperClientTestServlet.class, contextRoot = appName)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
         // Build an application and export it to the dropins directory
-        ShrinkHelper.defaultDropinApp(server, appName, "io.openliberty.jaxrs.client.fat.simpleSSL", "io.openliberty.jaxrs.client.fat.mismatchingCiphers");
+        ShrinkHelper.defaultDropinApp(server, appName, "io.openliberty.ssl.fat.jssehelper");
 
         // Make sure we don't fail because we try to start an
         // already started server
         try {
-            server.startServer("server.log", true);
-            assertNotNull("The server did not start", server.waitForStringInLog("CWWKF0011I"));
-            assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
+            server.startServer("JSSEHelperTest.log", true);
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -57,6 +57,7 @@ public class MisMatchingSSLCiphersTest extends FATServletClient {
     @AfterClass
     public static void teardown() throws Exception {
         if (server != null) {
+            // ignore "CWWKO0801E: The SSL connection cannot be initialized"
             server.stopServer("CWWKE1102W", "CWWKO0801E");  //ignore server quiesce timeouts due to slow test machines
         }
     }

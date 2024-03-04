@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2023 IBM Corporation and others.
+ * Copyright (c) 2007, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,6 +31,7 @@ import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 
@@ -114,11 +115,11 @@ public class SSLConfigManager {
     /***
      * This method parses the configuration.
      *
-     * @param map Global SSL configuration properties, most likely injected from SSLComponent
-     * @param reinitialize Boolean flag to indicate if the configuration should be re-loaded
-     * @param isServer Boolean flag to indiciate if the code is running within a server process
+     * @param map                      Global SSL configuration properties, most likely injected from SSLComponent
+     * @param reinitialize             Boolean flag to indicate if the configuration should be re-loaded
+     * @param isServer                 Boolean flag to indiciate if the code is running within a server process
      * @param transportSecurityEnabled Boolean flag to indicate if the transportSecurity-1.0 feature is enabled
-     * @param aliasPIDs Map of OSGi PID-indexed repertoire IDs
+     * @param aliasPIDs                Map of OSGi PID-indexed repertoire IDs
      * @throws Exception
      ***/
     public synchronized void initializeSSL(Map<String, Object> map,
@@ -1384,6 +1385,43 @@ public class SSLConfigManager {
      * @return
      */
     public String[] getCipherList(java.util.Properties props, SSLSocket socket) {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "getCipherList");
+
+        String ciphers[] = null;
+        String cipherString = props.getProperty(Constants.SSLPROP_ENABLED_CIPHERS);
+
+        try {
+
+            if (cipherString != null) {
+                ciphers = cipherString.split("\\s+");
+            } else {
+                String securityLevel = props.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "securityLevel from properties is " + securityLevel);
+                if (securityLevel == null)
+                    securityLevel = "HIGH";
+
+                ciphers = adjustSupportedCiphersToSecurityLevel(socket.getSupportedCipherSuites(), securityLevel);
+
+            }
+        } catch (Exception e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Exception setting ciphers in SSL Socket Factory.", new Object[] { e });
+        }
+
+        if (tc.isEntryEnabled())
+            Tr.exit(tc, "getCipherList");
+
+        return ciphers;
+    }
+
+    /**
+     * @param sslProps
+     * @param socket
+     * @return
+     */
+    public String[] getCipherList(java.util.Properties props, SSLServerSocket socket) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "getCipherList");
 
