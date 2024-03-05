@@ -726,9 +726,11 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
 
 	// Liberty Change start
 	if (LOG.isLoggable(Level.FINEST)) {
-	   for (String p1 : paramOrder) {
-		LOG.finest("initializeClassInfo: paramOrder: " + p1);
-	   }
+            if (paramOrder != null && !paramOrder.isEmpty()) {
+                for (String p1 : paramOrder) {
+                    LOG.finest("initializeClassInfo: paramOrder: " + p1);
+                }
+            }
 	}
 	// Liberty Change end
 
