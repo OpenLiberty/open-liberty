@@ -14,7 +14,6 @@ package com.ibm.ws.security.spnego.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -81,7 +80,7 @@ public class FATSuite extends TestContainerSuite {
     public static Network network;
     public static KerberosContainer krb5;
 
-    @ClassRule
+    //@ClassRule
     public static RepeatTests repeat = RepeatTests.withoutModification()
                     .andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                     .andWith(new JakartaEE10Action());

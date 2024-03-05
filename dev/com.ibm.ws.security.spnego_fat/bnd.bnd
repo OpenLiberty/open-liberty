@@ -20,7 +20,7 @@ fat.project: true
 
 fat.test.container.images: fbicodex/spnego-kdc-server:1.0
 
-tested.features: pages-3.0, appsecurity-4.0, cdi-3.0, spnego-1.0
+tested.features: pages-3.0, appsecurity-4.0, cdi-3.0, spnego-1.0, expressionlanguage-5.0, appsecurity-5.0, jsonp-2.1, pages-3.1, cdi-4.0, servlet-6.0
 
 -buildpath: \
     fattest.simplicity;version=latest,\
