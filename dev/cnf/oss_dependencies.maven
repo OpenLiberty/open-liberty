@@ -223,8 +223,10 @@ jakarta.annotation:jakarta.annotation-api:2.0.0
 jakarta.annotation:jakarta.annotation-api:2.1.1
 jakarta.authentication:jakarta.authentication-api:2.0.0
 jakarta.authentication:jakarta.authentication-api:3.0.0
+jakarta.authentication:jakarta.authentication-api:3.1.0-M1
 jakarta.authorization:jakarta.authorization-api:2.0.0
 jakarta.authorization:jakarta.authorization-api:2.1.0
+jakarta.authorization:jakarta.authorization-api:3.0.0-M1
 jakarta.batch:jakarta.batch-api:2.0.0
 jakarta.batch:jakarta.batch-api:2.1.1
 jakarta.ejb:jakarta.ejb-api:4.0.1
@@ -261,6 +263,7 @@ jakarta.resource:jakarta.resource-api:2.0.0
 jakarta.resource:jakarta.resource-api:2.1.0
 jakarta.security.enterprise:jakarta.security.enterprise-api:2.0.0
 jakarta.security.enterprise:jakarta.security.enterprise-api:3.0.0
+jakarta.security.enterprise:jakarta.security.enterprise-api:4.0.0-M1
 jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:2.0.0
 jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0
 jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.0.0
