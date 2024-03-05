@@ -17,13 +17,22 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.Set;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.classloading.ClassLoaderIdentifierService;
+import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
+import com.ibm.ws.runtime.metadata.ApplicationMetaData;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.resource.ResourceInfo;
 
+import io.openliberty.concurrent.internal.cdi.metadata.MTFDeferredMetaDataFactory;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -65,28 +74,54 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
     private final Set<Annotation> qualifiers;
 
     /**
-     * Construct a new bean for this resource.
+     * Construct a new bean for this resource, which is for default ManagedThreadFactory instances
+     * at the application level.
      *
-     * @param factory resource factory.
+     * @param cmd        component metadata from the thread upon which the CDI extension runs.
+     * @param extSvc     OSGi service for the Concurrency extension.
+     * @param qualifiers qualifiers for the bean.
      */
-    ManagedThreadFactoryBean(QualifiedResourceFactory factory) {
-        this.factory = factory;
-        this.qualifiers = factory.getQualifiers();
-        this.declaringClassLoader = factory.getDeclaringClassLoader();
-        this.declaringMetadata = factory.getDeclaringMetadata();
+    ManagedThreadFactoryBean(ComponentMetaData cmd, ConcurrencyExtensionMetadata extSvc, Set<Annotation> qualifiers) {
+        this.factory = extSvc.defaultManagedThreadFactoryFactory;
+        this.qualifiers = qualifiers;
+
+        // TODO find out how to get the class loader for the application.
+        // It is not correct to use whichever application component's classloader happens to be on the thread.
+        if (cmd instanceof IdentifiableComponentMetaData) {
+            String identifier = ((IdentifiableComponentMetaData) cmd).getPersistentIdentifier();
+
+            BundleContext bc = FrameworkUtil.getBundle(ClassLoaderIdentifierService.class).getBundleContext();
+            ServiceReference<ClassLoaderIdentifierService> ref = bc.getServiceReference(ClassLoaderIdentifierService.class);
+            ClassLoaderIdentifierService classloaderIdSvc = bc.getService(ref);
+            this.declaringClassLoader = classloaderIdSvc.getClassLoader(identifier);
+        } else {
+            throw new IllegalArgumentException(cmd.toString()); // internal error
+        }
+
+        // The Concurrency extension could be running under any module/component of the application.
+        ApplicationMetaData amd = cmd.getModuleMetaData().getApplicationMetaData();
+        MTFDeferredMetaDataFactory metadataFactory = (MTFDeferredMetaDataFactory) extSvc.mtfMetadataFactory;
+        this.declaringMetadata = metadataFactory.createComponentMetadata(amd, declaringClassLoader);
     }
 
     /**
      * Construct a new bean for this resource.
      *
-     * @param factory    resource factory.
-     * @param qualifiers qualifiers for the bean.
+     * @param factory resource factory.
+     * @param extSvc  OSGi service for the Concurrency extension.
      */
-    ManagedThreadFactoryBean(ResourceFactory factory, Set<Annotation> qualifiers) {
+    ManagedThreadFactoryBean(QualifiedResourceFactory factory, ConcurrencyExtensionMetadata extSvc) {
         this.factory = factory;
-        this.qualifiers = qualifiers;
-        this.declaringClassLoader = null; // TODO class loader for app
-        this.declaringMetadata = null; // TODO dummy component metadata for app
+        this.qualifiers = factory.getQualifiers();
+        this.declaringClassLoader = factory.getDeclaringClassLoader();
+
+        MetaData mdata = factory.getDeclaringMetadata();
+        if (mdata instanceof ApplicationMetaData amd) {
+            MTFDeferredMetaDataFactory metadataFactory = (MTFDeferredMetaDataFactory) extSvc.mtfMetadataFactory;
+            this.declaringMetadata = metadataFactory.createComponentMetadata(amd, declaringClassLoader);
+        } else {
+            this.declaringMetadata = mdata;
+        }
     }
 
     @Override
@@ -98,9 +133,7 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
 
         ManagedThreadFactory instance;
         try {
-            // TODO remove null check and always send a resource info
-            // once we implement the code path for default instances
-            ResourceInfo info = declaringClassLoader == null ? null : new MTFBeanResourceInfoImpl(declaringClassLoader, declaringMetadata);
+            ResourceInfo info = new MTFBeanResourceInfoImpl(declaringClassLoader, declaringMetadata);
             instance = (ManagedThreadFactory) factory.createResource(info);
         } catch (RuntimeException x) {
             if (trace && tc.isEntryEnabled())

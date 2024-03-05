@@ -154,6 +154,11 @@ public class ConcurrentCDITest extends FATServletClient {
     }
 
     @Test
+    public void testInjectManagedThreadFactoryQualifiedFromAppDD() throws Exception {
+        runTest(server, APP_NAME, testName);
+    }
+
+    @Test
     public void testInjectManagedThreadFactoryQualifiedFromWebDD() throws Exception {
         runTest(server, APP_NAME, testName);
     }
