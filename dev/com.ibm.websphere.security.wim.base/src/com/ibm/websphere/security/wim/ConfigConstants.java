@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -578,7 +578,8 @@ public interface ConfigConstants {
     };
 
     // Message Digest algorithms
-    String CONFIG_MDALGO_SHA1 = "SHA-1";
+    //issue 25138, remove SHA-1
+    //String CONFIG_MDALGO_SHA1 = "SHA-1";
     String CONFIG_MDALGO_SHA256 = "SHA-256";
     String CONFIG_MDALGO_SHA384 = "SHA-384";
     String CONFIG_MDALGO_SHA512 = "SHA-512";
@@ -587,8 +588,12 @@ public interface ConfigConstants {
      * List of supported Message Digest Algorithms. If constant is added or removed,
      * then this list should be updated too.
      */
+    //issue 25138
+    //String[] CONFIG_SUPPORTED_MDALGORITHMS = {
+    //                                           CONFIG_MDALGO_SHA1, CONFIG_MDALGO_SHA256, CONFIG_MDALGO_SHA384, CONFIG_MDALGO_SHA512
+    //};
     String[] CONFIG_SUPPORTED_MDALGORITHMS = {
-                                               CONFIG_MDALGO_SHA1, CONFIG_MDALGO_SHA256, CONFIG_MDALGO_SHA384, CONFIG_MDALGO_SHA512
+                                               CONFIG_MDALGO_SHA256, CONFIG_MDALGO_SHA384, CONFIG_MDALGO_SHA512
     };
 
     // String constants for authentication types

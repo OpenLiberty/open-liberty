@@ -63,7 +63,8 @@ public class TCKResultsWriter {
         String fullSpecName;
         String specURL = null;
         String tckURL = null;
-        String tckSHA1 = resultInfo.getSHA1();
+        //issue 25138
+        //String tckSHA1 = resultInfo.getSHA1();
         String tckSHA256 = resultInfo.getSHA256();
         if (type.equals(Type.MICROPROFILE)) {
             fullSpecName = "MicroProfile " + specName + " " + specVersion;
@@ -91,7 +92,9 @@ public class TCKResultsWriter {
 
         Path outputPath = Paths.get("results", filename);
         File outputFile = outputPath.toFile();
-        String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osName, osVersion, tckURL, tckSHA1, tckSHA256);
+        //issue 25138
+        //String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osName, osVersion, tckURL, tckSHA1, tckSHA256);
+        String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osName, osVersion, tckURL, tckSHA256);
 
         try (FileWriter output = new FileWriter(outputFile)) {
             Path junitPath = Paths.get("results", "junit");
@@ -128,8 +131,11 @@ public class TCKResultsWriter {
         }
     }
 
+    //issue 25138
+    //private static String getADocHeader(String filename, String fullSpecName, String specURL, String openLibertyVersion, String javaMajorVersion, String javaVersion,
+    //                                    String osName, String osVersion, String tckURL, String tckSHA1, String tckSHA256) {
     private static String getADocHeader(String filename, String fullSpecName, String specURL, String openLibertyVersion, String javaMajorVersion, String javaVersion,
-                                        String osName, String osVersion, String tckURL, String tckSHA1, String tckSHA256) {
+                                        String osName, String osVersion, String tckURL, String tckSHA256) {
         StringBuilder builder = new StringBuilder();
 
         builder.append(":page-layout: certification ").append(NEW_LINE);
@@ -162,8 +168,9 @@ public class TCKResultsWriter {
         builder.append(tckURL);
         builder.append("[").append(fullSpecName).append(" TCK]").append(NEW_LINE);
         builder.append("+").append(NEW_LINE);
-        builder.append("SHA-1: `").append(tckSHA1).append("`").append(NEW_LINE);
-        builder.append("+").append(NEW_LINE);
+        //issue 25138
+        //builder.append("SHA-1: `").append(tckSHA1).append("`").append(NEW_LINE);
+        //builder.append("+").append(NEW_LINE);
         builder.append("SHA-256: `").append(tckSHA256).append("`").append(NEW_LINE);
         builder.append(NEW_LINE);
 
