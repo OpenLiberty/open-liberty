@@ -45,6 +45,7 @@ Export-Package: \
 
 -buildpath: \
   org.apache.maven:maven-model;version=3.6.3, \
+  org.apache.maven.indexer:indexer-core;version=6.2.2, \
   org.codehaus.plexus:plexus-utils;version=3.2.1,\
 	com.ibm.ws.org.apache.ant;version=latest
 

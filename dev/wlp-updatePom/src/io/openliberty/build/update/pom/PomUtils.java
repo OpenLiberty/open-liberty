@@ -17,10 +17,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
+import org.apache.maven.index.artifact.GavCalculator;
+import org.apache.maven.index.artifact.M2GavCalculator;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
@@ -52,6 +58,7 @@ public class PomUtils {
         }
     }
 
+    private static GavCalculator calc;
     protected static final int BUF_SIZE = 32 * 1024;
     protected static final String POM_PREFIX_PATH = "META-INF/maven/dev/";
 
@@ -71,18 +78,35 @@ public class PomUtils {
     public static Model updateDependencies(Model pomModel, Function<Dependency, Boolean> isFiltered) {
         String m = "updateDependencies";
 
-        boolean didRemove = false;
+        boolean didChange = false;
 
         Iterator<Dependency> deps = pomModel.getDependencies().iterator();
         while (deps.hasNext()) {
             Dependency dep = deps.next();
             if (isFiltered.apply(dep)) {
                 deps.remove();
-                didRemove = true;
+                didChange = true;
+            } else if (hasExcludes(dep)) {
+                addTransitiveExcludes(dep);
+                didChange = true;
             }
         }
 
-        return (didRemove ? pomModel : null);
+        return (didChange ? pomModel : null);
+    }
+
+    /**
+     * @param dep
+     * @return
+     */
+    private static boolean hasExcludes(Dependency dep) {
+
+        String depString = dep.getGroupId() + ':' + dep.getArtifactId() + ':' + dep.getVersion();
+
+        if (transitiveExcludes.containsKey(depString))
+            return true;
+
+        return false;
     }
 
     public static final String[] DEV_GROUPS = { "dev", "test" };
@@ -95,7 +119,38 @@ public class PomUtils {
         return "dev".equals(groupId) || "test".equals(groupId);
     }
 
-    // TODO: Why these???
+    public static void addTransitiveExcludes(Dependency dep) {
+
+        List exclusions = dep.getExclusions();
+        String depString = dep.getGroupId() + ':' + dep.getArtifactId() + ':' + dep.getVersion();
+        String artifactPath = transitiveExcludes.get(depString);
+        String exclusion[] = artifactPath.split(":");
+        Exclusion ex = new Exclusion();
+        ex.setGroupId(exclusion[0]);
+        ex.setArtifactId(exclusion[1]);
+        exclusions.add(ex);
+    }
+
+    //We will add a pom excludes fragment in each of these dependency sections
+    static Map<String, String> transitiveExcludes = new HashMap<String, String>() {
+        {
+            put("org.apache.openwebbeans:openwebbeans-ee-common:1.1.6", "javassist:javassist");
+            put("org.apache.openwebbeans:openwebbeans-impl:1.1.6", "javassist:javassist");
+            put("org.apache.openwebbeans:openwebbeans-jsf:1.1.6", "javassist:javassist");
+            put("org.apache.openwebbeans:openwebbeans-web:1.1.6", "javassist:javassist");
+            put("org.apache.openwebbeans:openwebbeans-ee:1.1.6", "javassist:javassist");
+            put("org.apache.openwebbeans:openwebbeans-ejb:1.1.6", "javassist:javassist");
+            put("javax.resource:javax.resource-api:1.7", "javax.transaction:javax.transaction-api");
+            put("org.jboss.weld:weld-osgi-bundle:2.4.8.Final", "org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec");
+            put("org.jboss.weld:weld-osgi-bundle:3.1.9.Final", "org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec");
+            put("org.jboss.weld:weld-osgi-bundle:5.1.1.SP1", "org.jboss.logging:jboss-logging-processor");
+            put("org.jboss.weld.se:weld-se-core:5.1.1.SP1", "org.jboss.logging:jboss-logging-processor");
+            put("org.apache.cxf:cxf-rt-rs-service-description:3.3.0", "org.jboss.spec.javax.rmi:jboss-rmi-api_1.0_spec");
+            put("org.apache.cxf:cxf-rt-rs-sse:3.3.0", "org.jboss.spec.javax.rmi:jboss-rmi-api_1.0_spec");
+        }
+    };
+
+    //We know we are not including these packages in our shipped jar's
     public static final String[] FILTERED_GROUPS = { "org.springframework",
                                                      "org.springframework.boot",
                                                      "com.ibm.ws.common.encoder" };
@@ -141,5 +196,14 @@ public class PomUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * @return the calc
+     */
+    public static GavCalculator getCalc() {
+        if (calc == null)
+            calc = new M2GavCalculator();
+        return calc;
     }
 }
