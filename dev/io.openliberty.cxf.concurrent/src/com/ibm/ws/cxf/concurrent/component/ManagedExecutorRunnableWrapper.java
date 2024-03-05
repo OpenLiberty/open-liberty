@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2018,2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs21.concurrent.component;
+package com.ibm.ws.cxf.concurrent.component;
 
 import java.util.concurrent.Executor;
 
@@ -19,10 +19,10 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.context.service.serializable.ContextualRunnable;
-import com.ibm.ws.cxf.jaxrs21.client.AsyncClientRunnableWrapper;
+import com.ibm.ws.cxf.client.AsyncClientRunnableWrapper;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 
-@Component(name = "com.ibm.ws.jaxrs21.concurrent.component.ManagedExecutorRunnableWrapper",
+@Component(name = "com.ibm.ws.cxf.concurrent.component.ManagedExecutorRunnableWrapper",
            service = AsyncClientRunnableWrapper.class,
            immediate = true,
            property = { "service.vendor=IBM" })

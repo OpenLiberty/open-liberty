@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -13,9 +13,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: JAX-RS Concurrent
-Bundle-SymbolicName: com.ibm.ws.jaxrs.2.1.concurrent
-Bundle-Description: IBM JAX-RS-2.1 Concurrency support; version=${bVersion}
+Bundle-Name: CXF Concurrent
+Bundle-SymbolicName: io.openliberty.cxf.concurrent
+Bundle-Description: IBM JAX-RS 2.1 or JAX-WS CXF Concurrency support; version=${bVersion}
 
 WS-TraceGroup: JAXRS
 
@@ -26,20 +26,19 @@ Import-Package: \
 	org.apache.cxf.*;version='[3.2,4)',\
 	com.ibm.websphere.ras.*,\
 	com.ibm.ws.context.service.serializable.*,\
-	com.ibm.ws.jaxrs20.client,\
 	com.ibm.ws.ffdc,\
 	com.ibm.ws.concurrent,\
 	com.ibm.wsspi.kernel.service.utils,\
 	com.ibm.wsspi.threadcontext,\
 	org.osgi.framework,\
 	org.osgi.service.component,\
-	com.ibm.ws.cxf.jaxrs21.client;version='[3.2,4)'
+	com.ibm.ws.cxf.client;version='[3.2,4)'
      
 # If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong
 Private-Package:\
-  com.ibm.ws.jaxrs21.concurrent.*
+  com.ibm.ws.cxf.concurrent.*
   
--dsannotations: com.ibm.ws.jaxrs21.concurrent.component.*
+-dsannotations: com.ibm.ws.cxf.concurrent.component.*
 
 -buildpath: \
     com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
@@ -48,8 +47,6 @@ Private-Package:\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.jaxrs.2.0.client;version=latest,\
-	com.ibm.ws.jaxrs.2.0.common;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.concurrent;version=latest,\
 	com.ibm.ws.context;version=latest,\

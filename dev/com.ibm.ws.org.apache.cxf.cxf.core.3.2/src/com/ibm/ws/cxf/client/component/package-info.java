@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,4 +15,4 @@
  * @version "3.2.4"
  */
 @org.osgi.annotation.versioning.Version("3.2.4")
-package com.ibm.ws.cxf.jaxrs21.client;
+package com.ibm.ws.cxf.client.component;
