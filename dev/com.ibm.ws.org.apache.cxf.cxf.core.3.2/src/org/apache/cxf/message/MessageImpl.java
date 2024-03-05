@@ -112,38 +112,60 @@ public class MessageImpl extends StringMapImpl implements Message {
     @SuppressWarnings("unchecked")
     public <T> T getContent(Class<T> format) {
         // Liberty code change start - Add logging statments
-        LOG.entering("MessageImpl", "getContent");
+        if (LOG.isLoggable(Level.FINER)) {
+            LOG.entering("MessageImpl", "getContent");
+        }
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);
+
         for (int x = 0; x < index; x += 2) {
-	    LOG.finest("getContent processing class: " + contents[x].getClass().getCanonicalName());
+            if (isFinestEnabled) {
+                LOG.finest("getContent processing class: " + contents[x].getClass().getCanonicalName());
+            }
             if (contents[x] == format) {
-                LOG.finest("getContent returning class: " + contents[x+1].getClass().getCanonicalName());
+                if (isFinestEnabled) {
+                    LOG.finest("getContent returning class: " + contents[x+1].getClass().getCanonicalName());
+                }
+                if (LOG.isLoggable(Level.FINER)) {
+                    LOG.exiting("MessageImpl", "getContent");
+                }
                 return (T)contents[x + 1];
             }
         }
-        LOG.exiting("MessageImpl", "getContent");
+        if (LOG.isLoggable(Level.FINER)) {
+            LOG.exiting("MessageImpl", "getContent");
+        }
         // Liberty code change end
         return null;
     }
 
     public <T> void setContent(Class<T> format, Object content) {
         // Liberty code change start
-        LOG.entering("MessageImpl", "setContent");
-	if (LOG.isLoggable(Level.FINEST)) {
-	   LOG.finest("setContent: Logging content for format: " + (format != null ? format.getCanonicalName() : "null"));
-	   logContent(content);
-	}
+        if (LOG.isLoggable(Level.FINER)) {
+            LOG.entering("MessageImpl", "setContent");
+        }
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);
+        if (isFinestEnabled) {
+            LOG.finest("setContent: Logging content for format: " + (format != null ? format.getCanonicalName() : "null"));
+            logContent(content);
+        }
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
-		LOG.finest("setContent: Found format: Setting contents[" + x+1 + "] to " + (content != null ? content.getClass().getCanonicalName() : "NULL"));
+                if (isFinestEnabled) {
+                    LOG.finest("setContent: Found format: Setting contents[" + x+1 + "] to " + (content != null ? content.getClass().getCanonicalName() : "NULL"));
+                }
                 contents[x + 1] = content;
-                LOG.exiting("MessageImpl", "setContent");
+                if (LOG.isLoggable(Level.FINER)) {
+                    LOG.exiting("MessageImpl", "setContent");
+                }
                 return;
             }
         }
         if (index >= contents.length) {
             //very unlikely to happen.   Haven't seen more than about 6,
             //but just in case we'll add a few more
-	    LOG.finest("Index: " + index + " is >= contents length: " + contents.length);
+            if (isFinestEnabled) {
+                LOG.finest("Index: " + index + " is >= contents length: " + contents.length);
+            }
             Object[] tmp = new Object[contents.length + 10];
             System.arraycopy(contents, 0, tmp, 0, contents.length);
             contents = tmp;
@@ -151,29 +173,42 @@ public class MessageImpl extends StringMapImpl implements Message {
         contents[index] = format;
         contents[index + 1] = content;
         index += 2;
-        LOG.exiting("MessageImpl", "setContent");
+        if (LOG.isLoggable(Level.FINER)) {
+            LOG.exiting("MessageImpl", "setContent");
+        }
         // Liberty code change end
     }
 
     public <T> void removeContent(Class<T> format) {
-        LOG.entering("MessageImpl", "removeContent");  // Liberty Change begin
+        if (LOG.isLoggable(Level.FINER)) { // Liberty Change begin
+            LOG.entering("MessageImpl", "removeContent");
+        }
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
-	        LOG.finest("removeContent: Found content for format: " + 
-				(format != null ? format.getCanonicalName() : "null"));
+                if (isFinestEnabled) {
+                    LOG.finest("removeContent: Found content for format: " +
+                        (format != null ? format.getCanonicalName() : "null"));
+                }
                 index -= 2;
                 if (x != index) {
                     contents[x] = contents[index];
                     contents[x + 1] = contents[index + 1];
                 }
-	        LOG.finest("removeContent: " + (contents[index] != null ? contents[index].getClass().getCanonicalName() : "null"));
+                if (isFinestEnabled) {
+                    LOG.finest("removeContent: " + (contents[index] != null ? contents[index].getClass().getCanonicalName() : "null"));
+                }
                 contents[index] = null;
                 contents[index + 1] = null;
-                LOG.exiting("MessageImpl", "removeContent");
+                if (LOG.isLoggable(Level.FINER)) {
+                    LOG.exiting("MessageImpl", "removeContent");
+                }
                 return;
             }
         }
-	LOG.exiting("MessageImpl", "removeContent"); // Liberty change end
+        if (LOG.isLoggable(Level.FINER)) {
+            LOG.exiting("MessageImpl", "removeContent"); 
+        } // Liberty change end
     }
 
     public Set<Class<?>> getContentFormats() {
@@ -194,7 +229,9 @@ public class MessageImpl extends StringMapImpl implements Message {
     }
 
     public void setId(String i) {
-        LOG.finest("MessageImpl:setId to " + i);
+        if (LOG.isLoggable(Level.FINEST)) {
+            LOG.finest("MessageImpl:setId to " + i);
+        }
         this.id = i;
     }
 
@@ -211,10 +248,14 @@ public class MessageImpl extends StringMapImpl implements Message {
     public Object getContextualProperty(String key) {
         Object o = getOrDefault(key, NOT_FOUND);
         if (o != NOT_FOUND) {
-            LOG.finest("MessageImpl:getContextualProperty from default for "  + key );
+            if (LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("MessageImpl:getContextualProperty from default for "  + key );
+            }
             return o;
         }
-        LOG.finest("MessageImpl:getContextualProperty from Exchange for "  + key );
+        if (LOG.isLoggable(Level.FINEST)) {
+            LOG.finest("MessageImpl:getContextualProperty from Exchange for "  + key );
+        }
         return getFromExchange(key);
     }
 
