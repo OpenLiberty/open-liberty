@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,8 +54,6 @@ public class SocialLoginSessionInvalidatorTAI implements TrustAssociationInterce
     
     TAIWebUtils taiWebUtils = new TAIWebUtils();
     TAIRequestHelper taiRequestHelper = new TAIRequestHelper();
-    
-    private static boolean issuedBetaMessage = false;
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
@@ -81,26 +79,10 @@ public class SocialLoginSessionInvalidatorTAI implements TrustAssociationInterce
      */
     @Override
     public boolean isTargetInterceptor(HttpServletRequest req) throws WebTrustAssociationException {
-        if (!isRunningBetaMode()) {
-            return false;
-        }
         SocialTaiRequest socialTaiRequest = taiRequestHelper.createSocialTaiRequestAndSetRequestAttribute(req);
         taiRequestHelper.requestShouldBeHandledByTAI(req, socialTaiRequest);
         logoutIfSessionInvalidated(req);
         return false;
-    }
-    
-    boolean isRunningBetaMode() {
-        if (!ProductInfo.getBetaEdition()) {
-            return false;
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
-        }
     }
 
     @FFDCIgnore(SocialLoginException.class)

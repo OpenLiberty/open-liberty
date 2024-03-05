@@ -83,12 +83,6 @@ public class BackchannelLogoutService implements UnprotectedResourceService {
 
     @Override
     public boolean logout(HttpServletRequest request, HttpServletResponse response, String userName) {
-        if (!ProductInfo.getBetaEdition()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Beta mode is not enabled; back-channel logout will not be performed.");
-            }
-            return true;
-        }
         if (!hasBackchannelLogoutConfigured()) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "No client has a back-channel logout uri set up, so back-channel logout will not be performed.");
