@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,11 +22,14 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class InstallUbuntuTest extends InstallUtilityToolTest {
     private static final Class<?> c = InstallUbuntuTest.class;
     public static File openLib = new File("/var/lib/openliberty");
@@ -78,7 +81,7 @@ public class InstallUbuntuTest extends InstallUtilityToolTest {
     }
 
     @Test
-    public void testVerifyDebInstall() throws Exception {
+    public void testAVerifyDebInstall() throws Exception {
 
         if (openLibExists) {
             String METHOD_NAME = "testVerifyDebInstall";
@@ -97,7 +100,7 @@ public class InstallUbuntuTest extends InstallUtilityToolTest {
     }
 
     @Test
-    public void testServices() throws Exception {
+    public void testBServices() throws Exception {
 
         if (openLibExists) {
 
@@ -160,7 +163,7 @@ public class InstallUbuntuTest extends InstallUtilityToolTest {
     }
 
     @Test
-    public void testUninstallDeb() throws Exception {
+    public void testCUninstallDeb() throws Exception {
 
         if (openLibExists) {
             String METHOD_NAME = "testUninstallDeb";
