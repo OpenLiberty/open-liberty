@@ -25,14 +25,16 @@ configurations {
   smallryeMetrics
 }
 
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
 // Define G:A:V coordinates of each dependency
 dependencies {
   caffeine 'com.github.ben-manes.caffeine:caffeine:2.8.0'
   gson project(':io.openliberty.com.google.gson')
-  infinispanCommons 'org.infinispan:infinispan-commons:10.0.0.Final'
-  infinispanCore 'org.infinispan:infinispan-core:10.0.0.Final'
-  infinispanJCache 'org.infinispan:infinispan-jcache:10.0.0.Final'
-  infinispanJCacheCommons 'org.infinispan:infinispan-jcache-commons:10.0.0.Final'
+  infinispanCommons 'org.infinispan:infinispan-commons:12.1.7.Final'
+  infinispanCore 'org.infinispan:infinispan-core:12.1.7.Final'
+  infinispanJCache 'org.infinispan:infinispan-jcache:12.1.7.Final'
+  infinispanJCacheCommons 'org.infinispan:infinispan-jcache-commons:12.1.7.Final'
   protostream 'org.infinispan.protostream:protostream:4.3.0.Alpha13'
   jbossLogging 'org.jboss.logging:jboss-logging:3.4.1.Final'
   jGroups 'org.jgroups:jgroups:4.1.6.Final'
@@ -55,25 +57,25 @@ task addGSONToSharedDir(type: Copy) {
 task addInfinispanCommonsToSharedDir(type: Copy) {
   from configurations.infinispanCommons
   into new File(autoFvtDir, 'publish/shared/resources/infinispan')
-  rename 'infinispan-commons-10.*.jar', 'infinispan-commons.jar'
+  rename 'infinispan-commons-12.*.jar', 'infinispan-commons.jar'
 }
 
 task addInfinispanCoreToSharedDir(type: Copy) {
   from configurations.infinispanCore
   into new File(autoFvtDir, 'publish/shared/resources/infinispan')
-  rename 'infinispan-core-10.*.jar', 'infinispan-core.jar'
+  rename 'infinispan-core-12.*.jar', 'infinispan-core.jar'
 }
 
 task addInfinispanJCacheToSharedDir(type: Copy) {
   from configurations.infinispanJCache
   into new File(autoFvtDir, 'publish/shared/resources/infinispan')
-  rename 'infinispan-jcache-10.*.jar', 'infinispan-jcache.jar'
+  rename 'infinispan-jcache-12.*.jar', 'infinispan-jcache.jar'
 }
 
 task addInfinispanJCacheCommonsToSharedDir(type: Copy) {
   from configurations.infinispanJCacheCommons
   into new File(autoFvtDir, 'publish/shared/resources/infinispan')
-  rename 'infinispan-jcache-commons-10.*.jar', 'infinispan-jcache-commons.jar'
+  rename 'infinispan-jcache-commons-12.*.jar', 'infinispan-jcache-commons.jar'
 }
 
 task addJbossLoggingToSharedDir(type: Copy) {
