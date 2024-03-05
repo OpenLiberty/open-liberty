@@ -1577,20 +1577,25 @@ public class H2StreamProcessor {
         }
         currentHeaderBlockSize += hbf.length;
         System.out.println("Current header block size: "+currentHeaderBlockSize);
+        // According to RFC 9113 A receiver MUST terminate the connection with a connection error (Section 5.4.1)
+        // of type COMPRESSION_ERROR if it does not decompress a field block
         if (muxLink.maxHeaderBlockSize > 0 && currentHeaderBlockSize > muxLink.maxHeaderBlockSize) {
             // Need to end here since headers read exceeded maximum header block size
             Http2Exception headersTooBig;
             muxLink.getH2RateState().incrementRefusedStreamCount();
             muxLink.setContinuationExpected(false);
             muxLink.setWriteContinuationExpected(false);
-            if (muxLink.getH2RateState().tooManyStreamsRefused()) {
-                Tr.debug(tc, "getHeadersFromFrame entry: Too many streams refused found while doing headers" + muxLink.getH2RateState().getRefusedStreamCount());
-                headersTooBig = new EnhanceYourCalmException("Too many streams refused caught exceed the maximum header block size.");
-                headersTooBig.setConnectionError(true);
-            }else {
-                headersTooBig = new EnhanceYourCalmException("Headers read exceed the maximum header block size configured!");
-                headersTooBig.setConnectionError(false);
-            }
+            Tr.debug(tc, "getHeadersFromFrame entry: Found header exceeding maximum header block size. According to RFC we should shut the connection down since we don't have any processing done for headers.");
+            headersTooBig = new EnhanceYourCalmException("Stream exceeds the maximum header block size.");
+            headersTooBig.setConnectionError(true);
+            // if (muxLink.getH2RateState().tooManyStreamsRefused()) {
+            //     Tr.debug(tc, "getHeadersFromFrame entry: Too many streams refused found while doing headers" + muxLink.getH2RateState().getRefusedStreamCount());
+            //     headersTooBig = new EnhanceYourCalmException("Too many streams refused caught exceed the maximum header block size.");
+            //     headersTooBig.setConnectionError(true);
+            // }else {
+            //     headersTooBig = new EnhanceYourCalmException("Headers read exceed the maximum header block size configured!");
+            //     headersTooBig.setConnectionError(false);
+            // }
             throw headersTooBig;
         }
         if (hbf != null && hbf.length > 0) {

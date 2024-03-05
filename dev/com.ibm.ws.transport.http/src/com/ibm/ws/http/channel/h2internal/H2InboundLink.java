@@ -113,7 +113,7 @@ public class H2InboundLink extends HttpInboundLink {
     volatile int maxResetFrames = 100;
     volatile int resetFrameWindow = 30000; // milliseconds
     volatile int maxStreamsRefused = 100;
-    volatile int maxHeaderBlockSize = 16384000;
+    volatile int maxHeaderBlockSize = 16000;
 
     FrameReadProcessor frameReadProcessor = null;
 

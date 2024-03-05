@@ -168,7 +168,8 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         String testName = "testHeaderLimitReached";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        FrameRstStream errorFrame = new FrameRstStream(3, ENHANCE_YOUR_CALM_ERROR, false);
+        byte[] debugData = "Stream exceeds the maximum header block size.".getBytes();
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -206,7 +207,8 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         String testName = "testHeaderContinuationLimitReached";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        FrameRstStream errorFrame = new FrameRstStream(3, ENHANCE_YOUR_CALM_ERROR, false);
+        byte[] debugData = "Stream exceeds the maximum header block size.".getBytes();
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -237,69 +239,6 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         // send over the header frames followed by the data and continuation frames
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(frameContinuationHeaders);
-
-        blockUntilConnectionIsDone.await();
-        this.handleErrors(h2Client, testName);
-    }
-
-    /**
-     * Send a big header block through multiple continuation frames on a stream with no end headers flag. Expect a reset frame from the server.
-     */
-    public void testNewStreamAfterHeaderLimitReached(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
-        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        String testName = "testNewStreamAfterHeaderLimitReached";
-        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
-
-        FrameRstStream errorFrame = new FrameRstStream(3, ENHANCE_YOUR_CALM_ERROR, false);
-        h2Client.addExpectedFrame(errorFrame);
-
-        List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
-        secondHeadersReceived.add(new H2HeaderField(":status", "200"));
-        secondHeadersReceived.add(new H2HeaderField("x-powered-by", "Servlet/4.0"));
-        secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        // cannot assume language of test machine
-        secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(5, null, 0, 0, 0, false, true, false, false, false, false);
-        secondFrameHeaders.setHeaderFields(secondHeadersReceived);
-        h2Client.addExpectedFrame(secondFrameHeaders);
-
-        setupDefaultUpgradedConnection(h2Client);
-
-        // create headers to send over to the server; note that end_headers IS set
-        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, false, false, false, false, false);
-        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
-
-        // create the first continuation frame to send over; note that end_headers IS set
-        List<HeaderEntry> continuationHeadersToSend = new ArrayList<HeaderEntry>();
-        continuationHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader1", "This is test header1"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        continuationHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader2", "This is test header2"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        continuationHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader3", "This is test header3"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        continuationHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader4", "This is test header4"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        continuationHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader5", "This is test header5"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        continuationHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader6", "This is test header6"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        continuationHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader7", "This is test header7"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        continuationHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader8", "This is test header8"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        continuationHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader9", "This is test header9"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        continuationHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader10", "This is test header10"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        FrameContinuationClient frameContinuationHeaders = new FrameContinuationClient(3, null, false, false, false);
-        frameContinuationHeaders.setHeaderEntries(continuationHeadersToSend);
-
-        List<HeaderEntry> secondHeadersToSend = new ArrayList<HeaderEntry>();
-        secondHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        secondHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        secondHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        secondHeadersToSend.add(new HeaderEntry(new H2HeaderField("harold", "padilla"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        FrameHeadersClient secondFrameHeadersToSend = new FrameHeadersClient(5, null, 0, 0, 0, true, true, false, false, false, false);
-        secondFrameHeadersToSend.setHeaderEntries(secondHeadersToSend);
-
-        // send over the header frames followed by the data and continuation frames
-        h2Client.sendFrame(frameHeadersToSend);
-        h2Client.sendFrame(frameContinuationHeaders);
-        h2Client.sendFrame(secondFrameHeadersToSend);
 
         blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);

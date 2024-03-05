@@ -238,7 +238,7 @@
             id="maxStreamsRefused" required="false" type="Integer" min="0" default="100" />
 
         <AD name="%http2.maxHeaderBlockSize" description="%http2.maxHeaderBlockSize.desc"
-            id="maxHeaderBlockSize" required="false" type="Integer" min="0" default="16384000" />
+            id="maxHeaderBlockSize" required="false" type="Integer" min="0" default="819200" />
 
         <!--  Not technically internal but specifying here to get the property types checked if specified -->    
         <AD name="internal" description="internal use only"

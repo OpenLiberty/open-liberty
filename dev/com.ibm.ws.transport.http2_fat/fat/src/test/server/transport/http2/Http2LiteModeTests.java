@@ -386,21 +386,6 @@ public class Http2LiteModeTests extends FATServletClient {
     }
 
     /**
-     * Test Coverage: Connect to server via the insecure port and send out a header frame that exceeds established size.
-     * Start H2 connection
-     * Send large headers that exceed limit
-     * Expect reset
-     * Start new stream and send valid headers and expect valid response back
-     * Test Outcome: The HTTP/2 stream should receive a reset after exceeding the maximum header size and new stream should still be accepted
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testNewStreamAfterHeaderLimitReached() throws Exception {
-        runTest(continuationServletPath, testName.getMethodName());
-    }
-
-    /**
      * Test Coverage: Send a DATA frame on a stream that's in IDLE state.
      * Test Outcome: Expect a STREAM_CLOSED error in response.
      * Spec Section: 5.1
