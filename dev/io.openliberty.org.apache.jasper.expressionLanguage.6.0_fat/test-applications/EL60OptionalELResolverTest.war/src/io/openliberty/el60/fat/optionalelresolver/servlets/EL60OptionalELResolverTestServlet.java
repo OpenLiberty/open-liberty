@@ -20,7 +20,9 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import io.openliberty.el60.fat.optionalelresolver.beans.AnotherSimpleBean;
 import io.openliberty.el60.fat.optionalelresolver.beans.SimpleBeanWithOptionalProperty;
+import jakarta.el.ELContext;
 import jakarta.el.ELProcessor;
+import jakarta.el.ELResolver;
 import jakarta.el.MethodNotFoundException;
 import jakarta.el.OptionalELResolver;
 import jakarta.el.PropertyNotFoundException;
@@ -38,7 +40,7 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Do not add the OptionalELResolver to the list of ELResolver.
+     * Do not add the OptionalELResolver to the list of ELResolvers.
      *
      * Evaluate an Optional property that is not Empty.
      *
@@ -60,9 +62,14 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
     }
 
     /**
-     * Add the OptionalELResolver to the list of ELResolver.
+     * Add the OptionalELResolver to the list of ELResolvers.
      *
      * Evaluate an Optional property that is not Empty.
+     *
+     * The OptionalELResolver concertToType method states the following:
+     *
+     * If the base object is an {@link Optional} and {@link Optional#isEmpty()} returns {@code true} then this
+     * method returns the result of coercing {@code null} to the requested {@code type}.
      *
      * @throws Exception
      */
@@ -82,7 +89,7 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
     }
 
     /**
-     * Do not add the OptionalELResolver to the list of ELResolver.
+     * Do not add the OptionalELResolver to the list of ELResolvers.
      *
      * Evaluate an Optional String property that is Empty.
      *
@@ -103,9 +110,14 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
     }
 
     /**
-     * Add the OptionalELResolver to the list of ELResolver.
+     * Add the OptionalELResolver to the list of ELResolvers.
      *
      * Evaluate an Optional String property that is Empty.
+     *
+     * The OptionalELResolver convertToType method states the following:
+     *
+     * If the base object is an {@link Optional} and {@link Optional#isEmpty()} returns {@code true} then this
+     * method returns the result of coercing {@code null} to the requested {@code type}.
      *
      * @throws Exception
      */
@@ -127,6 +139,7 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
      * Do not add the OptionalELResolver to the list of ELResolvers.
      *
      * Evaluate an Optional bean property that is not empty.
+     * Evaluate a String property on the Optional bean property.
      *
      * @throws Exception
      */
@@ -154,6 +167,14 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
      * Add the OptionalELResolver to the list of ELResolvers.
      *
      * Evaluate an Optional bean property that is not empty.
+     * Evaluate a String property on the Optional bean property.
+     *
+     * The OptionalELResolver getValue method states the following:
+     *
+     * If the base object is an {@link Optional}, {@link Optional#isPresent()} returns {@code true} and the
+     * property is not {@code null} then the resulting value is the result of calling
+     * {@link ELResolver#getValue(ELContext, Object, Object)} using the {@link ELResolver} obtained from
+     * {@link ELContext#getELResolver()} with the following parameters:
      *
      * @throws Exception
      */
@@ -176,6 +197,7 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
      * Do not add the OptionalELResolver to the list of ELResolvers.
      *
      * Evaluate an Optional bean property that is empty.
+     * Evaluate a String property on the Optional bean property.
      *
      * @throws Exception
      */
@@ -203,6 +225,12 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
      * Add the OptionalELResolver to the list of ELResolvers.
      *
      * Evaluate an Optional bean property that is empty.
+     * Evaluate a String property on the Optional bean property.
+     *
+     * The OptionalELResolver getValue method states the following:
+     *
+     * If the base object is an {@link Optional} and {@link Optional#isEmpty()} returns {@code true} then the
+     * resulting value is {@code null}.
      *
      * @throws Exception
      */
@@ -220,9 +248,43 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
     }
 
     /**
-     * Add the OptionalELResolver to the list of ELResolver.
+     * Add the OptionalELResolver to the list of ELResolvers.
+     *
+     * Evaluate an Optional bean property that is not empty.
+     * Evaluate a missing property on the Optional bean property.
+     *
+     * Verify that a PropertyNotFoundException is thrown.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testEL60OptionalELResolver_OptionalBeanProperty_Missing_WithOptionalELResolver() throws Exception {
+        boolean propertyNotFoundExceptionThrown = false;
+
+        ELProcessor elp = new ELProcessor();
+        elp.getELManager().addELResolver(new jakarta.el.OptionalELResolver());
+        elp.defineBean("testBean", new SimpleBeanWithOptionalProperty(new AnotherSimpleBean("AnotherSimpleBean Test String")));
+
+        try {
+            Object actualResult = elp.eval("testBean.anotherSimpleBean.testStringMissing");
+            log("actualResult: " + actualResult);
+        } catch (PropertyNotFoundException e) {
+            propertyNotFoundExceptionThrown = true;
+        }
+
+        // jakarta.el.PropertyNotFoundException: Property [testStringMissing] not found on type [io.openliberty.el60.fat.optionalelresolver.beans.AnotherSimpleBean]
+        assertTrue("A PropertyNotFoundException was not thrown as expected.", propertyNotFoundExceptionThrown);
+    }
+
+    /**
+     * Add the OptionalELResolver to the list of ELResolvers.
      *
      * Test to ensure that the OptionalELResolver is read only.
+     *
+     * The OptionalELResolver setValue method states the following:
+     *
+     * If the base object is an {@link Optional} this method always throws a {@link PropertyNotWritableException} since
+     * instances of this resolver are always read-only.
      *
      * @throws Exception
      */
@@ -254,7 +316,7 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
             // Verify that the RecordELResolver is actually in the stack trace.
             // jakarta.el.PropertyNotWritableException: ELResolver not writable for type [java.util.Optional]
             // at jakarta.el.OptionalELResolver.setValue(OptionalELResolver.java:109)
-            assertTrue("The optionalELResolver was not found in the exception stack trace!", isOptionalELResolverInStackTrace(e.getStackTrace()));
+            assertTrue("The OptionalELResolver was not found in the exception stack trace!", isOptionalELResolverInStackTrace(e.getStackTrace()));
         }
 
         assertTrue("A PropertyNotWritableException was not thrown as expected!", propertyNotWritableExceptionThrown);
@@ -286,6 +348,12 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
      * Add the OptionalELResolver to the list of ELResolvers.
      *
      * Invoke the toString() method on an Optional property, in this case a bean.
+     *
+     * The OptionalELResolver invoke method states the following:
+     *
+     * If the base object is an {@link Optional} and {@link Optional#isPresent()} returns {@code true} then
+     * this method returns the result of invoking the specified method on the object obtained by calling
+     * {@link Optional#get()} with the specified parameters.
      *
      * @throws Exception
      */
@@ -330,6 +398,11 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
      * Add the OptionalELResolver to the list of ELResolvers.
      *
      * Invoke the toString() method on an empty Optional property, in this case a bean.
+     *
+     * The OptionalELResolver invoke method states the following:
+     *
+     * If the base object is an {@link Optional} and {@link Optional#isEmpty()} returns {@code true} then this
+     * method returns {@code null}.
      *
      * @throws Exception
      */
@@ -379,6 +452,11 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
      *
      * Invoke the doSomething() method on an Optional property, in this case a bean.
      * The return type of the doSomething() method is void.
+     *
+     * The OptionalELResolver invoke method states the following:
+     *
+     * If the base object is an {@link Optional} and {@link Optional#isEmpty()} returns {@code true} then this
+     * method returns {@code null}.
      *
      * @throws Exception
      */
@@ -439,6 +517,11 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
      * Invoke the doSomething() method on an Optional property that is empty, in this case a bean.
      * The return type of the doSomething() method is void.
      *
+     * The OptionalELResolver invoke method states the following:
+     *
+     * If the base object is an {@link Optional} and {@link Optional#isEmpty()} returns {@code true} then this
+     * method returns {@code null}.
+     *
      * @throws Exception
      */
     @Test
@@ -486,6 +569,12 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
      *
      * Invoke the returnSomething() method on an Optional property, in this case a bean.
      * The return type of the returnSomething() method is String.
+     *
+     * The OptionalELResolver invoke method statues the following:
+     *
+     * If the base object is an {@link Optional} and {@link Optional#isPresent()} returns {@code true} then
+     * this method returns the result of invoking the specified method on the object obtained by calling
+     * {@link Optional#get()} with the specified parameters.
      *
      * @throws Exception
      */
@@ -537,6 +626,11 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
      *
      * Invoke the returnSomething() method on an Optional property that is empty, in this case a bean.
      * The return type of the returnSomething() method is String.
+     *
+     * The OptionalELResolver invoke method states the following:
+     *
+     * If the base object is an {@link Optional} and {@link Optional#isEmpty()} returns {@code true} then this
+     * method returns {@code null}.
      *
      * @throws Exception
      */
