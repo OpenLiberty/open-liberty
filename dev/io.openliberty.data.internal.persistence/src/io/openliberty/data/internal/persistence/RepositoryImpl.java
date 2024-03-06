@@ -104,6 +104,7 @@ import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
+import jakarta.data.page.CursoredPage;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
@@ -278,7 +279,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         Method method = queryInfo.method;
         Class<?> multiType = queryInfo.getMultipleResultType();
-        boolean countPages = Page.class.equals(multiType) || KeysetAwarePage.class.equals(multiType);
+        boolean countPages = Page.class.equals(multiType) || CursoredPage.class.equals(multiType) || KeysetAwarePage.class.equals(multiType);
         StringBuilder q = null;
 
         // TODO would it be more efficient to invoke method.getAnnotations() once?
@@ -335,6 +336,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 q = generateSelectClause(queryInfo, select);
                 if (countPages)
                     generateCount(queryInfo, null);
+            } else if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE
+                       && multiType != null
+                       && Stream.class.isAssignableFrom(multiType)) {
+                throw new UnsupportedOperationException("The " + method.getName() + " method of the " + repositoryInterface.getName() +
+                                                        " repository interface cannot use the " +
+                                                        method.getReturnType().getName() + " return type for a delete operation.");
             }
         }
 
@@ -456,11 +463,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     static int computeOffset(PageRequest<?> pagination) {
         if (pagination.mode() != PageRequest.Mode.OFFSET)
-            throw new DataException(new IllegalArgumentException("Keyset pagination mode " + pagination.mode() +
+            throw new DataException(new IllegalArgumentException("Cursor based pagination mode " + pagination.mode() +
                                                                  " can only be used with repository methods with the following return types: " +
-                                                                 KeysetAwarePage.class.getName() + ", " + KeysetAwareSlice.class.getName() +
-                                                                 ", " + Iterator.class.getName() +
-                                                                 ". For offset pagination, use a PageRequest without a keyset.")); // TODO NLS
+                                                                 CursoredPage.class.getName() +
+                                                                 ". For offset pagination, use a PageRequest without a cursor.")); // TODO NLS
         int maxPageSize = pagination.size();
         long pageIndex = pagination.page() - 1; // zero-based
         if (Integer.MAX_VALUE / maxPageSize >= pageIndex)
@@ -1504,9 +1510,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private void generateOrderBy(QueryInfo queryInfo, StringBuilder q) {
         Class<?> multiType = queryInfo.getMultipleResultType();
 
-        boolean needsKeysetQueries = KeysetAwarePage.class.equals(multiType)
+        boolean needsKeysetQueries = CursoredPage.class.equals(multiType)
+                                     || KeysetAwarePage.class.equals(multiType)
                                      || KeysetAwareSlice.class.equals(multiType)
-                                     || Iterator.class.equals(multiType);
+                                     || Iterator.class.equals(multiType); // TODO remove these other types
 
         StringBuilder fwd = needsKeysetQueries ? new StringBuilder(100) : q; // forward page order
         StringBuilder prev = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
@@ -2421,8 +2428,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (pagination != null && Iterator.class.equals(multiType))
                             returnValue = new PaginatedIterator<>(queryInfo, pagination, args);
-                        else if (KeysetAwareSlice.class.equals(multiType) || KeysetAwarePage.class.equals(multiType))
-                            returnValue = new KeysetAwarePageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
+                        else if (CursoredPage.class.equals(multiType) || KeysetAwareSlice.class.equals(multiType) || KeysetAwarePage.class.equals(multiType))
+                            returnValue = new CursoredPageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
                         else if (Slice.class.equals(multiType) || Page.class.equals(multiType) || pagination != null && Streamable.class.equals(multiType))
                             returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
                         else {
@@ -2460,7 +2467,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                             if (multiType != null && BaseStream.class.isAssignableFrom(multiType)) {
                                 Stream<?> stream = query.getResultStream();
-                                if (Stream.class.equals(multiType)) // TODO FIND_AND_DELETE from stream?
+                                if (Stream.class.equals(multiType))
                                     returnValue = stream;
                                 else if (IntStream.class.equals(multiType))
                                     returnValue = stream.mapToInt(RepositoryImpl::toInt);

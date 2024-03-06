@@ -32,6 +32,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
+import jakarta.data.page.CursoredPage;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
@@ -39,9 +40,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 /**
+ * Page with the ability to create cursors from the elements on the page.
+ * A cursor can be used to request next and previous pages relative to the cursor.
  */
-public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
-    private static final TraceComponent tc = Tr.register(KeysetAwarePageImpl.class);
+public class CursoredPageImpl<T> implements CursoredPage<T>, KeysetAwarePage<T> {
+    private static final TraceComponent tc = Tr.register(CursoredPageImpl.class);
 
     private final Object[] args;
     private final boolean isForward;
@@ -51,7 +54,7 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
     private long totalElements = -1;
 
     @FFDCIgnore(Exception.class)
-    KeysetAwarePageImpl(QueryInfo queryInfo, PageRequest<T> pageRequest, Object[] args) {
+    CursoredPageImpl(QueryInfo queryInfo, PageRequest<T> pageRequest, Object[] args) {
 
         this.args = args;
         this.queryInfo = queryInfo;
@@ -98,9 +101,16 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
      * Query for count of total elements across all pages.
      *
      * @param jpql count query.
+     * @throws IllegalStateException if not configured to request a total count of elements.
      */
     @FFDCIgnore(Exception.class)
     private long countTotalElements() {
+        if (!pageRequest.requestTotal())
+            throw new IllegalStateException("A total count of elements and pages is not retreived from the database because the " +
+                                            pageRequest + " page request specifies a value of 'false' for 'requestTotal'. " +
+                                            "To request a page with the total count included, use the " +
+                                            "PageRequest.withTotal method instead of the PageRequest.withoutTotal method."); // TODO NLS
+
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -161,6 +171,11 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         // The extra position is only available for identifying a previous page if the current page was obtained in the reverse direction
         int minToHavePreviousPage = isForward ? 1 : (pageRequest.size() + (pageRequest.size() == Integer.MAX_VALUE ? 0 : 1));
         return results.size() >= minToHavePreviousPage;
+    }
+
+    @Override
+    public boolean hasTotals() {
+        return pageRequest.requestTotal();
     }
 
     @Override
@@ -232,6 +247,12 @@ public class KeysetAwarePageImpl<T> implements KeysetAwarePage<T> {
         // Decrement page number by 1 unless it would go below 1.
         PageRequest<T> p = pageRequest.page() == 1 ? pageRequest : pageRequest.page(pageRequest.page() - 1);
         return p.beforeKeyset(queryInfo.getKeysetValues(results.get(0)));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E> PageRequest<E> previousPageRequest(Class<E> entityClass) {
+        return (PageRequest<E>) previousPageRequest();
     }
 
     @Override

@@ -74,9 +74,16 @@ public class PageImpl<T> implements Page<T> {
      * Query for count of total elements across all pages.
      *
      * @param jpql count query.
+     * @throws IllegalStateException if not configured to request a total count of elements.
      */
     @FFDCIgnore(Exception.class)
     private long countTotalElements() {
+        if (!pageRequest.requestTotal())
+            throw new IllegalStateException("A total count of elements and pages is not retreived from the database because the " +
+                                            pageRequest + " page request specifies a value of 'false' for 'requestTotal'. " +
+                                            "To request a page with the total count included, use the " +
+                                            "PageRequest.withTotal method instead of the PageRequest.withoutTotal method."); // TODO NLS
+
         if (pageRequest.page() == 1L && results.size() <= pageRequest.size() && pageRequest.size() < Integer.MAX_VALUE)
             return results.size();
 
@@ -103,9 +110,31 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
+    public boolean hasContent() {
+        return !results.isEmpty();
+    }
+
+    @Override
     public boolean hasNext() {
         return results.size() > pageRequest.size() || // additional result was read beyond the max page size
                pageRequest.size() == Integer.MAX_VALUE && results.size() == pageRequest.size();
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return pageRequest.page() > 1;
+    }
+
+    @Override
+    public boolean hasTotals() {
+        return pageRequest.requestTotal();
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        int size = results.size();
+        int max = pageRequest.size();
+        return size > max ? new ResultIterator(max) : results.iterator();
     }
 
     @Override
@@ -128,32 +157,6 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
-    public long totalElements() {
-        if (totalElements == -1)
-            totalElements = countTotalElements();
-        return totalElements;
-    }
-
-    @Override
-    public long totalPages() {
-        if (totalElements == -1)
-            totalElements = countTotalElements();
-        return totalElements / pageRequest.size() + (totalElements % pageRequest.size() > 0 ? 1 : 0);
-    }
-
-    @Override
-    public boolean hasContent() {
-        return !results.isEmpty();
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-        int size = results.size();
-        int max = pageRequest.size();
-        return size > max ? new ResultIterator(max) : results.iterator();
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public PageRequest<T> nextPageRequest() {
         if (!hasNext())
@@ -172,8 +175,44 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public PageRequest<T> previousPageRequest() {
+        if (pageRequest.page() > 1)
+            return (PageRequest<T>) pageRequest.previous();
+        else
+            throw new NoSuchElementException("Cannot request a page number prior to " + pageRequest.page() +
+                                             ". To avoid this error, check for a true result of Page.hasPrevious " +
+                                             "before attempting this method."); // TODO NLS
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E> PageRequest<E> previousPageRequest(Class<E> entityClass) {
+        if (pageRequest.page() > 1)
+            return (PageRequest<E>) pageRequest.previous();
+        else
+            throw new NoSuchElementException("Cannot request a page number prior to " + pageRequest.page() +
+                                             ". To avoid this error, check for a true result of Page.hasPrevious " +
+                                             "before attempting this method."); // TODO NLS
+    }
+
+    @Override
     public Stream<T> stream() {
         return content().stream();
+    }
+
+    @Override
+    public long totalElements() {
+        if (totalElements == -1)
+            totalElements = countTotalElements();
+        return totalElements;
+    }
+
+    @Override
+    public long totalPages() {
+        if (totalElements == -1)
+            totalElements = countTotalElements();
+        return totalElements / pageRequest.size() + (totalElements % pageRequest.size() > 0 ? 1 : 0);
     }
 
     /**
