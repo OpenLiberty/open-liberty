@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.feature.tests;
@@ -450,6 +447,14 @@ public class VisibilityTest {
         // The following features are marked no ship, but are not ready for beta yet.
         // If they get marked beta, they should be removed from this list.
         expectedFailures.add("io.openliberty.persistentExecutor.internal.ee-10.0"); // the persistentExecutor feature is no ship
+
+        // The Jakarta EE11 Servlet 6.1 and Pages 4.0 features are beta.
+        // These features have not been tested yet with the servlet-6.1 and pages-4.0 features.
+        expectedFailures.add("io.openliberty.adminCenter1.0.internal.ee-11.0");
+        expectedFailures.add("io.openliberty.webCache1.0.internal.ee-11.0");
+
+        // This feature has not been tested yet with the servlet-6.1 feature.
+        expectedFailures.add("io.openliberty.xmlws4.0.internal.ee-11.0");
 
         StringBuilder errorMessage = new StringBuilder();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
