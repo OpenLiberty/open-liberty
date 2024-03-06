@@ -159,7 +159,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         channel.attr(NettyHttpConstants.IS_OUTBOUND_KEY).set(false);
 
         if (chain.isHttps()) {
-            if (chain.isHttp2Enabled() && notDisabled) { // h2 setup starts here
+            if (chain.isHttp2Enabled()) { // h2 setup starts here
                 // Need to setup ALPN
                 setupH2Pipeline(pipeline);
             } else { // https setup starts here
@@ -167,7 +167,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 setupHttpsPipeline(pipeline);
             }
         } else {
-            if (chain.isHttp2Enabled() && notDisabled) { //h2c setup starts here
+            if (chain.isHttp2Enabled()) { //h2c setup starts here
                 setupH2cPipeline(pipeline);
             } else { // http 1.1 setup starts here
                 setupHttp11Pipeline(pipeline);
@@ -288,11 +288,19 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             @Override
             protected void channelRead0(ChannelHandlerContext ctx, HttpMessage msg) throws Exception {
                 // If this handler is hit then no upgrade has been attempted and the client is just talking HTTP 1.1.
-                ctx.pipeline().addBefore("chunkLoggingHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
-                ctx.pipeline().addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, "objectAggregator",
-                                        new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
+                // ctx.pipeline().addBefore("chunkLoggingHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                // ctx.pipeline().addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, "objectAggregator",
+                //                         new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
+                // ctx.pipeline().remove(HttpServerUpgradeHandler.class);
+                // ctx.fireChannelRead(ReferenceCountUtil.retain(msg, 1));
+                MSP.log("NO UPGRADE DETECTED - ADD HTTP ");
+                
+                
+                
                 ctx.pipeline().remove(HttpServerUpgradeHandler.class);
-                ctx.fireChannelRead(ReferenceCountUtil.retain(msg, 1));
+                ctx.pipeline().addBefore("chunkWriteHandler", "objectAggregator", new LibertyHttpObjectAggregator(maxContentLength));
+                ctx.pipeline().addBefore("objectAggregator", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
                 // Remove unused handlers
                 ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
             }

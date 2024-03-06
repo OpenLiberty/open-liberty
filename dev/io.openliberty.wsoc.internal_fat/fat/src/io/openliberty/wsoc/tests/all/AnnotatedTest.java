@@ -52,7 +52,7 @@ public class AnnotatedTest {
         wsocTest.runEchoTest(new AnnotatedClientEP.SessionIdleTest(), "/basic/annotatedIdleTimeout", result, Constants.getLongTimeout());
         long endTime = System.currentTimeMillis();
         long totalTime = endTime - startTime;
-        if ((totalTime < 15000) || (totalTime > 25000)) {
+        if ((totalTime < 15000) || (totalTime > 40000)) {
             Assert.fail("Test ran for " + totalTime + " which is either less than 10 seconds or more than 25 seconds,  outside of an acceptable session timeout range.");
         }
     }

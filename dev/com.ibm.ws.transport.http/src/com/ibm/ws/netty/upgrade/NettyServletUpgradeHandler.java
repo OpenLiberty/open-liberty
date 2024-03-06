@@ -149,26 +149,35 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
         readLock.lock();
         boolean dataReady = false;
         try {
-            long waitTime = timeout == -1 ? Long.MAX_VALUE : unit.toNanos(timeout);
-            long endTime = System.nanoTime() + waitTime;
-            MSP.log("Beginning wait");
-            while (totalBytesRead < minBytesToRead && channel.isActive()) {
-                if (timeout != -1) { // If timeout is not -1, calculate the remaining wait time
-                    waitTime = endTime - System.nanoTime();
-                    if (waitTime <= 0) break; // Exit if the wait time has expired
+
+            if(queuedDataSize()>=numBytes) {
+                dataReady = true;
+
+            }else {
+
+
+                long waitTime = timeout == -1 ? Long.MAX_VALUE : unit.toNanos(timeout);
+                long endTime = System.nanoTime() + waitTime;
+                MSP.log("Beginning wait");
+                while (totalBytesRead < minBytesToRead && channel.isActive()) {
+                    if (timeout != -1) { // If timeout is not -1, calculate the remaining wait time
+                        waitTime = endTime - System.nanoTime();
+                        if (waitTime <= 0) break; // Exit if the wait time has expired
+                    }
+
+                    // If timeout is -1, this will wait indefinitely until signalled
+                    if (timeout == -1) {
+                        readCondition.await();
+                    } else {
+                        readCondition.awaitNanos(waitTime);
+                    }
+
+                    MSP.debug(" totalBytesRead: " + totalBytesRead);
+                    MSP.log(" minBytesToRead: "+ minBytesToRead);
                 }
 
-                // If timeout is -1, this will wait indefinitely until signalled
-                if (timeout == -1) {
-                    readCondition.await();
-                } else {
-                    readCondition.awaitNanos(waitTime);
-                }
-
-                MSP.debug(" totalBytesRead: " + totalBytesRead);
-                MSP.log(" minBytesToRead: "+ minBytesToRead);
+                dataReady = totalBytesRead >= minBytesToRead; // Check if the minimum number of bytes was read
             }
-            dataReady = totalBytesRead >= minBytesToRead; // Check if the minimum number of bytes was read
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // Restore the interrupt status
         } finally {
@@ -181,29 +190,40 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
     }
 
 
-    public synchronized void setToBuffer() {
+    public synchronized long setToBuffer() {
+        
+        if (!containsQueuedData()) {
+            System.out.println("No data to set, just return...");
+            return 0;
+        }
+        
+        
 
-        if (queuedDataSize() > 0) { // Check if we have enough data
+        if (queuedDataSize()>=minBytesToRead) { // Check if we have enough data
             MSP.log("storing available data");
             MSP.log("had data? " + containsQueuedData());
             MSP.log("data size: " + queuedDataSize());
+            
+            int readTotal = queuedDataSize()>=readContext.getBuffer().remaining() ? readContext.getBuffer().remaining(): queuedDataSize();
 
-            byte[] bytes = ByteBufUtil.getBytes(read(queuedDataSize(), null));
+            byte[] bytes = ByteBufUtil.getBytes(read(readTotal, null));
             MSP.log("got [" + bytes.length + "] bytes from handler.");
 
-            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(bytes.length);
-            readContext.setBuffer(buffer);
+//            WsByteBuffer buffer = ChannelFrameworkFactory.getBufferManager().allocate(bytes.length);
+//            readContext.setBuffer(buffer);
             readContext.getBuffer().put(bytes);
             MSP.log("stored bytes from handler in read context");
 
             // Reset totalBytesRead after fulfilling the read
             totalBytesRead -= bytes.length; // Adjust totalBytesRead
+            return bytes.length;
 
             // Signal that the read is complete
 //        if (callback != null) {
 //            callback.complete(vc, readContext);
 //        }
         }
+        return 0;
     }
 
 
@@ -278,5 +298,7 @@ public class NettyServletUpgradeHandler extends ChannelInboundHandlerAdapter {
     public void setTCPReadContext(TCPReadRequestContext context) {
         this.readContext = context;
     }
+    
+    
 
 }

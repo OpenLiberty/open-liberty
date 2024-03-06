@@ -72,6 +72,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 
 /**
  * Service context specific to an inbound HTTP message.
@@ -571,6 +572,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 //        MSP.log("ISC - getResponse() - response: " + Objects.isNull(response) + ", context: " + Objects.nonNull(nettyContext));
         if (Objects.isNull(this.response) && Objects.nonNull(this.nettyContext)) {
             this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest);
+            
+            
+            
         }
 
         return Objects.nonNull(nettyContext) ? this.response : getResponseImpl();
@@ -810,6 +814,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         MSP.log("sendResponseBody buffer size: " + GenericUtils.sizeOf(body));
 
         if (getHttpConfig().useNetty()) {
+            formatBody(body, null);
             sendOutgoing(body);
 
         } else {
@@ -2315,7 +2320,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 }
                 return;
             }
-            MSP.log("nettyInitForwardedValues 3");
+            MSP.log("nettyInitForwardedValues 3 - Size of ForList: "+forwardedForList.length);
             for (int i = forwardedForList.length - 1; i > 0; i--) {
                 MSP.log("Matching For List Element -> " + forwardedForList[i]);
                 matcher = pattern.matcher(forwardedForList[i]);

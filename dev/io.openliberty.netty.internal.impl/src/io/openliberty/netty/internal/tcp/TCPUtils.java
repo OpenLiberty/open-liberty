@@ -173,7 +173,7 @@ public class TCPUtils {
                 
                 System.out.println("open failed for " + config.getExternalName() + " due to: " + future.cause().getMessage());
                 System.out.println("Did we pass the cancelToken: " + cancelToken.get());
-                if(!cancelToken.get()) {
+                if(cancelToken.get()) {
                 	System.out.println("Cancel token received, not attempting to bind. Exiting...");
                 	return;
                 }

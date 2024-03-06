@@ -78,8 +78,13 @@ public class RemoteIpHandler extends SimpleChannelInboundHandler<FullHttpRequest
     protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
 
         String forwardedHeader = request.headers().get(FORWARDED_HEADER);
+        forwardedFor = new ArrayList<String>();
+        forwardedBy = new ArrayList<String>();
+        
 
         if (!Objects.isNull(forwardedHeader)) {
+            
+            
 
             this.parseForwarded(request);
 

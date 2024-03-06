@@ -121,27 +121,27 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                     else{
                      // create the WebConnection and pass the handler generated
                         HttpDispatcherLink link = (HttpDispatcherLink) irImpl.getHttpDispatcherLink();
-                        if(link.isUsingNetty()) {
-                            link.prepareForUpgrade();
-                            upgradedCon = new NettyUpgradedWebConnectionImpl(_request, _response, new HttpUpgradeHandlerWrapper(_dispatchContext.getWebApp(), handler), link.getUpgradedChannel());
-                            dispatcherLink = irImpl.getHttpDispatcherLink();
-                            clLink = irImpl.getConnLink();
-                            vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "true");
-                            // remove the TransportConstants which if added for Upgrade previously
-                            vc.getStateMap().put(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION, null);
-                            vc.getStateMap().put(TransportConstants.UPGRADED_LISTENER, null);
-                            upgradedCon.setDeviceConnLink(cldevice);   
-                            upgradedCon.setConnLink(clLink);
-                            upgradedCon.setHttpDisapctherConnLink(dispatcherLink);   
-
-                            upgradedCon.setVirtualConnection(vc);
-                            doUpgradeInit = true;
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "finishConnection  webconnection from upgradeHandler "+ upgradedCon.toString());
-                                Tr.debug(tc, "nettyChannel -->"+ tcc +" ,cldevice -->" + cldevice);
-                            }
+                       // if(link.isUsingNetty()) {
+                         //   link.prepareForUpgrade();
+//                            upgradedCon = new NettyUpgradedWebConnectionImpl(_request, _response, new HttpUpgradeHandlerWrapper(_dispatchContext.getWebApp(), handler), link.getUpgradedChannel());
+//                            dispatcherLink = irImpl.getHttpDispatcherLink();
+//                            clLink = irImpl.getConnLink();
+//                            vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "true");
+//                            // remove the TransportConstants which if added for Upgrade previously
+//                            vc.getStateMap().put(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION, null);
+//                            vc.getStateMap().put(TransportConstants.UPGRADED_LISTENER, null);
+//                            upgradedCon.setDeviceConnLink(cldevice);   
+//                            upgradedCon.setConnLink(clLink);
+//                            upgradedCon.setHttpDisapctherConnLink(dispatcherLink);   
+//
+//                            upgradedCon.setVirtualConnection(vc);
+//                            doUpgradeInit = true;
+//                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                                Tr.debug(tc, "finishConnection  webconnection from upgradeHandler "+ upgradedCon.toString());
+//                                Tr.debug(tc, "nettyChannel -->"+ tcc +" ,cldevice -->" + cldevice);
+                          //  }
                             
-                        }else {
+                      //  }else {
                             upgradedCon = new UpgradedWebConnectionImpl(_request, new HttpUpgradeHandlerWrapper(_dispatchContext.getWebApp(), handler));
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "finishConnection  webconnection from upgradeHandler "+ upgradedCon.toString());
@@ -166,7 +166,7 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
 
                                 doUpgradeInit = true;
                             }
-                        }
+                  //      }
                     }                    
                 }
                 catch (Throwable t) {
