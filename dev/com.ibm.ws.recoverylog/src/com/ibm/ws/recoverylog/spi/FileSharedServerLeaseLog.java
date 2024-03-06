@@ -331,8 +331,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
 
                         boolean success = false;
                         try {
-                            Path path = FileSystems.getDefault().getPath(System.getenv("WLP_USER_DIR"), "shared",
-                                                                         "leases", _recoveryGroup, recoveryIdentity);
+                            Path path = FileSystems.getDefault().getPath(_serverInstallLeaseLogDir, recoveryIdentity);
                             fileExists = Files.exists(path);
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "Does nio path exist? " + fileExists);
