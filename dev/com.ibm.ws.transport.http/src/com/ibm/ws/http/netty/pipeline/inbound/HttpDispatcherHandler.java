@@ -15,6 +15,7 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -23,9 +24,11 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Exception;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.Http2Exception.StreamException;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.util.ReferenceCountUtil;
+import io.openliberty.netty.internal.impl.NettyConstants;
 
 /**
  *
@@ -101,6 +104,27 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     public void newRequest(ChannelHandlerContext context, FullHttpRequest request) {
         MSP.log("Shiny new dispatcher link");
         HttpDispatcherLink link = new HttpDispatcherLink();
+        if(context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
+            MSP.log("Found content length previously set from past request, removing");
+            context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
+            MSP.log("Removed content length attribute: " + context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH));
+            
+            
+        }
+        
+      //TODO: better way to set connection as isH2
+        if(request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+            context.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
+               }
+        else {
+        
+        context.channel().attr(NettyHttpConstants.PROTOCOL).set("http");
+        
+        }
+        
+        MSP.log("Protocol set to: "+ context.channel().attr(NettyHttpConstants.PROTOCOL).get());
+        
+        
         context.channel().closeFuture().addListener(new ChannelFutureListener() {
 
             @Override

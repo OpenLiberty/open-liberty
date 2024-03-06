@@ -81,6 +81,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
             String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
             System.out.println("Got an HTTP2 request, setting stream ID of response to: " + streamId);
             nettyResponse.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), streamId);
+
         }
 
         if (isc instanceof HttpInboundServiceContextImpl) {
