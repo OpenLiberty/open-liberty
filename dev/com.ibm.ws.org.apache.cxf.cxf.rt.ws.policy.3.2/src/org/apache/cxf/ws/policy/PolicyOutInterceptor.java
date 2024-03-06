@@ -60,20 +60,26 @@ public class PolicyOutInterceptor extends AbstractPolicyInterceptor {
 
         BindingOperationInfo boi = exchange.getBindingOperationInfo();
         if (null == boi) {
-            LOG.fine("No binding operation info.");
+            if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                LOG.fine("No binding operation info.");
+            }
             return;
         }
 
         Endpoint e = exchange.getEndpoint();
         if (null == e) {
-            LOG.fine("No endpoint.");
+            if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                LOG.fine("No endpoint.");
+            }
             return;
         }
         EndpointInfo ei = e.getEndpointInfo();
 
         PolicyEngine pe = bus.getExtension(PolicyEngine.class);
         if (null == pe) {
-            LOG.fine("No PolicyEngine.");  // Liberty Change
+            if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                LOG.fine("No PolicyEngine.");  // Liberty Change
+            }
             return;
         }
 
@@ -92,7 +98,9 @@ public class PolicyOutInterceptor extends AbstractPolicyInterceptor {
             addInterceptors(effectivePolicy.getInterceptors(), msg);
             assertions.addAll(effectivePolicy.getChosenAlternative());
         } else if (MessageUtils.isRequestor(msg)) {
-	    LOG.fine("Processing client policy");  // Liberty Change
+            if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                LOG.fine("Processing client policy");  // Liberty Change
+            }
             // 2. Process client policy
             Conduit conduit = exchange.getConduit(msg);
 
@@ -108,7 +116,9 @@ public class PolicyOutInterceptor extends AbstractPolicyInterceptor {
             }
         } else {
             // 3. Process server policy
-	    LOG.fine("Processing server policy");  // Liberty Change
+            if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                LOG.fine("Processing server policy");  // Liberty Change
+            }
             Destination destination = exchange.getDestination();
             List<List<Assertion>> incoming
                 = CastUtils.cast((List<?>)exchange.get("ws-policy.validated.alternatives"));
@@ -134,7 +144,7 @@ public class PolicyOutInterceptor extends AbstractPolicyInterceptor {
                 for (Assertion a : assertions) {
                     PolicyUtils.printPolicyComponent(a, buf, 1);
                 }
-                LOG.finest(buf.toString());
+				LOG.finest(buf.toString());
             }
             msg.put(AssertionInfoMap.class, new AssertionInfoMap(assertions));
             msg.getInterceptorChain().add(PolicyVerificationOutInterceptor.INSTANCE);
@@ -144,7 +154,9 @@ public class PolicyOutInterceptor extends AbstractPolicyInterceptor {
     private static void addInterceptors(List<Interceptor<? extends Message>> interceptors, Message msg) {
         for (Interceptor<? extends Message> oi : interceptors) {
             msg.getInterceptorChain().add(oi);
-            LOG.log(Level.FINE, "Added interceptor of type {0}", oi.getClass().getSimpleName());
+            if(LOG.isLoggable(Level.FINE)) { // Liberty Change 
+                LOG.log(Level.FINE, "Added interceptor of type {0}", oi.getClass().getSimpleName());
+            }
         }
     }
 }

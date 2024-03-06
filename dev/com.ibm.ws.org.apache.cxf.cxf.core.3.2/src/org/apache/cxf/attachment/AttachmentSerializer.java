@@ -427,18 +427,23 @@ public class AttachmentSerializer {
     // Try to decode the string assuming the decoding may fail, the original string is going to
     // be returned in this case.
     private static String tryDecode(String s, Charset charset) {
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST); // Liberty Change
         try { 
 	    String dString = decode(s, charset); // Liberty Change Start
-            if (LOG.isLoggable(Level.FINEST)) {
+            if (isFinestEnabled) {
                LOG.finest("tryDecode: Original string:  " + s + ", charset: " + charset + 
 			", Decoded string: " + dString);
 	    }
             return dString;  // Liberty Change End
         } catch (IllegalArgumentException ex) {
-            LOG.finest("tryDecode: IllegalArgumentException exception: " + ex); // Liberty Change
+            if (isFinestEnabled) {
+                LOG.finest("tryDecode: IllegalArgumentException exception: " + ex); // Liberty Change
+            }
             return s;
         } catch (UnsupportedEncodingException ex) {
-            LOG.finest("tryDecode: UnsupportedEncodingException exception: " + ex); // Liberty Change
+            if (isFinestEnabled) {
+                LOG.finest("tryDecode: UnsupportedEncodingException exception: " + ex); // Liberty Change
+            }
             return s;
         }
     }

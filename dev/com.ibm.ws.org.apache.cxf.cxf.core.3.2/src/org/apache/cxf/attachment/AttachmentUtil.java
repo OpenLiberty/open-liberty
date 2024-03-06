@@ -113,6 +113,8 @@ public final class AttachmentUtil {
 
         @Override
         public synchronized CommandInfo[] getAllCommands(String mimeType) {
+            
+            boolean isFinestEnabled = LOG.isLoggable(Level.FINEST); // Liberty Change
 
             CommandInfo[] commands = super.getAllCommands(mimeType);
             CommandInfo[] defaultCommands = DEFAULT_COMMAND_MAP.getAllCommands(mimeType);
@@ -123,19 +125,19 @@ public final class AttachmentUtil {
                 String defCmdName = defCmdInfo.getCommandName();
                 boolean cmdNameExist = false;
                 for (CommandInfo cmdInfo : commands) {
-	            if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	            if (isFinestEnabled) { //Liberty Change Start
 	               LOG.finest("getAllCommands: processing cmd: " + cmdInfo.getCommandName());
 	            } //Liberty Change End
                     if (cmdInfo.getCommandName().equals(defCmdName)) {
                         cmdNameExist = true;
-	                if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	                if (isFinestEnabled) { //Liberty Change Start
 	                   LOG.finest("getAllCommands: Found command " + defCmdName);
 	                } //Liberty Change End
                         break;
                     }
                 }
                 if (!cmdNameExist) {
-	            if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+	            if (isFinestEnabled) { //Liberty Change Start
 	               LOG.finest("getAllCommands: Cmd does not exist, using default: " + defCmdName);
 	            } //Liberty Change End
                     cmdList.add(defCmdInfo);

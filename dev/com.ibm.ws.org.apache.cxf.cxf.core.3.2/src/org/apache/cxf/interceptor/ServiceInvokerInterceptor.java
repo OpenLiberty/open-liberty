@@ -63,6 +63,8 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
         Runnable invocation = new Runnable() {
 
             public void run() {
+                boolean isFinestEnabled = LOG.isLoggable(Level.FINEST); // Liberty Change
+                    
                 Exchange runableEx = message.getExchange();
                 Object result = invoker.invoke(runableEx, getInvokee(message));
                 if (!exchange.isOneWay()) {
@@ -80,16 +82,24 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
                         MessageContentsList resList = null;
                         if (result instanceof MessageContentsList) {
 			    // Liberty Change start
-			    LOG.finest("Result is instance of MessageContentsList"); 
+                            if(isFinestEnabled) {
+                                LOG.finest("Result is instance of MessageContentsList");
+                            }
                             resList = (MessageContentsList)result;
                         } else if (result instanceof List) {
-			    LOG.finest("Result is instance of List");
+                            if(isFinestEnabled) {
+                                LOG.finest("Result is instance of List");
+                            }
                             resList = new MessageContentsList((List<?>)result);
                         } else if (result.getClass().isArray()) {
                             resList = new MessageContentsList((Object[])result);
-			    LOG.finest("Result is Array");
+                            if(isFinestEnabled) {
+                                LOG.finest("Result is Array");
+                            }
                         } else {
-			    LOG.finest("Calling setContent for Object.class");    
+                            if(isFinestEnabled) {
+                                LOG.finest("Calling setContent for Object.class");
+                            }
 			    // Liberty Change end	
                             outMessage.setContent(Object.class, result);
                         }
@@ -162,13 +172,18 @@ public class ServiceInvokerInterceptor extends AbstractPhaseInterceptor<Message>
 
     private Object getInvokee(Message message) {
 	// Liberty Change start
-        LOG.finest("getInvokee: getContent from List: " + message.getClass().getCanonicalName());
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);
+        if(isFinestEnabled) {
+            LOG.finest("getInvokee: getContent from List: " + message.getClass().getCanonicalName());
+        }
         Object invokee = message.getContent(List.class);
         if (invokee == null) {
-	    LOG.finest("getInvokee: getContent from Object");
+            if(isFinestEnabled) {
+                LOG.finest("getInvokee: getContent from Object");
+            }
             invokee = message.getContent(Object.class);
         }
-	if (LOG.isLoggable(Level.FINEST)) {
+	if (isFinestEnabled) {
 	   if (invokee instanceof List) {
               for (Object o1 : (List)invokee) {
 		 if (o1 != null) {

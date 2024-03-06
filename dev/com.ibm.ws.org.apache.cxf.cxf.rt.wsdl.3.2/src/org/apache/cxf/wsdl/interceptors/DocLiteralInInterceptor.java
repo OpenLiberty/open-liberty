@@ -66,7 +66,9 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
 
     public void handleMessage(Message message) {
         if (isGET(message) && message.getContent(List.class) != null) {
-            LOG.finest("DocLiteralInInterceptor: HTTP GET method, returning");
+            if(LOG.isLoggable(Level.FINEST)) { // Liberty Change 
+                LOG.finest("DocLiteralInInterceptor: HTTP GET method, returning");
+            }
             return;
         }
 
@@ -82,7 +84,9 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
         //operation anymore, just return
         if (bop != null && !StaxUtils.toNextElement(xmlReader)) {
             // body may be empty for partial response to decoupled request
-            LOG.finest("DocLiteralInInterceptor: Soap Body may be empty, returning"); // Liberty Change
+            if(LOG.isLoggable(Level.FINEST)) { // Liberty Change 
+                LOG.finest("DocLiteralInInterceptor: Soap Body may be empty, returning"); // Liberty Change
+            }
             return;
         }
 
@@ -105,7 +109,9 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                 if (shouldWrapParameters(msgInfo, message)) {
                     QName startQName = xmlReader.getName();
                     MessagePartInfo mpi = msgInfo.getFirstMessagePart();
-		    LOG.fine("Should wrap parameters for Message part: " + mpi); // Liberty Change
+                    if(LOG.isLoggable(Level.FINE)) { // Liberty Change 
+                        LOG.fine("Should wrap parameters for Message part: " + mpi); // Liberty Change
+                    }
                     if (!mpi.getConcreteName().equals(startQName)) {
                         throw new Fault("UNEXPECTED_WRAPPER_ELEMENT", LOG, null, startQName,
                                         mpi.getConcreteName());
@@ -113,7 +119,9 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                     Object wrappedObject = dr.read(mpi, xmlReader);
                     parameters.put(mpi, wrappedObject);
                 } else {
-		    LOG.fine("No wrapper, unwrap each part individually"); // Liberty Change
+                    if(LOG.isLoggable(Level.FINE)) { // Liberty Change 
+                        LOG.fine("No wrapper, unwrap each part individually"); // Liberty Change
+                    }
                     // Unwrap each part individually if we don't have a wrapper
 
                     bop = bop.getUnwrappedOperation();
@@ -133,7 +141,9 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                 }
 
             } else {
-		LOG.finest("This is Bare style");  // Liberty Change
+                if(LOG.isLoggable(Level.FINEST)) { // Liberty Change 
+                    LOG.finest("This is Bare style");  // Liberty Change
+                }
                 //Bare style
                 BindingMessageInfo msgInfo = null;
 
@@ -149,7 +159,9 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                         }
                     }
                     if (msgInfo == null) {
-		        LOG.finest("MsgInfo is null, returning");  // Liberty Change
+                        if(LOG.isLoggable(Level.FINEST)) { // Liberty Change 
+                            LOG.finest("MsgInfo is null, returning");  // Liberty Change
+                        }
                         return;
                     }
                     setMessage(message, bop, client, si, msgInfo.getMessageInfo());
@@ -160,7 +172,9 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
 
                 if (xmlReader == null || !StaxUtils.toNextElement(xmlReader)) {
                     // empty input
-		    LOG.finest("No input, returning");  // Liberty Change
+                    if(LOG.isLoggable(Level.FINEST)) { // Liberty Change 
+                        LOG.finest("No input, returning");  // Liberty Change
+                    }
                     getBindingOperationForEmptyBody(operations, ep, exchange);
                     return;
                 }
@@ -176,7 +190,9 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                     if (!client && msgInfo != null && msgInfo.getMessageParts() != null
                         && msgInfo.getMessageParts().isEmpty()) {
                         //no input messagePartInfo
-		        LOG.finest("MessageParts empty, returning");  // Liberty Change
+                        if(LOG.isLoggable(Level.FINEST)) { // Liberty Change 
+                            LOG.finest("MessageParts empty, returning");  // Liberty Change
+                        }
                         return;
                     }
 
@@ -194,17 +210,23 @@ public class DocLiteralInInterceptor extends AbstractInDatabindingInterceptor {
                     if (!forceDocLitBare) {
                         //Make sure the elName found on the wire is actually OK for
                         //the purpose we need it
-		        LOG.finest("Validating elName: " + elName); // Liberty Change
+                        if(LOG.isLoggable(Level.FINEST)) { // Liberty Change 
+                            LOG.finest("Validating elName: " + elName); // Liberty Change
+                        }
                         validatePart(p, elName, message);
                     }
 
                     final Object o = dr.read(p, xmlReader);
                     if (forceDocLitBare && parameters.isEmpty()) {
                         // webservice provider does not need to ensure size
-			LOG.finest("No parameters to add!");  // Liberty Change
+                        if(LOG.isLoggable(Level.FINEST)) { // Liberty Change 
+                            LOG.finest("No parameters to add!");  // Liberty Change
+                        }
                         parameters.add(o);
                     } else {
-			LOG.finest("Add parameters to msgpart: " + p);  // Liberty Change
+                        if(LOG.isLoggable(Level.FINEST)) { // Liberty Change 
+                            LOG.finest("Add parameters to msgpart: " + p);  // Liberty Change
+                        }
                         parameters.put(p, o);
                     }
 

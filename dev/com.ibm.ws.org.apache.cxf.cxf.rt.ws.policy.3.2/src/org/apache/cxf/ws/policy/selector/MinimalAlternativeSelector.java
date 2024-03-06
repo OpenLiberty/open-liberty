@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.cxf.common.logging.LogUtils;
+
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.cxf.message.Message;
@@ -51,13 +53,17 @@ public class MinimalAlternativeSelector extends BaseAlternativeSelector {
             if (engine.supportsAlternative(alternative, assertor, msg)
                 && isCompatibleWithRequest(alternative, request)
                 && (null == choice || alternative.size() < choice.size())) {
-		LOG.fine("Engine supports alternative (CXF 2.6.2)");
+                if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                    LOG.fine("Engine supports alternative (CXF 2.6.2)");
+                }
                 choice = alternative;
             }
 	    // Liberty Change End
         }
         if (choice == null) {
-	    LOG.fine("Getting minimal alternatives");  // Liberty Change
+            if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                LOG.fine("Getting minimal alternatives");  // Liberty Change
+            }
             // didn't find one completely compatible with the incoming, just get the minimal
             alternatives = policy.getAlternatives();
             while (alternatives.hasNext()) {

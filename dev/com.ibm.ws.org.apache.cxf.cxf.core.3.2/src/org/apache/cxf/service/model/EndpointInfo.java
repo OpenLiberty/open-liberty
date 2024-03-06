@@ -21,6 +21,8 @@ package org.apache.cxf.service.model;
 
 import javax.xml.namespace.QName;
 import org.apache.cxf.common.logging.LogUtils;
+
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.cxf.ws.addressing.AttributedURIType;
@@ -101,7 +103,9 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
     public String getAddress() {
         EndpointReferenceType address = threadLocal.get(); //Liberty #3669
         if (address == null) {
-	    LOG.fine("getAddress: Setting address to lastAddressSet"); // Liberty Change
+            if (LOG.isLoggable(Level.FINE)) { // Liberty Change
+                LOG.fine("getAddress: Setting address to lastAddressSet"); // Liberty Change
+            }
             address = lastAddressSet; //Liberty
         }
         return (null != address && null != address.getAddress()) ? address.getAddress().getValue() : null;

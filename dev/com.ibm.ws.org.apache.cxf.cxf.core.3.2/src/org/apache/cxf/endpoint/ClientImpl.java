@@ -167,7 +167,9 @@ public class ClientImpl
                 try {
                     c.close();
                 } catch (IOException e) {
-		    LOG.finest("ClientImpl: Unexpected IOException: " + e); // Liberty Change
+                    if (LOG.isLoggable(Level.FINEST)) { 
+                        LOG.finest("ClientImpl: Unexpected IOException: " + e); // Liberty Change
+                    }
                     //ignore
                 }
             }
@@ -183,7 +185,9 @@ public class ClientImpl
                     ((Closeable)conduitSelector).close();
                 } catch (IOException e) {
                     //ignore, we're destroying anyway
-		    LOG.finest("ClientImpl: Unexpected IOException 2: " + e); // Liberty Change
+                    if (LOG.isLoggable(Level.FINEST)) { 
+                        LOG.finest("ClientImpl: Unexpected IOException 2: " + e); // Liberty Change
+                    }
                 }
             } else {
                 getConduit().close();
@@ -236,7 +240,9 @@ public class ClientImpl
                                 return e;
                             }
                         } catch (Throwable t) {
-		            LOG.finest("ClientImpl: Caught Unexpected Exception t: " + t); // Liberty Change
+                            if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                                LOG.finest("ClientImpl: Caught Unexpected Exception t: " + t); // Liberty Change
+                            }
                             //ignore
                         }
                     }
@@ -456,6 +462,8 @@ public class ClientImpl
                               Object[] params,
                               Map<String, Object> context,
                               Exchange exchange) throws Exception {
+        
+        boolean isFineEnabled = LOG.isLoggable(Level.FINE); // Liberty Change
         Bus origBus = BusFactory.getAndSetThreadDefaultBus(bus);
         ClassLoaderHolder origLoader = null;
         Map<String, Object> resContext = null;
@@ -465,12 +473,14 @@ public class ClientImpl
                 origLoader = ClassLoaderUtils.setThreadContextClassloader(loader);
             }
             if (exchange == null) {
-	        LOG.fine("doInvoke: Creating new Exchange.");
+                if(isFineEnabled) { // Liberty Change
+                    LOG.fine("doInvoke: Creating new Exchange.");
+                }
                 exchange = new ExchangeImpl();
             }
             exchange.setSynchronous(callback == null);
             Endpoint endpoint = getEndpoint();
-            if (LOG.isLoggable(Level.FINE)) {
+            if(isFineEnabled) { // Liberty Change
                 LOG.fine("Invoke, operation info: " + oi + ", params: " + Arrays.toString(params));
             }
             Message message = endpoint.getBinding().createMessage();
@@ -491,7 +501,9 @@ public class ClientImpl
                 context.put(RESPONSE_CONTEXT, resContext);
             }
 
-	    LOG.fine("Setting following requestContext on message: " + reqContext);  // Liberty Change
+            if(isFineEnabled) { // Liberty Change
+                LOG.fine("Setting following requestContext on message: " + reqContext);  // Liberty Change
+            }
             message.put(Message.INVOCATION_CONTEXT, context);
             setContext(reqContext, message);
             exchange.putAll(reqContext);
@@ -546,7 +558,9 @@ public class ClientImpl
             }
 
             if (callback != null) {
-		LOG.fine("Callback is not null, returning here.");  // Liberty Change
+                if(isFineEnabled) { // Liberty Change
+                    LOG.fine("Callback is not null, returning here.");  // Liberty Change
+                }
                 return null;
             }
             return processResult(message, exchange, oi, resContext);
@@ -557,14 +571,20 @@ public class ClientImpl
                 resContext.put(MessageContext.HTTP_RESPONSE_CODE, responseCode);
                 resContext.put(org.apache.cxf.message.Message.RESPONSE_CODE, responseCode);
                 setResponseContext(resContext);
-	        LOG.fine("setResponseContext: " + resContext);  // Liberty Change
+                if(isFineEnabled) { // Liberty Change
+                    LOG.fine("setResponseContext: " + resContext);  // Liberty Change
+                }
             }
             if (origLoader != null) {
-		LOG.fine("Reset origLoader");  // Liberty Change
+                if(isFineEnabled) { // Liberty Change
+                    LOG.fine("Reset origLoader");  // Liberty Change
+                }
                 origLoader.reset();
             }
             if (origBus != bus) {
-		LOG.fine("setThreadDefaultBus");  // Liberty Change
+                if(isFineEnabled) { // Liberty Change
+                    LOG.fine("setThreadDefaultBus");  // Liberty Change
+                }
                 BusFactory.setThreadDefaultBus(origBus);
             }
         }
@@ -592,14 +612,19 @@ public class ClientImpl
                     soap11NS)
                     && "Client".equals(faultCode.getLocalPart())) {
                 faultCode = new QName(soap11NS, "Server");
-		LOG.fine("enrichFault: Setting SOAP 1.1 faultcode: " + faultCode); // Liberty Change
+
+                if(LOG.isLoggable(Level.FINE)) { // Liberty Change 
+                    LOG.fine("enrichFault: Setting SOAP 1.1 faultcode: " + faultCode); // Liberty Change
+                }
                 fault.setFaultCode(faultCode);
             }
             if (faultCode.getNamespaceURI().equals(
                     soap12NS)
                     && "Sender".equals(faultCode.getLocalPart())) {
                 faultCode = new QName(soap12NS, "Receiver");
-		LOG.fine("enrichFault: Setting SOAP 1.2 faultcode: " + faultCode); // Liberty Change
+                if(LOG.isLoggable(Level.FINE)) { // Liberty Change 
+                    LOG.fine("enrichFault: Setting SOAP 1.2 faultcode: " + faultCode); // Liberty Change
+                }
                 fault.setFaultCode(faultCode);
             }
         }
@@ -609,6 +634,8 @@ public class ClientImpl
                                    Exchange exchange,
                                    BindingOperationInfo oi,
                                    Map<String, Object> resContext) throws Exception {
+
+        boolean isFineEnabled = LOG.isLoggable(Level.FINE); // Liberty Change
         Exception ex = null;
         // Check to see if there is a Fault from the outgoing chain if it's an out Message
         if (!message.get(Message.INBOUND_MESSAGE).equals(Boolean.TRUE)) {
@@ -644,14 +671,18 @@ public class ClientImpl
 
         // Wait for a response if we need to
         if (oi != null && !oi.getOperationInfo().isOneWay()) {
-	    LOG.fine("processResult: Calling waitResponse...");  // Liberty Change
+            if(isFineEnabled) { // Liberty Change
+                LOG.fine("processResult: Calling waitResponse...");  // Liberty Change
+            }
             waitResponse(exchange);
         }
 
         // leave the input stream open for the caller
         Boolean keepConduitAlive = (Boolean)exchange.get(Client.KEEP_CONDUIT_ALIVE);
         if (keepConduitAlive == null || !keepConduitAlive) {
-	    LOG.fine("processResult: Complete Exchange."); // Liberty Change
+            if(isFineEnabled) { // Liberty Change
+                LOG.fine("processResult: Complete Exchange."); // Liberty Change
+            }
             completeExchange(exchange);
         }
 
@@ -664,7 +695,9 @@ public class ClientImpl
                 // remove the recursive reference if present
                 resContext.remove(Message.INVOCATION_CONTEXT);
                 setResponseContext(resContext);
-	        LOG.fine("processResult: setResponseContext: " + resContext);  // Liberty Change
+                if(isFineEnabled) { // Liberty Change
+                    LOG.fine("processResult: setResponseContext: " + resContext);  // Liberty Change
+                }
             }
             resList = CastUtils.cast(inMsg.getContent(List.class));
         }
@@ -730,7 +763,9 @@ public class ClientImpl
                 try {
                     exchange.wait(remaining);
                 } catch (InterruptedException ex) {
-		    LOG.finest("waitResponse: Unexpected exception: " + ex);  // Liberty Change
+                    if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                        LOG.finest("waitResponse: Unexpected exception: " + ex);  // Liberty Change
+                    }
                     // ignore
                 }
                 long end = System.currentTimeMillis();
@@ -1023,16 +1058,23 @@ public class ClientImpl
         if (ctx == null) {
             return;
         }
+
+        boolean isFineEnabled = LOG.isLoggable(Level.FINE); // Liberty Change
+        
         Collection<InterceptorProvider> providers
             = CastUtils.cast((Collection<?>)ctx.get(Message.INTERCEPTOR_PROVIDERS));
         if (providers != null) {
             for (InterceptorProvider p : providers) {
                 if (in) {
                     chain.add(p.getInInterceptors());
-		    LOG.fine("modifyChain: Added input interceptors: " + p.getInInterceptors()); // Liberty Change
+                    if(isFineEnabled) { // Liberty Change
+                        LOG.fine("modifyChain: Added input interceptors: " + p.getInInterceptors()); // Liberty Change
+                    }
                 } else {
                     chain.add(p.getOutInterceptors());
-		    LOG.fine("modifyChain: Added output interceptors: " + p.getOutInterceptors()); // Liberty Change
+                    if(isFineEnabled) { // Liberty Change
+                        LOG.fine("modifyChain: Added output interceptors: " + p.getOutInterceptors()); // Liberty Change
+                    }
                 }
             }
         }
@@ -1041,7 +1083,9 @@ public class ClientImpl
             = CastUtils.cast((Collection<?>)ctx.get(key));
         if (is != null) {
             chain.add(is);
-	    LOG.fine("modifyChain: Added interceptors: " + is); // Liberty Change
+            if(isFineEnabled) { // Liberty Change
+                LOG.fine("modifyChain: Added interceptors: " + is); // Liberty Change
+            }
         }
     }
 
@@ -1107,7 +1151,9 @@ public class ClientImpl
                     }
                 }
             } catch (Throwable t) {
-		LOG.finest("Unexpected exception in clear(): " + t);  // Liberty Change
+                if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                    LOG.finest("Unexpected exception in clear(): " + t);  // Liberty Change
+                }
                 //ignore
             }
         }
@@ -1144,7 +1190,9 @@ public class ClientImpl
                     }
                 }
             } catch (Throwable t) {
-		LOG.finest("Unexpected exception in clear(): " + t);  // Liberty Change
+                if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                    LOG.finest("Unexpected exception in clear(): " + t);  // Liberty Change
+                }
                 //ignore
             }
         }

@@ -62,7 +62,11 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
 
         String className = "org.apache.cxf.jaxb.NamespaceMapper";
         className += postFix;
-	LOG.fine("Calling findClass for: " + className); // Liberty Change
+        if(LOG.isLoggable(Level.FINE)) {
+            LOG.fine("Calling findClass for: " + className); // Liberty Change
+        }
+
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST); // Liberty Change
         Class<?> cls = findClass(className, NamespaceClassCreator.class);
         Throwable t = null;
         if (cls == null) {
@@ -74,7 +78,10 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
                     try {
                         return loadClass(className, NamespaceClassCreator.class, bts);
                     } catch(NoClassDefFoundError e) {
-	                LOG.finest("loadClass for : " + className + " returned NCDF, trying RI"); // Liberty Change
+
+                        if(isFinestEnabled) {
+                            LOG.finest("loadClass for : " + className + " returned NCDF, trying RI"); // Liberty Change
+                        }
                         postFix = "RI";
                         className = "org.apache.cxf.jaxb.NamespaceMapper";
                         className += postFix;
@@ -82,7 +89,10 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
                         
                         bts = createNamespaceWrapperInternal(postFix);
 		        Class<?> lc = loadClass(className, NamespaceClassCreator.class, bts); // Liberty Change begin
-			LOG.finest("createNamespaceWrapperClass returning: " + lc);
+
+	                if(isFinestEnabled) {
+	                    LOG.finest("createNamespaceWrapperClass returning: " + lc);
+	                }
                         return lc;
                     }
                 }
@@ -92,7 +102,9 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
 
             } catch (RuntimeException ex) {
                 // continue
-		LOG.finest("createNamespaceWrapperClass: RuntimeException: " + ex);  // Liberty Change
+                if(isFinestEnabled) {
+                    LOG.finest("createNamespaceWrapperClass: RuntimeException: " + ex);  // Liberty Change
+                }
                 t = ex;
             }
         }
@@ -103,7 +115,9 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
                         NamespaceClassCreator.class);
             } catch (Throwable ex2) {
                 // ignore
-		LOG.finest("createNamespaceWrapperClass: Exception: " + ex2);  // Liberty Change
+                if(isFinestEnabled) {
+                    LOG.finest("createNamespaceWrapperClass: Exception: " + ex2);  // Liberty Change
+                }
                 t = ex2;
             }
         }
@@ -111,7 +125,10 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
                    LOG.log(Level.FINEST, "Could not create a NamespaceMapper compatible with Marshaller class " 
                            + mcls.getName(), t); // Liberty Change - Level to FINEST
                 }
-		LOG.fine("createNamespaceWrapperClass returning class: " + cls); // Liberty Change
+
+                if(LOG.isLoggable(Level.FINE)) {
+                    LOG.fine("createNamespaceWrapperClass returning class: " + cls); // Liberty Change
+                }
 		return cls;
     }
 
@@ -164,7 +181,9 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
         String slashedName = "org/apache/cxf/jaxb/EclipseNamespaceMapper";
         ASMHelper.ClassWriter cw = helper.createClassWriter();
         if (cw == null) {
-	    LOG.fine("doCreateEclipseNamespaceMapper: Could not create ASM classwriter, returning null");  // Liberty Change
+            if(LOG.isLoggable(Level.FINE)) {
+                LOG.fine("doCreateEclipseNamespaceMapper: Could not create ASM classwriter, returning null");  // Liberty Change
+            }
             return null;
         }
         String superName = "org/eclipse/persistence/internal/oxm/record/namespaces/MapNamespacePrefixMapper";
@@ -342,7 +361,9 @@ public class NamespaceClassGenerator extends ClassGeneratorClassLoader implement
         String postFixedName = "org/apache/cxf/jaxb/NamespaceMapper" + postFix;
         ASMHelper.ClassWriter cw = helper.createClassWriter();
         if (cw == null) {
-	    LOG.fine("createNamespaceWrapperInternal: Could not create ASM classwriter, returning null");  // Liberty Change
+            if(LOG.isLoggable(Level.FINE)) {
+                LOG.fine("createNamespaceWrapperInternal: Could not create ASM classwriter, returning null");  // Liberty Change
+            }
             return null;
         }
         ASMHelper.FieldVisitor fv;

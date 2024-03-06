@@ -19,6 +19,7 @@
 
 package org.apache.cxf.ws.policy;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.cxf.common.logging.LogUtils;
@@ -47,14 +48,20 @@ public class PolicyVerificationOutInterceptor extends AbstractPolicyInterceptor 
      * @throws PolicyException if none of the alternatives is supported
      */
     protected void handle(Message message) {
+        boolean isFineEnabled = LOG.isLoggable(Level.FINE); // Liberty Change
+        
         if (MessageUtils.isPartialResponse(message)) {
-            LOG.fine("Not verifying policies on outbound partial response.");
+            if(isFineEnabled) { // Liberty Change
+                LOG.fine("Not verifying policies on outbound partial response.");
+            }
             return;
         }
 
         AssertionInfoMap aim = message.get(AssertionInfoMap.class);
         if (null == aim) {
-            LOG.fine("AssertionInfoMap is null.");  // Liberty Change
+            if(isFineEnabled) { // Liberty Change
+                LOG.fine("AssertionInfoMap is null.");  // Liberty Change
+            }
             return;
         }
 
@@ -62,7 +69,9 @@ public class PolicyVerificationOutInterceptor extends AbstractPolicyInterceptor 
 
         EffectivePolicy policy = message.get(EffectivePolicy.class);
         if (policy == null) {
-            LOG.fine("EffectivePolicy is null.");  // Liberty Change
+            if(isFineEnabled) { // Liberty Change
+                LOG.fine("EffectivePolicy is null.");  // Liberty Change
+            }
             return;
         }
 
@@ -71,12 +80,16 @@ public class PolicyVerificationOutInterceptor extends AbstractPolicyInterceptor 
         try {
             aim.checkEffectivePolicy(policy.getPolicy());
         } catch (PolicyException e) {
-            LOG.fine("An exception was thrown when verifying that the effective policy for "
+            if(isFineEnabled) { // Liberty Change
+                LOG.fine("An exception was thrown when verifying that the effective policy for "
                      + "this request was satisfied.  However, this exception will not result in "
                      + "a fault.  The exception raised is: "
                      + e.toString());
+            }
             return;
         }
-        LOG.fine("Verified policies for outbound message.");
+        if(isFineEnabled) { // Liberty Change
+            LOG.fine("Verified policies for outbound message.");
+        }
     }
 }
