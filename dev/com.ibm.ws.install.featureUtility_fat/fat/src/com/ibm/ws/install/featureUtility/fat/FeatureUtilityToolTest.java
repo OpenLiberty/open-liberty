@@ -344,11 +344,18 @@ public abstract class FeatureUtilityToolTest {
             os = rf.openForWriting(false);
             wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
             Log.info(c, "replaceWlpProperties", "Set the version to : " + version);
-	    // beta
-	    wlpVersionProps.setProperty("com.ibm.websphere.productPublicKeyId", "0xBD9FD5BE9E68CA00");
-	    Log.info(c, "replaceWlpProperties", "Set product Key ID to : " + "0xBD9FD5BE9E68CA00");
             wlpVersionProps.store(os, null);
             os.close();
+            
+	    rf = new RemoteFile(server.getMachine(),
+		    minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
+	    if (rf.exists()) {
+		os = rf.openForWriting(false);
+		wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
+		Log.info(c, "replaceWlpProperties - closed ", "Set the version to : " + version);
+		wlpVersionProps.store(os, null);
+		os.close();
+	    }
         } finally {
             try {
                 os.close();
