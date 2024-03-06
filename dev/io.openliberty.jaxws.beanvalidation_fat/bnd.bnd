@@ -45,15 +45,9 @@ tested.features: \
 # For all project names that match the pattern "*_fat*", dependencies for junit,
 # fattest.simplicity, and componenttest-1.0 will be automatically added to the buildpath
 -buildpath: \
-	com.ibm.ws.jaxws.cdi;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.javaee.jws.1.0;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.javaee.validation.2.0,\
-	com.ibm.websphere.javaee.ejb.3.2,\
-	com.ibm.websphere.javaee.validation.1.1,\
-	com.ibm.websphere.javaee.validation.1.0,\
-	com.ibm.websphere.javaee.concurrent.1.0
+	com.ibm.websphere.javaee.validation.2.0;version=latest
