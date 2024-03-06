@@ -14,6 +14,7 @@ package jakarta.data.page.impl;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
@@ -33,7 +34,7 @@ public record PageRecord<T>(PageRequest<T> pageRequest,
         this(req, //
              content, //
              total, //
-             content.size() == req.size() && req.page() * req.size() < total);
+             content.size() == req.size() && (total < 0 || req.page() * req.size() < total));
     }
 
     @Override
@@ -47,16 +48,26 @@ public record PageRecord<T>(PageRequest<T> pageRequest,
     }
 
     @Override
+    public boolean hasPrevious() {
+        return pageRequest.page() > 1;
+    }
+
+    @Override
+    public boolean hasTotals() {
+        return totalElements >= 0;
+    }
+
+    @Override
     public Iterator<T> iterator() {
         return content.iterator();
     }
 
     @Override
     public PageRequest<T> nextPageRequest() {
-        if (moreResults)
+        if (hasNext())
             return pageRequest.next();
         else
-            return null;
+            throw new NoSuchElementException();
     }
 
     @SuppressWarnings("unchecked")
@@ -77,8 +88,34 @@ public record PageRecord<T>(PageRequest<T> pageRequest,
     }
 
     @Override
+    public PageRequest<T> previousPageRequest() {
+        if (hasPrevious())
+            return pageRequest.previous();
+        else
+            throw new NoSuchElementException();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <E> PageRequest<E> previousPageRequest(Class<E> entityClass) {
+        return (PageRequest<E>) previousPageRequest();
+    }
+
+    @Override
+    public long totalElements() {
+        if (totalElements >= 0)
+            return totalElements;
+        else
+            throw new IllegalStateException("total elements are not available");
+    }
+
+    @Override
     public long totalPages() {
-        int maxPageSize = pageRequest.size();
-        return (totalElements + (maxPageSize - 1)) / maxPageSize;
+        if (totalElements >= 0) {
+            int maxPageSize = pageRequest.size();
+            return (totalElements + (maxPageSize - 1)) / maxPageSize;
+        } else {
+            throw new IllegalStateException("total elements are not available");
+        }
     }
 }

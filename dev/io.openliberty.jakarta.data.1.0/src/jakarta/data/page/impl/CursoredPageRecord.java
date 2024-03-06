@@ -14,21 +14,23 @@ package jakarta.data.page.impl;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
-import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.CursoredPage;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
-public record KeysetAwareSliceRecord<T>(
+public record CursoredPageRecord<T>(
                 List<T> content,
                 List<Cursor> cursors,
+                long totalElements,
                 PageRequest<T> pageRequest,
                 PageRequest<T> nextPageRequest,
                 PageRequest<T> previousPageRequest)
-                implements KeysetAwareSlice<T> {
+                implements CursoredPage<T> {
 
     @Override
     public Cursor getKeysetCursor(int i) {
@@ -51,8 +53,21 @@ public record KeysetAwareSliceRecord<T>(
     }
 
     @Override
+    public boolean hasTotals() {
+        return totalElements >= 0;
+    }
+
+    @Override
     public Iterator<T> iterator() {
         return content.iterator();
+    }
+
+    @Override
+    public PageRequest<T> nextPageRequest() {
+        if (nextPageRequest == null)
+            throw new NoSuchElementException();
+        else
+            return nextPageRequest;
     }
 
     @SuppressWarnings("unchecked")
@@ -70,5 +85,37 @@ public record KeysetAwareSliceRecord<T>(
     @Override
     public <E> PageRequest<E> pageRequest(Class<E> entityClass) {
         return (PageRequest<E>) pageRequest;
+    }
+
+    @Override
+    public PageRequest<T> previousPageRequest() {
+        if (previousPageRequest == null)
+            throw new NoSuchElementException();
+        else
+            return previousPageRequest;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <E> PageRequest<E> previousPageRequest(Class<E> entityClass) {
+        return (PageRequest<E>) previousPageRequest();
+    }
+
+    @Override
+    public long totalElements() {
+        if (totalElements >= 0)
+            return totalElements;
+        else
+            throw new IllegalStateException("total elements are not available");
+    }
+
+    @Override
+    public long totalPages() {
+        if (totalElements >= 0) {
+            int maxPageSize = pageRequest.size();
+            return (totalElements + (maxPageSize - 1)) / maxPageSize;
+        } else {
+            throw new IllegalStateException("total elements are not available");
+        }
     }
 }

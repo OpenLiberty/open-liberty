@@ -17,10 +17,10 @@ import java.util.List;
 
 /**
  */
-public class KeysetCursor implements PageRequest.Cursor {
+public class PageRequestCursor implements PageRequest.Cursor {
     private final Object[] keyset;
 
-    KeysetCursor(Object... keyset) {
+    PageRequestCursor(Object... keyset) {
         this.keyset = keyset;
 
         if (keyset == null || keyset.length < 1)
@@ -34,7 +34,7 @@ public class KeysetCursor implements PageRequest.Cursor {
 
     @Override
     public boolean equals(Object o) {
-        return o == this || o != null && o.getClass().equals(getClass()) && Arrays.equals(((KeysetCursor) o).keyset, keyset);
+        return o == this || o != null && o.getClass().equals(getClass()) && Arrays.equals(((PageRequestCursor) o).keyset, keyset);
     }
 
     @Override
