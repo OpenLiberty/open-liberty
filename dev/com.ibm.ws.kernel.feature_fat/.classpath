@@ -22,6 +22,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="con" path="aQute.bnd.classpath.container"/>
-	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
