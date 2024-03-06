@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -110,6 +110,11 @@ public class JDTCompiler implements JspCompiler {
             compilerOptionsMap.put(CompilerOptions.OPTION_PreserveUnusedLocal, CompilerOptions.PRESERVE);
         }
         compilerOptionsMap.put(CompilerOptions.OPTION_Encoding, javaEncoding);
+
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "JDTCompiler", "source options are - javaSourceLevel: " + javaSourceLevel + " and jdkSourceLevel: " + jdkSourceLevel);
+        }
+
         
         if (javaSourceLevel != -1) {
             compilerOptionsMap.put(CompilerOptions.OPTION_Source, javaSourceLevel.toString());
