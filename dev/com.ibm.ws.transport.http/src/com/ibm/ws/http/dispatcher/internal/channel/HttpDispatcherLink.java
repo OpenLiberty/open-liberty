@@ -85,6 +85,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.openliberty.netty.internal.tcp.InactivityTimeoutHandler;
 
@@ -284,26 +285,66 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         for (String handler : nettyContext.pipeline().names()) {
             MSP.log("Dispatcher close handler -> " + handler);
         }
-        if (nettyContext.pipeline().get("httpKeepAlive") != null) {
-            this.nettyContext.pipeline().remove("httpKeepAlive");
-        //}
-        // if (nettyContext.pipeline().get("HTTP_SERVER_HANDLER") != null) {
+//        if (nettyContext.pipeline().get("httpKeepAlive") != null) {
+//            this.nettyContext.pipeline().remove("httpKeepAlive");
+//        //}
+//        // if (nettyContext.pipeline().get("HTTP_SERVER_HANDLER") != null) {
         //   this.nettyContext.pipeline().remove("HTTP_SERVER_HANDLER");
             
       
-            
-    }
-        
-        if(nettyContext.pipeline().get(NettyServletUpgradeHandler.class) !=null) {
+//            
+//    }
+//        
+//        if(nettyContext.pipeline().get(NettyServletUpgradeHandler.class) !=null) {
+//            this.nettyContext.channel().close();
+//        }
+//        
+//        
+//        return;
+        if (nettyRequest.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Doing nothing on close since Netty request is HTTP2 enabled. Codec will handle shutdown");
+            }
+            return;
+        }
+    
+        if (vc != null) {
+            System.out.println("VC not null on netty, checking if streams need to be closed!");
+            String closeNonUpgraded = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
+            if (closeNonUpgraded != null && closeNonUpgraded.equalsIgnoreCase("true")) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "close streams from HttpDispatcherLink.close");
+                }
+
+                // This close streams should be synchronous to match with legacy
+                Exception errorinClosing = this.closeStreams();
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Error closing in streams" + errorinClosing);
+                }
+
+                vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "CLOSED_NON_UPGRADED_STREAMS");
+                return;
+            }
+        }
+       
+    
+        if (nettyContext.pipeline().get("httpKeepAlive") == null) {
+            MSP.log("DispatcherLink close because no keep alive handler");
+            this.nettyContext.channel().close();
+            //}
+            // if (nettyContext.pipeline().get("HTTP_SERVER_HANDLER") != null) {
+            //   this.nettyContext.pipeline().remove("HTTP_SERVER_HANDLER");
+
+        }
+
+        if (nettyContext.pipeline().get(NettyServletUpgradeHandler.class) != null) {
+            MSP.log("DispatcherLink close because we have an upgrade handler");
             this.nettyContext.channel().close();
         }
-        
-        
+
         return;
-    
-    
-    
-    
+
     
     
 
@@ -319,71 +360,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.debug(tc, "Close called , vc ->" + this.vc + " hc: " + this.hashCode());
         }
 
-        if (usingNetty) {
-
-            //No Change
-
-            //register what the close will do, let the close be handled by
-            //the persist handler
-            // TODO: We should check this would probably be best to set either on ready but not on close
-            // since this can be called multiple times for persistent connections
-
-            // ChannelFuture future = nettyContext.channel().closeFuture();
-            // future.addListener(new ChannelFutureListener() {
-            //     @Override
-            //     public void operationComplete(ChannelFuture future) throws Exception {
-            //         isc.destroy();
-            //     }
-
-            // });
-
-//
-//            ChannelFuture closeFuture;
-//            if (response.isPersistent()) {
-//                MSP.log("Persist clear");
-//                isc.clear();
-//            }
-
-//            if (vc != null) {
-//                System.out.println("VC not null on netty, checking if streams need to be closed!");
-//                String closeNonUpgraded = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
-//                if (closeNonUpgraded != null && closeNonUpgraded.equalsIgnoreCase("true")) {
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                        Tr.debug(tc, "close streams from HttpDispatcherLink.close");
-//                    }
-//
-//                    // This close streams should be synchronous to match with legacy
-//                    Exception errorinClosing = this.closeStreams();
-//
-//                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                        Tr.debug(tc, "Error closing in streams" + errorinClosing);
-//                    }
-//
-//                    vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "CLOSED_NON_UPGRADED_STREAMS");
-//                    return;
-//                }
-//            }
-//            if (nettyRequest.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
-//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//                    Tr.debug(tc, "Doing nothing on close since Netty request is HTTP2 enabled. Codec will handle shutdown");
-//                }
-//                return;
-//            }
-//            try {
-//                // Hopefully should close after write finishes
-//                System.out.println("ON close before sync");
-//                this.nettyContext.channel().closeFuture().sync();
-//                System.out.println("ON close after sync");
-//            } catch (InterruptedException exception) {
-//                exception.printStackTrace();
-//            }
-            nettyClose(conn, e);
-        } else {
+    
             if (this.vc == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Connection must be already closed since vc is null");
                 }
-
+                if(!usingNetty) {
                 // closeCompleted check is for the close, destroy, close order scenario.
                 // Without this check, this second close (after the destroy) would decrement the connection again and produce a quiesce error.
                 if (this.decrementNeeded.compareAndSet(true, false) & !closeCompleted.get()) {
@@ -392,6 +374,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                         Tr.debug(tc, "decrementNeeded is true: decrement active connection");
                     }
                     this.myChannel.decrementActiveConns();
+                }
                 }
 
                 return;
@@ -476,9 +459,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     }
                 }
             }
+            
+            if(usingNetty) {
+                nettyClose(vc, e);
+            }
 
             // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.
-            if (myChannel.getStop0Called() == false) {
+            else if (myChannel.getStop0Called() == false) {
                 try {
                     super.close(conn, e);
                 } finally {
@@ -489,7 +476,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
                 closeCompleted.compareAndSet(false, true);
             }
-        }
+        
 
         //if (usingNetty) {
 
@@ -1690,6 +1677,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 //                 TransportOutboundHandler#0, DefaultChannelPipeline$TailContext#0]
 
                     System.out.println(nettyContext.pipeline().names());
+                    return;
                 }
 
 //                try {
@@ -1700,7 +1688,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
                 //               this.nettyContext.pipeline().remove(HttpDispatcherHandler.class);
 
-                return;
+                
             }
         }
 

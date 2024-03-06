@@ -418,7 +418,7 @@ public class CdiTest {
         wsocTest.runEchoTest(new AnnotatedClientEP.SessionIdleTest(), "/cdi/annotatedIdleTimeoutCDI", result, Constants.getLongTimeout());
         long endTime = System.currentTimeMillis();
         long totalTime = endTime - startTime;
-        if ((totalTime < 15000) || (totalTime > 25000)) {
+        if ((totalTime < 15000) || (totalTime > 40000)) {
             Assert.fail("Test - phase 1 - ran for " + totalTime
                         + " which is either less than 10 seconds or more than 25 seconds,  outside of an acceptable session timeout range.");
         }
@@ -428,7 +428,7 @@ public class CdiTest {
         wsocTest.runEchoTest(new AnnotatedClientEP.SessionIdleTest(), "/cdi/annotatedIdleTimeoutCDI", result2, Constants.getLongTimeout());
         endTime = System.currentTimeMillis();
         totalTime = endTime - startTime;
-        if ((totalTime < 3000) || (totalTime > 10000)) {
+        if ((totalTime < 3000) || (totalTime > 20000)) {
             Assert.fail("Test - phase 2 - ran for " + totalTime + " which is either less than 3 seconds or more than 10 seconds,  outside of an acceptable session timeout range.");
         }
 

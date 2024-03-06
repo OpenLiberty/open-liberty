@@ -24,6 +24,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
@@ -75,6 +76,12 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
 //            }
 
             final boolean isSwitching = response.status() == HttpResponseStatus.SWITCHING_PROTOCOLS;
+            
+            if(isSwitching && "websocket".equalsIgnoreCase(response.headers().get(HttpHeaderNames.UPGRADE))) {
+                ctx.channel().attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
+            }
+            
+            System.out.println("MSP PROTOCOL SET TO: "+ ctx.channel().attr(NettyHttpConstants.PROTOCOL).get());
 
 //            if (response.status() == HttpResponseStatus.SWITCHING_PROTOCOLS) {
 ////
@@ -87,6 +94,11 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
                 @Override
                 public void operationComplete(ChannelFuture future) {
                     if (future.isSuccess() && isSwitching) {
+                        
+                        
+                        
+                        
+                        
                         // Handle the successful write operation
                         ctx.pipeline().remove("maxConnectionHandler");
                         // ctx.pipeline().remove("HTTP_SERVER_HANDLER");

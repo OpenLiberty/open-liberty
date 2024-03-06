@@ -42,6 +42,7 @@ public class NettyTCPConnectionContext implements TCPConnectionContext {
         this.readContext = new NettyTCPReadRequestContext(this, nettyChannel);
         this.readContext.setVC(this.vc);
         this.writeContext = new NettyTCPWriteRequestContext(this, nettyChannel);
+        this.writeContext.setVC(this.vc);
         initializeSSLContext();
 
     }
