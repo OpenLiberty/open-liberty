@@ -135,13 +135,17 @@ public class WSDLServiceBuilder {
     private void copyExtensors(AbstractPropertiesHolder info, List<?> extList) {
         if (info != null) {
             for (ExtensibilityElement ext : cast(extList, ExtensibilityElement.class)) {
-		LOG.finest("copyExtensors: Ext element: " + ext.getElementType()); // Liberty Change
+                if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                    LOG.finest("copyExtensors: Ext element: " + ext.getElementType()); // Liberty Change
+                }
                 Object o = ext;
                 if (ext instanceof JAXBExtensibilityElement) {
                     o = ((JAXBExtensibilityElement)ext).getValue();
                 }
                 if (!info.containsExtensor(o)) {
-		    LOG.finest("copyExtensors: Adding ext: " + o);  // Liberty Change
+                    if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                        LOG.finest("copyExtensors: Adding ext: " + o);  // Liberty Change
+                    }
                     info.addExtensor(o);
                 }
             }
@@ -448,7 +452,9 @@ public class WSDLServiceBuilder {
             }
             if (ns == null) {
                 if (ignoreUnknownBindings) {
-		    LOG.fine("Ignoring UnknownBindings, return null");  // Liberty Change
+                    if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                        LOG.fine("Ignoring UnknownBindings, return null");  // Liberty Change
+                    }
                     return null;
                 }
                 org.apache.cxf.common.i18n.Message msg = new
@@ -460,7 +466,9 @@ public class WSDLServiceBuilder {
             try {
                 factory = bus.getExtension(DestinationFactoryManager.class).getDestinationFactory(ns);
             } catch (BusException e) {
-		LOG.fine("Ignoring BusException: " + e);  // Liberty Change
+                if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                    LOG.fine("Ignoring BusException: " + e);  // Liberty Change
+                }
                 // do nothing
             }
         }
@@ -488,12 +496,15 @@ public class WSDLServiceBuilder {
     }
 
     public BindingInfo buildBinding(ServiceInfo service, Binding binding) {
+        boolean isFineEnabled = LOG.isLoggable(Level.FINE); // Liberty Change
         BindingInfo bi = null;
         StringBuilder ns = new StringBuilder(100);
         BindingFactory factory = WSDLServiceUtils.getBindingFactory(binding, bus, ns);
         if (factory instanceof WSDLBindingFactory) {
             WSDLBindingFactory wFactory = (WSDLBindingFactory)factory;
-	    LOG.fine("buildBinding: Calling createBindingInfo for NS: " + ns.toString() + " and QName: " + binding.getQName());  // Liberty Change
+            if(isFineEnabled) {
+                LOG.fine("buildBinding: Calling createBindingInfo for NS: " + ns.toString() + " and QName: " + binding.getQName());  // Liberty Change
+            }
             bi = wFactory.createBindingInfo(service, binding, ns.toString());
             copyExtensors(bi, binding.getExtensibilityElements());
             copyExtensionAttributes(bi, binding);
@@ -518,11 +529,15 @@ public class WSDLServiceBuilder {
                 String outName = null;
                 if (bop.getBindingInput() != null) {
                     inName = bop.getBindingInput().getName();
-		    LOG.fine("buildBinding: Binding input: " + inName);  // Liberty Change
+                    if(isFineEnabled) {
+                        LOG.fine("buildBinding: Binding input: " + inName);  // Liberty Change
+                    }
                 }
                 if (bop.getBindingOutput() != null) {
                     outName = bop.getBindingOutput().getName();
-		    LOG.fine("buildBinding: Binding output: " + outName);  // Liberty Change
+                    if(isFineEnabled) {
+                        LOG.fine("buildBinding: Binding output: " + outName);  // Liberty Change
+                    }
                 }
                 final BindingOperationInfo bop2;
                 if (onlyExtensors) {
@@ -532,12 +547,16 @@ public class WSDLServiceBuilder {
                     bop2 = bi.buildOperation(new QName(binding.getQName().getNamespaceURI(),
                                                        bop.getName()), inName, outName);
                     if (bop2 != null) {
-		        LOG.fine("buildBinding: Adding bop2 to BI..." + bop2.getName()); // Liberty Change
+                        if(isFineEnabled) {
+                            LOG.fine("buildBinding: Adding bop2 to BI..." + bop2.getName()); // Liberty Change
+                        }
                         bi.addOperation(bop2);
                     }
                 }
                 if (bop2 != null) {
-		    LOG.fine("buildBinding: bop2 is not NULL" + bop2.getName());  // Liberty Change
+                    if(isFineEnabled) {
+                        LOG.fine("buildBinding: bop2 is not NULL" + bop2.getName());  // Liberty Change
+                    }
                     copyExtensors(bop2, bop.getExtensibilityElements());
                     copyExtensionAttributes(bop2, bop);
                     if (bop.getBindingInput() != null) {
@@ -575,7 +594,9 @@ public class WSDLServiceBuilder {
             .getExtensors(ExtensibilityElement.class);
         // for non-soap binding, the extensiblilityElement could be null
         if (extensiblilityElement == null) {
-	    LOG.fine("handleHeader: extensiblilityElement is null, returning");  // Liberty Change
+            if(LOG.isLoggable(Level.FINE)) {
+                LOG.fine("handleHeader: extensiblilityElement is null, returning");  // Liberty Change
+            }
             return;
         }
         // for (ExtensibilityElement element : extensiblilityElement) {

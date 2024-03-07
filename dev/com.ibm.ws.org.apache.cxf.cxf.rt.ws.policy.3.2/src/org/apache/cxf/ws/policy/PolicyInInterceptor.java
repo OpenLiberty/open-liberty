@@ -57,14 +57,18 @@ public class PolicyInInterceptor extends AbstractPolicyInterceptor {
         Bus bus = exchange.getBus();
         Endpoint e = exchange.getEndpoint();
         if (null == e) {
-            LOG.fine("No endpoint.");
+            if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                LOG.fine("No endpoint.");
+            }
             return;
         }
         EndpointInfo ei = e.getEndpointInfo();
 
         PolicyEngine pe = bus.getExtension(PolicyEngine.class);
         if (null == pe) {
-	    LOG.fine("No PolicyEngine.");  // Liberty Change
+            if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                LOG.fine("No PolicyEngine.");  // Liberty Change
+            }
             return;
         }
 
@@ -84,7 +88,9 @@ public class PolicyInInterceptor extends AbstractPolicyInterceptor {
             interceptors.addAll(effectivePolicy.getInterceptors());
             assertions.addAll(effectivePolicy.getChosenAlternative());
         } else if (MessageUtils.isRequestor(msg)) {
-	    LOG.finest("Processing client policy.");  // Liberty Change
+            if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                LOG.finest("Processing client policy.");  // Liberty Change
+            }
             // 2. Process client policy
             BindingOperationInfo boi = exchange.getBindingOperationInfo();
             if (boi == null) {
@@ -98,8 +104,10 @@ public class PolicyInInterceptor extends AbstractPolicyInterceptor {
                 // We do not know the underlying message type yet - so we pre-emptively add interceptors
                 // that can deal with any resposes or faults returned to this client endpoint.
 
-		LOG.finest("getEffectiveClientResponsePolicy for boi: " + boi.getName() + " and EI: " + 
+                if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                    LOG.finest("getEffectiveClientResponsePolicy for boi: " + boi.getName() + " and EI: " + 
 				(ei != null ? ei.getAddress() : "null") ); // Liberty Change
+                }
                 EffectivePolicy ep = pe.getEffectiveClientResponsePolicy(ei, boi, msg);
                 if (ep != null) {
                     interceptors.addAll(ep.getInterceptors());
@@ -112,7 +120,9 @@ public class PolicyInInterceptor extends AbstractPolicyInterceptor {
             }
         } else {
             // 3. Process server policy
-	    LOG.finest("Processing server policy.");  // Liberty Change
+            if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                LOG.finest("Processing server policy.");  // Liberty Change
+            }
             Destination destination = exchange.getDestination();
 
             // We do not know the underlying message type yet - so we pre-emptively add interceptors

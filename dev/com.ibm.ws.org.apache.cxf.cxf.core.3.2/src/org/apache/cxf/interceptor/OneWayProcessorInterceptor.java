@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.cxf.common.logging.LogUtils;
@@ -64,7 +65,9 @@ public class OneWayProcessorInterceptor extends AbstractPhaseInterceptor<Message
                 try {
                     in.close();
                 } catch (IOException e) {
-		    LOG.finest("OneWayProcessorInterceptor: Ignoring IOException 1: " + e); // Liberty Change
+                    if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                        LOG.finest("OneWayProcessorInterceptor: Ignoring IOException 1: " + e); // Liberty Change
+                    }
                     //ignore
                 }
             }
@@ -124,7 +127,9 @@ public class OneWayProcessorInterceptor extends AbstractPhaseInterceptor<Message
                     message.getExchange().setInMessage(message);
                 }
             } catch (IOException e) {
-		LOG.finest("OneWayProcessorInterceptor: Ignoring IOException 2: " + e); // Liberty Change
+                if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                    LOG.finest("OneWayProcessorInterceptor: Ignoring IOException 2: " + e); // Liberty Change
+                }
                 //IGNORE
             }
 
@@ -159,7 +164,9 @@ public class OneWayProcessorInterceptor extends AbstractPhaseInterceptor<Message
                     }
 
                 } catch (InterruptedException e) {
-		    LOG.finest("OneWayProcessorInterceptor: Ignoring InterruptedException: " + e); // Liberty Change
+                    if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                        LOG.finest("OneWayProcessorInterceptor: Ignoring InterruptedException: " + e); // Liberty Change
+                    }
                     //ignore - likely a busy work queue so we'll just let the one-way go
                 }
             }

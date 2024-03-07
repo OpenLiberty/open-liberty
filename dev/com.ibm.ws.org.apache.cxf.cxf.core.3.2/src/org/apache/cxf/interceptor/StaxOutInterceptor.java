@@ -41,6 +41,8 @@ import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.common.logging.LogUtils;
+
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
@@ -107,8 +109,9 @@ public class StaxOutInterceptor extends AbstractPhaseInterceptor<Message> {
                     }
                 }
             }
-
-	    LOG.finest("XMLStreamWriter class: " + (xwriter != null ? xwriter.getClass().getCanonicalName() : "NULL")); // Liberty Change
+            if(LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("XMLStreamWriter class: " + (xwriter != null ? xwriter.getClass().getCanonicalName() : "NULL")); // Liberty Change
+            }
 
             if (MessageUtils.getContextualBoolean(message, FORCE_START_DOCUMENT, false)) {
                 xwriter.writeStartDocument(encoding, "1.0");

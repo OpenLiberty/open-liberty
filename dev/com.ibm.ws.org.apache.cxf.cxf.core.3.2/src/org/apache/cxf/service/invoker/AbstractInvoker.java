@@ -236,7 +236,9 @@ public abstract class AbstractInvoker implements Invoker {
             for (Class<?> iface : targetObject.getClass().getInterfaces()) {
                 Method m = getMostSpecificMethod(methodToMatch, iface);
                 if (!methodToMatch.equals(m)) {
-	            LOG.fine("matchMethod: Returning method: " + m.getName());
+                    if (LOG.isLoggable(Level.FINE)) { // Liberty Change
+                        LOG.fine("matchMethod: Returning method: " + m.getName());
+                    }
                     return m;
                 }
             }
@@ -272,7 +274,9 @@ public abstract class AbstractInvoker implements Invoker {
             try {
                 method = targetClass.getMethod(method.getName(), method.getParameterTypes());
             } catch (NoSuchMethodException ex) {
-		LOG.fine("getMostSpecificMethod: This is OK, using original method " + ex); // Liberty Change
+                if (LOG.isLoggable(Level.FINE)) { // Liberty change
+                    LOG.fine("getMostSpecificMethod: This is OK, using original method " + ex); // Liberty Change
+                }
                 // Perhaps the target class doesn't implement this method:
                 // that's fine, just use the original method
             }

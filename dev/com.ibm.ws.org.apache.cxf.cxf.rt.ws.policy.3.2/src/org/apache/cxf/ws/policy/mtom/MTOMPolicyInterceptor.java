@@ -21,6 +21,8 @@ package org.apache.cxf.ws.policy.mtom;
 
 import java.util.Collection;
 import org.apache.cxf.common.logging.LogUtils;
+
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.cxf.interceptor.Fault;
@@ -56,17 +58,23 @@ public class MTOMPolicyInterceptor extends AbstractPhaseInterceptor<Message> {
             for (AssertionInfo ai : ais) {
                 if (MessageUtils.isRequestor(message)) {
                     //just turn on MTOM
-		    LOG.fine("Enable MTOM on client side");  // Liberty Change start
+                    if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                        LOG.fine("Enable MTOM on client side");  // Liberty Change start
+                    }
                     message.put(Message.MTOM_ENABLED, Boolean.TRUE);
                     ai.setAsserted(true);
                 } else {
                     // set mtom enabled and assert the policy if we find an mtom request
                     String contentType = (String)message.getExchange().getInMessage()
                         .get(Message.CONTENT_TYPE);
-		    LOG.fine("ContentType is " + contentType);
+                    if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                        LOG.fine("ContentType is " + contentType);
+                    }
                     if (contentType != null && contentType.contains("type=\"application/xop+xml\"")) {
                         ai.setAsserted(true);
-		        LOG.fine("Enable MTOM on provider side");  // Liberty Change end
+                        if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                            LOG.fine("Enable MTOM on provider side");  // Liberty Change end
+                        }
                         message.put(Message.MTOM_ENABLED, Boolean.TRUE);
                     }
                 }

@@ -118,12 +118,9 @@ public class MessageImpl extends StringMapImpl implements Message {
         boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);
 
         for (int x = 0; x < index; x += 2) {
-            if (isFinestEnabled) {
-                LOG.finest("getContent processing class: " + contents[x].getClass().getCanonicalName());
-            }
             if (contents[x] == format) {
                 if (isFinestEnabled) {
-                    LOG.finest("getContent returning class: " + contents[x+1].getClass().getCanonicalName());
+                    LOG.finest("getContent returning class: " + (contents[x+1] != null ? contents[x+1].getClass().getCanonicalName() : "NULL"));
                 }
                 if (LOG.isLoggable(Level.FINER)) {
                     LOG.exiting("MessageImpl", "getContent");
@@ -132,7 +129,7 @@ public class MessageImpl extends StringMapImpl implements Message {
             }
         }
         if (LOG.isLoggable(Level.FINER)) {
-            LOG.exiting("MessageImpl", "getContent");
+            LOG.exiting("MessageImpl", "getContent", "contents did not match format.");
         }
         // Liberty code change end
         return null;
@@ -145,7 +142,6 @@ public class MessageImpl extends StringMapImpl implements Message {
         }
         boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);
         if (isFinestEnabled) {
-            LOG.finest("setContent: Logging content for format: " + (format != null ? format.getCanonicalName() : "null"));
             logContent(content);
         }
         for (int x = 0; x < index; x += 2) {
@@ -187,8 +183,7 @@ public class MessageImpl extends StringMapImpl implements Message {
         for (int x = 0; x < index; x += 2) {
             if (contents[x] == format) {
                 if (isFinestEnabled) {
-                    LOG.finest("removeContent: Found content for format: " +
-                        (format != null ? format.getCanonicalName() : "null"));
+                    LOG.finest("removeContent: Found content for format: " + (format != null ? format.getCanonicalName() : "null"));
                 }
                 index -= 2;
                 if (x != index) {
@@ -301,7 +296,7 @@ public class MessageImpl extends StringMapImpl implements Message {
 
     private void logContent(Object content) {
 
-	if (content instanceof List) {
+		if (content instanceof List) {
            for (Object o1 : (List)content) {
                 if (o1 != null && o1.getClass() != null) {
                    LOG.finest("Setcontent param: " + o1.getClass().getCanonicalName());
@@ -337,18 +332,17 @@ public class MessageImpl extends StringMapImpl implements Message {
                     if ((p = ei.getBinding().getProperties()) != null) {
                         if (!p.isEmpty()) {
                             keys.addAll(p.keySet());
-                    }
+                    	}
                     }
                     if ((p = ei.getProperties()) != null) {
                         if (!p.isEmpty()) {
                             keys.addAll(p.keySet());
-                }
-            }
-        }
-                
+                		}
+            		}
+        		}
                 if (!ep.isEmpty()) {
                     keys.addAll(ep.keySet());
-    }
+    			}
             }
             if (!ex.isEmpty()) {
                 keys.addAll(ex.keySet());

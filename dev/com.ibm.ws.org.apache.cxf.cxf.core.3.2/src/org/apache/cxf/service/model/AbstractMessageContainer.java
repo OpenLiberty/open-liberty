@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.cxf.common.logging.LogUtils;
 
@@ -83,7 +84,10 @@ public abstract class AbstractMessageContainer extends AbstractPropertiesHolder 
         }
 
         MessagePartInfo part = new MessagePartInfo(name, this);
-	LOG.finest("addMessagePart: Created new MessagePartInfo: " +  part);  // Liberty Change
+
+        if (LOG.isLoggable(Level.FINEST)) { // Liberty Change
+            LOG.finest("addMessagePart: Created new MessagePartInfo: " +  part);  // Liberty Change
+        }
         addMessagePart(part);
         return part;
     }
@@ -148,7 +152,9 @@ public abstract class AbstractMessageContainer extends AbstractPropertiesHolder 
     public void removeMessagePart(QName name) {
         MessagePartInfo messagePart = getMessagePart(name);
         if (messagePart != null) {
-	    LOG.finest("removeMessagePart: " + name);  // Liberty Change
+            if (LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                LOG.finest("removeMessagePart: " + name);  // Liberty Change
+            }
             messageParts.remove(name);
         }
     }
@@ -199,7 +205,9 @@ public abstract class AbstractMessageContainer extends AbstractPropertiesHolder 
         }
 
         MessagePartInfo part = new MessagePartInfo(name, this);
-	LOG.finest("addOutOfBandMessagePart: Created new Msg Part: " + part);  // Liberty Change
+        if (LOG.isLoggable(Level.FINEST)) { // Liberty Change
+            LOG.finest("addOutOfBandMessagePart: Created new Msg Part: " + part);  // Liberty Change
+        }
         if (outOfBandParts == null) {
             outOfBandParts = new ArrayList<>(1);
         }
@@ -232,10 +240,14 @@ public abstract class AbstractMessageContainer extends AbstractPropertiesHolder 
     public MessagePartInfo getFirstMessagePart() {
         if (!messageParts.isEmpty()) {
 	    // Liberty Change start
-	    LOG.finest("Returning first MessagePart");
+            if (LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                LOG.finest("Returning first MessagePart");
+            }
             return messageParts.values().iterator().next();
         } else if (outOfBandParts != null && !outOfBandParts.isEmpty()) {
-	    LOG.finest("Returning first outOfBandParts");
+            if (LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                LOG.finest("Returning first outOfBandParts");
+            }
 	    // Liberty Change end	
             return outOfBandParts.get(0);
         } else {

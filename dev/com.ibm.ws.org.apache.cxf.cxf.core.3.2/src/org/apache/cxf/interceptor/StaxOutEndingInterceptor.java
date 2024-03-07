@@ -31,6 +31,8 @@ import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.common.logging.LogUtils;
+
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class StaxOutEndingInterceptor extends AbstractPhaseInterceptor<Message> {
@@ -55,7 +57,9 @@ public class StaxOutEndingInterceptor extends AbstractPhaseInterceptor<Message> 
     public void handleMessage(Message message) {
         try {
             XMLStreamWriter xtw = message.getContent(XMLStreamWriter.class);
-	    LOG.finest("XMLStreamWriter class: " + (xtw != null ? xtw.getClass().getCanonicalName() : "NULL")); // Liberty Change
+            if(LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("XMLStreamWriter class: " + (xtw != null ? xtw.getClass().getCanonicalName() : "NULL")); // Liberty Change
+            }
             if (xtw != null) {
                 try {
                     xtw.writeEndDocument();

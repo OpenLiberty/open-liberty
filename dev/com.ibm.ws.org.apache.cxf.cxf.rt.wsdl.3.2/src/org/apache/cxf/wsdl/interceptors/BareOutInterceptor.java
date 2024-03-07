@@ -46,13 +46,17 @@ public class BareOutInterceptor extends AbstractOutDatabindingInterceptor {
         BindingOperationInfo operation = exchange.getBindingOperationInfo();
 
         if (operation == null) {
-	    LOG.finest("BareOutInterceptor: Operation is NULL, returning..."); // Liberty Change start
+            if(LOG.isLoggable(Level.FINEST)) { // Liberty Change 
+                LOG.finest("BareOutInterceptor: Operation is NULL, returning..."); // Liberty Change start
+            }
             return;
         }
 
         MessageContentsList objs = MessageContentsList.getContentsList(message);
         if (objs == null || objs.isEmpty()) {
-	    LOG.finest("BareOutInterceptor: MessageContentsList is empty, returning...");
+            if(LOG.isLoggable(Level.FINEST)) { // Liberty Change 
+                LOG.finest("BareOutInterceptor: MessageContentsList is empty, returning...");
+            }
             return;
         }
 
@@ -62,16 +66,22 @@ public class BareOutInterceptor extends AbstractOutDatabindingInterceptor {
 
         if (!client) {
             if (operation.getOutput() != null) {
-		LOG.fine("BareOutInterceptor: Getoutput for operation: " + operation.getName());
+                if(LOG.isLoggable(Level.FINE)) { // Liberty Change 
+                    LOG.fine("BareOutInterceptor: Getoutput for operation: " + operation.getName());
+                }
                 bmsg = operation.getOutput();
                 parts = bmsg.getMessageParts();
             } else {
                 // partial response to oneway
-		LOG.finest("BareOutInterceptor: Operation output is NULL, returning");
+                if(LOG.isLoggable(Level.FINEST)) { // Liberty Change 
+                    LOG.finest("BareOutInterceptor: Operation output is NULL, returning");
+                }
                 return;
             }
         } else {
-	    LOG.fine("BareOutInterceptor: Get input message parts...");
+            if(LOG.isLoggable(Level.FINE)) { // Liberty Change 
+                LOG.fine("BareOutInterceptor: Get input message parts...");
+            }
             bmsg = operation.getInput();
             parts = bmsg.getMessageParts();
         }

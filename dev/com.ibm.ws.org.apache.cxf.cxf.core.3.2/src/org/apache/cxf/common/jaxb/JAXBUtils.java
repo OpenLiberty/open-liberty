@@ -191,7 +191,9 @@ public final class JAXBUtils {
                 ((Closeable)u).close();
             } catch (IOException e) {
                 //ignore
-                LOG.finest("Unexpected IOException when closing Unmarshaller: " + e);  // Liberty Change
+                if (LOG.isLoggable(Level.FINEST)) { 
+                    LOG.finest("Unexpected IOException when closing Unmarshaller: " + e);  // Liberty Change
+                }
             }
         }
     }
@@ -601,12 +603,16 @@ public final class JAXBUtils {
 
     @FFDCIgnore({Exception.class, Exception.class}) // Liberty Change
     private static synchronized ClassLoader getXJCClassLoader() {
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);
         if (jaxbXjcLoader == null) {
             try {
                 Class.forName("com.sun.tools.internal.xjc.api.XJC");
                 jaxbXjcLoader = ClassLoader.getSystemClassLoader();
             } catch (Exception t2) {
-                LOG.finest("getXJCClassLoader Exception received: " + t2);  // Liberty Change
+
+                if (isFinestEnabled) { 
+                    LOG.finest("getXJCClassLoader Exception received: " + t2);  // Liberty Change
+                }
                 //couldn't find either, probably cause tools.jar isn't on
                 //the classpath.   Let's see if we can find the tools jar
                 String s = SystemPropertyAction.getProperty("java.home");
@@ -617,12 +623,16 @@ public final class JAXBUtils {
                         jar = new File(home, "../lib/tools.jar");
                     }
                     if (jar.exists()) {
-                        LOG.fine("getXJCClassLoader: Found tools.jar: " + jar.getAbsolutePath());  // Liberty Change
+                        if(LOG.isLoggable(Level.FINE)) {
+                            LOG.fine("getXJCClassLoader: Found tools.jar: " + jar.getAbsolutePath());  // Liberty Change
+                        }
                         try {
                             jaxbXjcLoader = new URLClassLoader(new URL[] {jar.toURI().toURL()});
                             Class.forName("com.sun.tools.internal.xjc.api.XJC", false, jaxbXjcLoader);
                         } catch (Exception e) {
-                            LOG.finest("getXJCClassLoader: Error loading tools.jar: " + e);  // Liberty Change
+                            if(isFinestEnabled) {
+                                LOG.finest("getXJCClassLoader: Error loading tools.jar: " + e);  // Liberty Change
+                            }
                             jaxbXjcLoader = null;
                         }
                     }
@@ -639,7 +649,9 @@ public final class JAXBUtils {
         Object mapper = classLoaderService.createNamespaceWrapperInstance(marshaller.getClass(), nspref);
         if (mapper != null) {
 	    //Liberty change begin: Add checks for Jakarta and IBM Namespace Mappers
-	    LOG.fine("setNamespaceMapper: Checking marshaller: " + marshaller.getClass().getName());
+            if (LOG.isLoggable(Level.FINE)) { 
+                LOG.fine("setNamespaceMapper: Checking marshaller: " + marshaller.getClass().getName());
+            }
             if (marshaller.getClass().getName().startsWith("org.glassfish.")) {
                 marshaller.setProperty("org.glassfish.jaxb.namespacePrefixMapper", mapper);
             } else if (marshaller.getClass().getName().startsWith("com.ibm")) {
@@ -681,8 +693,10 @@ public final class JAXBUtils {
                    refClass = Class.forName(pkg + "api.TypeReference", true, getXJCClassLoader());
                 }
             }
-	    LOG.fine("createBridge: JAXBContext class: " + (cls != null ? cls.getCanonicalName() : "null")  + 
+            if(LOG.isLoggable(Level.FINE)) {
+                LOG.fine("createBridge: JAXBContext class: " + (cls != null ? cls.getCanonicalName() : "null")  + 
 			" and refclass: " + (refClass != null ? refClass.getCanonicalName() : "null") );
+            }
             //Liberty change end
             Object ref = refClass.getConstructor(QName.class,
                                                  Type.class,
@@ -741,14 +755,20 @@ public final class JAXBUtils {
                 cls = Class.forName("com.sun.tools.xjc.api.XJC");
                 sc = cls.getMethod("createSchemaCompiler").invoke(null);
             } catch (Throwable e) {
-		LOG.finest("createSchemaCompiler: Caught Throwable: " + e);  // Liberty Change
+                if (LOG.isLoggable(Level.FINEST)) { 
+                    LOG.finest("createSchemaCompiler: Caught Throwable: " + e);  // Liberty Change
+                }
                 cls = Class.forName("com.sun.tools.internal.xjc.api.XJC", true, getXJCClassLoader());
                 sc = cls.getMethod("createSchemaCompiler").invoke(null);
             }
-	    LOG.fine("createSchemaCompiler: sc: " + sc.getClass().getCanonicalName());  // Liberty Change
+            if(LOG.isLoggable(Level.FINE)) {
+                LOG.fine("createSchemaCompiler: sc: " + sc.getClass().getCanonicalName());  // Liberty Change
+            }
 
 	    SchemaCompiler ret_sc = ReflectionInvokationHandler.createProxyWrapper(sc, SchemaCompiler.class);
-	    LOG.fine("createSchemaCompiler: Returning SC: " + ret_sc);
+	    if(LOG.isLoggable(Level.FINE)) {
+	        LOG.fine("createSchemaCompiler: Returning SC: " + ret_sc);
+	    }
 	    return ret_sc;
         } catch (Exception ex) {
             throw new JAXBException(ex);
@@ -792,7 +812,7 @@ public final class JAXBUtils {
             }
         }
 
-        logger.log(Level.FINE, "Created classes: " + sb.toString());
+        logger.log(Level.FINEST, "Created classes: " + sb.toString()); // Liberty Change
     }
 
     public static List<String> getGeneratedClassNames(JCodeModel codeModel) {
@@ -826,7 +846,9 @@ public final class JAXBUtils {
                               .newInstance(f, encoding);
                 } catch (Exception ex) {
                     // try a single argument constructor
-		    LOG.finest("createFileCodeWriter: Exception ignored: " + ex);
+                    if(LOG.isLoggable(Level.FINEST)) {
+                        LOG.finest("createFileCodeWriter: Exception ignored: " + ex);
+                    }
                 }
             }
             return cls.getConstructor(File.class).newInstance(f);
@@ -890,10 +912,15 @@ public final class JAXBUtils {
                                     Class<?>[] extraClass,
                                     Map<Package, CachedClass> objectFactoryCache) {
 
+        boolean isFineEnabled = LOG.isLoggable(Level.FINE); // Liberty Change
+
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST); // Liberty Change
         // add user extra class into jaxb context
         if (extraClass != null && extraClass.length > 0) {
             for (Class<?> clz : extraClass) {
-		LOG.fine("scanPackages: Adding extra class: " + (clz != null ? clz.getCanonicalName() : "null")); // Liberty Change
+                if(isFineEnabled) {
+                    LOG.fine("scanPackages: Adding extra class: " + (clz != null ? clz.getCanonicalName() : "null")); // Liberty Change
+                }
                 classes.add(clz);
             }
         }
@@ -906,19 +933,19 @@ public final class JAXBUtils {
         Map<String, InputStream> packages = new HashMap<>();
         Map<String, ClassLoader> packageLoaders = new HashMap<>();
         Set<Class<?>> objectFactories = new HashSet<>();
+        
         for (Class<?> jcls : classes) {
             String pkgName = PackageUtils.getPackageName(jcls);
             if (!packages.containsKey(pkgName)) {
                 Package pkg = jcls.getPackage();
 
-	        if (LOG.isLoggable(Level.FINE)) {  // Liberty Change begin
+	        if (isFineEnabled) {  // Liberty Change begin
 		   InputStream is1 = jcls.getResourceAsStream("jaxb.index");
 		   if (is1 != null) {
 		      LOG.fine("scanPackages: jaxb.index file found for: " + jcls.getCanonicalName());
 		   }
 		   packages.put(pkgName, is1);
-	        }
-		else {
+	        } else {
                    packages.put(pkgName, jcls.getResourceAsStream("jaxb.index"));
 		}  // Liberty Change end
 
@@ -939,13 +966,19 @@ public final class JAXBUtils {
                         ofactory = Class.forName(objectFactoryClassName, false, getClassLoader(jcls));
                         objectFactories.add(ofactory);
                         addToObjectFactoryCache(pkg, ofactory, objectFactoryCache);
-			LOG.fine("ObjectFactory class: " + (ofactory != null ? ofactory.getCanonicalName() : "null")); // Liberty Change
+                        if(isFineEnabled) {
+                            LOG.fine("ObjectFactory class: " + (ofactory != null ? ofactory.getCanonicalName() : "null")); // Liberty Change
+                        }
                     } catch (ClassNotFoundException e) {
-			LOG.finest("ObjectFactory class not found: " + e); // Liberty Change
+                        if(isFinestEnabled) {
+                            LOG.finest("ObjectFactory class not found: " + e); // Liberty Change
+                        }
                         addToObjectFactoryCache(pkg, null, objectFactoryCache);
                     }
                 } else {
-		    LOG.fine("scanPackages: Adding ObjectFactory: " + ofactory.getCanonicalName()); // Liberty Change
+                    if(isFineEnabled) {
+                        LOG.fine("scanPackages: Adding ObjectFactory: " + ofactory.getCanonicalName()); // Liberty Change
+                    }
                     objectFactories.add(ofactory);
                 }
             }
@@ -971,7 +1004,10 @@ public final class JAXBUtils {
                                 Class<?> ncls = Class.forName(pkg + line, false, loader);
                                 classes.add(ncls);
                             } catch (Exception e) {
-			        LOG.finest("scanPackages: Ignoring exception: " + e); // Liberty Change
+
+                                if(isFinestEnabled) {
+                                    LOG.finest("scanPackages: Ignoring exception: " + e); // Liberty Change
+                                }
                                 // ignore
                             }
                         }
@@ -979,13 +1015,18 @@ public final class JAXBUtils {
                     }
                 } catch (IOException e) {
                     // ignore
-                    LOG.finest("Unexpected IOException in scanPackages: " + e);  // Liberty Change
+
+                    if(isFinestEnabled) {
+                        LOG.finest("Unexpected IOException in scanPackages: " + e);  // Liberty Change
+                    }
                 } finally {
                     try {
                         entry.getValue().close();
                     } catch (IOException e) {
                         // ignore
-                        LOG.finest("Unexpected IOException when closing input stream: " + e);  // Liberty Change
+                        if(isFinestEnabled) {
+                            LOG.finest("Unexpected IOException when closing input stream: " + e);  // Liberty Change
+                        }
                     }
                 }
             }
@@ -1012,8 +1053,12 @@ public final class JAXBUtils {
         if (objectFactoryPkg == null || objectFactoryCache == null) {
             return;
         }
+		
+	    if (LOG.isLoggable(Level.FINEST)) { 
+			LOG.finest("Adding ObjectFactory package to cache: " + objectFactoryPkg); // Liberty Change
+        }
+		
         synchronized (objectFactoryCache) {
-	    LOG.finest("Adding ObjectFactory package to cache: " + objectFactoryPkg); // Liberty Change
             objectFactoryCache.put(objectFactoryPkg,
                                      new CachedClass(ofactory));
         }
@@ -1041,8 +1086,10 @@ public final class JAXBUtils {
                 fullPckClass = packageName + "." + fullClassName;
             }
             typesClassNames.add(fullPckClass);
-	    LOG.fine("assignClassName: Added FullPckClass to typesClassNames: " + fullPckClass + 
+            if (LOG.isLoggable(Level.FINE)) { 
+                LOG.fine("assignClassName: Added FullPckClass to typesClassNames: " + fullPckClass + 
 		  " and returning fullClassName: " + fullClassName);  // Liberty Change
+            }
             return fullClassName;
         }
 
@@ -1215,7 +1262,9 @@ public final class JAXBUtils {
             }
             
             if (propertyName != null && escapeHandler != null) {
-                LOG.fine("Setting ESC handler on marshaller: " + propertyName + " to " + escapeHandler);  // Liberty Change
+                if (LOG.isLoggable(Level.FINE)) { 
+                    LOG.fine("Setting ESC handler on marshaller: " + propertyName + " to " + escapeHandler);  // Liberty Change
+                }
                 marshaller.setProperty(propertyName, escapeHandler);
             }
             //Liberty change end
@@ -1238,7 +1287,9 @@ public final class JAXBUtils {
             //Liberty change begin
             if (cls.getName().startsWith("com.ibm.xml")) {
                 // Do not use escape handlers with XLXP
-                LOG.fine("createEscapeHandler: XLXP found, returning null");
+                if (LOG.isLoggable(Level.FINE)) { 
+                    LOG.fine("createEscapeHandler: XLXP found, returning null");
+                }
                 return null;
             }
             String packageName;
@@ -1255,7 +1306,9 @@ public final class JAXBUtils {
                 packageName = "com.sun.xml" + postFix + ".bind.marshaller";
             }
 
-            LOG.fine("createEscapeHandler: packageName = " + packageName);
+            if (LOG.isLoggable(Level.FINE)) { 
+                LOG.fine("createEscapeHandler: packageName = " + packageName);
+            }
 
             Class<?> handlerClass = ClassLoaderUtils.loadClass(packageName + "." + simpleClassName,
                                                                cls);
