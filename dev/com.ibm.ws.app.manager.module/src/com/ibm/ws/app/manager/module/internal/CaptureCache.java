@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -86,6 +86,10 @@ public class CaptureCache<T> {
      * Synchronization of key data count updates is performed at the same
      * level as synchronization of the cache.  Count updates are always
      * associated with updates of the cache state.
+     *
+     * Log events will not necessarily put events which update key usage
+     * counts in order.  An activity count provides the ability to
+     * order log events (per key).
      */
     protected static class KeyData {
         public KeyData(String key) {
@@ -93,6 +97,7 @@ public class CaptureCache<T> {
                 throw new IllegalArgumentException("Disallowed null key");
             }
             this.key = key;
+            this.activity = 0;
             this.count = 0;
         }
 
@@ -103,16 +108,23 @@ public class CaptureCache<T> {
         }
 
         private int count;
+        private int activity;
 
         public int getCount() {
             return count;
         }
 
+        public int getActivity() {
+            return activity;
+        }
+
         protected int increment() {
+            ++activity;
             return ++count;
         }
 
         protected int decrement() {
+            ++activity;
             return --count;
         }
     }
@@ -202,6 +214,7 @@ public class CaptureCache<T> {
 
         String uniqueKey;
         int newCount;
+        int activity;
         CaptureSupplier<T> supplier;
 
         boolean isDebugEnabled = tc.isDebugEnabled();
@@ -211,10 +224,12 @@ public class CaptureCache<T> {
             if ( keyData == null ) {
                 uniqueKey = null;
                 newCount = -1;
+                activity = -1;
                 supplier = null;
             } else {
                 uniqueKey = keyData.getKey();
                 newCount = keyData.decrement();
+                activity = keyData.getActivity();
                 // Guard against corruption of the key data.
                 // The count should never go below zero.  But if it
                 // does, still remove the key from storage.
@@ -233,11 +248,11 @@ public class CaptureCache<T> {
 
         // 'release' entries must be logged in this format.
         // The FAT "com.ibm.ws.app.manager_fat/fat/src/"
-        // "componenttest/application/manager/test/SharedLibTest.java"
+        // "componenttest/application/manager/test/SharedLibTestUtils.java"
         // scans for and parses these log entries.
 
         if ( isDebugEnabled || (newCount < 0) ) {
-            String baseText = "[ " + key + " ] [ " + newCount + " ]: [ " + supplier + " ]";
+            String baseText = "[ " + key + " ] [ " + activity + " ] [ " + newCount + " ]: [ " + supplier + " ]";
             if ( isDebugEnabled ) {
                 debug( getTag(), "release", baseText);
             }
@@ -348,17 +363,20 @@ public class CaptureCache<T> {
         CaptureSupplier<T> captureSupplier;
 
         boolean isDebugEnabled = tc.isDebugEnabled();
+        int activity;
         int count = 0;
 
         synchronized( cacheLock ) {
-            keyData = acquire(key);
+            keyData = acquire(key); // increment is performed by 'acquire'
 
             // The count must be retrieved within the cache lock:
             // Other calls to acquire or release can happen after
             // releasing the lock.
             if ( isDebugEnabled ) {
-                count = keyData.count;
+                activity = keyData.getActivity();
+                count = keyData.getCount();
             } else {
+                activity = 0;
                 count = 0;
             }
 
@@ -367,12 +385,12 @@ public class CaptureCache<T> {
 
         // 'capture' entries must be logged in this format.
         // The FAT "com.ibm.ws.app.manager_fat/fat/src/"
-        // "componenttest/application/manager/test/SharedLibTest.java"
+        // "componenttest/application/manager/test/SharedLibServerUtils.java"
         // scans for and parses these log entries.
 
         if ( isDebugEnabled ) {
             debug( getTag(), "capture",
-                   "[ " + key + " ] [ " + count + " ] [ " + captureSupplier + " ]" );
+                   "[ " + key + " ] [ " + activity + " ] [ " + count + " ] [ " + captureSupplier + " ]" );
         }
 
         return captureSupplier;

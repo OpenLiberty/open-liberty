@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018-2023 IBM Corporation and others.
+ * Copyright (c) 2018,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,13 +18,14 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        FATTest.class,
-        AutoExtractTest.class,
-        AppOrderTests.class,
-        DropinsTests.class,
-        AppPrereqTest.class,
-        SharedLibUpdateConfigTest.class,
-        SharedLibUpdateJarTest.class
+                FATTest.class,
+                AutoExtractTest.class,
+                AppOrderTests.class,
+                DropinsTests.class,
+                AppPrereqTest.class,
+                SharedLibParseTest.class,
+                SharedLibUpdateConfigTest.class,
+                SharedLibUpdateJarTest.class
 })
 public class FATSuite {
     // EMPTY
