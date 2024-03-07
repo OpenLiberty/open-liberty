@@ -523,9 +523,18 @@ public class SelfExtractor implements LicenseProvider {
      * @return A {@link ReturnCode} indicating if this was successful or not
      */
     public static ReturnCode validateProductMatches(File outputDir, List productMatches) {
-        ReturnCode rc = ReturnCode.OK;
         List<Properties> props_list = getLibertyProperties(outputDir);
+        return validateProperties(productMatches, props_list);
+    }
 
+    /**
+     * @param productMatches
+     * @param rc
+     * @param props_list
+     * @return
+     */
+    protected static ReturnCode validateProperties(List productMatches, List<Properties> props_list) {
+        ReturnCode rc = ReturnCode.OK;
         if (props_list.isEmpty()) {
             rc = new ReturnCode(ReturnCode.BAD_OUTPUT);
         } else {
@@ -534,7 +543,6 @@ public class SelfExtractor implements LicenseProvider {
             }
         }
         return rc;
-
     }
 
     /**
@@ -568,7 +576,7 @@ public class SelfExtractor implements LicenseProvider {
      * @param result
      * @return
      */
-    private static ReturnCode getReturnCode(Properties props, ProductMatch match, int result) {
+    protected static ReturnCode getReturnCode(Properties props, ProductMatch match, int result) {
         String currentLicenseType = props.getProperty("com.ibm.websphere.productLicenseType");
         String currentInstallType = props.getProperty("com.ibm.websphere.productInstallType");
         String currentEdition = InstallUtils.getEditionName(props.getProperty("com.ibm.websphere.productEdition"));
@@ -586,7 +594,7 @@ public class SelfExtractor implements LicenseProvider {
                 }
             } else if (result == ProductMatch.INVALID_INSTALL_TYPE) {
                 rc = new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidInstallType", currentInstallType, match.getInstallType());
-            } else if (result == ProductMatch.INVALID_LICENSE) {
+            } else {
                 rc = new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidLicense", currentLicenseType, match.getLicenseType());
             }
         }
@@ -594,12 +602,12 @@ public class SelfExtractor implements LicenseProvider {
     }
 
     /**
-     * @param files
+     * @param outputDir
      */
     protected static List<Properties> getLibertyProperties(File outputDir) {
         List<Properties> props = new ArrayList<>();
 
-        if (outputDir.exists()) {
+        if (outputDir != null && outputDir.exists()) {
             File directory = new File(outputDir, "lib/versions");
             File[] files = directory.listFiles((dir, name) -> name.endsWith(".properties"));
             if (files == null || files.length == 0) {
