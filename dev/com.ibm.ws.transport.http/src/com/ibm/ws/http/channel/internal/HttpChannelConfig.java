@@ -160,7 +160,7 @@ public class HttpChannelConfig {
     // reset frames window size in milliseconds
     private int http2ResetFramesWindow = 30000;
     private int http2MaxStreamsRefused = 100;
-    private int http2MaxHeaderBlockSize = 819200;
+    private int http2MaxHeaderBlockSize = 16000;
     /** Identifies if the channel has been configured to use X-Forwarded-* and Forwarded headers */
     private boolean useForwardingHeaders = false;
     /** Regex to be used to verify that proxies in forwarded headers are known to user */

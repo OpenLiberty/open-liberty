@@ -20,7 +20,9 @@
     </httpEndpoint>
 
     <httpOptions
-        maxHeaderBlockSize="320"
+        maxHeaderBlockSize="1000"
+        limitNumHeaders="50"
+        limitFieldSize="100"
         id="defaultHttpOptions"
     />
 

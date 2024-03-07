@@ -128,10 +128,6 @@ public class H2StreamProcessor {
     // handle maximum size of header block
     private int currentHeaderBlockSize = 0;
 
-    // Header block for 400 response
-    private byte[] errorResponseBlock;
-    boolean errorSent = false;
-
     /**
      * Create a stream processor initialized in idle state
      *
@@ -160,15 +156,6 @@ public class H2StreamProcessor {
         updateStreamState(state);
         streamWindowUpdateWriteInitialSize = muxLink.getInitialWindowSize();
         streamWindowUpdateWriteLimit = muxLink.getInitialWindowSize();
-        try {
-            ByteArrayOutputStream headerBlockFragment = new ByteArrayOutputStream();
-            headerBlockFragment.write(H2Headers.encodeHeader(muxLink.getWriteTable(), ":status", "400", HpackConstants.LiteralIndexType.NEVERINDEX, false));
-            errorResponseBlock = headerBlockFragment.toByteArray();
-        } catch (Exception e) {
-            System.out.println("Could not initialize error header fragment");
-            e.printStackTrace();
-            errorResponseBlock = null;
-        }
     }
 
     /**
@@ -281,10 +268,6 @@ public class H2StreamProcessor {
         Http2Exception addFrameException = null;
 
         while (addFrame != ADDITIONAL_FRAME.NO) {
-
-            if(errorSent)
-                break;
-
             currentFrame = frame;
 
             // skip only first debug here, since it was done on entry
@@ -1599,10 +1582,12 @@ public class H2StreamProcessor {
         // so we will close the connection with a EnhanceYourCalm error to keep the Header tables in sync since
         // we won't be processing any more headers
         if (muxLink.maxHeaderBlockSize > 0 && currentHeaderBlockSize > muxLink.maxHeaderBlockSize) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getHeadersFromFrame entry: Found header exceeding maximum header block size. According to RFC we should shut the connection down since we don't have any processing done for headers.");
+            }
             muxLink.setContinuationExpected(false);
             muxLink.setWriteContinuationExpected(false);
-            Tr.debug(tc, "getHeadersFromFrame entry: Found header exceeding maximum header block size. According to RFC we should shut the connection down since we don't have any processing done for headers.");
-            Http2Exception headersTooBig = new EnhanceYourCalmException("Stream: " + myID + " exceeds the maximum header block size configured: " + muxLink.maxHeaderBlockSize);
+            Http2Exception headersTooBig = new EnhanceYourCalmException("Stream: " + myID + " exceeds the maximum header block size configured.");
             headersTooBig.setConnectionError(true);
             throw headersTooBig;
         }
@@ -1622,7 +1607,7 @@ public class H2StreamProcessor {
      * @throws CompressionException
      * @throws ProtocolException
      */
-    private void processCompleteHeaders(boolean isPush) throws CompressionException, FlowControlException, Http2Exception, ProtocolException {
+    private void processCompleteHeaders(boolean isPush) throws CompressionException, ProtocolException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "processCompleteHeaders entry: stream " + myID);
         }
@@ -1707,10 +1692,16 @@ public class H2StreamProcessor {
 
                     headers.add(current);
                 }
-                if(current.getName().length() > limitTokenSize || current.getValue().length() > limitTokenSize || pseudoHeaders.size() + headers.size() > 2) {
-                    sendError();
+                // If the headers exceeds the limits configured, we will stop handling headers and
+                // we will close the connection with a compression error according to RFC 9113 Section 4.3
+                // "A receiver MUST terminate the connection with a connection error (Section 5.4.1) of
+                // type COMPRESSION_ERROR if it does not decompress a field block"
+                if(current.getName().length() > limitTokenSize || current.getValue().length() > limitTokenSize ||
+                        pseudoHeaders.size() + headers.size() > limitNumberOfHeaders) {
                     buf.release();
-                    return;
+                    CompressionException comp = new CompressionException("Headers on stream: " + myID + " exceed limits configured for the server.");
+                    comp.setConnectionError(true);
+                    throw comp;
                 }
             }
             buf.release();
@@ -2204,19 +2195,6 @@ public class H2StreamProcessor {
         } catch (InterruptedException e) {
             // server error handled in caller
             return false;
-        }
-    }
-
-    private void sendError() throws CompressionException, FlowControlException, Http2Exception {
-        if(errorResponseBlock == null) 
-            throw new CompressionException("Could not return error message, problem handling header block.");
-        new Exception().printStackTrace();
-        errorSent = true;
-        currentFrame = new FrameHeaders(myID, errorResponseBlock, true, true);
-        boolean writeCompleted = writeFrameSync();
-        if (writeCompleted) {
-            endStream = true;
-            updateStreamState(StreamState.HALF_CLOSED_LOCAL);
         }
     }
 
