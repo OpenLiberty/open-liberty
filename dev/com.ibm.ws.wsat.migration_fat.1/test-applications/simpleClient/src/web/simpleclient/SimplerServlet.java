@@ -1,26 +1,29 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxws.wsat.components;
+package web.simpleclient;
 
-public interface WSATConfigService {
+import javax.servlet.annotation.WebServlet;
 
-    public boolean isSSLEnabled();
+import org.junit.Test;
 
-    public boolean isClientAuthEnabled();
+import componenttest.app.FATServlet;
 
-    public String getSSLReferenceId();
+@WebServlet({ "/SimplerServlet" })
+public class SimplerServlet extends FATServlet {
+	private static final long serialVersionUID = 1L;
 
-    public String getWSATUrl();
-
-    public long getAsyncResponseTimeout();
+	@Test
+	public void t1() {
+		// Coming soon
+	}
 }

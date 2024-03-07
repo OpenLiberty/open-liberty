@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,16 +34,19 @@ import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
+import web.simpleclient.SimplerServlet;
 
 @RunWith(FATRunner.class)
 public class SimpleTest extends DBTestBase {
 
 	@Server("MigrationServer1")
+    @TestServlet(servlet = SimplerServlet.class, contextRoot = "simpleClient")
 	public static LibertyServer server;
 
 	@Server("MigrationServer2")
@@ -94,6 +97,13 @@ public class SimpleTest extends DBTestBase {
 	public void sleep() throws InterruptedException {
 		// Sleep a little to ensure stray async messages are all done
 		Thread.sleep(5000);
+	}
+	
+	@Test
+	public void testAsyncResponseTimeoutSetting() throws Exception {
+		FATUtils.stopServers(server);
+		FATUtils.startServers(runner, server);
+		assertNotNull("asyncResponseTimeout not overridden", server.waitForStringInTrace("asyncResponseTimeout setting overridden to 0 by com.ibm.ws.wsat.asyncResponseTimeout system property"));
 	}
 
 	@Test
