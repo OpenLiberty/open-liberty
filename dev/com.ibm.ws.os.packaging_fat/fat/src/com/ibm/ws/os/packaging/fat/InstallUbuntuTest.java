@@ -22,14 +22,12 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class InstallUbuntuTest extends InstallUtilityToolTest {
     private static final Class<?> c = InstallUbuntuTest.class;
     public static File openLib = new File("/var/lib/openliberty");
@@ -64,118 +62,81 @@ public class InstallUbuntuTest extends InstallUtilityToolTest {
         }
     }
 
-//    @Test
-    public void testJavaInstall() throws Exception {
-        if (openLibExists) {
-            String METHOD_NAME = "testJavaInstall";
-            entering(c, METHOD_NAME);
-
-            String[] param1s = { "install", "-y", "default-jdk" }; //any java works
-            ProgramOutput po = runCommand(METHOD_NAME, "sudo apt-get", param1s);
-            assertEquals("Expected exit code", 0, po.getReturnCode()); //if already installed, exit is 0
-            exiting(c, METHOD_NAME);
-        } else {
-            logger.info("OpenLiberty did not install successfully");
-        }
-
-    }
-
     @Test
-    public void testAVerifyDebInstall() throws Exception {
+    public void testVerifyDebInstall() throws Exception {
+        String METHOD_NAME = "testVerifyDebInstall";
+        entering(c, METHOD_NAME);
 
-        if (openLibExists) {
-            String METHOD_NAME = "testVerifyDebInstall";
-            entering(c, METHOD_NAME);
+        assertTrue("OpenLiberty did not install successfully", openLibExists);
 
-            String[] param1s = { "-s", "openliberty" };
-            ProgramOutput po = runCommand(METHOD_NAME, "dpkg", param1s);
-            assertEquals("Expected exit code", 0, po.getReturnCode());
-            String output = po.getStdout();
-            assertTrue("Should contain installed status",
-                       output.indexOf("Status: install ok installed") >= 0);
-            exiting(c, METHOD_NAME);
-        } else {
-            logger.info("OpenLiberty did not install successfully");
-        }
-    }
+        //check Open Liberty was installed
 
-    @Test
-    public void testBServices() throws Exception {
+        String[] paramInstallStatus = { "-s", "openliberty" };
+        ProgramOutput poInstallStatus = runCommand(METHOD_NAME, "dpkg", paramInstallStatus);
+        assertEquals("Expected exit code", 0, poInstallStatus.getReturnCode());
+        String output = poInstallStatus.getStdout();
+        assertTrue("Should contain installed status",
+                   output.indexOf("Status: install ok installed") >= 0);
 
-        if (openLibExists) {
+        // test Open Liberty services
+        // append JAVA_HOME to server.env
+        //sudo sh -c 'echo line > file'
 
-            String METHOD_NAME = "testServices";
-            entering(c, METHOD_NAME);
-            // append JAVA_HOME to server.env
-            //sudo sh -c 'echo line > file'
+        String[] param1j = { "sh -c ", " 'echo JAVA_HOME=" + javaHome + " >> /opt/ol/etc/server.env'" };
+        ProgramOutput po1j = runCommand(METHOD_NAME, "sudo ", param1j);
+        Log.info(c, METHOD_NAME, "setup server.env permissions RC:" + po1j.getReturnCode());
 
-            String[] param1j = { "sh -c ", " 'echo JAVA_HOME=" + javaHome + " >> /opt/ol/etc/server.env'" };
-            ProgramOutput po1j = runCommand(METHOD_NAME, "sudo ", param1j);
-            Log.info(c, METHOD_NAME, "setup server.env permissions RC:" + po1j.getReturnCode());
+        // Output contents of server.env
+        Log.info(c, METHOD_NAME, "Contents of opt/ol/etc/server.env");
+        String[] param2b = { "cat", "/opt/ol/etc/server.env" };
+        ProgramOutput po2b = runCommand(METHOD_NAME, "sudo ", param2b);
 
-            // Output contents of server.env
-            Log.info(c, METHOD_NAME, "Contents of opt/ol/etc/server.env");
-            String[] param2b = { "cat", "/opt/ol/etc/server.env" };
-            ProgramOutput po2b = runCommand(METHOD_NAME, "sudo ", param2b);
+        // service tests
+        Log.info(c, METHOD_NAME, "Starting defaultServer");
+        ProgramOutput poServerStart = serviceCommand(METHOD_NAME, "start", "defaultServer");
+        TimeUnit.SECONDS.sleep(2);
+        ProgramOutput poServerStatus1 = serviceCommand(METHOD_NAME, "status", "defaultServer");
 
-            // service tests
-            Log.info(c, METHOD_NAME, "Starting defaultServer");
-            ProgramOutput po2 = serviceCommand(METHOD_NAME, "start", "defaultServer");
-            TimeUnit.SECONDS.sleep(2);
-            ProgramOutput po2a = serviceCommand(METHOD_NAME, "status", "defaultServer");
+        Log.info(c, METHOD_NAME, "Stopping defaultServer");
+        ProgramOutput poServerStop1 = serviceCommand(METHOD_NAME, "stop", "defaultServer");
+        TimeUnit.SECONDS.sleep(2);
+        ProgramOutput poServerStatus2 = serviceCommand(METHOD_NAME, "status", "defaultServer");
 
-            Log.info(c, METHOD_NAME, "Stopping defaultServer");
-            ProgramOutput po3 = serviceCommand(METHOD_NAME, "stop", "defaultServer");
-            TimeUnit.SECONDS.sleep(2);
-            ProgramOutput po3a = serviceCommand(METHOD_NAME, "status", "defaultServer");
+        Log.info(c, METHOD_NAME, "Re-starting defaultServer");
+        ProgramOutput poServerRestart = serviceCommand(METHOD_NAME, "restart", "defaultServer");
+        TimeUnit.SECONDS.sleep(2);
+        ProgramOutput poServerStatus3 = serviceCommand(METHOD_NAME, "status", "defaultServer");
 
-            Log.info(c, METHOD_NAME, "Re-starting defaultServer");
-            ProgramOutput po4 = serviceCommand(METHOD_NAME, "restart", "defaultServer");
-            TimeUnit.SECONDS.sleep(2);
-            ProgramOutput po4a = serviceCommand(METHOD_NAME, "status", "defaultServer");
+        Log.info(c, METHOD_NAME, "Stopping defaultServer");
+        ProgramOutput poServerStop2 = serviceCommand(METHOD_NAME, "stop", "defaultServer");
 
-            Log.info(c, METHOD_NAME, "Stopping defaultServer");
-            ProgramOutput po5 = serviceCommand(METHOD_NAME, "stop", "defaultServer");
+        Log.info(c, METHOD_NAME, "Test Results Summary:\n"
+                                 + "===================="
+                                 + "start defaultServer.service RC2:" + poServerStart.getReturnCode() + "\n"
+                                 + "status defaultServer.service RC2a:" + poServerStatus1.getReturnCode() + "\n"
+                                 + "stop defaultServer.service RC3:" + poServerStop1.getReturnCode() + "\n"
+                                 + "status defaultServer.service RC3a:" + poServerStatus2.getReturnCode() + "\n"
+                                 + "restart defaultServer.service RC4:" + poServerRestart.getReturnCode() + "\n"
+                                 + "status defaultServer.service RC4a:" + poServerStatus3.getReturnCode() + "\n"
+                                 + "stop defaultServer.service RC5:" + poServerStop2.getReturnCode() + "\n");
 
-            Log.info(c, METHOD_NAME, "Test Results Summary:\n"
-                                     + "===================="
-                                     + "start defaultServer.service RC2:" + po2.getReturnCode() + "\n"
-                                     + "status defaultServer.service RC2a:" + po2a.getReturnCode() + "\n"
-                                     + "stop defaultServer.service RC3:" + po3.getReturnCode() + "\n"
-                                     + "status defaultServer.service RC3a:" + po3a.getReturnCode() + "\n"
-                                     + "restart defaultServer.service RC4:" + po4.getReturnCode() + "\n"
-                                     + "status defaultServer.service RC4a:" + po4a.getReturnCode() + "\n"
-                                     + "stop defaultServer.service RC5:" + po5.getReturnCode() + "\n");
+        Boolean testsPassed = ((poServerStart.getReturnCode() == 0) && (poServerStop1.getReturnCode() == 0) && (poServerRestart.getReturnCode() == 0)
+                               && (poServerStop2.getReturnCode() == 0));
+        Assert.assertTrue("Non zero return code in service test case. "
+                          + "start defaultServer.service RC2:" + poServerStart.getReturnCode() + "\n"
+                          + "status defaultServer.service RC2a:" + poServerStatus1.getReturnCode() + "\n"
+                          + "stop defaultServer.service RC3:" + poServerStop1.getReturnCode() + "\n"
+                          + "status defaultServer.service RC3a:" + poServerStatus2.getReturnCode() + "\n"
+                          + "restart defaultServer.service RC4:" + poServerRestart.getReturnCode() + "\n"
+                          + "status defaultServer.service RC4a:" + poServerStatus3.getReturnCode() + "\n"
+                          + "stop defaultServer.service RC5:" + poServerStop2.getReturnCode() + "\n", testsPassed);
 
-            Boolean testsPassed = ((po2.getReturnCode() == 0) && (po3.getReturnCode() == 0) && (po4.getReturnCode() == 0)
-                                   && (po5.getReturnCode() == 0));
-            Assert.assertTrue("Non zero return code in service test case. "
-                              + "start defaultServer.service RC2:" + po2.getReturnCode() + "\n"
-                              + "status defaultServer.service RC2a:" + po2a.getReturnCode() + "\n"
-                              + "stop defaultServer.service RC3:" + po3.getReturnCode() + "\n"
-                              + "status defaultServer.service RC3a:" + po3a.getReturnCode() + "\n"
-                              + "restart defaultServer.service RC4:" + po4.getReturnCode() + "\n"
-                              + "status defaultServer.service RC4a:" + po4a.getReturnCode() + "\n"
-                              + "stop defaultServer.service RC5:" + po5.getReturnCode() + "\n", testsPassed);
-        } else {
-            logger.info("OpenLiberty did not install successfully");
-        }
-    }
+        // test Uninstall
 
-    @Test
-    public void testCUninstallDeb() throws Exception {
+        String[] paramUninstall = { "remove", "-y", "openliberty" };
+        ProgramOutput poUninstall = runCommand(METHOD_NAME, "sudo apt-get", paramUninstall);
+        assertEquals("Expected exit code", 0, poUninstall.getReturnCode());
 
-        if (openLibExists) {
-            String METHOD_NAME = "testUninstallDeb";
-            entering(c, METHOD_NAME);
-
-            String[] param1s = { "remove", "-y", "openliberty" };
-            ProgramOutput po = runCommand(METHOD_NAME, "sudo apt-get", param1s);
-            assertEquals("Expected exit code", 0, po.getReturnCode());
-            exiting(c, METHOD_NAME);
-        } else {
-            logger.info("OpenLiberty did not install successfully");
-        }
-
+        exiting(c, METHOD_NAME);
     }
 }
