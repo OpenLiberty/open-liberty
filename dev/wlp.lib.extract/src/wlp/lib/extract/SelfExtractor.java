@@ -582,9 +582,14 @@ public class SelfExtractor implements LicenseProvider {
         String currentEdition = InstallUtils.getEditionName(props.getProperty("com.ibm.websphere.productEdition"));
         String currentVersion = props.getProperty("com.ibm.websphere.productVersion");
 
-        ReturnCode rc = ReturnCode.OK;
-        if (result != ProductMatch.NOT_APPLICABLE) {
-            if (result == ProductMatch.INVALID_VERSION || result == ProductMatch.INVALID_EDITION) {
+        ReturnCode rc;
+        switch (result) {
+            case ProductMatch.NOT_APPLICABLE:
+            case ProductMatch.MATCHED:
+                rc = ReturnCode.OK;
+                break;
+            case ProductMatch.INVALID_VERSION:
+            case ProductMatch.INVALID_EDITION:
                 List<String> applicableEditions = InstallUtils.getEditionNameFromList(match.getEditions());
                 String matchVersion = match.getVersion();
                 if (result == ProductMatch.INVALID_VERSION) {
@@ -592,12 +597,18 @@ public class SelfExtractor implements LicenseProvider {
                 } else {
                     rc = new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidEdition", currentEdition, applicableEditions, currentVersion, matchVersion, currentLicenseType);
                 }
-            } else if (result == ProductMatch.INVALID_INSTALL_TYPE) {
+                break;
+            case ProductMatch.INVALID_INSTALL_TYPE:
                 rc = new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidInstallType", currentInstallType, match.getInstallType());
-            } else {
+                break;
+            case ProductMatch.INVALID_LICENSE:
                 rc = new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidLicense", currentLicenseType, match.getLicenseType());
-            }
+                break;
+            default:
+                rc = new ReturnCode(ReturnCode.BAD_OUTPUT);
+                break;
         }
+
         return rc;
     }
 

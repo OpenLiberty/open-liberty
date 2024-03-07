@@ -131,6 +131,20 @@ public class SelfExtractorTest {
     }
 
     @Test
+    public void testGetReturnCodeMatched() {
+        ProductMatch match = new ProductMatch();
+        Properties props = new Properties();
+        props.put("com.ibm.websphere.productId", "com.ibm.websphere.appserver");
+        props.put("com.ibm.websphere.productVersion", "24.0.0.1");
+        props.put("com.ibm.websphere.productEdition", "edition");
+        props.put("com.ibm.websphere.productLicenseType", "IPLA");
+        props.put("com.ibm.websphere.productInstallType", "Archive");
+
+        ReturnCode rc = SelfExtractor.getReturnCode(props, match, ProductMatch.MATCHED);
+        assertEquals("Return code does not match.", rc.getCode(), ReturnCode.OK.getCode());
+    }
+
+    @Test
     public void testValidatePropertiesEmptyProp() {
         List<Properties> props_list = new ArrayList<>();
         List productMatches = new ArrayList<>();
