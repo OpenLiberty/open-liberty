@@ -43,8 +43,11 @@ import componenttest.topology.impl.LibertyServer;
 // No need to run against cdi-2.0 since these tests don't use CDI at all.
 @SkipForRepeat("CDI-2.0")
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class JSPJava7Test {
-    private static final String APP_NAME = "TestJSPWithJava8";
+    
+    private static final String APP_NAME = "TestJSPWithJava8"; // Using Java 8 Test App to Verify it fails with Java 7 Source
+
     private static final Logger LOG = Logger.getLogger(JSPJava7Test.class.getName());
 
     @Server("jspJava7Server")
@@ -73,7 +76,6 @@ public class JSPJava7Test {
      */
     @Test
     @AllowedFFDC("java.security.PrivilegedActionException") // Occurs in EE10 and lower
-    @Mode(TestMode.FULL)
     public void testJdkSourceLevel17() throws Exception {
 
         ServerConfiguration configuration = server.getServerConfiguration();
@@ -106,7 +108,6 @@ public class JSPJava7Test {
      */
     @Test
     @AllowedFFDC("java.security.PrivilegedActionException") // Occurs in EE10 and lower
-    @Mode(TestMode.FULL)
     public void testJdkSourceLevel17withPreCompile() throws Exception {
 
         ServerConfiguration configuration = server.getServerConfiguration();
@@ -141,7 +142,6 @@ public class JSPJava7Test {
      */
     @Test
     @AllowedFFDC("java.security.PrivilegedActionException") // Occurs in EE10 and lower
-    @Mode(TestMode.FULL)
     public void testJdkSourceLevel17withPreCompileAndUseJDKCompiler() throws Exception {
 
         ServerConfiguration configuration = server.getServerConfiguration();
