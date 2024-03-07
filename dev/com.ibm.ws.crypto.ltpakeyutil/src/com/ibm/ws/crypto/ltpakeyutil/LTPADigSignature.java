@@ -30,8 +30,13 @@ final class LTPADigSignature {
 			if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
 				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256,
 						LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
+			} else if (LTPAKeyUtil.isFIPSEnabled() &&  LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()) {
+				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256,
+						LTPAKeyUtil.OPENJCE_PLUS_FIPS_NAME);
 			} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
 				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
+			} else if (LTPAKeyUtil.isOpenJCEPlusAvailable()) {
+				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.OPENJCE_PLUS_NAME);
 			} else {
 				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA);
 			}

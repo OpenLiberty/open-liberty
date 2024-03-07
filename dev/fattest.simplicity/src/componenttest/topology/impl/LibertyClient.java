@@ -668,17 +668,28 @@ public class LibertyClient {
             }
         }
 
-        //FIPS 140-3
+        // FIPS 140-3
         // if we have FIPS 140-3 enabled, and the matched java/platform, add JVM arg
         if (isFIPS140_3EnabledAndSupported()) {
             Log.info(c, "startClientWithArgs", "The JDK version: " + javaInfo.majorVersion() + " and vendor: " + JavaInfo.Vendor.IBM);
-            Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
-                                               + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
+            
+            if (javaInfo.majorVersion() == 8){
+                Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
+                                                + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
 
-            JVM_ARGS += " -Xenablefips140-3";
-            JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
-            JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
-            // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
+                JVM_ARGS += " -Xenablefips140-3";
+                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
+                JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
+                // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
+            }
+            else if (javaInfo.majorVersion() == 17){
+                Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
+                                                + " with IBM Java 17, adding JVM arguments -Dsemeru.fips=true, ..., to run with FIPS 140-3 enabled");
+
+                JVM_ARGS += " -Dsemeru.fips=true";
+                JVM_ARGS += " -Dsemeru.customprofile=OpenJCEPlusFIPS";
+                // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
+            }
         }
 
         // Look for forced client trace..
