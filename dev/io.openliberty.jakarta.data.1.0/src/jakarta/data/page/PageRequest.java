@@ -28,7 +28,7 @@ public interface PageRequest<T> {
 
     public interface Cursor {
         public static Cursor forKeyset(Object... keysetValues) {
-            return new KeysetCursor(keysetValues);
+            return new PageRequestCursor(keysetValues);
         }
 
         public List<?> elements();
@@ -39,15 +39,15 @@ public interface PageRequest<T> {
     }
 
     public static <T> PageRequest<T> of(Class<T> entityClass) {
-        return new Pagination<T>(1, 10, Collections.emptyList(), Mode.OFFSET, null);
+        return new Pagination<T>(1, 10, Collections.emptyList(), Mode.OFFSET, null, true);
     }
 
     public static <T> PageRequest<T> ofPage(long page) {
-        return new Pagination<T>(page, 10, Collections.emptyList(), Mode.OFFSET, null);
+        return new Pagination<T>(page, 10, Collections.emptyList(), Mode.OFFSET, null, true);
     }
 
     public static <T> PageRequest<T> ofSize(int size) {
-        return new Pagination<T>(1, size, Collections.emptyList(), Mode.OFFSET, null);
+        return new Pagination<T>(1, size, Collections.emptyList(), Mode.OFFSET, null, true);
     }
 
     public PageRequest<T> afterKeyset(Object... keyset);
@@ -74,11 +74,15 @@ public interface PageRequest<T> {
 
     public long page();
 
+    public boolean requestTotal();
+
     public int size();
 
     public List<Sort<? super T>> sorts();
 
     public PageRequest<T> page(long page);
+
+    public PageRequest<T> previous();
 
     public PageRequest<T> size(int size);
 
@@ -95,4 +99,9 @@ public interface PageRequest<T> {
 
     public PageRequest<T> sortBy(Sort<? super T> sort1, Sort<? super T> sort2, Sort<? super T> sort3,
                                  Sort<? super T> sort4, Sort<? super T> sort5);
+
+    public PageRequest<T> withoutTotal();
+
+    public PageRequest<T> withTotal();
+
 }

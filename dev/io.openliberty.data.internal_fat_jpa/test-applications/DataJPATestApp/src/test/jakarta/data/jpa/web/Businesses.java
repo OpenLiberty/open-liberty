@@ -15,8 +15,7 @@ package test.jakarta.data.jpa.web;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jakarta.data.Streamable;
-import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.CursoredPage;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
@@ -58,7 +57,7 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     @OrderBy("location.address.zip")
     @OrderBy("houseNum")
     @OrderBy("id")
-    KeysetAwareSlice<Business> findByZipIn(Iterable<Integer> zipCodes, PageRequest pagination);
+    CursoredPage<Business> findByZipIn(Iterable<Integer> zipCodes, PageRequest<?> pagination);
 
     // embeddable 3 levels deep as result type
     @OrderBy("street")
@@ -82,7 +81,7 @@ public interface Businesses extends BasicRepository<Business, Integer> {
 
     // Save with a different entity type does not conflict with the primary entity type from BasicRepository
     @Save
-    Streamable<Employee> save(Employee... e);
+    Stream<Employee> save(Employee... e);
 
     @Update
     boolean update(Business b);

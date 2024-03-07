@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 import jakarta.data.Limit;
 import jakarta.data.Sort;
 import jakarta.data.Streamable;
+import jakarta.data.page.CursoredPage;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
@@ -129,14 +130,14 @@ public interface Primes {
     Prime findByNumberIdBetween(long min, long max);
 
     @OrderBy("numberId")
-    KeysetAwarePage<Prime> findByNumberIdBetween(long min, long max, Limit limit);
+    CursoredPage<Prime> findByNumberIdBetween(long min, long max, Limit limit);
 
     @OrderBy("id")
-    KeysetAwarePage<Prime> findByNumberIdBetween(long min, long max, PageRequest<?> pagination);
+    CursoredPage<Prime> findByNumberIdBetween(long min, long max, PageRequest<?> pagination);
 
     List<Prime> findByNumberIdBetween(long min, long max, Sort<?>... orderBy);
 
-    KeysetAwarePage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort<?>... orderBy); // Lacks PageRequest
+    CursoredPage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort<?>... orderBy); // Lacks PageRequest
 
     KeysetAwareSlice<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, PageRequest<Prime> pagination);
 
@@ -170,7 +171,7 @@ public interface Primes {
     @OrderBy("sumOfBits")
     Page<Prime> findByNumberIdLessThan(long max, PageRequest<?> pagination);
 
-    Streamable<Prime> findByNumberIdLessThanEqualOrderByIdAsc(long max, PageRequest<?> pagination);
+    List<Prime> findByNumberIdLessThanEqualOrderByIdAsc(long max, PageRequest<?> pagination);
 
     Streamable<Prime> findByNumberIdLessThanEqualOrderByIdDesc(long max, Limit limit);
 
@@ -181,7 +182,7 @@ public interface Primes {
     KeysetAwareSlice<Prime> findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(long max, PageRequest<?> pagination);
 
     @Asynchronous
-    CompletionStage<KeysetAwarePage<Prime>> findByNumberIdLessThanOrderByIdDesc(long max, PageRequest<?> pagination);
+    CompletionStage<CursoredPage<Prime>> findByNumberIdLessThanOrderByIdDesc(long max, PageRequest<?> pagination);
 
     Iterator<Prime> findByNumberIdNotGreaterThan(long max, PageRequest<?> pagination);
 
@@ -259,10 +260,10 @@ public interface Primes {
     ArrayList<String> matchAnyExceptLiteralValueThatLooksLikeANamedParameter(String name, long num);
 
     @Query("SELECT o.numberId FROM Prime o WHERE (o.name = :numName OR o.romanNumeral=:numeral OR o.hex =:hexadecimal OR o.numberId=:num)")
-    Streamable<Long> matchAnyWithMixedUsageOfParamAnnotation(long num,
-                                                             @Param("numName") String numberName,
-                                                             String numeral,
-                                                             @Param("hexadecimal") String hex);
+    Stream<Long> matchAnyWithMixedUsageOfParamAnnotation(long num,
+                                                         @Param("numName") String numberName,
+                                                         String numeral,
+                                                         @Param("hexadecimal") String hex);
 
     @Query("SELECT o.numberId FROM Prime o WHERE (o.name = ?1 OR o.numberId=:num)")
     Collection<Long> matchAnyWithMixedUsageOfPositionalAndNamed(String name, long num);
@@ -323,7 +324,7 @@ public interface Primes {
     @Query("SELECT prime_ FROM Prime AS prime_ WHERE (prime_.numberId <= ?1)")
     @OrderBy(value = "even", descending = true)
     @OrderBy(value = "sumOfBits", descending = true)
-    KeysetAwarePage<Prime> upTo(long maxNumber, PageRequest<?> pagination);
+    CursoredPage<Prime> upTo(long maxNumber, PageRequest<?> pagination);
 
     @Find
     @OrderBy("name")

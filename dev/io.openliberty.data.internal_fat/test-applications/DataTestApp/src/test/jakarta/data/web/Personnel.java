@@ -17,7 +17,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
-import jakarta.data.Streamable;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
@@ -84,7 +83,7 @@ public interface Personnel {
 
     @Find
     @Select("firstName")
-    Streamable<String> namesThatStartWith(@By("firstName") @StartsWith String beginningOfFirstName);
+    List<String> namesThatStartWith(@By("firstName") @StartsWith String beginningOfFirstName);
 
     // An alternative to the above would be to make the Collector class a parameter
     // of the Paginated annotation, although this would rule out easily accessing the

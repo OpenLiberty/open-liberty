@@ -22,8 +22,7 @@ import java.util.Optional;
 
 import jakarta.data.Limit;
 import jakarta.data.Sort;
-import jakarta.data.page.KeysetAwarePage;
-import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.CursoredPage;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
@@ -77,9 +76,9 @@ public interface Packages extends BasicRepository<Package, Integer> {
     @OrderBy(value = "width", descending = true)
     @OrderBy(value = "height")
     @OrderBy(value = "id", descending = true)
-    KeysetAwareSlice<Package> findByHeightGreaterThan(float minHeight, PageRequest<?> pagination);
+    CursoredPage<Package> findByHeightGreaterThan(float minHeight, PageRequest<?> pagination);
 
-    KeysetAwareSlice<Package> findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(float minHeight, PageRequest<?> pagination);
+    CursoredPage<Package> findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(float minHeight, PageRequest<?> pagination);
 
     @OrderBy(value = "id")
     List<Integer> findIdByHeightRoundedDown(int height);
@@ -127,15 +126,15 @@ public interface Packages extends BasicRepository<Package, Integer> {
                                                                                          float lengthMultiplier, float widthMultiplier, float newHeight);
 
     @Find
-    KeysetAwarePage<Package> whereHeightNotWithin(@By("height") @LessThan float minToExclude,
-                                                  @Or @By("height") @GreaterThan float maxToExclude,
-                                                  PageRequest<?> pagination);
+    CursoredPage<Package> whereHeightNotWithin(@By("height") @LessThan float minToExclude,
+                                               @Or @By("height") @GreaterThan float maxToExclude,
+                                               PageRequest<?> pagination);
 
     @Query("SELECT p FROM Package p WHERE (p.length * p.width * p.height >= ?1 AND p.length * p.width * p.height <= ?2)")
     @OrderBy(value = "width", descending = true)
     @OrderBy(value = "length")
     @OrderBy(value = "id")
-    KeysetAwarePage<Package> whereVolumeWithin(float minVolume, float maxVolume, PageRequest<?> pagination);
+    CursoredPage<Package> whereVolumeWithin(float minVolume, float maxVolume, PageRequest<?> pagination);
 
     @Find
     @OrderBy(value = "id")
