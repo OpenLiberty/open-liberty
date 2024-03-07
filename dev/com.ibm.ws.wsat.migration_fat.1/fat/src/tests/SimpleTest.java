@@ -40,13 +40,13 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
-import web.simpleclient.SimplerServlet;
+import web.simpleclient.SimpleClientServlet;
 
 @RunWith(FATRunner.class)
 public class SimpleTest extends DBTestBase {
 
 	@Server("MigrationServer1")
-    @TestServlet(servlet = SimplerServlet.class, contextRoot = "simpleClient")
+    @TestServlet(servlet = SimpleClientServlet.class, contextRoot = "simpleClient")
 	public static LibertyServer server;
 
 	@Server("MigrationServer2")
@@ -103,7 +103,8 @@ public class SimpleTest extends DBTestBase {
 	public void testAsyncResponseTimeoutSetting() throws Exception {
 		FATUtils.stopServers(server);
 		FATUtils.startServers(runner, server);
-		assertNotNull("asyncResponseTimeout not overridden", server.waitForStringInTrace("asyncResponseTimeout setting overridden to 0 by com.ibm.ws.wsat.asyncResponseTimeout system property"));
+		server.resetLogMarks();
+		assertNotNull("asyncResponseTimeout not overridden", server.waitForStringInTraceUsingMark("asyncResponseTimeout setting overridden to [0-9]* by com.ibm.ws.wsat.asyncResponseTimeout system property"));
 	}
 
 	@Test

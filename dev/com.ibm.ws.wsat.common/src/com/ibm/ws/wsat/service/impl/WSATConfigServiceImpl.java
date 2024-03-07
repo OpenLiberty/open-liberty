@@ -142,7 +142,8 @@ public class WSATConfigServiceImpl implements WSATConfigService {
 
         if (ASYNC_RESPONSE_TIMEOUT != null) {
             if (TC.isDebugEnabled()) {
-                Tr.debug(TC, "asyncResponseTimeout setting overridden to {0} by {1} system property", ASYNC_RESPONSE_TIMEOUT, ASYNC_RESPONSE_TIMEOUT_PROPERTY);
+                // Tests will fail if you change the format of this debug message
+                Tr.debug(TC, "asyncResponseTimeout setting overridden to " + ASYNC_RESPONSE_TIMEOUT + " by " + ASYNC_RESPONSE_TIMEOUT_PROPERTY + " system property");
             }
             asyncResponseTimeout = ASYNC_RESPONSE_TIMEOUT;
         } else {

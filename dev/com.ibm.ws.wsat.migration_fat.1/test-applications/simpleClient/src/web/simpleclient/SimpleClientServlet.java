@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import java.util.Enumeration;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.RollbackException;
@@ -39,8 +38,10 @@ import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
 
+import componenttest.app.FATServlet;
+
 @WebServlet({ "/SimpleClientServlet" })
-public class SimpleClientServlet extends HttpServlet {
+public class SimpleClientServlet extends FATServlet {
 	private static final long serialVersionUID = 1L;
 	
 	private static final float DEFAULT_TIMEOUT = 40; // seconds
