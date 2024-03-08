@@ -137,7 +137,6 @@ io.opentelemetry.semconv:opentelemetry-semconv:1.23.1-alpha
 io.opentelemetry:opentelemetry-api-events:1.29.0-alpha
 io.opentelemetry:opentelemetry-api-events:1.35.0-alpha
 io.opentelemetry:opentelemetry-api-logs:1.19.0-alpha
-io.opentelemetry:opentelemetry-api-logs:1.35.0-alpha
 io.opentelemetry:opentelemetry-api:1.19.0
 io.opentelemetry:opentelemetry-api:1.29.0
 io.opentelemetry:opentelemetry-api:1.35.0
@@ -163,7 +162,6 @@ io.opentelemetry:opentelemetry-exporter-sender-okhttp:1.35.0
 io.opentelemetry:opentelemetry-exporter-zipkin:1.19.0
 io.opentelemetry:opentelemetry-exporter-zipkin:1.29.0
 io.opentelemetry:opentelemetry-exporter-zipkin:1.35.0
-io.opentelemetry:opentelemetry-extension-incubator:1.35.0
 io.opentelemetry:opentelemetry-extension-incubator:1.35.0-alpha
 io.opentelemetry:opentelemetry-extension-trace-propagators:1.19.0
 io.opentelemetry:opentelemetry-extension-trace-propagators:1.29.0
