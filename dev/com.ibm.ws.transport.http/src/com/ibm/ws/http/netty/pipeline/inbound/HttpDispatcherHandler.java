@@ -37,6 +37,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
 //    HttpDispatcherLink link;
     HttpChannelConfig config;
+    private ChannelHandlerContext context;
 
     public HttpDispatcherHandler(HttpChannelConfig config) {
 
@@ -45,6 +46,21 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
         Objects.requireNonNull(config);
         this.config = config;
     }
+    
+    
+    
+
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) {
+        // Store the context for later use
+       context = ctx;
+    }
+    
+ // Method to allow direct invocation
+    public void processMessageDirectly(FullHttpRequest request) throws Exception {
+        channelRead0(context, request);
+    }
+    
 
     @Override
     protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {

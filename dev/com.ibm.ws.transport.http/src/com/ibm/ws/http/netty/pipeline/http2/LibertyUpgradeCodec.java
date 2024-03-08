@@ -9,21 +9,29 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.http2;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.h2internal.Constants;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
+import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObjectDecoder;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler.UpgradeCodec;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler.UpgradeCodecFactory;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.DefaultHttp2Connection;
 import io.netty.handler.codec.http2.DefaultHttp2LocalFlowController;
@@ -81,7 +89,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         return new CleartextHttp2ServerUpgradeHandler(sourceCodec, upgradeHandler, codec.buildHttp2ConnectionHandler(httpConfig, channel));
     }
 
-    LibertyUpgradeCodec(HttpChannelConfig httpConfig, Channel channel) {
+    public LibertyUpgradeCodec(HttpChannelConfig httpConfig, Channel channel) {
         super();
         this.httpConfig = httpConfig;
         this.channel = channel;
@@ -102,7 +110,10 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
                 public void upgradeTo(ChannelHandlerContext ctx, io.netty.handler.codec.http.FullHttpRequest request) {
                     ctx.channel().pipeline().names().forEach(handler -> System.out.println(handler));
                     // Remove http1 handler adder
-                    ctx.pipeline().remove(HttpPipelineInitializer.NO_UPGRADE_OCURRED_HANDLER_NAME);
+                    
+                    ctx.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
+                    
+                    
                     // Call upgrade
                     super.upgradeTo(ctx, request);
                     System.out.println("After upgrade!");
@@ -137,7 +148,33 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
                 };
             };
 
-        } else {
+        } else if (AsciiString.contentEqualsIgnoreCase("websocket", protocol)) {
+            // WebSocket upgrade detected
+            return new UpgradeCodec() {
+                @Override
+                public void upgradeTo(ChannelHandlerContext ctx, io.netty.handler.codec.http.FullHttpRequest request) {
+                    System.out.println("This should be retaining the message and passing it on to the NO_UPDATE handler");
+                    
+                    
+                    ctx.fireChannelRead(ReferenceCountUtil.retain(request));
+                }
+
+                @Override
+                public boolean prepareUpgradeResponse(ChannelHandlerContext ctx, FullHttpRequest upgradeRequest, HttpHeaders upgradeHeaders) {
+                    //Abort upgrade, pass through inbound pipeline like no upgrade was performed.
+                    return false;
+                }
+
+                @Override
+                public Collection<CharSequence> requiredUpgradeHeaders() {
+                    //Delegated to HTTPDispatcher
+                    return Collections.emptyList();
+                };
+            }; 
+            
+        }else {
+                
+            
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Returning null since no valid protocol was found: " + protocol);
             }

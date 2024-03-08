@@ -322,8 +322,10 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
     public WsByteBuffer completeResponse() throws IOException {
         System.out.println("Completing response!");
         try {
-            responsePromise.get(20000, TimeUnit.MILLISECONDS);
+            System.out.println("This should wait up to 60s");
+            responsePromise.get(60000, TimeUnit.MILLISECONDS);
         }catch (InterruptedException | ExecutionException | TimeoutException e1) {
+            System.out.println("How much did we wait?");
             e1.printStackTrace();
         }
         if (resp == null) {
