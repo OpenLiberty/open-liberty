@@ -28,8 +28,7 @@ IBM-API-Package: \
   io.opentelemetry.sdk.autoconfigure.spi.metrics;type="third-party",\
   io.opentelemetry.sdk.autoconfigure.spi.traces;type="third-party",\
   io.opentelemetry.sdk.autoconfigure.spi;type="third-party",\
-  io.opentelemetry.semconv.trace.attributes;type="third-party",\
-  io.opentelemetry.semconv.resource.attributes;type="third-party",\
+  io.opentelemetry.semconv;type="third-party",\
   io.opentelemetry.sdk.resources;type="third-party",\
   io.opentelemetry.instrumentation.annotations;type="third-party"
 -features=\
