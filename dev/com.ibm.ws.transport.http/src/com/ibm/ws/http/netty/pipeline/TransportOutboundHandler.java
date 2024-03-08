@@ -17,7 +17,6 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
@@ -27,7 +26,6 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpUtil;
 import io.openliberty.netty.internal.tcp.InactivityTimeoutHandler;
 
@@ -47,8 +45,6 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-
-        MSP.log(Thread.currentThread().getStackTrace().toString());
 
         MSP.log("Writing outbound, msg is: " + msg);
         //TODO: only if first time running through here (persist needs to clear)
@@ -76,12 +72,12 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
 //            }
 
             final boolean isSwitching = response.status() == HttpResponseStatus.SWITCHING_PROTOCOLS;
-            
-            if(isSwitching && "websocket".equalsIgnoreCase(response.headers().get(HttpHeaderNames.UPGRADE))) {
+
+            if (isSwitching && "websocket".equalsIgnoreCase(response.headers().get(HttpHeaderNames.UPGRADE))) {
                 ctx.channel().attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
             }
-            
-            System.out.println("MSP PROTOCOL SET TO: "+ ctx.channel().attr(NettyHttpConstants.PROTOCOL).get());
+
+            System.out.println("MSP PROTOCOL SET TO: " + ctx.channel().attr(NettyHttpConstants.PROTOCOL).get());
 
 //            if (response.status() == HttpResponseStatus.SWITCHING_PROTOCOLS) {
 ////
@@ -94,27 +90,20 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
                 @Override
                 public void operationComplete(ChannelFuture future) {
                     if (future.isSuccess() && isSwitching) {
-                        
-                        
-                        
-                        
-                        
-                        // Handle the successful write operation
+
+                        ctx.pipeline().remove(TransportOutboundHandler.class);
+                        ctx.pipeline().remove("HttpServerCodec#0");
                         ctx.pipeline().remove("maxConnectionHandler");
-                        // ctx.pipeline().remove("HTTP_SERVER_HANDLER");
                         ctx.pipeline().remove("chunkLoggingHandler");
                         ctx.pipeline().remove("chunkWriteHandler");
                         ctx.pipeline().remove(ByteBufferCodec.class);
-                        ctx.pipeline().remove(TransportOutboundHandler.class);
                         ctx.pipeline().remove(InactivityTimeoutHandler.class);
-                        ctx.pipeline().remove(HttpServerCodec.class);
+                        
                         if (ctx.pipeline().get(NettyServletUpgradeHandler.class) == null) {
 
                             NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(ctx.channel());
                             ctx.pipeline().addLast(upgradeHandler);
                         }
-
-                        System.out.println(ctx.pipeline().names());
                     }
                 }
             });
@@ -123,20 +112,20 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
 
         else {
 
-            if (msg instanceof ByteBuf) {
-                // Optionally manipulate the data
-                ByteBuf data = (ByteBuf) msg;
-                // Proceed with writing
-                super.write(ctx, data, promise);
-            } else {
-                // Forward to the next handler if not a ByteBuf
-                super.write(ctx, msg, promise);
-
-            }
+//            if (msg instanceof ByteBuf) {
+//                // Optionally manipulate the data
+//                ByteBuf data = (ByteBuf) msg;
+//                // Proceed with writing
+//                super.write(ctx, data, promise);
+//            } else {
+//                // Forward to the next handler if not a ByteBuf
+//                super.write(ctx, msg, promise);
+//
+//            }
 
             MSP.log("writeAndFlush for message: " + msg.toString());
-
-            ctx.writeAndFlush(msg);
+            super.write(ctx, msg, promise);
+            //ctx.writeAndFlush(ReferenceCountUtil.retain(msg));
         }
     }
 
