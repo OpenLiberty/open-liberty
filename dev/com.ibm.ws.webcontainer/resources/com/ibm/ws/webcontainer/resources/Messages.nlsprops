@@ -1632,4 +1632,6 @@ redirect.location.cannot.be.null.useraction=Update the redirect location by spec
 
 sendRedirect.hyper.text.url=<html><body><p>Redirecting to <a href="{0}"></a></p></body></html>
 
-query.or.post.is.null=Request query string or post data is null.
+query.or.post.is.null=CWWWC0009E: The HTTP request query string or HTTP POST request data is null.
+query.or.post.is.null.explanation=The application tried to parse a null HTTP request query string or a null HTTP POST request body.
+query.or.post.is.null.useraction=The client must send a non-null HTTP request query string or a non-null HTTP POST request body.
