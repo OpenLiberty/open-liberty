@@ -231,15 +231,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * For most properties will be of a form such as o.Name or LOWER(o.Name) DESC or ...
      *
      * @param q             builder for the JPQL query.
-     * @param o             variable referring to the entity.
+     * @param o_            identifier for the entity followed by '.'. Empty string if there is no identifier variable.
      * @param Sort          sort criteria for a single attribute (name must already be converted to a valid entity attribute name).
      * @param sameDirection indicate to append the Sort in the normal direction. Otherwise reverses it (for keyset pagination in previous page direction).
      * @return the same builder for the JPQL query.
      */
     @Trivial
-    private void appendSort(StringBuilder q, String o, Sort<?> sort, boolean sameDirection) {
+    private void appendSort(StringBuilder q, String o_, Sort<?> sort, boolean sameDirection) {
 
-        q.append(sort.ignoreCase() ? "LOWER(" : "").append(o).append('.').append(sort.property());
+        q.append(sort.ignoreCase() ? "LOWER(" : "").append(o_).append(sort.property());
 
         if (sort.ignoreCase())
             q.append(")");
@@ -408,7 +408,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         // The @OrderBy annotation from Jakarta Data provides sort criteria statically
         if (orderBy.length > 0) {
-            queryInfo.type = queryInfo.type == null ? QueryInfo.Type.FIND : queryInfo.type;
+            //queryInfo.type = queryInfo.type == null ? QueryInfo.Type.FIND : queryInfo.type;
             queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>(orderBy.length + 2) : queryInfo.sorts;
             if (q == null)
                 if (queryInfo.jpql == null) {
@@ -744,12 +744,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private String generateDeleteById(QueryInfo queryInfo) {
         EntityInfo entityInfo = queryInfo.entityInfo;
         String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
         StringBuilder q;
         if (entityInfo.idClassAttributeAccessors == null) {
             String idAttrName = entityInfo.attributeNames.get("id");
             q = new StringBuilder(24 + entityInfo.name.length() + o.length() * 2 + idAttrName.length()) //
                             .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o).append(" WHERE ") //
-                            .append(o).append('.').append(idAttrName).append("=?1");
+                            .append(o_).append(idAttrName).append("=?1");
         } else {
             q = new StringBuilder(200) //
                             .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o).append(" WHERE ");
@@ -757,7 +758,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             for (String idClassAttrName : entityInfo.idClassAttributeAccessors.keySet()) {
                 if (++count != 1)
                     q.append(" AND ");
-                q.append(o).append('.').append(entityInfo.getAttributeName(idClassAttrName, true)).append("=?").append(count);
+                q.append(o_).append(entityInfo.getAttributeName(idClassAttrName, true)).append("=?").append(count);
             }
         }
         return q.toString();
@@ -769,6 +770,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private StringBuilder generateDeleteEntity(QueryInfo queryInfo) {
         EntityInfo entityInfo = queryInfo.entityInfo;
         String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
 
         StringBuilder q = new StringBuilder(100) //
                         .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
@@ -792,14 +794,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         q.append(" AND ");
 
                     name = entityInfo.attributeNames.get(name);
-                    q.append(o).append('.').append(name).append("=?").append(++queryInfo.paramCount);
+                    q.append(o_).append(name).append("=?").append(++queryInfo.paramCount);
                 }
             } else {
-                q.append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+                q.append(o_).append(idName).append("=?").append(++queryInfo.paramCount);
             }
 
             if (entityInfo.versionAttributeName != null)
-                q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
+                q.append(" AND ").append(o_).append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
 
             q.append(')');
         }
@@ -990,8 +992,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (trimmed)
             attributeExpr.append("TRIM(");
 
-        String o = queryInfo.entityVar;
-        attributeExpr.append(o).append('.').append(name);
+        String o_ = queryInfo.entityVar_;
+        attributeExpr.append(o_).append(name);
 
         if (trimmed)
             attributeExpr.append(')');
@@ -1065,7 +1067,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     private void generateConditionsForIdClass(QueryInfo queryInfo, Condition condition, boolean ignoreCase, boolean negate, StringBuilder q) {
 
-        String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
 
         q.append(negate ? "NOT (" : "(");
 
@@ -1076,9 +1078,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
             String name = queryInfo.entityInfo.getAttributeName(idClassAttr, true);
             if (ignoreCase)
-                q.append("LOWER(").append(o).append('.').append(name).append(')');
+                q.append("LOWER(").append(o_).append(name).append(')');
             else
-                q.append(o).append('.').append(name);
+                q.append(o_).append(name);
 
             switch (condition) {
                 case EQUALS:
@@ -1139,7 +1141,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         q.append('(');
 
-        String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
         int count = 0;
         for (String idClassAttr : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
             if (count != 0)
@@ -1147,9 +1149,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
             String name = queryInfo.entityInfo.getAttributeName(idClassAttr, true);
             if (ignoreCase)
-                q.append("LOWER(").append(o).append('.').append(name).append(')');
+                q.append("LOWER(").append(o_).append(name).append(')');
             else
-                q.append(o).append('.').append(name);
+                q.append(o_).append(name);
 
             q.append('=');
             appendParam(q, ignoreCase, count++ + qp);
@@ -1197,6 +1199,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private StringBuilder generateFromParameters(QueryInfo queryInfo, StringBuilder q, Annotation methodAnno,
                                                  boolean countPages, boolean hasUpdateParam, ParamInfo[] allParamInfo) {
         String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
 
         Boolean isNamePresent = null; // unknown
         Parameter[] params = null;
@@ -1289,7 +1292,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                             String name = queryInfo.entityInfo.getAttributeName(attribute, true);
 
-                            q.append(first ? " " : ", ").append(o).append('.').append(name).append("=");
+                            q.append(first ? " " : ", ").append(o_).append(name).append("=");
                             first = false;
 
                             boolean withFunction = false;
@@ -1298,12 +1301,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     break;
                                 case '+':
                                     if (withFunction = CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name)))
-                                        q.append("CONCAT(").append(o).append('.').append(name).append(',');
+                                        q.append("CONCAT(").append(o_).append(name).append(',');
                                     else
-                                        q.append(o).append('.').append(name).append('+');
+                                        q.append(o_).append(name).append('+');
                                     break;
                                 default:
-                                    q.append(o).append('.').append(name).append(op);
+                                    q.append(o_).append(name).append(op);
                             }
 
                             queryInfo.paramCount++;
@@ -1369,7 +1372,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                 String name = queryInfo.entityInfo.getAttributeName(attribute, true);
 
-                attributeExpr.append(o).append('.').append(name);
+                attributeExpr.append(o_).append(name);
 
                 if (paramInfo != null && paramInfo.functionAnnos != null)
                     for (Annotation anno : paramInfo.functionAnnos) {
@@ -1458,7 +1461,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         String paramPrefix = queryInfo.paramNames == null ? "?" : ":keyset";
         StringBuilder a = fwd == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
         StringBuilder b = prev == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
-        String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
         for (int i = 0; i < numKeys; i++) {
             if (a != null)
                 a.append(i == 0 ? "(" : " OR (");
@@ -1471,21 +1474,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 boolean lower = keyInfo.ignoreCase();
                 if (a != null)
                     if (lower) {
-                        a.append(k == 0 ? "LOWER(" : " AND LOWER(").append(o).append('.').append(name).append(')');
+                        a.append(k == 0 ? "LOWER(" : " AND LOWER(").append(o_).append(name).append(')');
                         a.append(k < i ? '=' : (asc ? '>' : '<'));
                         a.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
                     } else {
-                        a.append(k == 0 ? "" : " AND ").append(o).append('.').append(name);
+                        a.append(k == 0 ? "" : " AND ").append(o_).append(name);
                         a.append(k < i ? '=' : (asc ? '>' : '<'));
                         a.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
                     }
                 if (b != null)
                     if (lower) {
-                        b.append(k == 0 ? "LOWER(" : " AND LOWER(").append(o).append('.').append(name).append(')');
+                        b.append(k == 0 ? "LOWER(" : " AND LOWER(").append(o_).append(name).append(')');
                         b.append(k < i ? '=' : (asc ? '<' : '>'));
                         b.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
                     } else {
-                        b.append(k == 0 ? "" : " AND ").append(o).append('.').append(name);
+                        b.append(k == 0 ? "" : " AND ").append(o_).append(name);
                         b.append(k < i ? '=' : (asc ? '<' : '>'));
                         b.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
                     }
@@ -1521,11 +1524,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
         boolean first = true;
         for (Sort<?> sort : queryInfo.sorts) {
             fwd.append(first ? " ORDER BY " : ", ");
-            appendSort(fwd, queryInfo.entityVar, sort, true);
+            appendSort(fwd, queryInfo.entityVar_, sort, true);
 
             if (needsKeysetQueries) {
                 prev.append(first ? " ORDER BY " : ", ");
-                appendSort(prev, queryInfo.entityVar, sort, false);
+                appendSort(prev, queryInfo.entityVar_, sort, false);
             }
             first = false;
         }
@@ -1650,6 +1653,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         EntityInfo entityInfo = queryInfo.entityInfo;
         String methodName = queryInfo.method.getName();
         String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
         StringBuilder q = null;
 
         boolean hasUpdateParam = false;
@@ -1733,7 +1737,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             queryInfo.type = QueryInfo.Type.EXISTS;
             String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
             String attrName = entityInfo.getAttributeName(name, true);
-            q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
+            q = new StringBuilder(200).append("SELECT ").append(o_).append(attrName) //
                             .append(" FROM ").append(entityInfo.name).append(' ').append(o);
             if (queryInfo.method.getParameterCount() > 0)
                 generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
@@ -1759,6 +1763,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private StringBuilder generateSelectClause(QueryInfo queryInfo, Select select, String... selections) {
         StringBuilder q = new StringBuilder(200);
         String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
         EntityInfo entityInfo = queryInfo.entityInfo;
 
         boolean distinct = select != null && select.distinct();
@@ -1797,7 +1802,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         attributeType = QueryInfo.wrapperClassIfPrimitive(attributeType);
                     if (singleType.isAssignableFrom(attributeType)) {
                         singleAttributeName = entry.getKey();
-                        q.append(distinct ? "DISTINCT " : "").append(o).append('.').append(singleAttributeName);
+                        q.append(distinct ? "DISTINCT " : "").append(o_).append(singleAttributeName);
                         break;
                     }
                 }
@@ -1905,6 +1910,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         generateWhereClause(queryInfo, methodName, c, uFirst, where);
 
         String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
         StringBuilder q = new StringBuilder(250);
         q.append("UPDATE ").append(queryInfo.entityInfo.name).append(' ').append(o).append(" SET");
 
@@ -1949,19 +1955,19 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                " repository update operation cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
                 }
             } else {
-                q.append(first ? " " : ", ").append(o).append('.').append(name).append("=");
+                q.append(first ? " " : ", ").append(o_).append(name).append("=");
 
                 switch (op) {
                     case '+':
                         if (CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name))) {
-                            q.append("CONCAT(").append(o).append('.').append(name).append(',') //
+                            q.append("CONCAT(").append(o_).append(name).append(',') //
                                             .append('?').append(++queryInfo.paramCount).append(')');
                             break;
                         }
                         // else fall through
                     case '*':
                     case '/':
-                        q.append(o).append('.').append(name).append(op);
+                        q.append(o_).append(name).append(op);
                         // fall through
                     case '=':
                         q.append('?').append(++queryInfo.paramCount);
@@ -1980,6 +1986,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private StringBuilder generateUpdateEntity(QueryInfo queryInfo) {
         EntityInfo entityInfo = queryInfo.entityInfo;
         String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
         StringBuilder q;
 
         String idName = queryInfo.entityInfo.getAttributeName("id", true);
@@ -2004,13 +2011,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 else
                     q.append(", ");
 
-                q.append(o).append('.').append(name).append("=?").append(++queryInfo.paramCount);
+                q.append(o_).append(name).append("=?").append(++queryInfo.paramCount);
             }
 
-            q.append(" WHERE ").append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+            q.append(" WHERE ").append(o_).append(idName).append("=?").append(++queryInfo.paramCount);
 
             if (entityInfo.versionAttributeName != null)
-                q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
+                q.append(" AND ").append(o_).append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
         } else {
             // Update that returns an entity - perform a find operation first so that em.merge can be used
             queryInfo.init(Update.class, QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM_AND_RESULT);
@@ -2018,10 +2025,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
             q = new StringBuilder(100) //
                             .append("SELECT ").append(o).append(" FROM ").append(entityInfo.name).append(' ').append(o) //
-                            .append(" WHERE ").append(o).append('.').append(idName).append("=?").append(++queryInfo.paramCount);
+                            .append(" WHERE ").append(o_).append(idName).append("=?").append(++queryInfo.paramCount);
 
             if (entityInfo.versionAttributeName != null)
-                q.append(" AND ").append(o).append('.').append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
+                q.append(" AND ").append(o_).append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
         }
 
         return q;
@@ -2032,12 +2039,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     private void generateUpdatesForIdClass(QueryInfo queryInfo, boolean firstOperation, StringBuilder q) {
 
+        String o_ = queryInfo.entityVar_;
         int count = 0;
         for (String idClassAttr : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
             count++;
             String name = queryInfo.entityInfo.getAttributeName(idClassAttr, true);
 
-            q.append(firstOperation ? " " : ", ").append(queryInfo.entityVar).append('.').append(name) //
+            q.append(firstOperation ? " " : ", ").append(o_).append(name) //
                             .append("=?").append(++queryInfo.paramCount);
             if (count != 1)
                 queryInfo.paramAddedCount++;
@@ -2411,7 +2419,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             StringBuilder order = null; // ORDER BY clause based on Sorts
                             for (Sort<?> sort : sortList) {
                                 order = order == null ? new StringBuilder(100).append(" ORDER BY ") : order.append(", ");
-                                appendSort(order, queryInfo.entityVar, sort, forward);
+                                appendSort(order, queryInfo.entityVar_, sort, forward);
                             }
 
                             if (pagination == null || pagination.mode() == PageRequest.Mode.OFFSET)

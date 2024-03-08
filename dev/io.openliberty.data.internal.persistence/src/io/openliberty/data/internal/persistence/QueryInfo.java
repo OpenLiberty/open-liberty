@@ -91,9 +91,16 @@ public class QueryInfo {
     final Class<?> entityParamType;
 
     /**
-     * Entity variable name. "o" is used as the default in generated queries.
+     * Entity identifier variable name if an identifier variable is used.
+     * Otherwise "*". "o" is used as the default in generated queries.
      */
     String entityVar = "o";
+
+    /**
+     * Entity identifier variable name and . character if an identifier variable is used.
+     * Otherwise the empty string. "o." is used as the default in generated queries.
+     */
+    String entityVar_ = "o.";
 
     /**
      * Indicates if the query has a WHERE clause.
@@ -503,6 +510,7 @@ public class QueryInfo {
 
         String upper = jpql.toUpperCase();
         String upperTrimmed = upper.stripLeading();
+        // TODO JDQL queries can omit SELECT and/or FROM
         if (upperTrimmed.startsWith("SELECT")) {
             int order = upper.lastIndexOf("ORDER BY");
             type = Type.FIND;
@@ -514,8 +522,15 @@ public class QueryInfo {
             if (from > 0) {
                 // TODO support for multiple entity types
                 int entityName = find(entityInfo.name.toUpperCase(), upper, from + 5);
-                if (entityName > 0)
+                if (entityName > 0) {
                     entityVar = findEntityVariable(jpql, entityName + entityInfo.name.length() + 1);
+                    if (entityVar == null) {
+                        entityVar = "*";
+                        entityVar_ = "";
+                    } else {
+                        entityVar_ = entityVar + '.';
+                    }
+                }
 
                 if (countPages && jpqlCount == null) {
                     // Attempt to infer from provided query
@@ -845,6 +860,7 @@ public class QueryInfo {
         QueryInfo q = new QueryInfo(method, entityParamType, returnArrayType, returnTypeAtDepth);
         q.entityInfo = entityInfo;
         q.entityVar = entityVar;
+        q.entityVar_ = entityVar_;
         q.hasWhere = hasWhere;
         q.jpql = jpql;
         q.jpqlAfterKeyset = jpqlAfterKeyset;
