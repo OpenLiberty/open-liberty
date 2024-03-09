@@ -46,7 +46,7 @@ public class Krb5Helper {
 
     // When running on zOS the file format is not properly converted for the jaas.conf file currently,
     // so we will use zjaas.conf, which is already formatted for zOS.
-    private static final String JAAS_CONF_FILE = (System.getProperty("os.name") == "z/OS") ? SPNEGOConstants.ZOS_CLIENT_JAAS_CONFIG_FILE : SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
+    private static final String JAAS_CONF_FILE = "/resources/security/kerberos/testjaas.conf";//SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
 
     /**
      * Performs a Kerberos login on the given server using the provided login configuration and user credentials.

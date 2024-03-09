@@ -80,8 +80,8 @@ public class ContainerKDCCommonTest {
     public static final boolean ENABLE_INFO_LOGGING = true;
 
     protected static String keytabFile = null;
-
     protected static String configFile = null;
+    protected static String jaasConfigFile = null;
 
     protected static String krbUser1 = "user1";
     protected static String krbUser1Pwd = "password";
@@ -369,7 +369,7 @@ public class ContainerKDCCommonTest {
         }
 
         if (testServerName != null) {
-            setMyServer(LibertyServerFactory.getLibertyServer(testServerName));
+            myServer = LibertyServerFactory.getLibertyServer(testServerName);
         }
 
         if (emptyConfiguration == null) {
@@ -401,9 +401,11 @@ public class ContainerKDCCommonTest {
 
         //// testContainer from jdbc FAT
         //myServer = LibertyServerFactory.getLibertyServer("BasicAuthTest");
-        Path krbConfPath = Paths.get(myServer.getInstallRoot(), "krb5.ini");
-        Path krb5KeytabPath = Paths.get(myServer.getInstallRoot(), "HTTP_libertyhost.keytab");
+        Path jaasConfPath = Paths.get(myServer.getServerRoot(), "resources", "security", "kerberos", "jaas.conf");
+        Path krbConfPath = Paths.get(myServer.getServerRoot(), "resources", "security", "krb5.ini");
+        Path krb5KeytabPath = Paths.get(myServer.getServerRoot(), "resources", "security", "HTTP_libertyhost.keytab");
 
+        FATSuite.krb5.generateJAASConf(jaasConfPath);
         FATSuite.krb5.generateConf(krbConfPath);
         FATSuite.krb5.copyFileFromContainer("/etc/HTTP_libertyhost.keytab", krb5KeytabPath.toAbsolutePath().toString());
 
@@ -411,20 +413,31 @@ public class ContainerKDCCommonTest {
         myServer.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
         /////
 
-        configFile = krbConfPath.toAbsolutePath().toString(); //ApacheKDCforSPNEGO.getDefaultConfigFile();
+        jaasConfigFile = jaasConfPath.toAbsolutePath().toString();
+        assertNotNull("jaasConfigFile is null", jaasConfigFile);
+        Log.info(c, thisMethod, "jaas.conf file: " + jaasConfigFile);
+
+        configFile = krbConfPath.toAbsolutePath().toString();
         assertNotNull("ConfigFile is null", configFile);
         Log.info(c, thisMethod, "Config file: " + configFile);
 
         System.setProperty("KRB5_CONFIG", configFile);
         Log.info(c, thisMethod, "set System property: KRB5_CONFIG=" + configFile);
 
-        keytabFile = krb5KeytabPath.toAbsolutePath().toString();; // ApacheKDCforSPNEGO.getLibertyServerSPNKeytabFile();
+        keytabFile = krb5KeytabPath.toAbsolutePath().toString();
         assertNotNull("Keytab is null", keytabFile);
         Log.info(c, thisMethod, "Keytab file: " + keytabFile);
 
-        Log.info(c, thisMethod, "Print Config file contents: ");
-        BufferedReader br = new BufferedReader(new FileReader(configFile));
+        Log.info(c, thisMethod, "Print jaas.conf file contents: ");
+        BufferedReader br = new BufferedReader(new FileReader(jaasConfigFile));
         String line;
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+        br.close();
+
+        Log.info(c, thisMethod, "Print Config file contents: ");
+        br = new BufferedReader(new FileReader(configFile));
         while ((line = br.readLine()) != null) {
             System.out.println(line);
         }
@@ -436,24 +449,6 @@ public class ContainerKDCCommonTest {
             System.out.println(line);
         }
         br.close();
-
-        Log.info(c, thisMethod, "Copy krb5.ini to server: ");
-        myServer.copyFileToLibertyServerRoot(krbConfPath.getParent().toAbsolutePath().toString(), "resources/security", "krb5.ini");
-
-        Log.info(c, thisMethod, "Copy HTTP_libertyhost.keytab to server: ");
-        myServer.copyFileToLibertyServerRoot(krb5KeytabPath.getParent().toAbsolutePath().toString(), "resources/security", "HTTP_libertyhost.keytab");
-
-        //update configFile and keytabfile paths from server installRoot to serverRoot/resources/security/
-        krbConfPath = Paths.get(myServer.getServerRoot(), "resources", "security", "krb5.ini");
-        krb5KeytabPath = Paths.get(myServer.getServerRoot(), "resources", "security", "HTTP_libertyhost.keytab");
-
-        configFile = krbConfPath.toAbsolutePath().toString();
-        assertNotNull("ConfigFile is null", configFile);
-        Log.info(c, thisMethod, "Config file: " + configFile);
-
-        keytabFile = krb5KeytabPath.toAbsolutePath().toString();
-        assertNotNull("Keytab is null", keytabFile);
-        Log.info(c, thisMethod, "Keytab file: " + keytabFile);
 
         if (createSpnAndKeytab) {
             try {

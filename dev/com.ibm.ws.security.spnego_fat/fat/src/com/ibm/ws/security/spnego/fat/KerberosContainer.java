@@ -153,4 +153,23 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         outputPath.getParent().toFile().mkdirs();
         Files.write(outputPath, conf.getBytes(StandardCharsets.UTF_8));
     }
+
+    public void generateJAASConf(Path outputPath) throws IOException {
+        String conf = "ibmKrb5Login {\n" +
+                      "        com.ibm.security.auth.module.Krb5LoginModule required \n" +
+                      "        debug=\"true\";\n" +
+                      " };\n" +
+                      "" +
+                      "sunKrb5Login {\n" +
+                      "        com.sun.security.auth.module.Krb5LoginModule required \n" +
+                      "        debug=\"true\";\n" +
+                      " };\n" +
+                      "" +
+                      "sunKrb5LoginRefreshKrb5Config {\n" +
+                      "        com.sun.security.auth.module.Krb5LoginModule required \n" +
+                      "        debug=\"true\"  refreshKrb5Config=\"true\";\n" +
+                      " };\n";
+        outputPath.getParent().toFile().mkdirs();
+        Files.write(outputPath, conf.getBytes(StandardCharsets.UTF_8));
+    }
 }
