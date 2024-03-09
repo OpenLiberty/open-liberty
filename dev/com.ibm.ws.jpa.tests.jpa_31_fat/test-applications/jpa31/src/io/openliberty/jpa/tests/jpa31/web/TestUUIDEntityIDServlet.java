@@ -392,7 +392,7 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
     }
 
     /**
-     * Verify that an entity using a UUID type for its identity can use the UUID generator for primary key generation. Persist
+     * Verify that an entity using a UUID type for its identity can use the UUID generator for primary key generation.
      */
     @Test
     public void testBasicUUIDIdentity_UUID_Generator_JTA() {
@@ -437,7 +437,7 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
     }
 
     /**
-     * Verify that an entity using a UUID type for its identity can use the UUID generator for primary key generation. Merge
+     * Verify that an entity using a UUID type for its identity can use the UUID generator for primary key generation.
      */
     @Test
     public void testBasicUUIDIdentity_UUID_Generator_Merge_JTA() {
@@ -482,7 +482,7 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
     }
 
     /**
-     * Verify that an entity using a UUID type for its identity can use the UUID generator for primary key generation. XML Variant. Persist
+     * Verify that an entity using a UUID type for its identity can use the UUID generator for primary key generation. XML Variant.
      */
     @Test
     public void testBasicUUIDIdentity_UUID_Generator_JTA_XML() {
@@ -527,7 +527,7 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
     }
 
     /**
-     * Verify that an entity using a UUID type for its identity can use the UUID generator for primary key generation. XML Variant. Merge
+     * Verify that an entity using a UUID type for its identity can use the UUID generator for primary key generation. XML Variant.
      */
     @Test
     public void testBasicUUIDIdentity_UUID_Generator_Merge_JTA_XML() {
