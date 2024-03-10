@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2022 IBM Corporation and others.
+ * Copyright (c) 2005, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1717,26 +1717,22 @@ public class WSKeyStore extends Properties {
         String sanTag = "SAN=";
 
         try {
+            InetAddress addr = null;
             if (hostname != null && !hostname.isEmpty()) {
                 if (hostname.equals("localhost")) {
-                    String host = InetAddress.getLocalHost().getCanonicalHostName();
-                    if (isGoodDNSName(host))
-                        san.add("dns:" + host);
+                    addr = getLocalHostInetAddress();
+                } else {
+                    addr = InetAddress.getByName(hostname);
                 }
-                InetAddress addr;
-                // get the InetAddress if there is one
-                addr = getInetAddress(hostname);
-                if (addr != null && addr.toString().startsWith("/"))
-                    san.add("ip:" + hostname);
-                else {
-                    // If the hostname start with a digit keytool will not create a SAN with the value
-                    if (isGoodDNSName(hostname))
-                        san.add("dns:" + hostname);
+            }
+            if (addr != null) {
+                String inetHostname = addr.getCanonicalHostName();
+                String inetHostAddress = addr.getHostAddress();
+                if (!inetHostname.equals(inetHostAddress) && !inetHostname.equals("localhost")) {
+                    san.add("dns:" + inetHostname);
                 }
-            } else {
-                String host = InetAddress.getLocalHost().getCanonicalHostName();
-                if (isGoodDNSName(host))
-                    san.add("dns:" + host);
+                san.add("dns:localhost");
+                san.add("ip:" + inetHostAddress);
             }
         } catch (UnknownHostException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1760,79 +1756,19 @@ public class WSKeyStore extends Properties {
 
     }
 
-    /**
-     * @param hostname
-     * @return
-     */
-    private InetAddress getInetAddress(String hostname) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "getInetAddress: " + hostname);
-        InetAddress addr = null;
+    private InetAddress getLocalHostInetAddress() {
         try {
-            addr = InetAddress.getByName(hostname);
-        } catch (Exception e) {
-            //hostname likely does not resolve to an address
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "getInetAddress: " + addr);
-        return addr;
-    }
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<InetAddress>() {
+                @Override
+                public InetAddress run() throws UnknownHostException {
+                    return InetAddress.getLocalHost();
+                }
+            });
 
-    /*
-     * checking for a valid dnsName value, the SAN entry is pretty specific.
-     * Only alphas, digits, and hyphin are allowed. A period is allowed when domain are added.
-     * No part of the domain name can start with a digit
-     * The dnsName can not start or end with a period, and there can not be any empty component of the domain name
-     */
-    public static boolean isGoodDNSName(String dnsName) {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "isGoodDNSName", dnsName);
-        String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        String validCharsString = alpha + "0123456789-.";
-        // Make sure the first character is not a digit.
-        if (Character.isDigit(dnsName.charAt(0))) {
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "isGoodDNSName - dnsName starts with digit", false);
-            return false;
+        } catch (PrivilegedActionException pae) {
+            // FFDC it
+            return null;
         }
-        // make sure the dnsName does not start or end with a period
-        if (dnsName.charAt(0) == '.' || dnsName.charAt(dnsName.length() - 1) == '.') {
-            if (tc.isEntryEnabled())
-                Tr.exit(tc, "isGoodDNSName - dnsName starts or ends with a '.' ", false);
-            return false;
-        }
-        // Make sure there are no unacceptable characters in the dnsName
-        for (int i = 0; i < dnsName.length(); i++) {
-            char x = dnsName.charAt(i);
-            if (validCharsString.indexOf(x) < 0) {
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "isGoodDNSName - dnsName contains invalid character", false);
-                return false;
-            }
-        }
-        // look at the domain parts
-        for (int endIndex, startIndex = 0; startIndex < dnsName.length(); startIndex = endIndex + 1) {
-            endIndex = dnsName.indexOf('.', startIndex);
-            // getting part of the domain name
-            if (endIndex < 0) {
-                endIndex = dnsName.length();
-            }
-            // DNSName SubjectAltNames with empty components are not permitted
-            if ((endIndex - startIndex) < 1) {
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "isGoodDNSName - dnsName domain section is empty", false);
-                return false;
-            }
-            //DNSName components must begin with a letter A-Z or a-z
-            if (alpha.indexOf(dnsName.charAt(startIndex)) < 0) {
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "isGoodDNSName - dnsName domain part starts with a digit", false);
-                return false; //DNSName components must begin with a letter
-            }
-        }
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "isGoodDNSName", true);
-        return true;
     }
 
     /**
