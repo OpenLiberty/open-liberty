@@ -267,6 +267,72 @@ public class QueryInfo {
     }
 
     /**
+     * Temporary code to append the portion of the query language ql starting from startAt
+     * where the entity identify variable is inserted before references to entity attributes.
+     * This method does not cover all scenarios but should be sufficient for simulating.
+     * TODO remove this method once we have Jakarta Persistence 3.2.
+     *
+     * @param ql      Jakarta Data Query Language
+     * @param startAt position in query language to start at.
+     * @param q       simulated JPQL to which to append.
+     * @return simulated JPQL.
+     */
+    private StringBuilder appendWithIdentifierName(String ql, int startAt, StringBuilder q) {
+        boolean isLiteral = false;
+        boolean isNamedParamOrEmbedded = false;
+        int length = ql.length();
+        for (int i = startAt; i < length; i++) {
+            char ch = ql.charAt(i);
+            if (!isLiteral && (ch == ':' || ch == '.')) {
+                q.append(ch);
+                isNamedParamOrEmbedded = true;
+            } else if (ch == '\'') {
+                q.append(ch);
+                if (isLiteral) {
+                    if (i + 1 < length && ql.charAt(i + 1) == '\'') {
+                        // escaped ' within a literal
+                        q.append('\'');
+                        i++;
+                    } else {
+                        isLiteral = false;
+                    }
+                } else {
+                    isLiteral = true;
+                    isNamedParamOrEmbedded = false;
+                }
+            } else if (Character.isLetter(ch)) {
+                if (isNamedParamOrEmbedded || isLiteral) {
+                    q.append(ch);
+                } else {
+                    StringBuilder s = new StringBuilder();
+                    s.append(ch);
+                    for (int j = i + 1; j < length; j++) {
+                        ch = ql.charAt(j);
+                        if (Character.isLetterOrDigit(ch))
+                            s.append(ch);
+                        else
+                            break;
+                    }
+                    i += s.length() - 1;
+                    String str = s.toString();
+                    if (entityInfo.getAttributeName(str, false) == null)
+                        q.append(str);
+                    else
+                        q.append(entityVar_).append(str);
+                }
+            } else if (Character.isDigit(ch)) {
+                q.append(ch);
+            } else {
+                q.append(ch);
+                if (!isLiteral)
+                    isNamedParamOrEmbedded = false;
+            }
+        }
+
+        return q;
+    }
+
+    /**
      * Adds dynamically specified Sort criteria from the PageRequest to the end of an existing list, or
      * if the combined list Sort criteria doesn't already exist, this method creates it
      * starting with the Sort criteria of this QueryInfo.
@@ -501,58 +567,131 @@ public class QueryInfo {
     /**
      * Initializes query information based on the Query annotation.
      *
-     * @param queryJPQL      Query.value()
-     * @param queryCountJPQL Query.count()
-     * @param countPages     whether or not to obtain a count of pages.
+     * @param ql         Query.value() might be JPQL or JDQL
+     * @param countQL    Query.count() might be JPQL or JDQL or "" (unspecified)
+     * @param countPages whether or not to obtain a count of pages.
+     * @param entityInfo TODO remove once Jakarta Persistence 3.2 is used
      */
-    void initForQuery(String queryJPQL, String queryCountJPQL, boolean countPages) {
-        jpql = queryJPQL;
+    void initForQuery(String ql, String countQL, boolean countPages, EntityInfo entityInfo) {
 
-        String upper = jpql.toUpperCase();
-        String upperTrimmed = upper.stripLeading();
-        // TODO JDQL queries can omit SELECT and/or FROM
-        if (upperTrimmed.startsWith("SELECT")) {
-            int order = upper.lastIndexOf("ORDER BY");
-            type = Type.FIND;
-            sorts = sorts == null ? new ArrayList<>() : sorts;
-            jpqlCount = queryCountJPQL.length() > 0 ? queryCountJPQL : null;
+        int length = ql.length();
+        int startAt = 0;
+        char firstChar = ' ';
+        for (; startAt < length && Character.isWhitespace(firstChar = ql.charAt(startAt)); startAt++);
 
-            int selectIndex = upper.length() - upperTrimmed.length();
-            int from = find("FROM", upper, selectIndex + 9);
-            if (from > 0) {
-                // TODO support for multiple entity types
-                int entityName = find(entityInfo.name.toUpperCase(), upper, from + 5);
-                if (entityName > 0) {
-                    entityVar = findEntityVariable(jpql, entityName + entityInfo.name.length() + 1);
-                    if (entityVar == null) {
-                        entityVar = "*";
-                        entityVar_ = "";
-                    } else {
-                        entityVar_ = entityVar + '.';
+        switch (firstChar) {
+            case 'S':
+            case 's': // SELECT
+                // TODO
+                break;
+            case 'D':
+            case 'd': // DELETE FROM EntityName[ WHERE ...]
+                // Temporarily simulate optional identifier names by inserting them.
+                // TODO remove when switched to Jakarta Persistence 3.2.
+                if (length > startAt + 12
+                    && ql.regionMatches(true, startAt + 1, "ELETE", 0, 5)
+                    && Character.isWhitespace(ql.charAt(startAt + 6))) {
+                    int f = startAt + 7; // start of FROM
+                    for (; f < length && Character.isWhitespace(ql.charAt(f)); f++);
+                    if (length > f + 6
+                        && ql.regionMatches(true, f, "FROM", 0, 4)
+                        && Character.isWhitespace(ql.charAt(f + 4))) {
+                        int e = f + 5; // start of EntityName
+                        for (; e < length && Character.isWhitespace(ql.charAt(e)); e++);
+                        StringBuilder entityName = new StringBuilder();
+                        for (char ch; e < length && Character.isLetterOrDigit(ch = ql.charAt(e)); e++)
+                            entityName.append(ch);
+                        if (e < length - 1 && entityName.length() > 0 && Character.isWhitespace(ql.charAt(e))) {
+                            // EntityName followed by whitespace and at least one more character
+                            int w = e + 1; // start of WHERE
+                            for (; w < length && Character.isWhitespace(ql.charAt(w)); w++);
+                            if (length > w + 6
+                                && ql.regionMatches(true, w, "WHERE", 0, 5)
+                                && !Character.isLetterOrDigit(ql.charAt(w + 5))) {
+                                type = Type.DELETE;
+                                hasWhere = true;
+                                entityVar = "o";
+                                entityVar_ = "o.";
+                                StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
+                                                .append("DELETE FROM ").append(entityName).append(" o WHERE");
+                                jpql = appendWithIdentifierName(ql, w + 5, q).toString();
+                                System.out.println("Generated this JPQL : " + jpql);
+                            }
+                        }
                     }
                 }
-
-                if (countPages && jpqlCount == null) {
-                    // Attempt to infer from provided query
-                    String s = jpql.substring(selectIndex + 6, from);
-                    int comma = s.indexOf(',');
-                    if (comma > 0)
-                        s = s.substring(0, comma);
-                    jpqlCount = new StringBuilder(jpql.length() + 7) //
-                                    .append("SELECT COUNT(").append(s.trim()).append(") ") //
-                                    .append(order > from ? jpql.substring(from, order) : jpql.substring(from)) //
-                                    .toString();
-                }
-            }
-        } else if (upperTrimmed.startsWith("UPDATE")) {
-            type = Type.UPDATE;
-        } else if (upperTrimmed.startsWith("DELETE")) {
-            type = Type.DELETE;
-        } else {
-            throw new UnsupportedOperationException(jpql);
+                break;
+            case 'U':
+            case 'u': // UPDATE
+                // TODO
+                break;
+            case 'W':
+            case 'w': // WHERE
+                // TODO
+                break;
+            case 'F':
+            case 'f': // FROM
+                // TOOD
+                break;
+            case 'O':
+            case 'o': // ORDER BY
+                // TODO
+                break;
+            default:
+                break;
         }
 
-        hasWhere = upperTrimmed.contains("WHERE");
+        if (jpql == null) {
+            // TODO replace old logic
+            jpql = ql;
+            String upper = ql.toUpperCase();
+            String upperTrimmed = upper.stripLeading();
+            // TODO JDQL queries can omit SELECT and/or FROM
+            if (upperTrimmed.startsWith("SELECT")) {
+                int order = upper.lastIndexOf("ORDER BY");
+                type = Type.FIND;
+                sorts = sorts == null ? new ArrayList<>() : sorts;
+                jpqlCount = countQL.length() > 0 ? countQL : null; // TODO JDQL
+
+                int selectIndex = upper.length() - upperTrimmed.length();
+                int from = find("FROM", upper, selectIndex + 9);
+                if (from > 0) {
+                    // TODO support for multiple entity types
+                    int entityName = find(entityInfo.name.toUpperCase(), upper, from + 5);
+                    if (entityName > 0) {
+                        entityVar = findEntityVariable(ql, entityName + entityInfo.name.length() + 1);
+                        if (entityVar == null) {
+                            entityVar = "*";
+                            entityVar_ = "";
+                        } else {
+                            entityVar_ = entityVar + '.';
+                        }
+                    }
+
+                    if (countPages && jpqlCount == null) {
+                        // Attempt to infer from provided query
+                        String s = ql.substring(selectIndex + 6, from);
+                        int comma = s.indexOf(',');
+                        if (comma > 0)
+                            s = s.substring(0, comma);
+                        jpqlCount = new StringBuilder(ql.length() + 7) //
+                                        .append("SELECT COUNT(").append(s.trim()).append(") ") //
+                                        .append(order > from ? ql.substring(from, order) : ql.substring(from)) //
+                                        .toString();
+                    }
+                }
+            } else if (upperTrimmed.startsWith("UPDATE")) {
+                type = Type.UPDATE;
+            } else if (upperTrimmed.startsWith("DELETE")) {
+                type = Type.DELETE;
+            } else {
+                throw new UnsupportedOperationException("The query supplied to the " + method.getName() + " method of the " +
+                                                        method.getDeclaringClass().getName() + " repository does not apear to be " +
+                                                        "valid JDQL (Jakarta Data Query Language) or " +
+                                                        "valid JPQL (Jakarta Persistence Query Language). The query is " + ql); // TODO NLS
+            }
+            hasWhere = upperTrimmed.contains("WHERE");
+        }
     }
 
     /**

@@ -45,7 +45,7 @@ public interface Products {
     @Delete
     void clear();
 
-    @Query("DELETE FROM Product o WHERE o.pk IN ?1")
+    @Query("DELETE FROM Product WHERE pk IN ?1")
     int discontinueProducts(Set<UUID> ids);
 
     @Select(value = "name", distinct = true)
