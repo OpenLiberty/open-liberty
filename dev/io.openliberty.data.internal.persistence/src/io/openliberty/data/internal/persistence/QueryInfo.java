@@ -777,7 +777,7 @@ public class QueryInfo {
     private void keysetSizeMismatchError(PageRequest.Cursor keysetCursor) {
         List<String> keyTypes = new ArrayList<>();
         for (int i = 0; i < keysetCursor.size(); i++)
-            keyTypes.add(keysetCursor.getKeysetElement(i) == null ? null : keysetCursor.getKeysetElement(i).getClass().getName());
+            keyTypes.add(keysetCursor.get(i) == null ? null : keysetCursor.get(i).getClass().getName());
 
         throw new MappingException("The keyset cursor with key types " + keyTypes +
                                    " cannot be used with sort criteria of " + sorts +
@@ -796,7 +796,7 @@ public class QueryInfo {
         int paramNum = paramCount; // set to position before the first keyset parameter
         if (paramNames == null) // positional parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
-                Object value = keysetCursor.getKeysetElement(i);
+                Object value = keysetCursor.get(i);
                 if (entityInfo.idClassAttributeAccessors != null && entityInfo.idType.isInstance(value)) {
                     for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
                         Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
@@ -818,7 +818,7 @@ public class QueryInfo {
             }
         else // named parameters
             for (int i = 0; i < keysetCursor.size(); i++) {
-                Object value = keysetCursor.getKeysetElement(i);
+                Object value = keysetCursor.get(i);
                 if (entityInfo.idClassAttributeAccessors != null && entityInfo.idType.isInstance(value)) {
                     for (Member accessor : entityInfo.idClassAttributeAccessors.values()) {
                         Object v = accessor instanceof Field ? ((Field) accessor).get(value) : ((Method) accessor).invoke(value);
