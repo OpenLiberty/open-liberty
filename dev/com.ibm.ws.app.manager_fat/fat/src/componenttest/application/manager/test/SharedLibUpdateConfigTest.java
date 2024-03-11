@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2023 IBM Corporation and others.
+ * Copyright (c) 2020,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,12 @@
  *******************************************************************************/
 package componenttest.application.manager.test;
 
-import static componenttest.application.manager.test.SharedLibTestUtils.assertActivity;
+import static componenttest.application.manager.test.SharedLibServerUtils.assertActivity;
+import static componenttest.application.manager.test.SharedLibServerUtils.assertSnoop;
+import static componenttest.application.manager.test.SharedLibServerUtils.setupServer;
+import static componenttest.application.manager.test.SharedLibServerUtils.startServer;
+import static componenttest.application.manager.test.SharedLibServerUtils.verifyServer;
 import static componenttest.application.manager.test.SharedLibTestUtils.assertContainerActions;
-import static componenttest.application.manager.test.SharedLibTestUtils.assertSnoop;
-import static componenttest.application.manager.test.SharedLibTestUtils.setupServer;
-import static componenttest.application.manager.test.SharedLibTestUtils.startServer;
-import static componenttest.application.manager.test.SharedLibTestUtils.verifyContainers;
-import static componenttest.application.manager.test.SharedLibTestUtils.verifyServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,16 +61,14 @@ public class SharedLibUpdateConfigTest {
     public static final String SERVER_08_XML = "server08.xml";
     public static final String SERVER_16_XML = "server16.xml";
 
-    public static final String[] SERVER_XMLS =
-        { SERVER_01_XML, SERVER_04_XML, SERVER_08_XML, SERVER_16_XML };
+    public static final String[] SERVER_XMLS = { SERVER_01_XML, SERVER_04_XML, SERVER_08_XML, SERVER_16_XML };
 
     //
 
-    public static final String[] APP_NAMES =
-        { "snoop0",  "snoop1",  "snoop2",  "snoop3",
-          "snoop4",  "snoop5",  "snoop6",  "snoop7",
-          "snoop8",  "snoop9",  "snoop10", "snoop11",
-          "snoop12", "snoop13", "snoop14", "snoop15" };
+    public static final String[] APP_NAMES = { "snoop0", "snoop1", "snoop2", "snoop3",
+                                               "snoop4", "snoop5", "snoop6", "snoop7",
+                                               "snoop8", "snoop9", "snoop10", "snoop11",
+                                               "snoop12", "snoop13", "snoop14", "snoop15" };
 
     public static final int APP_COUNT = APP_NAMES.length;
 
@@ -79,17 +76,13 @@ public class SharedLibUpdateConfigTest {
 
     // min -> max + 1: 0..15 -> [ 0, 16 ]
     // -(min + 1) -> -((max + 1) + 1): 0..15 -> [ -1, -17 ]
-    public static final int[] APP_ACTIVITY_INITIAL =
-        { 0, APP_COUNT }; // Start 0 .. 15
-    public static final int[][] APP_ACTIVITY =
-        { { -2, -17 }, { 1, 4 }, { 4, 8 }, { 8, APP_COUNT } };
-                // Stop 1 .. 15, Start 1 .. 3, Start 4 .. 7, Start 8 .. 15
+    public static final int[] APP_ACTIVITY_INITIAL = { 0, APP_COUNT }; // Start 0 .. 15
+    public static final int[][] APP_ACTIVITY = { { -2, -17 }, { 1, 4 }, { 4, 8 }, { 8, APP_COUNT } };
+    // Stop 1 .. 15, Start 1 .. 3, Start 4 .. 7, Start 8 .. 15
 
     // min -> max + 1
-    public static final int[] APPS_RUNNING_INITIAL =
-        { 0, APP_COUNT };
-    public static final int[][] APPS_RUNNING =
-        { { 0, 1 }, { 0, 4 }, { 0, 8 }, { 0, APP_COUNT } };
+    public static final int[] APPS_RUNNING_INITIAL = { 0, APP_COUNT };
+    public static final int[][] APPS_RUNNING = { { 0, 1 }, { 0, 4 }, { 0, 8 }, { 0, APP_COUNT } };
 
     // Capture history:
     //
@@ -165,30 +158,25 @@ public class SharedLibUpdateConfigTest {
     // test2(0)  [snoop2: y/y/n/n] [snoop6: y/n/n/y] [snoop10: y/n/n/y] [snoop14: y/n/n/y]
     // test3(12) [snoop3: y/y/n/n] [snoop7: y/n/n/y] [snoop11: y/n/n/y] [snoop15: y/n/n/y]
 
-    public static final int NUM_VALUES = SharedLibTestUtils.NUM_VALUES;
+    public static final int NUM_VALUES = SharedLibServerUtils.NUM_VALUES;
 
     public static final int[] VALUES_0_1 = { 1, 0, 1, 0, 0, 0 }; // 0-Y 0Alt-N 1-Y 1Alt-N 2-N 3-N
     public static final int[] VALUES_0_2 = { 1, 0, 0, 0, 1, 0 }; // 0-Y 0Alt-N 1-N 1Alt-N 2-Y 3-N
     public static final int[] VALUES_0_3 = { 1, 0, 0, 0, 0, 1 }; // 0-Y 0Alt-N 1-N 1Alt-N 2-N 3-Y
 
-    public static final int[][] EXPECTED_VALUES_1 =
-        { VALUES_0_1 };
+    public static final int[][] EXPECTED_VALUES_1 = { VALUES_0_1 };
 
-    public static final int[][] EXPECTED_VALUES_4 =
-        { VALUES_0_1, VALUES_0_1, VALUES_0_1, VALUES_0_1 };
+    public static final int[][] EXPECTED_VALUES_4 = { VALUES_0_1, VALUES_0_1, VALUES_0_1, VALUES_0_1 };
 
-    public static final int[][] EXPECTED_VALUES_8 =
-        { VALUES_0_1, VALUES_0_1, VALUES_0_1, VALUES_0_1,
-          VALUES_0_2, VALUES_0_2, VALUES_0_2, VALUES_0_2 };
+    public static final int[][] EXPECTED_VALUES_8 = { VALUES_0_1, VALUES_0_1, VALUES_0_1, VALUES_0_1,
+                                                      VALUES_0_2, VALUES_0_2, VALUES_0_2, VALUES_0_2 };
 
-    public static final int[][] EXPECTED_VALUES_16 =
-        { VALUES_0_1, VALUES_0_1, VALUES_0_1, VALUES_0_1,
-          VALUES_0_3, VALUES_0_3, VALUES_0_3, VALUES_0_3,
-          VALUES_0_3, VALUES_0_3, VALUES_0_3, VALUES_0_3,
-          VALUES_0_3, VALUES_0_3, VALUES_0_3, VALUES_0_3 };
+    public static final int[][] EXPECTED_VALUES_16 = { VALUES_0_1, VALUES_0_1, VALUES_0_1, VALUES_0_1,
+                                                       VALUES_0_3, VALUES_0_3, VALUES_0_3, VALUES_0_3,
+                                                       VALUES_0_3, VALUES_0_3, VALUES_0_3, VALUES_0_3,
+                                                       VALUES_0_3, VALUES_0_3, VALUES_0_3, VALUES_0_3 };
 
-    public static final int[][][] ALL_EXPECTED_VALUES =
-        { EXPECTED_VALUES_1, EXPECTED_VALUES_4, EXPECTED_VALUES_8, EXPECTED_VALUES_16 };
+    public static final int[][][] ALL_EXPECTED_VALUES = { EXPECTED_VALUES_1, EXPECTED_VALUES_4, EXPECTED_VALUES_8, EXPECTED_VALUES_16 };
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -205,10 +193,9 @@ public class SharedLibUpdateConfigTest {
 
         List<ContainerAction> containerActions = new ArrayList<>();
 
-        CacheTransitions priorData =
-            assertContainerActions(server,
-                                                      0, 0, EXPECTED_CAPTURES_0_16,
-                                                      INITIAL_CAPTURES, containerActions);
+        CacheTransitions priorData = assertContainerActions(server,
+                                                            0, 0, EXPECTED_CAPTURES_0_16,
+                                                            INITIAL_CAPTURES, containerActions);
 
         for (int iter = 0; iter < TEST_ITERATIONS; iter++) {
             int configNo = iter % 4;
@@ -226,7 +213,11 @@ public class SharedLibUpdateConfigTest {
                                                priorData, containerActions);
         }
 
-        verifyContainers(containerActions);
+        // Container verification is disabled due to problems of event ordering.
+        // Logging does not guarantee that log events from different threads will
+        // be written in the order in which logging was requested.
+
+        // verifyContainers(containerActions);
     }
 
     //
@@ -237,34 +228,27 @@ public class SharedLibUpdateConfigTest {
     // update[2-3] last: [8,  4, 4,  0] c[8]  r[0]:  16
     // update[3-4] last: [16, 4, 0, 12] c[20] r[4]:  32
 
-    public static final CacheTransitions INITIAL_CAPTURES =
-        new CacheTransitions( new int[] { 0, 0, 0, 0 }, 0, 0, 0 );
+    public static final CacheTransitions INITIAL_CAPTURES = new CacheTransitions(new int[] { 0, 0, 0, 0 }, 0, 0, 0);
 
-    public static final CacheTransitions EXPECTED_CAPTURES_0_16 =
-        new CacheTransitions( new int[] { 16, 4, 0, 12 }, 32, 0, 32 );
+    public static final CacheTransitions EXPECTED_CAPTURES_0_16 = new CacheTransitions(new int[] { 16, 4, 0, 12 }, 32, 0, 32);
 
-    public static final CacheTransitions EXPECTED_CAPTURES_16_1 =
-        new CacheTransitions( new int[] { 1, 1, 0, 0 }, 0, 30, 2 );
+    public static final CacheTransitions EXPECTED_CAPTURES_16_1 = new CacheTransitions(new int[] { 1, 1, 0, 0 }, 0, 30, 2);
 
-    public static final CacheTransitions EXPECTED_CAPTURES_1_4 =
-        new CacheTransitions( new int[] { 4, 4, 0, 0 }, 6, 0, 8 );
+    public static final CacheTransitions EXPECTED_CAPTURES_1_4 = new CacheTransitions(new int[] { 4, 4, 0, 0 }, 6, 0, 8);
 
-    public static final CacheTransitions EXPECTED_CAPTURES_4_8 =
-        new CacheTransitions( new int[] { 8, 4, 4, 0 }, 8 + 4, 0 + 4, 16 );
+    public static final CacheTransitions EXPECTED_CAPTURES_4_8 = new CacheTransitions(new int[] { 8, 4, 4, 0 }, 8 + 4, 0 + 4, 16);
 
     // The releases and captures for (4 -> 8) are 4 higher because
     // the configuration changes for apps 2 and 3, from A: { test0, test1 } to B: { test0, test1 }.
     // the comparison evidently doesn't compare the actual shared libraries: the comparison
     // only sees that a different shared library has been set.
     // similarly for the captures (8 -> 16).
-    public static final CacheTransitions EXPECTED_CAPTURES_8_16 =
-        new CacheTransitions( new int[] { 16, 4, 0, 12 }, 24 + 4, 8 + 4, 32 );
+    public static final CacheTransitions EXPECTED_CAPTURES_8_16 = new CacheTransitions(new int[] { 16, 4, 0, 12 }, 24 + 4, 8 + 4, 32);
     // The releases and captures for (8 -> 16) are 4 higher; see the comment
     // for the captures (4 -> 8).
 
-    public static final CacheTransitions[] EXPECTED_CAPTURES =
-        { EXPECTED_CAPTURES_16_1,
-          EXPECTED_CAPTURES_1_4,
-          EXPECTED_CAPTURES_4_8,
-          EXPECTED_CAPTURES_8_16 };
+    public static final CacheTransitions[] EXPECTED_CAPTURES = { EXPECTED_CAPTURES_16_1,
+                                                                 EXPECTED_CAPTURES_1_4,
+                                                                 EXPECTED_CAPTURES_4_8,
+                                                                 EXPECTED_CAPTURES_8_16 };
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2023 IBM Corporation and others.
+ * Copyright (c) 2020,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,16 +12,15 @@
  *******************************************************************************/
 package componenttest.application.manager.test;
 
-import static componenttest.application.manager.test.SharedLibTestUtils.FROM_ALT;
+import static componenttest.application.manager.test.SharedLibServerUtils.FROM_ALT;
+import static componenttest.application.manager.test.SharedLibServerUtils.assertRestarted;
+import static componenttest.application.manager.test.SharedLibServerUtils.assertSnoop;
+import static componenttest.application.manager.test.SharedLibServerUtils.installLib;
+import static componenttest.application.manager.test.SharedLibServerUtils.setupServer;
+import static componenttest.application.manager.test.SharedLibServerUtils.startServer;
+import static componenttest.application.manager.test.SharedLibServerUtils.stopServer;
+import static componenttest.application.manager.test.SharedLibServerUtils.verifyServer;
 import static componenttest.application.manager.test.SharedLibTestUtils.assertContainerActions;
-import static componenttest.application.manager.test.SharedLibTestUtils.assertRestarted;
-import static componenttest.application.manager.test.SharedLibTestUtils.assertSnoop;
-import static componenttest.application.manager.test.SharedLibTestUtils.installLib;
-import static componenttest.application.manager.test.SharedLibTestUtils.setupServer;
-import static componenttest.application.manager.test.SharedLibTestUtils.startServer;
-import static componenttest.application.manager.test.SharedLibTestUtils.stopServer;
-import static componenttest.application.manager.test.SharedLibTestUtils.verifyContainers;
-import static componenttest.application.manager.test.SharedLibTestUtils.verifyServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,12 +63,12 @@ public class SharedLibUpdateJarTest {
     public static final String SERVER_2SA_3SB_XML = "server2sa3sb.xml";
     public static final String SERVER_3SA_3SB_XML = "server3sa3sb.xml";
 
-    public static final String LIB_NAME_0 = SharedLibTestUtils.LIB_NAME_0;
-    public static final String LIB_NAME_1 = SharedLibTestUtils.LIB_NAME_1;
-    public static final String LIB_NAME_2 = SharedLibTestUtils.LIB_NAME_2;
-    public static final String LIB_NAME_3 = SharedLibTestUtils.LIB_NAME_3;
+    public static final String LIB_NAME_0 = SharedLibServerUtils.LIB_NAME_0;
+    public static final String LIB_NAME_1 = SharedLibServerUtils.LIB_NAME_1;
+    public static final String LIB_NAME_2 = SharedLibServerUtils.LIB_NAME_2;
+    public static final String LIB_NAME_3 = SharedLibServerUtils.LIB_NAME_3;
 
-    public static final String[] APP_NAMES = { "snoop0",  "snoop1",  "snoop2",  "snoop3" };
+    public static final String[] APP_NAMES = { "snoop0", "snoop1", "snoop2", "snoop3" };
     public static final int APP_COUNT = APP_NAMES.length;
 
     // Negative means stopping: -(appNo + 1).
@@ -86,73 +85,62 @@ public class SharedLibUpdateJarTest {
     // C: n n y n
     // D: n n n y
 
-    public static final CacheTransitions INITIAL_TRANSITIONS =
-        new CacheTransitions( new int[] { 0, 0, 0, 0 }, 0, 0, 0 );
+    public static final CacheTransitions INITIAL_TRANSITIONS = new CacheTransitions(new int[] { 0, 0, 0, 0 }, 0, 0, 0);
 
     // app0 uses lib0, lib1
     // app1 uses lib0, lib1
     // app2 uses lib2
     // app3 uses lib3
-    public static final CacheTransitions EXPECTED_TRANSITIONS_TO_BASE =
-        new CacheTransitions( new int[] { 2, 2, 1, 1 }, 6, 0, 6 );
+    public static final CacheTransitions EXPECTED_TRANSITIONS_TO_BASE = new CacheTransitions(new int[] { 2, 2, 1, 1 }, 6, 0, 6);
 
     // app0 refreshes
     // app1 does NOT refresh
-    public static final CacheTransitions EXPECTED_TRANSITIONS_BASE_TO_ALT0 =
-        new CacheTransitions( new int[] { 2, 2, 1, 1 }, 2, 2, 6 );
+    public static final CacheTransitions EXPECTED_TRANSITIONS_BASE_TO_ALT0 = new CacheTransitions(new int[] { 2, 2, 1, 1 }, 2, 2, 6);
 
     // app0 does NOT refresh
     // app1 refreshes
-    public static final CacheTransitions EXPECTED_TRANSITIONS_ALT0_TO_ALT0_ALT1 =
-        new CacheTransitions( new int[] { 2, 2, 1, 1 }, 2, 2, 6 );
+    public static final CacheTransitions EXPECTED_TRANSITIONS_ALT0_TO_ALT0_ALT1 = new CacheTransitions(new int[] { 2, 2, 1, 1 }, 2, 2, 6);
 
     // app0 refreshes
     // app1 does NOT refresh
-    public static final CacheTransitions EXPECTED_TRANSITIONS_ALT0_ALT1_TO_ALT1 =
-        new CacheTransitions( new int[] { 2, 2, 1, 1 }, 2, 2, 6 );
+    public static final CacheTransitions EXPECTED_TRANSITIONS_ALT0_ALT1_TO_ALT1 = new CacheTransitions(new int[] { 2, 2, 1, 1 }, 2, 2, 6);
 
     // app0 does NOT refresh
     // app1 refreshes
-    public static final CacheTransitions EXPECTED_TRANSITIONS_ALT1_TO_BASE =
-        new CacheTransitions( new int[] { 2, 2, 1, 1 }, 2, 2, 6 );
+    public static final CacheTransitions EXPECTED_TRANSITIONS_ALT1_TO_BASE = new CacheTransitions(new int[] { 2, 2, 1, 1 }, 2, 2, 6);
 
     public static final int[] EXPECTED_VALUES_BASE0_BASE1 = { 1, 0, 1, 0, 0, 0 };
-    public static final int[] EXPECTED_VALUES_ALT0_BASE1  = { 0, 1, 1, 0, 0, 0 };
-    public static final int[] EXPECTED_VALUES_BASE0_ALT1  = { 1, 0, 0, 1, 0, 0 };
-    public static final int[] EXPECTED_VALUES_ALT0_ALT1   = { 0, 1, 0, 1, 0, 0 };
+    public static final int[] EXPECTED_VALUES_ALT0_BASE1 = { 0, 1, 1, 0, 0, 0 };
+    public static final int[] EXPECTED_VALUES_BASE0_ALT1 = { 1, 0, 0, 1, 0, 0 };
+    public static final int[] EXPECTED_VALUES_ALT0_ALT1 = { 0, 1, 0, 1, 0, 0 };
 
     public static final int[] EXPECTED_VALUES_APP2_BASE = { 0, 0, 0, 0, 1, 0 };
     public static final int[] EXPECTED_VALUES_APP3_BASE = { 0, 0, 0, 0, 0, 1 };
 
-    public static final int[][] EXPECTED_VALUES_BASE =
-        { EXPECTED_VALUES_BASE0_BASE1,
-          EXPECTED_VALUES_BASE0_BASE1,
-          EXPECTED_VALUES_APP2_BASE,
-          EXPECTED_VALUES_APP3_BASE };
+    public static final int[][] EXPECTED_VALUES_BASE = { EXPECTED_VALUES_BASE0_BASE1,
+                                                         EXPECTED_VALUES_BASE0_BASE1,
+                                                         EXPECTED_VALUES_APP2_BASE,
+                                                         EXPECTED_VALUES_APP3_BASE };
 
-    public static final int[][] EXPECTED_VALUES_BASE_TO_ALT0 =
-        { EXPECTED_VALUES_ALT0_BASE1, // Refreshed of lib0
-          EXPECTED_VALUES_BASE0_BASE1, // Stale lib0 !!!
-          EXPECTED_VALUES_APP2_BASE,
-          EXPECTED_VALUES_APP3_BASE };
+    public static final int[][] EXPECTED_VALUES_BASE_TO_ALT0 = { EXPECTED_VALUES_ALT0_BASE1, // Refreshed of lib0
+                                                                 EXPECTED_VALUES_BASE0_BASE1, // Stale lib0 !!!
+                                                                 EXPECTED_VALUES_APP2_BASE,
+                                                                 EXPECTED_VALUES_APP3_BASE };
 
-    public static final int[][] EXPECTED_VALUES_ALT0_TO_ALT0_ALT1 =
-        { EXPECTED_VALUES_ALT0_BASE1, // Stale lib1 !!!
-          EXPECTED_VALUES_ALT0_ALT1, // Refresh of lib0 and lib1 !!!
-          EXPECTED_VALUES_APP2_BASE,
-          EXPECTED_VALUES_APP3_BASE };
+    public static final int[][] EXPECTED_VALUES_ALT0_TO_ALT0_ALT1 = { EXPECTED_VALUES_ALT0_BASE1, // Stale lib1 !!!
+                                                                      EXPECTED_VALUES_ALT0_ALT1, // Refresh of lib0 and lib1 !!!
+                                                                      EXPECTED_VALUES_APP2_BASE,
+                                                                      EXPECTED_VALUES_APP3_BASE };
 
-    public static final int[][] EXPECTED_VALUES_ALT0_ALT1_TO_ALT1 =
-        { EXPECTED_VALUES_BASE0_ALT1, // Refresh lib0 and lib1 !!!
-          EXPECTED_VALUES_ALT0_ALT1, // Stale lib0 !!!
-          EXPECTED_VALUES_APP2_BASE,
-          EXPECTED_VALUES_APP3_BASE };
+    public static final int[][] EXPECTED_VALUES_ALT0_ALT1_TO_ALT1 = { EXPECTED_VALUES_BASE0_ALT1, // Refresh lib0 and lib1 !!!
+                                                                      EXPECTED_VALUES_ALT0_ALT1, // Stale lib0 !!!
+                                                                      EXPECTED_VALUES_APP2_BASE,
+                                                                      EXPECTED_VALUES_APP3_BASE };
 
-    public static final int[][] EXPECTED_VALUES_ALT1_TO_BASE =
-        { EXPECTED_VALUES_BASE0_ALT1, // Stale lib1 !!!
-          EXPECTED_VALUES_BASE0_BASE1, // Refresh lib0 and lib1 !!!
-          EXPECTED_VALUES_APP2_BASE,
-          EXPECTED_VALUES_APP3_BASE };
+    public static final int[][] EXPECTED_VALUES_ALT1_TO_BASE = { EXPECTED_VALUES_BASE0_ALT1, // Stale lib1 !!!
+                                                                 EXPECTED_VALUES_BASE0_BASE1, // Refresh lib0 and lib1 !!!
+                                                                 EXPECTED_VALUES_APP2_BASE,
+                                                                 EXPECTED_VALUES_APP3_BASE };
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -180,7 +168,7 @@ public class SharedLibUpdateJarTest {
                                          CacheTransitions transitions,
                                          List<ContainerAction> containerActions) throws Exception {
 
-        String title = ( fromAlt ? "Updating [ " : "Restoring [ " ) + libName + " ]";
+        String title = (fromAlt ? "Updating [ " : "Restoring [ ") + libName + " ]";
         System.out.println(title);
         installLib(server, fromAlt, libName);
 
@@ -256,6 +244,10 @@ public class SharedLibUpdateJarTest {
                                    EXPECTED_TRANSITIONS_ALT1_TO_BASE,
                                    transitions, containerActions);
 
-        verifyContainers(containerActions);
+        // Container verification is disabled due to problems of event ordering.
+        // Logging does not guarantee that log events from different threads will
+        // be written in the order in which logging was requested.
+
+        // verifyContainers(containerActions);
     }
 }
