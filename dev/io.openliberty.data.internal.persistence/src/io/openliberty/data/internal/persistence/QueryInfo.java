@@ -315,9 +315,12 @@ public class QueryInfo {
                     }
                     i += s.length() - 1;
                     String str = s.toString();
-                    if (entityInfo.getAttributeName(str, false) == null)
+                    if ("WHERE".equalsIgnoreCase(str)) {
+                        hasWhere = true;
                         q.append(str);
-                    else
+                    } else if (entityInfo.getAttributeName(str, false) == null) {
+                        q.append(str);
+                    } else
                         q.append(entityVar_).append(str);
                 }
             } else if (Character.isDigit(ch)) {
@@ -615,15 +618,39 @@ public class QueryInfo {
                                 StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
                                                 .append("DELETE FROM ").append(entityName).append(" o WHERE");
                                 jpql = appendWithIdentifierName(ql, w + 5, q).toString();
-                                System.out.println("Generated this JPQL : " + jpql);
                             }
                         }
                     }
                 }
                 break;
             case 'U':
-            case 'u': // UPDATE
-                // TODO
+            case 'u': // UPDATE EntityName[ SET ... WHERE ...]
+                // Temporarily simulate optional identifier names by inserting them.
+                // TODO remove when switched to Jakarta Persistence 3.2.
+                if (length > startAt + 13
+                    && ql.regionMatches(true, startAt + 1, "PDATE", 0, 5)
+                    && Character.isWhitespace(ql.charAt(startAt + 6))) {
+                    int e = startAt + 7; // start of EntityName
+                    for (; e < length && Character.isWhitespace(ql.charAt(e)); e++);
+                    StringBuilder entityName = new StringBuilder();
+                    for (char ch; e < length && Character.isLetterOrDigit(ch = ql.charAt(e)); e++)
+                        entityName.append(ch);
+                    if (e < length - 1 && entityName.length() > 0 && Character.isWhitespace(ql.charAt(e))) {
+                        // EntityName followed by whitespace and at least one more character
+                        int s = e + 1; // start of SET
+                        for (; s < length && Character.isWhitespace(ql.charAt(s)); s++);
+                        if (length > s + 4
+                            && ql.regionMatches(true, s, "SET", 0, 3)
+                            && !Character.isLetterOrDigit(ql.charAt(s + 3))) {
+                            type = Type.UPDATE;
+                            entityVar = "o";
+                            entityVar_ = "o.";
+                            StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
+                                            .append("UPDATE ").append(entityName).append(" o SET");
+                            jpql = appendWithIdentifierName(ql, s + 3, q).toString();
+                        }
+                    }
+                }
                 break;
             case 'W':
             case 'w': // WHERE
