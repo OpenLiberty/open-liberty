@@ -16,7 +16,7 @@ package jakarta.data.page;
  * Methods are copied from proposed interfaces in the Jakarta Data repo.
  */
 public interface KeysetAwareSlice<T> extends Slice<T> {
-    PageRequest.Cursor getKeysetCursor(int index);
+    PageRequest.Cursor getCursor(int index);
 
     boolean hasPrevious();
 

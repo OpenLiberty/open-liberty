@@ -1329,7 +1329,7 @@ public class DataJPATestServlet extends FATServlet {
         PageRequest<?> pagination = PageRequest
                         .ofSize(3)
                         .withoutTotal()
-                        .afterKeyset(CityId.of("Rochester", "Minnesota"));
+                        .afterKey(CityId.of("Rochester", "Minnesota"));
 
         CursoredPage<City> slice1 = cities.findByStateNameNotEndsWith("o", pagination);
         assertIterableEquals(List.of("Rochester New York",
@@ -1410,8 +1410,8 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(false, slice2.hasNext());
 
-        Cursor springfieldMO = slice2.getKeysetCursor(1);
-        pagination = pagination.size(3).beforeKeysetCursor(springfieldMO);
+        Cursor springfieldMO = slice2.getCursor(1);
+        pagination = pagination.size(3).beforeCursor(springfieldMO);
 
         CursoredPage<City> beforeSpringfieldMO = cities.findByStateNameNotNullOrderById(pagination);
         assertIterableEquals(List.of("Rochester New York",
@@ -1434,7 +1434,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByNamePatternWithKeysetPaginationDescending() {
-        PageRequest<?> pagination = PageRequest.ofSize(3).withTotal().afterKeyset(CityId.of("Springfield", "Tennessee"));
+        PageRequest<?> pagination = PageRequest.ofSize(3).withTotal().afterKey(CityId.of("Springfield", "Tennessee"));
 
         CursoredPage<City> page1 = cities.findByStateNameNotStartsWithOrderByIdDesc("Ma", pagination);
         assertIterableEquals(List.of("Springfield Oregon",
@@ -2008,7 +2008,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, it.hasNext());
 
         // Iterator with keyset pagination:
-        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2).afterKeyset(t8key));
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2).afterKey(t8key));
 
         assertNotNull(t = it.next());
         assertEquals(t6.leviedAgainst, t.leviedAgainst);
@@ -2033,7 +2033,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, it.hasNext());
 
         // Iterator with keyset pagination obtaining pages in reverse direction
-        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2).beforeKeyset(t2key));
+        it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(2).beforeKey(t2key));
 
         assertEquals(true, it.hasNext());
         assertNotNull(t = it.next());

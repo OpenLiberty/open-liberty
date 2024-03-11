@@ -134,7 +134,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T>, KeysetAwarePage<T> 
     }
 
     @Override
-    public PageRequest.Cursor getKeysetCursor(int index) {
+    public PageRequest.Cursor getCursor(int index) {
         if (index < 0 || index >= pageRequest.size())
             throw new IllegalArgumentException("index: " + index);
 
@@ -156,7 +156,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T>, KeysetAwarePage<T> 
                 throw new DataException(x.getCause());
             }
 
-        return Cursor.forKeyset(keyValues);
+        return Cursor.forKey(keyValues);
     }
 
     @Override
@@ -229,7 +229,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T>, KeysetAwarePage<T> 
             return null; // TODO error
 
         PageRequest<T> p = pageRequest.page() == Long.MAX_VALUE ? pageRequest : pageRequest.page(pageRequest.page() + 1);
-        return p.afterKeyset(queryInfo.getKeysetValues(results.get(Math.min(results.size(), pageRequest.size()) - 1)));
+        return p.afterKey(queryInfo.getKeysetValues(results.get(Math.min(results.size(), pageRequest.size()) - 1)));
     }
 
     @Override
@@ -246,7 +246,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T>, KeysetAwarePage<T> 
 
         // Decrement page number by 1 unless it would go below 1.
         PageRequest<T> p = pageRequest.page() == 1 ? pageRequest : pageRequest.page(pageRequest.page() - 1);
-        return p.beforeKeyset(queryInfo.getKeysetValues(results.get(0)));
+        return p.beforeKey(queryInfo.getKeysetValues(results.get(0)));
     }
 
     @Override
