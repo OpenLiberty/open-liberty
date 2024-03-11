@@ -289,7 +289,7 @@ triggers:
   triggerName: "Test: Feature (Checkpoint) Lite."
   triggerRank: 50
   groups: ["CSD"]
-  keyword: "!test_pb_with_checkpoint"
+  keyword: "!test_ol_pb_with_checkpoint"
   propertyDefinitions:
   - name: fat.buckets.to.run
     defaultValue: ${PR Changes:fat.buckets.to.run}
