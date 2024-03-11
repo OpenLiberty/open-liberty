@@ -64,15 +64,13 @@
         <dependency>
             <groupId>org.eclipse.microprofile.telemetry</groupId>
             <artifactId>microprofile-telemetry-tracing-tck</artifactId>
-            <!--<version>${mptelemetry.version}</version>-->
-            <version>2.0-alpha-ibm20240308</version>
+            <version>${mptelemetry.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.microprofile.telemetry</groupId>
             <artifactId>microprofile-telemetry-metrics-tck</artifactId>
-            <!--<version>${mptelemetry.version}</version>-->
-            <version>2.0-alpha-ibm20240308</version>
+            <version>${mptelemetry.version}</version>
         </dependency>
 
         <dependency>
