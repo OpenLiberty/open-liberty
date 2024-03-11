@@ -160,7 +160,7 @@ public class HttpChannelConfig {
     // reset frames window size in milliseconds
     private int http2ResetFramesWindow = 30000;
     private int http2MaxStreamsRefused = 100;
-    private int http2MaxHeaderBlockSize = 16000;
+    private long http2MaxHeaderBlockSize = 512000;
     /** Identifies if the channel has been configured to use X-Forwarded-* and Forwarded headers */
     private boolean useForwardingHeaders = false;
     /** Regex to be used to verify that proxies in forwarded headers are known to user */
@@ -929,7 +929,7 @@ public class HttpChannelConfig {
         Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_HEADER_BLOCK_SIZE);
         if (null != value) {
             try {
-                this.http2MaxHeaderBlockSize = convertInteger(value);
+                this.http2MaxHeaderBlockSize = convertLong(value);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: HTTP/2 Max Header Block Size is " + getH2MaxHeaderBlockSize());
                 }
@@ -2433,7 +2433,7 @@ public class HttpChannelConfig {
         return http2MaxStreamsRefused;
     }
 
-    public int getH2MaxHeaderBlockSize() {
+    public long getH2MaxHeaderBlockSize() {
         return http2MaxHeaderBlockSize;
     }
 

@@ -9,7 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -126,7 +125,7 @@ public class H2StreamProcessor {
     private boolean rstStreamSent = false;
 
     // handle maximum size of header block
-    private int currentHeaderBlockSize = 0;
+    private long currentHeaderBlockSize = 0;
 
     /**
      * Create a stream processor initialized in idle state
