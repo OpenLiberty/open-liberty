@@ -70,7 +70,7 @@ public class SPNEGOConstants {
     public final static String CYGWIN_HOME_REALM_1 = "c:\\cygwin\\home\\Administrator\\";
     public final static String KRB_RESOURCE_LOCATION = "/resources/security/kerberos/";
     public final static String SERVER_KRB5_CONFIG_FILE = KRB_RESOURCE_LOCATION + "krb5.conf";
-    public final static String CLIENT_JAAS_CONFIG_FILE = KRB_RESOURCE_LOCATION + "jaas.conf";
+    public final static String CLIENT_JAAS_CONFIG_FILE = KRB_RESOURCE_LOCATION + "jaas.config";
     public final static String ZOS_CLIENT_JAAS_CONFIG_FILE = KRB_RESOURCE_LOCATION + "zjaas.conf";
     public final static String SERVER_KRB5_CONFIG_FILE_BACKUP = KRB_RESOURCE_LOCATION + "KDCbackup-krb5.conf";
 
