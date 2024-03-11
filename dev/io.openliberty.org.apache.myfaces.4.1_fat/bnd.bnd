@@ -41,7 +41,7 @@ fat.minimum.java.level: 17
     io.openliberty.org.apache.commons.codec;version=latest,\
     io.openliberty.org.apache.xercesImpl;version=latest,\
     io.openliberty.jakarta.servlet.6.1;version=latest,\
-    io.openliberty.jakarta.annotation.2.1;version=latest,\
+    io.openliberty.jakarta.annotation.3.0;version=latest,\
     io.openliberty.jakarta.expressionLanguage.6.0;version=latest,\
     io.openliberty.org.testcontainers;version=latest,\
     org.seleniumhq.selenium:selenium-api;version=4.8.3,\
