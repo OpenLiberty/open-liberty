@@ -17,7 +17,7 @@ javac.source: 17
 javac.target: 17
 
 tested.features: \
-	checkpoint
+  checkpoint
 
 src: \
         fat/src
