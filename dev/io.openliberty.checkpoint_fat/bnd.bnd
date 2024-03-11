@@ -62,6 +62,7 @@ tested.features: \
         appsecurity-6.0,\
         beanvalidation-3.1,\
         cdi-4.1,\
+		checkpoint,\
         concurrent-3.1,\
         connectors-2.0,\
         connectors-2.1,\
@@ -103,7 +104,7 @@ tested.features: \
         websocket-2.2,\
         xmlbinding-4.0,\
         xmlWS-3.0,\
-        xmlws-4.0
+        xmlws-4.0,\
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
