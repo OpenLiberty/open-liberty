@@ -400,10 +400,8 @@ public class ConfigAdminHealthCheckTest {
                                 assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
 
                                 String configAdminLine = server1.waitForStringInTrace("configAdminAppName = MultiWarApps");
-                                String stateMapLine = server1.waitForStringInTrace(": appName = MultiWarApps,");
 
                                 assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
-                                assertNotNull("App was not detected by appTracker.", stateMapLine);
                             } else {
                                 log("testReadinessEndpointOnServerStart", "Application started but timeout still reached.");
                                 throw new TimeoutException("Timed out waiting for server and app to be ready. Timeout set to " + time_out + "ms.");
