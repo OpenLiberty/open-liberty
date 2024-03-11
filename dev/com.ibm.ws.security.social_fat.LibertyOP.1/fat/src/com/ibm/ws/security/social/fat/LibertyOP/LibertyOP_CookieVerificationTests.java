@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,14 +49,6 @@ import componenttest.topology.impl.LibertyServerWrapper;
 public class LibertyOP_CookieVerificationTests extends SocialCommonTest {
 
     public static Class<?> thisClass = LibertyOP_CookieVerificationTests.class;
-
-    protected static final String GLOBAL_JVM_ARGS = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            String prop = System.getProperty("global.jvm.args");
-            return prop == null ? "" : prop.trim();
-        }
-    });
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification();
@@ -130,10 +122,7 @@ public class LibertyOP_CookieVerificationTests extends SocialCommonTest {
         allowedCookies.add("JSESSIONID");
         allowedCookies.add("LtpaToken2");
         allowedCookies.add("WAS_[np][0-9]+");
-        Log.info(thisClass, _testName, "Global args: " + GLOBAL_JVM_ARGS);
-        if (GLOBAL_JVM_ARGS.contains("-Dcom.ibm.ws.beta.edition=true")) {
-            allowedCookies.add("WASOidcSession");
-        }
+        allowedCookies.add("WASOidcSession");
 
         // Verify all cookies that should have been deleted do not appear in the web
         // client anymore

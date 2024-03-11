@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -68,9 +68,6 @@ public class BackchannelLogoutHelper {
      * - Request includes a non-empty logout_token parameter
      */
     String validateRequestAndGetLogoutTokenParameter() throws BackchannelLogoutException {
-        if (!ProductInfo.getBetaEdition()) {
-            throw new BackchannelLogoutException("BETA: The back-channel logout feature is only available in the beta edition.");
-        }
         String httpMethod = request.getMethod();
         if (!"POST".equalsIgnoreCase(httpMethod)) {
             throw new BackchannelLogoutException("HTTP " + HttpServletResponse.SC_METHOD_NOT_ALLOWED + " Method Not Allowed (" + httpMethod + ")", HttpServletResponse.SC_METHOD_NOT_ALLOWED);

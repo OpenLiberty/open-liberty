@@ -104,6 +104,7 @@ import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
+import jakarta.data.page.CursoredPage;
 import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
@@ -278,7 +279,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         Method method = queryInfo.method;
         Class<?> multiType = queryInfo.getMultipleResultType();
-        boolean countPages = Page.class.equals(multiType) || KeysetAwarePage.class.equals(multiType);
+        boolean countPages = Page.class.equals(multiType) || CursoredPage.class.equals(multiType) || KeysetAwarePage.class.equals(multiType);
         StringBuilder q = null;
 
         // TODO would it be more efficient to invoke method.getAnnotations() once?
@@ -335,6 +336,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 q = generateSelectClause(queryInfo, select);
                 if (countPages)
                     generateCount(queryInfo, null);
+            } else if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE
+                       && multiType != null
+                       && Stream.class.isAssignableFrom(multiType)) {
+                throw new UnsupportedOperationException("The " + method.getName() + " method of the " + repositoryInterface.getName() +
+                                                        " repository interface cannot use the " +
+                                                        method.getReturnType().getName() + " return type for a delete operation.");
             }
         }
 
@@ -456,11 +463,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     static int computeOffset(PageRequest<?> pagination) {
         if (pagination.mode() != PageRequest.Mode.OFFSET)
-            throw new DataException(new IllegalArgumentException("Keyset pagination mode " + pagination.mode() +
+            throw new DataException(new IllegalArgumentException("Cursor based pagination mode " + pagination.mode() +
                                                                  " can only be used with repository methods with the following return types: " +
-                                                                 KeysetAwarePage.class.getName() + ", " + KeysetAwareSlice.class.getName() +
-                                                                 ", " + Iterator.class.getName() +
-                                                                 ". For offset pagination, use a PageRequest without a keyset.")); // TODO NLS
+                                                                 CursoredPage.class.getName() +
+                                                                 ". For offset pagination, use a PageRequest without a cursor.")); // TODO NLS
         int maxPageSize = pagination.size();
         long pageIndex = pagination.page() - 1; // zero-based
         if (Integer.MAX_VALUE / maxPageSize >= pageIndex)
@@ -571,13 +577,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
     /**
      * Finds and updates entities (or records) in the database.
-     * Entities that are not found are ignored.
      *
      * @param arg       the entity or record, or array or Iterable or Stream of entity or record.
      * @param queryInfo query information.
      * @param em        the entity manager.
      * @return the updated entities, using the return type that is required by the repository Update method signature.
-     * @throws Exception if an error occurs.
+     * @throws OptimisticLockingFailureException if an entity is not found in the database.
+     * @throws Exception                         if an error occurs.
      */
     private Object findAndUpdate(Object arg, QueryInfo queryInfo, EntityManager em) throws Exception {
         List<Object> results;
@@ -588,9 +594,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
             results = new ArrayList<>(length);
             for (int i = 0; i < length; i++) {
                 Object entity = findAndUpdateOne(Array.get(arg, i), queryInfo, em);
-                if (entity != null) {
+                if (entity == null)
+                    throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                else
                     results.add(entity);
-                }
             }
         } else {
             arg = arg instanceof Stream //
@@ -601,17 +608,19 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (arg instanceof Iterable) {
                 for (Object e : ((Iterable<?>) arg)) {
                     Object entity = findAndUpdateOne(e, queryInfo, em);
-                    if (entity != null) {
+                    if (entity == null)
+                        throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                    else
                         results.add(entity);
-                    }
                 }
             } else {
                 hasSingularEntityParam = true;
                 results = new ArrayList<>(1);
                 Object entity = findAndUpdateOne(arg, queryInfo, em);
-                if (entity != null) {
+                if (entity == null)
+                    throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                else
                     results.add(entity);
-                }
             }
         }
         em.flush();
@@ -1501,9 +1510,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private void generateOrderBy(QueryInfo queryInfo, StringBuilder q) {
         Class<?> multiType = queryInfo.getMultipleResultType();
 
-        boolean needsKeysetQueries = KeysetAwarePage.class.equals(multiType)
+        boolean needsKeysetQueries = CursoredPage.class.equals(multiType)
+                                     || KeysetAwarePage.class.equals(multiType)
                                      || KeysetAwareSlice.class.equals(multiType)
-                                     || Iterator.class.equals(multiType);
+                                     || Iterator.class.equals(multiType); // TODO remove these other types
 
         StringBuilder fwd = needsKeysetQueries ? new StringBuilder(100) : q; // forward page order
         StringBuilder prev = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
@@ -2362,7 +2372,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     throw new DataException("Repository method " + method + " cannot have multiple Limit parameters."); // TODO NLS
                             } else if (param instanceof Order) {
                                 @SuppressWarnings("unchecked")
-                                Order<Object> order = (Order<Object>) param;
+                                Iterable<Sort<Object>> order = (Iterable<Sort<Object>>) param;
                                 sortList = queryInfo.combineSorts(sortList, order);
                             } else if (param instanceof PageRequest) {
                                 if (pagination == null)
@@ -2418,8 +2428,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (pagination != null && Iterator.class.equals(multiType))
                             returnValue = new PaginatedIterator<>(queryInfo, pagination, args);
-                        else if (KeysetAwareSlice.class.equals(multiType) || KeysetAwarePage.class.equals(multiType))
-                            returnValue = new KeysetAwarePageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
+                        else if (CursoredPage.class.equals(multiType) || KeysetAwareSlice.class.equals(multiType) || KeysetAwarePage.class.equals(multiType))
+                            returnValue = new CursoredPageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
                         else if (Slice.class.equals(multiType) || Page.class.equals(multiType) || pagination != null && Streamable.class.equals(multiType))
                             returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
                         else {
@@ -2457,7 +2467,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                             if (multiType != null && BaseStream.class.isAssignableFrom(multiType)) {
                                 Stream<?> stream = query.getResultStream();
-                                if (Stream.class.equals(multiType)) // TODO FIND_AND_DELETE from stream?
+                                if (Stream.class.equals(multiType))
                                     returnValue = stream;
                                 else if (IntStream.class.equals(multiType))
                                     returnValue = stream.mapToInt(RepositoryImpl::toInt);
@@ -2623,12 +2633,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             updateCount = remove(arg, queryInfo, em);
                         }
 
-                        if (updateCount < numExpected) {
-                            Class<?> singleType = queryInfo.getSingleResultType();
-                            if (void.class.equals(singleType) || Void.class.equals(singleType))
-                                throw new OptimisticLockingFailureException((numExpected - updateCount) + " of the " +
-                                                                            numExpected + " entities were not found for deletion."); // TODO NLS
-                        }
+                        if (updateCount < numExpected)
+                            if (numExpected == 1)
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                            else
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database for " +
+                                                                            (numExpected - updateCount) + " of the " +
+                                                                            numExpected + " entities."); // TODO NLS
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
@@ -2640,17 +2651,29 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                         ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
                                         : args[0];
                         int updateCount = 0;
+                        int numExpected = 0;
 
                         if (arg instanceof Iterable) {
-                            for (Object e : ((Iterable<?>) arg))
+                            for (Object e : ((Iterable<?>) arg)) {
+                                numExpected++;
                                 updateCount += update(e, queryInfo, em);
+                            }
                         } else if (queryInfo.entityParamType.isArray()) {
-                            int length = Array.getLength(arg);
-                            for (int i = 0; i < length; i++)
+                            numExpected = Array.getLength(arg);
+                            for (int i = 0; i < numExpected; i++)
                                 updateCount += update(Array.get(arg, i), queryInfo, em);
                         } else {
+                            numExpected = 1;
                             updateCount = update(arg, queryInfo, em);
                         }
+
+                        if (updateCount < numExpected)
+                            if (numExpected == 1)
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                            else
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database for " +
+                                                                            (numExpected - updateCount) + " of the " +
+                                                                            numExpected + " entities."); // TODO NLS
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;

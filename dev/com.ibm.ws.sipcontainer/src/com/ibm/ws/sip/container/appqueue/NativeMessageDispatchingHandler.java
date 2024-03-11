@@ -172,7 +172,7 @@ public class NativeMessageDispatchingHandler implements MessageDispatchingHandle
 			c_logger.traceEntry(this, "dispatch message = " + msg +" blockTime="+blockTimeout);
 		}
 
-		int index = msg.getQueueIndex();
+		long index = msg.getQueueIndex();
 		if(index < 0){
 			//this should never happen.
 			if (c_logger.isTraceDebugEnabled()) {
@@ -196,13 +196,13 @@ public class NativeMessageDispatchingHandler implements MessageDispatchingHandle
 	 * @param index
 	 * @return
 	 */
-	protected AppQueueHandler getQueueToProcess(int index, Queueable msg){
-		index = index % s_dispatchers;
+	protected AppQueueHandler getQueueToProcess(long index, Queueable msg){
+		int daIndex = (int) index % s_dispatchers;
 		if (c_logger.isTraceDebugEnabled()) {
-			c_logger.traceDebug(this, "getQueueToProcess", "sending msg to queue no:"+index + " msg="+msg +
-					" handler Q:"+_dispatchersArray[index].getClass().getName());
+			c_logger.traceDebug(this, "getQueueToProcess", "sending msg to queue no:"+daIndex + " msg="+msg +
+					" handler Q:"+_dispatchersArray[daIndex].getClass().getName());
 		}
-		return _dispatchersArray[index];
+		return _dispatchersArray[daIndex];
 	}
 
 	/**

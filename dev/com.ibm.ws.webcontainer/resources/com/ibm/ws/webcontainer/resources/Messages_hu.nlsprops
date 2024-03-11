@@ -1632,3 +1632,4 @@ redirect.location.cannot.be.null.useraction=Friss\u00edtse az \u00e1tir\u00e1ny\
 
 sendRedirect.hyper.text.url=<html><body>Redirecting<p> <a href="{0}"></a></p></body></html>
 
+query.or.post.is.null=A k\u00e9r\u00e9s lek\u00e9rdez\u00e9si karaktersorozat vagy a post adat null.

@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2023 IBM Corporation and others.
+    Copyright (c) 2023, 2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@
         <!-- Verifying Pages 4.0 queryString:  -->
         queryString: ${pageContext.errorData.queryString}
 
-         <!-- TODO VERIFY METHOD --- See #27128  -->
-
+         <!-- Verifying Pages 4.0 method:  -->
+         errorMethod: ${pageContext.errorData.method}
     </body>
 </html>

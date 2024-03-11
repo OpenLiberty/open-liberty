@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.security.common.ssl.SecuritySSLUtils;
 import com.ibm.ws.ssl.KeyStoreService;
 
@@ -140,7 +141,12 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
         jws.setKey(clientAssertionSigningKey);
         jws.setDoKeyValidation(false);
 
-        return jws.getCompactSerialization();
+        Object token = ThreadIdentityManager.runAsServer();
+        try {
+            return jws.getCompactSerialization();
+        } finally {
+            ThreadIdentityManager.reset(token);
+        }
     }
 
     @Sensitive

@@ -22,13 +22,13 @@ import jakarta.data.Streamable;
 public interface Slice<T> extends Streamable<T> {
     List<T> content();
 
-    long number(); // from Spring Data and Micronaut. Not currently in Jakarta Data.
-
     int numberOfElements();
 
     PageRequest<T> pageRequest();
 
     boolean hasContent();
+
+    boolean hasNext();
 
     PageRequest<T> nextPageRequest();
 

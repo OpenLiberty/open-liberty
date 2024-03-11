@@ -292,9 +292,10 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
                             throw new IllegalStateException("Web module " + mData.getJ2EEName() + " is not available."); // TODO NLS
                     }
                 } else {
-                    // TODO implement
-                    throw new UnsupportedOperationException("Managed thread factory definitions are not supported in " +
-                                                            "application.xml yet. Metadata: " + metadata);
+                    // Should be unreachable because mock ComponentMetaData is created for resources defined in application.xml.
+                    throw new UnsupportedOperationException("A ManagedThreadFactory resource defined is in the " +
+                                                            metadata.getName() + " application artifact with " +
+                                                            metadata.getClass().getName() + " metadata.");
                 }
 
                 appName = cData.getJ2EEName().getApplication();

@@ -20,16 +20,16 @@ import jakarta.data.page.PageRequest;
 /**
  * Method signatures copied from jakarta.data.Order from the Jakarta Data repo.
  */
-public class Order<T> implements Iterable<Sort<T>> {
+public class Order<T> implements Iterable<Sort<? super T>> {
 
-    private final List<Sort<T>> sortBy;
+    private final List<Sort<? super T>> sortBy;
 
-    private Order(List<Sort<T>> sortBy) {
+    private Order(List<Sort<? super T>> sortBy) {
         this.sortBy = sortBy;
     }
 
     @SafeVarargs
-    public static final <T> Order<T> by(Sort<T>... sortBy) {
+    public static <T> Order<T> by(Sort<? super T>... sortBy) {
         return new Order<T>(List.of(sortBy));
     }
 
@@ -39,13 +39,17 @@ public class Order<T> implements Iterable<Sort<T>> {
                other instanceof Order && sortBy.equals(((Order<?>) other).sortBy);
     }
 
+    public List<Sort<? super T>> sorts() {
+        return sortBy;
+    }
+
     @Override
     public int hashCode() {
         return sortBy.hashCode();
     }
 
     @Override
-    public Iterator<Sort<T>> iterator() {
+    public Iterator<Sort<? super T>> iterator() {
         return sortBy.iterator();
     }
 

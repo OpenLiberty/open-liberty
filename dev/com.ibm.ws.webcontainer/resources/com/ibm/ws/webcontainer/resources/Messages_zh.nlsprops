@@ -1632,3 +1632,4 @@ redirect.location.cannot.be.null.useraction=\u901a\u8fc7\u6307\u5b9a\u975e\u7a7a
 
 sendRedirect.hyper.text.url=<html><body><p>\u91cd\u5b9a\u5411\u5230 <a href="{0}"></a></p></body></html>
 
+query.or.post.is.null=\u8bf7\u6c42\u67e5\u8be2\u5b57\u7b26\u4e32\u6216\u53d1\u5e03\u6570\u636e\u4e3a\u7a7a\u3002

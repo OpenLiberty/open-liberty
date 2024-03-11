@@ -11,6 +11,7 @@
 package test.jakarta.data.jpa.web;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -18,9 +19,7 @@ import java.util.stream.Stream;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
-import jakarta.data.Streamable;
-import jakarta.data.page.KeysetAwarePage;
-import jakarta.data.page.KeysetAwareSlice;
+import jakarta.data.page.CursoredPage;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
@@ -68,8 +67,8 @@ public interface Cities {
     Iterable<CityId> deleteFirst3ByStateName(String state, Order<City> sorts);
 
     @Delete
-    Streamable<CityId> deleteSome(@By("stateName") String state,
-                                  Limit limit);
+    List<CityId> deleteSome(@By("stateName") String state,
+                            Limit limit);
 
     @Delete
     CityId[] deleteWithinPopulationRange(@By("population") @GreaterThanEqual int min,
@@ -99,7 +98,7 @@ public interface Cities {
     @OrderBy("stateName")
     CityId[] findByStateNameEndsWith(String ending);
 
-    KeysetAwarePage<City> findByStateNameGreaterThan(String stateNameAfter, PageRequest<City> pagination);
+    CursoredPage<City> findByStateNameGreaterThan(String stateNameAfter, PageRequest<City> pagination);
 
     Stream<City> findByStateNameLessThan(String stateNameBefore, Sort<?>... sorts);
 
@@ -107,11 +106,11 @@ public interface Cities {
     Stream<City> findByStateNameNot(String exclude);
 
     @OrderBy("id")
-    KeysetAwareSlice<City> findByStateNameNotEndsWith(String postfix, PageRequest<?> pagination);
+    CursoredPage<City> findByStateNameNotEndsWith(String postfix, PageRequest<?> pagination);
 
-    KeysetAwareSlice<City> findByStateNameNotNullOrderById(PageRequest<City> pagination);
+    CursoredPage<City> findByStateNameNotNullOrderById(PageRequest<City> pagination);
 
-    KeysetAwarePage<City> findByStateNameNotStartsWithOrderByIdDesc(String prefix, PageRequest<?> pagination);
+    CursoredPage<City> findByStateNameNotStartsWithOrderByIdDesc(String prefix, PageRequest<?> pagination);
 
     CityId findFirstByNameOrderByPopulationDesc(String name);
 
@@ -127,11 +126,11 @@ public interface Cities {
                             @By("stateName") @StartsWith String statePattern);
 
     @Delete
-    boolean remove(City city);
+    void remove(City city);
 
-    Streamable<City> removeByStateName(String state);
+    List<City> removeByStateName(String state);
 
-    Streamable<City> removeByStateNameOrderByName(String state);
+    List<City> removeByStateNameOrderByName(String state);
 
     @Update
     int replace(CityId id,
@@ -152,9 +151,9 @@ public interface Cities {
 
     @Find
     @OrderBy(value = "id", descending = true)
-    KeysetAwarePage<City> sizedWithin(@By("population") @GreaterThanEqual int minPopulation,
-                                      @By("population") @LessThanEqual int maxPopulation,
-                                      PageRequest<City> pagination);
+    CursoredPage<City> sizedWithin(@By("population") @GreaterThanEqual int minPopulation,
+                                   @By("population") @LessThanEqual int maxPopulation,
+                                   PageRequest<City> pagination);
 
     @Save
     City save(City c);

@@ -29,11 +29,13 @@ Import-Package: \
 
 Private-Package: \
   io.openliberty.concurrent.internal.cdi.*,\
+  io.openliberty.concurrent.internal.cdi.metadata,\
   io.openliberty.concurrent.internal.cdi.resources.*
 
 -cdiannotations:
 
--dsannotations: io.openliberty.concurrent.internal.cdi.ConcurrencyExtensionMetadata
+-dsannotations: io.openliberty.concurrent.internal.cdi.ConcurrencyExtensionMetadata,\
+                io.openliberty.concurrent.internal.cdi.metadata.MTFDeferredMetaDataFactory
 
 instrument.classesExcludes: io/openliberty/concurrent/internal/cdi/resources/*.class
 
@@ -45,6 +47,7 @@ instrument.classesExcludes: io/openliberty/concurrent/internal/cdi/resources/*.c
   com.ibm.wsspi.org.osgi.service.component.annotations,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.cdi.interfaces.jakarta;version=latest, \
+  com.ibm.ws.classloading,\
   com.ibm.ws.concurrent,\
   com.ibm.ws.container.service;version=latest,\
   com.ibm.ws.context,\

@@ -54,15 +54,30 @@ public class ShortTokenLifetimePrep extends CommonAnnotatedSecurityTests {
             for (String appName : appNames) {
                 String url = httpsBase + "/" + appName;
                 WebClient webClient = getAndSaveWebClient();
-                Page response = invokeAppReturnLoginPage(webClient, url);
+                Page origResponse = invokeAppReturnLoginPage(webClient, url);
 
-                response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
-                // confirm protected resource was accessed
-                // Just check for a good status code - on faster machines, we'll land on the test app, on
-                // slow machines, we'll land on the logout page (since the token will be expired by the time it's returned
-                Expectations expectations = new Expectations();
-                expectations.addSuccessCodeForCurrentAction();
-                validationUtils.validateResult(response, expectations);
+                // try 10 times to get a good response before we go on to
+                for (int i = 0; i < 10; i++) {
+                    try {
+                        Page response = actions.doFormLogin(origResponse, Constants.TESTUSER, Constants.TESTUSERPWD);
+                        // confirm protected resource was accessed
+                        // Just check for a good status code - on faster machines, we'll land on the test app, on
+                        // slow machines, we'll land on the logout page (since the token will be expired by the time it's returned
+                        Expectations expectations = new Expectations();
+                        expectations.addSuccessCodeForCurrentAction();
+                        validationUtils.validateResult(response, expectations);
+                        break; // if we got this far, we've successfully logged in and show that the first token was issued correctly
+                    } catch (Exception e1) {
+                        Log.info(thisClass, "shortTokenLifetimePrep",
+                                 "A failure occurred trying to \"warm up\" the OP (meaning it takes a long time to issue the very first token and short token lifetime tests will time out)");
+                        Log.info(thisClass, "shortTokenLifetimePrep", e1.getMessage());
+
+                    }
+                    if (i == 10) {
+                        throw new Exception("We tried 10 times to make sure that the OP could issue the tokens that the tests need and each attempt has failed.  We should expect test case failures to follow.");
+                    }
+                }
+
             }
         } catch (Exception e) {
             Log.info(thisClass, "shortTokenLifetimePrep",

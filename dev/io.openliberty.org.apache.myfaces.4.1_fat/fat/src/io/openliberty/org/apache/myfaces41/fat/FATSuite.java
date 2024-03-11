@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,13 +20,23 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.FatLogHandler;
 
-import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.org.apache.myfaces41.fat.test.CompositeExtensionTest;
+import io.openliberty.org.apache.myfaces41.fat.test.ConfigTests;
+import io.openliberty.org.apache.myfaces41.fat.test.ContentLengthTest;
+import io.openliberty.org.apache.myfaces41.fat.test.Faces41CDITests;
+import io.openliberty.org.apache.myfaces41.fat.test.RenderIdTest;
+import io.openliberty.org.apache.myfaces41.fat.test.UUIDConverterTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class,
+                ConfigTests.class,
+                ContentLengthTest.class,
+                CompositeExtensionTest.class,
+                UUIDConverterTest.class,
+                Faces41CDITests.class
+                // RenderIdTest.class, id in head is not rendered
 })
 
 public class FATSuite {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -133,59 +130,6 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
             //let's use liberty SSL configuration
             tlsClientParams.setSSLSocketFactory(sslSocketFactory);
             tlsClientParams.setDisableCNCheck(disableCNCheck);
-            tlsClientParams.setCipherSuites(getSSLCipherSuites(sslRef, message));
-            // TODO: this is something we may want to do in the future, however, CXF currently
-            // only allows us to set 1 protocol
-            // tlsClientParams.setSecureSocketProtocol(getSSLProtocols(sslRef, message));
-
-            try {
-                String useHttpsURLConnectionDefaultSslSocketFactory = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-
-                    @Override
-                    public String run() throws Exception {
-                        return System.getProperty(JAXRSClientConstants.USE_HTTPS_URL_CONNECTION_DEFAULT_SSLSOCKETFACTORY);
-                    }
-                });
-
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Property " + JAXRSClientConstants.USE_HTTPS_URL_CONNECTION_DEFAULT_SSLSOCKETFACTORY
-                                 + "=" + useHttpsURLConnectionDefaultSslSocketFactory);
-                }
-
-                Object useHttpsURLConnectionDefaultSslSocketFactoryClientProp = message.get(JAXRSClientConstants.USE_HTTPS_URL_CONNECTION_DEFAULT_SSLSOCKETFACTORY);
-                String useHttpsURLConnectionDefaultSslSocketFactoryClientPropString = null;
-                if (useHttpsURLConnectionDefaultSslSocketFactoryClientProp != null) {
-                    useHttpsURLConnectionDefaultSslSocketFactoryClientPropString = (String) useHttpsURLConnectionDefaultSslSocketFactoryClientProp;
-                }
-
-                // check if the property is set either via SystemProperty or on the JAX-RS client
-                if ((useHttpsURLConnectionDefaultSslSocketFactory != null
-                        && useHttpsURLConnectionDefaultSslSocketFactory.trim().length() > 0
-                        && useHttpsURLConnectionDefaultSslSocketFactory.trim().equalsIgnoreCase("true"))
-                    || (useHttpsURLConnectionDefaultSslSocketFactoryClientPropString != null
-                        && useHttpsURLConnectionDefaultSslSocketFactoryClientPropString.trim().length() > 0
-                        && useHttpsURLConnectionDefaultSslSocketFactoryClientPropString.trim().equalsIgnoreCase("true"))) {
-
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Setting useHttpsURLConnectionDefaultSslSocketFactory on TLSClientParameters");
-                    }
-
-                    // This forces the JAX-RS client to use the DefaultSSLSocketFactory and
-                    // automatically pick up the SSL config from the server.xml.
-                    // This is a workaround for the client not honoring the above settings.
-                    //
-                    // From https://cxf.apache.org/docs/tls-configuration.html
-                    // This attribute specifies if HttpsURLConnection.getDefaultSSLSocketFactory()
-                    // should be used to create https connections. If 'true', 'jsseProvider',
-                    // 'secureSocketProtocol', 'trustManagers', 'keyManagers', 'secureRandom',
-                    // 'cipherSuites' and 'cipherSuitesFilter' configuration parameters are ignored.
-                    tlsClientParams.setUseHttpsURLConnectionDefaultSslSocketFactory(true);
-                }
-            } catch (PrivilegedActionException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Unable to get the '" + JAXRSClientConstants.USE_HTTPS_URL_CONNECTION_DEFAULT_SSLSOCKETFACTORY + "'property");
-                }
-            }
         } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "May not enable feature ssl-1.0 or appSecurity-2.0.");
         }
@@ -239,50 +183,6 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "getSSLSocketFactoryBySSLRef reflection failed with exception " + e.toString());
-            }
-            return null;
-        }
-    }
-
-    private List<String> getSSLCipherSuites(String sslRef, Message message) {
-        try {
-            final Class<?> jaxrsSslMgrClass = getJaxRsSSLManagerClass();
-            Object classObject = jaxrsSslMgrClass.newInstance();
-            Method m = AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
-
-                @Override
-                public Method run() throws NoSuchMethodException, SecurityException {
-                    return jaxrsSslMgrClass.getDeclaredMethod("getSSLCipherSuitesBySSLRef", String.class, String.class, String.class);
-                }
-            });
-
-            String[] cipherSuites = (String[]) m.invoke(classObject, getJaxRsSSLManagerParams(sslRef, message));
-            return Arrays.asList(cipherSuites);
-        } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getSSLCipherSuitesBySSLRef reflection failed with exception " + e.toString());
-            }
-            return null;
-        }
-    }
-
-    private List<String> getSSLProtocols(String sslRef, Message message) {
-        try {
-            final Class<?> jaxrsSslMgrClass = getJaxRsSSLManagerClass();
-            Object classObject = jaxrsSslMgrClass.newInstance();
-            Method m = AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
-
-                @Override
-                public Method run() throws NoSuchMethodException, SecurityException {
-                    return jaxrsSslMgrClass.getDeclaredMethod("getSSLProtocolsBySSLRef", String.class, String.class, String.class);
-                }
-            });
-
-            String[] protocols = (String[]) m.invoke(classObject, getJaxRsSSLManagerParams(sslRef, message));
-            return Arrays.asList(protocols);
-        } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getSSLProtocolsBySSLRef reflection failed with exception " + e.toString());
             }
             return null;
         }

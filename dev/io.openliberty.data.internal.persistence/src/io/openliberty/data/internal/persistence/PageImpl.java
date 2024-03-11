@@ -35,20 +35,20 @@ public class PageImpl<T> implements Page<T> {
     private static final TraceComponent tc = Tr.register(PageImpl.class);
 
     private final Object[] args;
-    private final PageRequest<?> pagination;
+    private final PageRequest<?> pageRequest;
     private final QueryInfo queryInfo;
     private final List<T> results;
     private long totalElements = -1;
 
     @FFDCIgnore(Exception.class)
-    PageImpl(QueryInfo queryInfo, PageRequest<T> pagination, Object[] args) {
+    PageImpl(QueryInfo queryInfo, PageRequest<T> pageRequest, Object[] args) {
         this.queryInfo = queryInfo;
-        this.pagination = pagination == null ? PageRequest.ofSize(100) : pagination;
+        this.pageRequest = pageRequest == null ? PageRequest.ofSize(100) : pageRequest;
         this.args = args;
 
         // BasicRepository.findAll(PageRequest) requires NullPointerException when PageRequest is null.
         // TODO Should this apply in general?
-        if (pagination == null && queryInfo.paramCount == 0 && queryInfo.method.getParameterCount() == 1
+        if (pageRequest == null && queryInfo.paramCount == 0 && queryInfo.method.getParameterCount() == 1
             && PageRequest.class.equals(queryInfo.method.getParameterTypes()[0]))
             throw new NullPointerException("PageRequest: null");
 
@@ -58,8 +58,8 @@ public class PageImpl<T> implements Page<T> {
             TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.entityClass);
             queryInfo.setParameters(query, args);
 
-            int maxPageSize = pagination.size();
-            query.setFirstResult(RepositoryImpl.computeOffset(pagination));
+            int maxPageSize = pageRequest.size();
+            query.setFirstResult(RepositoryImpl.computeOffset(pageRequest));
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));
 
             results = query.getResultList();
@@ -74,10 +74,17 @@ public class PageImpl<T> implements Page<T> {
      * Query for count of total elements across all pages.
      *
      * @param jpql count query.
+     * @throws IllegalStateException if not configured to request a total count of elements.
      */
     @FFDCIgnore(Exception.class)
     private long countTotalElements() {
-        if (pagination.page() == 1L && results.size() <= pagination.size() && pagination.size() < Integer.MAX_VALUE)
+        if (!pageRequest.requestTotal())
+            throw new IllegalStateException("A total count of elements and pages is not retreived from the database because the " +
+                                            pageRequest + " page request specifies a value of 'false' for 'requestTotal'. " +
+                                            "To request a page with the total count included, use the " +
+                                            "PageRequest.withTotal method instead of the PageRequest.withoutTotal method."); // TODO NLS
+
+        if (pageRequest.page() == 1L && results.size() <= pageRequest.size() && pageRequest.size() < Integer.MAX_VALUE)
             return results.size();
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
@@ -98,32 +105,100 @@ public class PageImpl<T> implements Page<T> {
     @Override
     public List<T> content() {
         int size = results.size();
-        int max = pagination.size();
+        int max = pageRequest.size();
         return size > max ? new ResultList(max) : results;
     }
 
     @Override
-    public long number() {
-        return pagination.page();
+    public boolean hasContent() {
+        return !results.isEmpty();
+    }
+
+    @Override
+    public boolean hasNext() {
+        return results.size() > pageRequest.size() || // additional result was read beyond the max page size
+               pageRequest.size() == Integer.MAX_VALUE && results.size() == pageRequest.size();
+    }
+
+    @Override
+    public boolean hasPrevious() {
+        return pageRequest.page() > 1;
+    }
+
+    @Override
+    public boolean hasTotals() {
+        return pageRequest.requestTotal();
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        int size = results.size();
+        int max = pageRequest.size();
+        return size > max ? new ResultIterator(max) : results.iterator();
     }
 
     @Override
     public int numberOfElements() {
         int size = results.size();
-        int max = pagination.size();
+        int max = pageRequest.size();
         return size > max ? max : size;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public PageRequest<T> pageRequest() {
-        return (PageRequest<T>) pagination;
+        return (PageRequest<T>) pageRequest;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <E> PageRequest<E> pageRequest(Class<E> entityClass) {
-        return (PageRequest<E>) pagination;
+        return (PageRequest<E>) pageRequest;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public PageRequest<T> nextPageRequest() {
+        if (!hasNext())
+            return null;
+
+        return (PageRequest<T>) pageRequest.next();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E> PageRequest<E> nextPageRequest(Class<E> entityClass) {
+        if (!hasNext())
+            return null;
+
+        return (PageRequest<E>) pageRequest.next();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public PageRequest<T> previousPageRequest() {
+        if (pageRequest.page() > 1)
+            return (PageRequest<T>) pageRequest.previous();
+        else
+            throw new NoSuchElementException("Cannot request a page number prior to " + pageRequest.page() +
+                                             ". To avoid this error, check for a true result of Page.hasPrevious " +
+                                             "before attempting this method."); // TODO NLS
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <E> PageRequest<E> previousPageRequest(Class<E> entityClass) {
+        if (pageRequest.page() > 1)
+            return (PageRequest<E>) pageRequest.previous();
+        else
+            throw new NoSuchElementException("Cannot request a page number prior to " + pageRequest.page() +
+                                             ". To avoid this error, check for a true result of Page.hasPrevious " +
+                                             "before attempting this method."); // TODO NLS
+    }
+
+    @Override
+    public Stream<T> stream() {
+        return content().stream();
     }
 
     @Override
@@ -137,42 +212,7 @@ public class PageImpl<T> implements Page<T> {
     public long totalPages() {
         if (totalElements == -1)
             totalElements = countTotalElements();
-        return totalElements / pagination.size() + (totalElements % pagination.size() > 0 ? 1 : 0);
-    }
-
-    @Override
-    public boolean hasContent() {
-        return !results.isEmpty();
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-        int size = results.size();
-        int max = pagination.size();
-        return size > max ? new ResultIterator(max) : results.iterator();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public PageRequest<T> nextPageRequest() {
-        if (results.size() <= pagination.size() && pagination.size() < Integer.MAX_VALUE)
-            return null;
-
-        return (PageRequest<T>) pagination.next();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <E> PageRequest<E> nextPageRequest(Class<E> entityClass) {
-        if (results.size() <= pagination.size() && pagination.size() < Integer.MAX_VALUE)
-            return null;
-
-        return (PageRequest<E>) pagination.next();
-    }
-
-    @Override
-    public Stream<T> stream() {
-        return content().stream();
+        return totalElements / pageRequest.size() + (totalElements % pageRequest.size() > 0 ? 1 : 0);
     }
 
     /**
