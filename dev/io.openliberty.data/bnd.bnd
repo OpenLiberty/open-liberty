@@ -16,9 +16,6 @@ bVersion=1.0
 javac.source: 17
 javac.target: 17
 
-tested.features: \
-  checkpoint
-
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Bundle-Name: Open Liberty API for Jakarta Data
