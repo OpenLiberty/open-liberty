@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 /**
@@ -24,6 +25,8 @@ import jakarta.data.repository.Repository;
  */
 @Repository
 public interface Receipts extends CrudRepository<Receipt, Long> {
+    @Query("SELECT COUNT(o) FROM ReceiptEntity o") // TODO JDQL with only "SELECT COUNT(*)"
+    long count();
 
     boolean deleteByTotalLessThan(float max);
 
