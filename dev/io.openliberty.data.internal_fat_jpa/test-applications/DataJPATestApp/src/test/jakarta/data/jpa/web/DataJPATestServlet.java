@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.Vector;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -922,7 +923,7 @@ public class DataJPATestServlet extends FATServlet {
         tran.begin();
         try {
             o1 = orders.findById(o1.id).orElseThrow();
-            Long o1id = o1.id;
+            UUID o1id = o1.id;
 
             // Update in separate transaction:
             CompletableFuture.supplyAsync(() -> {
@@ -3237,7 +3238,7 @@ public class DataJPATestServlet extends FATServlet {
 
         o1 = orders.findById(o1.id).orElseThrow();
         int newVersion = o1.versionNum;
-        Long id = o1.id;
+        UUID id = o1.id;
 
         // Attempt deletion at old version
         o1 = new PurchaseOrder();
@@ -3349,7 +3350,7 @@ public class DataJPATestServlet extends FATServlet {
         o1 = orders.findById(o1.id).orElseThrow();
         assertEquals(10.19f, o1.total, 0.001f);
         int newVersion = o1.versionNum;
-        Long id = o1.id;
+        UUID id = o1.id;
 
         o1 = new PurchaseOrder();
         o1.id = id;
