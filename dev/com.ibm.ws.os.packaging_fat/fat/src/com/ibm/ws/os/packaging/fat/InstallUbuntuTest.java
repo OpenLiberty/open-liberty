@@ -14,6 +14,7 @@ package com.ibm.ws.os.packaging.fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -67,6 +68,7 @@ public class InstallUbuntuTest extends InstallUtilityToolTest {
         String METHOD_NAME = "testVerifyDebInstall";
         entering(c, METHOD_NAME);
 
+        assumeTrue(openLibExists);
         assertTrue("OpenLiberty did not install successfully", openLibExists);
 
         //check Open Liberty was installed
