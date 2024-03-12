@@ -45,7 +45,7 @@ public interface Products {
     @Delete
     void clear();
 
-    @Query("DELETE FROM Product o WHERE o.pk IN ?1")
+    @Query("DELETE FROM Product WHERE pk IN ?1")
     int discontinueProducts(Set<UUID> ids);
 
     @Select(value = "name", distinct = true)
@@ -81,7 +81,7 @@ public interface Products {
     @Select(function = Aggregate.AVERAGE, value = "price")
     float meanPrice();
 
-    @Query("UPDATE Product o SET o.price = o.price - (?2 * o.price) WHERE o.name LIKE CONCAT('%', ?1, '%')")
+    @Query("UPDATE Product SET price = price - (?2 * price) WHERE name LIKE CONCAT('%', ?1, '%')")
     long putOnSale(String nameContains, float discount);
 
     // Custom repository method that combines multiple operations into a single transaction
@@ -115,7 +115,7 @@ public interface Products {
     @Select(function = Aggregate.SUM, distinct = true, value = "price")
     float totalOfDistinctPrices();
 
-    @Query("UPDATE Product o SET o.price=o.price/?2, o.version=o.version-1 WHERE (o.pk IN ?1)")
+    @Query("UPDATE Product SET price=price/?2, version=version-1 WHERE (pk IN ?1)")
     // TODO switch to annotated parameters once available for conditions
     //@Filter(by = "pk", op = Compare.In)
     //@Update(attr = "price", op = Operation.Divide)
