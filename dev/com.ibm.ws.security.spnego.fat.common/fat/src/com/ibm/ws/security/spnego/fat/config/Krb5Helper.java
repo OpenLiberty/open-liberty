@@ -46,7 +46,9 @@ public class Krb5Helper {
 
     // When running on zOS the file format is not properly converted for the jaas.conf file currently,
     // so we will use zjaas.conf, which is already formatted for zOS.
-    private static final String JAAS_CONF_FILE = SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
+    //private static final String JAAS_CONF_FILE = SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
+    private static final String JAAS_CONF_FILE = (System.getProperty("os.name")
+                    .equals("z/OS")) ? SPNEGOConstants.ZOS_CLIENT_JAAS_CONFIG_FILE : SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
 
     /**
      * Performs a Kerberos login on the given server using the provided login configuration and user credentials.
@@ -115,6 +117,78 @@ public class Krb5Helper {
         }
         return subject;
     }
+
+    //ToDo: add if we ever need to run without jaas.conf
+    /*
+     * public Subject doKerberosLogin(final String delegateSpn, final String krb5Keytab) throws LoginException {
+     * if (IBM_KRB5_LOGIN_MODULE_AVAILABLE) {
+     * return doIbmKerberosLogin(delegateSpn, krb5Keytab);
+     * } else {
+     * return doSunKerberosLogin(delegateSpn, krb5Keytab);
+     * }
+     * }
+     *
+     *
+     * public Subject doIbmKerberosLogin(final String delegateSpn, final String krb5Keytab) throws LoginException {
+     * Subject subject = new Subject();
+     * com.ibm.security.auth.module.Krb5LoginModule krb5 = new com.ibm.security.auth.module.Krb5LoginModule();
+     * Map<String, String> options = new HashMap<String, String>();
+     * Map<String, Object> sharedState = new HashMap<String, Object>();
+     *
+     * options.put("credsType", "both");
+     * options.put("useDefaultCcache", "false");
+     * options.put("forwardable", "true");
+     * options.put("principal", delegateSpn);
+     * options.put("useKeytab", krb5Keytab);
+     * options.put("debug", "true");
+     *
+     * krb5.initialize(subject, null, sharedState, options);
+     * debugKrb5LoginModule(subject, sharedState, options);
+     * krb5.login();
+     * krb5.commit();
+     *
+     * return subject;
+     * }
+     *
+     * public Subject doSunKerberosLogin(String delegateSpn, String krb5Keytab) throws LoginException {
+     * Subject subject = new Subject();
+     * com.sun.security.auth.module.Krb5LoginModule krb5 = new com.sun.security.auth.module.Krb5LoginModule();
+     * Map<String, String> options = new HashMap<String, String>();
+     * Map<String, Object> sharedState = new HashMap<String, Object>();
+     *
+     * options.put("isInitiator", "true");
+     * options.put("refreshKrb5Config", "true");
+     * options.put("doNotPrompt", "true");
+     * options.put("storeKey", "true");
+     * options.put("useKeyTab", "true");
+     * options.put("keyTab", System.getProperty("KRB5_KTNAME"));
+     *
+     * sharedState.put("javax.security.auth.login.name", delegateSpn);
+     * options.put("debug", "true");
+     *
+     * krb5.initialize(subject, null, sharedState, options);
+     * debugKrb5LoginModule(subject, sharedState, options);
+     * krb5.login();
+     * krb5.commit();
+     *
+     * return subject;
+     * }
+     *
+     * public void debugKrb5LoginModule(Subject subject, Map<String, ?> sharedState, Map<String, ?> options) {
+     * String NULL = "null";
+     * Log.info(thisClass, "debugKrb5LoginModule", "Krb5LoginModule ==> \n " +
+     * "       subject: " + (subject == null ? NULL : subject.toString()) +
+     * "\n       sharedState: " + (sharedState == null ? NULL : sharedState.toString()) +
+     * "\n       options: " + (options == null ? NULL : options.toString()) +
+     * "\n       " + KRB5_NAME + ": " + System.getProperty(KRB5_NAME) +
+     * "\n       " + KRB5_PRINCIPAL + ": " + System.getProperty(KRB5_PRINCIPAL) +
+     * "\n       " + USE_SUBJECT_CREDS_ONLY + ": " + System.getProperty(USE_SUBJECT_CREDS_ONLY) +
+     * "\n       " + KRB5_KDC + ": " + System.getProperty(KRB5_KDC) +
+     * "\n       " + KRB5_REALM + ": " + System.getProperty(KRB5_REALM) +
+     * "\n       " + KRB5_CONF + ": " + System.getProperty(KRB5_CONF) +
+     * "\n       " + KRB5_KTNAME + ": " + System.getProperty(KRB5_KTNAME));
+     * }
+     */
 
     /**
      * Sets various system properties in preparation for a Kerberos login on the specified server. The following system

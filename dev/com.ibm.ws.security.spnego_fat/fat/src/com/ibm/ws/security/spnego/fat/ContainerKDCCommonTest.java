@@ -401,11 +401,11 @@ public class ContainerKDCCommonTest {
 
         //// testContainer from jdbc FAT
         //myServer = LibertyServerFactory.getLibertyServer("BasicAuthTest");
-        Path jaasConfPath = Paths.get(myServer.getServerRoot(), "resources", "security", "kerberos", "jaas.config");
+        Path jaasConfPath = Paths.get(myServer.getServerRoot(), "resources", "security", "kerberos", "jaas.conf");
         Path krbConfPath = Paths.get(myServer.getServerRoot(), "resources", "security", "krb5.ini");
         Path krb5KeytabPath = Paths.get(myServer.getServerRoot(), "resources", "security", "HTTP_libertyhost.keytab");
 
-        FATSuite.krb5.generateJAASConf(jaasConfPath);
+        //FATSuite.krb5.generateJAASConf(jaasConfPath);
         FATSuite.krb5.generateConf(krbConfPath);
         FATSuite.krb5.copyFileFromContainer("/etc/HTTP_libertyhost.keytab", krb5KeytabPath.toAbsolutePath().toString());
 
