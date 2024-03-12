@@ -3695,7 +3695,11 @@ public class DataTestServlet extends FATServlet {
         assertEquals(105.50f, r.total(), 0.001f);
 
         // Update single entity that exists
-        receipts.update(new Receipt(1600L, "C0060-16-006", 600.16f));
+        Receipt updated = receipts.update(new Receipt(1600L, "C0060-16-006", 600.16f));
+
+        assertEquals("C0060-16-006", updated.customer());
+        assertEquals(1600L, updated.purchaseId());
+        assertEquals(600.16f, updated.total(), 0.001f);
 
         // Update multiple entities, if they exist
         try {
@@ -3707,8 +3711,20 @@ public class DataTestServlet extends FATServlet {
             // pass
         }
 
-        receipts.updateAll(List.of(new Receipt(1400L, "C0040-14-044", 14.41f),
-                                   new Receipt(1200L, "C0002-12-002", 112.20f)));
+        Iterable<Receipt> updates = receipts.updateAll(List.of(new Receipt(1400L, "C0040-14-044", 14.41f),
+                                                               new Receipt(1200L, "C0002-12-002", 112.20f)));
+        Iterator<Receipt> updatesIt = updates.iterator();
+        assertEquals(true, updatesIt.hasNext());
+        updated = updatesIt.next();
+        assertEquals(1400L, updated.purchaseId());
+        assertEquals("C0040-14-044", updated.customer());
+        assertEquals(14.41f, updated.total(), 0.001f);
+        assertEquals(true, updatesIt.hasNext());
+        updated = updatesIt.next();
+        assertEquals(1200L, updated.purchaseId());
+        assertEquals("C0002-12-002", updated.customer());
+        assertEquals(112.20f, updated.total(), 0.001f);
+        assertEquals(false, updatesIt.hasNext());
 
         // Verify the updates
         assertEquals(List.of(new Receipt(1200L, "C0002-12-002", 112.20f), // updated by updateAll
