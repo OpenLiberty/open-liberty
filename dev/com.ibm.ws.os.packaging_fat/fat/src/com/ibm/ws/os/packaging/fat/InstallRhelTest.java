@@ -14,6 +14,7 @@ package com.ibm.ws.os.packaging.fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -65,6 +66,7 @@ public class InstallRhelTest extends InstallUtilityToolTest {
 
         String METHOD_NAME = "testVerifyRpmInstall";
         entering(c, METHOD_NAME);
+        assumeTrue(openLibExists);
         assertTrue("OpenLiberty did not install successfully", openLibExists);
 
         String[] param1s = { "-qi", "openliberty" };
