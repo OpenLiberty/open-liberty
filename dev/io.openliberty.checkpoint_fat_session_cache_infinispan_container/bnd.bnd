@@ -29,7 +29,8 @@ tested.features: \
   servlet-6.0,\
   componenttest-2.0,\
   cdi-3.0,\
-  cdi-4.0
+  cdi-4.0,\
+  checkpoint
 
 
 -buildpath: \
