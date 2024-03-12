@@ -36,6 +36,11 @@ triggers:
     - stepName: Compile FATs
     - stepName: z/OS FATs
     - stepName: z/OS Unittests
+  # Enable the testing of the checkpoint feature, running the FATs (if any) in lite mode where only @CheckpointTest annotated test cases will be run.
+  - name: spawn.checkpoint
+    defaultValue: "true"
+    steps:
+    - stepName: Checkpoint FATs (Lite)
 
 - type: manual
   triggerName: "ol-pbbeta-manual"
@@ -57,6 +62,11 @@ triggers:
     description: "PR number in Open Liberty to checkout."
   - name: github_pr_api
     defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${github_pr_number}"
+  # Enable the testing of the checkpoint feature, running the FATs (if any) in lite mode where only @CheckpointTest annotated test cases will be run.
+  - name: spawn.checkpoint
+    defaultValue: "true"
+    steps:
+    - stepName: Checkpoint FATs (Lite)
 
 - type: github
   triggerName: "ol-fullpbbeta"
@@ -87,6 +97,11 @@ triggers:
     - stepName: Compile FATs
     - stepName: z/OS FATs
     - stepName: z/OS Unittests
+  # Enable the testing of the checkpoint feature, running the FATs (if any) in lite mode where only @CheckpointTest annotated test cases will be run.
+  - name: spawn.checkpoint
+    defaultValue: "true"
+    steps:
+    - stepName: Checkpoint FATs (Lite)
 
 - type: manual
   description: "Runs a test Personal build which simulates an Open Liberty product-only change."
@@ -282,27 +297,6 @@ triggers:
     description: "PR number in Open Liberty to checkout."
     steps:
     - stepName: PR Changes
-
-# Trigger to be deleted once confirmed to be working. 
-- type: github
-  description: "Runs a test personal build which also runs the Checkpoint feature FATs."
-  triggerName: "Test: Feature (Checkpoint) Lite."
-  triggerRank: 50
-  groups: ["CSD"]
-  keyword: "!test_ol_pb_with_checkpoint"
-  propertyDefinitions:
-  - name: fat.buckets.to.run
-    defaultValue: ${PR Changes:fat.buckets.to.run}
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Compile FATs
-    - stepName: Determine FATs Needed
-    - stepName: Distributed Lite FATs
-  # Enable the testing of the checkpoint feature, running the FATs (if any) in lite mode where only @CheckpointTest annotated test cases will be run.
-  - name: spawn.checkpoint
-    defaultValue: "true"
-    steps:
-    - stepName: Checkpoint FATs (Lite)
 
 steps:
 - stepName: PR Changes
@@ -574,10 +568,9 @@ steps:
   includeProperties:
   - file: jvms/dev/zOS_s390_64_java11.properties
 
-# This step runs any FATs which test the 'checkpoint' feature in an environment with CRIU installed.
-# Checkpoint FATs therefore run twice in builds but the @CheckpointTest annotation and use of the fat.test.run.checkpoint.only property mean that in standard CRIU
-# environments they only run the test cases with @CheckpointTest (skipping the others) and in non-CRIU environments they only run the unannotated test cases. Hence,
-# there's no duplication of testing. 
+# This step runs any FATs which declare that they test the 'checkpoint' feature in an environment with CRIU installed.
+# Checkpoint FATs therefore run twice in builds but the @CheckpointTest annotation and use of the fat.test.run.checkpoint.only property mean that in CRIU environments
+# they only run the test cases with @CheckpointTest (skipping the others) and in non-CRIU environments they only run the unannotated test cases. Hence, there's no duplication of testing.
 - stepName: Checkpoint FATs (Lite)
   workType: FAT
   dependsOn:
