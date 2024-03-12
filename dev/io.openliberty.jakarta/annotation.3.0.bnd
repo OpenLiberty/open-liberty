@@ -18,9 +18,9 @@ javac.target: 17
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Export-Package: \
-  jakarta.annotation;version="3.0.0",\
-  jakarta.annotation.security;version="3.0.0",\
-  jakarta.annotation.sql;version="3.0.0"
+  jakarta.annotation;version="2.1.1",\
+  jakarta.annotation.security;version="2.1.1",\
+  jakarta.annotation.sql;version="2.1.1"
 
 # Until we have the 3.0 API, remove ManagedBean from the 2.1 jar since that is the major change in 3.0.
 -includeresource: \

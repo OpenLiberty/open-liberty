@@ -50,8 +50,6 @@ Import-Package: \
   !org.jboss.resteasy.plugins.providers.jaxb, \
   !sun.misc, \
   org.jboss.resteasy.plugins.server.servlet, \
-  jakarta.ws.rs.*;version="[3.1,5.0)", \
-  jakarta.annotation;version="[2.1,4.0)", \
   *
 
 Private-Package: \
