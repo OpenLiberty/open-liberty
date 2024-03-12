@@ -42,7 +42,7 @@
 	<include
 		location="${shared.resource.dir}/configs/ssl.xml" />
 	<ssl id="defaultSSLConfig" trustDefaultCerts="true"
-		keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" />
+		keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" verifyHostname="false" />
 	<keyStore id="defaultTrustStore"
 		location="${server.config.dir}/resources/security/truststore.p12"
 		password="trustPassword" />
@@ -81,7 +81,8 @@
                clientSecret="FILL ME IN"
                userNameAttribute="preferred_username" 
                discoveryEndpointUrl="FILL ME IN"
-               signatureAlgorithm="RS256" />
+               signatureAlgorithm="RS256"
+			   hostNameVerificationEnabled="false" />
 
 	<!-- 
 		Each server that shares the cache NEEDS to share the same SSO cookie name.
