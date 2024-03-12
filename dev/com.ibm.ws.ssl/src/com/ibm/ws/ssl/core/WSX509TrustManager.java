@@ -22,6 +22,7 @@ import java.net.Socket;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -947,7 +948,8 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
             } else {
                 // Hostname verification error
                 String extendedMessage = ex.getMessage();
-                Tr.error(tc, "ssl.client.handshake.error.CWPKI0824E", new Object[] { peerHost, extendedMessage });
+                String sanInfo = getSANInfoForHostnameVerificationError(peerHost, chain);
+                Tr.error(tc, "ssl.client.handshake.error.CWPKI0824E", new Object[] { peerHost, sanInfo, extendedMessage });
                 throw ex;
             }
         } catch (Exception e) {
@@ -958,4 +960,37 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
         }
     }
 
+    private String getSANInfoForHostnameVerificationError(String peerHost, X509Certificate[] chain) {
+        int GENERAL_NAME_DNSNAME = 2;
+        int GENERAL_NAME_IPADDRESS = 7;
+        X509Certificate certificate = chain[0];
+        boolean doesDnsNameExist = false;
+        ArrayList<String> sanInfoList = new ArrayList<>();
+        try {
+            Collection<List<?>> subjectAltNames = certificate.getSubjectAlternativeNames();
+            if (subjectAltNames != null) {
+                for (List<?> sanEntry : subjectAltNames) {
+                    Integer sanType = (Integer) sanEntry.get(0);
+                    if (sanType == GENERAL_NAME_DNSNAME) {
+                        sanInfoList.add("dnsName:" + sanEntry.get(1));
+                        doesDnsNameExist = true;
+                    }
+                    if (sanType == GENERAL_NAME_IPADDRESS) {
+                        sanInfoList.add("ipAddress:" + sanEntry.get(1));
+                    }
+                }
+            }
+        } catch (CertificateParsingException e) {
+            // SAN cannot be decoded
+        }
+        String sanInfo = String.join(", ", sanInfoList);
+        String output;
+        if (Character.isDigit(peerHost.charAt(0)) || doesDnsNameExist) {
+            output = "Subject Alternative Name [" + sanInfo  + "]";
+        } else {
+            output = "subjectDN [" + certificate.getSubjectDN() + "]";
+        }
+
+        return output;
+    }
 }
