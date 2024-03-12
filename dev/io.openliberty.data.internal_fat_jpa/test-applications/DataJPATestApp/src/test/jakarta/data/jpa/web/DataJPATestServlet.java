@@ -1035,7 +1035,19 @@ public class DataJPATestServlet extends FATServlet {
             // pass
         }
 
-        orders.updateAll(List.of(o8, o7));
+        Iterable<PurchaseOrder> updates = orders.updateAll(List.of(o8, o7));
+
+        PurchaseOrder updated;
+        Iterator<PurchaseOrder> updatesIt = updates.iterator();
+        assertEquals(true, updatesIt.hasNext());
+        updated = updatesIt.next();
+        assertEquals("testEntitiesAsParameters-Customer8", updated.purchasedBy);
+        assertEquals(88.99f, updated.total, 0.001f);
+        assertEquals(true, updatesIt.hasNext());
+        updated = updatesIt.next();
+        assertEquals("testEntitiesAsParameters-Customer7", updated.purchasedBy);
+        assertEquals(77.99f, updated.total, 0.001f);
+        assertEquals(false, updatesIt.hasNext());
 
         List<Float> totals = orders.findTotalByPurchasedByIn(Set.of("testEntitiesAsParameters-Customer8",
                                                                     "testEntitiesAsParameters-Customer7",
@@ -1059,7 +1071,10 @@ public class DataJPATestServlet extends FATServlet {
         o1 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer1").orElseThrow();
         o1.total = 0.99f;
 
-        orders.update(o1);
+        updated = orders.update(o1);
+
+        assertEquals("testEntitiesAsParameters-Customer1", updated.purchasedBy);
+        assertEquals(0.99f, updated.total, 0.001f);
 
         totals = orders.findTotalByPurchasedByIn(Set.of("testEntitiesAsParameters-Customer1"));
         assertEquals(totals.toString(), 1, totals.size());
@@ -3366,7 +3381,13 @@ public class DataJPATestServlet extends FATServlet {
         }
 
         o1.versionNum = newVersion;
-        orders.update(o1);
+        PurchaseOrder updated = orders.update(o1);
+
+        assertEquals("testVersionedUpdate-Customer1", updated.purchasedBy);
+        assertEquals(10.29f, updated.total, 0.001f);
+        assertEquals(id, updated.id);
+        assertEquals(newVersion + 1, updated.versionNum);
+
         o1 = orders.findById(o1.id).orElseThrow();
         assertEquals(10.29f, o1.total, 0.001f);
 
