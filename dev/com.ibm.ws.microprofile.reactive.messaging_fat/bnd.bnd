@@ -32,7 +32,8 @@ tested.features: mpReactiveMessaging-1.0, \
                  cdi-4.0, \
                  jsonp-2.0, \
                  jsonp-2.1, \
-                 checkpoint
+                 checkpoint, \
+                 FAKE_TEST_CHANGE_SHOULD_NOT_BE_DELIVERED
                  
 
 fat.project: true
