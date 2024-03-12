@@ -96,7 +96,6 @@ import io.openliberty.data.repository.update.SubtractFrom;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
-import jakarta.data.Streamable;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
@@ -105,11 +104,8 @@ import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.CursoredPage;
-import jakarta.data.page.KeysetAwarePage;
-import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
-import jakarta.data.page.Slice;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
@@ -279,7 +275,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         Method method = queryInfo.method;
         Class<?> multiType = queryInfo.getMultipleResultType();
-        boolean countPages = Page.class.equals(multiType) || CursoredPage.class.equals(multiType) || KeysetAwarePage.class.equals(multiType);
+        boolean countPages = Page.class.equals(multiType) || CursoredPage.class.equals(multiType);
         StringBuilder q = null;
 
         // TODO would it be more efficient to invoke method.getAnnotations() once?
@@ -1514,9 +1510,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         Class<?> multiType = queryInfo.getMultipleResultType();
 
         boolean needsKeysetQueries = CursoredPage.class.equals(multiType)
-                                     || KeysetAwarePage.class.equals(multiType)
-                                     || KeysetAwareSlice.class.equals(multiType)
-                                     || Iterator.class.equals(multiType); // TODO remove these other types
+                                     || Iterator.class.equals(multiType); // TODO remove this type
 
         StringBuilder fwd = needsKeysetQueries ? new StringBuilder(100) : q; // forward page order
         StringBuilder prev = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
@@ -2436,9 +2430,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (pagination != null && Iterator.class.equals(multiType))
                             returnValue = new PaginatedIterator<>(queryInfo, pagination, args);
-                        else if (CursoredPage.class.equals(multiType) || KeysetAwareSlice.class.equals(multiType) || KeysetAwarePage.class.equals(multiType))
+                        else if (CursoredPage.class.equals(multiType))
                             returnValue = new CursoredPageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
-                        else if (Slice.class.equals(multiType) || Page.class.equals(multiType) || pagination != null && Streamable.class.equals(multiType))
+                        else if (Page.class.equals(multiType))
                             returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
                         else {
                             em = entityInfo.builder.createEntityManager();
@@ -2574,7 +2568,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     }
                                 } else if (results.isEmpty()) {
                                     throw new EmptyResultException("Query with return type of " + returnType.getName() +
-                                                                   " returned no results. If this is expected, specify a return type of array, List, Optional, Page, Slice, or Stream for the repository method.");
+                                                                   " returned no results. If this is expected, specify a return type of array, List, Optional, Page, CursoredPage, or Stream for the repository method.");
                                 } else { // single result of other type
                                     returnValue = oneResult(results);
                                     if (returnValue != null && !singleType.isAssignableFrom(returnValue.getClass())) {
@@ -2599,7 +2593,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         if (Optional.class.equals(returnType)) {
                             returnValue = returnValue == null
                                           || returnValue instanceof Collection && ((Collection<?>) returnValue).isEmpty()
-                                          || returnValue instanceof Slice && !((Slice<?>) returnValue).hasContent() //
+                                          || returnValue instanceof Page && !((Page<?>) returnValue).hasContent() //
                                                           ? Optional.empty() : Optional.of(returnValue);
                         } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
                             returnValue = CompletableFuture.completedFuture(returnValue);
@@ -2790,7 +2784,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (size == 1)
             return results.get(0);
         else if (size == 0)
-            throw new EmptyResultException("Query returned no results. If this is expected, specify a return type of array, List, Optional, Page, Slice, or Stream for the repository method.");
+            throw new EmptyResultException("Query returned no results. If this is expected, specify a return type of array, List, Optional, Page, CursoredPage, or Stream for the repository method.");
         else
             throw new NonUniqueResultException("Found " + results.size() +
                                                " results. To limit to a single result, specify Limit.of(1) as a parameter or use the findFirstBy name pattern.");
@@ -3125,8 +3119,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     @Trivial
     private static final Iterable<?> toIterable(Class<?> iterableType, Class<?> elementType, List<?> results) {
-        if (Streamable.class.equals(iterableType))
-            return new StreamableImpl<>(results);
         Collection<Object> list;
         if (iterableType.isInterface()) {
             if (iterableType.isAssignableFrom(ArrayList.class)) // covers Iterable, Collection, List
@@ -3180,7 +3172,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private static final <T> PageRequest<T> toPageRequest(Limit limit) {
         if (limit.startAt() != 1L)
             throw new DataException(new IllegalArgumentException("Limit with starting point " + limit.startAt() +
-                                                                 ", which is greater than 1, cannot be used to request pages or slices."));
+                                                                 ", which is greater than 1, cannot be used to request pages."));
         return PageRequest.ofSize(limit.maxResults());
     }
 

@@ -33,7 +33,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.page.CursoredPage;
-import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
 import jakarta.persistence.EntityManager;
@@ -43,7 +42,7 @@ import jakarta.persistence.TypedQuery;
  * Page with the ability to create cursors from the elements on the page.
  * A cursor can be used to request next and previous pages relative to the cursor.
  */
-public class CursoredPageImpl<T> implements CursoredPage<T>, KeysetAwarePage<T> {
+public class CursoredPageImpl<T> implements CursoredPage<T> {
     private static final TraceComponent tc = Tr.register(CursoredPageImpl.class);
 
     private final Object[] args;
