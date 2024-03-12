@@ -355,7 +355,7 @@ public class QueryInfo {
         while (addIt.hasNext()) {
             Sort<Object> sort = addIt.next();
             if (sort == null)
-                throw new DataException(new IllegalArgumentException("Sort: null"));
+                throw new IllegalArgumentException("Sort: null");
             else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
                     combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name, true), sort));
@@ -381,7 +381,7 @@ public class QueryInfo {
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
         for (Sort<Object> sort : additional) {
             if (sort == null)
-                throw new DataException(new IllegalArgumentException("Sort: null"));
+                throw new IllegalArgumentException("Sort: null");
             else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
                     combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name, true), sort));

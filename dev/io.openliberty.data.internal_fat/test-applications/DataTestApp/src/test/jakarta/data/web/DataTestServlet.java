@@ -60,7 +60,6 @@ import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
-import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
@@ -2973,7 +2972,13 @@ public class DataTestServlet extends FATServlet {
         // attempt next after an empty page
         assertEquals(false, page.hasNext());
         assertEquals(false, page.hasPrevious());
-        assertEquals(null, page.previousPageRequest());
+
+        try {
+            previous = page.previousPageRequest();
+            fail("Page.previousPageRequest must raise NoSuchElementException when hasPrevious returns false. Instead: " + previous);
+        } catch (NoSuchElementException x) {
+            // expected
+        }
     }
 
     /**
@@ -3119,6 +3124,22 @@ public class DataTestServlet extends FATServlet {
 
         houses.dropAll();
         vehicles.removeAll();
+    }
+
+    /**
+     * Verify that IllegalArgumentException is raised if the repository method
+     * has Sort parameters and also a PageRequest that specifies Sort parameters.
+     */
+    @Test
+    public void testMixSortParamsAndPageRequestSorts() {
+        PageRequest<?> pageRequest = PageRequest.ofSize(30).sortBy(Sort.asc("id"));
+        try {
+            Page<Prime> page = primes.findByRomanNumeralEndsWithAndIdLessThan("I", 300L, pageRequest, Sort.desc("id"));
+            fail("Must raise IllegalArgumentException when Sort parameters are " +
+                 "intermixed with PageRequest with Sort parameters. Instead: " + page);
+        } catch (IllegalArgumentException x) {
+            // expected
+        }
     }
 
     /**
@@ -3371,42 +3392,29 @@ public class DataTestServlet extends FATServlet {
         try {
             List<Prime> found = primes.findByNumberIdLessThanEqualOrderByIdDesc(9L, range);
             fail("Expected an error because starting position of range exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (DataException x) {
-            if (x.getCause() instanceof IllegalArgumentException)
-                ; // expected
-            else
-                throw x;
+        } catch (IllegalArgumentException x) {
+            // expected
         }
 
         try {
             Stream<Prime> found = primes.findFirst2147483648ByIdGreaterThan(1L);
             fail("Expected an error because limit exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (DataException x) {
-            boolean expected = false;
-            for (Throwable cause = x; !expected && cause != null; cause = cause.getCause())
-                expected = cause instanceof UnsupportedOperationException;
-            if (!expected)
-                throw x;
+        } catch (UnsupportedOperationException x) {
+            // expected
         }
 
         try {
             CursoredPage<Prime> found = primes.findByNumberIdBetween(5L, 15L, PageRequest.ofSize(Integer.MAX_VALUE / 30).page(33));
             fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (DataException x) {
-            if (x.getCause() instanceof IllegalArgumentException)
-                ; // expected
-            else
-                throw x;
+        } catch (IllegalArgumentException x) {
+            // expected
         }
 
         try {
             Page<Prime> found = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(52L, PageRequest.ofSize(Integer.MAX_VALUE / 20).page(22));
             fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (DataException x) {
-            if (x.getCause() instanceof IllegalArgumentException)
-                ; // expected
-            else
-                throw x;
+        } catch (IllegalArgumentException x) {
+            // expected
         }
     }
 
@@ -3472,8 +3480,14 @@ public class DataTestServlet extends FATServlet {
         // Specifying the entity type here is unnecessary, but should still work
         assertEquals(page2Request, page2.pageRequest(Prime.class));
 
-        // Specifying the entity type here is unnecessary, but should still work
-        assertEquals(null, page2.nextPageRequest(Prime.class));
+        assertEquals(false, page2.hasNext());
+
+        try {
+            PageRequest<Prime> page3Request = page2.nextPageRequest(Prime.class);
+            fail("Page.nextPageRequest must raise NoSuchElementException when hasNext returns false. Instead: " + page3Request);
+        } catch (NoSuchElementException x) {
+            // expected
+        }
     }
 
     /**

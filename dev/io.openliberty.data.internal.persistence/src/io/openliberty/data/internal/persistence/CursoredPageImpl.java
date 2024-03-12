@@ -225,7 +225,8 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     @Override
     public PageRequest<T> nextPageRequest() {
         if (!hasNext())
-            return null; // TODO error
+            throw new NoSuchElementException("Cannot request a next page. To avoid this error, check for a " +
+                                             "true result of CursoredPage.hasNext before attempting this method."); // TODO NLS
 
         PageRequest<T> p = pageRequest.page() == Long.MAX_VALUE ? pageRequest : pageRequest.page(pageRequest.page() + 1);
         return p.afterKey(queryInfo.getKeysetValues(results.get(Math.min(results.size(), pageRequest.size()) - 1)));
@@ -234,14 +235,15 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     @Override
     @SuppressWarnings("unchecked")
     public <E> PageRequest<E> nextPageRequest(Class<E> entityClass) {
-        // KeysetAwareSlice/Page must always have the same type result as sort criteria per the API.
+        // CursoredPage must always have the same type result as sort criteria per the API.
         return (PageRequest<E>) nextPageRequest();
     }
 
     @Override
     public PageRequest<T> previousPageRequest() {
         if (!hasPrevious())
-            return null; // TODO error
+            throw new NoSuchElementException("Cannot request a previous page. To avoid this error, check for a " +
+                                             "true result of CursoredPage.hasPrevious before attempting this method."); // TODO NLS
 
         // Decrement page number by 1 unless it would go below 1.
         PageRequest<T> p = pageRequest.page() == 1 ? pageRequest : pageRequest.page(pageRequest.page() - 1);
