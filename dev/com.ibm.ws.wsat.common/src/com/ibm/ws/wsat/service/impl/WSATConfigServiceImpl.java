@@ -38,9 +38,6 @@ import com.ibm.ws.wsat.service.WSATUtil;
 import com.ibm.wsspi.http.VirtualHost;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-/**
- *
- */
 @Component(name = "com.ibm.ws.wsat.service.wsatconfigservice",
            immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
            property = { "service.vendor=IBM" })
@@ -116,7 +113,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     }
 
     @Override
-//    @Trivial
+    @Trivial
     public long getAsyncResponseTimeout() {
         return asyncResponseTimeout;
     }
