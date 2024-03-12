@@ -62,8 +62,8 @@ Import-Package: \
   javax.xml.bind.attachment;version=!, \
   !javax.xml.ws.*, \
   org.apache.cxf.helpers;version="[${exportVer},4.0.0)", \
-  com.ibm.ws.cxf.jaxrs21.client;version="[${exportVer},${exportVer}]", \
-  com.ibm.ws.cxf.jaxrs21.client.component;version="[${exportVer},${exportVer}]", \
+  com.ibm.ws.cxf.client;version="[${exportVer},${exportVer}]", \
+  com.ibm.ws.cxf.client.component;version="[${exportVer},${exportVer}]", \
   *
 
 Export-Package: \
@@ -141,8 +141,8 @@ Export-Package: \
   org.apache.cxf.ws.addressing.v200408;version=${exportVer}, \
   org.apache.cxf.ws.addressing.wsdl;version=${exportVer}, \
   org.apache.cxf.wsdl.http;version=${exportVer}, \
-  com.ibm.ws.cxf.jaxrs21.client;version=${exportVer}, \
-  com.ibm.ws.cxf.jaxrs21.client.component;version=${exportVer}
+  com.ibm.ws.cxf.client;version=${exportVer}, \
+  com.ibm.ws.cxf.client.component;version=${exportVer}
 
 DynamicImport-Package: \
   com.ctc.wstx.*, \
@@ -154,7 +154,7 @@ DynamicImport-Package: \
   org.apache.cxf.*;version="[${exportVer},4.0.0)"
 
 -dsannotations: \
-  com.ibm.ws.cxf.jaxrs21.client.component.*
+  com.ibm.ws.cxf.client.component.*
 
 -includeresource: \
   @${repo;org.apache.cxf:cxf-core;${importVer};EXACT}!/!*-INF/*, \
