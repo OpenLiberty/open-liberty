@@ -53,23 +53,23 @@ Import-Package: \
   com.ibm.wsspi.webcontainer.collaborator;version="[10.0,11)", \
   io.openliberty.cdi.spi;version="[10.0,11)", \
   io.openliberty.org.jboss.resteasy.common.cdi;version="[1.0,2)", \
-  jakarta.annotation;version="[3.0,4)", \
-  jakarta.decorator;version="[4.1,5.0)", \
-  jakarta.enterprise.context;version="[4.1,5.0)", \
-  jakarta.enterprise.context.spi;version="[4.1,5.0)", \
-  jakarta.enterprise.event;version="[4.1,5.0)", \
-  jakarta.enterprise.inject;version="[4.1,5.0)", \
-  jakarta.enterprise.inject.spi;version="[4.1,5.0)", \
-  jakarta.enterprise.util;version="[4.1,5.0)", \
-  jakarta.interceptor;version="[2.2,3.0)", \
+  jakarta.annotation;version="[2.0,3)", \
+  jakarta.decorator;version="[3.0,5.0)", \
+  jakarta.enterprise.context;version="[3.0,5.0)", \
+  jakarta.enterprise.context.spi;version="[3.0,5.0)", \
+  jakarta.enterprise.event;version="[3.0,5.0)", \
+  jakarta.enterprise.inject;version="[3.0,5.0)", \
+  jakarta.enterprise.inject.spi;version="[3.0,5.0)", \
+  jakarta.enterprise.util;version="[3.0,5.0)", \
+  jakarta.interceptor;version="[2.0,3.0)", \
   javax.naming, \
-  jakarta.servlet;version="[6.1,7)", \
-  jakarta.ws.rs;version="[4.0,5.0)", \
-  jakarta.ws.rs.client;version="[4.0,5.0)", \
-  jakarta.ws.rs.container;version="[4.0,5.0)", \
-  jakarta.ws.rs.core;version="[4.0,5.0)", \
-  jakarta.ws.rs.ext;version="[4.0,5.0)", \
-  jakarta.ws.rs.sse;version="[4.0,5.0)", \
+  jakarta.servlet;version="[5.0,7)", \
+  jakarta.ws.rs;version="[3.0,4.0)", \
+  jakarta.ws.rs.client;version="[3.0,4.0)", \
+  jakarta.ws.rs.container;version="[3.0,4.0)", \
+  jakarta.ws.rs.core;version="[3.0,4.0)", \
+  jakarta.ws.rs.ext;version="[3.0,4.0)", \
+  jakarta.ws.rs.sse;version="[3.0,4.0)", \
   org.jboss.logging;version="[3.5,4)", \
   org.jboss.resteasy.cdi;version="[6.2,7)", \
   org.jboss.resteasy.cdi.i18n;version="[6.2,7)", \
@@ -108,6 +108,6 @@ Include-Resource:\
   com.ibm.ws.webcontainer.jakarta;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   io.openliberty.org.jboss.resteasy.common.ee10,\
-  io.openliberty.jakarta.restfulWS.4.0,\
-  io.openliberty.jakarta.cdi.4.1,\
+  io.openliberty.jakarta.restfulWS.3.1,\
+  io.openliberty.jakarta.cdi.4.0,\
   io.openliberty.jakarta.annotation.3.0
