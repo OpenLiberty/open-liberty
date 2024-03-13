@@ -75,7 +75,6 @@ public class BasicAuthTest extends ContainerKDCCommonTest {
     @BeforeClass
     public static void setUp() throws Exception {
         Log.info(c, "setUp", "Starting the server and kerberos setup...");
-        //ContainerKDCCommonTest.preClassCheck();
         ContainerKDCCommonTest.commonSetUp("BasicAuthTest", null,
                                            SPNEGOConstants.NO_APPS,
                                            SPNEGOConstants.NO_PROPS,
@@ -857,6 +856,8 @@ public class BasicAuthTest extends ContainerKDCCommonTest {
         newServerConfig.getFeatureManager().getFeatures().remove("spnego-1.0");
         updateConfigDynamically(myServer, newServerConfig, false);
 
+        // The spnego feature is disabled in trimKerberosRealmFromPrincipal_customJaasLogin.xml
+        // because when the xml is applied it resets the spnego config, and the default krb5.conf location can cause problems.
         testHelper.reconfigureServer("trimKerberosRealmFromPrincipal_customJaasLogin.xml", name.getMethodName(), null, false);
 
         newServerConfig = myServer.getServerConfiguration().clone();

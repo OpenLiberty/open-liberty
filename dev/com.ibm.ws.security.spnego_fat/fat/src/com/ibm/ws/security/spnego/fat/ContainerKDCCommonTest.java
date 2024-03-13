@@ -379,14 +379,11 @@ public class ContainerKDCCommonTest {
         testHelper = new CommonTestHelper(getMyServer(), myClient, mySslClient);
         testHelper.setShutdownMessages("CWWKS9127W");
 
-        //createKrbConf();
-
         //String hostName = testHelper.getTestSystemFullyQualifiedDomainName();
         String hostName = HOSTNAME;
         int hostPort = getMyServer().getHttpDefaultPort();
         Log.info(c, thisMethod, "setting up BasicauthClient with server " + hostName + " and port " + hostPort);
 
-        //myClient = new BasicAuthClient(hostName, hostPort, BasicAuthClient.DEFAULT_REALM, Constants.SIMPLE_SERVLET_NAME, BasicAuthClient.DEFAULT_CONTEXT_ROOT);
         myClient = new BasicAuthClient(getMyServer(), BasicAuthClient.DEFAULT_REALM, SPNEGOConstants.SIMPLE_SERVLET_NAME, BasicAuthClient.DEFAULT_CONTEXT_ROOT);
         if (createSslClient) {
             mySslClient = new SSLBasicAuthClient(getMyServer());
@@ -399,13 +396,10 @@ public class ContainerKDCCommonTest {
             Log.info(c, thisMethod, "Using initial config: " + config);
         }
 
-        //// testContainer from jdbc FAT
-        //myServer = LibertyServerFactory.getLibertyServer("BasicAuthTest");
         Path jaasConfPath = Paths.get(myServer.getServerRoot(), "resources", "security", "kerberos", "jaas.conf");
         Path krbConfPath = Paths.get(myServer.getServerRoot(), "resources", "security", "krb5.ini");
         Path krb5KeytabPath = Paths.get(myServer.getServerRoot(), "resources", "security", "HTTP_libertyhost.keytab");
 
-        //FATSuite.krb5.generateJAASConf(jaasConfPath);
         FATSuite.krb5.generateConf(krbConfPath);
         FATSuite.krb5.copyFileFromContainer("/etc/HTTP_libertyhost.keytab", krb5KeytabPath.toAbsolutePath().toString());
 
@@ -641,13 +635,6 @@ public class ContainerKDCCommonTest {
 
         testServer.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
 
-        if (copyCommonKeytab) {
-            Log.info(c, thisMethod, "Copying common keytab file into " + SPNEGOConstants.KRB_RESOURCE_LOCATION);
-            // Liberty infrastructure already adds leading and trailing '/' characters when copying
-            //String sanitizedKrbResourcePath = SPNEGOConstants.KRB_RESOURCE_LOCATION.substring(1, SPNEGOConstants.KRB_RESOURCE_LOCATION.length() - 1);
-            //testServer.copyFileToLibertyServerRoot(sanitizedKrbResourcePath, ApacheDSandKDCforSPNEGO.KEYTAB_FILE_LOCATION);
-        }
-
         if (startServer) {
             localTestHelper.startServer(serverXml, checkApps);
 
@@ -677,19 +664,6 @@ public class ContainerKDCCommonTest {
             }
         }
     }
-
-    /**
-     * Return the appropriate KdcHelper subtype for the corresponding KDC to be used by the tests.
-     *
-     * @param server
-     * @return
-     */
-    /*
-     * private static KdcHelper getKdcHelper(LibertyServer server) {
-     * Log.info(c, "getKdcHelper", "Getting appropriate KdcHelper class");
-     * return new LocalKdcHelper(getMyServer(), ApacheDSandKDCforSPNEGO.KDC_USER, ApacheDSandKDCforSPNEGO.KDC_USER_PWD, ApacheDSandKDCforSPNEGO.KDC_REALM);
-     * }
-     */
 
     /**
      * Determines whether the common SPNEGO token was created too far in the past to be usable in upcoming tests.
