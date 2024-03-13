@@ -20,7 +20,7 @@
 	<include location="${server.config.dir}/imports/helloworldApplication.xml" />
 	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
 	<include location="${server.config.dir}/imports/badHostNameVerifySSLSettings.xml" />
-	<include location="${server.config.dir}/imports/LibertyOP_hostNameVerify_oidc_SocialDiscoveryConfig.xml" />
+	<include location="${server.config.dir}/imports/LibertyOP_basicConfig_oidc_SocialConfig.xml" />
 	<include location="${server.config.dir}/imports/basicConfig_SocialConfig_filters.xml" />
 	<include location="${server.config.dir}/imports/basicConfig_SocialConfig_builders.xml" />
 
