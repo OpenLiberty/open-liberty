@@ -18,10 +18,5 @@ Bundle-SymbolicName: com.ibm.ws.crypto.common
 Export-Package: \
   com.ibm.ws.crypto.common
 
-test.project: true
-
-generate.replacement: true
-
-instrument.disabled: true
-
-publish.wlp.jar.disabled: true
+-buildpath: \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest
