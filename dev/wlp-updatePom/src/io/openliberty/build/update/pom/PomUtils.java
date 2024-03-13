@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.apache.maven.index.artifact.GavCalculator;
-import org.apache.maven.index.artifact.M2GavCalculator;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
@@ -58,7 +56,6 @@ public class PomUtils {
         }
     }
 
-    private static GavCalculator calc;
     protected static final int BUF_SIZE = 32 * 1024;
     protected static final String POM_PREFIX_PATH = "META-INF/maven/dev/";
 
@@ -131,7 +128,7 @@ public class PomUtils {
         exclusions.add(ex);
     }
 
-    //We will add a pom excludes fragment in each of these dependency sections
+    //We will add a pom excludes fragment in each of these dependency sections - Proven these are NOT shipped
     static Map<String, String> transitiveExcludes = new HashMap<String, String>() {
         {
             put("org.apache.openwebbeans:openwebbeans-ee-common:1.1.6", "javassist:javassist");
@@ -196,14 +193,5 @@ public class PomUtils {
             }
         }
         return false;
-    }
-
-    /**
-     * @return the calc
-     */
-    public static GavCalculator getCalc() {
-        if (calc == null)
-            calc = new M2GavCalculator();
-        return calc;
     }
 }
