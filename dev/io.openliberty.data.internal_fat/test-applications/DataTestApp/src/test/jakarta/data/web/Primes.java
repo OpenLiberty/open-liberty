@@ -235,6 +235,11 @@ public interface Primes {
     @Exists
     boolean isFoundWith(long id, String hex);
 
+    // TODO after JDQL SELECT is added: "Select name Where length(romanNumeral) * 2 >= length(name) Order By name Asc",
+    @Query(value = "Where numberId < 50 and romanNumeral is not null and length(romanNumeral) * 2 >= length(name) Order By name Desc",
+           count = "WHERE numberId < 50 and romanNumeral is not null and length ( name ) \r\n\t\t <= length(romanNumeral)*2")
+    Page<Prime> lengthBasedQuery(PageRequest<Prime> pageRequest);
+
     @Find
     @OrderBy(value = "numberId", descending = true)
     Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(@By("id") @LessThan long numLessThan,
@@ -329,6 +334,19 @@ public interface Primes {
 
     @Find
     Optional<Prime> withAnyCaseName(@By("name") @Trimmed @IgnoreCase String name);
+
+    @Query("where numberId <= ?2 and numberId>=?1")
+    Page<Prime> within(long minimum, long maximum, PageRequest<Prime> pageRequest);
+
+    @Query("where (numberId <= :maximum) and numberId>=10 order by name asc")
+    Page<Prime> within10toXAndSortedByName(long maximum, PageRequest<Prime> pageRequest);
+
+    @OrderBy(value = "even", descending = true)
+    @OrderBy(value = "name", descending = false)
+    @Query(" WHERE( numberId<=:max AND UPPER(romanNumeral) NOT LIKE '%VII' AND (numberId-(numberId/10)* 10)<>3 AND\tnumberId\t>= :min)")
+    CursoredPage<Prime> withinButNotEndingIn7or3(@Param("min") long minimum,
+                                                 @Param("max") long maximum,
+                                                 PageRequest<Prime> pageRequest);
 
     @Find
     List<Prime> withNameLengthAndWithin(@By("name") @Trimmed @CharCount int length,
