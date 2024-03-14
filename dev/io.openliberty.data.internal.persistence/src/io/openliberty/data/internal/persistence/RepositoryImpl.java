@@ -299,7 +299,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                                              count, exists, select);
 
         if (query != null) { // @Query annotation
-            queryInfo.initForQuery(query.value(), query.count(), countPages, entityInfo);
+            queryInfo.initForQuery(query.value(), query.count(), countPages);
         } else if (save != null) { // @Save annotation
             queryInfo.init(Save.class, QueryInfo.Type.SAVE);
         } else if (insert != null) { // @Insert annotation
