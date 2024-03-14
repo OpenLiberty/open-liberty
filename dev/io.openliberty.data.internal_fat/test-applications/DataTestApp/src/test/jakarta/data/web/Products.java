@@ -54,7 +54,7 @@ public interface Products {
 
     Product[] findByVersionGreaterThanEqualOrderByPrice(long minVersion);
 
-    @Query("SELECT o FROM Product o WHERE o.pk=:productId")
+    @Query("WHERE pk=:productId")
     Product findItem(@Param("productId") UUID id);
 
     Optional<Product> findById(UUID id);

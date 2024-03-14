@@ -36,7 +36,7 @@ import io.openliberty.data.repository.update.Assign;
 @Repository
 @Transactional(TxType.SUPPORTS)
 public interface PersonRepo {
-    @Query("SELECT o FROM Person o WHERE o.lastName=?1")
+    @Query("WHERE lastName=?1")
     List<Person> find(String lastName);
 
     @Find
