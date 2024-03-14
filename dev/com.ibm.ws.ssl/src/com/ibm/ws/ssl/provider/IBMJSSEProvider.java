@@ -45,6 +45,8 @@ public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvide
      */
     public IBMJSSEProvider() {
         super();
+        String protocol = Constants.PROTOCOL_SSL_TLS_V2;
+
         String fipsON = AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
             public String run() {
@@ -63,22 +65,30 @@ public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvide
             Tr.debug(tc, "provider: " + ibmjceplusfipsprovider);
         }
 
-        if (fipsON != null && fipsON.equalsIgnoreCase("true") && ibmjceplusfipsprovider.equals("IBMJCEPlusFIPS") && isRunningBetaMode()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "fips is enabled and using IBMJCEPlusFIPS provider");
-                Tr.debug(tc, "key manager factory alg: " + JSSEProviderFactory.getKeyManagerFactoryAlgorithm());
-                Tr.debug(tc, "trust manager factory alg: " + JSSEProviderFactory.getTrustManagerFactoryAlgorithm());
-                Tr.debug(tc, "protocol: " + Constants.PROTOCOL_TLS);
+//        if (fipsON != null && fipsON.equalsIgnoreCase("true") && ibmjceplusfipsprovider.equals("IBMJCEPlusFIPS") && isRunningBetaMode()) {
+//            protocol = Constants.PROTOCOL_TLS;
+//            if (tc.isDebugEnabled()) {
+//                Tr.debug(tc, "FIPS is enabled and using IBMJCEPlusFIPS provider");
+//            }
+//        }
+        if (fipsON != null && fipsON.equalsIgnoreCase("true")) {
+            if (ibmjceplusfipsprovider.equals("IBMJCEPlusFIPS") && isRunningBetaMode()) {
+                protocol = Constants.PROTOCOL_TLS;
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "FIPS is enabled and using IBMJCEPlusFIPS provider");
+                }
+            } else {
+                // UTLE TODO: error msg - FIPS is enabled but the IBMJCEPlusFIPS provider is not available
             }
-            initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
-                       Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_TLS);
-        } else {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "protocol: " + Constants.PROTOCOL_SSL_TLS_V2);
-            }
-            initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
-                       Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_SSL_TLS_V2);
         }
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "key manager factory alg: " + JSSEProviderFactory.getKeyManagerFactoryAlgorithm());
+            Tr.debug(tc, "trust manager factory alg: " + JSSEProviderFactory.getTrustManagerFactoryAlgorithm());
+            Tr.debug(tc, "protocol: " + protocol);
+        }
+        initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
+                   Constants.SOCKET_FACTORY_WAS_DEFAULT, null, protocol);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Created an IBM JSSE provider");
