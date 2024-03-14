@@ -70,7 +70,7 @@ public interface TCPReadRequestContext extends TCPRequestContext {
      * returned will be the
      * same VirtualConnection that applied to this TCPReadRequestContext before
      * the readAsynch is
-     * called, it is return as a convienince for the calling code to invoke the
+     * called, it is return as a convenience for the calling code to invoke the
      * callback complete
      * method in the same way the TCP Channel would have invoked it.
      * If you don't know how many bytes to expect on a read, you should pass
