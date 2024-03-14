@@ -272,12 +272,15 @@ public class QueryInfo {
      * This method does not cover all scenarios but should be sufficient for simulating.
      * TODO remove this method once we have Jakarta Persistence 3.2.
      *
+     * @oaram o_ entity identifier variable followed by the . character.
      * @param ql      Jakarta Data Query Language
      * @param startAt position in query language to start at.
      * @param q       simulated JPQL to which to append.
+     * @param q       simulated JPQL count query to which to append unless null. The ORDER BY clause is not appended.
      * @return simulated JPQL.
      */
-    private StringBuilder appendWithIdentifierName(String ql, int startAt, StringBuilder q) {
+    private StringBuilder appendWithIdentifierName(String o_, String ql, int startAt, StringBuilder q, StringBuilder c) {
+        boolean appendToCountQuery = c != null;
         boolean isLiteral = false;
         boolean isNamedParamOrEmbedded = false;
         int length = ql.length();
@@ -285,13 +288,19 @@ public class QueryInfo {
             char ch = ql.charAt(i);
             if (!isLiteral && (ch == ':' || ch == '.')) {
                 q.append(ch);
+                if (appendToCountQuery)
+                    c.append(ch);
                 isNamedParamOrEmbedded = true;
             } else if (ch == '\'') {
                 q.append(ch);
+                if (appendToCountQuery)
+                    c.append(ch);
                 if (isLiteral) {
                     if (i + 1 < length && ql.charAt(i + 1) == '\'') {
                         // escaped ' within a literal
                         q.append('\'');
+                        if (appendToCountQuery)
+                            c.append('\'');
                         i++;
                     } else {
                         isLiteral = false;
@@ -303,6 +312,8 @@ public class QueryInfo {
             } else if (Character.isLetter(ch)) {
                 if (isNamedParamOrEmbedded || isLiteral) {
                     q.append(ch);
+                    if (appendToCountQuery)
+                        c.append(ch);
                 } else {
                     StringBuilder s = new StringBuilder();
                     s.append(ch);
@@ -313,20 +324,44 @@ public class QueryInfo {
                         else
                             break;
                     }
-                    i += s.length() - 1;
+                    i += s.length();
                     String str = s.toString();
-                    if ("WHERE".equalsIgnoreCase(str)) {
+                    int by = -1;
+                    if ("ORDER".equalsIgnoreCase(str)
+                        && i + 3 < length
+                        && (by = indexOfAfterWhitespace("BY", ql, i + 1)) > 0) {
+                        for (; i < by + 2; i++)
+                            s.append(ql.charAt(i));
+                        str = s.toString();
+                    }
+                    i--; // adjust for separate loop increment
+
+                    if (by > 0) {
+                        appendToCountQuery = false;
+                        q.append(str);
+                    } else if ("WHERE".equalsIgnoreCase(str)) {
                         hasWhere = true;
                         q.append(str);
+                        if (appendToCountQuery)
+                            c.append(str);
                     } else if (entityInfo.getAttributeName(str, false) == null) {
                         q.append(str);
-                    } else
-                        q.append(entityVar_).append(str);
+                        if (appendToCountQuery)
+                            c.append(str);
+                    } else {
+                        q.append(o_).append(str);
+                        if (appendToCountQuery)
+                            c.append(o_).append(str);
+                    }
                 }
             } else if (Character.isDigit(ch)) {
                 q.append(ch);
+                if (appendToCountQuery)
+                    c.append(ch);
             } else {
                 q.append(ch);
+                if (appendToCountQuery)
+                    c.append(ch);
                 if (!isLiteral)
                     isNamedParamOrEmbedded = false;
             }
@@ -553,6 +588,21 @@ public class QueryInfo {
     }
 
     /**
+     * Determine if the index of the text ignoring case if it is the next non-whitespace characters.
+     *
+     * @parma text the text to match.
+     * @param ql      query language.
+     * @param startAt starting position in the query language string.
+     * @return position of the text ignoring case if it is the next non-whitespace characters. Otherwise -1;
+     */
+    private static int indexOfAfterWhitespace(String text, String ql, int startAt) {
+        int length = ql.length();
+        while (startAt < length && Character.isWhitespace(ql.charAt(startAt)))
+            startAt++;
+        return ql.regionMatches(true, startAt, text, 0, 2) ? startAt : -1;
+    }
+
+    /**
      * Initialize this query information for the specified type of annotated repository operation.
      *
      * @param annoClass     Insert, Update, Save, or Delete annotation class.
@@ -568,14 +618,62 @@ public class QueryInfo {
     }
 
     /**
+     * Assembles the count query based on the Query annotation.
+     * If Query.count contains JPQL, it is used.
+     * If Query.count contains JDQL, is it transformed into JPQL.
+     *
+     * @param countQL Query.count() might be JPQL or JDQL.
+     * @return count query in JPQL, possibly created from supplied JDQL.
+     */
+    private String assembleCountQuery(String countQL) {
+
+        int length = countQL.length();
+        int startAt = 0;
+        char firstChar = ' ';
+        for (; startAt < length && Character.isWhitespace(firstChar = countQL.charAt(startAt)); startAt++);
+
+        switch (firstChar) {
+            case 'S':
+            case 's': // SELECT
+                // TODO
+                throw new UnsupportedOperationException();
+            // break;
+            case 'W':
+            case 'w': // WHERE
+                if (length > startAt + 5
+                    && countQL.regionMatches(true, startAt + 1, "HERE", 0, 4)
+                    && !Character.isLetterOrDigit(countQL.charAt(startAt + 5))) {
+
+                    StringBuilder c = new StringBuilder(countQL.length()) //
+                                    .append("SELECT COUNT(o) FROM ") //
+                                    .append(entityInfo.name).append(" o WHERE");
+
+                    return appendWithIdentifierName("o.", countQL, startAt + 5, c, null).toString();
+                }
+                break;
+            case 'F':
+            case 'f': // FROM
+                // TOOD
+                throw new UnsupportedOperationException();
+            // break;
+            default:
+                throw new UnsupportedOperationException("The count query supplied to the " + method.getName() + " method of the " +
+                                                        method.getDeclaringClass().getName() + " repository does not apear to be " +
+                                                        "valid JDQL (Jakarta Data Query Language) or " +
+                                                        "valid JPQL (Jakarta Persistence Query Language) for a count query. The query is " + countQL); // TODO NLS
+        }
+
+        return countQL;
+    }
+
+    /**
      * Initializes query information based on the Query annotation.
      *
      * @param ql         Query.value() might be JPQL or JDQL
      * @param countQL    Query.count() might be JPQL or JDQL or "" (unspecified)
      * @param countPages whether or not to obtain a count of pages.
-     * @param entityInfo TODO remove once Jakarta Persistence 3.2 is used
      */
-    void initForQuery(String ql, String countQL, boolean countPages, EntityInfo entityInfo) {
+    void initForQuery(String ql, String countQL, boolean countPages) {
 
         int length = ql.length();
         int startAt = 0;
@@ -617,7 +715,7 @@ public class QueryInfo {
                                 entityVar_ = "o.";
                                 StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
                                                 .append("DELETE FROM ").append(entityName).append(" o WHERE");
-                                jpql = appendWithIdentifierName(ql, w + 5, q).toString();
+                                jpql = appendWithIdentifierName(entityVar_, ql, w + 5, q, null).toString();
                             }
                         }
                     }
@@ -647,14 +745,36 @@ public class QueryInfo {
                             entityVar_ = "o.";
                             StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
                                             .append("UPDATE ").append(entityName).append(" o SET");
-                            jpql = appendWithIdentifierName(ql, s + 3, q).toString();
+                            jpql = appendWithIdentifierName(entityVar_, ql, s + 3, q, null).toString();
                         }
                     }
                 }
                 break;
             case 'W':
             case 'w': // WHERE
-                // TODO
+                if (length > startAt + 5
+                    && ql.regionMatches(true, startAt + 1, "HERE", 0, 4)
+                    && !Character.isLetterOrDigit(ql.charAt(startAt + 5))) {
+                    type = Type.FIND;
+                    hasWhere = true;
+                    entityVar = "o";
+                    entityVar_ = "o.";
+                    StringBuilder q = new StringBuilder(ql.length() * 5 / 4 + 20) // add 25% for identifier variable use
+                                    .append("SELECT o FROM ").append(entityInfo.name).append(" o WHERE");
+                    StringBuilder c = countPages && countQL.length() == 0 //
+                                    ? new StringBuilder(q.length()) //
+                                                    .append("SELECT COUNT(o) FROM ") //
+                                                    .append(entityInfo.name).append(" o WHERE") //
+                                    : null;
+                    jpql = appendWithIdentifierName(entityVar_, ql, startAt + 5, q, c).toString();
+                    if (countPages)
+                        if (c == null)
+                            jpqlCount = assembleCountQuery(countQL);
+                        else
+                            jpqlCount = c.toString();
+                    else
+                        jpqlCount = null;
+                }
                 break;
             case 'F':
             case 'f': // FROM
