@@ -496,7 +496,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         Collection<ServiceReference<DatabaseStore>> refs = bc.getServiceReferences(DatabaseStore.class,
                                                                                    FilterUtils.createPropertyFilter("id", databaseStoreId));
         if (refs.isEmpty())
-            throw new IllegalArgumentException("Not found: " + databaseStoreId);
+            throw new RuntimeException("Not found: " + databaseStoreId);
 
         ServiceReference<DatabaseStore> ref = refs.iterator().next();
         String tablePrefix = (String) ref.getProperty("tablePrefix");

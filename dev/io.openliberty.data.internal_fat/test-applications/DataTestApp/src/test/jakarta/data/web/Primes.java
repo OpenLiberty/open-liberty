@@ -28,13 +28,9 @@ import java.util.stream.Stream;
 
 import jakarta.data.Limit;
 import jakarta.data.Sort;
-import jakarta.data.Streamable;
 import jakarta.data.page.CursoredPage;
-import jakarta.data.page.KeysetAwarePage;
-import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
-import jakarta.data.page.Slice;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
@@ -67,7 +63,7 @@ import io.openliberty.data.repository.function.Trimmed;
 @Repository
 public interface Primes {
     @Query("SELECT (num.name) FROM Prime As num")
-    Slice<String> all(PageRequest<?> pagination);
+    Page<String> all(PageRequest<?> pagination);
 
     @Exists
     boolean anyLessThanEndingWithBitPattern(@By("numberId") @LessThan long upperLimit,
@@ -139,11 +135,11 @@ public interface Primes {
 
     CursoredPage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort<?>... orderBy); // Lacks PageRequest
 
-    KeysetAwareSlice<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, PageRequest<Prime> pagination);
+    CursoredPage<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, PageRequest<Prime> pagination);
 
     Page<Prime> findByNumberIdBetweenAndSumOfBitsNotNull(long min, long max, PageRequest<?> pagination);
 
-    KeysetAwarePage<Prime> findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(long min, long max, PageRequest<?> pagination);
+    CursoredPage<Prime> findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(long min, long max, PageRequest<?> pagination);
 
     List<Prime> findByNumberIdBetweenOrderByNameIgnoreCaseDesc(long min, long max);
 
@@ -173,13 +169,13 @@ public interface Primes {
 
     List<Prime> findByNumberIdLessThanEqualOrderByIdAsc(long max, PageRequest<?> pagination);
 
-    Streamable<Prime> findByNumberIdLessThanEqualOrderByIdDesc(long max, Limit limit);
+    List<Prime> findByNumberIdLessThanEqualOrderByIdDesc(long max, Limit limit);
 
     Page<Prime> findByNumberIdLessThanEqualOrderByNumberIdDesc(long max, PageRequest<?> pagination);
 
     Stream<Prime> findByNumberIdLessThanOrderByEven(long max, Sort<?>... sorts);
 
-    KeysetAwareSlice<Prime> findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(long max, PageRequest<?> pagination);
+    CursoredPage<Prime> findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(long max, PageRequest<?> pagination);
 
     @Asynchronous
     CompletionStage<CursoredPage<Prime>> findByNumberIdLessThanOrderByIdDesc(long max, PageRequest<?> pagination);
@@ -188,13 +184,13 @@ public interface Primes {
 
     Iterator<Prime> findByNumberIdNotGreaterThan(long max, Sort<?>... order);
 
-    Slice<Prime> findByRomanNumeralEndsWithAndIdLessThan(String ending, long max, Limit limit, Sort<?>... orderBy);
+    Page<Prime> findByRomanNumeralEndsWithAndIdLessThan(String ending, long max, Limit limit, Sort<?>... orderBy);
 
-    Slice<Prime> findByRomanNumeralEndsWithAndIdLessThan(String ending, long max, PageRequest<?> pagination, Sort<?>... orderBy);
+    Page<Prime> findByRomanNumeralEndsWithAndIdLessThan(String ending, long max, PageRequest<?> pagination, Sort<?>... orderBy);
 
     @OrderBy(value = "sumOfBits", descending = true)
     @OrderBy("name")
-    Slice<Prime> findByRomanNumeralStartsWithAndIdLessThan(String prefix, long max, PageRequest<?> pagination);
+    Page<Prime> findByRomanNumeralStartsWithAndIdLessThan(String prefix, long max, PageRequest<?> pagination);
 
     @Find
     Prime findFirst(Sort<Prime> sort, Limit limitOf1);
@@ -296,7 +292,7 @@ public interface Primes {
     Stack<String> minMaxSumCountAverageStack(long numBelow);
 
     @Query("SELECT o.name FROM Prime o WHERE o.numberId < ?1")
-    Slice<String> namesBelow(long numBelow, PageRequest<Prime> pageRequest);
+    Page<String> namesBelow(long numBelow, PageRequest<Prime> pageRequest);
 
     @Query(value = "SELECT NEW java.util.AbstractMap.SimpleImmutableEntry(p.numberId, p.name) FROM Prime p WHERE p.numberId <= ?1 ORDER BY p.name",
            count = "SELECT COUNT(p) FROM Prime p WHERE p.numberId <= ?1")

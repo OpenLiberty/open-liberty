@@ -40,6 +40,7 @@ import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 import io.openliberty.data.repository.Select;
@@ -53,6 +54,12 @@ import io.openliberty.data.repository.function.Extract;
  */
 @Repository
 public interface Reservations extends BasicRepository<Reservation, Long> {
+
+    @Query("SELECT COUNT(o) FROM Reservation o") // JPQL
+    int count();
+
+    int countBy();
+
     boolean deleteByHostIn(List<String> hosts);
 
     long deleteByHostNot(String host);

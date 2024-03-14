@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,8 @@ public interface CrudRepository<T, K> extends BasicRepository<T, K> {
     void insertAll(Iterable<T> entities);
 
     @Update
-    boolean update(T entity);
+    T update(T entity);
 
     @Update
-    int updateAll(Iterable<T> entities);
+    Iterable<T> updateAll(Iterable<T> entities);
 }

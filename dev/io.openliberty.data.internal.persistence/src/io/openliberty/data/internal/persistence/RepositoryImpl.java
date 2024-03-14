@@ -96,7 +96,6 @@ import io.openliberty.data.repository.update.SubtractFrom;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
-import jakarta.data.Streamable;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
@@ -105,11 +104,8 @@ import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.CursoredPage;
-import jakarta.data.page.KeysetAwarePage;
-import jakarta.data.page.KeysetAwareSlice;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
-import jakarta.data.page.Slice;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
@@ -279,7 +275,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         Method method = queryInfo.method;
         Class<?> multiType = queryInfo.getMultipleResultType();
-        boolean countPages = Page.class.equals(multiType) || CursoredPage.class.equals(multiType) || KeysetAwarePage.class.equals(multiType);
+        boolean countPages = Page.class.equals(multiType) || CursoredPage.class.equals(multiType);
         StringBuilder q = null;
 
         // TODO would it be more efficient to invoke method.getAnnotations() once?
@@ -442,15 +438,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *
      * @param limit limit that was specified by the application.
      * @return offset value.
-     * @throws DataException with chained IllegalArgumentException if the starting point for
-     *                           the limited range is not positive or would overflow Integer.MAX_VALUE.
+     * @throws IllegalArgumentException if the starting point for the limited range
+     *                                      is not positive or would overflow Integer.MAX_VALUE.
      */
     static int computeOffset(Limit range) {
         long startIndex = range.startAt() - 1;
         if (startIndex >= 0 && startIndex <= Integer.MAX_VALUE)
             return (int) startIndex;
         else
-            throw new DataException(new IllegalArgumentException("The starting point for " + range + " is not within 1 to Integer.MAX_VALUE (2147483647).")); // TODO
+            throw new IllegalArgumentException("The starting point for " + range + " is not within 1 to Integer.MAX_VALUE (2147483647)."); // TODO
     }
 
     /**
@@ -458,22 +454,22 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *
      * @param pagination requested pagination.
      * @return offset for the specified page.
-     * @throws DataException with chained IllegalArgumentException if the offset exceeds Integer.MAX_VALUE
-     *                           or the PageRequest requests keyset pagination.
+     * @throws IllegalArgumentException if the offset exceeds Integer.MAX_VALUE
+     *                                      or the PageRequest requests cursor-based pagination.
      */
     static int computeOffset(PageRequest<?> pagination) {
         if (pagination.mode() != PageRequest.Mode.OFFSET)
-            throw new DataException(new IllegalArgumentException("Cursor based pagination mode " + pagination.mode() +
-                                                                 " can only be used with repository methods with the following return types: " +
-                                                                 CursoredPage.class.getName() +
-                                                                 ". For offset pagination, use a PageRequest without a cursor.")); // TODO NLS
+            throw new IllegalArgumentException("Cursor-based pagination mode " + pagination.mode() +
+                                               " can only be used with repository methods with the following return types: " +
+                                               CursoredPage.class.getName() +
+                                               ". For offset pagination, use a PageRequest without a cursor."); // TODO NLS
         int maxPageSize = pagination.size();
         long pageIndex = pagination.page() - 1; // zero-based
         if (Integer.MAX_VALUE / maxPageSize >= pageIndex)
             return (int) (pageIndex * maxPageSize);
         else
-            throw new DataException(new IllegalArgumentException("The offset for " + pagination.page() + " pages of size " + maxPageSize +
-                                                                 " exceeds Integer.MAX_VALUE (2147483647).")); // TODO
+            throw new IllegalArgumentException("The offset for " + pagination.page() + " pages of size " + maxPageSize +
+                                               " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
     }
 
     /**
@@ -551,12 +547,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 x = new MappingException(cause.getMessage(), original);
             else if (NonUniqueResultException.class.equals(cause.getClass()))
                 x = new NonUniqueResultException(cause.getMessage(), original);
+            else if (UnsupportedOperationException.class.equals(cause.getClass()))
+                x = new UnsupportedOperationException(cause.getMessage(), original);
             else
                 x = new MappingException(original);
         } else if (original instanceof IllegalArgumentException) {
-            // Example: Problem compiling [SELECT o FROM Account o WHERE (o.accountId>?1)]. The
-            // relationship mapping 'o.accountId' cannot be used in conjunction with the > operator
-            x = new MappingException(original);
+            if (original.getCause() == null) // raised by Liberty
+                x = (IllegalArgumentException) original;
+            else // raised by Jakarta Persistence provider
+                 // Example: Problem compiling [SELECT o FROM Account o WHERE (o.accountId>?1)]. The
+                 // relationship mapping 'o.accountId' cannot be used in conjunction with the > operator
+                x = new MappingException(original);
         } else if (original instanceof RuntimeException) {
             // Per EclipseLink, "This exception is used for any problem that is detected with a descriptor or mapping"
             if ("org.eclipse.persistence.exceptions.DescriptorException".equals(original.getClass().getName()))
@@ -1514,9 +1515,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         Class<?> multiType = queryInfo.getMultipleResultType();
 
         boolean needsKeysetQueries = CursoredPage.class.equals(multiType)
-                                     || KeysetAwarePage.class.equals(multiType)
-                                     || KeysetAwareSlice.class.equals(multiType)
-                                     || Iterator.class.equals(multiType); // TODO remove these other types
+                                     || Iterator.class.equals(multiType); // TODO remove this type
 
         StringBuilder fwd = needsKeysetQueries ? new StringBuilder(100) : q; // forward page order
         StringBuilder prev = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
@@ -1903,7 +1902,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (div > 0 && div < uFirst)
             uFirst = div;
         if (uFirst == Integer.MAX_VALUE)
-            throw new IllegalArgumentException(methodName); // updateBy that lacks updates
+            throw new UnsupportedOperationException(methodName); // updateBy that lacks updates
 
         // Compute the WHERE clause first due to its parameters being ordered first in the repository method signature
         StringBuilder where = new StringBuilder(150);
@@ -2377,7 +2376,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 if (limit == null)
                                     limit = (Limit) param;
                                 else
-                                    throw new DataException("Repository method " + method + " cannot have multiple Limit parameters."); // TODO NLS
+                                    throw new UnsupportedOperationException("Repository method " + method + " cannot have multiple Limit parameters."); // TODO NLS
                             } else if (param instanceof Order) {
                                 @SuppressWarnings("unchecked")
                                 Iterable<Sort<Object>> order = (Iterable<Sort<Object>>) param;
@@ -2386,7 +2385,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 if (pagination == null)
                                     pagination = (PageRequest<?>) param;
                                 else
-                                    throw new DataException("Repository method " + method + " cannot have multiple PageRequest parameters."); // TODO NLS
+                                    throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                                            method.getDeclaringClass().getName() +
+                                                                            " repository cannot have multiple PageRequest parameters."); // TODO NLS
                             } else if (param instanceof Sort) {
                                 @SuppressWarnings("unchecked")
                                 List<Sort<Object>> newList = queryInfo.combineSorts(sortList, (Sort<Object>) param);
@@ -2400,13 +2401,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (pagination != null) {
                             if (limit != null)
-                                throw new DataException("Repository method " + method + " cannot have both Limit and PageRequest as parameters."); // TODO NLS
+                                throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                                        method.getDeclaringClass().getName() +
+                                                                        " repository cannot have both Limit and PageRequest as parameters."); // TODO NLS
                             if (sortList == null) {
                                 @SuppressWarnings("unchecked")
                                 List<Sort<Object>> pageRequestSorts = (List<Sort<Object>>) (List<?>) pagination.sorts();
                                 sortList = queryInfo.combineSorts(null, pageRequestSorts);
                             } else if (!pagination.sorts().isEmpty()) {
-                                throw new DataException("Repository method " + method + " cannot specify Sort parameters if PageRequest also has Sort parameters."); // TODO NLS
+                                throw new IllegalArgumentException("The " + method.getName() + " method of the " +
+                                                                   method.getDeclaringClass().getName() +
+                                                                   " repository cannot specify Sort parameters" +
+                                                                   " if PageRequest also has Sort parameters."); // TODO NLS
                             }
                         }
 
@@ -2436,9 +2442,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (pagination != null && Iterator.class.equals(multiType))
                             returnValue = new PaginatedIterator<>(queryInfo, pagination, args);
-                        else if (CursoredPage.class.equals(multiType) || KeysetAwareSlice.class.equals(multiType) || KeysetAwarePage.class.equals(multiType))
+                        else if (CursoredPage.class.equals(multiType))
                             returnValue = new CursoredPageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
-                        else if (Slice.class.equals(multiType) || Page.class.equals(multiType) || pagination != null && Streamable.class.equals(multiType))
+                        else if (Page.class.equals(multiType))
                             returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
                         else {
                             em = entityInfo.builder.createEntityManager();
@@ -2574,7 +2580,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     }
                                 } else if (results.isEmpty()) {
                                     throw new EmptyResultException("Query with return type of " + returnType.getName() +
-                                                                   " returned no results. If this is expected, specify a return type of array, List, Optional, Page, Slice, or Stream for the repository method.");
+                                                                   " returned no results. If this is expected, specify a return type of array, List, Optional, Page, CursoredPage, or Stream for the repository method.");
                                 } else { // single result of other type
                                     returnValue = oneResult(results);
                                     if (returnValue != null && !singleType.isAssignableFrom(returnValue.getClass())) {
@@ -2599,7 +2605,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         if (Optional.class.equals(returnType)) {
                             returnValue = returnValue == null
                                           || returnValue instanceof Collection && ((Collection<?>) returnValue).isEmpty()
-                                          || returnValue instanceof Slice && !((Slice<?>) returnValue).hasContent() //
+                                          || returnValue instanceof Page && !((Page<?>) returnValue).hasContent() //
                                                           ? Optional.empty() : Optional.of(returnValue);
                         } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
                             returnValue = CompletableFuture.completedFuture(returnValue);
@@ -2790,7 +2796,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (size == 1)
             return results.get(0);
         else if (size == 0)
-            throw new EmptyResultException("Query returned no results. If this is expected, specify a return type of array, List, Optional, Page, Slice, or Stream for the repository method.");
+            throw new EmptyResultException("Query returned no results. If this is expected, specify a return type of array, List, Optional, Page, CursoredPage, or Stream for the repository method.");
         else
             throw new NonUniqueResultException("Found " + results.size() +
                                                " results. To limit to a single result, specify Limit.of(1) as a parameter or use the findFirstBy name pattern.");
@@ -2833,7 +2839,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 first = false;
                 distinct = methodName.regionMatches(start, "Distinct", 0, 8);
             } else if (distinct) {
-                throw new DataException("The keyword Distinct is not supported on the " + queryInfo.method.getName() + " method."); // TODO NLS
+                throw new UnsupportedOperationException("The keyword Distinct is not supported on the " + queryInfo.method.getName() + " method."); // TODO NLS
             }
 
         if (selections != null) {
@@ -2892,7 +2898,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
             }
         if (num == 0)
-            throw new DataException("The number of results to retrieve must not be 0 on the " + methodName + " method."); // TODO NLS
+            throw new UnsupportedOperationException("The number of results to retrieve must not be 0 on the " + methodName + " method."); // TODO NLS
         else
             queryInfo.maxResults = num;
 
@@ -2950,9 +2956,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
             throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
 
         if (!entityClass.isInstance(e))
-            throw new DataException("The " + (e == null ? null : e.getClass().getName()) +
-                                    " parameter does not match the " + entityClass.getName() +
-                                    " entity type that is expected for this repository."); // TODO NLS
+            throw new IllegalArgumentException("The " + (e == null ? null : e.getClass().getName()) +
+                                               " parameter does not match the " + entityClass.getName() +
+                                               " entity type that is expected for this repository."); // TODO NLS
 
         EntityInfo entityInfo = queryInfo.entityInfo;
         String jpql = queryInfo.jpql;
@@ -3046,9 +3052,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
             result = item.toString();
         }
         if (failIfNotConverted && result == item && item != null)
-            throw new DataException("Query returned a result of type " + item.getClass().getName() +
-                                    " which is not compatible with the type that is expected by the repository method signature: " +
-                                    type.getName()); // TODO
+            throw new MappingException("Query returned a result of type " + item.getClass().getName() +
+                                       " which is not compatible with the type that is expected by the repository method signature: " +
+                                       type.getName()); // TODO
         return result;
     }
 
@@ -3059,7 +3065,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         else if (o instanceof String)
             return Double.parseDouble((String) o);
         else
-            throw new IllegalArgumentException("Not representable as a double value: " + o.getClass().getName());
+            throw new MappingException("Not representable as a double value: " + o.getClass().getName());
     }
 
     /**
@@ -3112,7 +3118,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         else if (o instanceof String)
             return Integer.parseInt((String) o);
         else
-            throw new IllegalArgumentException("Not representable as an int value: " + o.getClass().getName());
+            throw new MappingException("Not representable as an int value: " + o.getClass().getName());
     }
 
     /**
@@ -3125,8 +3131,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     @Trivial
     private static final Iterable<?> toIterable(Class<?> iterableType, Class<?> elementType, List<?> results) {
-        if (Streamable.class.equals(iterableType))
-            return new StreamableImpl<>(results);
         Collection<Object> list;
         if (iterableType.isInterface()) {
             if (iterableType.isAssignableFrom(ArrayList.class)) // covers Iterable, Collection, List
@@ -3167,7 +3171,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         else if (o instanceof String)
             return Long.parseLong((String) o);
         else
-            throw new IllegalArgumentException("Not representable as a long value: " + o.getClass().getName());
+            throw new MappingException("Not representable as a long value: " + o.getClass().getName());
     }
 
     /**
@@ -3175,12 +3179,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *
      * @param limit Limit.
      * @return PageRequest.
-     * @throws DataException with chained IllegalArgumentException if the Limit is a range with a starting point above 1.
+     * @throws IllegalArgumentException if the Limit is a range with a starting point above 1.
      */
     private static final <T> PageRequest<T> toPageRequest(Limit limit) {
         if (limit.startAt() != 1L)
-            throw new DataException(new IllegalArgumentException("Limit with starting point " + limit.startAt() +
-                                                                 ", which is greater than 1, cannot be used to request pages or slices."));
+            throw new IllegalArgumentException("Limit with starting point " + limit.startAt() +
+                                               ", which is greater than 1, cannot be used to request pages.");
         return PageRequest.ofSize(limit.maxResults());
     }
 
@@ -3308,9 +3312,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
             throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
 
         if (!entityClass.isInstance(e))
-            throw new DataException("The " + (e == null ? null : e.getClass().getName()) +
-                                    " parameter does not match the " + entityClass.getName() +
-                                    " entity type that is expected for this repository."); // TODO NLS
+            throw new IllegalArgumentException("The " + (e == null ? null : e.getClass().getName()) +
+                                               " parameter does not match the " + entityClass.getName() +
+                                               " entity type that is expected for this repository."); // TODO NLS
 
         String jpql = queryInfo.jpql;
         EntityInfo entityInfo = queryInfo.entityInfo;

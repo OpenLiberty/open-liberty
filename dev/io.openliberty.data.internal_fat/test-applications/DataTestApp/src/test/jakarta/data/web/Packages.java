@@ -49,6 +49,9 @@ import io.openliberty.data.repository.update.SubtractFrom;
 @Repository
 public interface Packages extends BasicRepository<Package, Integer> {
 
+    @Query("SELECT COUNT(o) FROM Package o")
+    long countAll();
+
     @Delete
     long deleteAll();
 
