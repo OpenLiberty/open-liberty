@@ -10,14 +10,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.metrics_20;
-
-import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.MetricType;
+package com.ibm.ws.microprofile.faulttolerance.telemetry.metrics_20;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.microprofile.faulttolerance.metrics.integration.AbstractMetricRecorderImpl;
+import com.ibm.ws.microprofile.faulttolerance.telemetry.metrics.integration.AbstractMetricRecorderImpl;
+
+import io.opentelemetry.api.metrics.Meter;
+
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
@@ -31,14 +30,8 @@ import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 @Trivial
 public class MetricRecorderImpl extends AbstractMetricRecorderImpl {
 
-    public MetricRecorderImpl(String metricPrefix, MetricRegistry registry, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy, TimeoutPolicy timeoutPolicy,
+    public MetricRecorderImpl(String metricPrefix, Meter meter, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy, TimeoutPolicy timeoutPolicy,
                               BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync) {
-        super(metricPrefix, registry, retryPolicy, circuitBreakerPolicy, timeoutPolicy, bulkheadPolicy, fallbackPolicy, isAsync, MetricRecorderImpl::createMD);
+        super(metricPrefix, meter, retryPolicy, circuitBreakerPolicy, timeoutPolicy, bulkheadPolicy, fallbackPolicy, isAsync);
     }
-
-    private static Metadata createMD(String metaDataName, MetricType metaDataMetricType, String metadataUnit) {
-        Metadata metaData = Metadata.builder().withName(metaDataName).withType(metaDataMetricType).withUnit(metadataUnit).build();
-        return metaData;
-    }
-
 }

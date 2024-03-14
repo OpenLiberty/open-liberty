@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.metrics_20;
+package com.ibm.ws.microprofile.faulttolerance.telemetry.metrics_20;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
@@ -22,9 +22,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+
+import io.opentelemetry.api.metrics.Meter;
+import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
+import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
@@ -35,9 +38,8 @@ import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorderProvider;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
-import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
-@Component(name = "com.ibm.ws.microprofile.faulttolerance.metrics.integration.MetricRecorderProviderImpl", service = MetricRecorderProvider.class, configurationPolicy = IGNORE)
+@Component(name = "com.ibm.ws.microprofile.faulttolerance.telemetry.metrics_20.MetricRecorderProviderImpl", service = MetricRecorderProvider.class, configurationPolicy = IGNORE)
 public class MetricRecorderProviderImpl implements MetricRecorderProvider {
 
     private final static SecureAction secureAction = AccessController.doPrivileged(SecureAction.get());
@@ -55,9 +57,6 @@ public class MetricRecorderProviderImpl implements MetricRecorderProvider {
     private final Map<ClassLoader, Boolean> metricsEnabledCache = new WeakHashMap<>();
 
     private final static String CONFIG_METRICS_ENABLED = "MP_Fault_Tolerance_Metrics_Enabled";
-
-    @Reference
-    protected SharedMetricRegistries sharedRegistries;
 
     private final WeakHashMap<Method, MetricRecorder> recorders = new WeakHashMap<>();
 
@@ -78,8 +77,8 @@ public class MetricRecorderProviderImpl implements MetricRecorderProvider {
     private MetricRecorder createNewRecorder(Method method, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy, TimeoutPolicy timeoutPolicy,
                                              BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync) {
         if (isMetricsEnabled(method.getDeclaringClass())) {
-            MetricRegistry registry = sharedRegistries.getOrCreate(MetricRegistry.Type.APPLICATION.getName());
-            return new MetricRecorderImpl(getMetricPrefix(method), registry, retryPolicy, circuitBreakerPolicy, timeoutPolicy, bulkheadPolicy, fallbackPolicy, isAsync);
+            Meter meter = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry().getMeter(OpenTelemetryConstants.INSTRUMENTATION_NAME);
+            return new MetricRecorderImpl(getMetricPrefix(method), meter, retryPolicy, circuitBreakerPolicy, timeoutPolicy, bulkheadPolicy, fallbackPolicy, isAsync);
         } else {
             return DummyMetricRecorder.get();
         }
