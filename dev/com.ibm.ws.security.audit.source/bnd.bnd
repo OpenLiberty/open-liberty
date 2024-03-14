@@ -24,11 +24,11 @@ WS-TraceGroup: audit
 Export-Package: \
 	com.ibm.ws.security.audit.encryption,\
 	com.ibm.ws.security.audit.event,\
-	com.ibm.ws.security.audit.pipeline
+	com.ibm.ws.security.audit.pipeline,\
+	com.ibm.ws.security.audit.source.utils
 
 Private-Package: \
    com.ibm.ws.security.audit.source,\
-   com.ibm.ws.security.audit.source.utils,\
    com.ibm.ws.security.audit.source.internal.resources
    
 DynamicImport-Package: \

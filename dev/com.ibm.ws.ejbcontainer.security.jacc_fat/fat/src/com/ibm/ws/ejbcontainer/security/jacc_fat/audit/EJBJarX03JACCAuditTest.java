@@ -44,7 +44,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * This test invokes SecurityEJBX03Bean methods with a variety of method signatures to insure that
  * annotations are processed correctly with methods of the same name and different signature.
  */
-@Mode(TestMode.FULL)
+@Mode(TestMode.LITE)
 @RunWith(FATRunner.class)
 public class EJBJarX03JACCAuditTest extends EJBAnnTestBase {
 

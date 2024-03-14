@@ -9,7 +9,9 @@ visibility = private
   io.openliberty.appSecurity-5.0
   
 -bundles=\
-  com.ibm.ws.request.probe.audit.servlet.jakarta
+  com.ibm.ws.request.probe.audit.servlet.jakarta, \
+  com.ibm.ws.request.probe.audit.rest.jakarta, \
+  com.ibm.ws.security.audit.rest.jakarta
 
 kind=ga
 edition=core
