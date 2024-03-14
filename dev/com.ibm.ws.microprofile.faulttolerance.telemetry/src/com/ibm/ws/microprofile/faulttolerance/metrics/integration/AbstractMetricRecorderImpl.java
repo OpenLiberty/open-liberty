@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,31 +10,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.faulttolerance30.internal.metrics.integration;
+package com.ibm.ws.microprofile.faulttolerance.telemetry.metrics.integration;
 
-import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred.NO_FALLBACK;
-import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.FallbackOccurred.WITH_FALLBACK;
-import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.RetriesOccurred.NO_RETRIES;
-import static com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorder.RetriesOccurred.WITH_RETRIES;
-import static com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory.EXCEPTION_IN_ABORT_ON;
-import static com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory.EXCEPTION_NOT_IN_RETRY_ON;
-import static com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory.MAX_DURATION_REACHED;
-import static com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory.MAX_RETRIES_REACHED;
-import static com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory.NO_EXCEPTION;
-
-import java.util.EnumMap;
 import java.util.function.LongSupplier;
-import java.util.function.Supplier;
-
-import org.eclipse.microprofile.metrics.Counter;
-import org.eclipse.microprofile.metrics.Gauge;
-import org.eclipse.microprofile.metrics.Histogram;
-import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.MetricUnits;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
@@ -44,79 +24,50 @@ import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryResultCategory;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 
+import io.opentelemetry.api.metrics.LongCounter;
+import io.opentelemetry.api.metrics.LongHistogram;
+import io.opentelemetry.api.metrics.Meter;
+import io.opentelemetry.api.metrics.ObservableLongGauge;
+import io.opentelemetry.api.metrics.ObservableLongMeasurement;
+
 /**
- * Records Fault Tolerance metrics for the FT 3.0 spec
- * <p>
- * The FT 3.0 spec changes from using lots of separate metrics to using fewer metrics but storing multiple values by using tags.
- * From a recording perspective, this introduces very little change as we just treat each combination of name and tag as a separate metric.
- * <p>
- * This class initializes all of the metrics for the method up front in the constructor and stores them in fields so that we don't have to register or look up metrics while the
- * method is running.
- * <p>
- * In some cases, where a metric has tags with lots of values, we use an EnumSet to store the metrics for each tag combination.
- * <p>
- * In other cases, where a metric has few or no possible tag values, we just use a separate field for each tag combination.
+ *
  */
-public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
+public abstract class AbstractMetricRecorderImpl implements MetricRecorder {
 
-    /**
-     * Constant map from a {@link RetryResultCategory} to its corresponding metric {@link Tag}
-     */
-    private static final EnumMap<RetryResultCategory, Tag> RETRY_RESULT_TAGS = new EnumMap<>(RetryResultCategory.class);
-
-    /**
-     * Constant map from a {@link RetriesOccurred} to its corresponding metric {@link Tag}
-     */
-    private static final EnumMap<RetriesOccurred, Tag> RETRIES_OCCURRED_TAGS = new EnumMap<>(RetriesOccurred.class);
-
-    static {
-        RETRY_RESULT_TAGS.put(NO_EXCEPTION, new Tag("retryResult", "valueReturned"));
-        RETRY_RESULT_TAGS.put(EXCEPTION_IN_ABORT_ON, new Tag("retryResult", "exceptionNotRetryable"));
-        RETRY_RESULT_TAGS.put(EXCEPTION_NOT_IN_RETRY_ON, new Tag("retryResult", "exceptionNotRetryable"));
-        RETRY_RESULT_TAGS.put(MAX_DURATION_REACHED, new Tag("retryResult", "maxDurationReached"));
-        RETRY_RESULT_TAGS.put(MAX_RETRIES_REACHED, new Tag("retryResult", "maxRetriesReached"));
-
-        RETRIES_OCCURRED_TAGS.put(WITH_RETRIES, new Tag("retried", "true"));
-        RETRIES_OCCURRED_TAGS.put(NO_RETRIES, new Tag("retried", "false"));
-    }
-
-    private final EnumMap<FallbackOccurred, Counter> invocationSuccessCounter;
-    private final EnumMap<FallbackOccurred, Counter> invocationFailedCounter;
-    private final EnumMap<RetryResultCategory, EnumMap<RetriesOccurred, Counter>> retryCallsCounter;
-    private final Counter retryRetriesCounter;
-    private final Histogram timeoutDurationHistogram;
-    private final Counter timeoutTrueCalls;
-    private final Counter timeoutFalseCalls;
-    private final Counter circuitBreakerCallsSuccessCounter;
-    private final Counter circuitBreakerCallsFailureCounter;
-    private final Counter circuitBreakerCallsOpenCounter;
+    private final LongCounter invocationCounter;
+    private final LongCounter invocationFailedCounter;
+    private final LongCounter retryCallsSuccessImmediateCounter;
+    private final LongCounter retryCallsSuccessRetryCounter;
+    private final LongCounter retryCallsFailureCounter;
+    private final LongCounter retryRetriesCounter;
+    private final LongHistogram timeoutDurationHistogram;
+    private final LongCounter timeoutTrueCalls;
+    private final LongCounter timeoutFalseCalls;
+    private final LongCounter circuitBreakerCallsSuccessCounter;
+    private final LongCounter circuitBreakerCallsFailureCounter;
+    private final LongCounter circuitBreakerCallsOpenCounter;
     @SuppressWarnings("unused")
-    private final Gauge<Long> circuitBreakerOpenTime;
+    private final ObservableLongGauge circuitBreakerOpenTime;
     @SuppressWarnings("unused")
-    private final Gauge<Long> circuitBreakerHalfOpenTime;
+    private final ObservableLongGauge circuitBreakerHalfOpenTime;
     @SuppressWarnings("unused")
-    private final Gauge<Long> circuitBreakerClosedTime;
-    private final Counter circuitBreakerTimesOpenedCounter;
+    private final ObservableLongGauge circuitBreakerClosedTime;
+    private final LongCounter circuitBreakerTimesOpenedCounter;
     @SuppressWarnings("unused")
-    private final Gauge<Long> bulkheadConcurrentExecutions;
-    private final Counter bulkheadRejectionsCounter;
-    private final Counter bulkheadAcceptedCounter;
-    private final Histogram bulkheadExecutionDuration;
+    private final ObservableLongGauge bulkheadConcurrentExecutions;
+    private final LongCounter bulkheadRejectionsCounter;
+    private final LongCounter bulkheadAcceptedCounter;
+    private final LongHistogram bulkheadExecutionDuration;
     @SuppressWarnings("unused")
-    private final Gauge<Long> bulkheadQueuePopulation;
-    private final Histogram bulkheadQueueWaitTimeHistogram;
-
+    private final ObservableLongGauge bulkheadQueuePopulation;
+    private final LongHistogram bulkheadQueueWaitTimeHistogram;
+    private final LongCounter fallbackCalls;
     private LongSupplier concurrentExecutionCountSupplier = null;
     private LongSupplier queuePopulationSupplier = null;
-
-    /*
-     * Fields storing required state for circuit breaker metrics
-     */
     private long openNanos;
     private long halfOpenNanos;
     private long closedNanos;
-    private CircuitBreakerState circuitBreakerState = CircuitBreakerState.CLOSED;
-    protected long lastCircuitBreakerTransitionTime;
 
     private enum CircuitBreakerState {
         CLOSED,
@@ -124,76 +75,37 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
         OPEN
     }
 
-    public AbstractMetricRecorder30Impl(String methodName, MetricRegistry registry, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy, TimeoutPolicy timeoutPolicy,
-                                        BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync) {
-
-        /*
-         * Register all of the metrics required for this method and store them in fields
-         */
-
-        // Every metric uses this tag to identify the method it's reporting metrics for
-        Tag methodTag = new Tag("method", methodName);
-
+    //TODO confirm all descriptions are correct
+    public AbstractMetricRecorderImpl(String metricPrefix, Meter meter, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy,
+                                      TimeoutPolicy timeoutPolicy,
+                                      BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync) {
         if (retryPolicy != null || timeoutPolicy != null || circuitBreakerPolicy != null || bulkheadPolicy != null || fallbackPolicy != null) {
-            Metadata invocationsMetadata = metadata("ft.invocations.total", Type.COUNTER);
-            Tag valueReturnedTag = new Tag("result", "valueReturned");
-            Tag exceptionThrownTag = new Tag("result", "exceptionThrown");
-            invocationSuccessCounter = new EnumMap<>(FallbackOccurred.class);
-            invocationFailedCounter = new EnumMap<>(FallbackOccurred.class);
-
-            if (fallbackPolicy != null) {
-                // If there's a fallback policy we need four metrics to cover the combinations of
-                // fallback = [applied|notApplied] and result = [valueReturned|exceptionThrown]
-                Tag withFallbackTag = new Tag("fallback", "applied");
-                Tag withoutFallbackTag = new Tag("fallback", "notApplied");
-
-                invocationSuccessCounter.put(NO_FALLBACK, registry.counter(invocationsMetadata, methodTag, valueReturnedTag, withoutFallbackTag));
-                invocationSuccessCounter.put(WITH_FALLBACK, registry.counter(invocationsMetadata, methodTag, valueReturnedTag, withFallbackTag));
-
-                invocationFailedCounter.put(NO_FALLBACK, registry.counter(invocationsMetadata, methodTag, exceptionThrownTag, withoutFallbackTag));
-                invocationFailedCounter.put(WITH_FALLBACK, registry.counter(invocationsMetadata, methodTag, exceptionThrownTag, withFallbackTag));
-            } else {
-                // If there's no fallback, then we only need two metrics to cover the combinations of
-                // fallback = [notDefined] and result = [valueReturned|exceptionThrown]
-                Tag noFallbackTag = new Tag("fallback", "notDefined");
-
-                Counter invocationSuccess = registry.counter(invocationsMetadata, methodTag, valueReturnedTag, noFallbackTag);
-                invocationSuccessCounter.put(NO_FALLBACK, invocationSuccess);
-                invocationSuccessCounter.put(WITH_FALLBACK, invocationSuccess);
-
-                Counter invocationFailed = registry.counter(invocationsMetadata, methodTag, exceptionThrownTag, noFallbackTag);
-                invocationFailedCounter.put(NO_FALLBACK, invocationFailed);
-                invocationFailedCounter.put(WITH_FALLBACK, invocationFailed);
-            }
+            invocationCounter = meter.counterBuilder(metricPrefix + ".invocations.total").setDescription("The number of invocations").build();
+            invocationFailedCounter = meter.counterBuilder(metricPrefix + ".invocations.failed.total").setDescription("The number of invocations that failed").build();
         } else {
-            invocationSuccessCounter = null;
+            invocationCounter = null;
             invocationFailedCounter = null;
         }
 
         if (retryPolicy != null) {
-            retryCallsCounter = new EnumMap<>(RetryResultCategory.class);
-            // Iterate through the combinations of retry tags, creating each counter
-            for (RetryResultCategory resultCategory : RETRY_RESULT_TAGS.keySet()) {
-                EnumMap<RetriesOccurred, Counter> submap = new EnumMap<>(RetriesOccurred.class);
-                retryCallsCounter.put(resultCategory, submap);
-                for (RetriesOccurred retriesOccurred : RETRIES_OCCURRED_TAGS.keySet()) {
-                    submap.put(retriesOccurred,
-                               registry.counter("ft.retry.calls.total", methodTag, RETRY_RESULT_TAGS.get(resultCategory), RETRIES_OCCURRED_TAGS.get(retriesOccurred)));
-                }
-            }
-            retryRetriesCounter = registry.counter("ft.retry.retries.total", methodTag);
+            retryCallsSuccessImmediateCounter = meter.counterBuilder(metricPrefix
+                                                                     + ".retry.callsSucceededNotRetried.total").setDescription("The number of calls that succeeded without a retry").build();
+            retryCallsSuccessRetryCounter = meter.counterBuilder(metricPrefix
+                                                                 + ".retry.callsSucceededRetried.total").setDescription("The number of calls that succeeded with a retry").build();
+            retryCallsFailureCounter = meter.counterBuilder(metricPrefix + ".retry.callsFailed.total").setDescription("The number of calls that failed after a retry").build();
+            retryRetriesCounter = meter.counterBuilder(metricPrefix + ".retry.retries.total").setDescription("The number of calls that failed after a retry").build();
         } else {
-            retryCallsCounter = null;
+            retryCallsSuccessImmediateCounter = null;
+            retryCallsSuccessRetryCounter = null;
+            retryCallsFailureCounter = null;
             retryRetriesCounter = null;
         }
 
         if (timeoutPolicy != null) {
-            Metadata timeoutDurationMetadata = metadata("ft.timeout.executionDuration", Type.HISTOGRAM, MetricUnits.NANOSECONDS);
-            timeoutDurationHistogram = registry.histogram(timeoutDurationMetadata, methodTag);
-
-            Metadata timeoutCallsMetadata = metadata("ft.timeout.calls.total", Type.COUNTER);
-            timeoutTrueCalls = registry.counter(timeoutCallsMetadata, methodTag, new Tag("timedOut", "true"));
-            timeoutFalseCalls = registry.counter(timeoutCallsMetadata, methodTag, new Tag("timedOut", "false"));
+            timeoutDurationHistogram = meter.histogramBuilder(metricPrefix
+                                                              + ".timeout.executionDuration").setDescription("Execution Durations").ofLongs().setUnit("nanoseconds").build();
+            timeoutTrueCalls = meter.counterBuilder(metricPrefix + ".timeout.callsTimedOut.total").setDescription("The number of calls that timed out").build();
+            timeoutFalseCalls = meter.counterBuilder(metricPrefix + ".timeout.callsNotTimedOut.total").setDescription("The number of calls that did not time out").build();
         } else {
             timeoutDurationHistogram = null;
             timeoutTrueCalls = null;
@@ -201,17 +113,19 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
         }
 
         if (circuitBreakerPolicy != null) {
-            Metadata cbCallsMetadata = metadata("ft.circuitbreaker.calls.total", Type.COUNTER);
-            circuitBreakerCallsFailureCounter = registry.counter(cbCallsMetadata, methodTag, new Tag("circuitBreakerResult", "failure"));
-            circuitBreakerCallsSuccessCounter = registry.counter(cbCallsMetadata, methodTag, new Tag("circuitBreakerResult", "success"));
-            circuitBreakerCallsOpenCounter = registry.counter(cbCallsMetadata, methodTag, new Tag("circuitBreakerResult", "circuitBreakerOpen"));
-
-            Metadata cbStateTimeMetadata = metadata("ft.circuitbreaker.state.total", Type.GAUGE, MetricUnits.NANOSECONDS);;
-            circuitBreakerOpenTime = gauge(registry, cbStateTimeMetadata, this::getCircuitBreakerAccumulatedOpen, methodTag, new Tag("state", "open"));
-            circuitBreakerHalfOpenTime = gauge(registry, cbStateTimeMetadata, this::getCircuitBreakerAccumulatedHalfOpen, methodTag, new Tag("state", "halfOpen"));
-            circuitBreakerClosedTime = gauge(registry, cbStateTimeMetadata, this::getCircuitBreakerAccumulatedClosed, methodTag, new Tag("state", "closed"));
-
-            circuitBreakerTimesOpenedCounter = registry.counter("ft.circuitbreaker.opened.total", methodTag);
+            circuitBreakerCallsFailureCounter = meter.counterBuilder(metricPrefix
+                                                                     + ".circuitbreaker.callsFailed.total").setDescription("The number of calls that failed inside a circuit").build();
+            circuitBreakerCallsSuccessCounter = meter.counterBuilder(metricPrefix
+                                                                     + ".circuitbreaker.callsSucceeded.total").setDescription("The number of calls that succeeded inside a circuit").build();
+            circuitBreakerCallsOpenCounter = meter.counterBuilder(metricPrefix
+                                                                  + ".circuitbreaker.callsPrevented.total").setDescription("The number of calls prevented by a circuit break").build();
+            circuitBreakerOpenTime = meter.gaugeBuilder(metricPrefix
+                                                        + ".circuitbreaker.open.total").ofLongs().setUnit("nanoseconds").setDescription("The time a circuit was open").buildWithCallback(this::getCircuitBreakerAccumulatedOpen);
+            circuitBreakerHalfOpenTime = meter.gaugeBuilder(metricPrefix
+                                                            + ".circuitbreaker.halfOpen.total").ofLongs().setUnit("nanoseconds").setDescription("The time a circuit was half open").buildWithCallback(this::getCircuitBreakerAccumulatedHalfOpen);
+            circuitBreakerClosedTime = meter.gaugeBuilder(metricPrefix
+                                                          + ".circuitbreaker.closed.total").ofLongs().setUnit("nanoseconds").setDescription("The time a circuit was closed").buildWithCallback(this::getCircuitBreakerAccumulatedClosed);
+            circuitBreakerTimesOpenedCounter = meter.counterBuilder(metricPrefix + ".circuitbreaker.opened.total").setDescription("The number of times a circuit opened").build();
         } else {
             circuitBreakerCallsFailureCounter = null;
             circuitBreakerCallsSuccessCounter = null;
@@ -223,46 +137,51 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
         }
 
         if (bulkheadPolicy != null) {
-            Metadata bulkheadCallsMetadata = metadata("ft.bulkhead.calls.total", Type.COUNTER);
-            bulkheadAcceptedCounter = registry.counter(bulkheadCallsMetadata, methodTag, new Tag("bulkheadResult", "accepted"));
-            bulkheadRejectionsCounter = registry.counter(bulkheadCallsMetadata, methodTag, new Tag("bulkheadResult", "rejected"));
+            bulkheadConcurrentExecutions = meter.gaugeBuilder(metricPrefix
+                                                              + ".bulkhead.concurrentExecutions").ofLongs().setUnit("none").setDescription("The number of concurrent executions").buildWithCallback(this::getConcurrentExecutions);
+            bulkheadRejectionsCounter = meter.counterBuilder(metricPrefix + ".bulkhead.callsRejected.total").setDescription("The number of calls rejected by a bulkhead").build();
+            bulkheadAcceptedCounter = meter.counterBuilder(metricPrefix + ".bulkhead.callsAccepted.total").setDescription("The number of calls accepted by a bulkhead").build();
+            bulkheadExecutionDuration = meter.histogramBuilder(metricPrefix
+                                                               + ".bulkhead.executionDuration").setDescription("Execution Duration").ofLongs().setUnit("nanoseconds").build();
 
-            Metadata executionsRunningMetadata = metadata("ft.bulkhead.executionsRunning", Type.GAUGE);
-            bulkheadConcurrentExecutions = gauge(registry, executionsRunningMetadata, this::getConcurrentExecutions, methodTag);
-
-            Metadata runningDurationMetadata = metadata("ft.bulkhead.runningDuration", Type.HISTOGRAM, MetricUnits.NANOSECONDS);
-            bulkheadExecutionDuration = registry.histogram(runningDurationMetadata, methodTag);
         } else {
+            bulkheadConcurrentExecutions = null;
             bulkheadRejectionsCounter = null;
             bulkheadAcceptedCounter = null;
-            bulkheadConcurrentExecutions = null;
             bulkheadExecutionDuration = null;
         }
 
         if (bulkheadPolicy != null && isAsync == AsyncType.ASYNC) {
-            Metadata executionsWaitingMetadata = metadata("ft.bulkhead.executionsWaiting", Type.GAUGE);
-            bulkheadQueuePopulation = gauge(registry, executionsWaitingMetadata, this::getQueuePopulation, methodTag);
+            bulkheadQueuePopulation = meter.gaugeBuilder(metricPrefix
+                                                         + ".bulkhead.waitingQueue.population").ofLongs().setUnit("nanoseconds").buildWithCallback(this::getQueuePopulation);
+            bulkheadQueueWaitTimeHistogram = meter.histogramBuilder(metricPrefix + ".bulkhead.waiting.duration").ofLongs().setUnit("nanoseconds").build();
 
-            Metadata waitingDurationMetadata = metadata("ft.bulkhead.waitingDuration", Type.HISTOGRAM, MetricUnits.NANOSECONDS);
-            bulkheadQueueWaitTimeHistogram = registry.histogram(waitingDurationMetadata, methodTag);
         } else {
             bulkheadQueuePopulation = null;
             bulkheadQueueWaitTimeHistogram = null;
         }
 
+        if (fallbackPolicy != null) {
+            fallbackCalls = meter.counterBuilder(metricPrefix + ".fallback.calls.total").build();
+        } else {
+            fallbackCalls = null;
+        }
+
         lastCircuitBreakerTransitionTime = System.nanoTime();
     }
 
-    public abstract Metadata metadata(String name, Type type, String unit);
-
-    public abstract Metadata metadata(String name, Type type);
+    private CircuitBreakerState circuitBreakerState = CircuitBreakerState.CLOSED;
+    protected long lastCircuitBreakerTransitionTime;
 
     /** {@inheritDoc} */
     @Trivial
     @Override
     public void incrementInvocationSuccessCount(FallbackOccurred fallbackOccurred) {
-        if (invocationSuccessCounter != null) {
-            invocationSuccessCounter.get(fallbackOccurred).inc();
+        if (invocationCounter != null) {
+            invocationCounter.add(1);
+        }
+        if (fallbackOccurred == FallbackOccurred.WITH_FALLBACK) {
+            fallbackCalls.add(1);
         }
     }
 
@@ -270,17 +189,43 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     @Trivial
     @Override
     public void incrementInvocationFailedCount(FallbackOccurred fallbackOccurred) {
+        if (invocationCounter != null) {
+            invocationCounter.add(1);
+        }
         if (invocationFailedCounter != null) {
-            invocationFailedCounter.get(fallbackOccurred).inc();
+            invocationFailedCounter.add(1);
+        }
+        if (fallbackOccurred == FallbackOccurred.WITH_FALLBACK) {
+            fallbackCalls.add(1);
         }
     }
 
-    /** {@inheritDoc} */
-    @Trivial
     @Override
     public void incrementRetryCalls(RetryResultCategory resultCategory, RetriesOccurred retriesOccurred) {
-        if (retryCallsCounter != null) {
-            retryCallsCounter.get(resultCategory).get(retriesOccurred).inc();
+        if (retryCallsSuccessImmediateCounter != null) {
+            switch (resultCategory) {
+                case EXCEPTION_IN_ABORT_ON:
+                case NO_EXCEPTION:
+                case EXCEPTION_NOT_IN_RETRY_ON:
+                    // success
+                    if (retriesOccurred == RetriesOccurred.WITH_RETRIES) {
+                        retryCallsSuccessRetryCounter.add(1);
+                    } else {
+                        retryCallsSuccessImmediateCounter.add(1);
+                    }
+                    break;
+
+                case MAX_DURATION_REACHED:
+                case MAX_RETRIES_REACHED:
+                    // failure
+                    retryCallsFailureCounter.add(1);
+                    break;
+
+                case EXCEPTION_IN_RETRY_ON:
+                    // not valid for final retry attempt
+                default:
+                    // do nothing
+            }
         }
     }
 
@@ -289,7 +234,7 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     @Override
     public void incrementRetriesCount() {
         if (retryRetriesCounter != null) {
-            retryRetriesCounter.inc();
+            retryRetriesCounter.add(1);
         }
     }
 
@@ -298,7 +243,7 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     @Override
     public void recordTimeoutExecutionTime(long executionNanos) {
         if (timeoutDurationHistogram != null) {
-            timeoutDurationHistogram.update(executionNanos);
+            timeoutDurationHistogram.record(executionNanos);
         }
     }
 
@@ -307,7 +252,7 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     @Override
     public void incrementTimeoutTrueCount() {
         if (timeoutTrueCalls != null) {
-            timeoutTrueCalls.inc();
+            timeoutTrueCalls.add(1);
         }
     }
 
@@ -316,7 +261,7 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     @Override
     public void incrementTimeoutFalseCount() {
         if (timeoutFalseCalls != null) {
-            timeoutFalseCalls.inc();
+            timeoutFalseCalls.add(1);
         }
     }
 
@@ -325,7 +270,7 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     @Override
     public void incrementCircuitBreakerCallsCircuitOpenCount() {
         if (circuitBreakerCallsOpenCounter != null) {
-            circuitBreakerCallsOpenCounter.inc();
+            circuitBreakerCallsOpenCounter.add(1);
         }
     }
 
@@ -334,7 +279,7 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     @Override
     public void incrementCircuitBreakerCallsSuccessCount() {
         if (circuitBreakerCallsSuccessCounter != null) {
-            circuitBreakerCallsSuccessCounter.inc();
+            circuitBreakerCallsSuccessCounter.add(1);
         }
     }
 
@@ -343,7 +288,7 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     @Override
     public void incrementCircuitBreakerCallsFailureCount() {
         if (circuitBreakerCallsFailureCounter != null) {
-            circuitBreakerCallsFailureCounter.inc();
+            circuitBreakerCallsFailureCounter.add(1);
         }
     }
 
@@ -352,7 +297,7 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     @Override
     public void incrementBulkheadRejectedCount() {
         if (bulkheadRejectionsCounter != null) {
-            bulkheadRejectionsCounter.inc();
+            bulkheadRejectionsCounter.add(1);
         }
     }
 
@@ -361,7 +306,7 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     @Override
     public void incrementBulkeadAcceptedCount() {
         if (bulkheadAcceptedCounter != null) {
-            bulkheadAcceptedCounter.inc();
+            bulkheadAcceptedCounter.add(1);
         }
     }
 
@@ -371,7 +316,7 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
         if (circuitBreakerState != CircuitBreakerState.OPEN) {
             recordEndOfCircuitBreakerState(circuitBreakerState);
             circuitBreakerState = CircuitBreakerState.OPEN;
-            circuitBreakerTimesOpenedCounter.inc();
+            circuitBreakerTimesOpenedCounter.add(1);
         }
     }
 
@@ -417,43 +362,43 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     @Override
     public void reportQueueWaitTime(long queueWaitNanos) {
         if (bulkheadQueueWaitTimeHistogram != null) {
-            bulkheadQueueWaitTimeHistogram.update(queueWaitNanos);
+            bulkheadQueueWaitTimeHistogram.record(queueWaitNanos);
         }
     }
 
     @Trivial
-    private synchronized long getCircuitBreakerAccumulatedOpen() {
+    private synchronized void getCircuitBreakerAccumulatedOpen(ObservableLongMeasurement measurement) {
         long computedNanos = openNanos;
         if (circuitBreakerState == CircuitBreakerState.OPEN) {
             computedNanos += System.nanoTime() - lastCircuitBreakerTransitionTime;
         }
-        return computedNanos;
+        measurement.record(computedNanos);
     }
 
     @Trivial
-    private synchronized long getCircuitBreakerAccumulatedHalfOpen() {
+    private synchronized void getCircuitBreakerAccumulatedHalfOpen(ObservableLongMeasurement measurement) {
         long computedNanos = halfOpenNanos;
         if (circuitBreakerState == CircuitBreakerState.HALF_OPEN) {
             computedNanos += System.nanoTime() - lastCircuitBreakerTransitionTime;
         }
-        return computedNanos;
+        measurement.record(computedNanos);
     }
 
     @Trivial
-    private synchronized long getCircuitBreakerAccumulatedClosed() {
+    private synchronized void getCircuitBreakerAccumulatedClosed(ObservableLongMeasurement measurement) {
         long computedNanos = closedNanos;
         if (circuitBreakerState == CircuitBreakerState.CLOSED) {
             computedNanos += System.nanoTime() - lastCircuitBreakerTransitionTime;
         }
-        return computedNanos;
+        measurement.record(computedNanos);
     }
 
     @Trivial
-    private Long getConcurrentExecutions() {
+    private void getConcurrentExecutions(ObservableLongMeasurement measurement) {
         if (concurrentExecutionCountSupplier != null) {
-            return concurrentExecutionCountSupplier.getAsLong();
+            measurement.record(concurrentExecutionCountSupplier.getAsLong());
         } else {
-            return 0L;
+            measurement.record(0L);
         }
     }
 
@@ -465,11 +410,11 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     }
 
     @Trivial
-    private Long getQueuePopulation() {
+    private void getQueuePopulation(ObservableLongMeasurement measurement) {
         if (queuePopulationSupplier != null) {
-            return queuePopulationSupplier.getAsLong();
+            measurement.record(queuePopulationSupplier.getAsLong());
         } else {
-            return 0L;
+            measurement.record(0L);
         }
     }
 
@@ -485,19 +430,8 @@ public abstract class AbstractMetricRecorder30Impl implements MetricRecorder {
     @Override
     public void recordBulkheadExecutionTime(long executionTime) {
         if (bulkheadExecutionDuration != null) {
-            bulkheadExecutionDuration.update(executionTime);
+            bulkheadExecutionDuration.record(executionTime);
         }
-    }
-
-    @FFDCIgnore(IllegalArgumentException.class)
-    private Gauge<Long> gauge(MetricRegistry registry, Metadata gaugeMeta, Supplier<Long> supplier, Tag... tags) {
-        Gauge<Long> result = null;
-        try {
-            result = registry.gauge(gaugeMeta, supplier, tags);
-        } catch (IllegalArgumentException ex) {
-            // Thrown if metric already exists
-        }
-        return result;
     }
 
 }
