@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,19 +14,9 @@ package com.ibm.ws.gvt.rest.fat;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLSession;
-
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
-import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 
 /**
  * Some HTTP convenience methods.
@@ -41,38 +31,14 @@ public class GvtUtils {
 
     }
 
+    /**
+     * @param server
+     * @return
+     * @throws IOException
+     */
     public static HttpURLConnection getHttpConnectionForUTF(LibertyServer server) throws IOException {
-        int timeout = 5000;
-        URL url = createURL(server);
-        HttpURLConnection connection = getHttpConnection(url, timeout, HTTPRequestMethod.GET);
-        Log.info(HttpUtils.class, "getHttpConnection", "Connecting to " + url.toExternalForm() + " expecting http response in " + timeout + " seconds.");
-        connection.connect();
-        return connection;
-    }
 
-    public static HttpURLConnection getHttpConnection(URL url, int timeout, HTTPRequestMethod requestMethod) throws IOException, ProtocolException {
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
-        connection.setUseCaches(false);
-        connection.setRequestMethod(requestMethod.toString());
-        connection.setConnectTimeout(timeout);
-
-        if (connection instanceof HttpsURLConnection) {
-            ((HttpsURLConnection) connection).setHostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            });
-        }
-
-        return connection;
-    }
-
-    public static URL createURL(LibertyServer server) throws MalformedURLException {
-
-        return new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort());
+        return HttpUtils.getHttpConnectionForUTF(server);
     }
 
 }

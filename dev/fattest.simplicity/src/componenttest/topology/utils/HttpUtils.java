@@ -871,4 +871,20 @@ public class HttpUtils {
             return true;
         }
     }
+
+    public static HttpURLConnection getHttpConnectionForUTF(LibertyServer server) throws IOException {
+
+        int timeout = 5000;
+        URL url = createURL(server);
+        HttpURLConnection connection = getHttpConnection(url, timeout, HTTPRequestMethod.GET);
+        Log.info(HttpUtils.class, "getHttpConnection", "Connecting to " + url.toExternalForm() + " expecting http response in " + timeout + " seconds.");
+        connection.connect();
+        return connection;
+    }
+
+    public static URL createURL(LibertyServer server) throws MalformedURLException {
+
+        return new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort());
+    }
+
 }
