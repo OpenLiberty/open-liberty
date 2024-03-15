@@ -596,6 +596,37 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that specifies query language consisting only of a WHERE clause
+     * and requests cursor-based pagination.
+     */
+    @Test
+    public void testCursorPaginationWithWhereClauseOnly() {
+        // The prime numbers between 1 and 50 that do not end in 7 or 3 are:
+        // 2, 5, 11, 19, 29, 31, 41
+        CursoredPage<Prime> page1 = primes.withinButNotEndingIn7or3(1, 50, PageRequest.ofSize(4));
+
+        assertEquals(List.of("two", "eleven", "five", "forty-one"),
+                     page1.stream()
+                                     .map(p -> p.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(4, page1.numberOfElements());
+        assertEquals(7L, page1.totalElements());
+        assertEquals(2L, page1.totalPages());
+
+        assertEquals(true, page1.hasNext());
+
+        CursoredPage<Prime> page2 = primes.withinButNotEndingIn7or3(1, 50, page1.nextPageRequest());
+
+        assertEquals(List.of("nineteen", "thirty-one", "twenty-nine"),
+                     page2.stream()
+                                     .map(p -> p.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(false, page2.hasNext());
+    }
+
+    /**
      * Use a repository that inherits from a custom repository interface with type parameters indicating the entity and key types.
      */
     @Test
@@ -5253,6 +5284,38 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Obtain total counts of number of elements and pages when JDQL is supplied via the Query annotation
+     * and the count query provided by the Query annotation only has a WHERE clause.
+     */
+    @Test
+    public void testTotalCountsForCountQueryWithWhereClauseOnly() {
+        // The prime numbers less than 50 where the roman numeral length is at least
+        // twice the name length are:
+        // 2, 3, 7, 13, 37
+
+        Page<Prime> page1 = primes.lengthBasedQuery(PageRequest.ofSize(3));
+
+        assertEquals(List.of("two", "three", "thirty-seven"),
+                     page1.stream()
+                                     .map(p -> p.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(3, page1.numberOfElements());
+        assertEquals(5L, page1.totalElements());
+        assertEquals(2L, page1.totalPages());
+        assertEquals(true, page1.hasNext());
+
+        Page<Prime> page2 = primes.lengthBasedQuery(page1.nextPageRequest());
+
+        assertEquals(List.of("thirteen", "seven"),
+                     page2.stream()
+                                     .map(p -> p.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(false, page2.hasNext());
+    }
+
+    /**
      * Obtain total counts of number of elements and pages when JPQL is supplied via the Query annotation
      * where a count query is inferred from the Query annotation value, which has an ORDER BY clause.
      */
@@ -5872,5 +5935,72 @@ public class DataTestServlet extends FATServlet {
         Product p = products.findItem(prod1.pk);
         assertEquals(149.99f, p.price, 0.001f);
         assertEquals(version + 1, p.version);
+    }
+
+    /**
+     * Use a repository method that specifies query language consisting only of a WHERE clause and ORDER BY clause
+     * and requests offset pagination with a total count of pages.
+     */
+    @Test
+    public void testWhereAndOrderByClauseOnly() {
+        // The prime numbers between 10 and 43:
+        // 11, 13, 17, 19, 23, 29, 31, 37, 41, 43
+        Page<Prime> page1 = primes.within10toXAndSortedByName(43, PageRequest.ofSize(5));
+
+        assertEquals(List.of("eleven", "forty-one", "forty-three", "nineteen", "seventeen"),
+                     page1.stream()
+                                     .map(p -> p.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(5, page1.numberOfElements());
+        assertEquals(10L, page1.totalElements());
+        assertEquals(2L, page1.totalPages());
+        assertEquals(true, page1.hasNext());
+
+        Page<Prime> page2 = primes.within10toXAndSortedByName(43, page1.nextPageRequest());
+
+        assertEquals(List.of("thirteen", "thirty-one", "thirty-seven", "twenty-nine", "twenty-three"),
+                     page2.stream()
+                                     .map(p -> p.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a repository method that specifies query language consisting only of a WHERE clause
+     * and requests offset pagination with a total count of pages.
+     */
+    @Test
+    public void testWhereClauseOnly() {
+        // The prime numbers between 6 and 36:
+        // 7, 11, 13, 17, 19, 23, 29, 31
+        Page<Prime> page1 = primes.within(6, 36, PageRequest.of(Prime.class).size(3).desc("id"));
+
+        assertEquals(List.of(31L, 29L, 23L),
+                     page1.stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(3, page1.numberOfElements());
+        assertEquals(8L, page1.totalElements());
+        assertEquals(3L, page1.totalPages());
+        assertEquals(true, page1.hasNext());
+
+        Page<Prime> page2 = primes.within(6, 36, page1.nextPageRequest());
+
+        assertEquals(List.of(19L, 17L, 13L),
+                     page2.stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(true, page2.hasNext());
+
+        Page<Prime> page3 = primes.within(6, 36, page2.nextPageRequest());
+
+        assertEquals(List.of(11L, 7L),
+                     page3.stream()
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(false, page3.hasNext());
     }
 }
