@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -150,7 +150,7 @@ class ConfigurationMonitor implements ManagedService {
                 boolean modified = isFirstUpdate ? false : serverXMLConfig.isModified();
                 Collection<String> filesToMonitor = serverXMLConfig.getFilesToMonitor();
                 Collection<String> directoriesToMonitor = serverXMLConfig.getDirectoriesToMonitor();
-                fileMonitor = new ConfigFileMonitor(bundleContext, filesToMonitor, directoriesToMonitor, monitorInterval, modified, fileMonitorType, configRefresher);
+                fileMonitor = new ConfigFileMonitor(serverXMLConfig, bundleContext, filesToMonitor, directoriesToMonitor, monitorInterval, modified, fileMonitorType, configRefresher);
                 fileMonitor.register();
             }
         } else {

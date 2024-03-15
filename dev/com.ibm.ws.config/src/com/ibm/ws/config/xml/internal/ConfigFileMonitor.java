@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package com.ibm.ws.config.xml.internal;
 import java.io.File;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -23,9 +24,12 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.kernel.filemonitor.FileMonitor;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 class ConfigFileMonitor implements com.ibm.ws.kernel.filemonitor.FileMonitor {
 
     static final TraceComponent tc = Tr.register(ConfigFileMonitor.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
+    private static final CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
 
     /**  */
     private ServiceRegistration<FileMonitor> serviceRegistration;
@@ -36,8 +40,11 @@ class ConfigFileMonitor implements com.ibm.ws.kernel.filemonitor.FileMonitor {
     private String monitorType;
     private final BundleContext bundleContext;
     private final ConfigRefresher configRefresher;
+    private final AtomicBoolean checkIsModified = new AtomicBoolean(false);
+    private final ServerXMLConfiguration serverXMLConfig;
 
-    public ConfigFileMonitor(BundleContext bc, Collection<String> monitoredFiles, Collection<String> directoriesToMonitor, Long monitorInterval, boolean modified,
+    public ConfigFileMonitor(ServerXMLConfiguration serverXMLConfig, BundleContext bc, Collection<String> monitoredFiles, Collection<String> directoriesToMonitor,
+                             Long monitorInterval, boolean modified,
                              String fileMonitorType,
                              ConfigRefresher refresher) {
         this.bundleContext = bc;
@@ -47,6 +54,11 @@ class ConfigFileMonitor implements com.ibm.ws.kernel.filemonitor.FileMonitor {
         this.modified = modified;
         this.monitorType = fileMonitorType;
         this.configRefresher = refresher;
+        this.serverXMLConfig = serverXMLConfig;
+        if (checkpointPhase != CheckpointPhase.INACTIVE && !checkpointPhase.restored()) {
+            checkIsModified.set(true);
+        }
+
     }
 
     void register() {
@@ -143,11 +155,18 @@ class ConfigFileMonitor implements com.ibm.ws.kernel.filemonitor.FileMonitor {
 
     @Override
     public void onChange(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles) {
-        configRefresher.refreshConfiguration();
+        onChange(createdFiles, modifiedFiles, deletedFiles, null);
     }
 
     @Override
     public void onChange(Collection<File> createdFiles, Collection<File> modifiedFiles, Collection<File> deletedFiles, String filter) {
+        if (checkpointPhase.restored() && checkIsModified.compareAndSet(true, false)) {
+            if (!serverXMLConfig.isModified()) {
+                // On restore a checkpoint hook for config will have already processed these files.
+                // Do not process them again here.
+                return;
+            }
+        }
         configRefresher.refreshConfiguration();
     }
 }
