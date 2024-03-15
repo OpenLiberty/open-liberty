@@ -51,6 +51,7 @@ final class LTPACrypto {
 	private static final String IBMJCE_NAME = "IBMJCE";
 	private static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
 	private static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
+	private static final String OPENJCE_PLUS_FIPS_NAME = "OpenJCEPlusFIPS";
 	private static final String provider = getProvider();
 
 	private static final String SIGNATURE_ALGORITHM_SHA1WITHRSA = "SHA1withRSA";
@@ -1162,6 +1163,8 @@ final class LTPACrypto {
 		String provider = null;
 		if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
 			provider = IBMJCE_PLUS_FIPS_NAME;
+		} else if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()) {
+			provider = OPENJCE_PLUS_FIPS_NAME;
 		} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
 			provider = IBMJCE_NAME;
 		} else if (LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()) {
@@ -1178,14 +1181,14 @@ final class LTPACrypto {
 	}
 
 	private static String getSignatureAlgorithm() {
-		if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable())
+		if (LTPAKeyUtil.isFIPSEnabled() && (LTPAKeyUtil.isIBMJCEPlusFIPSAvailable() || LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()))
 			return SIGNATURE_ALGORITHM_SHA256WITHRSA;
 		else
 			return SIGNATURE_ALGORITHM_SHA1WITHRSA;
 	}
 
 	private static String getEncryptionAlgorithm() {
-		if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable())
+		if (LTPAKeyUtil.isFIPSEnabled() && (LTPAKeyUtil.isIBMJCEPlusFIPSAvailable() || LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()))
 			return ENCRYPT_ALGORITHM_RSA;
 		else
 			return ENCRYPT_ALGORITHM_DESEDE;
