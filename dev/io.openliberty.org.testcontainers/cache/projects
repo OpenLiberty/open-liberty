@@ -125,6 +125,7 @@ com.ibm.ws.microprofile.reactive.messaging_fat
 com.ibm.ws.openapi.ui_fat
 com.ibm.ws.rest.handler.validator.cloudant_fat
 com.ibm.ws.security.acme_fat
+com.ibm.ws.security.spnego_fat
 com.ibm.ws.session.cache_fat_infinispan_container
 com.ibm.ws.transaction.cloud_fat.base
 com.ibm.ws.transaction.cloud_fat.db2.0
