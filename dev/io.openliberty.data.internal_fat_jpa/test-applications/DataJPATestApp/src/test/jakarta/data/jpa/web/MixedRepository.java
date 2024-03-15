@@ -15,6 +15,7 @@ package test.jakarta.data.jpa.web;
 import java.util.LinkedList;
 import java.util.stream.Stream;
 
+import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.OrderBy;
@@ -28,7 +29,7 @@ import jakarta.data.repository.Repository;
 @Repository
 public interface MixedRepository { // Do not inherit from a supertype
 
-    @Query(value = "WHERE location.address.zip = location.address.zip", // TODO use different JDQL without WHERE
+    @Query(value = "FROM Business WHERE location.address.zip = location.address.zip",
            count = "FROM Business")
     Page<Business> findAll(PageRequest<Business> pageRequest);
 
@@ -42,5 +43,8 @@ public interface MixedRepository { // Do not inherit from a supertype
 
     @Query(value = "WHERE location.address.city=?1",
            count = "FROM Business WHERE location.address.city=?1")
-    Page<Business> locatedIn(String name, PageRequest<Business> pageRequest);
+    Page<Business> locatedIn(String city, PageRequest<Business> pageRequest);
+
+    @Query(value = "FROM Business WHERE location.address.city=:city AND location.address.state=:state")
+    CursoredPage<Business> locatedIn(String city, String state, PageRequest<Business> pageRequest);
 }

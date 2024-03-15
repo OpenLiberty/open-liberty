@@ -254,7 +254,7 @@ public class DataJPATestServlet extends FATServlet {
                                      .map(b -> b.name)
                                      .collect(Collectors.toList()));
 
-        assertEquals(true, page1.hasNext());
+        assertEquals(true, page2.hasNext());
 
         Page<Business> page3 = mixed.findAll(page2.nextPageRequest());
 
@@ -289,7 +289,7 @@ public class DataJPATestServlet extends FATServlet {
                                      .map(b -> b.name)
                                      .collect(Collectors.toList()));
 
-        assertEquals(true, page1.hasNext());
+        assertEquals(true, page2.hasNext());
 
         Page<Business> page3 = mixed.locatedIn("Rochester", page2.nextPageRequest());
 
@@ -566,6 +566,50 @@ public class DataJPATestServlet extends FATServlet {
 
         // Ensure non-matching entities remain in the database
         assertEquals(true, cities.existsById(CityId.of("Rochester", "Minnesota")));
+    }
+
+    /**
+     * Use a repository method with JDQL query language that includes only the FROM and WHERE clauses.
+     * Omit the count query and let it be inferred from the main query.
+     */
+    @Test
+    public void testFromAndWhereClausesOnly() {
+        CursoredPage<Business> page1 = mixed.locatedIn("Rochester", "MN", PageRequest.of(Business.class).size(4).asc("name"));
+
+        assertEquals(4L, page1.numberOfElements());
+        assertEquals(13L, page1.totalElements());
+        assertEquals(4L, page1.totalPages());
+        assertEquals(true, page1.hasNext());
+
+        assertEquals(List.of("Benike Construction", "Cardinal", "Crenlo", "Custom Alarm"),
+                     page1.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        CursoredPage<Business> page2 = mixed.locatedIn("Rochester", "MN", page1.nextPageRequest());
+
+        assertEquals(List.of("Home Federal Savings Bank", "IBM", "Mayo Clinic", "Metafile"),
+                     page2.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(true, page2.hasNext());
+
+        CursoredPage<Business> page3 = mixed.locatedIn("Rochester", "MN", page2.nextPageRequest());
+
+        assertEquals(List.of("Olmsted Medical", "RAC", "Reichel Foods", "Silver Lake Foods"),
+                     page3.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(true, page3.hasNext());
+
+        CursoredPage<Business> page4 = mixed.locatedIn("Rochester", "MN", page3.nextPageRequest());
+
+        assertEquals(List.of("Think Bank"),
+                     page4.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
     }
 
     /**
