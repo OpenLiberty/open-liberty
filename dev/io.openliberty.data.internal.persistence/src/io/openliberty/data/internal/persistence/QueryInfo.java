@@ -620,12 +620,14 @@ public class QueryInfo {
     /**
      * Assembles the count query based on the Query annotation.
      * If Query.count contains JPQL, it is used.
-     * If Query.count contains JDQL, is it transformed into JPQL.
+     * If Query.count contains JDQL, it is transformed into JPQL.
      *
      * @param countQL Query.count() might be JPQL or JDQL.
      * @return count query in JPQL, possibly created from supplied JDQL.
      */
     private String assembleCountQuery(String countQL) {
+
+        StringBuilder c = null;
 
         int length = countQL.length();
         int startAt = 0;
@@ -638,24 +640,49 @@ public class QueryInfo {
                 // TODO
                 throw new UnsupportedOperationException();
             // break;
+            case 'F':
+            case 'f': // FROM
+                boolean continueToWhereClause = false;
+                if (length > startAt + 5
+                    && countQL.regionMatches(true, startAt + 1, "ROM", 0, 3)
+                    && Character.isWhitespace(countQL.charAt(startAt + 4))) {
+
+                    startAt += 5; // EntityName optionally preceded by whitespace
+                    for (; startAt < length && Character.isWhitespace(countQL.charAt(startAt)); startAt++);
+                    StringBuilder entityName = new StringBuilder();
+                    for (char ch; startAt < length && Character.isLetterOrDigit(ch = countQL.charAt(startAt)); startAt++)
+                        entityName.append(ch);
+
+                    if (entityName.length() > 0) {
+                        if (c == null)
+                            c = new StringBuilder(countQL.length() * 5 / 4 + 25).append("SELECT COUNT(o)");
+                        c.append(" FROM ").append(entityName).append(" o");
+                        // EntityName might be followed by whitespace and a WHERE clause
+                        for (; startAt < length && Character.isWhitespace(countQL.charAt(startAt)); startAt++);
+                        if (startAt < length) {
+                            char w = countQL.charAt(startAt);
+                            continueToWhereClause = w == 'W' || w == 'w';
+                        }
+                        if (startAt == length)
+                            return c.toString();
+                    } // TODO error message for missing EntityName after FROM
+                }
+                if (!continueToWhereClause)
+                    break;
             case 'W':
             case 'w': // WHERE
                 if (length > startAt + 5
                     && countQL.regionMatches(true, startAt + 1, "HERE", 0, 4)
                     && !Character.isLetterOrDigit(countQL.charAt(startAt + 5))) {
 
-                    StringBuilder c = new StringBuilder(countQL.length()) //
-                                    .append("SELECT COUNT(o) FROM ") //
-                                    .append(entityInfo.name).append(" o WHERE");
+                    if (c == null)
+                        c = new StringBuilder(countQL.length() * 5 / 4 + 25) //
+                                        .append("SELECT COUNT(o) FROM ").append(entityInfo.name).append(" o");
+                    c.append(" WHERE");
 
                     return appendWithIdentifierName("o.", countQL, startAt + 5, c, null).toString();
                 }
                 break;
-            case 'F':
-            case 'f': // FROM
-                // TOOD
-                throw new UnsupportedOperationException();
-            // break;
             default:
                 throw new UnsupportedOperationException("The count query supplied to the " + method.getName() + " method of the " +
                                                         method.getDeclaringClass().getName() + " repository does not apear to be " +
