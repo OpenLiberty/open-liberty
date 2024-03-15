@@ -576,14 +576,18 @@ serverEnvAndJVMOptions()
 findRealPath() {
   path="$1"
 
-  # Try realpath command
-  if command -v realpath >/dev/null; then
-    resolvedPath=$(realpath "${path}" 2>/dev/null)
-  fi
-  
-  # If realpath is not available, try readlink -e
-  if [ -z "${resolvedPath}" ] && command -v readlink >/dev/null; then
-    resolvedPath=$(readlink -e "${path}" 2>/dev/null)
+  # realpath doesn't exist on OS/390.  readlink didn't exist on OS/390, but then it was added and
+  # it doesn't work as expected.  So avoiding both for OS/390.
+  if [ "$uname" != "OS/390" ]; then
+    # Try realpath command
+    if command -v realpath >/dev/null; then
+      resolvedPath=$(realpath "${path}" 2>/dev/null)
+    fi
+    
+    # If realpath is not available, try readlink -e
+    if [ -z "${resolvedPath}" ] && command -v readlink >/dev/null; then
+      resolvedPath=$(readlink -e "${path}" 2>/dev/null)
+    fi
   fi
 
   # If neither of those methods work, try a more basic approach
