@@ -849,18 +849,75 @@ public class QueryInfo {
                             jpqlCount = assembleCountQuery(countQL);
                         else
                             jpqlCount = c.toString();
-                    else
-                        jpqlCount = null;
 
                     break;
                 }
                 // continue
             case 'O':
             case 'o': // ORDER BY
-                throw new UnsupportedOperationException(); // TODO
-            // break;
+                if (startAt + 10 < length
+                    && ql.regionMatches(true, startAt, "ORDER", 0, 5)
+                    && Character.isWhitespace(ql.charAt(startAt + 5))) {
+                    startAt += 6; // Order followed by whitespace
+                    for (; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
+                    if (startAt + 4 < length
+                        && ql.regionMatches(true, startAt, "BY", 0, 2)
+                        && !Character.isLetterOrDigit(ql.charAt(startAt + 2))) {
+                        startAt += 2;
+
+                        if (q == null) {
+                            type = Type.FIND;
+                            entityVar = "o";
+                            entityVar_ = "o.";
+                            q = new StringBuilder(ql.length() * 5 / 4 + 20) // add 25% for identifier variable use
+                                            .append("SELECT o FROM ").append(entityInfo.name).append(" o");
+                        }
+                        q.append(" ORDER BY");
+
+                        if (countPages && countQL.length() == 0 && c == null)
+                            c = new StringBuilder(q.length()).append("SELECT COUNT(").append(entityVar) //
+                                            .append(") FROM ").append(entityInfo.name).append(' ').append(entityVar);
+
+                        jpql = appendWithIdentifierName(entityVar_, ql, startAt, q, null).toString();
+
+                        if (countPages)
+                            if (c == null)
+                                jpqlCount = assembleCountQuery(countQL);
+                            else
+                                jpqlCount = c.toString();
+
+                        break;
+                    }
+                }
+                // continue
             default:
-                break;
+                if (Character.isLetterOrDigit(firstChar)) {
+                    if (q != null && (firstChar == 'F' || firstChar == 'f')) {
+                        // FROM clause without WHERE and without ORDER BY
+                        jpql = q.toString();
+                        if (countPages)
+                            if (countQL.length() == 0)
+                                jpqlCount = c.toString();
+                            else
+                                jpqlCount = assembleCountQuery(countQL);
+                    }
+                } else { // empty query
+                    type = Type.FIND;
+                    entityVar = "o";
+                    entityVar_ = "o.";
+
+                    jpql = new StringBuilder(entityInfo.name.length() + 16) //
+                                    .append("SELECT o FROM ").append(entityInfo.name).append(" o") //
+                                    .toString();
+
+                    if (countPages)
+                        if (countQL.length() == 0)
+                            jpqlCount = new StringBuilder(entityInfo.name.length() + 23) //
+                                            .append("SELECT COUNT(o) FROM ").append(entityInfo.name).append(" o") //
+                                            .toString();
+                        else
+                            jpqlCount = assembleCountQuery(countQL);
+                }
         }
 
         if (jpql == null) {
