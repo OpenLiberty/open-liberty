@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2022 IBM Corporation and others.
+ * Copyright (c) 2005, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,8 +33,10 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -1040,9 +1042,9 @@ public class WSKeyStore extends Properties {
     /**
      * Get the key store wrapped by this object.
      *
-     * @param reinitialize Reinitialize the keystore?
+     * @param reinitialize       Reinitialize the keystore?
      * @param createIfNotPresent Create the keystore if not present?
-     * @param clone Return a clone of the keystore?
+     * @param clone              Return a clone of the keystore?
      * @return The keystore instance.
      * @throws Exception
      */
@@ -1234,6 +1236,64 @@ public class WSKeyStore extends Properties {
             Tr.exit(tc, "provideExpirationWarnings");
     }
 
+    public boolean isSubjectAltNamesExist(WSKeyStore wsKeystore, String ksName) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.entry(tc, "isSubjectAltNamesExist " + ksName);
+        KeyStore keystore = null;
+        try {
+            keystore = wsKeystore.getKeyStore(false, false, false);
+        } catch (Exception e1) {
+            // do nothing
+        }
+        if (keystore != null) {
+            try {
+                Enumeration<String> e = keystore.aliases();
+                if (e != null) {
+                    for (; e.hasMoreElements();) {
+                        String alias = e.nextElement();
+                        if (null == alias)
+                            continue;
+                        Certificate[] cert_chain = keystore.getCertificateChain(alias);
+                        if (null == cert_chain)
+                            continue;
+                        for (int i = 0; i < cert_chain.length; i++) {
+                            Collection<List<?>> san = getCertSan((X509Certificate) cert_chain[i]);
+                            if (san == null || san.isEmpty()) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "Exception checking certificate subject alternative names: " + e);
+                FFDCFilter.processException(e, getClass().getName(), "isSubjectAltNamesExist", this);
+                return false;
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "isSubjectAltNamesExist ", true);
+        return true;
+    }
+
+    /**
+     * @param x509Certificate
+     * @return
+     */
+    private Collection<List<?>> getCertSan(X509Certificate x509Certificate) {
+        try {
+            Collection<List<?>> san = x509Certificate.getSubjectAlternativeNames();
+            String dn = x509Certificate.getSubjectDN().getName();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.debug(tc, "Certificate's SubjectDN: " + dn + " Subject Alternative Name: " + (san != null ? san.toString() : "NULL"));
+            return san;
+        } catch (CertificateParsingException e) {
+            // Do nothing
+        }
+        return null;
+    }
+
     /**
      * Print a warning about a certificate being expired or soon to be expired in
      * the keystore.
@@ -1365,9 +1425,9 @@ public class WSKeyStore extends Properties {
      * @param alias
      * @param cert
      * @throws KeyStoreException
-     *             - if the store is read only or not found
+     *                               - if the store is read only or not found
      * @throws KeyException
-     *             - if an error happens updating the store with the cert
+     *                               - if an error happens updating the store with the cert
      */
     public void setCertificateEntry(String alias, Certificate cert) throws KeyStoreException, KeyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1454,9 +1514,9 @@ public class WSKeyStore extends Properties {
      * @param password
      * @param chain
      * @throws KeyStoreException
-     *             - if the store is read only or not found
+     *                               - if the store is read only or not found
      * @throws KeyException
-     *             - if an error happens updating the store with the cert
+     *                               - if an error happens updating the store with the cert
      */
     @Sensitive
     public void setKeyEntry(String alias, Key key, Certificate[] chain) throws KeyStoreException, KeyException {
@@ -1651,9 +1711,9 @@ public class WSKeyStore extends Properties {
      *
      * @param cert
      * @throws KeyStoreException
-     *             - if the store is read only or not found
+     *                               - if the store is read only or not found
      * @throws KeyException
-     *             - if an error happens updating the store with the cert
+     *                               - if an error happens updating the store with the cert
      */
     private void setCertificateEntryNoStore(String alias, Certificate cert) throws KeyStoreException, KeyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
