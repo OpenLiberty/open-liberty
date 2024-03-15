@@ -57,6 +57,7 @@ import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.CursoredPage;
+import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
 import jakarta.inject.Inject;
@@ -226,6 +227,76 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(found);
         assertEquals("Found " + found.toString(), 1, found.size());
         assertEquals("IBM", found.get(0).name);
+    }
+
+    /**
+     * Use a repository method with query language for the main query and count query,
+     * where the count query is JDQL consisting of the FROM clause only.
+     */
+    @Test
+    public void testCountQueryWithFromClauseOnly() {
+        Page<Business> page1 = mixed.findAll(PageRequest.of(Business.class).size(5).desc("name"));
+
+        assertEquals(5L, page1.numberOfElements());
+        assertEquals(15L, page1.totalElements());
+        assertEquals(3L, page1.totalPages());
+        assertEquals(true, page1.hasNext());
+
+        assertEquals(List.of("Think Bank", "Silver Lake Foods", "Reichel Foods", "RAC", "Olmsted Medical"),
+                     page1.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        Page<Business> page2 = mixed.findAll(page1.nextPageRequest());
+
+        assertEquals(List.of("Metafile", "Mayo Clinic", "IBM", "Home Federal Savings Bank", "HALCON"),
+                     page2.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(true, page1.hasNext());
+
+        Page<Business> page3 = mixed.findAll(page2.nextPageRequest());
+
+        assertEquals(List.of("Geotek", "Custom Alarm", "Crenlo", "Cardinal", "Benike Construction"),
+                     page3.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a repository method with query language for the main query and count query,
+     * where the count query is JDQL consisting of the FROM and WHERE clauses only.
+     */
+    @Test
+    public void testCountQueryWithFromAndWhereClausesOnly() {
+        Page<Business> page1 = mixed.locatedIn("Rochester", PageRequest.of(Business.class).size(6).asc("name"));
+
+        assertEquals(6L, page1.numberOfElements());
+        assertEquals(13L, page1.totalElements());
+        assertEquals(3L, page1.totalPages());
+        assertEquals(true, page1.hasNext());
+
+        assertEquals(List.of("Benike Construction", "Cardinal", "Crenlo", "Custom Alarm", "Home Federal Savings Bank", "IBM"),
+                     page1.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        Page<Business> page2 = mixed.locatedIn("Rochester", page1.nextPageRequest());
+
+        assertEquals(List.of("Mayo Clinic", "Metafile", "Olmsted Medical", "RAC", "Reichel Foods", "Silver Lake Foods"),
+                     page2.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(true, page1.hasNext());
+
+        Page<Business> page3 = mixed.locatedIn("Rochester", page2.nextPageRequest());
+
+        assertEquals(List.of("Think Bank"),
+                     page3.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
     }
 
     /**

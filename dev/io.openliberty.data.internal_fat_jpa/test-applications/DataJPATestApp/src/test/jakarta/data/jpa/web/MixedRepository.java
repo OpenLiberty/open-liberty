@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,10 @@ package test.jakarta.data.jpa.web;
 import java.util.LinkedList;
 import java.util.stream.Stream;
 
+import jakarta.data.page.Page;
+import jakarta.data.page.PageRequest;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 /**
@@ -25,6 +28,10 @@ import jakarta.data.repository.Repository;
 @Repository
 public interface MixedRepository { // Do not inherit from a supertype
 
+    @Query(value = "WHERE location.address.zip = location.address.zip", // TODO use different JDQL without WHERE
+           count = "FROM Business")
+    Page<Business> findAll(PageRequest<Business> pageRequest);
+
     @OrderBy("name")
     Business[] findByLocationAddressCity(String cityName);
 
@@ -32,4 +39,8 @@ public interface MixedRepository { // Do not inherit from a supertype
     Stream<City> findByName(String name);
 
     LinkedList<Unpopulated> findBySomethingStartsWith(String prefix);
+
+    @Query(value = "WHERE location.address.city=?1",
+           count = "FROM Business WHERE location.address.city=?1")
+    Page<Business> locatedIn(String name, PageRequest<Business> pageRequest);
 }
