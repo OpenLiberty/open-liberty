@@ -4468,7 +4468,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(990002, 990004, 990005),
                              packages.findAll().map(pack -> pack.id).sorted().collect(Collectors.toList()));
 
-        assertEquals(3l, packages.deleteAll());
+        packages.deleteAll();
 
         assertEquals(0, packages.countAll());
     }
@@ -4578,7 +4578,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(601, 603),
                              packages.withHeightAbout(5.0f));
 
-        assertEquals(4, packages.deleteEverything());
+        packages.deleteAll();
     }
 
     /**
