@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 CxfReservedTypeAndCTypeTest.class,
+                ExceptionTest.class,
                 JAXRS21SecurityAnnotationsTest.class,
                 JAXRS21SecurityAnnotationsTestRolesAsGroups.class,
                 JAXRS21SecurityContextTest.class,
@@ -36,7 +37,7 @@ import componenttest.rules.repeater.RepeatTests;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
+    public static RepeatTests r = RepeatTests.withoutModification()
         .andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
         .andWith(new JakartaEE10Action());
 }
