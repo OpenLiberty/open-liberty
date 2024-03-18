@@ -102,13 +102,7 @@ public final class SAAJUtils {
                 } else if ("com.sun.org.apache.xerces.internal.dom.ElementNSImpl".equals(
                        e.getClass().getName())) {
                     //since java9 159 SOAPPart1_1Impl.getDocumentElement not return SOAPElement
-                    try {
-                        Method method = e.getClass().getMethod("removeAttribute", String.class);
-                        method.invoke(e, "xmlns:" + s);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-
+                    e.removeAttribute("xmlns:" + s); // Liberty Change
                 }
             }
         } catch (Throwable t) {
