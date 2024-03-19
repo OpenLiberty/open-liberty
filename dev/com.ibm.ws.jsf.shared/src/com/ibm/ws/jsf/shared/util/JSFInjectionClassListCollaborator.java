@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -146,7 +146,8 @@ public class JSFInjectionClassListCollaborator implements WebAppInjectionClassLi
                         log.logp(Level.FINE, CLASS_NAME, methodName, "Found extender of " + injectionSubClass + " : " + mbcn);
                     }
                     // Only add if not previously found and it not just a wrapper class of the api.
-                    if (!injectionClassNames.contains(mbcn)  && !mbcn.equals(injectionSubClass+"Wrapper")) {
+                    // "$" check added in OLGH27951 -- to avoid searching nested inner classes
+                    if (!injectionClassNames.contains(mbcn)  && !mbcn.equals(injectionSubClass+"Wrapper")  && !mbcn.contains("$")) {
                         injectionClassNames.add(mbcn);
                         if (TraceComponent.isAnyTracingEnabled() && log.isLoggable(Level.FINE)) {
                             log.logp(Level.FINE, CLASS_NAME, methodName, "Add sub class :" + mbcn);
