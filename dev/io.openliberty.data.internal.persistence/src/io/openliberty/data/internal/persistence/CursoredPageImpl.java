@@ -133,7 +133,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     }
 
     @Override
-    public PageRequest.Cursor getCursor(int index) {
+    public PageRequest.Cursor cursor(int index) {
         if (index < 0 || index >= pageRequest.size())
             throw new IllegalArgumentException("index: " + index);
 

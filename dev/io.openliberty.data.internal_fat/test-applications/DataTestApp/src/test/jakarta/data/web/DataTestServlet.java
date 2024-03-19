@@ -2643,7 +2643,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(29L, 43L, 7L, 11L, 13L, 19L, 37L, 41L),
                              page2.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        PageRequest.Cursor cursor7 = page2.getCursor(2);
+        PageRequest.Cursor cursor7 = page2.cursor(2);
         PageRequest<?> paginationBefore7 = PageRequest.ofSize(8).beforeCursor(cursor7);
 
         CursoredPage<Prime> page1 = primes.findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(0L, 45L, paginationBefore7);
@@ -2651,7 +2651,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(2L, 31L, 23L, 29L, 43L),
                              page1.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        PageRequest.Cursor cursor13 = page2.getCursor(4);
+        PageRequest.Cursor cursor13 = page2.cursor(4);
         PageRequest<?> paginationAfter13 = PageRequest.ofPage(3).afterCursor(cursor13);
 
         CursoredPage<Prime> page3 = primes.findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(0L, 45, paginationAfter13);
@@ -2661,7 +2661,7 @@ public class DataTestServlet extends FATServlet {
 
         // test .equals method
         assertEquals(cursor13, cursor13);
-        assertEquals(cursor13, page2.getCursor(4));
+        assertEquals(cursor13, page2.cursor(4));
         assertEquals(false, cursor13.equals(cursor7));
 
         // test .hashCode method
@@ -5156,7 +5156,7 @@ public class DataTestServlet extends FATServlet {
         pagination = PageRequest.ofSize(6)
                         .sortBy(Sort.desc("binaryDigits"))
                         .withoutTotal()
-                        .beforeCursor(page3.getCursor(1)); // before the middle element of page 3
+                        .beforeCursor(page3.cursor(1)); // before the middle element of page 3
 
         CursoredPage<Prime> page = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, pagination);
 

@@ -1605,7 +1605,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(false, slice2.hasNext());
 
-        Cursor springfieldMO = slice2.getCursor(1);
+        Cursor springfieldMO = slice2.cursor(1);
         pagination = pagination.size(3).beforeCursor(springfieldMO);
 
         CursoredPage<City> beforeSpringfieldMO = cities.findByStateNameNotNullOrderById(pagination);
