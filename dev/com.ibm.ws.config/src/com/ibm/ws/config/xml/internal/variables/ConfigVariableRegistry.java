@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,6 +36,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.function.BiConsumer;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -52,6 +53,9 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables {
 
@@ -123,36 +127,87 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
             }
         }
 
+        processVarFiles((p, c) -> {
+            if (c.getName().endsWith(".properties")) {
+                try (FileInputStream fis = new FileInputStream(c)) {
+                    Properties props = new Properties();
+                    props.load(fis);
+                    props.forEach((key, value) -> {
+                        fileSystemVariables.put((String) key, new FileSystemVariable(c, (String) key, (String) value));
+                    });
+                } catch (IOException ex) {
+                    Tr.error(tc, "error.bad.variable.file", c.getAbsolutePath());
+                }
+            } else {
+                String varName = p.equals(c) ? c.getName() : p.getName() + "/" + c.getName();
+                fileSystemVariables.put(varName, new FileSystemVariable(c));
+            }
+        });
+
+        updateUserDefinedVariableMap();
+        updateUserDefinedVariableDefaultsMap();
+        CheckpointPhase.getPhase().addSingleThreadedHook(Integer.MIN_VALUE + 100, new CheckpointHook() {
+            final private Map<File, Long> trackedFiles = new HashMap<>(0);
+
+            @Override
+            public void prepare() {
+                // Save the file time stamps on prepare;
+                // This is so we can check if they changed on restore
+                processVarFiles((p, c) -> {
+                    trackedFiles.put(c, reduceTimestampPrecision(c.lastModified()));
+                });
+            }
+
+            @Override
+            public void restore() {
+                List<File> deletedFiles = new ArrayList<>(0);
+                List<File> createdFiles = new ArrayList<>(0);
+                List<File> modifiedFiles = new ArrayList<>(0);
+                // detect modified and created var files
+                processVarFiles((p, c) -> {
+                    Long existing = trackedFiles.remove(c);
+                    if (existing != null && !existing.equals(reduceTimestampPrecision(c.lastModified()))) {
+                        modifiedFiles.add(c);
+                    } else {
+                        createdFiles.add(c);
+                    }
+                });
+                // remaining ones are deleted var files
+                trackedFiles.forEach((v, t) -> deletedFiles.add(v));
+                trackedFiles.clear();
+
+                Map<String, DeltaType> deltaMap = new HashMap<String, DeltaType>(0);
+                removeFileSystemVariableDeletes(deletedFiles, deltaMap);
+                addFileSystemVariableCreates(createdFiles, deltaMap);
+                modifyFileSystemVariables(modifiedFiles, deltaMap);
+                // Nothing is done with the deltaMap here because this is done
+                // before the config restore hook is run so it will pick up the variable
+                // changes when it restores.  There is no need to pass the delta to the
+                // ConfigRefresher here.
+            }
+        });
+    }
+
+    final void processVarFiles(BiConsumer<File, File> processor) {
         for (File bindings : fsVarRootDirectoryFiles) {
             if (bindings.exists() && bindings.isDirectory()) {
                 for (File f : bindings.listFiles()) {
                     if (f.isFile()) {
-                        if (f.getName().endsWith(".properties")) {
-                            try (FileInputStream fis = new FileInputStream(f)) {
-                                Properties props = new Properties();
-                                props.load(fis);
-                                props.forEach((key, value) -> {
-                                    fileSystemVariables.put((String) key, new FileSystemVariable(f, (String) key, (String) value));
-                                });
-                            } catch (IOException ex) {
-                                Tr.error(tc, "error.bad.variable.file", f.getAbsolutePath());
-                            }
-                        } else {
-                            fileSystemVariables.put(f.getName(), new FileSystemVariable(f));
-                        }
+                        processor.accept(f, f);
                     } else if (f.isDirectory()) {
                         for (File varFile : f.listFiles()) {
                             if (varFile.isFile()) {
-                                fileSystemVariables.put(f.getName() + "/" + varFile.getName(), new FileSystemVariable(varFile));
+                                processor.accept(f, varFile);
                             }
                         }
                     }
                 }
             }
         }
+    }
 
-        updateUserDefinedVariableMap();
-        updateUserDefinedVariableDefaultsMap();
+    static final long reduceTimestampPrecision(long value) {
+        return (value / 1000) * 1000;
     }
 
     @Trivial
