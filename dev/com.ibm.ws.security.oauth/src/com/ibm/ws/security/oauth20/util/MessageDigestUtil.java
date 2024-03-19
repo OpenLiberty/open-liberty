@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,7 +21,8 @@ import com.ibm.ws.common.encoder.Base64Coder;
 
 public class MessageDigestUtil {
 
-    private static final TraceComponent tc = Tr.register(MessageDigestUtil.class);
+    private static final TraceComponent tc =
+            Tr.register(MessageDigestUtil.class);
 
     private static Object locker = new Object(); // @GK1
     private static MessageDigest md = null;
@@ -31,7 +32,7 @@ public class MessageDigestUtil {
 
     static {
         try {
-            md = MessageDigest.getInstance("SHA-256");
+            md = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Internal error initializing message digest", e);
@@ -40,9 +41,9 @@ public class MessageDigestUtil {
     }
 
     /**
-     * Calculate the message digest of the given String and convert
+     * Calculate the message digest of the given String and convert 
      * it to a hexadecimal String
-     *
+     * 
      * @param value input String
      * @return  message digest hexadecimal String
      */
@@ -65,7 +66,7 @@ public class MessageDigestUtil {
 
     /**
      * Convert a byte array to a String of hex characters
-     *
+     * 
      * @param bytes
      * @return  Hexadecimal String
      */
