@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2023 IBM Corporation and others.
+ * Copyright (c) 2008, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 
 package com.ibm.tx.util;
 
+import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +32,10 @@ public class Utils {
 
     public static final String traceTime(long timestamp) {
         return Instant.ofEpochMilli(timestamp).atZone(ZONE_ID).format(DATE_TIME_FORMATTER);
+    }
+
+    public static final String traceTime(FileTime timestamp) {
+        return timestamp.toInstant().atZone(ZONE_ID).format(DATE_TIME_FORMATTER);
     }
 
     /**
