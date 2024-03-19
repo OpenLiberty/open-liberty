@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -123,6 +123,12 @@ public class OracleUCPTestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/ucpDSAuthData")
     private DataSource ucpDSAuthData;
+
+    @Resource(lookup = "jdbc/ds-replay")
+    private DataSource ucpDSReplay;
+
+    @Resource(lookup = "jdbc/ds-replay-xa")
+    private DataSource ucpDSReplayXA;
 
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
 
@@ -584,16 +590,7 @@ public class OracleUCPTestServlet extends FATServlet {
     @Test
     public void testUCPMaxStatements() throws Exception {
         //TODO remove this restriction once Oracle release a JDBC 4.3 compliant driver
-        boolean atLeastJava9 = false;
-        //Oracle driver and UCP for JDBC 4.2 is not compatible with Java 9+
-        try {
-            Class.forName("java.lang.Runtime$Version"); // added in Java 9
-            atLeastJava9 = true;
-        } catch (ClassNotFoundException x) {
-            atLeastJava9 = false;
-        }
-
-        if (atLeastJava9) {
+        if (isJava9orHigher()) {
             System.out.println("Skipping testUCPMaxStatements because we are running on java 9 or greater");
             return;
         }
@@ -614,19 +611,11 @@ public class OracleUCPTestServlet extends FATServlet {
     @Test
     public void testDataSourceDefProps() throws Exception {
         //TODO remove this restriction once Oracle release a JDBC 4.3 compliant driver
-        boolean atLeastJava9 = false;
-        //Oracle driver and UCP for JDBC 4.2 is not compatible with Java 9+
-        try {
-            Class.forName("java.lang.Runtime$Version"); // added in Java 9
-            atLeastJava9 = true;
-        } catch (ClassNotFoundException x) {
-            atLeastJava9 = false;
-        }
-
-        if (atLeastJava9) {
+        if (isJava9orHigher()) {
             System.out.println("Skipping testDataSourceDefProps because we are running on java 9 or greater");
             return;
         }
+
         PoolDataSource pds = dsdUCPDS.unwrap(PoolDataSource.class);
 
         assertEquals("maxIdleTime not set on UCP", 30, pds.getMaxIdleTime());
@@ -703,6 +692,43 @@ public class OracleUCPTestServlet extends FATServlet {
         } catch (Exception ex) {
             //expected
         }
+    }
+
+    @Test
+    public void testReplayDataSource() throws Exception {
+        // Verify wrappers from UCP
+        assertTrue(ucpDSReplay.isWrapperFor(PoolDataSource.class));
+        assertTrue(ucpDSReplayXA.isWrapperFor(PoolXADataSource.class));
+
+        // Verify connection behavior
+        try (Connection con = ucpDSReplay.getConnection()) {
+            //Do not use just close
+        }
+
+        try (Connection con = ucpDSReplayXA.getConnection()) {
+            //Do not use just close
+        }
+
+        //TODO remove this restriction once Oracle releases a JDBC 4.3 compliant driver
+        if (isJava9orHigher()) {
+            System.out.println("Skipping testReplayDataSource because we are running on java 9 or greater");
+            return;
+        }
+
+        //Verify configuration
+
+        //Java 9+ results in IllegalArgumentException because createShardingKeyBuilder
+        // returns oracle.jdbc.OracleShardingKeyBuilder
+        // which does not extend java.sql.ShardingKeyBuilder (added in Java 9+)
+        PoolDataSource unwrappedDS = ucpDSReplay.unwrap(PoolDataSource.class);
+        assertEquals("oracle.jdbc.replay.OracleDataSourceImpl", unwrappedDS.getConnectionFactoryClassName());
+
+        //Java 9+ results in IllegalArgumentException because createXAConnectionBuilder
+        // returns oracle.ucp.jdbc.UCPXAConnectionBuilder
+        // which does not extend java.sql.ConnectionBuilder (added in Java 9+)
+        PoolXADataSource unwrappedXADS = ucpDSReplayXA.unwrap(PoolXADataSource.class);
+        assertEquals("oracle.jdbc.replay.OracleXADataSourceImpl", unwrappedXADS.getConnectionFactoryClassName());
+
     }
 
     //Used by config update tests to verify we are using a UCP datasource and
@@ -803,5 +829,14 @@ public class OracleUCPTestServlet extends FATServlet {
         System.out.println("   " + contents.replace("\n", "\n   "));
 
         return Integer.parseInt((String) mbs.getAttribute(bean.getObjectName(), "size"));
+    }
+
+    private boolean isJava9orHigher() {
+        try {
+            Class.forName("java.lang.Runtime$Version"); // added in Java 9
+            return true;
+        } catch (ClassNotFoundException x) {
+            return false;
+        }
     }
 }

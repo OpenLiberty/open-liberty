@@ -168,12 +168,15 @@ com.ibm.ws.wsat.migration_fat.6
 com.ibm.ws.wsat.recovery_fat.multi.6
 fattest.simplicity
 io.openliberty.checkpoint_fat_persistence
+io.openliberty.checkpoint_fat_session_cache_infinispan_container
 io.openliberty.data.internal_fat
 io.openliberty.data.internal_fat_jpa
 io.openliberty.data.internal_fat_nosql
 io.openliberty.jakarta.data.1.0_fat_tck
 io.openliberty.jcache.internal_fat.hazelcast
 io.openliberty.jcache.internal_fat.infinispan
+io.openliberty.microprofile.health.3.1.internal_fat
 io.openliberty.microprofile.openapi.ui.internal_fat
 io.openliberty.microprofile.reactive.messaging.internal_fat
 io.openliberty.microprofile.telemetry.1.0.internal.container_fat
+io.openliberty.org.apache.myfaces.4.1_fat
