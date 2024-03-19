@@ -34,10 +34,10 @@ import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.R
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal.RemovalServlet;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.ws.microprofile.faulttolerance.fat.repeat.RepeatFaultTolerance;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
@@ -51,8 +51,7 @@ public class MetricRemovalTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME)
-                    .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10);
 
     // FT 1.x, 2.x & Metrics 2.0+
     private final static String TEST_METRIC = "ft_com_ibm_websphere_microprofile_faulttolerance_metrics_fat_tests_removal_RemovalBean_doWorkWithRetry_invocations_total";

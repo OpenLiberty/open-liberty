@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,14 +16,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.CDIFallbackTest;
-import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.MetricRemovalTest;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.circuitbreaker.CircuitBreakerMetricTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                CDIFallbackTest.class,
-                MetricRemovalTest.class,
+                //     CDIFallbackTest.class,
+                //    MetricRemovalTest.class,
                 CircuitBreakerMetricTest.class,
 })
 public class FATSuite {

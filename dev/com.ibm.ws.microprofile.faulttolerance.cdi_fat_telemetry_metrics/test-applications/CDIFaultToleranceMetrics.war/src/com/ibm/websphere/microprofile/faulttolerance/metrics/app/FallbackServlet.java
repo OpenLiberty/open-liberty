@@ -16,8 +16,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import javax.inject.Inject;
-import javax.servlet.annotation.WebServlet;
+import jakarta.inject.Inject;
+import jakarta.servlet.annotation.WebServlet;
 
 import org.junit.Test;
 

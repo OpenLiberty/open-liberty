@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance.metrics.app.beans;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class DataBean {

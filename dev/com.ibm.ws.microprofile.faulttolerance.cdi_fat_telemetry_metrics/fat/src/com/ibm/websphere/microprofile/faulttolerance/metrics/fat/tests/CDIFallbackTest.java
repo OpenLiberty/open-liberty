@@ -32,6 +32,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -48,8 +49,7 @@ public class CDIFallbackTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatFaultTolerance.repeatDefault(SERVER_NAME)
-                    .andWith(RepeatFaultTolerance.ft11metrics20Features(SERVER_NAME));
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10);
 
     @BeforeClass
     public static void setUp() throws Exception {

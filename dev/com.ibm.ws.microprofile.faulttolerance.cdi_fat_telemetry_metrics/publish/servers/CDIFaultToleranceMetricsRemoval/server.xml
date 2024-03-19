@@ -18,10 +18,10 @@
 	    <feature>componenttest-1.0</feature>
 		<feature>osgiconsole-1.0</feature>
 		<feature>localConnector-1.0</feature>
-		<feature>cdi-2.0</feature>
-		<feature>servlet-4.0</feature>
-		<feature>mpFaultTolerance-2.1</feature>
-		<feature>mpMetrics-2.2</feature>
+		<feature>cdi-4.0</feature>
+		<feature>servlet-6.0</feature>
+		<feature>mpFaultTolerance-4.0</feature>
+		<feature>mpTelemetry-2.0</feature>
 	</featureManager>
 	
 	<mpMetrics authentication="false"/>

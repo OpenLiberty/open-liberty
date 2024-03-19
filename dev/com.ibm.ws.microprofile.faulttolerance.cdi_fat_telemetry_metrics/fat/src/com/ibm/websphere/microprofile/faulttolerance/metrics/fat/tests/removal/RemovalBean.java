@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.removal;
 
-import javax.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.faulttolerance.Retry;
 

@@ -12,8 +12,8 @@
  *******************************************************************************/
 package com.ibm.websphere.microprofile.faulttolerance.metrics.app.beans;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
