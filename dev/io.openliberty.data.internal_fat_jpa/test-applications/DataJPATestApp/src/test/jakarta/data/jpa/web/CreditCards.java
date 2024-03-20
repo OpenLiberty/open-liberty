@@ -17,6 +17,7 @@ import static io.openliberty.data.repository.function.Extract.Field.MONTH;
 import static io.openliberty.data.repository.function.Extract.Field.QUARTER;
 import static io.openliberty.data.repository.function.Extract.Field.WEEK;
 import static io.openliberty.data.repository.function.Extract.Field.YEAR;
+import static jakarta.data.repository.By.ID;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -79,7 +80,7 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     @OrderBy("debtor_email")
     Stream<Customer> findByIssuer(Issuer cardIssuer);
 
-    @OrderBy("id")
+    @OrderBy(ID)
     Stream<CardId> findBySecurityCode(int code);
 
     @OrderBy("number")

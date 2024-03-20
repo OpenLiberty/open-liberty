@@ -10,6 +10,8 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import static jakarta.data.repository.By.ID;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +31,9 @@ import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 
+import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
+import io.openliberty.data.repository.Or;
 import io.openliberty.data.repository.comparison.GreaterThan;
 import io.openliberty.data.repository.comparison.GreaterThanEqual;
 import io.openliberty.data.repository.comparison.LessThanEqual;
@@ -46,7 +50,9 @@ public interface Cities {
     @Exists
     boolean areFoundIn(@By("stateName") String state);
 
-    long countByStateNameAndIdNotOrIdNotAndName(String state, CityId exceptForInState, CityId exceptForCity, String city);
+    @Count
+    long countByStateButNotCity_Or_NotCityButWithCityName(@By("stateName") String state, @By(ID) @Not CityId exceptForInState,
+                                                          @Or @By(ID) @Not CityId exceptForCity, @By("name") String city);
 
     @Delete
     void delete(City city); // copied from BasicRepository
@@ -56,7 +62,8 @@ public interface Cities {
     @Delete
     void deleteAll(Iterable<City> list); // copied from BasicRepository
 
-    long deleteByIdOrId(CityId id1, CityId id2);
+    @Delete
+    long deleteById(@By(ID) CityId id);
 
     LinkedList<CityId> deleteByStateName(String state);
 
@@ -74,20 +81,27 @@ public interface Cities {
     CityId[] deleteWithinPopulationRange(@By("population") @GreaterThanEqual int min,
                                          @By("population") @LessThanEqual int max);
 
-    boolean existsById(CityId id);
+    @Exists
+    boolean existsById(@By(ID) CityId id);
 
     boolean existsByNameAndStateName(String name, String state);
 
-    Optional<City> findById(CityId id);
+    @Find
+    Optional<City> findById(@By(ID) CityId id);
 
+    @Find
     @OrderBy("name")
-    Stream<City> findByIdOrIdIgnoreCaseOrId(CityId id1, CityId id2, CityId id3);
+    Stream<City> findByIdIsOneOf(@By(ID) CityId id1,
+                                 @Or @By(ID) @IgnoreCase CityId id2,
+                                 @Or @By(ID) CityId id3);
 
     @OrderBy("stateName")
     Stream<City> findByName(String name);
 
+    @Find
     @OrderBy("stateName")
-    Stream<City> findByNameAndIdNot(String state, CityId exceptFor);
+    Stream<City> findByNameButNotId(String name,
+                                    @By(ID) @Not CityId exceptFor);
 
     @OrderBy(value = "stateName", descending = true)
     Stream<CityId> findByNameStartsWith(String prefix);
@@ -102,15 +116,17 @@ public interface Cities {
 
     Stream<City> findByStateNameLessThan(String stateNameBefore, Sort<?>... sorts);
 
-    @OrderBy(value = "id", descending = true, ignoreCase = true)
+    @OrderBy(value = ID, descending = true, ignoreCase = true)
     Stream<City> findByStateNameNot(String exclude);
 
-    @OrderBy("id")
+    @OrderBy(ID)
     CursoredPage<City> findByStateNameNotEndsWith(String postfix, PageRequest<?> pagination);
 
-    CursoredPage<City> findByStateNameNotNullOrderById(PageRequest<City> pagination);
+    @OrderBy(ID)
+    CursoredPage<City> findByStateNameNotNull(PageRequest<City> pagination);
 
-    CursoredPage<City> findByStateNameNotStartsWithOrderByIdDesc(String prefix, PageRequest<?> pagination);
+    @OrderBy(value = ID, descending = true)
+    CursoredPage<City> findByStateNameNotStartsWith(String prefix, PageRequest<?> pagination);
 
     CityId findFirstByNameOrderByPopulationDesc(String name);
 
@@ -122,7 +138,7 @@ public interface Cities {
     @OrderBy("stateName")
     @OrderBy("name")
     Stream<City> largerThan(@By("population") @GreaterThan int minPopulation,
-                            @By("id") @IgnoreCase @Not CityId exceptFor,
+                            @By(ID) @IgnoreCase @Not CityId exceptFor,
                             @By("stateName") @StartsWith String statePattern);
 
     @Delete
@@ -133,11 +149,11 @@ public interface Cities {
     List<City> removeByStateNameOrderByName(String state);
 
     @Update
-    int replace(CityId id,
+    int replace(@By(ID) CityId id,
                 @Assign("name") String newCityName,
                 @Assign("stateName") String newStateName,
                 // TODO switch the above to the following once IdClass is supported for updates
-                //@Assign("id") CityId newId,
+                //@Assign(ID) CityId newId,
                 @Assign("population") int newPopulation,
                 @Assign("areaCodes") Set<Integer> newAreaCodes);
 
@@ -150,7 +166,7 @@ public interface Cities {
                 @Assign("population") int newPopulation);
 
     @Find
-    @OrderBy(value = "id", descending = true)
+    @OrderBy(value = ID, descending = true)
     CursoredPage<City> sizedWithin(@By("population") @GreaterThanEqual int minPopulation,
                                    @By("population") @LessThanEqual int maxPopulation,
                                    PageRequest<City> pagination);
@@ -158,8 +174,12 @@ public interface Cities {
     @Save
     City save(City c);
 
-    int updateByIdAndPopulationSetIdSetPopulationSetAreaCodes(CityId oldId, int oldPopulation,
-                                                              CityId newId, int newPopulation, Set<Integer> newAreaCodes);
+    @Update
+    int updateIdPopulationAndAreaCodes(@By(ID) CityId oldId,
+                                       @By("population") int oldPopulation,
+                                       @Assign(ID) CityId newId,
+                                       @Assign("population") int newPopulation,
+                                       @Assign("areaCodes") Set<Integer> newAreaCodes);
 
     @Find
     @OrderBy("stateName")
