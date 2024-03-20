@@ -119,7 +119,13 @@ public class DataJPATestServlet extends FATServlet {
     Employees employees;
 
     @Inject
+    Manufacturers manufacturers;
+
+    @Inject
     MixedRepository mixed;
+
+    @Inject
+    Models models;
 
     @Inject
     Orders orders;
@@ -1259,6 +1265,56 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Reproduces issue 27925.
+     */
+    @Test
+    public void testForeignKey() {
+        Manufacturer toyota = new Manufacturer();
+        toyota.setName("Toyota");
+        toyota.setNotes("testForeignKey-1");
+
+        Model camry = new Model();
+        camry.setName("Camry");
+        camry.setYearIntroduced(1983);
+        toyota.addModel(camry);
+
+        Model corolla = new Model();
+        corolla.setName("Corolla");
+        corolla.setYearIntroduced(1966);
+        toyota.addModel(corolla);
+
+        Iterator<Model> saved = models.saveAll(List.of(camry, corolla)).iterator();
+
+        assertEquals(true, saved.hasNext());
+        UUID camryId = saved.next().getId();
+
+        assertEquals(true, saved.hasNext());
+        UUID corollaId = saved.next().getId();
+
+        assertEquals(false, saved.hasNext());
+
+        camry = models.findById(camryId).orElseThrow();
+
+        assertEquals("Camry", camry.getName());
+        assertEquals(Integer.valueOf(1983), camry.getYearIntroduced());
+        assertEquals("Toyota", camry.getManufacturer().getName());
+
+        corolla = models.findById(corollaId).orElseThrow();
+
+        assertEquals("Corolla", corolla.getName());
+        assertEquals(Integer.valueOf(1966), corolla.getYearIntroduced());
+        assertEquals("Toyota", corolla.getManufacturer().getName());
+
+        models.deleteById(corollaId);
+        assertEquals(false, models.findById(corollaId).isPresent());
+
+        models.delete(camry);
+        assertEquals(false, models.findById(camryId).isPresent());
+
+        manufacturers.delete(toyota);
+    }
+
+    /**
      * Use a repository method with JDQL query language that includes only the FROM and ORDER BY clauses.
      */
     @Test
@@ -1833,25 +1889,27 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Repository methods for an entity where the id is on the embeddable.
-     * EclipseLink allows this but it is not part of the JPA spec.
+     * Repository methods for an entity that has an id attribute that is not the unique identifier.
+     * In this case, the id value is computed as firstName + " " + lastName and is different from
+     * empNum, which is the unique identifier.
      */
     @Test
-    public void testIdOnEmbeddable() {
+    public void testIdThatIsNotTheUniqueIdentifier() {
         // Clear out data before test
-        employees.deleteByLastName("TestIdOnEmbeddable");
+        employees.deleteByLastName("testIdThatIsNotTheUniqueIdentifier");
 
-        Stream<Employee> added = businesses.save(new Employee("Irene", "TestIdOnEmbeddable", (short) 2636, 'A'),
-                                                 new Employee("Isabella", "TestIdOnEmbeddable", (short) 8171, 'B'),
-                                                 new Employee("Ivan", "TestIdOnEmbeddable", (short) 4948, 'A'),
-                                                 new Employee("Isaac", "TestIdOnEmbeddable", (short) 5310, 'C'));
+        Stream<Employee> added = businesses.save(new Employee(1002636, "Irene", "testIdThatIsNotTheUniqueIdentifier", (short) 2636, 'A'),
+                                                 new Employee(1008171, "Isabella", "testIdThatIsNotTheUniqueIdentifier", (short) 8171, 'B'),
+                                                 new Employee(1004948, "Ivan", "testIdThatIsNotTheUniqueIdentifier", (short) 4948, 'A'),
+                                                 new Employee(1005310, "Isaac", "testIdThatIsNotTheUniqueIdentifier", (short) 5310, 'C'));
 
         assertEquals(List.of("Irene", "Isabella", "Ivan", "Isaac"),
                      added.map(e -> e.firstName).collect(Collectors.toList()));
 
-        Employee emp4948 = employees.findById(4948);
+        Employee emp4948 = employees.findByEmpNum(1004948);
+        assertEquals(1004948, emp4948.empNum);
         assertEquals("Ivan", emp4948.firstName);
-        assertEquals("TestIdOnEmbeddable", emp4948.lastName);
+        assertEquals("testIdThatIsNotTheUniqueIdentifier", emp4948.lastName);
         assertEquals((short) 4948, emp4948.badge.number);
         assertEquals('A', emp4948.badge.accessLevel);
 
@@ -1863,17 +1921,19 @@ public class DataJPATestServlet extends FATServlet {
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of((short) 8171, (short) 5310, (short) 4948, (short) 2636),
-                             employees.findByFirstNameStartsWithOrderByIdDesc("I")
+                             employees.findByFirstNameStartsWithOrderByEmpNumDesc("I")
                                              .stream()
                                              .map(emp -> emp.badge.number)
                                              .collect(Collectors.toList()));
 
         assertIterableEquals(List.of("Badge#2636 Level A", "Badge#4948 Level A", "Badge#5310 Level C", "Badge#8171 Level B"),
-                             employees.findByLastName("TestIdOnEmbeddable")
+                             employees.findByLastName("testIdThatIsNotTheUniqueIdentifier")
                                              .map(Badge::toString)
                                              .collect(Collectors.toList()));
 
-        employees.deleteByLastName("TestIdOnEmbeddable");
+        // TODO add tests that query on Id once we add support Id not being the unique identifier
+
+        employees.deleteByLastName("testIdThatIsNotTheUniqueIdentifier");
     }
 
     /**

@@ -280,8 +280,7 @@ public abstract class EntityManagerBuilder implements Runnable {
                                 collectionElementTypes.put(fullAttributeName, ((PluralAttribute<?, ?, ?>) relAttr).getElementType().getJavaType());
                         } else if (relAttr instanceof SingularAttribute) {
                             SingularAttribute<?, ?> singleAttr = ((SingularAttribute<?, ?>) relAttr);
-                            if (singleAttr.isId()) {
-                                attributeNames.put("id", fullAttributeName);
+                            if (singleAttr.isId() && attributeNames.putIfAbsent("id", fullAttributeName) == null) {
                                 idType = singleAttr.getJavaType();
                             } else if (singleAttr.isVersion()) {
                                 versionAttrName = relationAttributeName_; // to be suitable for query-by-method

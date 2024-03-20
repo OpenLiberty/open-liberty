@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,14 +29,15 @@ public interface Employees {
 
     Employee findByBadgeNumber(long badgeNumber);
 
+    Employee findByEmpNum(long employeeNumber);
+
     @OrderBy("badge.number")
     Stream<Employee> findByFirstNameLike(String pattern);
 
-    List<Employee> findByFirstNameStartsWithOrderByIdDesc(String prefix);
+    List<Employee> findByFirstNameStartsWithOrderByEmpNumDesc(String prefix);
 
-    Employee findById(long badgeNumber);
-
-    @OrderBy("badge")
+    @OrderBy("badge.number")
+    @OrderBy("badge.accessLevel")
     Stream<Badge> findByLastName(String lastName);
 
     // "IN" is not supported for embeddables, but EclipseLink generates SQL that leads to an SQLDataException rather than rejecting outright
