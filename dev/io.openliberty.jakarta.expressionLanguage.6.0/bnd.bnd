@@ -25,8 +25,8 @@ Export-Package: \
 # to depend on Expression Language 6.0.
  Provide-Capability: \
    osgi.contract;\
-       osgi.contract=JavaEL;\
-       version:Version=5.0.0;\
+       osgi.contract=JakartaExpressionLanguage;\
+       version:Version=6.0.0;\
        uses:="jakarta.el"
 
 -includeresource: \
