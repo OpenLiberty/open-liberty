@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2017 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -61,6 +61,17 @@ public final class ProductMatch {
                     break;
                 }
             }
+        } else if (substring.startsWith("edition")) {
+            //If editions contains Open, add supported Websphere editions.
+            if (!editions.isEmpty() && editions.contains("Open")) {
+                String editionStr = getValue(substring);
+                for (int startIndex = 0, endIndex = editionStr.indexOf(',');; startIndex = endIndex, endIndex = editionStr.indexOf(',', ++startIndex)) {
+                    editions.add(editionStr.substring(startIndex, endIndex == -1 ? editionStr.length() : endIndex));
+                    if (endIndex == -1) {
+                        break;
+                    }
+                }
+            }
         } else if (substring.startsWith("productInstallType")) {
             installType = getValue(substring);
         } else if (substring.startsWith("productLicenseType")) {
@@ -69,7 +80,7 @@ public final class ProductMatch {
     }
 
     public int matches(Properties props) {
-        if (productId.equals(props.getProperty("com.ibm.websphere.productId"))) {
+        if (productId.equals(props.getProperty("com.ibm.websphere.productId")) || productId.equals("io.openliberty")) {
             if (version != null) {
                 String productVersion = props.getProperty("com.ibm.websphere.productVersion");
                 Matcher appliesToMatcher = validNumericVersionOrRange.matcher(version);
