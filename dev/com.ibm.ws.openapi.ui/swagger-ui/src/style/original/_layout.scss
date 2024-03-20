@@ -655,6 +655,7 @@
     .curl
     {
         white-space: normal;
+        max-height: 400px;
     }
 }
 
@@ -844,7 +845,7 @@
         .auth-wrapper
         {
             flex: none;
-            justify-content: none;
+            justify-content: start;
 
             .authorize
             {
