@@ -21,7 +21,9 @@ Export-Package:\
   com.ibm.ws.filetransfer.util
 
 Private-Package: \
-  com.ibm.ws.filetransfer.internal.*
+  com.ibm.ws.filetransfer.internal.*, \
+  org.apache.commons.io.build, \
+  org.apache.commons.io.file.attribute
 
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF
@@ -49,4 +51,5 @@ instrument.classesExcludes: com/ibm/ws/filetransfer/internal/resources/*.class
 	org.hamcrest:hamcrest-all;version=1.3, \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
-	com.ibm.ws.kernel.boot;version=latest
+	com.ibm.ws.kernel.boot;version=latest, \
+	com.ibm.ws.org.apache.commons.io;version=latest

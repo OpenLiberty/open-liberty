@@ -27,6 +27,7 @@ tested.features=servlet-4.0,cdi-2.0,mphealth-3.0,mphealth-3.1,mpConfig-1.4,mpCon
 
 -buildpath: \
 	com.ibm.ws.org.apache.commons.compress;version=latest, \
+	com.ibm.ws.org.apache.commons.io;version=latest, \
 	org.apache.johnzon:johnzon-core;version=1.1.0, \
 	com.ibm.websphere.javaee.jsonp.1.1;version=latest, \
 	com.ibm.websphere.javaee.cdi.1.2;version=latest, \

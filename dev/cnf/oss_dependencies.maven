@@ -74,11 +74,11 @@ com.sun.xml.ws:jaxws-tools:2.3.6
 com.sun.xml.ws:jaxws-tools:3.0.2
 com.unboundid:unboundid-ldapsdk:5.1.0
 commons-cli:commons-cli:1.4
-commons-codec:commons-codec:1.15
+commons-codec:commons-codec:1.16.1
 commons-collections:commons-collections:3.2.2
 commons-digester:commons-digester:2.1
 commons-fileupload:commons-fileupload:1.5
-commons-io:commons-io:2.11.0
+commons-io:commons-io:2.15.1
 commons-lang:commons-lang:2.4
 commons-logging:commons-logging:1.2
 commons-net:commons-net:3.6
@@ -363,6 +363,7 @@ org.apache.ant:ant:1.10.10
 org.apache.bcel:bcel:6.6.1
 org.apache.commons:commons-collections4:4.4
 org.apache.commons:commons-compress:1.24.0
+org.apache.commons:commons-compress:1.26.0
 org.apache.commons:commons-dbcp2:2.7.0
 org.apache.commons:commons-lang3:3.14.0
 org.apache.commons:commons-math:2.2
