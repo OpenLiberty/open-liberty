@@ -29,6 +29,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
@@ -79,12 +80,27 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     @Activate
     public void activate(Map<String, Object> config) {
         id = (String) config.get(KEY_ID);
-
         /*
          * Get the URI.
          */
         this.uriValue = (String) config.get(KEY_URI);
+        configureProperties(config);
+        /*
+         * Schedule a task to initialize the CacheManager in the background. This will
+         * alleviate delays on the first request to any caches that use this
+         * CacheManager.
+         */
+        CheckpointPhase.onRestore(1, () -> {
+            getCacheManagerFuture = scheduledExecutorService.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    getCacheManager();
+                }
+            }, 0, TimeUnit.SECONDS);
+        });
+    }
 
+    private void configureProperties(Map<String, Object> config) {
         /*
          * Get the configured vendor properties.
          */
@@ -103,20 +119,11 @@ public class CacheManagerServiceImpl implements CacheManagerService {
                     this.properties.setProperty(key, (String) value);
             }
         }
+    }
 
-        /*
-         * Schedule a task to initialize the CacheManager in the background. This will
-         * alleviate delays on the first request to any caches that use this
-         * CacheManager.
-         */
-        CheckpointPhase.onRestore(() -> {
-            getCacheManagerFuture = scheduledExecutorService.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    getCacheManager();
-                }
-            }, 0, TimeUnit.SECONDS);
-        });
+    @Modified
+    public void modified(Map<String, Object> config) {
+        configureProperties(config);
     }
 
     /**

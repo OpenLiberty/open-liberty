@@ -328,6 +328,7 @@ public class ConfigRefresher {
             RuntimeUpdateNotification notification = null;
             while ((notification = configUpdatesToDeliver.pollFirst()) != null) {
                 changesEnded(notification);
+                notification.waitForCompletion();
             }
         }
     }
