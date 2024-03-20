@@ -37,6 +37,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Spliterator;
 import java.util.Spliterators;
@@ -1937,9 +1938,25 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(Badge::toString)
                                              .collect(Collectors.toList()));
 
-        // TODO add tests that query on Id once we add support Id not being the unique identifier
+        // Use @OrderBy to sort by the id attribute which is not a unique identifier:
+        assertEquals(List.of("Irene", "Isaac", "Isabella", "Ivan"),
+                     employees.findByFirstNameStartsWith("I")
+                                     .map(e -> e.firstName)
+                                     .collect(Collectors.toList()));
+
+        // Use the OrderBy keyword to sort by the id attribute which is not a unique identifier:
+        assertEquals(List.of("Ivan", "Isabella", "Isaac", "Irene"),
+                     employees.findByFirstNameStartsWithOrderByIdDesc("I")
+                                     .map(e -> e.firstName)
+                                     .collect(Collectors.toList()));
+
+        Optional<Employee> found = employees.withId("Ivan testIdThatIsNotTheUniqueIdentifier");
+        assertEquals(true, found.isPresent());
+        assertEquals(1004948, found.get().empNum);
 
         employees.deleteByLastName("testIdThatIsNotTheUniqueIdentifier");
+
+        assertEquals(false, employees.withId("Ivan testIdThatIsNotTheUniqueIdentifier").isPresent());
     }
 
     /**

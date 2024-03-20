@@ -11,8 +11,11 @@
 package test.jakarta.data.jpa.web;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.By;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -34,7 +37,12 @@ public interface Employees {
     @OrderBy("badge.number")
     Stream<Employee> findByFirstNameLike(String pattern);
 
+    @OrderBy("id")
+    Stream<Employee> findByFirstNameStartsWith(String prefix);
+
     List<Employee> findByFirstNameStartsWithOrderByEmpNumDesc(String prefix);
+
+    Stream<Employee> findByFirstNameStartsWithOrderByIdDesc(String prefix);
 
     @OrderBy("badge.number")
     @OrderBy("badge.accessLevel")
@@ -43,4 +51,7 @@ public interface Employees {
     // "IN" is not supported for embeddables, but EclipseLink generates SQL that leads to an SQLDataException rather than rejecting outright
     @Query("SELECT e FROM Employee e WHERE e.badge IN ?1")
     List<Employee> withBadge(Iterable<Badge> badges);
+
+    @Find
+    Optional<Employee> withId(@By("id") String id);
 }
