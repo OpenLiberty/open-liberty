@@ -136,7 +136,7 @@ public class TestStaticHookRegister {
             if (priorHook >= rank) {
                 System.out.println(testPrepareMsgPrefix + rank + " " + hookCallIndex.addAndGet(1) + " SUCCESS");
             } else {
-                System.out.println(testPrepareMsgPrefix + rank + " " + hookCallIndex.addAndGet(1) + " FAILED");
+                System.out.println(testPrepareMsgPrefix + rank + " " + hookCallIndex.addAndGet(1) + " FAILED - " + priorHook);
             }
         }
 
@@ -146,7 +146,7 @@ public class TestStaticHookRegister {
             if (priorHook <= rank) {
                 System.out.println(testRestoreMsgPrefix + rank + " " + hookCallIndex.addAndGet(1) + " SUCCESS");
             } else {
-                System.out.println(testRestoreMsgPrefix + rank + " " + hookCallIndex.addAndGet(1) + " FAILED");
+                System.out.println(testRestoreMsgPrefix + rank + " " + hookCallIndex.addAndGet(1) + " FAILED - " + priorHook);
             }
         }
 

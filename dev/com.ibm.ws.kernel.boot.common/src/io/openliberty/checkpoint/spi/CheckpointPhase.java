@@ -242,17 +242,21 @@ public enum CheckpointPhase {
             return false;
         }
 
+        // Make sure the multi-thread max rank is created to unregister hooks on prepare.
+        // This is done in a single multi-thread hook to avoid deadlocks on unregister.
+        StaticCheckpointHook unregisterStaticHooks = multiThreadedHooks.computeIfAbsent(Integer.MAX_VALUE, (r) -> createStaticCheckpointHook(Integer.MAX_VALUE, true, null));
+
         debug(() -> "Adding hook: " + hook + (multiThreaded ? " multi-threaded" : " single-threaded") + " rank: " + rank);
         Map<Integer, StaticCheckpointHook> addToHooks = multiThreaded ? multiThreadedHooks : singleThreadedHooks;
-        StaticCheckpointHook staticCheckpointHook = addToHooks.computeIfAbsent(rank, (r) -> createStaticCheckpointHook(rank, multiThreaded));
+        StaticCheckpointHook staticCheckpointHook = addToHooks.computeIfAbsent(rank, (r) -> createStaticCheckpointHook(rank, multiThreaded, unregisterStaticHooks));
         return staticCheckpointHook.addHook(hook);
     }
 
-    private StaticCheckpointHook createStaticCheckpointHook(int rank, boolean multiThreaded) {
+    private StaticCheckpointHook createStaticCheckpointHook(int rank, boolean multiThreaded, StaticCheckpointHook unregisterStaticHooks) {
         final StaticCheckpointHook newHook = new StaticCheckpointHook(rank, multiThreaded);
         Object context = contextRef.get();
         if (context != null) {
-            newHook.register(context);
+            newHook.register(context, unregisterStaticHooks);
         }
         return newHook;
     }
@@ -371,12 +375,23 @@ public enum CheckpointPhase {
         this.contextRef = new WeakReference<Object>(context);
         registerService = context.getClass().getMethod("registerService", Class.class, Object.class, Dictionary.class);
         unregisterService = registerService.getReturnType().getMethod("unregister");
+
+        if (multiThreadedHooks.isEmpty() && singleThreadedHooks.isEmpty()) {
+            // nothing to do
+            return;
+        }
+        // Need to register any static hooks added before the context is set.
+        // The MAX rank hook for unregistering static hook registrations must exist already
+        StaticCheckpointHook unregisterStaticHooks = multiThreadedHooks.get(Integer.MAX_VALUE);
+        if (unregisterStaticHooks == null) {
+            throw new IllegalStateException("Expected max rank multi-thread hook to exist already.");
+        }
         // register any hooks already added
         for (Map.Entry<Integer, StaticCheckpointHook> hook : multiThreadedHooks.entrySet()) {
-            hook.getValue().register(context);
+            hook.getValue().register(context, unregisterStaticHooks);
         }
         for (Map.Entry<Integer, StaticCheckpointHook> hook : singleThreadedHooks.entrySet()) {
-            hook.getValue().register(context);
+            hook.getValue().register(context, unregisterStaticHooks);
         }
     }
 
@@ -390,21 +405,34 @@ public enum CheckpointPhase {
         private final boolean multiThreaded;
         private volatile List<CheckpointHook> preparedHooks = Collections.emptyList();
         private boolean lockHooks = false;
-        private volatile Object serviceRegistration;
+        private final List<Object> registrations = new ArrayList<>(0);
 
         public StaticCheckpointHook(int rank, boolean multiThreaded) {
             this.rank = rank;
             this.multiThreaded = multiThreaded;
         }
 
-        void register(Object context) {
+        void addRegistration(Object serviceRegistration) {
+            registrations.add(serviceRegistration);
+        }
+
+        void register(Object context, StaticCheckpointHook unregisterStaticHooks) {
             Dictionary<String, Object> props = new Hashtable<>();
             props.put(SERVICE_RANKING, Integer.valueOf(rank));
             props.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.valueOf(multiThreaded));
             try {
                 debug(() -> "Registering CheckpointHook service for rank :" + props.get(SERVICE_RANKING)
                             + (props.get(CheckpointHook.MULTI_THREADED_HOOK) == Boolean.TRUE ? " multi-threaded" : " single-threaded"));
-                serviceRegistration = registerService.invoke(context, CheckpointHook.class, this, props);
+                Object serviceRegistration = registerService.invoke(context, CheckpointHook.class, this, props);
+                if (unregisterStaticHooks != null) {
+                    unregisterStaticHooks.addRegistration(serviceRegistration);
+                } else {
+                    if (rank != Integer.MAX_VALUE || !multiThreaded) {
+                        throw new IllegalStateException("Missing unregisterStaticHook to add registration.");
+                    }
+                    // This is the max ranked multiThreaded hook; add the registration to self for unregistering
+                    addRegistration(serviceRegistration);
+                }
             } catch (IllegalAccessException | IllegalArgumentException e) {
                 throw new RuntimeException(e);
             } catch (InvocationTargetException e) {
@@ -432,10 +460,11 @@ public enum CheckpointPhase {
                 lockHooks = true;
             }
 
-            if (serviceRegistration != null) {
+            // Only max rank, multi-thread hook will have registrations to unregister
+            for (Object serviceRegistration : registrations) {
                 // clean up registration; a snapshot has been done, no need to stay registered
                 try {
-                    debug(() -> "unregistering static hook in prepare " + (multiThreaded ? "multi-threaded" : "single-threaded") + " rank: " + rank);
+                    debug(() -> "unregistering static hook in prepare: " + serviceRegistration);
                     unregisterService.invoke(serviceRegistration);
                 } catch (IllegalAccessException | IllegalArgumentException e) {
                     throw new RuntimeException(e);
@@ -443,6 +472,7 @@ public enum CheckpointPhase {
                     throw new RuntimeException(e.getTargetException());
                 }
             }
+
             // clean up map entry for this rank
             synchronized (CheckpointPhase.this) {
                 Map<Integer, StaticCheckpointHook> toRemoveMap = multiThreaded ? multiThreadedHooks : singleThreadedHooks;
