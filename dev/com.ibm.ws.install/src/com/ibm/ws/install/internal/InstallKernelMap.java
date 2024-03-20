@@ -1976,13 +1976,13 @@ public class InstallKernelMap implements Map {
 
         String[] proxyEnvVarSplit = proxyEnvVar.split("@");
         if (proxyEnvVarSplit.length != 1 && proxyEnvVarSplit.length != 2) {
-            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_" + protocol + "PROXY_FORMAT", proxyEnvVar));
+            throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_" + protocol.toUpperCase() + "PROXY_FORMAT", proxyEnvVar));
         }
 
         if (proxyEnvVarSplit.length == 1) { //without username and password
             String[] proxyHttpSplit = proxyEnvVar.split(":");
             if (proxyHttpSplit.length != 3) {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_" + protocol + "PROXY_FORMAT", proxyEnvVar));
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_IMPROPER_" + protocol.toUpperCase() + "PROXY_FORMAT", proxyEnvVar));
             }
             result.put(protocol + ".proxyHost", proxyHttpSplit[1].replace("/", "")); //proxy-server
             result.put(protocol + ".proxyPort", proxyHttpSplit[2]); ////3128
