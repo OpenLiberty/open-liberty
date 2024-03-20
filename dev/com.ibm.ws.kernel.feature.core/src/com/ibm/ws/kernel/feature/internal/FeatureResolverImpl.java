@@ -181,8 +181,10 @@ public class FeatureResolverImpl implements FeatureResolver {
                                   EnumSet<ProcessType> supportedProcessTypes) {
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
-        verifyVersionlessEnvVar(repository);
-
+        if(isBeta){
+            verifyVersionlessEnvVar(repository);
+        }
+        
         // this checks if the pre-resolved exists in the repo;
         // if one does not exist then we start over with an empty set of pre-resolved
         preResolved = checkPreResolvedExistAndSetFullName(preResolved, selectionContext);
