@@ -49,7 +49,6 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.exception.NettyException;
-import io.openliberty.netty.internal.tcp.InactivityTimeoutHandler;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
 
 /**
@@ -361,24 +360,20 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 // ctx.pipeline().remove(HttpServerUpgradeHandler.class);
                 // ctx.fireChannelRead(ReferenceCountUtil.retain(msg, 1));
                 MSP.log("NO UPGRADE DETECTED - ADD HTTP ");
-                
-                
-                if("HTTP2".equals(ctx.pipeline().channel().attr(NettyHttpConstants.PROTOCOL).get())){
-                
+
+                if ("HTTP2".equals(ctx.pipeline().channel().attr(NettyHttpConstants.PROTOCOL).get())) {
+
                     ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
                     return;
                 }
 
                 if (msg instanceof FullHttpRequest) {
-                    
+
                     System.out.println("Removing handlers and calling into the dispatcher");
 
-                   
-                    
-                        ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
-                        ctx.pipeline().remove("HttpServerUpgradeHandler#0");
-                    
-                    
+                    ctx.pipeline().remove(NO_UPGRADE_OCURRED_HANDLER_NAME);
+                    ctx.pipeline().remove("HttpServerUpgradeHandler#0");
+
                     if (ctx.pipeline().get(NettyServletUpgradeHandler.class) == null) {
 
                         NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(ctx.channel());
@@ -390,9 +385,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                     //HttpDispatcherHandler dispatcherHandler = (HttpDispatcherHandler) ctx.pipeline().get(HTTP_DISPATCHER_HANDLER_NAME);
                     MSP.log("Names before direct dispatcher call: " + ctx.pipeline().names().toString());
                     //dispatcherHandler.processMessageDirectly((FullHttpRequest) ReferenceCountUtil.retain(msg));
-                     //ReferenceCountUtil.retain(msg);
+                    //ReferenceCountUtil.retain(msg);
                     //return;
-                    
 
                 } else {
 
@@ -411,12 +405,11 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
                     //ctx.pipeline().remove(HttpServerUpgradeHandler.class);
                     ctx.pipeline().remove(this);
-                    //TODO: this needs to be improved, what happens if first request is not H2 but second is. 
+                    //TODO: this needs to be improved, what happens if first request is not H2 but second is.
                     MSP.log("Names after remove: " + ctx.pipeline().names().toString());
 
-                    
                 }
-                
+
                 ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
 
             }
@@ -466,7 +459,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         // if (httpConfig.useAutoCompression()) {
         //   pipeline.addLast(new NettyHttpContentCompressor());
         //}
-//        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ByteBufferCodec());
+        pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new ByteBufferCodec());
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new TransportInboundHandler(httpConfig));
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, null, new TransportOutboundHandler(httpConfig));
         if (httpConfig.useForwardingHeaders()) {

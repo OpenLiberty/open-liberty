@@ -106,6 +106,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
+        MSP.log("Exception caught in channel. Channel: {}, Reason: {} " + context.channel() + " " + cause.getMessage() + " " + cause);
         if (cause instanceof Http2Exception.StreamException) {
             System.out.println("Got a HTTP2 stream exception!! Need to close the stream");
             StreamException c = (Http2Exception.StreamException) cause;
