@@ -42,6 +42,7 @@ Service-Component=com.ibm.ws.session.cache;\
   dynamic:="monitor,userTransaction";\
   greedy:="library,monitor,userTransaction";\
   optional:="monitor,userTransaction,cacheManagerService";\
+  modified:='modified';\
   properties:="library.target=(id=unbound),monitor.target=(id=unbound),cacheManagerService.target=(id=unbound)"
 
 -buildpath: \
