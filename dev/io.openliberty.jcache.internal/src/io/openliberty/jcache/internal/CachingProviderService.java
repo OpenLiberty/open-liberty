@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,7 @@ import javax.cache.spi.CachingProvider;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
@@ -33,6 +34,8 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.library.spi.SpiLibrary;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.library.Library;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * Service that configures a {@link CachingProvider} to use with JCache caching.
@@ -67,11 +70,7 @@ public class CachingProviderService {
     public void activate(Map<String, Object> configProps) throws Exception {
         closeSyncObject = new Object();
 
-        /*
-         * Get the cache name and the ID.
-         */
-        cachingProviderClass = (String) configProps.get(KEY_PROVIDER_CLASS);
-        id = (String) configProps.get(KEY_ID);
+        configureProperties(configProps);
 
         /*
          * load JCache provider from configured library, which is either specified as a
@@ -80,17 +79,32 @@ public class CachingProviderService {
          * TODO???? No doPriv due to limitations in OSGi and security manager. If
          * running with SecurityManager, permissions will need to be granted explicitly.
          */
-        try {
-            ClassLoader classloader = getUnifiedClassLoader();
-            if (cachingProviderClass != null && !cachingProviderClass.trim().isEmpty()) {
-                cachingProvider = Caching.getCachingProvider(cachingProviderClass, classloader);
-            } else {
-                cachingProvider = Caching.getCachingProvider(classloader);
+        CheckpointPhase.onRestore(0, () -> {
+            try {
+                ClassLoader classloader = getUnifiedClassLoader();
+                if (cachingProviderClass != null && !cachingProviderClass.trim().isEmpty()) {
+                    cachingProvider = Caching.getCachingProvider(cachingProviderClass, classloader);
+                } else {
+                    cachingProvider = Caching.getCachingProvider(classloader);
+                }
+            } catch (Throwable e) {
+                Tr.error(tc, "CWLJC0004_GET_PROVIDER_FAILED", id, e);
+                throw e;
             }
-        } catch (Throwable e) {
-            Tr.error(tc, "CWLJC0004_GET_PROVIDER_FAILED", id, e);
-            throw e;
-        }
+        });
+    }
+
+    private void configureProperties(Map<String, Object> configProps) {
+        /*
+         * Get the cache name and the ID.
+         */
+        cachingProviderClass = (String) configProps.get(KEY_PROVIDER_CLASS);
+        id = (String) configProps.get(KEY_ID);
+    }
+
+    @Modified
+    public void modified(Map<String, Object> configProps) {
+        configureProperties(configProps);
     }
 
     @Deactivate
