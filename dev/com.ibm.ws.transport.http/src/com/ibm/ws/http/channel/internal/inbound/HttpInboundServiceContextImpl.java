@@ -72,7 +72,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
-import io.netty.handler.codec.http2.HttpConversionUtil;
 
 /**
  * Service context specific to an inbound HTTP message.
@@ -572,9 +571,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 //        MSP.log("ISC - getResponse() - response: " + Objects.isNull(response) + ", context: " + Objects.nonNull(nettyContext));
         if (Objects.isNull(this.response) && Objects.nonNull(this.nettyContext)) {
             this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest);
-            
-            
-            
+
         }
 
         return Objects.nonNull(nettyContext) ? this.response : getResponseImpl();
@@ -984,30 +981,30 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             Tr.debug(tc, "logFinalResponse", c, c.getAccessLog(), c.getAccessLog().isStarted(), numBytesWritten);
         }
 
-        if (this.getHttpConfig().useNetty()) {
-            this.bytesWritten = numBytesWritten;
-            this.nettyContext.write(this);
-        } else {
+//        if (this.getHttpConfig().useNetty()) {
+//            this.bytesWritten = numBytesWritten;
+//            this.nettyContext.write(this);
+//        } else {
 
-            // exit if access logging is disabled
-            if (!getHttpConfig().getAccessLog().isStarted()) {
-                return;
-            }
-
-            if (getRequest() == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "logFinalResponse", "getRequest() is null. HTTPAccess log entry is skipped.");
-                }
-                return;
-            }
-
-            if (MethodValues.UNDEF.equals(getRequest().getMethodValue())) {
-                // don't log anything if there wasn't a real request
-                return;
-            }
-            getHttpConfig().getAccessLog().log(getRequest(), getResponse(), getRequestVersion().getName(), null, getRemoteAddr().getHostAddress(), numBytesWritten);
-
+        // exit if access logging is disabled
+        if (!getHttpConfig().getAccessLog().isStarted()) {
+            return;
         }
+
+        if (getRequest() == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "logFinalResponse", "getRequest() is null. HTTPAccess log entry is skipped.");
+            }
+            return;
+        }
+
+        if (MethodValues.UNDEF.equals(getRequest().getMethodValue())) {
+            // don't log anything if there wasn't a real request
+            return;
+        }
+        getHttpConfig().getAccessLog().log(getRequest(), getResponse(), getRequestVersion().getName(), null, getRemoteAddr().getHostAddress(), numBytesWritten);
+
+//        }
     }
 
     /**
@@ -2320,7 +2317,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 }
                 return;
             }
-            MSP.log("nettyInitForwardedValues 3 - Size of ForList: "+forwardedForList.length);
+            MSP.log("nettyInitForwardedValues 3 - Size of ForList: " + forwardedForList.length);
             for (int i = forwardedForList.length - 1; i > 0; i--) {
                 MSP.log("Matching For List Element -> " + forwardedForList[i]);
                 matcher = pattern.matcher(forwardedForList[i]);
