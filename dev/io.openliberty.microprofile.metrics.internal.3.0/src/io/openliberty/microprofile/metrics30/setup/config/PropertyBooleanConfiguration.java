@@ -6,7 +6,7 @@ public abstract class PropertyBooleanConfiguration extends PropertyConfiguration
     @Override
     public String toString() {
         return String.format(this.getClass().getName() + "metric name: [%s]; isEnabled: [%s]", metricName,
-                isEnabled);
+                             isEnabled);
     }
 
     public boolean isEnabled() {

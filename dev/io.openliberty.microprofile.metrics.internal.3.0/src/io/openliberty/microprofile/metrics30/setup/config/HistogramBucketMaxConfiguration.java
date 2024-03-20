@@ -40,12 +40,10 @@ public class HistogramBucketMaxConfiguration extends PropertySingleValueConfigur
                     Double value = Double.parseDouble(keyValueSplit[1].trim());
                     metricBucketConfiguration = new HistogramBucketMaxConfiguration(metricName, value);
                 } else {
-                    if (LOGGER.isLoggable(Level.FINER)) {
-                        LOGGER.logp(Level.FINER, CLASS_NAME, null,
+                    LOGGER.logp(Level.WARNING, CLASS_NAME, null,
                                 "The value \"{0}\" is invalid for the \"{1}\" property. Only integer "
-                                        + "and decimal values are accepted.",
+                                                                 + "and decimal values are accepted.",
                                 new Object[] { keyValueSplit[1], MetricsConfigurationManager.MP_HISTOGRAM_BUCKET_PROP });
-                    }
                 }
             } else {
                 //either no value.. or too many values
@@ -53,7 +51,10 @@ public class HistogramBucketMaxConfiguration extends PropertySingleValueConfigur
             }
 
             // LIFO - right most configuration takes precedence
-            metricBucketMinMax.addFirst(metricBucketConfiguration);
+            if (metricBucketConfiguration != null) {
+                metricBucketMinMax.addFirst(metricBucketConfiguration);
+            }
+
         }
         return metricBucketMinMax;
 

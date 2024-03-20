@@ -34,7 +34,7 @@ public class TimerBucketMaxConfiguration extends PropertySingleValueConfiguratio
             String metricName = keyValueSplit[0];
 
             TimerBucketMaxConfiguration sloMinConfiguration = null;
-            Duration dur;
+            Duration dur = null;
             // metricGroup=<blank> == invalid
             if (keyValueSplit.length == 2) {
 
@@ -53,15 +53,12 @@ public class TimerBucketMaxConfiguration extends PropertySingleValueConfiguratio
                     String val = s.substring(0, s.length() - 1);
                     dur = Duration.ofHours(Long.parseLong(val));
                 } else if (s.matches("[0-9]+")) {
-                    dur = Duration.ofSeconds(Long.parseLong(s));
+                    dur = Duration.ofMillis(Long.parseLong(s));
                 } else {
-                    if (LOGGER.isLoggable(Level.FINER)) {
-                        LOGGER.logp(Level.FINER, CLASS_NAME, null,
+                    LOGGER.logp(Level.WARNING, CLASS_NAME, null,
                                 "The value \"{0}\" is invalid for the \"{1}\" property. Only integer values with an "
-                                        + "optional time unit (e.g. ms,s,m,h) are accepted.",
+                                                                 + "optional time unit (e.g. ms,s,m,h) are accepted.",
                                 new Object[] { s, MetricsConfigurationManager.MP_TIMER_BUCKET_PROP });
-                    }
-                    return null;
                 }
 
             } else {
@@ -69,10 +66,13 @@ public class TimerBucketMaxConfiguration extends PropertySingleValueConfiguratio
                 continue;
             }
 
-            sloMinConfiguration = new TimerBucketMaxConfiguration(metricName, dur);
+            if (dur != null) {
+                sloMinConfiguration = new TimerBucketMaxConfiguration(metricName, dur);
 
-            // LIFO - right most configuration takes precedence
-            sloMinConfigCollection.addFirst(sloMinConfiguration);
+                // LIFO - right most configuration takes precedence
+                sloMinConfigCollection.addFirst(sloMinConfiguration);
+            }
+
         }
         return sloMinConfigCollection;
 

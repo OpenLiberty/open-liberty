@@ -14,7 +14,6 @@ package io.openliberty.microprofile.metrics30.internal.helper;
 
 import java.time.Duration;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.eclipse.microprofile.metrics.ConcurrentGauge;
 import org.eclipse.microprofile.metrics.Counter;
@@ -38,8 +37,6 @@ import com.ibm.ws.microprofile.metrics23.helper.PrometheusBuilder23;
 import io.openliberty.microprofile.metrics30.internal.helper.BucketManager.BucketValue;
 import io.openliberty.microprofile.metrics30.internal.impl.Histogram30Impl;
 import io.openliberty.microprofile.metrics30.internal.impl.Timer30Impl;
-import io.openliberty.microprofile.metrics30.setup.config.MetricPercentileConfiguration;
-import io.openliberty.microprofile.metrics30.setup.config.MetricsConfigurationManager;
 
 /**
  *
@@ -248,37 +245,40 @@ public class PrometheusBuilder30 extends PrometheusBuilder23 {
 
         for (MetricID mid : currentMetricMap.keySet()) {
             boolean typePrinted = false;
+
             try {
-                Map<String, Map<Double, BucketValue>> newManager = ((Histogram30Impl) currentMetricMap.get(mid)).getBuckets();
+                if (currentMetricMap.get(mid) instanceof Histogram30Impl) {
+                    Map<String, Map<Double, BucketValue>> newManager = ((Histogram30Impl) currentMetricMap.get(mid)).getBuckets();
 
-                if (!newManager.isEmpty()) {
-                    typePrinted = true;
-                    String appName = name.replace("application_", "");
-                    getPromTypeLine(builder, appName, "histogram", appendUnit);
-                    getPromHelpLine(builder, appName, description, appendUnit);
-                }
-
-                for (String key : newManager.keySet()) {
-                    Map<Double, BucketValue> innerMap = newManager.get(key);
-
-                    for (Double innerKey : innerMap.keySet()) {
-                        double bucketKey = (!(Double.isNaN(conversionFactor))) ? innerKey * conversionFactor : innerKey;
-
-                        String applicationName;
-                        if (appendUnit == null)
-                            applicationName = "application_" + key.replace(".", "_") + "_bucket";
-                        else
-                            applicationName = "application_" + key.replace(".", "_") + "_" + appendUnit + "_bucket";
-
-                        String tagName = Double.isInfinite(bucketKey) ? "+Inf" : Double.toString(bucketKey);
-
-                        getPromValueLine(builder, applicationName, innerMap.get(innerKey).getValue(),
-                                         resolveTagsAsStringWithGlobalTags(mid),
-                                         new Tag("le", tagName),
-                                         "");//unit needed?
-
+                    if (!newManager.isEmpty()) {
+                        typePrinted = true;
+                        String appName = name.replace("application_", "");
+                        getPromTypeLine(builder, appName, "histogram", appendUnit);
+                        getPromHelpLine(builder, appName, description, appendUnit);
                     }
 
+                    for (String key : newManager.keySet()) {
+                        Map<Double, BucketValue> innerMap = newManager.get(key);
+
+                        for (Double innerKey : innerMap.keySet()) {
+                            double bucketKey = (!(Double.isNaN(conversionFactor))) ? innerKey * conversionFactor : innerKey;
+
+                            String applicationName;
+                            if (appendUnit == null)
+                                applicationName = "application_" + key.replace(".", "_") + "_bucket";
+                            else
+                                applicationName = "application_" + key.replace(".", "_") + "_" + appendUnit + "_bucket";
+
+                            String tagName = Double.isInfinite(bucketKey) ? "+Inf" : Double.toString(bucketKey);
+
+                            getPromValueLine(builder, applicationName, innerMap.get(innerKey).getValue(),
+                                             resolveTagsAsStringWithGlobalTags(mid),
+                                             new Tag("le", tagName),
+                                             "");//unit needed?
+
+                        }
+
+                    }
                 }
 
             } catch (Exception e) {
@@ -287,27 +287,30 @@ public class PrometheusBuilder30 extends PrometheusBuilder23 {
             }
 
             try {
-                Map<String, Map<Double, BucketValue>> newManager = ((Timer30Impl) currentMetricMap.get(mid)).getBuckets();
+                if (currentMetricMap.get(mid) instanceof Timer30Impl) {
+                    Map<String, Map<Double, BucketValue>> newManager = ((Timer30Impl) currentMetricMap.get(mid)).getBuckets();
 
-                if (!newManager.isEmpty()) {
-                    typePrinted = true;
-                    String appName = name.replace("application_", "");
-                    getPromTypeLine(builder, appName, "histogram", appendUnit);
-                    getPromHelpLine(builder, appName, description, appendUnit);
-                }
-
-                for (String key : newManager.keySet()) {
-                    Map<Double, BucketValue> innerMap = newManager.get(key);
-                    for (Double innerKey : innerMap.keySet()) {
-                        String tagName = Double.isInfinite(innerKey) ? "+Inf" : Double.toString(innerKey);
-
-                        getPromValueLine(builder, "application_" + key.replace(".", "_") + "_" + appendUnit + "_bucket", innerMap.get(innerKey).getValue(),
-                                         resolveTagsAsStringWithGlobalTags(mid),
-                                         new Tag("le", tagName),
-                                         "");//unit needed?
+                    if (!newManager.isEmpty()) {
+                        typePrinted = true;
+                        String appName = name.replace("application_", "");
+                        getPromTypeLine(builder, appName, "histogram", appendUnit);
+                        getPromHelpLine(builder, appName, description, appendUnit);
                     }
 
+                    for (String key : newManager.keySet()) {
+                        Map<Double, BucketValue> innerMap = newManager.get(key);
+                        for (Double innerKey : innerMap.keySet()) {
+                            String tagName = Double.isInfinite(innerKey) ? "+Inf" : Double.toString(innerKey);
+
+                            getPromValueLine(builder, "application_" + key.replace(".", "_") + "_" + appendUnit + "_bucket", innerMap.get(innerKey).getValue(),
+                                             resolveTagsAsStringWithGlobalTags(mid),
+                                             new Tag("le", tagName),
+                                             "");//unit needed?
+                        }
+
+                    }
                 }
+
             } catch (Exception e) {
                 //Do nothing
             }
@@ -334,25 +337,42 @@ public class PrometheusBuilder30 extends PrometheusBuilder23 {
             }
 
             double medianVal = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getMedian() * conversionFactor : sampling.getSnapshot().getMedian();
-            //double percentile75th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().get75thPercentile()
-            //                                                            * conversionFactor : sampling.getSnapshot().get(0.75)get75thPercentile();             //DYNAMICALLY do this stuff. Quick loop to go through buckets adn get each percentile.
 
-            MetricPercentileConfiguration percentilesConfig = MetricsConfigurationManager.getInstance().getPercentilesConfiguration(mid.getName());
+//            if (percentilesConfig != null && percentilesConfig.getValues() == null
+//                       && percentilesConfig.isDisabled()) {
+//                System.out.println("No custom percentiles configured? " + percentilesConfig.isDisabled());
+//                //do nothing - percentiles were disabled
+//            } else 
 
-            if (percentilesConfig != null && percentilesConfig.getValues() != null
-                && percentilesConfig.getValues().length > 0) {
-                double[] vals = Stream.of(percentilesConfig.getValues()).mapToDouble(Double::doubleValue).toArray();
+            if (Histogram.class.isInstance(sampling) && ((Histogram30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles() != null) {
 
-                for (Double value : vals) {
-                    double percentile = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(value)
-                                                                              * conversionFactor : sampling.getSnapshot().getValue(value);
-                    getPromValueLine(builder, name, percentile, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, Double.toString(value)), appendUnit);
+                if (((Histogram30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles() != null) {
 
+                    for (double value : ((Histogram30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles()) {
+
+                        double percentileVal = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(value)
+                                                                                     * conversionFactor : sampling.getSnapshot().getValue(value);
+                        getPromValueLine(builder, name, percentileVal, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, Double.toString(value)), appendUnit);
+
+                    }
                 }
-            } else if (percentilesConfig != null && percentilesConfig.getValues() == null
-                       && percentilesConfig.isDisabled()) {
-                //do nothing - percentiles were disabled
+
+            } else if (Timer.class.isInstance(sampling) && ((Timer30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles() != null) {
+
+                if (((Timer30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles() != null) {
+
+                    for (double value : ((Timer30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles()) {
+
+                        double percentileVal = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(value)
+                                                                                     * conversionFactor : sampling.getSnapshot().getValue(value);
+                        getPromValueLine(builder, name, percentileVal, resolveTagsAsStringWithGlobalTags(mid), new Tag(QUANTILE, Double.toString(value)), appendUnit);
+
+                    }
+                }
+
             } else {
+                System.out.println("No custom percentiles configured. MetricName: " + mid.getName());
+
                 double percentile75th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(0.75)
                                                                               * conversionFactor : sampling.getSnapshot().getValue(0.75);
 

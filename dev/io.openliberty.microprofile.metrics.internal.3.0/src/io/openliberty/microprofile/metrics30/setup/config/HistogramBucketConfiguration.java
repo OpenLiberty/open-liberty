@@ -44,20 +44,17 @@ public class HistogramBucketConfiguration extends PropertyArrayConfiguration<Dou
                 continue;
             } else {
                 // Parse values of buckets
-                Double[] bucketValues = Arrays.asList(keyValueSplit[1].split(",")).stream()
-                        .map(s -> {
-                            if (s.matches("[0-9]+[.]*[0-9]*")) {
-                                return Double.parseDouble(s);
-                            } else {
-                                if (LOGGER.isLoggable(Level.FINER)) {
-                                    LOGGER.logp(Level.FINER, CLASS_NAME, null,
-                                            "The value \"{0}\" is invalid for the \"{1}\" property. Only integer "
-                                                    + "and decimal values are accepted.",
-                                            new Object[] { s, MetricsConfigurationManager.MP_HISTOGRAM_BUCKET_PROP });
-                                }
-                                return null;
-                            }
-                        }).filter(x -> x != null).toArray(Double[]::new);
+                Double[] bucketValues = Arrays.asList(keyValueSplit[1].split(",")).stream().map(s -> {
+                    if (s.matches("[0-9]+[.]*[0-9]*")) {
+                        return Double.parseDouble(s);
+                    } else {
+                        LOGGER.logp(Level.WARNING, CLASS_NAME, null,
+                                    "The value \"{0}\" is invalid for the \"{1}\" property. Only integer "
+                                                                     + "and decimal values are accepted.",
+                                    new Object[] { s, MetricsConfigurationManager.MP_HISTOGRAM_BUCKET_PROP });
+                        return null;
+                    }
+                }).filter(x -> x != null).toArray(Double[]::new);
 
                 Arrays.sort(bucketValues);
 

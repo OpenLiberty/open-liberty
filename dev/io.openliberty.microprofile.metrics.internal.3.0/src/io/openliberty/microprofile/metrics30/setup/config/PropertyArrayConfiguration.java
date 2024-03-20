@@ -13,7 +13,7 @@ public abstract class PropertyArrayConfiguration<T> extends PropertyConfiguratio
     @Override
     public String toString() {
         return String.format(this.getClass().getName() + "<Metric name: [%s]>; <values: %s>", metricName,
-                Arrays.toString(values));
+                             Arrays.toString(values));
     }
 
     public T[] getValues() {

@@ -11,7 +11,7 @@ public abstract class PropertySingleValueConfiguration<T> extends PropertyConfig
     @Override
     public String toString() {
         return String.format(this.getClass().getName() + "<Metric name: [%s]>; <value: %s>", metricName,
-                value);
+                             value);
     }
 
     public T getValue() {

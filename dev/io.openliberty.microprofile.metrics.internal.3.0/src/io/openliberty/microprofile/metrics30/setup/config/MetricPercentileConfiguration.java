@@ -26,12 +26,12 @@ public class MetricPercentileConfiguration extends PropertyArrayConfiguration<Do
     }
 
     /**
-     * 
+     *
      * Parse the `mp.metrics.distribution.percentile` property.
      * syntax of {@code <metric_name>=<value-1>,<value-2>,...,<value-n>}
      * No values supplied to a metric name disables percentile output.
      * Can use wild card `*` at the end of metric name (e.g. demo.app.*)
-     * 
+     *
      * @param input MP Config value
      * @return Collection of {@link MetricPercentileConfiguration} objects
      */
@@ -41,7 +41,8 @@ public class MetricPercentileConfiguration extends PropertyArrayConfiguration<Do
         ArrayDeque<MetricPercentileConfiguration> metricPercentileConfigCollection = new ArrayDeque<MetricPercentileConfiguration>();
 
         if (input == null || input.length() == 0) {
-            return null;
+            // no input is the same as disabling all
+            input = "*=";
         }
 
         // not expecting backslashes?
@@ -66,11 +67,9 @@ public class MetricPercentileConfiguration extends PropertyArrayConfiguration<Do
                     if (s.matches("[0][.][0-9]+")) {
                         return Double.parseDouble(s);
                     } else {
-                        if (LOGGER.isLoggable(Level.FINER)) {
-                            LOGGER.logp(Level.FINER, CLASS_NAME, null,
+                        LOGGER.logp(Level.WARNING, CLASS_NAME, null,
                                     "The value \"{0}\" is invalid for the \"{1}\" property. Only values 0.0-1.0 inclusively are accepted.",
                                     new Object[] { s, MetricsConfigurationManager.MP_PERCENTILES_PROP });
-                        }
                         return null;
                     }
 

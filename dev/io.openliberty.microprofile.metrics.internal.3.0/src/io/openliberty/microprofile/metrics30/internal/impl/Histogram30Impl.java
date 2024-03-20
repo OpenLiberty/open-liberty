@@ -26,7 +26,10 @@
 package io.openliberty.microprofile.metrics30.internal.impl;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Snapshot;
@@ -37,6 +40,8 @@ import com.ibm.ws.microprofile.metrics.impl.Reservoir;
 
 import io.openliberty.microprofile.metrics30.internal.helper.BucketManager;
 import io.openliberty.microprofile.metrics30.internal.helper.BucketManager.BucketValue;
+import io.openliberty.microprofile.metrics30.setup.config.MetricPercentileConfiguration;
+import io.openliberty.microprofile.metrics30.setup.config.MetricsConfigurationManager;
 
 /**
  * A metric which calculates the distribution of a value.
@@ -49,6 +54,7 @@ public class Histogram30Impl implements Histogram {
     private final LongAdderAdapter count;
     private final LongAdderAdapter sum;
     private final BucketManager manager;
+    private final double[] percentiles;
 
     /**
      * Creates a new {@link Histogram30Impl} with the given reservoir.
@@ -64,6 +70,7 @@ public class Histogram30Impl implements Histogram {
         this.count = LongAdderProxy.create();
         this.sum = LongAdderProxy.create();
         this.manager = new BucketManager(metadata); //read config here for buckets and perce
+        this.percentiles = setConfiguredPercentiles(metadata);
     }
 
     /**
@@ -117,5 +124,39 @@ public class Histogram30Impl implements Histogram {
     @Override
     public long getSum() {
         return sum.sum();
+    }
+
+    public double[] getConfiguredPercentiles() {
+        return percentiles;
+    }
+
+    public double[] setConfiguredPercentiles(Metadata metadata) {
+        Optional<String> percentileConfiguration = ConfigProvider.getConfig().getOptionalValue("mp.metrics.distribution.percentiles", String.class);
+        String metricName = metadata.getName();
+        if (percentileConfiguration.isPresent()) {
+
+            MetricPercentileConfiguration percentileConfig = MetricsConfigurationManager.getInstance().getPercentilesConfiguration(metricName);
+            System.out.println("MetricName: " + metricName);
+
+            if (percentileConfig != null && percentileConfig.getValues() != null
+                && percentileConfig.getValues().length > 0) {
+                double[] vals = Stream.of(percentileConfig.getValues()).mapToDouble(Double::doubleValue).toArray();
+
+                for (Double value : vals) {
+                    System.out.println("Histogram Percentile Value: " + value + " -- " + metadata.getUnit());
+
+                }
+                return vals;
+            } else if (percentileConfig == null) {
+                return null;
+            } else {
+                System.out.println("Returning empty double for percentiles");
+                return new double[0];
+            }
+        }
+
+        System.out.println("Returning null for percentiles.");
+        return null;
+
     }
 }

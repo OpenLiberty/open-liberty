@@ -27,8 +27,11 @@ package io.openliberty.microprofile.metrics30.internal.impl;
 
 import java.time.Duration;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Meter;
@@ -44,6 +47,8 @@ import com.ibm.ws.microprofile.metrics.impl.TimerImpl;
 
 import io.openliberty.microprofile.metrics30.internal.helper.BucketManager;
 import io.openliberty.microprofile.metrics30.internal.helper.BucketManager.BucketValue;
+import io.openliberty.microprofile.metrics30.setup.config.MetricPercentileConfiguration;
+import io.openliberty.microprofile.metrics30.setup.config.MetricsConfigurationManager;
 
 /**
  * A timer metric which aggregates timing durations and provides duration statistics, plus
@@ -91,6 +96,7 @@ public class Timer30Impl implements Timer {
     protected final Histogram histogram;
     protected final BucketManager manager;
     protected final Clock clock;
+    private final double[] percentiles;
 
     /**
      * Creates a new {@link TimerImpl} using an {@link ExponentiallyDecayingReservoir} and the default
@@ -124,6 +130,8 @@ public class Timer30Impl implements Timer {
         this.histogram = new HistogramImpl(reservoir);
         this.manager = new BucketManager(metadata);
         this.elapsedTime = Duration.ZERO;
+        this.percentiles = setConfiguredPercentiles(metadata);
+
     }
 
     /**
@@ -230,6 +238,37 @@ public class Timer30Impl implements Timer {
 
     public Map<String, Map<Double, BucketValue>> getBuckets() {
         return manager.getBuckets();
+    }
+
+    public double[] getConfiguredPercentiles() {
+        return percentiles;
+    }
+
+    public double[] setConfiguredPercentiles(Metadata metadata) {
+        Optional<String> percentileConfiguration = ConfigProvider.getConfig().getOptionalValue("mp.metrics.distribution.percentiles", String.class);
+        String metricName = metadata.getName();
+        if (percentileConfiguration.isPresent()) {
+            MetricPercentileConfiguration percentileConfig = MetricsConfigurationManager.getInstance().getPercentilesConfiguration(metricName);
+            System.out.println("MetricName: " + metricName);
+            if (percentileConfig != null && percentileConfig.getValues() != null
+                && percentileConfig.getValues().length > 0) {
+                double[] vals = Stream.of(percentileConfig.getValues()).mapToDouble(Double::doubleValue).toArray();
+
+                for (Double value : vals) {
+                    System.out.println("Timer Pecentile Value: " + value + " -- " + metadata.getUnit());
+
+                }
+                return vals;
+            } else if (percentileConfig == null) {
+                return null;
+            } else {
+                System.out.println("Returning empty double for percentiles");
+                return new double[0];
+            }
+        }
+        System.out.println("Returning null for percentiles.");
+        return null;
+
     }
 
 }
