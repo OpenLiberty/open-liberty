@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -48,7 +48,8 @@ public class TestSuiteResult {
         } else {
             pass = "FAILED";
         }
-        strBuild.append("Test suite: " + name + " " + timestamp);
+        // if the timestamp is null then omit from results - occurs in TCKs running JUnit rather than testng
+        strBuild.append("Test suite: " + name + " " + (timestamp != null ? timestamp : ""));
         strBuild.append(System.lineSeparator());
         strBuild.append("Tests:" + tests + " Failures:" + failures + " Errors:" + errors);
         strBuild.append(System.lineSeparator());
