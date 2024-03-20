@@ -50,10 +50,4 @@ public class TransportInboundHandler extends SimpleChannelInboundHandler<FullHtt
         super.channelInactive(ctx);
     }
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        MSP.log("Exception caught in channel. Channel: {}, Reason: {} " + ctx.channel() + " " + cause.getMessage() + " " + cause);
-        ctx.close(); // Optionally close the channel if an exception is caught
-    }
-
 }
