@@ -9,10 +9,10 @@
     <feature>osgiConsole-1.0</feature>
   </featureManager>
 
-  
   <include location="../fatTestPorts.xml"/>
 
-  
+  <applicationManager startTimeout="60s"/>
+
   <application location="jpafat.war" type="war" context-root="/"></application>
 
   <library id="DB2Lib">
@@ -29,5 +29,5 @@
   </dataSource>
 
   <javaPermission codebase="${shared.resource.dir}db2/jcc-11.1.4.4.jar" className="java.security.AllPermission"/>
-  
+
 </server>
