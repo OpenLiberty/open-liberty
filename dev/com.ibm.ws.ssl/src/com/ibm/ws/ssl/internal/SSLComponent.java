@@ -52,6 +52,7 @@ import com.ibm.ws.ssl.config.SSLConfigManager;
 import com.ibm.ws.ssl.config.WSKeyStore;
 import com.ibm.ws.ssl.optional.SSLSupportOptional;
 import com.ibm.ws.ssl.protocol.LibertySSLSocketFactory;
+import com.ibm.ws.ssl.LibertySSLSocketFactoryWrapper;
 import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
@@ -101,7 +102,7 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
      */
     @Activate
     protected synchronized void activate(ComponentContext ctx, Map<String, Object> properties) {
-        setTheSocketFactoryClass(LibertySSLSocketFactory.class);
+        setTheSocketFactoryClass(LibertySSLSocketFactoryWrapper.class);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activated: " + properties);
         }
@@ -422,21 +423,21 @@ public class SSLComponent extends GenericSSLConfigService implements SSLSupportO
 
     @Override
     public SSLSocketFactory getSSLSocketFactory() {
-        return new LibertySSLSocketFactory();
+        return new LibertySSLSocketFactoryWrapper();
     }
 
     @Override
     public SSLSocketFactory getSSLSocketFactory(String sslAlias) throws javax.net.ssl.SSLException {
         if (sslAlias != null)
-            return new LibertySSLSocketFactory(sslAlias);
-        return new LibertySSLSocketFactory();
+            return new LibertySSLSocketFactoryWrapper(sslAlias);
+        return new LibertySSLSocketFactoryWrapper();
     }
 
     @Override
     public SSLSocketFactory getSSLSocketFactory(Properties sslProps) throws javax.net.ssl.SSLException {
         if ((sslProps != null && sslProps.isEmpty()) || sslProps == null)
-            return new LibertySSLSocketFactory();
-        return new LibertySSLSocketFactory(sslProps);
+            return new LibertySSLSocketFactoryWrapper();
+        return new LibertySSLSocketFactoryWrapper(sslProps);
     }
 
 }
