@@ -6,5 +6,5 @@ IBM-Provision-Capability: \
 IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.microprofile.faulttolerance.telemetry, \
  io.openliberty.microprofile.faulttolerance.4.0.telemetry.metrics.2.0
-kind=ga
-edition=core
+kind=noship
+edition=full
