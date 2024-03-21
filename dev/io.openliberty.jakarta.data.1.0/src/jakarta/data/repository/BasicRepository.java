@@ -32,20 +32,14 @@ public interface BasicRepository<T, K> extends DataRepository<T, K> {
     @Delete
     void deleteAll(List<? extends T> entities);
 
-    void deleteByIdIn(Iterable<K> ids);
-
     @Delete
     void deleteById(@By(ID) K id);
-
-    boolean existsById(K id);
 
     @Find
     Stream<T> findAll();
 
     @Find
     Page<T> findAll(PageRequest<T> pageRequest);
-
-    Stream<T> findByIdIn(Iterable<K> ids);
 
     @Find
     Optional<T> findById(@By(ID) K id);
