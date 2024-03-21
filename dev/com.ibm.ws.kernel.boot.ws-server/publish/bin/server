@@ -576,21 +576,33 @@ serverEnvAndJVMOptions()
 findRealPath() {
   path="$1"
 
-  # realpath doesn't exist on OS/390.  readlink didn't exist on OS/390, but then it was added and
-  # it doesn't work as expected.  So avoiding both for OS/390.
+  # Try 3 "built-in" approaches to resolving the path.
+  # OS/390 comments: realpath doesn't exist.  readlink didn't exist, but now does.  Though it
+  # doesn't work as expected.  cd -P is also not supported. So we avoid all three for OS/390.
   if [ "$uname" != "OS/390" ]; then
+
+
     # Try realpath command
     if command -v realpath >/dev/null; then
+
       resolvedPath=$(realpath "${path}" 2>/dev/null)
     fi
-    
-    # If realpath is not available, try readlink -e
+
+  
+    # If unsuccessful, try readlink -e
     if [ -z "${resolvedPath}" ] && command -v readlink >/dev/null; then
       resolvedPath=$(readlink -e "${path}" 2>/dev/null)
     fi
+
+    # If unsuccessful, try cd -P command. 
+    if [ -z "${resolvedPath}" ]; then
+
+      resolvedPath=$(unset CDPATH; cd -P "${path}" >/dev/null 2>&1 && pwd)
+    fi
+
   fi
 
-  # If neither of those methods work, try a more basic approach
+  # If none of those methods work, try a more basic approach
   if [ -z "${resolvedPath}" ]; then 
     symLinkCount=0
 
@@ -1555,7 +1567,7 @@ case $OSTYPE in
     ;;
 
   *)
-    uname=`uname`
+    uname=$(uname)
 
     case $uname in
       CYGWIN_*)
@@ -1564,9 +1576,22 @@ case $OSTYPE in
         ;;
 
       *)
-        dirname=$(dirname "$0")
-        WLP_INSTALL_DIR=$(unset CDPATH; cd "${dirname}/.." && pwd)
-        WLP_INSTALL_DIR=$(findRealPath "$WLP_INSTALL_DIR")
+        # The directory of this script (the server script) 
+        scriptDir="$(dirname "$0")"
+
+        # Get absolute path.  Needed because "." (current directory) never tests positive as a symbolic link, even if it is.
+        scriptDir=$(unset CDPATH; cd "${scriptDir}" && pwd)
+
+        # If the directory containing this script is NOT a symbolic link (the most likely case).
+        if [ ! -L "${scriptDir}" ]; then
+           WLP_INSTALL_DIR=$(unset CDPATH; cd "${scriptDir}/.." && pwd)
+
+        # Else the directory containing this script is a symbolic link.
+        # Must find the real path in order to find the installation directory (The parent of scriptDir).
+        else
+          resolvedScriptDir=$(findRealPath "${scriptDir}")             
+          WLP_INSTALL_DIR=$(findRealPath "${resolvedScriptDir}/..")
+        fi
     esac
 esac
 
