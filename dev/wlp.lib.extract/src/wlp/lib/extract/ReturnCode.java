@@ -85,4 +85,13 @@ public class ReturnCode {
     public Object[] getParameters() {
         return (null == params || params.length == 0) ? new Object[0] : Arrays.copyOf(params, params.length);
     }
+
+    /**
+     *
+     * @param rc
+     * @return
+     */
+    public static boolean isReturnCodeOK(ReturnCode rc) {
+        return rc.getCode() == ReturnCode.OK.getCode();
+    }
 }

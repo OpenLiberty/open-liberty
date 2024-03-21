@@ -538,7 +538,7 @@ public class SelfExtractor implements LicenseProvider {
         if (props_list.isEmpty()) {
             rc = new ReturnCode(ReturnCode.BAD_OUTPUT);
         } else {
-            for (int i = 0; i < props_list.size() && isReturnCodeOK(rc); i++) {
+            for (int i = 0; i < props_list.size() && ReturnCode.isReturnCodeOK(rc); i++) {
                 rc = matchLibertyProperties(productMatches, props_list.get(i));
             }
         }
@@ -562,7 +562,7 @@ public class SelfExtractor implements LicenseProvider {
     protected static ReturnCode matchLibertyProperties(List productMatches, Properties props) {
         Iterator<ProductMatch> matches = productMatches.iterator();
         ReturnCode rc = ReturnCode.OK;
-        while (matches.hasNext() && isReturnCodeOK(rc)) {
+        while (matches.hasNext() && ReturnCode.isReturnCodeOK(rc)) {
             ProductMatch match = matches.next();
             int result = match.matches(props);
             rc = getReturnCode(props, match, result);
@@ -571,10 +571,13 @@ public class SelfExtractor implements LicenseProvider {
     }
 
     /**
-     * @param props
-     * @param match
-     * @param result
-     * @return
+     *
+     * Get the return code based on the product match result and the current Liberty properties.
+     *
+     * @param props  The Liberty properties under wlp/lib/versions
+     * @param match  The product match for the feature. Contains the valid version, edition, installType and licenseType for the feature.
+     * @param result The product match result.
+     * @return ReturnCode The ReturnCode with proper messages according to the result
      */
     protected static ReturnCode getReturnCode(Properties props, ProductMatch match, int result) {
         String currentLicenseType = props.getProperty("com.ibm.websphere.productLicenseType");
