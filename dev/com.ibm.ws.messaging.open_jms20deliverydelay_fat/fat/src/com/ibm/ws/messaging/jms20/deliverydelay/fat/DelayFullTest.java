@@ -487,7 +487,24 @@ public class DelayFullTest {
         String changedMessageFromLog = server.waitForStringInLogUsingMark("CWWKF0008I.*",server.getMatchingLogFile("trace.log"));
         assertNotNull("Could not find the CWWKF0008I feature update completed message in the trace file", changedMessageFromLog);
     }
+    
+    /**
+     * Look for the message:
+     * "CWSID0108I: JMS server has started"
+     * in the log to make sure that not only have feature updates completed, but also that the JMS provider is available.
+     * @param server
+     * @throws Exception
+     */
+    private void verifyJMSServerStarted(LibertyServer server) throws Exception {
+    	//CWWKF0008I: Feature update completed in ?.??? seconds.
+        String changedMessageFromLog = server.waitForStringInLogUsingMark("CWSID0108I.*",server.getMatchingLogFile("trace.log"));
+        assertNotNull("Could not find the CWSID0108I 'JMS server has started' message in the trace file", changedMessageFromLog);
+    	return;
+    }
 
+
+    
+    //
     /**
      * <ul>
      * <li>Put a message to the client's messaging engine with a delivery delay.
@@ -517,6 +534,12 @@ public class DelayFullTest {
     		clientServer.changeFeatures(new ArrayList<String>(clientFeatures));
     		verifyAddedFeature(clientServer, serverFragment);
 
+    		// Wait until the JMS Server is actually running again.
+    		// There might still be a possibility that even in this case, the messaging singleton objects might not be available, but that's an issue to fix
+    		// elsewhere. Hopefully for the moment this will alleviate the problem with calling the app before the appropriate objects are available.
+    		verifyJMSServerStarted(clientServer);
+    		
+    		
     		boolean testResult2 = runInServlet("testReceiveMessage");
     		assertTrue("testReceiveMessage failed", testResult2);
 
