@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -27,7 +28,7 @@ public interface BasicRepository<T, K> extends DataRepository<T, K> {
     void delete(T entity);
 
     @Delete
-    void deleteAll(Iterable<? extends T> entities);
+    void deleteAll(List<? extends T> entities);
 
     void deleteByIdIn(Iterable<K> ids);
 
@@ -49,5 +50,5 @@ public interface BasicRepository<T, K> extends DataRepository<T, K> {
     <S extends T> S save(S entity);
 
     @Save
-    <S extends T> Iterable<S> saveAll(Iterable<S> entities);
+    <S extends T> List<S> saveAll(List<S> entities);
 }

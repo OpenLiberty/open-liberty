@@ -12,19 +12,21 @@
  *******************************************************************************/
 package jakarta.data.repository;
 
+import java.util.List;
+
 /**
  * Interface methods copied from Jakarta Data.
  */
 public interface CrudRepository<T, K> extends BasicRepository<T, K> {
     @Insert
-    void insert(T entity);
+    <S extends T> S insert(S entity);
 
     @Insert
-    void insertAll(Iterable<T> entities);
+    <S extends T> List<S> insertAll(List<S> entities);
 
     @Update
-    T update(T entity);
+    <S extends T> S update(S entity);
 
     @Update
-    Iterable<T> updateAll(Iterable<T> entities);
+    <S extends T> List<S> updateAll(List<S> entities);
 }
