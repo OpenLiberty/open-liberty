@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static jakarta.data.repository.By.ID;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -249,7 +251,7 @@ public class QueryInfo {
      */
     @Trivial
     void addSort(boolean ignoreCase, String attribute, boolean descending) {
-        Set<String> names = entityInfo.idClassAttributeAccessors != null && "id".equalsIgnoreCase(attribute) //
+        Set<String> names = entityInfo.idClassAttributeAccessors != null && ID.equalsIgnoreCase(attribute) //
                         ? entityInfo.idClassAttributeAccessors.keySet() //
                         : Set.of(attribute);
 
@@ -391,7 +393,7 @@ public class QueryInfo {
             Sort<Object> sort = addIt.next();
             if (sort == null)
                 throw new IllegalArgumentException("Sort: null");
-            else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
+            else if (hasIdClass && ID.equals(sort.property()))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
                     combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name, true), sort));
             else
@@ -417,7 +419,7 @@ public class QueryInfo {
         for (Sort<Object> sort : additional) {
             if (sort == null)
                 throw new IllegalArgumentException("Sort: null");
-            else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
+            else if (hasIdClass && ID.equals(sort.property()))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
                     combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name, true), sort));
             else

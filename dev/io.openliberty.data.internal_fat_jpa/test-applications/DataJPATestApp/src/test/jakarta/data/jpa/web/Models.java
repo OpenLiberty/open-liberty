@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,20 +10,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.repository;
+package test.jakarta.data.jpa.web;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.UUID;
+
+import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Repository;
 
 /**
- * To propose in Jakarta Data.
+ * Repository for the Model entity.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface By {
-    String ID = "#id";
-
-    String value();
+@Repository
+public interface Models extends CrudRepository<Model, UUID> {
 }

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package jakarta.data.repository;
 
+import static jakarta.data.repository.By.ID;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -32,7 +34,8 @@ public interface BasicRepository<T, K> extends DataRepository<T, K> {
 
     void deleteByIdIn(Iterable<K> ids);
 
-    void deleteById(K id);
+    @Delete
+    void deleteById(@By(ID) K id);
 
     boolean existsById(K id);
 
@@ -44,7 +47,8 @@ public interface BasicRepository<T, K> extends DataRepository<T, K> {
 
     Stream<T> findByIdIn(Iterable<K> ids);
 
-    Optional<T> findById(K id);
+    @Find
+    Optional<T> findById(@By(ID) K id);
 
     @Save
     <S extends T> S save(S entity);
