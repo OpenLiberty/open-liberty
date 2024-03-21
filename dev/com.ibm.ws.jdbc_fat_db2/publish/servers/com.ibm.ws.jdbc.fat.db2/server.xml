@@ -32,6 +32,9 @@
   <library id="DB2Lib">
     <fileset dir="${shared.resource.dir}/db2" includes="jcc.jar"/>
   </library>
+  
+  <ssl id="defaultSSLConfig" verifyHostname="false" />
+  <keyStore id="defaultKeyStore" location="security/db2-keystore.p12" password="db2test" />
     
   <dataSource id="DefaultDataSource">
     <jdbcDriver libraryRef="DB2Lib"/> 
