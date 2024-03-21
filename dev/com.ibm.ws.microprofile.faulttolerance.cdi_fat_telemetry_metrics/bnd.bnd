@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2020 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -36,8 +36,8 @@ tested.features: mpfaulttolerance-4.0,\
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-    org.jboss.shrinkwrap:shrinkwrap-impl-base;version=1.2.3,\
-    org.jboss.shrinkwrap:shrinkwrap-spi;version=1.2.3,\
+	org.jboss.shrinkwrap:shrinkwrap-impl-base;version=1.2.3,\
+	org.jboss.shrinkwrap:shrinkwrap-spi;version=1.2.3,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
@@ -49,7 +49,7 @@ tested.features: mpfaulttolerance-4.0,\
 	com.ibm.websphere.security;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	com.ibm.ws.microprofile.faulttolerance_repeat_tests;version=latest,\
-    io.openliberty.org.apache.commons.logging;version=latest,\
-    io.openliberty.org.apache.commons.codec;version=latest,\
-    io.openliberty.io.opentelemetry;version=latest,\
-    io.openliberty.mpTelemetry.2.0.thirdparty
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
+	io.openliberty.io.opentelemetry;version=latest,\
+	io.openliberty.mpTelemetry.2.0.thirdparty

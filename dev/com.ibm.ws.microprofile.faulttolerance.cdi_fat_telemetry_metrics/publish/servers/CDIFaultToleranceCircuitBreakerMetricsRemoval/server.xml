@@ -28,7 +28,4 @@
 		<classloader apiTypeVisibility="+third-party" />
 	</application>
 
-	
-	<mpMetrics authentication="false"/>
-
 </server>

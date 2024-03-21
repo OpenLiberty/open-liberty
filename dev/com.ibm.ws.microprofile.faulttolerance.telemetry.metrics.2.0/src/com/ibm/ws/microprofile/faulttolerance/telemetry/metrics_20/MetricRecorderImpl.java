@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 
 /**
- * Records metrics using MP Metrics API 2.0
+ * Records metrics using MP Telemetry API 2.0
  */
 @Trivial
 public class MetricRecorderImpl extends AbstractMetricRecorderImpl {
