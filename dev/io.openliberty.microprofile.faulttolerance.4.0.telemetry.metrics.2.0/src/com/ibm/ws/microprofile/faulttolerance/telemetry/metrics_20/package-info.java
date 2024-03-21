@@ -11,4 +11,4 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 @com.ibm.websphere.ras.annotation.TraceOptions(traceGroup = "FAULTTOLERANCE")
-package com.ibm.ws.microprofile.faulttolerance.telemetry.metrics_20;
+package io.openliberty.microprofile.faulttolerance.telemetry.metrics_20;

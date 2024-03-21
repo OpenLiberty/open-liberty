@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.telemetry.metrics.integration;
+package io.openliberty.microprofile.faulttolerance.telemetry.metrics.integration;
 
 import java.util.function.LongSupplier;
 

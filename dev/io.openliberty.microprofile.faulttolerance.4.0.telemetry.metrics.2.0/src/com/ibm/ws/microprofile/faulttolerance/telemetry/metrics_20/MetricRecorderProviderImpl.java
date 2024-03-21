@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.telemetry.metrics_20;
+package io.openliberty.microprofile.faulttolerance.telemetry.metrics_20;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
@@ -39,7 +39,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
 
-@Component(name = "com.ibm.ws.microprofile.faulttolerance.telemetry.metrics_20.MetricRecorderProviderImpl", service = MetricRecorderProvider.class, configurationPolicy = IGNORE)
+@Component(name = "io.openliberty.microprofile.faulttolerance.telemetry.metrics_20.MetricRecorderProviderImpl", service = MetricRecorderProvider.class, configurationPolicy = IGNORE)
 public class MetricRecorderProviderImpl implements MetricRecorderProvider {
 
     private final static SecureAction secureAction = AccessController.doPrivileged(SecureAction.get());

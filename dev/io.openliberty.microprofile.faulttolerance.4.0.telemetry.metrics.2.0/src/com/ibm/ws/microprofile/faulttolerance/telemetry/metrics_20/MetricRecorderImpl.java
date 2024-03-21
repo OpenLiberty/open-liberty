@@ -10,10 +10,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.telemetry.metrics_20;
+package io.openliberty.microprofile.faulttolerance.telemetry.metrics_20;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.microprofile.faulttolerance.telemetry.metrics.integration.AbstractMetricRecorderImpl;
+import io.openliberty.microprofile.faulttolerance.telemetry.metrics.integration.AbstractMetricRecorderImpl;
 
 import io.opentelemetry.api.metrics.Meter;
 

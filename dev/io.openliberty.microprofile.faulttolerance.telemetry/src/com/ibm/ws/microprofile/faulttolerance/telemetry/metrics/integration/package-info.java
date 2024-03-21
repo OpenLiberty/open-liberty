@@ -15,6 +15,6 @@
  */
 @org.osgi.annotation.versioning.Version("1.0")
 @TraceOptions(traceGroup = "TELEMETRY")
-package com.ibm.ws.microprofile.faulttolerance.telemetry.metrics.integration;
+package io.openliberty.microprofile.faulttolerance.telemetry.metrics.integration;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

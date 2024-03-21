@@ -4,7 +4,7 @@ IBM-Provision-Capability: \
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.mpFaultTolerance-4.0))", \
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.mpTelemetry-2.0))"
 IBM-Install-Policy: when-satisfied
--bundles=com.ibm.ws.microprofile.faulttolerance.telemetry, \
- com.ibm.ws.microprofile.faulttolerance.telemetry.metrics.2.0
+-bundles=io.openliberty.microprofile.faulttolerance.telemetry, \
+ io.openliberty.microprofile.faulttolerance.4.0.telemetry.metrics.2.0
 kind=ga
 edition=core
