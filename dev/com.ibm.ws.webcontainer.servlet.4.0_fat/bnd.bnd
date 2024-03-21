@@ -37,7 +37,8 @@ src: \
     test-applications/ResponseHeadersTest.war/src,\
     test-applications/DeferServletRequestListenerDestroyOnErrorTest.war/src,\
     test-applications/TestX590EncodedCert.war/src,\
-    test-applications/TestProgrammaticListenerAddition.jar/src
+    test-applications/TestProgrammaticListenerAddition.jar/src,\
+    test-applications/PartitionedTest.war/src
 
 fat.project: true
 
