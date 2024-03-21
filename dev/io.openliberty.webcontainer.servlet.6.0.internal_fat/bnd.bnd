@@ -22,7 +22,8 @@ src: \
     test-applications/SimpleTest.war/src,\
     test-applications/URIPathCanonicalizationTest.war/src,\
     test-applications/URIPathCanonicalInvalidWebXmlTest.war/src,\
-    test-applications/URIPathCanonicalWebXmlTest.war/src
+    test-applications/URIPathCanonicalWebXmlTest.war/src,\
+    test-applications/PartitionedServlet60Test.war/src
 
 fat.project: true
 
