@@ -2527,6 +2527,41 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method with cursor-based pagination that does not specify parenthesis
+     * in the WHERE clause.
+     */
+    @Test
+    public void testParenthesisInsertionForCursorPagination() {
+        PageRequest<?> page1Request = PageRequest.ofSize(3).asc("name").asc(ID);
+        CursoredPage<Business> page1 = mixed.withZipCodeIn(55901, 55904, page1Request);
+
+        assertEquals(List.of("Benike Construction", "Crenlo", "Home Federal Savings Bank"),
+                     page1.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(true, page1.hasNext());
+
+        CursoredPage<Business> page2 = mixed.withZipCodeIn(55901, 55904, page1.nextPageRequest());
+
+        assertEquals(List.of("IBM", "Metafile", "Olmsted Medical"),
+                     page2.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(true, page1.hasNext());
+
+        CursoredPage<Business> page3 = mixed.withZipCodeIn(55901, 55904, page2.nextPageRequest());
+
+        assertEquals(List.of("RAC", "Think Bank"),
+                     page3.stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(false, page3.hasNext());
+    }
+
+    /**
      * Tests lifecycle methods returning a single record.
      */
     @Test

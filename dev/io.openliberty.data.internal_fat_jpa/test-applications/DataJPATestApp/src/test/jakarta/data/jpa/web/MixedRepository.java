@@ -55,4 +55,7 @@ public interface MixedRepository { // Do not inherit from a supertype
 
     @Query("FROM Business WHERE location.address.city=:city AND location.address.state=:state")
     CursoredPage<Business> locatedIn(String city, String state, PageRequest<Business> pageRequest);
+
+    @Query("FROM Business WHERE location.address.zip=?1 OR location.address.zip=?2")
+    CursoredPage<Business> withZipCodeIn(int zip1, int zip2, PageRequest<?> pageRequest);
 }
