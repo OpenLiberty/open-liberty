@@ -22,6 +22,7 @@ import javax.net.ssl.SSLSocketFactory;
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
+import com.ibm.ws.ssl.protocol.LibertySSLSocketFactory;
 
 /*
  * A wrapper class that binds Liberty's SSL configuration in the {@code server.xml} to the
@@ -38,6 +39,25 @@ public class LibertySSLSocketFactoryWrapper extends SSLSocketFactory {
     private SSLSocketFactory delegate = null;
 
     private final Properties props;
+
+    //new
+    public LibertySSLSocketFactoryWrapper() {
+        delegate = new LibertySSLSocketFactory();
+        props = SSLPropertyUtils.lookupProperties();
+        //to be able to compile. 
+    }
+
+    //new
+    public LibertySSLSocketFactoryWrapper(String alias) {
+        delegate = new LibertySSLSocketFactory();
+        props = SSLPropertyUtils.lookupProperties(alias);
+    }
+
+    //new
+    public LibertySSLSocketFactoryWrapper(Properties props) {
+        delegate = new LibertySSLSocketFactory();
+        this.props = props; 
+    }
 
     public LibertySSLSocketFactoryWrapper(SSLSocketFactory sslSocketFactory) {
         delegate = sslSocketFactory;
