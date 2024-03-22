@@ -970,8 +970,15 @@ public class DataJPATestServlet extends FATServlet {
         o3.purchasedBy = "testEntitiesAsParameters-Customer3";
         o3.purchasedOn = OffsetDateTime.now();
         o3.total = 30.99f;
-        orders.insert(o3);
+        o3 = orders.insert(o3);
+
+        assertNotNull(o3.id);
+        assertEquals("testEntitiesAsParameters-Customer3", o3.purchasedBy);
+        assertEquals(30.99f, o3.total, 0.001f);
+        int o3_v1 = o3.versionNum;
+
         o3 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer3").orElseThrow();
+        assertEquals(o3_v1, o3.versionNum);
 
         PurchaseOrder o4 = new PurchaseOrder();
         o4.purchasedBy = "testEntitiesAsParameters-Customer4";
@@ -1089,10 +1096,25 @@ public class DataJPATestServlet extends FATServlet {
         o8.purchasedOn = OffsetDateTime.now();
         o8.total = 80.99f;
 
-        orders.insertAll(Set.of(o7, o8));
+        List<PurchaseOrder> inserted = orders.insertAll(List.of(o7, o8));
+
+        assertEquals(2, inserted.size());
+        assertNotNull(o7 = inserted.get(0));
+        assertNotNull(o7.id);
+        assertEquals("testEntitiesAsParameters-Customer7", o7.purchasedBy);
+        assertEquals(70.99f, o7.total, 0.001f);
+        int o7_v1 = o7.versionNum;
+        assertNotNull(o8 = inserted.get(1));
+        assertNotNull(o8.id);
+        assertEquals("testEntitiesAsParameters-Customer8", o8.purchasedBy);
+        assertEquals(80.99f, o8.total, 0.001f);
+        int o8_v1 = o8.versionNum;
 
         o7 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer7").orElseThrow();
         o8 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer8").orElseThrow();
+
+        assertEquals(o7_v1, o7.versionNum);
+        assertEquals(o8_v1, o8.versionNum);
 
         o7.total = 77.99f;
         o8.total = 88.99f;
@@ -1583,7 +1605,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(false, slice2.hasNext());
 
-        Cursor springfieldMO = slice2.getCursor(1);
+        Cursor springfieldMO = slice2.cursor(1);
         pagination = pagination.size(3).beforeCursor(springfieldMO);
 
         CursoredPage<City> beforeSpringfieldMO = cities.findByStateNameNotNullOrderById(pagination);

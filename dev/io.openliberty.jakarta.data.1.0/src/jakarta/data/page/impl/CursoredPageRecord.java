@@ -33,7 +33,7 @@ public record CursoredPageRecord<T>(
                 implements CursoredPage<T> {
 
     @Override
-    public Cursor getCursor(int i) {
+    public Cursor cursor(int i) {
         return cursors.get(i);
     }
 

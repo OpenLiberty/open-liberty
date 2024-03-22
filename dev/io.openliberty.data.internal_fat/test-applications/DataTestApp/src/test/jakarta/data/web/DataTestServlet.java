@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.Year;
 import java.time.ZoneOffset;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -908,7 +909,7 @@ public class DataTestServlet extends FATServlet {
         r4.stop = OffsetDateTime.of(2023, 5, 1, 9, 30, 0, 0, MDT);
         r4.setLengthInMinutes(30);
 
-        reservations.saveAll(Set.of(r1, r2, r3, r4));
+        reservations.saveAll(List.of(r1, r2, r3, r4));
 
         // ElementCount keyword
 
@@ -2642,7 +2643,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(29L, 43L, 7L, 11L, 13L, 19L, 37L, 41L),
                              page2.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        PageRequest.Cursor cursor7 = page2.getCursor(2);
+        PageRequest.Cursor cursor7 = page2.cursor(2);
         PageRequest<?> paginationBefore7 = PageRequest.ofSize(8).beforeCursor(cursor7);
 
         CursoredPage<Prime> page1 = primes.findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(0L, 45L, paginationBefore7);
@@ -2650,7 +2651,7 @@ public class DataTestServlet extends FATServlet {
         assertIterableEquals(List.of(2L, 31L, 23L, 29L, 43L),
                              page1.stream().map(p -> p.numberId).collect(Collectors.toList()));
 
-        PageRequest.Cursor cursor13 = page2.getCursor(4);
+        PageRequest.Cursor cursor13 = page2.cursor(4);
         PageRequest<?> paginationAfter13 = PageRequest.ofPage(3).afterCursor(cursor13);
 
         CursoredPage<Prime> page3 = primes.findByNumberIdBetweenOrderByEvenDescSumOfBitsDescIdAsc(0L, 45, paginationAfter13);
@@ -2660,7 +2661,7 @@ public class DataTestServlet extends FATServlet {
 
         // test .equals method
         assertEquals(cursor13, cursor13);
-        assertEquals(cursor13, page2.getCursor(4));
+        assertEquals(cursor13, page2.cursor(4));
         assertEquals(false, cursor13.equals(cursor7));
 
         // test .hashCode method
@@ -3700,12 +3701,34 @@ public class DataTestServlet extends FATServlet {
     public void testRecordCrudRepositoryMethods() {
         receipts.deleteByTotalLessThan(1000000.0f);
 
-        receipts.insert(new Receipt(1200L, "C0002-12-002", 102.20f));
+        Receipt r = receipts.insert(new Receipt(1200L, "C0002-12-002", 102.20f));
+        assertNotNull(r);
+        assertEquals(1200L, r.purchaseId());
+        assertEquals("C0002-12-002", r.customer());
+        assertEquals(102.20f, r.total(), 0.001f);
 
-        receipts.insertAll(Set.of(new Receipt(1300L, "C0033-13-003", 130.13f),
-                                  new Receipt(1400L, "C0040-14-004", 14.40f),
-                                  new Receipt(1500L, "C0005-15-005", 105.50f),
-                                  new Receipt(1600L, "C0006-16-006", 600.16f)));
+        List<Receipt> inserted = receipts.insertAll(List.of(new Receipt(1300L, "C0033-13-003", 130.13f),
+                                                            new Receipt(1400L, "C0040-14-004", 14.40f),
+                                                            new Receipt(1500L, "C0005-15-005", 105.50f),
+                                                            new Receipt(1600L, "C0006-16-006", 600.16f)));
+
+        assertEquals(4, inserted.size());
+        assertNotNull(r = inserted.get(0));
+        assertEquals(1300L, r.purchaseId());
+        assertEquals("C0033-13-003", r.customer());
+        assertEquals(130.13f, r.total(), 0.001f);
+        assertNotNull(r = inserted.get(1));
+        assertEquals(1400L, r.purchaseId());
+        assertEquals("C0040-14-004", r.customer());
+        assertEquals(14.40f, r.total(), 0.001f);
+        assertNotNull(r = inserted.get(2));
+        assertEquals(1500L, r.purchaseId());
+        assertEquals("C0005-15-005", r.customer());
+        assertEquals(105.50f, r.total(), 0.001f);
+        assertNotNull(r = inserted.get(3));
+        assertEquals(1600L, r.purchaseId());
+        assertEquals("C0006-16-006", r.customer());
+        assertEquals(600.16f, r.total(), 0.001f);
 
         try {
             receipts.insert(new Receipt(1200L, "C0002-10-002", 22.99f));
@@ -3715,15 +3738,15 @@ public class DataTestServlet extends FATServlet {
         }
 
         // Ensure that the entity that already exists was not modified by insert
-        Receipt r = receipts.findById(1200L).orElseThrow();
+        r = receipts.findById(1200L).orElseThrow();
         assertEquals(1200L, r.purchaseId());
         assertEquals("C0002-12-002", r.customer());
         assertEquals(102.20f, r.total(), 0.001f);
 
         try {
-            receipts.insertAll(Set.of(new Receipt(1700L, "C0017-17-007", 177.70f),
-                                      new Receipt(1500L, "C0055-15-005", 55.55f),
-                                      new Receipt(1800L, "C0008-18-008", 180.18f)));
+            receipts.insertAll(List.of(new Receipt(1700L, "C0017-17-007", 177.70f),
+                                       new Receipt(1500L, "C0055-15-005", 55.55f),
+                                       new Receipt(1800L, "C0008-18-008", 180.18f)));
             fail("insertAll must fail when one of the entities has an Id that already exists.");
         } catch (EntityExistsException x) {
             // expected
@@ -3756,8 +3779,8 @@ public class DataTestServlet extends FATServlet {
             // pass
         }
 
-        Iterable<Receipt> updates = receipts.updateAll(List.of(new Receipt(1400L, "C0040-14-044", 14.41f),
-                                                               new Receipt(1200L, "C0002-12-002", 112.20f)));
+        List<Receipt> updates = receipts.updateAll(List.of(new Receipt(1400L, "C0040-14-044", 14.41f),
+                                                           new Receipt(1200L, "C0002-12-002", 112.20f)));
         Iterator<Receipt> updatesIt = updates.iterator();
         assertEquals(true, updatesIt.hasNext());
         updated = updatesIt.next();
@@ -3850,10 +3873,17 @@ public class DataTestServlet extends FATServlet {
 
         r1.invitees = Set.of("testRepository-1a@example.org", "testRepository-1b@example.org", "testRepository-1c@example.org");
 
-        Iterable<Reservation> insertedOrUpdated = reservations.saveAll(new Iterable<>() {
+        List<Reservation> insertedOrUpdated = reservations.saveAll(new AbstractList<>() {
+            List<Reservation> list = Arrays.asList(r1, r2, r3, r4);
+
             @Override
-            public Iterator<Reservation> iterator() {
-                return Arrays.asList(r1, r2, r3, r4).iterator();
+            public Reservation get(int index) {
+                return list.get(index);
+            }
+
+            @Override
+            public int size() {
+                return list.size();
             }
         });
 
@@ -4789,7 +4819,7 @@ public class DataTestServlet extends FATServlet {
         r4.stop = OffsetDateTime.of(2022, 6, 3, 10, 0, 0, 0, CDT);
         r4.setLengthInMinutes(60);
 
-        reservations.saveAll(Set.of(r1, r2, r3, r4));
+        reservations.saveAll(List.of(r1, r2, r3, r4));
 
         ReservedTimeSlot[] reserved = reservations.findStartAndStopByLocationAndStartBetweenOrderByStart("30-2 C206",
                                                                                                          OffsetDateTime.of(2022, 6, 3, 0, 0, 0, 0, CDT),
@@ -5126,7 +5156,7 @@ public class DataTestServlet extends FATServlet {
         pagination = PageRequest.ofSize(6)
                         .sortBy(Sort.desc("binaryDigits"))
                         .withoutTotal()
-                        .beforeCursor(page3.getCursor(1)); // before the middle element of page 3
+                        .beforeCursor(page3.cursor(1)); // before the middle element of page 3
 
         CursoredPage<Prime> page = primes.findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(52L, pagination);
 

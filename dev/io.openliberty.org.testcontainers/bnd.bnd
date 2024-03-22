@@ -27,9 +27,13 @@ Bundle-Description: FAT Testcontainer Bundle; version=${bVersion}
 Export-Package: \
 	com.github.*;version="${dockerJavaVersion}",\
 	com.sun.jna.*;version="5.8.0",\
-	org.apache.commons.*;version="1.24.0",\
+	org.apache.commons.codec.*;version="1.16.1",\
+	org.apache.commons.compress.*;version="1.26.0",\
+	org.apache.commons.io.*;version="2.15.1",\
 	org.testcontainers.*;version="${testContainerVersion}";-split-package:=merge-last,\
-	org.rnorth.*;version="1.0.8"
+	org.rnorth.*;version="1.0.8",\
+	
+	
 
 #Ensure that /META-INF/service folder from testcontainers core project is included in bundle.
 # This will ensure that the other docker container strategies are accessible at runtime.
@@ -53,6 +57,8 @@ generate.replacement: true
 	com.github.docker-java:docker-java-transport;version=${dockerJavaVersion},\
 	com.github.docker-java:docker-java-transport-zerodep;version=${dockerJavaVersion},\
 	com.ibm.ws.org.apache.commons.compress;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest, \
+	io.openliberty.org.apache.commons.codec;version=latest, \
 	org.testcontainers:testcontainers;version=${testContainerVersion},\
 	org.testcontainers:database-commons;version=${testContainerVersion},\
 	org.testcontainers:jdbc;version=${testContainerVersion},\

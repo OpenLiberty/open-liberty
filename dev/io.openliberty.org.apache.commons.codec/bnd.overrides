@@ -1,7 +1,7 @@
 -include= ~../cnf/resources/bnd/rejar.props
-bVersion=1.15
+bVersion=1.16
 
 Bundle-SymbolicName: io.openliberty.org.apache.commons.codec
 
 Include-Resource: \
-   @${repo;commons-codec:commons-codec;1.15;EXACT}!/!META-INF/maven/*
+   @${repo;commons-codec:commons-codec;1.16.1;EXACT}!/!META-INF/maven/*
