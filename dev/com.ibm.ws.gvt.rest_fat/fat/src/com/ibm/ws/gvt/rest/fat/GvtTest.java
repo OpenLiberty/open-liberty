@@ -29,7 +29,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
@@ -60,9 +59,9 @@ public class GvtTest extends BaseTestCase {
     public void testUnicodeForNotification() throws Exception {
         final String methodName = "testUnicodeForNotification()";
 
-        contentString = HttpUtils.postRequest(server, ENDPOINT_NOTIFICATION, 200, "application/json", USER1_NAME, USER1_PASSWORD,
-                                              "application/json",
-                                              DELIVERY_INTERVAL);
+        contentString = GvtUtils.performPostGvt(server, ENDPOINT_NOTIFICATION, 200, "application/json", USER1_NAME, USER1_PASSWORD,
+                                                "application/json",
+                                                DELIVERY_INTERVAL);
         /*
          * Check response is empty or not.
          */
@@ -79,9 +78,9 @@ public class GvtTest extends BaseTestCase {
     public void testUnicodeForMbeans() throws Exception {
         final String methodName = "testUnicodeForMbeans()";
 
-        contentString = HttpUtils.postRequest(server, ENDPOINT_MBEAN, 200, "application/json", USER1_NAME, USER1_PASSWORD,
-                                              "application/json",
-                                              CLASS_NAME);
+        contentString = GvtUtils.performPostGvt(server, ENDPOINT_MBEAN, 200, "application/json", USER1_NAME, USER1_PASSWORD,
+                                                "application/json",
+                                                CLASS_NAME);
         /*
          * Check response is empty or not.
          */
@@ -92,7 +91,7 @@ public class GvtTest extends BaseTestCase {
     @Test
     public void testUTF8() throws Exception {
 
-        HttpURLConnection con = HttpUtils.getHttpConnectionForUTF(server);
+        HttpURLConnection con = GvtUtils.getHttpConnectionForUTF(server);
 
         assertEquals(200, con.getResponseCode());
 
