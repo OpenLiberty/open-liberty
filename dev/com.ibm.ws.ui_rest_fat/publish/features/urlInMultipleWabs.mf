@@ -7,8 +7,8 @@ Subsystem-Type: osgi.subsystem.feature
 Subsystem-Category: adminCenter
 Subsystem-Icon: icons/urlInMultipleWabicon48.png
 Subsystem-Description: This is the description for uri in multiple wabs. It is used to test that we can read the Tool URL from multiple wabs in the subsystem content manifest header.
-Subsystem-Content: com.ibm.ws.appserver.testbundle1; version="[1,1.0.100)",
- com.ibm.ws.appserver.basicbundle1; version="[1,1.0.100)"
+Subsystem-Content: com.ibm.ws.appserver.testbundle1; version="[1,1.1)",
+ com.ibm.ws.appserver.basicbundle1; version="[1,1.1)"
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.adminCenter-1.0))"
 IBM-Install-Policy: manual
 Subsystem-Vendor: IBM
