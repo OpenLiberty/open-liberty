@@ -128,7 +128,11 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         }
 
         processVarFiles((p, c) -> {
-            if (c.getName().endsWith(".properties")) {
+            if (c.getName().endsWith(".properties") && p.equals(c)) {
+                // Only process files as properties files if the p == c, indicating this file is in the root variables directory;
+                // Implying that we only process files as properties files if they are in the root variables directory;
+                // Otherwise they are read as a normal variable file with a single value
+                // TODO This was the original behavior, but not sure if it was the intended behavior
                 try (FileInputStream fis = new FileInputStream(c)) {
                     Properties props = new Properties();
                     props.load(fis);
