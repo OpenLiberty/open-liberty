@@ -37,8 +37,7 @@ public interface MixedRepository { // Do not inherit from a supertype
     @Query("FROM City")
     List<City> all(Order<City> sortBy);
 
-    @Query(value = "FROM Business WHERE location.address.zip = location.address.zip",
-           count = "FROM Business")
+    @Query(value = "FROM Business WHERE location.address.zip = location.address.zip")
     Page<Business> findAll(PageRequest<Business> pageRequest);
 
     @OrderBy("name")
@@ -49,8 +48,7 @@ public interface MixedRepository { // Do not inherit from a supertype
 
     LinkedList<Unpopulated> findBySomethingStartsWith(String prefix);
 
-    @Query(value = "WHERE location.address.city=?1",
-           count = "FROM Business WHERE location.address.city=?1")
+    @Query(value = "WHERE location.address.city=?1")
     Page<Business> locatedIn(String city, PageRequest<Business> pageRequest);
 
     @Query("FROM Business WHERE location.address.city=:city AND location.address.state=:state")
