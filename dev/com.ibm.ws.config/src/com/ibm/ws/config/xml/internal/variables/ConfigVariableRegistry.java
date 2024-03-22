@@ -166,10 +166,10 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
                 // detect modified and created var files
                 processVarFiles((p, c) -> {
                     Long existing = trackedFiles.remove(c);
-                    if (existing != null && !existing.equals(reduceTimestampPrecision(c.lastModified()))) {
-                        modifiedFiles.add(c);
-                    } else {
+                    if (existing == null) {
                         createdFiles.add(c);
+                    } else if (!existing.equals(reduceTimestampPrecision(c.lastModified()))) {
+                        modifiedFiles.add(c);
                     }
                 });
                 // remaining ones are deleted var files
