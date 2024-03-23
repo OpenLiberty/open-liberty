@@ -238,8 +238,7 @@ public interface Primes {
     boolean isFoundWith(long numberId, String hex);
 
     // TODO after JDQL SELECT is added: "Select name Where length(romanNumeral) * 2 >= length(name) Order By name Asc",
-    @Query(value = "Where numberId < 50 and romanNumeral is not null and length(romanNumeral) * 2 >= length(name) Order By name Desc",
-           count = "WHERE numberId < 50 and romanNumeral is not null and length ( name ) \r\n\t\t <= length(romanNumeral)*2")
+    @Query(value = "Where numberId < 50 and romanNumeral is not null and length(romanNumeral) * 2 >= length(name) Order By name Desc")
     Page<Prime> lengthBasedQuery(PageRequest<Prime> pageRequest);
 
     @Find
@@ -301,8 +300,7 @@ public interface Primes {
     @Query("SELECT o.name FROM Prime o WHERE o.numberId < ?1")
     Page<String> namesBelow(long numBelow, PageRequest<Prime> pageRequest);
 
-    @Query(value = "SELECT NEW java.util.AbstractMap.SimpleImmutableEntry(p.numberId, p.name) FROM Prime p WHERE p.numberId <= ?1 ORDER BY p.name",
-           count = "SELECT COUNT(p) FROM Prime p WHERE p.numberId <= ?1")
+    @Query(value = "SELECT NEW java.util.AbstractMap.SimpleImmutableEntry(p.numberId, p.name) FROM Prime p WHERE p.numberId <= ?1 ORDER BY p.name")
     Page<Map.Entry<Long, String>> namesByNumber(long maxNumber, PageRequest<?> pagination);
 
     @Query("SELECT prime.name, prime.hex FROM  Prime  prime  WHERE prime.numberId <= ?1")
