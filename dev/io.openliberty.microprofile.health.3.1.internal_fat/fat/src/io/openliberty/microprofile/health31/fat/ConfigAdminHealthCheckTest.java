@@ -65,7 +65,8 @@ public class ConfigAdminHealthCheckTest {
 
     private static final String MESSAGE_LOG = "logs/messages.log";
 
-    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W", "CWWKE1106W", "CWWKE1107W" };
+    private static final String[] EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWMH0053W", "CWMMH0052W", "CWMMH0053W", "CWWKE1106W", "CWWKE1107W", "CWMMH0054W",
+                                                        "SRVE0302E" };
     private static final String[] FAILS_TO_START_EXPECTED_FAILURES = { "CWWKE1102W", "CWWKE1105W", "CWMH0052W", "CWM*H0053W", "CWMMH0052W", "CWMMH0053W", "CWWKZ0060E",
                                                                        "CWWKZ0002E", "CWWKE1106W", "CWWKE1107W" };
 
@@ -149,6 +150,26 @@ public class ConfigAdminHealthCheckTest {
         server1.stopServer(EXPECTED_FAILURES);
         server2.stopServer(EXPECTED_FAILURES);
         server3.stopServer(FAILS_TO_START_EXPECTED_FAILURES);
+    }
+
+    public void setupReadinessTest(LibertyServer server, String testName) throws Exception {
+        log("setupClass", testName + " - Deploying the MultiWar App into the apps directory and starting the server.");
+
+        WebArchive war1 = ShrinkHelper.buildDefaultApp(DELAYED_APP_NAME, "io.openliberty.microprofile.health31.delayed.health.check.app");
+        WebArchive war2 = ShrinkHelper.buildDefaultApp(APP_NAME, "io.openliberty.microprofile.health31.config.admin.dropins.checks.app");
+        EnterpriseArchive testEar = ShrinkWrap.create(EnterpriseArchive.class, "MultiWarApps.ear");
+        testEar.addAsModule(war2);
+        testEar.addAsModule(war1);
+
+        ShrinkHelper.exportDropinAppToServer(server, testEar, DeployOptions.DISABLE_VALIDATION);
+
+        if (!server.isStarted())
+            server.startServer();
+
+        String line = server.waitForStringInLog("CWWKT0016I: Web application available.*DelayedHealthCheckApp*");
+        log("setupReadinessTest - " + testName, "Web Application available message found: " + line);
+        assertNotNull("The CWWKT0016I Web Application available message did not appear in messages.log", line);
+
     }
 
     /*
@@ -293,19 +314,15 @@ public class ConfigAdminHealthCheckTest {
     @Test
     @SkipForRepeat({ "mpHealth-2.0", "mpHealth-3.0" })
     public void testReadinessEndpointOnServerStart() throws Exception {
+        setupReadinessTest(server1, "testReadinessEndpointOnServerStart");
         log("testReadinessEndpointOnServerStart", "Begin execution of testReadinessEndpointOnServerStart");
+        server1.setMarkToEndOfLog();
+        server1.stopServer(EXPECTED_FAILURES);
 
         class StartServerOnThread extends Thread {
             @Override
             public void run() {
                 try {
-                    WebArchive war1 = ShrinkHelper.buildDefaultApp(DELAYED_APP_NAME, "io.openliberty.microprofile.health31.delayed.health.check.app");
-                    WebArchive war2 = ShrinkHelper.buildDefaultApp(APP_NAME, "io.openliberty.microprofile.health31.config.admin.dropins.checks.app");
-                    EnterpriseArchive testEar = ShrinkWrap.create(EnterpriseArchive.class, "MultiWarApps.ear");
-                    testEar.addAsModule(war2);
-                    testEar.addAsModule(war1);
-
-                    ShrinkHelper.exportDropinAppToServer(server1, testEar);
                     server1.startServer();
                 } catch (Exception e) {
                     assertTrue("Failure to start server on a seperate thread.", server1.isStarted());
