@@ -17,11 +17,14 @@
 package io.grpc.servlet;
 
 import static io.grpc.servlet.ServletServerStream.toHexString;
+import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINEST;
 import static java.util.logging.Level.SEVERE;
+import static java.util.logging.Level.WARNING;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+
 
 import io.grpc.InternalLogId;
 import io.grpc.Status;
@@ -39,6 +42,7 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nullable;
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletResponse;
 
 /** Handles write actions from the container thread and the application thread. */
 @Trivial
@@ -75,6 +79,7 @@ final class AsyncServletOutputStreamWriter {
   private final BiFunction<byte[], Integer, ActionItem> writeAction;
   private final ActionItem flushAction;
   private final ActionItem completeAction;
+  private final ActionItem completeWithFlushAction;
   private final BooleanSupplier isReady;
 
   /**
@@ -124,7 +129,43 @@ final class AsyncServletOutputStreamWriter {
             logger.log(FINE, "[{0}] call completed", logId);
           });
     };
-    
+
+    this.completeWithFlushAction = () -> {
+        logger.log(FINE, "[{0}] call is completing", logId);
+        transportState.runOnTransportThread(
+            () -> {
+              // We would like to do a test in here on the same thread that sets complete to true (below and elsewhere).
+              // The test is the same used to fail the getResponse in AsyncContextImpl ie.
+              // if (!asyncContext.isComplete()&&!asyncContext.isCompletePending()&&!asyncContext.isDispatchPending()) 
+              // but we do not have access to the implementation interface here.
+              // One of the gRPC FAT tests will test RESOURCE_EXHAUSTED by setting the gRPC maximum message size
+              // low and then sending a 'too large' messaged that cannot be deFramed - when the stream is closed
+              // and gets here, it has already been cancelled and we will not be able to get the Response, instead
+              // an illegal state is thrown. It is only this one error path test case (or an equivalent case)
+              // that will result in the IllegalStateException
+              try {
+                ServletResponse r = asyncContext.getResponse();
+                if(r != null ) {
+                  r.flushBuffer();
+                }
+              }catch( java.lang.IllegalStateException ise ) {
+                // We only get here when we are completing when no response is present, for example Sink.cancel has
+                // been called when processing a deframing error. e.g:
+                // io.grpc.servlet.ServletServerStream$ServletTransportState.deframeFailed(ServletServerStream.java:171)
+                // This is not a code error in the server, but the server is responding to a request
+                // that could not be deFramed and that error has already been logged.
+                // (The gRPC response error is placed in a metadata header)
+                logger.log(INFO, "[{0}]Not flushing gRPC response buffer as response body is cancelled, see earlier gRPC protocol error ", logId);
+              }catch( IOException ioe ) {
+            	  logger.log(WARNING, String.format("[{%s}] IOException when flushBuffer", logId), ioe);
+              }
+
+              transportState.complete();
+              asyncContext.complete();
+              logger.log(FINE, "[{0}] call completed", logId);
+            });
+      };
+
     this.isReady = () -> outputStream.isReady();
 
   };
@@ -143,6 +184,16 @@ final class AsyncServletOutputStreamWriter {
   void complete() {
     try {
       runOrBuffer(completeAction);
+    } catch (IOException e) {
+      // actually completeAction does not throw
+      throw Status.fromThrowable(e).asRuntimeException();
+    }
+  }
+
+  /** Called from application thread. */
+  void completeWithFlush() {
+    try {
+      runOrBuffer(completeWithFlushAction);
     } catch (IOException e) {
       // actually completeAction does not throw
       throw Status.fromThrowable(e).asRuntimeException();

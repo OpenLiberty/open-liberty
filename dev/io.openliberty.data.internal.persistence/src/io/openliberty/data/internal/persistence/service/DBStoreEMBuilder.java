@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -107,13 +107,16 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
      * Locates an existing databaseStore or creates a new one corresponding to the
      * dataStore name that is specified on the Repository annotation.
      *
-     * @param dataStore             dataStore name specified on the Repository annotation.
+     * @param dataStore             dataStore name specified on the Repository annotation, or
+     *                                  if obtained from CDI then the config.displayId of a dataSource.
+     * @param isConfigDisplayId     indicates if the dataStore name is a config.displayId unique identifier of a dataSource.
      * @param isJNDIName            indicates if the dataStore name is a JNDI name (begins with java: or is inferred to be java:comp/env/...)
      * @param type                  AnnotatedType for the interface that is annotated with the Repository annotation.
      * @param repositoryClassLoader class loader for repositories.
      * @param provider              OSGi service that provides the CDI extension.
      */
-    public DBStoreEMBuilder(String dataStore, boolean isJNDIName, AnnotatedType<?> type, ClassLoader repositoryClassLoader,
+    public DBStoreEMBuilder(String dataStore, boolean isConfigDisplayId, boolean isJNDIName,
+                            AnnotatedType<?> type, ClassLoader repositoryClassLoader,
                             DataExtensionProvider provider) {
         super(repositoryClassLoader);
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -154,7 +157,9 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
             try {
                 BundleContext bc = FrameworkUtil.getBundle(DatabaseStore.class).getBundleContext();
                 ServiceReference<ResourceFactory> dsRef = null;
-                if (isJNDIName) {
+                if (isConfigDisplayId) {
+                    dbStoreId = dataStore + "/databaseStore"; // {data source config.displayId}/databaseStore
+                } else if (isJNDIName) {
                     // Look for DataSourceDefinition with jndiName and application/module/component matching
                     String filter = "(&(service.factoryPid=com.ibm.ws.jdbc.dataSource)" + //
                                     (javaApp || javaModule || javaComp ? FilterUtils.createPropertyFilter("application", application) : "") + //
@@ -227,7 +232,9 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
                     svcProps.put("id", dbStoreId);
                     svcProps.put("config.displayId", dbStoreId);
 
-                    if (dataSourceId == null)
+                    if (isConfigDisplayId)
+                        svcProps.put("DataSourceFactory.target", "(config.displayId=" + dataStore + ')');
+                    else if (dataSourceId == null)
                         svcProps.put("DataSourceFactory.target", "(jndiName=" + dsRef.getProperty("jndiName") + ')');
                     else
                         svcProps.put("DataSourceFactory.target", "(id=" + dataSourceId + ')');
@@ -489,7 +496,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         Collection<ServiceReference<DatabaseStore>> refs = bc.getServiceReferences(DatabaseStore.class,
                                                                                    FilterUtils.createPropertyFilter("id", databaseStoreId));
         if (refs.isEmpty())
-            throw new IllegalArgumentException("Not found: " + databaseStoreId);
+            throw new RuntimeException("Not found: " + databaseStoreId);
 
         ServiceReference<DatabaseStore> ref = refs.iterator().next();
         String tablePrefix = (String) ref.getProperty("tablePrefix");

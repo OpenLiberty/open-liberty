@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2023 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1578,10 +1578,7 @@ uncaught.exception.during.AsyncListener.onComplete.explanation=AsyncListener car
 uncaught.exception.during.AsyncListener.onComplete.useraction=Verifica\u0163i codul surs\u0103 AsyncListener \u015fi istoricele de server pentru cauza r\u0103d\u0103cin\u0103 a erorii de aplica\u0163ie.
 
 # Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
-# 0001 - 0199 for Base
-# 0200 - 0299 for Servlet 3.0
-# 0300 - 0399 for Servlet 3.1
-# 0400 - 0499 for Servlet 4
+# Sequential increment the message number for all new releases and services
 
 #name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
 #name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
@@ -1624,3 +1621,15 @@ uri.has.backslash.character=URI-ul are un caracter [%5C] de backslash, codat sau
 multipart.file.count.max.exceeded=CWWWC0006E: Cererea con\u021binea mai multe fi\u0219iere pentru \u00eenc\u0103rcare dec\u00e2t este permis. Num\u0103rul maxim de fi\u0219iere este [{0}].
 multipart.file.count.max.exceeded.explanation=Num\u0103rul de fi\u0219iere care sunt \u00eenc\u0103rcate de cererea multipart/form-data a dep\u0103\u0219it limita stabilit\u0103.
 multipart.file.count.max.exceeded.useraction=M\u0103ri\u021bi num\u0103rul maxim de fi\u0219iere care pot fi \u00eenc\u0103rcate pentru o cerere, prin setarea propriet\u0103\u021bii personalizate maxFileCount webContainer \u00een fi\u0219ierul server.xml. Valoarea implicit\u0103 este de 5000. Pentru \u00eenc\u0103rca un num\u0103r nelimitat de fi\u0219iere, seta\u021bi valoarea la -1.
+
+cannot.sendRedirect.response.already.committed=CWWWC0007E: R\u0103spunsul " sendRedirect este permis dup\u0103 ce r\u0103spunsul este comis.
+cannot.sendRedirect.response.already.committed.explanation=C\u00e2nd un r\u0103spuns este comis, nu poate trimite o redirec\u021bionare.
+cannot.sendRedirect.response.already.committed.useraction=Verifica\u021bi logica de la sendRedirect pentru a v\u0103 asigura c\u0103 r\u0103spunsul nu este comis, fie manual, fie automat, \u00eenainte sendRedirect fie numit.
+
+redirect.location.cannot.be.null=CWWWC0008E: Loca\u021bia redirec\u021bion\u0103rii nu poate fi nul\u0103.
+redirect.location.cannot.be.null.explanation=URL-ul de loca\u021bie redirec\u021bionare trebuie s\u0103 fie o rud\u0103 sau un URL absolut. 
+redirect.location.cannot.be.null.useraction=Actualiza\u021bi loca\u021bia redirec\u021bionare prin specificarea unei valori URL care nu este goal\u0103. URL-ul poate fi relativ sau absolut.
+
+sendRedirect.hyper.text.url=<html><body><p>Redirecting to <a href="{0}"></a></p></body></html>
+
+query.or.post.is.null=Cerere \u0219ir de interogare sau de date post este nul.

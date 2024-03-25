@@ -19,7 +19,7 @@ dependencies {
     requiredLibs 'net.sourceforge.cssparser:cssparser:0.9.23'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit:2.20'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit-core-js:2.17'
-    requiredLibs 'org.apache.commons:commons-lang3:3.8'
+    requiredLibs 'org.apache.commons:commons-lang3:3.14.0'
     requiredLibs project(':io.openliberty.org.apache.commons.codec')
     requiredLibs 'org.apache.httpcomponents:httpmime:4.5.3'
     requiredLibs 'org.apache.httpcomponents:httpclient:4.5.4'

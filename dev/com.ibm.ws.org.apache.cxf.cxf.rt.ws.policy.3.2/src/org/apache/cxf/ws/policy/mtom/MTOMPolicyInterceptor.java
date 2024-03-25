@@ -20,6 +20,10 @@
 package org.apache.cxf.ws.policy.mtom;
 
 import java.util.Collection;
+import org.apache.cxf.common.logging.LogUtils;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.message.Message;
@@ -36,7 +40,11 @@ import com.ibm.websphere.ras.annotation.Sensitive; // Liberty Change
 // It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
 // to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
 // If a solution to this compilation issue can be found, this class should be removed as an overlay. 
+
 public class MTOMPolicyInterceptor extends AbstractPhaseInterceptor<Message> {
+
+    private static final Logger LOG = LogUtils.getL7dLogger(MTOMPolicyInterceptor.class);  // Liberty Change
+
     public MTOMPolicyInterceptor() {
         super(Phase.POST_LOGICAL);
     }
@@ -50,14 +58,23 @@ public class MTOMPolicyInterceptor extends AbstractPhaseInterceptor<Message> {
             for (AssertionInfo ai : ais) {
                 if (MessageUtils.isRequestor(message)) {
                     //just turn on MTOM
+                    if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                        LOG.fine("Enable MTOM on client side");  // Liberty Change start
+                    }
                     message.put(Message.MTOM_ENABLED, Boolean.TRUE);
                     ai.setAsserted(true);
                 } else {
                     // set mtom enabled and assert the policy if we find an mtom request
                     String contentType = (String)message.getExchange().getInMessage()
                         .get(Message.CONTENT_TYPE);
+                    if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                        LOG.fine("ContentType is " + contentType);
+                    }
                     if (contentType != null && contentType.contains("type=\"application/xop+xml\"")) {
                         ai.setAsserted(true);
+                        if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                            LOG.fine("Enable MTOM on provider side");  // Liberty Change end
+                        }
                         message.put(Message.MTOM_ENABLED, Boolean.TRUE);
                     }
                 }

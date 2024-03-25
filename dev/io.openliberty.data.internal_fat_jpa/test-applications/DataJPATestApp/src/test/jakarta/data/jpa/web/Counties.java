@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import jakarta.data.page.Page;
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
@@ -51,9 +51,9 @@ public interface Counties {
 
     Timestamp findLastUpdatedByName(String name);
 
-    int[] findZipCodesById(String name);
-
     Optional<int[]> findZipCodesByName(String name);
+
+    int[] findZipCodesByNameContains(String substring);
 
     @OrderBy("population")
     Stream<int[]> findZipCodesByNameEndsWith(String ending);
@@ -63,7 +63,7 @@ public interface Counties {
 
     @OrderBy("population")
     @OrderBy("name")
-    Page<int[]> findZipCodesByNameStartsWith(String beginning, Pageable pagination);
+    Page<int[]> findZipCodesByNameStartsWith(String beginning, PageRequest pagination);
 
     @OrderBy("population")
     Optional<Iterator<int[]>> findZipCodesByPopulationLessThanEqual(int maxPopulation);
@@ -89,7 +89,7 @@ public interface Counties {
     }
 
     @Delete
-    boolean remove(County c);
+    void remove(County c);
 
     @Save
     Stream<County> save(County... c);

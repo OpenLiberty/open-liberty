@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -88,15 +88,26 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
     }
 
     public synchronized WSATParticipantState waitResponse(long timeoutMills, WSATParticipantState... responses) {
-        List<WSATParticipantState> responseList = Arrays.asList(responses);
-        long now = System.nanoTime() / 1000000; // Use time in miiliseconds
-        long expiry = now + timeoutMills;
-        while (now < expiry && !responseList.contains(state)) {
-            try {
-                wait(expiry - now);
-            } catch (InterruptedException e) {
+        final List<WSATParticipantState> responseList = Arrays.asList(responses);
+
+        // Wait forever if timeout <= 0
+        if (timeoutMills <= 0) {
+            while (!responseList.contains(state)) {
+                try {
+                    wait(1000);
+                } catch (InterruptedException e) {
+                }
             }
-            now = System.nanoTime() / 1000000;
+        } else {
+            long now = System.nanoTime() / 1000000; // Use time in miiliseconds
+            final long expiry = now + timeoutMills;
+            while (now < expiry && !responseList.contains(state)) {
+                try {
+                    wait(expiry - now);
+                } catch (InterruptedException e) {
+                }
+                now = System.nanoTime() / 1000000;
+            }
         }
         return responseList.contains(state) ? state : WSATParticipantState.TIMEOUT;
     }
@@ -105,7 +116,7 @@ public class WSATParticipant extends WSATEndpoint implements Serializable {
      * Remove this participant from the coordinator transaction when complete.
      */
     public void remove() {
-        WSATCoordinatorTran tran = WSATTransaction.getCoordTran(globalId);
+        WSATTransaction tran = WSATTransaction.getCoordTran(globalId);
         if (tran != null) {
             tran.removeParticipant(participantId);
         }

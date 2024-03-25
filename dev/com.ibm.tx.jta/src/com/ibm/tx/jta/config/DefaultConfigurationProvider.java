@@ -234,7 +234,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     });
 
     @Override
-    public boolean getPropagateXAResourceTransactionTimeout() {
+    public boolean isPropagateXAResourceTransactionTimeout() {
         return _propagateXAResourceTransactionTimeout;
     }
 

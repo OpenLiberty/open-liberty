@@ -28,7 +28,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.common.impl.DebugUtils;
 import com.ibm.ws.wsat.common.impl.WSATCoordinator;
-import com.ibm.ws.wsat.common.impl.WSATCoordinatorTran;
 import com.ibm.ws.wsat.common.impl.WSATParticipant;
 import com.ibm.ws.wsat.common.impl.WSATParticipantState;
 import com.ibm.ws.wsat.common.impl.WSATTransaction;
@@ -484,7 +483,7 @@ public class ProtocolImpl {
     // Find the WSATParticipant for the response
     private WSATParticipant findParticipant(String globalId, String partId) {
         WSATParticipant participant = null;
-        WSATCoordinatorTran wsatTran = WSATTransaction.getCoordTran(globalId);
+        WSATTransaction wsatTran = WSATTransaction.getCoordTran(globalId);
         if (wsatTran != null) {
             participant = wsatTran.getParticipant(partId);
             if (participant == null) {

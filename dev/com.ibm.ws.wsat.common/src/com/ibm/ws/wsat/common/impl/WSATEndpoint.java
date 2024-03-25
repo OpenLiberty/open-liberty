@@ -74,6 +74,9 @@ public abstract class WSATEndpoint implements Serializable {
 
     // Initialization of transient fields called from constructor and deserializer
     public void init(EndpointReferenceType epr) {
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "WSATEndpoint.init: ", new Exception("WSATEndpoint.init stack"));
+        }
         // Apache CXF form of the EPR
         endpointRef = epr;
         if (epr != null) {

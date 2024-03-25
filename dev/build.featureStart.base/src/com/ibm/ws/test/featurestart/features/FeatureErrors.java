@@ -37,6 +37,8 @@ public class FeatureErrors {
         allowedErrors.put("mpOpenApi-1.0", QUIESCE_FAILURES);
 
         allowedErrors.put("batchSMFLogging-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.jbatch.smflogging" });
+        
+        allowedErrors.put("zosAutomaticRestartManager-1.0", new String[] { "CWWKB0758E" });
 
         // requires binaryLogging-1.0 to be enabled via bootstrap.properties
         allowedErrors.put("logAnalysis-1.0", new String[] { "CWWKE0702E: .* com.ibm.ws.loganalysis" });

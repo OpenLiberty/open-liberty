@@ -20,10 +20,10 @@ import jakarta.data.metamodel.TextAttribute;
  */
 @StaticMetamodel(City.class)
 public class CityAttrNames2 {
-    public static volatile Attribute areaCodes;
-    public static volatile SortableAttribute changeCount;
-    public static volatile Attribute id;
-    public static volatile SortableAttribute ignore; // ignored because the entity has no attribute with this name
+    public static volatile Attribute<City> areaCodes;
+    public static volatile SortableAttribute<City> changeCount;
+    public static volatile Attribute<City> id;
+    public static volatile SortableAttribute<City> ignore; // ignored because the entity has no attribute with this name
     public static volatile long population; // ignored due to data type
-    public static final TextAttribute name = null; // ignored due to final
+    public static final TextAttribute<City> name = null; // ignored due to final
 }

@@ -23,6 +23,7 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Export-Package:\
   com.ibm.ws.concurrent,\
+  com.ibm.ws.concurrent.cdi,\
   com.ibm.ws.concurrent.ext,\
   com.ibm.ws.concurrent.mp.spi.*
 

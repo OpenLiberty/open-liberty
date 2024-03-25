@@ -29,7 +29,6 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.spi.Connector;
@@ -130,9 +129,8 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory, Quiesce
             int maxPollRecords = config.getOptionalValue(KafkaConnectorConstants.MAX_POLL_RECORDS, Integer.class).orElse(500);
             int unackedLimit = config.getOptionalValue(KafkaConnectorConstants.UNACKED_LIMIT, Integer.class).orElse(maxPollRecords);
             int retrySeconds = config.getOptionalValue(KafkaConnectorConstants.CREATION_RETRY_SECONDS, Integer.class).orElse(0);
-            // If Beta is false, apply the default value as if the property had not been set.
-            boolean fastAck = ProductInfo.getBetaEdition() ? config.getOptionalValue(KafkaConnectorConstants.FAST_ACK, Boolean.class).orElse(false) : false;
-            String contextServiceRef = ProductInfo.getBetaEdition() ? config.getOptionalValue(KafkaConnectorConstants.CONTEXT_SERVICE, String.class).orElse(null): null;
+            boolean fastAck = config.getOptionalValue(KafkaConnectorConstants.FAST_ACK, Boolean.class).orElse(false);
+            String contextServiceRef = config.getOptionalValue(KafkaConnectorConstants.CONTEXT_SERVICE, String.class).orElse(null);
 
             // Configure our defaults
             Map<String, Object> consumerConfig = new HashMap<>();
@@ -151,9 +149,7 @@ public class KafkaIncomingConnector implements IncomingConnectorFactory, Quiesce
 
             // Create the kafkaConsumer
             KafkaConsumer<String, Object> kafkaConsumer = getKafkaConsumerWithRetry(consumerConfig, retrySeconds, channelName);
-            RMAsyncProvider asyncProvider;
-
-            asyncProvider = asyncProviderFactory.getAsyncProvider(contextServiceRef, channelName);
+            RMAsyncProvider asyncProvider = asyncProviderFactory.getAsyncProvider(contextServiceRef, channelName);
 
             PartitionTrackerFactory partitionTrackerFactory = new PartitionTrackerFactory();
             partitionTrackerFactory.setAsyncProvider(asyncProvider);

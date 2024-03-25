@@ -18,6 +18,7 @@ import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.common.info.ErrorOpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryInfoFactory;
@@ -39,7 +40,7 @@ public class OpenTelemetryProducer {
 
     private final ApplicationMetaData metaData;
 
-    private OpenTelemetryProducer() {
+    protected OpenTelemetryProducer() {
         metaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData().getApplicationMetaData();
     }
 
@@ -50,9 +51,7 @@ public class OpenTelemetryProducer {
      * @return An instance of OpenTelemetryInfo containing the instance of OpenTelemetry associated with this application. This instance will be a no-op OpenTelemetry if telemetry
      *         is disabled or the application has shut down.
      */
-    @ApplicationScoped
-    @Produces
-    public OpenTelemetryInfo getOpenTelemetryInfo() {
+    private OpenTelemetryInfo getOpenTelemetryInfo() {
         Optional<OpenTelemetryInfo> openTelemetryInfo = openTelemetryInfoFactoryService.call( (factory) -> {return factory.getOpenTelemetryInfo(metaData); });
         return openTelemetryInfo.orElseGet(ErrorOpenTelemetryInfo::new);
     }
@@ -65,7 +64,7 @@ public class OpenTelemetryProducer {
      */
     @Produces
     public Tracer getTracer() {
-        return getOpenTelemetryInfo().getTracer();
+        return getOpenTelemetryInfo().getOpenTelemetry().getTracer(OpenTelemetryConstants.INSTRUMENTATION_NAME);
     }
 
     /**
@@ -98,7 +97,7 @@ public class OpenTelemetryProducer {
      */
     @ApplicationScoped
     @Produces
-    public OpenTelemetry getOpenTelemetry(OpenTelemetryInfo openTelemetryInfo) {
-        return openTelemetryInfo.getOpenTelemetry();
+    public OpenTelemetry getOpenTelemetry() {
+        return getOpenTelemetryInfo().getOpenTelemetry();
     }
 }

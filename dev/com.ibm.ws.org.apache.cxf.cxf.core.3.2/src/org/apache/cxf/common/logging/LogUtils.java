@@ -60,6 +60,7 @@ public final class LogUtils {
 
     private static Class<?> loggerClass;
 
+
     /**
      * Prevents instantiation.
      */
@@ -165,9 +166,8 @@ public final class LogUtils {
      * @return an appropriate Logger
      */
     public static Logger getLogger(Class<?> cls) {
-        //Liberty Change for CXF Begain
-        return createLogger(cls, null, cls.getName() + getClassLoader(cls));
-        //Liberty Change for CXF End
+	Logger logger = createLogger(cls, null, cls.getName() + getClassLoader(cls));
+	return logger;
     }
 
     /**
@@ -178,9 +178,8 @@ public final class LogUtils {
      * @return an appropriate Logger
      */
     public static Logger getLogger(Class<?> cls, String resourcename) {
-        //Liberty Change for CXF Begain
-        return createLogger(cls, resourcename, cls.getName() + getClassLoader(cls));
-        //Liberty Change for CXF End
+        Logger logger = createLogger(cls, resourcename, cls.getName() + getClassLoader(cls));
+	return logger;
     }
 
     /**
@@ -194,7 +193,8 @@ public final class LogUtils {
     public static Logger getLogger(Class<?> cls,
                                    String resourcename,
                                    String loggerName) {
-        return createLogger(cls, resourcename, loggerName);
+        Logger logger =  createLogger(cls, resourcename, loggerName);
+	return logger;
     }
 
     /**
@@ -204,9 +204,8 @@ public final class LogUtils {
      * @return an appropriate Logger
      */
     public static Logger getL7dLogger(Class<?> cls) {
-        //Liberty Change for CXF Begin
-        return createLogger(cls, null, cls.getName() + getClassLoader(cls));
-        //Liberty Change for CXF End
+        Logger logger = createLogger(cls, null, cls.getName() + getClassLoader(cls));
+	return logger;
     }
 
     /**
@@ -217,9 +216,8 @@ public final class LogUtils {
      * @return an appropriate Logger
      */
     public static Logger getL7dLogger(Class<?> cls, String resourcename) {
-        //Liberty Change for CXF Begain
-        return createLogger(cls, resourcename, cls.getName() + getClassLoader(cls));
-        //Liberty Change for CXF End
+	Logger logger = createLogger(cls, resourcename, cls.getName() + getClassLoader(cls));
+	return logger;
     }
 
     /**
@@ -233,7 +231,8 @@ public final class LogUtils {
     public static Logger getL7dLogger(Class<?> cls,
                                       String resourcename,
                                       String loggerName) {
-        return createLogger(cls, resourcename, loggerName);
+        Logger logger =  createLogger(cls, resourcename, loggerName);
+	return logger;
     }
 
     /**
@@ -332,11 +331,13 @@ public final class LogUtils {
         if (sm != null) {
             return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
                 public ClassLoader run() {
-                    return Thread.currentThread().getContextClassLoader();
+		    ClassLoader  cl = Thread.currentThread().getContextClassLoader();
+                    return cl;
                 }
             });
         }
-        return Thread.currentThread().getContextClassLoader();
+        ClassLoader  cl = Thread.currentThread().getContextClassLoader();
+        return cl;
     }
 
     private static ClassLoader getClassLoader(final Class<?> clazz) {
@@ -492,13 +493,15 @@ public final class LogUtils {
      * @param message the message to be localized
      */
     private static String localize(Logger logger, String message) {
+	String newMsg = "";
         ResourceBundle bundle = logger.getResourceBundle();
         try {
-            return bundle != null ? bundle.getString(message) : message;
+            newMsg = bundle != null ? bundle.getString(message) : message;
         } catch (MissingResourceException ex) {
             //string not in the bundle
-            return message;
+            newMsg = message;
         }
+	return newMsg;
     }
 
 }

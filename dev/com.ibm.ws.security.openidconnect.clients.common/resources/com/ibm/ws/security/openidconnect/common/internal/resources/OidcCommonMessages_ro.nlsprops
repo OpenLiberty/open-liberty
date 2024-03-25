@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -193,3 +193,13 @@ DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=\u00cenl\u0103tura\u0163i 
 JWT_MISSING_ISSUER=CWWKS1784E: Jetonul nu este valid, deoarece nu con\u021bine o revendicare de emitent.
 JWT_MISSING_ISSUER.explanation=Jetonul trebuie s\u0103 con\u021bin\u0103 o revendicare de emitent pentru a identifica emitentul jetonului.
 JWT_MISSING_ISSUER.useraction=Ob\u021bine\u021bi un jeton nou, care s\u0103 includ\u0103 o revendicare de emitent.
+
+# Do not translate "typ", "logout+jwt"
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER=CWWKS1785E: Token-ul nu este valabil deoarece antetul [{0}] ''typ '' al token-ului indic\u0103 faptul c\u0103 este un simbol de logout.
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.explanation=Token-ul nu trebuie s\u0103 fie un simbol logout. Jetoanele de logout ar putea avea un parametru antet "typ" (tip) cu valoarea "logout + jwt".
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul folosit nu este un simbol logout.
+
+# Do not translate "events", "http://schemas.openid.net/event/backchannel-logout"
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM=CWWKS1786E: Token-ul nu este valabil deoarece "evenimentele" pretind cu valoarea [{0}] indic\u0103 faptul c\u0103 token-ul este un simbol logout.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.explanation=Token-ul nu trebuie s\u0103 fie un simbol logout. Jetoanele de logout au o cerere de "evenimente", care este un obiect JSON care include "http://schemas.openid.net/event/backchannel-logoutca unul dintre elementele sale.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.useraction=Asigura\u021bi-v\u0103 c\u0103 jetonul folosit nu este un simbol logout.

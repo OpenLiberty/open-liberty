@@ -431,7 +431,7 @@
 
            <AD id="publicClient" name="%publicClient" description="%publicClient.desc" required="false" type="Boolean" default="false" />
 
-           <AD id="backchannelLogoutUri" name="%backchannelLogoutUri" description="%backchannelLogoutUri.desc" required="false" type="String" ibm:beta="true" />
+           <AD id="backchannelLogoutUri" name="%backchannelLogoutUri" description="%backchannelLogoutUri.desc" required="false" type="String" />
 
     </OCD>
     

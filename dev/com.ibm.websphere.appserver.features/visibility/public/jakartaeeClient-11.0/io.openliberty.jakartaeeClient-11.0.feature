@@ -101,11 +101,9 @@ Subsystem-Name: Jakarta EE 11.0 Application Client
   io.openliberty.jsonb-3.0, \
   com.ibm.websphere.appserver.jdbc-4.2; ibm.tolerates:="4.3", \
   io.openliberty.persistence-3.2, \
-  io.openliberty.xmlBinding-4.0, \
   io.openliberty.beanValidation-3.1, \
   com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.appclient.appClient-2.0, \
-  io.openliberty.xmlWSClient-4.0, \
   com.ibm.websphere.appserver.transaction-2.0, \
   io.openliberty.jsonp-2.1
 -jars=io.openliberty.ejbcontainer; location:=dev/api/ibm/

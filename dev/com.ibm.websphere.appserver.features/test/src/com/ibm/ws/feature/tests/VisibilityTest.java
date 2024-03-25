@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -397,7 +397,7 @@ public class VisibilityTest {
                 } else {
                     errorMessage.append("     Auto feature filter only depends on one feature " + filterFeatures[0] + ".\n");
                     errorMessage.append("     The feature and/or bundle dependencies in this auto feature should just be a dependency of that feature\n");
-                    errorMessage.append("     OR this should be turned into a private feature that " + filterFeatures[0] + " depends on.");
+                    errorMessage.append("     OR this should be turned into a private feature that " + filterFeatures[0] + " depends on.\n");
                 }
             }
         }

@@ -19,16 +19,16 @@ Bundle-SymbolicName: com.ibm.ws.jaxrs.2.0.tools.wadl2java
 
 Require-Compiler: true
 
-Require-Bundle: com.ibm.ws.jaxrs.2.0.tools; version="[1,1.0.100)", \
- com.ibm.websphere.javaee.jaxrs.2.0; version="[1,1.0.100)"; location="dev/api/spec/", \
- com.ibm.ws.jaxrs.2.0.common; version ="[1,1.0.100)", \
- io.openliberty.jaxrs.2.0.wadl2java.jaxb.runtime; version="[1,1.0.100)", \
- com.ibm.websphere.javaee.activation.1.1; version="[1,1.0.100)"; location="dev/api/spec/", \
- com.ibm.websphere.javaee.jaxb.2.2; version="[1,1.0.100)"; location="dev/api/spec/", \
- com.ibm.ws.logging; version="[1,1.0.100)", \
- com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3; version="[1,1.0.100)", \
- com.ibm.websphere.javaee.annotation.1.2; version="[1.0.1,1.0.200)"; location="dev/api/spec/", \
- com.ibm.ws.xlxp.1.5.3; version="[1,1.0.100)"
+Require-Bundle: com.ibm.ws.jaxrs.2.0.tools; version="[1,1.1)", \
+ com.ibm.websphere.javaee.jaxrs.2.0; version="[1,1.1)"; location="dev/api/spec/", \
+ com.ibm.ws.jaxrs.2.0.common; version ="[1,1.1)", \
+ io.openliberty.jaxrs.2.0.wadl2java.jaxb.runtime; version="[1,1.1)", \
+ com.ibm.websphere.javaee.activation.1.1; version="[1,1.1)"; location="dev/api/spec/", \
+ com.ibm.websphere.javaee.jaxb.2.2; version="[1,1.1)"; location="dev/api/spec/", \
+ com.ibm.ws.logging; version="[1,1.1)", \
+ com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3; version="[1,1.1)", \
+ com.ibm.websphere.javaee.annotation.1.2; version="[1.0.1,1.1)"; location="dev/api/spec/", \
+ com.ibm.ws.xlxp.1.5.3; version="[1,1.1)"
  
 Parent-Last-Package: javax.xml.bind,\
 javax.xml.bind.annotation,\

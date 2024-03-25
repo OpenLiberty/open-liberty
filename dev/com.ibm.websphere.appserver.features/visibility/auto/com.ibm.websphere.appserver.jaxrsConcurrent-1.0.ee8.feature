@@ -8,6 +8,6 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.concurrent-1.0))"
 IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.contextService-1.0
--bundles=com.ibm.ws.jaxrs.2.1.concurrent
+-bundles=io.openliberty.cxf.concurrent
 kind=ga
 edition=core

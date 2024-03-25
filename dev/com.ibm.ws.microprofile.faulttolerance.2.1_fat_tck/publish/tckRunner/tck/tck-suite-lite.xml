@@ -27,11 +27,6 @@
             </class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.AsynchronousCSTest"></class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.AsynchronousTest"></class>
-            <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerBulkheadTest">
-                <methods>
-                    <include name="testCircuitBreakerAroundBulkheadSync"/>
-                </methods>
-            </class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerExceptionHierarchyTest"></class> <!-- new functionality -->
             <class name="org.eclipse.microprofile.fault.tolerance.tck.CircuitBreakerRetryTest">
                 <methods>

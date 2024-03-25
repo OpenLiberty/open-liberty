@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2022, 2023 IBM Corporation and others.
+    Copyright (c) 2022, 2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -223,6 +223,25 @@
 		userInfoEndpointEnabled="true"
 		validationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_invalidBCL/introspect"
 		authFilterRef="bcl_invalidBCLUri_filter"
+	>
+	</openidConnectClient>
+
+	<openidConnectClient
+		id="bcl_reconfig_invalidUri"
+		scope="openid profile"
+		clientId="bcl_reconfig_invalidUri"
+		clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		sharedKey="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+		inboundPropagation="supported"
+		jwtAccessTokenRemoteValidation="require"
+		httpsRequired="false"
+		redirectToRPHostAndPort="https://localhost:${client2Port}"
+		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_invalidBCL/authorize"
+		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_invalidBCL/token"
+		userInfoEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_invalidBCL/userinfo"
+		userInfoEndpointEnabled="true"
+		validationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample_invalidBCL/introspect"
+		authFilterRef="bcl_reconfig_invalidUri_filter"
 	>
 	</openidConnectClient>
 

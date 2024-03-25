@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -193,3 +193,13 @@ DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=\u8acb\u5c07\u6307\u5b9a\u
 JWT_MISSING_ISSUER=CWWKS1784E: \u8a18\u865f\u7121\u6548\uff0c\u56e0\u70ba\u5b83\u4e0d\u5305\u542b\u767c\u8b49\u8005\u8072\u660e\u3002
 JWT_MISSING_ISSUER.explanation=\u8a18\u865f\u5fc5\u9808\u5305\u542b\u767c\u51fa\u8005\u8072\u660e\uff0c\u4ee5\u8b58\u5225\u767c\u51fa\u8a18\u865f\u7684\u4eba\u54e1\u3002
 JWT_MISSING_ISSUER.useraction=\u53d6\u5f97\u5305\u542b\u767c\u8b49\u8005\u8072\u660e\u7684\u65b0\u8a18\u865f\u3002
+
+# Do not translate "typ", "logout+jwt"
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER=CWWKS1785E: \u8a18\u865f\u7121\u6548\uff0c\u56e0\u70ba\u8a18\u865f\u7684 [{0}] ''typ '' \u6a19\u982d\u6307\u51fa\u5b83\u662f\u767b\u51fa\u8a18\u865f\u3002
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.explanation=\u8a18\u865f\u4e0d\u80fd\u662f\u767b\u51fa\u8a18\u865f\u3002 \u767b\u51fa\u8a18\u865f\u53ef\u80fd\u5177\u6709\u503c\u70ba "logout + jwt" \u7684 "typ" (type) \u6a19\u982d\u53c3\u6578\u3002
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528\u7684\u8a18\u865f\u4e0d\u662f\u767b\u51fa\u8a18\u865f\u3002
+
+# Do not translate "events", "http://schemas.openid.net/event/backchannel-logout"
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM=CWWKS1786E: \u8a18\u865f\u7121\u6548\uff0c\u56e0\u70ba\u503c\u70ba [{0}] \u7684 ''events'' \u8981\u6c42\u6307\u51fa\u8a18\u865f\u662f\u767b\u51fa\u8a18\u865f\u3002
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.explanation=\u8a18\u865f\u4e0d\u80fd\u662f\u767b\u51fa\u8a18\u865f\u3002 \u767b\u51fa\u8a18\u865f\u5177\u6709 "events" \u8981\u6c42\uff0c\u9019\u662f\u5305\u542b "http://schemas.openid.net/event/backchannel-logout" \u4f5c\u70ba\u5176\u4e2d\u4e00\u500b\u5143\u7d20\u7684 JSON \u7269\u4ef6\u3002
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.useraction=\u8acb\u78ba\u5b9a\u4f7f\u7528\u7684\u8a18\u865f\u4e0d\u662f\u767b\u51fa\u8a18\u865f\u3002

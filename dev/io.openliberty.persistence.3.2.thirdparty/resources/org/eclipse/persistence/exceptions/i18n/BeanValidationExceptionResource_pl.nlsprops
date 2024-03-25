@@ -34,7 +34,7 @@
 7501=Tryb sprawdzania poprawno\u015bci komponentu Bean w programie zestawiaj\u0105cym {0} jest ustawiony na nieobs\u0142ugiwan\u0105 warto\u015b\u0107, "{1}".
 
 7510=Naruszenie ogranicze\u0144 dotycz\u0105cych zestawionego komponentu Bean {0}:
-{1}{2}
+#{1}{2}
 
 7525=Nie mo\u017cna przeanalizowa\u0107 w\u0142a\u015bciwo\u015bci "{0}", poniewa\u017c obie maj\u0105 adnotacj\u0119 @NotNull i atrybut "xs:nillable=true.
 

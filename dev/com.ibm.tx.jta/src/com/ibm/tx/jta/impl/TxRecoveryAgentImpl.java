@@ -794,16 +794,17 @@ public class TxRecoveryAgentImpl implements RecoveryAgent {
                 //Now extract a list of the peers that need to be recovered
                 peersToRecover = peerLeaseTable.getExpiredPeers();
 
-                // Discard the local server from the list
-                peersToRecover.remove(recoveryIdentity);
-
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Have checked leases for " + peerLeaseTable.size() + " peer" + (peerLeaseTable.size() != 1 ? "s" : "") + " in recovery group "
-                                 + recoveryGroup);
-                    if (peersToRecover.size() > 0) {
-                        for (String peer : peersToRecover) {
-                            Tr.debug(tc, "Need to recover: " + peer);
+                    if (peersToRecover != null && !peersToRecover.isEmpty()) {
+                        Tr.debug(tc, "Have checked leases for " + peerLeaseTable.size() + " peer" + (peerLeaseTable.size() != 1 ? "s" : "") + " in recovery group "
+                                     + recoveryGroup);
+                        if (peersToRecover.size() > 0) {
+                            for (String peer : peersToRecover) {
+                                Tr.debug(tc, "Need to recover: " + peer);
+                            }
                         }
+                    } else {
+                        Tr.debug(tc, "No peer servers will be recovered");
                     }
                 }
             } catch (Exception e) {

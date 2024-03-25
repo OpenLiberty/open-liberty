@@ -24,6 +24,8 @@ import java.util.Objects;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import org.apache.cxf.common.logging.LogUtils;
+import java.util.logging.Logger;
 
 /**
  * This class extends {@link TLSParameterBase} with client-specific
@@ -39,6 +41,8 @@ public class TLSClientParameters extends TLSParameterBase {
     private HostnameVerifier hostnameVerifier;
     private SSLContext sslContext;
     private boolean jaxrsClient; // Liberty Change
+
+    private static final Logger LOG = LogUtils.getL7dLogger(TLSClientParameters.class);  // Liberty Change
 
     /**
      * Set custom HostnameVerifier
@@ -271,6 +275,5 @@ public class TLSClientParameters extends TLSParameterBase {
     public boolean isJaxrsClient() {
         return jaxrsClient;
     }
-    // Liberty End
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -82,6 +82,7 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
+import com.ibm.wsspi.webcontainer.util.RequestUtils;
 import com.ibm.wsspi.webcontainer.util.ServletUtil;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
 
@@ -1156,7 +1157,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                         //so alreadyVerifiedEncodedChar flag can skip in case the app has definedFilter
                         if (!alreadyVerifiedEncodedChar) {
                             try {
-                                verifyEncodedCharacter(reqURI);
+                                RequestUtils.verifyEncodedCharacter(reqURI);
                                 alreadyVerifiedEncodedChar = true;        //skip subsequent check in filterDefined
                             }
                             catch (IOException ioe) {
@@ -1173,7 +1174,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                         //Servlet 6.0 - JSPExtensionServletWrapper is GenericServletWrapper
                         if (!alreadyVerifiedEncodedChar && (servletWrapper instanceof GenericServletWrapper)){
                             try {
-                                verifyEncodedCharacter(reqURI);
+                                RequestUtils.verifyEncodedCharacter(reqURI);
                                 alreadyVerifiedEncodedChar = true;        //to skip check in filterDefined later on
                             }
                             catch (IOException ioe) {
@@ -1243,7 +1244,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                 //              verify that no invalid encoded character in direct request URI
                 if (!alreadyVerifiedEncodedChar) {
                     try {
-                        verifyEncodedCharacter(reqURI);
+                        RequestUtils.verifyEncodedCharacter(reqURI);
                         alreadyVerifiedEncodedChar = true;      // skip checking in the DefaultExtension
                     }
                     catch (IOException ioe) {
@@ -1348,7 +1349,7 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
                                 //              Last check encodedCharacter for direct request.
                                 if (!alreadyVerifiedEncodedChar && requestProcessor instanceof DefaultExtensionProcessor) {
                                     try {
-                                        verifyEncodedCharacter(reqURI);
+                                        RequestUtils.verifyEncodedCharacter(reqURI);
                                         alreadyVerifiedEncodedChar = true;  //nothing after this, but just in case
                                     }
                                     catch (IOException ioe) {
@@ -1638,52 +1639,4 @@ public class WebAppFilterManager implements com.ibm.wsspi.webcontainer.filter.We
         return false;
     }
     //issue#9386
-    
-    /**
-     * Since Servlet 6.0:
-     *  Process original URI. It rejects any path has encoded character of:
-     *  %23 (#)
-     *  %2e (.)
-     *  %2f (/)
-     *  %5c (\)
-     *  
-     *  This verification is deferred until WC can determine the request is indeed for a servlet/JSP/filter
-     */
-    private void verifyEncodedCharacter(String uri) throws IOException {
-        final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
-        final String METHOD_NAME ="verifyEncodedCharacter";
-
-        if (isTraceOn && logger.isLoggable(Level.FINER))
-            logger.entering(CLASS_NAME, METHOD_NAME + " [" + uri + "]");
-
-        String path = uri.toLowerCase();
-        String message = null;
-
-        try {
-            if (path.contains("#") || path.contains("%23")) {
-                message = nls.getString("uri.has.fragment.character", "URI has a fragment [#] character; encoded [%23] or not");
-            }
-            else if (path.contains("%2e")){
-                message = nls.getString("uri.has.dot.character", "URI has encoded dot [%2E] character");
-            }
-            else if (path.contains("%2f")) {
-                message = nls.getString("uri.has.forwarslash.character", "URI has encoded forward slash [%2F] character");
-            }
-            else if (path.contains("\\") || path.contains("%5c")){
-                message = nls.getString("uri.has.backslash.character", "URI has backslash character; encoded [%5C] or not");
-            }
-
-            if (message != null) {
-                if (isTraceOn && logger.isLoggable(Level.FINE))
-                    logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Bad Request : " + message);
-
-                throw new IOException(nls.getFormattedMessage("bad.request.uri:.{0}", new Object[] { ((uri.length() > 128) ? (uri.substring(0, 127)) : uri) }, 
-                                "Bad request URI") + " . " + message);
-            }
-        }
-        finally {
-            if (isTraceOn && logger.isLoggable(Level.FINER))
-                logger.exiting(CLASS_NAME, METHOD_NAME);
-        }
-    }
 }

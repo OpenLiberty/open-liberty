@@ -21,6 +21,8 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.jpa.tests.spec10.entity.tests.AbstractFATSuite;
 import com.ibm.ws.jpa.tests.spec10.entity.tests.Entity_EJB;
 import com.ibm.ws.jpa.tests.spec10.entity.tests.Entity_Web;
+import com.ibm.ws.jpa.tests.spec10.entity.tests.TestOLGH21204_EJB;
+import com.ibm.ws.jpa.tests.spec10.entity.tests.TestOLGH21204_Web;
 
 import componenttest.rules.repeater.RepeatTests;
 
@@ -28,9 +30,8 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 Entity_EJB.class,
                 Entity_Web.class,
-                // TODO: Disable until https://github.com/OpenLiberty/open-liberty/issues/21207 is delivered
-//                TestOLGH21204_EJB.class,
-//                TestOLGH21204_Web.class,
+                TestOLGH21204_EJB.class,
+                TestOLGH21204_Web.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 public class FATSuite extends AbstractFATSuite {

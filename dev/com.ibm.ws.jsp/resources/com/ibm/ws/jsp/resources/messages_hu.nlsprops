@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
 #COMPONENTPREFIX JSPG CWWJS
@@ -1273,8 +1270,22 @@ jsp.isthreadsafe.warning=CWWJS0003W: A Pages 3.1 specifik\u00e1ci\u00f3 nyomat\u
 jsp.isthreadsafe.warning.explanation=A Servlet 6.0 v\u00e1ltozatb\u00f3l a SingleThreadModel elt\u00e1vol\u00edt\u00e1sra ker\u00fclt. A Pages 3.1 v\u00e1ltozat\u00e1ban az isThreadSafe elavult, a j\u00f6v\u0151beli Pages friss\u00edt\u00e9sek sor\u00e1n elt\u00e1vol\u00edt\u00e1sra ker\u00fcl.
 jsp.isthreadsafe.warning.useraction=T\u00e1vol\u00edtsa el az isThreadSafe direkt\u00edv\u00e1t az \u00f6sszes oldalr\u00f3l.
 
-
 jsp.useinmemory.warning=CWWJS0004W: A 'useInmem\u00f3ria' JSP be\u00e1ll\u00edt\u00e1s nem t\u00e1mogatott. A JSP f\u00e1jlok a lemezen ker\u00fclnek \u00f6ssze\u00e1ll\u00edt\u00e1sra \u00e9s ment\u00e9sre.
 jsp.useinmemory.warning.explanation=Ezt a szolg\u00e1ltat\u00e1st soha nem jelentett\u00e9k a hagyom\u00e1nyos WebSphere alkalmaz\u00e1sb\u00f3l t\u00f6rt\u00e9neti okokb\u00f3l.
 jsp.useinmemory.warning.useraction=T\u00e1vol\u00edtsa el a useInMemory param\u00e9tert a server.xml, ibm-web-bnd.xmlvagy a ibm-web-ext.xmi f\u00e1jlokb\u00f3l.
 
+pages.removed.element.error=CWWJS0005E: A {0} elem elt\u00e1vol\u00edt\u00e1sra ker\u00fclt a 4.0 oldalakban, ez\u00e9rt m\u00e1r nem t\u00e1mogatott.
+pages.removed.element.error.explanation=A jsp bedolgoz\u00f3 \u00e9s a kapcsol\u00f3d\u00f3 m\u0171veletek elavultak a 3.1 oldalakban \u00e9s a 4.0v\u00e1ltozatban elt\u00e1vol\u00edt\u00e1sra ker\u00fcltek. 
+pages.removed.element.error.useraction= T\u00e1vol\u00edtsa el a jsp bedolgoz\u00f3, tartal\u00e9k \u00e9s params elemeket a webalkalmaz\u00e1sb\u00f3l.
+
+jsp.javasourcelevel.warning=CWWJS0006W: A megadott javaSourceLevel ={0} \u00e9rt\u00e9k meghaladja a {1} telep\u00edtett Java szintet. Ez\u00e9rt az alap\u00e9rtelmezett Java szint: {1}.
+jsp.javasourcelevel.warning.explanation=A f\u00e1jl nem \u00e1ll\u00edthat\u00f3 \u00f6ssze magasabb forr\u00e1ssal, mint a rendelkez\u00e9sre \u00e1ll\u00f3 JDK szint. 
+jsp.javasourcelevel.warning.useraction=Adjon meg egy javaSourceszint \u00e9rt\u00e9ket, amely kisebb vagy egyenl\u0151, mint az el\u00e9rhet\u0151 JDK szint.
+
+jsp.bothsourcelevelset.warning=CWWJS0007W: Mindk\u00e9t javaSourceLevel ={0} \u00e9s jdkSourceLevel ={1} van megadva. Hib\u00e1s javaSourceszint ={0}.
+jsp.bothsourcelevelset.warning.explanation=Egyszerre csak egy forr\u00e1sszint\u0171 attrib\u00fatum haszn\u00e1lhat\u00f3.
+jsp.bothsourcelevelset.warning.useraction=Csak a javaSourceLevel attrib\u00fatum megad\u00e1sa. A jdkSourceLevel attrib\u00fatum stabiliz\u00e1l\u00f3dott. 
+
+jsp.javasourcelevel.value=CWWJS0008I: A JSP attrib\u00fatum javaSourceszintje "{0}".
+jsp.javasourcelevel.value.explanation=
+jsp.javasourcelevel.value.useraction=

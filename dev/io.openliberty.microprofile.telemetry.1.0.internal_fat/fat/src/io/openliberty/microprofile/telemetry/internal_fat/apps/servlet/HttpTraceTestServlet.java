@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -141,9 +141,10 @@ public class HttpTraceTestServlet extends FATServlet {
                         .withAttribute(SemanticAttributes.NET_HOST_PORT, Long.valueOf(serverPort))
 
         );
-        // Make sure the duration is longer than 2 seconds as there is a sleep for 2 seconds in the servlet
+        // Make sure the duration is longer than 1.90 seconds as there is a sleep for 2 seconds in the servlet
+        // The leeway is because Thread.sleep depends on precision and accuracy of system timers and schedulers.
         long duration = servletSpan.getEndEpochNanos() - servletSpan.getStartEpochNanos();
-        assertTrue(duration > TimeUnit.SECONDS.toNanos(2));
+        assertTrue("Duration " + duration + "ns is less than 1.9 seconds", duration > TimeUnit.NANOSECONDS.toNanos(1900000000));
 
     }
 
@@ -185,7 +186,7 @@ public class HttpTraceTestServlet extends FATServlet {
         );
         // Make sure the duration is longer than 2 seconds as there is a sleep for 2 seconds in the servlet
         long duration = servletSpan.getEndEpochNanos() - servletSpan.getStartEpochNanos();
-        assertTrue("Duration " + duration + "ns is less than 2 seconds", duration > TimeUnit.SECONDS.toNanos(2));
+        assertTrue("Duration " + duration + "ns is less than 1.9 seconds", duration > TimeUnit.NANOSECONDS.toNanos(1900000000));
 
         SpanData taskSpan = spanDataList.get(3);
         assertThat(taskSpan, isSpan()

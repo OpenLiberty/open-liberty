@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023.2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Select;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Save;
@@ -53,7 +54,7 @@ import jakarta.data.repository.Save;
  * from the {@link io.openliberty.data.repository.update} package.</p>
  *
  * <p>A parameter that is annotated with {@code Assign} must not be used in
- * combination with {@link Count}, {@link Delete}, {@link Exists}, {@link Insert},
+ * combination with {@link Count}, {@link Delete}, {@link Exists}, {@link Find}, {@link Insert},
  * {@link OrderBy}, {@link Query}, {@link Save}, or {@link Select} annotations
  * or on {@code countBy}, {@code deleteBy}, {@code existsBy},
  * {@code find...By}, or {@code updateBy} methods.</p>

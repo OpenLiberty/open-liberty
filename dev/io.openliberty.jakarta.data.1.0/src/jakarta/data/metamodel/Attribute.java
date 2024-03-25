@@ -15,7 +15,7 @@ package jakarta.data.metamodel;
 /**
  * Method signatures are copied from Jakarta Data.
  */
-public interface Attribute {
+public interface Attribute<T> {
 
     String name();
 

@@ -23,6 +23,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 
+import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.common.info.ErrorOpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.opentelemetry.api.baggage.Baggage;
@@ -56,7 +57,7 @@ public class OpenTelemetryAccessor {
      *         shut down.
      */
     public static Tracer getTracer() {
-        return getOpenTelemetryInfo().getTracer();
+        return getOpenTelemetryInfo().getOpenTelemetry().getTracer(OpenTelemetryConstants.INSTRUMENTATION_NAME);
     }
 
     /**

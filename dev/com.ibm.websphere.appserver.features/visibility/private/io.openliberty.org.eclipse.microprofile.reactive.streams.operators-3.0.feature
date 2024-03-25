@@ -7,6 +7,6 @@ singleton=true
   com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0
 -bundles=\
   io.openliberty.org.eclipse.microprofile.reactive.streams.operators.3.0; location:="dev/api/stable/,lib/"; mavenCoordinates="org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-api:3.0"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

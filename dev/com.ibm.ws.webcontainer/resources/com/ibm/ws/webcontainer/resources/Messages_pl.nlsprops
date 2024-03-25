@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2023 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1578,10 +1578,7 @@ uncaught.exception.during.AsyncListener.onComplete.explanation=Przywo\u0142ywany
 uncaught.exception.during.AsyncListener.onComplete.useraction=Sprawd\u017a kod \u017ar\u00f3d\u0142owy obiektu AsyncListener i dzienniki serwera, aby znale\u017a\u0107 podstawow\u0105 przyczyn\u0119 b\u0142\u0119du aplikacji.
 
 # Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
-# 0001 - 0199 for Base
-# 0200 - 0299 for Servlet 3.0
-# 0300 - 0399 for Servlet 3.1
-# 0400 - 0499 for Servlet 4
+# Sequential increment the message number for all new releases and services
 
 #name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
 #name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
@@ -1624,3 +1621,15 @@ uri.has.backslash.character=Identyfikator URI ma znak uko\u015bnika odwrotnego; 
 multipart.file.count.max.exceeded=CWWWC0006E: \u017b\u0105danie zawiera\u0142o wi\u0119cej plik\u00f3w do przes\u0142ania ni\u017c jest to dozwolone. Maksymalna liczba plik\u00f3w: [{0}].
 multipart.file.count.max.exceeded.explanation=Liczba plik\u00f3w, kt\u00f3re zosta\u0142y przes\u0142ane z u\u017cyciem \u017c\u0105dania multipart/form-data, przekroczy\u0142a limit.
 multipart.file.count.max.exceeded.useraction=Zwi\u0119ksz maksymaln\u0105 liczb\u0119 plik\u00f3w, kt\u00f3re mog\u0105 zosta\u0107 przes\u0142ane w jednym \u017c\u0105daniu, ustawiaj\u0105c w\u0142a\u015bciwo\u015b\u0107 niestandardow\u0105 maxFileCount webContainer w pliku server.xml. Warto\u015b\u0107 domy\u015blna to 5000. Aby uzyska\u0107 nieograniczon\u0105 operacj\u0119 przesy\u0142ania pliku, ustaw warto\u015b\u0107 -1.
+
+cannot.sendRedirect.response.already.committed=CWWWC0007E: Odpowied\u017a sendRedirect nie jest dozwolona po zatwierdzeniu odpowiedzi.
+cannot.sendRedirect.response.already.committed.explanation=Po zatwierdzeniu odpowiedzi nie mo\u017cna wys\u0142a\u0107 przekierowania.
+cannot.sendRedirect.response.already.committed.useraction=Sprawd\u017a logik\u0119 sendRedirect , aby upewni\u0107 si\u0119, \u017ce odpowied\u017a nie zosta\u0142a zatwierdzona r\u0119cznie lub automatycznie przed wywo\u0142aniem metody sendRedirect .
+
+redirect.location.cannot.be.null=CWWWC0008E: Po\u0142o\u017cenie przekierowania nie mo\u017ce mie\u0107 warto\u015bci NULL.
+redirect.location.cannot.be.null.explanation=Adres URL po\u0142o\u017cenia przekierowania musi by\u0107 wzgl\u0119dnym lub bezwzgl\u0119dnym adresem URL. 
+redirect.location.cannot.be.null.useraction=Zaktualizuj po\u0142o\u017cenie przekierowania, podaj\u0105c warto\u015b\u0107 adresu URL, kt\u00f3ra nie jest pusta. Adres URL mo\u017ce by\u0107 wzgl\u0119dny lub bezwzgl\u0119dny.
+
+sendRedirect.hyper.text.url=<html><body><p>Przekierowanie do <a href="{0}"></a></p></body></html>
+
+query.or.post.is.null=\u0141a\u0144cuch zapytania \u017c\u0105dania lub dane \u017c\u0105dania POST maj\u0105 warto\u015b\u0107 NULL.

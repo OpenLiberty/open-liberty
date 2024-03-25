@@ -7,7 +7,7 @@ Subsystem-Type: osgi.subsystem.feature
 Subsystem-Category: adminCenter
 Subsystem-Icon: icons/toolicon48.png;size=48,icons/toolicon64.png;size=64,icons/toolicon128.png;size=128
 Subsystem-Description: This is the description for ProdExtn1 Update AutoFeatureTool. It is the updated tool in the update test.
-Subsystem-Content: com.ibm.ws.appserver.prodextn1testbundle1; version="[1,1.0.100)"
+Subsystem-Content: com.ibm.ws.appserver.prodextn1testbundle1; version="[1,1.1)"
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.adminCenter-1.0))"
 IBM-Install-Policy: manual
 Subsystem-Vendor: IBM

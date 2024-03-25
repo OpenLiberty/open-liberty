@@ -1087,4 +1087,13 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     public boolean peerRecoveryPrecedence() {
         return (Boolean) _props.get("peerRecoveryPrecedence");
     }
+
+    @Override
+    @Trivial
+    public boolean isPropagateXAResourceTransactionTimeout() {
+        boolean b = _propagateXAResourceTransactionTimeout || (Boolean) _props.get("propagateXAResourceTransactionTimeout");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "isPropagateXAResourceTransactionTimeout {0}", b);
+        return b;
+    }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -228,7 +228,7 @@ public class JSF22StatelessViewTests {
      */
     @Test
     // Faces 4.0 doesn't support ManagedBeans and there is already a CDI test.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void JSF22StatelessView_TestViewScopeManagedBeanTransient() throws Exception {
         testViewScopeManagedBeanTransient("JSF22StatelessView_ViewScope_Transient.xhtml");
     }
@@ -241,7 +241,7 @@ public class JSF22StatelessViewTests {
      */
     @Test
     // Faces 4.0 doesn't support ManagedBeans and there is already a CDI test.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void JSF22StatelessView_TestViewScopeManagedBeanNotTransient() throws Exception {
         testViewScopeManagedBeanNotTransient("JSF22StatelessView_ViewScope_NotTransient.xhtml");
     }

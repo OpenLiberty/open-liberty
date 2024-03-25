@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -691,12 +691,17 @@ public class XMLConfigParser {
             return null;
         }
 
+        String resolvedIncludePath = resolvePath(includePath);
+        
+        if(resolvedIncludePath == null || resolvedIncludePath.trim().length() == 0){
+            return null;
+        }
+
         if (basePath == null) {
             // no basePath - resolve includePath as is
-            String normalIncludePath = resolvePath(includePath);
-            return wsLocationAdmin.resolveResource(normalIncludePath);
+            return wsLocationAdmin.resolveResource(resolvedIncludePath);
         } else {
-            String normalIncludePath = PathUtils.normalize(resolvePath(includePath));
+            String normalIncludePath = PathUtils.normalize(resolvedIncludePath);
             if (PathUtils.pathIsAbsolute(normalIncludePath)) {
                 // includePath is absolute - resolve includePath as is
                 return wsLocationAdmin.resolveResource(normalIncludePath);
