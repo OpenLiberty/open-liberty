@@ -90,7 +90,7 @@ public class ConfigHolder {
     }
     
     /**
-     * Get the value of enableSchemaValidation from all know property maps using the name (serviceName/portName) provided.
+     * Get the value of enableSchemaValidation from all known property maps using the name (serviceName/portName) provided.
      *
      * @param name - either the serviceName or portName depending on which config is being used to get the enableSchemaValidation
      * 
@@ -115,7 +115,7 @@ public class ConfigHolder {
     }
 
     /**
-     * Get the value of ignoreUnexpectedElements from all know property maps using the name (serviceName/portName) provided.
+     * Get the value of ignoreUnexpectedElements from all known property maps using the name (serviceName/portName) provided.
      *
      * @param name - either the serviceName or portName depending on which config is being used to get the ignoreUnexpectedElements
      * 
@@ -154,7 +154,7 @@ public class ConfigHolder {
         boolean debug = getDebugEnabled();
         if (configInfo.isEmpty()) {
             if (debug) {
-                Tr.debug(tc, "getNameProps is empty, return null");
+                Tr.debug(tc, "configInfo is empty, returning null");
             }
             return null;
         }
@@ -189,7 +189,7 @@ public class ConfigHolder {
                 if (key.equals(name)) {
 
                     if (debug) {
-                        Tr.debug(tc, "name found - " + name + " adding associated props");
+                        Tr.debug(tc, "key found - " + key + " adding associated props");
                     } 
 
                     Map<String, Object> props = configInfo.get(key);
@@ -197,10 +197,11 @@ public class ConfigHolder {
                     mergedProps.putAll(props); // merge props for this name.
 
                     foundName = key; // assign the foundName to the key name.
+                    continue;
                 } else if (key.equals(WebServiceConfigConstants.DEFAULT_PROP)) {
 
                     if (debug) {
-                        Tr.debug(tc, "default found - " + name + " adding default props");
+                        Tr.debug(tc, "default found - " + key + " adding default props");
                     }
                     
                     Map<String, Object> props = configInfo.get(key);
@@ -237,13 +238,12 @@ public class ConfigHolder {
                     Tr.debug(tc, "No properties found for: " + name );
                 }
                 return null; // We found neither properties for the serviceName/portName or any default properties
-                
             }
             if (debug) {
                 Tr.debug(tc, "getNameProps final result for nameame: " + name + " values: " + mergedProps);
             }
 
-            return (mergedProps.isEmpty() ? null : mergedProps);
+            return mergedProps;
         } // end sync block
     }
 

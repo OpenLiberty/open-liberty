@@ -63,20 +63,12 @@ public class LibertyWebServiceClientInInterceptor  extends AbstractPhaseIntercep
         
         // if messageServiceName != null, try to get the values from configuration using it
         if(messageServiceName != null) {
-            enableSchemaValidation = WebServicesClientConfigHolder.getEnableSchemaValidation(messageServiceName);
-            // if enableSchemaValidation is still null, then we need to try it to get the default setting if its set
-            if(enableSchemaValidation == null) {
-                WebServicesClientConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP);
-            }
+            // if messageServiceName != null, try to get enableSchemaValidation value from configuration, if it's == null try it to get the default configuration value
+            enableSchemaValidation = (WebServicesClientConfigHolder.getEnableSchemaValidation(messageServiceName) != null) ? WebServicesClientConfigHolder.getEnableSchemaValidation(messageServiceName): WebServicesClientConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP);         
             
-            // if messageServiceName != null, try to get ignoreUnexpectedElements value from configuration, if messageSevice == null then try to get the default configuration value
-            ignoreUnexpectedElements = WebServicesClientConfigHolder.getIgnoreUnexpectedElements(messageServiceName);
-            
-            
-            // if ignoreUnexpectedElements is still null then we need to try it to get the default setting if its set
-            if(ignoreUnexpectedElements == null) {
-                WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP);
-            }
+            // if messageServiceName != null, try to get ignoreUnexpectedElements value from configuration, if it's == null try to get the default configuration value
+            ignoreUnexpectedElements = (WebServicesClientConfigHolder.getIgnoreUnexpectedElements(messageServiceName) != null) ? WebServicesClientConfigHolder.getIgnoreUnexpectedElements(messageServiceName) : WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP);         
+                                                                                                                                                                                                                                                      
         } else {
             // if messageSevice == null then try to get the default configuration values
             enableSchemaValidation = WebServicesClientConfigHolder.getEnableSchemaValidation(WebServiceConfigConstants.DEFAULT_PROP);
@@ -103,15 +95,15 @@ public class LibertyWebServiceClientInInterceptor  extends AbstractPhaseIntercep
         boolean enableSchemaValidationValue = (boolean) enableSchemaValidation;
         boolean ignoreUnexpectedElementsValue = (boolean) ignoreUnexpectedElements;
         
-        // If both values are set to true, these are the default behaviors and we can just return. 
+        // If both values are set like this, these are the default behaviors and we can just no-op return. 
         if(enableSchemaValidationValue == true && ignoreUnexpectedElementsValue == false) {
             if (debug) {
-                Tr.debug(tc, "No webServiceClient configuration found. returning.");
+                Tr.debug(tc, "The webServiceClient configuration found matches the default behavior, returning.");
             }
             return;
         }
         
-        if(enableSchemaValidationValue == false) { // since the existing behavior already has a true value, no need to do anything unless its non-default
+        if(enableSchemaValidationValue == false) { // since the existing behavior already sets this with a true value, only change it when value is false
             // Set the CXF property for enabling schema validation based on the value from our config
             MessageUtils.getContextualBoolean(message, "schema-validation-enabled", (boolean) enableSchemaValidation);
             
@@ -121,7 +113,7 @@ public class LibertyWebServiceClientInInterceptor  extends AbstractPhaseIntercep
             }
         }
             
-        if(ignoreUnexpectedElementsValue == true) { // since the existing behavior already has a true value, no need to do anything unless its non-default
+        if(ignoreUnexpectedElementsValue == true) { // existing behavior sets this to true, but since we have to invert to match the property, only set it when our property is true
             // Set the CXF property for enabling schema validation based on the value from our config
             // TODO implement custom Validation Event Handler to ignore only UnexpectedElementExceptions
             MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, !ignoreUnexpectedElementsValue); // Since we are using our internal property to set a CXF property, we must invert the value
