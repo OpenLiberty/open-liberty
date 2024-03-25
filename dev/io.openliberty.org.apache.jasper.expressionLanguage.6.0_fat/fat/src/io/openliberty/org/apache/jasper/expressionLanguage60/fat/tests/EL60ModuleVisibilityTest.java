@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,23 +20,25 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.el60.fat.arraylengthtest.servlets.EL60ArrayLengthTestServlet;
+import io.openliberty.el60.fat.modulevisibility.servlets.EL60ModuleVisibilityTestServlet;
 
 /**
- * Test the Expression Language 6.0 Array length property.
+ * Test the Expression Language 6.0 module visibility.
+ *
+ * Expression Language 6.0 issue: https://github.com/jakartaee/expression-language/issues/188
  */
 @RunWith(FATRunner.class)
-public class EL60ArrayLengthTest extends FATServletClient {
+public class EL60ModuleVisibilityTest extends FATServletClient {
 
-    @Server("expressionLanguage60_arrayLengthServer")
-    @TestServlet(servlet = EL60ArrayLengthTestServlet.class, contextRoot = "EL60ArrayLengthTest")
+    @Server("expressionLanguage60_moduleVisibilityServer")
+    @TestServlet(servlet = EL60ModuleVisibilityTestServlet.class, contextRoot = "EL60ModuleVisibilityTest")
     public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, "EL60ArrayLengthTest.war", "io.openliberty.el60.fat.arraylengthtest.servlets");
+        ShrinkHelper.defaultDropinApp(server, "EL60ModuleVisibilityTest.war", "io.openliberty.el60.fat.modulevisibility.servlets");
 
-        server.startServer(EL60ArrayLengthTest.class.getSimpleName() + ".log");
+        server.startServer(EL60ModuleVisibilityTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
