@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -819,6 +819,10 @@ public class ClientWasReqURLTests extends CommonTest {
                 expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
                         "Server log did not contain an error message about the missing WASReqURLOidc cookie.",
                         MessageConstants.CWWKS1520E_MISSING_SAMESITE_COOKIE);
+            } else {
+                expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS,
+                        "Server log did not contain an error message about the missing WASReqURLOidc cookie.",
+                        MessageConstants.CWWKS2352E_MISSING_SAMESITE_COOKIE);
             }
             break;
         default:
