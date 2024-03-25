@@ -46,6 +46,8 @@ Import-Package: \
     com.ibm.ws.http.dispatcher.internal.channel.\
     !*.internal.*,\
     !jakarta.ws.rs.*,\
+    !io.openliberty.microprofile.metrics50,\
+    !org.eclipse.microprofile.metrics,\
     *
 
 Export-Package: \
@@ -58,8 +60,10 @@ Liberty-Monitoring-Components: \
 DynamicImport-Package: \
   jakarta.ws.rs;version="[3.1.0,4.0.0)",\
   jakarta.ws.rs.*;version="[3.1.0,4.0.0)",\
-  io.openliberty.microprofile.metrics50.*,\
-  org.eclipse.microprofile.metrics.*;version="[5.0.0,6.0.0)"
+  io.openliberty.microprofile.metrics50;version="[1.0.0,2.0.0)",\
+  io.openliberty.microprofile.metrics50.*;version="[1.0.0,2.0.0)",\
+  org.eclipse.microprofile.metrics.*;version="[5.0.0,6.0.0)",\
+  org.eclipse.microprofile.metrics;version="[5.0.0,6.0.0)"
 
 #DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
 # com.ibm.websphere.monitor.annotation;version="1.0.0", \

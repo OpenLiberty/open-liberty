@@ -19,6 +19,7 @@ import com.ibm.websphere.monitor.annotation.This;
 import com.ibm.websphere.monitor.meters.MeterCollection;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
@@ -238,6 +239,7 @@ public class HttpStatsMonitor extends StatisticActions {
 
 	// sync static methods for adding/retrieving
 
+	@FFDCIgnore({ClassNotFoundException.class, NoClassDefFoundError.class})
 	public void updateHttpStatDuration(HttpStatAttributes statAttri, Duration duration) {
 
 		/*
@@ -261,6 +263,9 @@ public class HttpStatsMonitor extends StatisticActions {
 			}
 		} catch (ClassNotFoundException e) {
 
+			System.out.println("SharedMetricRegistries does not exist");
+			e.printStackTrace();
+		} catch (NoClassDefFoundError e) {
 			System.out.println("SharedMetricRegistries does not exist");
 			e.printStackTrace();
 		}

@@ -9,6 +9,7 @@ import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetadataBuilder;
 import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.Tag;
+import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.osgi.service.component.annotations.Component;
@@ -36,12 +37,15 @@ public class RestMetricManager {
 		
 		MetricRegistry vendorRegistry = sharedMetricRegistries.getOrCreate(MetricRegistry.VENDOR_SCOPE);
 		
-		Metadata md = new MetadataBuilder().withName("http.metric").withUnit(MetricUnits.MILLISECONDS).build();
+		Metadata md = new MetadataBuilder().withName("http.metric").withUnit(MetricUnits.SECONDS).build();
 		
 		//MetricID mid = new MetricID("http.metric", retrieveTags(httpStatAttributes));
 
-		Histogram httpHistogram = vendorRegistry.histogram(md,retrieveTags(httpStatAttributes));
-		httpHistogram.update(duration.toMillis());
+		//Histogram httpHistogram = vendorRegistry.histogram(md,retrieveTags(httpStatAttributes));
+		//httpHistogram.update(duration.toMillis());
+		
+		Timer httpTimer = vendorRegistry.timer(md,retrieveTags(httpStatAttributes));
+		httpTimer.update(duration);
 		
 	}
 	
