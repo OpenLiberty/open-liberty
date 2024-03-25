@@ -359,13 +359,13 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 //                         new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
                 // ctx.pipeline().remove(HttpServerUpgradeHandler.class);
                 // ctx.fireChannelRead(ReferenceCountUtil.retain(msg, 1));
-                MSP.log("NO UPGRADE DETECTED - ADD HTTP ");
 
                 if ("HTTP2".equals(ctx.pipeline().channel().attr(NettyHttpConstants.PROTOCOL).get())) {
 
                     ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
                     return;
                 }
+                MSP.log("NO UPGRADE DETECTED - ADD HTTP ");
 
                 if (msg instanceof FullHttpRequest) {
 
