@@ -96,7 +96,9 @@ public class LibertyServiceImpl extends ServiceImpl {
      */
     public LibertyServiceImpl(JaxWsSecurityConfigurationService securityConfigService, WebServiceRefInfo wsrInfo,
                               Bus bus, URL url, QName name, Class<?> clazz, WebServiceFeature... features) {
+        
         super(bus, url, name, clazz, features);
+
         this.securityConfigService = securityConfigService;
         this.wsrInfo = wsrInfo;
         

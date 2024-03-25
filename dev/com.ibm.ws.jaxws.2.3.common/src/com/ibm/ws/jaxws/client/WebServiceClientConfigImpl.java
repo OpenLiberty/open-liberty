@@ -27,7 +27,7 @@ import com.ibm.ws.jaxws.internal.WebServiceConfigConstants;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
- * The declarative service responsible for processing a given
+ * The declarative service responsible for processing a given <webServiceClient> element in the server.xml
  * Adapted from com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfig
  */
 @Component(configurationPid = "com.ibm.ws.jaxws.clientConfig",
@@ -142,6 +142,10 @@ public class WebServiceClientConfigImpl extends WebServiceConfig {
 
         while (it.hasNext()) {
             String key = it.next();
+            
+            if(key == null) {
+                continue;
+            }
 
             if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
                 Tr.debug(tc, "key: " + key + " value: " + props.get(key) + " of type " + props.get(key).getClass());

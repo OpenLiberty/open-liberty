@@ -59,8 +59,11 @@ public abstract class WebServiceConfig {
             while (it.hasNext()) {
                     String key = it.next();
 
+                    if(key == null) {
+                        continue;
+                    }
                     if (debug) {
-                            Tr.info(tc, "key: " + key + " value: " + props.get(key) + " of type " + props.get(key).getClass());
+                            Tr.debug(tc, "key: " + key + " value: " + props.get(key) + " of type " + props.get(key).getClass());
                     }
                     // skip stuff we don't care about
                     if (propertiesToRemove.contains(key)) {
