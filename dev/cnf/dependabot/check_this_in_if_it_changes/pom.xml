@@ -1252,6 +1252,11 @@
       <version>2.1.1</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+      <version>3.0.0-M1</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.authentication</groupId>
       <artifactId>jakarta.authentication-api</artifactId>
       <version>2.0.0</version>
