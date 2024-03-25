@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,20 +20,24 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -87,7 +91,6 @@ public class PackageRunnableTest {
 
     @Before
     public void setup() throws Exception {
-        String method = "setup";
 
         // Verify that /lib/extract exits, and the manifest.mf is valid
         validateWLPLibExtractAndManifest();
@@ -253,8 +256,12 @@ public class PackageRunnableTest {
         assertNotNull("The server did not show that it had stopped after executing the jar.",
                       server.waitForStringInLog("CWWKE0036I:.*"));
 
-        // wait 30s to give the shutdown script time to run in the shutdown hook
-        Thread.sleep(30000);
+        File templateDir = getTemplateDir(extractLocation);
+        // wait up to 3 minutes to give the shutdown script time to run in the shutdown hook
+        Instant start = Instant.now();
+        while (templateDir.exists() && Duration.between(start, Instant.now()).toMinutes() < 3) {
+            Thread.sleep(5000);
+        }
 
         Log.info(c, method, "The value of extractLocation is: " + extractLocation);
         Log.info(c, method, "extractLocation is a directory: " + extractLocation.isDirectory());
@@ -263,7 +270,7 @@ public class PackageRunnableTest {
     }
 
     /**
-     * Checks that the /logs and optionally the /bin folder exist within the /wlp folder structure.
+     * Checks that the /logs and optionally the /templates folder exist within the /wlp folder structure.
      *
      * @param extractDir
      * @param shouldBinFolderExist
@@ -280,18 +287,8 @@ public class PackageRunnableTest {
             sb.append(files[i] + "\n");
         }
 
-        File logDir = null;
-        File templateDir = null;
-
-        if (extractDir.getAbsolutePath().endsWith("wlp")) {
-            logDir = new File(extractDir.getAbsolutePath() + File.separator + "usr" + File.separator + "servers" + File.separator + serverName
-                              + File.separator + "logs");
-            templateDir = new File(extractDir.getAbsolutePath() + File.separator + "templates");
-        } else {
-            logDir = new File(extractDir.getAbsolutePath() + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName
-                              + File.separator + "logs");
-            templateDir = new File(extractDir.getAbsolutePath() + File.separator + "wlp" + File.separator + "templates");
-        }
+        File logDir = getLogsDir(extractDir);
+        File templateDir = getTemplateDir(extractDir);
 
         // Logs should always exist regardless
         assertTrue(File.separator + "logs folder at " + logDir.getAbsolutePath() + " does not exist, but should. " + sb.toString(), logDir.exists());
@@ -300,10 +297,44 @@ public class PackageRunnableTest {
             assertTrue(File.separator + "templates folder at " + templateDir.getAbsolutePath() + " does not exist, but should. Contents =" + sb.toString(),
                        templateDir.exists());
         } else {
-            Log.info(c, method, "Contents at " + templateDir.getAbsolutePath() + " are : " + sb.toString());
-            assumeTrue(!templateDir.exists());
+            Log.info(c, method, "Contents at " + extractDir.getAbsolutePath() + " are :\n" + sb.toString());
+            assertFalse(File.separator + "templates folder at " + templateDir.getAbsolutePath() + " exists, but should not. Contents =" + sb.toString(), templateDir.exists());
         }
 
+    }
+
+    /**
+     * @param extractDir
+     * @return
+     */
+    private File getLogsDir(File extractDir) {
+        File logDir = null;
+
+        if (extractDir.getAbsolutePath().endsWith("wlp")) {
+            logDir = new File(extractDir.getAbsolutePath() + File.separator + "usr" + File.separator + "servers" + File.separator + serverName
+                              + File.separator + "logs");
+        } else {
+
+            logDir = new File(extractDir.getAbsolutePath() + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName
+                              + File.separator + "logs");
+        }
+        return logDir;
+    }
+
+    /**
+     * @param extractDir
+     * @return
+     */
+    private File getTemplateDir(File extractDir) {
+        File templateDir = null;
+
+        if (extractDir.getAbsolutePath().endsWith("wlp")) {
+            templateDir = new File(extractDir.getAbsolutePath() + File.separator + "templates");
+        } else {
+
+            templateDir = new File(extractDir.getAbsolutePath() + File.separator + "wlp" + File.separator + "templates");
+        }
+        return templateDir;
     }
 
     /**
@@ -432,6 +463,19 @@ public class PackageRunnableTest {
             } else {
                 // stop normally so shutdown hook is called
                 stopServer(extractLoc);
+                Instant start = Instant.now();
+                // wait for process to die gracefully before landing in the finally block where it will be destroyed forcefully.
+                while (proc.isAlive() && Duration.between(start, Instant.now()).toMinutes() < 3) {
+                    Thread.sleep(1000);
+                }
+                File shutdownHookLog = new File(getLogsDir(extractDirectory), "shutdownHook.log");
+                if (shutdownHookLog.exists()) {
+                    List<String> logStrings = Files.readAllLines(shutdownHookLog.toPath(), StandardCharsets.UTF_8);
+                    Log.info(c, method, "shutdown log found, contents:\n" + logStrings.stream().collect(Collectors.joining("\n")));
+                } else {
+                    Log.info(c, method, "shutdown hook log doesn't exist in: " + shutdownHookLog.getAbsolutePath());
+
+                }
             }
 
             if (os != null) {
@@ -636,13 +680,19 @@ public class PackageRunnableTest {
      */
     private void stopServer(String extractLocation) throws Exception {
         String method = "stopServer";
+        // LibertyServer framework doesn't work here. It always detects the server as not started even though it is started.
+        // When forcing it to started using `setStarted` this causes the stop command to hang indefinitely.
+        Runtime rt = Runtime.getRuntime();
+        String serverCmd;
+        if (System.getProperty("os.name").startsWith("Win")) {
+            serverCmd = "server.bat";
+        } else {
+            serverCmd = "server";
+        }
+        String stopCmd = extractLocation + File.separator + "bin" + File.separator + serverCmd + " stop " + serverName;
+        Log.info(c, method, "Stopping server with the following command: '" + stopCmd + "'");
+        rt.exec(stopCmd);
 
-        Log.info(c, method, "Getting existing liberty server");
-        LibertyServer server = LibertyServerFactory.getExistingLibertyServer(extractLocation + File.separator + "usr" + File.separator + "servers" + File.separator
-                                                                             + serverName);
-        Log.info(c, method, "Attempting to stop server = " + server.getServerName() + " with status = " + server.isStarted());
-
-        server.stopServer();
     }
 
     /**
@@ -834,28 +884,6 @@ public class PackageRunnableTest {
                     fos.write(buffer, 0, read);
                 }
             }
-        }
-    }
-
-    /**
-     * Writes a file out to the output log
-     *
-     * @param f
-     * @throws FileNotFoundException
-     * @throws IOException
-     */
-    private static void dumpFileToLog(File f) throws FileNotFoundException, IOException {
-        BufferedReader reader = null;
-        String method = "dumpFileToLog";
-        try {
-            reader = new BufferedReader(new FileReader(f));
-            String s = null;
-            Log.info(c, method, "\t Contents of " + f.getAbsolutePath() + " : ");
-            while ((s = reader.readLine()) != null) {
-                Log.info(c, method, "\t\t" + s);
-            }
-        } finally {
-            reader.close();
         }
     }
 

@@ -17,11 +17,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 /**
@@ -31,6 +36,7 @@ import java.util.ResourceBundle;
 public class ShutdownHook implements Runnable {
 
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle(SelfExtract.class.getName() + "Messages");
+    private static final String hookLog = "shutdownHook.log";
 
     final int platformType;
     final String dir;
@@ -106,7 +112,7 @@ public class ShutdownHook implements Runnable {
 
         Process stopProcess = Runtime.getRuntime().exec(cmd, SelfExtractUtils.runEnv(dir), null); // stop server
         try {
-            stopProcess.waitFor();
+            waitAndCloseStreams(stopProcess);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -117,18 +123,23 @@ public class ShutdownHook implements Runnable {
      *
      * @throws IOException
      */
-    private void startAsyncDelete() throws IOException {
+    private void startAsyncDelete() throws IOException, InterruptedException {
 
         Runtime rt = Runtime.getRuntime();
         File scriptFile = null;
+
         if (platformType == SelfExtractUtils.PlatformType_UNIX) {
             scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_UNIX);
-            rt.exec("chmod 750 " + scriptFile.getAbsolutePath());
-            rt.exec("sh -c " + scriptFile.getAbsolutePath() + " &");
+            Process proc = rt.exec("chmod 750 " + scriptFile.getAbsolutePath());
+            waitAndCloseStreams(proc);
+            ProcessBuilder job = new ProcessBuilder().command("sh", "-c", scriptFile.getAbsolutePath());
+            job.redirectErrorStream(true);
+            proc = job.start();
+            waitAndCloseStreams(proc);
         } else if (platformType == SelfExtractUtils.PlatformType_OS400) {
             scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_OS400);
             rt.exec("chmod 750 " + scriptFile.getAbsolutePath());
-            rt.exec("/usr/bin/qsh -c " + scriptFile.getAbsolutePath() + " &");
+            rt.exec("/usr/bin/qsh -c " + scriptFile.getAbsolutePath());
         } else if (platformType == SelfExtractUtils.PlatformType_WINDOWS) {
             scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_WINDOWS);
             // Note: must redirect output in order for script to run on windows.
@@ -140,6 +151,58 @@ public class ShutdownHook implements Runnable {
             // convert to Unix type path and run under bash
             rt.exec("bash -c " + scriptFile.getAbsolutePath().replace('\\', '/') + " &");
         }
+
+    }
+
+    /**
+     * @param proc
+     * @throws Exception
+     * @throws InterruptedException
+     */
+    private void waitAndCloseStreams(Process proc) throws IOException, InterruptedException {
+        StringBuilder stdOut = new StringBuilder();
+        StringBuilder stdErr = new StringBuilder();
+        StringBuilder output = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                stdOut.append(line + "\n");
+            }
+        }
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getErrorStream()))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                stdErr.append(line + "\n");
+            }
+        }
+
+        boolean stdoutEmpty = stdOut.toString().isEmpty();
+        boolean stderrEmpty = stdErr.toString().isEmpty();
+
+        proc.waitFor();
+
+        if (!stdoutEmpty) {
+            output.append(stdOut.toString());
+        }
+        if (!stderrEmpty) {
+            if (!stdoutEmpty) {
+                output.append("\nStderr:\n");
+            }
+            output.append(stdErr.toString());
+        }
+        File outputFile = getHookLog().toFile();
+
+        if (!output.toString().isEmpty()) {
+            try (FileWriter writer = new FileWriter(outputFile, true); BufferedWriter bufferedWriter = new BufferedWriter(writer)) {
+                bufferedWriter.write(output.toString());
+            }
+        }
+
+        proc.getInputStream().close();
+        proc.getOutputStream().close();
+        proc.getErrorStream().close();
     }
 
     /**
@@ -191,22 +254,28 @@ public class ShutdownHook implements Runnable {
         String serverDir = dir + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName + File.separator;
         File tempDir = Files.createTempDirectory("logs").toFile();
 
+        String logDirNormalized = logDir.replace('\\', '/');
+        String dirNormalized = dir.replace('\\', '/');
+        String tempDirNormalized = tempDir.getAbsolutePath().replace('\\', '/');
+        String fileNormalized = file.getAbsolutePath().replace('\\', '/');
+
         bw.write("echo begin delete" + "\n");
         bw.write("n=0" + "\n");
         bw.write("while [ $n -ne 1 ]; do" + "\n");
-        bw.write("  if [ -e " + dir.replace('\\', '/') + "/wlp ]; then" + "\n");
-        bw.write("    cp -r " + logDir.replace('\\', '/') + " " + tempDir.getAbsolutePath().replace('\\', '/') + "\n");
-        bw.write("    rm -rf " + dir.replace('\\', '/') + "/wlp/ \n");
+        bw.write("  if [ -e " + dirNormalized + "/wlp ]; then" + "\n");
+        bw.write("    cp -r " + logDirNormalized + " " + tempDirNormalized + "\n");
+        bw.write("    rm -rf " + dirNormalized + "/wlp/ \n");
         bw.write("  else" + "\n");
-        bw.write("    echo file not found - n=$n" + "\n");
+        bw.write("    echo file " + dirNormalized + "/wlp was deleted. Exiting loop." + "\n");
         bw.write("    n=1" + "\n");
         bw.write("  fi" + "\n");
         bw.write("done" + "\n");
-        bw.write("mkdir -p " + logDir.replace('\\', '/') + "\n");
-        bw.write("cp -r " + tempDir.getAbsolutePath().replace('\\', '/') + "/logs/ " + serverDir.replace('\\', '/') + "\n");
-        bw.write("chmod -R 755 " + dir.replace('\\', '/') + "\n");
-        bw.write("rm -rf " + file.getAbsolutePath().replace('\\', '/') + "\n");
-        bw.write("rm -rf " + tempDir.getAbsolutePath().replace('\\', '/') + "\n");
+        bw.write("mkdir -p " + logDirNormalized + "\n");
+        bw.write("cp -r " + tempDirNormalized + "/logs/ " + serverDir.replace('\\', '/') + "\n");
+        bw.write("echo log directory restored to: " + logDirNormalized + "\n");
+        bw.write("chmod -R 755 " + dirNormalized + "\n");
+        bw.write("rm -rf " + fileNormalized + "\n");
+        bw.write("rm -rf " + tempDirNormalized + "\n");
         bw.write("echo end delete" + "\n");
     }
 
@@ -286,22 +355,32 @@ public class ShutdownHook implements Runnable {
     @Override
     public void run() {
         try {
-
             stopServer(); // first, stop server
-
             // When the server is launched with java -jar, delete the server on exit minus
             // the /logs folder, unless WLP_JAR_EXTRACT_DIR is set at which point don't delete
             // anything.
-
             if (extractDirPredefined != true) {
                 startAsyncDelete(); // now launch async process to cleanup extraction directory
             }
 
         } catch (Exception e) {
+            try {
+                Files.write(getHookLog(), (e.getMessage() + "\n" + Arrays.toString(e.getStackTrace())).getBytes(), StandardOpenOption.APPEND);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
             e.printStackTrace();
             throw new RuntimeException("Shutdown hook failed with exception " + e.getMessage());
         }
 
+    }
+
+    /**
+     * @return
+     */
+    private Path getHookLog() {
+        String logDir = dir + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + serverName + File.separator + "logs";
+        return Paths.get(logDir, hookLog);
     }
 
 }
