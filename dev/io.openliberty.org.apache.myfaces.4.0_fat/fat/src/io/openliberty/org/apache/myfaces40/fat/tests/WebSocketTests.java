@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ import io.openliberty.org.apache.myfaces40.fat.JSFUtils;
  * in JSF 4.0 specification for <f:websocket> onerror="...".
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Skipped due to HTMLUnit / JavaScript incompatibility (New JS in RC5)
+@SkipForRepeat({SkipForRepeat.NO_MODIFICATION,SkipForRepeat.EE11_FEATURES}) // Skipped due to HTMLUnit / JavaScript incompatibility (New JS in RC5)
 public class WebSocketTests {
 
     private static final String WEB_SOCKET_TEST_APP_NAME = "WebSocket";

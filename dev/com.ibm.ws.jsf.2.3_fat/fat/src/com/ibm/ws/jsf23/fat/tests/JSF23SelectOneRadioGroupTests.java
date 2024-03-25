@@ -9,7 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -43,7 +42,6 @@ import com.ibm.ws.jsf23.fat.selenium_util.ExtendedWebDriver;
 import com.ibm.ws.jsf23.fat.selenium_util.WebPage;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;

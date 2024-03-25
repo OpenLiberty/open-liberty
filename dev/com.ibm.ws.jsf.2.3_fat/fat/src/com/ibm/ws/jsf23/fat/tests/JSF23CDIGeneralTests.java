@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -449,7 +450,7 @@ public class JSF23CDIGeneralTests {
      *
      * @throws Exception
      */
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES) // MYFACES-4461; Injection works regardless of @FacesConfig annotation
+    @SkipForRepeat(EE10_OR_LATER_FEATURES) // MYFACES-4461; Injection works regardless of @FacesConfig annotation
     @Mode(TestMode.FULL)
     @Test
     @ExpectedFFDC({ "org.jboss.weld.exceptions.DeploymentException", "com.ibm.ws.container.service.state.StateChangeException" })

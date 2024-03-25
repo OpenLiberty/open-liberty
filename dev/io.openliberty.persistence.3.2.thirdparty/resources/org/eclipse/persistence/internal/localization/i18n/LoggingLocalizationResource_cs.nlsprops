@@ -709,7 +709,12 @@ toplink_warning=[EL varov\u00e1n\u00ed]:
 
 unit_of_work_thread_info=Aktu\u00e1ln\u00ed jednotka pr\u00e1ce v relaci ({0}) byla vytvo\u0159ena jin\u00fdm podprocesem (ID: {1} n\u00e1zev: {2}), ne\u017e je aktu\u00e1ln\u00ed podproces (ID: {3} n\u00e1zev: {4})
 
-unit_of_work_thread_info_thread_dump=Trasov\u00e1n\u00ed z\u00e1sobn\u00edku podprocesu vytvo\u0159en\u00ed (ID: {0} n\u00e1zev: {1}): {2} Trasov\u00e1n\u00ed z\u00e1sobn\u00edku aktu\u00e1ln\u00edho podprocesu (ID: {3} n\u00e1zev: {4}): {5}\n
+unit_of_work_thread_info_thread_dump=Trasov\u00e1n\u00ed z\u00e1sobn\u00edku podprocesu vytvo\u0159en\u00ed (ID: {0} n\u00e1zev: {1}):
+#{2}
+
+Current podproces (ID: {3} n\u00e1zev: {4}) trasov\u00e1n\u00ed z\u00e1sobn\u00edku:
+#{5}
+
 unitofwork_identity_hashcode={0}Ha\u0161ovac\u00ed k\u00f3d identity UnitOfWork: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nem\u016f\u017ee pou\u017e\u00edvat vazbu na t\u00e9to datab\u00e1zov\u00e9 platform\u011b. Zm\u011bn\u011bno nastaven\u00ed dotazu, aby ho bylo mo\u017en\u00e9 prov\u00e9st bez vazby.

@@ -96,12 +96,30 @@ public class FeatureResolverImpl implements FeatureResolver {
             // nothing
         }
         tc = temp;
+    }
+
+    private void verifyVersionlessEnvVar(FeatureResolver.Repository repository){
         String[] preferredVersions = (preferedFeatureVersions == null) ? new String[] {} : preferedFeatureVersions.split(",");
         String[][] parsedVersions = new String[preferredVersions.length][2];
+        String invalid = "";
+        int invalidPadding = 0;
         for (int i = 0; i < preferredVersions.length; i++) {
-            parsedVersions[i] = parseNameAndVersion(preferredVersions[i].trim());
+            String[] current = parseNameAndVersion(preferredVersions[i].trim());
+            if(current[0] != null && current[1] != null && !current[0].isEmpty() && !current[1].isEmpty() && repository.getFeature(current[0] + "-" + current[1]) != null){
+                parsedVersions[i-invalidPadding] = current;
+            }
+            else{
+                invalidPadding++;
+                if(!invalid.isEmpty()){
+                    invalid += ",";
+                }
+                invalid += " \"" + preferredVersions[i] + "\"";
+            }
         }
-        parsedPreferedVersions = parsedVersions;
+        parsedPreferedVersions = Arrays.copyOf(parsedVersions, parsedVersions.length-invalidPadding);
+        if(!!!invalid.isEmpty()){
+            trace("Removing invalid entries in PREFERRED_FEATURE_VERSIONS:" + invalid);
+        }
     }
 
     @Override
@@ -163,6 +181,10 @@ public class FeatureResolverImpl implements FeatureResolver {
                                   EnumSet<ProcessType> supportedProcessTypes) {
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
+        if(isBeta){
+            verifyVersionlessEnvVar(repository);
+        }
+        
         // this checks if the pre-resolved exists in the repo;
         // if one does not exist then we start over with an empty set of pre-resolved
         preResolved = checkPreResolvedExistAndSetFullName(preResolved, selectionContext);
@@ -672,6 +694,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         static class Permutation {
             final Map<String, Chain> _selected = new HashMap<String, Chain>();
             final Map<String, Chains> _postponed = new LinkedHashMap<String, Chains>();
+            final Set<String> _postponedVersionless = new HashSet<String>();
             final Set<String> _blockedFeatures = new HashSet<String>();
             final ResultImpl _result = new ResultImpl();
 
@@ -883,6 +906,21 @@ public class FeatureResolverImpl implements FeatureResolver {
             // The decision of one postpone may effect the path of the
             // dependency in such a way to make later postponed decisions
             // unnecessary
+
+            //if a versionless feature is postponed, process that first
+            if(isBeta){
+                if(!!!_current._postponedVersionless.isEmpty()){
+                    String postponedVersionless = _current._postponedVersionless.iterator().next();
+                    Chain selected = _current._postponed.get(postponedVersionless).select(postponedVersionless, this);
+                    if (selected != null) {
+                        _current._selected.put(postponedVersionless, selected);
+                    }
+                    _current._postponed.clear();
+                    _current._postponedVersionless.clear();
+                    return;
+                }
+            }
+
             Map.Entry<String, Chains> firstPostponed = _current._postponed.entrySet().iterator().next();
             // try to find a good selection
             Chain selected = firstPostponed.getValue().select(firstPostponed.getKey(), this);
@@ -950,6 +988,11 @@ public class FeatureResolverImpl implements FeatureResolver {
             if (existing == null) {
                 existing = new Chains();
                 _current._postponed.put(baseName, existing);
+                if(isBeta){
+                    if(baseName.startsWith("io.openliberty.internal.versionless.")){
+                        _current._postponedVersionless.add(baseName);
+                    }
+                }
             }
             existing.add(chain);
         }

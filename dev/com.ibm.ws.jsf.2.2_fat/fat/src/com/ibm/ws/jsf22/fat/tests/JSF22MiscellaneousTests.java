@@ -9,7 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -371,9 +371,9 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
-    // Skip for EE10 because this test is specific to Faces Managed Beans which
+    // Skip for EE10+ because this test is specific to Faces Managed Beans which
     // are no longer supported in Faces 4.0.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void testViewScopeMyFaces() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
@@ -404,9 +404,9 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
-    // Skip for EE10 because this test is specific to Faces Managed Beans which
+    // Skip for EE10+ because this test is specific to Faces Managed Beans which
     // are no longer supported in Faces 4.0.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void testViewScopeMyFacesSerialize() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
@@ -528,10 +528,10 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
-    // Skip for EE10 as the jakarta.faces.application.Application.createValueBinding method
+    // Skip for EE10+ as the jakarta.faces.application.Application.createValueBinding method
     // was removed. In addition the fix for this isn't necessary for Faces 4.0 because the
     // org.apache.myfaces.el.convert packages doesn't exist any longer.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void testCustomValueBindingTag() throws Exception {
         try (WebClient webClient = new WebClient()) {
             webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);

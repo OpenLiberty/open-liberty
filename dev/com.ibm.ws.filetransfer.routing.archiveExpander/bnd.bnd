@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -20,10 +20,12 @@ Bundle-Description: Archive Expander; version=${bVersion}
 Main-Class: com.ibm.ws.filetransfer.routing.archiveExpander.ArchiveExpander
 
 Export-Package: \
-  com.ibm.ws.filetransfer.routing.archiveExpander
+  com.ibm.ws.filetransfer.routing.archiveExpander 
 
 Private-Package: \
- org.apache.commons.compress.archivers.zip
+ org.apache.commons.compress.archivers.zip, \
+ org.apache.commons.io.build, \
+ org.apache.commons.io.file.attribute
 
 Import-Package: \
  !org.apache.commons.compress.compressors.lzw, \
@@ -45,10 +47,13 @@ Import-Package: \
  @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/CharsetNames*, \
  @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/Charsets*, \
  @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/InputStreamStatistics*, \
- @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/IOUtils*
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/IOUtils*,\
+ @${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/TimeUtils*
+ 
 
 instrument.disabled: true
 
 -buildpath: \
-	com.ibm.ws.org.apache.commons.compress,\
+	com.ibm.ws.org.apache.commons.compress;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

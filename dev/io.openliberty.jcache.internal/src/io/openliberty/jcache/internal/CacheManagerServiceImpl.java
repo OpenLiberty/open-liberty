@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,6 +36,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.jcache.CacheManagerService;
 import io.openliberty.jcache.utils.CacheConfigUtil;
 
@@ -108,12 +109,14 @@ public class CacheManagerServiceImpl implements CacheManagerService {
          * alleviate delays on the first request to any caches that use this
          * CacheManager.
          */
-        getCacheManagerFuture = scheduledExecutorService.schedule(new Runnable() {
-            @Override
-            public void run() {
-                getCacheManager();
-            }
-        }, 0, TimeUnit.SECONDS);
+        CheckpointPhase.onRestore(() -> {
+            getCacheManagerFuture = scheduledExecutorService.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    getCacheManager();
+                }
+            }, 0, TimeUnit.SECONDS);
+        });
     }
 
     /**

@@ -17,6 +17,7 @@
         <feature>concurrent-3.1</feature>
         <feature>cdi-4.1</feature>
         <feature>componenttest-2.0</feature>
+        <feature>enterpriseBeansLite-4.0</feature>
         <feature>jndi-1.0</feature>
     </featureManager>
 

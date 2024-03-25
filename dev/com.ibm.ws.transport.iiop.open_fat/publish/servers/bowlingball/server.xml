@@ -11,4 +11,5 @@
     </featureManager>
     <quickStartSecurity userName="Bob" userPassword="bobpwd" />
     <keyStore id="defaultKeyStore" password="passw0rd" />
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
 </server>

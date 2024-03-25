@@ -55,8 +55,8 @@ import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60XPoweredByHeader
 public class FATSuite {
 
     // EE11 requires Java 17
-    // If we only specify EE11 for lite mode it will cause no tests to run which causes an error.
-    // If we are running on Java 11, have EE10 be the lite mode test to run.
+    // If we only specify EE11 for lite mode it will cause no tests to run with lower Java versions which causes an error.
+    // If we are running on a Java version less than 17, have EE10 (EmptyAction) be the lite mode test to run.
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES());

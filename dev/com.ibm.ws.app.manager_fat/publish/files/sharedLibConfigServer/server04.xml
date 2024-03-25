@@ -1,0 +1,47 @@
+<server description="sharedLibServer">
+
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <library id="snoopLibA">
+    <fileset dir="snoopLib" includes="test0.jar,test1.jar"/>
+  </library>
+
+  <library id="snoopLibB">
+    <fileset dir="snoopLib" includes="test0.jar,test1.jar"/>
+  </library>
+
+  <library id="snoopLibC">
+    <fileset dir="snoopLib" includes="test0.jar,test2.jar"/>
+  </library>
+
+  <library id="snoopLibD">
+    <fileset dir="snoopLib" includes="test0.jar,test3.jar"/>
+  </library>
+
+  //            A A B B
+  // test0(4) [snoop0: y/y/n/n]
+  // test1(4) [snoop1: y/y/n/n]
+  // test2(0) [snoop2: y/y/n/n]
+  // test3(0) [snoop3: y/y/n/n]
+
+  <application type="war" id="snoop0" name="snoop0" location="sharedLibSnoop.war" context-root="snoop0">
+    <classloader delegation="parentLast" commonLibraryRef="snoopLibA"/>
+  </application>
+
+  <application type="war" id="snoop1" name="snoop1" location="sharedLibSnoop.war" context-root="snoop1">
+    <classloader delegation="parentLast" commonLibraryRef="snoopLibA"/>
+  </application>
+
+  <application type="war" id="snoop2" name="snoop2" location="sharedLibSnoop.war" context-root="snoop2">
+    <classloader delegation="parentLast" commonLibraryRef="snoopLibB"/>
+  </application>
+
+  <application type="war" id="snoop3" name="snoop3" location="sharedLibSnoop.war" context-root="snoop3">
+    <classloader delegation="parentLast" commonLibraryRef="snoopLibB"/>
+  </application>
+
+</server>

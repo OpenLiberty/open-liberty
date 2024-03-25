@@ -22,7 +22,10 @@ src: \
 javac.source: 11
 javac.target: 11
 
-tested.features: connectors-2.1, xmlbinding-4.0
+tested.features: connectors-2.1,\
+                 xmlbinding-4.0,\ noship-1.0,\
+                 cdi-4.1,\
+                 servlet-6.1
     
 fat.project: true
 

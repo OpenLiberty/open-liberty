@@ -73,21 +73,31 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
      */
     protected void handle(Message message) {
 
+        boolean isFineEnabled = LOG.isLoggable(Level.FINE); // Liberty Change
+            
         AssertionInfoMap aim = message.get(AssertionInfoMap.class);
         if (null == aim) {
+            if(isFineEnabled) { // Liberty Change
+                LOG.fine("No AssertionInfoMap.");  // Liberty Change
+            }
             return;
         }
 
         Exchange exchange = message.getExchange();
         BindingOperationInfo boi = exchange.getBindingOperationInfo();
         if (null == boi) {
-            LOG.fine("No binding operation info.");
+            if(isFineEnabled) { // Liberty Change
+                LOG.fine("No binding operation info.");
+            }
+            
             return;
         }
 
         Endpoint e = exchange.getEndpoint();
         if (null == e) {
-            LOG.fine("No endpoint.");
+            if(isFineEnabled) { // Liberty Change
+                LOG.fine("No endpoint.");
+            }
             return;
         }
 
@@ -98,7 +108,9 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
         }
 
         if (MessageUtils.isPartialResponse(message)) {
-            LOG.fine("Not verifying policies on inbound partial response.");
+            if(isFineEnabled) { // Liberty Change
+                LOG.fine("Not verifying policies on inbound partial response.");
+            }
             return;
         }
 
@@ -108,8 +120,14 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
         if (effectivePolicy == null) {
             EndpointInfo ei = e.getEndpointInfo();
             if (MessageUtils.isRequestor(message)) {
+                if(isFineEnabled) { // Liberty Change
+                    LOG.fine("Getting response effectivePolicy for client.");  // Liberty Change
+                }
                 effectivePolicy = pe.getEffectiveClientResponsePolicy(ei, boi, message);
             } else {
+                if(isFineEnabled) { // Liberty Change
+                    LOG.fine("Getting request effectivePolicy for server .");  // Liberty Change
+                }
                 effectivePolicy = pe.getEffectiveServerRequestPolicy(ei, boi, message);
             }
         }
@@ -119,8 +137,10 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
             
             if (ignoreUnsupportedPolicy) {
                 // Please do not modify log message below, it's been used in PropertySettingTest
-                LOG.fine("WARNING: checkEffectivePolicy will not be called because "
+                if(isFineEnabled) { // Liberty Change
+                    LOG.fine("WARNING: checkEffectivePolicy will not be called because "
                                 + "property cxf.ignore.unsupported.policy is set to true.");
+                }
             } else {
                 usedAlternatives = aim.checkEffectivePolicy(effectivePolicy.getPolicy());
             } // Liberty Change End
@@ -140,7 +160,9 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
             }
             throw ex;
         }
-        LOG.fine("Verified policies for inbound message.");
+        if(isFineEnabled) { // Liberty Change
+            LOG.fine("Verified policies for inbound message.");
+        }
     }
 
 }

@@ -13,18 +13,27 @@
 package io.openliberty.concurrent.internal.cdi;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.classloading.ClassLoaderIdentifierService;
+import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
+import com.ibm.ws.runtime.metadata.ApplicationMetaData;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.wsspi.resource.ResourceFactory;
+import com.ibm.wsspi.resource.ResourceInfo;
 
+import io.openliberty.concurrent.internal.cdi.metadata.MTFDeferredMetaDataFactory;
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -44,6 +53,17 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
     private final Set<Type> beanTypes = Set.of(ManagedThreadFactory.class);
 
     /**
+     * Class loader of the application artifact that defines the managed thread factory definition.
+     * Or, if a bean for a default instance then the class loader for the application.
+     */
+    private final ClassLoader declaringClassLoader;
+
+    /**
+     * Metadata of the application artifact that defines the managed thread factory definition.
+     */
+    private final MetaData declaringMetadata;
+
+    /**
      * Resource factory that creates the resource.
      */
     private final ResourceFactory factory;
@@ -54,37 +74,54 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
     private final Set<Annotation> qualifiers;
 
     /**
-     * Construct a new bean for this resource.
+     * Construct a new bean for this resource, which is for default ManagedThreadFactory instances
+     * at the application level.
      *
-     * @param factory        resource factory.
-     * @param qualifierNames names of qualifier annotations for the bean.
+     * @param cmd        component metadata from the thread upon which the CDI extension runs.
+     * @param extSvc     OSGi service for the Concurrency extension.
+     * @param qualifiers qualifiers for the bean.
      */
-    ManagedThreadFactoryBean(ResourceFactory factory, List<String> qualifierNames) throws ClassNotFoundException {
-        this.factory = factory;
-        this.qualifiers = new LinkedHashSet<Annotation>();
+    ManagedThreadFactoryBean(ComponentMetaData cmd, ConcurrencyExtensionMetadata extSvc, Set<Annotation> qualifiers) {
+        this.factory = extSvc.defaultManagedThreadFactoryFactory;
+        this.qualifiers = qualifiers;
 
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        // TODO find out how to get the class loader for the application.
+        // It is not correct to use whichever application component's classloader happens to be on the thread.
+        if (cmd instanceof IdentifiableComponentMetaData) {
+            String identifier = ((IdentifiableComponentMetaData) cmd).getPersistentIdentifier();
 
-        for (String qualifierClassName : qualifierNames) {
-            Class<?> qualifierClass = loader.loadClass(qualifierClassName);
-            if (!qualifierClass.isInterface())
-                throw new IllegalArgumentException("The " + qualifierClassName + " class is not a valid qualifier class" +
-                                                   " because it is not an annotation."); // TODO NLS
-            qualifiers.add(Annotation.class.cast(Proxy.newProxyInstance(loader,
-                                                                        new Class<?>[] { Annotation.class, qualifierClass },
-                                                                        new QualifierProxy(qualifierClass))));
+            BundleContext bc = FrameworkUtil.getBundle(ClassLoaderIdentifierService.class).getBundleContext();
+            ServiceReference<ClassLoaderIdentifierService> ref = bc.getServiceReference(ClassLoaderIdentifierService.class);
+            ClassLoaderIdentifierService classloaderIdSvc = bc.getService(ref);
+            this.declaringClassLoader = classloaderIdSvc.getClassLoader(identifier);
+        } else {
+            throw new IllegalArgumentException(cmd.toString()); // internal error
         }
+
+        // The Concurrency extension could be running under any module/component of the application.
+        ApplicationMetaData amd = cmd.getModuleMetaData().getApplicationMetaData();
+        MTFDeferredMetaDataFactory metadataFactory = (MTFDeferredMetaDataFactory) extSvc.mtfMetadataFactory;
+        this.declaringMetadata = metadataFactory.createComponentMetadata(amd, declaringClassLoader);
     }
 
     /**
      * Construct a new bean for this resource.
      *
-     * @param factory    resource factory.
-     * @param qualifiers qualifiers for the bean.
+     * @param factory resource factory.
+     * @param extSvc  OSGi service for the Concurrency extension.
      */
-    ManagedThreadFactoryBean(ResourceFactory factory, Set<Annotation> qualifiers) {
+    ManagedThreadFactoryBean(QualifiedResourceFactory factory, ConcurrencyExtensionMetadata extSvc) {
         this.factory = factory;
-        this.qualifiers = qualifiers;
+        this.qualifiers = factory.getQualifiers();
+        this.declaringClassLoader = factory.getDeclaringClassLoader();
+
+        MetaData mdata = factory.getDeclaringMetadata();
+        if (mdata instanceof ApplicationMetaData amd) {
+            MTFDeferredMetaDataFactory metadataFactory = (MTFDeferredMetaDataFactory) extSvc.mtfMetadataFactory;
+            this.declaringMetadata = metadataFactory.createComponentMetadata(amd, declaringClassLoader);
+        } else {
+            this.declaringMetadata = mdata;
+        }
     }
 
     @Override
@@ -96,9 +133,8 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
 
         ManagedThreadFactory instance;
         try {
-            // TODO send in signal to MTF to defer context capture until newThread?
-            // Or, send in context that we already obtained?
-            instance = (ManagedThreadFactory) factory.createResource(null);
+            ResourceInfo info = new MTFBeanResourceInfoImpl(declaringClassLoader, declaringMetadata);
+            instance = (ManagedThreadFactory) factory.createResource(info);
         } catch (RuntimeException x) {
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "create", x);

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2023 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1578,10 +1578,7 @@ uncaught.exception.during.AsyncListener.onComplete.explanation=El AsyncListener 
 uncaught.exception.during.AsyncListener.onComplete.useraction=Verifique en el c\u00f3digo de origen de AsyncListener y en los registros del servidor la causa ra\u00edz del error de la aplicaci\u00f3n.
 
 # Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
-# 0001 - 0199 for Base
-# 0200 - 0299 for Servlet 3.0
-# 0300 - 0399 for Servlet 3.1
-# 0400 - 0499 for Servlet 4
+# Sequential increment the message number for all new releases and services
 
 #name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
 #name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
@@ -1624,3 +1621,15 @@ uri.has.backslash.character=El URI contiene un car\u00e1cter de barra inclinada 
 multipart.file.count.max.exceeded=CWWWC0006E: La solicitud conten\u00eda m\u00e1s archivos para cargar de los permitidos. El n\u00famero m\u00e1ximo de archivos es [{0}].
 multipart.file.count.max.exceeded.explanation=El n\u00famero de archivos que intenta cargar la solicitud multipart/form-data supera el l\u00edmite configurado.
 multipart.file.count.max.exceeded.useraction=Aumente el n\u00famero m\u00e1ximo de archivos que se pueden cargar por solicitud estableciendo la propiedad personalizada maxFileCount webContainer en el archivo server.xml. El valor predeterminado es 5000. Para cargar un n\u00famero ilimitado de archivos, establezca el valor a -1.
+
+cannot.sendRedirect.response.already.committed=CWWWC0007E: La respuesta sendRedirect no est\u00e1 permitida despu\u00e9s de que se confirme la respuesta.
+cannot.sendRedirect.response.already.committed.explanation=Cuando se confirma una respuesta, no puede enviar una redirecci\u00f3n.
+cannot.sendRedirect.response.already.committed.useraction=Verifique la l\u00f3gica sendRedirect para asegurarse de que la respuesta no se ha confirmado, ya sea manual o autom\u00e1ticamente, antes de que se llame a sendRedirect .
+
+redirect.location.cannot.be.null=CWWWC0008E: La ubicaci\u00f3n de redirecci\u00f3n no puede ser nula.
+redirect.location.cannot.be.null.explanation=El URL de ubicaci\u00f3n de redirecci\u00f3n debe ser un URL relativo o absoluto. 
+redirect.location.cannot.be.null.useraction=Actualice la ubicaci\u00f3n de redirecci\u00f3n especificando un valor de URL que no est\u00e9 vac\u00edo. El URL puede ser relativo o absoluto.
+
+sendRedirect.hyper.text.url=<html><body><p>Redirecci\u00f3n a <a href="{0}"></a></p></body></html>
+
+query.or.post.is.null=La serie de consulta de solicitud o los datos de publicaci\u00f3n son nulos.

@@ -15,7 +15,7 @@ package jakarta.data;
 /**
  * Method signatures copied from jakarta.data.repository.Sort from the Jakarta Data repo.
  */
-public record Sort(String property,
+public record Sort<T>(String property,
                 boolean isAscending,
                 boolean ignoreCase) {
 
@@ -24,27 +24,27 @@ public record Sort(String property,
             throw new NullPointerException("property is required");
     }
 
-    public static Sort asc(String property) {
-        return new Sort(property, true, false);
+    public static <T> Sort<T> asc(String property) {
+        return new Sort<>(property, true, false);
     }
 
-    public static Sort ascIgnoreCase(String property) {
-        return new Sort(property, true, true);
+    public static <T> Sort<T> ascIgnoreCase(String property) {
+        return new Sort<>(property, true, true);
     }
 
-    public static Sort desc(String property) {
-        return new Sort(property, false, false);
+    public static <T> Sort<T> desc(String property) {
+        return new Sort<>(property, false, false);
     }
 
-    public static Sort descIgnoreCase(String property) {
-        return new Sort(property, false, true);
+    public static <T> Sort<T> descIgnoreCase(String property) {
+        return new Sort<>(property, false, true);
     }
 
-    public static Sort of(String property, Direction direction, boolean ignoreCase) {
+    public static <T> Sort<T> of(String property, Direction direction, boolean ignoreCase) {
         if (direction == null)
             throw new NullPointerException("direction is required");
 
-        return new Sort(property, direction.equals(Direction.ASC), ignoreCase);
+        return new Sort<>(property, direction.equals(Direction.ASC), ignoreCase);
     }
 
     public boolean isDescending() {

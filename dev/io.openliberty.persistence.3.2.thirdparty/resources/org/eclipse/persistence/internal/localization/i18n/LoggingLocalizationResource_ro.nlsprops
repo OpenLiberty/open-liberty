@@ -709,7 +709,12 @@ toplink_warning=[EL Warning]:
 
 unit_of_work_thread_info=Unitatea curent\u0103 de lucru din sesiunea ({0}) a fost creat\u0103 de un fir (id: {1} nume: {2}), diferit de firul curent (id: {3} nume: {4})
 
-unit_of_work_thread_info_thread_dump=Creare fir (id: {0} nume: {1}): urm\u0103rire stiv\u0103 {2}Fir curent (id: {3} nume: {4}): urm\u0103rire stiv\u0103 {5}\n
+unit_of_work_thread_info_thread_dump=Creare thread (id: {0} : {1}):
+#{2}
+
+Current Fir (id: {3} : {4}
+#{5}
+
 unitofwork_identity_hashcode={0}Cod hash identitate UnitOfWork: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nu poate folosi legarea pe aceast\u0103 platform\u0103 de baz\u0103 de date. S-a modificat setarea interog\u0103rii pentru execu\u0163ie f\u0103r\u0103 legare.

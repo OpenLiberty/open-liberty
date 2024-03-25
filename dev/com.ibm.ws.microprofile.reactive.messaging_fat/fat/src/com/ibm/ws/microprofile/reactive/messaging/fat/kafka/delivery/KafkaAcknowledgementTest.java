@@ -75,8 +75,6 @@ public class KafkaAcknowledgementTest {
                         .addPackage(AbstractKafkaTestServlet.class.getPackage())
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
-
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
         server.startServer();
     }

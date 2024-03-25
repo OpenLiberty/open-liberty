@@ -9,4 +9,5 @@
     
     <keyStore id="defaultKeyStore" password="openliberty"/>
     <quickStartSecurity userName="admin" userPassword="adminpwd"/>
+    <orb id="defaultOrb" orbSSLInitTimeout="60"/>
 </server>

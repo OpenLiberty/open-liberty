@@ -1,0 +1,26 @@
+<server>
+	<featureManager>
+		<feature>localConnector-1.0</feature>
+		<feature>jsp-2.3</feature>
+		<feature>wsAtomicTransaction-1.2</feature>
+		<feature>jndi-1.0</feature>
+		<feature>servlet-3.1</feature>
+		<feature>cdi-1.2</feature>
+		<feature>txtest-1.0</feature>
+		<feature>jaxws-2.2</feature>
+	</featureManager>
+
+	<transaction
+      backendURL="http://localhost:8010"
+      recoveryIdentity="WSATBasic"
+      recoveryGroup="client-group"
+	  recoverOnStartup="true"
+	  waitForRecovery="true"
+	/>
+
+	<include location="../fatTestPorts.xml" />
+
+  <javaPermission codebase="${server.config.dir}/dropins/assertion.war" className="java.security.AllPermission"/>
+  <javaPermission codebase="${server.config.dir}/dropins/oneway.war" className="java.security.AllPermission"/>
+  <javaPermission codebase="${server.config.dir}/dropins/endtoend.war" className="java.security.AllPermission"/>
+</server>

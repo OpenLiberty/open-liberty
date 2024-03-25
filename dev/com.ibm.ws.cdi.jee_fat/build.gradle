@@ -19,7 +19,7 @@ dependencies {
       'net.sourceforge.htmlunit:webdriver:2.6',
       'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
       'org.brotli:dec:0.1.2',
-      'org.apache.commons:commons-lang3:3.8',
+      'org.apache.commons:commons-lang3:3.14.0',
       project(':com.ibm.ws.org.apache.commons.io'),
       project(':io.openliberty.org.apache.commons.codec'),
       'org.apache.httpcomponents:httpmime:4.5.3',

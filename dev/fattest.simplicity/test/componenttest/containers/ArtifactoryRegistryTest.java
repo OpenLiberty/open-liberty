@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,9 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.util.stream.Collectors;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,9 +37,20 @@ public class ArtifactoryRegistryTest {
     private static final File TESTDIR = new File(System.getProperty("java.io.tmpdir"), ".docker");
     private static final File TESTFILE = new File(TESTDIR, "config.json");
 
+    @BeforeClass
+    public static void setupTests() throws Exception {
+        Files.createDirectories(TESTDIR.toPath());
+    }
+
     @Before
     public void setupTest() throws Exception {
         Files.deleteIfExists(TESTFILE.toPath());
+    }
+
+    @AfterClass
+    public static void tearDownTests() throws Exception {
+        Files.deleteIfExists(TESTFILE.toPath());
+        Files.deleteIfExists(TESTDIR.toPath());
     }
 
     /**

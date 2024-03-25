@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -193,3 +193,13 @@ DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Remova os valores especifi
 JWT_MISSING_ISSUER=CWWKS1784E: O token n\u00e3o \u00e9 v\u00e1lido, pois n\u00e3o cont\u00e9m uma solicita\u00e7\u00e3o de emissor.
 JWT_MISSING_ISSUER.explanation=O token deve conter uma solicita\u00e7\u00e3o de emissor, que permita identificar quem emitiu o token.
 JWT_MISSING_ISSUER.useraction=Obtenha um novo token que inclua uma solicita\u00e7\u00e3o de emissor.
+
+# Do not translate "typ", "logout+jwt"
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER=CWWKS1785E: O token n\u00e3o \u00e9 v\u00e1lido porque o cabe\u00e7alho ''typ'' [{0}] do token indica que ele \u00e9 um token de logout.
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.explanation=O token n\u00e3o deve ser um token de logout Tokens de logout podem ter um par\u00e2metro de cabe\u00e7alho "typ" (type) com o valor de "logout + jwt".
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.useraction=Certifique-se de que o token usado n\u00e3o seja um token de logout
+
+# Do not translate "events", "http://schemas.openid.net/event/backchannel-logout"
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM=CWWKS1786E: O token n\u00e3o \u00e9 v\u00e1lido porque a solicita\u00e7\u00e3o ''events'' com o valor [{0}] indica que o token \u00e9 um token de logout.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.explanation=O token n\u00e3o deve ser um token de logout Os tokens de logout t\u00eam uma solicita\u00e7\u00e3o "events", que \u00e9 um objeto JSON que inclui "http://schemas.openid.net/event/backchannel-logout" como um de seus elementos.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.useraction=Certifique-se de que o token usado n\u00e3o seja um token de logout

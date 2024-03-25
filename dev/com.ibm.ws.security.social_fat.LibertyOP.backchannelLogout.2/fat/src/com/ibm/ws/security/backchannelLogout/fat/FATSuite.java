@@ -27,7 +27,8 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
         AlwaysPassesTest.class,
         BasicBCLTests.class,
-        MultiServerBCLTests.class
+        MultiServerBCLTests.class,
+        RevocationBCLTests.class
 
 })
 /**

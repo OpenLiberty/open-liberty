@@ -9,8 +9,12 @@
  *******************************************************************************/
 package io.openliberty.webcontainer61.osgi.webapp;
 
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,8 +27,10 @@ import com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext;
 import com.ibm.ws.webcontainer40.osgi.webapp.WebApp40;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
+import com.ibm.wsspi.webcontainer.util.RequestUtils;
 
 import io.openliberty.webcontainer61.facade.ServletContextFacade61;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 
 public class WebApp61 extends WebApp40 implements ServletContext {
@@ -132,6 +138,109 @@ public class WebApp61 extends WebApp40 implements ServletContext {
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.exiting(CLASS_NAME, "setResponseCharacterEncoding");
+        }
+    }
+
+    /**
+     * <p>
+     * The provided {@code path} parameter is canonicalized as per <a href=
+     * "https://jakarta.ee/specifications/servlet/6.0/jakarta-servlet-spec-6.0.html#uri-path-canonicalization">Servlet 6.0,
+     * 3.5.2</a> before being used to match resources.
+     *
+     */
+    @Override
+    public String getRealPath(String path) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+            logger.entering(CLASS_NAME, "getRealPath , path [" + path + "]");
+
+        if (path == null || path.equals("")) {
+            return super.getRealPath("/");
+        } else {
+            path = RequestUtils.normalizePath(path);
+            if (path == null)
+                return null;
+
+            return super.getRealPath(path);
+        }
+    }
+
+    /*
+     * see getRealPath comment
+     */
+    @Override
+    public RequestDispatcher getRequestDispatcher(String path) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+            logger.entering(CLASS_NAME, "getRequestDispatcher , path [" + path + "]");
+
+        if (path == null) {
+            return null;
+        } else {
+            //The pathname must begin with a / and is interpreted as relative to the current context root.
+            if (!path.startsWith("/"))
+                path = "/" + path;
+
+            path = RequestUtils.normalizePath(path);
+            if (path == null)
+                return null;
+
+            return super.getRequestDispatcher(path);
+        }
+    }
+
+    /*
+     * see getRealPath comment
+     */
+    @Override
+    public URL getResource(String path) throws MalformedURLException {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+            logger.entering(CLASS_NAME, "getResource , path [" + path + "]");
+
+        if (path == null) {
+            return null;
+        } else {
+            path = RequestUtils.normalizePath(path);
+            if (path == null)
+                return null;
+
+            return super.getResource(path);
+        }
+    }
+
+    /*
+     * see getRealPath comment
+     */
+    @Override
+    public InputStream getResourceAsStream(String path) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+            logger.entering(CLASS_NAME, "getResourceAsStream , path [" + path + "]");
+
+        if (path == null) {
+            return null;
+        } else {
+            path = RequestUtils.normalizePath(path);
+            if (path == null)
+                return null;
+
+            return super.getResourceAsStream(path);
+        }
+    }
+
+    /*
+     * see getRealPath comment
+     */
+    @Override
+    public Set<String> getResourcePaths(String path) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+            logger.entering(CLASS_NAME, "getResourcePaths , path [" + path + "]");
+
+        if (path == null) {
+            return null;
+        } else {
+            path = RequestUtils.normalizePath(path);
+            if (path == null)
+                return null;
+
+            return super.getResourcePaths(path);
         }
     }
 }

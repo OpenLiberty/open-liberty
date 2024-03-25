@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -62,21 +62,19 @@ import com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.noovrd.DMIProNoInhMDBServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.mdb.dmi.noovrd.DMIPubNoInhMDBServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.mdb.jndi.AnnotatedJNDIMDBServlet;
 import com.ibm.ws.jpa.fvt.injection.tests.mdb.jndi.DDJNDIMDBServlet;
+import com.ibm.ws.jpa.tests.spec10.injection.common.RepeaterInfo;
 import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
 public class JPA10Injection_MDB extends JPAFATServletClient {
 
     @Rule

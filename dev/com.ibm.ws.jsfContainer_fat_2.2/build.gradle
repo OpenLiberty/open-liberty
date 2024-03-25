@@ -27,7 +27,7 @@ dependencies {
     'xalan:xalan:2.7.2',
     project(':com.ibm.ws.org.apache.commons.io'),
     'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
-    'org.apache.commons:commons-lang3:3.8',
+    'org.apache.commons:commons-lang3:3.14.0',
     project(':com.ibm.ws.org.apache.httpcomponents'),
     'org.apache.httpcomponents:httpmime:4.3.1',
     'org.eclipse.jetty:jetty-util:9.4.7.RC0',

@@ -67,7 +67,7 @@ class SignalingEndOfTask  implements Runnable
 		boolean hangedDetected = false;
 		try{
 			//store the queue id on the current thread
-			ThreadLocalStorage.setQueueId(m_msg.getQueueIndex() % NativeMessageDispatchingHandler.s_dispatchers);
+			ThreadLocalStorage.setQueueId((int)m_msg.getQueueIndex() % NativeMessageDispatchingHandler.s_dispatchers);
 			setLogExtOnThread();
 			
 			m_parent.reportToFailoverServiceStart();

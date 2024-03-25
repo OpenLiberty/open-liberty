@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 Contributors to the Eclipse Foundation
+ * Copyright (c) 2020, 2024 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -29,13 +29,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.json.Json;
+import javax.json.JsonBuilderFactory;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponse.Status;
 
-import com.ibm.websphere.jsonsupport.JSON;
-import com.ibm.websphere.jsonsupport.JSONMarshallException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
@@ -44,14 +44,12 @@ import io.openliberty.microprofile.health.internal.common.HealthCheckConstants;
 public class HealthCheck30HttpResponseBuilder {
 
     private static final TraceComponent tc = Tr.register(HealthCheck30HttpResponseBuilder.class);
+    private static final JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(null);
 
     protected Status overallStatus = Status.UP;
     protected final ArrayList<Map<String, Object>> checks = new ArrayList<Map<String, Object>>();
 
-    private final JSON json;
-
-    public HealthCheck30HttpResponseBuilder(JSON json) {
-        this.json = json;
+    public HealthCheck30HttpResponseBuilder() {
     }
 
     public void addResponses(Set<HealthCheckResponse> hcResponseSet) {
@@ -72,8 +70,8 @@ public class HealthCheck30HttpResponseBuilder {
         httpResponse.setStatus(overallStatus == Status.UP ? 200 : 503);
 
         // Populate the payload with the overall status and checks array
-        payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, overallStatus);
-        payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_CHECKS, checks.toArray());
+        payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, overallStatus.name());
+        payload.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_CHECKS, checks);
 
         // Convert it into a JSON payload
         setJSONPayload(payload, httpResponse);
@@ -94,7 +92,8 @@ public class HealthCheck30HttpResponseBuilder {
         check.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_NAME, response.getName());
 
         Status checkStatus = response.getStatus();
-        check.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, checkStatus);
+        check.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_STATUS, checkStatus == null ? checkStatus : checkStatus.name());
+
         if (checkStatus != null) {
             if (checkStatus.equals(Status.DOWN))
                 overallStatus = Status.DOWN;
@@ -105,8 +104,9 @@ public class HealthCheck30HttpResponseBuilder {
         }
 
         Optional<Map<String, Object>> data = response.getData();
-        if ((data != null) && data.isPresent())
+        if ((data != null) && data.isPresent()) {
             check.put(HealthCheckConstants.HEALTH_CHECK_PAYLOAD_DATA, data.get());
+        }
 
         checks.add(check);
         if (tc.isDebugEnabled())
@@ -115,15 +115,10 @@ public class HealthCheck30HttpResponseBuilder {
 
     protected void setJSONPayload(Map<String, Object> payload, HttpServletResponse httpResponse) {
         try {
-            httpResponse.getOutputStream().write(json.asBytes(payload));
+            httpResponse.getOutputStream().write(jsonBuilderFactory.createObjectBuilder(payload).build().toString().getBytes());
         } catch (IOException e) {
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "Unexpected IOException while writing out POJO response", e);
-            }
-            httpResponse.setStatus(500);
-        } catch (JSONMarshallException e) {
-            if (tc.isEventEnabled()) {
-                Tr.event(tc, "Unexpected JSONMarshallException while getting the JSON service", e);
             }
             httpResponse.setStatus(500);
         }

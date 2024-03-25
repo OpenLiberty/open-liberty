@@ -95,7 +95,7 @@ import org.apache.cxf.ws.addressing.EndpointReferenceType;
 // Liberty Change Start - Imports
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.cxf.jaxrs21.client.component.AsyncClientRunnableWrapperManager;
+import com.ibm.ws.cxf.client.component.AsyncClientRunnableWrapperManager;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 

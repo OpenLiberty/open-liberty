@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2023 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1578,10 +1578,7 @@ uncaught.exception.during.AsyncListener.onComplete.explanation=Modul AsyncListen
 uncaught.exception.during.AsyncListener.onComplete.useraction=Pro vyhled\u00e1n\u00ed ko\u0159enov\u00e9 p\u0159\u00ed\u010diny chyby aplikace zkontrolujte zdrojov\u00fd k\u00f3d modulu AsyncListener a protokoly serveru.
 
 # Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
-# 0001 - 0199 for Base
-# 0200 - 0299 for Servlet 3.0
-# 0300 - 0399 for Servlet 3.1
-# 0400 - 0499 for Servlet 4
+# Sequential increment the message number for all new releases and services
 
 #name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
 #name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
@@ -1624,3 +1621,15 @@ uri.has.backslash.character=Identifik\u00e1tor URI m\u00e1 znak zp\u011btn\u00e9
 multipart.file.count.max.exceeded=CWWWC0006E: Po\u017eadavek obsahoval v\u00edce soubor\u016f pro odesl\u00e1n\u00ed, ne\u017e je povoleno. Maxim\u00e1ln\u00ed po\u010det soubor\u016f je [{0}].
 multipart.file.count.max.exceeded.explanation=Po\u010det soubor\u016f odeslan\u00fdch po\u017eadavkem multipart/form-data p\u0159ekro\u010dil nastaven\u00fd limit.
 multipart.file.count.max.exceeded.useraction=Zvy\u0161te maxim\u00e1ln\u00ed po\u010det soubor\u016f, kter\u00e9 mohou b\u00fdt odesl\u00e1ny na po\u017eadavek, nastaven\u00edm p\u0159izp\u016fsoben\u00e9 vlastnosti maxFileCount webContainer v souboru server.xml. V\u00fdchoz\u00ed hodnota je 5000. Pro neomezen\u00e9 odesl\u00e1n\u00ed souboru nastavte hodnotu na -1.
+
+cannot.sendRedirect.response.already.committed=CWWWC0007E: Odpov\u011b\u010f sendRedirect nen\u00ed po potvrzen\u00ed odezvy povolena.
+cannot.sendRedirect.response.already.committed.explanation=Kdy\u017e je odezva potvrzena, nem\u016f\u017ee odeslat p\u0159esm\u011brov\u00e1n\u00ed.
+cannot.sendRedirect.response.already.committed.useraction=Ov\u011b\u0159te logiku sendRedirect , abyste se ujistili, \u017ee odpov\u011b\u010f nen\u00ed potvrzena, bu\u010f ru\u010dn\u011b, nebo automaticky, p\u0159ed vol\u00e1n\u00edm sendRedirect .
+
+redirect.location.cannot.be.null=CWWWC0008E: Um\u00edst\u011bn\u00ed p\u0159esm\u011brov\u00e1n\u00ed nem\u016f\u017ee m\u00edt hodnotu null.
+redirect.location.cannot.be.null.explanation=Adresa URL pro p\u0159esm\u011brov\u00e1n\u00ed mus\u00ed b\u00fdt relativn\u00ed nebo absolutn\u00ed adresa URL. 
+redirect.location.cannot.be.null.useraction=Aktualizujte um\u00edst\u011bn\u00ed p\u0159esm\u011brov\u00e1n\u00ed zad\u00e1n\u00edm hodnoty adresy URL, kter\u00e1 nen\u00ed pr\u00e1zdn\u00e1. Adresa URL m\u016f\u017ee b\u00fdt bu\u010f relativn\u00ed, nebo absolutn\u00ed.
+
+sendRedirect.hyper.text.url=<html><body><p>P\u0159esm\u011brov\u00e1n\u00ed na <a href="{0}"></a></p></body></html>
+
+query.or.post.is.null=\u0158et\u011bzec dotazu po\u017eadavku nebo data p\u0159\u00edsp\u011bvku maj\u00ed hodnotu null.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -235,19 +235,19 @@ public class Simple2PCCloudTest extends FATServletClient {
         String id = "001";
 
         // Start peerPrecedenceServer1
-        FATUtils.startServers(server1);
+        FATUtils.startServers(peerPrecedenceServer1);
 
         try {
-            sb = runTestWithResponse(server1, SERVLET_NAME, "modifyLeaseOwner");
+            sb = runTestWithResponse(peerPrecedenceServer1, SERVLET_NAME, "modifyLeaseOwner");
 
             // We expect this to fail since it is gonna crash the server
-            sb = runTestWithResponse(server1, SERVLET_NAME, "setupRec" + id);
+            sb = runTestWithResponse(peerPrecedenceServer1, SERVLET_NAME, "setupRec" + id);
         } catch (Throwable e) {
         }
         Log.info(this.getClass(), method, "setupRec" + id + " returned: " + sb);
 
-        assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
-        server1.postStopServerArchive(); // must explicitly collect since crashed server
+        assertNotNull(peerPrecedenceServer1.getServerName() + " didn't crash properly", peerPrecedenceServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+        peerPrecedenceServer1.postStopServerArchive(); // must explicitly collect since crashed server
         // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
         // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.
 
@@ -255,7 +255,7 @@ public class Simple2PCCloudTest extends FATServletClient {
         try {
             // The server has been halted but its status variable won't have been reset because we crashed it. In order to
             // setup the server for a restart, set the server state manually.
-            server1.setStarted(false);
+            peerPrecedenceServer1.setStarted(false);
             peerPrecedenceServer1.startServerExpectFailure("recovery-dblog-fail.log", false, true);
         } catch (Exception ex) {
             // Tolerate an exception here, as recovery is asynch and the "successful start" message
@@ -357,7 +357,7 @@ public class Simple2PCCloudTest extends FATServletClient {
 
     @Test
     @Mode(TestMode.LITE)
-    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException" })
+    @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException", "javax.resource.ResourceException" })
     public void datasourceChangeTest() throws Exception {
         final String method = "datasourceChangeTest";
         // Start Server1

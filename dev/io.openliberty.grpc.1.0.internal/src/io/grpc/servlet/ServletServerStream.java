@@ -234,7 +234,6 @@ final class ServletServerStream extends AbstractServerStream {
 
   private final class Sink implements AbstractServerStream.Sink {
     final TrailerSupplier trailerSupplier = new TrailerSupplier();
-	private int closedButNoFlush = 0;
 
     @Override
     public void writeHeaders(Metadata headers) {
@@ -252,18 +251,7 @@ final class ServletServerStream extends AbstractServerStream {
     public void writeFrame(
     		@Nullable 
     		WritableBuffer frame, boolean flush, int numMessages) {
-      
-      MessageFramer framer = ServletServerStream.this.framer();
-      if( framer != null && framer.isClosed() && !flush ) {
-    		  if( closedButNoFlush==0) {
-    			 // Liberty change - our stack needs a flush at this point which has been
-    			 // removed from later versions of GRPC. See:
-    			 // https://github.com/grpc/grpc-java/pull/9177/files#diff-2de04da34f7e35c085ca26dc596410983f5ded55a8de11eb97811264dea011f2
-    		     flush = true;
-    		  }
-     		  closedButNoFlush=closedButNoFlush+1;     		 
-      }
-    	
+
       if (frame == null && !flush) {
         return;
       }
@@ -312,8 +300,7 @@ final class ServletServerStream extends AbstractServerStream {
           trailerSupplier.get().putIfAbsent(key, newValue);
         }
       }
-
-      writer.complete();
+      writer.completeWithFlush();
     }
 
     @Override

@@ -161,18 +161,29 @@ public class PhaseInterceptorChain implements InterceptorChain {
     }
 
     public static boolean setCurrentMessage(PhaseInterceptorChain chain, Message m) {
+        boolean isFineEnabled = LOG.isLoggable(Level.FINE);   // Liberty Change
         if (getCurrentMessage() == m) {
+            if(isFineEnabled) {
+                LOG.fine("Current message same as message passed, returning false.");  // Liberty Change
+            }
             return false;
         }
         if (chain.iterator.hasPrevious()) {
             chain.iterator.previous();
             if (chain.iterator.next() instanceof ServiceInvokerInterceptor) {
+                if(isFineEnabled) {
+                    LOG.fine("Setting current message to message passed.");  // Liberty Change
+                }
                 CURRENT_MESSAGE.set(m);
                 return true;
             }
             String error = "Only ServiceInvokerInterceptor can update the current chain message";
             LOG.warning(error);
             throw new IllegalStateException(error);
+        }
+
+        if(isFineEnabled) {
+            LOG.fine("setCurrentMessage returning false.");  // Liberty Change
         }
         return false;
 
@@ -184,13 +195,20 @@ public class PhaseInterceptorChain implements InterceptorChain {
 
     public synchronized void releaseAndAcquireChain() {
         while (!chainReleased) {
+           if (isFineLogging) {   // Liberty Change Start
+              LOG.fine("Waiting for chain to be released...");
+	   }
             try {
                 this.wait();
             } catch (InterruptedException ex) {
+                    LOG.finest("Unexpected exception in releaseAndAcquireChain: " + ex); 
+                }
                 // ignore
             }
-        }
         chainReleased = false;
+        if (isFineLogging) {
+            LOG.fine("Sucessfully acquired chain.");
+	}  // Liberty Change End
     }
 
     public synchronized void releaseChain() {
@@ -326,6 +344,9 @@ public class PhaseInterceptorChain implements InterceptorChain {
                     pause();
                     throw ex;
                 } catch (RuntimeException ex) {
+                    if (isFineLogging) {  // Liberty Change Start
+                        LOG.fine("doIntercept:  RuntimeException occurred: " + ex);
+                    } // Liberty Change End
                     if (!faultOccurred) {
                         faultOccurred = true;
                         wrapExceptionAsFault(message, ex);
@@ -426,10 +447,16 @@ public class PhaseInterceptorChain implements InterceptorChain {
     public synchronized boolean doInterceptStartingAfter(Message message,
                                                          String startingAfterInterceptorID) {
         updateIterator();
+        if (isFineLogging) {  // Liberty Change Start
+           LOG.fine("doInterceptStartingAfter: Start after interceptor: " + startingAfterInterceptorID);
+        }  // Liberty Change End
         while (state == State.EXECUTING && iterator.hasNext()) {
             PhaseInterceptor<? extends Message> currentInterceptor
                 = (PhaseInterceptor<? extends Message>)iterator.next();
             if (currentInterceptor.getId().equals(startingAfterInterceptorID)) {
+                if (isFineLogging) {  // Liberty Change Start
+                    LOG.fine("doInterceptStartingAfter: Found interceptor slot!");  // Liberty Change
+                }
                 break;
             }
         }
@@ -447,11 +474,17 @@ public class PhaseInterceptorChain implements InterceptorChain {
     public synchronized boolean doInterceptStartingAt(Message message,
                                                          String startingAtInterceptorID) {
         updateIterator();
+        if (isFineLogging) {  // Liberty Change Start
+           LOG.fine("doInterceptStartingAt: Start at interceptor: " + startingAtInterceptorID);
+        }  // Liberty Change End
         while (state == State.EXECUTING && iterator.hasNext()) {
             PhaseInterceptor<? extends Message> currentInterceptor
                 = (PhaseInterceptor<? extends Message>)iterator.next();
             if (currentInterceptor.getId().equals(startingAtInterceptorID)) {
                 iterator.previous();
+                if (isFineLogging) {  // Liberty Change Start
+                    LOG.fine("doInterceptStartingAt: Found interceptor slot!"); // Liberty Change
+                }
                 break;
             }
         }
@@ -462,8 +495,14 @@ public class PhaseInterceptorChain implements InterceptorChain {
         updateIterator();
         if (state == State.COMPLETE) {
             state = State.EXECUTING;
+            if (isFineLogging) {  // Liberty Change Start
+               LOG.fine("reset:  Reset complete state");
+            }  // Liberty Change End
             iterator.reset();
         } else {
+            if (isFineLogging) {  // Liberty Change Start
+               LOG.fine("reset:  Reset incomplete state");
+            }  // Liberty Change End
             iterator.reset();
         }
     }
@@ -492,6 +531,9 @@ public class PhaseInterceptorChain implements InterceptorChain {
         while (it.hasNext()) {
             InterceptorHolder holder = it.nextInterceptorHolder();
             if (holder.interceptor == i) {
+                if (isFineLogging) {  // Liberty Change Start
+                   LOG.fine("Removing  interceptor: " + i);
+                } // Liberty Change End
                 remove(holder);
                 return;
             }
@@ -499,6 +541,9 @@ public class PhaseInterceptorChain implements InterceptorChain {
     }
 
     public synchronized void abort() {
+        if (isFineLogging) {  // Liberty Change Start
+           LOG.fine("Aborting interceptor chain");
+        } // Liberty Change End
         this.state = InterceptorChain.State.ABORTED;
     }
 

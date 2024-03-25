@@ -18,8 +18,8 @@ Bundle-Name: IBM JAXB XJC Tool
 
 Require-Compiler: true
 
-Require-Bundle: com.ibm.ws.jaxb.tools; version="[1,1.0.100)", \
- com.ibm.websphere.javaee.jaxb.2.2; version="[1,1.0.100)"; location="dev/api/spec/", \
- com.ibm.ws.logging; version="[1,1.0.100)"
+Require-Bundle: com.ibm.ws.jaxb.tools; version="[1,1.1)", \
+ com.ibm.websphere.javaee.jaxb.2.2; version="[1,1.1)"; location="dev/api/spec/", \
+ com.ibm.ws.logging; version="[1,1.1)"
  
 Command-Class: com.ibm.ws.jaxb.tools.XJC

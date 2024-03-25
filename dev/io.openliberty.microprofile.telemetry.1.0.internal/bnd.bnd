@@ -28,8 +28,8 @@ src: src, resources
 
 -dsannotations: \
   io.openliberty.microprofile.telemetry10.internal.cdi.SPIMetaData,\
+  io.openliberty.microprofile.telemetry10.internal.config.OpenTelemetryVersionedConfigurationImpl,\
   io.openliberty.microprofile.telemetry10.internal.rest.TelemetryClientBuilderListener,\
-  io.openliberty.microprofile.telemetry10.internal.sdk.OpenTelemetrySdkBuilderSupplierImpl,\
   io.openliberty.microprofile.telemetry10.internal.rest.TelemetryServletContainerInitializer
 
 -dsannotations-inherit: true
@@ -62,7 +62,7 @@ Export-Package: \
 	io.openliberty.microprofile.telemetry10.internal.rest;version='1.0';thread-context=true
 
 Private-Package: io.openliberty.microprofile.telemetry10.internal.helper,\
-	io.openliberty.microprofile.telemetry10.internal.sdk
+	io.openliberty.microprofile.telemetry10.internal.config
 
 -buildpath: \
 	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
