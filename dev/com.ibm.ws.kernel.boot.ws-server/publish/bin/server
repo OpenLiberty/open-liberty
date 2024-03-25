@@ -1590,7 +1590,7 @@ case $OSTYPE in
         # Must find the real path in order to find the installation directory (The parent of scriptDir).
         else
           resolvedScriptDir=$(findRealPath "${scriptDir}")             
-          WLP_INSTALL_DIR=$(findRealPath "${resolvedScriptDir}/..")
+          WLP_INSTALL_DIR=$(unset CDPATH; cd "${resolvedScriptDir}/.." && pwd)
         fi
     esac
 esac
