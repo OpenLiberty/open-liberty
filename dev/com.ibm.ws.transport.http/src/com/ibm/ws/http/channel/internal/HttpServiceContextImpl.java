@@ -2878,41 +2878,52 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
     final protected void sendOutgoing(WsByteBuffer[] wsbb) throws IOException {
         WsByteBuffer[] buffers = wsbb;
         boolean addedCompressionContentLength = false;
-        if (!headersSent() && Objects.nonNull(buffers)) {
 
-            if (nettyContext.channel().hasAttr(NettyHttpConstants.ACCEPT_ENCODING)) {
+        if (nettyContext.channel().hasAttr(NettyHttpConstants.ACCEPT_ENCODING)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Compression enabled. Prepping data");
+            }
+            if (getResponse().getContentLength() == HttpGenerics.NOT_SET) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Compression enabled. Prepping data");
+                    Tr.debug(tc, "Found compression with no content length set. Setting and removing afterwards " + GenericUtils.sizeOf(buffers));
                 }
-                if (getResponse().getContentLength() == HttpGenerics.NOT_SET) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Found compression with no content length set. Setting and removing afterwards " + GenericUtils.sizeOf(buffers));
-                    }
-                    addedCompressionContentLength = true;
-                    HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
-                }
-                String acceptEncoding = nettyContext.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
+                addedCompressionContentLength = true;
+                HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
+            }
+            String acceptEncoding = nettyContext.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
+            if (this.compressHandler == null) {
                 ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(getHttpConfig(), nettyResponse, acceptEncoding);
                 compressionHandler.process();
                 if (compressionHandler.getEncoding() != null) {
                     setupCompressionHandler(compressionHandler.getEncoding());
-                    // check whether we need to pass data through the compression handler
-                    if (null != this.compressHandler) {
-                        List<WsByteBuffer> list = this.compressHandler.compress(buffers);
-                        if (this.isFinalWrite) {
-                            list.addAll(this.compressHandler.finish());
-                        }
+                }
+            }
+            if (this.compressHandler != null) {
+                System.out.println("Compress handler not null");
+                List<WsByteBuffer> list = this.compressHandler.compress(buffers);
+                if (this.isFinalWrite) {
+                    System.out.println("Final write!");
+                    list.addAll(this.compressHandler.finish());
+                }
 
-                        // put any created buffers onto the release list
-                        if (0 < list.size()) {
-                            buffers = new WsByteBuffer[list.size()];
-                            list.toArray(buffers);
-                            storeAllocatedBuffers(buffers);
-                        } else {
-                            buffers = null;
-                        }
-
+                // put any created buffers onto the release list
+                if (0 < list.size()) {
+                    System.out.println("new buffers: " + list.size());
+                    buffers = new WsByteBuffer[list.size()];
+                    list.toArray(buffers);
+                    storeAllocatedBuffers(buffers);
+                    System.out.println("Stored allocated buffers");
+                    String streamId = nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), "-1");
+                    if (!streamId.equals("-1")) {
+                        System.out.println("Setting pending buffers for H2 connection");
+                        //    setPendingBuffers(buffers);
+                        clearPendingByteBuffers();
+                        addToPendingByteBuffer(buffers, list.size());
                     }
+                } else {
+                    System.out.println("buffers null");
+                    buffers = null;
+                    clearPendingByteBuffers();
                 }
             }
 
@@ -3250,49 +3261,58 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             return;
         }
         this.isFinalWrite = true;
-
+        boolean addedCompressionContentLength = false;
         WsByteBuffer[] buffers = wsbb;
-        // TODO: Do we need to add this?
-//        if (!headersSent()) {
-//
-//            //HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(wsbb));
-////            setPartialBody(false);
-//
-//            if (Objects.nonNull(buffers) && nettyContext.channel().hasAttr(NettyHttpConstants.ACCEPT_ENCODING)) {
-//                String acceptEncoding = nettyContext.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
-//                ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(getHttpConfig(), nettyResponse, acceptEncoding);
-//                compressionHandler.process();
-//                if (compressionHandler.getEncoding() != null) {
-//                    MSP.log("setting compression attribute -> " + compressionHandler.getEncoding());
-//                    setupCompressionHandler(compressionHandler.getEncoding());
-//                    // check whether we need to pass data through the compression handler
-//                    if (null != this.compressHandler) {
-//
-//                        List<WsByteBuffer> list = this.compressHandler.compress(buffers);
-//                        if (this.isFinalWrite) {
-//                            list.addAll(this.compressHandler.finish());
-//                        }
-//
-//                        // put any created buffers onto the release list
-//                        if (0 < list.size()) {
-//                            buffers = new WsByteBuffer[list.size()];
-//                            list.toArray(buffers);
-//                            storeAllocatedBuffers(buffers);
-//                        } else {
-//                            buffers = null;
-//                        }
-//
-//                    }
-//                }
-//                if (Objects.nonNull(buffers)) {
-//                    MSP.log("setting new compressed content length of: " + GenericUtils.sizeOf(buffers));
-//                    HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
-//                }
-//            } else {
-//                HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
-//            }
-//
-//        }
+
+        if (nettyContext.channel().hasAttr(NettyHttpConstants.ACCEPT_ENCODING)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Compression enabled. Prepping data");
+            }
+            if (getResponse().getContentLength() == HttpGenerics.NOT_SET) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Found compression with no content length set. Setting and removing afterwards " + GenericUtils.sizeOf(buffers));
+                }
+                addedCompressionContentLength = true;
+                HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
+            }
+            String acceptEncoding = nettyContext.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
+            if (this.compressHandler == null) {
+                ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(getHttpConfig(), nettyResponse, acceptEncoding);
+                compressionHandler.process();
+                if (compressionHandler.getEncoding() != null) {
+                    setupCompressionHandler(compressionHandler.getEncoding());
+                }
+            }
+            if (this.compressHandler != null) {
+                System.out.println("Compress handler not null");
+                List<WsByteBuffer> list = this.compressHandler.compress(buffers);
+                if (this.isFinalWrite) {
+                    System.out.println("Final write!");
+                    list.addAll(this.compressHandler.finish());
+                }
+
+                // put any created buffers onto the release list
+                if (0 < list.size()) {
+                    System.out.println("new buffers: " + list.size());
+                    buffers = new WsByteBuffer[list.size()];
+                    list.toArray(buffers);
+                    storeAllocatedBuffers(buffers);
+                    System.out.println("Stored allocated buffers");
+                    String streamId = nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), "-1");
+                    if (!streamId.equals("-1")) {
+                        System.out.println("Setting pending buffers for H2 connection");
+                        //    setPendingBuffers(buffers);
+                        clearPendingByteBuffers();
+                        addToPendingByteBuffer(buffers, list.size());
+                    }
+                } else {
+                    System.out.println("buffers null");
+                    buffers = null;
+                    clearPendingByteBuffers();
+                }
+            }
+
+        }
 
         this.addBytesWritten(GenericUtils.sizeOf(buffers));
         // TODO check this as I believe it is not longer required
