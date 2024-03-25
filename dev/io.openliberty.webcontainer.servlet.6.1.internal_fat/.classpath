@@ -9,6 +9,7 @@
     <classpathentry kind="src" path="test-applications/EmptyURLPatternMappingTest.war/src"/>
     <classpathentry kind="src" path="test-applications/HTTPResponseCodesTest.war/src"/>
     <classpathentry kind="src" path="test-applications/HTTPServletMappingTest.war/src"/>
+    <classpathentry kind="src" path="test-applications/PathCanonicalizationTest.war/src"/>
     <classpathentry kind="src" path="test-applications/ReadWriteByteBuffer.war/src"/>
     <classpathentry kind="src" path="test-applications/RequestParameterTest.war/src"/>
     <classpathentry kind="src" path="test-applications/ResponseNoOpAfterCommit.war/src"/>

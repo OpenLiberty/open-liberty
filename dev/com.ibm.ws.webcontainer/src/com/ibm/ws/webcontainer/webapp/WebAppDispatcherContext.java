@@ -344,6 +344,9 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
      */
     public RequestDispatcher getRequestDispatcher(String path)
     {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINEST)){
+            logger.entering (CLASS_NAME, "getRequestDispatcher", " path [" + path + "]");
+        }
         if (path == null)
             return null;
 
@@ -393,6 +396,9 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
                 path = '/' + path;
             }
 
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  
+                logger.logp(Level.FINE, CLASS_NAME,"getRequestDispatcher", "calling webApp getRequestDispatcher, path [" + path + "]");
+            }
             // 113234 - indicate that security check is not needed --- not any more --Defect 126196
             return getWebApp().getFacade().getRequestDispatcher(path); // true
             // end 108232: part 1
