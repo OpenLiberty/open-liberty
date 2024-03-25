@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
+        version="3.2">
+
+    <persistence-unit name="AutoClosable_JTA">
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <class>io.openliberty.jpa.tests.jpa32.models.QueryEntity</class>
+        <exclude-unlisted-classes/>
+        <properties>
+            <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="AutoClosable_RL"  transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <class>io.openliberty.jpa.tests.jpa32.models.QueryEntity</class>
+        <exclude-unlisted-classes/>
+        <properties>
+            <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="UUID_JTA">
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <mapping-file>META-INF/orm_uuid.xml</mapping-file>
+        <class>io.openliberty.jpa.tests.jpa32.models.EmbeddableUUID_ID</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.UUID_IDClass</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.UUIDAutoGenEntity</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.UUIDEmbeddableIdEntity</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.UUIDEntity</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.UUIDIdClassEntity</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.UUIDUUIDGenEntity</class>
+        <exclude-unlisted-classes/>
+        <properties>
+            <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="UUID_RL"  transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <mapping-file>META-INF/orm_uuid.xml</mapping-file>
+        <class>io.openliberty.jpa.tests.jpa32.models.EmbeddableUUID_ID</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.UUID_IDClass</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.UUIDAutoGenEntity</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.UUIDEmbeddableIdEntity</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.UUIDEntity</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.UUIDIdClassEntity</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.UUIDUUIDGenEntity</class>
+        <exclude-unlisted-classes/>
+        <properties>
+            <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="QueryFeatures_JTA">
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <class>io.openliberty.jpa.tests.jpa32.models.QueryDateTimeEntity</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.QueryEntity</class>
+        <exclude-unlisted-classes/>
+        <properties>
+            <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.logging.level" value="FINE"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="QueryFeatures_RL"  transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <class>io.openliberty.jpa.tests.jpa32.models.QueryDateTimeEntity</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.QueryEntity</class>
+        <properties>
+            <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.logging.level" value="FINE"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="CASE_CONDITION_JTA">
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <class>io.openliberty.jpa.tests.jpa32.models.CaseEntity</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.Case2Entity</class>
+        <class>io.openliberty.jpa.tests.jpa32.models.Case3Entity</class>
+        <exclude-unlisted-classes/>
+        <properties>
+            <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+</persistence>

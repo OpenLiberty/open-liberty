@@ -1,0 +1,50 @@
+<entity-mappings xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence/orm
+    https://jakarta.ee/xml/ns/persistence/orm/orm_3_2.xsd"
+  version="3.2">
+
+  <entity class="io.openliberty.jpa.tests.jpa32.models.XMLUUIDAutoGenEntity">
+     <attributes>
+        <id name="id">
+            <generated-value strategy="AUTO" />
+        </id>
+        <basic name="strData" />
+     </attributes>
+  </entity>
+  <entity class="io.openliberty.jpa.tests.jpa32.models.XMLUUIDEmbeddableIdEntity">
+     <attributes>
+        <embedded-id name="id"/>
+        <basic name="strData" />
+     </attributes>
+  </entity>
+  <entity class="io.openliberty.jpa.tests.jpa32.models.XMLUUIDEntity">
+     <attributes>
+        <id name="id" />
+        <basic name="strData" />
+     </attributes>
+  </entity>
+  <entity class="io.openliberty.jpa.tests.jpa32.models.XMLUUIDIdClassEntity">
+     <id-class class="io.openliberty.jpa.tests.jpa32.models.XMLUUID_IDClass"/>
+     <attributes>
+        <id name="uuid_id" />
+        <id name="l_id" />
+        <basic name="strData" />
+     </attributes>
+  </entity>
+  <entity class="io.openliberty.jpa.tests.jpa32.models.XMLUUIDUUIDGenEntity">
+     <attributes>
+        <id name="id">
+            <generated-value strategy="UUID" />
+        </id>
+        <basic name="strData" />
+     </attributes>
+  </entity>
+  
+  <embeddable class="io.openliberty.jpa.tests.jpa32.models.XMLEmbeddableUUID_ID">
+     <attributes>
+        <basic name="eid" />
+     </attributes>
+  </embeddable>
+
+</entity-mappings>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
+        version="3.2">
+        
+    
+    <persistence-unit name="JPAJSON_JTA">
+        <jta-data-source>jdbc/JPA_JTA_DS</jta-data-source>
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <class>io.openliberty.jpa.tests.jpa32.json.models.JSONEntity</class>
+        <exclude-unlisted-classes/>
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="JPAJSON_RL"  transaction-type="RESOURCE_LOCAL">
+        <non-jta-data-source>jdbc/JPA_NJTA_DS</non-jta-data-source>
+        <class>io.openliberty.jpa.tests.jpa32.json.models.JSONEntity</class>
+        <exclude-unlisted-classes/>
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
+            <property name="eclipselink.cache.shared.default" value="false"/>
+        </properties>
+    </persistence-unit>
+</persistence>
