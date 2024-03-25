@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2023 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1578,10 +1578,7 @@ uncaught.exception.during.AsyncListener.onComplete.explanation=\uc624\ub958 \uba
 uncaught.exception.during.AsyncListener.onComplete.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc624\ub958\uc758 \uadfc\ubcf8 \uc6d0\uc778\uc744 \ud655\uc778\ud558\ub824\uba74 AsyncListener \uc18c\uc2a4 \ucf54\ub4dc \ubc0f \uc11c\ubc84 \ub85c\uadf8\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 
 # Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
-# 0001 - 0199 for Base
-# 0200 - 0299 for Servlet 3.0
-# 0300 - 0399 for Servlet 3.1
-# 0400 - 0499 for Servlet 4
+# Sequential increment the message number for all new releases and services
 
 #name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
 #name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
@@ -1624,3 +1621,15 @@ uri.has.backslash.character=URI\uc5d0 \ubc31\uc2ac\ub798\uc2dc \ubb38\uc790\uac0
 multipart.file.count.max.exceeded=CWWWC0006E: \uc694\uccad\uc5d0 \ud3ec\ud568\ub41c \uc5c5\ub85c\ub4dc \ud30c\uc77c\uc774 \ud5c8\uc6a9\ub41c \uac1c\uc218\ub97c \ucd08\uacfc\ud569\ub2c8\ub2e4. \ucd5c\ub300 \ud30c\uc77c \uc218\ub294 [{0}]\uac1c\uc785\ub2c8\ub2e4.
 multipart.file.count.max.exceeded.explanation=\ub2e4\uc911 \ud30c\ud2b8/\uc591\uc2dd \ub370\uc774\ud130 \uc694\uccad\uc5d0\uc11c \uc5c5\ub85c\ub4dc\ud55c \ud30c\uc77c \uc218\uac00 \uc124\uc815\ub41c \ud55c\ub3c4\ub97c \ucd08\uacfc\ud588\uc2b5\ub2c8\ub2e4.
 multipart.file.count.max.exceeded.useraction=server.xml \ud30c\uc77c\uc5d0\uc11c maxFileCount webContainer \uc0ac\uc6a9\uc790 \uc815\uc758 \ud2b9\uc131\uc744 \uc124\uc815\ud558\uc5ec \uc694\uccad\ub2f9 \uc5c5\ub85c\ub4dc\ud560 \uc218 \uc788\ub294 \ucd5c\ub300 \ud30c\uc77c \uc218\ub97c \ub298\ub9bd\ub2c8\ub2e4. \uae30\ubcf8\uac12\uc740 5000\uc785\ub2c8\ub2e4. \ubb34\uc81c\ud55c \ud30c\uc77c \uc5c5\ub85c\ub4dc\uc758 \uacbd\uc6b0 \uac12\uc744 -1\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+cannot.sendRedirect.response.already.committed=CWWWC0007E: \uc751\ub2f5\uc774 \ucee4\ubbf8\ud2b8\ub41c \ud6c4\uc5d0\ub294 sendRedirect \uc751\ub2f5\uc774 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+cannot.sendRedirect.response.already.committed.explanation=\uc751\ub2f5\uc774 \ucee4\ubbf8\ud2b8\ub418\uba74 \uacbd\ub85c \uc7ac\uc9c0\uc815\uc744 \uc804\uc1a1\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+cannot.sendRedirect.response.already.committed.useraction=sendRedirect \ub85c\uc9c1\uc744 \ud655\uc778\ud558\uc5ec sendRedirect \uac00 \ud638\ucd9c\ub418\uae30 \uc804\uc5d0 \uc751\ub2f5\uc774 \uc218\ub3d9 \ub610\ub294 \uc790\ub3d9\uc73c\ub85c \ucee4\ubbf8\ud2b8\ub418\uc9c0 \uc54a\uc558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+redirect.location.cannot.be.null=CWWWC0008E: \uacbd\ub85c \uc7ac\uc9c0\uc815 \uc704\uce58\ub294 \ub110\uc77c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+redirect.location.cannot.be.null.explanation=\uacbd\ub85c \uc7ac\uc9c0\uc815 \uc704\uce58 URL\uc740 \uc0c1\ub300 \ub610\ub294 \uc808\ub300 URL\uc774\uc5b4\uc57c \ud569\ub2c8\ub2e4. 
+redirect.location.cannot.be.null.useraction=\ube44\uc5b4 \uc788\uc9c0 \uc54a\uc740 URL\uac12\uc744 \uc9c0\uc815\ud558\uc5ec \uacbd\ub85c \uc7ac\uc9c0\uc815 \uc704\uce58\ub97c \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624. URL\uc740 \uc0c1\ub300\uc801 \ub610\ub294 \uc808\ub300\uc801\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+
+sendRedirect.hyper.text.url=<html><body><p>\uacbd\ub85c \uc7ac\uc9c0\uc815 \ub300\uc0c1 <a href="{0}"></a></p></body></html>
+
+query.or.post.is.null=\uc694\uccad \uc870\ud68c \ubb38\uc790\uc5f4 \ub610\ub294 \uac8c\uc2dc \ub370\uc774\ud130\uac00 \ub110\uc785\ub2c8\ub2e4.

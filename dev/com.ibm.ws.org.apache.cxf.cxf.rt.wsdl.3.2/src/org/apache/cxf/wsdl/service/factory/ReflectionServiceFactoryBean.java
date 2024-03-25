@@ -228,6 +228,9 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
                 return cls.getConstructor(Boolean.TYPE, Map.class)
                     .newInstance(this.isQualifyWrapperSchema(), this.getProperties());
             } catch (NoSuchMethodException nsme) {
+                if(LOG.isLoggable(Level.FINE)) {
+                    LOG.fine("Ignoring NoSuchMethodException: " + nsme);  // Liberty Change
+                }
                 //ignore, use the no-arg constructor
             }
             return cls.newInstance();
@@ -646,8 +649,16 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
 
         Map<QName, Method> validMethods = new HashMap<>();
         for (Method m : methods) {
+	    // Liberty Change start
+            if(LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("initializeWSDLOperations: for Method: " +  (m != null ? m.getName() : "null"));
+            }
             if (isValidMethod(m)) {
                 QName opName = getOperationName(intf, m);
+                if(LOG.isLoggable(Level.FINEST)) {
+                    LOG.finest("initializeWSDLOperations: Operation name: " + opName);
+                }
+	    // Liberty Change end
                 validMethods.put(opName, m);
             }
         }
@@ -660,6 +671,9 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
                 if (o.getName().getNamespaceURI().equals(opName.getNamespaceURI())
                     && isMatchOperation(o.getName().getLocalPart(), opName.getLocalPart())) {
                     selected = m.getValue();
+                    if(LOG.isLoggable(Level.FINEST)) {
+                        LOG.finest("Method selected: " + (selected != null ? selected.getName() : "null")); // Liberty Change
+                    }
                     break;
                 }
             }
@@ -717,7 +731,21 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
      */
     protected boolean initializeClassInfo(OperationInfo o, Method method, List<String> paramOrder) {
         OperationInfo origOp = o;
+
+	// Liberty Change start
+        if (LOG.isLoggable(Level.FINEST)) {
+            if (paramOrder != null && !paramOrder.isEmpty()) {
+                for (String p1 : paramOrder) {
+                    LOG.finest("initializeClassInfo: paramOrder: " + p1);
+                }
+            }
+        }
+	// Liberty Change end
+
         if (isWrapped(method)) {
+            if(LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("initializeClassInfo: Method is wrapped");   // Liberty Change
+            }
             if (o.getUnwrappedOperation() == null) {
                 //the "normal" algorithm didn't allow for unwrapping,
                 //but the annotations say unwrap this.   We'll need to
@@ -725,6 +753,9 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
                 WSDLServiceBuilder.checkForWrapped(o, true);
             }
             if (o.getUnwrappedOperation() != null) {
+                if(LOG.isLoggable(Level.FINEST)) {
+                    LOG.finest("initializeClassInfo: Operation is Unwrapped");  // Liberty Change
+                }
                 if (o.hasInput()) {
                     MessageInfo input = o.getInput();
                     MessagePartInfo part = input.getFirstMessagePart();
@@ -747,6 +778,9 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
                 setFaultClassInfo(o, method);
             }
         } else if (o.isUnwrappedCapable()) {
+            if(LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("initializeClassInfo: Operation is Unwrapped Capable");  // Liberty Change
+            }
             // remove the unwrapped operation because it will break the
             // the WrapperClassOutInterceptor, and in general makes
             // life more confusing
@@ -774,6 +808,9 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             Class<?> paramType = paramTypes[i];
             Type genericType = genericTypes[i];
             if (!initializeParameter(o, method, i, paramType, genericType)) {
+                if(LOG.isLoggable(Level.FINEST)) {
+                    LOG.finest("initializeClassInfo: initializeParameter 1 returning false.");  // Liberty Change
+                }
                 return false;
             }
         }
@@ -782,6 +819,9 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
         // Initialize return type
         if (o.hasOutput()
             && !initializeParameter(o, method, -1, method.getReturnType(), method.getGenericReturnType())) {
+            if(LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("initializeClassInfo: initializeParameter 2 returning false.");  // Liberty Change
+            }
             return false;
         }
         if (o.hasOutput()) {
@@ -815,9 +855,15 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
         boolean isHeader = isHeader(method, i);
         Annotation[] paraAnnos = null;
         if (i != -1 && o.getProperty(METHOD_PARAM_ANNOTATIONS) != null) {
+            if(LOG.isLoggable(Level.FINE)) {
+                LOG.fine("initializeParameter : Param Annotations"); // Liberty Change
+            }
             Annotation[][] anns = (Annotation[][])o.getProperty(METHOD_PARAM_ANNOTATIONS);
             paraAnnos = anns[i];
         } else if (i == -1 && o.getProperty(METHOD_ANNOTATIONS) != null) {
+            if(LOG.isLoggable(Level.FINE)) {
+                LOG.fine("initializeParameter : Method Annotations"); // Liberty Change
+            }
             paraAnnos = (Annotation[])o.getProperty(METHOD_ANNOTATIONS);
         }
 
@@ -1825,11 +1871,21 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
 
 
     protected void initializeParameter(MessagePartInfo part, Class<?> rawClass, Type type) {
+        
+        boolean isFineEnabled = LOG.isLoggable(Level.FINE);
         if (isHolder(rawClass, type)) {
             Type c = getHolderType(rawClass, type);
             if (c != null) {
                 type = c;
+		// Liberty Change start
+                if(isFineEnabled) {
+                    LOG.fine("initializeParameter: Holder type: " + c.getTypeName()); 
+                }
                 rawClass = getClass(type);
+                if(isFineEnabled) {
+                    LOG.fine("initializeParameter: Holder rawClass: " + (rawClass != null ? rawClass.getCanonicalName() : "NULL") );
+                }
+		// Liberty Change end
             }
         }
         if (type instanceof TypeVariable) {
@@ -1854,6 +1910,9 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
         if (Collection.class.isAssignableFrom(rawClass)) {
             part.setProperty(RAW_CLASS, rawClass);
         }
+        if(isFineEnabled) {
+            LOG.fine("Calling setTypeClass 1 for : " + rawClass.getCanonicalName()); // Liberty Change
+        }
         part.setTypeClass(rawClass);
 
         if (part.getMessageInfo().getOperation().isUnwrapped()
@@ -1867,6 +1926,9 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
                 || Boolean.TRUE.equals(part.getProperty(ReflectionServiceFactoryBean.MODE_INOUT))) {
                 MessagePartInfo mpi = o.getOutput().getMessagePart(part.getName());
                 if (mpi != null) {
+                    if(isFineEnabled) {
+                        LOG.fine("Calling setTypeClass 2 for : " + rawClass.getCanonicalName()); // Liberty Change
+                    }
                     mpi.setTypeClass(rawClass);
                     mpi.setProperty(GENERIC_TYPE, type);
                     if (Collection.class.isAssignableFrom(rawClass)) {
@@ -1877,6 +1939,9 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             if (!Boolean.TRUE.equals(part.getProperty(ReflectionServiceFactoryBean.MODE_OUT))) {
                 MessagePartInfo mpi = o.getInput().getMessagePart(part.getName());
                 if (mpi != null) {
+                    if(isFineEnabled) {
+                        LOG.fine("Calling setTypeClass 3 for : " + rawClass.getCanonicalName()); // Liberty Change
+                    }
                     mpi.setTypeClass(rawClass);
                     mpi.setProperty(GENERIC_TYPE, type);
                     if (Collection.class.isAssignableFrom(rawClass)) {
@@ -2094,9 +2159,14 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             // Ignore XFireFaults because they don't need to be declared
             if (Fault.class.isAssignableFrom(exClazz)
                 || exClazz.equals(RuntimeException.class) || exClazz.equals(Throwable.class)) {
+                if(LOG.isLoggable(Level.FINEST)) {
+                    LOG.finest("initializeFaults: Ignoring fault class: " + exClazz.getCanonicalName()); // Liberty Change
+                }
                 continue;
             }
-
+            if(LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("initializeFaults: Adding fault class: " + exClazz.getCanonicalName()); // Liberty Change
+            }
             addFault(service, op, exClazz);
         }
     }
@@ -2538,6 +2608,9 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             for (AbstractServiceConfiguration c : serviceConfigurations) {
                 defWrappedCache = c.isWrapped();
                 if (defWrappedCache != null) {
+                    if(LOG.isLoggable(Level.FINEST)) {
+                        LOG.finest("isWrapped: Returning defWrappedCache");  // Liberty Change
+                    }
                     return defWrappedCache;
                 }
             }
@@ -2551,6 +2624,9 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             for (AbstractServiceConfiguration c : serviceConfigurations) {
                 styleCache = c.getStyle();
                 if (styleCache != null) {
+                    if(LOG.isLoggable(Level.FINEST)) {
+                        LOG.finest("Returning styleCache");	 // Liberty Change
+                    }
                     return styleCache;
                 }
             }
@@ -2565,6 +2641,9 @@ public class ReflectionServiceFactoryBean extends org.apache.cxf.service.factory
             for (AbstractServiceConfiguration c : serviceConfigurations) {
                 b = c.isRPC(method);
                 if (b != null) {
+                    if(LOG.isLoggable(Level.FINEST)) {
+                        LOG.finest("isRPC: Adding method to RPC Cache: " + method.getName());  // Liberty Change
+                    }
                     isRpcCache.put(method, b);
                     return b.booleanValue();
                 }

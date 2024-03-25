@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,10 +31,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
-import com.ibm.websphere.jsonsupport.JSON;
-import com.ibm.websphere.jsonsupport.JSONFactory;
-import com.ibm.websphere.jsonsupport.JSONSettings;
-import com.ibm.websphere.jsonsupport.JSONSettings.Include;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.health.internal.AppTracker;
@@ -59,8 +55,6 @@ public class HealthCheck31ServiceImpl implements HealthCheck31Service {
     final AtomicBoolean readinessWarningAlreadyShown = new AtomicBoolean(false);
     final AtomicBoolean startupWarningAlreadyShown = new AtomicBoolean(false);
     AtomicInteger unstartedAppsCounter = new AtomicInteger(0);
-
-    private JSON json = null;
 
     @Reference(service = AppTracker.class)
     protected void setAppTracker(AppTracker service) {
@@ -108,11 +102,9 @@ public class HealthCheck31ServiceImpl implements HealthCheck31Service {
     public void performHealthCheck(HttpServletRequest request, HttpServletResponse httpResponse, String healthCheckProcedure) {
         Set<HealthCheckResponse> hcResponses = null;
         Set<String> unstartedAppsSet = new HashSet<String>();
-        Set<String> apps = appTracker.getAllAppNames();
-        Iterator<String> appsIt = apps.iterator();
         boolean anyAppsInstalled = false;
 
-        HealthCheck30HttpResponseBuilder hcHttpResponseBuilder = new HealthCheck30HttpResponseBuilder(getJSON());
+        HealthCheck30HttpResponseBuilder hcHttpResponseBuilder = new HealthCheck30HttpResponseBuilder();
 
         // Verify if the default overall Startup/Readiness status is configured
         String defaultReadinessProp = ConfigProvider.getConfig().getOptionalValue(HealthCheckConstants.DEFAULT_OVERALL_READINESS_STATUS, String.class).orElse("");
@@ -126,6 +118,26 @@ public class HealthCheck31ServiceImpl implements HealthCheck31Service {
         }
         Status defaultOverallReadiness = defaultReadinessProp.equalsIgnoreCase("UP") ? Status.UP : Status.DOWN;
         Status defaultOverallStartup = defaultStartupProp.equalsIgnoreCase("UP") ? Status.UP : Status.DOWN;
+
+        Set<String> apps = appTracker.getAllAppNames();
+
+        Set<String> configApps = appTracker.getAllConfigAppNames();
+        Iterator<String> configAppsIt = configApps.iterator();
+
+        while (configAppsIt.hasNext()) {
+            String nextAppName = configAppsIt.next();
+            if (apps.contains(nextAppName)) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "In performHealthCheck(): configAdmin found an application that the applicationStateListener already found. configAdminAppName = " + nextAppName);
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "In performHealthCheck(): applicationStateListener couldn't find application. configAdmin added appName = " + nextAppName);
+                appTracker.addAppName(nextAppName);
+            }
+        }
+
+        apps = appTracker.getAllAppNames();
+        Iterator<String> appsIt = apps.iterator();
 
         while (appsIt.hasNext()) {
             String appName = appsIt.next();
@@ -233,18 +245,5 @@ public class HealthCheck31ServiceImpl implements HealthCheck31Service {
         if (hcExecutor != null) {
             hcExecutor.removeModuleReferences(appName, moduleName);
         }
-    }
-
-    /**
-     * Utility that returns a JSON object from a factory
-     *
-     * @return the JSON object providing POJO-JSON serialization and deserialization
-     */
-    private JSON getJSON() {
-        if (json == null) {
-            JSONSettings settings = new JSONSettings(Include.NON_NULL);
-            json = JSONFactory.newInstance(settings);
-        }
-        return json;
     }
 }

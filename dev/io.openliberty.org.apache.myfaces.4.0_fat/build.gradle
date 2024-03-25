@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ dependencies {
     requiredLibs 'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0'
     requiredLibs 'net.sourceforge.htmlunit:neko-htmlunit:2.44.0' 
-    requiredLibs 'org.apache.commons:commons-lang3:3.8'
+    requiredLibs 'org.apache.commons:commons-lang3:3.14.0'
     requiredLibs 'org.apache.httpcomponents:httpclient:4.5.7'
     requiredLibs 'org.apache.httpcomponents:httpcore:4.4.9'
     requiredLibs 'org.apache.httpcomponents:httpmime:4.5.3'
@@ -86,3 +86,4 @@ dependencies {
 //addRequiredLibraries {
 //    dependsOn addMojarra40
 //}
+addRequiredLibraries.dependsOn addJakartaTransformer

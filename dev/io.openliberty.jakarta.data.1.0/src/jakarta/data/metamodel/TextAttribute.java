@@ -17,9 +17,9 @@ import jakarta.data.Sort;
 /**
  * Method signatures are copied from Jakarta Data.
  */
-public interface TextAttribute extends SortableAttribute {
+public interface TextAttribute<T> extends SortableAttribute<T> {
 
-    Sort ascIgnoreCase();
+    Sort<T> ascIgnoreCase();
 
-    Sort descIgnoreCase();
+    Sort<T> descIgnoreCase();
 }

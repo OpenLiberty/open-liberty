@@ -43,6 +43,8 @@ import com.ibm.ws.security.oauth20.util.CacheUtil;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
+import com.ibm.ws.security.openidconnect.server.internal.JwtUtils;
+import com.ibm.ws.security.openidconnect.token.JWT;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
@@ -75,11 +77,27 @@ public class LogoutTokenBuilder {
     }
 
     public Map<OidcBaseClient, Set<String>> buildLogoutTokensFromIdTokenString(String idTokenString) throws LogoutTokenBuilderException {
+        validateIdTokenSignature(idTokenString);
         JwtClaims idTokenClaims = getClaimsFromIdTokenString(idTokenString);
         try {
             return buildLogoutTokensForUser(idTokenClaims.getSubject());
         } catch (MalformedClaimException e) {
             String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN", e);
+            throw new LogoutTokenBuilderException(errorMsg, e);
+        }
+    }
+
+    void validateIdTokenSignature(String idTokenString) throws LogoutTokenBuilderException {
+        try {
+            String oauthProviderName = oidcServerConfig.getOauthProviderName();
+            OAuth20Provider oauthProvider = ProvidersService.getOAuth20Provider(oauthProviderName);
+            JWT jwt = JwtUtils.createJwt(idTokenString, oauthProvider, oidcServerConfig);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "JWT : " + jwt);
+            }
+            jwt.verifySignatureOnly();
+        } catch (Exception e) {
+            String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN", new Object[] { e });
             throw new LogoutTokenBuilderException(errorMsg, e);
         }
     }

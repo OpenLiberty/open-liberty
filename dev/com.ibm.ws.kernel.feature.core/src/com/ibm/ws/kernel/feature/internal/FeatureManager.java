@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,8 +41,10 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -85,6 +87,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.FeatureDefinition;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
+import com.ibm.ws.kernel.feature.FixManager;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.kernel.feature.ServerStarted;
@@ -146,14 +149,14 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * from an explicit <code>Variable</code> definition in a server configuration file (such as server.xml)
  * </p>
  */
-@Component(service = { FeatureProvisioner.class, FrameworkReady.class, ManagedService.class },
+@Component(service = { FixManager.class, FeatureProvisioner.class, FrameworkReady.class, ManagedService.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = {
                         Constants.SERVICE_VENDOR + "=" + "IBM",
                         Constants.SERVICE_PID + "=" + "com.ibm.ws.kernel.feature"
            })
-public class FeatureManager implements FeatureProvisioner, FrameworkReady, ManagedService {
+public class FeatureManager implements FixManager, FeatureProvisioner, FrameworkReady, ManagedService {
 
     private static final String ME = FeatureManager.class.getName();
     private static final TraceComponent tc = Tr.register(FeatureManager.class);
@@ -306,6 +309,12 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
     private volatile LibertyBootRuntime libertyBoot;
 
     private FrameworkWiring frameworkWiring;
+
+    private final Set<String> iFixSet = new CopyOnWriteArraySet<String>();
+
+    private final Set<String> tFixSet = new CopyOnWriteArraySet<String>();
+
+    private final AtomicBoolean fixLock = new AtomicBoolean(false);
 
     @Reference
     private volatile List<ServerReadyStatus> serverReadyChecks;
@@ -819,6 +828,8 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             featureRepository.dispose();
 
             // Update/progress messages -- AFTER we've written cache files
+
+            fixLock.set(false);
             writeUpdateMessages(featureChange.provisioningMode, preInstalledFeatures, deletedAutoFeatures, deletedPublicAutoFeatures);
         }
     }
@@ -1027,83 +1038,122 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
         return out;
     }
 
-    /**
-     *
-     */
-    @FFDCIgnore(IllegalStateException.class)
-    private void writeServiceMessages() {
-        // This print stream is used to write a fix.data file containing detected fixes for service.
-        PrintStream out = null;
-        Map<Bundle, Map<String, String>> cachedFixes = new HashMap<>();
-        boolean dirtyFixCache = readCachedFixes(cachedFixes);
+    private final void populateFixSets() {
 
-        Bundle[] bundles = bundleContext.getBundles();
+        if (fixLock.compareAndSet(false, true)) {
 
-        Set<String> iFixSet = new HashSet<String>();
-        Set<String> tFixSet = new HashSet<String>();
+            HashSet<String> newTFixSet = new HashSet<String>();
+            HashSet<String> newIFixSet = new HashSet<String>();
 
-        for (Bundle b : bundles) {
-            String tFixes;
-            boolean hasTFixes = false;
-            String iFixes;
-            boolean hasIFixes = false;
-            Map<String, String> cachedHeaders = cachedFixes.get(b);
-            if (cachedHeaders == null) {
-                Dictionary<String, String> headers;
-                try {
-                    headers = b.getHeaders("");
-                } catch (IllegalStateException ise) {
-                    // This can happen if a bundle was uninstalled between the call to bundleContext.getBundles() and here.
-                    // Testing shows this typically happens to dynamically generated bundles, like
-                    // "WSClassLoadingService@Thread Context:WebModule:basicauth-basicauth-/basicauth"
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "writeServiceMessages - caught exception getting manifest headers for bundle " + b, ise);
+            // This print stream is used to write a fix.data file containing detected fixes for service.
+            PrintStream out = null;
+            Map<Bundle, Map<String, String>> cachedFixes = new HashMap<>();
+            boolean dirtyFixCache = readCachedFixes(cachedFixes);
+
+            Bundle[] bundles = bundleContext.getBundles();
+
+            for (Bundle b : bundles) {
+                String tFixes;
+                boolean hasTFixes = false;
+                String iFixes;
+                boolean hasIFixes = false;
+                Map<String, String> cachedHeaders = cachedFixes.get(b);
+                if (cachedHeaders == null) {
+                    Dictionary<String, String> headers;
+                    try {
+                        headers = b.getHeaders("");
+                    } catch (IllegalStateException ise) {
+                        // This can happen if a bundle was uninstalled between the call to bundleContext.getBundles() and here.
+                        // Testing shows this typically happens to dynamically generated bundles, like
+                        // "WSClassLoadingService@Thread Context:WebModule:basicauth-basicauth-/basicauth"
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "writeServiceMessages - caught exception getting manifest headers for bundle " + b, ise);
+                        }
+                        continue;
                     }
-                    continue;
+
+                    cachedHeaders = new HashMap<>(2);
+                    tFixes = headers.get(FEATURE_TEST_FIXES);
+                    hasTFixes = tFixes != null;
+                    if (hasTFixes) {
+                        cachedHeaders.put(FEATURE_TEST_FIXES, tFixes);
+                    }
+                    iFixes = headers.get(FEATURE_INTERIM_FIXES);
+                    hasIFixes = iFixes != null;
+                    if (hasIFixes) {
+                        cachedHeaders.put(FEATURE_INTERIM_FIXES, iFixes);
+                    }
+
+                    cachedFixes.put(b, cachedHeaders);
+                    dirtyFixCache = true;
+                } else {
+                    tFixes = cachedHeaders.get(FEATURE_TEST_FIXES);
+                    hasTFixes = tFixes != null;
+                    iFixes = cachedHeaders.get(FEATURE_INTERIM_FIXES);
+                    hasIFixes = iFixes != null;
                 }
 
-                cachedHeaders = new HashMap<>(2);
-                tFixes = headers.get(FEATURE_TEST_FIXES);
-                hasTFixes = tFixes != null;
                 if (hasTFixes) {
-                    cachedHeaders.put(FEATURE_TEST_FIXES, tFixes);
+                    out = getFixWriter(out);
+                    out.print("tFix: ");
+                    out.print(b.getLocation());
+                    out.print(": ");
+                    out.println(tFixes);
+                    newTFixSet.addAll(Arrays.asList(tFixes.replaceAll(" ", "").split(",")));
                 }
-                iFixes = headers.get(FEATURE_INTERIM_FIXES);
-                hasIFixes = iFixes != null;
                 if (hasIFixes) {
-                    cachedHeaders.put(FEATURE_INTERIM_FIXES, iFixes);
+                    out = getFixWriter(out);
+                    out.print("iFix: ");
+                    out.print(b.getLocation());
+                    out.print(": ");
+                    out.println(iFixes);
+                    newIFixSet.addAll(Arrays.asList(iFixes.replaceAll(" ", "").split(",")));
                 }
-
-                cachedFixes.put(b, cachedHeaders);
-                dirtyFixCache = true;
-            } else {
-                tFixes = cachedHeaders.get(FEATURE_TEST_FIXES);
-                hasTFixes = tFixes != null;
-                iFixes = cachedHeaders.get(FEATURE_INTERIM_FIXES);
-                hasIFixes = iFixes != null;
             }
 
-            if (hasTFixes) {
-                out = getFixWriter(out);
-                out.print("tFix: ");
-                out.print(b.getLocation());
-                out.print(": ");
-                out.println(tFixes);
-                tFixSet.addAll(Arrays.asList(tFixes.split("[,\\s]")));
+            if (out != null) {
+                out.flush();
+                out.close();
             }
-            if (hasIFixes) {
-                out = getFixWriter(out);
-                out.print("iFix: ");
-                out.print(b.getLocation());
-                out.print(": ");
-                out.println(iFixes);
-                iFixSet.addAll(Arrays.asList(iFixes.split("[,\\s]")));
+            if (dirtyFixCache) {
+                writeCachedFixes(cachedFixes);
             }
+
+            tFixSet.clear();
+            iFixSet.clear();
+            tFixSet.addAll(newTFixSet);
+            iFixSet.addAll(newIFixSet);
         }
 
-        if (!!!iFixSet.isEmpty()) {
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getTFixes() {
+
+        populateFixSets();
+
+        return Collections.unmodifiableSet(tFixSet);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<String> getIFixes() {
+
+        populateFixSets();
+
+        return Collections.unmodifiableSet(iFixSet);
+    }
+
+    private void writeServiceMessages() {
+
+        Set<String> tempTFixSet = getTFixes();
+
+        Set<String> tempIFixSet = getIFixes();
+
+        if (!!!tempIFixSet.isEmpty()) {
             StringBuilder builder = new StringBuilder();
-            for (String fix : iFixSet) {
+            for (String fix : tempIFixSet) {
                 if (!"".equals(fix)) {
                     builder.append(',');
                     builder.append(fix);
@@ -1113,9 +1163,9 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             String fixes = builder.toString();
             Tr.audit(tc, "INTERIM_FIX_DETECTED", fixes);
         }
-        if (!!!tFixSet.isEmpty()) {
+        if (!!!tempTFixSet.isEmpty()) {
             StringBuilder builder = new StringBuilder();
-            for (String fix : tFixSet) {
+            for (String fix : tempTFixSet) {
                 if (!"".equals(fix)) {
                     builder.append(',');
                     builder.append(fix);
@@ -1126,13 +1176,6 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             Tr.warning(tc, "TEST_FIX_DETECTED", fixes);
         }
 
-        if (out != null) {
-            out.flush();
-            out.close();
-        }
-        if (dirtyFixCache) {
-            writeCachedFixes(cachedFixes);
-        }
     }
 
     /**
@@ -1227,7 +1270,7 @@ public class FeatureManager implements FeatureProvisioner, FrameworkReady, Manag
             FeatureDefinition fd = getFeatureDefinition(feature);
 
             if (fd != null && fd.getVisibility() == Visibility.PUBLIC) {
-                if(fd.getSymbolicName().contains("versionless")){
+                if (fd.getSymbolicName().contains("versionless")) {
                     continue;
                 }
                 // get name from feature definition.

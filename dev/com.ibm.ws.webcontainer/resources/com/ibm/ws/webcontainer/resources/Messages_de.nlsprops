@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2023 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1578,10 +1578,7 @@ uncaught.exception.during.AsyncListener.onComplete.explanation=Der in der Fehler
 uncaught.exception.during.AsyncListener.onComplete.useraction=Suchen Sie im AsyncListener-Quellencode und in den Serverprotokollen nach der Ursache f\u00fcr den Anwendungsfehler.
 
 # Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
-# 0001 - 0199 for Base
-# 0200 - 0299 for Servlet 3.0
-# 0300 - 0399 for Servlet 3.1
-# 0400 - 0499 for Servlet 4
+# Sequential increment the message number for all new releases and services
 
 #name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
 #name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
@@ -1624,3 +1621,15 @@ uri.has.backslash.character=URI enth\u00e4lt einen umgekehrten Schr\u00e4gstrich
 multipart.file.count.max.exceeded=CWWWC0006E: Die Anforderung enthielt mehr Dateien zum Hochladen als zul\u00e4ssig sind. Die maximale Anzahl von Dateien ist [{0}].
 multipart.file.count.max.exceeded.explanation=Die Anzahl der Dateien, die von der Anforderung f\u00fcr mehrteilige Formulardaten hochgeladen werden, hat den festgelegten Grenzwert \u00fcberschritten.
 multipart.file.count.max.exceeded.useraction=Erh\u00f6hen Sie die maximale Anzahl Dateien, die pro Anforderung hochgeladen werden k\u00f6nnen, indem Sie die angepasste Eigenschaft maxFileCount webContainer in der Datei server.xml festlegen. Der Standardwert ist 5000. F\u00fcr einen unbegrenzten Dateiupload setzen Sie den Wert auf -1.
+
+cannot.sendRedirect.response.already.committed=CWWWC0007E: Die Antwort sendRedirect ist nach dem Festschreiben der Antwort nicht zul\u00e4ssig.
+cannot.sendRedirect.response.already.committed.explanation=Wenn eine Antwort festgeschrieben wird, kann sie keine Umleitung senden.
+cannot.sendRedirect.response.already.committed.useraction=\u00dcberpr\u00fcfen Sie die sendRedirect -Logik, um sicherzustellen, dass die Antwort weder manuell noch automatisch festgeschrieben wird, bevor sendRedirect aufgerufen wird.
+
+redirect.location.cannot.be.null=CWWWC0008E: Die Umleitungsposition darf nicht null sein.
+redirect.location.cannot.be.null.explanation=Die URL der Umleitungsposition muss eine relative oder eine absolute URL sein. 
+redirect.location.cannot.be.null.useraction=Aktualisieren Sie die Umleitungsposition, indem Sie einen URL-Wert angeben, der nicht leer ist. Die URL kann relativ oder absolut sein.
+
+sendRedirect.hyper.text.url=<html><body><p>Umleitung an <a href="{0}"></a></p></body></html>
+
+query.or.post.is.null=Anforderungsabfragezeichenfolge oder POST-Daten sind null.

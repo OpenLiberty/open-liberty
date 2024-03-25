@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -142,12 +142,10 @@ public class OidcBaseClient extends BaseClient implements Serializable, OidcOAut
     private int length = HashSecretUtils.DEFAULT_KEYSIZE;
 
     @Expose
-    @Beta
     @SerializedName(SN_BACKCHANNEL_LOGOUT_URI)
     private String backchannelLogoutUri = null;
 
     @Expose
-    @Beta
     @SerializedName(SN_BACKCHANNEL_LOGOUT_SESSION_REQUIRED)
     private boolean backchannelLogoutSessionRequired = false;
 

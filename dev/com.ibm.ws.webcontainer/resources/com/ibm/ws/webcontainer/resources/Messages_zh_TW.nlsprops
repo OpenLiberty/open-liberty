@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2023 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1578,10 +1578,7 @@ uncaught.exception.during.AsyncListener.onComplete.explanation=\u932f\u8aa4\u8a0
 uncaught.exception.during.AsyncListener.onComplete.useraction=\u8acb\u9a57\u8b49 AsyncListener \u539f\u59cb\u78bc\u548c\u4f3a\u670d\u5668\u65e5\u8a8c\uff0c\u4ee5\u627e\u51fa\u61c9\u7528\u7a0b\u5f0f\u932f\u8aa4\u7684\u4e3b\u8981\u539f\u56e0\u3002
 
 # Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
-# 0001 - 0199 for Base
-# 0200 - 0299 for Servlet 3.0
-# 0300 - 0399 for Servlet 3.1
-# 0400 - 0499 for Servlet 4
+# Sequential increment the message number for all new releases and services
 
 #name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
 #name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
@@ -1624,3 +1621,15 @@ uri.has.backslash.character=URI \u5177\u6709\u53cd\u659c\u7dda\u5b57\u5143\uff1b
 multipart.file.count.max.exceeded=CWWWC0006E: \u8981\u6c42\u5305\u542b\u7684\u4e0a\u50b3\u6a94\u6848\u6578\u8d85\u904e\u5141\u8a31\u7684\u6578\u76ee\u3002 \u6a94\u6848\u6578\u76ee\u4e0a\u9650\u70ba [{0}]\u3002
 multipart.file.count.max.exceeded.explanation=multipart/form-data \u8981\u6c42\u6240\u4e0a\u50b3\u7684\u6a94\u6848\u6578\u5df2\u8d85\u51fa\u8a2d\u5b9a\u9650\u5236\u3002
 multipart.file.count.max.exceeded.useraction=\u5728 server.xml \u6a94\u4e2d\u8a2d\u5b9a maxFileCount webContainer \u81ea\u8a02\u5167\u5bb9\uff0c\u4ee5\u589e\u52a0\u6bcf\u500b\u8981\u6c42\u6240\u80fd\u4e0a\u50b3\u7684\u6a94\u6848\u6578\u76ee\u4e0a\u9650\u3002 \u9810\u8a2d\u503c\u70ba 5000\u3002 \u82e5\u70ba\u7121\u9650\u5236\u6a94\u6848\u4e0a\u50b3\uff0c\u8acb\u5c07\u503c\u8a2d\u70ba -1\u3002
+
+cannot.sendRedirect.response.already.committed=CWWWC0007E: \u5728\u78ba\u5b9a\u56de\u61c9\u4e4b\u5f8c\uff0c\u4e0d\u5bb9\u8a31\u56de\u61c9 sendRedirect \u3002
+cannot.sendRedirect.response.already.committed.explanation=\u78ba\u5b9a\u56de\u61c9\u6642\uff0c\u7121\u6cd5\u50b3\u9001\u91cd\u65b0\u5c0e\u5411\u3002
+cannot.sendRedirect.response.already.committed.useraction=\u9a57\u8b49 sendRedirect \u908f\u8f2f\uff0c\u4ee5\u78ba\u4fdd\u5728\u547c\u53eb sendRedirect \u4e4b\u524d\u672a\u624b\u52d5\u6216\u81ea\u52d5\u78ba\u5b9a\u56de\u61c9\u3002
+
+redirect.location.cannot.be.null=CWWWC0008E: \u91cd\u65b0\u5c0e\u5411\u4f4d\u7f6e\u4e0d\u80fd\u662f\u7a7a\u503c\u3002
+redirect.location.cannot.be.null.explanation=\u91cd\u65b0\u5c0e\u5411\u4f4d\u7f6e URL \u5fc5\u9808\u662f\u76f8\u5c0d\u6216\u7d55\u5c0d URL\u3002 
+redirect.location.cannot.be.null.useraction=\u8acb\u6307\u5b9a\u975e\u7a7a\u7684 URL \u503c\u4f86\u66f4\u65b0\u91cd\u65b0\u5c0e\u5411\u4f4d\u7f6e\u3002 URL \u53ef\u4ee5\u662f\u76f8\u5c0d\u6216\u7d55\u5c0d\u3002
+
+sendRedirect.hyper.text.url=<html><body><p>\u91cd\u65b0\u5c0e\u5411\u81f3 <a href="{0}"></a></p></body></html>
+
+query.or.post.is.null=\u8981\u6c42\u67e5\u8a62\u5b57\u4e32\u6216\u516c\u4f48\u8cc7\u6599\u662f\u7a7a\u503c\u3002

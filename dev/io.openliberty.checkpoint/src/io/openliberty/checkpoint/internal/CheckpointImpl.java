@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.instrument.ClassFileTransformer;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -115,6 +118,8 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private final CheckpointFailedException forceFail;
     private final List<CheckpointHookService> hooksMultiThreaded = Collections.synchronizedList(new ArrayList<>());
     private final List<CheckpointHookService> hooksSingleThreaded = Collections.synchronizedList(new ArrayList<>());
+    private final Field checkpointPhaseRestored;
+    private final Method checkpointPhaseblockAddHooks;
 
     private static volatile CheckpointImpl INSTANCE = null;
 
@@ -195,6 +200,14 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         this.pauseRestore = getPauseTime(cc.getBundleContext().getProperty(CHECKPOINT_PAUSE_RESTORE));
         this.forceFail = getForceFailCheckpointCode(cc.getBundleContext().getProperty(CHECKPOINT_FORCE_FAIL_TYPE));
 
+        try {
+            this.checkpointPhaseblockAddHooks = CheckpointPhase.class.getDeclaredMethod("blockAddHooks");
+            this.checkpointPhaseblockAddHooks.setAccessible(true);
+            this.checkpointPhaseRestored = CheckpointPhase.class.getDeclaredField("restored");
+            this.checkpointPhaseRestored.setAccessible(true);
+        } catch (NoSuchMethodException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
         // Keep assignment of static INSTANCE as last thing done.
         // Technically we are escaping 'this' here but we can be confident that INSTANCE will not be used
         // until the constructor exits here given that this is an immediate component and activated early,
@@ -354,6 +367,14 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
 
         checkSupportedFeatures();
 
+        // block adding hooks to CheckpointPhase
+        try {
+            checkpointPhaseblockAddHooks.invoke(checkpointAt);
+        } catch (IllegalAccessException | IllegalArgumentException e) {
+            throw new CheckpointFailedException(getUnknownType(), "Failed to call blockAddHooks.", e);
+        } catch (InvocationTargetException e) {
+            throw new CheckpointFailedException(getUnknownType(), "Failed to call blockAddHooks.", e.getTargetException());
+        }
         // sorting is lowest to highest for restore
         List<CheckpointHookService> multiThreadRestoreHooks = getHooks(this.hooksMultiThreaded);
         List<CheckpointHookService> singleThreadRestoreHooks = getHooks(this.hooksSingleThreaded);
@@ -494,8 +515,10 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     }
 
     private boolean isInstantOnFeature(ManifestElement[] instantonEnabledHeader, Object featureName) {
+        if (allowedFeatures.contains(featureName)) {
+            return true;
+        }
         if (instantonEnabledHeader != null && instantonEnabledHeader.length > 0) {
-
             if (Boolean.parseBoolean(instantonEnabledHeader[0].getValue())) {
                 // check for beta
                 String type = instantonEnabledHeader[0].getDirective("type");
@@ -505,7 +528,7 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
                 return true;
             }
         }
-        return allowedFeatures.contains(featureName);
+        return false;
     }
 
     public Type getUnknownType() {
@@ -621,7 +644,13 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     @Trivial
     private void restore(List<CheckpointHookService> checkpointHooks) throws CheckpointFailedException {
         // The first thing is to set the jvmRestore flag
-        jvmRestore.set(true);
+        if (jvmRestore.compareAndSet(false, true)) {
+            try {
+                checkpointPhaseRestored.set(checkpointAt, Boolean.TRUE);
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                throw new CheckpointFailedException(getUnknownType(), "Failed to set restored flag on CheckpointPhase", e);
+            }
+        }
         debug(tc, () -> "Calling restore hooks on this list: " + checkpointHooks);
         callHooks("restore",
                   checkpointHooks,

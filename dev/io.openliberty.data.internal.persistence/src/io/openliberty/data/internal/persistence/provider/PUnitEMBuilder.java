@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,21 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
 
     private final String persistenceUnitRef;
 
+    public PUnitEMBuilder(EntityManagerFactory emf, ClassLoader repositoryClassLoader) {
+        super(repositoryClassLoader);
+        this.emf = emf;
+        this.persistenceUnitRef = emf.toString();
+
+        this.application = null;
+        this.module = null;
+        this.component = null;
+
+        // TODO For EntityManagerFactory managed by Open Liberty, the persistence unit and app/module/component are known
+        // Example of emf.toString():
+        // com.ibm.ws.jpa.container.v31.JPAEMFactoryV31@ed2fe703[PuId=DataStoreTestApp#DataStoreTestWeb.war#MyPersistenceUnit,
+        // DataStoreTestApp#DataStoreTestWeb.war, org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl@3708cabf]
+    }
+
     public PUnitEMBuilder(EntityManagerFactory emf, String persistenceUnitRef, ClassLoader repositoryClassLoader) {
         super(repositoryClassLoader);
         this.emf = emf;
@@ -46,6 +61,7 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
         boolean javaModule = !javaApp && persistenceUnitRef.regionMatches(5, "module", 0, 6);
         boolean javaComp = !javaApp && !javaModule && persistenceUnitRef.regionMatches(5, "comp", 0, 4);
 
+        // TODO it might not be predictable which module this thread runs from. If so, module and component cannot be used.
         if (javaApp || javaModule || javaComp) {
             ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
             J2EEName jeeName = cData == null ? null : cData.getJ2EEName();

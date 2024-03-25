@@ -22,6 +22,10 @@ package org.apache.cxf.ws.policy.selector;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.cxf.common.logging.LogUtils;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.cxf.message.Message;
 import org.apache.cxf.ws.policy.Assertor;
@@ -33,6 +37,8 @@ import org.apache.neethi.Policy;
  *
  */
 public class MinimalAlternativeSelector extends BaseAlternativeSelector {
+
+    private static final Logger LOG = LogUtils.getL7dLogger(MinimalAlternativeSelector.class);  // Liberty Change
 
     public Collection<Assertion> selectAlternative(
         Policy policy, PolicyEngine engine,
@@ -47,11 +53,17 @@ public class MinimalAlternativeSelector extends BaseAlternativeSelector {
             if (engine.supportsAlternative(alternative, assertor, msg)
                 && isCompatibleWithRequest(alternative, request)
                 && (null == choice || alternative.size() < choice.size())) {
+                if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                    LOG.fine("Engine supports alternative (CXF 2.6.2)");
+                }
                 choice = alternative;
             }
-			// Liberty Change End
+	    // Liberty Change End
         }
         if (choice == null) {
+            if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                LOG.fine("Getting minimal alternatives");  // Liberty Change
+            }
             // didn't find one completely compatible with the incoming, just get the minimal
             alternatives = policy.getAlternatives();
             while (alternatives.hasNext()) {

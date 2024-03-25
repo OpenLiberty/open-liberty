@@ -171,6 +171,10 @@ MicroProfile Opentracing API [microprofile-opentracing-api],
 MicroProfile Reactive Messaging API [microprofile-reactive-messaging-api],
 MicroProfile Reactive Streams Operators Core [microprofile-reactive-streams-operators-core],
 MicroProfile Rest Client API [microprofile-rest-client-api],
+MUTINY
+MUTINY-REACTIVE-STREAMS-OPERATORS-JAKARTA
+MUTINY-ZERO
+MUTINY-ZERO-FLOW-ADAPTERS
 Netty/Buffer [netty-buffer], Netty/Codec [netty-codec],
 Netty/Codec/HTTP [netty-codec-http], Netty/Codec/HTTP2 [netty-codec-http2],
 Netty/Codec/Socks [netty-codec-socks], Netty/Common [netty-common],
@@ -263,6 +267,12 @@ SmallRye Common: Classloader [smallrye-common-classloader],
 SmallRye Common: Constraints [smallrye-common-constraint],
 SmallRye Common: Expressions [smallrye-common-expression],
 SmallRye Common: Functions [smallrye-common-function],
+SMALLRYE-COMMON-VERTX-CONTEXT,
+SMALLRYE-MUTINY-VERTX-CORE,
+SMALLRYE-MUTINY-VERTX-RUNTIME,
+SMALLRYE-REACTIVE-CONVERTER-API,
+SMALLRYE-REACTIVE-MESSAGING-API,
+SMALLRYE-REACTIVE-MESSAGING-PROVIDER,
 SmallRye Config: CDI [smallrye-config],
 SmallRye Config: Common [smallrye-config-common],
 SmallRye Config: Core [smallrye-config-core],
@@ -336,7 +346,9 @@ snappy-java, swagger-client [swagger-client-3.24.5.tgz],
 swagger-ui [swagger-ui-5.10.3.tgz], tomcat-el-api, tomcat-jasper-el,
 ts-toolbelt [ts-toolbelt-9.6.0.tgz], tunnel-agent [tunnel-agent-0.6.0.tgz],
 yoko-core, yoko-osgi, yoko-rmi-impl, yoko-rmi-spec, yoko-spec-corba, yoko-util
-
+VERTX-CODEGEN,
+VERTX-CORE,
+VERTX-MUTINY-GENERATOR
 
 Apache License
 Version 2.0, January 2004

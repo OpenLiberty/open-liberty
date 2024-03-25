@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.cxf.Bus;
@@ -46,7 +47,7 @@ import org.osgi.framework.SynchronousBundleListener;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore; // Liberty Change
 
 public class CXFExtensionBundleListener implements SynchronousBundleListener {
-    private static final Logger LOG = LogUtils.getL7dLogger(CXFActivator.class);
+    private static final Logger LOG = LogUtils.getL7dLogger(CXFExtensionBundleListener.class);
     private long id;
     private ConcurrentMap<Long, List<OSGiExtension>> extensions
         = new ConcurrentHashMap<>(16, 0.75f, 4);
@@ -62,14 +63,22 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
                 || bundle.getState() == Bundle.ACTIVE
                 || bundle.getState() == Bundle.STOPPING)
                 && bundle.getBundleId() != context.getBundle().getBundleId()) {
-            	// Start Liberty Change
+            	//Liberty Change Start
                 String bundleName = bundle.toString();
                 if(!bundleName.startsWith("com.ibm.ws.org.apache.cxf") && !bundleName.startsWith("com.ibm.ws.wssecurity")) {
                     // don't register non-cxf bundles
+
+                    if (LOG.isLoggable(Level.FINEST)) {  // Liberty Change Start
+                        LOG.finest("Non-CXF bundle: Do not register bundle " + bundleName);
+                    }
                 }
-                else
+                else {
+                    if (LOG.isLoggable(Level.FINEST)) { 
+                        LOG.finest("CXF bundle: Register bundle " + bundleName);
+                    }
                     register(bundle);
-                //
+		}
+                //Liberty Change End
             }
         }
     }
@@ -77,8 +86,15 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
     /** {@inheritDoc}*/
     public void bundleChanged(BundleEvent event) {
         if (event.getType() == BundleEvent.RESOLVED && id != event.getBundle().getBundleId()) {
+
+            if (LOG.isLoggable(Level.FINEST)) {  // Liberty Change Start
+                LOG.finest("bundleChanged: Register bundle " + event.getBundle()); 
+            } // Liberty Change End
             register(event.getBundle());
         } else if (event.getType() == BundleEvent.UNRESOLVED || event.getType() == BundleEvent.UNINSTALLED) {
+            if (LOG.isLoggable(Level.FINEST)) {  // Liberty Change Start
+                LOG.finest("bundleChanged: Unregister bundle " + event.getBundle()); //Liberty Change
+            } // Liberty Change End
             unregister(event.getBundle().getBundleId());
         }
     }
@@ -92,21 +108,39 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
     }
 
     private boolean addExtensions(final Bundle bundle, List<Extension> orig) {
+        
+        boolean isFinestEnabled = LOG.isLoggable(Level.FINEST);  //Liberty Change
         if (orig.isEmpty()) {
+            if (isFinestEnabled) {
+                LOG.finest("Extension list is empty!");  //Liberty Change
+            }
             return false;
         }
 
         List<String> names = new ArrayList<>(orig.size());
         for (Extension ext : orig) {
+            if (isFinestEnabled) {
+                LOG.finest("register: Adding extension: " + ext.toString()); //Liberty Change
+            }
             names.add(ext.getName());
         }
-        LOG.finest("Adding the extensions from bundle " + bundle.getSymbolicName() // Liberty Change: Log at finest
+
+        if (isFinestEnabled) {
+            LOG.finest("Adding the extensions from bundle " + bundle.getSymbolicName() // Liberty Change: Log at finest
                  + " (" + bundle.getBundleId() + ") " + names);
+        }
         List<OSGiExtension> list = extensions.get(bundle.getBundleId());
         if (list == null) {
+
+            if (isFinestEnabled) {
+                LOG.finest("Extension list is NULL!");  // Liberty Change
+            }
             list = new CopyOnWriteArrayList<>();
             List<OSGiExtension> preList = extensions.putIfAbsent(bundle.getBundleId(), list);
             if (preList != null) {
+                if (isFinestEnabled) {
+                    LOG.finest("Setting list to preList");  //Liberty Change
+                }
                 list = preList;
             }
         }
@@ -120,7 +154,9 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
     protected void unregister(final long bundleId) {
         List<OSGiExtension> list = extensions.remove(bundleId);
         if (list != null) {
-            LOG.finest("Removing the extensions for bundle " + bundleId);  // Liberty Change: Log at finest
+            if (LOG.isLoggable(Level.FINEST)) { 
+                LOG.finest("Removing the extensions for bundle " + bundleId);  // Liberty Change: Log at finest
+            }
             ExtensionRegistry.removeExtensions(list);
         }
     }
@@ -166,7 +202,9 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
                         }
                     }
                 } catch (Throwable ex) {
-                    LOG.finest("Failed to get BundleContext due to error: " + ex);
+                    if (LOG.isLoggable(Level.FINEST)) {
+                        LOG.finest("Failed to get BundleContext due to error: " + ex);
+                    }
                 }
             } else {
                 if (interfaceName == null && bundle.getBundleContext() != null) {
@@ -194,6 +232,9 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
                     c = AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
                         @Override
                         public Class<?> run() throws ClassNotFoundException {
+                            if (LOG.isLoggable(Level.FINEST)) { 
+                                LOG.finest("tryClass: Loading class: " + className);  //Liberty Change
+                            }
                             return bundle.loadClass(className);
                         }
                     });
@@ -207,6 +248,9 @@ public class CXFExtensionBundleListener implements SynchronousBundleListener {
                 // End Liberty Change
 
             } catch (Throwable e) {
+                if (LOG.isLoggable(Level.FINEST)) { 
+                    LOG.finest("tryClass: Setting origExc to: " + e);  // Liberty Change
+                }
                 origExc = e;
             }
             if (c == null) {

@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
 #COMPONENTPREFIX JSPG CWWJS
@@ -1273,8 +1270,22 @@ jsp.isthreadsafe.warning=CWWJS0003W: Specifikace Pages 3.1 d\u016frazn\u011b dop
 jsp.isthreadsafe.warning.explanation=SingleThreadModel byl odebr\u00e1n ze servletu 6.0. V produktu Pages 3.1 byla zam\u00edtnuta direktiva str\u00e1nky isThreadSafe a jej\u00ed odebr\u00e1n\u00ed je napl\u00e1nov\u00e1no v budouc\u00ed aktualizaci produktu Pages.
 jsp.isthreadsafe.warning.useraction=Odeberte direktivu isThreadSafe ze v\u0161ech str\u00e1nek.
 
-
 jsp.useinmemory.warning=CWWJS0004W: Volba JSP 'useInMemory' nen\u00ed podporov\u00e1na. Str\u00e1nky JSP budou m\u00edsto toho zkompilov\u00e1ny a ulo\u017eeny na disk.
 jsp.useinmemory.warning.explanation=Tato funkce nebyla z historick\u00fdch d\u016fvod\u016f nikdy portov\u00e1na z tradi\u010dn\u00edho serveru WebSphere .
 jsp.useinmemory.warning.useraction=Odeberte volbu useInMemory ze soubor\u016f server.xml, ibm-web-bnd.xmlnebo ibm-web-ext.xmi .
 
+pages.removed.element.error=CWWJS0005E: Prvek {0} byl odebr\u00e1n ze str\u00e1nek 4.0 , a proto ji\u017e nen\u00ed podporov\u00e1n.
+pages.removed.element.error.explanation=Modul plug-in jsp a souvisej\u00edc\u00ed akce byly zam\u00edtnuty v Pages 3.1 a odebr\u00e1ny v produktu 4.0. 
+pages.removed.element.error.useraction= Z webov\u00e9 aplikace odeberte prvky jsp plugin, fallback a params.
+
+jsp.javasourcelevel.warning=CWWJS0006W: Zadan\u00e1 hodnota javaSourceLevel ={0} p\u0159ekra\u010duje instalovanou \u00farove\u0148 Java {1} . Proto je v\u00fdchoz\u00ed \u00farove\u0148 Java nastavena na {1}.
+jsp.javasourcelevel.warning.explanation=Soubor nelze zkompilovat s vy\u0161\u0161\u00edm zdrojem, ne\u017e je dostupn\u00e1 \u00farove\u0148 JDK. 
+jsp.javasourcelevel.warning.useraction=Zadejte hodnotu \u00farovn\u011b javaSource, kter\u00e1 je men\u0161\u00ed nebo rovna dostupn\u00e9 \u00farovni JDK.
+
+jsp.bothsourcelevelset.warning=CWWJS0007W: Jsou zad\u00e1ny hodnoty javaSourceLevel ={0} i jdkSourceLevel ={1} . Standardn\u011b se pou\u017eije javaSourceLevel ={0}.
+jsp.bothsourcelevelset.warning.explanation=V dan\u00e9m okam\u017eiku lze pou\u017e\u00edt pouze jeden atribut \u00farovn\u011b zdroje.
+jsp.bothsourcelevelset.warning.useraction=Zadejte pouze atribut \u00farovn\u011b javaSource. Atribut \u00farovn\u011b jdkSourceje stabilizovan\u00fd. 
+
+jsp.javasourcelevel.value=CWWJS0008I: Hodnota atributu JSP javaSourceLevel je "{0}".
+jsp.javasourcelevel.value.explanation=
+jsp.javasourcelevel.value.useraction=

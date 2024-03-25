@@ -29,7 +29,7 @@
 #   (single quote must be coded as one single quote '). 
 #
 # -------------------------------------------------------------------------------------------------
-External_transaction_controller_not_defined_by_server_platform=A DatabaseSession olyan k\u00fcls\u0151 tranzakci\u00f3vez\u00e9rl\u0151vel rendelkezik, amit nem a ServerPlatform hat\u00e1rozott meg. Az EclipseLink enged\u00e9lyezni fogja a k\u00fcls\u0151 tranzakci\u00f3vez\u00e9rl\u0151 fel\u00fclb\u00edr\u00e1lat\u00e1t, azonban javasoljuk, hogy alternat\u00edv megold\u00e1sk\u00e9nt fontolja meg az org.eclipse.persistence.platform.server.ServerPlatformBase tov\u00e1bbsz\u00e1rmaztat\u00e1s\u00e1t \u00e9s a getExternalTransactionControllerClass() fel\u00fclb\u00edr\u00e1lat\u00e1t.
+External_transaction_controller_not_defined_by_server_platform=A DatabaseSession olyan k\u00fcls\u0151 tranzakci\u00f3vez\u00e9rl\u0151vel rendelkezik, amit nem a ServerPlatform hat\u00e1rozott meg. Az EclipseLink enged\u00e9lyezni fogja a k\u00fcls\u0151 tranzakci\u00f3vez\u00e9rl\u0151 fel\ufffd\ufffdlb\u00edr\u00e1lat\u00e1t, azonban javasoljuk, hogy alternat\u00edv megold\u00e1sk\u00e9nt fontolja meg az org.eclipse.persistence.platform.server.ServerPlatformBase tov\u00e1bbsz\u00e1rmaztat\u00e1s\u00e1t \u00e9s a getExternalTransactionControllerClass() fel\u00fclb\u00edr\u00e1lat\u00e1t.
 
 JDBC_driver_does_not_support_meta_data=Csatlakoztatott: ismeretlen (a JDBC illeszt\u0151program nem t\u00e1mogatja a metaadatokat.)
 
@@ -709,7 +709,12 @@ toplink_warning=[EL Warning]:
 
 unit_of_work_thread_info=A(z) ({0}) munkamenet aktu\u00e1lis egys\u00e9g\u00e9t egy, az aktu\u00e1list\u00f3l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) elt\u00e9r\u0151 sz\u00e1l hozta l\u00e9tre (azonos\u00edt\u00f3: {1} n\u00e9v: {2}).
 
-unit_of_work_thread_info_thread_dump=Sz\u00e1l l\u00e9trehoz\u00e1sa (azonos\u00edt\u00f3: {0} n\u00e9v: {1}) veremnyomk\u00f6vet\u00e9s: {2} Aktu\u00e1lis sz\u00e1l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) veremnyomk\u00f6vet\u00e9s:{5}\n
+unit_of_work_thread_info_thread_dump=L\u00e9trehoz\u00e1si sz\u00e1l (azonos\u00edt\u00f3: {0} n\u00e9v: {1}) verem nyomk\u00f6vet\u00e9s:
+#{2}
+
+Current Sz\u00e1l (azonos\u00edt\u00f3: {3} n\u00e9v: {4}) verem nyomk\u00f6vet\u00e9s:
+#{5}
+
 unitofwork_identity_hashcode={0}UnitOfWork azonoss\u00e1g kivonatk\u00f3d: {1}
 
 update_all_query_cannot_use_binding_on_this_platform=Az UpdateAllQuery nem haszn\u00e1lhat k\u00f6t\u00e9st ezen az adatb\u00e1zis-platformon. Lek\u00e9rdez\u00e9s be\u00e1ll\u00edt\u00e1s m\u00f3dos\u00edtva a v\u00e9grehajt\u00e1shoz k\u00f6t\u00e9s n\u00e9lk\u00fcl.

@@ -21,5 +21,5 @@
     
     <variable name="a_value" defaultValue="test1" />
 
-    <checkpoint.pid a="${a_value}" b="${b_value}" c="${c_value}" password="test-password"/>
+    <checkpoint.pid a="${a_value}" b="${b_value}" c="${c_value}" d="${d_value}" password="test-password"/>
 </server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -266,6 +266,25 @@ public class ServerConfigTest {
             test(server, "/restart/restart?testName=includeDir");
         } finally {
             server.stopServer();
+        }
+    }
+
+    @Test
+    public void testIncludeWithEmptyVariable() throws Exception {
+        LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.config.import.empty.variable");
+        ShrinkHelper.exportAppToServer(server, restartApp, DeployOptions.DISABLE_VALIDATION);
+        server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/configfatlibertyinternals-1.0.mf");
+        server.setServerStartTimeout(SERVER_START_TIMEOUT);
+
+        try {
+            server.startServer("emptyimports.log");
+
+            // Wait for the application to be installed before proceeding
+            assertNotNull("The restart application never came up", server.waitForStringInLog("CWWKZ0001I.* restart"));
+
+            assertNotNull("No cannot resolve include warning", server.waitForStringInLog("CWWKG0084W.*"));
+        } finally {
+            server.stopServer("CWWKG0084W");
         }
     }
 

@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -284,11 +286,17 @@ public class FeatureUtility {
 
         String protocol = null;
 		if (host != null && !host.isEmpty()) {
-			if (host.toLowerCase().startsWith("https://")) {
-				protocol = "https";
-			} else {
-				protocol = "http";
+			try {
+			    URL hostURL = new URL(host);
+			    protocol = hostURL.getProtocol();
+			    host = hostURL.getHost();
+			} catch (MalformedURLException e) {
+			    // If protocol is not defined, assume http protocol.
+			    logger.fine("Proxy protocol is not defined: " + e.getMessage());
+			    protocol = "http";
+
 			}
+
 		}
 
 		if (protocol != null && !protocol.isEmpty()) {

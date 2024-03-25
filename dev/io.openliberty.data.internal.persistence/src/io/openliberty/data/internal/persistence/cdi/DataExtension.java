@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package io.openliberty.data.internal.persistence.cdi;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedParameterizedType;
 import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
@@ -22,6 +23,7 @@ import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,10 +33,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -60,6 +60,7 @@ import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
 import jakarta.annotation.Generated;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.metamodel.StaticMetamodel;
+import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
@@ -68,15 +69,17 @@ import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
-import jakarta.enterprise.inject.spi.AfterTypeDiscovery;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanAttributes;
 import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessAnnotatedType;
 import jakarta.enterprise.inject.spi.WithAnnotations;
+import jakarta.inject.Qualifier;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -94,25 +97,17 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
     private final DataExtensionProvider provider = AccessController.doPrivileged(this);
 
     /**
-     * Beans for repository interfaces.
-     * Beans are removed as they are processed to allow for the CDI extension methods to be invoked again
-     * for different applications or the same application being restarted.
-     */
-    private final Queue<Bean<?>> repositoryBeans = new ConcurrentLinkedQueue<>();
-
-    /**
-     * Map of repository type to EntityManagerBuilder.
+     * Map of repository annotated type to Repository annotation.
      * Entries are removed as they are processed to allow for the CDI extension methods to be invoked again
      * for different applications or the same application being restarted.
      */
-    private final ConcurrentHashMap<AnnotatedType<?>, EntityManagerBuilder> repositoryTypes = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<AnnotatedType<?>, Repository> repositoryAnnos = new ConcurrentHashMap<>();
 
     /**
      * Map of entity class to list of static metamodel class.
      */
     private final Map<Class<?>, List<Class<?>>> staticMetamodels = new HashMap<>();
 
-    @FFDCIgnore(NamingException.class)
     @Trivial
     public <T> void annotatedRepository(@Observes @WithAnnotations(Repository.class) ProcessAnnotatedType<T> event) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -127,55 +122,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
             Tr.debug(this, tc, "annotatedRepository to " + (provide ? "provide" : "ignore"),
                      repository.toString(), type.getJavaClass().getName());
 
-        if (provide) {
-            Class<?> repositoryInterface = type.getJavaClass();
-            ClassLoader loader = repositoryInterface.getClassLoader();
-
-            EntityManagerBuilder builder = null;
-            String dataStore = repository.dataStore();
-            boolean isJNDIName;
-            if (dataStore.length() == 0) {
-                dataStore = "defaultDatabaseStore";
-                isJNDIName = false;
-            } else {
-                isJNDIName = dataStore.startsWith("java:");
-
-                if (isJNDIName) {
-                    try {
-                        Object resource = InitialContext.doLookup(dataStore);
-                        if (resource instanceof EntityManagerFactory)
-                            builder = new PUnitEMBuilder((EntityManagerFactory) resource, dataStore, loader);
-
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, dataStore + " is the JNDI name for " + resource);
-                    } catch (NamingException x) {
-                    }
-                } else {
-                    // Check for resource references and persistence unit references where java:comp/env/ is omitted:
-                    String javaCompName = "java:comp/env/" + dataStore;
-                    try {
-                        Object resource = InitialContext.doLookup(javaCompName);
-
-                        if (resource instanceof EntityManagerFactory)
-                            builder = new PUnitEMBuilder((EntityManagerFactory) resource, javaCompName, loader);
-
-                        if (builder != null || resource instanceof DataSource) {
-                            isJNDIName = true;
-                            dataStore = javaCompName;
-                        }
-
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, dataStore + " is the JNDI name for " + resource);
-                    } catch (NamingException x) {
-                    }
-                }
-            }
-
-            if (builder == null)
-                builder = new DBStoreEMBuilder(dataStore, isJNDIName, type, loader, provider);
-
-            repositoryTypes.put(type, builder);
-        }
+        if (provide)
+            repositoryAnnos.put(type, repository);
     }
 
     @Trivial
@@ -202,32 +150,158 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
         }
     }
 
-    public void afterTypeDiscovery(@Observes AfterTypeDiscovery event, BeanManager beanMgr) {
+    @FFDCIgnore(NamingException.class)
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanMgr) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         // Group entities by data access provider and class loader
         Map<EntityManagerBuilder, EntityManagerBuilder> entityGroups = new HashMap<>();
 
-        for (Iterator<Map.Entry<AnnotatedType<?>, EntityManagerBuilder>> it = repositoryTypes.entrySet().iterator(); it.hasNext();) {
-            Map.Entry<AnnotatedType<?>, EntityManagerBuilder> entry = it.next();
+        for (Iterator<AnnotatedType<?>> it = repositoryAnnos.keySet().iterator(); it.hasNext();) {
+            AnnotatedType<?> repositoryType = it.next();
             it.remove();
 
-            AnnotatedType<?> repositoryType = entry.getKey();
-            EntityManagerBuilder entityManagerBuilder = entry.getValue();
+            Repository repository = repositoryType.getAnnotation(Repository.class);
             Class<?> repositoryInterface = repositoryType.getJavaClass();
+            ClassLoader loader = repositoryInterface.getClassLoader();
+
+            EntityManagerBuilder emBuilder = null;
+            String dataStore = repository.dataStore();
+            boolean isConfigDisplayId;
+            boolean isJNDIName;
+            if (dataStore.length() == 0) {
+                dataStore = "defaultDatabaseStore";
+                isConfigDisplayId = false;
+                isJNDIName = false;
+
+                // Look for resource accessor method with qualifiers
+                // TODO if we keep this code, make it more efficient/stable. Identification of resource accessor methods
+                // is also done by discoverEntityClasses.
+                for (Method method : repositoryInterface.getMethods()) {
+                    if (method.getParameterCount() == 0) {
+                        Class<?> returnType = method.getReturnType();
+                        if (DataSource.class.equals(returnType) || EntityManager.class.equals(returnType)) {
+                            ArrayList<Annotation> qualifiers = new ArrayList<>();
+                            Annotation[] annos = method.getAnnotations();
+                            for (Annotation anno : annos)
+                                if (anno.annotationType().isAnnotationPresent(Qualifier.class))
+                                    qualifiers.add(anno);
+                            int numQualifiers = qualifiers.size();
+                            if (numQualifiers > 0) {
+                                annos = numQualifiers == annos.length ? annos : qualifiers.toArray(new Annotation[numQualifiers]);
+
+                                if (DataSource.class.equals(returnType)) {
+                                    Instance<DataSource> instance = CDI.current().select(DataSource.class, annos);
+                                    DataSource resource = instance.get();
+
+                                    isConfigDisplayId = true;
+                                    isJNDIName = false;
+                                    try {
+                                        // force initialization by using the proxy
+                                        resource.getLoginTimeout();
+
+                                        // org.jboss.weld.interceptor.util.proxy.TargetInstanceProxy.weld_getTargetInstance()
+                                        Object wsJdbcDataSource = resource.getClass() //
+                                                        .getDeclaredMethod("weld_getTargetInstance") //
+                                                        .invoke(resource);
+
+                                        // TODO would need to add getDisplayId if we want to try this approach,
+                                        // but for now, we are blocked by weld_getTargetInstance returning null.
+                                        // com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource.getDisplayId()
+                                        dataStore = (String) wsJdbcDataSource.getClass() //
+                                                        .getMethod("getDisplayId") //
+                                                        .invoke(wsJdbcDataSource);
+                                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException
+                                                    | SQLException x) {
+                                        // unexpected type of data source
+                                        throw new UnsupportedOperationException //
+                                        ("The " + resource.getClass() + " DataSource is not managed by the server." +
+                                         " Use @DataSourceDefinition to configure a DataSource in the application " +
+                                         " or configure a dataSource in the server configuration, and update the producer" +
+                                         " to use @Resource. For example: @Produces @MyQualifier" +
+                                         " @Resource(lookup = \"java:app/jdbc/MyDataSource\") DataSource dataSource;" +
+                                         " The DataSource is used by the " + method.getName() + " resource accessor method of the " +
+                                         method.getDeclaringClass().getName() + " repository.", x); // TODO NLS
+                                    }
+
+                                    if (emBuilder == null)
+                                        emBuilder = new DBStoreEMBuilder(dataStore, isConfigDisplayId, isJNDIName, repositoryType, loader, provider);
+                                    else
+                                        throw new UnsupportedOperationException//
+                                        ("The " + method.getName() + " resource accessor method of the " +
+                                         method.getDeclaringClass().getName() + " repository should not be annotated with the " +
+                                         qualifiers + " qualifier annotations because a repository is only permitted to have" +
+                                         " one resource accessor method with qualifier annotations."); // TODO NLS
+                                } else { // EntityManager/EntityManagerFactory
+                                    Instance<EntityManagerFactory> instance = CDI.current().select(EntityManagerFactory.class, annos);
+                                    EntityManagerFactory emf = instance.get();
+
+                                    if (emBuilder == null)
+                                        emBuilder = new PUnitEMBuilder(emf, loader);
+                                    else
+                                        throw new UnsupportedOperationException//
+                                        ("The " + method.getName() + " resource accessor method of the " +
+                                         method.getDeclaringClass().getName() + " repository should not be annotated with the " +
+                                         qualifiers + " qualifier annotations because a repository is only permitted to have" +
+                                         " one resource accessor method with qualifier annotations."); // TODO NLS
+
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                isConfigDisplayId = false;
+                isJNDIName = dataStore.startsWith("java:");
+
+                if (isJNDIName) {
+                    try {
+                        Object resource = InitialContext.doLookup(dataStore);
+                        if (resource instanceof EntityManagerFactory)
+                            emBuilder = new PUnitEMBuilder((EntityManagerFactory) resource, dataStore, loader);
+
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, dataStore + " is the JNDI name for " + resource);
+                    } catch (NamingException x) {
+                    }
+                } else {
+                    // Check for resource references and persistence unit references where java:comp/env/ is omitted:
+                    String javaCompName = "java:comp/env/" + dataStore;
+                    try {
+                        Object resource = InitialContext.doLookup(javaCompName);
+
+                        if (resource instanceof EntityManagerFactory)
+                            emBuilder = new PUnitEMBuilder((EntityManagerFactory) resource, javaCompName, loader);
+
+                        if (emBuilder != null || resource instanceof DataSource) {
+                            isJNDIName = true;
+                            dataStore = javaCompName;
+                        }
+
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, dataStore + " is the JNDI name for " + resource);
+                    } catch (NamingException x) {
+                    }
+                }
+            }
+
+            if (emBuilder == null)
+                emBuilder = new DBStoreEMBuilder(dataStore, isConfigDisplayId, isJNDIName, repositoryType, loader, provider);
 
             Class<?>[] primaryEntityClassReturnValue = new Class<?>[1];
             Map<Class<?>, List<QueryInfo>> queriesPerEntityClass = new HashMap<>();
             if (discoverEntityClasses(repositoryType, queriesPerEntityClass, primaryEntityClassReturnValue)) {
-                EntityManagerBuilder previous = entityGroups.putIfAbsent(entityManagerBuilder, entityManagerBuilder);
-                entityManagerBuilder = previous == null ? entityManagerBuilder : previous;
+                EntityManagerBuilder previous = entityGroups.putIfAbsent(emBuilder, emBuilder);
+                emBuilder = previous == null ? emBuilder : previous;
 
                 for (Class<?> entityClass : queriesPerEntityClass.keySet())
-                    entityManagerBuilder.add(entityClass);
+                    emBuilder.add(entityClass);
 
                 BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
                 Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>( //
                                 repositoryInterface, beanMgr, provider, this, //
-                                entityManagerBuilder, primaryEntityClassReturnValue[0], queriesPerEntityClass));
-                repositoryBeans.add(bean);
+                                emBuilder, primaryEntityClassReturnValue[0], queriesPerEntityClass));
+                event.addBean(bean);
             }
         }
 
@@ -237,12 +311,6 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
 
         for (EntityManagerBuilder builder : entityGroups.values()) {
             builder.populateStaticMetamodelClasses(staticMetamodels);
-        }
-    }
-
-    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanMgr) {
-        for (Bean<?> bean; (bean = repositoryBeans.poll()) != null;) {
-            event.addBean(bean);
         }
     }
 
@@ -372,8 +440,15 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 } else if (c.isArray()) {
                     c = c.getComponentType();
                 }
-                if (Object.class.equals(c)) { // generic parameter like BasicRepository.save(S entity)
-                    entityParamType = method.getParameterTypes()[0];
+                if (Object.class.equals(c)) {
+                    // generic parameter like BasicRepository.save(S entity) or BasicRepository.deleteById(@By(ID) K id)
+                    boolean isEntity = true;
+                    for (Annotation anno : method.getParameterAnnotations()[0])
+                        if (By.class.equals(anno.annotationType()))
+                            isEntity = false;
+                    if (isEntity)
+                        entityParamType = c;
+                    // TODO is there any way to distinguish @Delete deleteById(K key) when @By is not present?
                 } else if (c != null &&
                            !c.isPrimitive() &&
                            !c.isInterface()) {

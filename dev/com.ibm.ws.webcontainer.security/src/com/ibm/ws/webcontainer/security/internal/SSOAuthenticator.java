@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -189,12 +189,6 @@ public class SSOAuthenticator implements WebAuthenticator {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "handleSSO Exception: ", new Object[] { e });
                         }
-                        // Perform logout steps
-                        // If the ltpa.keys are changed, and an existing LTPA token cookie is no longer valid.
-                        // we will logout the user, so they are properly redirected to the login page to login again and get a new LTPA token
-                        //TODO - Only do this if the key rotation feature is enabled to
-                        cleanupLoggedOutToken(req, res, false);
-
                         //TODO - Remove authentication cache.
                     }
                 }

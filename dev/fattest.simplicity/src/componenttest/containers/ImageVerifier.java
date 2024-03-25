@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ public final class ImageVerifier {
         knownImages.addAll(DatabaseContainerType.images());
 
         //Add images from the testcontainers project
-        knownImages.addAll(Arrays.asList("testcontainers/ryuk:0.5.1", "testcontainers/sshd:1.1.0", "testcontainers/vnc-recorder:1.3.0"));
+        knownImages.addAll(Arrays.asList("testcontainers/ryuk:0.6.0", "testcontainers/sshd:1.1.0", "testcontainers/vnc-recorder:1.3.0"));
     }
 
     public static DockerImageName collectImage(DockerImageName image) {

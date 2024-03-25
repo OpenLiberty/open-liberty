@@ -42,4 +42,7 @@
     <javaPermission codebase="${EktorpCodebase}" className="java.util.PropertyPermission" name="line.separator" actions="read"/>
     <javaPermission codebase="${EktorpCodebase}" className="java.util.PropertyPermission" name="com.fasterxml.jackson.*" actions="read"/>
 
+    <!-- Needed for com.ibm.ws.org.slf4j.api.jar -->
+    <javaPermission codebase="${EktorpCodebase}" className="java.util.PropertyPermission" name="slf4j.detectLoggerNameMismatch" actions="read"/>
+
 </server>

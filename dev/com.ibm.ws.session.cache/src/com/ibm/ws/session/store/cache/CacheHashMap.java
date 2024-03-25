@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,9 @@ import com.ibm.ws.session.SessionStatistics;
 import com.ibm.ws.session.store.common.BackedHashMap;
 import com.ibm.ws.session.store.common.BackedSession;
 import com.ibm.wsspi.session.IStore;
+
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * Hash map backed by JCache.
@@ -103,13 +106,13 @@ public class CacheHashMap extends BackedHashMap {
     /**
      * Per-application session attribute cache.
      */
-    private Cache<String, byte[]> sessionAttributeCache; // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
+    private volatile Cache<String, byte[]> sessionAttributeCache; // Because byte[] does instance-based .equals, it will not be possible to use Cache.replace operations, but we are okay with that.
 
     /**
      * Per-application cache that contains meta information about the session but not the session attribute values.
      */
     @SuppressWarnings("rawtypes")
-    private Cache<String, ArrayList> sessionMetaCache;
+    private volatile Cache<String, ArrayList> sessionMetaCache;
 
     /**
      * Trace identifier for the session attribute cache
@@ -131,11 +134,8 @@ public class CacheHashMap extends BackedHashMap {
         // We know we're running multi-row..if not writeAllProperties and not time-based writes,
         // we must keep the app data tables per thread (rather than per session)
         appDataTablesPerThread = (!_smc.writeAllProperties() && !_smc.getEnableTimeBasedWrite());
-
-        AccessController.doPrivileged((PrivilegedAction<Void>) () -> {
-            cacheInit();
-            return null;
-        });
+        // this MUST happen before the SessionContext starts the invalidator
+        CheckpointPhase.onRestore(0, () -> AccessController.doPrivileged((PrivilegedAction<Void>) () -> { cacheInit(); return null; }));
     }
 
     /**

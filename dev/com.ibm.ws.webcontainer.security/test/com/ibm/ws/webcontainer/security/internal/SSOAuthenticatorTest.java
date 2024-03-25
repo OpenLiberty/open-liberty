@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -240,13 +240,6 @@ public class SSOAuthenticatorTest {
 
                 one(authService).authenticate(with(equal(JaasLoginConfigConstants.SYSTEM_WEB_INBOUND)), with(any(AuthenticationData.class)), with(equal((Subject) null)));
                 will(throwException(new AuthenticationException("Invalid LTPAToken")));
-
-                //add logoutforInvalidToken expectations
-                one(req).getAuthType();
-                one(req).getSession(false);
-                one(ssoCookieHelper).removeSSOCookieFromResponse(resp);
-                one(ssoCookieHelper).createLogoutCookies(req, resp);
-                one(resp).getStatus();
             }
         });
 
@@ -329,13 +322,6 @@ public class SSOAuthenticatorTest {
                 will(throwException(new AuthenticationException("Authentication failed")));
 
                 one(ssoCookieHelper).createLogoutCookies(req, resp);
-
-                //add logoutforInvalidToken expectations
-                one(req).getAuthType();
-                one(req).getSession(false);
-                one(ssoCookieHelper).removeSSOCookieFromResponse(resp);
-                one(ssoCookieHelper).createLogoutCookies(req, resp);
-                one(resp).getStatus();
             }
         });
 

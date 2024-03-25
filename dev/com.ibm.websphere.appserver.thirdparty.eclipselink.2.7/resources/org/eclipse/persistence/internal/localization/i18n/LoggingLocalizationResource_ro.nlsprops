@@ -175,6 +175,16 @@ elements={0}{1} elemente
 
 enable_batch_operations_as_true_not_supported=Setarea WLS native CMP "enable-batch-operations-as-true" nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 
+encryptor_decrypt_old_algorithm=Parola Bazei de Date folosite in {0} a fost criptat de un algorithm.Reencrypt deprecated by `passwordUpdate.sh ` de la eclipselink.zip bundle.
+
+encryptor_decrypt_old_algorithm_without_session_name=Parola de la baza de date a fost criptata de catre un algorithm.ReencryptpasswordUpdate.sh " de la eclipselink.zip bundle.
+
+encryptor_script_description=Aceast\u0103 aplica\u021bie decripteaz\u0103 intern o parol\u0103 veche criptat\u0103 care a fost folosit\u0103 de o versiune anterioar\u0103 a lui EclipseLink o cripteaz\u0103 cu cel mai recent algoritm.
+
+encryptor_script_output=Parola de recriptare este: {0 {0}
+
+encryptor_script_usage=Utilizarea este ` `passwordUpdate .sh | .cmd -ip < old criptat password> `
+
 entity_manager_ignores_jta_data_source=Unitatea de persisten\u0163\u0103 nu utilizeaz\u0103 JTA, prin urmare, EntityManager ignor\u0103 sursa de date jta. 
 
 entity_manager_ignores_nonjta_data_source=Unitatea de persisten\u0163\u0103 utilizeaz\u0103 JTA, prin urmare, EntityManager ignor\u0103 sursa de date non jta. 
@@ -737,7 +747,11 @@ toplink_warning=[EL Warning]:
 
 unit_of_work_thread_info=Unitatea curent\u0103 de lucru din sesiunea ({0}) a fost creat\u0103 de un fir (id: {1} nume: {2}), diferit de firul curent (id: {3} nume: {4})
 
-unit_of_work_thread_info_thread_dump=Creare fir (id: {0} nume: {1}): urm\u0103rire stiv\u0103 {2}Fir curent (id: {3} nume: {4}): urm\u0103rire stiv\u0103 {5}
+unit_of_work_thread_info_thread_dump=Creare thread (id: {0} : {1}):
+#{2}
+
+Current Fir (id: {3} : {4}
+#{5}
 
 unitofwork_identity_hashcode={0}Cod hash identitate UnitOfWork: {1}
 

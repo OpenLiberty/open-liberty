@@ -23,14 +23,43 @@
       <context-root>/</context-root>
     </web>
   </module>
+
+  <module>
+    <ejb>concurrentCDIEJB.jar</ejb>
+  </module>
+
+  <!-- ENV ENTRIES -->
+
+  <env-entry>
+    <env-entry-name>java:app/env/entry1</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>value1</env-entry-value>
+  </env-entry>
+
+  <!-- resource definitions -->
+
   <context-service>
     <name>java:app/concurrent/with-location-and-without-app-context</name>
-    <qualifier>concurrent.cdi.web.ClearingAppContext</qualifier>
-    <qualifier>concurrent.cdi.web.PropagatingLocationContext</qualifier>
-    <qualifier>concurrent.cdi.web.IgnoringTransactionContext</qualifier>
+    <qualifier>concurrent.cdi.ejb.ClearingAppContext</qualifier>
+    <qualifier>concurrent.cdi.ejb.PropagatingLocationContext</qualifier>
+    <qualifier>concurrent.cdi.ejb.IgnoringTransactionContext</qualifier>
     <cleared>Application</cleared>
     <propagated>Location</propagated>
     <unchanged>Remaining</unchanged>
   </context-service>
+
+  <managed-thread-factory>
+    <name>java:app/concurrent/thread-factory-app-dd-with-app-context</name>
+    <qualifier>concurrent.cdi.ejb.PropagatingAppContext</qualifier>
+    <context-service-ref>java:app/concurrent/with-app-context</context-service-ref>
+    <priority>1</priority>
+  </managed-thread-factory>
+
+  <managed-thread-factory>
+    <name>java:app/concurrent/thread-factory-app-dd-without-app-context</name>
+    <qualifier>concurrent.cdi.ejb.ClearingAppContext</qualifier>
+    <context-service-ref>java:app/concurrent/with-location-and-tx-context</context-service-ref>
+    <priority>2</priority>
+  </managed-thread-factory>
 
 </application>

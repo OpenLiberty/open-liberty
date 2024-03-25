@@ -135,6 +135,7 @@ Include-Resource: \
   org/eclipse/persistence/asm=${bin}/org/eclipse/persistence/asm,\
   org/eclipse/persistence/dynamic=${bin}/org/eclipse/persistence/dynamic,\
   org/eclipse/persistence/internal/jpa=${bin}/org/eclipse/persistence/internal/jpa,\
+  org/eclipse/persistence/mappings/converters=${bin}/org/eclipse/persistence/mappings/converters,\
   org/eclipse/persistence/jpa/jpql/parser=${bin}/org/eclipse/persistence/jpa/jpql/parser
 
 publish.wlp.jar.suffix: dev/api/third-party

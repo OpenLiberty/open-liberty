@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
 #COMPONENTPREFIX JSPG CWWJS
@@ -1273,8 +1270,22 @@ jsp.isthreadsafe.warning=CWWJS0003W: W specyfikacji Pages 3.1 zdecydowanie zalec
 jsp.isthreadsafe.warning.explanation=Obiekt SingleThreadModel zosta\u0142 usuni\u0119ty z serwletu w wersji 6.0. W Pages 3.1 zdezaktualizowano dyrektyw\u0119 isThreadSafe z planem jej usuni\u0119cia w przysz\u0142ej aktualizacji.
 jsp.isthreadsafe.warning.useraction=Usu\u0144 dyrektyw\u0119 isThreadSafe ze wszystkich stron.
 
-
 jsp.useinmemory.warning=CWWJS0004W: Opcja JSP 'useInMemory' nie jest obs\u0142ugiwana. Zamiast tego strony JSP zostan\u0105 skompilowane i zapisane na dysku.
 jsp.useinmemory.warning.explanation=Ta funkcja nie zosta\u0142a nigdy zaimportowana z tradycyjnego produktu WebSphere z powod\u00f3w historycznych.
 jsp.useinmemory.warning.useraction=Usu\u0144 opcj\u0119 useInMemory z pliku server.xml, pliku ibm-web-bnd.xmllub plik\u00f3w ibm-web-ext.xmi .
 
+pages.removed.element.error=CWWJS0005E: Element {0} zosta\u0142 usuni\u0119ty na stronach 4.0 i dlatego nie jest ju\u017c obs\u0142ugiwany.
+pages.removed.element.error.explanation=Wtyczka JSP i powi\u0105zane z ni\u0105 dzia\u0142ania sta\u0142y si\u0119 nieaktualne na stronach 3.1 i zosta\u0142y usuni\u0119te w wersji 4.0. 
+pages.removed.element.error.useraction= Usu\u0144 z aplikacji WWW elementy plugin jsp, fallback i params.
+
+jsp.javasourcelevel.warning=CWWJS0006W: Podana warto\u015b\u0107 javaSourceLevel ={0} przekracza poziom zainstalowanego \u015brodowiska Java {1} . Dlatego domy\u015blny poziom j\u0119zyka Java jest ustawiony na warto\u015b\u0107 {1}.
+jsp.javasourcelevel.warning.explanation=Nie mo\u017cna skompilowa\u0107 pliku z wy\u017cszym \u017ar\u00f3d\u0142em ni\u017c dost\u0119pny poziom pakietu JDK. 
+jsp.javasourcelevel.warning.useraction=Okre\u015bl warto\u015b\u0107 poziomu javaSourcemniejsz\u0105 lub r\u00f3wn\u0105 dost\u0119pnej wersji pakietu JDK.
+
+jsp.bothsourcelevelset.warning=CWWJS0007W: Okre\u015blono zar\u00f3wno poziom javaSource={0} , jak i poziom jdkSource={1} . Zostanie u\u017cyta warto\u015b\u0107 domy\u015blna javaSourceLevel ={0}.
+jsp.bothsourcelevelset.warning.explanation=W danym momencie mo\u017ce by\u0107 u\u017cywany tylko jeden atrybut poziomu \u017ar\u00f3d\u0142a.
+jsp.bothsourcelevelset.warning.useraction=Nale\u017cy poda\u0107 tylko atrybut poziomu javaSource. Atrybut poziomu jdkSourcejest ustabilizowany. 
+
+jsp.javasourcelevel.value=CWWJS0008I: Poziom javaSourceatrybutu JSP ma warto\u015b\u0107 "{0}".
+jsp.javasourcelevel.value.explanation=
+jsp.javasourcelevel.value.useraction=

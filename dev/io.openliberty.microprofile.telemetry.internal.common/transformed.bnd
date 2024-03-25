@@ -18,13 +18,13 @@ Bundle-Description: MicroProfile.telemetry, common code; version=${bVersion}; Ja
 Export-Package: \
 	io.openliberty.microprofile.telemetry.internal.interfaces;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.common;version='1.0',\
+	io.openliberty.microprofile.telemetry.internal.common.constants;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.common.cdi;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.common.info;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.common.resources;version='1.0',\
 	io.openliberty.microprofile.telemetry.internal.common.rest;version='1.0';thread-context=true
 
 Private-Package: \
-	io.openliberty.microprofile.telemetry.internal.common.helpers,\
 	io.openliberty.microprofile.telemetry.internal.common.rest.jakarta
 
 -dsannotations: \
