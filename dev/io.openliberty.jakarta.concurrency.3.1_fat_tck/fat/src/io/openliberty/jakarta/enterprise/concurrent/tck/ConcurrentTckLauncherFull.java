@@ -40,7 +40,8 @@ import componenttest.topology.utils.tck.TCKRunner;
  */
 @Mode(FULL)
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
+//TODO switch back to Java 17 for RC2
+@MinimumJavaLevel(javaLevel = 21)
 public class ConcurrentTckLauncherFull {
 
     final static Map<String, String> additionalProps = new HashMap<>();
