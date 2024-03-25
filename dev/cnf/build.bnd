@@ -51,6 +51,9 @@ javac.encoding: UTF-8
 #  off:     do not specify a release
 javac.args.release: source
 -sources: false
+-jpms-multi-release: false
+# With bnd 5.2.0 The importing of java.* packages need to be disabled to maintain legacy behavior.
+-noimportjava: true
 
 instrument.disabled: ${if;${test.project};true;false}
 instrument.classesIncludes: **/*.class
@@ -101,6 +104,7 @@ build.bnd.plugins: \
 -buildpath+: \
   com.ibm.jbatch.container.jakarta.ee9;project=com.ibm.jbatch.container;source=none, \
   com.ibm.jbatch.container.jakarta.ee10;project=com.ibm.jbatch.container;source=none, \
+  com.ibm.ws.jsp.3.0.jakarta;project=com.ibm.ws.jsp.2.3;source=none, \
   io.openliberty.cdi.spi;project=com.ibm.websphere.appserver.spi.cdi;source=none, \
   io.openliberty.connectors.security.internal.inbound;project=com.ibm.ws.jca.inbound.security;source=none, \
   io.openliberty.dynacache.internal;project=com.ibm.ws.dynacache;source=none, \

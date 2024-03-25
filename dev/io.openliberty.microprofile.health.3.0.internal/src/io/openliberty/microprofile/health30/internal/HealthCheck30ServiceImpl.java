@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -100,8 +100,6 @@ public class HealthCheck30ServiceImpl implements HealthCheck30Service {
     public void performHealthCheck(HttpServletRequest request, HttpServletResponse httpResponse, String healthCheckProcedure) {
         Set<HealthCheckResponse> hcResponses = null;
         Set<String> unstartedAppsSet = new HashSet<String>();
-        Set<String> apps = appTracker.getAllAppNames();
-        Iterator<String> appsIt = apps.iterator();
         boolean anyAppsInstalled = false;
 
         HealthCheck30HttpResponseBuilder hcHttpResponseBuilder = new HealthCheck30HttpResponseBuilder();
@@ -112,6 +110,26 @@ public class HealthCheck30ServiceImpl implements HealthCheck30Service {
             Tr.debug(tc, "In performHealthCheck(): The default overall Readiness status was configured to be overriden: mp.health.default.readiness.empty.response="
                          + defaultReadinessProp);
         Status defaultOverallReadiness = defaultReadinessProp.equalsIgnoreCase("UP") ? Status.UP : Status.DOWN;
+
+        Set<String> apps = appTracker.getAllAppNames();
+
+        Set<String> configApps = appTracker.getAllConfigAppNames();
+        Iterator<String> configAppsIt = configApps.iterator();
+
+        while (configAppsIt.hasNext()) {
+            String nextAppName = configAppsIt.next();
+            if (apps.contains(nextAppName)) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "In performHealthCheck(): configAdmin found an application that the applicationStateListener already found. configAdminAppName = " + nextAppName);
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "In performHealthCheck(): applicationStateListener couldn't find application. configAdmin added appName = " + nextAppName);
+                appTracker.addAppName(nextAppName);
+            }
+        }
+
+        apps = appTracker.getAllAppNames();
+        Iterator<String> appsIt = apps.iterator();
 
         while (appsIt.hasNext()) {
             String appName = appsIt.next();

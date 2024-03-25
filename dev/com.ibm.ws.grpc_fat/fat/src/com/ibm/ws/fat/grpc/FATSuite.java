@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -54,7 +54,8 @@ public class FATSuite {
 
     static String[] addedFeatures = { "mpOpenAPI-3.0", "mpMetrics-4.0", "mpJwt-2.0", "mpConfig-3.0", "mpRestClient-3.0", "appSecurity-4.0" };
 
-    static String[] ee10AddedFeatures = { "mpOpenAPI-3.1", "mpMetrics-5.0", "mpJwt-2.1", "mpConfig-3.0", "mpRestClient-3.0", "appSecurity-5.0" };
+    //updated to use MP61 features
+    static String[] ee10AddedFeatures = { "mpOpenAPI-3.1", "mpMetrics-5.1", "mpJwt-2.1", "mpConfig-3.1", "mpRestClient-3.0", "appSecurity-5.0" };
 
     @ClassRule
     public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())

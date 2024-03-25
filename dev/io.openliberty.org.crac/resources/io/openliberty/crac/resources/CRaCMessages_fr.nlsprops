@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.org.crac/resources/io/openliberty/crac/resources/CRaCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0551-600 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551=CWWKC0551E: La demande de point de contr\u00f4le du serveur a \u00e9chou\u00e9, car une ou plusieurs ressources ont \u00e9mis une exception lorsqu'elles ont \u00e9t\u00e9 notifi\u00e9es pour la demande de point de contr\u00f4le.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.explanation=Une ou plusieurs impl\u00e9mentations de ressource enregistr\u00e9es ont \u00e9mis une exception lorsqu'elles ont \u00e9t\u00e9 notifi\u00e9es pour une demande de point de contr\u00f4le.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.useraction=Recherchez dans les journaux l'exception qui a provoqu\u00e9 l'\u00e9chec de la demande de point de contr\u00f4le.
+
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552=CWWKC0552E: La restauration du serveur a \u00e9chou\u00e9, car une ou plusieurs ressources ont \u00e9mis une exception lorsqu'elles ont \u00e9t\u00e9 notifi\u00e9es pour la restauration du serveur \u00e0 partir d'un point de contr\u00f4le.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.explanation=Une ou plusieurs impl\u00e9mentations de ressources enregistr\u00e9es ont \u00e9mis une exception lorsqu'elles ont \u00e9t\u00e9 notifi\u00e9es pour une restauration de serveur \u00e0 partir d'un point de contr\u00f4le.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.useraction=Recherchez dans les journaux l'exception qui a provoqu\u00e9 l'\u00e9chec de la restauration du serveur \u00e0 partir du point de contr\u00f4le.
+
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553=CWWKC0553E: Les demandes de point de contr\u00f4le ne sont pas prises en charge sur le serveur Liberty.
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.explanation=Les demandes de point de contr\u00f4le qui utilisent les API org.crac ne sont pas prises en charge par Liberty. 
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.useraction=Consultez la documentation pour plus de d\u00e9tails sur les op\u00e9rations de point de contr\u00f4le et de restauration pour Liberty InstantOn.

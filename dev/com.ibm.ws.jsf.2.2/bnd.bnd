@@ -14,8 +14,6 @@ bSymbolicName=com.ibm.ws.jsf.2.2
 Bundle-Name: WAS JSF 2.2
 Bundle-SymbolicName: com.ibm.ws.jsf.2.2
 Bundle-Description: WAS JSF 2.2, version ${bVersion}
-WLP-ServerName: IBM WebSphere Application Server
-WLP-ServerVersion: ${libertyBetaVersion}
 
 app-resources= \
   META-INF/services/org.apache.myfaces.spi.WebConfigProviderFactory | \
@@ -139,7 +137,6 @@ Include-Resource: \
   META-INF=@src/META-INF, \
   @${repo;com.ibm.websphere.javaee.jsf.2.2}!/META-INF/resources/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.2}!/META-INF/internal-resources/**, \
-  @${repo;commons-digester:commons-digester;2.1}!/!META-INF/**, \
   org/apache/myfaces/resource=resources/org/apache/myfaces/resource, \
   OSGI-INF=resources/OSGI-INF
     
@@ -160,7 +157,7 @@ instrument.ffdc: false
   com.ibm.websphere.javaee.jstl.1.2;version=latest,\
   com.ibm.websphere.javaee.persistence.2.1;version=latest,\
   io.openliberty.org.apache.commons.codec;version=latest,\
-  commons-digester:commons-digester;strategy=exact;version=2.1,\
+  io.openliberty.org.apache.commons.digester;version=latest,\
   com.ibm.ws.org.apache.commons.beanutils.1.9.4;version=latest,\
   com.ibm.ws.com.google.guice.2.0;version=latest,\
   com.ibm.ws.classloading;version=latest,\

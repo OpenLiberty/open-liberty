@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,11 +45,11 @@ import com.ibm.ws.container.service.app.deploy.ClientModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ConnectorModuleInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.EJBModuleInfo;
-import com.ibm.ws.container.service.app.deploy.ManifestClassPathUtils;
 import com.ibm.ws.container.service.app.deploy.ModuleClassesContainerInfo;
 import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
+import com.ibm.ws.container.service.app.deploy.extended.ManifestClassPathHelper;
 import com.ibm.ws.javaee.dd.app.Application;
 import com.ibm.ws.javaee.dd.app.Module;
 import com.ibm.ws.javaee.ddmodel.DDParser;
@@ -402,7 +402,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
                 useLibsInfos.add(libInfo);
 
                 try {
-                    ManifestClassPathUtils.addCompleteJarEntryUrls(useLibsInfos, libEntry, resolvedManifestIdentities);
+                    ManifestClassPathHelper.addCompleteJarEntryUrls(useLibsInfos, libEntry, libContainer, resolvedManifestIdentities);
                     // throws UnableToAdaptException
                 } catch (UnableToAdaptException e) {
                     // FFDC

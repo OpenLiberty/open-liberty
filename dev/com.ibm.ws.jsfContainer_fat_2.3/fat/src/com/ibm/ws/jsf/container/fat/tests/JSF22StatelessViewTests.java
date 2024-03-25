@@ -30,7 +30,7 @@ import com.ibm.ws.jsf.container.fat.FATSuite;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import junit.framework.Assert;
@@ -49,7 +49,7 @@ public class JSF22StatelessViewTests extends FATServletClient {
     @BeforeClass
     public static void setup() throws Exception {
 
-        isEE10 = JakartaEE10Action.isActive();
+        isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         WebArchive mojarraApp = ShrinkWrap.create(WebArchive.class, MOJARRA_APP + ".war")
                         .addPackages(false, isEE10 ? "jsf.view.beans.faces40" : "jsf.view.beans.jsf22", "jsf.view.beans");

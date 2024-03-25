@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,21 +13,24 @@
 package tests;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
+import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
@@ -136,15 +139,32 @@ public class FailoverTestLease extends FATServletClient {
     @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer staleCloudServer;
 
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.fastcheck")
+    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer server1fastcheck;
+
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD002.fastcheck")
+    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer server2fastcheck;
+
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete")
+    public static LibertyServer longLeaseCompeteServer1;
+
     public static String[] serverNames = new String[] {
                                                         "com.ibm.ws.transaction_retriablecloud",
-                                                        "com.ibm.ws.transaction_stalecloud"
+                                                        "com.ibm.ws.transaction_stalecloud",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.fastcheck",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD002.fastcheck"
     };
 
     @BeforeClass
     public static void setUp() throws Exception {
         TxShrinkHelper.buildDefaultApp(retriableCloudServer, APP_NAME, APP_PATH, "web");
         TxShrinkHelper.buildDefaultApp(staleCloudServer, APP_NAME, APP_PATH, "web");
+        TxShrinkHelper.buildDefaultApp(longLeaseCompeteServer1, APP_NAME, APP_PATH, "web");
+        TxShrinkHelper.buildDefaultApp(server1fastcheck, APP_NAME, APP_PATH, "web");
+        TxShrinkHelper.buildDefaultApp(server2fastcheck, APP_NAME, APP_PATH, "web");
     }
 
     @AfterClass
@@ -170,16 +190,8 @@ public class FailoverTestLease extends FATServletClient {
         }
     };
 
-    @Before
-    public void startUp() throws Exception {
-        FATUtils.startServers(runner, retriableCloudServer);
-    }
-
     @After
     public void cleanup() throws Exception {
-
-        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
-
         FailoverTest.commonCleanup(this.getClass().getName());
     }
 
@@ -190,6 +202,8 @@ public class FailoverTestLease extends FATServletClient {
     public void testHADBLeaseUpdateFailover() throws Exception {
         final String method = "testHADBLeaseUpdateFailover";
         StringBuilder sb = null;
+
+        FATUtils.startServers(runner, retriableCloudServer);
 
         Log.info(this.getClass(), method, "Call setupForLeaseUpdate");
 
@@ -213,6 +227,12 @@ public class FailoverTestLease extends FATServletClient {
         // Should see a message like
         // WTRN0108I: Have recovered from SQLException when updating server lease for server with identity cloud0011
         assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when updating server lease"));
+
+        // cleanup HATable
+        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropHATable");
+        Log.info(this.getClass(), method, "dropHATable returned: " + sb);
+
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
     }
 
     /**
@@ -222,6 +242,8 @@ public class FailoverTestLease extends FATServletClient {
     public void testHADBLeaseDeleteFailover() throws Exception {
         final String method = "testHADBLeaseDeleteFailover";
         StringBuilder sb = null;
+
+        FATUtils.startServers(runner, retriableCloudServer);
 
         Log.info(this.getClass(), method, "Call setupForLeaseDelete");
 
@@ -261,6 +283,12 @@ public class FailoverTestLease extends FATServletClient {
         sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
 
         Log.info(this.getClass(), method, "deleteStaleLease returned: " + sb);
+
+        // cleanup HATable
+        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropHATable");
+        Log.info(this.getClass(), method, "dropHATable returned: " + sb);
+
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
     }
 
     /**
@@ -270,6 +298,8 @@ public class FailoverTestLease extends FATServletClient {
     public void testHADBLeaseClaimFailover() throws Exception {
         final String method = "testHADBLeaseClaimFailover";
         StringBuilder sb = null;
+
+        FATUtils.startServers(runner, retriableCloudServer);
 
         Log.info(this.getClass(), method, "Call setupForLeaseClaim");
 
@@ -309,6 +339,12 @@ public class FailoverTestLease extends FATServletClient {
         sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
 
         Log.info(this.getClass(), method, "deleteStaleLease returned: " + sb);
+
+        // cleanup HATable
+        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropHATable");
+        Log.info(this.getClass(), method, "dropHATable returned: " + sb);
+
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
     }
 
     /**
@@ -318,6 +354,8 @@ public class FailoverTestLease extends FATServletClient {
     public void testHADBLeaseGetFailover() throws Exception {
         final String method = "testHADBLeaseGetFailover";
         StringBuilder sb = null;
+
+        FATUtils.startServers(runner, retriableCloudServer);
 
         Log.info(this.getClass(), method, "Call setupForLeaseGet");
 
@@ -357,5 +395,233 @@ public class FailoverTestLease extends FATServletClient {
         sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
 
         Log.info(this.getClass(), method, "deleteStaleLease returned: " + sb);
+
+        // cleanup HATable
+        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropHATable");
+        Log.info(this.getClass(), method, "dropHATable returned: " + sb);
+
+        FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
     }
+
+    /**
+     * Mimic situation where a server's logs have been deleted but a lease log entry remains.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testLeaseDeletion() throws Exception {
+        final String method = "testLeaseDeletion";
+        if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
+            StringBuilder sb = null;
+
+            FATUtils.startServers(runner, retriableCloudServer);
+
+            Log.info(this.getClass(), method, "set timeout");
+            retriableCloudServer.setServerStartTimeout(30000);
+
+            // Tidy up any pre-existing tables
+            sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropStaleRecoveryLogTables");
+            Log.info(this.getClass(), method, "dropStaleRecoveryLogTables returned: " + sb);
+
+            // Insert stale lease
+            sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "insertStaleLease");
+            Log.info(this.getClass(), method, "insertStaleLease returned: " + sb);
+
+            // Wait for string that shows we attempted to peer recover "cloudstale"
+            assertNotNull("peer recovery failed", retriableCloudServer
+                            .waitForStringInTrace("Peer server cloudstale has missing recovery log SQL tables", LOG_SEARCH_TIMEOUT));
+
+            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
+        }
+        Log.info(this.getClass(), method, "test complete");
+    }
+
+    @Test
+    public void testBatchLeaseDeletion() throws Exception {
+        final String method = "testBatchLeaseDeletion";
+        if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
+            StringBuilder sb = null;
+
+            FATUtils.startServers(runner, server1fastcheck);
+
+            Log.info(this.getClass(), method, "set timeout");
+            server1fastcheck.setServerStartTimeout(30000);
+
+            // Insert stale leases
+            sb = runTestWithResponse(server1fastcheck, SERVLET_NAME, "setupBatchOfStaleLeases1");
+            Log.info(this.getClass(), method, "setupBatchOfStaleLeases1 returned: " + sb);
+            server2fastcheck.useSecondaryHTTPPort();
+            FATUtils.startServers(runner, server2fastcheck);
+
+            Log.info(this.getClass(), method, "set timeout");
+            server2fastcheck.setServerStartTimeout(30000);
+            // Insert more stale leases
+            sb = runTestWithResponse(server2fastcheck, SERVLET_NAME, "setupBatchOfStaleLeases2");
+            Log.info(this.getClass(), method, "setupBatchOfStaleLeases1 returned: " + sb);
+
+            // Check peer recovery attempts for dummy servers
+            int server1Recoveries = 0;
+            int server2Recoveries = 0;
+            boolean foundThemAll = false;
+            int searchAttempts = 0;
+            while (!foundThemAll && searchAttempts < 60) {
+                List<String> recoveredAlready1 = server1fastcheck.findStringsInLogs("has missing recovery log SQL tables");
+                List<String> recoveredAlready2 = server2fastcheck.findStringsInLogs("has missing recovery log SQL tables");
+                // Check number of recovery attempts
+                if (recoveredAlready1 != null)
+                    server1Recoveries = recoveredAlready1.size();
+                if (recoveredAlready2 != null)
+                    server2Recoveries = recoveredAlready2.size();
+                if (server1Recoveries + server2Recoveries > 19)
+                    foundThemAll = true;
+                if (!foundThemAll) {
+                    searchAttempts++;
+                    Thread.sleep(1000 * 5);
+                }
+                Log.info(this.getClass(), method, "testBatchLeaseDeletion found " + server1Recoveries +
+                                                  " in server1 logs and " + server2Recoveries + " in server2 logs");
+            }
+            if (!foundThemAll)
+                fail("Did not attempt peer recovery for all servers");
+            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server1fastcheck, server2fastcheck);
+        }
+        Log.info(this.getClass(), method, "test complete");
+    }
+
+    /**
+     * Test aggressive takeover of recovery logs by a home server
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testAggressiveTakeover1() throws Exception {
+        final String method = "testAggressiveTakeover1";
+        if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
+            StringBuilder sb = null;
+
+            FATUtils.startServers(runner, longLeaseCompeteServer1);
+
+            Log.info(this.getClass(), method, "Call longLeaseCompeteServer1");
+
+            sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupForAggressivePeerRecovery1");
+
+            Log.info(this.getClass(), method, "setupForAggressivePeerRecovery returned: " + sb);
+            try {
+                // We expect this to fail since it is gonna crash the server
+                sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupRec007");
+            } catch (IOException e) {
+            }
+            Log.info(this.getClass(), method, "back from runTestWithResponse in testAggressiveTakeover1, sb is " + sb);
+
+            // wait for 1st server to have gone away
+            Log.info(this.getClass(), method, "wait for first server to go away in testDBBaseRecovery");
+            assertNotNull(longLeaseCompeteServer1.getServerName() + " did not crash", longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+            longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since crashed server
+            // The server has been halted but its status variable won't have been reset because we crashed it. In order to
+            // setup the server for a restart, set the server state manually.
+            longLeaseCompeteServer1.setStarted(false);
+
+            // Now start server2
+            server2fastcheck.setHttpDefaultPort(9992);
+            FATUtils.startServers(runner, server2fastcheck);
+
+            // Now start server1
+            FATUtils.startServers(runner, longLeaseCompeteServer1);
+
+            // Server appears to have started ok. Check for key string to see whether recovery has succeeded, irrespective of what server2fastcheck has done
+            assertNotNull("peer recovery failed", longLeaseCompeteServer1
+                            .waitForStringInTrace("All persistent services have been directed to perform recovery processing for this WebSphere server", LOG_SEARCH_TIMEOUT));
+
+            // Did server2 attempt peer recovery? Report only.
+            List<String> theList = server2fastcheck
+                            .findStringsInTrace("Server with identity cloud0021 attempted but failed to recover the logs of peer server cloud0011");
+            if (theList.isEmpty())
+                Log.info(this.getClass(), method, "Server2 was NOT interrupted when peer recovering server1");
+            else
+                Log.info(this.getClass(), method, "Server2 was interrupted when peer recovering server1");
+
+            theList = server2fastcheck
+                            .findStringsInTrace("Server with identity cloud0021 has recovered the logs of peer server cloud0011");
+            if (theList.isEmpty())
+                Log.info(this.getClass(), method, "Server2 did not peer recover server1");
+            else
+                Log.info(this.getClass(), method, "Server2 did peer recover server1");
+
+            // cleanup HATable
+            sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "dropHATable");
+            Log.info(this.getClass(), method, "dropHATable returned: " + sb);
+
+            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server2fastcheck, longLeaseCompeteServer1);
+        }
+        Log.info(this.getClass(), method, "test complete");
+    }
+
+    /**
+     * Test aggressive takeover of recovery logs by a home server. Take over at different point in server2's processing.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testAggressiveTakeover2() throws Exception {
+        final String method = "testAggressiveTakeover2";
+        if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
+            StringBuilder sb = null;
+
+            FATUtils.startServers(runner, longLeaseCompeteServer1);
+
+            Log.info(this.getClass(), method, "Call longLeaseCompeteServer1");
+
+            sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupForAggressivePeerRecovery2");
+
+            Log.info(this.getClass(), method, "setupForAggressivePeerRecovery returned: " + sb);
+            try {
+                // We expect this to fail since it is gonna crash the server
+                sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "setupRec007");
+            } catch (IOException e) {
+            }
+            Log.info(this.getClass(), method, "back from runTestWithResponse in testAggressiveTakeover2, sb is " + sb);
+
+            // wait for 1st server to have gone away
+            Log.info(this.getClass(), method, "wait for first server to go away in testDBBaseRecovery");
+            assertNotNull(longLeaseCompeteServer1.getServerName() + " did not crash", longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+            longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since crashed server
+            // The server has been halted but its status variable won't have been reset because we crashed it. In order to
+            // setup the server for a restart, set the server state manually.
+            longLeaseCompeteServer1.setStarted(false);
+
+            // Now start server2
+            server2fastcheck.setHttpDefaultPort(9992);
+            FATUtils.startServers(runner, server2fastcheck);
+
+            // Now start server1
+            FATUtils.startServers(runner, longLeaseCompeteServer1);
+
+            // Server appears to have started ok. Check for key string to see whether recovery has succeeded, irrespective of what server2fastcheck has done
+            assertNotNull("peer recovery failed", longLeaseCompeteServer1
+                            .waitForStringInTrace("All persistent services have been directed to perform recovery processing for this WebSphere server", LOG_SEARCH_TIMEOUT));
+
+            // Did server2 attempt peer recovery? Report only.
+            List<String> theList = server2fastcheck
+                            .findStringsInTrace("Server with identity cloud0021 attempted but failed to recover the logs of peer server cloud0011");
+            if (theList.isEmpty())
+                Log.info(this.getClass(), method, "Server2 was NOT interrupted when peer recovering server1");
+            else
+                Log.info(this.getClass(), method, "Server2 was interrupted when peer recovering server1");
+
+            theList = server2fastcheck
+                            .findStringsInTrace("Server with identity cloud0021 has recovered the logs of peer server cloud0011");
+            if (theList.isEmpty())
+                Log.info(this.getClass(), method, "Server2 did not peer recover server1");
+            else
+                Log.info(this.getClass(), method, "Server2 did peer recover server1");
+
+            // cleanup HATable
+            sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "dropHATable");
+            Log.info(this.getClass(), method, "dropHATable returned: " + sb);
+
+            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server2fastcheck, longLeaseCompeteServer1);
+        }
+        Log.info(this.getClass(), method, "test complete");
+    }
+
 }

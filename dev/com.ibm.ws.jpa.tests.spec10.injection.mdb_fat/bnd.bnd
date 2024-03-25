@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ src: \
 
 fat.project: true
 fat.test.databases: true
-tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, persistence-3.0, xmlbinding-4.0, persistence-3.1, servlet-6.0
+tested.features: jdbc-4.0, beanvalidation-1.1, jpa-2.0, el-3.0, persistence-3.0, xmlbinding-4.0, persistence-3.1, servlet-6.0, persistence-3.2, servlet-6.1, connectors-2.1
 
 # Uncomment to test against alternative databases
 # Options: Derby, Postgres, DB2, Oracle, SQLServer

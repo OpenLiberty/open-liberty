@@ -23,7 +23,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.logging.Level;
 
@@ -48,7 +47,6 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.resource.ResourceFactory;
 
-import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 public class JTMConfigurationProvider extends DefaultConfigurationProvider implements ConfigurationProvider {
@@ -106,9 +104,10 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         activateHasBeenCalled = true;
         _transactionSettingsProviders.activate(cc);
         _cc = cc;
-        if (inCheckpointRestore()) {
+
+        final String _prevLogDir = logDir;
+        if (checkpointRestoreBeforeRunningCondition()) {
             // Reset tranlog dir when reactivated during restore
-            // REVIEWER Why are logDir, _isSQLRecoveryLog static? Complicates update.
             logDir = null;
         }
 
@@ -119,13 +118,16 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         // Dictionary (Hashtable), it becomes a bottleneck to read a property
         // with each thread getting a Hashtable lock to do a get operation.
         Dictionary<String, Object> props = cc.getProperties();
+
         Map<String, Object> properties = new HashMap<>();
+
         Enumeration<String> keys = props.keys();
         while (keys.hasMoreElements()) {
             String key = keys.nextElement();
             properties.put(key, props.get(key));
         }
         properties = Collections.unmodifiableMap(properties);
+
         synchronized (this) {
             _props = properties;
         }
@@ -161,23 +163,42 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                 // The DataSource is available, which means that we are able to drive recovery
                 // processing. This is driven through the reference to the TransactionManagerService,
                 // assuming that it is available
-                if (tmsRef != null)
+                if (isStartupEnabled())
                     tmsRef.doStartup(this, _isSQLRecoveryLog);
             }
         } else {
-            getTransactionLogDirectory(); // Sets logDir
-            if (tmsRef != null)
+            getTransactionLogDirectory(); // Set logDir
+            if (checkpointRestoreBeforeRunningCondition() && !logDir.equals(_prevLogDir)) {
+                // transactionLogDir changed in checkpoint restore. If the checkpoint contains
+                // a recovery log, it also contains active handle(s) to the log files. Deleting
+                // the previous, stale logDir will cause checkpoint restore to fail w/o otherwise
+                // replacing it. Ignore the stale recovery log as a convenience for on-premesis
+                // usage (e.g. testing outside of a container.)
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "logDir changed in checkpoint restore. Ignore previous logDir " + _prevLogDir);
+            }
+            if (isStartupEnabled())
                 tmsRef.doStartup(this, _isSQLRecoveryLog);
         }
 
         if (tc.isDebugEnabled())
             Tr.debug(tc, "activate  retrieved datasourceFactory is " + _theDataSourceFactory);
 
-        addTransactionLogDirCheckpointHook(logDir);
-
         // Configuration has changed, may need to reset the lists of sqlcodes
         _setRetriableSqlcodes = false;
         _setNonRetriableSqlcodes = false;
+    }
+
+    private boolean isStartupEnabled() {
+        if (_cc == null || tmsRef == null) {
+            return false; // not activated or tms is unavailable
+        }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Checkpoint phase: " + CheckpointPhase.getPhase() + ", restored: " + CheckpointPhase.getPhase().restored());
+        //    normal server:          phase == INACTIVE && restored
+        //    checkpoint, all phases: phase != INACTIVE && !restored
+        //    checkpoint restore      phase != INACTIVE && restored
+        return true;
     }
 
     protected void deactivate(int reason, ComponentContext cc, Map<String, Object> properties) {
@@ -242,7 +263,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "setDataSourceFactory and activate have been called, initiate recovery");
 
-            if (tmsRef != null)
+            if (isStartupEnabled())
                 tmsRef.doStartup(this, _isSQLRecoveryLog);
         }
     }
@@ -250,6 +271,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     /*
      * Called by DS to dereference DataSourceFactory
      */
+    @Trivial
     protected void unsetDataSourceFactory(ServiceReference<ResourceFactory> ref) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "unsetDataSourceFactory, ref " + ref);
@@ -274,15 +296,12 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public int getClientInactivityTimeout() {
-        // return Integer.valueOf(_props.get("client.inactivity.timeout"));
         Number num = (Number) _props.get("clientInactivityTimeout");
-
-        int timeout = num.intValue();
-
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getClientInactivityTimeout: {0}", timeout);
-        return timeout;
+            Tr.debug(tc, "getClientInactivityTimeout: {0}", num);
+        return num.intValue();
     }
 
     @Override
@@ -308,24 +327,26 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Trivial
     public int getHeuristicRetryLimit() {
         Number num = (Number) _props.get("heuristicRetryLimit");
-
-        int limit = num.intValue();
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getHeuristicRetryLimit: {0}", limit);
-        return limit;
-    }
-
-    @Override
-    public int getMaximumTransactionTimeout() {
-        //return ((Integer) _props.get("propogatedOrBMTTranLifetimeTimeout")).intValue();
-        Number num = (Number) _props.get("propogatedOrBMTTranLifetimeTimeout");
+            Tr.debug(tc, "getHeuristicRetryLimit: {0}", num);
         return num.intValue();
     }
 
     @Override
+    @Trivial
+    public int getMaximumTransactionTimeout() {
+        Number num = (Number) _props.get("propogatedOrBMTTranLifetimeTimeout");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getMaximumTransactionTimeout: {0}", num);
+        return num.intValue();
+    }
+
+    @Override
+    @Trivial
     public int getTotalTransactionLifetimeTimeout() {
-        //return ((Integer) _props.get("totalTranLifetimeTimeout")).intValue();
         Number num = (Number) _props.get("totalTranLifetimeTimeout");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getTotalTransactionLifetimeTimeout: {0}", num);
         return num.intValue();
     }
 
@@ -337,6 +358,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * Use Tr configuration for 'transaction' group.
      */
     @Override
+    @Trivial
     public Level getTraceLevel() {
         return tc.getLoggerLevel();
     }
@@ -354,6 +376,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public String getLeaseCheckStrategy() {
         return (String) _props.get("leaseCheckStrategy");
     }
@@ -365,20 +388,30 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public int getLeaseCheckInterval() {
         Number num = (Number) _props.get("leaseCheckInterval");
         return num.intValue();
     }
 
     @Override
+    @Trivial
     public int getLeaseLength() {
         Number num = (Number) _props.get("leaseLength");
         return num.intValue();
     }
 
     @Override
+    @Trivial
     public int getLeaseRenewalThreshold() {
         Number num = (Number) _props.get("leaseRenewalThreshold");
+        return num.intValue();
+    }
+
+    @Override
+    @Trivial
+    public int getLeaseExpiryThreshold() {
+        Number num = (Number) _props.get("leaseExpiryThreshold");
         return num.intValue();
     }
 
@@ -434,43 +467,65 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public boolean isAcceptHeuristicHazard() {
-        return (Boolean) _props.get("acceptHeuristicHazard");
+        final Boolean ahh = (Boolean) _props.get("acceptHeuristicHazard");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "isAcceptHeuristicHazard {0}", ahh);
+        return ahh;
     }
 
     @Override
     @Trivial
     public boolean isRecoverOnStartup() {
-        Boolean isRoS = (Boolean) _props.get("recoverOnStartup");
+        final Boolean isRoS = (Boolean) _props.get("recoverOnStartup");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isRecoverOnStartup {0}", isRoS);
-        if (isRoS && checkpointWaitForConfig()) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Defer recovery until restore config updates complete");
-            return false;
+        if (isRoS) {
+            if (checkpointAtBeforeAppStart() && isSQLRecoveryLog()) {
+                // Avoid premature checkpoint dump, which will start the first time a
+                // JDBC driver class is used to connect to the recovery log database.
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Disable recoverOnStartup during checkpoint at beforeAppStart for SQL recovery log");
+                return false;
+            }
+            if (checkpointRestoreBeforeRunningCondition()) {
+                // Avoid using a stale datasource factory for SQL recovery logging.
+                // Defer initial local recovery until restore config updates complete.
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Disable recoverOnStartup during restore until config updates complete");
+                return false;
+            }
         }
         return isRoS;
     }
 
     @Override
     public boolean isShutdownOnLogFailure() {
-        Boolean isSoLF = (Boolean) _props.get("shutdownOnLogFailure");
+        final Boolean isSoLF = (Boolean) _props.get("shutdownOnLogFailure");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isShutdownOnLogFailure set to " + isSoLF);
+        if (isSoLF && checkpoint()) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Disable shutdownOnLogFailure during checkpoint");
+            return false;
+        }
         return isSoLF;
     }
 
     @Override
+    @Trivial
     public boolean isOnePCOptimization() {
-        Boolean is1PC = (Boolean) _props.get("OnePCOptimization");
+        final Boolean is1PC = (Boolean) _props.get("OnePCOptimization");
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "OnePCOptimization set to " + is1PC);
+            Tr.debug(tc, "OnePCOptimization set to {0}", is1PC);
         return is1PC;
     }
 
     @Override
+    @Trivial
     public boolean isForcePrepare() {
-        Boolean forcePrepare = (Boolean) _props.get("forcePrepare");
+        final Boolean forcePrepare = (Boolean) _props.get("forcePrepare");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "forcePrepare set to {0}", forcePrepare);
         return forcePrepare;
@@ -479,21 +534,14 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     @Trivial
     public boolean isWaitForRecovery() {
-        Boolean isWfR = (Boolean) _props.get("waitForRecovery");
+        final Boolean isWfR = (Boolean) _props.get("waitForRecovery");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "isWaitForRecovery {0}", isWfR);
-        if (!isWfR && checkpointWaitForConfig()) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Defer recovery until restore config updates complete");
-            return true;
-        }
         return isWfR;
     }
 
     @Override
     public ResourceFactory getResourceFactory() {
-
-//WAS THIS        _theDataSourceFactory = dataSourceFactoryRef.getService();
         try {
             _theDataSourceFactory = dataSourceFactoryRef.getServiceWithException();
         } catch (Exception ex) {
@@ -508,6 +556,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     }
 
     @Override
+    @Trivial
     public RuntimeMetaDataProvider getRuntimeMetaDataProvider() {
         return _runtimeMetaDataProvider;
     }
@@ -534,7 +583,6 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
     @Override
     @Trivial
     public String getRecoveryGroup() {
-
         _recoveryGroup = (String) _props.get("recoveryGroup");
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getRecoveryGroup {0}", _recoveryGroup);
@@ -565,7 +613,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             Tr.debug(tc, "setTMRecoveryService " + tmrec);
         if (tmsRef != null) {
             if (!_isSQLRecoveryLog) {
-                if (_cc != null) {
+                if (isStartupEnabled()) {
                     tmsRef.doStartup(this, _isSQLRecoveryLog);
                 }
             } else {
@@ -574,7 +622,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
                 ServiceReference<ResourceFactory> serviceRef = dataSourceFactoryRef.getReference();
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "retrieved datasourceFactory service ref " + serviceRef);
-                if (_cc != null && serviceRef != null) {
+                if (isStartupEnabled() && serviceRef != null) {
                     tmsRef.doStartup(this, _isSQLRecoveryLog);
                 }
             }
@@ -591,8 +639,9 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * all resource factories and transaction services have updated.
      */
     protected void setRunningCondition(ServiceReference<Condition> runningCondition) {
-        if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
+        if (checkpointRestore()) {
             _runningCondition = runningCondition;
+
             if (tmsRef != null) {
                 tmsRef.doDeferredRecoveryAtRestore(this);
             }
@@ -816,8 +865,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#getTimeBetweenHeartbeats()
      */
     @Override
+    @Trivial
     public int getTimeBetweenHeartbeats() {
         Number num = (Number) _props.get("timeBetweenHeartbeats");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getTimeBetweenHeartbeats: {0}", num);
         return num.intValue();
     }
 
@@ -827,8 +879,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#getPeerTimeBeforeStale()
      */
     @Override
+    @Trivial
     public int getPeerTimeBeforeStale() {
         Number num = (Number) _props.get("peerTimeBeforeStale");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getPeerTimeBeforeStale: {0}", num);
         return num.intValue();
     }
 
@@ -838,8 +893,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#getLightweightLogRetryInterval()
      */
     @Override
+    @Trivial
     public int getLightweightLogRetryInterval() {
         Number num = (Number) _props.get("lightweightLogRetryInterval");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getLightweightLogRetryInterval: {0}", num);
         return num.intValue();
     }
 
@@ -849,8 +907,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#getLightweightLogRetryLimit()
      */
     @Override
+    @Trivial
     public int getLightweightLogRetryLimit() {
         Number num = (Number) _props.get("lightweightLogRetryLimit");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getLightweightLogRetryLimit: {0}", num);
         return num.intValue();
     }
 
@@ -860,8 +921,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#getLogRetryInterval()
      */
     @Override
+    @Trivial
     public int getLogRetryInterval() {
         Number num = (Number) _props.get("logRetryInterval");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getLogRetryInterval: {0}", num);
         return num.intValue();
     }
 
@@ -871,8 +935,11 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#getLogRetryLimit()
      */
     @Override
+    @Trivial
     public int getLogRetryLimit() {
         Number num = (Number) _props.get("logRetryLimit");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "getLogRetryLimit: {0}", num);
         return num.intValue();
     }
 
@@ -882,8 +949,12 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @see com.ibm.tx.config.ConfigurationProvider#enableLogRetries()
      */
     @Override
+    @Trivial
     public boolean enableLogRetries() {
-        return (Boolean) _props.get("enableLogRetries");
+        final Boolean elr = (Boolean) _props.get("enableLogRetries");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "enableLogRetries {0}", elr);
+        return elr;
     }
 
     /*
@@ -957,38 +1028,24 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         return _dataSourceFactorySet;
     }
 
-    protected boolean inCheckpointRestore() {
-        return CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && CheckpointPhase.getPhase().restored();
-    }
-
-    protected boolean inCheckpoint() {
+    protected boolean checkpoint() {
         return CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && !CheckpointPhase.getPhase().restored();
     }
 
-    protected boolean checkpointWaitForConfig() {
-        return CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && _runningCondition == null;
+    protected boolean checkpointAtBeforeAppStart() {
+        return CheckpointPhase.getPhase() == CheckpointPhase.BEFORE_APP_START && !CheckpointPhase.getPhase().restored();
     }
 
-    AtomicBoolean addHook = new AtomicBoolean(true);
+    protected boolean checkpointAtAfterAppStart() {
+        return CheckpointPhase.getPhase() == CheckpointPhase.AFTER_APP_START && !CheckpointPhase.getPhase().restored();
+    }
 
-    /**
-     * Add a hook that fails checkpoint whenever the default or configured
-     * transaction log directory exists and cannot be deleted, including the
-     * case where the directory path is unexpectedly a file.
-     *
-     * @param logDir A directory path that exists and contains transaction logs.
-     */
-    private void addTransactionLogDirCheckpointHook(final String logDir) {
-        if (logDir != null && inCheckpoint() && addHook.compareAndSet(true, false)) {
-            CheckpointPhase.getPhase().addSingleThreadedHook(new CheckpointHook() {
-                @Override
-                public void prepare() {
-                    if (!recursiveDelete(new File(logDir))) {
-                        throw new IllegalStateException(Tr.formatMessage(tc, "ERROR_CHECKPOINT_TRANLOGS_EXIST", logDir));
-                    }
-                }
-            });
-        }
+    protected boolean checkpointRestore() {
+        return CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE && CheckpointPhase.getPhase().restored();
+    }
+
+    protected boolean checkpointRestoreBeforeRunningCondition() {
+        return checkpointRestore() && _runningCondition == null;
     }
 
     /**
@@ -998,10 +1055,7 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
      * @return false iff fileToRemove exists and cannot be deleted, otherwise return true.
      */
     protected boolean recursiveDelete(final File fileToRemove) {
-        if (fileToRemove == null)
-            return true;
-
-        if (!fileToRemove.exists())
+        if ((fileToRemove == null) || !fileToRemove.exists())
             return true;
 
         boolean success = true;
@@ -1022,5 +1076,24 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
             success |= fileToRemove.delete();
         }
         return success;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.tx.config.ConfigurationProvider#enableHADBPeerLocking()
+     */
+    @Override
+    public boolean peerRecoveryPrecedence() {
+        return (Boolean) _props.get("peerRecoveryPrecedence");
+    }
+
+    @Override
+    @Trivial
+    public boolean isPropagateXAResourceTransactionTimeout() {
+        boolean b = _propagateXAResourceTransactionTimeout || (Boolean) _props.get("propagateXAResourceTransactionTimeout");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "isPropagateXAResourceTransactionTimeout {0}", b);
+        return b;
     }
 }

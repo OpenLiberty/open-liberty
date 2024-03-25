@@ -14,7 +14,7 @@
                    xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
 
-    <OCD id="io.openliberty.microprofile.openapi" name="%mpOpenAPI" description="%mpOpenAPI.desc" ibm:alias="mpOpenAPI" ibm:beta="true">
+    <OCD id="io.openliberty.microprofile.openapi" name="%mpOpenAPI" description="%mpOpenAPI.desc" ibm:alias="mpOpenAPI">
         <AD id="docPath" name="%docPath" description="%docPath.desc" default="/openapi" required="false" type="String" />
         <AD id="uiPath" name="%uiPath" description="%uiPath.desc" required="false" type="String" />
     </OCD>

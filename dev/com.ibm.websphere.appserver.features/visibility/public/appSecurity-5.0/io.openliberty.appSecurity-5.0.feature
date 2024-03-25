@@ -11,7 +11,13 @@ IBM-API-Package: jakarta.security.enterprise; type="spec", \
  jakarta.security.auth.message; type="spec", \
  jakarta.security.auth.message.callback; type="spec", \
  jakarta.security.auth.message.config; type="spec", \
- jakarta.security.auth.message.module; type="spec"
+ jakarta.security.auth.message.module; type="spec", \
+ com.ibm.wsspi.security.tai; type="ibm-api", \
+ com.ibm.wsspi.security.token; type="ibm-api", \
+ com.ibm.wsspi.security.auth.callback; type="ibm-api", \
+ com.ibm.wsspi.security.common.auth.module; type="ibm-api", \
+ com.ibm.websphere.security.auth.callback; type="ibm-api", \
+ com.ibm.websphere.security.web; type="ibm-api"
 
 IBM-ShortName: appSecurity-5.0
 Subsystem-Name: Application Security 5.0 (Jakarta Security 3.0)
@@ -40,7 +46,6 @@ Subsystem-Name: Application Security 5.0 (Jakarta Security 3.0)
   io.openliberty.security.jakartasec.3.0.internal, \
   io.openliberty.security.jakartasec.3.0.internal.cdi, \
   io.openliberty.security.authentication.internal.filter, \
-  io.openliberty.security.authentication.internal.tai, \
   io.openliberty.security.sso.internal, \
   io.openliberty.security.jaspic.2.0.internal, \
   io.openliberty.security.common.jwt.internal

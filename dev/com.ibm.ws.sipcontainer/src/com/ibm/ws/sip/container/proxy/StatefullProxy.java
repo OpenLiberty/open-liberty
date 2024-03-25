@@ -1418,7 +1418,8 @@ public class StatefullProxy	extends BranchManager
 	 * Notification about timeout according to the m_director.getProxyTimeout()
 	 * 
 	 */
-	public synchronized void proxyTimeout() {
+	//remove sychronized as it caused a deadlock, see OL issue 25962
+	public void proxyTimeout() {
 
 		if (c_logger.isTraceDebugEnabled()) {
 			c_logger.traceDebug(this, "proxyTimeout", getMyInfo());

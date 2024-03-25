@@ -1,1 +1,1 @@
-io.openliberty.microprofile.telemetry.internal.rest.TelemetryRestClientBuilderListener
+io.openliberty.microprofile.telemetry11.internal.rest.TelemetryRestClientBuilderListener

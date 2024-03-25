@@ -6,15 +6,13 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp23.fat.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -34,10 +32,11 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 /**
  * JSP 2.3 tests which use Java 1.8 specific features.
  *
- * Tests must only run when Java 1.8 is in use.
+ * Tests must only run when Java 1.8 or later is in use.
  *
  * Tests that just need to drive a simple request using our WebBrowser object can be placed in this class.
  *
@@ -71,10 +70,45 @@ public class JSPJava8Test {
      * Simple test for Index.jsp
      *
      * @throws Exception
-     *             if something goes horribly wrong
+     *                       if something goes horribly wrong
      */
     @Test
     public void testJava8JSP() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        String url = JSPUtils.createHttpUrlString(server, APP_NAME, "index.jsp");
+        LOG.info("url: " + url);
+
+        WebRequest request = new GetMethodWebRequest(url);
+        WebResponse response = wc.getResponse(request);
+        LOG.info("Servlet response : " + response.getText());
+
+        assertEquals("Expected " + 200 + " status code was not returned!",
+                     200, response.getResponseCode());
+        assertTrue("The response did not contain: onetwothreefour", response.getText().contains("onetwothreefour"));
+    }
+
+    /**
+     * Same test as testJava8JSP, but using the runtime JDK (via JSP's useJDKCompiler option rather than the default Eclipse Compiler for Java (ECJ))
+     *
+     * https://openliberty.io/docs/latest/reference/config/jspEngine.html
+     * 
+     * @throws Exception if something goes horribly wrong
+     *                
+     */
+    @Test
+    public void testJava8viaUseJDKCompiler() throws Exception {
+
+        ServerConfiguration configuration = server.getServerConfiguration();
+        configuration.getJspEngine().setUseJDKCompiler(true);
+        LOG.info("New server configuration used: " + configuration);
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(configuration);
+        server.restartApplication(APP_NAME);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME), false, "CWWKT0016I:.*TestJSPWithJava8.*");
+
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
 

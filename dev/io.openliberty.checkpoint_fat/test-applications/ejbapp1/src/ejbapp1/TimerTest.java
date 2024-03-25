@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,7 +13,6 @@
 
 package ejbapp1;
 
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -30,21 +29,22 @@ public class TimerTest {
 
     @Schedule(hour = "*", minute = "*", second = "*/1", persistent = false)
     public void everyOneSeconds(Timer timer) {
-        long currentTime = System.nanoTime();
-        long lastTime = lastRun.getAndSet(currentTime);
-        if (lastTime == -1) {
+        long nextTime = timer.getNextTimeout().getTime(); // time when the timer is scheduled to run
+        long prevTime = lastRun.getAndSet(nextTime);
+        if (prevTime == -1) {
             return;
         }
-        long deltaTime = currentTime - lastTime;
-        long deltaMillis = TimeUnit.NANOSECONDS.toMillis(deltaTime);
+
+        long deltaMillis = nextTime - prevTime;
+
         System.out.println("TIMER - Ran again: " + deltaMillis);
-        // here we assume if delta is less than 500 millis then something is wrong
-        if (deltaMillis < 500 && numRun.get() > 0) {
+        // if the delta is not 1000 millis then something is wrong since timer is scheduled to run every 1 sec.
+        if (deltaMillis != 1000 && numRun.get() > 0) {
             // Note that we throw out the first run because of offset issues
-            // with the timer starting
             System.out.println("TIMER RUN TOO FAST: " + deltaMillis);
             failed.set(true);
         }
+
         if (numRun.addAndGet(1) == 5) {
             System.out.println("TIMER RUN 5 TIMES");
             if (failed.get()) {

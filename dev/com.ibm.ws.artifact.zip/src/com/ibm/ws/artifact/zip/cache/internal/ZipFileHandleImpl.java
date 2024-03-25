@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012,2020 IBM Corporation and others.
+ * Copyright (c) 2012,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,6 +30,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
 import com.ibm.ws.artifact.zip.cache.ZipFileHandle;
+import com.ibm.ws.artifact.zip.cache.internal.ZipFileReaper.OpenZipFile;
 import com.ibm.ws.artifact.zip.internal.FileUtils;
 
 /**
@@ -83,11 +84,6 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         return file;
     }
 
-    @Trivial
-    public long getLastModified() {
-        return FileUtils.fileLastModified( getFile() );
-    }
-
     //
 
     private static class ZipFileLock {
@@ -95,6 +91,7 @@ public class ZipFileHandleImpl implements ZipFileHandle {
     }
     private final ZipFileLock zipFileLock = new ZipFileLock();
     private ZipFile zipFile;
+    private long lastModified;
     private int openCount;
 
     //
@@ -169,8 +166,11 @@ public class ZipFileHandleImpl implements ZipFileHandle {
                 }
                 if ( zipFileReaper == null ) {
                     zipFile = ZipFileUtils.openZipFile(file); // throws IOException
+                    lastModified = FileUtils.fileLastModified(file);
                 } else {
-                    zipFile = zipFileReaper.open(path);
+                    OpenZipFile openZipFile = zipFileReaper.open(path);
+                    zipFile = openZipFile.zipFile;
+                    lastModified = openZipFile.lastModified;
                 }
             }
 
@@ -347,10 +347,13 @@ public class ZipFileHandleImpl implements ZipFileHandle {
         // Duplicate keys would be possible of the CRC or last-modified values, when
         // converted to strings, could contain ":::" character sequences.
 
-        String entryCacheKey =
-               entryName +
-               ":::" + Long.toString( zipEntry.getCrc() ) +
-               ":::" + Long.toString( getLastModified() );
+        StringBuilder keyBuilder = new StringBuilder(entryName.length() + 46);
+        keyBuilder.append(entryName);
+        keyBuilder.append(":::");
+        keyBuilder.append(zipEntry.getCrc());
+        keyBuilder.append(":::");
+        keyBuilder.append(lastModified);
+        String entryCacheKey = keyBuilder.toString();
 
         // Note that only the individual gets and puts are protected.
         //

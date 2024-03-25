@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,17 @@ import jaxb.web.utils.StringSchemaOutputResolver;
 @WebServlet("/JAXBContextTestServlet")
 public class JAXBContextTestServlet extends FATServlet {
     // We cache the context in order to keep the total run time of the tests down
-    private JAXBContext riContext = null;
+    private static JAXBContext riContext = null;
+
+    static {
+        // Obtain the RI context first, since we can't guarentee order of tests and dont want the
+        // RI context to be overriden by the negative tests with the third party impl property.
+        try {
+            riContext = JAXBContextUtils.setupJAXBContext();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /*
     *
@@ -46,9 +56,6 @@ public class JAXBContextTestServlet extends FATServlet {
     @Test
     public void testJakartaEE10JaxbContextSchemaOutputResolver() throws Exception {
         SchemaOutputResolver ssor = new StringSchemaOutputResolver();
-
-        if (riContext == null)
-            riContext = JAXBContextUtils.setupJAXBContext();
 
         riContext.generateSchema(ssor);
         String schemaString = ((StringSchemaOutputResolver) ssor).getSchema();
@@ -61,9 +68,6 @@ public class JAXBContextTestServlet extends FATServlet {
     @SkipForRepeat({})
     public void testJaxbContextUnmarshallingPurchaseOrderTypeObject() throws Exception {
 
-        if (riContext == null)
-            riContext = JAXBContextUtils.setupJAXBContext();
-
         Unmarshaller unmarshaller = riContext.createUnmarshaller();
 
         JAXBContextUtils.comparePurchaseOrderType(unmarshaller);
@@ -73,9 +77,6 @@ public class JAXBContextTestServlet extends FATServlet {
     @SkipForRepeat({})
     public void testJaxbContextUnmarshallingItemsObject() throws Exception {
 
-        if (riContext == null)
-            riContext = JAXBContextUtils.setupJAXBContext();
-
         Unmarshaller unmarshaller = riContext.createUnmarshaller();
 
         JAXBContextUtils.comparePurchaseOrderType(unmarshaller);
@@ -84,9 +85,6 @@ public class JAXBContextTestServlet extends FATServlet {
     @Test
     @SkipForRepeat({})
     public void testJaxbContextUnmarshallingShippingAddressObject() throws Exception {
-
-        if (riContext == null)
-            riContext = JAXBContextUtils.setupJAXBContext();
 
         Unmarshaller unmarshaller = riContext.createUnmarshaller();
 

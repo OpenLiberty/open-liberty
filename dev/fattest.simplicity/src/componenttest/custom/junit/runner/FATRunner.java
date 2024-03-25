@@ -60,8 +60,7 @@ import componenttest.exception.TopologyException;
 import componenttest.logging.ffdc.IgnoredFFDCs;
 import componenttest.logging.ffdc.IgnoredFFDCs.IgnoredFFDC;
 import componenttest.rules.repeater.EE9PackageReplacementHelper;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.impl.LibertyServerWrapper;
@@ -682,7 +681,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         for (ExpectedFFDC ffdc : ffdcs) {
             if (ffdc != null) {
                 String[] exceptionClasses = ffdc.value();
-                if (RepeatTestFilter.isAnyRepeatActionActive(JakartaEE9Action.ID, JakartaEE10Action.ID)) {
+                if (JakartaEEAction.isEE9OrLaterActive()) {
                     String[] jakarta9ReplacementExceptionClasses = new String[exceptionClasses.length];
                     System.arraycopy(exceptionClasses, 0, jakarta9ReplacementExceptionClasses, 0, exceptionClasses.length);
                     int index = 0;
@@ -736,7 +735,7 @@ public class FATRunner extends BlockJUnit4ClassRunner {
         for (AllowedFFDC ffdc : ffdcs) {
             if (ffdc != null) {
                 String[] exceptionClasses = ffdc.value();
-                if (RepeatTestFilter.isAnyRepeatActionActive(JakartaEE9Action.ID, JakartaEE10Action.ID)) {
+                if (JakartaEEAction.isEE9OrLaterActive()) {
                     String[] jakarta9ReplacementExceptionClasses = new String[exceptionClasses.length];
                     System.arraycopy(exceptionClasses, 0, jakarta9ReplacementExceptionClasses, 0, exceptionClasses.length);
                     int index = 0;

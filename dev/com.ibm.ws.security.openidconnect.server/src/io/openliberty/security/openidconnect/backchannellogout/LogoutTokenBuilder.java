@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
@@ -38,8 +40,11 @@ import com.ibm.ws.security.oauth20.plugins.OidcBaseClientValidator;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JWTData;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JwsSigner;
 import com.ibm.ws.security.oauth20.util.CacheUtil;
+import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.openidconnect.backchannellogout.BackchannelLogoutException;
+import com.ibm.ws.security.openidconnect.server.internal.JwtUtils;
+import com.ibm.ws.security.openidconnect.token.JWT;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
@@ -50,11 +55,13 @@ public class LogoutTokenBuilder {
 
     public static final String EVENTS_MEMBER_NAME = "http://schemas.openid.net/event/backchannel-logout";
 
+    private final HttpServletRequest request;
     private final OidcServerConfig oidcServerConfig;
     private final OAuth20Provider oauth20provider;
     private final OAuth20EnhancedTokenCache tokenCache;
 
-    public LogoutTokenBuilder(OidcServerConfig oidcServerConfig) {
+    public LogoutTokenBuilder(HttpServletRequest request, OidcServerConfig oidcServerConfig) {
+        this.request = request;
         this.oidcServerConfig = oidcServerConfig;
         this.oauth20provider = getOAuth20Provider(oidcServerConfig);
         this.tokenCache = oauth20provider.getTokenCache();
@@ -70,11 +77,27 @@ public class LogoutTokenBuilder {
     }
 
     public Map<OidcBaseClient, Set<String>> buildLogoutTokensFromIdTokenString(String idTokenString) throws LogoutTokenBuilderException {
+        validateIdTokenSignature(idTokenString);
         JwtClaims idTokenClaims = getClaimsFromIdTokenString(idTokenString);
         try {
             return buildLogoutTokensForUser(idTokenClaims.getSubject());
         } catch (MalformedClaimException e) {
             String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN", e);
+            throw new LogoutTokenBuilderException(errorMsg, e);
+        }
+    }
+
+    void validateIdTokenSignature(String idTokenString) throws LogoutTokenBuilderException {
+        try {
+            String oauthProviderName = oidcServerConfig.getOauthProviderName();
+            OAuth20Provider oauthProvider = ProvidersService.getOAuth20Provider(oauthProviderName);
+            JWT jwt = JwtUtils.createJwt(idTokenString, oauthProvider, oidcServerConfig);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "JWT : " + jwt);
+            }
+            jwt.verifySignatureOnly();
+        } catch (Exception e) {
+            String errorMsg = Tr.formatMessage(tc, "LOGOUT_TOKEN_ERROR_GETTING_CLAIMS_FROM_ID_TOKEN", new Object[] { e });
             throw new LogoutTokenBuilderException(errorMsg, e);
         }
     }
@@ -116,9 +139,20 @@ public class LogoutTokenBuilder {
     void verifyIssuer(JwtClaims idTokenClaims) throws MalformedClaimException, IdTokenDifferentIssuerException {
         String issuerClaim = idTokenClaims.getIssuer();
         String expectedIssuer = oidcServerConfig.getIssuerIdentifier();
-        if (expectedIssuer != null && !expectedIssuer.equals(issuerClaim)) {
-            String errorMsg = Tr.formatMessage(tc, "ID_TOKEN_ISSUER_NOT_THIS_OP", new Object[] { issuerClaim, expectedIssuer, oidcServerConfig.getProviderId() });
-            throw new IdTokenDifferentIssuerException(errorMsg);
+        if (expectedIssuer != null && !expectedIssuer.isEmpty()) {
+            if (!expectedIssuer.equals(issuerClaim)) {
+                String errorMsg = Tr.formatMessage(tc, "ID_TOKEN_ISSUER_NOT_THIS_OP", new Object[] { issuerClaim, expectedIssuer, oidcServerConfig.getProviderId() });
+                throw new IdTokenDifferentIssuerException(errorMsg);
+            }
+        } else {
+            expectedIssuer = getIssuerFromRequest();
+            if (!expectedIssuer.equals(issuerClaim)) {
+                String otherExpectedIssuer = expectedIssuer.replace("/oidc/providers/", "/oidc/endpoint/");
+                if (!otherExpectedIssuer.equals(issuerClaim)) {
+                    String errorMsg = Tr.formatMessage(tc, "ID_TOKEN_ISSUER_NOT_THIS_OP", new Object[] { issuerClaim, expectedIssuer, oidcServerConfig.getProviderId() });
+                    throw new IdTokenDifferentIssuerException(errorMsg);
+                }
+            }
         }
     }
 
@@ -194,9 +228,22 @@ public class LogoutTokenBuilder {
     void removeRefreshTokenAssociatedWithOAuthTokenFromCache(OAuth20Token cachedToken) {
         CacheUtil cu = new CacheUtil(tokenCache);
         OAuth20Token refreshToken = cu.getRefreshToken(cachedToken);
-        if (refreshToken != null) {
+        if (refreshToken != null && !refreshTokenHasOfflineAccessScope(refreshToken)) {
             tokenCache.remove(refreshToken.getTokenString());
         }
+    }
+
+    boolean refreshTokenHasOfflineAccessScope(OAuth20Token refreshToken) {
+        String[] scopes = refreshToken.getScope();
+        if (scopes == null) {
+            return false;
+        }
+        for (String scope : scopes) {
+            if (OIDCConstants.OIDC_DISC_SCOPES_SUPP_OFFLINE_ACC.equals(scope)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -361,6 +408,7 @@ public class LogoutTokenBuilder {
         logoutTokenClaims.setIssuer(issuer);
         logoutTokenClaims.setAudience(client.getClientId());
         logoutTokenClaims.setIssuedAtToNow();
+        logoutTokenClaims.setExpirationTimeMinutesInTheFuture(2);
         logoutTokenClaims.setGeneratedJwtId();
 
         Map<String, Object> eventsClaim = new HashMap<>();
@@ -368,6 +416,16 @@ public class LogoutTokenBuilder {
         logoutTokenClaims.setClaim("events", eventsClaim);
 
         return logoutTokenClaims;
+    }
+
+    String getIssuerFromRequest() {
+        String issuerIdentifier = request.getScheme() + "://" + request.getServerName();
+        int port = request.getServerPort();
+        if (port != 80 && port != 443) {
+            issuerIdentifier += ":" + port;
+        }
+        issuerIdentifier += "/oidc/providers/" + oidcServerConfig.getProviderId();
+        return issuerIdentifier;
     }
 
 }

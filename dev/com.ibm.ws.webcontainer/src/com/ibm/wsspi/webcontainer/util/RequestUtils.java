@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.wsspi.webcontainer.util;
 
@@ -53,6 +50,8 @@ public class RequestUtils {
     private static final int maxDuplicateHashKeyParams = WCCustomProperties.MAX_DUPLICATE_HASHKEY_PARAMS; // PM58495 (728397)
     private static final boolean decodeParamViaReqEncoding = WCCustomProperties.DECODE_PARAM_VIA_REQ_ENCODING; // PM92940
     private static final boolean printbyteValueandcharParamdata = WCCustomProperties.PRINT_BYTEVALUE_AND_CHARPARAMDATA; //PM92940
+    
+    private static final boolean SERVLET61_OR_ABOVE = com.ibm.ws.webcontainer.osgi.WebContainer.isServlet61orAbove();
 
    /**
     *
@@ -224,7 +223,12 @@ public class RequestUtils {
                                     logger.logp(Level.WARNING, CLASS_NAME, "parseName", "invalid.query.string");
                                     return null;
                                 } //PK75617 ends
-                                throw new IllegalArgumentException(); //@RWS5
+                                if (SERVLET61_OR_ABOVE) {
+                                    throw new IllegalStateException(); 
+                                }
+                                else {
+                                    throw new IllegalArgumentException(); 
+                                }
                             } //PK75617
                             // c[j++] = (char)(num1*16 + num2);       //@RWS5
                             char newChar = (char) ((num1 << 4) | num2); //@RWS8
@@ -327,7 +331,13 @@ public class RequestUtils {
                                     logger.logp(Level.WARNING, CLASS_NAME, "parseName", "invalid.query.string");
                                     return null;
                                 } //PK75617 ends
-                                throw new IllegalArgumentException(); //@RWS5
+
+                                if (SERVLET61_OR_ABOVE) {
+                                    throw new IllegalStateException(); 
+                                }
+                                else {
+                                    throw new IllegalArgumentException(); 
+                                }
                             } //PK75617
                               // c[j++] = (char)(num1*16 + num2);       //@RWS5
                             char newChar = (char) ((num1 << 4) | num2); //@RWS8
@@ -545,50 +555,73 @@ public class RequestUtils {
                 String key = null; //PM92940 Start
                 String value = null;
 
-                if (decodeParamViaReqEncoding && (!encoding_is_ShortEnglish)) {
+                try {
+                    if (decodeParamViaReqEncoding && (!encoding_is_ShortEnglish)) {
 
-                    // data, start, (end-start),encoding, string
-                    key = parse_decode_Parameter(qs.getKey(), encoding, "paramKey");
+                        // data, start, (end-start),encoding, string
+                        key = parse_decode_Parameter(qs.getKey(), encoding, "paramKey");
 
-                    if (!qs.hasEquals()) {
-                        value = key != null ? EMPTY_STRING : null;
-                    } else {
-                        value = parse_decode_Parameter(qs.getValue(), encoding, "paramValue");
-                    }
-
-                    if (ignoreInvalidQueryString && ((value == null) || (key == null))) {
-                        continue;
-                    }
-
-                } else {
-                    key = qs.parseKey();
-                    //PM35450 Start
-                    //String value = null;
-                    if (!qs.hasEquals()) {
-                        value = key != null ? EMPTY_STRING : null;
-                    } else {
-                        value = qs.parseValue();
-                    }
-                    //PM35450 End
-
-                    if (ignoreInvalidQueryString && ((value == null) || (key == null))) { //PK75617
-                        continue;
-                    } //PK75617
-                    if (!encoding_is_ShortEnglish) {
-                        try {
-                            if (!qs.isKeySingleByteString()) {
-                                key = new String(key.getBytes(SHORT_ENGLISH), encoding);
-                            }
-                            if (!qs.isValueSingleByteString()) {
-                                value = new String(value.getBytes(SHORT_ENGLISH), encoding);
-                            }
-                        } catch (UnsupportedEncodingException uee) {
-                            //No need to nls. SHORT_ENGLISH will always be supported
-                            logger.logp(Level.SEVERE, CLASS_NAME, "parseQueryString", "unsupported exception", uee);
-                            throw new IllegalArgumentException();
+                        if (!qs.hasEquals()) {
+                            value = key != null ? EMPTY_STRING : null;
+                        } else {
+                            value = parse_decode_Parameter(qs.getValue(), encoding, "paramValue");
                         }
-                    }
-                } //PM92940 End
+
+                        if (ignoreInvalidQueryString && ((value == null) || (key == null))) {
+                            //reason to have this log behind the ignore flag - app wants to continue operation with bad pairs
+                            //but it also wants to know about the bad pairs combination to fix them later.
+                            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                                logger.logp(Level.FINE, CLASS_NAME, "parseQueryString", "null in (key,value) suggests that an invalid character in either/both: key[" + key + "] , value ["+value+"] ;pair position ["+ totalSize + "]");
+                            } 
+                            continue;
+                        }
+
+                    } else {
+                        key = qs.parseKey();
+                        //PM35450 Start
+                        //String value = null;
+                        if (!qs.hasEquals()) {
+                            value = key != null ? EMPTY_STRING : null;
+                        } else {
+                            value = qs.parseValue();
+                        }
+                        //PM35450 End
+
+                        if (ignoreInvalidQueryString && ((value == null) || (key == null))) { //PK75617
+                            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                                logger.logp(Level.FINE, CLASS_NAME, "parseQueryString", "null in (key,value) suggests there is an invalid character in either/both: key[" + key + "] , value ["+value+"] ;pair position ["+ totalSize + "]");
+                            } 
+                            continue;
+                        }//PK75617
+
+                        if (!encoding_is_ShortEnglish) {
+                            try {
+                                if (!qs.isKeySingleByteString()) {
+                                    key = new String(key.getBytes(SHORT_ENGLISH), encoding);
+                                }
+                                if (!qs.isValueSingleByteString()) {
+                                    value = new String(value.getBytes(SHORT_ENGLISH), encoding);
+                                }
+                            } catch (UnsupportedEncodingException uee) {
+                                //No need to nls. SHORT_ENGLISH will always be supported
+                                logger.logp(Level.SEVERE, CLASS_NAME, "parseQueryString", "unsupported exception", uee);
+                                if (SERVLET61_OR_ABOVE) {
+                                    throw new IllegalStateException(); 
+                                }
+                                else {
+                                    throw new IllegalArgumentException(); 
+                                }
+                            }
+                        }
+                    } //PM92940 End
+                }
+                catch (IllegalStateException ise) {
+                    //if both key and value are null (meaning the key is probably bad thus value is skipped), use the totalSize to estimate the position of the bad pair
+                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                        logger.logp(Level.FINE, CLASS_NAME, "parseQueryString", "null in (key,value) suggests that an invalid character in either/both: key[" + key + "] , value ["+value+"] ;pair position ["+ totalSize + "]");
+                    } 
+                    throw ise;
+                }
 
                 //logger.logp(Level.FINE, CLASS_NAME,"parseQueryString", "key="+key+", value="+value);
                 String valArray[] = new String[] { value };
@@ -609,7 +642,12 @@ public class RequestUtils {
                             logger.logp(Level.SEVERE, CLASS_NAME, "parseQueryString",
                                         MessageFormat.format(nls.getString("Exceeding.maximum.hash.collisions"), new Object[] { maxDuplicateHashKeyParams }));
 
-                            throw new IllegalArgumentException();
+                            if (SERVLET61_OR_ABOVE) {
+                                throw new IllegalStateException(); 
+                            }
+                            else {
+                                throw new IllegalArgumentException(); 
+                            }
                         }
                     } // 728397 End 
                 }
@@ -619,7 +657,13 @@ public class RequestUtils {
                 // possibly 10000 big enough, will never be here 
                 logger.logp(Level.SEVERE, CLASS_NAME, "parseQueryString",
                             MessageFormat.format(nls.getString("Exceeding.maximum.parameters"), new Object[] { maxParamPerRequest, totalSize }));
-                throw new IllegalArgumentException();
+                
+                if (SERVLET61_OR_ABOVE) {
+                    throw new IllegalStateException(); 
+                }
+                else {
+                    throw new IllegalArgumentException(); 
+                }
             } // 724365 End
         }
 
@@ -636,7 +680,12 @@ public class RequestUtils {
         }                                                                                            //PK75617
 
         if (cha == null || cha.length == 0) {
-            throw new IllegalArgumentException("query string or post data is null");
+            if (SERVLET61_OR_ABOVE) {
+                throw new IllegalStateException(nls.getString("query.or.post.is.null")); 
+            }
+            else {
+                throw new IllegalArgumentException(nls.getString("query.or.post.is.null")); 
+            }
         }
 
         // Call optimized version if there is only 1 char[]
@@ -684,7 +733,12 @@ public class RequestUtils {
                printValues(paramData, "decoded " + val);                        
        }catch ( UnsupportedEncodingException uee ) {
            logger.logp(Level.SEVERE, CLASS_NAME,"parse_decode_Parameter", "unsupported exception--> ", uee);
-           throw new IllegalArgumentException();
+           if (SERVLET61_OR_ABOVE) {
+               throw new IllegalStateException(); 
+           }
+           else {
+               throw new IllegalArgumentException(); 
+           }
        }catch ( IllegalArgumentException ie ) {
            if (ignoreInvalidQueryString)                                                                        
            {

@@ -1,17 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.el.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE9_OR_LATER_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -48,22 +46,22 @@ public class EL30MiscTests {
     private static final Logger LOG = Logger.getLogger(EL30MiscTests.class.getName());
 
     @Server("elMiscServer")
-    public static LibertyServer elServer;
+    public static LibertyServer server;
 
     private static final String ServiceLookup_AppName = "ELServicesLookup";
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(elServer, "ELServicesLookup.war", "com.ibm.ws.el30.fat.servicelookup");
+        ShrinkHelper.defaultDropinApp(server, "ELServicesLookup.war", "com.ibm.ws.el30.fat.servicelookup");
 
-        elServer.startServer(EL30MiscTests.class.getSimpleName() + ".log");
+        server.startServer(EL30MiscTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (elServer != null && elServer.isStarted()) {
-            elServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 
@@ -78,7 +76,7 @@ public class EL30MiscTests {
     public void testEL30ServiceLookup() throws Exception {
         WebConversation wc = new WebConversation();
 
-        String url = ELUtils.createHttpUrlString(elServer, ServiceLookup_AppName, "TestServiceLookup");
+        String url = ELUtils.createHttpUrlString(server, ServiceLookup_AppName, "TestServiceLookup");
         LOG.info("url: " + url);
 
         WebRequest request = new GetMethodWebRequest(url);
@@ -105,20 +103,20 @@ public class EL30MiscTests {
      *
      * @throws Exception
      */
-    @SkipForRepeat({SkipForRepeat.EE9_FEATURES,SkipForRepeat.EE10_FEATURES})
+    @SkipForRepeat(EE9_OR_LATER_FEATURES)
     @Test
     public void testEL22ServiceLookup() throws Exception {
 
-        elServer.saveServerConfiguration();
+        server.saveServerConfiguration();
 
-        ServerConfiguration configuration = elServer.getServerConfiguration();
+        ServerConfiguration configuration = server.getServerConfiguration();
         LOG.info("Server configuration that was saved: " + configuration);
 
-        elServer.setMarkToEndOfLog();
-        elServer.setServerConfigurationFile("serverConfigs/jsp22server.xml");
-        elServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(ServiceLookup_AppName), true, "CWWKT0016I:.*ELServicesLookup.*");
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile("serverConfigs/jsp22server.xml");
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(ServiceLookup_AppName), true, "CWWKT0016I:.*ELServicesLookup.*");
 
-        configuration = elServer.getServerConfiguration();
+        configuration = server.getServerConfiguration();
         LOG.info("Updated server configuration: " + configuration);
 
         try {
@@ -126,7 +124,7 @@ public class EL30MiscTests {
 
             wc.setExceptionsThrownOnErrorStatus(false);
 
-            String url = ELUtils.createHttpUrlString(elServer, ServiceLookup_AppName, "EL22Test.jsp");
+            String url = ELUtils.createHttpUrlString(server, ServiceLookup_AppName, "EL22Test.jsp");
             LOG.info("url: " + url);
 
             WebRequest request = new GetMethodWebRequest(url);
@@ -138,10 +136,10 @@ public class EL30MiscTests {
             assertTrue("The response did not contain: Lookup works!", response.getText().contains("Lookup works!"));
 
         } finally {
-            elServer.setMarkToEndOfLog();
-            elServer.restoreServerConfiguration();
+            server.setMarkToEndOfLog();
+            server.restoreServerConfiguration();
             // Wait for the application that is still deployed to start.
-            elServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(ServiceLookup_AppName), true, "CWWKT0016I:.*ELServicesLookup.*");
+            server.waitForConfigUpdateInLogUsingMark(Collections.singleton(ServiceLookup_AppName), true, "CWWKT0016I:.*ELServicesLookup.*");
         }
     }
 }

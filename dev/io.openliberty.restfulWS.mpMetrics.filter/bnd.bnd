@@ -48,6 +48,8 @@ Import-Package: \
     org.eclipse.microprofile.metrics;version="[5.0,6)",\
 	org.eclipse.microprofile.metrics.*;version="[5.0,6)",\
 	io.openliberty.microprofile.metrics50,\
+	io.openliberty.microprofile.metrics.internal.monitor,\
+	io.openliberty.microprofile.metrics.internal.monitor.computed.internal,\
     !*.internal.*,*
 
 Private-Package: \
@@ -62,6 +64,7 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
 
 -buildpath: \
 	com.ibm.ws.classloading,\
+	io.openliberty.org.eclipse.microprofile.config.3.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	com.ibm.ws.monitor,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
@@ -73,6 +76,7 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.logging.core,\
 	io.openliberty.microprofile.metrics.5.0.internal,\
+	io.openliberty.microprofile.metrics.5.0.monitor.internal,\
 	io.openliberty.org.eclipse.microprofile.metrics.5.0;version=latest,\
 	com.ibm.ws.jaxrs.defaultexceptionmapper.jakarta;version=latest, \
 	com.ibm.ws.microprofile.metrics.common;version=latest,\

@@ -13,7 +13,8 @@ IBM-API-Package: javax.servlet.sip.annotation;  type="spec", \
  com.ibm.websphere.sip.resolver;  type="ibm-api", \
  com.ibm.websphere.sip.unmatchedMessages.events;  type="ibm-api", \
  com.ibm.websphere.sip.unmatchedMessages;  type="ibm-api", \
- com.ibm.websphere.sip;  type="ibm-api"
+ com.ibm.websphere.sip;  type="ibm-api", \
+ com.ibm.websphere.endpoint; type="ibm-api"
 IBM-ShortName: sipServlet-1.1
 Subsystem-Name: SIP Servlet 1.1
 -features=\

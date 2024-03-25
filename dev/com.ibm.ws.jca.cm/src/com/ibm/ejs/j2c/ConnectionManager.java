@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -321,12 +321,12 @@ public final class ConnectionManager implements com.ibm.ws.j2c.ConnectionManager
                 mcWrapper.setPoolState(poolState);
                 if (mcWrapper.do_not_reuse_mcw) {
                     if (isTraceOn && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Connection error occurred for this mcw " + mcWrapper + ", mcw will not be reuse");
+                        Tr.debug(this, tc, "Connection error occurred for this mcw " + mcWrapper + ", mcw will not be reused");
                     }
                     mcWrapper.markStale();
-                    ResourceException e = new ResourceException("Resource adatepr called connection error event during getConnection " +
+                    ResourceException e = new ResourceException("Resource adapter called connection error event during getConnection " +
                                                                 "processing and did not throw a resource exception.  The reason for " +
-                                                                "this falue may have been logged during the connection error event " +
+                                                                "this failure may have been logged during the connection error event " +
                                                                 "logging.");
                     throw e;
                 }

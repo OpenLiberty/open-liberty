@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,13 +39,16 @@ import com.ibm.ws.config.admin.ConfigurationDictionary;
 import com.ibm.ws.config.admin.ExtendedConfiguration;
 import com.ibm.ws.config.admin.internal.ConfigurationStorageHelper.ConfigStorageConsumer;
 
+import io.openliberty.checkpoint.spi.CheckpointHook;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
+
 /**
  * ConfigurationStore manages all active configurations along with persistence. The current
  * implementation uses a filestore and serialization of the configuration dictionaries to files
  * identified by their pid. Persistence details are in the constructor, saveConfiguration, and
  * deleteConfiguration and can be factored out separately if required.
  */
-class ConfigurationStore implements Runnable {
+class ConfigurationStore implements Runnable, CheckpointHook {
     private static final TraceComponent tc = Tr.register(ConfigurationStore.class, ConfigAdminConstants.TR_GROUP, ConfigAdminConstants.NLS_PROPS);
 
     private final ConfigAdminServiceFactory caFactory;
@@ -308,7 +311,8 @@ class ConfigurationStore implements Runnable {
         } finally {
             saveMonitor.unlock();
         }
-        if (currentSaveTask == null) {
+        if (currentSaveTask == null && checkpointPhase.restored()) {
+            // no need to save if there is no save task and we have restored
             return;
         }
         readLock();
@@ -348,6 +352,9 @@ class ConfigurationStore implements Runnable {
         return new HashMap<>();
     }
 
+    private boolean addedCheckpointSaveHook = false;
+    private final CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
+
     void save() {
         if (saveTask != null) {
             return;
@@ -357,12 +364,30 @@ class ConfigurationStore implements Runnable {
             if (shutdown) {
                 return;
             }
+            if (!(checkpointPhase.restored())) {
+                if (addedCheckpointSaveHook) {
+                    return;
+                }
+                // Before a checkpoint case;
+                // for checkpoint add hook to save during prepare
+                if (addedCheckpointSaveHook = checkpointPhase.addMultiThreadedHook(this)) {
+                    // Successfully added hook; return without background task to save
+                    return;
+                }
+            }
+
+            // Not during checkpoint; do the normal scheduled save in the background
             if (saveTask == null) {
                 saveTask = caFactory.updateQueue.addScheduled(this);
             }
         } finally {
             saveMonitor.unlock();
         }
+    }
+
+    @Override
+    public void prepare() {
+        run();
     }
 
     @Override

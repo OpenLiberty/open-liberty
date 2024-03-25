@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,7 +35,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.zip.cache.ZipCachingProperties;
 import com.ibm.ws.artifact.zip.internal.SystemUtils;
-import com.ibm.ws.kernel.service.util.KeyBasedLockStore;
+import com.ibm.ws.kernel.boot.utils.KeyBasedLockStore;
 
 /**
  * Reaper facility for managing ZipFiles.
@@ -160,6 +160,16 @@ public class ZipFileReaper {
             synchronized (completedStorage) {
                 completedStorage.validate();
             }
+        }
+    }
+
+    @Trivial
+    public static class OpenZipFile {
+        public final ZipFile zipFile;
+        final long lastModified;
+        OpenZipFile(ZipFile zipFile, long lastModified) {
+            this.zipFile = zipFile;
+            this.lastModified = lastModified;
         }
     }
 
@@ -1489,12 +1499,12 @@ public class ZipFileReaper {
     }
 
     @Trivial
-    public ZipFile open(String path) throws IOException, ZipException {
+    public OpenZipFile open(String path) throws IOException, ZipException {
         return open( path, System.nanoTime() );
     }
 
     @Trivial
-    public ZipFile open(String path, long openAt) throws IOException, ZipException {
+    public OpenZipFile open(String path, long openAt) throws IOException, ZipException {
         String methodName = "open";
         if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " Path [ " + path + " ] at [ " + toRelSec_s(initialAt, openAt) + " ]");
@@ -1597,7 +1607,7 @@ public class ZipFileReaper {
                 if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
                     Tr.debug(tc, methodName + " Path [ " + path + " ] [ " + zipFile + " ]");
                 }
-                return zipFile;
+                return new OpenZipFile(zipFile, data.getLastModified());
             }
         } finally {
             reaperLock.releaseReadLock();

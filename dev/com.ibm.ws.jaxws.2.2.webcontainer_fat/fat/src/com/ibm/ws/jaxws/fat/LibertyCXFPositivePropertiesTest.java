@@ -18,6 +18,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.ws.jaxws.fat.util.ExplodedShrinkHelper;
 import com.ibm.ws.jaxws.fat.util.TestUtils;
 import com.ibm.ws.properties.test.servlet.LibertyCXFPositivePropertiesTestServlet;
@@ -25,7 +26,7 @@ import com.ibm.ws.properties.test.servlet.LibertyCXFPositivePropertiesTestServle
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /*
@@ -81,10 +82,12 @@ public class LibertyCXFPositivePropertiesTest {
                                       "apps/libertyCXFProperty.war/WEB-INF/wsdl", "image.wsdl");
 
         // For EE10, we test all the properties tested in the other repeats plus the additional Woodstox configuration property
-        if (JakartaEE10Action.isActive()) {
-            TestUtils.publishFileToServer(server,
-                                          "LibertyCXFPropertiesTest", "woodstox-true-bootstrap.properties",
-                                          "", "bootstrap.properties");
+        if (JakartaEEAction.isEE10OrLaterActive()) {
+            server.getServerBootstrapPropertiesFile().delete(); // In the next line we are forcing overwrite, however, we are deleting here to be sure.
+            server.getServerBootstrapPropertiesFile().copyFromSource(new RemoteFile(server.getMachine(), server.pathToAutoFVTTestFiles
+                                                                                                         + "/LibertyCXFPropertiesTest/woodstox-true-bootstrap.properties"),
+                                                                     false,
+                                                                     true);
         }
 
         server.startServer("LibertyCXFPropertiesTest.log");
@@ -109,7 +112,7 @@ public class LibertyCXFPositivePropertiesTest {
         assertNotNull("The test testCxfPropertyUsedAlternativePolicy failed, and 'cxf.ignore.unsupported.policy' was not configured",
                       server.waitForStringInTraceUsingMark("WARNING: Unsupported policy assertions will be ignored"));
 
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             // Woodstox StAX provider is disabled for these tests, assert disabling it is shown in logs.
             assertNotNull("The org.apache.cxf.stax.allowInsecureParser property failed to disable the Woodstox StAX Provider",
                           server.waitForStringInTraceUsingMark("The System Property `org.apache.cxf.stax.allowInsecureParser` is set, using JRE's StAX Provider"));

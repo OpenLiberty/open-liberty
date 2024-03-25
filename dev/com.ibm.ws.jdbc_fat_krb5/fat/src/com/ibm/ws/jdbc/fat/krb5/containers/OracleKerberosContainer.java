@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,13 +18,17 @@ import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_REALM;
 import java.time.Duration;
 
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.OracleXEContainer;
 
-public class OracleKerberosContainer extends OracleContainer {
+/**
+ * Custom Oracle Kerberos Container class
+ * TODO replace with OracleFree
+ */
+public class OracleKerberosContainer extends OracleXEContainer {
 
     private static final Class<?> c = OracleKerberosContainer.class;
 
@@ -62,7 +66,7 @@ public class OracleKerberosContainer extends OracleContainer {
     }
 
     @Override
-    public OracleContainer withUsername(String username) {
+    public OracleXEContainer withUsername(String username) {
         throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 
@@ -72,7 +76,7 @@ public class OracleKerberosContainer extends OracleContainer {
     }
 
     @Override
-    public OracleContainer withPassword(String password) {
+    public OracleXEContainer withPassword(String password) {
         throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 
@@ -82,7 +86,7 @@ public class OracleKerberosContainer extends OracleContainer {
     }
 
     @Override
-    public OracleContainer withDatabaseName(String dbName) {
+    public OracleXEContainer withDatabaseName(String dbName) {
         throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 }

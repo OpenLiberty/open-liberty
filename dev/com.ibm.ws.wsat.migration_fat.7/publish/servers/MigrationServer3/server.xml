@@ -20,7 +20,7 @@
 
 	<httpOptions
 		readTimeout="150s"
-		wirteTimeout="150s"
+		writeTimeout="150s"
 		persistTimeout="150s"
 	/>
 
@@ -31,6 +31,8 @@
         recoverOnStartup="true"
         waitForRecovery="true"
     />
+
+	<wsAtomicTransaction asyncResponseTimeout="60000"/>
 
 	<javaPermission name="*" actions="*" className="java.security.AllPermission"/>
 

@@ -234,7 +234,7 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     });
 
     @Override
-    public boolean getPropagateXAResourceTransactionTimeout() {
+    public boolean isPropagateXAResourceTransactionTimeout() {
         return _propagateXAResourceTransactionTimeout;
     }
 
@@ -417,6 +417,11 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
         return 90;
     }
 
+    @Override
+    public int getLeaseExpiryThreshold() {
+        return 1;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -465,5 +470,10 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     @Override
     public String getBackendURL() {
         return null;
+    }
+
+    @Override
+    public boolean peerRecoveryPrecedence() {
+        return false;
     }
 }

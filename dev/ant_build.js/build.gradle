@@ -58,8 +58,7 @@ dependencies {
     library "com.fasterxml.jackson.core:jackson-databind:2.15.2"
     library "com.google.javascript:closure-compiler:v20160315"
     library "com.jcraft:jsch:0.1.54"
-    library "com.sun.xml.bind:jaxb-core:2.3.0.1"
-    library "com.sun.xml.bind:jaxb-impl:2.3.0.1"
+    library "com.sun.xml.bind:jaxb-impl:2.3.9"
     library "commons-beanutils:commons-beanutils:1.9.2"
     library "commons-collections:commons-collections:3.2.1"
     library "commons-digester:commons-digester:1.8.1"
@@ -114,8 +113,7 @@ def dependencyToPath = [
   "com.fasterxml.jackson.core:jackson-core:2.15.2": "lib/buildtasks/jackson-core-2.15.2.jar",
   "com.fasterxml.jackson.core:jackson-databind:2.15.2": "lib/buildtasks/jackson-databind-2.15.2.jar",
   "com.jcraft:jsch:0.1.54": "lib/buildtasks/jsch-0.1.54.jar",
-  "com.sun.xml.bind:jaxb-core:2.3.0.1": "lib/buildtasks/jaxb-core-2.3.0.1.jar",
-  "com.sun.xml.bind:jaxb-impl:2.3.0.1": "lib/buildtasks/jaxb-impl-2.3.0.1.jar",
+  "com.sun.xml.bind:jaxb-impl:2.3.9": "lib/buildtasks/jaxb-impl-2.3.9.jar",
   "javax.xml.bind:activation:1.0.2": "lib/buildtasks/jaxb-activation.jar",
   "javax.xml.bind:jaxb-api:2.3.0": "lib/buildtasks/jaxb-api-2.3.0.jar",
   "org.osgi:org.osgi.core:5.0.0": "lib/buildtasks/osgi.core.jar",

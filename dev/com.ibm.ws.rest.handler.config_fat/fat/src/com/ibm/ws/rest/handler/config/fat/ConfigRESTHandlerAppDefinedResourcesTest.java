@@ -36,6 +36,7 @@ import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,8 +46,9 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
@@ -55,6 +57,12 @@ import componenttest.topology.utils.HttpsRequest;
 public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     private static final String APP_NAME = "AppDefResourcesApp";
     private static final String DerbyVersion = "10.11.1.1";
+
+    @ClassRule
+    public static RepeatTests r = EERepeatActions.repeat("com.ibm.ws.rest.handler.config.appdef.fat",
+                                                         EERepeatActions.EE10, // EE10
+                                                         EERepeatActions.EE9, // EE9
+                                                         EERepeatActions.EE8); // EE8
 
     @Server("com.ibm.ws.rest.handler.config.appdef.fat")
     public static LibertyServer server;
@@ -1205,7 +1213,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(stack.get(1));
         assertNotNull(stack.get(2));
         assertNotNull(err, cause = failure.getJsonObject("cause"));
-        assertEquals(err, JakartaEE9Action.isActive() || JakartaEE10Action.isActive() ? "jakarta.resource.ResourceException" : "javax.resource.ResourceException",
+        assertEquals(err, JakartaEEAction.isEE9OrLaterActive() ? "jakarta.resource.ResourceException" : "javax.resource.ResourceException",
                      cause.getString("class"));
         assertNotNull(err, message = cause.getString("message"));
         assertTrue(err, message.startsWith("J2CA8011E") && message.contains("1:05:30"));
@@ -1377,9 +1385,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     }
 
     private String getExpectedJmsProviderSpecVersion() {
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             return "3.1";
-        } else if (JakartaEE9Action.isActive()) {
+        } else if (JakartaEEAction.isEE9Active()) {
             return "3.0";
         } else {
             return "2.0";

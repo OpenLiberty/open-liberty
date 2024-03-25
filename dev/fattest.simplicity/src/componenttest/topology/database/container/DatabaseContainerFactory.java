@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ import componenttest.custom.junit.runner.FATRunner;
  * Derby: Uses a derby no-op test container <br>
  * DerbyClient: Uses a derby no-op test container <br>
  * DB2: Uses <a href="https://hub.docker.com/repository/docker/kyleaure/db2">Custom DB2 container</a> <br>
- * Oracle: Uses <a href="https://hub.docker.com/r/gvenzl/oracle-xe">Offical Oracle container</a> <br>
+ * Oracle: Uses <a href="https://hub.docker.com/r/gvenzl/oracle-free">Offical Oracle container</a> <br>
  * Postgres: Uses <a href="https://hub.docker.com/_/postgres">Offical Postgres Container</a> <br>
  * MS SQL Server: Uses <a href="https://hub.docker.com/_/microsoft-mssql-server">Offical Microsoft SQL Container</a> <br>
  *
@@ -119,7 +119,7 @@ public class DatabaseContainerFactory {
                     acceptDB2License.invoke(cont);
                     //Add startup timeout since DB2 tends to take longer than the default 3 minutes on build machines.
                     Method withStartupTimeoutDB2 = cont.getClass().getMethod("withStartupTimeout", Duration.class);
-                    withStartupTimeoutDB2.invoke(cont, Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE ? 5 : 15));
+                    withStartupTimeoutDB2.invoke(cont, getContainerTimeout(5, 15));
                     break;
                 case Derby:
                     break;
@@ -131,7 +131,7 @@ public class DatabaseContainerFactory {
                     usingSid.invoke(cont);
                     //Add startup timeout since Oracle tends to take longer than the default 3 minutes on build machines.
                     Method withStartupTimeoutOracle = cont.getClass().getMethod("withStartupTimeout", Duration.class);
-                    withStartupTimeoutOracle.invoke(cont, Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25));
+                    withStartupTimeoutOracle.invoke(cont, getContainerTimeout(3, 25));
                     break;
                 case Postgres:
                     //This allows postgres by default to participate in XA transactions (2PC).
@@ -185,6 +185,23 @@ public class DatabaseContainerFactory {
             Log.warning(c, "MISSING: " + type + " JDBC driver not in location: " + temp.getAbsolutePath());
         }
 
+        return result;
+    }
+
+    /**
+     * Creates a container timeout duration (in minutes) based on where the test is being run.
+     *
+     * @param  fastTimeout - For fast systems: typically your local system
+     * @param  slowTimeout - For slow systems: typically our build systems
+     *
+     * @return             The timeout duration
+     */
+    private static Duration getContainerTimeout(int fastTimeout, int slowTimeout) {
+        boolean isFast = FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE;
+        Duration result = Duration.ofMinutes(isFast ? fastTimeout : slowTimeout);
+        Log.info(c, "getContainerTimeout", "Returning container timeout of " + result.toMinutes() + " minutes, because"
+                                           + " FAT_TEST_LOCALRUN = " + FATRunner.FAT_TEST_LOCALRUN + " and"
+                                           + " ARM_ARCHITECTURE = " + FATRunner.ARM_ARCHITECTURE);
         return result;
     }
 }

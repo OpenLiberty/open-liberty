@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import jakarta.data.repository.Limit;
+import jakarta.data.Limit;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
@@ -30,13 +30,36 @@ public class ProviderTestServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
     @Inject
+    Composites composites;
+
+    @Inject
     Palindromes palindromes;
 
     /**
-     * Uses a repository from a mock Jakarta Data provider to insert, update, find, and delete entities.
+     * Uses a repository from a mock Jakarta Data provider that is based on the
+     * CDI build compatible extension to query for entities.
      */
     @Test
-    public void testDataProvider() {
+    public void testDataProviderWithBuildCompatibleExtension() {
+        assertEquals(List.of(6L, 9L, 12L, 15L),
+                     composites.findByFactorsContainsOrderByIdAsc(3, Limit.of(4))
+                                     .stream()
+                                     .map(c -> c.id)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of(4L, 9L, 25L),
+                     composites.findByNumUniqueFactorsOrderByIdAsc(3, Limit.of(3))
+                                     .stream()
+                                     .map(c -> c.id)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Uses a repository from a mock Jakarta Data provider that is based on the CDI extension
+     * to insert, update, find, and delete entities.
+     */
+    @Test
+    public void testDataProviderWithExtension() {
         assertEquals(List.of("civic", "kayak", "level", "radar"),
                      palindromes.findByLengthOrderByLettersAsc(5, Limit.of(4))
                                      .stream()

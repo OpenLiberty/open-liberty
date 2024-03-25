@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation;
 
+import static io.openliberty.microprofile.telemetry.internal_fat.common.SpanDataMatcher.isSpan;
 import static io.opentelemetry.api.trace.SpanKind.CLIENT;
 import static io.opentelemetry.api.trace.SpanKind.SERVER;
 import static io.opentelemetry.semconv.trace.attributes.SemanticAttributes.HTTP_METHOD;
@@ -35,30 +36,33 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.GET;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanKind;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
-import jakarta.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.ApplicationPath;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HttpMethod;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.core.Application;
-import jakarta.ws.rs.core.Context;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriInfo;
+import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 
 /**
  * Tests MP Telemetry integration with restfulWS and mpRestClient.
@@ -116,6 +120,9 @@ public class JaxRsEndpoints extends Application {
     @Inject
     private HttpServletRequest request;
 
+    @Inject
+    private InjectableBean injectableBean;
+
     private Client client;
 
     @PostConstruct
@@ -167,6 +174,68 @@ public class JaxRsEndpoints extends Application {
         assertEquals(requestUri.getHost(), httpGet.getAttributes().get(NET_PEER_NAME));
         assertEquals(Long.valueOf(requestUri.getPort()), httpGet.getAttributes().get(NET_PEER_PORT));
         assertThat(httpGet.getAttributes().get(HTTP_URL), containsString("endpoints"));
+
+        return Response.ok(TEST_PASSED).build();
+    }
+
+    //Gets a list of spans created by open telemetry when a test was running and confirms the spans are what we expected and IDs are propagated correctly
+    //spanExporter.reset() should be called at the start of each new test.
+    @GET
+    @Path("/readspansmptel11/{traceId}")
+    public Response readSpansMpTel11(@Context UriInfo uriInfo, @PathParam("traceId") String traceId) {
+        List<SpanData> spanData = spanExporter.getFinishedSpanItems(3, traceId);
+
+        SpanData firstURL = spanData.get(0);
+        SpanData httpGet = spanData.get(1);
+        SpanData secondURL = spanData.get(2);
+
+        assertEquals(SERVER, firstURL.getKind());
+        assertEquals(CLIENT, httpGet.getKind());
+        assertEquals(SERVER, secondURL.getKind());
+
+        assertEquals(firstURL.getSpanId(), httpGet.getParentSpanId());
+        assertEquals(httpGet.getSpanId(), secondURL.getParentSpanId());
+
+        assertEquals(HTTP_OK, firstURL.getAttributes().get(HTTP_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, firstURL.getAttributes().get(HTTP_METHOD));
+        assertEquals("http", firstURL.getAttributes().get(HTTP_SCHEME));
+        assertThat(httpGet.getAttributes().get(HTTP_URL), containsString("endpoints")); //There are many different URLs that will end up here. But all should contain "endpoints"
+
+        // The request used to call /readspans should have the same hostname and port as the test request
+        URI requestUri = uriInfo.getRequestUri();
+        assertEquals(requestUri.getHost(), firstURL.getAttributes().get(NET_HOST_NAME));
+        assertEquals(Long.valueOf(requestUri.getPort()), firstURL.getAttributes().get(NET_HOST_PORT));
+
+        assertEquals(CLIENT, httpGet.getKind());
+        assertEquals("GET", httpGet.getName());
+        assertEquals(HTTP_OK, httpGet.getAttributes().get(HTTP_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, httpGet.getAttributes().get(HTTP_METHOD));
+        assertEquals(requestUri.getHost(), httpGet.getAttributes().get(NET_PEER_NAME));
+        assertEquals(Long.valueOf(requestUri.getPort()), httpGet.getAttributes().get(NET_PEER_PORT));
+        assertThat(httpGet.getAttributes().get(HTTP_URL), containsString("endpoints"));
+
+        return Response.ok(TEST_PASSED).build();
+    }
+
+    //Gets a list of spans created by open telemetry when a test was running and confirms the spans are what we expected and IDs are propagated correctly
+    //spanExporter.reset() should be called at the start of each new test.
+    @GET
+    @Path("/readspanswithspan/{traceId}")
+    public Response readSpansWithSpan(@Context UriInfo uriInfo, @PathParam("traceId") String traceId) {
+        List<SpanData> spanData = spanExporter.getFinishedSpanItems(2, traceId);
+
+        SpanData firstURL = spanData.get(0);
+        SpanData withSpan = spanData.get(1);
+
+        assertThat(firstURL, isSpan()
+                        .withKind(SpanKind.SERVER)
+                        .withAttribute(SemanticAttributes.HTTP_METHOD, "GET")
+                        .withAttribute(SemanticAttributes.HTTP_SCHEME, "http")
+                        .withAttribute(SemanticAttributes.HTTP_STATUS_CODE, 200L));
+
+        assertThat(withSpan, isSpan()
+                        .withKind(SpanKind.INTERNAL)
+                        .withParentSpanId(firstURL.getSpanId()));
 
         return Response.ok(TEST_PASSED).build();
     }
@@ -278,7 +347,7 @@ public class JaxRsEndpoints extends Application {
             LOGGER.info("<<< getMP");
         }
         return Response.ok(Span.current().getSpanContext().getTraceId()).build();
-        
+
     }
 
     //This method is called via mpClient from the entry methods.
@@ -336,6 +405,17 @@ public class JaxRsEndpoints extends Application {
 
             LOGGER.info("<<< getMPAsync");
         }
+        return Response.ok(Span.current().getSpanContext().getTraceId()).build();
+    }
+
+    @GET
+    @Path("/jaxrsclientwithspan")
+    public Response getJaxWithSpan(@Context UriInfo uriInfo) {
+        LOGGER.info(">>> getJaxWithSpans");
+        injectableBean.methodWithSpan();
+
+        LOGGER.info("<<< getJaxWithSpans");
+
         return Response.ok(Span.current().getSpanContext().getTraceId()).build();
     }
 

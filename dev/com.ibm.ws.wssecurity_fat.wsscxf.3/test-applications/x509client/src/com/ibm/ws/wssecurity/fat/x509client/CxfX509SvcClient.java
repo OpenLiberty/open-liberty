@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -251,6 +251,8 @@ public class CxfX509SvcClient extends HttpServlet {
         // Load the keystore
         //Crypto crypto = new Merlin();
         requestContext.put("ws-security.callback-handler", "com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback");
+        //issue 30353
+        requestContext.put("ws-security.asymmetric.signature.algorithm", "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
         String strServerDir = System.getProperty("server.config.dir").replace('\\', '/');
         String strX509JksSignLocation = strServerDir + "x509ClientDefaultS.properties";
 
@@ -292,6 +294,8 @@ public class CxfX509SvcClient extends HttpServlet {
         String strX509JksSignLocation = strServerDir + "/x509ClientDefaultS.properties";
         String strX509JksEncrLocation = strServerDir + "/x509ClientSecondE.properties"; // do the server.xml on purpose
         requestContext.put("ws-security.callback-handler", "com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"); // The callback
+        //issue 30353
+        requestContext.put("ws-security.asymmetric.signature.algorithm", "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256");
         requestContext.put("ws-security.signature.properties", getProperties(strX509JksSignLocation, strServerDir));
         requestContext.put("ws-security.encryption.properties", getProperties(strX509JksEncrLocation, strServerDir));
     }

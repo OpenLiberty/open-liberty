@@ -24,7 +24,6 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.Security;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,11 +65,6 @@ public class VerifySignatureUtility {
     private String defaultKeyID = null;
 
     private final ProgressBar progressBar = ProgressBar.getInstance();
-
-    VerifySignatureUtility() {
-        Security.addProvider(new BouncyCastleProvider());
-
-    }
 
     private String getLibertyKeyID() throws InstallException {
         if (defaultKeyID != null) {
@@ -152,17 +146,26 @@ public class VerifySignatureUtility {
             URLConnection conn;
             try {
                 logger.fine("Downloading key... " + key.getValue());
+                ArtifactDownloaderUtils.checkValidProxy(envMap);
                 URL keyUrl = new URL(key.getValue());
                 Proxy proxy;
+                String proxyEncodedAuth = "";
                 if (envMap.get("https.proxyHost") != null) {
                     proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
+                    proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword"));
                 } else if (envMap.get("http.proxyHost") != null) {
                     proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
+                    proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("http.proxyUser"), (String) envMap.get("http.proxyPassword"));
                 } else {
                     proxy = Proxy.NO_PROXY;
                 }
                 conn = keyUrl.openConnection(proxy);
                 conn.setConnectTimeout(10000);
+
+                if (!proxyEncodedAuth.isEmpty()) {
+                    logger.fine("encoded proxy auth: " + proxyEncodedAuth);
+                    conn.setRequestProperty("Proxy-Authorization", proxyEncodedAuth);
+                }
 
                 try (BufferedInputStream in = new BufferedInputStream(conn.getInputStream())) {
                     File tempFile = File.createTempFile("signature", ".asc", Utils.getInstallDir());
@@ -296,6 +299,7 @@ public class VerifySignatureUtility {
                 progressBar.updateProgress(increment);
 
             } catch (IOException | PGPException e) {
+                logger.fine(e.getMessage());
                 failedFeatures.add(f);
             }
         }
@@ -368,7 +372,7 @@ public class VerifySignatureUtility {
      * @throws FileNotFoundException
      */
     private boolean verifySignature(String fileName, PGPSignature sig, PGPPublicKey pubKey) throws IOException, FileNotFoundException, PGPException {
-        sig.init(new JcaPGPContentVerifierBuilderProvider().setProvider("BC"), pubKey);
+        sig.init(new JcaPGPContentVerifierBuilderProvider().setProvider(new BouncyCastleProvider()), pubKey);
 
         // Read file to verify
         try (InputStream dIn = new BufferedInputStream(new FileInputStream(fileName))) {

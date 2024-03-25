@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -207,7 +207,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      * and PoolManager are null. It may still have references to
      * XATransactionWrapper, LocalTransactionWrapper, NoTransactionWrapper, and
      * ConnectionEventListener, but those wrappers are not allowed to hold connection
-     * related resoures (for example: XAResoure). A MCWrapper is pooled in
+     * related resources (for example: XAResoure). A MCWrapper is pooled in
      * the MCWrapperPool when in the INACTIVE state. In addition, all variables which
      * need to be reset every use should be at some default value when in the INACTIVE
      * state.
@@ -409,6 +409,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
     private boolean pretestThisConnection = false;
     private boolean aborted = false;
     private boolean qmidenabled = true;
+    protected boolean errorDuringExternalCall = false;
 
     /**
      * Constructor is protected and should only be used by
@@ -2175,10 +2176,10 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
             /*
              * When a resource adapter uses connectionErrorOccurred during a
              * createManagedConnection, matchManagedConnection or getConnection
-             * we can not reuse the mcw. Reuse of the mcw may results in duplicate
+             * we can not reuse the mcw. Reuse of the mcw may result in duplicate
              * entries in the MCWrapperListPool. To be safe, all mcw connectionErrorOccurred
              * events will be marked not to be reused. Note, the use of connectionErrorOccurred before
-             * the managed connection is inuse, may not be spec compliant, but the customer for this request has
+             * the managed connection is in use, may not be spec compliant, but the customer for this request has
              * stated their resource adapter worked with this behavior on 5.0.1.
              */
             if (isTracingEnabled && tc.isDebugEnabled()) {
@@ -2186,6 +2187,7 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
                                    "Attempting to cleanup and destroy this connection cleanly");
             }
             do_not_reuse_mcw = true;
+            errorDuringExternalCall = true;
 
         } else {
             /*
@@ -2544,6 +2546,12 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
         if (isStale()) {
             buf.append("[STALE]  ");
         }
+
+        // Added errorDuringExternalCall check for tracing purposes
+        if (errorDuringExternalCall) {
+            buf.append("[ExtCallError]  ");
+        }
+
         if (do_not_reuse_mcw) {
             buf.append("[REMOVING]  ");
         }
@@ -2677,219 +2685,6 @@ public final class MCWrapper implements com.ibm.ws.j2c.MCWrapper, JCAPMIHelper {
      */
     @Override
     public void setPoolState(int i) {
-        if (pm.gConfigProps.callResourceAdapterStatMethods) {
-            if (poolState.get() == 0) {
-                /*
-                 * If current state is 0, we are a new connection, or we are in
-                 * transition to one of the pools.
-                 */
-                if (i == 1) {
-                    /*
-                     * This connection is moving from new/transaction to free
-                     */
-                    synchronized (pm.gConfigProps.numberOfFreeConnectionsLockObject) {
-                        ++pm.gConfigProps.numberOfFreeConnections;
-                    }
-                }
-                if (i == 2) {
-                    /*
-                     * This connection is moving from new/transaction to shared
-                     */
-                    synchronized (pm.gConfigProps.numberOfInuseConnectionsLockObject) {
-                        ++pm.gConfigProps.numberOfInuseConnections;
-                    }
-                }
-                if (i == 3) {
-                    /*
-                     * This connection is moving from new/transaction to unshared
-                     */
-                    synchronized (pm.gConfigProps.numberOfInuseConnectionsLockObject) {
-                        ++pm.gConfigProps.numberOfInuseConnections;
-                    }
-                }
-                if (i == 4) {
-                    /*
-                     * This connection is moving from new/transaction to waiter
-                     */
-                    // do nothing here
-                    //++pm.gConfigProps.numberOfInuseConnections;
-                }
-            }
-            if (poolState.get() == 1) {
-                /*
-                 * We are in the free pool, moving to inuse.
-                 */
-                if (i == 0) {
-                    /*
-                     * This connection is moving from free to transition
-                     */
-                    synchronized (pm.gConfigProps.numberOfFreeConnectionsLockObject) {
-                        --pm.gConfigProps.numberOfFreeConnections;
-                    }
-                }
-                if (i == 2) {
-                    /*
-                     * This connection is moving from free to shared
-                     */
-                    synchronized (pm.gConfigProps.numberOfFreeConnectionsLockObject) {
-                        --pm.gConfigProps.numberOfFreeConnections;
-                    }
-                    synchronized (pm.gConfigProps.numberOfInuseConnectionsLockObject) {
-                        ++pm.gConfigProps.numberOfInuseConnections;
-                    }
-                }
-                if (i == 3) {
-                    /*
-                     * This connection is moving from free to unshared
-                     */
-                    synchronized (pm.gConfigProps.numberOfFreeConnectionsLockObject) {
-                        --pm.gConfigProps.numberOfFreeConnections;
-                    }
-                    synchronized (pm.gConfigProps.numberOfInuseConnectionsLockObject) {
-                        ++pm.gConfigProps.numberOfInuseConnections;
-                    }
-                }
-                if (i == 4) {
-                    /*
-                     * This connection is moving from free to waiter
-                     */
-                    synchronized (pm.gConfigProps.numberOfFreeConnectionsLockObject) {
-                        --pm.gConfigProps.numberOfFreeConnections;
-                    }
-                    //--pm.gConfigProps.numberOfFreeConnections;
-                    //++pm.gConfigProps.numberOfInuseConnections;
-                }
-
-            }
-            if (poolState.get() == 2) {
-                /*
-                 * We are in the shared pool, moving to free/transition.
-                 */
-                if (i == 0) {
-                    /*
-                     * This connection is moving from shared to transition
-                     */
-                    synchronized (pm.gConfigProps.numberOfInuseConnectionsLockObject) {
-                        --pm.gConfigProps.numberOfInuseConnections;
-                    }
-                }
-                if (i == 1) {
-                    /*
-                     * This connection is moving from shared to free
-                     */
-                    synchronized (pm.gConfigProps.numberOfFreeConnectionsLockObject) {
-                        ++pm.gConfigProps.numberOfFreeConnections;
-                    }
-                    synchronized (pm.gConfigProps.numberOfInuseConnectionsLockObject) {
-                        --pm.gConfigProps.numberOfInuseConnections;
-                    }
-                }
-                if (i == 3) {
-                    /*
-                     * This connection is moving from shared to unshared
-                     */
-                    // do nothing
-                    //--pm.gConfigProps.numberOfFreeConnections;
-                    //++pm.gConfigProps.numberOfInuseConnections;
-                }
-                if (i == 4) {
-                    /*
-                     * This connection is moving from shared to waiter
-                     */
-                    synchronized (pm.gConfigProps.numberOfInuseConnectionsLockObject) {
-                        --pm.gConfigProps.numberOfInuseConnections;
-                    }
-                    //--pm.gConfigProps.numberOfFreeConnections;
-                    //++pm.gConfigProps.numberOfInuseConnections;
-                }
-
-            }
-            if (poolState.get() == 3) {
-                /*
-                 * We are in the unshared pool, moving to free/transition.
-                 */
-                if (i == 0) {
-                    /*
-                     * This connection is moving from unshared to transition
-                     */
-                    synchronized (pm.gConfigProps.numberOfInuseConnectionsLockObject) {
-                        --pm.gConfigProps.numberOfInuseConnections;
-                    }
-                }
-                if (i == 1) {
-                    /*
-                     * This connection is moving from unshared to free
-                     */
-                    synchronized (pm.gConfigProps.numberOfFreeConnectionsLockObject) {
-                        ++pm.gConfigProps.numberOfFreeConnections;
-                    }
-                    synchronized (pm.gConfigProps.numberOfInuseConnectionsLockObject) {
-                        --pm.gConfigProps.numberOfInuseConnections;
-                    }
-                }
-                if (i == 2) {
-                    /*
-                     * This connection is moving from unshared to shared
-                     */
-                    // do nothing
-                    //--pm.gConfigProps.numberOfFreeConnections;
-                    //++pm.gConfigProps.numberOfInuseConnections;
-                }
-                if (i == 4) {
-                    /*
-                     * This connection is moving from unshared to waiter
-                     */
-                    synchronized (pm.gConfigProps.numberOfInuseConnectionsLockObject) {
-                        --pm.gConfigProps.numberOfInuseConnections;
-                    }
-                    //--pm.gConfigProps.numberOfFreeConnections;
-                    //++pm.gConfigProps.numberOfInuseConnections;
-                }
-
-            }
-            if (poolState.get() == 4) {
-                /*
-                 * We are in the waiter pool, moving to free/transition.
-                 */
-                if (i == 0) {
-                    /*
-                     * This connection is moving from waiter to transition
-                     */
-                    // do nothing
-                    //--pm.gConfigProps.numberOfInuseConnections;
-                }
-                if (i == 1) {
-                    /*
-                     * This connection is moving from waiter to free
-                     */
-                    synchronized (pm.gConfigProps.numberOfFreeConnectionsLockObject) {
-                        ++pm.gConfigProps.numberOfFreeConnections;
-                    }
-                    //--pm.gConfigProps.numberOfInuseConnections;
-                }
-                if (i == 2) {
-                    /*
-                     * This connection is moving from waiter to shared
-                     */
-                    // do nothing
-                    //--pm.gConfigProps.numberOfFreeConnections;
-                    synchronized (pm.gConfigProps.numberOfInuseConnectionsLockObject) {
-                        ++pm.gConfigProps.numberOfInuseConnections;
-                    }
-                }
-                if (i == 3) {
-                    /*
-                     * This connection is moving from waiter to unshared
-                     */
-                    // do nothing here
-                    //--pm.gConfigProps.numberOfFreeConnections;
-                    synchronized (pm.gConfigProps.numberOfInuseConnectionsLockObject) {
-                        ++pm.gConfigProps.numberOfInuseConnections;
-                    }
-                }
-            }
-
-        }
         poolState.set(i);
     }
 

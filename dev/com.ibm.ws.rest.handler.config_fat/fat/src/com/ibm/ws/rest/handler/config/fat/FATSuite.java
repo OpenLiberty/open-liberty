@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,16 +13,11 @@
 package com.ibm.ws.rest.handler.config.fat;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -37,12 +32,6 @@ import componenttest.topology.utils.HttpUtils;
 
 public class FATSuite {
 
-    @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(null, TestMode.FULL,
-                                                             MicroProfileActions.MP60, // EE10
-                                                             MicroProfileActions.MP50, // EE9
-                                                             MicroProfileActions.MP40); // EE8
-
     @BeforeClass
     public static void setup() throws Exception {
         HttpUtils.trustAllCertificates();
@@ -51,7 +40,7 @@ public class FATSuite {
     }
 
     public static void setupServerSideAnnotations(LibertyServer server) {
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             server.addEnvVar("CONNECTION_FACTORY", "jakarta.resource.cci.ConnectionFactory");
             server.addEnvVar("QUEUE_FACTORY", "jakarta.jms.QueueConnectionFactory");
             server.addEnvVar("TOPIC_FACTORY", "jakarta.jms.TopicConnectionFactory");

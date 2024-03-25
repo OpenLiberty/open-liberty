@@ -110,6 +110,9 @@ memory.committedHeap.description=Wy\u015bwietla ilo\u015b\u0107 pami\u0119ci (w 
 #Memory maxHeap message
 memory.maxHeap.description=Wy\u015bwietla maksymaln\u0105 ilo\u015b\u0107 pami\u0119ci sterty (w bajtach), kt\u00f3ra mo\u017ce by\u0107 u\u017cywana przez funkcj\u0119 zarz\u0105dzania pami\u0119ci\u0105. Ten atrybut ma warto\u015b\u0107 -1, je\u015bli maksymalna wielko\u015b\u0107 pami\u0119ci sterty nie jest zdefiniowana. Ta ilo\u015b\u0107 pami\u0119ci nie jest gwarantowana jako dost\u0119pna na potrzeby zarz\u0105dzania pami\u0119ci\u0105, je\u015bli jest ona wi\u0119ksza ni\u017c ilo\u015b\u0107 zatwierdzonej pami\u0119ci. Przydzielenie pami\u0119ci przez wirtualn\u0105 maszyn\u0119 j\u0119zyka Java mo\u017ce zako\u0144czy\u0107 si\u0119 niepowodzeniem nawet wtedy, gdy ilo\u015b\u0107 u\u017cywanej pami\u0119ci nie przekracza tej wielko\u015bci maksymalnej.
 
+#Memory heapUtilization message
+memory.heapUtilization.description=Cz\u0119\u015b\u0107 maksymalnej wielko\u015bci pami\u0119ci sterty, kt\u00f3ra jest obecnie u\u017cywana. Ta metryka ma warto\u015b\u0107 -1, je\u015bli maksymalna wielko\u015b\u0107 pami\u0119ci sterty jest niezdefiniowana.
+
 #Jvm uptime message
 jvm.uptime.description=Wy\u015bwietla czas uruchomienia wirtualnej maszyny j\u0119zyka Java (w milisekundach). Ten atrybut przedstawia przybli\u017cony czas uruchomienia wirtualnej maszyny j\u0119zyka Java.
 
@@ -144,11 +147,17 @@ cpu.processCpuLoad.description=Wy\u015bwietla u\u017cycie procesora przez proces
 #Cpu processCpuTime message
 cpu.processCpuTime.description=Wy\u015bwietla czas pracy procesora u\u017cywany przez proces, w kt\u00f3rym dzia\u0142a wirtualna maszyna j\u0119zyka Java.
 
+#Cpu processCpuUtilization message
+cpu.processCpuUtilization.description=Ostatni czas pracy procesora wykorzystany przez proces maszyny JVM ze wszystkich procesor\u00f3w dost\u0119pnych dla maszyny JVM.
+
 #Garbage collection count message
 garbageCollectionCount.description=Wy\u015bwietla \u0142\u0105czn\u0105 liczb\u0119 operacji gromadzenia, kt\u00f3re wyst\u0105pi\u0142y. Ten atrybut ma warto\u015b\u0107 -1, je\u015bli liczba operacji gromadzenia dla tego kolektora jest niezdefiniowana.
 
 #Garbage collection time message
 garbageCollectionTime.description=Wy\u015bwietla szacowany \u0142\u0105czny czas trwania gromadzenia (w milisekundach). Ten atrybut ma warto\u015b\u0107 -1, je\u015bli czas trwania gromadzenia dla tego kolektora jest niezdefiniowany. Implementacja wirtualnej maszyny j\u0119zyka Java mo\u017ce u\u017cywa\u0107 zegara o wysokiej rozdzielczo\u015bci do mierzenia czasu, kt\u00f3ry up\u0142yn\u0105\u0142. Ten atrybut mo\u017ce mie\u0107 t\u0119 sam\u0105 warto\u015b\u0107, nawet je\u015bli liczba operacji gromadzenia zwi\u0119kszy\u0142a si\u0119, gdy czas trwania gromadzenia jest bardzo kr\u00f3tki.
+
+#Garbage collection time per garbage collection cycle message
+gc.time.per.cycle.description=Ostatni \u015bredni czas przeznaczony na cykl czyszczenia pami\u0119ci. Ta metryka wy\u015bwietla warto\u015b\u0107 -1, je\u015bli czas czyszczenia pami\u0119ci lub liczba operacji czyszczenia pami\u0119ci dla tego kolektora nie s\u0105 zdefiniowane.
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages
@@ -158,6 +167,7 @@ threadpool.size.description=Wielko\u015b\u0107 puli w\u0105tk\u00f3w.
 
 servlet.request.total.description=Liczba odwiedzin w tym serwlecie od momentu uruchomienia serwera.
 servlet.responseTime.total.description=\u0141\u0105czny czas odpowiedzi tego serwletu od momentu uruchomienia serwera.
+servlet.request.elapsedTime.per.request.description=Ostatni \u015bredni czas odpowiedzi na \u017c\u0105danie serwletu.
 
 connectionpool.create.total.description=\u0141\u0105czna liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych, kt\u00f3re zosta\u0142y utworzone od momentu utworzenia puli.
 connectionpool.destroy.total.description=\u0141\u0105czna liczba po\u0142\u0105cze\u0144 zarz\u0105dzanych, kt\u00f3re zosta\u0142y zniszczone od momentu utworzenia puli.
@@ -168,6 +178,8 @@ connectionpool.waitTime.total.description=\u0141\u0105czny czas oczekiwania na w
 connectionpool.inUseTime.total.description=\u0141\u0105czny czas aktywno\u015bci wszystkich po\u0142\u0105cze\u0144 od momentu uruchomienia serwera.
 connectionpool.usedConnections.total.description=\u0141\u0105czna liczba \u017c\u0105da\u0144 po\u0142\u0105cze\u0144, kt\u00f3re oczekiwa\u0142y z powodu pe\u0142nej puli po\u0142\u0105cze\u0144 lub kt\u00f3re nie musia\u0142y czeka\u0107 od momentu uruchomienia serwera. \u017badne po\u0142\u0105czenia, kt\u00f3re s\u0105 aktualnie u\u017cywane, nie s\u0105 uwzgl\u0119dniane w tej sumie.
 connectionpool.queuedRequests.total.description=\u0141\u0105czna liczba \u017c\u0105da\u0144 po\u0142\u0105cze\u0144, kt\u00f3re musia\u0142y oczekiwa\u0107 na po\u0142\u0105czenie z powodu pe\u0142nej puli po\u0142\u0105cze\u0144 od momentu uruchomienia serwera.
+connectionpool.inUseTime.per.usedConnection.description=Ostatni \u015bredni czas, przez kt\u00f3ry po\u0142\u0105czenia by\u0142y u\u017cywane.
+connectionpool.waitTime.per.queuedRequest.description=Najnowszy \u015bredni czas oczekiwania na \u017c\u0105dania po\u0142\u0105czenia w kolejce.
 
 session.create.total.description=Liczba sesji zalogowanych od momentu w\u0142\u0105czenia tego pomiaru.
 session.liveSessions.description=Liczba u\u017cytkownik\u00f3w, kt\u00f3rzy s\u0105 obecnie zalogowani.
@@ -189,6 +201,7 @@ grpc.client.responseTime.total.description=\u0141\u0105czny czas odpowiedzi uko\
 
 REST.request.description=Liczba wywo\u0142a\u0144 i \u0142\u0105czny czas odpowiedzi tej metody zasobu RESTful od momentu uruchomienia serwera. Metryka nie b\u0119dzie rejestrowa\u0142a czasu obs\u0142ugi ani liczby \u017c\u0105da\u0144 REST powoduj\u0105cych nieodwzorowany wyj\u0105tek. S\u0142u\u017cy r\u00f3wnie\u017c do rejestrowania najd\u0142u\u017cszego czasu trwania w poprzedniej pe\u0142nej minucie i najkr\u00f3tszego czasu trwania w poprzedniej pe\u0142nej minucie.
 REST.request.unmappedException.description=\u0141\u0105czna liczba nieodwzorowanych wyj\u0105tk\u00f3w, kt\u00f3re wywo\u0142a\u0142a ta metoda zasobu RESTful od momentu uruchomienia serwera.
+REST.request.elapsedTime.per.request.description: Najnowszy \u015bredni czas odpowiedzi na \u017c\u0105danie metody zasobu zgodnego ze specyfikacj\u0105 REST.
 
 requestTiming.requestCount.description=Liczba \u017c\u0105da\u0144 serwlet\u00f3w od uruchomienia serwera.
 requestTiming.activeRequestCount.description=Liczba obecnie realizowanych \u017c\u0105da\u0144 serwlet\u00f3w.

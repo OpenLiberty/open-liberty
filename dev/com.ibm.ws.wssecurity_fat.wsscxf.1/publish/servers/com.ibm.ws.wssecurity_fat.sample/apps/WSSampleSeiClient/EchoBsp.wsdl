@@ -84,7 +84,7 @@
             <ns1:AlgorithmSuite>
                <wsp:Policy>
                   <!--ns1:XPathFilter20/ -->
-                  <ns1:Basic128Rsa15/>
+                  <ns1:Basic256Sha256Rsa15/>
                </wsp:Policy>
             </ns1:AlgorithmSuite>
             <ns1:InitiatorToken>
@@ -138,7 +138,7 @@
             <ns1:AlgorithmSuite>
                <wsp:Policy>
                   <!--ns1:XPathFilter20/ -->
-                  <ns1:Basic128Rsa15/>
+                  <ns1:Basic256Sha256Rsa15/>
                </wsp:Policy>
             </ns1:AlgorithmSuite>
             <ns1:InitiatorToken>
@@ -224,7 +224,7 @@
             <ns1:AlgorithmSuite>
                <wsp:Policy>
                   <!-- ns1:XPathFilter20/ -->
-                  <ns1:Basic128Rsa15/>
+                  <ns1:Basic256Sha256Rsa15/>
                </wsp:Policy>
             </ns1:AlgorithmSuite>
             <ns1:InitiatorToken>
@@ -280,7 +280,7 @@
             <ns1:AlgorithmSuite>
                <wsp:Policy>
                   <!-- ns1:XPathFilter20/ -->
-                  <ns1:Basic128Rsa15/>
+                  <ns1:Basic256Sha256Rsa15/>
                </wsp:Policy>
             </ns1:AlgorithmSuite>
             <ns1:InitiatorToken>
@@ -362,7 +362,7 @@
             <ns1:AlgorithmSuite>
                <wsp:Policy>
                   <!-- ns1:XPathFilter20/ -->
-                  <ns1:Basic128Rsa15/>
+                  <ns1:Basic256Sha256Rsa15/>
                </wsp:Policy>
             </ns1:AlgorithmSuite>
             <ns1:InitiatorToken>
@@ -416,7 +416,7 @@
             <ns1:AlgorithmSuite>
                <wsp:Policy>
                   <!-- ns1:XPathFilter20/ -->
-                  <ns1:Basic128Rsa15/>
+                  <ns1:Basic256Sha256Rsa15/>
                </wsp:Policy>
             </ns1:AlgorithmSuite>
             <ns1:InitiatorToken>
@@ -493,7 +493,7 @@
             <ns1:AlgorithmSuite>
                <wsp:Policy>
                   <!-- ns1:XPathFilter20/ -->
-                  <ns1:Basic128Rsa15/>
+                  <ns1:Basic256Sha256Rsa15/>
                </wsp:Policy>
             </ns1:AlgorithmSuite>
             <ns1:InitiatorToken>
@@ -546,7 +546,7 @@
             <ns1:AlgorithmSuite>
                <wsp:Policy>
                   <!-- ns1:XPathFilter20/ -->
-                  <ns1:Basic128Rsa15/>
+                  <ns1:Basic256Sha256Rsa15/>
                </wsp:Policy>
             </ns1:AlgorithmSuite>
             <ns1:InitiatorToken>

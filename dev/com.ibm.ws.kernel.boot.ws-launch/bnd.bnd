@@ -19,5 +19,7 @@ Bundle-SymbolicName: com.ibm.ws.kernel.boot.ws-launch
 -outputmask: ws-launch.jar
 -removeheaders= Bnd-LastModified, Bundle-Name, Bundle-Description, Bundle-ManifestVersion, Tool
 
+-pom: false
+
 publish.wlp.jar.include: ws-launch.jar
 publish.wlp.jar.rename: false

@@ -13,6 +13,7 @@
 package tests;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
@@ -85,6 +87,7 @@ public class DualServerDynamicTestBase extends FATServletClient {
         try {
             // We expect this to fail since it is gonna crash the server
             runTest(server1, servletName, "setupRec" + id);
+            fail("setupRec" + id + " did not cause " + server1.getServerName() + " to crash");
         } catch (IOException e) {
         }
 
@@ -156,5 +159,11 @@ public class DualServerDynamicTestBase extends FATServletClient {
         server2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 
         server2.setHttpDefaultPort(server2.getHttpSecondaryPort());
+    }
+
+    public static void dropTables() {
+        Log.info(DualServerDynamicTestBase.class, "dropTables", "WAS_PARTNER_LOGcloud0011, WAS_LEASES_LOG, WAS_TRAN_LOGcloud0011, WAS_PARTNER_LOGcloud0021, WAS_TRAN_LOGcloud0021");
+        TxTestContainerSuite.dropTables("WAS_PARTNER_LOGcloud0011", "WAS_LEASES_LOG", "WAS_TRAN_LOGcloud0011", "WAS_PARTNER_LOGcloud0021",
+                                        "WAS_TRAN_LOGcloud0021");
     }
 }

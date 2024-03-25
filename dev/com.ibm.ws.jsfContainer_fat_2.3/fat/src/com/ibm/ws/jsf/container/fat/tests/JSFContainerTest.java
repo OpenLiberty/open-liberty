@@ -21,7 +21,7 @@ import com.ibm.ws.jsf.container.fat.FATSuite;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
@@ -35,16 +35,16 @@ public class JSFContainerTest extends FATServletClient {
     @Server("jsf.container.2.3_fat")
     public static LibertyServer server;
 
-    private static boolean isEE10;
+    private static boolean isEE10OrLater;
 
     @BeforeClass
     public static void setUp() throws Exception {
 
-        isEE10 = JakartaEE10Action.isActive();
+        isEE10OrLater = JakartaEEAction.isEE10OrLaterActive();
 
         WebArchive mojarraApp = ShrinkHelper.buildDefaultApp(MOJARRA_APP, "jsf.container.bean");
         mojarraApp = FATSuite.addMojarra(mojarraApp);
-        if (!isEE10) {
+        if (!isEE10OrLater) {
             mojarraApp.addPackage("jsf.container.bean.jsf23");
         }
         mojarraApp = (WebArchive) ShrinkHelper.addDirectory(mojarraApp, "publish/files/permissions");
@@ -52,7 +52,7 @@ public class JSFContainerTest extends FATServletClient {
 
         WebArchive myfacesApp = ShrinkHelper.buildDefaultApp(MYFACES_APP, "jsf.container.bean");
         ShrinkHelper.addDirectory(myfacesApp, "test-applications/" + MOJARRA_APP + "/resources");
-        if (!isEE10) {
+        if (!isEE10OrLater) {
             myfacesApp.addPackage("jsf.container.bean.jsf23");
         }
         myfacesApp = FATSuite.addMyFaces(myfacesApp);

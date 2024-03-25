@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2022, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.microprofile.config.internal.common/resources/io/openliberty/microprofile/config/internal/common/resources/MPConfigCommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC MicroProfile Config with InstantOn
+# Message numbers CWWKC0651-700 are reserved for this file.
+
+#COMPONENTPREFIX CWMCG                 
+#COMPONENTNAMEFOR CWMCG MicroProfile Config Common
+# Message numbers CWMCG0400-499 are reserved for this file.
+
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWMCG0000=CWMCG0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMCG0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMCG0000.useraction=User action text for the message
+
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651=CWWKC0651W: \u30b5\u30fc\u30d0\u30fc\u3067\u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u30fb\u30a2\u30af\u30b7\u30e7\u30f3\u304c\u5b8c\u4e86\u3057\u3066\u304b\u3089\u3001{0} \u30ad\u30fc\u306e MicroProfile \u69cb\u6210\u5024\u304c\u5909\u66f4\u3055\u308c\u307e\u3057\u305f\u3002 \u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u30fb\u30a2\u30af\u30b7\u30e7\u30f3\u306e\u5f8c\u3067\u30ad\u30fc\u306e\u5024\u304c\u5909\u66f4\u3055\u308c\u305f\u5834\u5408\u3001\u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u306f\u66f4\u65b0\u3055\u308c\u305f\u5024\u3092\u4f7f\u7528\u3057\u306a\u3044\u53ef\u80fd\u6027\u304c\u3042\u308a\u307e\u3059\u3002
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.explanation=\u69cb\u6210\u5024\u306f\u3001\u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u30fb\u30a2\u30af\u30b7\u30e7\u30f3\u4e2d\u306b\u30a2\u30af\u30bb\u30b9\u3055\u308c\u3001\u30b5\u30fc\u30d0\u30fc\u30fb\u30d7\u30ed\u30bb\u30b9\u304c\u5fa9\u5143\u3055\u308c\u308b\u524d\u306b\u66f4\u65b0\u3055\u308c\u307e\u3057\u305f\u3002 \u30a2\u30d7\u30ea\u30b1\u30fc\u30b7\u30e7\u30f3\u304c\u69cb\u6210\u306b\u30a2\u30af\u30bb\u30b9\u3059\u308b\u65b9\u6cd5\u306b\u3088\u3063\u3066\u306f\u3001\u66f4\u65b0\u3055\u308c\u305f\u5024\u304c\u4f7f\u7528\u3055\u308c\u306a\u3044\u5834\u5408\u304c\u3042\u308a\u307e\u3059\u3002
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.useraction=\u30c1\u30a7\u30c3\u30af\u30dd\u30a4\u30f3\u30c8\u4e2d\u306b\u69cb\u6210\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u306b\u30a2\u30af\u30bb\u30b9\u3057\u306a\u3044\u3088\u3046\u306b\u3057\u3066\u304f\u3060\u3055\u3044\u3002

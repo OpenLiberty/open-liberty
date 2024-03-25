@@ -15,6 +15,7 @@ package test.jakarta.data.validation.web;
 import java.util.List;
 
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
@@ -32,7 +33,9 @@ public interface Rectangles {
 
     int findWidthById(String id);
 
+    @Save
     void save(@Valid Rectangle r);
 
+    @Save
     void saveAll(@Valid Rectangle... rectangles);
 }

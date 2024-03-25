@@ -29,6 +29,7 @@ task validateNLS {
       include '**/*Resource.nlsprops'
       exclude '**/TraceLocalizationResource.nlsprops'
       exclude '**/*Resource_*.nlsprops'
+      exclude '**/LoggingLocalizationResource.nlsprops'
       // Remove '#[A-Z]+ NON-TRANSLATABLE' string(S) from the existing nlsprop
       filter {
         it.contains("NON-TRANSLATABLE") ? null: it
@@ -56,6 +57,7 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
+          exclude(name: '**/LoggingLocalizationResource.nlsprops')
         }
       }
       delete fileTree(existingResourceDir){ 
@@ -66,6 +68,7 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
+          exclude(name: '**/LoggingLocalizationResource.nlsprops')
         }
       }
     }
@@ -77,6 +80,7 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
+          exclude(name: '**/LoggingLocalizationResource.nlsprops')
         }
       }
       delete fileTree(newResourcesDir){ 
@@ -88,6 +92,7 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
+          exclude(name: '**/LoggingLocalizationResource.nlsprops')
         }
       }
     }

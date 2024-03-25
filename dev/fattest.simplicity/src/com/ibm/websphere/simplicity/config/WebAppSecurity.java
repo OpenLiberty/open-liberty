@@ -19,13 +19,14 @@ import javax.xml.bind.annotation.XmlAttribute;
  */
 public class WebAppSecurity extends ConfigElement {
 
+    // Attribute to toggle the use of context root for SSO cookie path
     @XmlAttribute
     public String useContextRootForSSOCookiePath;
 
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder(getClass().getSimpleName()).append('{');
-        // attributes
+        // Attributes
         buf.append("useContextRootForSSOCookiePath=").append(useContextRootForSSOCookiePath);
         buf.append('}');
         return buf.toString();

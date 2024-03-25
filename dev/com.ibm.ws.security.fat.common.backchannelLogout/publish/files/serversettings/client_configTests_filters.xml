@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2022 IBM Corporation and others.
+    Copyright (c) 2022, 2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -30,6 +30,24 @@
 			urlPattern="/simple/bcl_mainPath_publicClient_withoutSecret" />
 	</authFilter>
 
+	<authFilter id="bcl_mainPath_accessTokenCacheEnabled_false_confClient_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_mainPath_accessTokenCacheEnabled_false_confClient" />
+	</authFilter>
+
+	<authFilter id="bcl_mainPath_accessTokenInLtpaCookie_true_confClient_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_mainPath_accessTokenInLtpaCookie_true_confClient" />
+	</authFilter>
+
+	<authFilter id="bcl_mainPath_introspectFalse_confClient_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_mainPath_introspectFalse_confClient" />
+	</authFilter>
+
 	<authFilter id="bcl_defaultBCLTimeout_filter">
 		<requestUrl
 			matchType="contains" 
@@ -58,6 +76,12 @@
 		<requestUrl
 			matchType="contains" 
 			urlPattern="/simple/bcl_invalidBCLUri" />
+	</authFilter>
+
+	<authFilter id="bcl_reconfig_invalidUri_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_reconfig_invalidUri" />
 	</authFilter>
 
 	<authFilter id="bcl_omittedBCLUri_filter">
@@ -258,4 +282,40 @@
 			urlPattern="/simple/accessTokenCacheEnabledFalseClient-3" />
 	</authFilter>
 
+	<authFilter id="variableIntrospectValidationEndpoint_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/variableIntrospectValidationEndpoint" />
+	</authFilter>
+
+	<authFilter id="bcl_userClientTokenLimit_Client_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_userClientTokenLimit_Client" />
+	</authFilter>
+
+	<authFilter id="bcl_appPasswordsClient1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_appPasswordsClient1" />
+	</authFilter>
+
+	<authFilter id="bcl_appPasswordsClient2_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_appPasswordsClient2" />
+	</authFilter>
+
+	<authFilter id="bcl_appTokensClient1_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_appTokensClient1" />
+	</authFilter>
+
+	<authFilter id="bcl_appTokensClient2_filter">
+		<requestUrl
+			matchType="contains" 
+			urlPattern="/simple/bcl_appTokensClient2" />
+	</authFilter>
+	
 </server>

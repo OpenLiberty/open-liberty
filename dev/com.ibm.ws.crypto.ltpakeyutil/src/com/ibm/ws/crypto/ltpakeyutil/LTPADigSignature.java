@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,22 +18,22 @@ import java.security.NoSuchProviderException;
 
 final class LTPADigSignature {
 
-	private static final String MESSAGE_DIGEST_ALGORITHM = "SHA";
-
 	static byte[][] testRawPubKey = null;
 	static byte[][] testRawPrivKey = null;
 	static MessageDigest md1 = null;
 	static private Object lockObj1 = new Object();
 	static long created = 0;
 	static long cacheHits = 0;
-	private static final String IBMJCE_NAME = "IBMJCE";
 
 	static {
 		try {
-			if (LTPAKeyUtil.isIBMJCEAvailable()) {
-				md1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM, IBMJCE_NAME);
+			if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256,
+						LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
+			} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
+				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
 			} else {
-				md1 = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
+				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA);
 			}
 
 		} catch (NoSuchAlgorithmException e) {
@@ -67,7 +67,7 @@ final class LTPADigSignature {
 		byte[][] rsaPubKey = pubKey.getRawKey();
 		byte[] data;
 		synchronized (lockObj1) {
-				data = md1.digest(mesg);
+			data = md1.digest(mesg);
 		}
 		return LTPACrypto.verifyISO9796(rsaPubKey, data, 0, data.length, signature, 0, signature.length);
 	}

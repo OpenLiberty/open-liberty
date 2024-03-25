@@ -39,8 +39,9 @@ import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -55,8 +56,8 @@ import componenttest.topology.impl.LibertyServer;
                 OSGiConsoleTest.class,
                 LocalEJBTest.class,
                 CheckpointSPITest.class,
+                CheckpointSPITestConfig.class,
                 CheckpointWithSecurityManager.class,
-                MPConfigTest.class,
                 SSLTest.class,
                 PasswordUtilsTest.class,
                 MPOpenTracingJaegerTraceTest.class,
@@ -84,14 +85,18 @@ import componenttest.topology.impl.LibertyServer;
                 JaxWSVirtualHostTest.class,
                 WebAppMessageTest.class,
                 URAPIs_Federation_2LDAPsTest.class,
-                SkipIfCheckpointNotSupportedAnnotationTest.class,
+                JavaInfoIsCriuSupportedTest.class,
                 RestConnectorTest.class,
                 AuditTest.class,
                 ConcurrencyTest.class,
                 MapCacheTest.class,
                 WebCacheTest.class,
                 XMLbindingsTest.class,
-                WebProfileJSPtest.class
+                LocalConnectorTest.class,
+                WebProfileJSPtest.class,
+                MPTelemetryJaxRsIntegrationTest.class,
+                LogsChangeTraceSpecTest.class,
+                OpenAPIConfigTest.class
 })
 
 public class FATSuite {
@@ -172,16 +177,18 @@ public class FATSuite {
     }
 
     public static void transformApps(LibertyServer myServer, String... apps) {
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             for (String app : apps) {
                 Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + app);
-                JakartaEE9Action.transformApp(someArchive);
-            }
-        } else if (JakartaEE10Action.isActive()) {
-            for (String app : apps) {
-                Path someArchive = Paths.get(myServer.getServerRoot() + File.separatorChar + "dropins" + File.separatorChar + app);
-                JakartaEE10Action.transformApp(someArchive);
+                JakartaEEAction.transformApp(someArchive);
             }
         }
+    }
+
+    public static RepeatTests defaultMPRepeat(String serverName) {
+        return MicroProfileActions.repeat(serverName,
+                                          MicroProfileActions.MP61, // first test in LITE mode
+                                          MicroProfileActions.MP41, // rest are FULL mode
+                                          MicroProfileActions.MP50);
     }
 }

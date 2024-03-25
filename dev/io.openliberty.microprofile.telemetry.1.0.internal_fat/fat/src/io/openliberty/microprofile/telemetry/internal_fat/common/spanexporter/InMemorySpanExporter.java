@@ -45,7 +45,7 @@ import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import jakarta.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class InMemorySpanExporter implements SpanExporter {
@@ -226,7 +226,20 @@ public class InMemorySpanExporter implements SpanExporter {
         List<SpanData> lSpans = new ArrayList<SpanData>(spans);
         Iterator<SpanData> iter = lSpans.listIterator();
         while (iter.hasNext()) {
-            if (iter.next().getName().contains("readspans")) {
+            SpanData span = iter.next();
+            /*
+             * Remove readspans and FAT servlet spans.
+             *
+             * REGEX breakdown:
+             * Match start of line.
+             * Match 0 or 1 of the string "GET " (note whitespace) using a non-capturing group.
+             * Match a literal "/"
+             * Match anything
+             * Match a literal /
+             * match the string "test"
+             * Match anything until the end of the line.
+             */
+            if (span.getName().contains("readspans") || span.getName().matches("^(?:GET )?/.*/test.*$")) {
                 iter.remove();
             }
         }
@@ -273,7 +286,7 @@ public class InMemorySpanExporter implements SpanExporter {
             String unclaimedNames = unclaimedSpans.stream()
                             .map(SpanData::getName)
                             .collect(Collectors.joining(", "));
-            LOGGER.severe("TEST9999E: Found unexpected spans at shutdown, full data in log: " + unclaimedNames);
+            LOGGER.severe("TEST9999E: Found " + unclaimedSpans.size() + " unexpected spans at shutdown, full data in log: " + unclaimedNames);
             for (SpanData span : unclaimedSpans) {
                 LOGGER.severe(span.toString());
             }

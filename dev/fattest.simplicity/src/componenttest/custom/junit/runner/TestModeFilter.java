@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,17 +45,6 @@ public class TestModeFilter extends Filter {
         return null;
     }
 
-    /**
-     * Like {@link Description#getTestClass}, but without initializing the class.
-     */
-    private Class<?> getTestClass(Description desc) {
-        try {
-            return Class.forName(desc.getClassName(), false, getClass().getClassLoader());
-        } catch (ClassNotFoundException e) {
-            return null;
-        }
-    }
-
     /** {@inheritDoc} */
     @Override
     public boolean shouldRun(Description desc) {
@@ -66,7 +55,7 @@ public class TestModeFilter extends Filter {
         if (mode == null) {
             //there was no method level annotation
             //check for a test class level annotation
-            mode = getTestClass(desc).getAnnotation(Mode.class);
+            mode = FilterUtils.getTestClass(desc, getClass()).getAnnotation(Mode.class);
         }
         //default to lite for unannotated tests
         TestMode testMode = TestMode.LITE;

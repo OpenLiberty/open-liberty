@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2018 IBM Corporation and others.
+ * Copyright (c) 2015, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,6 +46,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
+import com.ibm.ws.cdi.internal.interfaces.ContextBeginnerEnder;
 import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -164,8 +165,15 @@ public class EEValidationUtils {
         }
         // We need to set a current component before doing anything to do with JNDI
         CDIRuntime cdiRuntime = cdiArchive.getCDIRuntime();
+
+        //This method can be invoked as part of application startup, if so don't set a context when one is already active.
+        ContextBeginnerEnder cbe = null;
+
         try {
-            cdiRuntime.beginContext(cdiArchive);
+            if (! cdiRuntime.isContextBeginnerEnderActive()) {
+                cbe = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(cdiArchive).beginContext(); //TODO make this into a try-with-resources when we start compiling with java 9
+            }
+
             InitialContext c = new InitialContext();
 
             validateJndiLookup(c, lookupString, annotated, declaringClass, cdiArchive);
@@ -175,8 +183,12 @@ public class EEValidationUtils {
         } catch (CDIException e) {
             throw new IllegalStateException(e);
         } finally {
-            cdiRuntime.endContext();
+            if (cbe != null) {
+                cbe.close();
+            }
         }
+
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "validateJndiLookup", new Object[] { Util.identity(annotated) });
         }
@@ -250,10 +262,10 @@ public class EEValidationUtils {
     private static Class<?> getLookupClass(InitialContext c, Name lookupName) throws NamingException, CDIException {
         Name beanManagerName = c.getNameParser("").parse(beanManagerLookupString);
 
-        // This is to prevent calling a synchronized WeldBootstrap method when 
-        // aquiring a BeanManager. Otherwise this method might be called with 
-        // a synchronized method from WeldBootstrap already on the stack and 
-        // cause liberty to hang. 
+        // This is to prevent calling a synchronized WeldBootstrap method when
+        // aquiring a BeanManager. Otherwise this method might be called with
+        // a synchronized method from WeldBootstrap already on the stack and
+        // cause liberty to hang.
         if (lookupName.equals(beanManagerName)) {
             return javax.enterprise.inject.spi.BeanManager.class;
         }

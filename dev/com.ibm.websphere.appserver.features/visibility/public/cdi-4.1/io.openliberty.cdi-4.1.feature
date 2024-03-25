@@ -46,13 +46,13 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.1
   io.openliberty.jakarta.cdi-4.1, \
   io.openliberty.jakarta.xmlWS-4.0, \
   io.openliberty.jakarta.xmlBinding-4.0, \
-  io.openliberty.jakarta.annotation-2.1, \
+  io.openliberty.jakarta.annotation-3.0, \
   com.ibm.websphere.appserver.eeCompatible-11.0, \
   com.ibm.websphere.appserver.internal.slf4j-1.7, \
   io.openliberty.jakarta.pages-4.0, \
   com.ibm.websphere.appserver.transaction-2.0
--bundles=io.openliberty.org.jboss.weld5, \
- io.openliberty.org.jboss.weld5.se, \
+-bundles=io.openliberty.org.jboss.weld6, \
+ io.openliberty.org.jboss.weld6.se, \
  com.ibm.ws.org.jboss.jdeparser.1.0.0, \
  com.ibm.ws.managedobject, \
  io.openliberty.org.jboss.logging35, \
@@ -60,11 +60,11 @@ Subsystem-Name: Jakarta Contexts and Dependency Injection 4.1
  com.ibm.ws.cdi.weld.jakarta, \
  com.ibm.ws.cdi.internal.jakarta, \
  io.openliberty.cdi.4.0.internal.weld, \
- io.openliberty.cdi.4.0.internal.services.fragment, \
+ io.openliberty.cdi.4.1.internal.services.fragment, \
  com.ibm.ws.cdi.interfaces.jakarta, \
- io.openliberty.cdi.4.0.interfaces, \
+ io.openliberty.cdi.4.0.internal.interfaces, \
  io.openliberty.cdi.spi; location:="dev/spi/ibm/,lib/"
--jars=io.openliberty.cdi.4.0.thirdparty; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:5.1.0.Final"
+-jars=io.openliberty.cdi.4.1.thirdparty; location:="dev/api/third-party/,lib/"; mavenCoordinates="org.jboss.weld:weld-osgi-bundle:6.0.0.Beta1"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd, \
  dev/spi/ibm/javadoc/io.openliberty.cdi.spi_1.1-javadoc.zip

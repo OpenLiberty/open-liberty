@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.net.URL;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -39,11 +40,10 @@ import com.ibm.ws.jsf22.fat.selenium_util.ExtendedWebDriver;
 import com.ibm.ws.jsf22.fat.selenium_util.WebPage;
 
 import componenttest.annotation.Server;
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -65,14 +65,15 @@ public class JSF22ComponentTesterTests {
     @Server("jsfTestServer2")
     public static LibertyServer jsfTestServer2;
 
-    @Rule
-    public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
+    @ClassRule
+    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
                     .withAccessToHost(true)
-                    .withLogConsumer(new SimpleLogConsumer(JSF22ComponentTesterTests.class, "selenium-driver"));
+                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
+
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         ShrinkHelper.defaultDropinApp(jsfTestServer2, "JSF22ComponentTester.war",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.componenttester.beans.faces40" : "com.ibm.ws.jsf22.fat.componenttester.beans.jsf22",
@@ -253,8 +254,8 @@ public class JSF22ComponentTesterTests {
         assertTrue(page.isInPage("Action-Listener order page"));
 
         page.findElement(By.id("form:testLink")).click();
-        page.waitForCondition(driver1 -> page.isInPage("test action called")); 
-        
+        page.waitForCondition(driver1 -> page.isInPage("test action called"));
+
         assertEquals(page.findElement(By.id("testOutput")).getText(), "test action called");
     }
 

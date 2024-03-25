@@ -39,7 +39,7 @@
   <target name="jshint" />
 
   <!-- Copy over the things we need from the DOJO build process -->
-  <target name="dojo-release-post-ext">
+  <target name="dojo-release-post-ext" depends="dojo-release-execute, dojo-release-post-create">
     <copy todir="${dojo.project.release.output}/idx">
       <fileset dir="${dojo.project.build.output}/idx">
         <include name="widget/nls/Dialog.js" />

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,20 +30,20 @@ public class EL50BasicTests extends FATServletClient {
 
     @Server("expressionLanguage50_basicServer")
     @TestServlet(servlet = EL50BasicTestsServlet.class, contextRoot = "EL50Basic")
-    public static LibertyServer elServer;
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(elServer, "EL50Basic.war", "io.openliberty.el50.fat.basic.servlets");
+        ShrinkHelper.defaultDropinApp(server, "EL50Basic.war", "io.openliberty.el50.fat.basic.servlets");
 
-        elServer.startServer(EL50BasicTests.class.getSimpleName() + ".log");
+        server.startServer(EL50BasicTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (elServer != null && elServer.isStarted()) {
-            elServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 }

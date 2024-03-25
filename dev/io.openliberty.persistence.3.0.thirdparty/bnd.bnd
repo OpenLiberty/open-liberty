@@ -14,10 +14,10 @@
 bVersion=1.0
 
 # Eclipselink version info
-eclVersion=3.0.3
+eclVersion=3.0.4
 eclFullVersion=${eclVersion}
-eclPackageVersion=3.0.3
-asmFullVersion=9.5.0
+eclPackageVersion=3.0.4
+asmFullVersion=9.6.0
 
 Bundle-SymbolicName: io.openliberty.persistence.3.0.thirdparty
 Bundle-Description: EclipseLink JPA
@@ -110,15 +110,13 @@ DynamicImport-Package: \
 
 Private-Package: io.openliberty.persistence.internal.helper
 
-# Remove with the delivery of https://github.com/OpenLiberty/open-liberty/issues/24978
+
 Include-Resource: \
   @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!(META-INF/maven/*|module-info.class),\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
   @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  org/eclipse/persistence/platform/database=${bin}/org/eclipse/persistence/platform/database,\
-  org/eclipse/persistence/internal/helper=resources/org/eclipse/persistence/internal/helper
+  @${repo;org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen.processor;${eclFullVersion};EXACT}!/!META-INF/maven/*
 
 publish.wlp.jar.suffix: dev/api/third-party
 

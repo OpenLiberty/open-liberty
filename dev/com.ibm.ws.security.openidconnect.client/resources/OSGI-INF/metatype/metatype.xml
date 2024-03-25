@@ -163,6 +163,11 @@
                 <Option label="%pkceCodeChallengeMethod.S256" value="S256" />
          </AD>
          <AD id="tokenRequestOriginHeader" name="%tokenRequestOriginHeader" description="%tokenRequestOriginHeader.desc" required="false" type="String" />
+         
+		 <AD id="tokenOrderToFetchCallerClaims" type="String" required="false" name="%tokenOrderToFetchCallerClaims" description="%tokenOrderToFetchCallerClaims.desc" default="IDToken" >        
+        	<Option label="%tokenOrderToFetchCallerClaims.IDToken" value="IDToken" />
+         	<Option label="%tokenOrderToFetchCallerClaims.ACCESSAndIDAndUITokens" value="AccessToken IDToken UserInfo" /> 
+   		 </AD>    
      </OCD>
 
     <Designate factoryPid="com.ibm.ws.security.openidconnect.client.oidcClientConfig">

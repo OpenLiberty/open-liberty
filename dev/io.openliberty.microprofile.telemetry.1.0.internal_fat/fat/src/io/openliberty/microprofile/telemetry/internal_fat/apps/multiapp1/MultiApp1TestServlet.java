@@ -23,6 +23,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.client.ClientBuilder;
+
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -32,13 +37,9 @@ import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.ws.rs.client.ClientBuilder;
 
 @SuppressWarnings("serial")
-@WebServlet("/multiapp1")
+@WebServlet("/testMultiapp1")
 public class MultiApp1TestServlet extends FATServlet {
 
     @Inject

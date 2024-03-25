@@ -1,0 +1,78 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+	<authFilter id="mySampleFilter">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/sampleBuilder"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="sampleBuilder"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		signatureAlgorithm="RS256"
+		tokenOrderToFetchCallerClaims="AccessToken IDToken UserInfo"
+		mapIdentityToRegistryUser="false"
+		httpsRequired="false"
+		realmIdentifier="realmName"
+		userIdentifier="upn"
+		groupIdentifier="role"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfig1/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="mySampleFilter"
+	>
+	</openidConnectClient>
+
+	<authFilter id="idTokenOnlyFilter">
+		<requestUrl
+			id="idTokenOnlyRequestUrl"
+			urlPattern="/idtokenonly"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="idtokenonly"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTor"
+		sharedKey="secret"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="rs256"
+		signatureAlgorithm="RS256"
+		mapIdentityToRegistryUser="false"
+		httpsRequired="false"
+		realmIdentifier="realmName"
+		userIdentifier="upn"
+		groupIdentifier="role"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfig1/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"
+		userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/UserinfoEndpointServlet/getJWT"
+		userInfoEndpointEnabled="true"
+		validationMethod="userinfo"
+		authFilterRef="idTokenOnlyFilter"
+	>
+	</openidConnectClient>	
+
+</server>

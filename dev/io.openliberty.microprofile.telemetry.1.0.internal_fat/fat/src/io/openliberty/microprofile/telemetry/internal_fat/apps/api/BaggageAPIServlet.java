@@ -21,11 +21,11 @@ import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.baggage.BaggageBuilder;
 import io.opentelemetry.api.baggage.BaggageEntryMetadata;
 import io.opentelemetry.api.baggage.propagation.W3CBaggagePropagator;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.annotation.WebServlet;
+import javax.enterprise.context.ApplicationScoped;
+import javax.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/baggage")
+@WebServlet("/testBaggage")
 @ApplicationScoped // Make this a bean so that there's one bean in the archive, otherwise CDI gets disabled and @Inject doesn't work
 public class BaggageAPIServlet extends FATServlet {
 

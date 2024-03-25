@@ -32,11 +32,13 @@
     </featureManager>
 
     <variable name="TX_RETRY_INT" defaultValue="10" />
+       <variable name="TX_LOG_DIR" defaultValue="${server.output.dir}tranlog" />
 
     <transaction
         recoverOnStartup="true"
         waitForRecovery="false"
         heuristicRetryInterval="${TX_RETRY_INT}"
+        transactionLogDirectory="${TX_LOG_DIR}"
     />
 
     <application location="transactionrecovery.war"/>

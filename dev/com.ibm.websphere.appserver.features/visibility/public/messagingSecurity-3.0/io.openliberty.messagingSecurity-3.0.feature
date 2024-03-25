@@ -1,6 +1,12 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.messagingSecurity-3.0
 visibility=public
+IBM-API-Package: \
+  com.ibm.wsspi.security.tai; type="ibm-api", \
+  com.ibm.wsspi.security.token; type="ibm-api", \
+  com.ibm.wsspi.security.auth.callback; type="ibm-api", \
+  com.ibm.wsspi.security.common.auth.module; type="ibm-api", \
+  com.ibm.websphere.security.auth.callback; type="ibm-api"
 IBM-ShortName: messagingSecurity-3.0
 WLP-AlsoKnownAs: wasJmsSecurity-3.0
 Subsystem-Name: Messaging Server 3.0 Security

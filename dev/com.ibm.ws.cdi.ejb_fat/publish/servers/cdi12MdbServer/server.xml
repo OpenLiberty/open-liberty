@@ -1,0 +1,57 @@
+<server description="Server for testing MDBs with CDI">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>osgiconsole-1.0</feature>
+        <feature>cdi-1.2</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>mdb-3.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>componentTest-1.0</feature>
+        <feature>wasJmsServer-1.0</feature>
+        <feature>wasJmsClient-2.0</feature>
+        <feature>jms-2.0</feature>
+    </featureManager>
+
+    <!-- Settings for basicMdb.war -->
+
+    <jmsQueueConnectionFactory jndiName="jms/qcf">
+        <properties.wasJms />
+    </jmsQueueConnectionFactory>
+
+    <messagingEngine>
+        <queue id="basic/queue" />
+    </messagingEngine>
+
+    <jmsQueue id="jms/basic/queue" jndiName="jms/basic/queue">
+        <properties.wasJms queueName="basic/queue" />
+    </jmsQueue>
+    <jmsActivationSpec id="basicMdb/BasicMdb">
+        <properties.wasJms destinationRef="jms/basic/queue" />
+    </jmsActivationSpec>
+    
+    <!-- Settings for MdbTest.ear -->
+    
+    <messagingEngine>
+        <queue id="jar/jarQueue" />
+        <queue id="jar/jarNoDiscoveryQueue" />
+    </messagingEngine>
+
+    <jmsQueue id="jms/jar/jarQueue" jndiName="jms/jar/jarQueue">
+        <properties.wasJms queueName="jar/jarQueue" />
+    </jmsQueue>
+    <jmsActivationSpec id="MdbTest/EjbJar/JarMdb">
+        <properties.wasJms destinationRef="jms/jar/jarQueue" />
+    </jmsActivationSpec>
+    
+    <jmsQueue id="jms/jar/jarNoDiscoveryQueue" jndiName="jms/jar/jarNoDiscoveryQueue">
+        <properties.wasJms queueName="jar/jarNoDiscoveryQueue" />
+    </jmsQueue>
+    <jmsActivationSpec id="MdbTest/EjbNoDiscoveryJar/JarMdbNotDiscovered">
+        <properties.wasJms destinationRef="jms/jar/jarNoDiscoveryQueue" />
+    </jmsActivationSpec>
+    
+    <logging traceSpecification="JCDI=all"/>
+
+</server>

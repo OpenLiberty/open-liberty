@@ -36,7 +36,7 @@ public class GraphQLTckPackageTest {
     private static final String SERVER_NAME = "FATServer";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP60, MicroProfileActions.MP50);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP61, MicroProfileActions.MP50);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

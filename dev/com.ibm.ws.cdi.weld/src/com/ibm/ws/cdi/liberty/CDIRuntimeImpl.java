@@ -16,9 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -54,6 +52,7 @@ import com.ibm.ws.cdi.internal.interfaces.BuildCompatibleExtensionFinder;
 import com.ibm.ws.cdi.internal.interfaces.CDIArchive;
 import com.ibm.ws.cdi.internal.interfaces.CDIContainerEventManager;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
+import com.ibm.ws.cdi.internal.interfaces.ContextBeginnerEnder;
 import com.ibm.ws.cdi.internal.interfaces.EjbEndpointService;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveFactory;
@@ -73,7 +72,6 @@ import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
 import com.ibm.wsspi.classloading.ClassLoadingService;
@@ -87,9 +85,9 @@ import io.openliberty.cdi.spi.CDIExtensionMetadata;
 /**
  * This class is to get hold all necessary services.
  */
-@Component(name = "com.ibm.ws.cdi.liberty.CDIRuntimeImpl", service = { ApplicationStateListener.class, CDIService.class, CDIProvider.class }, 
-    property = { "service.vendor=IBM",  "service.ranking:Integer=100" }) //CDI must shut down before EJB as EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)"
-                                                                         //CDI must also start up after injection engine, as CDI can trigger JNDI lookups in app code as part of starting up and that code can do JNDI lookups
+@Component(name = "com.ibm.ws.cdi.liberty.CDIRuntimeImpl", service = { ApplicationStateListener.class, CDIService.class,
+                                                                       CDIProvider.class }, property = { "service.vendor=IBM", "service.ranking:Integer=100" }) //CDI must shut down before EJB as EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)"
+                                                                                                                                                                                                                                                                                         //CDI must also start up after injection engine, as CDI can trigger JNDI lookups in app code as part of starting up and that code can do JNDI lookups
 public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationStateListener, CDIService, CDILibertyRuntime, CDIProvider {
     private static final TraceComponent tc = Tr.register(CDIRuntimeImpl.class);
 
@@ -145,7 +143,6 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     private boolean isClientProcess;
     private RuntimeFactory runtimeFactory;
     private ProxyServicesImpl proxyServices;
-    private final Map<String, ClassLoader> appTccls = new ConcurrentHashMap<>();
 
     public void activate(ComponentContext cc) {
         metaDataSlotServiceSR.activate(cc);
@@ -442,6 +439,7 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("resource")
     @Override
     public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
         /*
@@ -459,11 +457,6 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
          * did so with this comment.
          */
 
-        ClassLoader newCL = null;
-        ClassLoader oldCl = null;
-
-        boolean setContext = false;
-
         try {
             Application application = this.runtimeFactory.newApplication(appInfo);
             /* if there is no app classes info then the app manager is not in control of this app */
@@ -474,42 +467,22 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
 
             ClassLoader appCL = getRealAppClassLoader(application);
             if (appCL != null) {
-                newCL = classLoadingSRRef.getServiceWithException().createThreadContextClassLoader(appCL);
-                appTccls.put(appInfo.getName(), newCL);
-                oldCl = CDIUtils.getAndSetLoader(newCL);
-            }
-
-            //Because weld fires observes in all modules when endInitialization() is called
-            //We can only set the jndi context once. This is sufficent for the java:app namespace
-            //but not for the java module namespace.
-
-            //Origonally I tried to setup JNDI so only application metadata was on the thread but
-            //that didn't work so I use give classic utils one of the module archives.
-
-            if (application.getModuleArchives().size() > 0 &&
-                application.getApplicationMetaData() != null) {
-                CDIArchive archive = application.getModuleArchives().iterator().next();
-                beginContext(archive);
-                setContext = true;
+                ClassLoader newCL = classLoadingSRRef.getServiceWithException().createThreadContextClassLoader(appCL);
+                application.setTCCL(newCL);
             }
 
             for (CDIArchive archive : application.getModuleArchives()) {
                 registerDeferedMetaData(archive);
             }
 
-            WebSphereCDIDeployment webSphereCDIDeployment = getCDIContainer().startInitialization(application);
-            if (webSphereCDIDeployment != null) {
-                getCDIContainer().endInitialization(webSphereCDIDeployment);//This split is just to keep the CDIContainerImpl code conistant across liberty & websphere.
+            try (ContextBeginnerEnder cbe = createContextBeginnerEnder().extractComponentMetaData(application).extractTCCL(application).beginContext()) {
+                WebSphereCDIDeployment webSphereCDIDeployment = getCDIContainer().startInitialization(application);
+                if (webSphereCDIDeployment != null) {
+                    getCDIContainer().endInitialization(webSphereCDIDeployment);//This split is just to keep the CDIContainerImpl code conistant across liberty & websphere.
+                }
             }
         } catch (CDIException e) {
             throw new StateChangeException(e);
-        } finally {
-            if (oldCl != null) {
-                CDIUtils.getAndSetLoader(oldCl);
-            }
-            if (setContext) {
-                endContext();
-            }
         }
     }
 
@@ -541,11 +514,11 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
             } finally {
                 // Clean up the application TCCL created for startup
                 // Must do this at shutdown since it's possible for the app to hold onto it and use it after startup
-                ClassLoader tccl = appTccls.get(appInfo.getName());
+                ClassLoader tccl = application.getTCCL();
                 if (tccl != null) {
                     classLoadingSRRef.getServiceWithException().destroyThreadContextClassLoader(tccl);
-                    appTccls.remove(appInfo.getName());
                 }
+                application.setTCCL(null);
             }
         }
     }
@@ -606,25 +579,6 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     @Override
     public ProxyServices getProxyServices() {
         return proxyServices;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void beginContext(CDIArchive archive) throws CDIException {
-        JndiHelperComponentMetaData cmd = null;
-
-        MetaData metaData = archive.getMetaData();
-        if (archive.isModule()) {
-            ModuleMetaData moduleMetaData = (ModuleMetaData) metaData;
-            cmd = new JndiHelperComponentMetaData(moduleMetaData);
-        } else {
-            ApplicationMetaData applicationMetaData = (ApplicationMetaData) metaData;
-            cmd = new JndiHelperComponentMetaData(applicationMetaData);
-
-        }
-
-        ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
-        accessor.beginContext(cmd);
     }
 
     private void registerDeferedMetaData(CDIArchive archive) throws CDIException {
@@ -731,4 +685,25 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         return devMode;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public ContextBeginnerEnder createContextBeginnerEnder() {
+        return new ContextBeginnerEnderImpl();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isContextBeginnerEnderActive() {
+        return ContextBeginnerEnderImpl.isActive();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ContextBeginnerEnder cloneActiveContextBeginnerEnder() {
+        ContextBeginnerEnderImpl contextBeginnerEnder = ContextBeginnerEnderImpl.getCurrentlyActive();
+        if (contextBeginnerEnder == null) {
+            return null;
+        }
+        return contextBeginnerEnder.clone();
+    }
 }

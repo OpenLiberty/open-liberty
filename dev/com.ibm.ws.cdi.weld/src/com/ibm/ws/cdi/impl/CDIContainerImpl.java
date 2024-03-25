@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.impl;
 
-import java.lang.annotation.Annotation;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -24,11 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.DeploymentException;
-import javax.enterprise.inject.spi.Extension;
 
 import org.jboss.weld.bootstrap.BeanDeploymentModule;
 import org.jboss.weld.bootstrap.BeanDeploymentModules;
@@ -44,7 +41,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
-import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.cdi.impl.weld.BDAFactory;
 import com.ibm.ws.cdi.impl.weld.WebSphereCDIDeploymentImpl;
@@ -56,6 +52,7 @@ import com.ibm.ws.cdi.internal.interfaces.CDIContainer;
 import com.ibm.ws.cdi.internal.interfaces.CDIContainerEventManager;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
+import com.ibm.ws.cdi.internal.interfaces.ContextBeginnerEnder;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchive;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveFactory;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
@@ -224,7 +221,15 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 if (modules != null) {
                     for (BeanDeploymentModule module : modules) {
                         if (!module.isWebModule()) {
-                            eventManager.fireStartupEvent(module);
+                            String id = module.getId();
+                            WebSphereBeanDeploymentArchive bda = deployment.getBeanDeploymentArchive(id);
+                            if (bda != null) {
+                                try (ContextBeginnerEnder contextBeginnerEnder = cdiRuntime.createContextBeginnerEnder().extractComponentMetaData(bda.getArchive()).extractTCCL(application).beginContext()) {
+                                    eventManager.fireStartupEvent(module);
+                                }
+                            } else {
+                                throw new IllegalStateException(Tr.formatMessage(tc, "no.bda.for.module.CWOWB1019E", module, module.getId()));
+                            }
                         }
                     }
                 }
@@ -306,7 +311,7 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
      * Create a BDA for each runtime extension and add it to the deployment.
      *
      * @param webSphereCDIDeployment
-     * @param excludedBdas a set of application BDAs which should not be visible to runtime extensions
+     * @param excludedBdas           a set of application BDAs which should not be visible to runtime extensions
      * @throws CDIException
      */
     private void addRuntimeExtensions(WebSphereCDIDeployment webSphereCDIDeployment,
@@ -658,9 +663,9 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         if (cdiRuntime.getExtensionArchiveFactories().size() != 1) {
             throw new IllegalStateException("found " + cdiRuntime.getExtensionArchiveFactories().size() + " extension archive factories");
         }
-        
+
         for (ExtensionArchiveFactory factory : cdiRuntime.getExtensionArchiveFactories()) {
-            //First iterate through the implementations of CDIExtensionMetadata and ask the providers for an archive for every implementation 
+            //First iterate through the implementations of CDIExtensionMetadata and ask the providers for an archive for every implementation
             Iterator<ServiceAndServiceReferencePair<CDIExtensionMetadata>> spiExtensions = cdiRuntime.getSPIExtensionServices();
             while (spiExtensions.hasNext()) {
                 ServiceAndServiceReferencePair<CDIExtensionMetadata> extensionMetaData = spiExtensions.next();
@@ -697,8 +702,6 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
 
         return extensionSet;
     }
-
-
 
     private ExtensionArchive newExtensionArchive(ServiceReference<WebSphereCDIExtension> sr) throws CDIException {
         Bundle bundle = sr.getBundle();

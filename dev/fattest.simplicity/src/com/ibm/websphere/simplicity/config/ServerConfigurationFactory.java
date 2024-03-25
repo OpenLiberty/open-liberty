@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -122,6 +122,11 @@ public class ServerConfigurationFactory {
 
     /**
      * Converts a server configuration XML file into a series of Java objects.
+     * Synchronized to ensure two threads do not attempt to call unmarshall concurrently
+     * to avoid the following bug in javax.xml.xpath: https://bugs.openjdk.org/browse/JDK-8047329
+     * The bug itself is in Apache Xerces which is the JAXP implementation that can either
+     * come from the JDK or provided on the classpath which does not have a resolution.
+     * https://issues.apache.org/jira/browse/XERCESJ-432
      *
      * @param  inputStream
      *                         a server configuration XML file as a stream
@@ -130,7 +135,7 @@ public class ServerConfigurationFactory {
      * @throws Exception
      *                         if the XML can't be parsed
      */
-    public ServerConfiguration unmarshal(InputStream inputStream) throws Exception {
+    public synchronized ServerConfiguration unmarshal(InputStream inputStream) throws Exception {
         if (inputStream == null) {
             return null; // nothing to unmarshall
         }

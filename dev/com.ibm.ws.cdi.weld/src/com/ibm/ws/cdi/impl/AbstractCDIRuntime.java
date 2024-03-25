@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,7 +30,6 @@ import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 /**
  * This abstract class generally holds methods which simply pass through to the CDIContainerImpl
@@ -164,13 +163,6 @@ public abstract class AbstractCDIRuntime implements CDIService, CDIRuntime, CDIP
         }
 
         return cdi;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void endContext() {
-        ComponentMetaDataAccessorImpl accessor = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor();
-        accessor.endContext();
     }
 
     @Override

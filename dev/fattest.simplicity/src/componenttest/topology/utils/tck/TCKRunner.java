@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +35,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -228,7 +228,7 @@ public class TCKRunner {
         if (TCKUtilities.useArtifactory()) {
             Properties wrapperProperties = TCKUtilities.updateWrapperPropertiesFile(wrapperPropertiesFile, TCKUtilities.getArtifactoryServer());
 
-            // Pre-download wrapper jar and set up a temporary maven home directory (if not already created
+            // Pre-download wrapper jar and set up a temporary maven home directory (if not already created)
             this.artifactoryAuthenticator = new ArtifactoryAuthenticator();
             TCKUtilities.downloadMvnWrapperJar(tckRunnerDir, wrapperProperties, this.artifactoryAuthenticator);
             this.mavenUserHome = TCKUtilities.getTemporaryMavenHomeDir();
@@ -895,16 +895,22 @@ public class TCKRunner {
         //              <systemPath>${lib}com.ibm.ws.microprofile.config.cdi_${liberty.version}.jar</systemPath>
 
         Pattern p = Pattern.compile(stringPattern);
-        for (int i = 0; i < files.length; i++) {
-            Matcher m = p.matcher(files[i]);
-            if (m.matches()) {
-                result = files[i];
-                Log.finer(c, "jarPathInDir", "dir " + dir + " matches " + stringPattern + " for " + jarNameFragment + " as " + result);
-                return result;
-            }
+
+        //Find all files that match, then sort in reverse and return the first to ensure we get the latest version (if multiple exist)
+        result = Arrays.asList(files)
+                        .stream()
+                        .filter(file -> p.matcher(file).matches())
+                        .sorted(Comparator.reverseOrder())
+                        .findFirst()
+                        .orElse(null);
+
+        if (result == null) {
+            Log.finer(c, "jarPathInDir", "returning NOT FOUND for " + jarNameFragment + " " + expandedJarNameFragment + " " + stringPattern);
+        } else {
+            Log.finer(c, "jarPathInDir", "dir " + dir + " matches " + stringPattern + " for " + jarNameFragment + " as " + result);
         }
-        Log.finer(c, "jarPathInDir", "returning NOT FOUND for " + jarNameFragment + " " + expandedJarNameFragment + " " + stringPattern);
-        return null;
+
+        return result;
     }
 
     private static Map<String, String> getMvnEnv(File mavenUserHome) throws IOException, InterruptedException {

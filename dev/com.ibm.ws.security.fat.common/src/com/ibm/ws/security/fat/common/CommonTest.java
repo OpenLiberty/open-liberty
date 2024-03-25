@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,9 +29,7 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.utils.WebClientTracker;
 
-import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.LibertyServerUtils;
 
@@ -98,7 +96,7 @@ public class CommonTest {
     public static void timeoutChecker() throws Exception {
         String method = "timeoutChecker";
 
-        int timeoutCounter = 0 ;
+        int timeoutCounter = 0;
         boolean timeoutFound = false;
         String outputFile = "./results/output.txt";
         File f = new File(outputFile);
@@ -184,45 +182,47 @@ public class CommonTest {
 
     private static void transformAppsInDefaultDirs(TestServer server, String appDirName) {
 
-        LibertyServer myServer = server.getServer();
-        Machine machine = myServer.getMachine();
-
-        Log.info(thisClass, "transformAppsInDefaultDirs", "Processing " + appDirName + " for serverName: " + myServer.getServerName());
-        RemoteFile appDir = new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(myServer.getServerRoot() + File.separatorChar + appDirName, machine));
-
-        RemoteFile[] list = null;
         try {
+            LibertyServer myServer = server.getServer();
+            Machine machine = myServer.getMachine();
+
+            Log.info(thisClass, "transformAppsInDefaultDirs", "Processing " + appDirName + " for serverName: " + myServer.getServerName());
+            RemoteFile appDir = new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(myServer.getServerRoot() + File.separatorChar + appDirName, machine));
+
+            RemoteFile[] list = null;
             if (appDir.isDirectory()) {
                 list = appDir.list(false);
             }
-        } catch (Exception e) {
-            Log.error(thisClass, "transformAppsInDefaultDirs", e);
-        }
-        if (list != null) {
-            for (RemoteFile app : list) {
-                if (JakartaEE9Action.isActive()) {
-                    JakartaEE9Action.transformApp(Paths.get(app.getAbsolutePath()));
-                } else if (JakartaEE10Action.isActive()) {
-                    JakartaEE10Action.transformApp(Paths.get(app.getAbsolutePath()));
+            if (list != null) {
+                for (RemoteFile app : list) {
+                    if (!app.getName().contains("idp.war")) { // the idp.war should have already been transformed
+                        JakartaEEAction.transformApp(Paths.get(app.getAbsolutePath()));
+                    }
                 }
             }
+        } catch (Exception e) {
+            Log.error(thisClass, "transformAppsInDefaultDirs", e);
+            e.printStackTrace();
         }
     }
 
     /**
      * JakartaEE9 transform applications for a specified server.
      *
-     * @param serverName The server to transform the applications on.
+     * @param serverName
+     *            The server to transform the applications on.
      */
     public static void transformApps(TestServer server) {
-        if (RepeatTestFilter.isAnyRepeatActionActive(JakartaEE9Action.ID, JakartaEE10Action.ID)) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
 
             transformAppsInDefaultDirs(server, "dropins");
             transformAppsInDefaultDirs(server, "test-apps");
+            //            // TODO - may break saml - may have to update saml rules
+            //            transformAppsInDefaultDirs(server, "idp-apps");
 
         }
     }
-    
+
     @After
     public void endTestCleanup() throws Exception {
 

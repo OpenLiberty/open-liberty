@@ -25,6 +25,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -80,7 +81,7 @@ public class RepeatableTranTest extends FATServletClient {
 //        ShrinkHelper.exportDropinAppToServer(server, RepeatableTransactionTest);
 
         // Since not using ShrinkWrap, manually transform the application if required
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             transformJakartaEEApp(server, "dropins", "RepeatableTransactionTest.ear");
         }
 
@@ -92,11 +93,9 @@ public class RepeatableTranTest extends FATServletClient {
     private static void transformJakartaEEApp(LibertyServer server, String path, String filename) throws Exception {
         String localLocation = "publish/servers/" + server.getServerName() + "/" + path;
 
-        Path localAppPath = Paths.get(localLocation + "/" + filename);
-        if (JakartaEE9Action.isActive()) {
-            JakartaEE9Action.transformApp(localAppPath);
-        } else if (JakartaEE10Action.isActive()) {
-            JakartaEE10Action.transformApp(localAppPath);
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            Path localAppPath = Paths.get(localLocation + "/" + filename);
+            JakartaEEAction.transformApp(localAppPath);
         }
 
         server.copyFileToLibertyServerRoot(localLocation, path, filename);

@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.jboss.weld.proxy.WeldClientProxy;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.MalformedClaimException;
 
@@ -24,6 +23,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.cdi40.internal.utils.CDI40Utils;
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.credential.OidcTokensCredential;
 import io.openliberty.security.jakartasec.tokens.AccessTokenImpl;
@@ -109,12 +109,7 @@ public class OidcIdentityStore implements IdentityStore {
     private void setOpenIdContext(OpenIdContext openIdContext, String subjectIdentifier, TokenResponse tokenResponse, AccessToken accessToken,
                                   IdentityToken identityToken, OpenIdClaims userinfoClaims, JsonObject providerMetadata, String state, boolean useSession, String clientId) {
 
-        OpenIdContextImpl openIdContextImpl;
-        if (openIdContext instanceof WeldClientProxy) {
-            openIdContextImpl = (OpenIdContextImpl) ((WeldClientProxy) openIdContext).getMetadata().getContextualInstance();
-        } else {
-            openIdContextImpl = (OpenIdContextImpl) openIdContext;
-        }
+        OpenIdContextImpl openIdContextImpl = (OpenIdContextImpl) CDI40Utils.getContextualInstanceFromProxy(openIdContext);
 
         Map<String, String> tokenResponseRawMap = tokenResponse.asMap();
         // TODO: Move getting expires_in to TokenResponse

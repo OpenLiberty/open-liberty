@@ -37,7 +37,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -68,10 +67,7 @@ public class ApplicationProcessorTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-                                                             MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
-                                                             MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
-                                                             MicroProfileActions.MP41);// mpOpenAPI-2.0, FULL
+    public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
 
     @BeforeClass
     public static void setUpTest() throws Exception {

@@ -50,7 +50,7 @@ public class EjbDiscoveryTest extends FATServletClient {
 
     //chosen this one test to run on EE8 as well
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE8, EERepeatActions.EE7);
+    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE11, EERepeatActions.EE8, EERepeatActions.EE7);
 
     @Server(SERVER_NAME)
     @TestServlets({
@@ -63,7 +63,7 @@ public class EjbDiscoveryTest extends FATServletClient {
         JavaArchive ejbDiscoveryNone = ShrinkWrap.create(JavaArchive.class,
                                                          EJB_DISCOVERY_APP_NAME + "None.jar")
                                                  .addClass(com.ibm.ws.cdi.ejb.apps.ejbdiscovery.none.UndiscoveredStatelessBean.class)
-                                                 .addClass(com.ibm.ws.cdi.ejb.apps.ejbdiscovery.none.StatelessLocal.class)
+                                                 .addClass(com.ibm.ws.cdi.ejb.apps.ejbdiscovery.none.UndiscoveredStatelessLocal.class)
                                                  .add(new FileAsset(new File("test-applications/" + EJB_DISCOVERY_APP_NAME + "None.jar/resources/WEB-INF/beans.xml")),
                                                       "/META-INF/beans.xml");
 

@@ -14,7 +14,6 @@ package batch.fat.junit;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
 import java.util.Properties;
 
 import javax.json.JsonObject;
@@ -30,6 +29,7 @@ import com.ibm.ws.jbatch.test.BatchRestUtils;
 import com.ibm.ws.jbatch.test.FatUtils;
 
 import batch.fat.util.BatchFATHelper;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -68,8 +68,8 @@ public class PartitionReducerTest extends BatchFATHelper {
         }
     }
 
-    @ExpectedFFDC({ "java.lang.IllegalStateException",
-                    "com.ibm.jbatch.container.exception.BatchContainerRuntimeException" })
+    @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException" })
+    @AllowedFFDC({ "java.lang.IllegalStateException" })
     @Test
     public void testPartitionReducerMethodsForceFailure() throws Exception {
 
@@ -89,16 +89,7 @@ public class PartitionReducerTest extends BatchFATHelper {
 
         assertTrue(exitStatus.contains("rollbackPartitionedStep"));
 
-        // log these for some debugging if possible
-        List<String> ffdclist = server.listFFDCFiles(server.getServerName());
-        for (int i = 0; i < ffdclist.size(); i++) {
-            log("testPartitionReducerMethodsForceFailure", "ffdc: " + ffdclist.get(i));
-        }
-
-        ffdclist = server.listFFDCSummaryFiles(server.getServerName());
-        for (int i = 0; i < ffdclist.size(); i++) {
-            log("testPartitionReducerMethodsForceFailure", "ffdc summary: " + ffdclist.get(i));
-        }
+        assertTrue(!server.findStringsInLogs("com.ibm.jbatch.container.exception.BatchContainerRuntimeException.*Forcing failure in batchlet").isEmpty());
 
     }
 

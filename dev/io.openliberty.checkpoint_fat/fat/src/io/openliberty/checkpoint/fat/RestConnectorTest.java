@@ -36,10 +36,8 @@ import com.ibm.websphere.simplicity.config.BasicRegistry.User;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -48,7 +46,7 @@ import componenttest.topology.utils.HttpsRequest;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class RestConnectorTest extends FATServletClient {
 
     public static final String SERVER_NAME = "checkpointRestConnector";
@@ -57,10 +55,7 @@ public class RestConnectorTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL,
-                                                                      MicroProfileActions.MP41, // first test in LITE mode
-                                                                      // rest are FULL mode
-                                                                      MicroProfileActions.MP50, MicroProfileActions.MP60);
+    public static RepeatTests repeatTest = FATSuite.defaultMPRepeat(SERVER_NAME);
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {

@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -199,13 +201,8 @@ public class FeatureUtility {
     protected VerifyOption getVerifyOption(String builderVerifyOption, Map<String, Object> envMap) throws InstallException {
 	String verifyValue;
 	String envValue = ((String) envMap.get("FEATURE_VERIFY"));
-	// beta
-	boolean enableVerify = System.getProperty("enable.verify") != null
-		&& System.getProperty("enable.verify").equals("true");
-	if (!enableVerify) {
-	    verifyValue = "skip";
-	} else {
-	    if (builderVerifyOption == null && envValue == null) {
+
+	if (builderVerifyOption == null && envValue == null) {
 		verifyValue = DEFAULT_VERIFY.toString();
 	    } else if (builderVerifyOption == null) {
 		verifyValue = envValue.toLowerCase();
@@ -222,8 +219,6 @@ public class FeatureUtility {
 		}
 		verifyValue = builderVerifyOption;
 	    }
-	}
-
 
 
 	try {
@@ -291,11 +286,17 @@ public class FeatureUtility {
 
         String protocol = null;
 		if (host != null && !host.isEmpty()) {
-			if (host.toLowerCase().startsWith("https://")) {
-				protocol = "https";
-			} else {
-				protocol = "http";
+			try {
+			    URL hostURL = new URL(host);
+			    protocol = hostURL.getProtocol();
+			    host = hostURL.getHost();
+			} catch (MalformedURLException e) {
+			    // If protocol is not defined, assume http protocol.
+			    logger.fine("Proxy protocol is not defined: " + e.getMessage());
+			    protocol = "http";
+
 			}
+
 		}
 
 		if (protocol != null && !protocol.isEmpty()) {

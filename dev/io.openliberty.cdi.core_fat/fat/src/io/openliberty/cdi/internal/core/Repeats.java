@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,9 @@
  *******************************************************************************/
 package io.openliberty.cdi.internal.core;
 
-public enum Repeats {
-    NO_BEANS_XML,
-    WITH_BEANS_XML
+import componenttest.rules.repeater.RepeatTestAction;
+
+public class Repeats {
+    public static final RepeatTestAction WITH_BEANS_XML = new BeansXmlRepeat();
+    public static final RepeatTestAction NO_BEANS_XML = new NoBeansXmlRepeat();
 }

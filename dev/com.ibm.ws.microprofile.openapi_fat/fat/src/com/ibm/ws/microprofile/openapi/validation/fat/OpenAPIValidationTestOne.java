@@ -8,6 +8,8 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.microprofile.openapi.fat.FATSuite;
+
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -50,12 +52,7 @@ public class OpenAPIValidationTestOne {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
-        MicroProfileActions.MP60, // mpOpenAPI-3.1, LITE
-        MicroProfileActions.MP50, // mpOpenAPI-3.0, FULL
-        MicroProfileActions.MP41, // mpOpenAPI-2.0, FULL
-        MicroProfileActions.MP33, // mpOpenAPI-1.1, FULL
-        MicroProfileActions.MP22);// mpOpenAPI-1.0, FULL
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     private static final String OPENAPI_VALIDATION_YAML = "openapi_validation";
 
@@ -85,7 +82,10 @@ public class OpenAPIValidationTestOne {
 
     @Test
     @SkipForRepeat({
-        MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID
+        MicroProfileActions.MP41_ID,
+        MicroProfileActions.MP50_ID,
+        MicroProfileActions.MP60_ID,
+        MicroProfileActions.MP61_ID
     })
     public void testInfoValidation() {
 

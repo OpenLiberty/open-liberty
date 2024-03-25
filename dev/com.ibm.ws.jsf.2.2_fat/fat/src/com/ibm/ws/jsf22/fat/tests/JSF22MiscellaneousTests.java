@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -21,6 +21,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -47,12 +48,10 @@ import com.ibm.ws.jsf22.fat.selenium_util.WebPage;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -78,14 +77,15 @@ public class JSF22MiscellaneousTests {
     @Server("jsf22MiscellaneousServer")
     public static LibertyServer jsf22MiscellaneousServer;
 
-    @Rule
-    public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
-                                                                                  .withAccessToHost(true)
-                                                                                  .withLogConsumer(new SimpleLogConsumer(JSF22ResetValuesAndAjaxDelayTests.class, "selenium-driver"));
+    @ClassRule
+    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
+                    .withAccessToHost(true)
+                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
+
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         JavaArchive JSF22MiscellaneousJar = ShrinkHelper.buildJavaArchive(APP_NAME_MISCELLANEOUS + ".jar", "com.ibm.ws.jsf22.fat.miscbean.jar",
                                                                           isEE10 ? "com.ibm.ws.jsf22.fat.miscbean.jar.faces40" : "com.ibm.ws.jsf22.fat.miscbean.jar.jsf22");
@@ -282,7 +282,7 @@ public class JSF22MiscellaneousTests {
             if (!page.asText().contains("This is a protected page.")) {
                 Assert.fail("Invalid response from server.  The protected page was not retrieved = " + page.asText());
             }
-            if (!page.getUrl().toString().contains((JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "faces.Token=")) {
+            if (!page.getUrl().toString().contains((JakartaEEAction.isEE9OrLaterActive() ? "jakarta." : "javax.") + "faces.Token=")) {
                 Assert.fail("Invalid response from server.  This page does NOT contain the token = " + page.asText());
             }
 
@@ -371,9 +371,9 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
-    // Skip for EE10 because this test is specific to Faces Managed Beans which
+    // Skip for EE10+ because this test is specific to Faces Managed Beans which
     // are no longer supported in Faces 4.0.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void testViewScopeMyFaces() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
@@ -404,9 +404,9 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
-    // Skip for EE10 because this test is specific to Faces Managed Beans which
+    // Skip for EE10+ because this test is specific to Faces Managed Beans which
     // are no longer supported in Faces 4.0.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void testViewScopeMyFacesSerialize() throws Exception {
         try (WebClient webClient = new WebClient()) {
 
@@ -528,10 +528,10 @@ public class JSF22MiscellaneousTests {
      * @throws Exception
      */
     @Test
-    // Skip for EE10 as the jakarta.faces.application.Application.createValueBinding method
+    // Skip for EE10+ as the jakarta.faces.application.Application.createValueBinding method
     // was removed. In addition the fix for this isn't necessary for Faces 4.0 because the
     // org.apache.myfaces.el.convert packages doesn't exist any longer.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void testCustomValueBindingTag() throws Exception {
         try (WebClient webClient = new WebClient()) {
             webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);

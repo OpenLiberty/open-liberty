@@ -25,6 +25,7 @@ Export-Package: com.ibm.ws.dynamic.bundle;provide:=true
 -buildpath: \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.kernel.boot.common,\
 	com.ibm.ws.org.eclipse.equinox.region, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.logging

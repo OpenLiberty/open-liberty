@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,7 @@ import javax.json.JsonObject;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,6 +36,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
@@ -46,6 +49,14 @@ public class ValidateDataSourceTest extends FATServletClient {
 
     @Server("com.ibm.ws.rest.handler.validator.jdbc.fat")
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r1 = MicroProfileActions.repeat("com.ibm.ws.rest.handler.validator.jdbc.fat",
+                                                              MicroProfileActions.MP61,
+                                                              MicroProfileActions.MP50, // EE9
+                                                              MicroProfileActions.MP40, // EE8
+                                                              MicroProfileActions.MP30,
+                                                              MicroProfileActions.MP20);
 
     private static String VERSION_REGEX = "[0-9]+\\.[0-9]+.*";
 

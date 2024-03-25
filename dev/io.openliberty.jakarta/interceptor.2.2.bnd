@@ -1,0 +1,31 @@
+#*******************************************************************************
+# Copyright (c) 2020, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+Bundle-SymbolicName: io.openliberty.jakarta.interceptor.2.2; singleton:=true
+
+#export copied from the original bundle
+Export-Package: jakarta.interceptor;version="2.2.0-RC1"
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-includeresource: \
+  @${repo;jakarta.interceptor:jakarta.interceptor-api;2.2.0.RC1;EXACT}!/!(META-INF/maven/*|module-info.class)
+
+-maven-dependencies: \
+  dep1;groupId=jakarta.interceptor;artifactId=jakarta.interceptor-api;version=2.2.0-RC1;scope=runtime

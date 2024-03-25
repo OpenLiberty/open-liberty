@@ -68,9 +68,7 @@ public class OpenAPIEndpointManager implements OpenAPIEndpointProvider {
         docPath = OPEN_API_DOC_ENDPOINT_PATH;
         uiPath = docPath + OPEN_API_UI_PATH;
 
-        if (ProductInfo.getBetaEdition()) {
-            getPathsFromProperties(properties);
-        }
+        getPathsFromProperties(properties);
 
         uiWabConfigManager = new WABConfigManager(context, OPEN_API_UI_VAR_NAME, "OpenAPI UI");
         docWabConfigManager = new WABConfigManager(context, OPEN_API_DOC_VAR_NAME, "OpenAPI Doc");
@@ -80,9 +78,7 @@ public class OpenAPIEndpointManager implements OpenAPIEndpointProvider {
 
     @Modified
     protected void modified(Map<String, Object> properties) {
-        if (ProductInfo.getBetaEdition()) {
-            getPathsFromProperties(properties);
-        }
+        getPathsFromProperties(properties);
         uiWabConfigManager.setPath(uiPath);
         docWabConfigManager.setPath(docPath);
     }

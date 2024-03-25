@@ -15,12 +15,17 @@ export default class SimpleInfo extends React.Component {
 
     const Markdown = getComponent("Markdown", true)
     const VersionStamp = getComponent("VersionStamp")
+    const OpenAPIVersion = getComponent("OpenAPIVersion")
 
     return (
       <div className="info">
         <hgroup className="main">
-          <h2 className="title" >{ title }
-            { version && <VersionStamp version={version}></VersionStamp> }
+          <h2 className="title" >
+            { title }
+            <span>
+              { version && <VersionStamp version={version}></VersionStamp> }
+              <OpenAPIVersion oasVersion="2.0" />{/* 2.0 version here gets overridden elsewhere for later versions */}
+            </span>
           </h2>
         </hgroup>
 

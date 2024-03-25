@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -38,12 +38,20 @@ public class KafkaConnectorConstants {
     //The length of time to retry creation of the KafkaConsumer
     public static final String CREATION_RETRY_SECONDS = "creation.retry.seconds";
 
+    //Whether to complete ack() call before the partition offset is actually committed
+    public static final String FAST_ACK = "fast.ack";
+
+    //The name of the context service to use
+    public static final String CONTEXT_SERVICE = "context.service";
+
     //The set of properties which should NOT be passed through to the Kafka client
     public static final Set<String> NON_KAFKA_PROPS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[] { TOPIC,
                                                                                                                              ConnectorFactory.CONNECTOR_ATTRIBUTE,
                                                                                                                              ConnectorFactory.CHANNEL_NAME_ATTRIBUTE,
                                                                                                                              UNACKED_LIMIT,
-                                                                                                                             CREATION_RETRY_SECONDS
+                                                                                                                             CREATION_RETRY_SECONDS,
+                                                                                                                             FAST_ACK,
+                                                                                                                             CONTEXT_SERVICE
     })));
 
 //=======================Kafka Properties===============================//

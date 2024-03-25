@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,7 +37,7 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationDa
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -47,15 +47,6 @@ public class OidcClientCookieVerificationTests extends CommonTest {
 
     public static final String OP_SSO_COOKIE_NAME = "WAS_OP_SSO_cookie";
     public static final String RP_SSO_COOKIE_NAME = "WAS_RP_SSO_cookie";
-
-    protected static final String GLOBAL_JVM_ARGS = AccessController
-            .doPrivileged(new PrivilegedAction<String>() {
-                @Override
-                public String run() {
-                    String prop = System.getProperty("global.jvm.args");
-                    return prop == null ? "" : prop.trim();
-                }
-            });
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -100,13 +91,13 @@ public class OidcClientCookieVerificationTests extends CommonTest {
         expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_COOKIE, Constants.STRING_MATCHES, "Should have found a WASOidcState cookie but didn't.", null, "WASOidcState[pn][0-9]+=[^" + CommonValidationTools.COOKIE_DELIMITER + "]+");
         expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_COOKIE, Constants.STRING_MATCHES, "Should have found a WASOidcNonce cookie but didn't.", null, "WASOidcNonce[pn][0-9]+=[^" + CommonValidationTools.COOKIE_DELIMITER + "]+");
         expectations = getSuccessfulAccessExpectations(updatedTestSettings, expectations);
-        String expirationCookieFormat = JakartaEE10Action.isActive() ? "; max-age=0" : "; Expires=Thu, 01 Dec 1994";
+        String expirationCookieFormat = JakartaEEAction.isEE10OrLaterActive() ? "; max-age=0" : "; Expires=Thu, 01 Dec 1994";
         expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_MATCHES, "Should have found a Set-Cookie header to clear the WASOidcState cookie but didn't.", null, "WASOidcState[pn][0-9]+=\"\"" + expirationCookieFormat);
         expectations = vData.addExpectation(expectations, Constants.LOGIN_USER, Constants.RESPONSE_HEADER, Constants.STRING_MATCHES, "Should have found a Set-Cookie header to clear the WASOidcNonce cookie but didn't.", null, "WASOidcNonce[pn][0-9]+=\"\"" + expirationCookieFormat);
 
         genericRP(_testName, webClient, updatedTestSettings, Constants.GOOD_OIDC_LOGIN_ACTIONS_SKIP_CONSENT, expectations);
 
-        List<String> allowedCookies = addSessionCookieToExpectedCookiesIfRunningBeta("JSESSIONID", "LtpaToken2", OP_SSO_COOKIE_NAME, RP_SSO_COOKIE_NAME);
+        List<String> allowedCookies = Arrays.asList("JSESSIONID", "LtpaToken2", OP_SSO_COOKIE_NAME, RP_SSO_COOKIE_NAME, "WASOidcSession");
 
         // Verify all cookies that should have been deleted do not appear in the web client anymore
         validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, allowedCookies);
@@ -193,7 +184,7 @@ public class OidcClientCookieVerificationTests extends CommonTest {
 
         logInAndLogOut(webClient, updatedTestSettings, expectations);
 
-        List<String> allowedCookies = addSessionCookieToExpectedCookiesIfRunningBeta("JSESSIONID", RP_SSO_COOKIE_NAME);
+        List<String> allowedCookies = Arrays.asList("JSESSIONID", RP_SSO_COOKIE_NAME, "WASOidcSession");
 
         // Only the OP's SSO cookie should have been removed; the RP's should still be present
         validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, allowedCookies);
@@ -223,7 +214,7 @@ public class OidcClientCookieVerificationTests extends CommonTest {
 
         logInAndLogOut(webClient, updatedTestSettings, expectations);
 
-        List<String> allowedCookies = addSessionCookieToExpectedCookiesIfRunningBeta("JSESSIONID", RP_SSO_COOKIE_NAME);
+        List<String> allowedCookies = Arrays.asList("JSESSIONID", RP_SSO_COOKIE_NAME, "WASOidcSession");
 
         // Only the OP's SSO cookie should have been removed; the RP's should still be present
         validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, allowedCookies);
@@ -256,7 +247,7 @@ public class OidcClientCookieVerificationTests extends CommonTest {
 
         logIn(webClient, updatedTestSettings);
 
-        List<String> allowedCookies = addSessionCookieToExpectedCookiesIfRunningBeta("JSESSIONID", "LtpaToken2", OP_SSO_COOKIE_NAME, RP_SSO_COOKIE_NAME);
+        List<String> allowedCookies = Arrays.asList("JSESSIONID", "LtpaToken2", OP_SSO_COOKIE_NAME, RP_SSO_COOKIE_NAME, "WASOidcSession");
 
         validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, allowedCookies);
 
@@ -285,7 +276,7 @@ public class OidcClientCookieVerificationTests extends CommonTest {
         Log.info(thisClass, _testName, "Verify cookies have been deleted from the original web client");
         validationTools.verifyOnlyAllowedCookiesStillPresent(webClient, Arrays.asList("JSESSIONID"));
 
-        allowedCookies = addSessionCookieToExpectedCookiesIfRunningBeta("JSESSIONID", "LtpaToken2", OP_SSO_COOKIE_NAME, RP_SSO_COOKIE_NAME);
+        allowedCookies = Arrays.asList("JSESSIONID", "LtpaToken2", OP_SSO_COOKIE_NAME, RP_SSO_COOKIE_NAME, "WASOidcSession"); 
 
         Log.info(thisClass, _testName, "Verify cookies are still present in the second web client");
         validationTools.verifyOnlyAllowedCookiesStillPresent(webClient2, allowedCookies);
@@ -320,20 +311,6 @@ public class OidcClientCookieVerificationTests extends CommonTest {
         expectations = validationTools.addDefaultIDTokenExpectations(expectations, _testName, eSettings.getProviderType(), Constants.LOGIN_USER, settings);
         expectations = validationTools.addDefaultGeneralResponseExpectations(expectations, _testName, eSettings.getProviderType(), Constants.LOGIN_USER, settings);
         return expectations;
-    }
-
-    private List<String> addSessionCookieToExpectedCookiesIfRunningBeta(String... expectedCookies) {
-        List<String> allowedCookies = new ArrayList<>();
-        if (expectedCookies != null) {
-            for (String expectedCookie : expectedCookies) {
-                allowedCookies.add(expectedCookie);
-            }
-        }
-        Log.info(thisClass, _testName, "Global args: " + GLOBAL_JVM_ARGS);
-        if (GLOBAL_JVM_ARGS.contains("-Dcom.ibm.ws.beta.edition=true")) {
-            allowedCookies.add("WASOidcSession");
-        }
-        return allowedCookies;
     }
 
 }

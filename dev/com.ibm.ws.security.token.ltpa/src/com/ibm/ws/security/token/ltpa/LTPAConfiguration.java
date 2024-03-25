@@ -46,7 +46,12 @@ public interface LTPAConfiguration {
     /**
      * The Boolean to monitor the token keys file's directory.
      */
-    static final String CFG_KEY_MONITOR_DIRECTORY = "monitorDirectory";
+    public static final String CFG_KEY_MONITOR_VALIDATION_KEYS_DIR = "monitorValidationKeysDir";
+
+    /**
+     * The token keys file's update method or trigger.
+     */
+    public static final String CFG_KEY_UPDATE_TRIGGER = "updateTrigger";
 
     /**
      * The token validation keys.
@@ -66,7 +71,7 @@ public interface LTPAConfiguration {
     /**
      * The the date-time to stop using the token validation keys.
      */
-    static final String CFG_KEY_VALIDATION_NOT_USE_AFTER_DATE = "notUseAfterDate";
+    static final String CFG_KEY_VALIDATION_VALID_UNTIL_DATE = "validUntilDate";
 
     /**
      * @return TokenFactory instance corresponding to this LTPA configuration
@@ -104,13 +109,23 @@ public interface LTPAConfiguration {
     long getExpirationDifferenceAllowed();
 
     /**
-     * @return monitor directory
+     * @return monitor interval
      */
-    boolean getMonitorDirectory();
+    long getMonitorInterval();
+
+    /**
+     * @return boolean for monitoring validation keys dir
+     */
+    boolean getMonitorValidationKeysDir();
+
+    /**
+     * @return update trigger
+     */
+    String getUpdateTrigger();
 
     /**
      * @return validation Keys
      */
     List<Properties> getValidationKeys();
-
+    
 }

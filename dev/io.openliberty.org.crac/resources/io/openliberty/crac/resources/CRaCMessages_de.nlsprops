@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.org.crac/resources/io/openliberty/crac/resources/CRaCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0551-600 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551=CWWKC0551E: Die Anforderung eines Serverpr\u00fcfpunkts ist fehlgeschlagen, da mindestens eine Ressource bei der Benachrichtigung \u00fcber eine Pr\u00fcfpunktanforderung eine Ausnahme ausgel\u00f6st hat.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.explanation=Mindestens eine registrierte Ressourcenimplementierung hat bei der Benachrichtigung \u00fcber eine Pr\u00fcfpunktanforderung eine Ausnahme ausgel\u00f6st.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.useraction=Suchen Sie in den Protokollen nach der Ausnahme, die zum Fehlschlagen der Pr\u00fcfpunktanforderung gef\u00fchrt hat.
+
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552=CWWKC0552E: Der Server konnte nicht zur\u00fcckgeschrieben werden, weil mindestens eine Ressource eine Ausnahmebedingung ausgel\u00f6st hat, als sie \u00fcber das Zur\u00fcckschreiben des Servers vom Pr\u00fcfpunkt benachrichtigt wurde.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.explanation=Mindestens eine registrierte Ressourcenimplementierung hat eine Ausnahme ausgel\u00f6st, als sie \u00fcber das Zur\u00fcckschreiben des Servers vom Pr\u00fcfpunkt benachrichtigt wurde.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.useraction=Suchen Sie in den Protokollen nach der Ausnahme, die das Fehlschlagen beim Zur\u00fcckschreiben des Servers vom Pr\u00fcfpunkt verursacht hat.
+
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553=CWWKC0553E: Anforderungen f\u00fcr Pr\u00fcfpunkte werden vom Liberty-Server nicht unterst\u00fctzt.
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.explanation=Anforderungen f\u00fcr Pr\u00fcfpunkte, die die org.crac-APIs verwenden, werden von Liberty nicht unterst\u00fctzt. 
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.useraction=Einzelheiten zum Pr\u00fcfpunkt und den Operationen zum Zur\u00fcckschreiben f\u00fcr Liberty InstantOn finden Sie in der Dokumentation.

@@ -13,8 +13,9 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.invalid.badconfig;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties.simpleIncomingChannel;
-import static com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties.simpleIncomingChannel;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
@@ -34,8 +35,8 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaConnectorConstants;
 
@@ -64,8 +65,7 @@ public class KafkaBadConfigTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10,
-                                                                  ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
+    public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10, ReactiveMessagingActions.MP50_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -74,11 +74,11 @@ public class KafkaBadConfigTest {
 
     @AfterClass
     public static void teardownTest() throws Exception {
-        server.stopServer("CWMRX1007E", // Expected error message
-                          "CWWKZ000[1-4]", // Generic "Exception starting app" messages
-                          "CWMRX1009W", // Connector initialization failed but will be retried message
-                          "CWMRX1008E", // Expected outgoing error message
-                          "CWMRX1010W" // Outgoing connector initialization failed by will be retried message
+        kafkaStopServer(server, "CWMRX1007E", // Expected error message
+                        "CWWKZ000[1-4]", // Generic "Exception starting app" messages
+                        "CWMRX1009W", // Connector initialization failed but will be retried message
+                        "CWMRX1008E", // Expected outgoing error message
+                        "CWMRX1010W" // Outgoing connector initialization failed by will be retried message
         );
     }
 

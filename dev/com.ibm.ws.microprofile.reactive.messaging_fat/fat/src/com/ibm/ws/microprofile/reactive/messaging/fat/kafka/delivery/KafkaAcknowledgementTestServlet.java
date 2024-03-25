@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -118,5 +118,21 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
 
         // Assert that partition offset gets committed to 3
         kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 3, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
+    }
+
+    @Test
+    public void testPostProcessSubscriber() throws InterruptedException {
+        long offset = kafkaTestClient.getTopicOffset(KafkaPostProcessReceptionBean.POST_PROCESS_CHANNEL, APP_GROUPID);
+
+        KafkaWriter<String, String> writer = kafkaTestClient.writerFor(KafkaPostProcessReceptionBean.POST_PROCESS_CHANNEL);
+        writer.sendMessage("test1");
+        writer.sendMessage("test2");
+        writer.sendMessage("test3");
+        writer.sendMessage("test4");
+        writer.sendMessage("test5");
+
+        // All messages should be received and acked immediately
+        // Assert that partition offset gets committed to 5
+        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaPostProcessReceptionBean.POST_PROCESS_CHANNEL, APP_GROUPID);
     }
 }

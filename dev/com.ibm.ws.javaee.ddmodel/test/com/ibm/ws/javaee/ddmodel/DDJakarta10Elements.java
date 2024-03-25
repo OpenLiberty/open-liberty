@@ -13,6 +13,7 @@
 package com.ibm.ws.javaee.ddmodel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -124,11 +125,7 @@ import com.ibm.ws.javaee.dd.common.JNDIEnvironmentRefs;
 public class DDJakarta10Elements {
 
     public static List<String> names(String... name0) {
-        List<String> names = new ArrayList<String>(6);
-        for ( String name : names ) {
-            names.add(name);
-        }
-        return names;
+        return new ArrayList<String>(Arrays.asList(name0));
     }
 
     public static void withName(List<String> names, String name, Consumer<List<String>> action) {

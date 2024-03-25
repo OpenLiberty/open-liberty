@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2021 IBM Corporation and others.
+    Copyright (c) 2011, 2023 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
@@ -20,7 +17,15 @@
             id="disableJspRuntimeCompilation" required="false" type="Boolean" default="false"/>
         <AD description="%extendedDocumentRoot" name="%extendedDocumentRoot.name"
             id="extendedDocumentRoot" required="false" type="String" default="" /> 
-        <AD description="%jdkSourceLevel" name="%jdkSourceLevel.name"
+        <AD description="%javaSourceLevel" name="%javaSourceLevel.name"
+            id="javaSourceLevel" required="false" type="String">
+            <Option label="8" value="8"/>
+            <Option label="11" value="11"/>
+            <Option label="17" value="17"/>
+            <Option label="21" value="21"/>
+        </AD> 
+        <!-- Marked internal for compatibility reasons (for existing users), and recommending javaSourceLevel forward. See OLGH #7183  -->
+        <AD name="internal" description="internal use only"
             id="jdkSourceLevel" required="false" type="String">
             <Option label="13" value="13"/>
             <Option label="14" value="14"/>
@@ -31,8 +36,6 @@
         </AD> 
         <AD description="%keepGenerated" name="%keepGenerated.name"
             id="keepGenerated" required="false" type="Boolean" default="false"/>
-        <AD description="%useInMemory" name="%useInMemory.name"
-            id="useInMemory" required="false" type="Boolean" default="false" />
         <AD description="%recompileJspOnRestart" name="%recompileJspOnRestart.name"
             id="recompileJspOnRestart" required="false" type="Boolean" default="false"/>
         <AD description="%useImplicitTagLibs" name="%useImplicitTagLibs.name"
@@ -47,7 +50,10 @@
             id="useJDKCompiler" required="false" type="Boolean"/> <!--null default-->
         <AD description="%prepareJSPThreadCount" name="%prepareJSPThreadCount.name"
             id="prepareJSPThreadCount" required="false" type="Integer" default="1"/>
-        <!--  needs translation post-8559 -->
+
+         <!--  INTERNAL -->
+        <AD id="useInMemory" name="internal" description="internal use only" 
+            required="false" type="Boolean" default="false" />
         <AD id="osgiAppsCanProvideJSTL" name="internal" description="internal use only"
             type="Boolean" default="false"/>
             

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -111,7 +111,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1, 0)) >= 99)";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
-                    if (isUsingJPA31Feature()) {
+                    if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                         expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (ABS(COALESCE(ITEM_INTEGER1, ?)) >= ?)";
                     }
 
@@ -264,7 +264,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                         String expected = "SELECT 2, COUNT(ABS(-3)) FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_INTEGER1 = ABS(-3))";
 
                         // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
-                        if (isUsingJPA31Feature()) {
+                        if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                             expected = "SELECT 2, COUNT(ABS(?)) FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_INTEGER1 = ABS(?))";
                         }
 
@@ -348,7 +348,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                     List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                    if (isUsingJPA31Feature()) {
+                    if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                         if (isDerby || isDB2 || isDB2ZOS) {
                             String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_STRING1 = TRIM(VARCHAR(? || ?))) AND (ITEM_STRING1 = TRIM(VARCHAR(? || ?))))";
                             Assert.assertEquals(expected, sql.get(0));
@@ -499,7 +499,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     String expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = 'Test') AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = 33)))";
 
                     //TODO: Alter test until EclipseLink 3.0 are updated to include the fix
-                    if (isUsingJPA31Feature()) {
+                    if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                         // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
                         expected = "SELECT t0.KEY_CHAR, t0.ITEM_BOOLEAN1, t0.ITEM_DATE1, t0.ITEM_INTEGER1, t0.ITEM_STRING1 FROM SIMPLEENTITYOLGH8294 t0 WHERE ((t0.ITEM_STRING1 = ?) AND EXISTS (SELECT 1 FROM SIMPLEENTITYOLGH8294 t1 WHERE (t0.ITEM_INTEGER1 = ?)))";
                     }
@@ -571,7 +571,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     String expected = "SELECT (ITEM_INTEGER1 + ?) FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_INTEGER1 + ?) > 1)";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
-                    if (isUsingJPA31Feature()) {
+                    if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                         expected = "SELECT (ITEM_INTEGER1 + ?) FROM SIMPLEENTITYOLGH8294 WHERE ((ITEM_INTEGER1 + ?) > ?)";
                     }
 
@@ -635,7 +635,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     String expected = "SELECT (ITEM_INTEGER1 + 4) FROM SIMPLEENTITYOLGH8294 WHERE (ABS((ITEM_INTEGER1 + 4)) > 1)";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
-                    if (isUsingJPA31Feature()) {
+                    if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                         expected = "SELECT (ITEM_INTEGER1 + ?) FROM SIMPLEENTITYOLGH8294 WHERE (ABS((ITEM_INTEGER1 + ?)) > ?)";
                     }
 
@@ -754,7 +754,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                     List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                    if (isUsingJPA31Feature()) {
+                    if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                         if (isDB2) {
                             String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (? IN (?, ?, ?))";
                             Assert.assertEquals(expected, sql.get(0));
@@ -803,7 +803,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                     List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                    if (isUsingJPA31Feature()) {
+                    if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                         if (isDB2) {
                             String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (? IN (?, ?, ?))";
                             Assert.assertEquals(expected, sql.get(0));
@@ -852,7 +852,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
 
                     List<String> sql = SQLListener.getAndClearSQLList();
                     Assert.assertEquals("Expected 1 line of SQL to have been generated.", 1, sql.size());
-                    if (isUsingJPA31Feature()) {
+                    if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                         if (isDB2) {
                             String expected = "SELECT 2 FROM SIMPLEENTITYOLGH8294 WHERE (ITEM_STRING1 IN (?, ?, ?))";
                             Assert.assertEquals(expected, sql.get(0));
@@ -974,7 +974,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE ? LIKE ? ESCAPE '_'";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
-                    if (isUsingJPA31Feature()) {
+                    if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                         expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE ? LIKE ? ESCAPE ?";
                     }
 
@@ -1045,7 +1045,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (TRIM(ITEM_STRING1) = TRIM(SUBSTR(?, 1, 5)))";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
-                    if (isUsingJPA31Feature()) {
+                    if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                         expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (TRIM(ITEM_STRING1) = TRIM(SUBSTR(?, ?, ?)))";
                     }
 
@@ -1077,7 +1077,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (TRIM(ITEM_STRING1) = TRIM(SUBSTR(?, ?, 5)))";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
-                    if (isUsingJPA31Feature()) {
+                    if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                         expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (TRIM(ITEM_STRING1) = TRIM(SUBSTR(?, ?, ?)))";
                     }
 
@@ -1139,7 +1139,7 @@ public class JPATestOLGH8294Logic extends AbstractTestLogic {
                     String expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (SUBSTR(ITEM_STRING1, 1, ?) NOT IN (?, ?, ?, ?))";
 
                     // EclipseLink 4.0 (JPA 3.1) changed the default behavior to bind literals now that DB2/Derby know what is valid
-                    if (isUsingJPA31Feature()) {
+                    if (isUsingJPA31Feature() || isUsingJPA32Feature()) {
                         expected = "SELECT 1 FROM SIMPLEENTITYOLGH8294 WHERE (SUBSTR(ITEM_STRING1, ?, ?) NOT IN (?, ?, ?, ?))";
                     }
 

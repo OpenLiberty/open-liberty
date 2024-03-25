@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -267,9 +267,6 @@ public class AuthenticateApi {
     }
 
     String getUserNameFromCallerSubject() {
-        if (!ProductInfo.getBetaEdition()) {
-            return null;
-        }
         Subject subject = subjectManager.getCallerSubject();
         if (subject != null && !subjectHelper.isUnauthenticated(subject)) {
             Set<WSPrincipal> wsPrincipals = subject.getPrincipals(WSPrincipal.class);

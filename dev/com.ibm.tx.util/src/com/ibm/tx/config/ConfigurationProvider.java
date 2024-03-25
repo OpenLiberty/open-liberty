@@ -212,11 +212,8 @@ public interface ConfigurationProvider {
     /**
      * Returns whether we will propagate the transaction timeout to XAResources
      */
-    public boolean getPropagateXAResourceTransactionTimeout();
+    public boolean isPropagateXAResourceTransactionTimeout();
 
-    /**
-     * @return
-     */
     public String getRecoveryIdentity();
 
     public String getRecoveryGroup();
@@ -230,6 +227,8 @@ public interface ConfigurationProvider {
     public int getLeaseLength();
 
     public int getLeaseRenewalThreshold();
+
+    public int getLeaseExpiryThreshold();
 
     public String getBackendURL();
 
@@ -349,4 +348,12 @@ public interface ConfigurationProvider {
      * @return
      */
     public boolean isForcePrepare();
+
+    /**
+     * Return true when a peer server that has claimed the logs of a home server is to be allowed to proceed with peer recovery. The home server
+     * claim on its own logs will then fail.
+     *
+     * @return
+     */
+    public boolean peerRecoveryPrecedence();
 }

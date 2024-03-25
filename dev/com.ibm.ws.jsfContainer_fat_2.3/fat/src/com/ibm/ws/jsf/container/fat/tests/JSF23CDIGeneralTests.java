@@ -43,8 +43,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -68,8 +67,7 @@ public class JSF23CDIGeneralTests extends FATServletClient {
     @Server("jsf.container.2.3_fat.cdi")
     public static LibertyServer jsf23CDIServer;
 
-    private static boolean isEE9;
-    private static boolean isEE10;
+    private static boolean isEE9OrLater;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -120,8 +118,7 @@ public class JSF23CDIGeneralTests extends FATServletClient {
         // Start the server and use the class name so we can find logs easily.
         jsf23CDIServer.startServer(JSF23CDIGeneralTests.class.getSimpleName() + ".log");
 
-        isEE9 = JakartaEE9Action.isActive();
-        isEE10 = JakartaEE10Action.isActive();
+        isEE9OrLater = JakartaEEAction.isEE9OrLaterActive();
     }
 
     @Before
@@ -321,14 +318,14 @@ public class JSF23CDIGeneralTests extends FATServletClient {
             assertTrue(resultPage.asText().contains("URI from RequestMap: /ELImplicitObjectsViaCDI/index.xhtml"));
             assertTrue(resultPage.asText()
                             .contains("Flow map object is null: Exception: WELD-001303: No active contexts "
-                                      + "for scope type " + (isEE10 || isEE9 ? "jakarta." : "javax.") + "faces.flow.FlowScoped")); // Expected exception
+                                      + "for scope type " + (isEE9OrLater ? "jakarta." : "javax.") + "faces.flow.FlowScoped")); // Expected exception
             assertTrue(resultPage.asText().contains("Message from HeaderMap: This is a test"));
-            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: " + (isEE10 || isEE9 ? "jakarta." : "javax.") + "servlet.http.Cookie"));
+            assertTrue(resultPage.asText().contains("Cookie object from CookieMap: " + (isEE9OrLater ? "jakarta." : "javax.") + "servlet.http.Cookie"));
             assertTrue(resultPage.asText().contains("WELD_CONTEXT_ID_KEY from InitParameterMap: ELImplicitObjectsViaCDI"));
             assertTrue(resultPage.asText().contains("Message from RequestParameterMap: Hello World"));
             assertTrue(resultPage.asText().contains("Message from RequestParameterValuesMap: [Hello World]"));
             assertTrue(resultPage.asText().contains("Message from HeaderValuesMap: [This is a test]"));
-            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: " + (isEE10 || isEE9 ? "jakarta." : "javax.") + "faces"));
+            assertTrue(resultPage.asText().contains("Resource handler JSF_SCRIPT_LIBRARY_NAME constant: " + (isEE9OrLater ? "jakarta." : "javax.") + "faces"));
         }
     }
 

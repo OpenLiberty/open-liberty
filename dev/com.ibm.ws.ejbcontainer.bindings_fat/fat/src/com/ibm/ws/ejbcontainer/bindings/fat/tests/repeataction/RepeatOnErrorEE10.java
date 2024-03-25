@@ -15,6 +15,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -54,7 +55,7 @@ public class RepeatOnErrorEE10 extends JakartaEE10Action {
     }
 
     @Override
-    public JakartaEE10Action forServers(String... serverNames) {
+    public JakartaEEAction forServers(String... serverNames) {
         if (serverNames == null || serverNames.length != 1) {
             throw new IllegalStateException("Only 1 server supported by " + getClass().getSimpleName() + " repeat action");
         }

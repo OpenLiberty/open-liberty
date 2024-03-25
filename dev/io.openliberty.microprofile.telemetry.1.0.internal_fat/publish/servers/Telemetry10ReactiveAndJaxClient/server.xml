@@ -1,0 +1,32 @@
+<server description="Telemetry10Servlet">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>pages-3.1</feature>
+        <feature>mpTelemetry-1.0</feature>
+        <feature>componentTest-2.0</feature>
+        <feature>concurrent-3.0</feature>
+        <feature>jsonb-3.0</feature>
+        <feature>restfulWS-3.1</feature>
+        <feature>mpRestClient-3.0</feature>
+        <feature>mpReactiveMessaging-3.0</feature>
+    </featureManager>
+    
+    <library id="exporter" apiTypeVisibility="+third-party">
+        <file name="${server.config.dir}/shared/exporter.jar" commonLibraryRef="exporter" />
+    </library>
+
+    <application id="ReactiveMessageThatTriggersRestClientApp" name="ReactiveMessageThatTriggersRestClientApp"
+        type="war" location="ReactiveMessageThatTriggersRestClientApp.war">
+        <classloader apiTypeVisibility="+third-party" commonLibraryRef="exporter" />
+    </application>
+    
+    <application id="RestClientTriggeredByReactiveMessagApp" name="RestClientTriggeredByReactiveMessagApp"
+        type="war" location="RestClientTriggeredByReactiveMessagApp.war">
+        <classloader apiTypeVisibility="+third-party" commonLibraryRef="exporter" />
+    </application>
+    
+    <logging traceSpecification="TELEMETRY=all"/>
+</server>

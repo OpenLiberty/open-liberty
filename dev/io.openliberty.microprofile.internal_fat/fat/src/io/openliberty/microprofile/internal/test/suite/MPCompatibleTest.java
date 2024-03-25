@@ -121,7 +121,7 @@ public class MPCompatibleTest {
                                           false, //expectStartFailure
                                           false); //validateTimedExit
         } finally {
-            server.stopServer("CWWKF0044E: The concurrent-2.0 and .* features cannot be loaded at the same time",
+            server.stopServer("(CWWKF0044E|CWWKF0047E): The concurrent-2.0 and .* features cannot be loaded at the same time",
                               "CWWKF0046W: The configuration includes an incompatible combination of features");
         }
     }

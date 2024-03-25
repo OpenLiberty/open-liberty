@@ -21,7 +21,6 @@ import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsF
 import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsFactoryResolver;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testng.ITestNGListener;
@@ -31,25 +30,19 @@ import org.testng.xml.XmlClass;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
-
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.RepeatTests;
 import io.smallrye.reactive.streams.Engine;
 
 /**
- * Runs the Reactive Streams TCK against our Kafka connector
+ * Runs the Reactive Streams 1.0 TCK against our Kafka connector
  * <p>
  * The Reactive Streams TCK is written using TestNG, so this test is a wrapper which launches TestNG to run the tests.
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class ReactiveStreamsTckTest {
-
-    @ClassRule
-    public static RepeatTests r = ReactiveMessagingActions.repeat(null, ReactiveMessagingActions.MP20_RM10);
 
     @BeforeClass
     public static void setup() {

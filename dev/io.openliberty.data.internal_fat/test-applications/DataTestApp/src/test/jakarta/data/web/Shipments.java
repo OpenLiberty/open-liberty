@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,63 +13,66 @@
 package test.jakarta.data.web;
 
 import java.time.OffsetDateTime;
+import java.util.Set;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.By;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Param;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 
-import io.openliberty.data.repository.Compare;
-import io.openliberty.data.repository.Delete;
-import io.openliberty.data.repository.Filter;
 import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.Update;
+import io.openliberty.data.repository.comparison.In;
+import io.openliberty.data.repository.update.Assign;
 
 /**
  *
  */
 @Repository
 public interface Shipments {
-    @Filter(by = "id", param = "shipmentId")
-    @Filter(by = "status", op = Compare.In, value = { "PREPARING", "READY_FOR_PICKUP" })
-    @Update(attr = "status", value = "CANCELED")
-    @Update(attr = "canceledAt", param = "time")
-    boolean cancel(@Param("shipmentId") long id,
-                   @Param("time") OffsetDateTime timeOfCancellation);
+    @Update
+    boolean cancel(long id,
+                   @By("status") @In Set<String> currentStatus,
+                   @Assign("status") String newStatus,
+                   @Assign("canceledAt") OffsetDateTime timeOfCancellation);
 
-    @Filter(by = "id")
-    @Filter(by = "status", value = "'READY_FOR_PICKUP'")
-    @Update(attr = "status", value = "'IN_TRANSIT'")
-    @Update(attr = "location")
-    @Update(attr = "shippedAt")
-    boolean dispatch(long id, String location, OffsetDateTime timeOfDispatch);
+    @Update
+    boolean dispatch(long id,
+                     String status,
+                     @Assign("status") String newStatus,
+                     @Assign("location") String location,
+                     @Assign("shippedAt") OffsetDateTime timeOfDispatch);
 
-    @Filter(by = "id")
-    Shipment find(long id);
+    @Find
+    Shipment find(@By("id") long shipmentId);
 
-    @Filter(by = "status")
+    @Find
     @OrderBy("destination")
-    Stream<Shipment> find(String status);
+    Stream<Shipment> find(@By("status") String shipmentStatus);
 
+    @Find
     @OrderBy("status")
     @OrderBy(value = "orderedAt", descending = true)
     Shipment[] getAll();
 
-    @Filter(by = "id")
+    @Find
     @Select("status")
     String getStatus(long id);
-
-    @Filter(by = "status", value = "CANCELED")
-    @Delete
-    int removeCanceled();
 
     @Delete
     int removeEverything();
 
+    @Save
     void save(Shipment s);
 
-    @Filter(by = "id")
-    @Filter(by = "location")
-    @Update(attr = "location")
-    boolean updateLocation(long id, String prevLocation, String newLocation);
+    @Delete
+    int statusBasedRemoval(@By("status") String s);
+
+    @Update
+    boolean updateLocation(long id,
+                           String location,
+                           @Assign("location") String newLocation);
 }

@@ -20,6 +20,9 @@
     </Designate>
           
     <OCD description="%transaction.config.desc" name="%transaction.config" id="com.ibm.ws.transaction" ibm:alias="transaction">
+        <AD name="%propagate.timeout" description="%propagate.timeout.desc"
+            id="propagateXAResourceTransactionTimeout" required="false" type="Boolean" default="false" />
+
         <AD name="internal" description="%forcePrepare.desc"
             id="forcePrepare" required="false" type="Boolean" default="false" />
 
@@ -65,9 +68,12 @@
 
         <AD name="%lease.check.interval" description="%lease.check.interval.desc"
             id="leaseCheckInterval" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
-            
+
 		<AD name="%lease.renewal.threshold" description="%lease.renewal.threshold.desc"
             id="leaseRenewalThreshold" required="false" type="Integer" min="1" max="100" default="90" />
+
+		<AD name="%lease.expiry.threshold" description="%lease.expiry.threshold.desc"
+            id="leaseExpiryThreshold" required="false" type="Integer" min="1" default="1" />
 
         <AD name="%lease.length" description="%lease.length.desc"
             id="leaseLength" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
@@ -112,8 +118,11 @@
             id="retriableSqlCodes" required="false" type="String" default="" />
             
         <AD name="internal" description="internal use only"
-            id="nonRetriableSqlCodes" required="false" type="String" default="" />                    
-                                                                   
+            id="nonRetriableSqlCodes" required="false" type="String" default="" />
+                                
+        <AD name="internal" description="internal use only"
+            id="peerRecoveryPrecedence" required="false" type="Boolean" default="false" />
+                                                                             
         <AD name="%logging.for.heuristic.reporting.enabled" description="%logging.for.heuristic.reporting.enabled.desc" 
             id="enableLoggingForHeuristicReporting" required="false" type="Boolean" default="false" />
         

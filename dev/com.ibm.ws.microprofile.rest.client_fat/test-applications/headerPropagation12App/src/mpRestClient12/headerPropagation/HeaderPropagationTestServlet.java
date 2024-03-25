@@ -112,7 +112,7 @@ public class HeaderPropagationTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID}) // @Context injection not supported in ClientHeaderFactory instances in RESTEasy
+    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID}) // @Context injection not supported in ClientHeaderFactory instances in RESTEasy
     public void testSendCustomHeaderViaFactory(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String allHeaders = ClientBuilder.newClient()
@@ -131,7 +131,7 @@ public class HeaderPropagationTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID}) // @Context injection not supported in ClientHeaderFactory instances in RESTEasy
+    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID}) // @Context injection not supported in ClientHeaderFactory instances in RESTEasy
     public void testSendCustomHeaderViaCDIEnabledFactory(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         String allHeaders = ClientBuilder.newClient()

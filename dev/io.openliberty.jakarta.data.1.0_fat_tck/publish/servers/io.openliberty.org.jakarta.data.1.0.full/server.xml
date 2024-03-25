@@ -1,0 +1,62 @@
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <!-- Features being tested -->
+        <feature>jakartaee-10.0</feature>
+        <feature>data-1.0</feature>
+        
+        <!-- Features needed for arquillan support -->
+        <feature>localConnector-1.0</feature>
+        
+        <!-- Required by test infrastructure -->
+        <feature>timedexit-1.0</feature>
+        
+        <!-- Convenience feature -->
+        <feature>arquillian-support-jakarta-2.1</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml" />
+
+    <!-- Allow Arquillian access to dropins directory for application installation -->
+    <remoteFileAccess>
+        <writeDir>${server.config.dir}/dropins</writeDir>
+    </remoteFileAccess>
+    
+    <library id="dbRotationLib">
+      <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
+    </library>
+    
+    <!-- The datasource used by JPA -->
+    <dataSource id="DefaultDataSource"  fat.modify="true">
+      <jdbcDriver libraryRef="dbRotationLib"/>
+      <properties.derby.embedded createDatabase="create" databaseName="memory:testdb" user="dbuser1" password="dbpwd1"/>
+    </dataSource>
+    
+    <keyStore id="defaultKeyStore" password="openliberty"/>
+    <quickStartSecurity userName="admin" userPassword="adminpwd"/>
+    <orb id="defaultOrb" orbSSLInitTimeout="90"/>
+        
+    <!--Java2 security-->
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+	
+    <!-- Permission needed for Oracle driver -->
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
+    
+    <!-- Permission needed for Postgres driver -->
+    <javaPermission codeBase="${server.config.dir}/apps/app.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+
+    <!-- Permission needed for SQLServer driver -->
+    <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+</server>

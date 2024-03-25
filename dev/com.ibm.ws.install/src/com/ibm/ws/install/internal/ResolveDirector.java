@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@ import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.product.utility.extension.ifix.xml.IFixInfo;
+import com.ibm.ws.repository.common.enums.ReadMode;
 import com.ibm.ws.repository.common.enums.ResourceType;
 import com.ibm.ws.repository.common.enums.Visibility;
 import com.ibm.ws.repository.connections.DirectoryRepositoryConnection;
@@ -238,7 +239,7 @@ class ResolveDirector extends AbstractDirector {
                     File repoDir = new File(urlProcessed.getPath());
                     if (repoDir.exists()) {
                         if (repoDir.isDirectory()) {
-                            lie = new DirectoryRepositoryConnection(repoDir);
+                            lie = new DirectoryRepositoryConnection(repoDir, ReadMode.ASSUME_UNCHANGED);
                             loginEntries.add(lie);
                             continue;
                         } else {
@@ -413,11 +414,20 @@ class ResolveDirector extends AbstractDirector {
         if (!unresolvedFeatures.isEmpty()) {
             log(Level.FINEST, "Determined unresolved features: " + unresolvedFeatures.toString() + " from " + fromDir.getAbsolutePath());
             RepositoryConnectionList loginInfo = getRepositoryConnectionList(null, null, null, this.getClass().getCanonicalName() + ".resolve");
-            this.installResources = resolveMap(unresolvedFeatures, loginInfo, false);
+            if (this.installResources == null) {
+                this.installResources = resolveMap(unresolvedFeatures, loginInfo, false);
+            } else {
+                installResources.putAll(resolveMap(unresolvedFeatures, loginInfo, false));
+            }
         }
         if (!installAssets.isEmpty()) {
             resolveAutoFeatures(autoFeatures, installAssets);
-            this.localInstallAssets = installAssets;
+            if (this.localInstallAssets == null) {
+                this.localInstallAssets = installAssets;
+            } else {
+                localInstallAssets.addAll(installAssets);
+            }
+
         }
         if (this.localInstallAssets == null || this.localInstallAssets.isEmpty()) {
             throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ALREADY_INSTALLED", InstallUtils.getFeatureListOutput(featureIds));

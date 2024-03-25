@@ -318,7 +318,13 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
             writer.print(");");
             writer.println();
         }
-        if (PagesVersionHandler.isPages31OrHigherLoaded()) {
+        if (PagesVersionHandler.isPages40OrHigherLoaded()) {
+            if (aliasSeen) {
+                writer.println("this.jspContext = new org.apache.jasper.runtime.JspContextWrapper(this, ctx, _jspx_nested, _jspx_at_begin, _jspx_at_end, aliasMap);");
+            } else {
+                writer.println("this.jspContext = new org.apache.jasper.runtime.JspContextWrapper(this, ctx, _jspx_nested, _jspx_at_begin, _jspx_at_end, null);");
+            }
+        } else if (PagesVersionHandler.isPages31Loaded()) {
             if (aliasSeen) {
                 writer.println("this.jspContext = new org.apache.jasper.runtime.JspContextWrapper(ctx, this, _jspx_nested, _jspx_at_begin, _jspx_at_end, aliasMap);");
             } else {

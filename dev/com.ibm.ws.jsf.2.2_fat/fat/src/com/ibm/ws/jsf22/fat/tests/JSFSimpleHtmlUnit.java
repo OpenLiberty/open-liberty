@@ -33,8 +33,7 @@ import com.ibm.ws.jsf22.fat.JSFUtils;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -55,7 +54,7 @@ public class JSFSimpleHtmlUnit {
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         ShrinkHelper.defaultDropinApp(jsfTestServer1, APP_NAME + ".war",
                                       isEE10 ? "com.ibm.ws.jsf22.fat.simple.bean.faces40" : "com.ibm.ws.jsf22.fat.simple.bean.jsf22",
@@ -238,7 +237,7 @@ public class JSFSimpleHtmlUnit {
             // Make a request to a dummy page to ensure that MyFaces initializes if it has not done so already
             URL url = JSFUtils.createHttpUrl(jsfTestServer1, APP_NAME, "dummy.jsf");
 
-            String msg = "No context init parameter '" + (JakartaEE9Action.isActive() || JakartaEE10Action.isActive() ? "jakarta" : "javax")
+            String msg = "No context init parameter '" + (JakartaEEAction.isEE9OrLaterActive() ? "jakarta" : "javax")
                          + ".faces.FACELETS_BUFFER_SIZE' found, using default value '1024'";
             // Check the trace.log
             // There should be a match so fail if there is not.

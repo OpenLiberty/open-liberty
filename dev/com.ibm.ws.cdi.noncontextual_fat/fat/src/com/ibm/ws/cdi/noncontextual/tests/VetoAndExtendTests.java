@@ -48,6 +48,7 @@ public class VetoAndExtendTests extends FATServletClient {
     @ClassRule
     public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME,
                                                          EERepeatActions.EE10,
+                                                         EERepeatActions.EE11,
                                                          EERepeatActions.EE9,
                                                          EERepeatActions.EE7);
 

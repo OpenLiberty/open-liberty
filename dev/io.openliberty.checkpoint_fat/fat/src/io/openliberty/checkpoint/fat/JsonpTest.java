@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
@@ -36,7 +36,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 import jsonp.JSONPServlet;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class JsonpTest extends FATServletClient {
 
     private static final String SERVER_NAME = "checkpointJsonp";

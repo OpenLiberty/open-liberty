@@ -97,217 +97,6 @@
 #              action is done and when the server is restored.
 #
 ###############################################################################
-SERVER_UNKNOWN_STATUS=5
-
-##
-## Determine the platform and absolute path of the installation directory.
-##
-case $OSTYPE in
-  cygwin)
-    uname=CYGWIN_NT
-
-    # Determine the installation directory without forking if possible.  Use
-    # eval to hide ${var//find/replace}, ${var%suffix}, and ${var:first:length}
-    # syntaxes from shells that can't parse them.
-    eval '
-      # cd to the install directory.
-      savePWD=$PWD
-      script=${0//\\/\/}
-      unset CDPATH; cd "${script%/*}"/..
-
-      # Convert the install (current working) directory to a Windows path.
-      case $PWD in
-        /cygdrive/?/*)
-          # Use ${var:first:length} to avoid forking for cygpath.
-          WLP_INSTALL_DIR=${PWD:10:1}:${PWD:11}
-          ;;
-        *)
-          WLP_INSTALL_DIR=`cygpath -ma .`
-      esac
-
-      cd "$savePWD"
-    '
-    ;;
-
-  *)
-    uname=`uname`
-
-    case $uname in
-      CYGWIN_*)
-        WLP_INSTALL_DIR=`cygpath -ma "${0}"/../..`
-        ;;
-
-      *)
-        dirname=`dirname "$0"`
-        WLP_INSTALL_DIR=`unset CDPATH; cd "$dirname/.." && pwd`
-    esac
-esac
-
-##
-## Platform specific setup
-##
-PS_P='ps -p'
-UMASK_O='umask o='
-tryShellExtensions=true
-os400lib=false
-shareclassesCacheDirPerm=true
-defaultFileEncoding=
-newline='
-'
-nativeEBCDIC=false
-
-case ${uname} in
-  CYGWIN_*)
-    # java.exe is a non-Cygwin process, so we need to pass -W.
-    PS_P='ps -W -p'
-    shareclassesCacheDirPerm=false
-    ;;
-
-  OS/390)
-    defaultFileEncoding=iso8859-1
-    nativeEBCDIC=true         # Auto-convert server.env/jvm.options from ASCII-to-EBCDIC, if necessary.
-    _BPXK_WLM_PROPAGATE=NO    # Prevent WLM enclave propagation to spawned processes
-    _EDC_PTHREAD_YIELD=-2     # Disable sleeps inside of pthread_yield
-    JAVA_PROPAGATE=NO         # Prevent WLM enclave propagation to new threads
-    export _BPXK_WLM_PROPAGATE _EDC_PTHREAD_YIELD JAVA_PROPAGATE
-
-    WLP_NLS_PATH="${WLP_INSTALL_DIR}/lib/native/zos/s390x/nls/%N.cat"
-    if [ ${NLSPATH} ]
-    then
-      NLSPATH="${WLP_NLS_PATH}:${NLSPATH}"
-    else
-      NLSPATH="${WLP_NLS_PATH}"
-    fi
-    ;;
-
-  OS400)
-    tryShellExtensions=false
-    # os400lib gets unset later if we cannot find WAS_PRODUCT_LIB and WAS_SHARED_LIB
-    os400lib=true
-    # on os400 determine current umask and replace o value with 7 (deny all permissions for other)
-    UMASK_O="umask `/QOpenSys/usr/bin/umask | sed 's|[0-7]$|7|g'`"
-    ;;
-esac
-
-##
-## safeEcho: Portable echo that can handle backslashes and leading dashes.
-safeEcho()
-{
-  cat <<EOF
-$*
-EOF
-
-  return $?
-}
-
-# Starting the server with a full tmp directory may prevent the server from
-# reading server.env during startup.
-safeEcho "" || exit $?
-
-# Define escapeForEval functions using ${var//find/replace} and ${var#suffix}
-# if possible since those constructs are significantly faster than safeEcho+sed
-# since they avoid forks.  Use eval (to hide the syntax from shells that don't
-# support them) in a subshell (to avoid exiting the shell process on error) to
-# test if the shell has support.
-if ${tryShellExtensions} && (eval 'true ${1//b/c} ${1#*=}') 2> /dev/null; then
-  # The shell has support.  Define the functions using eval, again to hide the
-  # syntax from shells that don't support it.
-  eval "
-    escapeForEval()
-    {
-      escapeForEvalResult=\\'\${1//\\'/\\'\\\"\\'\\\"\\'}\\'
-    }
-
-    extractValueAndEscapeForEval()
-    {
-      escapeForEval \"\${1#*=}\"
-    }
-
-    substitutePrefixVar()
-    {
-      case \$1 in
-      @\$2@*) substitutePrefixVarResult=\$3\${1#@\$2@};;
-      *) substitutePrefixVarResult=\$1
-      esac
-    }
-  "
-else
-  ##
-  ## escapeForEval: Escape the first parameter to be safe for use in eval,
-  ##                and set escapeForEvalResult with the result.
-  ##
-  escapeForEval()
-  {
-    escapeForEvalResult=\'`safeEcho "$1" | sed s/\'/\'\"\'\"\'/g`\'
-  }
-
-  ##
-  ## extractValueAndEscapeForEval: Extract the value of a var=value string,
-  ##                               and set escapeForEvalResult with the result.
-  ##
-  extractValueAndEscapeForEval()
-  {
-    escapeForEvalResult=\'`safeEcho "$1" | sed -e 's/[^=]*=//' -e s/\'/\'\"\'\"\'/g`\'
-  }
-
-  ##
-  ## substitutePrefixVar: If $1 has a prefix @$2@, set substitutePrefixVarResult
-  ##                      to $1 with the prefix replaced by $3.  Otherwise, set
-  ##                      to $1.
-  substitutePrefixVar()
-  {
-    case $1 in
-    @$2@*) substitutePrefixVarResult=$3`safeEcho "$1" | sed -e "s/^@$2@//"`;;
-    *) substitutePrefixVarResult=$1
-    esac
-  }
-fi
-
-##
-## Quote ${WLP_INSTALL_DIR} for eval.
-##
-escapeForEval "${WLP_INSTALL_DIR}"
-WLP_INSTALL_DIR_QUOTED=${escapeForEvalResult}
-READ_ETC=1
-
-##
-## Consume script parameters:
-##   action is required/positional,
-##   serverName is optional, --options following
-##
-if [ $# -lt 1 ]
-then
-  ACTION=help:usage
-else
-  ACTION=$1
-  shift #consume
-  if [ $# -ge 1 ]
-  then
-    # Only use if it isn't something that looks like an option
-    case $1 in
-    --*);;
-    *)
-      SERVER_NAME=$1
-      shift #consume
-    esac
-  fi
-fi
-
-##
-## Set server name and directory
-##
-if [ -z "$SERVER_NAME" ]
-then
-  SERVER_NAME=defaultServer
-fi
-
-##
-## Set JAVA_AGENT_QUOTED if WLP_SKIP_BOOTSTRAP_AGENT is unset.
-##
-JAVA_AGENT_QUOTED=-javaagent:${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-javaagent.jar
-if [ -n "${WLP_SKIP_BOOTSTRAP_AGENT}" ]; then
-  JAVA_AGENT_QUOTED=
-fi
 
 ##
 ## Determine which CRIU mode to use, based on current euid, and the value of the CRIU_UNPRIVILEGED env var.
@@ -758,16 +547,24 @@ serverEnvAndJVMOptions()
     mergeJVMOptions "${WLP_INSTALL_DIR}/etc/jvm.options"
   fi
 
+  # Determine location of Java Platform Module System (JPMS) modules directory
   if [ -z "${JAVA_HOME}" ]; then
-    JAVA_PATH_FROM_PATH=$(command -v java)
-    if [ -n "${JAVA_PATH_FROM_PATH}" ] ; then
-      JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $JAVA_PATH_FROM_PATH))/lib/modules
+
+    # JAVA_HOME not set.  Locate java using the PATH.
+    JAVA_PATH=$(command -v java)
+    if [ -n "${JAVA_PATH}" ] ; then
+
+      REAL_JAVA_PATH=$(findRealPath "${JAVA_PATH}")
+
+      if [ -n "${REAL_JAVA_PATH}" ]; then
+         JPMS_MODULE_FILE_LOCATION=$(dirname "$(dirname "${REAL_JAVA_PATH}")")/lib/modules
+      fi
     fi
   else
     JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
   fi
 
-  # If we are running on Java 9, apply Liberty's built-in java 9 options  
+  # If we are running on Java 9 and up, apply Liberty's built-in java 9 options  
   if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
     mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
   fi
@@ -775,30 +572,133 @@ serverEnvAndJVMOptions()
   return $rc
 }
 
+# Resolve symbolic links in a path iteratively
+findRealPath() {
+  path="$1"
+
+  # realpath doesn't exist on OS/390.  readlink didn't exist on OS/390, but then it was added and
+  # it doesn't work as expected.  So avoiding both for OS/390.
+  if [ "$uname" != "OS/390" ]; then
+    # Try realpath command
+    if command -v realpath >/dev/null; then
+      resolvedPath=$(realpath "${path}" 2>/dev/null)
+    fi
+    
+    # If realpath is not available, try readlink -e
+    if [ -z "${resolvedPath}" ] && command -v readlink >/dev/null; then
+      resolvedPath=$(readlink -e "${path}" 2>/dev/null)
+    fi
+  fi
+
+  # If neither of those methods work, try a more basic approach
+  if [ -z "${resolvedPath}" ]; then 
+    symLinkCount=0
+
+    # Loop ends when resolvedPath does not contain any symlinks  
+    while true; do
+
+      resolvedPath=""
+      IFS="/" # Set the delimiter to '/'
+      # Split the path into components.  Purposefully not putting quotes around $path.
+      set -- $path
+      pathContainsSymLink="false"
+      for component; do
+	  
+        if [ -z "$component" ]; then
+          continue # Skip empty components
+        fi
+
+        # Combine the resolved path & component
+        if [ -z "$resolvedPath" ]; then
+          case "$path" in
+          /*)
+            resolvedPath="/$component"
+            ;;
+          *) # If path is relative, then don't add leading slash
+            resolvedPath=$component
+            ;;
+          esac
+        else
+          resolvedPath="$resolvedPath/$component"
+        fi
+
+        if [ -L "$resolvedPath" ]; then
+          pathContainsSymLink="true"
+          symLinkCount=$((symLinkCount + 1))
+		  
+          # Get the target of the symbolic link
+          target=$(ls -l "$resolvedPath" | awk '{print $NF}')
+
+          # Don't lose the remaining path past the symlink
+          if [ "$resolvedPath" = "$path" ]; then
+            remaining_path=""
+          else
+            # Remove the resolved part from the original path
+            remaining_path="${path#"${resolvedPath%/}"/}"
+          fi
+
+          # Save the prefix up one level from the symlink
+          savePrefix=$(cd "$(dirname "$resolvedPath")" && pwd)
+		  
+          case "$target" in
+          /*)
+            # Absolute path case
+            resolvedPath="$target/$remaining_path"
+            ;;
+          *)
+            # Relative path case"
+            resolvedPath="$savePrefix/$target/$remaining_path"
+            ;;
+          esac
+
+          break
+        else
+          :  # $resolvedPath is  NOT a symLink
+        fi
+      done  # end for
+
+      if [ $pathContainsSymLink = "false" ]; then
+        break
+      fi
+
+      if [ $symLinkCount -gt 100  ]; then
+        issueMessage --message:warning.tooManySymbolicLinks "$1"
+        resolvedPath=""
+        break
+      fi
+
+      path=$resolvedPath
+    done  # end while
+  fi
+
+  # Return the fully resolved path
+  echo "$resolvedPath"
+}
 
 mergeJVMOptions()
 {
-    jvmOptions=$1
+  jvmOptions=$1
 
-    if [ -f "$jvmOptions" ]; then
-      READ_ETC=0
-      saveIFS=$IFS
-      IFS=$newline
-
-      for option in `readNativeFile "$jvmOptions" '[#-]' | LC_ALL=C tr -d '\r'`; do
-        if [ -n "$option" ]; then
-          case $option in
-          \#*);;
+  if [ -f "$jvmOptions" ]; then
+    READ_ETC=0
+    saveIFS=$IFS
+    IFS=$newline
+    
+    for option in $(readNativeFile "$jvmOptions" '[#-]' | LC_ALL=C tr -d '\r'); do
+      if [ -n "$option" ]; then
+        case $option in
+          \#*) 
+              ;;
           *)
-            escapeForEval "${option}"
-            SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} '${option}'"
-            ;;
-          esac
-        fi
-      done
-      IFS=$saveIFS
-    fi
-
+              escapeForEval "${option}"
+              option="${escapeForEvalResult}"
+              SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} ${option}"
+              ;;
+        esac
+      fi
+    done
+    IFS=$saveIFS
+  fi
 }
 
 ##
@@ -810,7 +710,7 @@ readServerEnv()
   if [ -f "$1" ]; then
     saveIFS=$IFS
     IFS=$newline
-    for line in `readNativeFile "$1" '[#_A-Za-z=]' | tr -d '\r'`; do
+    for line in $(readNativeFile "$1" '[#_A-Za-z=]' | tr -d '\r'); do
       case $line in
 
       \#*)
@@ -819,9 +719,9 @@ readServerEnv()
            # "enable_variable_expansion", and nothing else (ignoring case and white space).
            # If found, we use the source command ( . ) which performs all of the server.env
            # variable assignments while resolving any variable references.
-           if [ $variableExpansionEnabled = 0  ] && [ $(echo $line | grep -i "enable_variable_expansion") ]
+           if [ $variableExpansionEnabled = 0  ] && [ $(safeEcho $line | grep -i "enable_variable_expansion") ]
            then
-              processedLine=$(echo $line | tr -d '[:blank:]' | tr '[:upper:]' '[:lower:]')
+              processedLine=$(safeEcho $line | tr -d '[:blank:]' | tr '[:upper:]' '[:lower:]')
               if [ "#enable_variable_expansion" = $processedLine ]
               then
                  eval ". $1"
@@ -831,15 +731,15 @@ readServerEnv()
       *=*)
           # The sed commands extracts the variable from the line but only if it contains alpha-numeric
           # characters. Only accept alphanumeric variable names to avoid eval complexities.
-          if [ "$uname" != "SunOS" ]; then
+          if [ "$uname" != "SunOS" ] && [ "$uname" != "OS/390" ]; then
 
             # This is the preferred pattern, because it handles characters 
             # from multiple languages, but it doesn't work on Solaris.
             var=$(safeEcho "$line" | sed -n -e 's/^\([_[:alpha:]][_[:alnum:]]*\)=.*/\1/p')
 
           else
-            # On Solaris we cannot use alpha or alnum
-            var=$(safeEcho "$line" | sed -n -e 's/^\([a-zA-Z_][a-zA-Z0-9_]*\)=.*/\1/p')
+            # On Solaris & Z/OS we cannot use alpha or alnum
+            var=$(safeEcho "$line" | awk -F= '{print $1}' | sed '/^[a-zA-Z_][a-zA-Z0-9_]*$/!d')
           fi
 
           if [ -n "$var" ]; then
@@ -874,9 +774,9 @@ readServerEnv()
 criuEnvDefaults() {
   if [ -z "$GLIBC_TUNABLES" ]
   then
-    GLIBC_TUNABLES=glibc.cpu.hwcaps=z14,arch_2_07,-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
+    GLIBC_TUNABLES=glibc.cpu.hwcaps=z14,-arch_3_00,-arch_3_1,-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
   else
-    GLIBC_TUNABLES=${GLIBC_TUNABLES}:glibc.cpu.hwcaps=z14,arch_2_07,-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
+    GLIBC_TUNABLES=${GLIBC_TUNABLES}:glibc.cpu.hwcaps=z14,-arch_3_00,-arch_3_1,-XSAVEC,-XSAVE,-AVX2,-ERMS,-AVX,-AVX_Fast_Unaligned_Load:glibc.pthread.rseq=0
   fi
   export GLIBC_TUNABLES
   export LD_BIND_NOT=on
@@ -905,7 +805,7 @@ readNativeFile() {
   if ${nativeEBCDIC}; then
     # ASCII 'm' overlaps with EBCDIC '_', so strip it out before detecting the codepage.
     # Note: cat used here to handle ASCII-tagged files.
-    filecontents=`cat "$1" | iconv -f ISO8859-1 -t IBM-1047 | tr -d 'm\r\n'`
+    filecontents=$(cat "$1" | iconv -f ISO8859-1 -t IBM-1047 | tr -d 'm\r\n')
     case $filecontents in
       $2*) iconv -f ISO8859-1 -t IBM-1047 "$1" ;;  # ASCII file.
       *) cat "$1"                # EBCDIC file or ASCII-tagged file.
@@ -1014,7 +914,6 @@ javaCmd()
     # IgnoreUnrecognizedRestoreOptions to avoid failing to restore if unsupported options are specified to restore
     JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -XX:+IgnoreUnrecognizedVMOptions -XX:+IgnoreUnrecognizedRestoreOptions -XX:+EnableCRIUSupport -XX:+CRIURestoreNonPortableMode $X_WLP_IMMUTABLE_VARS"
 
-
     checkCriuUnprivileged
     if [ $DO_CRIU_UNPRIVILEGED = true ]; then
       JVM_OPTIONS_QUOTED="$JVM_OPTIONS_QUOTED -Dio.openliberty.checkpoint.criu.unprivileged=true"
@@ -1029,7 +928,6 @@ javaCmd()
     criuEnvDefaults
   fi
   
-
   # Set all the parameters for the java command.  We use eval so that each line
   # in jvm.options is treated as a distinct argument.
   eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar ""$REMAINING_ARGS"
@@ -1131,8 +1029,6 @@ issueMessage()
   "${JAVA_CMD}" "$@"
 }
 
-
-
 ##
 ## serverCmdOS400: Launch a server process using the OS400 native launcher.
 ##
@@ -1222,6 +1118,14 @@ serverCmd()
   IBM_JAVA_OPTIONS=${SERVER_IBM_JAVA_OPTIONS}
   SAVE_OPENJ9_JAVA_OPTIONS=${OPENJ9_JAVA_OPTIONS}
   OPENJ9_JAVA_OPTIONS=${SERVER_IBM_JAVA_OPTIONS}
+
+  # Check for any verbose:gc variable set by user
+  # By default we set this to be true unless user specifies otherwise
+  # if [ ! jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc] then SERVER_IBM_JAVA_OPTIONS += -Xverbosegclog:verbosegc.%seq.log,10,1024
+  if [ -n "${JVM_OPTIONS_QUOTED##*"verbosegc"*}" ] && [ -n "${JVM_OPTIONS_QUOTED##*"verbose:gc"*}"  ] && [ ! "${VERBOSEGC}" = "false" ]
+  then
+    OPENJ9_JAVA_OPTIONS="-Xverbosegclog:${X_LOG_DIR}/verbosegc.%seq.log,10,1024 ${OPENJ9_JAVA_OPTIONS}"
+  fi
 
   if $os400lib; then
     serverCmdOS400 "${SERVER_CMD_BACKGROUND_LOG}" "${SERVER_NAME}" "$@"
@@ -1532,10 +1436,237 @@ restoreServer()
       issueMessage --message:error.checkpoint.restore.failed.no.recovery "${X_LOG_DIR}/checkpoint/restore.log"
     else
       issueMessage --message:info.checkpoint.restore.failed "${X_LOG_DIR}/checkpoint/restore.log"
-    fi    
+    fi
+
+    if [ -f "${X_LOG_DIR}/checkpoint/restore.log" ]; then
+      cat "${X_LOG_DIR}/checkpoint/restore.log"
+    fi
   fi
   return $rc
 }
+
+##
+## safeEcho: Portable echo that can handle backslashes and leading dashes.
+safeEcho()
+{
+  cat <<EOF
+$*
+EOF
+
+  return $?
+}
+
+# Define escapeForEval functions using ${var//find/replace} and ${var#suffix}
+# if possible since those constructs are significantly faster than safeEcho+sed
+# since they avoid forks.  Use eval (to hide the syntax from shells that don't
+# support them) in a subshell (to avoid exiting the shell process on error) to
+# test if the shell has support.
+defineEscapeForEvalFunctions()
+{
+  if ${tryShellExtensions} && (eval 'true ${1//b/c} ${1#*=}') 2> /dev/null; then
+    # The shell has support.  Define the functions using eval, again to hide the
+    # syntax from shells that don't support it.
+    eval "
+      escapeForEval()
+      {
+        escapeForEvalResult=\\'\${1//\\'/\\'\\\"\\'\\\"\\'}\\'
+      }
+  
+      extractValueAndEscapeForEval()
+      {
+        escapeForEval \"\${1#*=}\"
+      }
+  
+      substitutePrefixVar()
+      {
+        case \$1 in
+        @\$2@*) substitutePrefixVarResult=\$3\${1#@\$2@};;
+        *) substitutePrefixVarResult=\$1
+        esac
+      }
+    "
+  else
+    ##
+    ## escapeForEval: Escape the first parameter to be safe for use in eval,
+    ##                and set escapeForEvalResult with the result.
+    ##
+    escapeForEval()
+    {
+      escapeForEvalResult=\'$(safeEcho "$1" | sed s/\'/\'\"\'\"\'/g)\'
+    }
+  
+    ##
+    ## extractValueAndEscapeForEval: Extract the value of a var=value string,
+    ##                               and set escapeForEvalResult with the result.
+    ##
+    extractValueAndEscapeForEval()
+    {
+      escapeForEvalResult=\'`safeEcho "$1" | sed -e 's/[^=]*=//' -e s/\'/\'\"\'\"\'/g`\'
+    }
+  
+    ##
+    ## substitutePrefixVar: If $1 has a prefix @$2@, set substitutePrefixVarResult
+    ##                      to $1 with the prefix replaced by $3.  Otherwise, set
+    ##                      to $1.
+    substitutePrefixVar()
+    {
+      case $1 in
+      @$2@*) substitutePrefixVarResult=$3`safeEcho "$1" | sed -e "s/^@$2@//"`;;
+      *) substitutePrefixVarResult=$1
+      esac
+    }
+  fi
+}
+
+# ########################################################################### #
+# main()                                                                      #
+# ########################################################################### #
+
+SERVER_UNKNOWN_STATUS=5
+
+##
+## Determine the platform and absolute path of the installation directory.
+##
+case $OSTYPE in
+  cygwin)
+    uname=CYGWIN_NT
+
+    # Determine the installation directory without forking if possible.  Use
+    # eval to hide ${var//find/replace}, ${var%suffix}, and ${var:first:length}
+    # syntaxes from shells that can't parse them.
+    eval '
+      # cd to the install directory.
+      savePWD=$PWD
+      script=${0//\\/\/}
+      unset CDPATH; cd "${script%/*}"/..
+
+      # Convert the install (current working) directory to a Windows path.
+      case $PWD in
+        /cygdrive/?/*)
+          # Use ${var:first:length} to avoid forking for cygpath.
+          WLP_INSTALL_DIR=${PWD:10:1}:${PWD:11}
+          ;;
+        *)
+          WLP_INSTALL_DIR=`cygpath -ma .`
+      esac
+
+      cd "$savePWD"
+    '
+    ;;
+
+  *)
+    uname=`uname`
+
+    case $uname in
+      CYGWIN_*)
+        # This is a very unlikely path. 
+        WLP_INSTALL_DIR=$(cygpath -ma "$(findRealPath "$0" | sed 's|\\|/|g' | sed 's|/[^/]*$||')"/..)
+        ;;
+
+      *)
+        dirname=$(dirname "$0")
+        WLP_INSTALL_DIR=$(unset CDPATH; cd "${dirname}/.." && pwd)
+        WLP_INSTALL_DIR=$(findRealPath "$WLP_INSTALL_DIR")
+    esac
+esac
+
+##
+## Platform specific setup
+##
+PS_P='ps -p'
+UMASK_O='umask o='
+tryShellExtensions=true
+os400lib=false
+shareclassesCacheDirPerm=true
+defaultFileEncoding=
+newline='
+'
+nativeEBCDIC=false
+
+case ${uname} in
+  CYGWIN_*)
+    # java.exe is a non-Cygwin process, so we need to pass -W.
+    PS_P='ps -W -p'
+    shareclassesCacheDirPerm=false
+    ;;
+
+  OS/390)
+    defaultFileEncoding=iso8859-1
+    nativeEBCDIC=true         # Auto-convert server.env/jvm.options from ASCII-to-EBCDIC, if necessary.
+    _BPXK_WLM_PROPAGATE=NO    # Prevent WLM enclave propagation to spawned processes
+    _EDC_PTHREAD_YIELD=-2     # Disable sleeps inside of pthread_yield
+    JAVA_PROPAGATE=NO         # Prevent WLM enclave propagation to new threads
+    export _BPXK_WLM_PROPAGATE _EDC_PTHREAD_YIELD JAVA_PROPAGATE
+
+    WLP_NLS_PATH="${WLP_INSTALL_DIR}/lib/native/zos/s390x/nls/%N.cat"
+    if [ ${NLSPATH} ]
+    then
+      NLSPATH="${WLP_NLS_PATH}:${NLSPATH}"
+    else
+      NLSPATH="${WLP_NLS_PATH}"
+    fi
+    ;;
+
+  OS400)
+    tryShellExtensions=false
+    # os400lib gets unset later if we cannot find WAS_PRODUCT_LIB and WAS_SHARED_LIB
+    os400lib=true
+    # on os400 determine current umask and replace o value with 7 (deny all permissions for other)
+    UMASK_O="umask `/QOpenSys/usr/bin/umask | sed 's|[0-7]$|7|g'`"
+    ;;
+esac
+
+# Starting the server with a full tmp directory may prevent the server from
+# reading server.env during startup.
+safeEcho "" || exit $?
+
+defineEscapeForEvalFunctions
+
+##
+## Quote ${WLP_INSTALL_DIR} for eval.
+##
+escapeForEval "${WLP_INSTALL_DIR}"
+WLP_INSTALL_DIR_QUOTED=${escapeForEvalResult}
+READ_ETC=1
+
+##
+## Consume script parameters:
+##   action is required/positional,
+##   serverName is optional, --options following
+##
+if [ $# -lt 1 ]
+then
+  ACTION=help:usage
+else
+  ACTION=$1
+  shift #consume
+  if [ $# -ge 1 ]
+  then
+    # Only use if it isn't something that looks like an option
+    case $1 in
+    --*);;
+    *)
+      SERVER_NAME=$1
+      shift #consume
+    esac
+  fi
+fi
+
+##
+## Set server name and directory
+##
+if [ -z "$SERVER_NAME" ]
+then
+  SERVER_NAME=defaultServer
+fi
+
+##
+## Set JAVA_AGENT_QUOTED if WLP_SKIP_BOOTSTRAP_AGENT is unset.
+##
+JAVA_AGENT_QUOTED=-javaagent:${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-javaagent.jar
+if [ -n "${WLP_SKIP_BOOTSTRAP_AGENT}" ]; then
+  JAVA_AGENT_QUOTED=
+fi
 
 JAVA_DEBUG=
 JVM_OPTIONS_QUOTED=
@@ -1770,8 +1901,8 @@ case "$ACTION" in
     if checkServer true
     then
       serverPIDStatus
-      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
-      javaCmd '' "${JVM_OPTIONS_QUOTED}" "${SERVER_NAME}" --pid="${PID}" --package "$@" 
+      JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED} 
+      javaCmd '' "${SERVER_NAME}" --pid="${PID}" --package "$@"
       exit $?
     else
       exit 2

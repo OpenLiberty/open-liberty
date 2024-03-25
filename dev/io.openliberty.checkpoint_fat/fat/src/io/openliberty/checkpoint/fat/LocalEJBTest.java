@@ -34,12 +34,10 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -52,7 +50,7 @@ import ejbapp1.TimerTest;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class LocalEJBTest extends FATServletClient {
 
     public static final String SERVER_NAME = "checkpointEJB";
@@ -65,10 +63,7 @@ public class LocalEJBTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat("checkpointEJB", TestMode.FULL,
-                                                                      MicroProfileActions.MP41, // first test in LITE mode
-                                                                      // rest are FULL mode
-                                                                      MicroProfileActions.MP50, MicroProfileActions.MP60);
+    public static RepeatTests repeatTest = FATSuite.defaultMPRepeat(SERVER_NAME);
 
     @Before
     public void setUp() throws Exception {

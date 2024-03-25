@@ -35,11 +35,14 @@
         <jakarta.data.version>1.0.0-SNAPSHOT</jakarta.data.version>
         <jakarta.data.tck.version>1.0.0-SNAPSHOT</jakarta.data.tck.version>
         <jakarta.cdi.version>4.0.1</jakarta.cdi.version>
+        
+        <!-- JNoSQL Implementation -->
+        <jnosql.mongodb.version>1.1.0</jnosql.mongodb.version>
 
         <!-- Test Infrastructure versions -->
         <arquillian.version>1.7.0.Final</arquillian.version>
         <arquillian.wlp.version>2.1.3</arquillian.wlp.version>
-        <junit.version>5.9.2</junit.version>
+        <junit.version>5.10.0</junit.version>
         <sigtest.version>1.6</sigtest.version>
     </properties>
     
@@ -64,8 +67,7 @@
 
     <modules>
         <module>standalone</module>
-        <module>web</module>
-        <module>core</module>
+        <module>platform</module>
     </modules>
     
     <build>

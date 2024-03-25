@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.LogCursor;
 import com.ibm.ws.recoverylog.spi.LogCursorImpl;
+import com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException;
 import com.ibm.ws.recoverylog.spi.PeerLostLogOwnershipException;
 import com.ibm.ws.recoverylog.spi.RLSUtils;
 import com.ibm.ws.recoverylog.spi.RecoverableUnitSection;
@@ -441,6 +442,11 @@ public class SQLRecoverableUnitSectionImpl implements RecoverableUnitSection {
                 if (tc.isEntryEnabled())
                     Tr.exit(tc, "write", ple);
                 throw ple;
+            } catch (LogsUnderlyingTablesMissingException lutme) {
+                // No FFDC in this case
+                if (tc.isEntryEnabled())
+                    Tr.exit(tc, "write", lutme);
+                throw lutme;
             } catch (InternalLogException exc) {
                 FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.SQLRecoverableUnitSectionImpl.write", "437", this);
                 if (tc.isEntryEnabled())
@@ -512,6 +518,11 @@ public class SQLRecoverableUnitSectionImpl implements RecoverableUnitSection {
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "force", ple);
             throw ple;
+        } catch (LogsUnderlyingTablesMissingException lutme) {
+            // No FFDC in this case
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "force", lutme);
+            throw lutme;
         } catch (InternalLogException exc) {
             FFDCFilter.processException(exc, "com.ibm.ws.recoverylog.spi.SQLRecoverableUnitSectionImpl.force", "509", this);
             if (tc.isEntryEnabled())

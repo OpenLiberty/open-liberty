@@ -16,6 +16,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -24,6 +25,9 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.context.MultiThreadedContextServlet;
@@ -38,12 +42,14 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.context.MultiThre
 public class MultiThreadedContextTest extends FATServletClient {
 
     public static final String CONTEXT_TEST_APP_NAME = "contextTest";
+    public static final String SERVER_NAME = "Telemetry10Context";
 
     @TestServlets({
                     @TestServlet(contextRoot = CONTEXT_TEST_APP_NAME, servlet = MultiThreadedContextServlet.class)
 
     })
-    @Server("Telemetry10Context")
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass
@@ -56,7 +62,10 @@ public class MultiThreadedContextTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, apiTestWar, SERVER_ONLY);
         server.startServer();
     }
-
+    
+    @ClassRule
+    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
+    
     @AfterClass
     public static void teardown() throws Exception {
         server.stopServer();

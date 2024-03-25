@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2023 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,27 +26,33 @@ src: src
 -dsannotations: io.openliberty.microprofile.reactive.messaging30.internal.OLReactiveMessaging30Extension
 
 Include-Resource: \
-  META-INF=resources/META-INF
+  META-INF=resources/META-INF, \
+  OSGI-INF/wlp=resources/OSGI-INF/wlp
 
 Import-Package: \
   !io.vertx.*,\
   !io.smallrye.common.vertx.*,\
   !io.micrometer.*,\
   !io.opentelemetry.*,\
-  !org.eclipse.microprofile.metrics.*,\
+  org.eclipse.microprofile.metrics.*; version="[4.0,6)",\
   jakarta.enterprise.*; version="[3.0,5)",\
   *
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Private-Package: \
 	io.smallrye.reactive.messaging.providers.connectors;-split-package:=merge-first,\
 	io.smallrye.reactive.messaging.*,\
-	io.openliberty.microprofile.reactive.messaging30.internal
+	io.openliberty.microprofile.reactive.messaging30.internal,\
+	io.openliberty.microprofile.reactive.messaging30.resources;version=1.0
 
 -buildpath: \
-  io.smallrye.reactive:smallrye-reactive-messaging-api;version=4.8.0;strategy=exact, \
-  io.smallrye.reactive:smallrye-reactive-messaging-provider;version=4.8.0;strategy=exact, \
+  com.ibm.ws.logging;version=latest,\
+  io.smallrye.reactive:smallrye-reactive-messaging-api;version=4.16.0;strategy=exact, \
+  io.smallrye.reactive:smallrye-reactive-messaging-provider;version=4.16.0;strategy=exact, \
   io.openliberty.jakarta.cdi.3.0;version=latest, \
   io.openliberty.jakarta.annotation.2.0;version=latest, \
+  io.openliberty.jakarta.interceptor.2.0;version=latest, \
   io.openliberty.org.eclipse.microprofile.reactive.messaging.3.0;version=latest, \
   io.openliberty.org.eclipse.microprofile.reactive.streams.operators.3.0;version=latest, \
   com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest, \
@@ -56,7 +62,15 @@ Private-Package: \
   com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.container.service;version=latest,\
   io.openliberty.io.smallrye.reactive.mutiny;version=latest,\
-  io.openliberty.io.smallrye.common.2.1;version=latest,\
+  io.openliberty.io.smallrye.common2;version=latest,\
   io.openliberty.io.smallrye.reactive.converter-api3;version=latest,\
-  io.openliberty.org.jboss.logging35;version=latest
+  io.openliberty.org.jboss.logging35;version=latest,\
+  jakarta.enterprise.cdi-api;version=latest,\
+  io.openliberty.jakarta.cdi.4.0,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.ws.kernel.boot,\
+  com.ibm.ws.kernel.service,\
+  com.ibm.ws.cdi.internal.jakarta

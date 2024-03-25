@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -51,18 +51,20 @@ public class LivePartitionTestConsumer implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("Test consumer starting");
         try (KafkaConsumer<?, String> consumer = new KafkaConsumer<>(config)) {
             consumer.subscribe(Collections.singleton(topic));
             ConsumerRecord<?, String> lastRecord = null;
 
             int messages = 0;
             long startTime = System.nanoTime();
-            while (messages < MESSAGES_TO_CONSUME && System.nanoTime() - startTime < TIMEOUT_NS) {
+            readloop: while (messages < MESSAGES_TO_CONSUME && System.nanoTime() - startTime < TIMEOUT_NS) {
                 ConsumerRecords<?, String> records = consumer.poll(Duration.ofSeconds(5));
+                System.out.println("Test consumer polled " + records.count() + " records");
                 for (ConsumerRecord<?, String> record : records) {
                     if (record.value().endsWith(Integer.toString(FINAL_MESSAGE_NUMBER))) {
                         // Never consume the final record, the test bean looks for it
-                        break;
+                        break readloop;
                     }
                     messages++;
                     messagesReceived.add(record.value());
@@ -76,8 +78,10 @@ public class LivePartitionTestConsumer implements Runnable {
             if (lastRecord != null) {
                 TopicPartition topicPartition = new TopicPartition(lastRecord.topic(), lastRecord.partition());
                 OffsetAndMetadata offset = new OffsetAndMetadata(lastRecord.offset() + 1);
+                System.out.println("Test consumer committing offset: " + offset);
                 consumer.commitSync(Collections.singletonMap(topicPartition, offset));
             }
+            System.out.println("Test consumer consumed " + messages + " messages.");
         }
     }
 

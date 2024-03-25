@@ -1,0 +1,29 @@
+Summary: If you want to build this project but not modify it the changes to the build should be completely invisible to you.
+
+-------------------
+
+The build system for this project is unusual, but not complicated. It consists of three tasks:
+
+bndMagic - A back end task that creates a temporary bnd file by extracting data from the upstream MANIFEST.MF file, applying local modifications to it, and saving the result in the format of a bnd file.
+
+checkWeldPackages - This task compares the temporary bnd file created by bndMagic with the actual bnd file we use when assembling this project. If there is any differences an exception is thrown. This task is run automatically as part of the standard build pipeline.
+
+This check should only throw an exception if you are updating the version of weld-osgi-bundle we import and the new version has different imports or exports.
+
+updateWeldPackages - This task overwrites the bnd file we use when assembling the project with the output of bndMagic.
+
+-------------------
+
+How to update to a newer version of weld-osgi-bundle
+
+1. Update the version of weld-osgi-bundle stored in the variable "weldVersion" in build.gradle
+2. Update the version of weld-osgi-bundle in dev/cnf like normal.
+3. Run the build, if checkWeldPackages throws an exception than run updateWeldPackages (and don't forget to check in the changes to the bnd file)
+
+If as part of your update you need to change the local modifications to the imports or exports in MANIFEST.MF then update additionalImports and/or additionalExports in build.gradle
+
+If as part of your update to add a new property to an export (e.g. we add "thread-context=true" to the export "org.jboss.weld.event") add an entry to the map additionalPropertiesForExports in build.gradle. (There is no code for adding properties to imports, but it would be trivial to write some based on the code for adding properties to imports) 
+
+If as part of your update you need to modify the OSGi Service-Component then modify bnd.template like any other bnd file. You can treat bnd.template like a normal bnd.overrides file for anything except Export-Package and Import-Package
+
+

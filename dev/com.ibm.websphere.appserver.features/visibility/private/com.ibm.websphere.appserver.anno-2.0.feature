@@ -9,11 +9,12 @@ IBM-SPI-Package: \
  com.ibm.wsspi.anno.info, \
  com.ibm.wsspi.anno.service, \
  com.ibm.wsspi.anno.targets, \
- com.ibm.wsspi.anno.util
+ com.ibm.wsspi.anno.util, \
+ com.ibm.ws.anno.classsource.specification
 Manifest-Version: 1.0
 IBM-Process-Types: server, \
  client
--features=io.openliberty.jakarta.annotation-2.0; ibm.tolerates:="2.1", \
+-features=io.openliberty.jakarta.annotation-2.0; ibm.tolerates:="2.1, 3.0", \
   com.ibm.websphere.appserver.artifact-1.0
 -bundles=com.ibm.ws.anno
 -jars=com.ibm.websphere.appserver.spi.anno; location:=dev/spi/ibm/

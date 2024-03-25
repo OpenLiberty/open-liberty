@@ -15,7 +15,8 @@
 	<webAppSecurity
 		httpOnlyCookies="false"
 		ssoCookieName="testOPCookie"
-		allowFailOverToBasicAuth="true" />
+		allowFailOverToBasicAuth="true"
+		trackLoggedOutSSOCookies="true" />
 			
 	<javaPermission className="java.net.URLPermission" name="https://localhost:-/-" actions="POST:" />
 		

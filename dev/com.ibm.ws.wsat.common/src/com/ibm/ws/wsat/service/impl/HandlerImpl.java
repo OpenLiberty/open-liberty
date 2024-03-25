@@ -97,7 +97,7 @@ public class HandlerImpl {
             // need to set ourselves up as the coordinator.
             WSATTransaction wsatTran = WSATTransaction.getTran(globalId);
             try {
-                if (wsatTran == null) {
+                if (!(wsatTran instanceof WSATTransaction)) {
                     // First time we've seen this tran.  So invoke our (local-only) version
                     // of WS-AT activation to configure ourselves as the coordinator and
                     // get a CoordinationContext.
@@ -215,12 +215,11 @@ public class HandlerImpl {
 
                 // Invoke our (local-only) WS-AT activation service to configure ourselves
                 // as a participant.
-                registrationService.activate(globalId, registration, expires, false);
 
                 // Activate returns a WSATContext but we also need the WSATTransaction.
                 // This will have been created during the activation processing so we can
                 // recover it here.
-                wsatTran = WSATTransaction.getTran(globalId);
+                wsatTran = registrationService.activate(globalId, registration, expires, false);
 
                 // Finally register as a participant back with the coordinator
                 registrationService.registerParticipant(globalId, wsatTran);
@@ -237,7 +236,6 @@ public class HandlerImpl {
                     throw new WSATException(Tr.formatMessage(TC, "NO_WSAT_TRAN_CWLIB0201", globalId));
                 }
             }
-
         } finally {
             // We need to be able to coordinate the response from the webservice call we
             // are about to make.  Only way to do this is to store something in a ThreadLocal

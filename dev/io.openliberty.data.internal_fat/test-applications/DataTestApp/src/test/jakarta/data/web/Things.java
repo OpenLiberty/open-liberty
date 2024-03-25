@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,14 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static jakarta.data.repository.By.ID;
+
 import java.util.stream.Stream;
 
+import jakarta.data.repository.By;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -45,19 +51,20 @@ public interface Things {
      */
     Stream<Thing> findByFloorNotAndInfoLikeAndOrderNumberLessThan(Integer floor, String infoPattern, long orderNumBelow);
 
-    Thing findById(long id);
+    @Find
+    Thing findById(@By(ID) long id);
+
+    /**
+     * The "Or" in "OrderNumber" should not be treated as a keyword because it immediately follows "findBy".
+     */
+    Stream<Thing> findByOrderNumber(long orderNum);
 
     /**
      * "Desc" within OrderByDescription would be treated as a keyword,
      * but @OrderBy can be used instead.
      */
     @OrderBy("description")
-    Stream<Thing> findByIdGreaterThan(long idAbove);
-
-    /**
-     * The "Or" in "OrderNumber" should not be treated as a keyword because it immediately follows "findBy".
-     */
-    Stream<Thing> findByOrderNumber(long orderNum);
+    Stream<Thing> findByThingIdGreaterThan(long exclusiveMin);
 
     /**
      * "Or" within findBy...PurchaseOrder... would be treated as a keyword,
@@ -67,7 +74,9 @@ public interface Things {
     Stream<Thing> forPurchaseOrder(int num);
 
     // Matches signature from CrudRepository
+    @Delete
     void deleteAll();
 
+    @Insert // intentionally does not match the method name because the spec permits this, although hopefully no one will write code this way
     void save(Thing thing);
 }

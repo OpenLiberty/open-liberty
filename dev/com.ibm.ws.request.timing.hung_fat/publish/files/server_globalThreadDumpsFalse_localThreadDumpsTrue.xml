@@ -9,6 +9,7 @@
 	<httpEndpoint id="defaultHttpEndpoint" host="*" />
 
 	<include location="../fatTestPorts.xml"/>
+	<include location="serverSessionConfig.xml"/>
   	
    <requestTiming slowRequestThreshold="0"/>
    <requestTiming hungRequestThreshold = "2s" enableThreadDumps="false">

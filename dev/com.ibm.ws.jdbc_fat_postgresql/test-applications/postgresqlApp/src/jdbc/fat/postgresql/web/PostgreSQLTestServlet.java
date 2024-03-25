@@ -55,6 +55,12 @@ public class PostgreSQLTestServlet extends FATServlet {
 
     private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
+    @Resource(lookup = "jdbc/driver-url-preferred")
+    DataSource driver_url_perferred;
+
+    @Resource(lookup = "jdbc/ds-property-preferred")
+    DataSource ds_property_perferred;
+
     @Resource
     UserTransaction tx;
 
@@ -647,6 +653,21 @@ public class PostgreSQLTestServlet extends FATServlet {
             // Verify that pstmt3 cache key is different than the first 2
             if (Objects.equals(key1, key3))
                 throw new Exception("Statement was cached but it should not have been cached.  Key3=" + key3 + " Key1=" + key1);
+        }
+    }
+
+    @Test
+    public void testVerifyConnectionPrecedence() throws Throwable {
+        try (Connection con = driver_url_perferred.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO people(id,name) VALUES(?,?)");) {
+            stmt.setInt(1, 18);
+            stmt.setString(2, "testVerifyConnectionPrecedence");
+            stmt.execute();
+        }
+
+        try (Connection con = ds_property_perferred.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO people(id,name) VALUES(?,?)");) {
+            stmt.setInt(1, 19);
+            stmt.setString(2, "testVerifyConnectionPrecedence");
+            stmt.execute();
         }
     }
 

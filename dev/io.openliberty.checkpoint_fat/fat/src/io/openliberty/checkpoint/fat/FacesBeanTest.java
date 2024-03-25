@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,7 +30,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -41,7 +41,7 @@ import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class FacesBeanTest extends FATServletClient {
 
     public static final String FACES_BEAN_SERVER_NAME = "checkpointFaces-beanServer";
@@ -50,24 +50,10 @@ public class FacesBeanTest extends FATServletClient {
     @Rule
     public TestName testName = new TestName();
 
+    // TODO additional work needed to run this test on EE10/MP6
     @ClassRule
     public static RepeatTests repeatTests = MicroProfileActions.repeat(FACES_BEAN_SERVER_NAME, TestMode.LITE,
                                                                        MicroProfileActions.MP41, MicroProfileActions.MP50 /* , MicroProfileActions.MP60 */);
-
-//    @ClassRule
-//    public static RepeatTests repeatTests;
-//    static {
-//        // EE10 requires Java 11. If we only specify EE10 for lite mode it will cause no tests to run which causes an error.
-//        // If we are running on Java 8 have EE9 be the lite mode test to run.
-//        if (JavaInfo.JAVA_VERSION >= 11) {
-//            repeatTests = RepeatTests.with(new EmptyAction().fullFATOnly())
-//                              .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-//                              .andWith(FeatureReplacementAction.EE10_FEATURES());
-//        } else {
-//            repeatTests = RepeatTests.with(new EmptyAction().fullFATOnly())
-//                              .andWith(FeatureReplacementAction.EE9_FEATURES());
-//        }
-//    }
 
     @Server(FACES_BEAN_SERVER_NAME)
     public static LibertyServer facesBeanServer;
@@ -78,7 +64,7 @@ public class FacesBeanTest extends FATServletClient {
         facesBeanApp = (WebArchive) ShrinkHelper.addDirectory(facesBeanApp, "test-applications/" + FACES_APP_NAME + "/resources");
         // Add Myfaces or Mojarra provider libraries when testing facesContainer-x.y; e.g.:
         //facesBeanApp = FATSuite.addMyFaces(facesApp);
-        ShrinkHelper.exportDropinAppToServer(facesBeanServer, facesBeanApp, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(facesBeanServer, facesBeanApp, DeployOptions.SERVER_ONLY, DeployOptions.OVERWRITE);
 
         TestMethod testMethod = getTestMethod(TestMethod.class, testName);
 

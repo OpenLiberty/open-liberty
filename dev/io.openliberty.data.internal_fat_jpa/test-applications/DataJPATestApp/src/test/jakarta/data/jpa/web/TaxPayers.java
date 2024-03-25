@@ -17,8 +17,10 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.DataRepository;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
 import io.openliberty.data.repository.Select;
 
@@ -27,6 +29,7 @@ import io.openliberty.data.repository.Select;
  */
 @Repository
 public interface TaxPayers extends DataRepository<TaxPayer, Long> {
+    @Delete
     long delete();
 
     @Select("bankAccounts")
@@ -41,7 +44,9 @@ public interface TaxPayers extends DataRepository<TaxPayer, Long> {
     @OrderBy("ssn")
     Stream<TaxPayer> findByBankAccountsNotEmpty();
 
+    @Save
     Iterable<TaxPayer> save(Iterable<TaxPayer> taxPayers);
 
+    @Save
     Iterator<TaxPayer> save(TaxPayer... taxPayers);
 }

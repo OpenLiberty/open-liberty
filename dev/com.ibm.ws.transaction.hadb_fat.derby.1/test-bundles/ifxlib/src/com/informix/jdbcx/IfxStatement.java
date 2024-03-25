@@ -34,6 +34,10 @@ public class IfxStatement implements Statement {
     IfxConnection ifxConn;
 
     static boolean failoverQuery;
+    static int _peerRecoveryCount = 0;
+    static boolean _firstsql = true;
+    static String _homeservername = "";
+    static int _failingOperation = 1;
     private boolean _leaselogDeleteFlag;
     private boolean _leaselogGetFlag;
 
@@ -154,6 +158,44 @@ public class IfxStatement implements Statement {
         if (sql.contains("SELECT SERVER_IDENTITY, LEASE_TIME FROM WAS_LEASES_LOG")) {
             System.out.println("IfxStatement(): This is a leaselog get statement");
             _leaselogGetFlag = true;
+        }
+        if (IfxConnection.isPeerRecoveryPauseEnabled()) {
+            if (_firstsql) {
+                System.out.println("IfxStatement(): First query, find table name");
+                _firstsql = false;
+                int tableIndex = sql.indexOf("WAS_PARTNER_LOG");
+                System.out.println("IfxStatement(): Table index is at " + tableIndex);
+
+                // cloudname starts at tableIndex + 15
+                _homeservername = sql.substring(tableIndex + 15, tableIndex + 24);
+                // set which operation we will fail on
+                _failingOperation = IfxConnection.getFailingRetries();
+                System.out.println("IfxStatement(): _homeservername is " + _homeservername + ", fail on operation " + _failingOperation);
+            }
+
+            if (sql.contains("SELECT SERVER_NAME FROM WAS_TRAN_LOG")) {
+                int nextTableIndex = sql.indexOf("WAS_TRAN_LOG");
+                System.out.println("IfxStatement(): Next Table index is at " + nextTableIndex);
+
+                // cloudname starts at tableIndex + 12
+                String thisservername = sql.substring(nextTableIndex + 12, nextTableIndex + 21);
+                System.out.println("IfxStatement(): thisservername is " + thisservername + " compare with homeservername " + _homeservername);
+                if (thisservername.equals(_homeservername)) {
+                    System.out.println("IfxStatement(): Names the same, not a peer");
+                } else {
+                    _peerRecoveryCount++;
+                    System.out.println("IfxStatement(): This is a peer recovery statement with count " + _peerRecoveryCount);
+                    if (_peerRecoveryCount == _failingOperation) {
+                        System.out.println("IfxStatement(): Sleep for a while");
+                        try {
+                            Thread.sleep(1000 * 10);
+                        } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
         }
 
         simQueryFailover();

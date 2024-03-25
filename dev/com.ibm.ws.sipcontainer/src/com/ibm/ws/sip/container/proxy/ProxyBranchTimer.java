@@ -64,8 +64,8 @@ public class ProxyBranchTimer extends BaseTimer{
     /**
 	 * Extracts queue index from the related application session.
 	 */
-	protected int extractQueueIndex() {
-		int result = -1;
+	protected long extractQueueIndex() {
+		long result = -1;
 		if(_origReqImp != null){
 			TransactionUserWrapper tuImpl = _origReqImp.getTransactionUser();
 			if(tuImpl != null){

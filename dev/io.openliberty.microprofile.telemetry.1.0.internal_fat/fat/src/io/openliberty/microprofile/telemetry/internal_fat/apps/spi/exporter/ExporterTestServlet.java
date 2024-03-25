@@ -24,14 +24,14 @@ import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import jakarta.inject.Inject;
-import jakarta.servlet.annotation.WebServlet;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
 /**
  * Basic test of a span exporter
  */
 @SuppressWarnings("serial")
-@WebServlet("/exporterTest")
+@WebServlet("/testExporter")
 public class ExporterTestServlet extends FATServlet {
 
     @Inject

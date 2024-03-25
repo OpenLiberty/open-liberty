@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.org.crac/resources/io/openliberty/crac/resources/CRaCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC Checkpoint
+
+# Message numbers CWWKC0551-600 are reserved for this file.
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWWKC0000=CWWKC0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWWKC0000.useraction=User action text for the message
+
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551=CWWKC0551E: Cererea de punct de control server a e\u0219uat deoarece una sau mai multe resurse au aruncat o excep\u021bie atunci c\u00e2nd au fost notificate despre cererea de punct de control.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.explanation=Una sau mai multe implement\u0103ri de resurse \u00eenregistrate au aruncat o excep\u021bie atunci c\u00e2nd au fost notificate despre o cerere de control.
+CRAC_RESOURCE_CHECKPOINT_FAIL_CWWKC0551.useraction=Inspecta\u021bi istoricele pentru a g\u0103si excep\u021bia care a f\u0103cut ca cererea de punct de control s\u0103 e\u0219ueze.
+
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552=CWWKC0552E: Serverul nu a reu\u0219it s\u0103 se restaureze deoarece una sau mai multe resurse au aruncat o excep\u021bie atunci c\u00e2nd au fost notificate pentru restaurarea serverului de la punctul de control.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.explanation=Una sau mai multe implement\u0103ri de resurse \u00eenregistrate au aruncat o excep\u021bie atunci c\u00e2nd au fost notificate pentru o restaurare a serverului de la punctul de control.
+CRAC_RESOURCE_RESTORE_FAIL_CWWKC0552.useraction=Inspecta\u021bi istoricele pentru a g\u0103si excep\u021bia care a cauzat e\u0219ecul restaur\u0103rii serverului de la punctul de control.
+
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553=CWWKC0553E: Cererile de punct de control nu sunt acceptate pe serverul Liberty.
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.explanation=Cererile de punct de control care utilizeaz\u0103 API-uri org.crac nu sunt suportate de Liberty. 
+CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553.useraction=Verifica\u021bi documenta\u021bia pentru detalii despre punctul de control \u0219i opera\u021biile de restaurare pentru Liberty InstantOn.

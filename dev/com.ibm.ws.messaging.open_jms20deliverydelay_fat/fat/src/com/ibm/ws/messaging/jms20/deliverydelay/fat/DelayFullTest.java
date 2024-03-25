@@ -36,8 +36,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -74,17 +73,13 @@ public class DelayFullTest {
     };
 
     private static void transformConfigurations() throws Exception {
-        if ( !JakartaEE9Action.isActive() && !JakartaEE10Action.isActive()) {
+        if ( !JakartaEEAction.isEE9OrLaterActive()) {
             return;
         }
 
         for ( String config : EE9_TRANSFORMED_CONFIGS ) {
             Path configPath = Paths.get("lib/LibertyFATTestFiles", config);
-            if (JakartaEE9Action.isActive()) {
-                JakartaEE9Action.transformApp(configPath);
-            } else if (JakartaEE10Action.isActive()) {
-                JakartaEE10Action.transformApp(configPath);
-            }
+            JakartaEEAction.transformApp(configPath);
         }
     }
 
@@ -459,11 +454,11 @@ public class DelayFullTest {
     }
     
     private String getServerFeature() {
-        return ( JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "messagingServer-3.0" : "wasJmsServer-1.0" );
+        return ( JakartaEEAction.isEE9OrLaterActive() ? "messagingServer-3.0" : "wasJmsServer-1.0" );
     }
 
     private String getServerMessageFragment() {
-        return ( JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "messagingServer" : "wasJmsServer" );
+        return ( JakartaEEAction.isEE9OrLaterActive() ? "messagingServer" : "wasJmsServer" );
     }
 
     private void verifyRemovedFeature(LibertyServer server, String fragment) throws Exception {
@@ -492,7 +487,24 @@ public class DelayFullTest {
         String changedMessageFromLog = server.waitForStringInLogUsingMark("CWWKF0008I.*",server.getMatchingLogFile("trace.log"));
         assertNotNull("Could not find the CWWKF0008I feature update completed message in the trace file", changedMessageFromLog);
     }
+    
+    /**
+     * Look for the message:
+     * "CWSID0108I: JMS server has started"
+     * in the log to make sure that not only have feature updates completed, but also that the JMS provider is available.
+     * @param server
+     * @throws Exception
+     */
+    private void verifyJMSServerStarted(LibertyServer server) throws Exception {
+    	//CWWKF0008I: Feature update completed in ?.??? seconds.
+        String changedMessageFromLog = server.waitForStringInLogUsingMark("CWSID0108I.*",server.getMatchingLogFile("trace.log"));
+        assertNotNull("Could not find the CWSID0108I 'JMS server has started' message in the trace file", changedMessageFromLog);
+    	return;
+    }
 
+
+    
+    //
     /**
      * <ul>
      * <li>Put a message to the client's messaging engine with a delivery delay.
@@ -522,6 +534,12 @@ public class DelayFullTest {
     		clientServer.changeFeatures(new ArrayList<String>(clientFeatures));
     		verifyAddedFeature(clientServer, serverFragment);
 
+    		// Wait until the JMS Server is actually running again.
+    		// There might still be a possibility that even in this case, the messaging singleton objects might not be available, but that's an issue to fix
+    		// elsewhere. Hopefully for the moment this will alleviate the problem with calling the app before the appropriate objects are available.
+    		verifyJMSServerStarted(clientServer);
+    		
+    		
     		boolean testResult2 = runInServlet("testReceiveMessage");
     		assertTrue("testReceiveMessage failed", testResult2);
 

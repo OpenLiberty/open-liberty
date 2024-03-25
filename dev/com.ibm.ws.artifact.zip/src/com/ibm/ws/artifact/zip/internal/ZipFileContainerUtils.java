@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -88,6 +88,7 @@ public class ZipFileContainerUtils {
         private final String parentPath;
 
         private final int[] locations;
+        private final StringBuilder entryPathBuilder = new StringBuilder("/");
         private int index;
 
         @Trivial
@@ -140,25 +141,27 @@ public class ZipFileContainerUtils {
             //            gp/p/c2/gc1
 
             String entryName;
-            String entryPath;
+
+            // Always starts with a `/`
+            entryPathBuilder.setLength(1);
 
             int slashLoc = nextPath.indexOf('/', parentLen);
             if ( slashLoc == -1 ) {
                 // The location is an immediate child.
                 entryName = nextPath.substring(parentLen);
-                entryPath = nextPath;
+                entryPathBuilder.append(nextPath);
             } else {
                 // The location is a grandchild.
                 entryName = nextPath.substring(parentLen, slashLoc);
-                entryPath = nextPath.substring(0, slashLoc);
+                entryPathBuilder.append(nextPath, 0, slashLoc);
                 nextEntryData = null;
             }
 
-            String a_entryPath = "/" + entryPath;
+            String entryPath = entryPathBuilder.toString();
 
             ZipFileEntry nextZipFileEntry = rootContainer.createEntry(
                 nestedContainer,
-                entryName, a_entryPath,
+                entryName, entryPath,
                 nextEntryData);
 
             return nextZipFileEntry;

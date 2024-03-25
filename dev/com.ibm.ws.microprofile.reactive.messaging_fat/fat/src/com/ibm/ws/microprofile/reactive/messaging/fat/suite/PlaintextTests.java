@@ -25,6 +25,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.ack.auto.KafkaAutoAckTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.containers.ExtendedKafkaContainer;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.context.KafkaDefaultContextTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.context.custom.KafkaCustomContextTest;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.context.custom.invalid.KakfaInvalidContextTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.delivery.KafkaAcknowledgementTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.flatmap.KafkaFlatMapTest;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.message.ConsumerRecordTest;
@@ -50,9 +53,12 @@ import componenttest.containers.TestContainerSuite;
                 KafkaMessagingTest.class,
                 KafkaAcknowledgementTest.class,
                 KafkaAutoAckTest.class,
+                KafkaCustomContextTest.class,
                 KafkaCustomSerializerTest.class,
                 KafkaCustomKeySerializerTest.class,
+                KafkaDefaultContextTest.class,
                 KafkaFlatMapTest.class,
+                KakfaInvalidContextTest.class,
                 KafkaPartitionTest.class,
                 KafkaSharedLibTest.class,
                 MissingGroupIDTest.class,
@@ -72,7 +78,7 @@ public class PlaintextTests extends TestContainerSuite {
         return Collections.singletonMap(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaContainer.getBootstrapServers());
     }
 
-    public static AdminClient getAdminClient(){
+    public static AdminClient getAdminClient() {
         Map<String, Object> adminClientProps = connectionProperties();
         return AdminClient.create(adminClientProps);
     }

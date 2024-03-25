@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-	~ Copyright (c) 2022, 2023 IBM Corporation and others. All rights reserved. 
+	~ Copyright (c) 2022, 2024 IBM Corporation and others. All rights reserved. 
 	~ This program and the accompanying materials are made available under the 
 	~ terms of the Eclipse Public License 2.0 which accompanies this distribution, 
 	~ and is available at 
@@ -51,24 +51,22 @@
 		<!-- tck - data - external TCK -->
 		<dependency>
 			<groupId>${jakarta.data.groupid}</groupId>
-			<artifactId>jakarta-data-tck</artifactId>
+			<artifactId>jakarta.data-tck</artifactId>
 			<version>${jakarta.data.tck.version}</version>
 		</dependency>
 		<!-- api - data - internal bundle -->
 		<dependency>
 			<groupId>jakarta.data</groupId>
-			<artifactId>jakarta-data-api</artifactId>
+			<artifactId>jakarta.data-api</artifactId>
 			<version>${jakarta.data.version}</version>
 			<scope>system</scope>
 			<systemPath>${io.openliberty.jakarta.data.1.0}</systemPath>
 		</dependency>
-		<!-- impl - data - internal bundle -->
+		<!-- impl - data - external jnosql for MongoDB -->
 		<dependency>
-			<groupId>jakarta.data</groupId>
-			<artifactId>jakarta-data-impl</artifactId>
-			<version>${jakarta.data.version}</version>
-			<scope>system</scope>
-			<systemPath>${io.openliberty.data.internal}</systemPath>
+			<groupId>org.eclipse.jnosql.databases</groupId>
+			<artifactId>jnosql-mongodb</artifactId>
+			<version>${jnosql.mongodb.version}</version>
 		</dependency>
 		<!-- test frameworks -->
 		<dependency>
@@ -131,7 +129,7 @@
 						</goals>
 						<configuration>
 							<target>
-								<copy file="${io.openliberty.jakarta.data.1.0}" tofile="${project.build.directory}/signaturedirectory/jakarta-data-api.jar" />
+								<copy file="${io.openliberty.jakarta.data.1.0}" tofile="${project.build.directory}/signaturedirectory/jakarta.data-api.jar" />
 							</target>
 						</configuration>
 					</execution>
@@ -139,19 +137,21 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.1.2</version>
 				<configuration>
 					<trimStackTrace>false</trimStackTrace>
 					<failIfNoTests>true</failIfNoTests>
-					<dependenciesToScan>${jakarta.data.groupid}:jakarta-data-tck</dependenciesToScan>
+					<dependenciesToScan>
+						<dependency>${jakarta.data.groupid}:jakarta.data-tck</dependency>
+					</dependenciesToScan>
 					<statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
 						<usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
 						<usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
 					</statelessTestsetReporter>
 					<systemPropertyVariables>
 						<java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
-						<jimage.dir>${project.build.directory}/jdk17-bundle</jimage.dir>
-						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta-data-api.jar:${project.build.directory}/jdk11-bundle/java.base:${project.build.directory}/jdk11-bundle/java.rmi:${project.build.directory}/jdk11-bundle/java.sql:${project.build.directory}/jdk11-bundle/java.naming</signature.sigTestClasspath>
+						<jimage.dir>${jimage.dir}</jimage.dir>
+						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.data-api.jar:${jimage.dir}/java.base:${jimage.dir}/java.rmi:${jimage.dir}/java.sql:${jimage.dir}/java.naming</signature.sigTestClasspath>
 						<jakarta.tck.profile>${jakarta.tck.profile}</jakarta.tck.profile>
 					</systemPropertyVariables>
 					<groups>${included.groups}</groups>

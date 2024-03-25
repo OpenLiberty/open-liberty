@@ -20,6 +20,7 @@
 		enabled="false" />
 	<samlWebSso20
 		inboundPropagation="required"
+		signatureMethodAlgorithm="SHA1"
 		id="rsSaml_min" />
 
 </server>

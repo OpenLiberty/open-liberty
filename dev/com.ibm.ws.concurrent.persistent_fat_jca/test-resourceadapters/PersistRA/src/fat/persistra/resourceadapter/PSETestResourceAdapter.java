@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -89,6 +89,8 @@ public class PSETestResourceAdapter implements ResourceAdapter {
                 @Override
                 public TaskStatus<?> call() throws Exception {
                     TaskStatus<?> taskStatus = scheduler.schedule(new RASerializableTask(), new RATrigger());
+                    
+                    System.out.println("PSETestResourceAdapter start task scheduled.");
 
                     for (long start = System.nanoTime(); !taskStatus.hasResult() && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(POLL_INTERVAL))
                         taskStatus = scheduler.getStatus(taskStatus.getTaskId());

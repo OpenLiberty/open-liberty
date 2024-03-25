@@ -16,8 +16,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
+import jakarta.data.page.PageRequest;
 import jakarta.data.repository.DataRepository;
-import jakarta.data.repository.Pageable;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.Repository;
 
 /**
@@ -30,11 +31,12 @@ public interface Tariffs extends DataRepository<Tariff, Long> {
 
     Stream<Tariff> findByLeviedAgainst(String country);
 
-    Iterator<Tariff> findByLeviedAgainstLessThanOrderByKeyDesc(String countryNameBefore, Pageable pagination);
+    Iterator<Tariff> findByLeviedAgainstLessThanOrderByKeyDesc(String countryNameBefore, PageRequest pagination);
 
     Tariff findByLeviedByAndLeviedAgainstAndLeviedOn(String taxingCountry, String taxedCountry, String item);
 
-    List<Tariff> findByLeviedByOrderByKey(String country, Pageable pagination);
+    List<Tariff> findByLeviedByOrderByKey(String country, PageRequest pagination);
 
+    @Insert
     Tariff save(Tariff t);
 }

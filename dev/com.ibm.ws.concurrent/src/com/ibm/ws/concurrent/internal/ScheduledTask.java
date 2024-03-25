@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,6 +23,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
@@ -44,6 +45,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.ContextualAction;
 import com.ibm.ws.concurrent.TriggerService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.threading.ScheduledCustomExecutorTask;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
@@ -55,7 +57,7 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
  * If a repeating task, each execution of the task schedules the next execution,
  * thus guaranteeing that we never have overlapping executions of the same task.
  */
-public class ScheduledTask<T> implements Callable<T> {
+public class ScheduledTask<T> implements Callable<T>, ScheduledCustomExecutorTask {
     private static final TraceComponent tc = Tr.register(ScheduledTask.class);
 
     /**
@@ -77,14 +79,16 @@ public class ScheduledTask<T> implements Callable<T> {
         /**
          * Status of the result. Expect the status to change as the task is scheduled and executes.
          */
-        private final AtomicReference<Status<T>> statusRef = new AtomicReference<Status<T>>(new Status<T>(Status.Type.NONE, null, null, false));
+        private final AtomicReference<Status<T>> statusRef = new AtomicReference<Status<T>>(Status.of(Status.Type.NONE));
 
         private final boolean compareAndSet(Status<T> expectedStatus, Status<T> newStatus) {
             boolean updated = statusRef.compareAndSet(expectedStatus, newStatus);
             if (updated && TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 StringBuilder sb = new StringBuilder(60).append(expectedStatus.type).append("-->").append(newStatus.type).append(' ');
-                if (newStatus.finalExecutionIsComplete)
-                    sb.append("[final]").append(' ');
+                if (Boolean.TRUE.equals(newStatus.hasNext))
+                    sb.append("[has next] ");
+                else if (Boolean.FALSE.equals(newStatus.hasNext))
+                    sb.append("[final] ");
                 if (newStatus.value != null)
                     sb.append(newStatus.value).append(' ');
                 if (newStatus.failure != null)
@@ -112,15 +116,41 @@ public class ScheduledTask<T> implements Callable<T> {
         };
 
         private final Throwable failure;
-        private final boolean finalExecutionIsComplete; // means there should be no further executions of the task
+        private final Boolean hasNext; // keep this value null for unknown until the final execution completes or is aborted or canceled
         private final Type type;
         private final T value;
 
-        private Status(Type type, T value, Throwable failure, boolean finalExecutionIsComplete) {
+        private Status(Type type, T value, Throwable failure, Boolean hasNext) {
             this.failure = failure;
-            this.finalExecutionIsComplete = finalExecutionIsComplete;
+            this.hasNext = hasNext;
             this.type = type;
             this.value = value;
+        }
+
+        private final boolean isFinalExecutionComplete() {
+            return Boolean.FALSE.equals(hasNext);
+        }
+
+        private static final <T> Status<T> done(T resultValue, boolean isFinalExecution) {
+            return new Status<T>(Type.DONE, resultValue, null, isFinalExecution ? false : null);
+        }
+
+        private static final <T> Status<T> of(Type type) {
+            Boolean hasNext = type == Type.ABORTED || type == Type.CANCELED || type == Type.DONE ? false : null;
+            return new Status<T>(type, null, null, hasNext);
+        }
+
+        private static final <T> Status<T> of(Type type, Throwable failure) {
+            Boolean hasNext = type == Type.ABORTED || type == Type.CANCELED || type == Type.DONE ? false : null;
+            return new Status<T>(type, null, failure, hasNext);
+        }
+
+        private Status<T> withNextExecution() {
+            return new Status<T>(type, value, failure, true);
+        }
+
+        private Status<T> withoutNextExecution() {
+            return new Status<T>(type, value, failure, false);
         }
     }
 
@@ -273,7 +303,7 @@ public class ScheduledTask<T> implements Callable<T> {
 
         // schedule the task if the listener didn't cancel it
         Status<T> status = result.getStatus();
-        if (status.type == Status.Type.NONE && result.compareAndSet(status, new Status<T>(Status.Type.SUBMITTED, null, null, false))) {
+        if (status.type == Status.Type.NONE && result.compareAndSet(status, Status.of(Status.Type.SUBMITTED))) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "schedule " + delay + " from now");
             ScheduledExecutorService scheduledExecSvc = managedExecSvc.scheduledExecSvc;
@@ -348,7 +378,7 @@ public class ScheduledTask<T> implements Callable<T> {
 
         // schedule the task if the listener didn't cancel it
         Status<T> status = result.getStatus();
-        if (status.type == Status.Type.NONE && result.compareAndSet(status, new Status<T>(Status.Type.SUBMITTED, null, null, false))) {
+        if (status.type == Status.Type.NONE && result.compareAndSet(status, Status.of(Status.Type.SUBMITTED))) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "schedule " + Duration.of(delay, ChronoUnit.NANOS) + " from now");
             ScheduledExecutorService scheduledExecSvc = managedExecSvc.scheduledExecSvc;
@@ -390,11 +420,11 @@ public class ScheduledTask<T> implements Callable<T> {
             if (trigger != null)
                 try {
                     if (triggerSvc.skipRun(lastExecution, nextExecutionTime, trigger))
-                        skipped = new Status<T>(Status.Type.SKIPPED, null, null, false);
+                        skipped = Status.of(Status.Type.SKIPPED);
                 } catch (Throwable x) {
                     // spec requires skip when skipRun fails
                     Tr.error(tc, "CWWKC1103.skip.run.failed", getName(), managedExecSvc.name, x);
-                    skipped = new Status<T>(Status.Type.SKIPPED, null, x, false);
+                    skipped = Status.of(Status.Type.SKIPPED, x);
                 }
 
             ZonedDateTime computedNextExecution = null;
@@ -413,7 +443,7 @@ public class ScheduledTask<T> implements Callable<T> {
 
                 // run the task if the listener didn't cancel it
                 status = result.getStatus();
-                if (status.type == Status.Type.SUBMITTED && result.compareAndSet(status, new Status<T>(Status.Type.STARTED, null, null, false))) {
+                if (status.type == Status.Type.SUBMITTED && result.compareAndSet(status, Status.of(Status.Type.STARTED))) {
                     try {
                         if (trigger == null)
                             if (isCallable)
@@ -448,9 +478,9 @@ public class ScheduledTask<T> implements Callable<T> {
                         Tr.error(tc, "CWWKC1101.task.failed", getName(), managedExecSvc.name, x);
                         status = result.getStatus();
                         if (status.type == Status.Type.CANCELED) // include the failure in the result so it will be available to taskDone
-                            result.compareAndSet(status, new Status<T>(Status.Type.CANCELED, null, x, true));
+                            result.compareAndSet(status, Status.of(Status.Type.CANCELED, x));
                         else if (status.type == Status.Type.STARTED)
-                            result.compareAndSet(status, new Status<T>(Status.Type.DONE, null, x, true));
+                            result.compareAndSet(status, Status.of(Status.Type.DONE, x));
                         result.latch.countDown();
                     }
 
@@ -458,11 +488,11 @@ public class ScheduledTask<T> implements Callable<T> {
                     if (status.type == Status.Type.STARTED) {
                         // calculate next execution
                         if (trigger == null)
-                            result.compareAndSet(status, new Status<T>(Status.Type.DONE, taskResult, null, fixedDelay == null && fixedRate == null));
+                            result.compareAndSet(status, Status.done(taskResult, fixedDelay == null && fixedRate == null));
                         else {
                             computedNextExecution = triggerSvc.getNextRunTime(lastExecution, taskScheduledTime, trigger);
 
-                            result.compareAndSet(status, new Status<T>(Status.Type.DONE, taskResult, null, computedNextExecution == null));
+                            result.compareAndSet(status, Status.done(taskResult, computedNextExecution == null));
                         }
 
                         result.latch.countDown();
@@ -502,7 +532,7 @@ public class ScheduledTask<T> implements Callable<T> {
 
                     // No next execution
                     if (computedNextExecution == null)
-                        result.compareAndSet(skipped, new Status<T>(Status.Type.SKIPPED, null, skipped.failure, true));
+                        result.compareAndSet(skipped, skipped.withoutNextExecution());
                 } finally {
                     result.latch.countDown();
 
@@ -525,8 +555,9 @@ public class ScheduledTask<T> implements Callable<T> {
             // Resubmit this task to run at the next scheduled time
             status = result.getStatus();
             Result nextResult;
-            if (!status.finalExecutionIsComplete
+            if (!status.isFinalExecutionComplete()
                 && (status.type == Status.Type.DONE || status.type == Status.Type.SKIPPED)
+                && result.compareAndSet(status, status.withNextExecution())
                 && resultRef.compareAndSet(result, nextResult = new Result())) {
                 result = nextResult;
                 done = false;
@@ -592,7 +623,7 @@ public class ScheduledTask<T> implements Callable<T> {
 
                 // reschedule the task if the listener didn't cancel it
                 status = result.getStatus();
-                if (status.type == Status.Type.NONE && result.compareAndSet(status, new Status<T>(Status.Type.SUBMITTED, null, null, false))) {
+                if (status.type == Status.Type.NONE && result.compareAndSet(status, Status.of(Status.Type.SUBMITTED))) {
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(this, tc, "reschedule " + delay + " from now");
                     ScheduledFuture<?> scheduledFuture = managedExecSvc.scheduledExecSvc.schedule(this, delay.toNanos(), TimeUnit.NANOSECONDS);
@@ -616,9 +647,9 @@ public class ScheduledTask<T> implements Callable<T> {
                 Tr.error(tc, "CWWKC1101.task.failed", getName(), managedExecSvc.name, x);
 
             status = result.getStatus();
-            if (!status.finalExecutionIsComplete) {
-                Status<T> newStatus = status.type == Status.Type.STARTED ? new Status<T>(Status.Type.DONE, null, x, true) : new Status<T>(Status.Type.ABORTED, null, x, true);
-                result.compareAndSet(status, newStatus);
+            if (status.hasNext == null) {
+                Status.Type abortedOrDone = status.type == Status.Type.STARTED ? Status.Type.DONE : Status.Type.ABORTED;
+                result.compareAndSet(status, Status.of(abortedOrDone, x));
             }
             result.latch.countDown();
 
@@ -671,6 +702,17 @@ public class ScheduledTask<T> implements Callable<T> {
                         .add(BigInteger.valueOf(denominator.getNano()));
 
         return num.divide(denom).longValueExact();
+    }
+
+    /**
+     * Returns a custom executor upon which to run the task.
+     * We use this when virtual=true to direct the task to a new new virtual thread.
+     * Otherwise, the null value that is returned when virtual=false means to use the Liberty thread pool.
+     */
+    @Override
+    @Trivial
+    public Executor getExecutor() {
+        return managedExecSvc.policyExecutor.getVirtualThreadExecutor(); // null if virtual=false
     }
 
     /**
@@ -754,11 +796,10 @@ public class ScheduledTask<T> implements Callable<T> {
 
             boolean canceled = false;
 
-            Status<T> canceledStatus = new Status<T>(Status.Type.CANCELED, null, null, true);
             Result result = resultRef.get();
             Status<T> status = result.getStatus();
-            while (!canceled && !status.finalExecutionIsComplete) {
-                if (result.compareAndSet(status, canceledStatus)) {
+            while (!canceled && !status.isFinalExecutionComplete()) {
+                if (!Boolean.TRUE.equals(status.hasNext) && result.compareAndSet(status, Status.of(Status.Type.CANCELED))) {
                     // Cancel the callable that is scheduled to submit the task for execution.
                     Future<?> future = scheduledFutureRef.get();
                     if (future != null)
@@ -796,6 +837,8 @@ public class ScheduledTask<T> implements Callable<T> {
 
                     canceled = true;
                 } else {
+                    // Let pending work (such as reschedule) on other threads go first, and then refresh status
+                    Thread.yield();
                     result = resultRef.get();
                     status = result.getStatus();
                 }
@@ -1006,7 +1049,7 @@ public class ScheduledTask<T> implements Callable<T> {
             Status<T> status = resultRef.get().getStatus();
             if (status.type == Status.Type.CANCELED)
                 return true;
-            else if (status.finalExecutionIsComplete)
+            else if (status.isFinalExecutionComplete())
                 return false;
 
             Future<?> future = scheduledFutureRef.get();

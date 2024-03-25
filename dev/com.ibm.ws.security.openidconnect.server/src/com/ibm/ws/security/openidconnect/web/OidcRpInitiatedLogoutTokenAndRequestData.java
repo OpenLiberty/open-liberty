@@ -22,6 +22,7 @@ import com.ibm.ws.security.jwt.utils.IssuerUtils;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.openidconnect.server.internal.HashUtils;
+import com.ibm.ws.security.openidconnect.server.internal.JwtUtils;
 import com.ibm.ws.security.openidconnect.token.IDTokenValidationFailedException;
 import com.ibm.ws.security.openidconnect.token.JWT;
 import com.ibm.ws.security.openidconnect.token.JWTPayload;
@@ -147,21 +148,21 @@ public class OidcRpInitiatedLogoutTokenAndRequestData {
                         clientId = getVerifiedClientId(payload);
                     }
                 } catch (Exception e) {
-                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
+                    Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e.getMessage() });
                     isDataValidForLogout = false;
                 }
             } else {
-                Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ivfe });
+                Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { ivfe.getMessage() });
                 isDataValidForLogout = false;
             }
         } catch (Exception e) {
-            Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e });
+            Tr.error(tc, "OIDC_SERVER_IDTOKEN_VERIFY_ERR", new Object[] { e.getMessage() });
             isDataValidForLogout = false;
         }
     }
 
     void parseAndValidateIdTokenHint() throws Exception {
-        JWT jwt = endpointServices.createJwt(idTokenHintParameter, oauth20Provider, oidcServerConfig);
+        JWT jwt = JwtUtils.createJwt(idTokenHintParameter, oauth20Provider, oidcServerConfig);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "JWT : " + jwt);
         }

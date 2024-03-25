@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,8 +22,7 @@ import org.junit.Test;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.beanvalidation.fat.basic.BasicValidation_Common;
 
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -41,7 +40,7 @@ public abstract class EJBModule_Common extends FATServletClient {
         JavaArchive jar = ShrinkHelper.buildJavaArchive("EJBModule1EJB.jar", "beanvalidation.ejbmodule.*");
         JavaArchive jar2 = ShrinkHelper.buildJavaArchive("EJBModule2EJB.jar", "beanvalidation.ejbmodule2.ejb");
 
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             jar.move("/META-INF/constraints-house_EE9.xml", "/META-INF/constraints-house.xml");
             jar2.move("/META-INF/constraints-house_EE9.xml", "/META-INF/constraints-house.xml");
         }
@@ -52,14 +51,14 @@ public abstract class EJBModule_Common extends FATServletClient {
                         .addAsModule(war)
                         .addAsModule(jar);
         ShrinkHelper.addDirectory(ear, "test-applications/OneEJBModuleApp.ear/resources/");
-        ShrinkHelper.exportToServer(server, "dropins", ear);
+        ShrinkHelper.exportDropinAppToServer(server, ear);
 
         EnterpriseArchive ear2 = ShrinkWrap.create(EnterpriseArchive.class, "TwoEJBModulesApp.ear")
                         .addAsModule(war)
                         .addAsModule(jar)
                         .addAsModule(jar2);
         ShrinkHelper.addDirectory(ear2, "test-applications/TwoEJBModulesApp.ear/resources/");
-        ShrinkHelper.exportToServer(server, "dropins", ear2);
+        ShrinkHelper.exportDropinAppToServer(server, ear2);
     }
 
     protected abstract LibertyServer getServer();

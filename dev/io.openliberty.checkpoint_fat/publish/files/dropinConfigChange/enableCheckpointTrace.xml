@@ -1,0 +1,7 @@
+<server>
+  <logging
+    traceSpecification="*=info:checkpoint=all"
+    maxFileSize="20"
+    maxFiles="5"
+    logDirectory="restore_log_dir"/>
+</server>

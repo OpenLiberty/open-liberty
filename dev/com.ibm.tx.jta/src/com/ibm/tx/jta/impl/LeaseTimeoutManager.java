@@ -1,12 +1,12 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2022 IBM Corporation and others.
+ * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -62,10 +62,9 @@ public class LeaseTimeoutManager {
             _leaseLog = leaseLog;
 
             // Renew lease
-            // Disable lease checking if we failed to renew our own lease;
-            if (renewLease()) {
-                schedule(delay);
-            }
+            renewLease();
+            // Schedule the next renewal irrespective of the success or failure of the last renewal attempt
+            schedule(delay);
         }
 
         /*
@@ -78,7 +77,10 @@ public class LeaseTimeoutManager {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "LeaseRenewal", _recoveryIdentity, _recoveryGroup);
 
-            if (!FrameworkState.isStopping() && renewLease()) {
+            if (!FrameworkState.isStopping()) {
+                // Renew lease
+                renewLease();
+                // Schedule the next renewal irrespective of the success or failure of the last renewal attempt
                 schedule((int) delay);
             }
         }
@@ -152,7 +154,7 @@ public class LeaseTimeoutManager {
 
             if (!FrameworkState.isStopping() && _recoveryAgent != null && !_recoveryAgent.isServerStopping()) {
                 ArrayList<String> peersToRecover = _recoveryAgent.processLeasesForPeers(_recoveryIdentity, _recoveryGroup);
-                if (_recoveryDirector != null && _recoveryDirector instanceof RecoveryDirectorImpl) {
+                if (_recoveryDirector != null && _recoveryDirector instanceof RecoveryDirectorImpl && peersToRecover != null && !peersToRecover.isEmpty()) {
                     try {
                         ((RecoveryDirectorImpl) _recoveryDirector).peerRecoverServers(_recoveryAgent, _recoveryIdentity, peersToRecover);
                     } catch (RecoveryFailedException e) {
@@ -177,6 +179,7 @@ public class LeaseTimeoutManager {
                 _alarm = null;
             }
         }
+
     }
 
     /**

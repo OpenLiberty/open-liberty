@@ -1,0 +1,82 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  fat/src,\
+  test-applications/simpleservice/src,\
+  test-applications/BT11AddNumbersImplService/src,\
+  test-applications/jaxws22mtom/src,\
+  test-applications/defaultpackage/src
+  
+
+#  test-applications/cxfclient/src,\
+#  
+  
+fat.project: true
+
+# These features get added programmatically
+tested.features: jaxws-2.2, \
+  jsp-2.2, \
+  servlet-3.1, \
+  expressionlanguage-4.0, \
+  pages-3.0, \
+  servlet-5.0, \
+  xmlBinding-3.0, \
+  xmlWS-3.0, \
+  expressionlanguage-5.0, \
+  xmlws-4.0, \
+  xmlbinding-4.0, \
+  pages-3.1, \
+  servlet-6.0
+  
+
+
+-buildpath: \
+	com.ibm.websphere.javaee.annotation.1.2,\
+	com.ibm.websphere.javaee.ejb.3.2,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.ibm.websphere.javaee.jaxws.2.2,\
+	com.ibm.websphere.javaee.jws.1.0;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1,\
+	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest,\
+	com.ibm.ws.jaxws.2.3.common;version=latest,\
+	com.ibm.ws.jaxws.webcontainer,\
+	com.ibm.ws.webcontainer;version=latest,\
+  	com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest,\
+  	com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest,\
+  	com.ibm.ws.org.apache.cxf.cxf.rt.databinding.jaxb.3.2;version=latest,\
+  	com.ibm.ws.org.apache.cxf.cxf.rt.features.logging.3.2;version=latest,\
+  	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.frontend.simple.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.management.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest,\
+	org.apache.cxf.xjcplugins:cxf-xjc-boolean;version=2.6.0,\
+	org.apache.cxf.xjcplugins:cxf-xjc-bug671;version=2.6.0,\
+	org.apache.cxf.xjcplugins:cxf-xjc-dv;version=2.6.0,\
+	org.apache.cxf.xjcplugins:cxf-xjc-ts;version=2.6.0,\
+	org.apache.cxf.xjc-utils:cxf-xjc-runtime;version=2.6.0,\
+	org.springframework:spring-aop;version=3.0.7.RELEASE,\
+	org.springframework:spring-asm;version=3.0.7.RELEASE,\
+	org.springframework:spring-beans;version=3.0.7.RELEASE,\
+	org.springframework:spring-context;version=3.0.7.RELEASE,\
+	org.springframework:spring-core;version=3.0.7.RELEASE,\
+	org.springframework:spring-expression;version=3.0.7.RELEASE,\
+	org.springframework:spring-web;version=3.0.7.RELEASE,\
+	com.ibm.ws.jmx.connector.client.restConnector;version=latest,\
+	fattest.simplicity,\
+	com.ibm.ws.jaxb.tools;version=latest,\
+	com.ibm.ws.org.apache.cxf.cxf.core.3.2,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	com.ibm.ws.org.slf4j.jdk14;version=latest
+  

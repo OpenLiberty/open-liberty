@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,8 +29,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -64,11 +63,10 @@ public class EnterpriseAppTest extends FATServletClient {
         ear.addAsModule(rar);
         ear.addAsModule(lmrar);
         ShrinkHelper.addDirectory(ear, "lib/LibertyFATTestFiles/enterpriseApp");
-        ShrinkHelper.exportToServer(server, "apps", ear);
+        ShrinkHelper.exportAppToServer(server, ear);
 
-        server.addEnvVar("PERMISSION", (JakartaEE9Action.isActive()
-                                        || JakartaEE10Action.isActive()) ? "jakarta.resource.spi.security.PasswordCredential" : "javax.resource.spi.security.PasswordCredential");
-        server.addInstalledAppForValidation(appName);
+        server.addEnvVar("PERMISSION",
+                         JakartaEEAction.isEE9OrLaterActive() ? "jakarta.resource.spi.security.PasswordCredential" : "javax.resource.spi.security.PasswordCredential");
         server.startServer();
     }
 

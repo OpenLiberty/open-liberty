@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -104,15 +104,16 @@ public interface CDIRuntime extends CDIService {
     public boolean skipCreatingBda(CDIArchive archive);
 
     /**
-     * @param archive
-     * @throws CDIException
+     * Create an empty ContextBeginnerEnder.
      */
-    void beginContext(CDIArchive archive) throws CDIException;
+    ContextBeginnerEnder createContextBeginnerEnder();
 
     /**
+     * Returns true if a Context started by a ContextBeginnerEnder is currently active on the current thread.
      *
+     * Trying to start a context while one is already active is both unnecessary and will throw an exception
      */
-    void endContext();
+    boolean isContextBeginnerEnderActive();
 
     /**
      * @param bundle
@@ -127,6 +128,7 @@ public interface CDIRuntime extends CDIService {
                                                          boolean applicationBDAsVisible,
                                                          boolean extClassesOnly,
                                                          Set<String> extraExtensionClasses) throws CDIException;
+
     /**
      * @return
      */
@@ -222,4 +224,17 @@ public interface CDIRuntime extends CDIService {
      * @return the WeldDevelopmentMode, or {@code null} if does not exist or it is not enabled
      */
     public WeldDevelopmentMode getWeldDevelopmentMode();
+
+    /**
+     * creates a ContextBeginnerEnder that will do the same thing as the currently
+     * active ContextBeginnerEnder, or returns null if none are active.
+     *
+     * This is useful if you need to record which thread context classloader and
+     * component metadata are currently active so you can re-establish that state
+     * after a checkpoint restore.
+     *
+     * Remember to always close a ContextBeginnerEnder before starting a new one.
+     */
+    public ContextBeginnerEnder cloneActiveContextBeginnerEnder();
+
 }

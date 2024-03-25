@@ -5,6 +5,8 @@ visibility=public
 singleton=true
 IBM-App-ForceRestart: uninstall, \
  install
+IBM-SPI-Package: \
+  com.ibm.wsspi.webservices.handler
 IBM-ShortName: jaxrs-2.1
 Subsystem-Name: Java RESTful Services 2.1
 -features=com.ibm.websphere.appserver.internal.jaxrs-2.1, \

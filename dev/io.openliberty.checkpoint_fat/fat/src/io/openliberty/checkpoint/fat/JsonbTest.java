@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
@@ -48,7 +48,7 @@ import javax.ws.rs.core.Response;
 import jsonb.JsonbApplication;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class JsonbTest extends FATServletClient {
 
     private static final String SERVER_NAME = "checkpointJsonb";

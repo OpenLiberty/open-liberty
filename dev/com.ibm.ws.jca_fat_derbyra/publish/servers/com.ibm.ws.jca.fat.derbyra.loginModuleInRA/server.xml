@@ -24,7 +24,7 @@
 
     <variable name="onError" value="FAIL"/>
 
-    <application location="derbyRAApp.ear"/>
+    <application id="derbyRAApp" location="derbyRAApp.ear"/>
 
     <resourceAdapter id="DerbyLMRA" location="${server.config.dir}/connectors/DerbyLMRA.rar"/>
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.service.impl;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Map;
 
 import javax.xml.soap.SOAPException;
@@ -28,6 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.jaxws.wsat.components.WSATConfigService;
 import com.ibm.ws.wsat.service.Handler;
@@ -35,19 +38,27 @@ import com.ibm.ws.wsat.service.WSATUtil;
 import com.ibm.wsspi.http.VirtualHost;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-/**
- *
- */
 @Component(name = "com.ibm.ws.wsat.service.wsatconfigservice",
            immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
            property = { "service.vendor=IBM" })
 public class WSATConfigServiceImpl implements WSATConfigService {
 
     private static final TraceComponent TC = Tr.register(WSATConfigServiceImpl.class);
+
+    public static final String ASYNC_RESPONSE_TIMEOUT_PROPERTY = "com.ibm.ws.wsat.asyncResponseTimeout";
+
+    public static final Long ASYNC_RESPONSE_TIMEOUT = AccessController.doPrivileged(new PrivilegedAction<Long>() {
+        @Override
+        public Long run() {
+            return Long.getLong(ASYNC_RESPONSE_TIMEOUT_PROPERTY);
+        }
+    });
+
     private static final String SSLEnabled = "sslEnabled";
     private static final String clientAuthRef = "clientAuth";
     private static final String SSLRef = "sslRef";
     private static final String proxyRef = "externalURLPrefix";
+    private static final String asyncResponseTimeoutRef = "asyncResponseTimeout";
     private static final String WSATContextRoot = "/ibm/wsatservice";
 
     private static final String HTTPCONFIGSERVICE_REFERENCE_NAME = "httpOptions";
@@ -59,7 +70,21 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     private boolean enabled;
     private String sslId;
     private String proxy;
+    private long asyncResponseTimeout;
     private boolean clientAuth;
+
+    private static WSATConfigService INSTANCE;
+
+    public WSATConfigServiceImpl() {
+        INSTANCE = this;
+    }
+
+    /**
+     * @return
+     */
+    public static WSATConfigService getInstance() {
+        return INSTANCE;
+    }
 
     @Reference(name = WSATHANDLERSERVICE_REFERENCE_NAME, service = Handler.class)
     protected void setHandlerService(ServiceReference<Handler> ref) {
@@ -82,8 +107,15 @@ public class WSATConfigServiceImpl implements WSATConfigService {
      * @see com.ibm.ws.wsat.service.WSATConfigService#isGlobalEnabled()
      */
     @Override
+    @Trivial
     public boolean isSSLEnabled() {
         return enabled;
+    }
+
+    @Override
+    @Trivial
+    public long getAsyncResponseTimeout() {
+        return asyncResponseTimeout;
     }
 
     @Activate
@@ -94,7 +126,6 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     @Deactivate
     protected void deactivate(ComponentContext cc) {
         httpOptions.deactivate(cc);
-
     }
 
     @Modified
@@ -105,13 +136,48 @@ public class WSATConfigServiceImpl implements WSATConfigService {
         enabled = (Boolean) properties.get(SSLEnabled);
         sslId = (String) properties.get(SSLRef);
         proxy = (String) properties.get(proxyRef);
-        clientAuth = (Boolean) properties.get(clientAuthRef);
-        if (TC.isDebugEnabled()) {
-            Tr.debug(TC, "SSLEnabled = [{0}], SSLRefId = [{1}], proxy = [{2}], clientAuth = [{3}]", enabled, sslId, proxy, clientAuth);
+
+        if (ASYNC_RESPONSE_TIMEOUT != null) {
+            if (TC.isDebugEnabled()) {
+                // Tests will fail if you change the format of this debug message
+                Tr.debug(TC, "asyncResponseTimeout setting overridden to " + ASYNC_RESPONSE_TIMEOUT + " by " + ASYNC_RESPONSE_TIMEOUT_PROPERTY + " system property");
+            }
+            asyncResponseTimeout = ASYNC_RESPONSE_TIMEOUT;
+        } else {
+            asyncResponseTimeout = (Long) properties.get(asyncResponseTimeoutRef);
         }
+
+        clientAuth = (Boolean) properties.get(clientAuthRef);
+
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "SSLEnabled = [{0}], SSLRefId = [{1}], proxy = [{2}], clientAuth = [{3}], asyncResponseTimeout = [{4}]", enabled, sslId, proxy, clientAuth,
+                     asyncResponseTimeout);
+        }
+
+        String host = getWSATUrl();
+
         if (enabled) {
             Tr.info(TC, "WSAT_SECURITY_CWLIB0206", sslId);
+
+            if (host.startsWith("http://")) {
+                // Let's see how long this takes to rectify
+                do {
+                    if (TC.isDebugEnabled()) {
+                        Tr.debug(TC, "SSL is enabled but the WSAT URL we got is {0}", host);
+                    }
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                    }
+                } while ((host = getWSATUrl()).startsWith("http://"));
+
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "SSL is enabled and the WSAT URL we now have is {0}", host);
+                }
+            }
         }
+
         if (proxy != null && !proxy.equals("")) {
             Tr.info(TC, "WSAT_PROXY_CWLIB0207", proxy);
 
@@ -126,13 +192,18 @@ public class WSATConfigServiceImpl implements WSATConfigService {
             }
         }
 
-        String regHost = resolveHost()
+        setEndpoints(handlerService.getService(), host);
+    }
+
+    public void setEndpoints(Handler handler, String host) {
+
+        String regHost = host
                          + "/"
                          + Constants.COORDINATION_REGISTRATION_ENDPOINT;
-        String coorHost = resolveHost()
+        String coorHost = host
                           + "/"
                           + Constants.COORDINATION_ENDPOINT;
-        String partHost = resolveHost()
+        String partHost = host
                           + "/"
                           + Constants.PARTICIPANT_ENDPOINT;
 
@@ -141,9 +212,9 @@ public class WSATConfigServiceImpl implements WSATConfigService {
         EndpointReferenceType localPartEpr = WSATUtil.createEpr(partHost);
 
         //set into HandlerService will always self coor...
-        handlerService.getService().setCoordinatorEndpoint(localCoorEpr);
-        handlerService.getService().setRegistrationEndpoint(localRegEpr);
-        handlerService.getService().setParticipantEndpoint(localPartEpr);
+        handler.setCoordinatorEndpoint(localCoorEpr);
+        handler.setRegistrationEndpoint(localRegEpr);
+        handler.setParticipantEndpoint(localPartEpr);
     }
 
     /*
@@ -152,6 +223,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
      * @see com.ibm.ws.jaxws.wsat.components.WSATConfigService#getSSLReferenceId()
      */
     @Override
+    @Trivial
     public String getSSLReferenceId() {
         return sslId;
     }
@@ -162,29 +234,12 @@ public class WSATConfigServiceImpl implements WSATConfigService {
      * @see com.ibm.ws.jaxws.wsat.components.WSATConfigService#getWSATUrl(boolean)
      */
     @Override
+    @Trivial
     public String getWSATUrl() {
         if (proxy != null && proxy.length() > 0)
             return proxy + WSATContextRoot;
         else
             return httpOptions.getService().getUrlString(WSATContextRoot, enabled);
-    }
-
-    private String resolveHost() {
-        String host = "";
-        if (TraceComponent.isAnyTracingEnabled() && TC.isDebugEnabled())
-            Tr.debug(
-                     TC,
-                     "resolveHost",
-                     "Checking if enable SSL for WS-AT",
-                     enabled);
-        host = getWSATUrl();
-        if (TraceComponent.isAnyTracingEnabled() && TC.isDebugEnabled())
-            Tr.debug(
-                     TC,
-                     "resolveHost",
-                     "Checking which url is using for WS-AT",
-                     host);
-        return host;
     }
 
     /*
@@ -193,6 +248,7 @@ public class WSATConfigServiceImpl implements WSATConfigService {
      * @see com.ibm.ws.jaxws.wsat.components.WSATConfigService#isClientAuthEnabled()
      */
     @Override
+    @Trivial
     public boolean isClientAuthEnabled() {
         return clientAuth;
     }

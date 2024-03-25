@@ -14,14 +14,13 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
@@ -33,7 +32,12 @@ import componenttest.topology.utils.tck.TCKRunner;
 @RunWith(FATRunner.class)
 public class ReactiveStreams30TCKLauncher {
 
-    @Server("ReactiveStreams30TCKServer")
+    public static final String SERVER_NAME = "ReactiveStreams30TCKServer";
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.repeatDefault(SERVER_NAME);
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     @BeforeClass
@@ -42,7 +46,7 @@ public class ReactiveStreams30TCKLauncher {
         //Set timeout for the tests.
         props.put("DEFAULT_TIMEOUT_MILLIS", "10000");//Increase timeout before tests fail.
         props.put("DEFAULT_NO_SIGNALS_TIMEOUT_MILLIS", "100"); //By default NO_SIGNALS_TIMEOUT == DEFAULT_TIMEOUT_MILLIS. Every test will sleep for NO_SIGNALS_TIMEOUT so set this back to the original default to prevent the tests taking hours.
-        props.put("DEFAULT_POLL_TIMEOUT_MILLIS", "20");
+        props.put("DEFAULT_POLL_TIMEOUT_MILLIS_ENV", "20");
         server.setAdditionalSystemProperties(props);
         server.startServer();
     }
@@ -53,8 +57,6 @@ public class ReactiveStreams30TCKLauncher {
     }
 
     @Test
-    @Mode(TestMode.FULL) //The TCK takes around 15mins and is difficult to break up so running in FULL mode
-    @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchReactiveStreams30Tck() throws Exception {
         String bucketName = "io.openliberty.microprofile.reactive.streams.operators30.internal_fat_tck";
         String testName = this.getClass() + ":launchReactiveStreams30Tck";

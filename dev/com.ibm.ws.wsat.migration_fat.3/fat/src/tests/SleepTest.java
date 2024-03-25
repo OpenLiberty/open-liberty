@@ -23,7 +23,6 @@ import java.time.Duration;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -32,16 +31,18 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.wsat.fat.util.DBTestBase;
 
-import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
+import web.simpleclient.SleepClientServlet;
 
 @RunWith(FATRunner.class)
 public class SleepTest extends DBTestBase {
 
 	@Server("WSATSleep")
+    @TestServlet(servlet = SleepClientServlet.class, contextRoot = "simpleClient")
 	public static LibertyServer server;
 
 	@Server("MigrationServer2")
@@ -55,6 +56,7 @@ public class SleepTest extends DBTestBase {
 
 	@BeforeClass
 	public static void beforeTests() throws Exception {
+		System.getProperties().entrySet().stream().forEach(e -> Log.info(SleepTest.class, "beforeTests", e.getKey() + " -> " + e.getValue()));
 
 		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
 		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
@@ -88,71 +90,71 @@ public class SleepTest extends DBTestBase {
 		DBTestBase.cleanupWSATTest(server);
 		DBTestBase.cleanupWSATTest(server2);
 	}
-
-	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
-	public void testWSATRE094FVT() {
-		callServlet("WSATRE094FVT");
-	}
-
-	@Test
-	public void testWSATRE095FVT() {
-		callServlet("WSATRE095FVT");
-	}
-
-	@Test
-	@AllowedFFDC(value = { "javax.transaction.SystemException" })
-	public void testWSATRE096FVT() {
-		callServlet("WSATRE096FVT");
-	}
-
-	@Test
-	public void testWSATRE097FVT() {
-		callServlet("WSATRE097FVT");
-	}
-
-	@Test
-	@AllowedFFDC(value = { "javax.transaction.SystemException" })
-	public void testWSATRE098FVT() {
-		callServlet("WSATRE098FVT");
-	}
-
-	@Test
-	public void testWSATRE099FVT() {
-		callServlet("WSATRE099FVT");
-	}
-
-	@Test
-	@AllowedFFDC(value = { "javax.transaction.SystemException" })
-	public void testWSATRE100FVT() {
-		callServlet("WSATRE100FVT");
-	}
-
-	@Test
-	public void testWSATRE101FVT() {
-		callServlet("WSATRE101FVT");
-	}
-
-	@Test
-	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
-	public void testWSATRE102FVT() {
-		callServlet("WSATRE102FVT");
-	}
-
-	@Test
-	public void testWSATRE103FVT() {
-		callServlet("WSATRE103FVT");
-	}
-
-	@Test
-	public void testWSATRE104FVT() {
-		callServlet("WSATRE104FVT");
-	}
-
-	@Test
-	public void testWSATRE105FVT() {
-		callServlet("WSATRE105FVT");
-	}
+//
+//	@Test
+//	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
+//	public void testWSATRE094FVT() {
+//		callServlet("WSATRE094FVT");
+//	}
+//
+//	@Test
+//	public void testWSATRE095FVT() {
+//		callServlet("WSATRE095FVT");
+//	}
+//
+//	@Test
+//	@AllowedFFDC(value = { "javax.transaction.SystemException" })
+//	public void testWSATRE096FVT() {
+//		callServlet("WSATRE096FVT");
+//	}
+//
+//	@Test
+//	public void testWSATRE097FVT() {
+//		callServlet("WSATRE097FVT");
+//	}
+//
+//	@Test
+//	@AllowedFFDC(value = { "javax.transaction.SystemException" })
+//	public void testWSATRE098FVT() {
+//		callServlet("WSATRE098FVT");
+//	}
+//
+//	@Test
+//	public void testWSATRE099FVT() {
+//		callServlet("WSATRE099FVT");
+//	}
+//
+//	@Test
+//	@AllowedFFDC(value = { "javax.transaction.SystemException" })
+//	public void testWSATRE100FVT() {
+//		callServlet("WSATRE100FVT");
+//	}
+//
+//	@Test
+//	public void testWSATRE101FVT() {
+//		callServlet("WSATRE101FVT");
+//	}
+//
+//	@Test
+//	@AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
+//	public void testWSATRE102FVT() {
+//		callServlet("WSATRE102FVT");
+//	}
+//
+//	@Test
+//	public void testWSATRE103FVT() {
+//		callServlet("WSATRE103FVT");
+//	}
+//
+//	@Test
+//	public void testWSATRE104FVT() {
+//		callServlet("WSATRE104FVT");
+//	}
+//
+//	@Test
+//	public void testWSATRE105FVT() {
+//		callServlet("WSATRE105FVT");
+//	}
 
 	private void callServlet(String testMethod){
 		try {

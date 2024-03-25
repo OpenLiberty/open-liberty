@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="ImportedService"
+    targetNamespace = "http://com/ibm/ws/jaxws/wsdl/ImportedService.wsdl"
+    xmlns:tns = "http://com/ibm/ws/jaxws/wsdl/ImportedService.wsdl"
+    xmlns:custom = "http://com/ibm/ws/jaxws/wsdl/ImportedServiceSchema.xsd"
+    xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+    xmlns:wsdl = "http://schemas.xmlsoap.org/wsdl/"
+    >
+    
+    <wsdl:types>
+      <xs:schema elementFormDefault = "qualified" targetNamespace="urn:tns">
+        <xs:import namespace = "http://com/ibm/ws/jaxws/wsdl/ImportedServiceSchema.xsd" schemaLocation="ImportedServiceSchema.xsd"/>
+      </xs:schema>
+    </wsdl:types>
+
+    <wsdl:message name="CustomFault">
+      <wsdl:part element="custom:CFault" name="fault"/>
+    </wsdl:message>
+
+    <wsdl:message name="CustomFaultDetail">
+      <wsdl:part element="custom:CFault" name="faultdetail"/>
+    </wsdl:message>
+
+    <wsdl:message name="CustomHeader">
+      <wsdl:part element="custom:CPerson" name="person"/>
+    </wsdl:message>
+
+</wsdl:definitions>

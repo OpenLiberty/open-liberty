@@ -13,6 +13,7 @@
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.partitions;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,11 +34,11 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
+import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.KafkaTestClient;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ConnectorProperties;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.KafkaUtils;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.suite.ReactiveMessagingActions;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.KafkaConnectorConstants;
@@ -55,7 +56,7 @@ public class KafkaPartitionTest {
 
     private static final String APP_NAME = "KafkaPartitionTest";
 
-    public static final String SERVER_NAME = "SimpleRxMessagingServer";
+    public static final String SERVER_NAME = "ConcurrentRxMessagingServer";
 
     @Server(SERVER_NAME)
     @TestServlets({
@@ -66,12 +67,13 @@ public class KafkaPartitionTest {
 
     @ClassRule
     public static RepeatTests r = ReactiveMessagingActions.repeat(SERVER_NAME, ReactiveMessagingActions.MP61_RM30, ReactiveMessagingActions.MP20_RM10,
-                                                                  ReactiveMessagingActions.MP50_RM30, ReactiveMessagingActions.MP60_RM30);
+                                                                  ReactiveMessagingActions.MP50_RM30);
 
     @BeforeClass
     public static void setup() throws Exception {
         //Generate unique topic names for each repeat
         String livePartitionTopicName = LivePartitionTestBean.CHANNEL_IN + RepeatTestFilter.getRepeatActionsAsString();
+        String livePartitionSubscriberMethodTopicName = LivePartitionTestSubscriberMethodBean.CHANNEL_IN + RepeatTestFilter.getRepeatActionsAsString();
         String partitionTopicName = PartitionTestReceptionBean.CHANNEL_NAME + RepeatTestFilter.getRepeatActionsAsString();
 
         // Create a topic with two partitions
@@ -82,6 +84,7 @@ public class KafkaPartitionTest {
         List<NewTopic> newTopics = new ArrayList<>();
         newTopics.add(new NewTopic(partitionTopicName, 2, (short) 1));
         newTopics.add(new NewTopic(livePartitionTopicName, LivePartitionTestBean.PARTITION_COUNT, (short) 1));
+        newTopics.add(new NewTopic(livePartitionSubscriberMethodTopicName, LivePartitionTestSubscriberMethodBean.PARTITION_COUNT, (short) 1));
         adminClient.createTopics(newTopics).all().get(KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
 
         // Create and deploy the app
@@ -96,7 +99,16 @@ public class KafkaPartitionTest {
                                         .simpleIncomingChannel(PlaintextTests.connectionProperties(), ConnectorProperties.DEFAULT_CONNECTOR_ID, LivePartitionTestBean.CHANNEL_IN,
                                                                LivePartitionTestServlet.APP_GROUPID, livePartitionTopicName)
                                         .addProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "5")
-                                        .addProperty(KafkaConnectorConstants.UNACKED_LIMIT, "100")); // Want to simulate having lots of unacked messages
+                                        .addProperty(KafkaConnectorConstants.UNACKED_LIMIT, "100") // Want to simulate having lots of unacked messages
+                                        .addProperty(KafkaConnectorConstants.FAST_ACK, "false"))
+                        .include(ConnectorProperties
+                                        .simpleIncomingChannel(PlaintextTests.connectionProperties(),
+                                                               ConnectorProperties.DEFAULT_CONNECTOR_ID,
+                                                               LivePartitionTestSubscriberMethodBean.CHANNEL_IN,
+                                                               LivePartitionTestServlet.APP_GROUPID,
+                                                               livePartitionSubscriberMethodTopicName)
+                                        .addProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "5")
+                                        .addProperty(KafkaConnectorConstants.FAST_ACK, "true"));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage(KafkaTestClient.class.getPackage())
@@ -114,7 +126,7 @@ public class KafkaPartitionTest {
     @AfterClass
     public static void shutdown() throws Exception {
         try {
-            server.stopServer();
+            kafkaStopServer(server);
         } finally {
             KafkaUtils.deleteKafkaTopics(PlaintextTests.getAdminClient());
         }

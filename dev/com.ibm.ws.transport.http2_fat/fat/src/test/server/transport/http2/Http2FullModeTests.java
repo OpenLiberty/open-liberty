@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package test.server.transport.http2;
 
@@ -1845,4 +1842,27 @@ public class Http2FullModeTests extends FATServletClient {
     //public void testSettingsFrameStress() throws Exception {
     //    runTest(defaultServletPath, testName.getMethodName());
     //}
+
+    /**
+     * Test Coverage: Create an excessive number of streams on the server, resetting each stream.
+     * Test Outcome: GOAWAY received from server
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testRapidReset() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Create an streams on the server, 101 over the number of maxConcurrentStreams.
+     * The server should respond to each stream with a reset.
+     * Test Outcome: GOAWAY received from server
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testMaxStreamsRefused() throws Exception {
+        runTest(defaultServletPath, testName.getMethodName());
+    }
 }

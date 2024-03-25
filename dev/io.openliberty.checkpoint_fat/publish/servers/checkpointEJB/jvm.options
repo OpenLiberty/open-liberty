@@ -1,1 +1,2 @@
 -Xdump:java:events=throw+systhrow,filter=org/eclipse/openj9/criu/JVMCheckpointException,request=exclusive+preempt
+-Xdump:java:events=throw+systhrow,filter=java/lang/NullPointerException,request=exclusive+prepwalk+preempt

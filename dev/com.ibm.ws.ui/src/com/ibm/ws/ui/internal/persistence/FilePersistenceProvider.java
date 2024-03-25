@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package com.ibm.ws.ui.internal.persistence;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
@@ -74,7 +75,7 @@ public class FilePersistenceProvider implements IPersistenceProvider {
     /**
      * Unit test constructor. Allows for override of the JSON API object and
      * IFileDebugger.
-     * 
+     *
      * @param json
      * @param fDebug
      */
@@ -120,7 +121,7 @@ public class FilePersistenceProvider implements IPersistenceProvider {
      * This method should not be called directly by any method except getPersistenceFileLockObj().
      * <p>
      * This method will create the File object.
-     * 
+     *
      * @param name The persistence name associated with the File
      * @return The File object which represents the underlying persistent file.
      * @throws IOException If the parent directories could not be created (if necessary)
@@ -145,7 +146,7 @@ public class FilePersistenceProvider implements IPersistenceProvider {
      * <p>
      * Access to this method is synchronized. Callers should use the returned
      * object for local synchronization.
-     * 
+     *
      * @param name The persistence name associated with the File 'lock object'
      * @return The associated File 'lock object'
      * @throws IOException If the File 'lock object' could not be properly created because the parent directories could not be created.
@@ -165,7 +166,7 @@ public class FilePersistenceProvider implements IPersistenceProvider {
      * directories do not exist they will be created. If they can not be
      * created, an exception will be thrown to the caller. Parent directories
      * are NOT created by the Rest handler JSON API so we must ensure they are created here.
-     * 
+     *
      * @param file The File whose parents should be created, if needed.
      * @throws IOException If the parent directories could not be created.
      */
@@ -277,6 +278,9 @@ public class FilePersistenceProvider implements IPersistenceProvider {
         } catch (FileNotFoundException e) {
             // This is an expected error flow, do not FFDC or log anything
             throw e;
+        } catch (NoSuchFileException e) {
+            // This is an expected error flow, do not FFDC or log anything
+            throw e;
         } catch (IOException e) {
             Tr.error(tc, "FILE_PERSISTENCE_IO_ERROR", file.getAbsolutePath(), e.getMessage());
             throw e;
@@ -305,10 +309,8 @@ public class FilePersistenceProvider implements IPersistenceProvider {
                     boolean deleted = file.delete();
                     File parent = file.getParentFile();
                     String[] sa = parent.list();
-                    if (sa.length == 0)
-                    {
-                        if (parent.delete() == false)
-                        {
+                    if (sa.length == 0) {
+                        if (parent.delete() == false) {
                             Tr.warning(tc, "TOOLDATA_PARENT_DIR_DELETE_RESULT_FALSE", parent.getAbsolutePath());
                         }
                     }
@@ -321,8 +323,7 @@ public class FilePersistenceProvider implements IPersistenceProvider {
 
     /** {@inheritDoc} */
     @Override
-    public boolean exists(String name)
-    {
+    public boolean exists(String name) {
         final File file = getPersistenceFileLockObj(name);
 
         synchronized (file) {

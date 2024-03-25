@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,21 +14,31 @@ package test.jakarta.data.web;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-
-import io.openliberty.data.repository.Delete;
-import io.openliberty.data.repository.Filter;
 
 /**
  * Repository interface for the Receipt entity which is a record
  */
 @Repository
 public interface Receipts extends CrudRepository<Receipt, Long> {
+    @Query("SELECT COUNT(o) FROM ReceiptEntity o") // TODO JDQL with only "SELECT COUNT(*)"
+    long count();
+
+    boolean deleteByTotalLessThan(float max);
+
     Optional<Receipt> deleteByPurchaseId(long purchaseId);
 
+    int deleteByPurchaseIdIn(Iterable<Long> ids);
+
     @Delete
-    @Filter(by = "customer")
-    Collection<Receipt> deleteFor(String customer);
+    Collection<Receipt> discardFor(String customer);
+
+    boolean existsByPurchaseId(long id);
+
+    Stream<Receipt> findByPurchaseIdIn(Iterable<Long> ids);
 }

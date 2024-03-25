@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -29,11 +29,18 @@ Export-Package: \
     io.openliberty.security.jakartasec.cdi.extensions
 
 Import-Package: \
+        io.openliberty.cdi40.internal.utils,\
 	!*.internal.*,\
 	!com.ibm.ws.kernel.boot.cmdline,\
 	javax.security.auth,\
 	!javax.*,\
-	*   
+	jakarta.security.auth.message;version="[3.0,4)", \
+	jakarta.security.enterprise.authentication.mechanism.http;version="[3.0,5)", \
+	jakarta.security.enterprise.credential;version="[3.0,5)", \
+	jakarta.security.enterprise.identitystore.openid;version="[3.0,5)", \
+	jakarta.security.enterprise.identitystore;version="[3.0,5)", \
+	jakarta.security.enterprise;version="[3.0,5)", \
+	*
 
 Private-Package: \
     io.openliberty.security.jakartasec.cdi.internal.*
@@ -59,12 +66,12 @@ src: src, resources
 	io.openliberty.jakarta.jsonp.2.1,\
 	io.openliberty.jakarta.security.3.0,\
 	io.openliberty.jakarta.servlet.6.0,\
-	io.openliberty.org.jboss.weld5;version=latest,\
 	io.openliberty.security.jakartasec.2.0.internal,\
 	io.openliberty.security.jakartasec.2.0.internal.cdi,\
 	io.openliberty.security.jakartasec.3.0.internal,\
 	io.openliberty.security.oidcclientcore.internal.jakarta,\
 	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+	io.openliberty.cdi.4.0.internal.interfaces;version=latest,\
 	io.openliberty.webcontainer.security.internal;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.websphere.security;version=latest,\
@@ -81,9 +88,6 @@ src: src, resources
 	org.jmock:jmock;strategy=exact;version=2.5.1,\
 	com.ibm.ws.org.objenesis:objenesis;version=1.0,\
 	io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
-	io.openliberty.jakarta.authentication.3.0;version=latest,\
-	io.openliberty.jakarta.security.3.0,\
-	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	com.ibm.ws.security.common.jsonwebkey;version=latest,\
 	com.ibm.json4j;version=latest,\
 	com.ibm.websphere.security;version=latest,\

@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2022, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.microprofile.config.internal.common/resources/io/openliberty/microprofile/config/internal/common/resources/MPConfigCommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+
+#COMPONENTPREFIX CWWKC                 
+#COMPONENTNAMEFOR CWWKC MicroProfile Config with InstantOn
+# Message numbers CWWKC0651-700 are reserved for this file.
+
+#COMPONENTPREFIX CWMCG                 
+#COMPONENTNAMEFOR CWMCG MicroProfile Config Common
+# Message numbers CWMCG0400-499 are reserved for this file.
+
+# NLS_MESSAGEFORMAT_VAR                
+# MSG_DESCRIPTIVE_NAME_CWMCG0000=CWMCG0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWMCG0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWMCG0000.useraction=User action text for the message
+
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651=CWWKC0651W: La valeur de configuration MicroProfile pour la cl\u00e9 {0} a \u00e9t\u00e9 modifi\u00e9e depuis la fin de l''action de point de contr\u00f4le sur le serveur. Si la valeur de la cl\u00e9 change apr\u00e8s l''action de point de contr\u00f4le, l''application risque de ne pas utiliser la valeur mise \u00e0 jour.
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.explanation=La valeur de configuration a \u00e9t\u00e9 consult\u00e9e lors d'une action de point de contr\u00f4le et mise \u00e0 jour avant la restauration du processus serveur. Selon la fa\u00e7on dont l'application acc\u00e8de \u00e0 la configuration, la valeur mise \u00e0 jour peut ne pas \u00eatre utilis\u00e9e.
+WARNING_UPDATED_CONFIG_PROPERTY_NOT_USED_CWWKC0651.useraction=Evitez d'acc\u00e9der aux propri\u00e9t\u00e9s de configuration pendant le point de contr\u00f4le.

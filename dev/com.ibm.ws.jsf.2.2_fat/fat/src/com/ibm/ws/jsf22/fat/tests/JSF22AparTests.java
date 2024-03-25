@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,9 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE8_OR_LATER_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -49,8 +48,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import junit.framework.Assert;
 
@@ -71,7 +69,7 @@ public class JSF22AparTests {
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         ShrinkHelper.defaultDropinApp(jsfAparServer, "PI47600.war", "com.ibm.ws.jsf22.fat.tests.PI47600");
 
@@ -202,9 +200,9 @@ public class JSF22AparTests {
      * @throws Exception
      */
     @Test
-    // Skipping for EE10 as this test tests com.ibm.ws.jsf.delayManagedBeanPostConstruct which
+    // Skipping for EE10+ as this test tests com.ibm.ws.jsf.delayManagedBeanPostConstruct which
     // is specific to ManagedBeans which are no longer available in Faces 4.0.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void testPI30335DefaultBehavior() throws Exception {
         String msgToSearchFor = "ManagedBean Ref: com.ibm.ws.jsf22.fat.tests.PI30335.ManagedBean2";
 
@@ -223,9 +221,9 @@ public class JSF22AparTests {
      * @throws Exception
      */
     @Test
-    // Skipping for EE10 as this test tests com.ibm.ws.jsf.delayManagedBeanPostConstruct which
+    // Skipping for EE10+ as this test tests com.ibm.ws.jsf.delayManagedBeanPostConstruct which
     // is specific to ManagedBeans which are no longer available in Faces 4.0.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void testPI30335PropertySetToFalse() throws Exception {
         String msgToSearchFor = "ManagedBean Ref: null";
 
@@ -500,10 +498,10 @@ public class JSF22AparTests {
      * @throws Exception
      */
     @Test
-    // Skipping for EE10 as this test uses both a CDI bean and a ManagedBean and ManagedBeans are
+    // Skipping for EE10+ as this test uses both a CDI bean and a ManagedBean and ManagedBeans are
     // no longer available in Faces 4.0. The testViewScopedJSFManagedBeanPreDestroy test will
     // be executed for EE10 with just a CDI bean to verify that PreDestroy is called.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void testViewScopedCDIManagedBeanPreDestroy() throws Exception {
         try (WebClient webClient = new WebClient()) {
             URL url = JSFUtils.createHttpUrl(jsfAparServer, "ViewScopedCDIBean", "");
@@ -893,7 +891,7 @@ public class JSF22AparTests {
 
             // Change the value of ViewState to stateless
             HtmlHiddenInput viewStateInput = (HtmlHiddenInput) statefulForm
-                            .getInputByName((JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "jakarta." : "javax.") + "faces.ViewState");
+                            .getInputByName((JakartaEEAction.isEE9OrLaterActive() ? "jakarta." : "javax.") + "faces.ViewState");
             viewStateInput.setValueAttribute("stateless");
 
             // Get the button and then click it
@@ -906,7 +904,7 @@ public class JSF22AparTests {
             // Check that a FacesException is thrown
             assertTrue("PI89168: FacesException was not thrown!\n" + page.asText(),
                        page.asText()
-                                       .contains((JakartaEE10Action.isActive() || JakartaEE9Action.isActive() ? "jakarta." : "javax.")
+                                       .contains((JakartaEEAction.isEE9OrLaterActive() ? "jakarta." : "javax.")
                                                  + "faces.FacesException: unable to create view \"/statefulView.xhtml\""));
         }
     }
@@ -1037,7 +1035,7 @@ public class JSF22AparTests {
      *
      * @throws Exception
      */
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat(EE8_OR_LATER_FEATURES)
     @Test
     public void testPI90507NonBindingCase() throws Exception {
         try (WebClient webClient = new WebClient()) {
@@ -1081,7 +1079,7 @@ public class JSF22AparTests {
      *
      * @throws Exception
      */
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat(EE8_OR_LATER_FEATURES)
     @Test
     public void testPI90507BindingCase() throws Exception {
         try (WebClient webClient = new WebClient()) {

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -82,6 +82,11 @@ kafka.create.outgoing.retry.CWMRX1010W=CWMRX1010W: Um conector de sa\u00edda Kaf
 kafka.create.outgoing.retry.CWMRX1010W.explanation=Ocorreu um erro quando o conector Kafka foi configurado para um canal de sistema de mensagens reativo de sa\u00edda. Isso pode ser causado por um problema na configura\u00e7\u00e3o do conector ou por um problema na resolu\u00e7\u00e3o do nome do host do broker do Kafka.
 kafka.create.outgoing.retry.CWMRX1010W.useraction=Revise a mensagem de erro, o arquivo messages.log no servidor e os logs do FFDC para identificar se o problema era tempor\u00e1rio e se foi resolvido ao tentar fazer a configura\u00e7\u00e3o do conector novamente.
 
+# {0} = kafka record data, {1} = exception details
+# 'nack' is the name of a method and should not be translated
+kafka.input.message.nacked.CWMRX1011E=CWMRX1011E: O m\u00e9todo nack foi chamado em uma mensagem criada a partir de um registro Kafka , indicando que ele n\u00e3o foi processado com \u00eaxito. O fluxo de mensagens reativo ser\u00e1 encerrado O registro era: {0}. Exce\u00e7\u00e3o: {1}.
+kafka.input.message.nacked.CWMRX1011E.explanation=O conector Kafka enviou uma mensagem que levou a uma falha dentro do aplicativo, fazendo com que a mensagem fosse negativamente reconhecida Como a mensagem n\u00e3o foi processada com \u00eaxito, o deslocamento confirmado n\u00e3o \u00e9 avan\u00e7ado para a parti\u00e7\u00e3o da qual a mensagem veio. Portanto, mais nenhuma mensagem pode ser processada a partir desta parti\u00e7\u00e3o...
+kafka.input.message.nacked.CWMRX1011E.useraction=Revise a mensagem de erro e o arquivo messages.log no servidor para determinar o problema.. Para evitar a parada do processamento de mensagens devido a uma falha, implemente a l\u00f3gica em seu aplicativo para manipula\u00e7\u00e3o alternativa de mensagens que s\u00e3o negativamente reconhecidas..
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Reactive Messaging error message

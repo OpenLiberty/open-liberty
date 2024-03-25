@@ -32,7 +32,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
-import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -44,9 +43,8 @@ public class EjbConstructorInjectionTest extends FATServletClient {
     public static final String SERVER_NAME = "cdi12EjbConstructorInjectionServer";
     public static final String EJB_CONSTRUCTOR_INJECTION_APP_NAME = "ejbConstructorInjection";
 
-    //not bothering to repeat with EE8 ... the EE9 version is mostly a transformed version of the EE8 code
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE9, EERepeatActions.EE7);
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     @Server(SERVER_NAME)
     @TestServlets({

@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -108,7 +108,7 @@ public class AppPasswordsAndTokensCommonTest extends CommonTest {
     protected static final long oneDay = 24L * oneHour;
     protected static final long oneWeek = 7L * oneDay;
     protected static final long ninetyDays = 90L * oneDay;
-    protected static final long unknownLifetime = 0L;
+    public static final long unknownLifetime = 0L;
 
     protected static final boolean ExpectSuccess = true;
     protected static final boolean ExpectFailure = false;
@@ -567,7 +567,7 @@ public class AppPasswordsAndTokensCommonTest extends CommonTest {
     /**
      * Given a user, add expectations to ensure no app-passwords were found for the user
      */
-    protected List<TokenValues> successfullyListEmptyAppPasswordsForUser(TestSettings settings, String userName, String accessToken) throws Exception {
+    public List<TokenValues> successfullyListEmptyAppPasswordsForUser(TestSettings settings, String userName, String accessToken) throws Exception {
         List<validationData> expectations = getSuccessfulListAppPasswordExpectations(settings, userName);
         addResponseDoesNotContainAppPasswordsExpectation(expectations, userName);
 
@@ -593,9 +593,9 @@ public class AppPasswordsAndTokensCommonTest extends CommonTest {
     protected void verifyValidAppPasswordCanObtainNewToken(TestSettings settings, TokenValues appPassword) throws Exception {
         getAccessTokenFromAppPassword(settings, appPassword.getApp_password(), ExpectSuccess, getGoodTokenEndpointExpectations(settings));
     }
-    
+
     protected void verifyValidAppPasswordObtainNewTokenFails(TestSettings settings, TokenValues appPassword) throws Exception {
-    	 List<validationData> expectations = vData.addResponseStatusExpectation(null, Constants.INVOKE_TOKEN_ENDPOINT, Constants.UNAUTHORIZED_STATUS);
+        List<validationData> expectations = vData.addResponseStatusExpectation(null, Constants.INVOKE_TOKEN_ENDPOINT, Constants.UNAUTHORIZED_STATUS);
          expectations = validationTools.addMessageExpectation(testOPServer, 
         		 expectations, Constants.INVOKE_TOKEN_ENDPOINT, Constants.MESSAGES_LOG, 
         		 Constants.STRING_CONTAINS, "Did not receive an " + MessageConstants.CWOAU0074E_CANNOT_COMPLETE_PASSWORD_EXCHANGE + " error message.", 
@@ -1658,7 +1658,7 @@ public class AppPasswordsAndTokensCommonTest extends CommonTest {
      * @return - the generated expectations
      * @throws Exception
      */
-    protected List<validationData> getGoodCreateAppPasswordsExpectations(TestSettings settings) throws Exception {
+    public List<validationData> getGoodCreateAppPasswordsExpectations(TestSettings settings) throws Exception {
 
         List<validationData> expectations = vData.addSuccessStatusCodesForActions(new String[] { Constants.INVOKE_APP_PASSWORDS_ENDPOINT_CREATE });
         expectations = vData.addExpectation(expectations, Constants.INVOKE_APP_PASSWORDS_ENDPOINT_CREATE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not receive an " + Constants.APP_PASSWORD_KEY, null, Constants.APP_PASSWORD_KEY);
@@ -1791,7 +1791,7 @@ public class AppPasswordsAndTokensCommonTest extends CommonTest {
      * @return - the generated expectations
      * @throws Exception
      */
-    protected List<validationData> getGoodTokenEndpointExpectations(TestSettings settings) throws Exception {
+    public List<validationData> getGoodTokenEndpointExpectations(TestSettings settings) throws Exception {
 
         List<validationData> expectations = vData.addSuccessStatusCodesForActions(new String[] { Constants.INVOKE_TOKEN_ENDPOINT });
         expectations = vData.addExpectation(expectations, Constants.INVOKE_TOKEN_ENDPOINT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not receive an " + Constants.ACCESS_TOKEN_KEY, null, Constants.ACCESS_TOKEN_KEY);

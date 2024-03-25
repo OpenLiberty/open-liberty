@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -92,7 +92,7 @@ public class FaultToleranceMainTest extends FATServletClient {
     @Rule
     public AnnotationFilter filter = AnnotationFilter
                     .requireAnnotations(BasicTest.class)
-                    .forAllRepeatsExcept(MicroProfileActions.MP60_ID)
+                    .forAllRepeatsExcept(MicroProfileActions.MP61_ID)
                     .inModes(TestMode.LITE);
 
     @BeforeClass
@@ -210,7 +210,11 @@ public class FaultToleranceMainTest extends FATServletClient {
         }
     }
 
-    @SkipForRepeat({ MicroProfileActions.MP40_ID, MicroProfileActions.MP41_ID, MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID }) // FT 3.0+ does not close executors until the application shuts down
+    @SkipForRepeat({ MicroProfileActions.MP40_ID,
+                     MicroProfileActions.MP41_ID,
+                     MicroProfileActions.MP50_ID,
+                     MicroProfileActions.MP60_ID,
+                     MicroProfileActions.MP61_ID }) // FT 3.0+ does not close executors until the application shuts down
     @Test
     public void testExecutorsClose() throws Exception {
 

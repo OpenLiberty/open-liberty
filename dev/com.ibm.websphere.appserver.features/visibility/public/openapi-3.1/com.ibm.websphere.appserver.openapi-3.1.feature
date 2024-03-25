@@ -5,6 +5,12 @@ visibility=public
 singleton=true
 IBM-App-ForceRestart: install, uninstall
 IBM-ShortName: openapi-3.1
+IBM-API-Package: \
+  com.ibm.wsspi.security.tai; type="ibm-api", \
+  com.ibm.wsspi.security.token; type="ibm-api", \
+  com.ibm.wsspi.security.auth.callback; type="ibm-api", \
+  com.ibm.wsspi.security.common.auth.module; type="ibm-api", \
+  com.ibm.websphere.security.auth.callback; type="ibm-api"
 IBM-SPI-Package: com.ibm.wsspi.openapi31; type="ibm-spi"
  
 Subsystem-Name: OpenAPI 3.1

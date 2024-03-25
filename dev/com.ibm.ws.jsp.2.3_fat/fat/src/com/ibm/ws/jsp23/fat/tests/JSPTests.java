@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,8 +47,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -67,6 +66,7 @@ public class JSPTests {
     private static final String TestJDT_APP_NAME = "TestJDT";
     private static final String OLGH20509_APP_NAME1 = "OLGH20509jar";
     private static final String OLGH20509_APP_NAME2 = "OLGH20509TDfalse";
+    private static final String OLGH27779_APP_NAME = "OLGH27779";
 
     @Server("jspServer")
     public static LibertyServer server;
@@ -90,6 +90,8 @@ public class JSPTests {
         ShrinkHelper.defaultDropinApp(server, TestJDT_APP_NAME + ".war");
 
         ShrinkHelper.defaultDropinApp(server, TestEDR_APP_NAME + ".war");
+
+        ShrinkHelper.defaultDropinApp(server, OLGH27779_APP_NAME + ".war");
 
         JavaArchive jspJar = ShrinkWrap.create(JavaArchive.class, "OLGH20509Include.jar");
         jspJar = (JavaArchive) ShrinkHelper.addDirectory(jspJar, "test-applications/includejar/resources");
@@ -743,9 +745,13 @@ public class JSPTests {
     /**
      * Test JSP 2.3 Resolution of Variables and their Properties
      *
+     *  Skipped for EE11:
+     *  - ELContextImpl (within org.apache.jaspser.el) arguments changed changed in Pages 4.0
+     *  - Test copied and refactored to 4.0 Bucket: PagesELTeststestPages40ResolutionVariableProperties
      * @throws Exception
      *                       if something goes wrong
      */
+    @SkipForRepeat(SkipForRepeat.EE11_FEATURES)
     @Test
     public void testJSP23ResolutionVariableProperties() throws Exception {
         String[] expectedInResponse = { "class org.apache.el.stream.StreamELResolverImpl",
@@ -761,7 +767,7 @@ public class JSPTests {
                                         "Testing StreamELResolver with distinct method (Expected: [1, 4, 3, 2, 5]): [1, 4, 3, 2, 5]",
                                         "Testing StreamELResolver with filter method (Expected: [4, 3, 5, 3]): [4, 3, 5, 3]" };
 
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             for (int i = 0; i < expectedInResponse.length; i++) {
                 expectedInResponse[i] = expectedInResponse[i].replace("javax.el", "jakarta.el");
             }
@@ -983,6 +989,20 @@ public class JSPTests {
         Thread.sleep(500L); // ensure file is deleted
     }
 
+    /*
+     * Verify a stackover flow error does not occur via the include(String relativeUrlPath, boolean flush) 
+     * 
+     * See https://github.com/OpenLiberty/open-liberty/issues/27779 for more details
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testOLGH27779() throws Exception {
+        this.verifyStringInResponse(OLGH27779_APP_NAME, "index.jsp", "Test Passed!");
+    }
+
+
+    // Helper Methods
+
     public void makeConcurrentRequests(WebConversation wc1, WebRequest request1, int numberOfCalls) throws Exception {
         final ExecutorService executor = Executors.newFixedThreadPool(numberOfCalls);
         final Collection<Future<Boolean>> tasks = new ArrayList<Future<Boolean>>();
@@ -1045,7 +1065,7 @@ public class JSPTests {
     }
 
     private void verifyExceptionInResponse(String expectedException, String responseText) throws Exception {
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             expectedException = "jakarta." + expectedException;
         } else {
             expectedException = "javax." + expectedException;

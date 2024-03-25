@@ -25,7 +25,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.common.impl.WSATCoordinator;
-import com.ibm.ws.wsat.common.impl.WSATCoordinatorTran;
 import com.ibm.ws.wsat.common.impl.WSATParticipant;
 import com.ibm.ws.wsat.common.impl.WSATTransaction;
 import com.ibm.ws.wsat.service.WSATContext;
@@ -109,7 +108,7 @@ public class RegistrationImpl {
         }
 
         // Generate a new WSATTran control with the global transaction id
-        WSATCoordinatorTran wsatTran = new WSATCoordinatorTran(globalId, timeout, recovery);
+        WSATTransaction wsatTran = new WSATTransaction(globalId, timeout, recovery);
 
         // Set ourselves as the registration service and note the protocol
         // coordinator to return when others register with us.
@@ -129,7 +128,7 @@ public class RegistrationImpl {
      * Note: this function is used internally by the implementation - we do not expose
      * the WS-Coor Activation service.
      */
-    public WSATContext activate(String globalId, EndpointReferenceType registration, long timeout, boolean recovery) throws WSATException {
+    public WSATTransaction activate(String globalId, EndpointReferenceType registration, long timeout, boolean recovery) throws WSATException {
         if (timeout < 0) {
             throw new WSATException(Tr.formatMessage(TC, "WSAT_TRAN_EXPIRED_CWLIB0203"));
         }
@@ -144,7 +143,7 @@ public class RegistrationImpl {
         WSATTransaction.putTran(wsatTran);
 
         // Build the context object to return
-        return wsatTran.getContext();
+        return wsatTran;
     }
 
     /*
@@ -163,7 +162,7 @@ public class RegistrationImpl {
         } else {
             // Get the transaction - this should exist.  We should always be registering
             // into an existing active transaction.
-            WSATCoordinatorTran wsatTran = WSATTransaction.getCoordTran(globalId);
+            WSATTransaction wsatTran = WSATTransaction.getCoordTran(globalId);
             if (wsatTran != null) {
                 // Add the new participant and enlist with the transaction manager so it
                 // will take part in 2PC transaction completion.

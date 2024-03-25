@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ src: \
     test-applications/APARs/OLGH14192/src
 
 fat.project: true
-tested.features: el-3.0, persistence-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterprisebeanslite-4.0, cdi-4.0, persistence-3.1, persistencecontainer-3.1, xmlbinding-4.0, servlet-6.0
+tested.features: el-3.0, persistence-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterprisebeanslite-4.0, cdi-4.0, persistence-3.1, persistencecontainer-3.1, xmlbinding-4.0, servlet-6.0, persistence-3.2, cdi-4.1, servlet-6.1
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. commons-logging:commons-logging)

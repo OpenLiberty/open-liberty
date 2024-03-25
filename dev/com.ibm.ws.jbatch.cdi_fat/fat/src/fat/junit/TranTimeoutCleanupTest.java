@@ -14,6 +14,8 @@ package fat.junit;
 
 import java.io.File;
 
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -26,6 +28,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import app.timeout.TranTimeoutCleanupServlet;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -53,6 +56,7 @@ import componenttest.topology.utils.FATServletClient;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@SkipIfSysProp(OS_ZOS)
 public class TranTimeoutCleanupTest extends FATServletClient {
 
     @ClassRule

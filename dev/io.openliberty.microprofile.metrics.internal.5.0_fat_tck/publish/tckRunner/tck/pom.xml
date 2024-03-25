@@ -17,7 +17,7 @@
     <properties>
         <arquillian.version>1.7.0.Alpha13</arquillian.version>
         <arquillian.liberty.managed.jakarta.version>2.1.1</arquillian.liberty.managed.jakarta.version>
-        <microprofile.metrics.version>5.0.1</microprofile.metrics.version>
+        <microprofile.metrics.version>5.0.2</microprofile.metrics.version>
 
         <!-- the below is used in arquillian.xml -->
         <wlp>${wlp}</wlp>

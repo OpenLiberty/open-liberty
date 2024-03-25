@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+    targetNamespace = "http://com/ibm/ws/jaxws/wsdl/ImportedServiceSchema.xsd"
+    xmlns:custom = "http://com/ibm/ws/jaxws/wsdl/ImportedServiceSchema.xsd"
+    xmlns:xs = "http://www.w3.org/2001/XMLSchema"
+    elementFormDefault = "qualified"
+    attributeFormDefault = "unqualified"
+    version="1.0">
+
+    <xs:element name="CFault" type="custom:CustomFaultType"/>
+    <xs:element name="CFaultCode" type="custom:CustomFaultCodeType"/>
+    <xs:element name="CFaultString" type="custom:ResponseMessageType"/>
+    <xs:element name="CHeader" type="custom:CustomHeaderType"/>
+    <xs:element name="CPerson" type="custom:PersonType"/>
+    <xs:element name="CustomHeader" type="custom:CustomHeaderType"/>
+
+    <xs:complexType name="CustomFaultType">
+      <xs:sequence>
+        <xs:element ref="custom:CFaultCode"/>
+        <xs:element ref="custom:CFaultString"/>
+      </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CustomHeaderType">
+      <xs:sequence>
+        <xs:element ref="custom:CPerson"/>
+      </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="CustomFaultCodeType">
+      <xs:restriction base="xs:string">
+        <xs:maxLength value="200"/>
+      </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="ResponseMessageType">
+      <xs:restriction base="xs:string">
+        <xs:maxLength value="250"/>
+      </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="PersonType">
+      <xs:sequence>
+        <xs:element ref="custom:Name"/>
+        <xs:element ref="custom:Email"/>
+      </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="Name" type="custom:NameType" nillable="true" />
+    <xs:simpleType name="NameType">
+      <xs:restriction base="xs:string" />
+    </xs:simpleType>
+
+    <xs:element name="Email" type="custom:EmailType" nillable="true" />
+    <xs:simpleType name="EmailType">
+      <xs:restriction base="xs:string" />
+    </xs:simpleType>
+
+</xs:schema>

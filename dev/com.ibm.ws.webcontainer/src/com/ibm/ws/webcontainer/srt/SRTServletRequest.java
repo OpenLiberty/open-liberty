@@ -465,7 +465,14 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     /* (non-Javadoc)
      * @see javax.servlet.ServletRequest#setCharacterEncoding(java.lang.String)
      */
-    public void setCharacterEncoding(String arg0)
+    public void setCharacterEncoding(String arg0) throws UnsupportedEncodingException {
+        setCharacterEncoding(arg0, false);
+    }
+
+    /*
+     * Overloaded to have an option to skip the check isCharsetSupported
+     */
+    protected void setCharacterEncoding(String arg0, boolean skipCheckCharsetSupported) 
                     throws UnsupportedEncodingException {
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
             checkRequestObjectInUse();
@@ -490,7 +497,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         }
         //PM03928
 
-        boolean isSupported = EncodingUtils.isCharsetSupported(arg0);
+        boolean isSupported = skipCheckCharsetSupported ? skipCheckCharsetSupported: EncodingUtils.isCharsetSupported(arg0);
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"setCharacterEncoding", "this->"+this+": "+" name --> " + arg0 + " isSupported --> " + String.valueOf(isSupported));
         }

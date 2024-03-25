@@ -8,7 +8,6 @@ singleton=true
  io.openliberty.webcontainer.security.internal; start-phase:=SERVICE_EARLY, \
  com.ibm.ws.webcontainer.security.admin, \
  io.openliberty.security.authentication.internal.filter, \
- io.openliberty.security.authentication.internal.tai, \
  io.openliberty.security.sso.internal
 kind=ga
 edition=core

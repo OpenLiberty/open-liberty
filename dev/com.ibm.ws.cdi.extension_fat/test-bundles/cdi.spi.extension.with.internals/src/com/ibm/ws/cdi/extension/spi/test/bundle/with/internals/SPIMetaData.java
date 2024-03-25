@@ -32,8 +32,8 @@ import com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.getclass.beaninje
 import com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.getclass.interceptor.ClassSPIInterceptor;
 import com.ibm.ws.cdi.extension.spi.test.bundle.with.internals.getclass.producer.ClassSPIRegisteredProducer;
 
-import com.ibm.ws.cdi40.extension.CDI40ExtensionMetadataInternal;
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
+import io.openliberty.cdi40.internal.extension.CDI40ExtensionMetadataInternal;
 
 @Component(service = CDIExtensionMetadata.class, configurationPolicy = IGNORE)
 public class SPIMetaData implements CDIExtensionMetadata, CDI40ExtensionMetadataInternal {

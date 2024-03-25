@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatActions.SEVersion;
@@ -40,19 +40,21 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class SessionDatabaseTest extends FATServletClient {
 
-    @Server("sessionDatabaseServer")
+    static final String SERVER_NAME = "sessionDatabaseServer";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     public static SessionDatabaseApp app = null;
     private static int DERBY_PORT = 1528;
 
     @ClassRule
-    public static RepeatTests rt = RepeatTests.with(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.2").withID("JDBC4.2"))
-                    .andWith(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.1").withID("JDBC4.1").fullFATOnly())
-                    .andWith(new FeatureReplacementAction().removeFeatures(Collections.singleton("jdbc-*"))
+    public static RepeatTests rt = RepeatTests.with(new FeatureReplacementAction().forServers(SERVER_NAME).removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.2").withID("JDBC4.2"))
+                    .andWith(new FeatureReplacementAction().forServers(SERVER_NAME).removeFeatures(Collections.singleton("jdbc-*")).addFeature("jdbc-4.1").withID("JDBC4.1").fullFATOnly())
+                    .andWith(new FeatureReplacementAction().forServers(SERVER_NAME).removeFeatures(Collections.singleton("jdbc-*"))
                                     .addFeature("jdbc-4.3")
                                     .withID("JDBC4.3")
                                     .withMinJavaLevel(SEVersion.JAVA11)

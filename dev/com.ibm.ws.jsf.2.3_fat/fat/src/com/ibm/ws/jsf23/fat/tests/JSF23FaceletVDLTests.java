@@ -33,8 +33,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -186,7 +185,16 @@ public class JSF23FaceletVDLTests {
         assertNotNull("The application " + appName + " did not appear to have been installed.",
                       server.waitForStringInLog("CWWKZ0001I.* " + appName.substring(0, appName.indexOf("."))));
 
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        // EE10: No context init parameter 'jakarta.faces.FACELETS_REFRESH_PERIOD' found, using default value '0, -1 in Production'.
+        
+        if(JakartaEEAction.isEE11OrLaterActive()){
+            String result = server.waitForStringInLogUsingMark(".*No context init parameter 'jakarta\\.faces\\.FACELETS_REFRESH_PERIOD' found, using default value '0, -1 in Production'.*");
+            String result2 = server.waitForStringInLogUsingMark(".*No context init parameter 'jakarta\\.faces\\.STATE_SAVING_METHOD' found, using default value 'server'*");
+
+            // Verify that the correct values of the context parameters were found.
+            assertNotNull("The correct value of the jakarta.faces.FACELETS_REFRESH_PERIOD context parameter was not found", result);
+            assertNotNull("The correct value of the jakarta.faces.STATE_SAVING_METHOD context parameter was not found", result2);
+        } else if (JakartaEEAction.isEE9OrLaterActive()) {
             String result = server.waitForStringInLogUsingMark(".*No context init parameter 'jakarta\\.faces\\.FACELETS_REFRESH_PERIOD' found, using default value '-1'.*");
             String result2 = server.waitForStringInLogUsingMark(".*No context init parameter 'jakarta\\.faces\\.STATE_SAVING_METHOD' found, using default value 'server'*");
 

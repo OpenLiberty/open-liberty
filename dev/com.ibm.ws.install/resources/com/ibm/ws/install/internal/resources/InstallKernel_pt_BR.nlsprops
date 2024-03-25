@@ -629,7 +629,7 @@ VALIDATION_INVALID_URL=Formato de URL n\u00e3o suportada
 VALIDATION_DUPLICATE_KEY=Nome da propriedade duplicado
 VALIDATION_UNSUPPORTED_PROTOCOL=Protocolo n\u00e3o suportado
 VALIDATION_MISSING_PUBKEY_NAME=Nome da chave p\u00fablica ausente
-VALIDATION_INVALID_key_URL=URL da chave n\u00e3o suportada
+VALIDATION_INVALID_key URL = URL de chave n\u00e3o suportada
 VALIDATION_INVALID_KEYID=Formato de ID de chave inv\u00e1lido
 VALIDATION_MISSING_KEYID=ID de chave ausente
 

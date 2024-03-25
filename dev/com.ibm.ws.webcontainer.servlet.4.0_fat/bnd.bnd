@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -28,6 +25,8 @@ src: \
     test-applications/TestGetMappingSlashStar.war/src,\
     test-applications/SCIExceptionTest.jar/src,\
     test-applications/SCIFilterServletNameMapping.jar/src,\
+    test-applications/SameContextRootTestApp1.war/src,\
+    test-applications/SameContextRootTestApp2.war/src,\
     test-applications/SameSiteTest.war/src,\
     test-applications/SameSiteSecurityTest.war/src,\
     test-applications/Servlet5TestApp.war/src,\
@@ -51,7 +50,13 @@ tested.features:\
     pages-3.1,\
     servlet-6.0,\
     appsecurity-5.0,\
-    cdi-4.0
+    cdi-4.0,\
+    expressionlanguage-6.0,\
+    noship-1.0,\
+    pages-4.0,\
+    servlet-6.1,\
+    appsecurity-6.0,\
+    cdi-4.1
 
 -buildpath:\
     io.openliberty.org.apache.commons.logging;version=latest,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 
-import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.SimpleTest;
+import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.EL60ArrayLengthTest;
+import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.EL60ModuleVisibilityTest;
+import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.EL60OptionalELResolverTest;
+import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.EL60RecordELResolverTest;
 
 /**
  * Expression Language 6.0 Tests
@@ -33,7 +36,10 @@ import io.openliberty.org.apache.jasper.expressionLanguage60.fat.tests.SimpleTes
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                SimpleTest.class
+                EL60ArrayLengthTest.class,
+                EL60ModuleVisibilityTest.class,
+                EL60OptionalELResolverTest.class,
+                EL60RecordELResolverTest.class
 
 })
 public class FATSuite {

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://com/ibm/ws/jaxws/wsdl/MainServiceSchema.xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://com/ibm/ws/jaxws/wsdl/MainServiceSchema.xsd"
+	xmlns:tns="http://com/ibm/ws/jaxws/wsdl/MainServiceSchema.xsd"
+	elementFormDefault="qualified" attributeFormDefault="unqualified"
+	version="1.0">
+
+	<xs:element name="NameSpaceCheck" type="NameSpaceCheckMessage">
+	</xs:element>
+
+	<xs:element name="NameSpaceCheckResponse" type="NameSpaceCheckResponseMessage">
+	</xs:element>
+
+	<xs:complexType name="NameSpaceCheckMessage">
+		<xs:sequence>
+			<xs:element ref="tns:Dummy_Object" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="NameSpaceCheckResponseMessage">
+		<xs:sequence>
+			<xs:element ref="tns:ResponseMessage" />
+		</xs:sequence>
+	</xs:complexType>
+
+  <xs:element name="Dummy_Object" type="Dummy_Object_TYPE">
+  </xs:element>
+  <xs:complexType name="Dummy_Object_TYPE">
+    <xs:sequence>
+      <xs:element ref="ID"/>
+      <xs:element ref="DESCRIPTION"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ID" type="tns:IDType" nillable="true" doc:refref="ParametersType.id">
+  </xs:element>
+  <xs:simpleType name="IDType">
+    <xs:restriction base="xs:integer">
+      <xs:totalDigits value="8"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="DESCRIPTION" type="tns:DescriptionType" doc:refref="ParametersType.description">
+  </xs:element>
+  <xs:simpleType name="DescriptionType">
+    <xs:restriction base="xs:string">
+      <xs:maxLength value="20"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="ResponseMessage" type="xs:string">
+  </xs:element>
+</xs:schema>

@@ -10,6 +10,8 @@
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true"/>
     <applicationMonitor updateTrigger="mbean"/>
+
+    <httpSession useSeparateSessionInvalidatorThreadPool = "false" delayInvalidationAlarmDuringServerStartup = "60"/>
   
     <!-- Java2 security -->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*"/>

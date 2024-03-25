@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,25 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.MetricID;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.Tag;
+import org.eclipse.microprofile.metrics.Timer;
+
+import com.ibm.websphere.csi.J2EEName;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+
+import io.openliberty.microprofile.metrics.internal.monitor.computed.internal.ComputedMonitorMetricsHandler;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.ws.rs.container.ContainerRequestContext;
@@ -30,20 +46,6 @@ import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.ext.Provider;
-
-import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.MetricID;
-import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.Tag;
-import org.eclipse.microprofile.metrics.Timer;
-
-import com.ibm.websphere.csi.J2EEName;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
-import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 @Provider
 public class RestfulWsMonitorFilter implements ContainerRequestFilter, ContainerResponseFilter {
@@ -55,6 +57,15 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
             + "of a REST request if it resulted in an unmapped exception. Also tracks the highest recorded time "
             + "duration within the previous completed full minute and lowest recorded time duration within the "
             + "previous completed full minute.";
+
+    static {
+    	/*
+    	 * Eagerly load the inner classes so that they are not loaded while calculating the amount of time a method took.
+    	 * The first request coming through the filter() logic will end up being way off due to the loading of the inner classes. 
+    	 */
+    	TimerContext.init();
+    	RestMetricInfo.init();
+    }
 
     @Context
     ResourceInfo resourceInfo;
@@ -68,6 +79,8 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
     private static final String TIMER_CONTEXT = "TIMER_CONTEXT";
 
     private static class TimerContext {
+    	static void init() {}
+
         final String timerKey;
         final long startTime;
         TimerContext(String timerKey, long startTime) {
@@ -103,6 +116,7 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
      */
     @Override
     public void filter(ContainerRequestContext reqCtx) throws IOException {
+        if (!MonitorAppStateListener.isRESTEnabled()) return;
         Class<?> resourceClass = resourceInfo.getResourceClass();
 
         if (resourceClass != null) {
@@ -156,13 +170,21 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
                             baseMetricRegistry);
 
                     timerMap.put(key, restTimer);
-                
+
                     /*
                      * Need to make sure we register the unmapped exception counter as it is
                      * expected whether an exception has occurred or not.
                      */
                     MetricsRestfulWsEMCallbackImpl.registerOrRetrieveRESTUnmappedExceptionMetric(className, methodName,
                             appName);
+
+                    // Register the computed REST.elapsedTime metric.
+                    ComputedMonitorMetricsHandler cmmh = MonitorAppStateListener.monitorMetricsHandler.getComputedMonitorMetricsHandler();
+
+                    //Save mp app name value from the MP Config property (if available) for unregistering the metric.
+                    String mpAppNameConfigValue = resolveMPAppNameFromMPConfig();
+
+                    cmmh.createRESTComputedMetrics("RESTStats", metricID, appName, mpAppNameConfigValue);
                 }
 
                 monitorKeyCache.putMonitorKey(resourceClass, resourceMethod, key);
@@ -190,6 +212,7 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
      */
     @Override
     public void filter(ContainerRequestContext reqCtx, ContainerResponseContext respCtx) throws IOException {
+        if (!MonitorAppStateListener.isRESTEnabled()) return;
         // Check that the TimerContext has been set on the request context.  This will happen when 
         // the ContainerRequestFilter.filter() method is invoked.  Situations, such as an improper jwt will cause the 
         // request filter to not be called and we will therefore not record any statistics.
@@ -299,8 +322,26 @@ public class RestfulWsMonitorFilter implements ContainerRequestFilter, Container
         }
     }
 
+    protected String resolveMPAppNameFromMPConfig() {
+        Optional<String> applicationName = null;
+        String mpAppName = null;
+
+        if ((applicationName = ConfigProvider.getConfig().getOptionalValue("mp.metrics.appName", String.class)).isPresent() 
+                && !applicationName.get().isEmpty()) {
+            mpAppName = applicationName.get();
+        }
+        else if ((applicationName = ConfigProvider.getConfig().getOptionalValue("mp.metrics.defaultAppName", String.class)).isPresent() 
+                && !applicationName.get().isEmpty()) {
+            mpAppName = applicationName.get();
+        }
+
+        return mpAppName;
+    }
+
     static class RestMetricInfo {
-        boolean isEar = false;
+    	static void init() {}
+
+    	boolean isEar = false;
         HashSet<String> keys = new HashSet<String>();
 
         void setIsEar() {

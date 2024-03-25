@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 #
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -17,9 +14,12 @@ src: \
     fat/src,\
     test-applications/TestInjection.war/src,\
     test-applications/TestEL.war/src,\
-    test-applications/TestPreDestroy.war/src
+    test-applications/TestPreDestroy.war/src,\
+    test-bundle/src
 
 fat.project: true
+
+-sub: *.bnd
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 # In this case, jsp-2.2 is added programmatically at runtime.
@@ -27,16 +27,19 @@ tested.features:\
     jsp-2.2,\
     servlet-4.0,\
     cdi-2.0,\
-    expressionLanguage-4.0,\
+    expressionlanguage-4.0,\
     servlet-5.0,\
     pages-3.0,\
     cdi-3.0, \
     servlet-6.0, \
-    expressionLanguage-5.0,\
+    expressionlanguage-5.0,\
     pages-3.1,\
-    cdi-4.0
-
-
+    cdi-4.0,\
+    expressionLanguage-6.0,\
+    noship-1.0,\
+    pages-4.0,\
+    servlet-6.1,\
+    cdi-4.1
 
 -buildpath: \
     com.ibm.websphere.javaee.annotation.1.1;version=latest,\
@@ -49,4 +52,5 @@ tested.features:\
     httpunit:httpunit;version=1.5.4,\
     com.ibm.websphere.javaee.interceptor.1.1;version=latest,\
     org.apache.httpcomponents:httpclient;version=4.1.2,\
-    org.apache.httpcomponents:httpcore;version=4.1.2
+    org.apache.httpcomponents:httpcore;version=4.1.2,\
+    com.ibm.websphere.appserver.spi.jsp

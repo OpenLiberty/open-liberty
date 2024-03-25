@@ -27,8 +27,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -69,9 +68,11 @@ public class SimpleTest extends FATServletClient {
         // Use test-specific public features (e.g. txjtafat-x.y) to enable protected features
         // jta-x.y on the server. And since these public features are not in the repeatable EE
         // feature set, the following sets the appropriate features for each repeatable test.
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE11OrLaterActive()) {
+            server.changeFeatures(Arrays.asList("txjtafat-2.0", "servlet-6.1", "componenttest-2.0", "osgiconsole-1.0"));
+        } else if (JakartaEEAction.isEE10Active()) {
             server.changeFeatures(Arrays.asList("txjtafat-2.0", "servlet-6.0", "componenttest-2.0", "osgiconsole-1.0"));
-        } else if (JakartaEE9Action.isActive()) {
+        } else if (JakartaEEAction.isEE9Active()) {
             server.changeFeatures(Arrays.asList("txjtafat-2.0", "servlet-5.0", "componenttest-2.0", "osgiconsole-1.0"));
         } else if (RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID)) { // e.g. isActive()
             server.changeFeatures(Arrays.asList("txjtafat-1.2", "servlet-4.0", "componenttest-1.0", "osgiconsole-1.0"));

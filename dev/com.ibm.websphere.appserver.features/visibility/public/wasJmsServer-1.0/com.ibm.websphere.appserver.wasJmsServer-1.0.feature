@@ -2,7 +2,8 @@
 symbolicName=com.ibm.websphere.appserver.wasJmsServer-1.0
 WLP-DisableAllFeatures-OnConflict: false
 visibility=public
-IBM-API-Package: com.ibm.websphere.messaging.mbean; type="ibm-api"
+IBM-API-Package: com.ibm.websphere.messaging.mbean; type="ibm-api", \
+  com.ibm.websphere.endpoint; type="ibm-api"
 IBM-ShortName: wasJmsServer-1.0
 Subsystem-Name: Message Server 1.0
 -features=\
@@ -27,3 +28,4 @@ Subsystem-Name: Message Server 1.0
 -files=dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.messaging_1.0-javadoc.zip
 kind=ga
 edition=base
+WLP-InstantOn-Enabled: true; type:=beta

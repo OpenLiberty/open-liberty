@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,5 +26,5 @@ Private-Package: com.ibm.ws.bnd.metatype.annotation, \
 publish.wlp.jar.disabled: true
 
 -buildpath: \
-	biz.aQute.bnd:biz.aQute.bnd.annotation;version=6.3.0, \
+	biz.aQute.bnd:biz.aQute.bnd.annotation;strategy=exact;version=6.4.1, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

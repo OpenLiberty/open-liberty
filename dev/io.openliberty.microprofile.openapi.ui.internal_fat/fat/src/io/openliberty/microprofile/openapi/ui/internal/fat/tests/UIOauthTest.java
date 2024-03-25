@@ -12,9 +12,10 @@ package io.openliberty.microprofile.openapi.ui.internal.fat.tests;
 
 import static componenttest.selenium.SeleniumWaits.waitForElement;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertNotNull;
 
 import java.time.Duration;
-import java.util.Arrays;
 
 import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -43,6 +44,7 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.openapi.ui.internal.fat.app.SecureTestResource;
+import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestApplication;
 
 @RunWith(FATRunner.class)
 public class UIOauthTest {
@@ -80,23 +82,20 @@ public class UIOauthTest {
      */
     @Rule
     public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>().withCapabilities(new ChromeOptions())
-            .withAccessToHost(true)
-            .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.RECORD_FAILING,
-                    Props.getInstance().getFileProperty(Props.DIR_LOG),
-                    VncRecordingFormat.MP4)
-            .withLogConsumer(new SimpleLogConsumer(UIBasicTest.class, "selenium-driver"));
+                                                                                  .withAccessToHost(true)
+                                                                                  .withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.RECORD_FAILING,
+                                                                                                     Props.getInstance().getFileProperty(Props.DIR_LOG),
+                                                                                                     VncRecordingFormat.MP4)
+                                                                                  .withLogConsumer(new SimpleLogConsumer(UIBasicTest.class, "selenium-driver"));
 
     private RemoteWebDriver driver;
 
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                                   .addClass(SecureTestResource.class);
+                                   .addClasses(SecureTestResource.class, TestApplication.class);
 
         ShrinkHelper.exportDropinAppToServer(server, war, ShrinkHelper.DeployOptions.SERVER_ONLY);
-
-        //Set guards
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
 
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
     }
@@ -158,7 +157,7 @@ public class UIOauthTest {
         server.startServer();
         //Reduce possibility that Server is not listening on its HTTPS Port
         //Especially for Windows if certificates are slow to create
-        server.waitForSSLStart();;
+        server.waitForSSLStart();
 
         OAuthTest(CUSTOM_UI_PATH_VALUE);
     }
@@ -179,7 +178,9 @@ public class UIOauthTest {
         WebElement getOperation = waitForElement(driver, By.id("operations-default-get_test"));
         //check that the operation is "unlocked"
         //we will use the lock object later to check that it has been updated
-        WebElement lock = getOperation.findElement(By.cssSelector("button.authorization__btn.unlocked"));
+        WebElement lock = getOperation.findElement(By.cssSelector("button.authorization__btn"));
+        WebElement lockSvg = lock.findElement(By.tagName("svg"));
+        assertThat(lockSvg.getAttribute("class"), equalTo("unlocked"));
 
         //Check the Authorize button is available and click it
         WebElement authorizeButton = waitForElement(driver, By.xpath("//span[contains(.,'Authorize')]"));
@@ -197,9 +198,9 @@ public class UIOauthTest {
         assertThat("Modal header containers OAuth", authContainer.findElement(By.cssSelector("h4")).getText(), Matchers.containsString("oauth (OAuth2, authorizationCode)"));
 
         //Fill out OAuth fields
-        WebElement clientNameField = authContainer.findElement(By.id("client_id"));
+        WebElement clientNameField = authContainer.findElement(By.id("client_id_authorizationCode"));
         clientNameField.sendKeys(OAUTH_CLIENT_NAME);
-        WebElement clientSecretField = authContainer.findElement(By.id("client_secret"));
+        WebElement clientSecretField = authContainer.findElement(By.id("client_secret_authorizationCode"));
         clientSecretField.sendKeys(OAUTH_CLIENT_SECRET);
         // Tick the scope tick box
         WebElement Scope = authContainer.findElement(By.xpath("//label[@for='test-authorizationCode-checkbox-oauth']"));
@@ -246,7 +247,22 @@ public class UIOauthTest {
         oauthModalHead.findElement(By.cssSelector("button.close-modal")).click();
 
         //Check the lock status on operation - should be "locked"
-        assertThat("Check that lock button is now in 'locked' state", lock.getAttribute("class").equals("authorization__btn locked"));
+        //Refetch the lock svg element as the previous one is no longer attached to the page,
+        // so cannot be reused. however the button is kept, so that can be reused as the anchor
+        lockSvg = lock.findElement(By.tagName("svg"));
+        assertThat("Check that lock button is now in 'locked' state", lockSvg.getAttribute("class"), equalTo("locked"));
+
+        WebElement getOperationButton = getOperation.findElement(By.cssSelector("button"));
+        getOperationButton.click();
+        WebElement tryOutButton = waitForElement(getOperation, By.cssSelector("button.btn.try-out__btn"));
+        tryOutButton.click();
+        //get the GET `/test` operation from `default`
+        getOperation = waitForElement(driver, By.id("operations-default-get_test"));
+        WebElement executeButton = waitForElement(getOperation, By.cssSelector("button.btn.execute"));
+        executeButton.click();
+        getOperation = waitForElement(driver, By.id("operations-default-get_test"));
+        WebElement testGet200Response = waitForElement(getOperation, By.cssSelector("tr.response[data-code=\"200\"]"));
+        assertNotNull("200 response line", testGet200Response);
     }
 
 }

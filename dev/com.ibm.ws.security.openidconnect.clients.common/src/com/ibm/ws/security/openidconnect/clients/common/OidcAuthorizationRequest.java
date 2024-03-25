@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.common.web.JavaScriptUtils;
 import com.ibm.ws.security.common.web.WebSSOUtils;
 import com.ibm.ws.security.openidconnect.pkce.ProofKeyForCodeExchangeHelper;
@@ -229,13 +230,18 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
         if (isImplicit) {
             addImplicitParameters(authzParameters);
         }
+        String resources = getResourcesParameter();
+        if (resources != null) {          
+            authzParameters.addParameter("resource", resources);
+        }
+
         // look for custom params in the configuration to send to the authorization ep
         addCustomParams(authzParameters);
 
         // check and see if we have any additional params to forward from the request
         addForwardLoginParams(authzParameters);
     }
-
+    
     private boolean isACRConfigured() {
         boolean isACR = false;
         String acr_values = null;
@@ -252,11 +258,6 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
 
     void addImplicitParameters(AuthorizationRequestParameters authzParameters) throws UnsupportedEncodingException {
         authzParameters.addParameter("response_mode", "form_post");
-        // add resource
-        String resources = getResourcesParameter();
-        if (resources != null) {
-            authzParameters.addParameter("resource", resources);
-        }
     }
 
     String getResourcesParameter() throws UnsupportedEncodingException {

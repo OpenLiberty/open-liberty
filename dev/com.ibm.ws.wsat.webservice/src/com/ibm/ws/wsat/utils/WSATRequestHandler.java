@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,10 +37,8 @@ import com.ibm.ws.wsat.webservice.client.wsat.Notification;
 import com.ibm.ws.wsat.webservice.client.wscoor.RegisterResponseType;
 import com.ibm.ws.wsat.webservice.client.wscoor.RegisterType;
 
-/**
- *
- */
 public class WSATRequestHandler {
+    @Trivial
     private WSATRequestHandler() {
 
     }
@@ -60,7 +58,7 @@ public class WSATRequestHandler {
     private RegisterResponseType doRegister(Map<String, String> wsatProperties, String protocolId, EndpointReferenceType participant, String txID,
                                             String recoveryID) throws Throwable {
         String errorStr = null;
-        Protocol service = WSATOSGIService.getInstance().getProtocolService();
+        Protocol service = WSCoorUtil.getProtocolService();
         EndpointReferenceType coordinator = null;
         if (txID == null) {
             errorStr = "txID is NULL";
@@ -119,7 +117,7 @@ public class WSATRequestHandler {
     }
 
     public void handleFaultRequest(QName faultcode, String faultstring, String faultactor, Detail detail) throws WSATException {
-        WSATOSGIService.getInstance().getHandlerService().handleClientFault();
+        WSCoorUtil.getHandlerService().handleClientFault();
     }
 
     public void handleParticipantPrepareRequest(Notification parameters, WebServiceContext ctx) throws WSATException {

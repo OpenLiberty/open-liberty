@@ -17,10 +17,10 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.sql.DataSource;
 import javax.transaction.Transaction;
@@ -38,7 +38,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.auth.data.AuthData;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
@@ -52,6 +51,8 @@ import com.ibm.wsspi.persistence.PersistenceServiceUnitConfig;
 import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceConfigFactory;
 import com.ibm.wsspi.resource.ResourceFactory;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * Uses a database as a persistent store.
@@ -83,12 +84,12 @@ public class DatabaseStoreImpl implements DatabaseStore {
     /**
      * Reference to the default authentication data.
      */
-    private ServiceReference<?> authDataRef;
+    private final ServiceReference<?> authDataRef;
 
     /**
      * Resource factory for the data source.
      */
-    private ResourceFactory dataSourceFactory;
+    private final ResourceFactory dataSourceFactory;
 
     /**
      * Indicates if this database store instance has been deactivated.
@@ -98,71 +99,103 @@ public class DatabaseStoreImpl implements DatabaseStore {
     /**
      * A service that controls local transactions.
      */
-    private LocalTransactionCurrent localTranCurrent;
+    private final LocalTransactionCurrent localTranCurrent;
 
     /**
      * Resource factory for the non-transactional data source.
      */
-    private ResourceFactory nonJTADataSourceFactory;
+    private final ResourceFactory nonJTADataSourceFactory;
 
     /**
      * The persistence service.
      */
-    private PersistenceService persistenceService;
+    private final PersistenceService persistenceService;
 
     /**
      * Configuration properties for this instance.
      */
-    private Dictionary<String, ?> properties;
+    private final Map<String, ?> properties;
 
     /**
      * Schema from config
      */
-    private String schema;
+    private final String schema;
 
     /**
      * Table prefix from config
      */
-    private String tablePrefix;
+    private final String tablePrefix;
 
     /**
      * Key generation strategy from config
      */
-    private String strategy;
+    private final String strategyConfig;
 
     /**
      * Length of schema String
      */
-    int schemaLength;
+    final int schemaLength;
 
     /**
      * Length of tablePrefix String
      */
-    int tablePrefixLength;
+    final int tablePrefixLength;
 
     /**
      * Resource config factory.
      */
-    private ResourceConfigFactory resourceConfigFactory;
+    private final ResourceConfigFactory resourceConfigFactory;
 
     /**
      * Transaction manager.
      */
-    private EmbeddableWebSphereTransactionManager tranMgr;
+    private final EmbeddableWebSphereTransactionManager tranMgr;
 
     @Activate
-    @Trivial
-    protected void activate(ComponentContext context) throws Exception {
-        this.properties = context.getProperties();
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "activate", this.properties);
+    public DatabaseStoreImpl(Map<String, ?> properties, //
+
+                             // static mandatory references
+                             @Reference(name = "DataSourceFactory", target = "(id=unbound)") ResourceFactory dataSourceFactory, //
+                             @Reference LocalTransactionCurrent localTranCurrent, //
+                             @Reference PersistenceService persistenceService, //
+                             @Reference ResourceConfigFactory resourceConfigFactory, //
+                             @Reference EmbeddableWebSphereTransactionManager tranMgr, //
+
+                             // static optional refereences
+                             @Reference(name = "AuthData",
+                                 service = AuthData.class,
+                                 cardinality = ReferenceCardinality.OPTIONAL,
+                                 policy = ReferencePolicy.STATIC,
+                                 target = "(id=unbound)",
+                                 policyOption = ReferencePolicyOption.GREEDY) ServiceReference<AuthData> authDataRef, //
+                             @Reference(name = "NonJTADataSourceFactory",
+                                 cardinality = ReferenceCardinality.OPTIONAL,
+                                 policy = ReferencePolicy.STATIC,
+                                 policyOption = ReferencePolicyOption.GREEDY,
+                                 target = "(id=unbound)") ResourceFactory nonJTADataSourceFactory
+                    ) throws Exception {
+
+        this.properties = properties;
+
+        // static mandatory references
+        this.dataSourceFactory = dataSourceFactory;
+        this.localTranCurrent = localTranCurrent;
+        this.persistenceService = persistenceService;
+        this.resourceConfigFactory = resourceConfigFactory;
+        this.tranMgr = tranMgr;
+
+        // static optional references
+        this.authDataRef = authDataRef;
+        this.nonJTADataSourceFactory = nonJTADataSourceFactory;
 
         // The database store should be lazily initialized by the components using it, so there is no need
         // for the database store implementation to have its own lazy initialization.
 
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "activate");
+        schema = (String) this.properties.get("schema");
+        schemaLength = schema == null ? -1 : schema.length();
+        tablePrefix = (String) this.properties.get("tablePrefix");
+        tablePrefixLength = tablePrefix.length();
+        strategyConfig = (String) this.properties.get("keyGenerationStrategy");
     }
 
     /**
@@ -183,8 +216,6 @@ public class DatabaseStoreImpl implements DatabaseStore {
             Tr.entry(this, tc, "createPersistenceServiceUnit", loader, Arrays.asList(entityClassNames));
 
         Map<String, Object> puProps = new HashMap<String, Object>();
-        tablePrefix = (String) this.properties.get("tablePrefix");
-        tablePrefixLength = tablePrefix.length();
         for (int i = 0; i < tablePrefixLength; i++) {
             int codepoint = tablePrefix.codePointAt(i);
             if (!Character.isLetterOrDigit(codepoint) && codepoint != 95) { // alphanumeric or _ character
@@ -193,8 +224,6 @@ public class DatabaseStoreImpl implements DatabaseStore {
             }
         }
 
-        schema = (String) this.properties.get("schema");
-        schemaLength = schema == null ? -1 : schema.length();
         for (int i = 0; i < schemaLength; i++) {
             int codepoint = schema.codePointAt(i);
             if (!Character.isLetterOrDigit(codepoint) && codepoint != 95) { // alphanumeric or _ character
@@ -205,7 +234,7 @@ public class DatabaseStoreImpl implements DatabaseStore {
 
         // Look for EclipseLink persistence properties
         if (this.properties.get("persistenceProperties.0.config.referenceType") != null) {
-            for (String key : Collections.list(this.properties.keys())) {
+            for (String key : this.properties.keySet()) {
                 if (key.startsWith("persistenceProperties.0") && !key.equals("persistenceProperties.0.config.referenceType")) {
                     Object value = this.properties.get(key);
                     key = key.substring(24);
@@ -246,15 +275,15 @@ public class DatabaseStoreImpl implements DatabaseStore {
             }
         }
 
+        // NOTE the order is important for the calls to createResource below on
+        // dataSourceFactory and nonJTADataSourceFactory.
+        // DO NOT change the order they are called here without addressing the fact
+        // that the sharing scope is modified to unshareable on the resourceInfo before calling
+        // nonJTADataSourceFactory.createResource
+        SpecialEntitySet entitySet = entityClassNames.length == 0 ? SpecialEntitySet.NONE : recognizeSpecialEntityPackage(entityClassNames[0]);
         DataSource dataSource = (DataSource) dataSourceFactory.createResource(resourceInfo);
-        String dbProductName = getDatabaseProductName(((WSDataSource) dataSource)).toLowerCase();
-        if (dbProductName.contains("informix") || dbProductName.startsWith("ids/")) {
-            // Defect 168450 - PersistenceService is currently disabled when running with Informix.
-            // Once the informix issues are fixed, this exception will be removed.
-            // When informix is using a DB2 driver, the product name is determined by db2 and is
-            // similar to: ids/nt64
-            throw new UnsupportedOperationException(dbProductName);
-        }
+        // Check the product name for support and compute strategy
+        String strategy = checkSupportedDBProductComputeStrategy(dataSource, entitySet);
 
         DataSource nonJTADataSource;
         if (nonJTADataSourceFactory == null)
@@ -273,23 +302,15 @@ public class DatabaseStoreImpl implements DatabaseStore {
             throw new IllegalStateException(errMsg);
         }
 
-        strategy = (String) this.properties.get("keyGenerationStrategy");
-        if ("AUTO".equals(strategy)) {
-            strategy = dbProductName.contains("oracle") ? "SEQUENCE"
-                            : dbProductName.contains("adaptive server") || dbProductName.contains("sybase") ? "TABLE"
-                                            : "IDENTITY";
-        }
-
         // TODO: replace temporary code specific to persistentExecutor with general solution that applies the
         // table prefix, schema, and keyGenerationStrategy to all entities
 
         List<InMemoryMappingFile> inMemoryFiles;
-        SpecialEntitySet entitySet = entityClassNames.length == 0 ? SpecialEntitySet.NONE : recognizeSpecialEntityPackage(entityClassNames[0]);
         if (entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR)) {
-            String ormFileContents = createOrmFileContentsForPersistentExecutor();
+            String ormFileContents = createOrmFileContentsForPersistentExecutor(strategy);
             inMemoryFiles = Collections.singletonList(new InMemoryMappingFile(ormFileContents.getBytes("UTF-8")));
         } else if (entitySet.equals(SpecialEntitySet.BATCH)) {
-            String ormFileContents = createOrmFileContentsForBatch(entityClassNames);
+            String ormFileContents = createOrmFileContentsForBatch(entityClassNames, strategy);
             inMemoryFiles = Collections.singletonList(new InMemoryMappingFile(ormFileContents.getBytes("UTF-8")));
         } else {
             // hidden internal non-ship property for experimenting with Jakarta Data
@@ -337,8 +358,9 @@ public class DatabaseStoreImpl implements DatabaseStore {
             if (!(entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR) && entityClassNames.length == 1)) {
                 boolean createTables = (Boolean) this.properties.get("createTables");
                 boolean dropTables = (Boolean) this.properties.get("dropTables");
-                if (createTables || dropTables)
-                    dropAndOrCreateTables(persistenceServiceUnit, createTables, dropTables);
+                if (createTables || dropTables) {
+                    CheckpointPhase.onRestore(() -> dropAndOrCreateTables(persistenceServiceUnit, createTables, dropTables));
+                }
             }
 
             if (deactivated) {
@@ -358,7 +380,41 @@ public class DatabaseStoreImpl implements DatabaseStore {
         return persistenceServiceUnit;
     }
 
-    protected String createOrmFileContentsForPersistentExecutor() {
+    private String checkSupportedDBProductComputeStrategy(DataSource dataSource, SpecialEntitySet entitySet) throws Exception {
+        boolean isAutoStrategy = "AUTO".equals(strategyConfig);
+        AtomicReference<String> strategy = new AtomicReference<>(isAutoStrategy ? "CHECKPOINT" : strategyConfig);
+        CheckpointPhase.onRestore(() -> {
+            String dbProductName = getDatabaseProductName(((WSDataSource) dataSource)).toLowerCase();
+            if (dbProductName.contains("informix") || dbProductName.startsWith("ids/")) {
+                // Defect 168450 - PersistenceService is currently disabled when running with Informix.
+                // Once the informix issues are fixed, this exception will be removed.
+                // When informix is using a DB2 driver, the product name is determined by db2 and is
+                // similar to: ids/nt64
+                throw new UnsupportedOperationException(dbProductName);
+            }
+            if (isAutoStrategy) {
+                String autoStrategy = dbProductName.contains("oracle") ? "SEQUENCE"
+                                : dbProductName.contains("adaptive server") || dbProductName.contains("sybase") ? "TABLE"
+                                                : "IDENTITY";
+                strategy.set(autoStrategy);
+            }
+        });
+        String result = strategy.get();
+        if ((entitySet  == SpecialEntitySet.BATCH || entitySet == SpecialEntitySet.PERSISTENT_EXECUTOR) && "CHECKPOINT".equals(result)) {
+            // BATCH and PERSISTENT_EXECUTOR currently require a strategy so we must find one somehow
+            // without requiring a connection to the DataSource
+
+            // TODO need to add logic that checks the driver class name or other config
+            // to determine a strategy without connecting to the DB here
+
+            // TODO need to add an error message saying that for InstantOn (checkpoint)
+            // a strategy must be configured with the 'keyGenerationStrategy' attribute
+            throw new UnsupportedOperationException();
+        }
+        return result;
+    }
+
+    protected String createOrmFileContentsForPersistentExecutor(String strategy) {
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
@@ -438,7 +494,7 @@ public class DatabaseStoreImpl implements DatabaseStore {
         return orm.toString();
     }
 
-    protected String createOrmFileContentsForBatch(String[] entityClassNames) {
+    protected String createOrmFileContentsForBatch(String[] entityClassNames, String strategy) {
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
@@ -646,7 +702,7 @@ public class DatabaseStoreImpl implements DatabaseStore {
                                                 String[] entityClassNames,
                                                 String[] entityClassEntries)
                     throws UnsupportedEncodingException {
-        return ((entityClassNames == null || entityClassNames.length == 0) && (entityClassEntries == null && entityClassEntries.length == 0))
+        return ((entityClassNames == null || entityClassNames.length == 0) && (entityClassEntries == null || entityClassEntries.length == 0))
                         ? null
                         : new InMemoryMappingFile(createOrm(schemaName, tablePrefix, entityClassNames, entityClassEntries).getBytes("UTF-8"));
     }
@@ -853,147 +909,6 @@ public class DatabaseStoreImpl implements DatabaseStore {
                     localTranCurrent.resume(suspendedLTC);
             }
         }
-    }
-
-    /**
-     * Declarative Services method for setting the service reference for the default auth data
-     *
-     * @param ref reference to the service
-     */
-    @Reference(service = AuthData.class,
-               cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.STATIC,
-               target = "(id=unbound)",
-               policyOption = ReferencePolicyOption.GREEDY)
-    protected void setAuthData(ServiceReference<AuthData> ref) {
-        authDataRef = ref;
-    }
-
-    /**
-     * Declarative Services method for setting the resource factory for the data source.
-     *
-     * @param svc the service
-     */
-    @Reference(target = "(id=unbound)")
-    protected void setDataSourceFactory(ResourceFactory svc) {
-        dataSourceFactory = svc;
-    }
-
-    /**
-     * Declarative Services method for setting the LocalTransactionCurrent.
-     *
-     * @param ref the service
-     */
-    @Reference
-    protected void setLocalTransactionCurrent(LocalTransactionCurrent svc) {
-        localTranCurrent = svc;
-    }
-
-    /**
-     * Declarative Services method for setting the resource factory for the non-transactional data source.
-     *
-     * @param svc the service
-     */
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.STATIC,
-               policyOption = ReferencePolicyOption.GREEDY,
-               target = "(id=unbound)")
-    protected void setNonJTADataSourceFactory(ResourceFactory svc) {
-        nonJTADataSourceFactory = svc;
-    }
-
-    /**
-     * Declarative Services method for setting the persistence service.
-     *
-     * @param svc the service
-     */
-    @Reference
-    protected void setPersistenceService(PersistenceService svc) {
-        persistenceService = svc;
-    }
-
-    /**
-     * Declarative services method for setting the resource config factory.
-     *
-     * @param svc the service
-     */
-    @Reference(service = ResourceConfigFactory.class)
-    protected void setResourceConfigFactory(ResourceConfigFactory svc) {
-        resourceConfigFactory = svc;
-    }
-
-    /**
-     * Declarative Services method for setting the transaction manager
-     *
-     * @param svc the service
-     */
-    @Reference
-    protected void setTransactionManager(EmbeddableWebSphereTransactionManager svc) {
-        tranMgr = svc;
-    }
-
-    /**
-     * Declarative Services method for unsetting the service reference for default auth data
-     *
-     * @param ref reference to the service
-     */
-
-    protected void unsetAuthData(ServiceReference<AuthData> ref) {
-        authDataRef = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the resource factory for the data source.
-     *
-     * @param svc the service
-     */
-    protected void unsetDataSourceFactory(ResourceFactory svc) {
-        dataSourceFactory = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the LocalTransactionCurrent.
-     *
-     * @param svc the service
-     */
-    protected void unsetLocalTransactionCurrent(LocalTransactionCurrent svc) {
-        localTranCurrent = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the resource factory for the non-transactional data source.
-     *
-     * @param svc the service
-     */
-    protected void unsetNonJTADataSourceFactory(ResourceFactory svc) {
-        nonJTADataSourceFactory = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the persistence service.
-     *
-     * @param svc the service
-     */
-    protected void unsetPersistenceService(PersistenceService svc) {
-        persistenceService = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the resource config factory.
-     *
-     * @param svc the service
-     */
-    protected void unsetResourceConfigFactory(ResourceConfigFactory svc) {
-        resourceConfigFactory = null;
-    }
-
-    /**
-     * Declarative Services method for unsetting the transaction manager
-     *
-     * @param svc the service
-     */
-    protected void unsetTransactionManager(EmbeddableWebSphereTransactionManager svc) {
-        tranMgr = null;
     }
 
     @Override

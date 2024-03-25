@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014,2017 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -52,8 +52,7 @@ public class BasicJSONPTest extends FATServletClient {
         WebArchive customAppJSONPWAR = ShrinkWrap.create(WebArchive.class, "customAppJSONPWAR.war")
                         .addAsServiceProvider(javax.json.spi.JsonProvider.class, jsonp.app.custom.provider.JsonProviderImpl.class)
                         .addPackages(true, "jsonp.app.custom");
-        ShrinkHelper.exportToServer(server, "dropins", customAppJSONPWAR);
-        server.addInstalledAppForValidation("customAppJSONPWAR");
+        ShrinkHelper.exportDropinAppToServer(server, customAppJSONPWAR);
 
         JavaArchive customLibJSONPProvider = ShrinkWrap.create(JavaArchive.class, "customLibJSONPProvider.jar")
                         .addAsServiceProvider(javax.json.spi.JsonProvider.class, jsonp.lib.provider.JsonProviderImpl.class)
@@ -63,13 +62,11 @@ public class BasicJSONPTest extends FATServletClient {
         WebArchive customLibJSONPWAR = ShrinkWrap.create(WebArchive.class, "customLibJSONPWAR.war")
                         .addPackage("jsonp.lib.web");
         ShrinkHelper.exportAppToServer(server, customLibJSONPWAR);
-        server.addInstalledAppForValidation("customLibJSONPWAR");
 
         WebArchive jsonpWar = ShrinkWrap.create(WebArchive.class, APP_JSONP + ".war")
                         .addAsWebInfResource(new File("test-applications/JSONPWAR.war/resources/WEB-INF/json_read_test_data.js"))
                         .addPackage("jsonp.app.web");
-        ShrinkHelper.exportToServer(server, "dropins", jsonpWar);
-        server.addInstalledAppForValidation(APP_JSONP);
+        ShrinkHelper.exportDropinAppToServer(server, jsonpWar);
 
         server.startServer();
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
+import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.wsat.fat.util.WSATTest;
 
 import componenttest.annotation.AllowedFFDC;
@@ -36,7 +37,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
-@AllowedFFDC(value = { "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException", "java.io.FileNotFoundException" })
+@AllowedFFDC(value = { "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException", "java.io.FileNotFoundException", "java.net.SocketException" })
 @RunWith(FATRunner.class)
 public class ReroutePeerRecoveryTest extends MultiRecoveryTest {
 
@@ -64,37 +65,73 @@ public class ReroutePeerRecoveryTest extends MultiRecoveryTest {
 	public static LibertyServer[] serversToStop;
 
 	@BeforeClass
-	public static void startExtraServers() throws Exception {
-    	Log.info(ReroutePeerRecoveryTest.class, "startExtraServers", "");
-		server3.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_quaternary")));
-		server4.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_tertiary")));
-		server5.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_quinary")));
-		server6.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_senary")));
+	public static void beforeClass() throws Exception {
+		Log.info(ReroutePeerRecoveryTest.class, "beforeClass", "");
+		String method = "beforeClass";
+
+		runner = new SetupRunner() {
+	        @Override
+	        public void run(LibertyServer s) throws Exception {
+	        	Log.info(MultiRecoveryTest.class, "setupRunner.run", "Setting up "+s.getServerName());
+	            s.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+	        }
+	    };
+	    
+		BASE_URL = "http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort();
+
+		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
+		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
+
+        clientApp = ShrinkHelper.buildDefaultApp("recoveryClient", "client.*");
+		ShrinkHelper.exportDropinAppToServer(server1, clientApp);
+		ShrinkHelper.exportDropinAppToServer(server2, clientApp);
+
+        serverApp = ShrinkHelper.buildDefaultApp("recoveryServer", "server.*");
+		ShrinkHelper.exportDropinAppToServer(server1, serverApp);
+		ShrinkHelper.exportDropinAppToServer(server2, serverApp);
+
+		int port = Integer.parseInt(System.getProperty("HTTP_quaternary"));
+    	Log.info(ReroutePeerRecoveryTest.class, method, "Setting port for " + server3.getServerName() + " to " + port);
+    	server3.setHttpDefaultPort(port);
+
+    	port = Integer.parseInt(System.getProperty("HTTP_tertiary"));
+    	Log.info(ReroutePeerRecoveryTest.class, method, "Setting port for " + server4.getServerName() + " to " + port);
+		server4.setHttpDefaultPort(port);
+
+    	port = Integer.parseInt(System.getProperty("HTTP_quinary"));
+    	Log.info(ReroutePeerRecoveryTest.class, method, "Setting port for " + server5.getServerName() + " to " + port);
+		server5.setHttpDefaultPort(port);
+
+    	port = Integer.parseInt(System.getProperty("HTTP_senary"));
+    	Log.info(ReroutePeerRecoveryTest.class, method, "Setting port for " + server6.getServerName() + " to " + port);
+		server6.setHttpDefaultPort(port);
 
 		ShrinkHelper.exportDropinAppToServer(server3, clientApp);
 		ShrinkHelper.exportDropinAppToServer(server5, clientApp);
 		ShrinkHelper.exportDropinAppToServer(server3, serverApp);
 		ShrinkHelper.exportDropinAppToServer(server5, serverApp);
-		
-		FATUtils.startServers(runner, server3, server4, server5, server6);
 	}
 
 	@After
-	public void afterTest() throws Exception {
-		FATUtils.stopServers(allowedMsgs, serversToStop);
-		FATUtils.startServers(runner, serversToStart);
+	public void after() throws Exception {
+		Log.info(ReroutePeerRecoveryTest.class, "after", "");
+		FATUtils.stopServers(allowedMsgs, server1, server2, server3, server4, server5, server6);
 	}
 
 	@Before
-	public void beforeTest() throws Exception {
+	public void before() throws Exception {
+		Log.info(ReroutePeerRecoveryTest.class, "before", "");
+		FATUtils.startServers(runner, server1, server2, server3, server4, server5, server6);
 		WSATTest.callClearResourcesServlet(recoveryServer, server3, server5);
+		server3.setTraceMarkToEndOfDefaultTrace();
+		server5.setTraceMarkToEndOfDefaultTrace();
 	}
 	
 	private static final String[] allowedMsgs = new String[] {"WTRN0048W"};
 	
 	@AfterClass
-	public static void stopExtraServers() throws Exception {
-		FATUtils.stopServers(allowedMsgs, server3, server4, server5, server6);
+	public static void afterClass() throws Exception {
+		Log.info(ReroutePeerRecoveryTest.class, "afterClass", "");
 	}
 
 	@Override
@@ -196,29 +233,29 @@ public class ReroutePeerRecoveryTest extends MultiRecoveryTest {
 
 	@Test
 	public void WSTXMPR008DFVT() throws Exception {
-		serversToStop = new LibertyServer[]{server2, server3,};
-		serversToStart = new LibertyServer[]{server1, server2, server3};
+		serversToStop = new LibertyServer[]{server3,};
+		serversToStart = new LibertyServer[]{server1, server3};
 		recoveryTest(server1, server2, "801", "server1", "none");
 	}
 
 	@Test
 	public void WSTXMPR008EFVT() throws Exception {
-		serversToStop = new LibertyServer[]{server1, server5,};
-		serversToStart = new LibertyServer[]{server1, server2, server5};
+		serversToStop = new LibertyServer[]{server5,};
+		serversToStart = new LibertyServer[]{server2, server5};
 		recoveryTest(server1, server2, "802", "server2", "none");
 	}
 
 	@Test
 	public void WSTXMPR009DFVT() throws Exception {
-		serversToStop = new LibertyServer[]{server2, server3,};
-		serversToStart = new LibertyServer[]{server1, server2, server3};
+		serversToStop = new LibertyServer[]{server3,};
+		serversToStart = new LibertyServer[]{server1, server3};
 		recoveryTest(server1, server2, "901", "server1", "none");
 	}
 
 	@Test
 	public void WSTXMPR009EFVT() throws Exception {
-		serversToStop = new LibertyServer[]{server1, server5,};
-		serversToStart = new LibertyServer[]{server1, server2, server5};
+		serversToStop = new LibertyServer[]{server5,};
+		serversToStart = new LibertyServer[]{server2, server5};
 		recoveryTest(server1, server2, "902", "server2", "none");
 	}
 }

@@ -1,0 +1,35 @@
+#*******************************************************************************
+# Copyright (c) 2018, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+-include= jar:${fileuri;${repo;org.jboss.weld:weld-osgi-bundle;[6.0,6.1)}}!/META-INF/MANIFEST.MF,check-me-in-if-i-change.bnd
+
+-includeresource: \
+  @${repo;org.jboss.weld:weld-osgi-bundle;[6.0,6.1)}
+
+Bundle-SymbolicName: io.openliberty.org.jboss.weld6; singleton:=true
+
+instrument.disabled: true
+
+-buildpath: \
+	org.jboss.weld:weld-osgi-bundle;version="[6.0,6.1)", \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+    com.ibm.ws.junit.extensions;version=latest,\
+    io.openliberty.jakarta.cdi.4.1;version=latest,\
+    io.openliberty.org.jboss.logging35;version=latest

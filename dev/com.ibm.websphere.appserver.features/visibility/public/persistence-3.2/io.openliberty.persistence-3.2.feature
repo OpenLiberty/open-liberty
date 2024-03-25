@@ -228,7 +228,7 @@ Subsystem-Name: Jakarta Persistence 3.2
   com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.jsonp-2.1, \
   com.ibm.websphere.appserver.transaction-2.0
--bundles=io.openliberty.persistence.3.1.thirdparty; location:=dev/api/third-party/; mavenCoordinates="org.eclipse.persistence:eclipselink:4.0.0", \
+-bundles=io.openliberty.persistence.3.2.thirdparty; location:=dev/api/third-party/; mavenCoordinates="org.eclipse.persistence:eclipselink:4.0.0", \
  com.ibm.ws.jpa.container.eclipselink.jakarta
 kind=noship
 edition=full

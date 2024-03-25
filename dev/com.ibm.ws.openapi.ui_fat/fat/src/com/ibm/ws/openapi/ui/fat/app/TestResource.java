@@ -10,8 +10,12 @@
 package com.ibm.ws.openapi.ui.fat.app;
 
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 
 import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
@@ -24,8 +28,27 @@ import org.eclipse.microprofile.openapi.annotations.info.Info;
 @Path("/test")
 public class TestResource {
 
+    @Path("/{id}")
     @GET
-    public String testGet() {
-        return "OK";
+    public int testGet(@PathParam("id") int id) {
+        return id;
+    }
+
+    @Path("/{id}")
+    @PUT
+    public void testPut(@PathParam("id") int id) {
+        // store a message
+    }
+
+    @Path("/{id}")
+    @POST
+    public void testPost(@PathParam("id") int id) {
+        // store a message
+    }
+
+    @Path("/{id}")
+    @DELETE
+    public void testDelete(@PathParam("id") int id) {
+        // delete a message
     }
 }

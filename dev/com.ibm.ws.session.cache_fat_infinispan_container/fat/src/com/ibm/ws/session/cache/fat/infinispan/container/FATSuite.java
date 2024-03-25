@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -38,6 +38,7 @@ import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyFileManager;
@@ -94,7 +95,7 @@ public class FATSuite extends TestContainerSuite {
         String installRoot = server.getInstallRoot();
         LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/infinispan");
 
-        if (JakartaEE9Action.isActive() || JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             LibertyFileManager.deleteLibertyDirectoryAndContents(machine, installRoot + "/usr/shared/resources/infinispan-jakarta");
             RemoteFile jakartaResourceDir = LibertyFileManager.createRemoteFile(machine, installRoot + "/usr/shared/resources/infinispan-jakarta");
             jakartaResourceDir.mkdirs();
@@ -119,12 +120,12 @@ public class FATSuite extends TestContainerSuite {
                                     .build())
                     .withFileFromFile("/opt/infinispan_config/config.xml", new File("lib/LibertyFATTestFiles/infinispan/config.xml"))
                     .withFileFromFile("/opt/infinispan/server/conf/users.properties", new File("lib/LibertyFATTestFiles/infinispan/users.properties")))
-                    .withCommand("./bin/server.sh -c /opt/infinispan_config/config.xml")
-                    .withExposedPorts(11222)
-                    .waitingFor(new LogMessageWaitStrategy()
-                                    .withRegEx(".*ISPN080001: Infinispan Server.*")
-                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 15)))
-                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Infinispan"));
+                                    .withCommand("./bin/server.sh -c /opt/infinispan_config/config.xml")
+                                    .withExposedPorts(11222)
+                                    .waitingFor(new LogMessageWaitStrategy()
+                                                    .withRegEx(".*ISPN080001: Infinispan Server.*")
+                                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 5 : 15)))
+                                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "Infinispan"));
 
     /**
      * Custom runner used by test classes.

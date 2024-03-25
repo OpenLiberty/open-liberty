@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -28,7 +28,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -66,7 +66,7 @@ public class UnmappedAppTest {
     public static void setup() throws Exception {
 
         WebArchive war = ShrinkHelper.buildDefaultAppFromPathNoResources(warName, null, "jaxrs2x.unmappedApp");
-        String pkgPrefix = JakartaEE9Action.isActive() ? "jakarta" : "javax";
+        String pkgPrefix = JakartaEEAction.isEE9OrLaterActive() ? "jakarta" : "javax";
         war.addAsWebInfResource(new StringAsset(String.format(webXml, pkgPrefix, pkgPrefix)), "web.xml");
         ShrinkHelper.exportDropinAppToServer(server, war);
 
@@ -91,7 +91,7 @@ public class UnmappedAppTest {
         assertNotNull(resp);
         assertEquals("hello", resp.trim());
 
-        if (JakartaEE9Action.isActive()) {
+        if (JakartaEEAction.isEE9OrLaterActive()) {
             assertFalse(server.findStringsInLogs("CWWKW1302W").isEmpty());
         }
     }

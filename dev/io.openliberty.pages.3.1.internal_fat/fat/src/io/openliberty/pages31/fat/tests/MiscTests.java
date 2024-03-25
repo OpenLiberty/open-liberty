@@ -1,14 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.pages31.fat.tests;
 
+import static componenttest.annotation.SkipForRepeat.EE11_OR_LATER_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
@@ -53,8 +54,7 @@ public class MiscTests {
     public static LibertyServer server;
 
     @BeforeClass
-    public static void setup() throws Exception {;
-
+    public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "io.openliberty.pages31.fat.misc", "io.openliberty.pages31.fat.misc.other");
         server.startServer();
     }
@@ -71,6 +71,7 @@ public class MiscTests {
      *
      * @throws Exception if something goes horribly wrong
      */
+    @SkipForRepeat(EE11_OR_LATER_FEATURES)
     @Test
     public void testIsThreadSafeLogsWarning() throws Exception {
         WebConversation wc = new WebConversation();
@@ -95,6 +96,7 @@ public class MiscTests {
      *
      * @throws Exception if something goes horribly wrong
      */
+    @SkipForRepeat(EE11_OR_LATER_FEATURES)
     @Test
     public void testJspPluginNoOp() throws Exception {
         WebConversation wc = new WebConversation();
@@ -140,6 +142,8 @@ public class MiscTests {
 
     /**
      * Verify if static imports can be accessed through a JSP with both Expression Language and Pages expressions
+     * Interface field only available through JSP
+     *
      * @throws Exception if something goes horribly wrong
      */
     @Test
@@ -154,10 +158,12 @@ public class MiscTests {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
+        assertEquals(200, response.getResponseCode()); // Verifies no exception occurs if a page tries to import a field from an interface via EL
         assertTrue("Static field not found in Expression Language Environment", response.getText().contains("EL Field expression: CAFFE NERO"));
         assertTrue("Static method not found in Expression Language Environment", response.getText().contains("EL Method expression: LATTE"));
         assertTrue("Static field not found in Pages Environment", response.getText().contains("JSP Field expression: CAFFE NERO"));
         assertTrue("Static method not found in Pages Environment", response.getText().contains("JSP Method expression: LATTE"));
+        assertTrue("Interface field not found in Pages Environment", response.getText().contains("JSP Static Interface Field expression: INTERFACE_FIELD"));
     }
 
 

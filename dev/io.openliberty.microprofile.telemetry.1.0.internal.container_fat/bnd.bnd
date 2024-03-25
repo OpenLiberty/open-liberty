@@ -1,0 +1,75 @@
+#*******************************************************************************
+# Copyright (c) 2022, 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+fat.minimum.java.level: 11
+
+src: \
+    fat/src
+	
+fat.project: true
+
+#Any changes to these names must be copied to TestConstants
+fat.test.container.images: \
+    jaegertracing/all-in-one:1.54, \
+    openzipkin/zipkin-slim:2.23, \
+    otel/opentelemetry-collector:0.74.0 ,\
+    alpine:3.16
+
+grpcVersion=1.57.2
+
+tested.features:\
+  cdi-2.0,\
+  cdi-1.2,\
+  mpTelemetry-1.1,\
+  mpTelemetry-1.0,\
+  mpConfig-3.1,\
+  mpConfig-2.0,\
+  mpConfig-1.3,\
+  mpRestClient-2.0,\
+  mpRestClient-1.1,\
+  jaxrs-2.1,\
+  jaxrs-2.0,\
+  jsonp-1.1,\
+  jsonp-1.0,\
+  restfulWS-3.1,\
+  servlet-6.0,\
+  servlet-4.0
+
+-buildpath: \
+	io.openliberty.microprofile.telemetry.internal_fat.common,\
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.3;version=latest,\
+	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
+	io.openliberty.jakarta.cdi.4.0;version=latest,\
+	io.openliberty.jakarta.restfulWS.3.1;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.1;version=latest,\
+	io.openliberty.io.opentelemetry;version=latest,\
+	io.openliberty.org.testcontainers;version=latest,\
+	io.openliberty.io.opentracing.opentracing-api.0.33.0;version=latest,\
+	io.grpc:grpc-api;version='${grpcVersion}',\
+	io.grpc:grpc-core;version='${grpcVersion}',\
+	io.grpc:grpc-context;version='${grpcVersion}',\
+	io.grpc:grpc-protobuf;version='${grpcVersion}',\
+	io.grpc:grpc-protobuf-lite;version='${grpcVersion}',\
+	io.grpc:grpc-stub;version='${grpcVersion}',\
+	com.ibm.ws.com.google.guava;version=latest,\
+	io.openliberty.io.netty;version=latest,\
+	com.google.protobuf:protobuf-java;version='3.19.2',\
+	com.google.protobuf:protobuf-java-util;version='3.19.2',\
+	com.ibm.ws.io.reactivex.rxjava.2.2;version=latest,\
+	com.ibm.websphere.org.reactivestreams.reactive-streams.1.0,\
+	io.openliberty.com.google.gson;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

@@ -14,12 +14,12 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.PropertiesAsset;
@@ -29,6 +29,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp1.MultiApp1TestServlet;
@@ -37,6 +38,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.multiapp2.MultiAp
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporterProvider;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.spans.AbstractSpanMatcher;
 import io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider;
 
 /**
@@ -47,48 +49,59 @@ public class TelemetryMultiAppTest extends FATServletClient {
 
     public static final String APP1_NAME = "multiapp1";
     public static final String APP2_NAME = "multiapp2";
+    public static final String SERVER_NAME = "Telemetry10MultiApp";
 
     @TestServlets({
                     @TestServlet(contextRoot = APP1_NAME, servlet = MultiApp1TestServlet.class),
                     @TestServlet(contextRoot = APP2_NAME, servlet = MultiApp2TestServlet.class),
     })
-    @Server("Telemetry10MultiApp")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {
         // InMemorySpanExporter shared library
         PropertiesAsset exporterConfig = new PropertiesAsset()
-                        .addProperty("otel.traces.exporter", "in-memory");
+                        .addProperty("otel.traces.exporter", "in-memory")
+                        .addProperty("otel.sdk.disabled", "false")
+                        .addProperty("otel.bsp.schedule.delay", "100");
         JavaArchive exporterJar = ShrinkWrap.create(JavaArchive.class, "exporter.jar")
                         .addClasses(InMemorySpanExporter.class, InMemorySpanExporterProvider.class)
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsServiceProvider(ConfigurableSpanExporterProvider.class, InMemorySpanExporterProvider.class)
                         .addAsResource(exporterConfig, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportToServer(server, "shared", exporterJar, SERVER_ONLY);
 
         PropertiesAsset app1Config = new PropertiesAsset()
-                        .addProperty("otel.service.name", "multiapp1");
+                        .addProperty("otel.service.name", "multiapp1")
+                        .addProperty("otel.sdk.disabled", "false")
+                        .addProperty("otel.bsp.schedule.delay", "100");
         WebArchive multiapp1 = ShrinkWrap.create(WebArchive.class, APP1_NAME + ".war")
                         .addClass(MultiApp1TestServlet.class)
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsResource(app1Config, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, multiapp1, SERVER_ONLY);
 
         PropertiesAsset app2Config = new PropertiesAsset()
-                        .addProperty("otel.service.name", "multiapp2");
+                        .addProperty("otel.service.name", "multiapp2")
+                        .addProperty("otel.sdk.disabled", "false")
+                        .addProperty("otel.bsp.schedule.delay", "100");
         WebArchive multiapp2 = ShrinkWrap.create(WebArchive.class, APP2_NAME + ".war")
                         .addClass(MultiApp2TestServlet.class)
                         .addClass(MultiApp2TargetResource.class)
                         .addPackage(TestSpans.class.getPackage())
+                        .addPackage(AbstractSpanMatcher.class.getPackage())
                         .addAsResource(app2Config, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, multiapp2, SERVER_ONLY);
 
-        server.addEnvVar("OTEL_SDK_DISABLED", "false");
-        server.addEnvVar("OTEL_BSP_SCHEDULE_DELAY", "100");
         server.startServer();
     }
 

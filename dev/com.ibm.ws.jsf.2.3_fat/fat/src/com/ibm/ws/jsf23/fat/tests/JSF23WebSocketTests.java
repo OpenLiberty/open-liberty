@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -35,9 +37,8 @@ import com.ibm.ws.jsf23.fat.selenium_util.ExtendedWebDriver;
 import com.ibm.ws.jsf23.fat.selenium_util.WebPage;
 
 import componenttest.annotation.Server;
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -56,13 +57,13 @@ public class JSF23WebSocketTests {
     public static LibertyServer server;
 
     private String contextRoot = "WebSocket";
-    
-    @Rule
-    public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
-                    .withAccessToHost(true)
-                    .withLogConsumer(new SimpleLogConsumer(JSF23WebSocketTests.class, "selenium-driver"));
 
-    private ExtendedWebDriver driver;
+    @ClassRule
+    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
+                    .withAccessToHost(true)
+                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
+
+    private static ExtendedWebDriver driver;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -72,6 +73,8 @@ public class JSF23WebSocketTests {
         server.startServer(c.getSimpleName() + ".log");
 
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
+
+        driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
     }
 
     @AfterClass
@@ -80,14 +83,23 @@ public class JSF23WebSocketTests {
         if (server != null && server.isStarted()) {
             server.stopServer();
         }
+        driver.quit(); // closes all sessions and terminutes the webdriver
     }
 
     @Before
     public void setupPerTest() throws Exception {
         server.setMarkToEndOfLog();
-        driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
     }
 
+    /*
+     * Clear cookies for the selenium webdriver, so that session don't carry over between tests
+     */
+    @After
+    public void clearCookies()
+    {
+        driver.getRemoteWebDriver().manage().deleteAllCookies();
+    }
+    
     /**
      * Test to ensure that the <f:websocket> component actually works properly.
      * The test will ensure that a message is pushed from server to client.
@@ -100,7 +112,7 @@ public class JSF23WebSocketTests {
     public void testPushWebsocket() throws Exception {
         String url;
 
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             url = JSFUtils.createSeleniumURLString(server, contextRoot, "faces40/PushWebSocketTest.jsf");
         } else {
             url = JSFUtils.createSeleniumURLString(server, contextRoot, "PushWebSocketTest.jsf");
@@ -123,7 +135,7 @@ public class JSF23WebSocketTests {
 
         // Now click the button and get the resulted page.
         page.findElement(By.id("form1:sendButton")).click();
-        page.waitForCondition(driver -> page.isInPage("Message from the server via push!")); // Wait for text to appear rather than some default time 
+        page.waitForCondition(driver -> page.isInPage("Message from the server via push!")); // Wait for text to appear rather than some default time
         page.waitForCondition(driver -> page.isInPage("Called onclose listener"));
 
         // Log the page for debugging if necessary in the future.
@@ -150,7 +162,7 @@ public class JSF23WebSocketTests {
     public void testOpenAndCloseWebsocket() throws Exception {
         String url;
 
-        if (JakartaEE10Action.isActive()) {
+        if (JakartaEEAction.isEE10OrLaterActive()) {
             url = JSFUtils.createSeleniumURLString(server, contextRoot, "faces40/OpenCloseWebSocketTest.jsf");
         } else {
             url = JSFUtils.createSeleniumURLString(server, contextRoot, "OpenCloseWebSocketTest.jsf");

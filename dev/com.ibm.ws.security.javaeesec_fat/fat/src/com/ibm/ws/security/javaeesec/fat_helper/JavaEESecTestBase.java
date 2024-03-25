@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,7 +49,7 @@ import org.apache.http.util.EntityUtils;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 public class JavaEESecTestBase {
@@ -552,7 +552,7 @@ public class JavaEESecTestBase {
         nvps.add(new BasicNameValuePair("form:j_id_e", "Login"));
         nvps.add(new BasicNameValuePair("form_SUBMIT", "1"));
         if (viewState != null) {
-            if (JakartaEE9Action.isActive()) {
+            if (JakartaEEAction.isEE9OrLaterActive()) {
                 nvps.add(new BasicNameValuePair("jakarta.faces.ViewState", viewState));
             } else {
                 nvps.add(new BasicNameValuePair("javax.faces.ViewState", viewState));
@@ -990,7 +990,7 @@ public class JavaEESecTestBase {
      * out.
      */
     public static void assumeNotWindowsEe9() {
-        if (JakartaEE9Action.isActive() && System.getProperty("os.name").toLowerCase().startsWith("win")) {
+        if (JakartaEEAction.isEE9Active() && System.getProperty("os.name").toLowerCase().startsWith("win")) {
             Log.info(logClass, "assumeNotWindowsEe9", "Skipping EE9 repeat action on Windows.");
             assumeTrue(false);
         }

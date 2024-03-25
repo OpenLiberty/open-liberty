@@ -31,10 +31,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfCheckpointNotSupported;
+import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import concurrentApp.ConcurrentApp;
@@ -42,7 +40,7 @@ import concurrentApp.RepeatedTrigger;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
-@SkipIfCheckpointNotSupported
+@CheckpointTest
 public class ConcurrencyTest {
 
     public static final String WAR_APP_NAME = "concurrentApp";
@@ -54,9 +52,7 @@ public class ConcurrencyTest {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests repeatTest = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL,
-                                                                      MicroProfileActions.MP41, // first test in LITE mode
-                                                                      MicroProfileActions.MP50, MicroProfileActions.MP60); // rest are FULL mode
+    public static RepeatTests repeatTest = FATSuite.defaultMPRepeat(SERVER_NAME);
 
     @BeforeClass
     public static void exportWebApp() throws Exception {

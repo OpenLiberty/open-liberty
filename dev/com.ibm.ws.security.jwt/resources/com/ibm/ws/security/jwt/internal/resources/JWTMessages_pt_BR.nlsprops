@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/jwt/resources/JWTMessages.nlsprops
 #COMPONENTPREFIX CWWKS
@@ -19,11 +16,11 @@
 # -------------------------------------------------------------------------------------------------
 # Message prefix block: CWWKS6000 - CWWKS6100
 JWT_BUILDER_CONFIG_PROCESSED=CWWKS6000I: Configura\u00e7\u00e3o {0} do JWT processada com \u00eaxito
-JWT_BUILDER_CONFIG_PROCESSED.explanation=A configura\u00e7\u00e3o do JWT (construtor de token da web JSON) foi processada com \u00eaxito.
+JWT_BUILDER_CONFIG_PROCESSED.explanation=A configura\u00e7\u00e3o do construtor JSON Web Token (JWT) foi processada com \u00eaxito
 JWT_BUILDER_CONFIG_PROCESSED.useraction=Nenhuma
 
 JWT_BUILDER_CONFIG_MODIFIED=CWWKS6001I: Mudan\u00e7a na configura\u00e7\u00e3o {0} do JWT processada com \u00eaxito.
-JWT_BUILDER_CONFIG_MODIFIED.explanation=A configura\u00e7\u00e3o do JWT (construtor de token da web JSON) foi modificada com \u00eaxito.
+JWT_BUILDER_CONFIG_MODIFIED.explanation=A configura\u00e7\u00e3o do construtor JSON Web Token (JWT) foi modificada com \u00eaxito
 JWT_BUILDER_CONFIG_MODIFIED.useraction=Nenhum.
 
 # Do not translate "JSON Web Token", "JWT"
@@ -44,7 +41,7 @@ JWT_ENDPOINT_FILTER_MATCH_NOT_FOUND.useraction=Verifique se o caminho da URL apo
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Config ID of JWT provider
-JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: O servi\u00e7o de configura\u00e7\u00e3o JSON Web Token (JWT) n\u00e3o est\u00e1 dispon\u00edvel para o provedor [{0}].
+JWT_CONFIG_SERVICE_NOT_AVAILABLE=CWWKS6005E: O servi\u00e7o de configura\u00e7\u00e3o do JSON Web Token n\u00e3o est\u00e1 dispon\u00edvel para o provedor [{0}].
 JWT_CONFIG_SERVICE_NOT_AVAILABLE.explanation=O provedor especificado na mensagem n\u00e3o existe na configura\u00e7\u00e3o do servidor ou a configura\u00e7\u00e3o para o provedor especificado n\u00e3o foi processada pelo servi\u00e7o de configura\u00e7\u00e3o.
 JWT_CONFIG_SERVICE_NOT_AVAILABLE.useraction=Inspecione a configura\u00e7\u00e3o do servidor para assegurar que o provedor especificado esteja configurado.
 
@@ -65,7 +62,7 @@ JWT_BUILDER_INVALID.explanation=Um construtor JSON web token (JWT) com o ID espe
 JWT_BUILDER_INVALID.useraction=No arquivo server.xml, configure um elemento jwtBuilder com o ID especificado.
 
 # Do not translate "JSON Web Token", "JWT"
-JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: O valor [{1}] na solicita\u00e7\u00e3o JSON web token (JWT) [{0}] n\u00e3o \u00e9 v\u00e1lido.
+JWT_INVALID_CLAIM_VALUE_ERR=CWWKS6009E: O valor [{1}] na [{0}] solicita\u00e7\u00e3o JSON Web Token (JWT) n\u00e3o \u00e9 v\u00e1lido.
 JWT_INVALID_CLAIM_VALUE_ERR.explanation=O valor especificado na solicita\u00e7\u00e3o JSON web token (JWT) n\u00e3o atende \u00e0 especifica\u00e7\u00e3o JWT.
 JWT_INVALID_CLAIM_VALUE_ERR.useraction=Forne\u00e7a um valor v\u00e1lido para a solicita\u00e7\u00e3o especificada. Para obter informa\u00e7\u00f5es adicionais, consulte a especifica\u00e7\u00e3o JWT.
 
@@ -131,13 +128,13 @@ JWT_INVALID_CLAIMS_ERR.useraction=Certifique-se de que o conjunto correto de sol
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Issuer claim of the token, 1=JWT configuration ID, 2=Trusted issuers specified in server configuration
-JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: O emissor [{0}] do JSON Web Token (JWT) fornecido n\u00e3o \u00e9 listado como um emissor confi\u00e1vel na configura\u00e7\u00e3o de JWT [{1}]. Os emissores confi\u00e1veis s\u00e3o [{2}].
+JWT_ISSUER_NOT_TRUSTED=CWWKS6022E: O emissor do [{0}] do JSON Web Token (JWT) fornecido n\u00e3o est\u00e1 listado como um emissor confi\u00e1vel na configura\u00e7\u00e3o do JWT [{1}] Os emissores confi\u00e1veis s\u00e3o [{2}].
 JWT_ISSUER_NOT_TRUSTED.explanation=A configura\u00e7\u00e3o do servidor especifica quais emissores s\u00e3o confi\u00e1veis ao validar os JWTs. O token fornecido n\u00e3o foi originado de um emissor confi\u00e1vel, portanto, o token n\u00e3o pode ser validado.
 JWT_ISSUER_NOT_TRUSTED.useraction=Obtenha um novo token de um dos emissores confi\u00e1veis especificados em sua configura\u00e7\u00e3o do JWT, ou inclua o emissor especificado na mensagem como um emissor confi\u00e1vel em sua configura\u00e7\u00e3o do JWT.
 
 # Do not translate "JSON Web Token", "JWT"
 # 0=Audience claim of the token, 1=JWT configuration ID, 2=Trusted audiences specified in server configuration
-JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: O p\u00fablico [{0}] do JSON Web Token (JWT) fornecido n\u00e3o \u00e9 listado como um p\u00fablico confi\u00e1vel na configura\u00e7\u00e3o de JWT [{1}]. Os p\u00fablicos confi\u00e1veis s\u00e3o [{2}].
+JWT_AUDIENCE_NOT_TRUSTED=CWWKS6023E: O p\u00fablico do [{0}] do JSON Web Token (JWT) fornecido n\u00e3o est\u00e1 listado como um p\u00fablico confi\u00e1vel na configura\u00e7\u00e3o do [{1}] JWT. Os p\u00fablicos confi\u00e1veis s\u00e3o [{2}].
 JWT_AUDIENCE_NOT_TRUSTED.explanation=A configura\u00e7\u00e3o do servidor especifica quais p\u00fablicos s\u00e3o confi\u00e1veis ao validar os JWTs. O token fornecido n\u00e3o \u00e9 destinado a um p\u00fablico confi\u00e1vel, portanto, o token n\u00e3o pode ser validado.
 JWT_AUDIENCE_NOT_TRUSTED.useraction=Obtenha um novo token destinado a um dos p\u00fablicos confi\u00e1veis especificados em sua configura\u00e7\u00e3o do JWT, ou inclua o p\u00fablico especificado na mensagem como um p\u00fablico confi\u00e1vel em sua configura\u00e7\u00e3o do JWT.
 
@@ -323,7 +320,7 @@ MP_CONFIG_PUBLIC_KEY_ALG_NOT_SUPPORTED.useraction=Especifique um algoritmo de as
 
 # Do not translate "JSON Web Token", "AMR", "JWT"
 # 0=AMR claim of the token, 1=JWT configuration ID, 2=AMR specified in server configuration
-JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: O AMR [{0}] do token da web JSON (JWT) fornecido n\u00e3o \u00e9 listado como um AMR confi\u00e1vel na configura\u00e7\u00e3o do [{1}] JWT. Os AMR confi\u00e1veis s\u00e3o [{2}].
+JWT_AMR_CLAIM_NOT_VALID=CWWKS6054E: O [{0}] AMR do JSON Web Token (JWT) fornecido n\u00e3o est\u00e1 listado como um AMR confi\u00e1vel na configura\u00e7\u00e3o do JWT [{1}].. Os AMR confi\u00e1veis s\u00e3o [{2}].
 JWT_AMR_CLAIM_NOT_VALID.explanation=A configura\u00e7\u00e3o do servidor especifica qual AMR \u00e9 confi\u00e1vel ao validar JWTs. O token fornecido n\u00e3o \u00e9 destinado a um AMR confi\u00e1vel, portanto, o token n\u00e3o pode ser validado.
 JWT_AMR_CLAIM_NOT_VALID.useraction=Obtenha um novo token para um dos AMR confi\u00e1veis especificados em sua configura\u00e7\u00e3o JWT ou inclua o AMR especificado na mensagem como um AMR confi\u00e1vel em sua configura\u00e7\u00e3o de JWT.
 

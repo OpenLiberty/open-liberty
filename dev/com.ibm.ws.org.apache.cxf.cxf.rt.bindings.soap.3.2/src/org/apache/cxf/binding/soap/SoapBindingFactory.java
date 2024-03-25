@@ -640,7 +640,7 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
                               String partNameFilter) {
         for (Part part : cast(msg.getParts().values(), Part.class)) {
 
-        	// Liberty Change Start: Correct OutofBound MessagePartInfos from inheriting the wrong QName from MessageInfo
+            // Liberty Change Start: Correct OutofBound MessagePartInfos from inheriting the wrong QName from MessageInfo
             QName partTypeQname = part.getTypeName();
             QName partElementQname = part.getElementName();
             if (StringUtils.isEmpty(partNameFilter)
@@ -657,8 +657,16 @@ public class SoapBindingFactory extends AbstractWSDLBindingFactory {
                     && pi.getMessageInfo().getName().equals(msg.getQName())) {
                     continue;
                 }
-                if (partElementQname != null && !partElementQname.equals(pqname)) { // Use ElementQname to check for correct QName
-                    pi = minfo.addOutOfBandMessagePart(partElementQname);
+                // Fix 26846 begin
+                String partElementQnameSpace = partElementQname.getNamespaceURI();
+                
+                // Correct Namespace while keeping everything else intact. 
+                // Use ElementQname to check for correct QName
+                // Fix 27103 prevents creation of MessagePartInfo (pi) when it's null in system
+                if (partElementQnameSpace != null && pi != null && !partElementQnameSpace.equals(minfo.getName().getNamespaceURI())) { 
+                    QName newPartTypeQName = new QName(partElementQnameSpace, pqname.getLocalPart());
+                    pi = minfo.addOutOfBandMessagePart(newPartTypeQName);
+                 // Fix 26846 end
                     LOG.finest("QName mismatch corrected, PartInfo is now = " + pi);
                 } else {
                     pi = minfo.addOutOfBandMessagePart(pqname);

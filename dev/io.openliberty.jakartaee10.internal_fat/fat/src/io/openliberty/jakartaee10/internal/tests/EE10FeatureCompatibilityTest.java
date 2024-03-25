@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.jakartaee10.internal.tests;
 
@@ -54,6 +51,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.FeatureUtilities;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatActions.EEVersion;
@@ -130,6 +128,10 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         compatibleFeatures.remove("springBoot-2.0");
 
         compatibleFeatures.remove("mpReactiveMessaging-3.0"); //still in development
+        compatibleFeatures.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
+
+        compatibleFeatures.remove("mpHealth"); //versionless features in development
+        compatibleFeatures.remove("mpMetrics");
 
         if (!openLibertyOnly) {
             // stabilized features
@@ -173,6 +175,7 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         incompatibleFeatures.removeAll(compatibleFeatures);
 
         incompatibleFeatures.remove("mpReactiveMessaging-3.0"); //still in development
+        incompatibleFeatures.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
 
         // Test features may or may not be compatible, we don't want to assert either way
         incompatibleFeatures.removeAll(FeatureUtilities.allTestFeatures());
@@ -287,12 +290,15 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
      */
     @Test
     public void testCdi40Feature() throws Exception {
+        Set<String> featureSet = new HashSet<>(allFeatures);
+        featureSet.remove("mpHealth");
+        featureSet.remove("mpMetrics");
         Map<String, String> specialEE10Conflicts = new HashMap<>();
         specialEE10Conflicts.put("cdi-3.0", "io.openliberty.cdi");
         // cdi-4.0 will conflict with itself
         specialEE10Conflicts.put("cdi-4.0", "io.openliberty.cdi");
         specialEE10Conflicts.put("cdi-4.1", "io.openliberty.cdi");
-        testCompatibility("cdi-4.0", allFeatures, specialEE10Conflicts);
+        testCompatibility("cdi-4.0", featureSet, specialEE10Conflicts);
     }
 
     /**
@@ -310,6 +316,9 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
      */
     @Test
     public void testServlet60Feature() throws Exception {
+        Set<String> featureSet = new HashSet<>(allFeatures);
+        featureSet.remove("mpHealth");
+        featureSet.remove("mpMetrics");
         Map<String, String> specialEE10Conflicts = new HashMap<>();
         specialEE10Conflicts.put("servlet-6.1", "com.ibm.websphere.appserver.servlet");
         specialEE10Conflicts.put("servlet-6.0", "com.ibm.websphere.appserver.servlet");
@@ -318,7 +327,7 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         specialEE10Conflicts.put("servlet-3.1", "com.ibm.websphere.appserver.servlet");
         specialEE10Conflicts.put("servlet-3.0", "com.ibm.websphere.appserver.servlet");
 
-        testCompatibility("servlet-6.0", allFeatures, specialEE10Conflicts);
+        testCompatibility("servlet-6.0", featureSet, specialEE10Conflicts);
     }
 
     /**
@@ -342,7 +351,7 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         // faces and facesContainer conflict with each other
         specialEE10Conflicts.put("facesContainer-3.0", "io.openliberty.facesProvider");
         specialEE10Conflicts.put("facesContainer-4.0", "io.openliberty.facesProvider");
-        specialEE10Conflicts.put("facesContainer-5.0", "io.openliberty.facesProvider");
+        specialEE10Conflicts.put("facesContainer-4.1", "io.openliberty.facesProvider");
         // the jakartaee-10.0 convenience feature conflicts with itself
         specialEE10Conflicts.put("jakartaee-10.0", "io.openliberty.jakartaee");
         // the convenience feature depends on jdbc-4.2 and tolerates 4.3

@@ -1,1 +1,1 @@
-io.openliberty.microprofile.telemetry.internal.rest.TelemetryContainerFilter
+io.openliberty.microprofile.telemetry11.internal.rest.TelemetryContainerFilter

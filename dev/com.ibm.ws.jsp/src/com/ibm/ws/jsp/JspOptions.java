@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp;
 
@@ -54,7 +51,8 @@ public class JspOptions {
     protected String     ieClassId = "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93";
     protected boolean    isZOS = false;
     protected String     javaEncoding = "UTF-8";
-    private   int        jdkSourceLevel;
+    private   int        jdkSourceLevel = -1;
+    private   int        javaSourceLevel = -1; 
     protected String     jspCompileClasspath = null;
     protected boolean    keepGenerated = false;
     protected boolean    keepGeneratedclassfiles = true;
@@ -75,7 +73,6 @@ public class JspOptions {
     protected boolean    useDevModeSet = false;   // LIDB4293-2
     protected boolean    useFullPackageNames = false;
     protected boolean    useImplicitTagLibs = true;
-    protected boolean    useInMemory = false;   // LIDB4293-2
     protected boolean    useIterationEval = false;  //PK31135
     protected boolean    useJDKCompiler = false; // defect jdkcompiler
     protected boolean    useJikes = false;
@@ -112,21 +109,21 @@ public class JspOptions {
     protected boolean    deleteClassFilesBeforeRecompile = false; //PI12939
     protected boolean    allowMultipleAttributeValues = false; //PI30519
     protected boolean    allowPrecedenceInJspExpressionsWithConstantString = false; //PI37304
-    
+
     //@BLB Pretouch End
     // defect 400645
     String overriddenJspOptions = new String();
     
     public JspOptions() {
-        setJdkSourceLevel(16);
+        setJavaSourceLevel(8); // Changed in PR 25494
     }   
     
     public JspOptions(Properties jspParams) {
-        setJdkSourceLevel(16);
+        setJavaSourceLevel(8); // Changed in PR 25494
         populateOptions(jspParams);
     }
     
-	public void populateOptions(Properties jspParams) {
+    public void populateOptions(Properties jspParams) {
 
 		/*--------------------*/
 		/* Load Option Values */
@@ -222,7 +219,9 @@ public class JspOptions {
         }
         
         int useJdkSourceLevel = -1;
+        int useJavaSourceLevel = -1;
         String rawJdkSourceLevel = jspParams.getProperty("jdkSourceLevel");
+        String rawJavaSourceLevel = jspParams.getProperty("javaSourceLevel");
         try {
             if (rawJdkSourceLevel != null)
                 useJdkSourceLevel = Integer.parseInt(rawJdkSourceLevel);
@@ -231,9 +230,29 @@ public class JspOptions {
                 logger.logp(Level.INFO, CLASS_NAME, "populateOptions", "Invalid value for jdkSourceLevel = " + rawJdkSourceLevel + ".");
             }
         }
-        if (useJdkSourceLevel >= 13) {
-            logger.logp(Level.INFO, CLASS_NAME, "populateOptions", JspMessages.getMessage("jsp.jdksourcelevel.value", new Object[] { useJdkSourceLevel })); //152472
+
+        if (rawJavaSourceLevel != null && (rawJavaSourceLevel.equals("8") || rawJavaSourceLevel.equals("1.8"))) // only for Java 8 do we accept 1.8 and 8
+            rawJavaSourceLevel =  org.eclipse.jdt.internal.compiler.impl.CompilerOptions.VERSION_1_8; 
+        try {
+            if (rawJavaSourceLevel != null)
+                useJavaSourceLevel = Integer.parseInt(rawJavaSourceLevel);            
+        } catch(NumberFormatException e) {
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.INFO)) {
+                logger.logp(Level.INFO, CLASS_NAME, "populateOptions", "Invalid value for javaSourceLevel = " + rawJavaSourceLevel + ".");
+            }
+        }
+
+        if(useJavaSourceLevel != -1 && useJdkSourceLevel != -1) {
+            logger.logp(Level.WARNING, CLASS_NAME, "populateOptions", JspMessages.getMessage("jsp.bothsourcelevelset.warning", new Object[] { useJavaSourceLevel, useJdkSourceLevel }));
+            useJdkSourceLevel = -1;
+        }
+
+        if(useJavaSourceLevel != -1) {
+            setJavaSourceLevel(useJavaSourceLevel); //validation already done via metatype.xml options 
+            logger.logp(Level.INFO, CLASS_NAME, "populateOptions", JspMessages.getMessage("jsp.javasourcelevel.value", new Object[] { javaSourceLevel }));
+        } else if (useJdkSourceLevel >= 13) {
             setJdkSourceLevel(useJdkSourceLevel);
+            logger.logp(Level.INFO, CLASS_NAME, "populateOptions", JspMessages.getMessage("jsp.jdksourcelevel.value", new Object[] { useJdkSourceLevel })); //152472
         }
         
         // Normalize compileWithAssert and jdkSourceLevel; compileWithAssert with value true means compile with
@@ -394,20 +413,11 @@ public class JspOptions {
 			}
 		}//PK31135
 
-        //LIDB4293-2
-		String useInMemoryStr = jspParams.getProperty("useInMemory");
-		if (useInMemoryStr != null) {
-			if (useInMemoryStr.equalsIgnoreCase("true"))
-				this.useInMemory = true;
-			else if (useInMemoryStr.equalsIgnoreCase("false"))
-				this.useInMemory = false;
-			else {
-				if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.INFO)){
-					logger.logp(Level.INFO, CLASS_NAME, "populateOptions", "Invalid value for useInMemory = "+ useInMemoryStr);
-				}
-			}
-		}//LIDB4293-2
+        String useInMemoryStr = jspParams.getProperty("useInMemory");
 
+        if (useInMemoryStr != null && useInMemoryStr.equals("true")) {
+			logger.logp(Level.WARNING, CLASS_NAME, "populateOptions", "jsp.useinmemory.warning");
+        }
         //LIDB4293-2
 		String useDevModeStr = jspParams.getProperty("useDevMode");
 		if (useDevModeStr != null) {
@@ -1072,8 +1082,22 @@ public class JspOptions {
         this.jdkSourceLevel = jdkSourceLevel;
     }
 
+    public void setJavaSourceLevel(int javaSourceLevel) {
+        int jmv = JavaInfo.majorVersion();
+        if (javaSourceLevel > jmv) {
+            // can not specify higher than running Java
+            logger.logp(Level.WARNING, CLASS_NAME, "setJavaSourceLevel", JspMessages.getMessage("jsp.javasourcelevel.warning", new Object[] { javaSourceLevel, jmv }));
+            javaSourceLevel = jmv;
+        }
+        this.javaSourceLevel = javaSourceLevel;
+    }
+    
     public int getJdkSourceLevel() {
         return jdkSourceLevel;
+    }
+    
+    public int getJavaSourceLevel() {
+        return javaSourceLevel;
     }
 
     public void setVerbose(boolean verbose) {
@@ -1246,19 +1270,6 @@ public class JspOptions {
 	//PK31135
 
 	//LIDB4293-2
-	public boolean isUseInMemory() {
-		return useInMemory;
-	}
-
-	public void setUseInMemory(boolean b) {
-		useInMemory = b;
-        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
-            logger.logp(Level.FINEST, CLASS_NAME,"setUseInMemory", "getUseInMemory() [" + isUseInMemory()+"]");
-        }
-	}
-	//LIDB4293-2
-
-	//LIDB4293-2
 	public boolean isUseDevMode() {
 		return useDevMode;
 	}
@@ -1272,13 +1283,9 @@ public class JspOptions {
 			setUseDevModeSet(true);
 	    	setReloadEnabled(true);
 	    	setReloadInterval(1);
-	    	setUseInMemory(true);
 	    	setTrackDependencies(true);
 	    	setDisableJspRuntimeCompilation(false);
 		}
-        if(com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINEST)){
-            logger.logp(Level.FINEST, CLASS_NAME,"setUseDevMode", "getUseInMemory() [" + isUseInMemory()+"]");
-        }
 	}
 	//LIDB4293-2
 
@@ -1628,6 +1635,7 @@ public class JspOptions {
                 "ieClassId =                           [" + ieClassId +"]"+separatorString+
                 "isZOS =                               [" + isZOS +"]"+separatorString+
                 "javaEncoding =                        [" + javaEncoding +"]"+separatorString+
+                "javaSourceLevel =                     [" + javaSourceLevel +"]"+separatorString+
                 "jdkSourceLevel =                      [" + jdkSourceLevel +"]"+separatorString+
                 "jspCompileClasspath =                 [" + tmpJspCompileClasspath +"]"+separatorString+
                 "keepGenerated =                       [" + keepGenerated +"]"+separatorString+
@@ -1649,7 +1657,6 @@ public class JspOptions {
                 "useDevModeSet =                       [" + useDevModeSet +"]"+separatorString+
                 "useFullPackageNames =                 [" + useFullPackageNames +"]"+separatorString+
                 "useImplicitTagLibs =                  [" + useImplicitTagLibs +"]"+separatorString+
-                "useInMemory =                         [" + useInMemory +"]"+separatorString+
                 "useIterationEval =                    [" + useIterationEval +"]"+separatorString+
                 "useJDKCompiler =                      [" + useJDKCompiler +"]"+separatorString+
                 "useJikes =                            [" + useJikes +"]"+separatorString+

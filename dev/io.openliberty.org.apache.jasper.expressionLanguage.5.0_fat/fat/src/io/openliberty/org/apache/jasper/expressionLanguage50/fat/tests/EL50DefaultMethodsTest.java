@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,20 +31,21 @@ public class EL50DefaultMethodsTest extends FATServletClient {
 
     @Server("expressionLanguage50_defaultMethodsServer")
     @TestServlet(servlet = EL50DefaultMethodsServlet.class, contextRoot = "EL50DefaultMethodBeanELResolverTest")
-    public static LibertyServer elServer;
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(elServer, "EL50DefaultMethodBeanELResolverTest.war", "io.openliberty.el50.fat.defaultmethods.servlet");
+        ShrinkHelper.defaultDropinApp(server, "EL50DefaultMethodBeanELResolverTest.war", "io.openliberty.el50.fat.defaultmethods.servlet");
 
-        elServer.startServer(EL50DefaultMethodsTest.class.getSimpleName() + ".log");
+        server.startServer(EL50DefaultMethodsTest.class.getSimpleName() + ".log");
+
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (elServer != null && elServer.isStarted()) {
-            elServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 }

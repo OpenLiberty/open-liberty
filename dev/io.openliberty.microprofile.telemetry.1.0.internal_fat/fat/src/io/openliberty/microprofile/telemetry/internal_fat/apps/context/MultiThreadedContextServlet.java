@@ -27,13 +27,13 @@ import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.baggage.BaggageBuilder;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
-import jakarta.annotation.Resource;
-import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.annotation.WebServlet;
+import javax.annotation.Resource;
+import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.enterprise.context.ApplicationScoped;
+import javax.servlet.annotation.WebServlet;
 
 @SuppressWarnings("serial")
-@WebServlet("/context")
+@WebServlet("/testContext")
 @ApplicationScoped
 public class MultiThreadedContextServlet extends FATServlet {
 
@@ -82,7 +82,7 @@ public class MultiThreadedContextServlet extends FATServlet {
     @Test
     public void testNewContextWrap() throws InterruptedException, ExecutionException, TimeoutException {
         //add some baggage to the current context
-        try(Scope s = addBaggage(MY_KEY_1, MY_VALUE_1)){
+        try (Scope s = addBaggage(MY_KEY_1, MY_VALUE_1)) {
 
             //create a new context with a different value in (should not contain MY_KEY_1)
             Context context = newContextWithBaggage(MY_KEY_2, MY_VALUE_2);
@@ -103,7 +103,7 @@ public class MultiThreadedContextServlet extends FATServlet {
     @Test
     public void testNewContextWrapCallable() throws InterruptedException, ExecutionException, TimeoutException {
         //add some baggage to the current context
-        try(Scope s = addBaggage(MY_KEY_1, MY_VALUE_1)){
+        try (Scope s = addBaggage(MY_KEY_1, MY_VALUE_1)) {
 
             //create a new context with a different value in (should not contain MY_KEY_1)
             Context context = newContextWithBaggage(MY_KEY_2, MY_VALUE_2);

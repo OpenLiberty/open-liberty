@@ -1,0 +1,32 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMRX
+#COMPONENTNAMEFOR CWMRX MicroProfile Reactive
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2023 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# CWMRX   0000-0999       MicroProfile Reactive Streams
+# CWMRX   1000-1999       MicroProfile Reactive Messaging
+#-----------------------------------------------------------------------------------------------------------------------------
+
+reactive.messaging.validation.error.CWMRX1100E=CWMRX1100E: O eroare a ap\u0103rut \u00een timpul valid\u0103rii Reactive Messaging atunci c\u00e2nd a \u00eenceput aplica\u021bia {0} Eroarea a fost {1}
+reactive.messaging.validation.error.CWMRX1100E.explanation=\u00cen timpul valid\u0103rii graficului de mesagerie reactiv\u0103 construit, au fost g\u0103site erori care \u00eempiedic\u0103 trimiterea sau primirea de mesaje.
+reactive.messaging.validation.error.CWMRX1100E.useraction=Rezolva\u021bi erorile raportate \u0219i reimplementa\u021bi aplica\u021bia.

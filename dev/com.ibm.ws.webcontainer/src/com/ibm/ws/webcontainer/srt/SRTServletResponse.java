@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -870,7 +871,18 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
                 if (isTraceOn&&logger.isLoggable (Level.FINE) && writerException){  //306998.15
                     logger.logp(Level.FINE, CLASS_NAME,"getWriter", "writerException --> " + writerException + "--> creating new OutputStreamWriter");
                 }
-                _outWriter = new OutputStreamWriter(_rawOut, EncodingUtils.getJvmConverter(charEncoding));
+
+                String convertedCharEncoding = EncodingUtils.getJvmConverter(charEncoding);
+                Charset charset;
+                if (convertedCharEncoding == null) {
+                    charset = Charset.defaultCharset();
+                } else {
+                    charset = EncodingUtils.getCharsetForName(convertedCharEncoding);
+                    if (charset == null) {
+                        throw new UnsupportedEncodingException(convertedCharEncoding + " is not found");
+                    }
+                }
+                _outWriter = new OutputStreamWriter(_rawOut, charset);
                 _outWriterEncoding = charEncoding;
                 writerException = false;
             }
@@ -1053,8 +1065,21 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
      * 
      */
     private void addSTSHeader() {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+            logger.entering(CLASS_NAME,"addSTSHeader", this);
+        }
 
-        String value  = this.getRequest().getWebAppDispatcherContext().getWebApp().getConfiguration().getSTSHeaderValue(); 
+        WebApp webApp = this.getRequest().getWebAppDispatcherContext().getWebApp();
+
+        //webApp is null if there's any exception before WC can determine a target webapp 
+        if (webApp == null) {   
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+                logger.exiting(CLASS_NAME,"addSTSHeader", "cannot determine WebApp.");
+            }
+            return;
+        }
+
+        String value  = webApp.getConfiguration().getSTSHeaderValue(); 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME,"addSTSHeader", " value -->" + value);
         }
@@ -2240,7 +2265,12 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
                 throw new IllegalArgumentException("Cannot Set Content-Type to a Date value");
             }
             else {
-                setHeader(name, (createCompliantHttpDateString(date)));
+                if (com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() < com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_61) {
+                    setHeader(name, (createCompliantHttpDateString(date)));
+                }
+                else {
+                    addDateField(name, date);
+                }
             }
         }
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15

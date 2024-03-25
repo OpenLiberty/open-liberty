@@ -18,7 +18,8 @@ IBM-API-Package: jakarta.ws.rs; type="spec", \
  org.jboss.resteasy.plugins.providers.sse; type="internal", \
  org.jboss.resteasy.plugins.providers; type="internal", \
  org.jboss.resteasy.spi;type="internal", \
- org.reactivestreams;type="internal"
+ org.reactivestreams;type="internal", \
+ jakarta.activation; type="spec"
 IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 IBM-App-ForceRestart: uninstall, \
  install
@@ -28,7 +29,7 @@ Subsystem-Name: Jakarta RESTful Web Services 3.0 Client
 -features=io.openliberty.cdi-3.0, \
   io.openliberty.jakarta.mail-2.0, \
   io.openliberty.jakarta.validation-3.0, \
-  com.ibm.websphere.appserver.globalhandler-1.0, \
+  com.ibm.websphere.appserver.globalhandler-2.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   com.ibm.websphere.appserver.servlet-5.0, \
   io.openliberty.servlet.internal-5.0, \

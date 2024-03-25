@@ -1,0 +1,106 @@
+#*******************************************************************************
+# Copyright (c) 2023, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+Bundle-Name: WAS WebContainer
+Bundle-SymbolicName: io.openliberty.webcontainer.servlet.6.1.internal.factories
+Bundle-Description: WAS WebContainer with object factories for Servlet 6.1 support
+
+-dsannotations: \
+  io.openliberty.webcontainer.servlet.internal.async.factory.AsyncContextFactory61Impl, \
+  io.openliberty.webcontainer.servlet.internal.osgi.container.config.factory.WebAppConfiguratorFactory61Impl, \
+  io.openliberty.webcontainer.servlet.internal.osgi.response.factory.IRequestResponseFactory61Impl, \
+  io.openliberty.webcontainer.servlet.internal.osgi.srt.factory.SRTConnectionContextPool61Impl, \
+  io.openliberty.webcontainer.servlet.internal.osgi.webapp.factory.WebAppFactory61Impl, \
+  io.openliberty.webcontainer.servlet.internal.servlet.factory.CacheServletWrapperFactory61Impl, \
+  io.openliberty.webcontainer.servlet.internal.session.impl.factory.SessionContextRegistryImplFactory61Impl, \
+  io.openliberty.webcontainer.servlet.internal.util.factory.URIMatcherFactory61Impl
+
+Service-Component: \
+  com.ibm.ws.webcontainer.v61.dd; \
+    implementation:=com.ibm.ws.javaee.version.ServletVersion; \
+    provide:=com.ibm.ws.javaee.version.ServletVersion; \
+    properties:="version:Integer=61", \
+  com.ibm.ws.webcontainer.v61.httpTransportBehavior; \
+    implementation:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
+    provide:=com.ibm.wsspi.http.ee7.HttpTransportBehavior; \
+    properties:="useEE7Streams:Boolean=true,useIOEBehavior:Boolean=true", \
+  com.ibm.ws.webcontainer.v61.httpProtocolBehavior; \
+    implementation:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
+    provide:=com.ibm.wsspi.channelfw.HttpProtocolBehavior; \
+    properties:="httpVersionSetting:String=2.0_Optional_On", \
+  com.ibm.ws.webcontainer.v61.httpBehavior; \
+    implementation:=com.ibm.wsspi.http.ee.behaviors.HttpBehavior; \
+    provide:=com.ibm.wsspi.http.ee.behaviors.HttpBehavior; \
+    properties:="useEE10Cookies:Boolean=true"
+
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: \
+    com.ibm.ws.webcontainer.speclevel, \
+    io.openliberty.webcontainer.servlet.internal.*factory*;provide:=true
+
+Import-Package: \
+    !io.openliberty.webcontainer.servlet.internal.async.factory, \
+    !io.openliberty.webcontainer.servlet.internal.osgi.container.config.factory, \
+    !io.openliberty.webcontainer.servlet.internal.osgi.response.factory, \
+    !io.openliberty.webcontainer.servlet.internal.osgi.srt.factory, \
+    !io.openliberty.webcontainer.servlet.internal.osgi.webapp.factory, \
+    !io.openliberty.webcontainer.servlet.internal.servlet.factory, \
+    !io.openliberty.webcontainer.servlet.internal.session.impl.factory, \
+    !io.openliberty.webcontainer.servlet.internal.util.factory, \
+    com.ibm.websphere.csi, \
+    com.ibm.ws.webcontainer40.osgi.container.config, \
+    com.ibm.ws.webcontainer40.osgi.request, \
+    com.ibm.ws.webcontainer40.osgi.srt, \
+    com.ibm.ws.webcontainer31.osgi.response, \
+    com.ibm.ws.webcontainer31.osgi.srt, \
+    com.ibm.ws.webcontainer31.async, \
+    com.ibm.ws.webcontainer31.osgi.webapp, \
+    com.ibm.ws.webcontainer31.session.impl, \
+    com.ibm.ws.webcontainer.osgi.srt, \
+    com.ibm.ws.container.service.metadata, \
+    com.ibm.ws.webcontainer.osgi.webapp, \
+    com.ibm.wsspi.injectionengine, \
+    io.openliberty.webcontainer60.session.impl, \
+    io.openliberty.webcontainer60.osgi.request, \
+    io.openliberty.webcontainer61.osgi.response, \
+    *
+
+-buildpath: \
+    com.ibm.ws.webcontainer.servlet.3.1.jakarta;version=latest,\
+    com.ibm.ws.webcontainer.jakarta;version=latest,\
+    com.ibm.ws.logging.core,\
+    com.ibm.ws.adaptable.module;version=latest,\
+    com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.websphere.org.osgi.service.component;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    com.ibm.ws.transport.http;version=latest,\
+    com.ibm.ws.channelfw;version=latest,\
+    com.ibm.ws.managedobject;version=latest,\
+    com.ibm.ws.container.service;version=latest,\
+    com.ibm.ws.injection;version=latest,\
+    com.ibm.ws.session.jakarta;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.webcontainer.servlet.4.0.jakarta;version=latest,\
+    com.ibm.ws.resource;version=latest, \
+    com.ibm.ws.kernel.boot.core;version=latest,\
+    io.openliberty.webcontainer.servlet.6.0.internal;version=latest,\
+    io.openliberty.jakarta.servlet.6.1;version=latest,\
+    io.openliberty.webcontainer.servlet.6.1.internal;version=latest
+

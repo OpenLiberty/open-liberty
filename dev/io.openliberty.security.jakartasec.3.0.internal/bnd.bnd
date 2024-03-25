@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -35,26 +35,31 @@ Export-Package: \
     io.openliberty.security.jakartasec.tokens
 
 Import-Package: \
+    jakarta.security.enterprise.authentication.mechanism.http;version="[3.0,5)",\
+    jakarta.security.enterprise.authentication.mechanism.http.openid;version="[3.0,5)",\
+    jakarta.security.enterprise.credential;version="[3.0,5)",\
+    jakarta.security.enterprise.identitystore;version="[3.0,5)",\
+    jakarta.security.enterprise.identitystore.openid;version="[3.0,5)",\
     *
 
 instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resources/resources/*.class
 
 -buildpath: \
-    com.ibm.ws.kernel.boot;version=latest,\
-    com.ibm.ws.kernel.service;version=latest,\
-    com.ibm.ws.logging;version=latest,\
-    com.ibm.ws.logging.core;version=latest,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-    io.openliberty.security.jakartasec.2.0.internal,\
-    io.openliberty.jakarta.security.3.0,\
-    io.openliberty.security.oidcclientcore.internal.jakarta,\
-    io.openliberty.jakarta.jsonp.2.1,\
-    io.openliberty.jakarta.servlet.6.0,\
-    com.ibm.ws.org.jose4j;version=latest,\
-    com.ibm.ws.security;version=latest,\
-    io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
-    com.ibm.json4j;version=latest,\
-    io.openliberty.org.jboss.weld5;version=latest
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.security.jakartasec.2.0.internal,\
+	io.openliberty.jakarta.security.3.0,\
+	io.openliberty.security.oidcclientcore.internal.jakarta,\
+	io.openliberty.jakarta.jsonp.2.1,\
+	io.openliberty.jakarta.servlet.6.0,\
+	com.ibm.ws.org.jose4j;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
+	com.ibm.json4j;version=latest,\
+	io.openliberty.cdi.4.0.internal.interfaces;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
@@ -66,7 +71,6 @@ instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resource
     io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
     io.openliberty.org.apache.jasper.expressionLanguage.5.0;version=latest,\
     io.openliberty.org.eclipse.parsson.1.1,\
-    io.openliberty.jakarta.security.3.0,\
     com.ibm.ws.security.test.common;version=latest,\
     org.jmock:jmock-legacy;version=2.5.0,\
     org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\

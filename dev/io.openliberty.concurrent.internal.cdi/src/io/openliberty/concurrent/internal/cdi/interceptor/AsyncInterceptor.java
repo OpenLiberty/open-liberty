@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,9 @@ package io.openliberty.concurrent.internal.cdi.interceptor;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -30,8 +32,10 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.concurrent.internal.messages.ConcurrencyNLS;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.enterprise.concurrent.Schedule;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
@@ -50,25 +54,35 @@ public class AsyncInterceptor implements Serializable {
     @FFDCIgnore({ ClassCastException.class, NamingException.class }) // application errors raised directly to the app
     public Object intercept(InvocationContext invocation) throws Exception {
         Method method = invocation.getMethod();
-        validateTransactional(method);
-        if (method.getDeclaringClass().getAnnotation(Asynchronous.class) != null)
-            throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1401.class.anno.disallowed",
-                                                                     "@Asynchronous",
-                                                                     method.getDeclaringClass().getName()));
-
         Asynchronous anno = method.getAnnotation(Asynchronous.class);
+
+        // Is it a scheduled asynchronous method?
+        Schedule[] schedules = anno.runAt();
+        if (schedules.length > 0) {
+            // Identify requested inline execution for scheduled executions other than the first,
+            CompletableFuture<?> future = ScheduledAsyncMethod.inlineExecutionFuture.get();
+            if (future != null)
+                return invoke(invocation, future);
+        }
+
+        validateTransactional(method);
+
+        if (method.getDeclaringClass().getAnnotation(Asynchronous.class) != null)
+            throw new UnsupportedOperationException(ConcurrencyNLS.getMessage("CWWKC1401.class.anno.disallowed",
+                                                                              "@Asynchronous",
+                                                                              method.getDeclaringClass().getName()));
 
         // @Asynchronous must be on a method that returns completion stage or void
         Class<?> returnType = method.getReturnType();
         if (!returnType.equals(CompletableFuture.class)
             && !returnType.equals(CompletionStage.class)
             && !returnType.equals(Void.TYPE)) // void
-            throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1400.unsupported.return.type",
-                                                                     returnType,
-                                                                     method.getName(),
-                                                                     method.getClass().getName(),
-                                                                     "@Asynchronous",
-                                                                     "[CompletableFuture, CompletionStage, void]"));
+            throw new UnsupportedOperationException(ConcurrencyNLS.getMessage("CWWKC1400.unsupported.return.type",
+                                                                              returnType,
+                                                                              method.getName(),
+                                                                              method.getClass().getName(),
+                                                                              "@Asynchronous",
+                                                                              "[CompletableFuture, CompletionStage, void]"));
 
         Object executor;
         try {
@@ -86,16 +100,31 @@ public class AsyncInterceptor implements Serializable {
                 for (Class<?> i : executor.getClass().getInterfaces())
                     interfaces.add(i.getName());
 
-            throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1402.not.managed.executor",
-                                                                  "@Asynchronous",
-                                                                  method.getName(),
-                                                                  method.getClass().getName(),
-                                                                  anno.executor(),
-                                                                  executor.getClass().getName(),
-                                                                  interfaces), x);
+            throw new RejectedExecutionException(ConcurrencyNLS.getMessage("CWWKC1402.not.managed.executor",
+                                                                           "@Asynchronous",
+                                                                           method.getName(),
+                                                                           method.getClass().getName(),
+                                                                           anno.executor(),
+                                                                           executor.getClass().getName(),
+                                                                           interfaces), x);
         }
 
-        return managedExecutor.newAsyncMethod(this::invoke, invocation);
+        if (schedules.length == 0) {
+            // Immediate one-time asynchronous method
+
+            return managedExecutor.newAsyncMethod(this::invoke, invocation);
+        } else {
+            // Scheduled asynchronous method - arrange first execution
+
+            List<Long> skipIfLateBySeconds = new ArrayList<Long>();
+            List<ScheduleCronTrigger> triggers = new ArrayList<>();
+            for (Schedule schedule : schedules) {
+                skipIfLateBySeconds.add(schedule.skipIfLateBy());
+                triggers.add(ScheduleCronTrigger.create(schedule));
+            }
+
+            return new ScheduledAsyncMethod(invocation, this, managedExecutor, triggers, skipIfLateBySeconds).future;
+        }
     }
 
     /**
@@ -139,13 +168,13 @@ public class AsyncInterceptor implements Serializable {
                 case REQUIRES_NEW:
                     break;
                 default:
-                    throw new UnsupportedOperationException(Tr.formatMessage(tc, "CWWKC1403.unsupported.tx.type",
-                                                                             "@Transactional",
-                                                                             tx.value(),
-                                                                             "@Asynchronous",
-                                                                             method.getName(),
-                                                                             method.getDeclaringClass().getName(),
-                                                                             Arrays.asList(TxType.REQUIRES_NEW, TxType.NOT_SUPPORTED)));
+                    throw new UnsupportedOperationException(ConcurrencyNLS.getMessage("CWWKC1403.unsupported.tx.type",
+                                                                                      "@Transactional",
+                                                                                      tx.value(),
+                                                                                      "@Asynchronous",
+                                                                                      method.getName(),
+                                                                                      method.getDeclaringClass().getName(),
+                                                                                      Arrays.asList(TxType.REQUIRES_NEW, TxType.NOT_SUPPORTED)));
             }
     }
 }

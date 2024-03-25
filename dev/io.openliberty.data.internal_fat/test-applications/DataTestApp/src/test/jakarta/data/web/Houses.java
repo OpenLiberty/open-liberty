@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,21 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static jakarta.data.repository.By.ID;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
+import jakarta.data.Order;
+import jakarta.data.repository.By;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
+import jakarta.data.repository.Save;
 
 /**
  * Repository for operations on the unannotated House entity,
@@ -26,22 +34,31 @@ import jakarta.data.repository.Repository;
  */
 @Repository
 public interface Houses {
-    long deleteAll();
 
-    long deleteById(String parcel);
+    @Delete
+    long deleteById(@By(ID) String parcel);
 
     long deleteByKitchenWidthGreaterThan(int widthAbove);
 
-    boolean existsById(String parcel);
+    @Delete
+    int discardBasedOnGarage(Garage.Type garage_type, int garage_door_height);
+
+    @Delete
+    long dropAll();
+
+    boolean existsByParcelId(String parcel);
+
+    Stream<House> findByAreaGreaterThan(int minArea, Order<House> sorts);
 
     List<House> findByGarageTypeOrderByGarageDoorWidthDesc(Garage.Type type);
 
-    House findById(String parcel);
+    @Find
+    House findById(@By(ID) String parcel);
 
     @OrderBy("purchasePrice")
     int[] findGarageAreaByGarageNotNull();
 
-    Optional<Object[]> findGarageDoorAndKitchenLengthAndKitchenWidthById(String parcel);
+    Optional<Object[]> findGarageDoorAndKitchenLengthAndKitchenWidthByParcelId(String parcel);
 
     @OrderBy("lotSize")
     Stream<Object[]> findKitchenLengthAndKitchenWidthAndGarageAreaAndAreaByAreaLessThan(int maxArea);
@@ -49,7 +66,17 @@ public interface Houses {
     @OrderBy("area")
     DoubleStream findPurchasePriceByLotSizeGreaterThan(float minLotSize);
 
+    @Find
+    List<House> findWithGarageDoorDimensions(int garage_door_width, int garage_door_height);
+
+    @Insert
+    void insert(House h);
+
+    @Delete
+    Optional<House> remove(String parcelId);
+
+    @Save
     List<House> save(House... h);
 
-    boolean updateByIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms(String parcel, Garage updatedGarage, int addedArea, int addedKitchenLength, int newNumBedrooms);
+    boolean updateByParcelIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms(String parcel, Garage updatedGarage, int addedArea, int addedKitchenLength, int newNumBedrooms);
 }

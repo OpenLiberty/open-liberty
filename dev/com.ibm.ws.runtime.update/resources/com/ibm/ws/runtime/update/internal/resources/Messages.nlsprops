@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -31,8 +31,8 @@
 # 1100-1199 com.ibm.ws.runtime.update.internal.resources.Messages
 # -------------------------------------------------------------------------------------------------
 
-quiesce.begin=CWWKE1100I: Waiting for up to 30 seconds for the server to quiesce.
-quiesce.begin.explanation=The server waits for up to 30 seconds for services to quiesce before proceeding with shutdown.
+quiesce.begin=CWWKE1100I: Waiting for up to {0} seconds for the server to quiesce.
+quiesce.begin.explanation=The server waits for services to quiesce before it proceeds with shutdown.
 quiesce.begin.useraction=No action is required.
 
 quiesce.end=CWWKE1101I: Server quiesce complete.
@@ -40,11 +40,11 @@ quiesce.end.explanation=The quiesce operation completed successfully.
 quiesce.end.useraction=No action is required.
 
 quiece.warning=CWWKE1102W: The quiesce operation did not complete. The server will now stop.
-quiece.warning.explanation=The process was unable to quiesce all services within 30 seconds.
-quiece.warning.useraction=You can safely ignore error messages that are the result of unavailable required services.
+quiece.warning.explanation=The process was unable to quiesce all services within the quiesce timeout period.
+quiece.warning.useraction=You can safely ignore error messages that are the result of unavailable required services. If the problem persists, increase the 'quiesceTimeout' duration by adding 'quiesceTimeout' attribute to the 'executor' element in the 'server.xml' file.
 
-client.quiesce.begin=CWWKE1103I: Waiting for up to 30 seconds for the client to quiesce.
-client.quiesce.begin.explanation=The client waits for up to 30 seconds for services to quiesce before proceeding with shutdown.
+client.quiesce.begin=CWWKE1103I: Waiting for up to {0} seconds for the client to quiesce.
+client.quiesce.begin.explanation=The client waits for services to quiesce before it proceeds with shutdown.
 client.quiesce.begin.useraction=No action is required.
 
 client.quiesce.end=CWWKE1104I: Client quiesce complete.

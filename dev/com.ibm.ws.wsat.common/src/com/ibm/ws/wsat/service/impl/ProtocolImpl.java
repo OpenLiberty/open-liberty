@@ -28,7 +28,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.common.impl.DebugUtils;
 import com.ibm.ws.wsat.common.impl.WSATCoordinator;
-import com.ibm.ws.wsat.common.impl.WSATCoordinatorTran;
 import com.ibm.ws.wsat.common.impl.WSATParticipant;
 import com.ibm.ws.wsat.common.impl.WSATParticipantState;
 import com.ibm.ws.wsat.common.impl.WSATTransaction;
@@ -142,6 +141,10 @@ public class ProtocolImpl {
 
     @FFDCIgnore(WSATException.class)
     public void prepare(ProtocolServiceWrapper wrapper) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "prepare: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
+        }
+
         if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.PREPARE);
             return;
@@ -231,6 +234,10 @@ public class ProtocolImpl {
     // sort things out.
 
     public void commit(ProtocolServiceWrapper wrapper) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "commit: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
+        }
+
         if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.COMMIT);
             return;
@@ -262,6 +269,10 @@ public class ProtocolImpl {
 
     @FFDCIgnore(WSATException.class)
     public void rollback(ProtocolServiceWrapper wrapper) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "rollback: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
+        }
+
         if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.ROLLBACK);
             return;
@@ -337,6 +348,10 @@ public class ProtocolImpl {
      */
 
     public void prepared(ProtocolServiceWrapper wrapper) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "prepared: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
+        }
+
         if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.PREPARED);
         } else {
@@ -363,6 +378,10 @@ public class ProtocolImpl {
     }
 
     public void readOnly(ProtocolServiceWrapper wrapper) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "readOnly: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
+        }
+
         if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.READONLY);
         } else {
@@ -432,6 +451,10 @@ public class ProtocolImpl {
     }
 
     public void aborted(ProtocolServiceWrapper wrapper) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "aborted: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
+        }
+
         if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.ABORTED);
         } else {
@@ -443,6 +466,10 @@ public class ProtocolImpl {
     }
 
     public void committed(ProtocolServiceWrapper wrapper) throws WSATException {
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "committed: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
+        }
+
         if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.COMMITTED);
         } else {
@@ -456,7 +483,7 @@ public class ProtocolImpl {
     // Find the WSATParticipant for the response
     private WSATParticipant findParticipant(String globalId, String partId) {
         WSATParticipant participant = null;
-        WSATCoordinatorTran wsatTran = WSATTransaction.getCoordTran(globalId);
+        WSATTransaction wsatTran = WSATTransaction.getCoordTran(globalId);
         if (wsatTran != null) {
             participant = wsatTran.getParticipant(partId);
             if (participant == null) {

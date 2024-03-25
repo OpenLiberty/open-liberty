@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2023 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -14,30 +14,39 @@
 bVersion=1.0
 
 fat.test.container.images:\
- seleniarm/standalone-chromium:4.8.3,\
- selenium/standalone-chrome:4.8.3,\
- alpine:3.16
+    seleniarm/standalone-chromium:4.8.3,\
+    selenium/standalone-chrome:4.8.3,\
+    alpine:3.16
 
 tested.features: \
- expressionLanguage-4.0, \
- servlet-5.0, \
- cdi-3.0, \
- websocket-2.0, \
- faces-3.0, \
- pages-3.0,\
- beanvalidation-3.0,\
- xmlBinding-3.0,\
- jpacontainer-3.0,\
- persistence-3.0,\
- expressionLanguage-5.0,\
- pages-3.1,\
- servlet-6.0,\
- faces-4.0,\
- cdi-4.0,\
- persistence-3.1,\
- persistencecontainer-3.1,\
- websocket-2.1
-
+    expressionlanguage-4.0, \
+    servlet-5.0, \
+    cdi-3.0, \
+    websocket-2.0, \
+    faces-3.0, \
+    pages-3.0,\
+    beanvalidation-3.0,\
+    xmlbinding-3.0,\
+    jpacontainer-3.0,\
+    persistence-3.0,\
+    expressionlanguage-5.0,\
+    pages-3.1,\
+    servlet-6.0,\
+    faces-4.0,\
+    cdi-4.0,\
+    persistence-3.1,\
+    persistencecontainer-3.1,\
+    websocket-2.1,\
+    cdi-4.0,\
+    expressionlanguage-6.0,\
+    faces-4.1,\
+    noship-1.0,\
+    cdi-4.1,\
+    servlet-6.1,\
+    websocket-2.2,\
+    beanvalidation-3.1,\
+    persistence-3.2,\
+    persistencecontainer-3.2
 
 src: \
     fat/src,\

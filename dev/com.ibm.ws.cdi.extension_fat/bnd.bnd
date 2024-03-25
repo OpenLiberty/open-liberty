@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -45,7 +42,14 @@ tested.features:\
 	cdi-4.0,\
 	servlet-6.0,\
 	faces-4.0,\
-        cdi.internals-4.0
+        cdi.internals-4.0,\
+        expressionlanguage-6.0,\
+        noship-1.0,\
+        cdi-4.1,\
+        pages-4.0,\
+        servlet-6.1,\
+        faces-4.1,\
+        beanvalidation-3.1
 	
 fat.project: true
 
@@ -70,6 +74,7 @@ fat.project: true
 	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
 	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
-        io.openliberty.cdi.4.0.interfaces;version=latest,\
+        io.openliberty.cdi.4.0.internal.interfaces;version=latest,\
 	com.ibm.ws.cdi.internal;version=latest,\
-	io.openliberty.jakarta.cdi.4.0
+	io.openliberty.jakarta.cdi.4.0,\
+        com.ibm.ws.org.jboss.weld;version=latest

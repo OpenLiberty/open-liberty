@@ -17,13 +17,13 @@ Subsystem-Name: MicroProfile Config 3.1
   com.ibm.websphere.appserver.internal.slf4j-1.7, \
   io.openliberty.mpCompatible-6.1
 -bundles=io.openliberty.io.smallrye.config3, \
- io.openliberty.io.smallrye.common.2.1, \
+ io.openliberty.io.smallrye.common2, \
  io.openliberty.microprofile.config.internal.common, \
  io.openliberty.microprofile.config.internal.serverxml, \
  com.ibm.ws.org.apache.commons.lang3, \
  com.ibm.ws.cdi.interfaces.jakarta, \
  io.openliberty.org.jboss.logging35
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

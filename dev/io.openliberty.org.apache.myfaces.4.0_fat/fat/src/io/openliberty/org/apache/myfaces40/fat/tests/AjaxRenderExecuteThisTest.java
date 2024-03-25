@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,7 @@ import io.openliberty.org.apache.myfaces40.fat.FATSuite;
  * More tests might need to be added depending on the outcome of issue: https://github.com/jakartaee/faces/issues/1567
  */
 @RunWith(FATRunner.class)
-@SkipForRepeat(SkipForRepeat.NO_MODIFICATION) // Skipped due to HTMLUnit / JavaScript incompatibility (New JS in RC5)
+@SkipForRepeat({SkipForRepeat.NO_MODIFICATION,SkipForRepeat.EE11_FEATURES}) // Skipped due to HTMLUnit / JavaScript incompatibility (New JS in RC5)
 public class AjaxRenderExecuteThisTest {
 
     protected static final Class<?> clazz = AjaxRenderExecuteThisTest.class;

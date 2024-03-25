@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsp23.fat.tests;
 
@@ -86,7 +83,7 @@ public class JSP23JSP22ServerTest {
      */
 
     @Test
-    @SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES})
+    @SkipForRepeat({SkipForRepeat.EE9_OR_LATER_FEATURES})
     public void testJsp23to22FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -127,7 +124,7 @@ public class JSP23JSP22ServerTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE10_FEATURES})
+    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE10_OR_LATER_FEATURES})
     public void testJsp30to23FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -169,7 +166,7 @@ public class JSP23JSP22ServerTest {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES})
+    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE11_OR_LATER_FEATURES})
     public void testJsp31to23FeatureChange() throws Exception {
         WebConversation wc = new WebConversation();
         wc.setExceptionsThrownOnErrorStatus(false);
@@ -199,6 +196,48 @@ public class JSP23JSP22ServerTest {
 
         assertTrue("The response did not contain: JSP version via getVersionInformation: 2.3", response.getText().contains("JSP version via getVersionInformation: 2.3"));
         assertTrue("The response did not contain: JSP version via getSpecificationVersion: 2.3", response.getText().contains("JSP version via getSpecificationVersion: 2.3"));
+
+    }
+
+    /**
+     * Tests a request with the pages-4.0 feature enabled.
+     * Then changes the feature to pages-3.1 and request the same JSP again.
+     * The JSP should be recompiled.
+     * The JSP file pulls the version out of it's generated code and displays it in the rendered page.
+     *
+     * @throws Exception
+     */
+    @Test
+    @SkipForRepeat({SkipForRepeat.NO_MODIFICATION, SkipForRepeat.EE9_OR_LATER_FEATURES})
+    public void testJsp40to31FeatureChange() throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+
+        LOG.info("Requesting JSP with pages-4.0 feature enabled");
+
+        String url = JSPUtils.createHttpUrlString(server, APP_NAME, "testJspFeatureChange.jsp");
+        LOG.info("url: " + url);
+
+        WebRequest request = new GetMethodWebRequest(url);
+        WebResponse response = wc.getResponse(request);
+        LOG.info("Response from a 4.0 compilation: " + response.getText());
+
+        assertTrue("The response did not contain: JSP version via getVersionInformation: 4.0", response.getText().contains("JSP version via getVersionInformation: 4.0"));
+        assertTrue("The response did not contain: JSP version via getSpecificationVersion: 4.0", response.getText().contains("JSP version via getSpecificationVersion: 4.0"));
+
+        List<String> jsp23Feature = new ArrayList<String>();
+        jsp23Feature.add("pages-3.1");
+        server.changeFeatures(jsp23Feature);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("TestJspFeatureChange"), true, new String[0]);
+
+        LOG.info("Requesting JSP with pages-3.1 feature enabled");
+
+        response = wc.getResponse(request);
+
+        LOG.info("Response from a 3.1 compilation: " + response.getText());
+
+        assertTrue("The response did not contain: JSP version via getVersionInformation: 3.1", response.getText().contains("JSP version via getVersionInformation: 3.1"));
+        assertTrue("The response did not contain: JSP version via getSpecificationVersion: 3.1", response.getText().contains("JSP version via getSpecificationVersion: 3.1"));
 
     }
 }

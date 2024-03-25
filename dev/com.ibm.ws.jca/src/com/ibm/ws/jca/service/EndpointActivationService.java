@@ -513,7 +513,7 @@ public class EndpointActivationService implements XAResourceFactory, Application
 
     /**
      * This method will identify the BootstrapContext corresponding to the activationSpec and invoke
-     * activateEndpoint on the resource adapter, returning a deactivationKey which can be used for deactivating the endpoint.
+     * endpointActivate on the resource adapter, returning a deactivationKey which can be used for deactivating the endpoint.
      *
      * @param mef MessageEndpointFactory that is passed from the container.
      * @param activationProperties The activation properties that are passed from the container

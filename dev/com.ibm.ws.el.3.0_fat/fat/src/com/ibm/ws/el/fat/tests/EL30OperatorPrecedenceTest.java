@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.el.fat.tests;
 
@@ -36,20 +33,20 @@ public class EL30OperatorPrecedenceTest extends FATServletClient {
 
     @Server("elServer")
     @TestServlet(servlet = EL30OperatorPrecedenceServlet.class, contextRoot = "TestEL3.0")
-    public static LibertyServer elServer;
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ShrinkHelper.defaultDropinApp(elServer, "TestEL3.0.war", "com.ibm.ws.el30.fat.beans", "com.ibm.ws.el30.fat.servlets");
+        ShrinkHelper.defaultDropinApp(server, "TestEL3.0.war", "com.ibm.ws.el30.fat.beans", "com.ibm.ws.el30.fat.servlets");
 
-        elServer.startServer(EL30OperatorPrecedenceTest.class.getSimpleName() + ".log");
+        server.startServer(EL30OperatorPrecedenceTest.class.getSimpleName() + ".log");
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         // Stop the server
-        if (elServer != null && elServer.isStarted()) {
-            elServer.stopServer();
+        if (server != null && server.isStarted()) {
+            server.stopServer();
         }
     }
 }

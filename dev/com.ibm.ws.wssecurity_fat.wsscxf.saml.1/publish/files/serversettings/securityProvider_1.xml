@@ -9,6 +9,7 @@
 	  <!--  3/2021 add ws-security.return.security.error="true" -->
 	  
 		<signatureProperties
+		    signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="Liberty"
 			org.apache.ws.security.crypto.merlin.keystore.alias="sslspservercert"

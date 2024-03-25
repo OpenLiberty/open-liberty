@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,11 +28,6 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import test.jakarta.data.nosql.web.DataNoSQLServlet;
 
-/**
- * This test bucket will eventually be used to test Jakarta Data running with a Jakarta NoSQL provider.
- * To start with, it is only being used to verify that the Jakarta NoSQL classes can be loaded from a
- * currently nonship nosql-1.0 feature.
- */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 public class DataNoSQLTest extends FATServletClient {

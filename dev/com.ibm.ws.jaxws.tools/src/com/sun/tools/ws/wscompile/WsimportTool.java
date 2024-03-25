@@ -504,7 +504,7 @@ public class WsimportTool {
 
         CodeWriter cw;
         if (options.filer != null) {
-            cw = new FilerCodeWriter(options.sourceDir, options);
+            cw = new FilerCodeWriter(options);
         } else {
             cw = new WSCodeWriter(options.sourceDir, options);
         }

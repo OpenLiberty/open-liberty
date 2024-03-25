@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
+
+import io.openliberty.asm.ASMHelper;
 
 import com.ibm.ws.ras.instrument.internal.model.ClassInfo;
 import com.ibm.ws.ras.instrument.internal.model.FieldInfo;
@@ -46,8 +48,12 @@ public class TraceConfigClassVisitor extends ClassVisitor {
     protected TraceObjectFieldAnnotationVisitor traceObjectFieldAnnotationVisitor;
 
     public TraceConfigClassVisitor(ClassVisitor cv) {
-        super(Opcodes.ASM9, cv);
+        super(ASMHelper.getCurrentASM(), cv);
     }
+    
+    public TraceConfigClassVisitor() {
+        super(Opcodes.ASM9);
+    }    
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
@@ -94,7 +100,7 @@ public class TraceConfigClassVisitor extends ClassVisitor {
         private final MethodInfo methodInfo;
 
         private MethodInfoMethodVisitor(MethodVisitor mv, MethodInfo methodInfo) {
-            super(Opcodes.ASM9, mv);
+            super(ASMHelper.getCurrentASM(), mv);
             this.methodInfo = methodInfo;
         }
 
@@ -115,7 +121,7 @@ public class TraceConfigClassVisitor extends ClassVisitor {
             private final MethodInfo methodInfo;
 
             private FFDCIgnoreAnnotationVisitor(AnnotationVisitor av, MethodInfo methodInfo) {
-                super(Opcodes.ASM9, av);
+                super(ASMHelper.getCurrentASM(), av);
                 this.methodInfo = methodInfo;
             }
 
@@ -133,7 +139,7 @@ public class TraceConfigClassVisitor extends ClassVisitor {
             private final MethodInfo methodInfo;
 
             private FFDCIgnoreValueArrayVisitor(AnnotationVisitor av, MethodInfo methodInfo) {
-                super(Opcodes.ASM9, av);
+                super(ASMHelper.getCurrentASM(), av);
                 this.methodInfo = methodInfo;
             }
 

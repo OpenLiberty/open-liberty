@@ -15,8 +15,9 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>Jakarta JSON Binding TCK Runner TCK Module</name>
 
-	<!-- For artifacts not yet in Maven Central -->
-	<!-- <repositories> 
+	<repositories>
+		<!-- For artifacts not yet in Maven Central -->
+		<!--
 		<repository>
 			<id>sonatype-nexus-staging</id>
 			<name>Sonatype Nexus Staging</name>
@@ -28,7 +29,14 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-	</repositories> -->
+		-->
+		<!-- For artifacts not yet in Stagging repo use DHE -->
+		<repository>
+			<name>IBM DHE Maven repository</name>
+			<id>DHE</id>
+			<url>https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo</url>
+		</repository>
+	</repositories>
 
 	<properties>
 		<!-- Global Maven settings -->
@@ -41,6 +49,9 @@
 		<!-- Jakarta EE API -->
 		<jakarta.json.version>2.1.0</jakarta.json.version>
 		<jakarta.jsonb.version>3.0.0</jakarta.jsonb.version>
+		
+		<!-- Jakarta EE TCK - Can be overridden by test class -->
+		<jakarta.jsonb.tck.groupId>jakarta.json.bind</jakarta.jsonb.tck.groupId>
 		<jakarta.jsonb.tck.version>3.0.0</jakarta.jsonb.tck.version>
 
 		<!-- Test versions -->
@@ -51,7 +62,7 @@
 	<dependencies>
 		<!-- tck - jsonb - external artifact -->
 		<dependency>
-			<groupId>jakarta.json.bind</groupId>
+			<groupId>${jakarta.jsonb.tck.groupId}</groupId>
 			<artifactId>jakarta.json.bind-tck</artifactId>
 			<version>${jakarta.jsonb.tck.version}</version>
 			<scope>test</scope>
@@ -111,12 +122,27 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- Try to force TCK to  use version 1.6 instead of 1.4 -->
+		<!-- TCK compile dependencies -->
 		<dependency>
-            <groupId>org.netbeans.tools</groupId>
-            <artifactId>sigtest-maven-plugin</artifactId>
-            <version>1.6</version>
-        </dependency>
+		    <groupId>org.netbeans.tools</groupId>
+		    <artifactId>sigtest-maven-plugin</artifactId>
+		    <version>1.6</version>
+		    <scope>test</scope>
+		</dependency>
+        
+		<dependency>
+		    <groupId>org.hamcrest</groupId>
+		    <artifactId>hamcrest</artifactId>
+		    <version>2.2</version>
+		    <scope>test</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter</artifactId>
+		    <version>5.10.0</version>
+		    <scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -149,7 +175,7 @@
 				<configuration>
 					<trimStackTrace>false</trimStackTrace>
 					<failIfNoTests>true</failIfNoTests>
-					<dependenciesToScan>jakarta.json.bind:jakarta.json.bind-tck</dependenciesToScan>
+					<dependenciesToScan>${jakarta.jsonb.tck.groupId}:jakarta.json.bind-tck</dependenciesToScan>
 					<systemPropertyVariables>
 						<jimage.dir>${project.build.directory}/jdk11-bundle</jimage.dir>
 						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.json.bind-api.jar:${project.build.directory}/jdk11-bundle/java.base:${project.build.directory}/jdk11-bundle/java.rmi:${project.build.directory}/jdk11-bundle/java.sql:${project.build.directory}/jdk11-bundle/java.naming</signature.sigTestClasspath>

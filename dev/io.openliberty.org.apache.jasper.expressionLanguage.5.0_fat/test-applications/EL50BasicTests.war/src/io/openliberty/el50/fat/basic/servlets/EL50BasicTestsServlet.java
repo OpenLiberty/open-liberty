@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,12 +9,14 @@
  *******************************************************************************/
 package io.openliberty.el50.fat.basic.servlets;
 
+import static componenttest.annotation.SkipForRepeat.EE11_OR_LATER_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipForRepeat;
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -97,6 +99,7 @@ public class EL50BasicTestsServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    @SkipForRepeat(EE11_OR_LATER_FEATURES) // Expression Language 6.0 removed the getFeatureDescriptors method.
     public void testGetFeatureDescriptors_returnsNull() throws Exception {
         ELResolver resolver = new CustomELResolver();
         assertNull("The result was expected to be null for ELResolver getFeatureDescriptors but was not.",

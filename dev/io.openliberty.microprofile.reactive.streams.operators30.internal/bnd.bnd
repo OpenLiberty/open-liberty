@@ -25,7 +25,7 @@ javac.target: 11
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 -dsannotations-inherit: true
--dsannotations: io.openliberty.microprofile.reactive.streams.operators30.spi.impl.LibertyReactiveStreamsEngineImpl
+-dsannotations: io.openliberty.microprofile.reactive.streams.operators30.spi.impl.LibertyReactiveStreamsEngineProvider
 
 Import-Package: \
   !io.openliberty.microprofile.reactive.streams.operators.spi.impl, \
@@ -34,27 +34,18 @@ Import-Package: \
   org.eclipse.microprofile.reactive.streams.operators; version="[1.0,1.1)", \
   *
 
-Export-Package: io.openliberty.microprofile.reactive.streams.operators30.spi.impl;version='1.0'
-
 src: src
 testsrc: test/src
 
 -buildpath: \
-  com.ibm.ws.cdi.interfaces;version=latest,\
   com.ibm.ws.logging;version=latest, \
   com.ibm.ws.logging.core;version=latest, \
-  org.eclipse.osgi;version=latest, \
-  com.ibm.websphere.org.osgi.core;version=latest, \
   com.ibm.websphere.org.osgi.service.component;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
   io.openliberty.org.eclipse.microprofile.reactive.streams.operators.3.0;version=latest, \
-  com.ibm.ws.kernel.service;version=latest, \
-  com.ibm.ws.context;version=latest, \
   com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest, \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   io.openliberty.io.smallrye.reactive.streams-operators-jakarta;version=latest, \
-  com.ibm.websphere.security;version=latest, \
-  com.ibm.ws.threading;version=latest
+  io.openliberty.io.smallrye.reactive.mutiny;version=latest
   
 -testpath: \
   ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

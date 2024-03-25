@@ -72,7 +72,7 @@
     <!-- "APP" is the default schema for Derby -->
     <authData id="APP" user="APP" password="{aes}APb9ZaYzUL+JsfFD/OOBGaPM0evjmx5AnvmzbaKgffyX"/>
 
-    <application type="ear" id="derbyRAApp" name="${id}Name" location="derbyRAApp.ear"/>
+    <application type="ear" id="derbyRAApp" location="derbyRAApp.ear"/>
 
     <transaction heuristicRetryInterval="2"/>
 

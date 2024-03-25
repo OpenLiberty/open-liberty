@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
@@ -35,14 +34,19 @@ import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRebalanceListener;
+import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRecord;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.ConsumerRecords;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaAdapterFactory;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.KafkaConsumer;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.OffsetAndMetadata;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.TopicPartition;
 import com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.WakeupException;
+
+import io.openliberty.microprofile.reactive.messaging.internal.interfaces.RMAsyncProvider;
+import io.openliberty.microprofile.reactive.messaging.internal.interfaces.RMContext;
 
 /**
  * Connects a reactive stream to a Kafka topic
@@ -58,16 +62,24 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
     private static final Duration FOREVER = Duration.ofMillis(Long.MAX_VALUE);
 
     private final KafkaConsumer<K, V> kafkaConsumer;
-    private final ExecutorService executor;
+    private final RMAsyncProvider asyncProvider;
     private final Collection<String> topics;
 
     private PublisherBuilder<Message<V>> publisher;
     private boolean subscribed = false;
     private volatile boolean running = true;
+    /**
+     * indicates whether an error has occurred which should fail the stream
+     */
+    private volatile Throwable error = null;
     private final ConcurrentLinkedQueue<KafkaConsumerAction> tasks;
     private final KafkaAdapterFactory kafkaAdapterFactory;
     private final ThresholdCounter unackedMessageCounter;
     private final PartitionTrackerFactory partitionTrackerFactory;
+    /**
+     * If true, acknowledgement is reported complete immediately, otherwise it's not reported complete until the partition offset is committed which may fail.
+     */
+    private final boolean fastAck;
 
     /**
      * The current collection of partition trackers
@@ -89,11 +101,11 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
     private final ReentrantLock lock = new ReentrantLock();
 
     public KafkaInput(KafkaAdapterFactory kafkaAdapterFactory, PartitionTrackerFactory partitionTrackerFactory,
-                      KafkaConsumer<K, V> kafkaConsumer, ExecutorService executor,
-                      String topic, int unackedLimit) {
+                      KafkaConsumer<K, V> kafkaConsumer, RMAsyncProvider asyncProvider,
+                      String topic, int unackedLimit, boolean fastAck) {
         super();
         this.kafkaConsumer = kafkaConsumer;
-        this.executor = executor;
+        this.asyncProvider = asyncProvider;
         this.topics = Collections.singleton(topic);
         this.tasks = new ConcurrentLinkedQueue<>();
         this.kafkaAdapterFactory = kafkaAdapterFactory;
@@ -103,6 +115,7 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
         } else {
             this.unackedMessageCounter = ThresholdCounter.UNLIMITED;
         }
+        this.fastAck = fastAck;
     }
 
     public PublisherBuilder<Message<V>> getPublisher() {
@@ -119,8 +132,24 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
                                      .flatMapCompletionStage(x -> unackedMessageCounter.waitForBelowThreshold().thenCompose(y -> pollKafkaAsync()))
                                      .flatMap(Function.identity())
                                      .peek(x -> unackedMessageCounter.increment())
-                                     .takeWhile((record) -> this.running);
+                                     .takeWhile((record) -> this.running)
+                                     .flatMap(this::errorMapper)
+                                     .onError(e -> this.shutdown());
         return kafkaStream;
+    }
+
+    /**
+     * Maps a message to an error if an error has occurred, or to itself otherwise
+     *
+     * @param message the message
+     * @return a stream consisting of {@code message} or failing with the reported {@link #error}
+     */
+    private PublisherBuilder<Message<V>> errorMapper(Message<V> message) {
+        if (error != null) {
+            return ReactiveStreams.failed(error);
+        } else {
+            return ReactiveStreams.of(message);
+        }
     }
 
     public CompletionStage<Void> commitOffsets(PartitionTracker partitionTracker, OffsetAndMetadata offset) {
@@ -222,8 +251,11 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
             result.complete(wrapInMessageStream(records));
         } else {
             try {
-                this.executor.submit(() -> {
-                    executePollActions(result);
+                RMContext context = asyncProvider.captureContext();
+                this.asyncProvider.getExecutorService().submit(() -> {
+                    context.execute(() -> {
+                        executePollActions(result);
+                    });
                 });
             } catch (RejectedExecutionException e) {
                 //by far the most likely reason for this exception is the server is being shutdown
@@ -271,10 +303,29 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
                                   try {
                                       TopicPartition partition = kafkaAdapterFactory.newTopicPartition(r.topic(), r.partition());
                                       PartitionTracker tracker = trackers.get(partition);
-                                      Message<V> message = this.kafkaAdapterFactory.newIncomingKafkaMessage(r, () -> {
-                                          unackedMessageCounter.decrement();
-                                          return tracker.recordDone(r.offset(), r.leaderEpoch());
-                                      });
+                                      Message<V> message = this.kafkaAdapterFactory.newIncomingKafkaMessage(r,
+                                                                                                            () -> {
+                                                                                                                unackedMessageCounter.decrement();
+                                                                                                                if (fastAck) {
+                                                                                                                    tracker.recordDone(r.offset(),
+                                                                                                                                       r.leaderEpoch(),
+                                                                                                                                       RMContext.NOOP);
+                                                                                                                    return CompletableFuture.completedFuture(null);
+                                                                                                                } else {
+                                                                                                                    RMContext context = asyncProvider.captureContext();
+                                                                                                                    CompletionStage<Void> ackResult = tracker.recordDone(r.offset(),
+                                                                                                                                                                         r.leaderEpoch(),
+                                                                                                                                                                         context);
+                                                                                                                    return ackResult;
+                                                                                                                }
+
+                                                                                                            },
+                                                                                                            (t) -> {
+                                                                                                                logNackedMessage(r, t);
+                                                                                                                error = t;
+                                                                                                                unackedMessageCounter.decrement();
+                                                                                                                return CompletableFuture.completedFuture(null);
+                                                                                                            });
                                       return new TrackedMessage<>(message, tracker);
                                   } catch (Throwable t) {
                                       Tr.error(tc, "internal.kafka.connector.error.CWMRX1000E", t);
@@ -283,6 +334,11 @@ public class KafkaInput<K, V> implements ConsumerRebalanceListener {
                               })
                               .filter(m -> !m.tracker.isClosed())
                               .map(m -> m.message);
+    }
+
+    private static void logNackedMessage(ConsumerRecord<?, ?> record, Throwable exception) {
+        Tr.error(tc, "kafka.input.message.nacked.CWMRX1011E", record, exception);
+        FFDCFilter.processException(exception, KafkaInput.class.getName(), "message-nack");
     }
 
     private static class TrackedMessage<V> {

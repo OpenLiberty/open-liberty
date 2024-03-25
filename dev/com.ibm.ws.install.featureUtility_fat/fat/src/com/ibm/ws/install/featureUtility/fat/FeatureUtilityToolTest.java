@@ -29,6 +29,9 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.zip.ZipFile;
 
+import org.testcontainers.containers.Container.ExecResult;
+import org.testcontainers.containers.GenericContainer;
+
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
@@ -364,22 +367,13 @@ public abstract class FeatureUtilityToolTest {
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, boolean debug) throws Exception {
         Properties envProps = new Properties();
-	// beta
-	envProps.put("JVM_ARGS", "-Denable.verify=true");
-//        envProps.put("JVM_ARGS", "-Drepository.description.url=" + TestUtils.repositoryDescriptionUrl);
-//        envProps.put("INSTALL_LOG_LEVEL", "FINE");
-//        if (debug)
-//            envProps.put("JVM_ARGS", "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=7777,timeout=10000 -Drepository.description.url="
-//                                     + TestUtils.repositoryDescriptionUrl);
-//        else
-//            envProps.put("JVM_ARGS", "-Drepository.description.url=" + TestUtils.repositoryDescriptionUrl);
+	// add beta property here
+	// envProps.put("JVM_ARGS", "-Dbeta.property=true");
         return runFeatureUtility(testcase, params, envProps);
     }
 
     protected ProgramOutput runFeatureUtility(String testcase, String[] params, Properties envProps) throws Exception {
-            // always run feature utility with minified root
-	    // beta
-	    envProps.put("JVM_ARGS", "-Denable.verify=true");
+	// always run feature utility with minified root
         return runCommand(minifiedRoot, testcase, "featureUtility", params, envProps);
     }
 
@@ -521,6 +515,17 @@ public abstract class FeatureUtilityToolTest {
 
     }
 
+    /**
+     * @param METHOD_NAME
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    protected void checkProxyLog(final String METHOD_NAME, GenericContainer<?> proxyContainer)
+	    throws IOException, InterruptedException {
+	ExecResult lsResult = proxyContainer.execInContainer("cat", "/var/log/squid/access.log");
+	String stdout = lsResult.getStdout();
+	Log.info(c, METHOD_NAME, "Test Failed. Proxy Log: " + stdout);
+    }
 
 
 

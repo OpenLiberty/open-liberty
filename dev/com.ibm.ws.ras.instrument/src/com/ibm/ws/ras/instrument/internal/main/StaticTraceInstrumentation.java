@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.objectweb.asm.ClassReader;
@@ -42,6 +43,41 @@ import com.ibm.ws.ras.instrument.internal.xml.TraceConfigFileParser;
  * class files and class files in jars with trace.
  */
 public class StaticTraceInstrumentation extends AbstractInstrumentation {
+    private static final String CLASS_NAME = "StaticTraceInstrumentation";
+
+    public static boolean isLoggablePath(String path) {
+        return FileLogger.isLoggablePath(path);
+    }
+
+    public PrintWriter fileWriter() {
+        return FileLogger.fileWriter();
+    }
+
+    public byte[] read(InputStream inputStream) throws IOException {
+        return FileLogger.read(inputStream);
+    }
+
+    public static void fileLog(String methodName, String text) {
+        FileLogger.fileLog(CLASS_NAME, methodName, text);
+    }
+    
+    public static void fileLog(String methodName, String text, Object value) {
+        FileLogger.fileLog(CLASS_NAME, methodName, text, value);
+    }
+    
+    public static void fileDump(String methodName, String text, byte[] bytes) {
+        FileLogger.fileDump(CLASS_NAME, methodName, text, bytes);
+    }   
+    
+    public static void fileStack(String methodName, String text, Throwable th) {
+        FileLogger.fileStack(CLASS_NAME, methodName, text, th);
+    }   
+
+    static {
+        fileLog("<init>", "Initializing");
+    }
+
+    //
 
     protected boolean introspectAnnotations = true;
     protected boolean instrumentWithFFDC = false;
@@ -54,7 +90,9 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
     /**
      * Public default constructor to allow for programmatic use of the class.
      */
-    public StaticTraceInstrumentation() {}
+    public StaticTraceInstrumentation() {
+        // EMPTY
+    }
 
     /**
      * Enable or disable the generation of calls to FFDC.
@@ -113,115 +151,108 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
     }
 
     /**
-     * Instrument the class at the current position in the specified input stream.
-     * 
-     * @return instrumented class file or null if the class has already
-     *         been instrumented.
-     * 
-     * @throws IOException if an error is encountered while reading from
-     *             the <code>InputStream</code>
+     * {@inheritDoc}
      */
-    final protected byte[] transform(final InputStream classfileStream) throws IOException {
-        ClassConfigData classConfigData = processClassConfiguration(classfileStream);
-        ClassInfo classInfo = classConfigData.getClassInfo();
+    @Override
+    final protected byte[] transform(String path, InputStream classStream) throws IOException {
+        String methodName = "transform";
+        boolean isLoggable = isLoggablePath(path);
+        
+        if ( isLoggable ) {                         
+            fileLog(methodName, "Class", path);
+        }
 
-        // Only instrument the classes that we're supposed to.
-        if (!getInstrumentationOptions().isPackageIncluded(classInfo.getPackageName())) {
+        // To keep the processing simple, read in the entire class stream
+        // initially, then re-use it for the read of the class data and
+        // for the actual transformation.
+        //
+        // The class bytes should be 'reasonably' small.  Also, doing this
+        // read early puts the read overhead all in one spot.
+
+        byte[] initialBytes;
+        try {
+            initialBytes = read(classStream);
+        } catch ( IOException e ) {
+            fileStack(methodName, "Read failure [ " + path + " ]", e);
             return null;
         }
 
-        // Merge command line, config file, package annotations, and class annotations
+        ClassInfo classInfo = readConfig(initialBytes);
+
+        // Merging the class information does not change whether the class is enabled
+        // for instrumentation.
+
+        if ( !getInstrumentationOptions().isPackageIncluded( classInfo.getPackageName() ) ) {
+            if ( isLoggable ) {
+                fileLog(methodName, "Ignore: Package not included", classInfo.getClassName());
+            }
+            return null;
+        }
+
         classInfo = mergeClassConfigInfo(classInfo);
 
-        int classWriterOptions = isComputeFrames() ? ClassWriter.COMPUTE_FRAMES : ClassWriter.COMPUTE_MAXS;
-
-        InputStream classInputStream = classConfigData.getClassInputStream();
-        ClassReader reader = new ClassReader(classInputStream);
-        ClassWriter writer = new ClassWriter(reader, classWriterOptions);
-
-        ClassVisitor visitor = writer;
-        if (isDebug()) {
-            visitor = new CheckClassAdapter(visitor);
-            visitor = new TraceClassVisitor(visitor, new PrintWriter(System.out));
+        if ( isLoggable ) {
+            fileDump(methodName, "Initial bytes", initialBytes);
         }
 
-        // Get the correct tracing adapter
-        switch (getTraceType()) {
-            case JAVA_LOGGING:
-                visitor = new JSR47TracingClassAdapter(visitor, classInfo);
-                break;
-            case TR:
-                visitor = new WebSphereTrTracingClassAdapter(visitor, classInfo);
-                break;
-            case LIBERTY:
-                break;
-            case NONE:
-                break;
-        }
+        // The reader is created early and is provided to the class writer
+        // as a write optimization which helps when the writer is optimized
+        // for 'mostly add' transformations.  See the ASM ClassWriter JavaDoc.
 
-        if (getInstrumentWithFFDC()) {
-            visitor = new FFDCClassAdapter(visitor, classInfo);
-        }
+        ClassReader classReader = new ClassReader(initialBytes);
+        ClassWriter classWriter = createWriter(classReader);
+        ClassVisitor classVisitor = createVisitor( classInfo, classWriter, isDebug() || isLoggable );
 
-        // The SerialVersionUIDAdder adder must be the first visitor in
-        // the chain in order to calculate the serialVersionUID before
-        // the tracing class adapter mucks around and (possibly) adds a
-        // class static initializer.
-        visitor = new SerialVersionUIDAdder(visitor);
+        int readOptions = ( isComputeFrames() ? ClassReader.EXPAND_FRAMES : 0 );
+
         try {
-            // Keep all metadata information that's present in the class file
-            reader.accept(visitor, isComputeFrames() ? ClassReader.EXPAND_FRAMES : 0);
-        } catch (Throwable t) {
-            IOException ioe = new IOException("Unable to instrument class stream with trace");
-            ioe.initCause(t);
-            throw ioe;
+            classReader.accept(classVisitor, readOptions);
+
+        } catch ( Throwable t ) {
+            fileStack(methodName, "Instrumentation failure [ " + path + " ]", t);
+
+            if ( !isDebug() && !isLoggable ) {
+                classReader = new ClassReader(initialBytes);
+                classWriter = createWriter(classReader);
+                classVisitor = createVisitor(classInfo, classWriter, true);
+
+                try {
+                    classReader.accept(classVisitor, readOptions);
+                } catch ( Throwable innerThrowable ) {
+                    // Ignore
+                }
+            }
+
+            throw new IOException("Unable to instrument class stream with trace", t);
         }
 
-        return writer.toByteArray();
+        byte[] finalBytes = classWriter.toByteArray();
+        if ( isLoggable ) {
+            fileDump(methodName, "Final bytes", initialBytes);
+        }
+        return finalBytes;
     }
 
     /**
-     * Holder class to encapsulate the results of introspection.
+     * Read the trace configuration information of a class.
+     * 
+     * This is simplified relative to prior implementations:
+     * Previously, a class writer was included in the visitor
+     * stack.  Since the trace configuration visitor is a read
+     * only visitor, the inclusion of the writer is an
+     * unnecessary, expensive, step. 
+     * 
+     * @param classBytes The bytes of the class.
+     * 
+     * @return Class information read from the class bytes.
      */
-    private final static class ClassConfigData {
-        InputStream classInputStream;
-        ClassInfo classInfo;
+    private ClassInfo readConfig(byte[] classBytes) {
+        TraceConfigClassVisitor classVisitor = new TraceConfigClassVisitor();
 
-        ClassConfigData(InputStream classInputStream) {
-            this.classInputStream = classInputStream;
-        }
+        ClassReader classReader = new ClassReader(classBytes);
+        classReader.accept(classVisitor, 0);
 
-        ClassConfigData(InputStream classInputStream, ClassInfo classInfo) {
-            this.classInputStream = classInputStream;
-            this.classInfo = classInfo;
-        }
-
-        ClassInfo getClassInfo() {
-            return classInfo;
-        }
-
-        InputStream getClassInputStream() {
-            return classInputStream;
-        }
-    }
-
-    /**
-     * Introspect configuration information from the class in the provided
-     * InputStream.
-     */
-    protected ClassConfigData processClassConfiguration(final InputStream inputStream) throws IOException {
-        if (introspectAnnotations == false) {
-            return new ClassConfigData(inputStream);
-        }
-
-        ClassReader cr = new ClassReader(inputStream);
-        ClassWriter cw = new ClassWriter(cr, 0); // Don't compute anything - read only mode
-        TraceConfigClassVisitor cv = new TraceConfigClassVisitor(cw);
-        cr.accept(cv, 0);
-        ClassInfo classInfo = cv.getClassInfo();
-        InputStream classInputStream = new ByteArrayInputStream(cw.toByteArray());
-
-        return new ClassConfigData(classInputStream, classInfo);
+        return classVisitor.getClassInfo();
     }
 
     /**
@@ -255,6 +286,59 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
         }
 
         return classInfo;
+    }
+
+    private ClassWriter createWriter(ClassReader classReader) {
+        int writeOptions = isComputeFrames() ? ClassWriter.COMPUTE_FRAMES : ClassWriter.COMPUTE_MAXS;
+        return new ClassWriter(classReader, writeOptions);
+    }
+
+    private ClassVisitor createVisitor(ClassInfo classInfo, ClassWriter classWriter, boolean isLoggable) {
+        // A class writer is at the bottom of the stack, as it receives all
+        // visit perturbations from the other visitors.  The writer must be
+        // remembered, as it provides the final, transformed class bytes.
+
+        ClassVisitor visitor = classWriter;
+
+        // The check and trace visitors are next to last: They validate and display
+        // the perturbed class just before it reaches the writer.
+
+        if ( isLoggable ) {
+            visitor = new CheckClassAdapter(visitor);
+
+            PrintWriter traceWriter = ( isLoggable ? fileWriter() : null );
+            if ( traceWriter == null ) {
+                traceWriter = new PrintWriter(System.out);
+            }
+            visitor = new TraceClassVisitor(visitor, traceWriter);
+        }
+
+        // Two trace injection adapters may be used: One for usual enter/exit
+        // trace injection and one to inject FFDC handling.
+        //
+        // There is (mostly) no point to running trace injection if neither
+        // adapter is in use.  That is probably never the case.
+
+        TraceType useTraceType = getTraceType();
+        if ( useTraceType == TraceType.JAVA_LOGGING ) {
+            visitor = new JSR47TracingClassAdapter(visitor, classInfo);
+        } else if ( useTraceType == TraceType.TR ) {
+            visitor = new WebSphereTrTracingClassAdapter(visitor, classInfo);
+        } else {
+            // Don't inject entry/exit trace
+        }
+        if ( getInstrumentWithFFDC() ) {
+            visitor = new FFDCClassAdapter(visitor, classInfo);
+        }
+
+        // The SerialVersionUIDAdder adder must be the first visitor in
+        // the chain in order to calculate the serialVersionUID before
+        // the tracing class adapter mucks around and (possibly) adds a
+        // class static initializer.
+
+        visitor = new SerialVersionUIDAdder(visitor);
+
+        return visitor;
     }
 
     /**
@@ -346,11 +430,7 @@ public class StaticTraceInstrumentation extends AbstractInstrumentation {
         System.out.println("  .class files to instrument.");
     }
 
-    /**
-     * Main entry point for command line execution.
-     */
     public final static void main(String[] args) throws Exception {
-
         if (args == null || args.length <= 0) {
             printUsageMessage();
             return;

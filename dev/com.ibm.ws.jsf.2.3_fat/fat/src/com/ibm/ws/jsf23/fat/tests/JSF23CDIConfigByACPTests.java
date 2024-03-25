@@ -24,7 +24,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -44,7 +44,7 @@ public class JSF23CDIConfigByACPTests extends CDITestBase {
 
     @BeforeClass
     public static void setup() throws Exception {
-        boolean isEE10 = JakartaEE10Action.isActive();
+        boolean isEE10 = JakartaEEAction.isEE10OrLaterActive();
 
         // Create the CDIConfigByACP jar that is used in CDIConfigByACP.war.
         JavaArchive cdiConfigByACPJar = isEE10 ? ShrinkWrap.create(JavaArchive.class, "CDIConfigByACPFaces40.jar") : ShrinkWrap

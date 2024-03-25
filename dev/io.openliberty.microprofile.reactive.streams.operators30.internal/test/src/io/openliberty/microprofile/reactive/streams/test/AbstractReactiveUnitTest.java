@@ -11,12 +11,14 @@ package io.openliberty.microprofile.reactive.streams.test;
 
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
+import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsEngineResolver;
+import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsFactoryImpl;
+import org.eclipse.microprofile.reactive.streams.operators.spi.ReactiveStreamsFactoryResolver;
 import org.junit.After;
 import org.junit.Before;
 
@@ -30,14 +32,15 @@ public class AbstractReactiveUnitTest {
     @Before
     public void activateEngine() {
         engine = new TestReactiveStreamsEngine();
-        engine.setExecutorService(ForkJoinPool.commonPool());
-        engine.activate();
+        ReactiveStreamsEngineResolver.setInstance(engine);
+        ReactiveStreamsFactoryResolver.setInstance(new ReactiveStreamsFactoryImpl());
     }
 
     @After
     public void deactivateEngine() {
         if (engine != null) {
-            engine.deactivate();
+            ReactiveStreamsFactoryResolver.setInstance(null);
+            ReactiveStreamsEngineResolver.setInstance(null);
             engine = null;
         }
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import jakarta.data.page.Page;
+import jakarta.data.page.PageRequest;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Page;
-import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.RepositoryAssist;
+import jakarta.data.repository.Save;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
@@ -32,7 +33,7 @@ import javax.naming.InitialContext;
  * Repository for the County entity.
  */
 @Repository
-public interface Counties extends RepositoryAssist {
+public interface Counties {
 
     boolean deleteByNameAndLastUpdated(String name, Timestamp version);
 
@@ -50,9 +51,9 @@ public interface Counties extends RepositoryAssist {
 
     Timestamp findLastUpdatedByName(String name);
 
-    int[] findZipCodesById(String name);
-
     Optional<int[]> findZipCodesByName(String name);
+
+    int[] findZipCodesByNameContains(String substring);
 
     @OrderBy("population")
     Stream<int[]> findZipCodesByNameEndsWith(String ending);
@@ -62,19 +63,21 @@ public interface Counties extends RepositoryAssist {
 
     @OrderBy("population")
     @OrderBy("name")
-    Page<int[]> findZipCodesByNameStartsWith(String beginning, Pageable pagination);
+    Page<int[]> findZipCodesByNameStartsWith(String beginning, PageRequest pagination);
 
     @OrderBy("population")
     Optional<Iterator<int[]>> findZipCodesByPopulationLessThanEqual(int maxPopulation);
 
     default EntityManager getAutoClosedEntityManager() {
-        return getResource(EntityManager.class).orElseThrow();
+        return getEntityManager(); // must be automatically closed after getAutoClosedEntityManager ends
     }
+
+    EntityManager getEntityManager();
 
     default void insert(County c) throws Exception {
         UserTransaction tx = InitialContext.doLookup("java:comp/UserTransaction");
         tx.begin();
-        try (EntityManager em = getResource(EntityManager.class).orElseThrow()) {
+        try (EntityManager em = getEntityManager()) {
             em.persist(c);
             em.flush();
         } finally {
@@ -85,14 +88,16 @@ public interface Counties extends RepositoryAssist {
         }
     }
 
-    boolean remove(County c);
+    @Delete
+    void remove(County c);
 
+    @Save
     Stream<County> save(County... c);
 
     default Object[] topLevelDefaultMethod() {
-        EntityManager emOuter1 = getResource(EntityManager.class).orElseThrow();
+        EntityManager emOuter1 = getEntityManager();
         EntityManager emInner = getAutoClosedEntityManager();
-        EntityManager emOuter2 = getResource(EntityManager.class).orElseThrow();
+        EntityManager emOuter2 = getEntityManager();
         return new Object[] { emOuter1, emOuter2, emOuter1.isOpen(), emOuter2.isOpen(), emInner.isOpen() };
     }
 

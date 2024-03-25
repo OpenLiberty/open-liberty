@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2021 IBM Corporation and others.
+# Copyright (c) 2020, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,7 +65,6 @@ testsrc: test/src
         com.ibm.websphere.javaee.annotation.1.3;version=latest,\
         com.ibm.websphere.javaee.servlet.4.0; version=latest,\
         com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-        com.ibm.websphere.jsonsupport;version=latest,\
         io.openliberty.org.eclipse.microprofile.health.3.0;version=latest,\
         io.openliberty.org.eclipse.microprofile.config.2.0;version=latest,\
         com.ibm.websphere.org.osgi.core;version=latest,\
@@ -86,12 +85,12 @@ testsrc: test/src
         com.ibm.ws.org.apache.commons.lang3;version=latest,\
         org.eclipse.osgi;version=latest,\
         io.openliberty.microprofile.health.internal.common,\
+        com.ibm.websphere.javaee.jsonp.1.1;version=latest, \
         com.ibm.ws.microprofile.health;version=latest
 
 -testpath: \
         ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
         com.ibm.ws.junit.extensions;version=latest, \
-        com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
         org.hamcrest:hamcrest-all;version=1.3, \
         org.jmock:jmock-junit4;version=2.5.1, \
         org.jmock:jmock;version=2.5.1, \

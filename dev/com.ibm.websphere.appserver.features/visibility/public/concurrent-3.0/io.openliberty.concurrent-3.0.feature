@@ -4,7 +4,25 @@ visibility=public
 singleton=true
 IBM-ShortName: concurrent-3.0
 IBM-API-Package: jakarta.enterprise.concurrent; type="spec",\
-  jakarta.enterprise.concurrent.spi; type="spec"
+  jakarta.enterprise.concurrent.spi; type="spec", \
+  jakarta.annotation; type="spec", \
+  jakarta.annotation.security; type="spec", \
+  jakarta.annotation.sql; type="spec"
+IBM-SPI-Package: \
+  com.ibm.wsspi.adaptable.module, \
+  com.ibm.ws.adaptable.module.structure, \
+  com.ibm.wsspi.adaptable.module.adapters, \
+  com.ibm.wsspi.artifact, \
+  com.ibm.wsspi.artifact.factory, \
+  com.ibm.wsspi.artifact.factory.contributor, \
+  com.ibm.wsspi.artifact.overlay, \
+  com.ibm.wsspi.artifact.equinox.module, \
+  com.ibm.wsspi.anno.classsource, \
+  com.ibm.wsspi.anno.info, \
+  com.ibm.wsspi.anno.service, \
+  com.ibm.wsspi.anno.targets, \
+  com.ibm.wsspi.anno.util, \
+  com.ibm.ws.anno.classsource.specification
 IBM-API-Service: jakarta.enterprise.concurrent.ContextService; id="DefaultContextService", \
   jakarta.enterprise.concurrent.ManagedExecutorService; id="DefaultManagedExecutorService", \
   jakarta.enterprise.concurrent.ManagedScheduledExecutorService; id="DefaultManagedScheduledExecutorService"
@@ -22,7 +40,8 @@ Subsystem-Name: Jakarta Concurrency 3.0
   com.ibm.ws.concurrent.jakarta, \
   com.ibm.ws.javaee.platform.defaultresource, \
   com.ibm.ws.resource, \
-  io.openliberty.concurrent.internal
+  io.openliberty.concurrent.internal, \
+  io.openliberty.concurrent.internal.compat
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -20,7 +20,9 @@ src: \
 fat.project: true
 
 tested.features:\
-  mpmetrics-5.0,\
+  mpConfig-3.1,\
+  mpMetrics-5.0,\
+  mpMetrics-5.1,\
   restfulws-3.1
 
 # To define a global minimum java level for the FAT, use the following property.

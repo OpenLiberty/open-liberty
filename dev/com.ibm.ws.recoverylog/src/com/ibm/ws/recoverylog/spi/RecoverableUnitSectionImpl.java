@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2021 IBM Corporation and others.
+ * Copyright (c) 2003, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import com.ibm.tx.TranConstants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 
 //------------------------------------------------------------------------------
@@ -787,11 +788,10 @@ public class RecoverableUnitSectionImpl implements RecoverableUnitSection {
      * @return The identity of the recoverable unit section.
      */
     @Override
+    @Trivial
     public int identity() {
-        if (tc.isEntryEnabled())
-            Tr.entry(tc, "identity", this);
-        if (tc.isEntryEnabled())
-            Tr.exit(tc, "identity", _identity);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "{0} {1}", _identity, this);
         return _identity;
     }
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -193,3 +193,13 @@ DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Entfernen Sie die angegebe
 JWT_MISSING_ISSUER=CWWKS1784E: Das Token ist ung\u00fcltig, da es keine Ausstelleranforderung enth\u00e4lt.
 JWT_MISSING_ISSUER.explanation=Das Token muss eine Ausstelleranforderung enthalten, um anzugeben, wer das Token ausgestellt hat.
 JWT_MISSING_ISSUER.useraction=Fordern Sie ein neues Token an, das eine Ausstelleranforderung enth\u00e4lt.
+
+# Do not translate "typ", "logout+jwt"
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER=CWWKS1785E: Das Token ist ung\u00fcltig, da der Header [{0}] ''typ'' des Tokens angibt, dass es sich um ein Abmeldetoken handelt.
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.explanation=Das Token darf kein Abmeldetoken sein. Abmeldetoken k\u00f6nnen einen Headerparameter "typ" (Typ) mit dem Wert "logout + jwt" haben.
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.useraction=Stellen Sie sicher, dass das verwendete Token kein Abmeldetoken ist.
+
+# Do not translate "events", "http://schemas.openid.net/event/backchannel-logout"
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM=CWWKS1786E: Das Token ist ung\u00fcltig, weil der Anspruch '' events'' mit dem Wert [{0}] angibt, dass es sich bei dem Token um ein Abmeldetoken handelt.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.explanation=Das Token darf kein Abmeldetoken sein. Abmeldetoken haben einen Anspruch "events", bei dem es sich um ein JSON-Objekt handelt, das "http://schemas.openid.net/event/backchannel-logout" als eines seiner Elemente enth\u00e4lt.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.useraction=Stellen Sie sicher, dass das verwendete Token kein Abmeldetoken ist.

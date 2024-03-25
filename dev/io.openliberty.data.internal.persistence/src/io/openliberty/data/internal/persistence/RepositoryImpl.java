@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,24 +12,22 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static jakarta.data.repository.By.ID;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
-import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLSyntaxErrorException;
@@ -45,7 +43,9 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -53,6 +53,7 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.BaseStream;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -67,34 +68,55 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
-import io.openliberty.data.repository.Compare;
 import io.openliberty.data.repository.Count;
-import io.openliberty.data.repository.Delete;
 import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Filter;
-import io.openliberty.data.repository.Function;
-import io.openliberty.data.repository.Operation;
+import io.openliberty.data.repository.Or;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.Select.Aggregate;
-import io.openliberty.data.repository.Update;
+import io.openliberty.data.repository.comparison.Contains;
+import io.openliberty.data.repository.comparison.EndsWith;
+import io.openliberty.data.repository.comparison.GreaterThan;
+import io.openliberty.data.repository.comparison.GreaterThanEqual;
+import io.openliberty.data.repository.comparison.In;
+import io.openliberty.data.repository.comparison.LessThan;
+import io.openliberty.data.repository.comparison.LessThanEqual;
+import io.openliberty.data.repository.comparison.Like;
+import io.openliberty.data.repository.comparison.StartsWith;
+import io.openliberty.data.repository.function.AbsoluteValue;
+import io.openliberty.data.repository.function.CharCount;
+import io.openliberty.data.repository.function.ElementCount;
+import io.openliberty.data.repository.function.Extract;
+import io.openliberty.data.repository.function.IgnoreCase;
+import io.openliberty.data.repository.function.Not;
+import io.openliberty.data.repository.function.Rounded;
+import io.openliberty.data.repository.function.Trimmed;
+import io.openliberty.data.repository.update.Add;
+import io.openliberty.data.repository.update.Assign;
+import io.openliberty.data.repository.update.Divide;
+import io.openliberty.data.repository.update.Multiply;
+import io.openliberty.data.repository.update.SubtractFrom;
+import jakarta.data.Limit;
+import jakarta.data.Order;
+import jakarta.data.Sort;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
+import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
-import jakarta.data.repository.KeysetAwarePage;
-import jakarta.data.repository.KeysetAwareSlice;
-import jakarta.data.repository.Limit;
+import jakarta.data.page.CursoredPage;
+import jakarta.data.page.Page;
+import jakarta.data.page.PageRequest;
+import jakarta.data.repository.By;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
-import jakarta.data.repository.Page;
-import jakarta.data.repository.Pageable;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
-import jakarta.data.repository.RepositoryAssist;
-import jakarta.data.repository.Slice;
-import jakarta.data.repository.Sort;
-import jakarta.data.repository.Streamable;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.LockModeType;
@@ -107,124 +129,84 @@ import jakarta.transaction.Status;
 public class RepositoryImpl<R> implements InvocationHandler {
     private static final TraceComponent tc = Tr.register(RepositoryImpl.class);
 
-    private static final Map<Function, String> FUNCTION_CALLS = new HashMap<>();
+    private static final String COMPARISON_ANNO_PACKAGE = In.class.getPackageName();
+    private static final String FUNCTION_ANNO_PACKAGE = Not.class.getPackageName();
+    private static final String UPDATE_ANNO_PACKAGE = Add.class.getPackageName();
+
+    private static final Map<String, String> FUNCTION_CALLS = new HashMap<>();
     static {
-        FUNCTION_CALLS.put(Function.AbsoluteValue, "ABS(");
-        FUNCTION_CALLS.put(Function.CharCount, "LENGTH(");
-        FUNCTION_CALLS.put(Function.ElementCount, "SIZE(");
-        FUNCTION_CALLS.put(Function.IgnoreCase, "LOWER(");
-        FUNCTION_CALLS.put(Function.Rounded, "ROUND(");
-        FUNCTION_CALLS.put(Function.RoundedDown, "FLOOR(");
-        FUNCTION_CALLS.put(Function.RoundedUp, "CEILING(");
-        FUNCTION_CALLS.put(Function.Trimmed, "TRIM(");
-        FUNCTION_CALLS.put(Function.WithDay, "EXTRACT (DAY FROM ");
-        FUNCTION_CALLS.put(Function.WithHour, "EXTRACT (HOUR FROM ");
-        FUNCTION_CALLS.put(Function.WithMinute, "EXTRACT (MINUTE FROM ");
-        FUNCTION_CALLS.put(Function.WithMonth, "EXTRACT (MONTH FROM ");
-        FUNCTION_CALLS.put(Function.WithQuarter, "EXTRACT (QUARTER FROM ");
-        FUNCTION_CALLS.put(Function.WithSecond, "EXTRACT (SECOND FROM ");
-        FUNCTION_CALLS.put(Function.WithWeek, "EXTRACT (WEEK FROM ");
-        FUNCTION_CALLS.put(Function.WithYear, "EXTRACT (YEAR FROM ");
+        FUNCTION_CALLS.put(AbsoluteValue.class.getSimpleName(), "ABS(");
+        FUNCTION_CALLS.put(CharCount.class.getSimpleName(), "LENGTH(");
+        FUNCTION_CALLS.put(ElementCount.class.getSimpleName(), "SIZE(");
+        FUNCTION_CALLS.put(IgnoreCase.class.getSimpleName(), "LOWER(");
+        FUNCTION_CALLS.put(Not.class.getSimpleName(), "NOT(");
+        FUNCTION_CALLS.put(Rounded.Direction.DOWN.name(), "FLOOR(");
+        FUNCTION_CALLS.put(Rounded.Direction.NEAREST.name(), "ROUND(");
+        FUNCTION_CALLS.put(Rounded.Direction.UP.name(), "CEILING(");
+        FUNCTION_CALLS.put(Trimmed.class.getSimpleName(), "TRIM(");
+        FUNCTION_CALLS.put(Extract.Field.DAY.name(), "EXTRACT (DAY FROM ");
+        FUNCTION_CALLS.put(Extract.Field.HOUR.name(), "EXTRACT (HOUR FROM ");
+        FUNCTION_CALLS.put(Extract.Field.MINUTE.name(), "EXTRACT (MINUTE FROM ");
+        FUNCTION_CALLS.put(Extract.Field.MONTH.name(), "EXTRACT (MONTH FROM ");
+        FUNCTION_CALLS.put(Extract.Field.QUARTER.name(), "EXTRACT (QUARTER FROM ");
+        FUNCTION_CALLS.put(Extract.Field.SECOND.name(), "EXTRACT (SECOND FROM ");
+        FUNCTION_CALLS.put(Extract.Field.WEEK.name(), "EXTRACT (WEEK FROM ");
+        FUNCTION_CALLS.put(Extract.Field.YEAR.name(), "EXTRACT (YEAR FROM ");
     }
 
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = new HashSet<>(Arrays.asList //
-    (Limit.class, Pageable.class, Sort.class, Sort[].class));
+    (Limit.class, Order.class, PageRequest.class, Sort.class, Sort[].class));
 
-    private static final Set<Compare> SUPPORTS_COLLECTIONS = Set.of //
-    (Compare.Equal, Compare.Contains, Compare.Empty, Compare.Not, Compare.NotContains, Compare.NotEmpty);
+    // Valid types for when a repository method computes an update count
+    private static final Set<Class<?>> UPDATE_COUNT_TYPES = new HashSet<>(Arrays.asList //
+    (boolean.class, Boolean.class, int.class, Integer.class, long.class, Long.class, void.class, Void.class, Number.class));
 
     private static final ThreadLocal<Deque<EntityManager>> defaultMethodResources = new ThreadLocal<>();
 
-    private final Class<?> defaultEntityClass; // entity class as specified by the user (not generated for records)
-    private final CompletableFuture<EntityInfo> defaultEntityInfoFuture;
     private final AtomicBoolean isDisposed = new AtomicBoolean();
+    private final CompletableFuture<EntityInfo> primaryEntityInfoFuture;
     private final DataExtensionProvider provider;
     final Map<Method, CompletableFuture<QueryInfo>> queries = new HashMap<>();
     private final Class<R> repositoryInterface;
-    private final boolean requestsValidation; // indicates if repository superinterface is annotated with jakarta.validation.Valid
-    private final Class<? extends Annotation> Valid; // the jakarta.validation.Valid, if available
+    private final EntityValidator validator;
 
-    public RepositoryImpl(DataExtension extension, EntityDefiner definer, Class<R> repositoryInterface, Class<?> defaultEntityClass, boolean requestsValidation) {
-        this.defaultEntityClass = defaultEntityClass;
-        this.provider = extension.provider;
+    public RepositoryImpl(DataExtensionProvider provider, DataExtension extension, EntityManagerBuilder builder,
+                          Class<R> repositoryInterface, Class<?> primaryEntityClass,
+                          Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
+        this.primaryEntityInfoFuture = primaryEntityClass == null ? null : builder.entityInfoMap.computeIfAbsent(primaryEntityClass, EntityInfo::newFuture);
+        this.provider = provider;
         this.repositoryInterface = repositoryInterface;
-        this.requestsValidation = requestsValidation;
-        this.Valid = extension.Valid;
+        Object validation = provider.validationService();
+        this.validator = validation == null ? null : EntityValidator.newInstance(validation, repositoryInterface);
 
-        boolean inheritance = defaultEntityClass.getAnnotation(Inheritance.class) != null;
-        Class<?> recordClass = null;
-
-        if (defaultEntityClass.isRecord())
-            try {
-                recordClass = defaultEntityClass;
-                defaultEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Entity");
-            } catch (ClassNotFoundException x) {
-                // TODO figure out how to best report this error to the user
-                throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
-            }
-
-        defaultEntityInfoFuture = definer.entityInfoMap.computeIfAbsent(defaultEntityClass, EntityInfo::newFuture);
-
-        for (Method method : repositoryInterface.getMethods()) {
-            if (RepositoryAssist.class.equals(method.getDeclaringClass()) // skip mix-in interface
-                || method.isDefault()) // skip default methods
-                continue;
-
-            Class<?> returnArrayComponentType = null;
-            List<Class<?>> returnTypeAtDepth = new ArrayList<>(5);
-            Type type = method.getGenericReturnType();
-            for (int depth = 0; depth < 5 && type != null; depth++) {
-                if (type instanceof ParameterizedType) {
-                    returnTypeAtDepth.add((Class<?>) ((ParameterizedType) type).getRawType());
-                    Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
-                    type = typeParams.length == 1 ? typeParams[0] : null;
-                } else if (type instanceof Class) {
-                    Class<?> c = (Class<?>) type;
-                    returnTypeAtDepth.add(c);
-                    if (IntStream.class.equals(type)) {
-                        returnTypeAtDepth.add(int.class);
-                        depth++;
-                    } else if (LongStream.class.equals(type)) {
-                        returnTypeAtDepth.add(long.class);
-                        depth++;
-                    } else if (DoubleStream.class.equals(type)) {
-                        returnTypeAtDepth.add(double.class);
-                        depth++;
-                    } else if (returnArrayComponentType == null) {
-                        returnArrayComponentType = c.getComponentType();
-                        if (returnArrayComponentType != null) {
-                            returnTypeAtDepth.add(returnArrayComponentType);
-                            depth++;
-                        }
-                    }
-                    type = null;
-                } else if (type instanceof GenericArrayType) {
-                    // TODO cover the possibility that the generic type could be for something other than the entity, such as the primary key?
-                    Class<?> arrayComponentType = recordClass == null ? defaultEntityClass : recordClass;
-                    returnTypeAtDepth.add(arrayComponentType.arrayType());
-                    if (returnArrayComponentType == null) {
-                        returnTypeAtDepth.add(returnArrayComponentType = arrayComponentType);
-                        depth++;
-                    }
-                    type = null;
+        for (Entry<Class<?>, List<QueryInfo>> entry : queriesPerEntityClass.entrySet()) {
+            Class<?> entityClass = entry.getKey();
+            for (QueryInfo queryInfo : entry.getValue()) {
+                if (queryInfo.type == QueryInfo.Type.RESOURCE_ACCESS) {
+                    queryInfo.validateParams = validator != null && validator.isValidatable(queryInfo.method)[1];
+                    queries.put(queryInfo.method, CompletableFuture.completedFuture(queryInfo));
                 } else {
-                    returnTypeAtDepth.add(recordClass == null ? defaultEntityClass : recordClass);
-                    type = null;
+                    boolean inheritance = entityClass.getAnnotation(Inheritance.class) != null; // TODO what do we need to do this with?
+
+                    Class<?> jpaEntityClass;
+                    Class<?> recordClass = null;
+                    if (entityClass.isRecord())
+                        try {
+                            recordClass = entityClass;
+                            jpaEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Entity");
+                        } catch (ClassNotFoundException x) {
+                            // TODO figure out how to best report this error to the user
+                            throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
+                        }
+                    else
+                        jpaEntityClass = entityClass;
+
+                    CompletableFuture<EntityInfo> entityInfoFuture = builder.entityInfoMap.computeIfAbsent(jpaEntityClass, EntityInfo::newFuture);
+
+                    queries.put(queryInfo.method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(queryInfo),
+                                                                               this::completeQueryInfo));
                 }
             }
-
-            Class<?> entityClass = returnTypeAtDepth.get(returnTypeAtDepth.size() - 1);
-
-            if (!inheritance || entityClass == recordClass || !defaultEntityClass.isAssignableFrom(entityClass)) // TODO allow other entity types from model
-                entityClass = defaultEntityClass;
-
-            CompletableFuture<EntityInfo> entityInfoFuture = entityClass.equals(defaultEntityClass) //
-                            ? defaultEntityInfoFuture //
-                            : definer.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
-
-            QueryInfo queryInfo = new QueryInfo(method, returnArrayComponentType, returnTypeAtDepth);
-            queries.put(method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(queryInfo),
-                                                             this::completeQueryInfo));
         }
     }
 
@@ -243,82 +225,19 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Appends JQPL for parameters/values, of one of the following forms, depending on the filter.
-     * <li> ?1 or LOWER(?1)
-     * <li> :name or LOWER(:name)
-     * <li> 'value' or LOWER('value')
-     * In the case of Between, does this for both arguments, with AND between them.
-     *
-     * @param q     builder for the JPQL query.
-     * @param lower indicates if the query parameter should be compared in lower case.
-     * @param num   parameter number.
-     * @return the same builder for the JPQL query.
-     */
-    @Trivial
-    private static StringBuilder appendParamOrValue(StringBuilder q, QueryInfo queryInfo, Filter filter, boolean lower) {
-        String[] params = filter.param();
-        String[] values = filter.value();
-        int numArgs = filter.op() == Compare.Between || filter.op() == Compare.NotBetween ? 2 : 1;
-        for (int i = 0; i < numArgs; i++) {
-            if (i > 0)
-                q.append(" AND "); // BETWEEN ?1 AND ?2
-            if (lower)
-                q.append("LOWER(");
-            if (params.length > i) {
-                if (queryInfo.paramNames == null)
-                    queryInfo.paramNames = new ArrayList<>(); // content is computed later from method signature
-                if (numArgs == 1 && params.length > 1) { // IN (:param1, :param2, :param3)
-                    for (int p = 0; p < params.length; p++)
-                        q.append(p == 0 ? "(" : ", ").append(':').append(params[p]);
-                    q.append(')');
-                } else {
-                    q.append(':').append(params[i]); // TODO if this is null, could use values[i]
-                }
-            } else if (values.length > i) {
-                if (numArgs == 1 && values.length > 1) { // IN ('value1', 'value2', 'value3')
-                    for (int v = 0; v < values.length; v++) {
-                        q.append(v == 0 ? "(" : ", ");
-                        char c = values[v].length() == 0 ? ' ' : values[v].charAt(0);
-                        boolean enquote = (c < '0' || c > '9') && c != '\'';
-                        if (enquote)
-                            q.append("'");
-                        q.append(values[v]);
-                        if (enquote)
-                            q.append("'");
-                    }
-                    q.append(')');
-                } else {
-                    char c = values[i].length() == 0 ? ' ' : values[i].charAt(0);
-                    boolean enquote = (c < '0' || c > '9') && c != '\'';
-                    if (enquote)
-                        q.append("'");
-                    q.append(values[i]);
-                    if (enquote)
-                        q.append("'");
-                }
-            } else { // positional parameter
-                q.append('?').append(++queryInfo.paramCount);
-            }
-            if (lower)
-                q.append(")");
-        }
-        return q;
-    }
-
-    /**
      * Appends JQPL to sort based on the specified entity attribute.
      * For most properties will be of a form such as o.Name or LOWER(o.Name) DESC or ...
      *
      * @param q             builder for the JPQL query.
-     * @param o             variable referring to the entity.
+     * @param o_            identifier for the entity followed by '.'. Empty string if there is no identifier variable.
      * @param Sort          sort criteria for a single attribute (name must already be converted to a valid entity attribute name).
      * @param sameDirection indicate to append the Sort in the normal direction. Otherwise reverses it (for keyset pagination in previous page direction).
      * @return the same builder for the JPQL query.
      */
     @Trivial
-    private void appendSort(StringBuilder q, String o, Sort sort, boolean sameDirection) {
+    private void appendSort(StringBuilder q, String o_, Sort<?> sort, boolean sameDirection) {
 
-        q.append(sort.ignoreCase() ? "LOWER(" : "").append(o).append('.').append(sort.property());
+        q.append(sort.ignoreCase() ? "LOWER(" : "").append(o_).append(sort.property());
 
         if (sort.ignoreCase())
             q.append(")");
@@ -336,7 +255,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * Invoked when the bean for the repository is disposed.
      */
     public void beanDisposed() {
-        isDisposed.set(true);
+        // TODO re-enable when using a single bean for the repository rather than sharing the repository across multiple beans
+        // isDisposed.set(true);
     }
 
     /**
@@ -349,167 +269,148 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private QueryInfo completeQueryInfo(EntityInfo entityInfo, QueryInfo queryInfo) {
         queryInfo.entityInfo = entityInfo;
 
+        if (validator != null) {
+            boolean[] v = validator.isValidatable(queryInfo.method);
+            queryInfo.validateParams = v[0];
+            queryInfo.validateResult = v[1];
+        }
+
+        Method method = queryInfo.method;
         Class<?> multiType = queryInfo.getMultipleResultType();
-        boolean countPages = Page.class.equals(multiType) || KeysetAwarePage.class.equals(multiType);
+        boolean countPages = Page.class.equals(multiType) || CursoredPage.class.equals(multiType);
         StringBuilder q = null;
 
         // TODO would it be more efficient to invoke method.getAnnotations() once?
 
-        Query query = queryInfo.method.getAnnotation(Query.class);
-        if (query == null) {
-            // Query by annotations
-            Filter[] filters = queryInfo.method.getAnnotationsByType(Filter.class);
-            StringBuilder whereClause = filters.length > 0 ? generateWhereClause(queryInfo, filters) : null;
-            String o = queryInfo.entityVar;
+        // spec-defined annotation types
+        Delete delete = method.getAnnotation(Delete.class);
+        Find find = method.getAnnotation(Find.class);
+        Insert insert = method.getAnnotation(Insert.class);
+        Update update = method.getAnnotation(Update.class);
+        Save save = method.getAnnotation(Save.class);
+        Query query = method.getAnnotation(Query.class);
+        OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
 
-            Update[] updates = queryInfo.method.getAnnotationsByType(Update.class);
-            if (updates.length > 0) {
-                queryInfo.type = QueryInfo.Type.UPDATE;
-                q = generateUpdateClause(queryInfo, updates);
-                if (whereClause != null)
-                    q.append(whereClause);
-            } else if (queryInfo.method.getAnnotation(Delete.class) != null) {
-                if (queryInfo.isFindAndDelete()) {
-                    queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
-                    Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
-                    q = generateSelectClause(queryInfo, select);
-                    queryInfo.jpqlDelete = generateDeleteById(queryInfo);
-                } else { // DELETE
-                    queryInfo.type = QueryInfo.Type.DELETE;
-                    q = new StringBuilder(13 + o.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
-                                    .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
-                }
-                if (whereClause != null)
-                    q.append(whereClause);
-            } else if (queryInfo.method.getAnnotation(Count.class) != null) {
-                queryInfo.type = QueryInfo.Type.COUNT;
-                q = new StringBuilder(21 + 2 * o.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
-                                .append("SELECT COUNT(").append(o).append(") FROM ") //
-                                .append(entityInfo.name).append(' ').append(o);
-                if (whereClause != null)
-                    q.append(whereClause);
-            } else if (queryInfo.method.getAnnotation(Exists.class) != null) {
-                queryInfo.type = QueryInfo.Type.EXISTS;
-                String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
-                String attrName = entityInfo.getAttributeName(name, true);
-                q = new StringBuilder(15 + 2 * o.length() + attrName.length() + entityInfo.name.length() + (whereClause == null ? 0 : whereClause.length())) //
-                                .append("SELECT ").append(o).append('.').append(attrName) //
-                                .append(" FROM ").append(entityInfo.name).append(' ').append(o);
-                if (whereClause != null)
-                    q.append(whereClause);
-            } else if (whereClause != null) {
-                queryInfo.type = QueryInfo.Type.FIND;
-                Select select = queryInfo.method.getAnnotation(Select.class);
-                q = generateSelectClause(queryInfo, select).append(whereClause);
-                if (countPages && queryInfo.type == QueryInfo.Type.FIND)
-                    generateCount(queryInfo, whereClause.toString());
-            } else if (queryInfo.method.getName().startsWith("save")) {
-                queryInfo.type = QueryInfo.Type.MERGE;
-                Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length != 1)
-                    throw new UnsupportedOperationException("Repository save operations must have exactly 1 parameter," +
-                                                            " which can be the entity or a collection or array of entities. The " + queryInfo.method.getName() +
-                                                            " method has " + paramTypes.length + " parameters."); // TODO NLS
-                queryInfo.saveParamType = paramTypes[0];
-                if (Valid != null)
-                    queryInfo.validatable = isValidatable(queryInfo.method, queryInfo.saveParamType);
-            } else {
-                // Query by method name
-                q = generateMethodNameQuery(queryInfo, countPages);//keyset queries before orderby
+        // experimental annotation types
+        Count count = method.getAnnotation(Count.class);
+        Exists exists = method.getAnnotation(Exists.class);
+        Select select = method.getAnnotation(Select.class);
 
-                // @Select annotation only
-                if (q == null) {
-                    Select select = queryInfo.method.getAnnotation(Select.class);
-                    if (select != null) {
-                        queryInfo.type = QueryInfo.Type.FIND;
-                        q = generateSelectClause(queryInfo, select);
-                        if (countPages)
-                            generateCount(queryInfo, null);
-                    }
-                }
+        Annotation methodTypeAnno = queryInfo.validateAnnotationCombinations(delete, insert, update, save,
+                                                                             find, query, orderBy,
+                                                                             count, exists, select);
+
+        if (query != null) { // @Query annotation
+            queryInfo.initForQuery(query.value(), multiType);
+        } else if (save != null) { // @Save annotation
+            queryInfo.init(Save.class, QueryInfo.Type.SAVE);
+        } else if (insert != null) { // @Insert annotation
+            queryInfo.init(Insert.class, QueryInfo.Type.INSERT);
+        } else if (queryInfo.entityParamType != null) {
+            if (update != null) { // @Update annotation
+                q = generateUpdateEntity(queryInfo);
+            } else if (delete != null) { // @Delete annotation
+                q = generateDeleteEntity(queryInfo);
+            } else { // should be unreachable
+                throw new UnsupportedOperationException("The " + method.getName() + " method of the " + repositoryInterface.getName() +
+                                                        " repository interface must be annotated with one of " +
+                                                        "(Delete, Insert, Save, Update)" +
+                                                        " because the method's parameter accepts entity instances. The following" +
+                                                        " annotations were found: " + Arrays.toString(method.getAnnotations()));
             }
-        } else { // @Query annotation
-            queryInfo.jpql = query.value();
-
-            String upper = queryInfo.jpql.toUpperCase();
-            String upperTrimmed = upper.stripLeading();
-            if (upperTrimmed.startsWith("SELECT")) {
-                int orderBy = upper.lastIndexOf("ORDER BY");
-                queryInfo.type = QueryInfo.Type.FIND;
-                queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>() : queryInfo.sorts;
-                queryInfo.jpqlCount = query.count().length() > 0 ? query.count() : null;
-
-                int select = upper.length() - upperTrimmed.length();
-                int from = find("FROM", upper, select + 9);
-                if (from > 0) {
-                    int entityName = find(entityInfo.name.toUpperCase(), upper, from + 5);
-                    if (entityName > 0) {
-                        String entityVar = findEntityVariable(queryInfo.jpql, entityName + entityInfo.name.length() + 1);
-                        if (entityVar != null)
-                            queryInfo.entityVar = entityVar;
-                    }
-
-                    if (countPages && queryInfo.jpqlCount == null) {
-                        // Attempt to infer from provided query
-                        String s = queryInfo.jpql.substring(select + 6, from);
-                        int comma = s.indexOf(',');
-                        if (comma > 0)
-                            s = s.substring(0, comma);
-                        queryInfo.jpqlCount = new StringBuilder(queryInfo.jpql.length() + 7) //
-                                        .append("SELECT COUNT(").append(s.trim()).append(") ") //
-                                        .append(orderBy > from ? queryInfo.jpql.substring(from, orderBy) : queryInfo.jpql.substring(from)) //
-                                        .toString();
-                    }
-                }
-            } else if (upperTrimmed.startsWith("UPDATE")) {
-                queryInfo.type = QueryInfo.Type.UPDATE;
-            } else if (upperTrimmed.startsWith("DELETE")) {
-                queryInfo.type = QueryInfo.Type.DELETE;
+        } else {
+            if (methodTypeAnno != null) {
+                // Query by Parameters
+                q = generateQueryFromMethodParams(queryInfo, methodTypeAnno, countPages);//keyset queries before orderby
             } else {
-                throw new UnsupportedOperationException(queryInfo.jpql);
+                // Query by Method Name
+                q = generateQueryFromMethodName(queryInfo, countPages);
             }
 
-            queryInfo.hasWhere = upperTrimmed.contains("WHERE");
+            // TODO did we break the following? Maybe move this into the above methods?
+            // @Select annotation only
+            if (q == null && queryInfo.type == null && select != null) {
+                queryInfo.type = QueryInfo.Type.FIND;
+                q = generateSelectClause(queryInfo, select);
+                if (countPages)
+                    generateCount(queryInfo, null);
+            } else if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE
+                       && multiType != null
+                       && Stream.class.isAssignableFrom(multiType)) {
+                throw new UnsupportedOperationException("The " + method.getName() + " method of the " + repositoryInterface.getName() +
+                                                        " repository interface cannot use the " +
+                                                        method.getReturnType().getName() + " return type for a delete operation.");
+            }
         }
 
         // If we don't already know from generating the JPQL, find out how many
         // parameters the JPQL takes and which parameters are named parameters.
         if (query != null || queryInfo.paramNames != null) {
             int initialParamCount = queryInfo.paramCount;
-            Parameter[] params = queryInfo.method.getParameters();
+            Parameter[] params = method.getParameters();
+            List<Integer> paramPositions = null;
             Class<?> paramType;
+            boolean hasParamAnnotation = false;
             for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(paramType = params[i].getType()); i++) {
                 Param param = params[i].getAnnotation(Param.class);
-                if (param != null) {
+                hasParamAnnotation |= param != null;
+                String paramName = param == null ? null : param.value();
+                if (param == null && queryInfo.jpql != null && params[i].isNamePresent()) {
+                    String name = params[i].getName();
+                    if (paramPositions == null)
+                        paramPositions = getParameterPositions(queryInfo.jpql);
+                    for (int p = 0; p < paramPositions.size() && paramName == null; p++) {
+                        int pos = paramPositions.get(p); // position at which the named parameter name must appear
+                        int next = pos + name.length(); // the next character must not be alphanumeric for the name to be a match
+                        if (queryInfo.jpql.regionMatches(paramPositions.get(p), name, 0, name.length())
+                            && (next >= queryInfo.jpql.length() || !Character.isLetterOrDigit(queryInfo.jpql.charAt(next)))) {
+                            paramName = name;
+                            paramPositions.remove(p);
+                        }
+                    }
+                }
+                if (paramName != null) {
                     if (queryInfo.paramNames == null)
                         queryInfo.paramNames = new ArrayList<>();
                     if (entityInfo.idClassAttributeAccessors != null && paramType.equals(entityInfo.idType))
+                        // TODO is this correct to do when @Query has a named parameter with type of the IdClass?
+                        // It seems like the JPQL would not be consistent.
                         for (int p = 1, numIdClassParams = entityInfo.idClassAttributeAccessors.size(); p <= numIdClassParams; p++) {
-                            queryInfo.paramNames.add(new StringBuilder(param.value()).append('_').append(p).toString());
+                            queryInfo.paramNames.add(new StringBuilder(paramName).append('_').append(p).toString());
                             if (p > 1) {
                                 queryInfo.paramCount++;
                                 queryInfo.paramAddedCount++;
                             }
                         }
                     else
-                        queryInfo.paramNames.add(param.value());
+                        queryInfo.paramNames.add(paramName);
                 }
                 queryInfo.paramCount++;
+
                 if (initialParamCount != 0)
                     throw new MappingException("Cannot mix positional and named parameters on repository method " +
-                                               queryInfo.method.getDeclaringClass().getName() + '.' + queryInfo.method.getName()); // TODO NLS
+                                               method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
+
+                int numParamNames = queryInfo.paramNames == null ? 0 : queryInfo.paramNames.size();
+                if (numParamNames > 0 && numParamNames != queryInfo.paramCount)
+                    if (hasParamAnnotation) {
+                        throw new MappingException("Cannot mix positional and named parameters on repository method " +
+                                                   method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
+                    } else { // we might have mistaken a literal value for a named parameter
+                        queryInfo.paramNames = null;
+                        queryInfo.paramCount -= queryInfo.paramAddedCount;
+                        queryInfo.paramAddedCount = 0;
+                    }
             }
         }
 
         // The @OrderBy annotation from Jakarta Data provides sort criteria statically
-        OrderBy[] orderBy = queryInfo.method.getAnnotationsByType(OrderBy.class);
         if (orderBy.length > 0) {
-            queryInfo.type = queryInfo.type == null ? QueryInfo.Type.FIND : queryInfo.type;
+            //queryInfo.type = queryInfo.type == null ? QueryInfo.Type.FIND : queryInfo.type;
             queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>(orderBy.length + 2) : queryInfo.sorts;
             if (q == null)
                 if (queryInfo.jpql == null) {
-                    Select select = queryInfo.method.getAnnotation(Select.class); // TODO can this ever be present here and not already handled by other code path?
-                    q = generateSelectClause(queryInfo, select);
+                    q = generateSelectClause(queryInfo, select); // TODO can select ever be present here and not already handled by other code path?
                     if (countPages)
                         generateCount(queryInfo, null);
                 } else {
@@ -526,7 +427,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         queryInfo.jpql = q == null ? queryInfo.jpql : q.toString();
 
         if (queryInfo.type == null)
-            throw new MappingException("Repository method name " + queryInfo.method.getName() +
+            throw new MappingException("Repository method name " + method.getName() +
                                        " does not map to a valid query. Some examples of valid method names are:" +
                                        " save(entity), findById(id), findByPriceLessThanEqual(maxPrice), deleteById(id)," +
                                        " existsById(id), countByPriceBetween(min, max), updateByIdSetPrice(id, newPrice)"); // TODO NLS
@@ -539,15 +440,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *
      * @param limit limit that was specified by the application.
      * @return offset value.
-     * @throws DataException with chained IllegalArgumentException if the starting point for
-     *                           the limited range is not positive or would overflow Integer.MAX_VALUE.
+     * @throws IllegalArgumentException if the starting point for the limited range
+     *                                      is not positive or would overflow Integer.MAX_VALUE.
      */
     static int computeOffset(Limit range) {
         long startIndex = range.startAt() - 1;
         if (startIndex >= 0 && startIndex <= Integer.MAX_VALUE)
             return (int) startIndex;
         else
-            throw new DataException(new IllegalArgumentException("The starting point for " + range + " is not within 1 to Integer.MAX_VALUE (2147483647).")); // TODO
+            throw new IllegalArgumentException("The starting point for " + range + " is not within 1 to Integer.MAX_VALUE (2147483647)."); // TODO
     }
 
     /**
@@ -555,23 +456,22 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *
      * @param pagination requested pagination.
      * @return offset for the specified page.
-     * @throws DataException with chained IllegalArgumentException if the offset exceeds Integer.MAX_VALUE
-     *                           or the Pageable requests keyset pagination.
+     * @throws IllegalArgumentException if the offset exceeds Integer.MAX_VALUE
+     *                                      or the PageRequest requests cursor-based pagination.
      */
-    static int computeOffset(Pageable pagination) {
-        if (pagination.mode() != Pageable.Mode.OFFSET)
-            throw new DataException(new IllegalArgumentException("Keyset pagination mode " + pagination.mode() +
-                                                                 " can only be used with repository methods with the following return types: " +
-                                                                 KeysetAwarePage.class.getName() + ", " + KeysetAwareSlice.class.getName() +
-                                                                 ", " + Iterator.class.getName() +
-                                                                 ". For offset pagination, use a Pageable without a keyset.")); // TODO NLS
+    static int computeOffset(PageRequest<?> pagination) {
+        if (pagination.mode() != PageRequest.Mode.OFFSET)
+            throw new IllegalArgumentException("Cursor-based pagination mode " + pagination.mode() +
+                                               " can only be used with repository methods with the following return types: " +
+                                               CursoredPage.class.getName() +
+                                               ". For offset pagination, use a PageRequest without a cursor."); // TODO NLS
         int maxPageSize = pagination.size();
         long pageIndex = pagination.page() - 1; // zero-based
         if (Integer.MAX_VALUE / maxPageSize >= pageIndex)
             return (int) (pageIndex * maxPageSize);
         else
-            throw new DataException(new IllegalArgumentException("The offset for " + pagination.page() + " pages of size " + maxPageSize +
-                                                                 " exceeds Integer.MAX_VALUE (2147483647).")); // TODO
+            throw new IllegalArgumentException("The offset for " + pagination.page() + " pages of size " + maxPageSize +
+                                               " exceeds Integer.MAX_VALUE (2147483647)."); // TODO
     }
 
     /**
@@ -620,10 +520,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     x = new DataConnectionException(original);
                 else if (cause instanceof SQLSyntaxErrorException)
                     x = new MappingException(original);
+                else if (cause instanceof SQLIntegrityConstraintViolationException)
+                    x = new EntityExistsException(original);
             }
             if (x == null) {
                 if (original instanceof OptimisticLockException)
                     x = new OptimisticLockingFailureException(original);
+                else if (original instanceof jakarta.persistence.EntityExistsException)
+                    x = new EntityExistsException(original);
                 else if (original instanceof NoResultException)
                     x = new EmptyResultException(original);
                 else if (original instanceof jakarta.persistence.NonUniqueResultException)
@@ -636,21 +540,26 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (cause == null)
                 x = new MappingException(original);
             else if (DataException.class.equals(cause.getClass()))
-                x = new DataException(cause.getMessage(), cause);
+                x = new DataException(cause.getMessage(), original);
             else if (DataConnectionException.class.equals(cause.getClass()))
-                x = new DataConnectionException(cause.getMessage(), cause);
+                x = new DataConnectionException(cause.getMessage(), original);
             else if (EmptyResultException.class.equals(cause.getClass()))
-                x = new EmptyResultException(cause.getMessage(), cause);
+                x = new EmptyResultException(cause.getMessage(), original);
             else if (MappingException.class.equals(cause.getClass()))
-                x = new MappingException(cause.getMessage(), cause);
+                x = new MappingException(cause.getMessage(), original);
             else if (NonUniqueResultException.class.equals(cause.getClass()))
-                x = new NonUniqueResultException(cause.getMessage(), cause);
+                x = new NonUniqueResultException(cause.getMessage(), original);
+            else if (UnsupportedOperationException.class.equals(cause.getClass()))
+                x = new UnsupportedOperationException(cause.getMessage(), original);
             else
-                x = new MappingException(cause);
+                x = new MappingException(original);
         } else if (original instanceof IllegalArgumentException) {
-            // Example: Problem compiling [SELECT o FROM Account o WHERE (o.accountId>?1)]. The
-            // relationship mapping 'o.accountId' cannot be used in conjunction with the > operator
-            x = new MappingException(original);
+            if (original.getCause() == null) // raised by Liberty
+                x = (IllegalArgumentException) original;
+            else // raised by Jakarta Persistence provider
+                 // Example: Problem compiling [SELECT o FROM Account o WHERE (o.accountId>?1)]. The
+                 // relationship mapping 'o.accountId' cannot be used in conjunction with the > operator
+                x = new MappingException(original);
         } else if (original instanceof RuntimeException) {
             // Per EclipseLink, "This exception is used for any problem that is detected with a descriptor or mapping"
             if ("org.eclipse.persistence.exceptions.DescriptorException".equals(original.getClass().getName()))
@@ -670,57 +579,166 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Finds the first occurrence of the text followed by a non-alphanumeric/non-underscore character.
+     * Finds and updates entities (or records) in the database.
      *
-     * @param lookFor text to find.
-     * @param findIn  where to look for it.
-     * @param startAt starting position.
-     * @return index where found, otherwise -1.
+     * @param arg       the entity or record, or array or Iterable or Stream of entity or record.
+     * @param queryInfo query information.
+     * @param em        the entity manager.
+     * @return the updated entities, using the return type that is required by the repository Update method signature.
+     * @throws OptimisticLockingFailureException if an entity is not found in the database.
+     * @throws Exception                         if an error occurs.
      */
-    private static int find(String lookFor, String findIn, int startAt) {
-        int totalLength = findIn.length();
-        for (int foundAt; startAt < totalLength && (foundAt = findIn.indexOf(lookFor, startAt)) > 0; startAt = foundAt + 1) {
-            int nextPosition = foundAt + lookFor.length();
-            if (nextPosition >= totalLength)
-                break;
-            char ch = findIn.charAt(nextPosition);
-            if (!Character.isLowerCase(ch) && !Character.isUpperCase(ch) && !Character.isDigit(ch) && ch != '_')
-                return foundAt;
+    private Object findAndUpdate(Object arg, QueryInfo queryInfo, EntityManager em) throws Exception {
+        List<Object> results;
+
+        boolean hasSingularEntityParam = false;
+        if (queryInfo.entityParamType.isArray()) {
+            int length = Array.getLength(arg);
+            results = new ArrayList<>(length);
+            for (int i = 0; i < length; i++) {
+                Object entity = findAndUpdateOne(Array.get(arg, i), queryInfo, em);
+                if (entity == null)
+                    throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                else
+                    results.add(entity);
+            }
+        } else {
+            arg = arg instanceof Stream //
+                            ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                            : arg;
+
+            results = new ArrayList<>();
+            if (arg instanceof Iterable) {
+                for (Object e : ((Iterable<?>) arg)) {
+                    Object entity = findAndUpdateOne(e, queryInfo, em);
+                    if (entity == null)
+                        throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                    else
+                        results.add(entity);
+                }
+            } else {
+                hasSingularEntityParam = true;
+                results = new ArrayList<>(1);
+                Object entity = findAndUpdateOne(arg, queryInfo, em);
+                if (entity == null)
+                    throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                else
+                    results.add(entity);
+            }
         }
-        return -1;
+        em.flush();
+
+        if (queryInfo.entityInfo.recordClass != null)
+            for (int i = 0; i < results.size(); i++)
+                results.set(i, queryInfo.entityInfo.toRecord(results.get(i)));
+
+        Class<?> returnType = queryInfo.method.getReturnType();
+        Object returnValue;
+        if (queryInfo.returnArrayType != null) {
+            Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+            returnValue = results.toArray(newArray);
+        } else {
+            Class<?> multiType = queryInfo.getMultipleResultType();
+            if (multiType == null)
+                returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+            else if (multiType.isInstance(results))
+                returnValue = results;
+            else if (Stream.class.equals(multiType))
+                returnValue = results.stream();
+            else if (Iterable.class.isAssignableFrom(multiType))
+                returnValue = toIterable(multiType, null, results);
+            else if (Iterator.class.equals(multiType))
+                returnValue = results.iterator();
+            else
+                throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                           queryInfo.method.getName() + " method of the " +
+                                           queryInfo.method.getDeclaringClass().getName() +
+                                           " class is not a valid return type for a repository " +
+                                           "@Update" + " method. Valid return types include " +
+                                           getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+        }
+
+        if (Optional.class.equals(returnType)) {
+            returnValue = returnValue == null ? Optional.empty() : Optional.of(returnValue);
+        } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+            returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
+        } else if (returnValue != null && !returnType.isInstance(returnValue)) {
+            throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                       queryInfo.method.getName() + " method of the " +
+                                       queryInfo.method.getDeclaringClass().getName() +
+                                       " class is not a valid return type for a repository " +
+                                       "@Update" + " method. Valid return types include " +
+                                       getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+        }
+
+        return returnValue;
     }
 
     /**
-     * Finds the entity variable name after the start of the entity name.
-     * Examples of JPQL:
-     * ... FROM Order o, Product p ...
-     * ... FROM Product AS p ...
+     * Finds an entity (or record) in the database, locks it for subsequent update,
+     * and updates the entity found in the database to match the desired state of the supplied entity.
      *
-     * @param findIn  where to look for it.
-     * @param startAt position after the end of the entity name.
-     * @return entity variable name. Null if none is found.
+     * @param e         the entity or record.
+     * @param queryInfo query information.
+     * @param em        the entity manager.
+     * @return the entity that is written to the database. Null if not found.
+     * @throws Exception if an error occurs.
      */
-    private static String findEntityVariable(String findIn, int startAt) {
-        int length = findIn.length();
-        boolean foundStart = false;
-        for (int c = startAt; c < length; c++) {
-            char ch = findIn.charAt(c);
-            if (Character.isLowerCase(ch) || Character.isUpperCase(ch) || Character.isDigit(ch) || ch == '_') {
-                if (!foundStart) {
-                    startAt = c;
-                    foundStart = true;
-                }
-            } else { // not part of the entity variable name
-                if (foundStart) {
-                    String found = findIn.substring(startAt, c);
-                    if ("AS".equalsIgnoreCase(found))
-                        foundStart = false;
-                    else
-                        return found;
-                }
-            }
+    private Object findAndUpdateOne(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
+        Class<?> singleType = queryInfo.getSingleResultType();
+        String jpql = queryInfo.jpql;
+        EntityInfo entityInfo = queryInfo.entityInfo;
+
+        int versionParamIndex = 2;
+        Object version = null;
+        if (entityInfo.versionAttributeName != null) {
+            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            if (version == null)
+                jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
-        return foundStart ? findIn.substring(startAt) : null;
+
+        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName(ID, true));
+        if (id == null) {
+            jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+            if (version != null)
+                jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
+            Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
+
+        TypedQuery<?> query = em.createQuery(jpql, singleType); // TODO for records, use the entity class, not the record class
+        query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
+
+        // id parameter(s)
+
+        int p = 0;
+        if (entityInfo.idClassAttributeAccessors != null) {
+            throw new UnsupportedOperationException(); // TODO
+        } else if (id != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + id.getClass().getSimpleName());
+            query.setParameter(++p, id);
+        }
+
+        // version parameter
+
+        if (entityInfo.versionAttributeName != null && version != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + version.getClass().getSimpleName());
+            query.setParameter(++p, version);
+        }
+
+        List<?> results = query.getResultList();
+
+        Object entity;
+        if (results.isEmpty()) {
+            entity = null;
+        } else {
+            entity = results.get(0);
+            entity = em.merge(toEntity(e));
+        }
+        return entity;
     }
 
     /**
@@ -729,12 +747,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private String generateDeleteById(QueryInfo queryInfo) {
         EntityInfo entityInfo = queryInfo.entityInfo;
         String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
         StringBuilder q;
         if (entityInfo.idClassAttributeAccessors == null) {
-            String idAttrName = entityInfo.attributeNames.get("id");
+            String idAttrName = entityInfo.attributeNames.get(ID);
             q = new StringBuilder(24 + entityInfo.name.length() + o.length() * 2 + idAttrName.length()) //
                             .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o).append(" WHERE ") //
-                            .append(o).append('.').append(idAttrName).append("=?1");
+                            .append(o_).append(idAttrName).append("=?1");
         } else {
             q = new StringBuilder(200) //
                             .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o).append(" WHERE ");
@@ -742,10 +761,55 @@ public class RepositoryImpl<R> implements InvocationHandler {
             for (String idClassAttrName : entityInfo.idClassAttributeAccessors.keySet()) {
                 if (++count != 1)
                     q.append(" AND ");
-                q.append(o).append('.').append(entityInfo.getAttributeName(idClassAttrName, true)).append("=?").append(count);
+                q.append(o_).append(entityInfo.getAttributeName(idClassAttrName, true)).append("=?").append(count);
             }
         }
         return q.toString();
+    }
+
+    /**
+     * Generates JPQL for deletion by entity id and version (if versioned).
+     */
+    private StringBuilder generateDeleteEntity(QueryInfo queryInfo) {
+        EntityInfo entityInfo = queryInfo.entityInfo;
+        String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
+
+        StringBuilder q = new StringBuilder(100) //
+                        .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
+
+        if (queryInfo.method.getParameterCount() == 0) {
+            queryInfo.type = QueryInfo.Type.DELETE;
+            queryInfo.hasWhere = false;
+        } else {
+            queryInfo.init(Delete.class, QueryInfo.Type.DELETE_WITH_ENTITY_PARAM);
+            queryInfo.hasWhere = true;
+
+            q.append(" WHERE (");
+
+            String idName = entityInfo.getAttributeName(ID, true);
+            if (idName == null && entityInfo.idClassAttributeAccessors != null) {
+                boolean first = true;
+                for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
+                    if (first)
+                        first = false;
+                    else
+                        q.append(" AND ");
+
+                    name = entityInfo.attributeNames.get(name);
+                    q.append(o_).append(name).append("=?").append(++queryInfo.paramCount);
+                }
+            } else {
+                q.append(o_).append(idName).append("=?").append(++queryInfo.paramCount);
+            }
+
+            if (entityInfo.versionAttributeName != null)
+                q.append(" AND ").append(o_).append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
+
+            q.append(')');
+        }
+
+        return q;
     }
 
     /**
@@ -913,13 +977,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
         String name = queryInfo.entityInfo.getAttributeName(attribute, true);
         if (name == null) {
             if (attribute.length() == 3) {
-                // Special case for CrudRepository.deleteAll and CrudRepository.findAll
+                // TODO We might be able to remove special cases like this now that we have the entity parameter pattern
+                // Special case for BasicRepository.deleteAll and BasicRepository.findAll
                 int len = q.length(), where = q.lastIndexOf(" WHERE (");
                 if (where + 8 == len)
                     q.delete(where, len); // Remove " WHERE " because there are no conditions
                 queryInfo.hasWhere = false;
-            } else if (queryInfo.entityInfo.idClassAttributeAccessors != null && attribute.equalsIgnoreCase("id")) {
-                generateConditionsForIdClass(queryInfo, null, condition, ignoreCase, negated, q);
+            } else if (queryInfo.entityInfo.idClassAttributeAccessors != null && ID.equals(attribute)) {
+                generateConditionsForIdClass(queryInfo, condition, ignoreCase, negated, q);
             }
             return;
         }
@@ -930,8 +995,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (trimmed)
             attributeExpr.append("TRIM(");
 
-        String o = queryInfo.entityVar;
-        attributeExpr.append(o).append('.').append(name);
+        String o_ = queryInfo.entityVar_;
+        attributeExpr.append(o_).append(name);
 
         if (trimmed)
             attributeExpr.append(')');
@@ -1003,12 +1068,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
     /**
      * Generates JPQL for a *By condition on the IdClass, which expands to multiple conditions in JPQL.
      */
-    private void generateConditionsForIdClass(QueryInfo queryInfo, Filter filter, Condition condition, boolean ignoreCase, boolean negate, StringBuilder q) {
-        if (filter != null && filter.value().length != 0)
-            throw new MappingException("IdClass parameter cannot be represented as a hard-coded value of the @Filter annotation."); // TODO NLS
+    private void generateConditionsForIdClass(QueryInfo queryInfo, Condition condition, boolean ignoreCase, boolean negate, StringBuilder q) {
 
-        String paramName = filter == null || filter.param().length == 0 ? null : filter.param()[0];
-        String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
 
         q.append(negate ? "NOT (" : "(");
 
@@ -1019,24 +1081,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
             String name = queryInfo.entityInfo.getAttributeName(idClassAttr, true);
             if (ignoreCase)
-                q.append("LOWER(").append(o).append('.').append(name).append(')');
+                q.append("LOWER(").append(o_).append(name).append(')');
             else
-                q.append(o).append('.').append(name);
+                q.append(o_).append(name);
 
             switch (condition) {
                 case EQUALS:
                 case NOT_EQUALS:
                     q.append(condition.operator);
-                    if (paramName == null) { // positional parameter
-                        appendParam(q, ignoreCase, ++queryInfo.paramCount);
-                        if (count != 1)
-                            queryInfo.paramAddedCount++;
-                    } else { // named parameter
-                        q.append(ignoreCase ? "LOWER(:" : ":");
-                        q.append(paramName).append('_').append(count);
-                        if (ignoreCase)
-                            q.append(')');
-                    }
+                    appendParam(q, ignoreCase, ++queryInfo.paramCount);
+                    if (count != 1)
+                        queryInfo.paramAddedCount++;
                     break;
                 case NULL:
                 case EMPTY:
@@ -1053,6 +1108,63 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
 
         q.append(')');
+    }
+
+    /**
+     * Generates JPQL for a *By condition on the IdClass, which expands to multiple conditions in JPQL.
+     *
+     * @param queryInfo query information.
+     * @param paramInfo parameter information.
+     * @param qp        index of first JPQL query parameter to use for the first IdClass attribute.
+     * @param q         partially generated JPQL query to which to append.
+     * @return the number of extra query parameters that were added due to the IdClass.
+     */
+    private int generateConditionsForIdClass(QueryInfo queryInfo, ParamInfo paramInfo, int qp, StringBuilder q) {
+
+        if (paramInfo.comparisonAnno != null && !(paramInfo.comparisonAnno instanceof Assign))
+            throw new MappingException("The " + paramInfo.comparisonAnno.annotationType().getSimpleName() +
+                                       " annotation cannot be applied to a parameter of the " +
+                                       queryInfo.method.getName() + " method of the " + repositoryInterface.getName() +
+                                       " repository because the parameter type is an IdClass."); // TODO NLS
+
+        boolean ignoreCase = false;
+        if (paramInfo.functionAnnos != null)
+            for (ListIterator<Annotation> fn = paramInfo.functionAnnos.listIterator(paramInfo.functionAnnos.size()); fn.hasPrevious();) {
+                Annotation anno = fn.previous();
+                if (anno instanceof IgnoreCase)
+                    ignoreCase = true;
+                else if (anno instanceof Not)
+                    q.append(" NOT ");
+                else
+                    throw new MappingException("The " + anno.annotationType().getSimpleName() +
+                                               " annotation cannot be applied to a parameter of the " +
+                                               queryInfo.method.getName() + " method of the " + repositoryInterface.getName() +
+                                               " repository because the parameter type is an IdClass."); // TODO NLS
+            }
+
+        q.append('(');
+
+        String o_ = queryInfo.entityVar_;
+        int count = 0;
+        for (String idClassAttr : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
+            if (count != 0)
+                q.append(" AND ");
+
+            String name = queryInfo.entityInfo.getAttributeName(idClassAttr, true);
+            if (ignoreCase)
+                q.append("LOWER(").append(o_).append(name).append(')');
+            else
+                q.append(o_).append(name);
+
+            q.append('=');
+            appendParam(q, ignoreCase, count++ + qp);
+        }
+
+        q.append(')');
+
+        queryInfo.paramCount += count;
+        queryInfo.paramAddedCount += (count - 1);
+        return count - 1;
     }
 
     /**
@@ -1076,6 +1188,266 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Generates JPQL based on method parameters.
+     * Method annotations Count, Delete, Exists, Find, and Update indicate the respective type of method.
+     * Find methods can have special type parameters (PageRequest, Limit, Order, Sort, Sort[]). Other methods cannot.
+     *
+     * @param queryInfo      query information
+     * @param q              JPQL query to which to append the WHERE clause. Or null to create a new JPQL query.
+     * @param methodAnno     Count, Delete, Exists, Find, or Update annotation on the method. Never null.
+     * @param countPages     indicates whether or not to count pages. Only applies for find queries.
+     * @param hasUpdateParam indicates if the method has an parameters that are annotated to perform updates.
+     * @param allParamInfo   information about method parameters.
+     */
+    private StringBuilder generateFromParameters(QueryInfo queryInfo, StringBuilder q, Annotation methodAnno,
+                                                 boolean countPages, boolean hasUpdateParam, ParamInfo[] allParamInfo) {
+        String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
+
+        Boolean isNamePresent = null; // unknown
+        Parameter[] params = null;
+
+        Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
+        int numAttributeParams = paramTypes.length;
+        while (numAttributeParams > 0 && SPECIAL_PARAM_TYPES.contains(paramTypes[numAttributeParams - 1]))
+            numAttributeParams--;
+
+        if (numAttributeParams < paramTypes.length && !(methodAnno instanceof Find) && !(methodAnno instanceof Delete))
+            throw new MappingException("The special parameter types " + SPECIAL_PARAM_TYPES +
+                                       " must not be used on the " + queryInfo.method.getName() + " method of the " +
+                                       repositoryInterface.getName() + " repository because the repository method is a " +
+                                       methodAnno.annotationType().getSimpleName() + " operation."); // TODO NLS
+
+        // Identify IdClass parameters
+        if (queryInfo.entityInfo.idClassAttributeAccessors != null) {
+            for (int p = 0; p < numAttributeParams; p++)
+                if (paramTypes[p].equals(queryInfo.entityInfo.idType)) {
+                    if (allParamInfo[p] == null)
+                        allParamInfo[p] = new ParamInfo();
+                    allParamInfo[p].isIdClass = true;
+                }
+        }
+
+        if (q == null)
+            // Write new JPQL, starting with SELECT or UPDATE
+            if (!hasUpdateParam) {
+                queryInfo.type = QueryInfo.Type.FIND;
+                q = generateSelectClause(queryInfo, queryInfo.method.getAnnotation(Select.class));
+            } else {
+                queryInfo.type = QueryInfo.Type.UPDATE;
+                q = new StringBuilder(250).append("UPDATE ").append(queryInfo.entityInfo.name).append(' ').append(o).append(" SET");
+
+                boolean first = true;
+                // p is the method parameter number (0-based)
+                // qp is the query parameter number (1-based and accounting for IdClass requiring multiple query parameters)
+                for (int p = 0, qp = 1; p < numAttributeParams; p++, qp++) {
+                    ParamInfo paramInfo = allParamInfo[p];
+                    if (paramInfo != null)
+                        if (paramInfo.isIdClass) {
+                            if (paramInfo.updateAnno == null) {
+                                qp += queryInfo.entityInfo.idClassAttributeAccessors.size() - 1;
+                            } else if (paramInfo.updateAnno instanceof Assign) {
+                                //    generateUpdatesForIdClass(queryInfo, update, first, q);
+                                throw new UnsupportedOperationException("@Assign IdClass"); // TODO
+                            } else {
+                                throw new MappingException("The " + paramInfo.updateAnno.annotationType().getName() +
+                                                           " annotation cannot be used on parameter " + (p + 1) +
+                                                           " of the " + queryInfo.method.getName() + " method of the " +
+                                                           repositoryInterface.getName() + " repository when the Id is an IdClass."); // TODO NLS
+                            }
+                        } else if (paramInfo.updateAnno != null) {
+                            Annotation anno = paramInfo.updateAnno;
+                            String attribute;
+                            char op;
+                            if (anno instanceof Assign) {
+                                attribute = ((Assign) anno).value();
+                                op = '=';
+                            } else if (anno instanceof Add) {
+                                attribute = ((Add) anno).value();
+                                op = '+';
+                            } else if (anno instanceof Multiply) {
+                                attribute = ((Multiply) anno).value();
+                                op = '*';
+                            } else if (anno instanceof Divide) {
+                                attribute = ((Divide) anno).value();
+                                op = '/';
+                            } else if (anno instanceof SubtractFrom) {
+                                attribute = ((SubtractFrom) anno).value();
+                                op = '-';
+                            } else { // should be unreachable
+                                throw new UnsupportedOperationException(anno.toString());
+                            }
+
+                            if ("".equals(attribute)) {
+                                if (isNamePresent == null) {
+                                    params = queryInfo.method.getParameters();
+                                    isNamePresent = params[p].isNamePresent();
+                                }
+                                if (Boolean.TRUE.equals(isNamePresent))
+                                    attribute = params[p].getName();
+                                else
+                                    throw new MappingException("You must specify an entity attribute name as the value of the " +
+                                                               anno.annotationType().getName() + " annotation on parameter " + (p + 1) +
+                                                               " of the " + queryInfo.method.getName() + " method of the " +
+                                                               repositoryInterface.getName() + " repository or compile the application" +
+                                                               " with the -parameters compiler option that preserves the parameter names."); // TODO NLS
+                            }
+
+                            String name = queryInfo.entityInfo.getAttributeName(attribute, true);
+
+                            q.append(first ? " " : ", ").append(o_).append(name).append("=");
+                            first = false;
+
+                            boolean withFunction = false;
+                            switch (op) {
+                                case '=':
+                                    break;
+                                case '+':
+                                    if (withFunction = CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name)))
+                                        q.append("CONCAT(").append(o_).append(name).append(',');
+                                    else
+                                        q.append(o_).append(name).append('+');
+                                    break;
+                                default:
+                                    q.append(o_).append(name).append(op);
+                            }
+
+                            queryInfo.paramCount++;
+                            q.append('?').append(qp);
+
+                            if (withFunction)
+                                q.append(')');
+                        }
+                }
+            }
+
+        int startIndexForWhereClause = q.length();
+
+        // append the WHERE clause
+        // p is the method parameter number (0-based)
+        // qp is the query parameter number (1-based and accounting for IdClass requiring multiple query parameters)
+        for (int p = 0, qp = 1; p < numAttributeParams; p++, qp++) {
+            ParamInfo paramInfo = allParamInfo[p];
+            if (paramInfo == null || paramInfo.updateAnno == null) {
+                if (queryInfo.hasWhere) {
+                    q.append(paramInfo != null && paramInfo.or ? " OR " : " AND ");
+                } else {
+                    q.append(" WHERE (");
+                    queryInfo.hasWhere = true;
+                }
+
+                // Determine the entity attribute name, first from @By("name"), otherwise from the parameter name
+                String attribute = paramInfo == null ? null : paramInfo.byAttribute;
+                if (attribute == null) {
+                    if (isNamePresent == null) {
+                        params = queryInfo.method.getParameters();
+                        isNamePresent = params[p].isNamePresent();
+                    }
+                    if (Boolean.TRUE.equals(isNamePresent))
+                        attribute = params[p].getName();
+                    else
+                        throw new MappingException("You must specify an entity attribute name as the value of the " +
+                                                   By.class.getName() + " annotation on parameter " + (p + 1) +
+                                                   " of the " + queryInfo.method.getName() + " method of the " +
+                                                   repositoryInterface.getName() + " repository or compile the application" +
+                                                   " with the -parameters compiler option that preserves the parameter names."); // TODO NLS
+                }
+
+                if (paramInfo != null && paramInfo.isIdClass) {
+                    qp += generateConditionsForIdClass(queryInfo, paramInfo, qp, q);
+                    continue;
+                }
+
+                boolean ignoreCase = false;
+                StringBuilder attributeExpr = new StringBuilder();
+                if (paramInfo != null && paramInfo.functionAnnos != null)
+                    for (ListIterator<Annotation> fn = paramInfo.functionAnnos.listIterator(paramInfo.functionAnnos.size()); fn.hasPrevious();) {
+                        Annotation anno = fn.previous();
+                        ignoreCase |= anno instanceof IgnoreCase;
+                        String functionType = anno instanceof Extract ? ((Extract) anno).value().name() //
+                                        : anno instanceof Rounded ? ((Rounded) anno).value().name() //
+                                                        : anno.annotationType().getSimpleName();
+                        String functionCall = FUNCTION_CALLS.get(functionType);
+                        if (functionCall == null)
+                            throw new UnsupportedOperationException(anno.toString()); // should never occur
+                        attributeExpr.append(functionCall);
+                    }
+
+                String name = queryInfo.entityInfo.getAttributeName(attribute, true);
+
+                attributeExpr.append(o_).append(name);
+
+                if (paramInfo != null && paramInfo.functionAnnos != null)
+                    for (Annotation anno : paramInfo.functionAnnos) {
+                        if (anno instanceof Rounded && ((Rounded) anno).value() == Rounded.Direction.NEAREST)
+                            attributeExpr.append(", 0)"); // round to zero digits beyond the decimal
+                        else
+                            attributeExpr.append(')');
+                    }
+
+                boolean isCollection = queryInfo.entityInfo.collectionElementTypes.containsKey(name);
+                if (isCollection)
+                    verifyCollectionsSupported(name, ignoreCase, paramInfo == null ? null : paramInfo.comparisonAnno);
+
+                queryInfo.paramCount++;
+
+                if (paramInfo == null || paramInfo.comparisonAnno == null) { // Equals
+                    q.append(attributeExpr).append('=');
+                    appendParam(q, ignoreCase, qp);
+                } else if (paramInfo.comparisonAnno instanceof GreaterThan) {
+                    q.append(attributeExpr).append('>');
+                    appendParam(q, ignoreCase, qp);
+                } else if (paramInfo.comparisonAnno instanceof GreaterThanEqual) {
+                    q.append(attributeExpr).append(">=");
+                    appendParam(q, ignoreCase, qp);
+                } else if (paramInfo.comparisonAnno instanceof LessThan) {
+                    q.append(attributeExpr).append('<');
+                    appendParam(q, ignoreCase, qp);
+                } else if (paramInfo.comparisonAnno instanceof LessThanEqual) {
+                    q.append(attributeExpr).append("<=");
+                    appendParam(q, ignoreCase, qp);
+                } else if (paramInfo.comparisonAnno instanceof Contains) {
+                    if (isCollection) {
+                        q.append(" ?").append(qp).append(" MEMBER OF ").append(attributeExpr);
+                    } else {
+                        q.append(attributeExpr).append(" LIKE CONCAT('%', ");
+                        appendParam(q, ignoreCase, qp).append(", '%')");
+                    }
+                } else if (paramInfo.comparisonAnno instanceof Like) {
+                    q.append(attributeExpr).append(" LIKE ");
+                    appendParam(q, ignoreCase, qp);
+                } else if (paramInfo.comparisonAnno instanceof StartsWith) {
+                    q.append(attributeExpr).append(" LIKE CONCAT(");
+                    appendParam(q, ignoreCase, qp).append(", '%')");
+                } else if (paramInfo.comparisonAnno instanceof EndsWith) {
+                    q.append(attributeExpr).append(" LIKE CONCAT('%', ");
+                    appendParam(q, ignoreCase, qp).append(')');
+                } else if (paramInfo.comparisonAnno instanceof In) {
+                    if (ignoreCase)
+                        throw new MappingException("The " + Set.of("IgnoreCase", "In") +
+                                                   " annotations cannot be combined on parameter " + (p + 1) + " of the " +
+                                                   queryInfo.method.getName() + " method of the " +
+                                                   repositoryInterface.getName() + " repository."); // TODO NLS
+                    q.append(attributeExpr).append(" IN ");
+                    appendParam(q, ignoreCase, qp);
+                } else {
+                    throw new UnsupportedOperationException(paramInfo.comparisonAnno.annotationType().toString());
+                }
+            } else if (paramInfo.isIdClass) {
+                // adjust query parameter position based on the number of parameters needed for an IdClass
+                qp += queryInfo.entityInfo.idClassAttributeAccessors.size() - 1;
+            }
+        }
+        if (queryInfo.hasWhere)
+            q.append(')');
+
+        if (countPages && queryInfo.type == QueryInfo.Type.FIND)
+            generateCount(queryInfo, numAttributeParams == 0 ? null : q.substring(startIndexForWhereClause));
+
+        return q;
+    }
+
+    /**
      * Generates the before/after keyset queries and populates them into the query information.
      * Example conditions to add for forward keyset of (lastName, firstName, ssn):
      * AND ((o.lastName > ?5)
@@ -1092,34 +1464,34 @@ public class RepositoryImpl<R> implements InvocationHandler {
         String paramPrefix = queryInfo.paramNames == null ? "?" : ":keyset";
         StringBuilder a = fwd == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
         StringBuilder b = prev == null ? null : new StringBuilder(200).append(queryInfo.hasWhere ? " AND (" : " WHERE (");
-        String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
         for (int i = 0; i < numKeys; i++) {
             if (a != null)
                 a.append(i == 0 ? "(" : " OR (");
             if (b != null)
                 b.append(i == 0 ? "(" : " OR (");
             for (int k = 0; k <= i; k++) {
-                Sort keyInfo = queryInfo.sorts.get(k);
+                Sort<?> keyInfo = queryInfo.sorts.get(k);
                 String name = keyInfo.property();
                 boolean asc = keyInfo.isAscending();
                 boolean lower = keyInfo.ignoreCase();
                 if (a != null)
                     if (lower) {
-                        a.append(k == 0 ? "LOWER(" : " AND LOWER(").append(o).append('.').append(name).append(')');
+                        a.append(k == 0 ? "LOWER(" : " AND LOWER(").append(o_).append(name).append(')');
                         a.append(k < i ? '=' : (asc ? '>' : '<'));
                         a.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
                     } else {
-                        a.append(k == 0 ? "" : " AND ").append(o).append('.').append(name);
+                        a.append(k == 0 ? "" : " AND ").append(o_).append(name);
                         a.append(k < i ? '=' : (asc ? '>' : '<'));
                         a.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
                     }
                 if (b != null)
                     if (lower) {
-                        b.append(k == 0 ? "LOWER(" : " AND LOWER(").append(o).append('.').append(name).append(')');
+                        b.append(k == 0 ? "LOWER(" : " AND LOWER(").append(o_).append(name).append(')');
                         b.append(k < i ? '=' : (asc ? '<' : '>'));
                         b.append("LOWER(").append(paramPrefix).append(queryInfo.paramCount + 1 + k).append(')');
                     } else {
-                        b.append(k == 0 ? "" : " AND ").append(o).append('.').append(name);
+                        b.append(k == 0 ? "" : " AND ").append(o_).append(name);
                         b.append(k < i ? '=' : (asc ? '<' : '>'));
                         b.append(paramPrefix).append(queryInfo.paramCount + 1 + k);
                     }
@@ -1138,23 +1510,61 @@ public class RepositoryImpl<R> implements InvocationHandler {
             Tr.debug(this, tc, "forward & previous keyset queries", queryInfo.jpqlAfterKeyset, queryInfo.jpqlBeforeKeyset);
     }
 
-    private StringBuilder generateMethodNameQuery(QueryInfo queryInfo, boolean countPages) {
+    /**
+     * Generates the JPQL ORDER BY clause. This method is common between the OrderBy annotation and keyword.
+     */
+    private void generateOrderBy(QueryInfo queryInfo, StringBuilder q) {
+        Class<?> multiType = queryInfo.getMultipleResultType();
+
+        boolean needsKeysetQueries = CursoredPage.class.equals(multiType)
+                                     || Iterator.class.equals(multiType); // TODO remove this type
+
+        StringBuilder fwd = needsKeysetQueries ? new StringBuilder(100) : q; // forward page order
+        StringBuilder prev = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
+
+        boolean first = true;
+        for (Sort<?> sort : queryInfo.sorts) {
+            fwd.append(first ? " ORDER BY " : ", ");
+            appendSort(fwd, queryInfo.entityVar_, sort, true);
+
+            if (needsKeysetQueries) {
+                prev.append(first ? " ORDER BY " : ", ");
+                appendSort(prev, queryInfo.entityVar_, sort, false);
+            }
+            first = false;
+        }
+
+        if (needsKeysetQueries) {
+            generateKeysetQueries(queryInfo, q, fwd, prev);
+            q.append(fwd);
+        }
+    }
+
+    /**
+     * Handles Query by Method Name.
+     *
+     * @param queryInfo  query information to populate.
+     * @param countPages whether to generate a count query (for Page.totalElements and Page.totalPages).
+     * @return the generated query written to a StringBuilder.
+     */
+    private StringBuilder generateQueryFromMethodName(QueryInfo queryInfo, boolean countPages) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+
         EntityInfo entityInfo = queryInfo.entityInfo;
-        String o = queryInfo.entityVar;
         String methodName = queryInfo.method.getName();
+        String o = queryInfo.entityVar;
         StringBuilder q = null;
+
+        int by = methodName.indexOf("By");
+
         if (methodName.startsWith("find")) {
             Select select = queryInfo.method.getAnnotation(Select.class);
             List<String> selections = select == null ? new ArrayList<>() : null;
-            int by = methodName.indexOf("By", 4);
-            int c = by < 0 ? methodName.length() : by + 2;
-            if (by > 4 && "findAllById".equals(methodName) && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
-                methodName = "findAllByIdIn"; // CrudRepository.findAllById(Iterable)
-            else
-                parseFindBy(queryInfo, methodName, by, selections);
+            int c = by < 0 ? 4 : (by + 2);
+            parseFindBy(queryInfo, methodName, by, selections);
             q = generateSelectClause(queryInfo, select, selections == null ? null : selections.toArray(new String[selections.size()]));
 
-            int orderBy = by < 0 ? -1 : methodName.indexOf("OrderBy", by + 2);
+            int orderBy = methodName.indexOf("OrderBy", by + 2);
             if (orderBy > c || orderBy == -1 && methodName.length() > c) {
                 int where = q.length();
                 generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
@@ -1165,32 +1575,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 parseOrderBy(queryInfo, orderBy, q);
             queryInfo.type = QueryInfo.Type.FIND;
         } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
-            int by = methodName.indexOf("By", 6);
-            int c = by < 0 ? methodName.length() : by + 2;
-            if (by > 6) {
-                if ("deleteAllById".equals(methodName) && Iterable.class.isAssignableFrom(queryInfo.method.getParameterTypes()[0]))
-                    if (entityInfo.idClassAttributeAccessors == null)
-                        methodName = "deleteAllByIdIn"; // CrudRepository.deleteAllById(Iterable)
-                    else
-                        throw new MappingException("The deleteAllById operation cannot be used on entities with composite IDs."); // TODO NLS
-            } else if (methodName.length() == 6) {
-                Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length == 1 && (Object.class.equals(paramTypes[0]) || entityInfo.getType().equals(paramTypes[0]))) {
-                    methodName = entityInfo.versionAttributeName == null ? "deleteById" : ("deleteByIdAnd" + entityInfo.versionAttributeName);
-                    queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM; // CrudRepository.delete(entity)
-                    c = 8;
-                }
-            } else if (methodName.length() == 9 && methodName.endsWith("All")) {
-                Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-                if (paramTypes.length == 1 && Iterable.class.isAssignableFrom(paramTypes[0]))
-                    if (entityInfo.idClassAttributeAccessors == null) {
-                        methodName = entityInfo.versionAttributeName == null ? "deleteById" : ("deleteByIdAnd" + entityInfo.versionAttributeName);
-                        queryInfo.type = QueryInfo.Type.DELETE_WITH_ENTITY_PARAM; // CrudRepository.deleteAll(Iterable), one at a time
-                        c = 8;
-                    } else {
-                        throw new MappingException("The deleteAll operation cannot be used on entities with composite IDs."); // TODO NLS
-                    }
-            }
+            int c = by < 0 ? 6 : (by + 2);
             boolean isFindAndDelete = queryInfo.isFindAndDelete();
             if (isFindAndDelete) {
                 if (queryInfo.type != null)
@@ -1215,61 +1600,157 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
             queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
         } else if (methodName.startsWith("update")) {
-            int by = methodName.indexOf("By", 6);
-            int c = by < 0 ? 6 : by + 2;
+            int c = by < 0 ? 6 : (by + 2);
             q = generateUpdateClause(queryInfo, methodName, c);
             queryInfo.type = QueryInfo.Type.UPDATE;
         } else if (methodName.startsWith("count")) {
-            int by = methodName.indexOf("By", 5);
-            int c = by < 0 ? 5 : by + 2;
+            int c = by < 0 ? 5 : (by + 2);
             q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
             if (methodName.length() > c)
                 generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.COUNT;
         } else if (methodName.startsWith("exists")) {
-            int by = methodName.indexOf("By", 6);
-            int c = by < 0 ? 6 : by + 2;
-            String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
+            int c = by < 0 ? 6 : (by + 2);
+            String name = entityInfo.idClassAttributeAccessors == null ? ID : entityInfo.idClassAttributeAccessors.firstKey();
             String attrName = entityInfo.getAttributeName(name, true);
             q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
                             .append(" FROM ").append(entityInfo.name).append(' ').append(o);
             if (methodName.length() > c)
                 generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.EXISTS;
+        } else {
+            throw new UnsupportedOperationException("The name of the " + methodName + " method of the " +
+                                                    queryInfo.method.getDeclaringClass().getName() +
+                                                    " repository does not meet the requirements for Query by Method Name." +
+                                                    " Method names for Query by Method Name must begin with one of the " +
+                                                    "(count, delete, exists, find, update)" +
+                                                    " keywords, followed by 0 or more additional characters," +
+                                                    " followed by the 'By' keyword." +
+                                                    " If you are not using Query by Method Name, " +
+                                                    " query methods must be annotated with one of: " +
+                                                    "(Delete, Find, Insert, Query, Save, Update)" + "."); // TODO NLS
         }
+
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, methodName + " is identified as a " + queryInfo.type + " method");
 
         return q;
     }
 
     /**
-     * Generates the JPQL ORDER BY clause. This method is common between the OrderBy annotation and keyword.
+     * Handles the Query by Parameters pattern,
+     * which requires one of the following annotations:
+     * Count, Delete, Exists, Find, or Update.
+     *
+     * @param queryInfo      query information to populate.
+     * @param methodTypeAnno Count, Delete, Exists, Find, or Update annotation.
+     *                           The Insert, Save, and Query annotations are never supplied to this method.
+     * @param countPages     whether to generate a count query (for Page.totalElements and Page.totalPages).
+     * @return the generated query written to a StringBuilder.
      */
-    private void generateOrderBy(QueryInfo queryInfo, StringBuilder q) {
-        Class<?> multiType = queryInfo.getMultipleResultType();
+    private StringBuilder generateQueryFromMethodParams(QueryInfo queryInfo, Annotation methodTypeAnno, boolean countPages) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        boolean needsKeysetQueries = KeysetAwarePage.class.equals(multiType)
-                                     || KeysetAwareSlice.class.equals(multiType)
-                                     || Iterator.class.equals(multiType);
+        EntityInfo entityInfo = queryInfo.entityInfo;
+        String methodName = queryInfo.method.getName();
+        String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
+        StringBuilder q = null;
 
-        StringBuilder fwd = needsKeysetQueries ? new StringBuilder(100) : q; // forward page order
-        StringBuilder prev = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
+        boolean hasUpdateParam = false;
 
-        boolean first = true;
-        for (Sort sort : queryInfo.sorts) {
-            fwd.append(first ? " ORDER BY " : ", ");
-            appendSort(fwd, queryInfo.entityVar, sort, true);
+        // Identify parameter annotations
 
-            if (needsKeysetQueries) {
-                prev.append(first ? " ORDER BY " : ", ");
-                appendSort(prev, queryInfo.entityVar, sort, false);
+        Annotation[][] annosForAllParams = queryInfo.method.getParameterAnnotations();
+        ParamInfo[] allParamInfo = annosForAllParams.length == 0 ? null : new ParamInfo[annosForAllParams.length];
+        for (int p = 0; p < annosForAllParams.length; p++)
+            if (annosForAllParams[p].length > 0) {
+                ParamInfo paramInfo = null;
+                for (Annotation anno : annosForAllParams[p])
+                    if (anno instanceof By) {
+                        paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
+                        paramInfo.byAttribute = ((By) anno).value();
+                    } else if (anno instanceof Or) {
+                        paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
+                        paramInfo.or = true;
+                    } else {
+                        String packageName = anno.annotationType().getPackageName();
+                        if (COMPARISON_ANNO_PACKAGE.equals(packageName)) {
+                            paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
+                            if (paramInfo.comparisonAnno == null)
+                                paramInfo.comparisonAnno = anno;
+                            else
+                                throw new MappingException("The " + Set.of(paramInfo.comparisonAnno, anno) +
+                                                           " annotations cannot be combined on parameter " + (p + 1) + " of the " +
+                                                           queryInfo.method.getName() + " method of the " +
+                                                           repositoryInterface.getName() + " repository."); // TODO NLS
+                        } else if (FUNCTION_ANNO_PACKAGE.equals(packageName)) {
+                            paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
+                            paramInfo.addFunctionAnnotation(anno);
+                        } else if (UPDATE_ANNO_PACKAGE.equals(packageName)) {
+                            paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
+                            hasUpdateParam = true;
+                            if (paramInfo.updateAnno == null)
+                                paramInfo.updateAnno = anno;
+                            else
+                                throw new MappingException("The " + Set.of(paramInfo.updateAnno, anno) +
+                                                           " annotations cannot be combined on parameter " + (p + 1) + " of the " +
+                                                           queryInfo.method.getName() + " method of the " +
+                                                           repositoryInterface.getName() + " repository."); // TODO NLS
+                        }
+                    }
+                allParamInfo[p] = paramInfo;
             }
-            first = false;
+
+        if (methodTypeAnno instanceof Update) {
+            if (!hasUpdateParam)
+                throw new MappingException("Because the " + methodName + " method of the " +
+                                           repositoryInterface.getName() + " repository is an update operation, it must have either " +
+                                           "a single parameter that is the entity type or an Iterable, Stream, or array of entity, " +
+                                           "Or it must have at least one parameter that is annotated with one of " +
+                                           List.of(Assign.class, Add.class, Multiply.class, Divide.class) + "."); // TODO
+        } else if (hasUpdateParam) {
+            throw new MappingException("Parameters of the " + methodName + " method of the " +
+                                       repositoryInterface.getName() + " repository must not be annotated with annotations from the " +
+                                       UPDATE_ANNO_PACKAGE + " package because the repository method is not annotated with " +
+                                       Update.class.getName() + "."); // TODO NLS
         }
 
-        if (needsKeysetQueries) {
-            generateKeysetQueries(queryInfo, q, fwd, prev);
-            q.append(fwd);
+        if (methodTypeAnno instanceof Find || methodTypeAnno instanceof Update) {
+            q = generateFromParameters(queryInfo, null, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
+        } else if (methodTypeAnno instanceof Delete) {
+            if (queryInfo.isFindAndDelete()) {
+                queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
+                q = generateSelectClause(queryInfo, null);
+                queryInfo.jpqlDelete = generateDeleteById(queryInfo);
+            } else { // DELETE
+                queryInfo.type = QueryInfo.Type.DELETE;
+                q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
+            }
+            if (queryInfo.method.getParameterCount() > 0)
+                generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
+        } else if (methodTypeAnno instanceof Count) {
+            queryInfo.type = QueryInfo.Type.COUNT;
+            q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
+            if (queryInfo.method.getParameterCount() > 0)
+                generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
+        } else if (methodTypeAnno instanceof Exists) {
+            queryInfo.type = QueryInfo.Type.EXISTS;
+            String name = entityInfo.idClassAttributeAccessors == null ? ID : entityInfo.idClassAttributeAccessors.firstKey();
+            String attrName = entityInfo.getAttributeName(name, true);
+            q = new StringBuilder(200).append("SELECT ").append(o_).append(attrName) //
+                            .append(" FROM ").append(entityInfo.name).append(' ').append(o);
+            if (queryInfo.method.getParameterCount() > 0)
+                generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
+        } else {
+            // TODO should be unreachable
+            throw new UnsupportedOperationException("Unexpected annotation " + methodTypeAnno + " for parameter-based query.");
         }
+
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, methodName + " is identified as a " + queryInfo.type + " method");
+
+        return q;
     }
 
     /**
@@ -1283,6 +1764,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private StringBuilder generateSelectClause(QueryInfo queryInfo, Select select, String... selections) {
         StringBuilder q = new StringBuilder(200);
         String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
         EntityInfo entityInfo = queryInfo.entityInfo;
 
         boolean distinct = select != null && select.distinct();
@@ -1321,7 +1803,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         attributeType = QueryInfo.wrapperClassIfPrimitive(attributeType);
                     if (singleType.isAssignableFrom(attributeType)) {
                         singleAttributeName = entry.getKey();
-                        q.append(distinct ? "DISTINCT " : "").append(o).append('.').append(singleAttributeName);
+                        q.append(distinct ? "DISTINCT " : "").append(o_).append(singleAttributeName);
                         break;
                     }
                 }
@@ -1422,13 +1904,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (div > 0 && div < uFirst)
             uFirst = div;
         if (uFirst == Integer.MAX_VALUE)
-            throw new IllegalArgumentException(methodName); // updateBy that lacks updates
+            throw new UnsupportedOperationException(methodName); // updateBy that lacks updates
 
         // Compute the WHERE clause first due to its parameters being ordered first in the repository method signature
         StringBuilder where = new StringBuilder(150);
         generateWhereClause(queryInfo, methodName, c, uFirst, where);
 
         String o = queryInfo.entityVar;
+        String o_ = queryInfo.entityVar_;
         StringBuilder q = new StringBuilder(250);
         q.append("UPDATE ").append(queryInfo.entityInfo.name).append(' ').append(o).append(" SET");
 
@@ -1466,26 +1949,26 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
             if (name == null) {
                 if (op == '=') {
-                    generateUpdatesForIdClass(queryInfo, null, first, q);
+                    generateUpdatesForIdClass(queryInfo, first, q);
                 } else {
-                    String opName = op == '+' ? Operation.Add.name() : op == '*' ? Operation.Multiply.name() : Operation.Divide.name();
+                    String opName = op == '+' ? "Add" : op == '*' ? "Multiply" : "Divide";
                     throw new MappingException("The " + opName +
                                                " repository update operation cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
                 }
             } else {
-                q.append(first ? " " : ", ").append(o).append('.').append(name).append("=");
+                q.append(first ? " " : ", ").append(o_).append(name).append("=");
 
                 switch (op) {
                     case '+':
                         if (CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name))) {
-                            q.append("CONCAT(").append(o).append('.').append(name).append(',') //
+                            q.append("CONCAT(").append(o_).append(name).append(',') //
                                             .append('?').append(++queryInfo.paramCount).append(')');
                             break;
                         }
                         // else fall through
                     case '*':
                     case '/':
-                        q.append(o).append('.').append(name).append(op);
+                        q.append(o_).append(name).append(op);
                         // fall through
                     case '=':
                         q.append('?').append(++queryInfo.paramCount);
@@ -1499,88 +1982,54 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Generates the JPQL UPDATE clause from @Update annotations.
-     *
-     * @param queryInfo query information
-     * @param updates   Update annotations
-     * @return the JPQL UPDATE clause
+     * Generates JPQL for updates of an entity by entity id and version (if versioned).
      */
-    private StringBuilder generateUpdateClause(QueryInfo queryInfo, Update[] updates) {
+    private StringBuilder generateUpdateEntity(QueryInfo queryInfo) {
+        EntityInfo entityInfo = queryInfo.entityInfo;
         String o = queryInfo.entityVar;
-        StringBuilder q = new StringBuilder(400).append("UPDATE ").append(queryInfo.entityInfo.name).append(' ').append(o).append(" SET");
+        String o_ = queryInfo.entityVar_;
+        StringBuilder q;
 
-        boolean first = true;
-        for (Update update : updates) {
-            String attribute = update.attr();
-            Operation op = update.op();
-            String name = queryInfo.entityInfo.getAttributeName(attribute, true);
+        String idName = queryInfo.entityInfo.getAttributeName(ID, true);
+        if (idName == null && queryInfo.entityInfo.idClassAttributeAccessors != null) {
+            // TODO support this similar to what generateDeleteEntity does
+            throw new MappingException("Update operations cannot be used on entities with composite IDs."); // TODO NLS
+        }
 
-            if (name == null) {
-                if (op == Operation.Assign)
-                    generateUpdatesForIdClass(queryInfo, update, first, q);
+        Class<?> singleType = queryInfo.getSingleResultType();
+        if (UPDATE_COUNT_TYPES.contains(singleType)) {
+            queryInfo.init(Update.class, QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM);
+            queryInfo.hasWhere = true;
+
+            q = new StringBuilder(100) //
+                            .append("UPDATE ").append(entityInfo.name).append(' ').append(o) //
+                            .append(" SET ");
+
+            boolean first = true;
+            for (String name : entityInfo.getAttributeNamesForEntityUpdate()) {
+                if (first)
+                    first = false;
                 else
-                    throw new MappingException("The " + op.name() +
-                                               " repository update operation cannot be used on the Id of the entity when the Id is an IdClass."); // TODO NLS
-            } else {
-                q.append(first ? " " : ", ").append(o).append('.').append(name).append("=");
+                    q.append(", ");
 
-                boolean withFunction = false;
-                switch (op) {
-                    case Assign:
-                        break;
-                    case Add:
-                        if (withFunction = CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name)))
-                            q.append("CONCAT(").append(o).append('.').append(name).append(',');
-                        else
-                            q.append(o).append('.').append(name).append('+');
-                        break;
-                    case Multiply:
-                        q.append(o).append('.').append(name).append('*');
-                        break;
-                    case Subtract:
-                        q.append(o).append('.').append(name).append('-');
-                        break;
-                    case Divide:
-                        q.append(o).append('.').append(name).append('/');
-                        break;
-                    default:
-                        throw new UnsupportedOperationException(op.name());
-                }
-
-                String param = update.param();
-                String[] values = update.value();
-                if (param.length() > 0) { // named parameter
-                    q.append(':').append(param);
-                    if (queryInfo.paramNames == null)
-                        queryInfo.paramNames = new ArrayList<>(); // content is computed later from method signature
-                } else if (values.length == 1) { // single value
-                    char c = values[0].length() == 0 ? ' ' : values[0].charAt(0);
-                    boolean enquote = (c < '0' || c > '9') && c != '\'';
-                    if (enquote)
-                        q.append("'");
-                    q.append(values[0]);
-                    if (enquote)
-                        q.append("'");
-                } else if (values.length > 1) { // multiple value list // TODO should we even allow this if there is no way to supply a single value list?
-                    for (int v = 0; v < values.length; v++) {
-                        q.append(v == 0 ? "(" : ", ");
-                        char c = values[v].length() == 0 ? ' ' : values[v].charAt(0);
-                        boolean enquote = (c < '0' || c > '9') && c != '\'';
-                        if (enquote)
-                            q.append("'");
-                        q.append(values[v]);
-                        if (enquote)
-                            q.append("'");
-                    }
-                    q.append(')');
-                } else { // positional parameter
-                    q.append('?').append(++queryInfo.paramCount);
-                }
-
-                if (withFunction)
-                    q.append(')');
+                q.append(o_).append(name).append("=?").append(++queryInfo.paramCount);
             }
-            first = false;
+
+            q.append(" WHERE ").append(o_).append(idName).append("=?").append(++queryInfo.paramCount);
+
+            if (entityInfo.versionAttributeName != null)
+                q.append(" AND ").append(o_).append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
+        } else {
+            // Update that returns an entity - perform a find operation first so that em.merge can be used
+            queryInfo.init(Update.class, QueryInfo.Type.UPDATE_WITH_ENTITY_PARAM_AND_RESULT);
+            queryInfo.hasWhere = true;
+
+            q = new StringBuilder(100) //
+                            .append("SELECT ").append(o).append(" FROM ").append(entityInfo.name).append(' ').append(o) //
+                            .append(" WHERE ").append(o_).append(idName).append("=?").append(++queryInfo.paramCount);
+
+            if (entityInfo.versionAttributeName != null)
+                q.append(" AND ").append(o_).append(entityInfo.versionAttributeName).append("=?").append(++queryInfo.paramCount);
         }
 
         return q;
@@ -1589,25 +2038,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
     /**
      * Generates JPQL to assign the entity properties of which the IdClass consists.
      */
-    private void generateUpdatesForIdClass(QueryInfo queryInfo, Update update, boolean firstOperation, StringBuilder q) {
-        if (update != null && update.value().length != 0)
-            throw new MappingException("IdClass parameter cannot be represented as a hard-coded value of the @Update annotation."); // TODO NLS
+    private void generateUpdatesForIdClass(QueryInfo queryInfo, boolean firstOperation, StringBuilder q) {
 
-        String paramName = update == null || update.param().length() == 0 ? null : update.param();
-
+        String o_ = queryInfo.entityVar_;
         int count = 0;
         for (String idClassAttr : queryInfo.entityInfo.idClassAttributeAccessors.keySet()) {
             count++;
             String name = queryInfo.entityInfo.getAttributeName(idClassAttr, true);
 
-            q.append(firstOperation ? " " : ", ").append(queryInfo.entityVar).append('.').append(name);
-            if (paramName == null) { // positional parameter
-                q.append("=?").append(++queryInfo.paramCount);
-                if (count != 1)
-                    queryInfo.paramAddedCount++;
-            } else { // named parameter
-                q.append("=:").append(paramName).append('_').append(count);
-            }
+            q.append(firstOperation ? " " : ", ").append(o_).append(name) //
+                            .append("=?").append(++queryInfo.paramCount);
+            if (count != 1)
+                queryInfo.paramAddedCount++;
 
             firstOperation = false;
         }
@@ -1638,159 +2080,184 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Generates the JPQL WHERE clause based on conditions in the Filter annotations
+     * Return a name for the parameter, suitable for display in an NLS message.
      *
-     * @param queryInfo query information
-     * @param filters   Filter annotations
-     * @return the JPQL WHERE clause
+     * @param param parameter
+     * @param index zero-based method index.
+     * @return parameter name.
      */
-    private StringBuilder generateWhereClause(QueryInfo queryInfo, Filter[] filters) {
-        queryInfo.hasWhere = true;
-        StringBuilder q = new StringBuilder(250).append(" WHERE (");
-
-        boolean first = true;
-        for (Filter filter : filters) {
-            if (first)
-                first = false;
-            else
-                q.append(' ').append(filter.as().name()).append(' '); // AND / OR between conditions
-
-            String attribute = filter.by();
-            Function functions[] = filter.fn();
-            Compare comparison = filter.op();
-            Compare negatedFrom = comparison.negated();
-            boolean negated = negatedFrom != null;
-            if (negated)
-                comparison = negatedFrom;
-
-            if (attribute.length() == 0)
-                throw new MappingException("Entity property name is missing."); // TODO possibly combine with unknown entity property name
-
-            boolean ignoreCase = false;
-            StringBuilder attributeExpr = new StringBuilder();
-            for (int f = functions.length - 1; f >= 0; f--) {
-                if (functions[f] == Function.IgnoreCase)
-                    ignoreCase = true;
-                String functionCall = FUNCTION_CALLS.get(functions[f]);
-                if (functionCall == null)
-                    throw new UnsupportedOperationException(functions[f].name()); // should never occur
-                attributeExpr.append(functionCall);
-            }
-
-            String name = queryInfo.entityInfo.getAttributeName(attribute, true);
-            if (name == null) {
-                generateConditionsForIdClass(queryInfo, filter, Condition.forIdClass(comparison), ignoreCase, negated, q);
-                continue;
-            }
-
-            String o = queryInfo.entityVar;
-            attributeExpr.append(o).append('.').append(name);
-
-            for (int f = functions.length - 1; f >= 0; f--) {
-                if (functions[f] == Function.Rounded)
-                    attributeExpr.append(", 0)"); // round to zero digits beyond the decimal
-                else
-                    attributeExpr.append(')');
-            }
-
-            boolean isCollection = queryInfo.entityInfo.collectionElementTypes.containsKey(name);
-            if (isCollection)
-                verifyCollectionsSupported(name, ignoreCase, comparison);
-
-            switch (comparison) {
-                case Equal:
-                    q.append(attributeExpr).append(negated ? Condition.NOT_EQUALS.operator : Condition.EQUALS.operator);
-                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
-                    break;
-                case GreaterThan:
-                    q.append(attributeExpr).append(Condition.GREATER_THAN.operator);
-                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
-                    break;
-                case GreaterThanEqual:
-                    q.append(attributeExpr).append(Condition.GREATER_THAN_EQUAL.operator);
-                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
-                    break;
-                case LessThan:
-                    q.append(attributeExpr).append(Condition.LESS_THAN.operator);
-                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
-                    break;
-                case LessThanEqual:
-                    q.append(attributeExpr).append(Condition.LESS_THAN_EQUAL.operator);
-                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
-                    break;
-                case StartsWith:
-                    q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT(");
-                    appendParamOrValue(q, queryInfo, filter, ignoreCase).append(", '%')");
-                    break;
-                case EndsWith:
-                    q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ");
-                    appendParamOrValue(q, queryInfo, filter, ignoreCase).append(")");
-                    break;
-                case Like:
-                    q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE ");
-                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
-                    break;
-                case Between:
-                    q.append(attributeExpr).append(negated ? " NOT " : " ").append("BETWEEN ");
-                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
-                    break;
-                case Contains:
-                    if (isCollection) {
-                        q.append(' ');
-                        appendParamOrValue(q, queryInfo, filter, ignoreCase) //
-                                        .append(negated ? " NOT " : " ").append("MEMBER OF ").append(attributeExpr);
-                    } else {
-                        q.append(attributeExpr).append(negated ? " NOT " : " ").append("LIKE CONCAT('%', ");
-                        appendParamOrValue(q, queryInfo, filter, ignoreCase).append(", '%')");
-                    }
-                    break;
-                case In:
-                    if (ignoreCase)
-                        throw new MappingException(new UnsupportedOperationException("Repository keyword IgnoreCase cannot be combined with the In keyword.")); // TODO
-                    q.append(attributeExpr).append(negated ? " NOT " : "").append(Condition.IN.operator);
-                    appendParamOrValue(q, queryInfo, filter, ignoreCase);
-                    break;
-                case Null:
-                    q.append(attributeExpr).append(negated ? Condition.NOT_NULL.operator : Condition.NULL.operator);
-                    break;
-                case True:
-                    q.append(attributeExpr).append(Condition.TRUE.operator);
-                    break;
-                case False:
-                    q.append(attributeExpr).append(Condition.FALSE.operator);
-                    break;
-                case Empty:
-                    if (isCollection)
-                        q.append(attributeExpr).append(negated ? Condition.NOT_EMPTY.operator : Condition.EMPTY.operator);
-                    else
-                        q.append(attributeExpr).append(negated ? Condition.NOT_NULL.operator : Condition.NULL.operator);
-                    break;
-                default:
-                    throw new MappingException(new UnsupportedOperationException(comparison.name())); // should be unreachable
-            }
-        }
-
-        return q.append(')');
+    @Trivial
+    private static final String getName(Parameter param, int index) {
+        return param.isNamePresent() //
+                        ? param.getName() //
+                        : ("(" + (index + 1) + ")");
     }
 
     /**
-     * Implementation of RepositoryAssist.getResource for the specified resource type.
+     * Identifies possible positions of named parameters within the JPQL.
+     *
+     * @param jpql JPQL
+     * @return possible positions of named parameters within the JPQL.
+     */
+    @Trivial
+    private List<Integer> getParameterPositions(String jpql) {
+        List<Integer> positions = new ArrayList<>();
+        for (int index = 0; (index = jpql.indexOf(':', index)) >= 0;)
+            positions.add(++index);
+        return positions;
+    }
+
+    /**
+     * Request an instance of a resource of the specified type.
      *
      * @param type resource type.
-     * @return optional populated with the resource or the empty optional.
+     * @return instance of the resource. Never null.
+     * @throws UnsupportedOperationException if the type of resource is not available.
      */
-    private <T> Optional<T> getResource(Class<T> type) {
+    private <T> T getResource(Class<T> type) {
         Deque<EntityManager> resources = defaultMethodResources.get();
-        if (resources == null)
-            throw new IllegalStateException("The " + type.getName() + " resource cannot be obtained outside the scope of a repository default method."); // TODO NLS
         if (EntityManager.class.equals(type)) {
-            EntityManager em = defaultEntityInfoFuture.join().persister.createEntityManager();
-            resources.add(em);
+            EntityManager em = primaryEntityInfoFuture.join().builder.createEntityManager();
+            if (resources == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, type + " accessed outside the scope of repository default method",
+                             Arrays.toString(new Exception().getStackTrace()));
+            } else {
+                resources.add(em);
+            }
             @SuppressWarnings("unchecked")
             T t = (T) em;
-            return Optional.of(t);
+            return t;
         }
-        return Optional.empty();
+        throw new UnsupportedOperationException("The " + type.getName() + " type of resource is not available from the Jakarta Data provider."); // TODO NLS
+    }
+
+    /**
+     * Returns some of the more commonly used return types that are valid for a life cycle method.
+     *
+     * @param singularClassName        simple class name of the entity
+     * @param hasSingularEntityParam   if the life cycle method entity parameter is singular (not an Iterable or array)
+     * @param includeBooleanAndNumeric whether to include boolean and numeric types as valid.
+     * @return some of the more commonly used return types that are valid for a life cycle method.
+     */
+    private List<String> getValidReturnTypes(String singularClassName, boolean hasSingularEntityParam, boolean includeBooleanAndNumeric) {
+        List<String> validReturnTypes = new ArrayList<>();
+        if (includeBooleanAndNumeric) {
+            validReturnTypes.add("boolean");
+            validReturnTypes.add("int");
+            validReturnTypes.add("long");
+        }
+
+        validReturnTypes.add("void");
+
+        if (hasSingularEntityParam) {
+            validReturnTypes.add(singularClassName);
+        } else {
+            validReturnTypes.add(singularClassName + "[]");
+            validReturnTypes.add("Iterable<" + singularClassName + ">");
+            validReturnTypes.add("List<" + singularClassName + ">");
+        }
+
+        return validReturnTypes;
+    }
+
+    /**
+     * Inserts entities (or records) into the database.
+     * An error is raised if any of the entities (or records) already exist in the database.
+     *
+     * @param arg       the entity or record, or array or Iterable or Stream of entity or record.
+     * @param queryInfo query information.
+     * @param em        the entity manager.
+     * @return the updated entities, using the return type that is required by Insert method signature.
+     * @throws Exception if an error occurs.
+     */
+    private Object insert(Object arg, QueryInfo queryInfo, EntityManager em) throws Exception {
+        Class<?> singleType = queryInfo.getSingleResultType();
+        boolean resultVoid = void.class.equals(singleType) || Void.class.equals(singleType);
+        ArrayList<Object> results;
+
+        boolean hasSingularEntityParam = false;
+        if (queryInfo.entityParamType.isArray()) {
+            int length = Array.getLength(arg);
+            results = resultVoid ? null : new ArrayList<>(length);
+            for (int i = 0; i < length; i++) {
+                Object entity = toEntity(Array.get(arg, i));
+                em.persist(entity);
+                if (results != null)
+                    results.add(entity);
+            }
+            em.flush();
+        } else {
+            arg = arg instanceof Stream //
+                            ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                            : arg;
+
+            if (arg instanceof Iterable) {
+                results = resultVoid ? null : new ArrayList<>();
+                for (Object e : ((Iterable<?>) arg)) {
+                    Object entity = toEntity(e);
+                    em.persist(entity);
+                    if (results != null)
+                        results.add(entity);
+                }
+                em.flush();
+            } else {
+                hasSingularEntityParam = true;
+                results = resultVoid ? null : new ArrayList<>(1);
+                Object entity = toEntity(arg);
+                em.persist(entity);
+                em.flush();
+                if (results != null)
+                    results.add(entity);
+            }
+        }
+
+        Class<?> returnType = queryInfo.method.getReturnType();
+        Object returnValue;
+        if (resultVoid) {
+            returnValue = null;
+        } else {
+            if (queryInfo.entityInfo.recordClass != null)
+                for (int i = 0; i < results.size(); i++)
+                    results.set(i, queryInfo.entityInfo.toRecord(results.get(i)));
+
+            if (queryInfo.returnArrayType != null) {
+                Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+                returnValue = results.toArray(newArray);
+            } else {
+                Class<?> multiType = queryInfo.getMultipleResultType();
+                if (multiType == null)
+                    returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+                else if (multiType.isInstance(results))
+                    returnValue = results;
+                else if (Stream.class.equals(multiType))
+                    returnValue = results.stream();
+                else if (Iterable.class.isAssignableFrom(multiType))
+                    returnValue = toIterable(multiType, null, results);
+                else if (Iterator.class.equals(multiType))
+                    returnValue = results.iterator();
+                else
+                    throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                               queryInfo.method.getName() + " method of the " +
+                                               queryInfo.method.getDeclaringClass().getName() +
+                                               " class is not a valid return type for a repository " +
+                                               "@Insert" + " method. Valid return types include " +
+                                               getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+            }
+        }
+
+        if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+            returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
+        } else if (!resultVoid && !returnType.isInstance(returnValue)) {
+            throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                       queryInfo.method.getName() + " method of the " +
+                                       queryInfo.method.getDeclaringClass().getName() +
+                                       " class is not a valid return type for a repository " +
+                                       "@Insert" + " method. Valid return types include " +
+                                       getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+        }
+
+        return returnValue;
     }
 
     @FFDCIgnore(Throwable.class)
@@ -1801,13 +2268,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         boolean isDefaultMethod = false;
 
         if (queryInfoFuture == null)
-            if (RepositoryAssist.class.equals(method.getDeclaringClass())) {
-                String methodName = method.getName();
-                if ("getResource".equals(methodName))
-                    return getResource((Class<?>) args[0]);
-                else
-                    throw new UnsupportedOperationException(method.toString());
-            } else if (method.isDefault()) {
+            if (method.isDefault()) {
                 isDefaultMethod = true;
             } else {
                 String methodName = method.getName();
@@ -1865,8 +2326,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, queryInfo.toString());
 
-            EntityValidator validator = provider.validator();
-            if (validator != null) // TODO also use queryInfo.validatable which will previously check with bean validation
+            if (queryInfo.validateParams)
                 validator.validateParameters(proxy, method, args);
 
             LocalTransactionCoordinator suspendedLTC = null;
@@ -1880,6 +2340,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 case FIND:
                 case COUNT:
                 case EXISTS:
+                case RESOURCE_ACCESS:
                     requiresTransaction = false;
                     break;
                 default:
@@ -1893,107 +2354,83 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
 
                 switch (queryInfo.type) {
-                    case MERGE: {
-                        em = entityInfo.persister.createEntityManager();
-
-                        List<Object> results;
-                        if (queryInfo.saveParamType.isArray()) {
-                            results = new ArrayList<>();
-                            Object a = args[0];
-                            int length = Array.getLength(a);
-                            if (queryInfo.validatable && validator != null)
-                                validator.validate(a, length);
-                            for (int i = 0; i < length; i++)
-                                results.add(em.merge(toEntity(Array.get(a, i))));
-                            em.flush();
-                        } else if (Iterable.class.isAssignableFrom(queryInfo.saveParamType)) {
-                            if (queryInfo.validatable && validator != null)
-                                validator.validate((Iterable<?>) args[0]);
-                            results = new ArrayList<>();
-                            for (Object e : ((Iterable<?>) args[0]))
-                                results.add(em.merge(toEntity(e)));
-                            em.flush();
-                        } else {
-                            if (queryInfo.validatable && validator != null && args[0] != null)
-                                validator.validate(args[0]);
-                            results = List.of(em.merge(toEntity(args[0])));
-                            em.flush();
-                        }
-
-                        if (queryInfo.returnArrayType != null) {
-                            Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
-                            returnValue = results.toArray(newArray);
-                        } else {
-                            Class<?> multiType = queryInfo.getMultipleResultType();
-                            if (multiType == null)
-                                returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results?
-                            else if (multiType.isInstance(results))
-                                returnValue = results;
-                            else if (Stream.class.equals(multiType))
-                                returnValue = results.stream();
-                            else if (Iterable.class.isAssignableFrom(multiType))
-                                returnValue = toIterable(multiType, null, results);
-                            else if (Iterator.class.equals(multiType))
-                                returnValue = results.iterator();
-                            else
-                                throw new UnsupportedOperationException(multiType + " is an unsupported return type."); // TODO NLS
-                        }
-
-                        if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
-                            returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
-                        } else {
-                            returnValue = returnType.isInstance(returnValue) ? returnValue : null;
-                        }
+                    case SAVE: {
+                        em = entityInfo.builder.createEntityManager();
+                        returnValue = save(args[0], queryInfo, em);
+                        break;
+                    }
+                    case INSERT: {
+                        em = entityInfo.builder.createEntityManager();
+                        returnValue = insert(args[0], queryInfo, em);
                         break;
                     }
                     case FIND:
                     case FIND_AND_DELETE: {
                         Limit limit = null;
-                        Pageable pagination = null;
-                        List<Sort> sortList = null;
+                        PageRequest<?> pagination = null;
+                        List<Sort<Object>> sortList = null;
 
                         // Jakarta Data allows the method parameter positions after those used as query parameters
                         // to be used for purposes such as pagination and sorting.
                         for (int i = queryInfo.paramCount - queryInfo.paramAddedCount; i < (args == null ? 0 : args.length); i++) {
                             Object param = args[i];
-                            if (param instanceof Limit)
+                            if (param instanceof Limit) {
                                 if (limit == null)
                                     limit = (Limit) param;
                                 else
-                                    throw new DataException("Repository method " + method + " cannot have multiple Limit parameters."); // TODO NLS
-                            else if (param instanceof Pageable)
+                                    throw new UnsupportedOperationException("Repository method " + method + " cannot have multiple Limit parameters."); // TODO NLS
+                            } else if (param instanceof Order) {
+                                @SuppressWarnings("unchecked")
+                                Iterable<Sort<Object>> order = (Iterable<Sort<Object>>) param;
+                                sortList = queryInfo.combineSorts(sortList, order);
+                            } else if (param instanceof PageRequest) {
                                 if (pagination == null)
-                                    pagination = (Pageable) param;
+                                    pagination = (PageRequest<?>) param;
                                 else
-                                    throw new DataException("Repository method " + method + " cannot have multiple Pageable parameters."); // TODO NLS
-                            else if (param instanceof Sort)
-                                sortList = queryInfo.combineSorts(sortList, (Sort) param);
-                            else if (param instanceof Sort[])
-                                sortList = queryInfo.combineSorts(sortList, (Sort[]) param);
+                                    throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                                            method.getDeclaringClass().getName() +
+                                                                            " repository cannot have multiple PageRequest parameters."); // TODO NLS
+                            } else if (param instanceof Sort) {
+                                @SuppressWarnings("unchecked")
+                                List<Sort<Object>> newList = queryInfo.combineSorts(sortList, (Sort<Object>) param);
+                                sortList = newList;
+                            } else if (param instanceof Sort[]) {
+                                @SuppressWarnings("unchecked")
+                                List<Sort<Object>> newList = queryInfo.combineSorts(sortList, (Sort<Object>[]) param);
+                                sortList = newList;
+                            }
                         }
 
                         if (pagination != null) {
                             if (limit != null)
-                                throw new DataException("Repository method " + method + " cannot have both Limit and Pageable as parameters."); // TODO NLS
-                            if (sortList == null)
-                                sortList = queryInfo.combineSorts(sortList, pagination.sorts());
-                            else if (sortList != null && !pagination.sorts().isEmpty())
-                                throw new DataException("Repository method " + method + " cannot specify Sort parameters if Pageable also has Sort parameters."); // TODO NLS
+                                throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                                        method.getDeclaringClass().getName() +
+                                                                        " repository cannot have both Limit and PageRequest as parameters."); // TODO NLS
+                            if (sortList == null) {
+                                @SuppressWarnings("unchecked")
+                                List<Sort<Object>> pageRequestSorts = (List<Sort<Object>>) (List<?>) pagination.sorts();
+                                sortList = queryInfo.combineSorts(null, pageRequestSorts);
+                            } else if (!pagination.sorts().isEmpty()) {
+                                throw new IllegalArgumentException("The " + method.getName() + " method of the " +
+                                                                   method.getDeclaringClass().getName() +
+                                                                   " repository cannot specify Sort parameters" +
+                                                                   " if PageRequest also has Sort parameters."); // TODO NLS
+                            }
                         }
 
                         if (sortList == null && queryInfo.hasDynamicSortCriteria())
                             sortList = queryInfo.sorts;
 
                         if (sortList != null && !sortList.isEmpty()) {
-                            boolean forward = pagination == null || pagination.mode() != Pageable.Mode.CURSOR_PREVIOUS;
+                            boolean forward = pagination == null || pagination.mode() != PageRequest.Mode.CURSOR_PREVIOUS;
                             StringBuilder q = new StringBuilder(queryInfo.jpql);
                             StringBuilder order = null; // ORDER BY clause based on Sorts
-                            for (Sort sort : sortList) {
+                            for (Sort<?> sort : sortList) {
                                 order = order == null ? new StringBuilder(100).append(" ORDER BY ") : order.append(", ");
-                                appendSort(order, queryInfo.entityVar, sort, forward);
+                                appendSort(order, queryInfo.entityVar_, sort, forward);
                             }
 
-                            if (pagination == null || pagination.mode() == Pageable.Mode.OFFSET)
+                            if (pagination == null || pagination.mode() == PageRequest.Mode.OFFSET)
                                 queryInfo = queryInfo.withJPQL(q.append(order).toString(), sortList); // offset pagination can be a starting point for keyset pagination
                             else // CURSOR_NEXT or CURSOR_PREVIOUS
                                 generateKeysetQueries(queryInfo = queryInfo.withJPQL(null, sortList), q, forward ? order : null, forward ? null : order);
@@ -2007,20 +2444,19 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         if (pagination != null && Iterator.class.equals(multiType))
                             returnValue = new PaginatedIterator<>(queryInfo, pagination, args);
-                        else if (KeysetAwareSlice.class.equals(multiType) || KeysetAwarePage.class.equals(multiType))
-                            returnValue = new KeysetAwarePageImpl<>(queryInfo, limit == null ? pagination : toPageable(limit), args);
-                        else if (Slice.class.equals(multiType) || Page.class.equals(multiType) || pagination != null && Streamable.class.equals(multiType))
-                            returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageable(limit), args);
+                        else if (CursoredPage.class.equals(multiType))
+                            returnValue = new CursoredPageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
+                        else if (Page.class.equals(multiType))
+                            returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
                         else {
-                            em = entityInfo.persister.createEntityManager();
+                            em = entityInfo.builder.createEntityManager();
 
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "createQuery", queryInfo.jpql, entityInfo.entityClass.getName());
 
-                            // TODO remove doPriv once switched to Java 21 only or EclipseLink bug is fixed
                             final QueryInfo qi = queryInfo;
                             final EntityManager eMgr = em;
-                            TypedQuery<?> query = AccessController.doPrivileged((PrivilegedAction<TypedQuery<?>>) () -> eMgr.createQuery(qi.jpql, qi.entityInfo.entityClass));
+                            TypedQuery<?> query = eMgr.createQuery(qi.jpql, qi.entityInfo.entityClass);
                             queryInfo.setParameters(query, args);
 
                             if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE)
@@ -2047,7 +2483,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                             if (multiType != null && BaseStream.class.isAssignableFrom(multiType)) {
                                 Stream<?> stream = query.getResultStream();
-                                if (Stream.class.equals(multiType)) // TODO FIND_AND_DELETE from stream?
+                                if (Stream.class.equals(multiType))
                                     returnValue = stream;
                                 else if (IntStream.class.equals(multiType))
                                     returnValue = stream.mapToInt(RepositoryImpl::toInt);
@@ -2083,7 +2519,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                             Object value = result;
                                             if (entityInfo.entityClass.isInstance(result) ||
                                                 entityInfo.recordClass != null && entityInfo.recordClass.isInstance(result)) {
-                                                List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.attributeNames.get("id"));
+                                                List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.attributeNames.get(ID));
                                                 if (accessors == null || accessors.isEmpty())
                                                     throw new MappingException("Unable to find the id attribute on the " + entityInfo.name + " entity."); // TODO NLS
                                                 for (Member accessor : accessors)
@@ -2146,7 +2582,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     }
                                 } else if (results.isEmpty()) {
                                     throw new EmptyResultException("Query with return type of " + returnType.getName() +
-                                                                   " returned no results. If this is expected, specify a return type of array, List, Optional, Page, Slice, or Stream for the repository method.");
+                                                                   " returned no results. If this is expected, specify a return type of array, List, Optional, Page, CursoredPage, or Stream for the repository method.");
                                 } else { // single result of other type
                                     returnValue = oneResult(results);
                                     if (returnValue != null && !singleType.isAssignableFrom(returnValue.getClass())) {
@@ -2171,7 +2607,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         if (Optional.class.equals(returnType)) {
                             returnValue = returnValue == null
                                           || returnValue instanceof Collection && ((Collection<?>) returnValue).isEmpty()
-                                          || returnValue instanceof Slice && !((Slice<?>) returnValue).hasContent() //
+                                          || returnValue instanceof Page && !((Page<?>) returnValue).hasContent() //
                                                           ? Optional.empty() : Optional.of(returnValue);
                         } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
                             returnValue = CompletableFuture.completedFuture(returnValue);
@@ -2180,7 +2616,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     }
                     case DELETE:
                     case UPDATE: {
-                        em = entityInfo.persister.createEntityManager();
+                        em = entityInfo.builder.createEntityManager();
 
                         jakarta.persistence.Query update = em.createQuery(queryInfo.jpql);
                         queryInfo.setParameters(update, args);
@@ -2191,21 +2627,80 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         break;
                     }
                     case DELETE_WITH_ENTITY_PARAM: {
-                        em = entityInfo.persister.createEntityManager();
-                        TypedQuery<?> delete = em.createQuery(queryInfo.jpql, entityInfo.entityClass);
+                        em = entityInfo.builder.createEntityManager();
 
+                        Object arg = args[0] instanceof Stream //
+                                        ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
+                                        : args[0];
                         int updateCount = 0;
-                        if (args[0] instanceof Iterable && Iterable.class.equals(queryInfo.method.getParameterTypes()[0]))
-                            for (Object e : ((Iterable<?>) args[0]))
-                                updateCount += remove(e, queryInfo, delete);
-                        else
-                            updateCount = remove(args[0], queryInfo, delete);
+                        int numExpected = 0;
+
+                        if (arg instanceof Iterable) {
+                            for (Object e : ((Iterable<?>) arg)) {
+                                numExpected++;
+                                updateCount += remove(e, queryInfo, em);
+                            }
+                        } else if (queryInfo.entityParamType.isArray()) {
+                            numExpected = Array.getLength(arg);
+                            for (int i = 0; i < numExpected; i++)
+                                updateCount += remove(Array.get(arg, i), queryInfo, em);
+                        } else {
+                            numExpected = 1;
+                            updateCount = remove(arg, queryInfo, em);
+                        }
+
+                        if (updateCount < numExpected)
+                            if (numExpected == 1)
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                            else
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database for " +
+                                                                            (numExpected - updateCount) + " of the " +
+                                                                            numExpected + " entities."); // TODO NLS
 
                         returnValue = toReturnValue(updateCount, returnType, queryInfo);
                         break;
                     }
+                    case UPDATE_WITH_ENTITY_PARAM: {
+                        em = entityInfo.builder.createEntityManager();
+
+                        Object arg = args[0] instanceof Stream //
+                                        ? ((Stream<?>) args[0]).sequential().collect(Collectors.toList()) //
+                                        : args[0];
+                        int updateCount = 0;
+                        int numExpected = 0;
+
+                        if (arg instanceof Iterable) {
+                            for (Object e : ((Iterable<?>) arg)) {
+                                numExpected++;
+                                updateCount += update(e, queryInfo, em);
+                            }
+                        } else if (queryInfo.entityParamType.isArray()) {
+                            numExpected = Array.getLength(arg);
+                            for (int i = 0; i < numExpected; i++)
+                                updateCount += update(Array.get(arg, i), queryInfo, em);
+                        } else {
+                            numExpected = 1;
+                            updateCount = update(arg, queryInfo, em);
+                        }
+
+                        if (updateCount < numExpected)
+                            if (numExpected == 1)
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database."); // TODO NLS
+                            else
+                                throw new OptimisticLockingFailureException("A matching entity was not found in the database for " +
+                                                                            (numExpected - updateCount) + " of the " +
+                                                                            numExpected + " entities."); // TODO NLS
+
+                        returnValue = toReturnValue(updateCount, returnType, queryInfo);
+                        break;
+                    }
+                    case UPDATE_WITH_ENTITY_PARAM_AND_RESULT: {
+                        em = entityInfo.builder.createEntityManager();
+                        returnValue = findAndUpdate(args[0], queryInfo, em);
+                        break;
+                    }
                     case COUNT: {
-                        em = entityInfo.persister.createEntityManager();
+                        em = entityInfo.builder.createEntityManager();
 
                         TypedQuery<Long> query = em.createQuery(queryInfo.jpql, Long.class);
                         queryInfo.setParameters(query, args);
@@ -2237,7 +2732,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         break;
                     }
                     case EXISTS: {
-                        em = entityInfo.persister.createEntityManager();
+                        em = entityInfo.builder.createEntityManager();
 
                         jakarta.persistence.Query query = em.createQuery(queryInfo.jpql);
                         query.setMaxResults(1);
@@ -2252,9 +2747,16 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         }
                         break;
                     }
+                    case RESOURCE_ACCESS: {
+                        returnValue = getResource(returnType);
+                        break;
+                    }
                     default:
                         throw new UnsupportedOperationException(queryInfo.type.name());
                 }
+
+                if (queryInfo.validateResult)
+                    validator.validateReturnValue(proxy, method, returnValue);
 
                 failed = false;
             } finally {
@@ -2278,9 +2780,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
             }
 
-            if (validator != null) // TODO queryInfo.validatable
-                validator.validateReturnValue(proxy, method, returnValue);
-
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), returnValue);
             return returnValue;
@@ -2293,87 +2792,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
     }
 
-    /**
-     * Determine whether or not the parameter to the method should be validated.
-     * Prerequisites: the Valid field must contain the jakarta.validation.Valid class and not be null.
-     *
-     * @param method    repository method.
-     * @param arg0Class class of the first argument to the method.
-     * @return whether or not the first parameter to the method should be validated.
-     */
-    @Trivial
-    private boolean isValidatable(Method method, Class<?> arg0Class) {
-        // TODO based on outcome of Jakarta Data issue 216, either remove this method and requestsValidation
-        // or switch to use it and also implement validation for remove.
-        if (true)
-            return true;
-
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "isValidatable", method, arg0Class);
-
-        if (method.isAnnotationPresent(Valid)) {
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "isValidatable", "true: method has @Valid");
-            return true;
-        }
-
-        for (Annotation paramAnno : method.getParameterAnnotations()[0])
-            if (paramAnno.annotationType().equals(Valid)) {
-                if (trace && tc.isEntryEnabled())
-                    Tr.exit(this, tc, "isValidatable", "true: first arg has @Valid");
-                return true;
-            }
-
-        if (requestsValidation && (Object.class.equals(arg0Class) || defaultEntityClass.isAssignableFrom(arg0Class))) {
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "isValidatable", "true: first arg type matches or is generic");
-            return true;
-        }
-
-        if (requestsValidation) {
-            Class<?> arrayComponentClass = arg0Class.componentType();
-            if (arrayComponentClass != null
-                && (Object.class.equals(arrayComponentClass) || defaultEntityClass.isAssignableFrom(arrayComponentClass))) {
-                if (trace && tc.isEntryEnabled())
-                    Tr.exit(this, tc, "isValidatable", "true: first arg array class matches or is generic");
-                return true;
-            } else if (trace && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "array component " + arrayComponentClass + " is non-matching and non-generic");
-            }
-
-            if (Iterable.class.isAssignableFrom(arg0Class)) {
-                Type iterableComponentType = method.getGenericParameterTypes()[0];
-                if (iterableComponentType instanceof ParameterizedType) {
-                    Type[] typeParams = ((ParameterizedType) iterableComponentType).getActualTypeArguments();
-                    if (typeParams == null || typeParams.length == 0 || typeParams[0] instanceof TypeVariable // generic
-                        || typeParams[0] instanceof Class && defaultEntityClass.isAssignableFrom((Class<?>) typeParams[0])) {
-                        if (trace && tc.isEntryEnabled())
-                            Tr.exit(this, tc, "isValidatable", "true: first arg Iterable class matches or is generic");
-                        return true;
-                    } else if (trace && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "iterable component " + typeParams[0] + " is non-matching and non-generic");
-                    }
-                } else {
-                    if (trace && tc.isEntryEnabled())
-                        Tr.exit(this, tc, "isValidatable", "true: " + iterableComponentType + " is not a parameterized type");
-                    return true;
-                }
-            }
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "isValidatable", "false, requestsValidation? " + requestsValidation);
-        return false;
-    }
-
     @Trivial
     private final Object oneResult(List<?> results) {
         int size = results.size();
         if (size == 1)
             return results.get(0);
         else if (size == 0)
-            throw new EmptyResultException("Query returned no results. If this is expected, specify a return type of array, List, Optional, Page, Slice, or Stream for the repository method.");
+            throw new EmptyResultException("Query returned no results. If this is expected, specify a return type of array, List, Optional, Page, CursoredPage, or Stream for the repository method.");
         else
             throw new NonUniqueResultException("Found " + results.size() +
                                                " results. To limit to a single result, specify Limit.of(1) as a parameter or use the findFirstBy name pattern.");
@@ -2416,7 +2841,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 first = false;
                 distinct = methodName.regionMatches(start, "Distinct", 0, 8);
             } else if (distinct) {
-                throw new DataException("The keyword Distinct is not supported on the " + queryInfo.method.getName() + " method."); // TODO NLS
+                throw new UnsupportedOperationException("The keyword Distinct is not supported on the " + queryInfo.method.getName() + " method."); // TODO NLS
             }
 
         if (selections != null) {
@@ -2475,7 +2900,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
             }
         if (num == 0)
-            throw new DataException("The number of results to retrieve must not be 0 on the " + methodName + " method."); // TODO NLS
+            throw new UnsupportedOperationException("The number of results to retrieve must not be 0 on the " + methodName + " method."); // TODO NLS
         else
             queryInfo.maxResults = num;
 
@@ -2521,25 +2946,62 @@ public class RepositoryImpl<R> implements InvocationHandler {
      *
      * @param e         the entity or record.
      * @param queryInfo query information that is prepopulated for deleteById.
-     * @param delete    deletion query.
+     * @param em        the entity manager.
      * @return the number of entities deleted (1 or 0).
      * @throws Exception if an error occurs or if the repository method return type is void and
      *                       the entity (or correct version of the entity) was not found.
      */
-    private static int remove(Object e, QueryInfo queryInfo, TypedQuery<?> delete) throws Exception {
+    private int remove(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
+        Class<?> entityClass = queryInfo.entityInfo.recordClass == null ? queryInfo.entityInfo.entityClass : queryInfo.entityInfo.recordClass;
 
-        Object v = e;
-        if (queryInfo.entityInfo.versionAttributeName == null) {
-            queryInfo.setParameters(delete, e);
+        if (e == null)
+            throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
+
+        if (!entityClass.isInstance(e))
+            throw new IllegalArgumentException("The " + (e == null ? null : e.getClass().getName()) +
+                                               " parameter does not match the " + entityClass.getName() +
+                                               " entity type that is expected for this repository."); // TODO NLS
+
+        EntityInfo entityInfo = queryInfo.entityInfo;
+        String jpql = queryInfo.jpql;
+
+        int versionParamIndex = (entityInfo.idClassAttributeAccessors == null ? 1 : entityInfo.idClassAttributeAccessors.size()) + 1;
+        Object version = null;
+        if (entityInfo.versionAttributeName != null) {
+            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            if (version == null)
+                jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
+        }
+
+        Object id = null;
+        if (entityInfo.idClassAttributeAccessors == null) {
+            id = entityInfo.getAttribute(e, entityInfo.getAttributeName(ID, true));
+            if (id == null) {
+                jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+                if (version != null)
+                    jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && jpql != queryInfo.jpql)
+            Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
+
+        TypedQuery<?> delete = em.createQuery(jpql, entityInfo.entityClass);
+
+        if (entityInfo.idClassAttributeAccessors == null) {
+            int p = 1;
+            if (id != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + id.getClass().getSimpleName());
+                delete.setParameter(p++, id);
+            }
+            if (version != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "set ?" + p + ' ' + version.getClass().getSimpleName());
+                delete.setParameter(p, version);
+            }
         } else {
-            String name = queryInfo.entityInfo.attributeNames.get(queryInfo.entityInfo.versionAttributeName.toLowerCase());
-            List<Member> accessors = queryInfo.entityInfo.attributeAccessors.get(name);
-            if (accessors == null || accessors.isEmpty())
-                throw new MappingException("Unable to find the " + queryInfo.entityInfo.versionAttributeName +
-                                           " attribute on the " + queryInfo.entityInfo.name + " entity."); // should never occur
-            for (Member accessor : accessors)
-                v = accessor instanceof Method ? ((Method) accessor).invoke(v) : ((Field) accessor).get(v);
-            queryInfo.setParameters(delete, e, v);
+            queryInfo.setParametersFromIdClassAndVersion(delete, e, version);
         }
 
         int numDeleted = delete.executeUpdate();
@@ -2547,13 +3009,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (numDeleted == 0) {
             Class<?> returnType = queryInfo.method.getReturnType();
             if (void.class.equals(returnType) || Void.class.equals(returnType)) {
-                if (queryInfo.entityInfo.versionAttributeName == null)
+                if (entityInfo.versionAttributeName == null)
                     throw new OptimisticLockingFailureException("Entity was not found."); // TODO NLS
                 else
-                    throw new OptimisticLockingFailureException("Version " + v + " of the entity was not found."); // TODO NLS
+                    throw new OptimisticLockingFailureException("Version " + version + " of the entity was not found."); // TODO NLS
             }
         } else if (numDeleted > 1) {
-            throw new DataException("Found " + numDeleted + " entities matching the delete query."); // ought to be unreachable
+            throw new DataException("Found " + numDeleted + " matching entities."); // ought to be unreachable
         }
 
         return numDeleted;
@@ -2592,9 +3054,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
             result = item.toString();
         }
         if (failIfNotConverted && result == item && item != null)
-            throw new DataException("Query returned a result of type " + item.getClass().getName() +
-                                    " which is not compatible with the type that is expected by the repository method signature: " +
-                                    type.getName()); // TODO
+            throw new MappingException("Query returned a result of type " + item.getClass().getName() +
+                                       " which is not compatible with the type that is expected by the repository method signature: " +
+                                       type.getName()); // TODO
         return result;
     }
 
@@ -2605,7 +3067,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         else if (o instanceof String)
             return Double.parseDouble((String) o);
         else
-            throw new IllegalArgumentException("Not representable as a double value: " + o.getClass().getName());
+            throw new MappingException("Not representable as a double value: " + o.getClass().getName());
     }
 
     /**
@@ -2658,7 +3120,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         else if (o instanceof String)
             return Integer.parseInt((String) o);
         else
-            throw new IllegalArgumentException("Not representable as an int value: " + o.getClass().getName());
+            throw new MappingException("Not representable as an int value: " + o.getClass().getName());
     }
 
     /**
@@ -2671,8 +3133,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     @Trivial
     private static final Iterable<?> toIterable(Class<?> iterableType, Class<?> elementType, List<?> results) {
-        if (Streamable.class.equals(iterableType))
-            return new StreamableImpl<>(results);
         Collection<Object> list;
         if (iterableType.isInterface()) {
             if (iterableType.isAssignableFrom(ArrayList.class)) // covers Iterable, Collection, List
@@ -2713,21 +3173,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
         else if (o instanceof String)
             return Long.parseLong((String) o);
         else
-            throw new IllegalArgumentException("Not representable as a long value: " + o.getClass().getName());
+            throw new MappingException("Not representable as a long value: " + o.getClass().getName());
     }
 
     /**
-     * Converts a Limit to a Pageable if possible.
+     * Converts a Limit to a PageRequest if possible.
      *
      * @param limit Limit.
-     * @return Pageable.
-     * @throws DataException with chained IllegalArgumentException if the Limit is a range with a starting point above 1.
+     * @return PageRequest.
+     * @throws IllegalArgumentException if the Limit is a range with a starting point above 1.
      */
-    private static final Pageable toPageable(Limit limit) {
+    private static final <T> PageRequest<T> toPageRequest(Limit limit) {
         if (limit.startAt() != 1L)
-            throw new DataException(new IllegalArgumentException("Limit with starting point " + limit.startAt() +
-                                                                 ", which is greater than 1, cannot be used to request pages or slices."));
-        return Pageable.ofSize(limit.maxResults());
+            throw new IllegalArgumentException("Limit with starting point " + limit.startAt() +
+                                               ", which is greater than 1, cannot be used to request pages.");
+        return PageRequest.ofSize(limit.maxResults());
     }
 
     private static final Object toReturnValue(int i, Class<?> returnType, QueryInfo queryInfo) {
@@ -2749,20 +3209,185 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
+     * Saves entities (or records) to the database, which can involve an update or an insert,
+     * depending on whether the entity already exists.
+     *
+     * @param arg       the entity or record, or array or Iterable or Stream of entity or record.
+     * @param queryInfo query information.
+     * @param em        the entity manager.
+     * @return the updated entities, using the return type that is required by the repository Save method signature.
+     * @throws Exception if an error occurs.
+     */
+    private Object save(Object arg, QueryInfo queryInfo, EntityManager em) throws Exception {
+        Class<?> singleType = queryInfo.getSingleResultType();
+        boolean resultVoid = void.class.equals(singleType) || Void.class.equals(singleType);
+        List<Object> results;
+
+        boolean hasSingularEntityParam = false;
+        if (queryInfo.entityParamType.isArray()) {
+            results = new ArrayList<>();
+            int length = Array.getLength(arg);
+            for (int i = 0; i < length; i++)
+                results.add(em.merge(toEntity(Array.get(arg, i))));
+            em.flush();
+        } else {
+            arg = arg instanceof Stream //
+                            ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                            : arg;
+
+            if (Iterable.class.isAssignableFrom(queryInfo.entityParamType)) {
+                results = new ArrayList<>();
+                for (Object e : ((Iterable<?>) arg))
+                    results.add(em.merge(toEntity(e)));
+                em.flush();
+            } else {
+                hasSingularEntityParam = true;
+                results = resultVoid ? null : new ArrayList<>(1);
+                Object entity = em.merge(toEntity(arg));
+                if (results != null)
+                    results.add(entity);
+                em.flush();
+            }
+        }
+
+        Class<?> returnType = queryInfo.method.getReturnType();
+        Object returnValue;
+        if (resultVoid) {
+            returnValue = null;
+        } else {
+            if (queryInfo.entityInfo.recordClass != null)
+                for (int i = 0; i < results.size(); i++)
+                    results.set(i, queryInfo.entityInfo.toRecord(results.get(i)));
+
+            if (queryInfo.returnArrayType != null) {
+                Object[] newArray = (Object[]) Array.newInstance(queryInfo.returnArrayType, results.size());
+                returnValue = results.toArray(newArray);
+            } else {
+                Class<?> multiType = queryInfo.getMultipleResultType();
+                if (multiType == null)
+                    returnValue = results.isEmpty() ? null : results.get(0); // TODO error if multiple results? Detect earlier?
+                else if (multiType.isInstance(results))
+                    returnValue = results;
+                else if (Stream.class.equals(multiType))
+                    returnValue = results.stream();
+                else if (Iterable.class.isAssignableFrom(multiType))
+                    returnValue = toIterable(multiType, null, results);
+                else if (Iterator.class.equals(multiType))
+                    returnValue = results.iterator();
+                else
+                    throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                               queryInfo.method.getName() + " method of the " +
+                                               queryInfo.method.getDeclaringClass().getName() +
+                                               " class is not a valid return type for a repository " +
+                                               "@Save" + " method. Valid return types include " +
+                                               getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+            }
+        }
+
+        if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
+            returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
+        } else if (!resultVoid && !returnType.isInstance(returnValue)) {
+            throw new MappingException("The " + returnType.getName() + " return type of the " +
+                                       queryInfo.method.getName() + " method of the " +
+                                       queryInfo.method.getDeclaringClass().getName() +
+                                       " class is not a valid return type for a repository " +
+                                       "@Save" + " method. Valid return types include " +
+                                       getValidReturnTypes(results.get(0).getClass().getSimpleName(), hasSingularEntityParam, false) + "."); // TODO NLS
+        }
+
+        return returnValue;
+    }
+
+    /**
+     * Updates the entity (or record) from the database if its attributes match the database.
+     *
+     * @param e         the entity or record.
+     * @param queryInfo query information that is prepopulated for update by id (and possibly version).
+     * @param em        the entity manager.
+     * @return the number of entities updated (1 or 0).
+     * @throws Exception if an error occurs.
+     */
+    private int update(Object e, QueryInfo queryInfo, EntityManager em) throws Exception {
+        Class<?> entityClass = queryInfo.entityInfo.recordClass == null ? queryInfo.entityInfo.entityClass : queryInfo.entityInfo.recordClass;
+
+        if (e == null)
+            throw new NullPointerException("The entity parameter cannot have a null value."); // TODO NLS // required by spec
+
+        if (!entityClass.isInstance(e))
+            throw new IllegalArgumentException("The " + (e == null ? null : e.getClass().getName()) +
+                                               " parameter does not match the " + entityClass.getName() +
+                                               " entity type that is expected for this repository."); // TODO NLS
+
+        String jpql = queryInfo.jpql;
+        EntityInfo entityInfo = queryInfo.entityInfo;
+        LinkedHashSet<String> attrsToUpdate = entityInfo.getAttributeNamesForEntityUpdate();
+
+        int versionParamIndex = attrsToUpdate.size() + 2;
+        Object version = null;
+        if (entityInfo.versionAttributeName != null) {
+            version = entityInfo.getAttribute(e, entityInfo.versionAttributeName);
+            if (version == null)
+                jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
+        }
+
+        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName(ID, true));
+        if (id == null) {
+            jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
+            if (version != null)
+                jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && jpql != queryInfo.jpql)
+            Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
+
+        TypedQuery<?> update = em.createQuery(jpql, entityInfo.entityClass);
+
+        // parameters for entity attributes to update:
+
+        int p = 0;
+        for (String attrName : entityInfo.getAttributeNamesForEntityUpdate())
+            QueryInfo.setParameter(++p, update, e,
+                                   entityInfo.attributeAccessors.get(attrName));
+
+        // id parameter(s)
+
+        if (entityInfo.idClassAttributeAccessors != null) {
+            throw new UnsupportedOperationException(); // TODO
+        } else if (id != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + id.getClass().getSimpleName());
+            update.setParameter(++p, id);
+        }
+
+        // version parameter
+
+        if (entityInfo.versionAttributeName != null && version != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "set ?" + (p + 1) + ' ' + version.getClass().getSimpleName());
+            update.setParameter(++p, version);
+        }
+
+        int numUpdated = update.executeUpdate();
+
+        if (numUpdated > 1)
+            throw new DataException("Found " + numUpdated + " matching entities."); // ought to be unreachable
+        return numUpdated;
+    }
+
+    /**
      * Confirm that collections are supported for this condition,
      * based on whether case insensitive comparison is requested.
      *
      * @param attributeName entity attribute to which the condition is to be applied.
-     * @param ignoreCase    indicates if the condition is to be performed ignoring case.
-     * @param condition     the type of condition.
+     * @param conditionAnno condition annotation such as LessThan.
      * @throws MappingException with chained UnsupportedOperationException if not supported.
      */
     @Trivial
-    private static void verifyCollectionsSupported(String attributeName, boolean ignoreCase, Compare condition) {
-        if (!SUPPORTS_COLLECTIONS.contains(condition) || ignoreCase)
-            throw new MappingException(new UnsupportedOperationException("Repository keyword " +
-                                                                         (ignoreCase ? "IgnoreCase" : condition.name()) +
+    private static void verifyCollectionsSupported(String attributeName, boolean ignoreCase, Annotation conditionAnno) {
+        if (conditionAnno != null && !(conditionAnno instanceof Contains) || ignoreCase)
+            throw new MappingException(new UnsupportedOperationException("The parameter annotation " +
+                                                                         (ignoreCase ? "IgnoreCase" : conditionAnno.annotationType().getSimpleName()) +
                                                                          " which is applied to entity property " + attributeName +
-                                                                         " is not supported for collection properties.")); // TODO
+                                                                         " is not supported for collection properties.")); // TODO NLS
     }
 }

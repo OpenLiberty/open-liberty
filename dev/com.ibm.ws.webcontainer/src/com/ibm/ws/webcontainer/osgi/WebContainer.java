@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2023 IBM Corporation and others.
+ * Copyright (c) 2010, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -96,6 +96,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
+import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.cache.CacheManager;
 import com.ibm.wsspi.webcontainer.extension.ExtensionFactory;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
@@ -242,6 +243,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     public static final int SPEC_LEVEL_40 = 40;
     public static final int SPEC_LEVEL_50 = 50;
     public static final int SPEC_LEVEL_60 = 60;
+    public static final int SPEC_LEVEL_61 = 61;
     private static final int DEFAULT_SPEC_LEVEL = 30;
 
     private static int loadedContainerSpecLevel = loadServletVersion();
@@ -1018,9 +1020,18 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "startModule: " + webModule.getName() + "; " + e);
             }
-            
-            //PI58875
-            this.stopModule(moduleInfo);
+           
+            //Issue 25855
+            WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
+            if (reqState != null && reqState.getAttribute("com.ibm.ws.webcontainer.contextRootAlreadyInUse") != null) {
+                reqState.removeAttribute("com.ibm.ws.webcontainer.contextRootAlreadyInUse"); 
+                this.stopModule(moduleInfo, false);
+            }
+            else {
+                //PI58875
+                this.stopModule(moduleInfo);
+            }
+
             throw new StateChangeException(e);
         } finally {
             starting = modulesStarting.decrementAndGet();
@@ -1209,6 +1220,14 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
      * This will stop a web module in the web container
      */
     public void stopModule(ExtendedModuleInfo moduleInfo) {
+        stopModule(moduleInfo, true); 
+    }
+    
+    /*
+     * issue 25855, removeContextRoot = false only when there is a duplicated context root in multiple apps.  
+     * There should be SRVE0164E in that case. 
+    */
+    private void stopModule(ExtendedModuleInfo moduleInfo, boolean removeContextRoot) {
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "stopModule()",((WebModuleInfo)moduleInfo).getName());
@@ -1225,14 +1244,21 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             }
             
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "stopModule: " + webModule.getName() + " " + webModule.getContextRoot());
+                Tr.debug(tc, "stopModule: " + webModule.getName() + " " + webModule.getContextRoot() + " , removeContextRoot [" +removeContextRoot+ "]");
             }
 
-            removeContextRootRequirement(dMod);
-            removeModule(dMod);
+            /*
+             * 25855, since startModule never succeeds adding any contextRoot or start a module, there is no need
+             * to remove the context root or cleanup the module
+             * 
+             * Majority/normal operation (i.e shutdown/stop/dynamic reload...) should go into this block
+             */
+            if (removeContextRoot) {
+                removeContextRootRequirement(dMod);
+                removeModule(dMod);
+                this.vhostManager.purgeHost(dMod.getVirtualHostName());
+            }
             
-            this.vhostManager.purgeHost(dMod.getVirtualHostName());
-
             WebModuleMetaData wmmd = (WebModuleMetaData) ((ExtendedModuleInfo)webModule).getMetaData();
             
             deregisterMBeans((WebModuleMetaDataImpl) wmmd);
@@ -1625,11 +1651,11 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     }
     
     public static boolean isServletLevel60orAbove() {
-        if(WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_60) {
-            return true;
-        }
-        
-        return false;
+        return (WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_60) ? true : false; 
+    }
+    
+    public static boolean isServlet61orAbove() {
+        return (WebContainer.getServletContainerSpecLevel() >= WebContainer.SPEC_LEVEL_61) ? true : false; 
     }
     
     protected static class CompletedFuture implements Future {

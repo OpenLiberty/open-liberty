@@ -6,6 +6,7 @@
 		ws-security.timestamp.futureTimeToLive="60"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache_ee7.xml"
+		ws-security.symmetric.signature.algorithm="http://www.w3.org/2001/04/xmldsig-more#hmac-sha256"
 	>
 		<encryptionProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
