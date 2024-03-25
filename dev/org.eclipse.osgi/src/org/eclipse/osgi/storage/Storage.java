@@ -1301,8 +1301,8 @@ public class Storage {
 		DataOutputStream out = null;
 		boolean success = false;
 		moduleDatabase.readLock();
-		try {
-			synchronized (this.saveMonitor) {
+		synchronized (this.saveMonitor) {
+			try {
 				if (lastSavedTimestamp == moduleDatabase.getTimestamp())
 					return;
 				childStorageManager = getChildStorageManager();
@@ -1313,24 +1313,24 @@ public class Storage {
 				moduleDatabase.store(out, true);
 				lastSavedTimestamp = moduleDatabase.getTimestamp();
 				success = true;
-			}
-		} finally {
-			if (!success) {
-				if (mos != null) {
-					mos.abort();
+			} finally {
+				moduleDatabase.readUnlock();
+				if (!success) {
+					if (mos != null) {
+						mos.abort();
+					}
+				}
+				if (out != null) {
+					try {
+						out.close();
+					} catch (IOException e) {
+						// tried our best
+					}
+				}
+				if (childStorageManager != null) {
+					childStorageManager.close();
 				}
 			}
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					// tried our best
-				}
-			}
-			if (childStorageManager != null) {
-				childStorageManager.close();
-			}
-			moduleDatabase.readUnlock();
 		}
 	}
 
