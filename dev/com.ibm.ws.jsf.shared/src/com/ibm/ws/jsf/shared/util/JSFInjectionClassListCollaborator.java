@@ -55,28 +55,28 @@ public class JSFInjectionClassListCollaborator implements WebAppInjectionClassLi
 
     // List of abstract classes in JSF 2.2 for which extenders require support for CDI 1.2    
     private final String[] _InjectionSubClasses = new String[] {
-        "javax.el.ELResolver",
-        "javax.faces.application.ApplicationFactory",
-        "javax.faces.application.NavigationHandler",
-        "javax.faces.application.ResourceHandler",
-        "javax.faces.application.StateManager",
-        "javax.faces.component.visit.VisitContextFactory",
-        "javax.faces.context.ExceptionHandlerFactory",
-        "javax.faces.context.ExternalContextFactory",
-        "javax.faces.context.FacesContextFactory",
-        "javax.faces.context.PartialViewContextFactory",
-        "javax.faces.lifecycle.ClientWindowFactory",
-        "javax.faces.lifecycle.LifecycleFactory",
-        "javax.faces.render.RenderKitFactory",
-        // In JSF 2.2 spec but not in API jar:
-        //"javax.faces.view.ViewDeclarationFactory",
-        // assuming javax.faces.view.ViewDeclarationLanguageFactory instead
-        "javax.faces.view.ViewDeclarationLanguageFactory",
-        "javax.faces.view.facelets.FaceletCacheFactory",
-        // In JSF 2.2 spec but not in API jar:
-        // "javax.faces.view.facelets.FaceletFactory"
-        // so ignored.
-        "javax.faces.view.facelets.TagHandlerDelegateFactory"                                                              
+        // "javax.el.ELResolver",
+        // "javax.faces.application.ApplicationFactory",
+        // "javax.faces.application.NavigationHandler",
+        // "javax.faces.application.ResourceHandler",
+        // "javax.faces.application.StateManager",
+        // "javax.faces.component.visit.VisitContextFactory",
+        // "javax.faces.context.ExceptionHandlerFactory",
+        // "javax.faces.context.ExternalContextFactory",
+        // "javax.faces.context.FacesContextFactory",
+        // "javax.faces.context.PartialViewContextFactory",
+        // "javax.faces.lifecycle.ClientWindowFactory",
+        // "javax.faces.lifecycle.LifecycleFactory",
+        // "javax.faces.render.RenderKitFactory",
+        // // In JSF 2.2 spec but not in API jar:
+        // //"javax.faces.view.ViewDeclarationFactory",
+        // // assuming javax.faces.view.ViewDeclarationLanguageFactory instead
+        // "javax.faces.view.ViewDeclarationLanguageFactory",
+        // "javax.faces.view.facelets.FaceletCacheFactory",
+        // // In JSF 2.2 spec but not in API jar:
+        // // "javax.faces.view.facelets.FaceletFactory"
+        // // so ignored.
+        // "javax.faces.view.facelets.TagHandlerDelegateFactory"                                                              
     };
 
     //
