@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ dependencies {
                 'jtidy:jtidy:4aug2000r7-dev',
                 'rhino:js:1.6R5',
                 'de.flapdoodle.embed:de.flapdoodle.embed.mongo:3.0.0',
-                'org.apache.commons:commons-compress:1.21'
+                project(':com.ibm.ws.org.apache.commons.compress')
                 
   /*
    * Previously we had an uber jar named htmlunit-2.20-OSGi.jar. It appears to have contained all of

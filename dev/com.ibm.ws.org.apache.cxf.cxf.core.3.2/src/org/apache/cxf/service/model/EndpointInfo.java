@@ -20,6 +20,10 @@
 package org.apache.cxf.service.model;
 
 import javax.xml.namespace.QName;
+import org.apache.cxf.common.logging.LogUtils;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.cxf.ws.addressing.AttributedURIType;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
@@ -39,6 +43,8 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
     // Liberty #3669:  Store address in a theadLocal to avoid issue where redirected URL is mismatched when accessed 
     // from both IP address and machine name.
     private final ThreadLocal<EndpointReferenceType> threadLocal = new ThreadLocal<EndpointReferenceType>();
+
+    private static final Logger LOG = LogUtils.getL7dLogger(EndpointInfo.class);  // Liberty Change
 
     public EndpointInfo() {
     }
@@ -97,6 +103,9 @@ public class EndpointInfo extends AbstractDescriptionElement implements NamedIte
     public String getAddress() {
         EndpointReferenceType address = threadLocal.get(); //Liberty #3669
         if (address == null) {
+            if (LOG.isLoggable(Level.FINE)) { // Liberty Change
+                LOG.fine("getAddress: Setting address to lastAddressSet"); // Liberty Change
+            }
             address = lastAddressSet; //Liberty
         }
         return (null != address && null != address.getAddress()) ? address.getAddress().getValue() : null;

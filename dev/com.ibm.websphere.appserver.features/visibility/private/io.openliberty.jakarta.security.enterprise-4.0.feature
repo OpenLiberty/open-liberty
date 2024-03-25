@@ -5,7 +5,7 @@ singleton=true
   com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.noShip-1.0
 -bundles=\
-  io.openliberty.jakarta.security.3.0; location:=dev/api/spec/; mavenCoordinates="jakarta.security.enterprise:jakarta.security.enterprise-api:3.0.0"
+  io.openliberty.jakarta.security.4.0; location:=dev/api/spec/; mavenCoordinates="jakarta.security.enterprise:jakarta.security.enterprise-api:4.0.0-M1"
 kind=noship
 edition=full
 

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -144,7 +144,7 @@ public class ConfigurationStorageHelperTest {
         }
 
         @Override
-        public void updateCache(Dictionary<String, Object> properties, Set<ConfigID> references, Set<String> newUniques) throws IOException {
+        public void updateCache(Dictionary<String, Object> properties, Set<ConfigID> refs, Set<String> newUniques) throws IOException {
             // nothing
         }
 
@@ -214,72 +214,122 @@ public class ConfigurationStorageHelperTest {
         }
     }
 
+    //
+
+    public static final boolean USE_LONG_STRINGS = true;
+
     @Test
-    public void testStoreLoadCycle() throws IOException {
+    public void testStoreShort() throws IOException {
+        testStore(0, !USE_LONG_STRINGS);
+    }
+
+    @Test
+    public void testStoreLong() throws IOException {
+        testStore(0, USE_LONG_STRINGS);
+    }
+
+    protected static final ConfigStorageConsumer<Integer, TestConfiguration> EMPTY_CONSUMER = new ConfigStorageConsumer<Integer, TestConfiguration>() {
+        @Override
+        public TestConfiguration consumeConfigData(String location, Set<String> uniqueVars, Set<ConfigID> references, ConfigurationDictionary dict) {
+            throw new UnsupportedOperationException("No expected data");
+        }
+
+        @Override
+        public Integer getKey(TestConfiguration configuration) {
+            throw new UnsupportedOperationException("No saved data");
+        }
+    };
+
+    protected void testStore(int dataNo, boolean storeLongs) throws IOException {
         File configFile = new File("build", "testData");
-        ConfigurationDictionary testData = setupTestData(0);
-        String bundleLocation = "the location of the bundle";
+
+        String location = "bundle.location";
+
+        ConfigurationDictionary testData = setupTestData(dataNo, storeLongs);
+
         Set<String> testVars = setupUniqueVars();
-        Set<ConfigID> testConfigID = setupConfigID();
+        Set<ConfigID> testRefs = setupConfigID();
+
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(configFile))) {
-            ConfigurationStorageHelper.store(dos, testData, bundleLocation, testConfigID, testVars);
+            ConfigurationStorageHelper helper = new ConfigurationStorageHelper(location, testData, testVars, testRefs);
+            helper.store(dos);
         }
 
-        Set<String> loadedUniqueVars = new HashSet<>();
-        Set<ConfigID> loadedConfigIDs = new HashSet<>();
-        ConfigurationDictionary loadedConfig = new ConfigurationDictionary();
-
-        String loadedLocation = null;
+        ConfigurationStorageHelper helper = new ConfigurationStorageHelper();
         try (DataInputStream dis = new DataInputStream(new FileInputStream(configFile))) {
-            loadedLocation = ConfigurationStorageHelper.load(dis, loadedUniqueVars, loadedConfigIDs, loadedConfig);
+            helper.load(dis);
         }
 
-        assertEquals("Location corrupted", bundleLocation, loadedLocation);
-        assertEquals("unique variables corrupted", testVars, loadedUniqueVars);
-        assertEquals("config ids corrupted", testConfigID, loadedConfigIDs);
-        assertConfigDictEquals(testData, loadedConfig);
+        assertEquals("Location corrupted", location, helper.getLocation());
+        assertEquals("unique variables corrupted", testVars, helper.getUniqueVars());
+        assertEquals("config ids corrupted", testRefs, helper.getReferences());
+        assertConfigDictEquals(testData, (ConfigurationDictionary) (helper.getReadOnlyProps()));
     }
 
     @Test
-    public void testStoreLoadCycleWithNulls() throws IOException {
-        File configFile = new File("build", "testData");
-        ConfigurationDictionary testData = setupTestData(0);
-        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(configFile))) {
-            ConfigurationStorageHelper.store(dos, testData, null, null, null);
-        }
-        Set<String> loadedUniqueVars = new HashSet<>();
-        Set<ConfigID> loadedConfigIDs = new HashSet<>();
-        ConfigurationDictionary loadedConfig = new ConfigurationDictionary();
-
-        String loadedLocation = null;
-        try (DataInputStream dis = new DataInputStream(new FileInputStream(configFile))) {
-            loadedLocation = ConfigurationStorageHelper.load(dis, loadedUniqueVars, loadedConfigIDs, loadedConfig);
-        }
-        assertNull("Location should be null", loadedLocation);
-        assertTrue("unique variables should be empty", loadedUniqueVars.isEmpty());
-        assertTrue("config ids should be empty", loadedConfigIDs.isEmpty());
-        assertConfigDictEquals(testData, loadedConfig);
+    public void testStoreNullsShort() throws IOException {
+        testStoreNulls(0, !USE_LONG_STRINGS);
     }
 
     @Test
-    public void testMultiConfigStore() throws IOException {
+    public void testStoreNullsLong() throws IOException {
+        testStoreNulls(0, USE_LONG_STRINGS);
+    }
+
+    public void testStoreNulls(int dataNo, boolean useLongStrings) throws IOException {
         File configFile = new File("build", "testData");
-        List<TestConfiguration> expectedConfigs = setupTestConfigurations();
+
+        ConfigurationDictionary testData = setupTestData(dataNo, useLongStrings);
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(configFile))) {
+            ConfigurationStorageHelper helper = new ConfigurationStorageHelper(null, testData, null, null);
+            helper.store(dos);
+        }
+
+        ConfigurationStorageHelper helper = new ConfigurationStorageHelper();
+        try (DataInputStream dis = new DataInputStream(new FileInputStream(configFile))) {
+            helper.load(dis);
+        }
+
+        assertNull("Location should be null", helper.getLocation());
+        assertTrue("unique variables should be empty", helper.getUniqueVars().isEmpty());
+        assertTrue("config ids should be empty", helper.getReferences().isEmpty());
+        assertConfigDictEquals(testData, (ConfigurationDictionary) (helper.getReadOnlyProps()));
+    }
+
+    @Test
+    public void testMultiStoreShort() throws IOException {
+        testMultiStore(!USE_LONG_STRINGS);
+    }
+
+    @Test
+    public void testMultiStoreLong() throws IOException {
+        testMultiStore(USE_LONG_STRINGS);
+    }
+
+    protected static final ConfigStorageConsumer<Integer, TestConfiguration> STANDARD_CONSUMER = new ConfigStorageConsumer<Integer, TestConfiguration>() {
+        @Override
+        public TestConfiguration consumeConfigData(String location, Set<String> uniqueVars, Set<ConfigID> references, ConfigurationDictionary dict) {
+            return new TestConfiguration(location, dict, references, uniqueVars);
+        }
+
+        @Override
+        public Integer getKey(TestConfiguration configuration) {
+            return (Integer) configuration.getProperties().get("test id");
+        }
+    };
+
+    protected void testMultiStore(boolean useLongStrings) throws IOException {
+        File configFile = new File("build", "testData");
+        List<TestConfiguration> expectedConfigs = setupTestConfigurations(100, useLongStrings);
+
         ConfigurationStorageHelper.store(configFile, expectedConfigs);
 
-        ConfigStorageConsumer<Integer, TestConfiguration> consumer = new ConfigStorageConsumer<Integer, TestConfiguration>() {
-            @Override
-            public TestConfiguration consumeConfigData(String location, Set<String> uniqueVars, Set<ConfigID> references, ConfigurationDictionary dict) {
-                return new TestConfiguration(location, dict, references, uniqueVars);
-            }
+        Map<Integer, TestConfiguration> loadedConfigs = ConfigurationStorageHelper.load(configFile, STANDARD_CONSUMER);
 
-            @Override
-            public Integer getKey(TestConfiguration configuration) {
-                return (Integer) configuration.getProperties().get("test id");
-            }
-        };
+        verifyConfigs(expectedConfigs, loadedConfigs);
+    }
 
-        Map<Integer, TestConfiguration> loadedConfigs = ConfigurationStorageHelper.load(configFile, consumer);
+    protected void verifyConfigs(List<TestConfiguration> expectedConfigs, Map<Integer, TestConfiguration> loadedConfigs) {
         assertEquals("Wrong number of loaded configs.", expectedConfigs.size(), loadedConfigs.size());
 
         // sort so we can easily test expected configs in order
@@ -295,9 +345,34 @@ public class ConfigurationStorageHelperTest {
     }
 
     @Test
-    public void testMapStore() throws IOException {
+    public void testMapStoreShort() throws IOException {
+        char[] shortChars = "value".toCharArray();
+        char[] shortProtectedChars = "secret".toCharArray();
+
+        testMapStore(shortChars, shortProtectedChars);
+    }
+
+    @Test
+    public void testMapStoreLong() throws IOException {
+        char[] longChars = getChars('l', 100000);
+        char[] longProtectedChars = getChars('p', 101000);
+
+        testMapStore(longChars, longProtectedChars);
+    }
+
+    public static char[] getChars(char c, int len) {
+        char[] chars = new char[len];
+        for (int charNo = 0; charNo < len; charNo++) {
+            chars[charNo] = c;
+        }
+        return chars;
+    }
+
+    protected void testMapStore(char[] chars, char[] protectedChars) throws IOException {
         File configFile = new File("build", "testData");
+
         Map<String, Object> expectedMap = new HashMap<>();
+
         expectedMap.put("null", null);
         expectedMap.put("byte", (byte) 5);
         expectedMap.put("short", (short) 55);
@@ -307,8 +382,10 @@ public class ConfigurationStorageHelperTest {
         expectedMap.put("float", (float) 5.5);
         expectedMap.put("double", 55.55);
         expectedMap.put("boolean", true);
-        expectedMap.put("string", "value");
-        expectedMap.put("password", new SerializableProtectedString("secret".toCharArray()));
+
+        expectedMap.put("string", new String(chars));
+        expectedMap.put("password", new SerializableProtectedString(protectedChars));
+
         try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(configFile))) {
             ConfigurationStorageHelper.writeMap(dos, ConfigurationStorageHelper.toMapOrDictionary(expectedMap));
         }
@@ -319,14 +396,11 @@ public class ConfigurationStorageHelperTest {
         assertMapEquals(expectedMap, loadedMap);
     }
 
-    /**
-     * @return
-     */
-    private List<TestConfiguration> setupTestConfigurations() {
+    private List<TestConfiguration> setupTestConfigurations(int count, boolean useLongStrings) {
         List<TestConfiguration> testConfigs = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < count; i++) {
             String location = i % 2 == 0 ? null : "location " + i;
-            ConfigurationDictionary props = setupTestData(i);
+            ConfigurationDictionary props = setupTestData(i, useLongStrings);
             Set<String> testVars = setupUniqueVars();
             Set<ConfigID> testConfigID = setupConfigID();
             testConfigs.add(new TestConfiguration(location, props, testConfigID, testVars));
@@ -405,13 +479,17 @@ public class ConfigurationStorageHelperTest {
         if (expecteds.length == actuals.length) {
             for (int i = 0; i < expecteds.length; i++) {
                 if (expecteds[i] != actuals[i]) {
-                    throw new AssertionFailedError("The boolean arrays are different at position " + i + ". Expected: " + Arrays.toString(expecteds) + " actual: "
-                                                   + Arrays.toString(actuals));
+                    throw new AssertionFailedError(message +
+                                                   ": Difference at " + i +
+                                                   ": Expected: " + Arrays.toString(expecteds) +
+                                                   ": Actual: " + Arrays.toString(actuals));
                 }
             }
         } else {
-            throw new AssertionFailedError("The boolean arrays are different lengths. Expected: " + Arrays.toString(expecteds) + "[" + expecteds.length + "] actual: "
-                                           + Arrays.toString(actuals) + "[" + actuals.length + "]");
+            throw new AssertionFailedError(message +
+                                           ": Different lengths" +
+                                           ": Expected: " + Arrays.toString(expecteds) + "[" + expecteds.length + "]" +
+                                           ": Actual: " + Arrays.toString(actuals) + "[" + actuals.length + "]");
         }
     }
 
@@ -441,7 +519,7 @@ public class ConfigurationStorageHelperTest {
         return configIDs;
     }
 
-    public static ConfigurationDictionary setupTestData(int testId) {
+    public static ConfigurationDictionary setupTestData(int testId, boolean useLongStrings) {
         ConfigurationDictionary dict = new ConfigurationDictionary();
         dict.put("test id", testId);
         dict.put("byte", (byte) 5);
@@ -452,8 +530,15 @@ public class ConfigurationStorageHelperTest {
         dict.put("float", (float) 5.5);
         dict.put("double", 55.55);
         dict.put("boolean", true);
-        dict.put("string", "value");
-        dict.put("password", new SerializableProtectedString("secret".toCharArray()));
+
+        dict.put("short string", "value");
+        if (useLongStrings) {
+            dict.put("long string", new String(getChars('l', 102000)));
+        }
+        dict.put("short password", new SerializableProtectedString("secret".toCharArray()));
+        if (useLongStrings) {
+            dict.put("long password", new SerializableProtectedString(getChars('s', 103000)));
+        }
 
         dict.put("map", setupSubMap());
         dict.put("byte array", new byte[] { 1, 2, 3, 4, 5 });
@@ -464,7 +549,14 @@ public class ConfigurationStorageHelperTest {
         dict.put("float array", new float[] { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f });
         dict.put("double array", new double[] { 11.11, 22.22, 33.33, 44.44, 55.55 });
         dict.put("boolean array", new boolean[] { true, false, false, true, true });
-        dict.put("string array", new String[] { "abc", "def", "ghi", "jkl", "mno" });
+
+        String[] strArray;
+        if (useLongStrings) {
+            strArray = new String[] { "abc", "def", "ghi", "jkl", "mno", new String(getChars('x', 104000)) };
+        } else {
+            strArray = new String[] { "abc", "def", "ghi", "jkl", "mno" };
+        }
+        dict.put("string array", strArray);
 
         dict.put("Byte array", new Byte[] { 1, 2, 3, 4, 5 });
         dict.put("Byte null array", new Byte[] { 1, 2, null, 4, 5 });
@@ -491,16 +583,39 @@ public class ConfigurationStorageHelperTest {
         dict.put("Float collection", asList(new Float[] { 1.1f, 2.2f, 3.3f, 4.4f, 5.5f }));
         dict.put("Double collection", asList(new Double[] { 11.11, 22.22, 33.33, 44.44, 55.55 }));
         dict.put("Boolean collection", asList(new Boolean[] { true, false, false, true, true }));
-        dict.put("string collection", asList(new String[] { "abc", "def", "ghi", "jkl", "mno" }));
-        dict.put("Mixed collection", asList(new Object[] {
-                                                           Byte.valueOf((byte) 1),
-                                                           Short.valueOf((short) 1),
-                                                           Integer.valueOf(1),
-                                                           Long.valueOf(1),
-                                                           Character.valueOf('a'),
-                                                           Float.valueOf(1.1f),
-                                                           Double.valueOf(1.1),
-                                                           "string" }));
+
+        String[] strColl;
+        if (useLongStrings) {
+            strColl = new String[] { "abc", "def", "ghi", "jkl", "mno", new String(getChars('y', 105000)) };
+        } else {
+            strColl = new String[] { "abc", "def", "ghi", "jkl", "mno" };
+        }
+        dict.put("string collection", asList(strColl));
+
+        Object[] mixedColl;
+        if (useLongStrings) {
+            mixedColl = new Object[] {
+                                       Byte.valueOf((byte) 1),
+                                       Short.valueOf((short) 1),
+                                       Integer.valueOf(1),
+                                       Long.valueOf(1),
+                                       Character.valueOf('a'),
+                                       Float.valueOf(1.1f),
+                                       Double.valueOf(1.1),
+                                       "string",
+                                       new String(getChars('z', 106000)) };
+        } else {
+            mixedColl = new Object[] {
+                                       Byte.valueOf((byte) 1),
+                                       Short.valueOf((short) 1),
+                                       Integer.valueOf(1),
+                                       Long.valueOf(1),
+                                       Character.valueOf('a'),
+                                       Float.valueOf(1.1f),
+                                       Double.valueOf(1.1),
+                                       "string" };
+        }
+        dict.put("Mixed collection", asList(mixedColl));
 
         return dict;
     }

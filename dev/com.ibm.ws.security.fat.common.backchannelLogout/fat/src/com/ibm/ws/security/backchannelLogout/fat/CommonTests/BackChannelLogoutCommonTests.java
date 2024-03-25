@@ -46,6 +46,7 @@ import com.ibm.ws.security.fat.common.logging.CommonFatLoggingUtils;
 import com.ibm.ws.security.fat.common.social.SocialConstants;
 import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.fat.common.utils.MySkipRule;
+import com.ibm.ws.security.fat.common.utils.SecurityFatHttpUtils;
 import com.ibm.ws.security.jwt.utils.JweHelper;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.EndpointSettings;
@@ -54,8 +55,10 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.MessageConstants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.RSCommonTestTools;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestServer;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
+import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings.StoreType;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.utils.ServerFileUtils;
 
@@ -64,6 +67,8 @@ import componenttest.topology.utils.ServerFileUtils;
  */
 
 public class BackChannelLogoutCommonTests extends CommonTest {
+
+    protected final static String localStore = "LOCALSTORE";
 
     protected static Class<?> thisClass = BackChannelLogoutCommonTests.class;
     public static ServerFileUtils serverFileUtils = new ServerFileUtils();
@@ -77,6 +82,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
     protected static String currentRepeatAction = null;
     protected static String tokenType = null;
     protected static String httpSessionEnabled = null;
+    protected static String bclRoot = null;
 
     protected static VariationSettings vSettings = null;
 
@@ -143,22 +149,6 @@ public class BackChannelLogoutCommonTests extends CommonTest {
             Log.info(thisClass, "callSpecificCheck", "Is using just req.logout() without either end_session or logout on the OP: " + Boolean.toString(flag));
             recordTestIfSkipped(flag);
             return flag;
-        }
-
-    }
-
-    public static class SkipIfUsingJustReqLogoutOrSAMLSPInitiatedLogout extends MySkipRule {
-
-        protected static Class<?> thisClass = SkipIfUsingJustReqLogoutOrSAMLSPInitiatedLogout.class;
-
-        @Override
-        public Boolean callSpecificCheck() {
-
-            boolean reqLogoutFlag = currentRepeatAction.contains(Constants.HTTP_SESSION) && vSettings.sessionLogoutEndpoint == null;
-            boolean samlSPInitLogoutFlag = currentRepeatAction.contains(Constants.SAML_SP_INITIATED_LOGOUT);
-            Log.info(thisClass, "callSpecificCheck", "Is using just req.logout() without either end_session or logout endpoint or using SAML SP Initiated logout on the OP: " + Boolean.toString(reqLogoutFlag || samlSPInitLogoutFlag));
-            recordTestIfSkipped(reqLogoutFlag || samlSPInitLogoutFlag);
-            return reqLogoutFlag || samlSPInitLogoutFlag;
         }
 
     }
@@ -240,6 +230,154 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         }
 
         return contextRoot;
+    }
+
+    public static void sharedSetUp() throws Exception {
+
+        currentRepeatAction = RepeatTestFilter.getRepeatActionsAsString();
+
+        makeRandomSettingSelections();
+
+        vSettings = new VariationSettings(currentRepeatAction);
+
+        // Start a normal OP, or an OP that uses SAML to authorize (in this case, we need to fire up a server running Shibboleth
+        sharedStartProviderBasedOnRepeat(tokenType);
+
+        // start an OIDC RP or a Social oidc client
+        sharedStartClientBasedOnRepeat(tokenType);
+
+        sharedRegisterClientsIfNeeded();
+
+    }
+
+    /**
+     * If the current repeat is a SAML variation, start a Shibboleth IDP and an OP with a samlWebSso20 client. That client will be
+     * used to authorize using the SAML IDP.
+     * Otherwise, start a standard OIDC OP.
+     *
+     * @param tokenType
+     *            flag to be passed to common tooling to set config settings in the OP to have it create opaque or jwt
+     *            access_tokens
+     * @throws Exception
+     */
+    @SuppressWarnings("serial")
+    public static void sharedStartProviderBasedOnRepeat(String tokenType) throws Exception {
+
+        List<String> serverApps = new ArrayList<String>() {
+            {
+                add(Constants.OAUTHCLIENT_APP); // need this app to get the refresh forms
+            }
+        };
+
+        // For tests using httpsessionlogout, we need an intermediate app to perform the logout (including making calls to individual bcl endpoints on the RPs)
+        if (currentRepeatAction.contains(Constants.HTTP_SESSION)) {
+            serverApps.add(Constants.simpleLogoutApp);
+        }
+
+        if (vSettings.loginMethod.equals(Constants.SAML)) {
+            Log.info(thisClass, "setUp", "pickAnIDP: " + pickAnIDP);
+            testIDPServer = commonSetUp("com.ibm.ws.security.saml.sso-2.0_fat.shibboleth", "server_orig.xml", Constants.IDP_SERVER_TYPE, Constants.NO_EXTRA_APPS, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.SKIP_CHECK_FOR_SECURITY_STARTED, true);
+            pickAnIDP = true; // tells commonSetup to update the OP server files with current/this instance IDP server info
+            testIDPServer.setRestoreServerBetweenTests(false);
+            testOPServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.op.saml", adjustServerConfig("op_server_basicTests.xml"), Constants.OIDC_OP, serverApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
+            // now, we need to update the IDP files
+            shibbolethHelpers.fixSPInfoInShibbolethServer(testOPServer, testIDPServer);
+            shibbolethHelpers.fixVarsInShibbolethServerWithDefaultValues(testIDPServer);
+            // now, start the shibboleth app with the updated config info
+            shibbolethHelpers.startShibbolethApp(testIDPServer);
+            testOPServer.addIgnoredServerException(MessageConstants.CWWKS5207W_SAML_CONFIG_IGNORE_ATTRIBUTES);
+        } else {
+            useLdap = false;
+            Log.info(thisClass, "beforeClass", "Set useLdap to: " + useLdap);
+            if (currentRepeatAction.contains(Constants.MONGODB)) {
+                List<String> extraMsgs = new ArrayList<String>();
+                extraMsgs.add("CWWKZ0001I.*" + Constants.OAUTHCONFIGMONGO_START_APP);
+                testOPServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.op.mongo", adjustServerConfig("op_server_basicTests.xml"), Constants.OIDC_OP, serverApps, Constants.DO_NOT_USE_DERBY, Constants.USE_MONGODB, extraMsgs, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT, Constants.JUNIT_REPORTING);
+                // register clients after all servers are started and we know everyone's ports
+                testSettings.setStoreType(StoreType.CUSTOM);
+            } else {
+                testOPServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.op", adjustServerConfig("op_server_basicTests.xml"), Constants.OIDC_OP, serverApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
+            }
+        }
+
+        Map<String, String> vars = new HashMap<String, String>();
+
+        if (currentRepeatAction.contains(SocialConstants.SOCIAL)) {
+            // social client
+            bclRoot = "ibm/api/social-login/backchannel_logout";
+        } else {
+            // openidconnect client
+            bclRoot = "oidcclient/backchannel_logout";
+        }
+        vars.put("bclRoot", bclRoot);
+
+        updateServerSettings(testOPServer, vars);
+
+        testOPServer.setRestoreServerBetweenTests(false);
+        SecurityFatHttpUtils.saveServerPorts(testOPServer.getServer(), Constants.BVT_SERVER_1_PORT_NAME_ROOT);
+        testOPServer.addIgnoredServerExceptions(MessageConstants.CWWKS1648E_BACK_CHANNEL_LOGOUT_INVALID_URI, MessageConstants.CWWKS5215E_NO_AVAILABLE_SP, "CWWKE0702E", "CWWKF0029E");
+
+    }
+
+    /**
+     * If the current repeat is an OIDC or SAML variation, start an OIDC RP client, otherwise, start a Social oidc client
+     *
+     * @param tokenType
+     *            flag to be passed to common tooling to set config settings in the OP to have it create opaque or jwt
+     *            access_tokens
+     * @throws Exception
+     */
+    @SuppressWarnings("serial")
+    public static void sharedStartClientBasedOnRepeat(String tokenType) throws Exception {
+
+        List<String> clientApps = new ArrayList<String>() {
+            {
+                add(Constants.APP_FORMLOGIN);
+                add(Constants.backchannelLogoutApp);
+            }
+        };
+
+        // For tests using httpsessionlogout, we need an intermediate app to perform the logout (including making calls to individual bcl endpoints on the RPs)
+        if (currentRepeatAction.contains(Constants.HTTP_SESSION)) {
+            clientApps.add(Constants.simpleLogoutApp);
+        }
+
+        Map<String, String> vars = new HashMap<String, String>();
+        if (vSettings.loginMethod.equals(Constants.OIDC) || vSettings.loginMethod.equals(Constants.SAML)) {
+            clientServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.rp", adjustServerConfig("rp_server_basicTests.xml"), Constants.OIDC_RP, clientApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
+            vars = updateClientCookieNameAndPort(clientServer, "clientCookieName", Constants.clientCookieName);
+            testSettings.setFlowType(Constants.RP_FLOW);
+        } else {
+            clientServer = commonSetUp("com.ibm.ws.security.backchannelLogout_fat.social", adjustServerConfig("social_server_basicTests.xml"), Constants.OIDC_RP, clientApps, Constants.DO_NOT_USE_DERBY, Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, Constants.X509_CERT);
+            vars = updateClientCookieNameAndPort(clientServer, "clientCookieName", Constants.clientCookieName);
+            testSettings.setFlowType(SocialConstants.SOCIAL);
+            clientServer.addIgnoredServerExceptions(MessageConstants.CWWKG0058E_CONFIG_MISSING_REQUIRED_ATTRIBUTE, MessageConstants.CWWKS1740W_RS_REDIRECT_TO_RP, MessageConstants.CWWKS1725E_VALIDATION_ENDPOINT_URL_NOT_VALID_OR_FAILED); // the social client isn't happy with the public client not having a secret
+        }
+
+        updateServerSettings(clientServer, vars);
+
+        SecurityFatHttpUtils.saveServerPorts(clientServer.getServer(), Constants.BVT_SERVER_2_PORT_NAME_ROOT);
+
+        clientServer.addIgnoredServerExceptions(MessageConstants.CWWKS1541E_BACK_CHANNEL_LOGOUT_ERROR, MessageConstants.CWWKS1543E_BACK_CHANNEL_LOGOUT_REQUEST_VALIDATION_ERROR);
+
+        if (currentRepeatAction.contains(Constants.HTTP_SESSION)) {
+            if (currentRepeatAction.contains(Constants.OIDC_RP) || currentRepeatAction.contains(SocialConstants.SOCIAL)) {
+                logoutApp = clientServer.getHttpsString() + "/simpleLogoutTestApp/simpleLogout";
+            } else {
+                logoutApp = testOPServer.getHttpsString() + "/simpleLogoutTestApp/simpleLogout";
+            }
+        }
+
+    }
+
+    public static void sharedRegisterClientsIfNeeded() throws Exception {
+
+        if (currentRepeatAction.contains(Constants.MONGODB)) {
+            Log.info(thisClass, "registerClientsIfNeeded", "Setting up mongo clients");
+            regClients = new BackChannelLogout_RegisterClients(testOPServer, clientServer, null);
+            regClients.registerClientsForBasicBCLTests();
+
+        }
     }
 
     /**
@@ -794,7 +932,11 @@ public class BackChannelLogoutCommonTests extends CommonTest {
                         expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on Logout page.", null, Constants.LOGOUT_TITLE);
                         expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not get the successful logout message.", null, "Logout successful");
                     } else {
-                        expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on Web Login Service.", null, "Web Login Service");
+                        if (vSettings.logoutMethodTested.equals(Constants.IBM_SECURITY_LOGOUT)) {
+                            expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on Web Login Service.", null, Constants.ibm_security_logout_default_page);
+                        } else {
+                            expectations = vData.addExpectation(expectations, Constants.LOGOUT, Constants.RESPONSE_TITLE, Constants.STRING_CONTAINS, "Did not land on Web Login Service.", null, "Web Login Service");
+                        }
                         if (bclForm == BCL_FORM.TEST_BCL && vSettings.isLogoutEndpointInvoked) {
                             expectations = vData.addExpectation(expectations, Constants.PROCESS_LOGOUT_PROPAGATE_YES, Constants.RESPONSE_URL, Constants.STRING_MATCHES, "Did not land on the post back channel logout test app", null, "https://localhost:" + testOPServer.getServer().getBvtSecurePort() + "/ibm/saml20/spOP/slo");
                         } else {
@@ -1127,11 +1269,16 @@ public class BackChannelLogoutCommonTests extends CommonTest {
                 updatedTestSettings.setEndSession(testOPServer.getHttpsString() + "/ibm/saml20/defaultSP/logout");
             } else {
                 updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace("OidcConfigSample", provider));
-                if (vSettings.logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT)) {
-                    updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace(Constants.END_SESSION_ENDPOINT, Constants.LOGOUT_ENDPOINT));
+                if (vSettings.logoutMethodTested.equals(Constants.IBM_SECURITY_LOGOUT)) {
+                    updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace(Constants.END_SESSION_ENDPOINT, Constants.IBM_SECURITY_LOGOUT));
+                } else {
+                    if (vSettings.logoutMethodTested.equals(Constants.LOGOUT_ENDPOINT)) {
+                        updatedTestSettings.setEndSession(updatedTestSettings.getEndSession().replace(Constants.END_SESSION_ENDPOINT, Constants.LOGOUT_ENDPOINT));
+                    }
                 }
             }
         }
+        updatedTestSettings.setRevocationEndpt(updatedTestSettings.getRevocationEndpt().replace("OidcConfigSample", provider));
         updatedTestSettings.setTokenEndpt(updatedTestSettings.getTokenEndpt().replace("OidcConfigSample", provider));
         updatedTestSettings.setClientID(client);
         updatedTestSettings.setClientSecret("mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"); // all of the clients are using the same secret
@@ -1494,11 +1641,11 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         return invokeLogout(webClient, settings, logoutExpectations, id_token, multiStepLogout);
     }
 
-    public Object invokeLogout(WebClient webClient, TestSettings settings, List<validationData> logoutExpectations, String id_token) throws Exception {
-        return invokeLogout(webClient, settings, logoutExpectations, id_token, true);
+    public Object invokeLogout(WebClient webClient, TestSettings settings, List<validationData> logoutExpectations, String token) throws Exception {
+        return invokeLogout(webClient, settings, logoutExpectations, token, true);
     }
 
-    public Object invokeLogout(WebClient webClient, TestSettings settings, List<validationData> logoutExpectations, String id_token, boolean multiStepLogout) throws Exception {
+    public Object invokeLogout(WebClient webClient, TestSettings settings, List<validationData> logoutExpectations, String token, boolean multiStepLogout) throws Exception {
         String thisMethod = "invokeLogout";
         validationLogger("Start -", thisMethod);
 
@@ -1510,17 +1657,22 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         Log.info(thisClass, thisMethod, "Debug defaultApp: " + vSettings.finalAppWithoutPostRedirect);
         Log.info(thisClass, thisMethod, "Debug logoutApp: " + logoutApp);
         Log.info(thisClass, thisMethod, "Debug sessionLogoutEndpoint: " + vSettings.sessionLogoutEndpoint);
+        Log.info(thisClass, thisMethod, "Debug token: " + token);
+
+        //        for (validationData e : logoutExpectations) {
+        //            e.printValidationData();
+        //        }
 
         List<endpointSettings> parms = null;
         switch (vSettings.logoutMethodTested) {
         case Constants.SAML_IDP_INITIATED_LOGOUT: // update for idp/sp initiated
-            return genericOP(_testName, webClient, settings, Constants.IDP_INITIATED_LOGOUT, logoutExpectations, null, id_token);
+            return genericOP(_testName, webClient, settings, Constants.IDP_INITIATED_LOGOUT, logoutExpectations, null, token);
         case Constants.SAML_SP_INITIATED_LOGOUT: // update for idp/sp initiated
-            return genericOP(_testName, webClient, settings, Constants.SP_INITIATED_LOGOUT, logoutExpectations, null, id_token);
+            return genericOP(_testName, webClient, settings, Constants.SP_INITIATED_LOGOUT, logoutExpectations, null, token);
         case Constants.REVOCATION_ENDPOINT:
             parms = eSettings.addEndpointSettings(parms, "client_id", settings.getClientID());
             parms = eSettings.addEndpointSettings(parms, "client_secret", settings.getClientSecret());
-            parms = eSettings.addEndpointSettings(parms, "token", id_token);
+            parms = eSettings.addEndpointSettings(parms, "token", token);
             return genericInvokeEndpoint(_testName, webClient, null, settings.getRevocationEndpt(), Constants.POSTMETHOD, Constants.INVOKE_REVOCATION_ENDPOINT, parms, null, logoutExpectations, testSettings);
         case Constants.END_SESSION:
         case Constants.LOGOUT_ENDPOINT:
@@ -1529,7 +1681,7 @@ public class BackChannelLogoutCommonTests extends CommonTest {
             if (isUsingSaml() && multiStepLogout) {
                 logoutActions = new String[] { Constants.LOGOUT, Constants.PROCESS_LOGOUT_PROPAGATE_YES };
             }
-            return genericOP(_testName, webClient, settings, logoutActions, logoutExpectations, null, id_token);
+            return genericOP(_testName, webClient, settings, logoutActions, logoutExpectations, null, token);
         case Constants.HTTP_SESSION:
             //            String id_token = null;
             if (vSettings.sessionLogoutEndpoint != null) {
@@ -1545,10 +1697,12 @@ public class BackChannelLogoutCommonTests extends CommonTest {
             if (opLogoutEndpoint != null) {
                 parms = eSettings.addEndpointSettingsIfNotNull(parms, "opLogoutUri", opLogoutEndpoint);
             }
-            if (id_token != null) {
-                parms = eSettings.addEndpointSettingsIfNotNull(parms, "id_token_hint", id_token);
+            if (token != null) {
+                parms = eSettings.addEndpointSettingsIfNotNull(parms, "id_token_hint", token);
             }
             return genericInvokeEndpoint(_testName, webClient, null, logoutApp, Constants.POSTMETHOD, Constants.LOGOUT, parms, null, logoutExpectations, testSettings);
+        case Constants.IBM_SECURITY_LOGOUT:
+            return genericOP(_testName, webClient, settings, Constants.LOGOUT_ONLY_ACTIONS, logoutExpectations, null, token);
         default:
             fail("Logout method wasn't specified");
             return null;
@@ -1707,6 +1861,21 @@ public class BackChannelLogoutCommonTests extends CommonTest {
         addStateToHtml(states.getClientCookieExists(), states.getClientCookieMatchesPrevious(), states.getClientCookieStillValid());
         addStateToHtml(states.getIsAccessTokenValid());
         addStateToHtml(states.getIsRefreshTokenValid());
+    }
+
+    /**
+     * Invoke the back channel logout app that logs a message and counts the number of times it is invoked
+     * Each time the app is called (during a logout), it logs a message and increments a counter.
+     * When we have tests that expect multiple bcl logouts to occur, we check the count created by this app to verify that the
+     * correct number of logouts occurred.
+     * This method causes that counter to be reset.
+     *
+     * @throws Exception
+     */
+    protected void resetBCLAppCounter() throws Exception {
+        genericInvokeEndpoint(_testName, getAndSaveWebClient(true), null, clientServer.getHttpsString() + "/backchannelLogoutTestApp/backChannelLogoutLogMsg",
+                Constants.PUTMETHOD, "resetBCLCounter", null, null, vData.addSuccessStatusCodes(), testSettings);
+
     }
 
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -193,3 +193,13 @@ DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Odeberte ur\u010den\u00e9 
 JWT_MISSING_ISSUER=CWWKS1784E: Token nen\u00ed platn\u00fd, proto\u017ee neobsahuje n\u00e1rok vydavatele.
 JWT_MISSING_ISSUER.explanation=Token mus\u00ed obsahovat n\u00e1rok vydavatele, kter\u00fd identifikuje, kdo dan\u00fd token vydal.
 JWT_MISSING_ISSUER.useraction=Z\u00edskejte nov\u00fd token, kter\u00fd bude obsahovat n\u00e1rok vydavatele.
+
+# Do not translate "typ", "logout+jwt"
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER=CWWKS1785E: Token je neplatn\u00fd, proto\u017ee z\u00e1hlav\u00ed [{0}] ''typ '' tokenu ozna\u010duje, \u017ee se jedn\u00e1 o token odhl\u00e1\u0161en\u00ed.
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.explanation=Token nesm\u00ed b\u00fdt tokenem odhl\u00e1\u0161en\u00ed. Tokeny odhl\u00e1\u0161en\u00ed mohou m\u00edt parametr z\u00e1hlav\u00ed "typ" (type) s hodnotou "logout + jwt".
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.useraction=Ujist\u011bte se, \u017ee pou\u017eit\u00fd token nen\u00ed tokenem odhl\u00e1\u0161en\u00ed.
+
+# Do not translate "events", "http://schemas.openid.net/event/backchannel-logout"
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM=CWWKS1786E: Token je neplatn\u00fd, proto\u017ee n\u00e1rok ''events'' s hodnotou [{0}] ozna\u010duje, \u017ee token je token odhl\u00e1\u0161en\u00ed.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.explanation=Token nesm\u00ed b\u00fdt tokenem odhl\u00e1\u0161en\u00ed. Tokeny odhl\u00e1\u0161en\u00ed maj\u00ed n\u00e1rok "ud\u00e1lost\u00ed", co\u017e je objekt JSON, kter\u00fd zahrnuje "http://schemas.openid.net/event/backchannel-logout" jako jeden z jeho prvk\u016f.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.useraction=Ujist\u011bte se, \u017ee pou\u017eit\u00fd token nen\u00ed tokenem odhl\u00e1\u0161en\u00ed.

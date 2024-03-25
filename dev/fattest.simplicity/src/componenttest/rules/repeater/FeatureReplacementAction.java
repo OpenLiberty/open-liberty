@@ -94,6 +94,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featureNameMapping.put("jsfContainer", "facesContainer");
         featureNameMapping.put("jsp", "pages");
         featureNameMapping.put("el", "expressionLanguage");
+        featureNameMapping.put("wmqJmsClient", "wmqMessagingClient");
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
 
@@ -150,6 +151,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
 
     private boolean forceAddFeatures = true;
     private SEVersion minJavaLevel = SEVersion.JAVA8;
+    private SEVersion maxJavaLevel = null;
     protected String currentID = null;
     private final Set<String> optionsToAdd = new HashSet<String>();
     private final Set<File> optionFilesCreated = new HashSet<File>();
@@ -295,6 +297,14 @@ public class FeatureReplacementAction implements RepeatTestAction {
      */
     public FeatureReplacementAction removeFeature(String removeFeature) {
         this.removeFeatures.add(removeFeature.toLowerCase());
+        return this;
+    }
+
+    /**
+     * Defines a maximum java level in order for this RepeatTestAction to be enabled
+     */
+    public FeatureReplacementAction withMaxJavaLevel(SEVersion javaLevel) {
+        this.maxJavaLevel = javaLevel;
         return this;
     }
 
@@ -464,6 +474,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
             Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the java level is too low.");
             return false;
         }
+        if (maxJavaLevel != null && JavaInfo.forCurrentVM().majorVersion() > maxJavaLevel.majorVersion()) {
+            Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the java level is too high.");
+            return false;
+        }
         if (TestModeFilter.FRAMEWORK_TEST_MODE.compareTo(testRunMode) < 0) {
             Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the test mode " + testRunMode +
                                      " is not valid for current mode " + TestModeFilter.FRAMEWORK_TEST_MODE);
@@ -584,7 +598,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
             try (Scanner s = new Scanner(configFile)) {
                 while (!isServerConfig && s.hasNextLine()) {
                     String line = s.nextLine();
-                    if (line.contains("<server")) {
+                    if (line.contains("<server ") || line.contains("<server>")) {
                         isServerConfig = true;
                         break;
                     } else if (line.contains("<client")) {
@@ -641,6 +655,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
             Log.info(c, m, "Resulting features: " + features);
 
             if (isServerConfig) {
+                updateServerConfig(serverConfig);
                 Log.info(c, m, "Config: " + serverConfig);
                 ServerConfigurationFactory.toFile(configFile, serverConfig);
             } else {
@@ -652,6 +667,10 @@ public class FeatureReplacementAction implements RepeatTestAction {
             LibertyServerFactory.getLibertyServer(serverName);
         for (String clientName : clients)
             LibertyClientFactory.getLibertyClient(clientName);
+    }
+
+    protected void updateServerConfig(ServerConfiguration serverConfig) {
+        // override in subclass
     }
 
     @Override

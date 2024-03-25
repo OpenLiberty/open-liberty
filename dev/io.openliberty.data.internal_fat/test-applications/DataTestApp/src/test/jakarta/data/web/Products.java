@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
@@ -44,7 +45,7 @@ public interface Products {
     @Delete
     void clear();
 
-    @Query("DELETE FROM Product o WHERE o.pk IN ?1")
+    @Query("DELETE FROM Product WHERE pk IN ?1")
     int discontinueProducts(Set<UUID> ids);
 
     @Select(value = "name", distinct = true)
@@ -53,35 +54,40 @@ public interface Products {
 
     Product[] findByVersionGreaterThanEqualOrderByPrice(long minVersion);
 
-    @Query("SELECT o FROM Product o WHERE o.pk=:productId")
+    @Query("WHERE pk=:productId")
     Product findItem(@Param("productId") UUID id);
 
-    Optional<Product> findById(UUID id);
+    Optional<Product> findByPK(UUID id);
 
+    @Find
     @Select(function = Aggregate.MAXIMUM, value = "price")
     float highestPrice();
 
+    @Update
     long inflateAllPrices(@Multiply("price") float rateOfIncrease);
 
+    @Update
     long inflatePrices(@By("name") @Contains String nameContains,
                        @Multiply("price") float rateOfIncrease);
 
     @Exists
     boolean isNotEmpty();
 
+    @Find
     @Select(function = Aggregate.MINIMUM, value = "price")
     float lowestPrice();
 
+    @Find
     @Select(function = Aggregate.AVERAGE, value = "price")
     float meanPrice();
 
-    @Query("UPDATE Product o SET o.price = o.price - (?2 * o.price) WHERE o.name LIKE CONCAT('%', ?1, '%')")
+    @Query("UPDATE Product SET price = price - (?2 * price) WHERE name LIKE CONCAT('%', ?1, '%')")
     long putOnSale(String nameContains, float discount);
 
     // Custom repository method that combines multiple operations into a single transaction
     @Transactional
     default Product remove(UUID id) {
-        for (Optional<Product> product; (product = findById(id)).isPresent();)
+        for (Optional<Product> product; (product = findByPK(id)).isPresent();)
             if (discontinueProducts(Set.of(id)) == 1)
                 return product.get();
         return null;
@@ -93,20 +99,23 @@ public interface Products {
     @Save
     Product[] saveMultiple(Product... p);
 
-    boolean setPrice(UUID id,
+    @Update
+    boolean setPrice(UUID pk,
                      long version,
                      @Assign("price") float newPrice);
 
+    @Find
     @Select(function = Aggregate.COUNT, distinct = false, value = { "name", "description", "price" })
     ProductCount stats();
 
     @Count
     int total();
 
+    @Find
     @Select(function = Aggregate.SUM, distinct = true, value = "price")
     float totalOfDistinctPrices();
 
-    @Query("UPDATE Product o SET o.price=o.price/?2, o.version=o.version-1 WHERE (o.pk IN ?1)")
+    @Query("UPDATE Product SET price=price/?2, version=version-1 WHERE (pk IN ?1)")
     // TODO switch to annotated parameters once available for conditions
     //@Filter(by = "pk", op = Compare.In)
     //@Update(attr = "price", op = Operation.Divide)

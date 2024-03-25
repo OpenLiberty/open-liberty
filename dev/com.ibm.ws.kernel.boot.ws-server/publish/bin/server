@@ -576,14 +576,18 @@ serverEnvAndJVMOptions()
 findRealPath() {
   path="$1"
 
-  # Try realpath command
-  if command -v realpath >/dev/null; then
-    resolvedPath=$(realpath "${path}" 2>/dev/null)
-  fi
-  
-  # If realpath is not available, try readlink -e
-  if [ -z "${resolvedPath}" ] && command -v readlink >/dev/null; then
-    resolvedPath=$(readlink -e "${path}" 2>/dev/null)
+  # realpath doesn't exist on OS/390.  readlink didn't exist on OS/390, but then it was added and
+  # it doesn't work as expected.  So avoiding both for OS/390.
+  if [ "$uname" != "OS/390" ]; then
+    # Try realpath command
+    if command -v realpath >/dev/null; then
+      resolvedPath=$(realpath "${path}" 2>/dev/null)
+    fi
+    
+    # If realpath is not available, try readlink -e
+    if [ -z "${resolvedPath}" ] && command -v readlink >/dev/null; then
+      resolvedPath=$(readlink -e "${path}" 2>/dev/null)
+    fi
   fi
 
   # If neither of those methods work, try a more basic approach
@@ -1114,6 +1118,14 @@ serverCmd()
   IBM_JAVA_OPTIONS=${SERVER_IBM_JAVA_OPTIONS}
   SAVE_OPENJ9_JAVA_OPTIONS=${OPENJ9_JAVA_OPTIONS}
   OPENJ9_JAVA_OPTIONS=${SERVER_IBM_JAVA_OPTIONS}
+
+  # Check for any verbose:gc variable set by user
+  # By default we set this to be true unless user specifies otherwise
+  # if [ ! jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc] then SERVER_IBM_JAVA_OPTIONS += -Xverbosegclog:verbosegc.%seq.log,10,1024
+  if [ -n "${JVM_OPTIONS_QUOTED##*"verbosegc"*}" ] && [ -n "${JVM_OPTIONS_QUOTED##*"verbose:gc"*}"  ] && [ ! "${VERBOSEGC}" = "false" ]
+  then
+    OPENJ9_JAVA_OPTIONS="-Xverbosegclog:${X_LOG_DIR}/verbosegc.%seq.log,10,1024 ${OPENJ9_JAVA_OPTIONS}"
+  fi
 
   if $os400lib; then
     serverCmdOS400 "${SERVER_CMD_BACKGROUND_LOG}" "${SERVER_NAME}" "$@"

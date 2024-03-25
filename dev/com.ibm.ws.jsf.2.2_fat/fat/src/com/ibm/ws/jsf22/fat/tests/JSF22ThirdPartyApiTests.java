@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -41,7 +41,7 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 // This test is skipped and the io.openliberty.org.apache.myfaces.4.0_fat test bucket contains the following
 // Faces 4.0 specific tests: Faces40ThirdPartyApiTests.java.
-@SkipForRepeat(EE10_FEATURES)
+@SkipForRepeat(EE10_OR_LATER_FEATURES)
 public class JSF22ThirdPartyApiTests {
 
     protected static final Class<?> c = JSF22ThirdPartyApiTests.class;

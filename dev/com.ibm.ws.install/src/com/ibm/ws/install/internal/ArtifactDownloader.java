@@ -19,7 +19,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.Authenticator;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
@@ -31,7 +30,6 @@ import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,7 +43,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -108,8 +105,8 @@ public class ArtifactDownloader implements AutoCloseable {
         info(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_MAVEN_REPO_CONNECTION_SUCCESSFUL"));
 
         try {
-            missingFeaturesURLs = ArtifactDownloaderUtils.getMissingFiles(URLtoMavenCoordMap.keySet(), envMap);
-        } catch (IOException | InterruptedException | ExecutionException e) {
+            missingFeaturesURLs = ArtifactDownloaderUtils.getMissingFiles(URLtoMavenCoordMap.keySet(), envMap, repository);
+        } catch (InterruptedException | ExecutionException e) {
             throw new InstallException(e.getMessage());
         }
 
@@ -213,7 +210,7 @@ public class ArtifactDownloader implements AutoCloseable {
                     throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN");
                 }
 
-                if (ArtifactDownloaderUtils.fileIsMissing(urlLocation, envMap)) {
+                if (ArtifactDownloaderUtils.fileIsMissing(urlLocation, envMap, repository)) {
                     throw ExceptionUtils.createByKey("ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_REPO", ArtifactDownloaderUtils.getfilename(mavenCoords), filetype + " file",
                                                      repository.toString()); //ERROR_FAILED_TO_DOWNLOAD_ASSETS_FROM_MAVEN_REPO
                 }
@@ -307,69 +304,6 @@ public class ArtifactDownloader implements AutoCloseable {
         return result;
     }
 
-    private void configureProxyAuthentication() throws InstallException {
-        //set up basic auth HTTP proxy tunnel
-        System.setProperty("jdk.http.auth.tunneling.disabledSchemes", "");
-
-        if (envMap.get("https.proxyUser") != null) {
-            final String encodedPassword = formatAndCheckRepositoryPassword((String) envMap.get("https.proxyPassword"));
-            Authenticator.setDefault(new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication((String) envMap.get("https.proxyUser"), PasswordUtil.passwordDecode(encodedPassword).toCharArray());
-                }
-            });
-        } else if (envMap.get("http.proxyUser") != null) {
-            final String encodedPassword = formatAndCheckRepositoryPassword((String) envMap.get("http.proxyPassword"));
-            Authenticator.setDefault(new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication((String) envMap.get("http.proxyUser"), PasswordUtil.passwordDecode(encodedPassword).toCharArray());
-                }
-            });
-        }
-    }
-
-    private void configureAuthentication(final MavenRepository repository) throws InstallException {
-
-        if (repository.getUserId() != null && repository.getPassword() != null &&
-            envMap.get("https.proxyUser") == null && envMap.get("http.proxyUser") == null) {
-            final String encodedPassword = formatAndCheckRepositoryPassword(repository.getPassword());
-            Authenticator.setDefault(new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(repository.getUserId(), PasswordUtil.passwordDecode(encodedPassword).toCharArray());
-                }
-            });
-        }
-    }
-
-    /**
-     * @param pwd - repository password
-     * @return a formated password string
-     * @throws InstallException if decoding the password fails due to an unsupported algorithm or invalid password.
-     */
-    private String formatAndCheckRepositoryPassword(String pwd) throws InstallException {
-        String crypto_algorithm = PasswordUtil.getCryptoAlgorithm(pwd);
-        if (!pwd.startsWith("{")) {
-            pwd = "{}" + pwd;
-            logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_NOT_ENCRYPTED")
-                                   + InstallUtils.NEWLINE);
-            return pwd;
-        }
-
-        if (PasswordUtil.passwordDecode(pwd) == null) {
-            if (!PasswordUtil.isValidCryptoAlgorithm(crypto_algorithm)) {
-                // don't accept unsupported crypto algorithm
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_CRYPTO_UNSUPPORTED"));
-            } else {
-                throw new InstallException(Messages.PASSWORD_UTIL_MESSAGES.getLogMessage("PASSWORDUTIL_CYPHER_EXCEPTION"));
-            }
-        }
-
-        return pwd;
-    }
-
     /**
      * Tests the connection of a MavenRepository. If the server returns 404, then this will return false.
      *
@@ -377,15 +311,16 @@ public class ArtifactDownloader implements AutoCloseable {
      */
     protected boolean testConnection(MavenRepository repository) {
         try {
-            checkValidProxy();
-            configureProxyAuthentication();
-            configureAuthentication(repository);
-            int responseCode = ArtifactDownloaderUtils.exists(repository.getRepositoryUrl(), envMap);
+            ArtifactDownloaderUtils.checkValidProxy(envMap);
+            ArtifactDownloaderUtils.verifyPassword(repository.getPassword());
+            int responseCode = ArtifactDownloaderUtils.exists(repository.getRepositoryUrl(), envMap, repository);
             logger.fine("Response code - " + repository.getRepositoryUrl() + ":" + responseCode);
-            if (responseCode != 404) {
-                // repo is fine for use
+            if (responseCode >= 200 && responseCode < 400) {
                 return true;
+            } else {
+                ArtifactDownloaderUtils.checkResponseCode(responseCode, repository.getRepositoryUrl());
             }
+
         } catch (IOException | InstallException e) {
             logger.warning(repository.getRepositoryUrl() + " cannot be connected");
             logger.fine(e.getMessage());
@@ -395,18 +330,29 @@ public class ArtifactDownloader implements AutoCloseable {
 
     private void downloadInternal(URI address, File destination, MavenRepository repository) throws IOException, InstallException {
         Proxy proxy;
+        String proxyEncodedAuth = "";
         if (envMap.get("https.proxyHost") != null) {
             proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("https.proxyHost"), Integer.parseInt((String) envMap.get("https.proxyPort"))));
+            proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword"));
         } else if (envMap.get("http.proxyHost") != null) {
             proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress((String) envMap.get("http.proxyHost"), Integer.parseInt((String) envMap.get("http.proxyPort"))));
+            proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("http.proxyUser"), (String) envMap.get("http.proxyPassword"));
         } else {
             proxy = Proxy.NO_PROXY;
         }
         URL url = address.toURL();
         URLConnection conn = url.openConnection(proxy);
-        addBasicAuthentication(address, conn, repository);
+
         final String userAgentValue = calculateUserAgent();
+        String repoEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication(repository.getUserId(), repository.getPassword());
         conn.setRequestProperty("User-Agent", userAgentValue);
+        if (!repoEncodedAuth.isEmpty()) {
+            conn.setRequestProperty("Authorization", repoEncodedAuth);
+        }
+        if (!proxyEncodedAuth.isEmpty()) {
+            conn.setRequestProperty("Proxy-Authorization", proxyEncodedAuth);
+        }
+
         conn.connect();
 
         destination.getParentFile().mkdirs();
@@ -443,32 +389,6 @@ public class ArtifactDownloader implements AutoCloseable {
         String osVersion = System.getProperty("os.version");
         String osArch = System.getProperty("os.arch");
         return String.format("%s/%s (%s;%s;%s) (%s;%s;%s)", appName, appVersion, osName, osVersion, osArch, javaVendor, javaVersion, javaVendorVersion);
-    }
-
-    private void addBasicAuthentication(URI address, URLConnection conn, MavenRepository repository) throws IOException {
-        String userInfo = calculateUserInfo(address, repository);
-        if (userInfo == null) {
-            return;
-        }
-        conn.setRequestProperty("Authorization", "Basic " + base64Encode(userInfo));
-    }
-
-    private String base64Encode(String userInfo) {
-        try {
-            return Base64.getEncoder().encodeToString(userInfo.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException encodingException) {
-            throw new RuntimeException("Failed to get bytes for user info using UTF-8.", encodingException);
-        }
-    }
-
-    private String calculateUserInfo(URI uri, MavenRepository repository) {
-        if (repository.getUserId() != null && repository.getPassword() != null) {
-            return repository.getUserId() + ":" + repository.getPassword();
-        }
-//        if (envMap.get("FEATURE_REPO_USER") != null && envMap.get("FEATURE_REPO_PASSWORD") != null) {
-//            return (String)envMap.get("FEATURE_REPO_USER") + ':' + (String)envMap.get("FEATURE_REPO_PASSWORD");
-//        }
-        return uri.getUserInfo();
     }
 
     private static class SystemPropertiesProxyAuthenticator extends Authenticator {
@@ -520,28 +440,6 @@ public class ArtifactDownloader implements AutoCloseable {
 
     public List<File> getDownloadedFiles() {
         return downloadedFiles;
-    }
-
-    public void checkValidProxy() throws InstallException {
-        String protocol = null;
-        if (envMap.get("https.proxyUser") != null) {
-            protocol = "https";
-        } else if (envMap.get("http.proxyUser") != null) {
-            protocol = "http";
-        }
-
-        String proxyPort = (String) envMap.get(protocol + ".proxyPort");
-        if (protocol != null) {
-            int proxyPortnum = Integer.parseInt(proxyPort);
-            if (((String) envMap.get(protocol + ".proxyHost")).isEmpty()) {
-                throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_HOST_MISSING");
-            } else if (proxyPortnum < 0 || proxyPortnum > 65535) {
-                throw ExceptionUtils.createByKey("ERROR_TOOL_INVALID_PROXY_PORT", proxyPort);
-            } else if (((String) envMap.get(protocol + ".proxyPassword")).isEmpty() ||
-                       envMap.get(protocol + ".proxyPassword") == null) {
-                throw ExceptionUtils.createByKey("ERROR_TOOL_PROXY_PWD_MISSING");
-            }
-        }
     }
 
     private void updateProgress(double increment) {

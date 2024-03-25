@@ -70,14 +70,14 @@ public class ProxyHelper {
      */
     private ClassLoader getClassLoaderForInterfaces(final ClassLoader loader, final Class<?>[] interfaces) {
         if (canSeeAllInterfaces(loader, interfaces)) {
-            LOG.log(Level.FINE, "current classloader " + loader + " can see all interface");
+            LOG.log(Level.FINE, "current classloader " + loader + " can see all interfaces"); // Liberty Change
             return loader;
         }
         String sortedNameFromInterfaceArray = getSortedNameFromInterfaceArray(interfaces);
         ClassLoader cachedLoader = proxyClassLoaderCache.getProxyClassLoader(loader, interfaces);
         if (canSeeAllInterfaces(cachedLoader, interfaces)) {
-            LOG.log(Level.FINE, "find required loader from ProxyClassLoader cache with key" 
-                 + sortedNameFromInterfaceArray);
+            LOG.log(Level.FINE, "Returning ProxyClassLoader " + cachedLoader + " from cache with key " 
+                 + sortedNameFromInterfaceArray);  // Liberty Change
             return cachedLoader;
         } else {
             LOG.log(Level.FINE, "find a loader from ProxyClassLoader cache with interfaces " 
@@ -111,9 +111,16 @@ public class ProxyHelper {
     private boolean canSeeAllInterfaces(ClassLoader loader, Class<?>[] interfaces) {
         for (Class<?> currentInterface : interfaces) {
             String ifName = currentInterface.getName();
+            if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                LOG.finest("canSeeAllInterfaces: Checking interface: " + ifName);
+            }
             try {
                 Class<?> ifClass = Class.forName(ifName, true, loader);
                 if (ifClass != currentInterface) {
+                    if(LOG.isLoggable(Level.FINE)) { // Liberty Change
+                        LOG.fine("canSeeAllInterfaces returning false; ifClass " + ifClass + " does not match " + 
+                                        "current interface " + currentInterface);
+                    }
                     return false;
                 }
                 //we need to check all the params/returns as well as the Proxy creation
@@ -131,6 +138,9 @@ public class ProxyHelper {
                     }
                 }
             } catch (NoClassDefFoundError | ClassNotFoundException e) {
+                if(LOG.isLoggable(Level.FINEST)) { // Liberty Change
+                    LOG.finest("canSeeAllInterfaces: Exception caught, returning false: " + e);  // Liberty Change end
+                }
                 return false;
             }
         }
@@ -138,7 +148,8 @@ public class ProxyHelper {
     }
 
     public static Object getProxy(ClassLoader loader, Class<?>[] interfaces, InvocationHandler handler) {
-        return HELPER.getProxyInternal(loader, interfaces, handler);
+	Object po = HELPER.getProxyInternal(loader, interfaces, handler);
+	return po;
     }
     
 }

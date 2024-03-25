@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -133,7 +133,7 @@ public class JSF22AppConfigPopTests {
      */
     @Test
     // Faces ManagedBeans are not supported in Faces 4.0.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void testAppPopConfiguredSimpleBean() throws Exception {
 
         this.verifyResponse(contextRoot, "AddedBean.jsf", jsfTestServer2, "SuccessfulAddedBeanTest");
@@ -149,7 +149,7 @@ public class JSF22AppConfigPopTests {
      */
     @Test
     // Faces ManagedBeans/managed-property are not supported in Faces 4.0.
-    @SkipForRepeat(EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void testAppPopConfiguredMPBean() throws Exception {
 
         try (WebClient webClient = new WebClient()) {

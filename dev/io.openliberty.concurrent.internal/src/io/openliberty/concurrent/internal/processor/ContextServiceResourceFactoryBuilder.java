@@ -39,6 +39,7 @@ import com.ibm.ws.concurrent.WSManagedExecutorService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -46,6 +47,7 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
 
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 
 @Component(service = ResourceFactoryBuilder.class,
@@ -84,6 +86,23 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
     private static final String CONFIG_SOURCE = "config.source";
 
     /**
+     * Name of property that identifies the application for java:global data sources.
+     */
+    static final String DECLARING_APPLICATION = "declaringApplication";
+
+    /**
+     * Name of property that identifies the class loader of the application artifact
+     * that defines the context service definition.
+     */
+    static final String DECLARING_CLASS_LOADER = "declaringClassLoader";
+
+    /**
+     * Name of property that identifies the class loader of the application artifact
+     * that defines the context service definition.
+     */
+    static final String DECLARING_METADATA = "declaringMetadata";
+
+    /**
      * Property value that indicates the configuration originated in a configuration file, such as server.xml,
      * rather than being programmatically created via ConfigurationAdmin.
      */
@@ -93,11 +112,6 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
      * Unique identifier attribute name.
      */
     private static final String ID = "id";
-
-    /**
-     * Name of property that identifies the application for java:global data sources.
-     */
-    static final String DECLARING_APPLICATION = "declaringApplication";
 
     /**
      * Name of internal property that enforces unique JNDI names.
@@ -191,6 +205,8 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
             contextSvcProps.put(prop.getKey(), value);
         }
 
+        ClassLoader declaringClassLoader = (ClassLoader) contextSvcProps.remove(DECLARING_CLASS_LOADER);
+        MetaData declaringMetadata = (MetaData) contextSvcProps.remove(DECLARING_METADATA);
         String declaringApplication = (String) contextSvcProps.remove(DECLARING_APPLICATION);
         String application = (String) contextSvcProps.get("application");
         String module = (String) contextSvcProps.get("module");
@@ -360,9 +376,10 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
         contextServiceFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, contextServiceID));
         contextServiceFilter.append("(component.name=com.ibm.ws.context.service)(jndiName=*))");
 
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, declaringApplication, //
+        QualifiedResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, declaringApplication, //
                         contextServiceID, jndiName, contextServiceFilter.toString(), //
-                        null, null);
+                        null, null, //
+                        declaringMetadata, declaringClassLoader, qualifierNames);
         try {
             String bundleLocation = bundleContext.getBundle().getLocation();
             ConfigurationAdmin configAdmin = configAdminRef.getService();
@@ -388,7 +405,7 @@ public class ContextServiceResourceFactoryBuilder implements ResourceFactoryBuil
                                                             " because the " + "CDI" + " feature is not enabled."); // TODO NLS
 
                 QualifiedResourceFactories qrf = bundleContext.getService(ref);
-                qrf.add(jeeName, QualifiedResourceFactories.Type.ContextService, qualifierNames, factory);
+                qrf.add(jeeName, QualifiedResourceFactory.Type.ContextService, qualifierNames, factory);
             }
         } catch (Exception x) {
             factory.destroy();

@@ -100,7 +100,7 @@ public class ThreadLocalStorage
 		
 		if (c_logger.isTraceFailureEnabled()) {
 			try {
-				int tuQueueIndex = SipApplicationSessionImpl.extractAppSessionCounter(tu.getApplicationId()) % NativeMessageDispatchingHandler.s_dispatchers;
+				long tuQueueIndex = SipApplicationSessionImpl.extractAppSessionCounter(tu.getApplicationId()) % NativeMessageDispatchingHandler.s_dispatchers;
 				
 				if(ThreadLocalStorage.getQueueId() == null || ! ThreadLocalStorage.getQueueId().equals(tuQueueIndex)) {
 					c_logger.traceFailure(tu, "traceThreadModelValidity", "Threading model violation! " +

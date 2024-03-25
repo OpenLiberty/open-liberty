@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -193,3 +193,13 @@ DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=OpenID Connect \ud074\ub77
 JWT_MISSING_ISSUER=CWWKS1784E: \ud1a0\ud070\uc774 \ubc1c\ud589\uc790 \uccad\uad6c\ub97c \ud3ec\ud568\ud558\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 JWT_MISSING_ISSUER.explanation=\ud1a0\ud070\uc740 \ud1a0\ud070\uc744 \ubc1c\ud589\ud55c \uc0ac\uc6a9\uc790\ub97c \uc2dd\ubcc4\ud558\uae30 \uc704\ud574 \ubc1c\ud589\uc790 \uccad\uad6c\ub97c \ud3ec\ud568\ud574\uc57c \ud569\ub2c8\ub2e4.
 JWT_MISSING_ISSUER.useraction=\ubc1c\ud589\uc790 \uccad\uad6c\ub97c \ud3ec\ud568\ud558\ub294 \uc0c8 \ud1a0\ud070\uc744 \ud655\ubcf4\ud558\uc2ed\uc2dc\uc624.
+
+# Do not translate "typ", "logout+jwt"
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER=CWWKS1785E: \ud1a0\ud070\uc758 [{0}] ''typ'' \ud5e4\ub354\uac00 \ub85c\uadf8\uc544\uc6c3 \ud1a0\ud070\uc784\uc744 \ud45c\uc2dc\ud558\ubbc0\ub85c \ud1a0\ud070\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.explanation=\ud1a0\ud070\uc740 \ub85c\uadf8\uc544\uc6c3 \ud1a0\ud070\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4. \ub85c\uadf8\uc544\uc6c3 \ud1a0\ud070\uc740 \uac12\uc774 "logout+jwt" \uc778 "typ" (\uc720\ud615) \ud5e4\ub354 \ub9e4\uac1c\ubcc0\uc218\ub97c \uac00\uc9c8 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.useraction=\uc0ac\uc6a9\ub41c \ud1a0\ud070\uc774 \ub85c\uadf8\uc544\uc6c3 \ud1a0\ud070\uc774 \uc544\ub2cc\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# Do not translate "events", "http://schemas.openid.net/event/backchannel-logout"
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM=CWWKS1786E: \uac12\uc774 [{0}] \uc778 ''\uc774\ubca4\ud2b8'' \uccad\uad6c\uac00 \ud1a0\ud070\uc774 \ub85c\uadf8\uc544\uc6c3 \ud1a0\ud070\uc784\uc744 \ud45c\uc2dc\ud558\ubbc0\ub85c \ud1a0\ud070\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.explanation=\ud1a0\ud070\uc740 \ub85c\uadf8\uc544\uc6c3 \ud1a0\ud070\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4. \ub85c\uadf8\uc544\uc6c3 \ud1a0\ud070\uc5d0\ub294 "events" \uccad\uad6c\uac00 \uc788\uc2b5\ub2c8\ub2e4. \uc774 \uccad\uad6c\ub294 "http://schemas.openid.net/event/backchannel-logout"\uc744 \ud574\ub2f9 \uc694\uc18c \uc911 \ud558\ub098\ub85c \ud3ec\ud568\ud558\ub294 JSON \uc624\ube0c\uc81d\ud2b8\uc785\ub2c8\ub2e4.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.useraction=\uc0ac\uc6a9\ub41c \ud1a0\ud070\uc774 \ub85c\uadf8\uc544\uc6c3 \ud1a0\ud070\uc774 \uc544\ub2cc\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

@@ -16,7 +16,6 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONL
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaStopServer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,8 +119,6 @@ public class KafkaPartitionTest {
                         .addAsResource(appConfig, "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
-
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
 
         server.startServer();
     }

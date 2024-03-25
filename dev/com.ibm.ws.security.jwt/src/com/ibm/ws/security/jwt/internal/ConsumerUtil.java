@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.websphere.security.jwt.KeyException;
 import com.ibm.websphere.security.jwt.KeyStoreServiceException;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.common.time.TimeUtils;
@@ -855,6 +856,7 @@ public class ConsumerUtil {
 
     void processJwtContextWithConsumer(JwtConsumer jwtConsumer, JwtContext jwtContext)
             throws InvalidTokenException, InvalidJwtException {
+        Object token = ThreadIdentityManager.runAsServer();
         try {
             jwtConsumer.processContext(jwtContext);
         } catch (InvalidJwtSignatureException e) {
@@ -869,6 +871,8 @@ public class ConsumerUtil {
                 // message
                 throw e;
             }
+        } finally {
+            ThreadIdentityManager.reset(token);
         }
     }
 

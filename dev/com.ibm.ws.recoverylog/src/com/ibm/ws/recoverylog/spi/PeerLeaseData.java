@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.recoverylog.spi;
+
+import java.nio.file.attribute.FileTime;
+import java.time.Duration;
+import java.time.Instant;
 
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.util.Utils;
@@ -24,15 +28,15 @@ import com.ibm.websphere.ras.annotation.Trivial;
 public class PeerLeaseData {
     private static final TraceComponent tc = Tr.register(PeerLeaseData.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
     private final String _recoveryIdentity;
-    private final long _leaseTime;
-    private final int _leaseTimeout;
+    private final FileTime _leaseTime;
+    private final Duration _leaseTimeout;
 
-    public PeerLeaseData(String recoveryIdentity, long leaseTime, int leaseTimeout) {
+    public PeerLeaseData(String recoveryIdentity, FileTime newleaseTime, int leaseTimeout) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "PeerLeaseData", new Object[] { recoveryIdentity, Utils.traceTime(leaseTime), leaseTimeout });
+            Tr.entry(tc, "PeerLeaseData", new Object[] { recoveryIdentity, Utils.traceTime(newleaseTime), leaseTimeout });
         this._recoveryIdentity = recoveryIdentity;
-        this._leaseTime = leaseTime;
-        this._leaseTimeout = leaseTimeout;
+        this._leaseTime = newleaseTime;
+        this._leaseTimeout = Duration.ofSeconds(leaseTimeout);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "PeerLeaseData");
@@ -47,7 +51,7 @@ public class PeerLeaseData {
      * @return the _leaseTime
      */
     @Trivial
-    public long getLeaseTime() {
+    public FileTime getLeaseTime() {
         return _leaseTime;
     }
 
@@ -56,16 +60,16 @@ public class PeerLeaseData {
      */
     @Trivial
     public boolean isExpired() {
-        long curTime = System.currentTimeMillis();
+        Instant now = Instant.now();
 
-        if (curTime - _leaseTime > _leaseTimeout * 1000) {
+        if (now.isAfter(_leaseTime.toInstant().plus(_leaseTimeout))) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Lease for " + _recoveryIdentity + " expired at " + Utils.traceTime(_leaseTime + _leaseTimeout));
+                Tr.debug(tc, "Lease for " + _recoveryIdentity + " expired at " + Utils.traceTime(_leaseTime.toMillis() + _leaseTimeout.toMillis()));
             }
             return true;
         } else {
             if (tc.isDebugEnabled()) {
-                int secondsLeft = (int) ((curTime + _leaseTimeout - _leaseTime) / 1000);
+                long secondsLeft = now.plus(_leaseTimeout).minusMillis(_leaseTime.toMillis()).getEpochSecond();
                 Tr.debug(tc, "Lease for " + _recoveryIdentity + " has not expired. " + secondsLeft + " second" + (secondsLeft != 1 ? "s" : "") + " left.");
             }
             return false;

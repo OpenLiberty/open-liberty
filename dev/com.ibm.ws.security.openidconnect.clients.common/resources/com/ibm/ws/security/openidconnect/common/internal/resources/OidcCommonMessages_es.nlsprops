@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -193,3 +193,13 @@ DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Elimine los valores especi
 JWT_MISSING_ISSUER=CWWKS1784E: La se\u00f1al no es v\u00e1lida porque no contiene una reclamaci\u00f3n de emisor.
 JWT_MISSING_ISSUER.explanation=La se\u00f1al debe contener una reclamaci\u00f3n de emisor para identificar qui\u00e9n ha emitido la se\u00f1al.
 JWT_MISSING_ISSUER.useraction=Obtenga una nueva se\u00f1al que incluya una reclamaci\u00f3n de emisor.
+
+# Do not translate "typ", "logout+jwt"
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER=CWWKS1785E: La se\u00f1al no es v\u00e1lida porque la cabecera [{0}] ''typ '' de la se\u00f1al indica que es una se\u00f1al de cierre de sesi\u00f3n.
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.explanation=La se\u00f1al no debe ser una se\u00f1al de cierre de sesi\u00f3n. Las se\u00f1ales de cierre de sesi\u00f3n pueden tener un par\u00e1metro de cabecera "typ" (tipo) con el valor de "logout + jwt".
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.useraction=Aseg\u00farese de que la se\u00f1al utilizada no es una se\u00f1al de cierre de sesi\u00f3n.
+
+# Do not translate "events", "http://schemas.openid.net/event/backchannel-logout"
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM=CWWKS1786E: La se\u00f1al no es v\u00e1lida porque la reclamaci\u00f3n ''events'' con el valor [{0}] indica que la se\u00f1al es una se\u00f1al de cierre de sesi\u00f3n.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.explanation=La se\u00f1al no debe ser una se\u00f1al de cierre de sesi\u00f3n. Las se\u00f1ales de cierre de sesi\u00f3n tienen una reclamaci\u00f3n "events", que es un objeto JSON que incluye "http://schemas.openid.net/event/backchannel-logout" como uno de sus elementos.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.useraction=Aseg\u00farese de que la se\u00f1al utilizada no es una se\u00f1al de cierre de sesi\u00f3n.

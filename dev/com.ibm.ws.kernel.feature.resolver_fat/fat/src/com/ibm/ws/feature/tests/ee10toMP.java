@@ -48,8 +48,8 @@ public class ee10toMP {
         server.addEnvVar("PREFERRED_FEATURE_VERSIONS", envVar);
         server.startServer();
 
-        assertNotNull("Expected mpMetrics-5.0 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"),
-                      server.waitForStringInLog("mpMetrics-5.0"));
+        assertNotNull("Expected mpMetrics-5.1 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"),
+                      server.waitForStringInLog("mpMetrics-5.1"));
         assertNotNull("Expected mpHealth-4.0 after features resolved but got: " + server.findStringsInLogs("CWWKF0012I: The server installed the following features:"),
                       server.waitForStringInLog("mpHealth-4.0"));
 

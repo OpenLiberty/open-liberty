@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2023 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME ws/code/jsp/src/com/ibm/ws/jsp/resources/messages.nlsprops
 #COMPONENTPREFIX JSPG CWWJS
@@ -1273,8 +1270,22 @@ jsp.isthreadsafe.warning=CWWJS0003W: Pages 3.1 \u89c4\u8303\u5f3a\u70c8\u5efa\u8
 jsp.isthreadsafe.warning.explanation=\u5df2\u4ece Servlet 6.0 \u4e2d\u9664\u53bb SingleThreadModel\u3002 Pages 3.1 \u4e0d\u63a8\u8350\u4f7f\u7528 isThreadSafe\uff0c\u8ba1\u5212\u5728\u5c06\u6765\u7684 Pages \u66f4\u65b0\u4e2d\u5c06\u5176\u79fb\u9664\u3002
 jsp.isthreadsafe.warning.useraction=\u4ece\u6240\u6709\u9875\u9762\u4e2d\u9664\u53bb isThreadSafe \u4f2a\u6307\u4ee4\u3002
 
-
 jsp.useinmemory.warning=CWWJS0004W: \u4e0d\u652f\u6301 "useInMemory" JSP \u9009\u9879\u3002 \u5c06\u6539\u4e3a\u7f16\u8bd1 JSP \u5e76\u5c06\u5176\u4fdd\u5b58\u5728\u78c1\u76d8\u4e0a\u3002
 jsp.useinmemory.warning.explanation=\u7531\u4e8e\u5386\u53f2\u539f\u56e0\uff0c\u4ece\u672a\u4ece\u4f20\u7edf WebSphere \u79fb\u690d\u6b64\u529f\u80fd\u3002
 jsp.useinmemory.warning.useraction=\u4ece server.xml\uff0c ibm-web-bnd.xml\u6216 ibm-web-ext.xmi \u6587\u4ef6\u4e2d\u9664\u53bb useInMemory \u9009\u9879\u3002
 
+pages.removed.element.error=CWWJS0005E: {0} \u5143\u7d20\u5df2\u5728\u9875\u9762 4.0 \u4e2d\u9664\u53bb\uff0c\u56e0\u6b64\u4e0d\u518d\u53d7\u652f\u6301\u3002
+pages.removed.element.error.explanation=Jsp \u63d2\u4ef6\u548c\u76f8\u5173\u64cd\u4f5c\u5728\u9875\u9762 3.1 \u4e2d\u5df2\u4e0d\u63a8\u8350\u4f7f\u7528\uff0c\u5728 4.0\u4e2d\u5df2\u9664\u53bb\u3002 
+pages.removed.element.error.useraction= \u4ece Web \u5e94\u7528\u7a0b\u5e8f\u4e2d\u9664\u53bb jsp \u63d2\u4ef6\uff0c\u56de\u9000\u548c\u53c2\u6570\u5143\u7d20\u3002
+
+jsp.javasourcelevel.warning=CWWJS0006W: \u6307\u5b9a\u7684 javaSourceLevel ={0} \u503c\u8d85\u8fc7 {1} \u5b89\u88c5\u7684 Java \u7ea7\u522b\u3002 \u56e0\u6b64\uff0c\u7f3a\u7701 Java \u7ea7\u522b\u8bbe\u7f6e\u4e3a {1}\u3002
+jsp.javasourcelevel.warning.explanation=\u65e0\u6cd5\u4f7f\u7528\u9ad8\u4e8e\u53ef\u7528 JDK \u7ea7\u522b\u7684\u6e90\u6765\u7f16\u8bd1\u6587\u4ef6\u3002 
+jsp.javasourcelevel.warning.useraction=\u6307\u5b9a\u5c0f\u4e8e\u6216\u7b49\u4e8e\u53ef\u7528 JDK \u7ea7\u522b\u7684 javaSource\u7ea7\u522b\u503c\u3002
+
+jsp.bothsourcelevelset.warning=CWWJS0007W: \u540c\u65f6\u6307\u5b9a\u4e86 javaSourceLevel ={0} \u548c jdkSourceLevel ={1} \u3002 \u7f3a\u7701\u4e3a javaSource\u7ea7\u522b ={0}\u3002
+jsp.bothsourcelevelset.warning.explanation=\u4e00\u6b21\u53ea\u80fd\u4f7f\u7528\u4e00\u4e2a\u6e90\u7ea7\u522b\u5c5e\u6027\u3002
+jsp.bothsourcelevelset.warning.useraction=\u4ec5\u6307\u5b9a javaSource\u7ea7\u522b\u5c5e\u6027\u3002 jdkSource\u7ea7\u522b\u5c5e\u6027\u5df2\u7a33\u5b9a\u3002 
+
+jsp.javasourcelevel.value=CWWJS0008I: JSP \u5c5e\u6027 javaSourceLevel \u7684\u503c\u4e3a "{0}"\u3002
+jsp.javasourcelevel.value.explanation=
+jsp.javasourcelevel.value.useraction=

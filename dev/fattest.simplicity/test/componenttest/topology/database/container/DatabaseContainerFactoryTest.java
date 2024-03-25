@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.Map;
 
@@ -22,9 +24,9 @@ import org.junit.Test;
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MSSQLServerContainer;
-import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.WaitStrategy;
+import org.testcontainers.oracle.OracleContainer;
 
 import componenttest.custom.junit.runner.FATRunner;
 
@@ -36,7 +38,7 @@ public class DatabaseContainerFactoryTest {
         assertTrue(db2.getClass().isAssignableFrom(Db2Container.class));
         Db2Container _db2 = (Db2Container) db2;
 
-        Map<String, String> env = getField(Db2Container.class, _db2, "env", Map.class);
+        Map<String, String> env = getEnv(Db2Container.class, _db2);
         assertTrue(env.containsKey("LICENSE"));
         assertEquals("accept", env.get("LICENSE"));
 
@@ -109,11 +111,13 @@ public class DatabaseContainerFactoryTest {
         assertTrue(sqlserver.getClass().isAssignableFrom(MSSQLServerContainer.class));
         MSSQLServerContainer _sqlserver = (MSSQLServerContainer) sqlserver;
 
-        Map<String, String> env = getField(MSSQLServerContainer.class, _sqlserver, "env", Map.class);
+        Map<String, String> env = getEnv(MSSQLServerContainer.class, _sqlserver);
         assertTrue(env.containsKey("ACCEPT_EULA"));
         assertEquals("Y", env.get("ACCEPT_EULA"));
     }
 
+    // NOTE: This uses reflection to get at private class fields
+    // this can break when upgrading versions.
     private static <T> T getField(Class<?> clazz, Object obj, String name, Class<T> type) throws Exception {
         Field f = null;
         Class<?> tempClazz = clazz;
@@ -134,6 +138,53 @@ public class DatabaseContainerFactoryTest {
         assertTrue(f.getType().isAssignableFrom(type));
         f.setAccessible(true);
         return (T) f.get(obj);
+    }
+
+    // NOTE: This uses reflection to get at private class fields / methods
+    // this can break when upgrading versions.
+    private static Map<String, String> getEnv(Class<?> clazz, Object obj) {
+        //Get ContainerDef field
+        String fName = "containerDef";
+        Field f = null;
+        Class<?> tempClazz = clazz;
+
+        while (tempClazz.getSuperclass() != null) {
+            try {
+                f = tempClazz.getDeclaredField(fName);
+                break;
+            } catch (NoSuchFieldException e) {
+                tempClazz = tempClazz.getSuperclass();
+            }
+        }
+
+        if (f == null) {
+            throw new RuntimeException("Could not find field with name: " + fName);
+        } else {
+            f.setAccessible(true);
+        }
+
+        // Call method getEnvVars
+        String mName = "getEnvVars";
+        Map<String, String> result = null;
+        try {
+            Object containerDef = f.get(obj);
+            if (containerDef == null) {
+                throw new RuntimeException("Field with name " + fName + " was never initialized.");
+            }
+
+            Method m = containerDef.getClass().getDeclaredMethod(mName);
+            m.setAccessible(true);
+            return (Map<String, String>) m.invoke(containerDef);
+
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Could not find method with name: " + mName, e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Could not get object from field: " + fName, e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Could not access field or method", e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException("Could not invoke method: " + mName, e);
+        }
     }
 
 }

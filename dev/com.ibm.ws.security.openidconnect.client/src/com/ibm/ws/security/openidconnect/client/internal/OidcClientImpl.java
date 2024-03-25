@@ -114,8 +114,6 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     int iClientIsBeforeSso = 0;
     boolean needProviderHint = true;
 
-    private static boolean issuedBetaMessage = false;
-
     protected void setOidcClientConfig(ServiceReference<OidcClientConfig> ref) {
         synchronized (initOidcClientAuthLock) {
             oidcClientConfigRef.putReference((String) ref.getProperty(CFG_KEY_ID), ref);
@@ -439,10 +437,6 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
 
     @Override
     public void logoutIfSessionInvalidated(HttpServletRequest req) {
-        if (!isRunningBetaMode()) {
-            return;
-        }
-
         String provider = getOidcProvider(req);
         if (provider == null) {
             if (tc.isDebugEnabled()) {
@@ -461,19 +455,6 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         }
 
         OidcSessionUtils.logoutIfSessionInvalidated(req, sessionInfo, oidcClientConfig);
-    }
-
-    boolean isRunningBetaMode() {
-        if (!ProductInfo.getBetaEdition()) {
-            return false;
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
-        }
     }
 
     private boolean requestHasOidcCookie(HttpServletRequest req) {
@@ -833,9 +814,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
 
             while (services.hasNext()) {
                 OidcClientConfig oidcClientConfig = services.next();
-                if (isRunningBetaMode()) {
-                    OidcSessionUtils.removeOidcSession(request, response, oidcClientConfig);
-                }
+                OidcSessionUtils.removeOidcSession(request, response, oidcClientConfig);
                 OidcClientRequest oidcClientRequest = new OidcClientRequest(request, response, oidcClientConfig, (ReferrerURLCookieHandler) null);
                 if (handleOidcCookie(request, response, oidcClientRequest, userName, bSetSubject)) {
                     bSetSubject = true;

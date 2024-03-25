@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,14 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import static jakarta.data.repository.By.ID;
+
 import java.util.List;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
@@ -52,19 +56,20 @@ public interface Accounts {
     @OrderBy("accountId")
     Stream<AccountId> findByBankName(String bank);
 
-    Account findById(AccountId id);
+    @Find
+    Account findById(@By(ID) AccountId id);
 
     // EclipseLink IllegalArgumentException:
     // Problem compiling [SELECT o FROM Account o WHERE (o.accountId BETWEEN ?1 AND ?2)].
     // [31, 42] The association field 'o.accountId' cannot be used as a state field path.
-    List<Account> findByIdBetween(AccountId minId, AccountId maxId);
+    List<Account> findByAccountIdBetween(AccountId minId, AccountId maxId);
 
-    List<Account> findByIdEmpty();
+    List<Account> findByAccountIdEmpty();
 
     // EclipseLink IllegalArgumentException:
     // Problem compiling [SELECT o FROM Account o WHERE (o.accountId>?1)].
     // The relationship mapping 'o.accountId' cannot be used in conjunction with the > operator
-    Stream<Account> findByIdGreaterThan(AccountId id);
+    Stream<Account> findByAccountIdGreaterThan(AccountId id);
 
     // EclipseLink org.eclipse.persistence.exceptions.DatabaseException
     // java.sql.SQLSyntaxErrorException: Syntax error: Encountered "," at line 1, column 102. Error Code: 30000
@@ -72,16 +77,16 @@ public interface Accounts {
     // WHERE (((ACCOUNTNUM, ROUTINGNUM) IN (AccountId:1004470:30372, AccountId:1006380:22158)) OR (OWNER = ...)) ORDER BY OWNER DESC
     // ** position 102 is ^ **
     @OrderBy(value = "owner", descending = true)
-    Stream<Account> findByIdInOrOwner(List<AccountId> id, String owner);
+    Stream<Account> findByAccountIdInOrOwner(List<AccountId> id, String owner);
 
     @OrderBy("accountId")
-    Stream<Account> findByIdNotNull();
+    Stream<Account> findByAccountIdNotNull();
 
     // EclipseLink org.eclipse.persistence.exceptions.DescriptorException
     // No subclass matches this class [class java.lang.Boolean] for this Aggregate mapping with inheritance.
     // Mapping: org.eclipse.persistence.mappings.AggregateObjectMapping[accountId]
     // Descriptor: RelationalDescriptor(test.jakarta.data.jpa.web.Account --> [DatabaseTable(WLPAccount)])
-    List<Account> findByIdTrue();
+    List<Account> findByAccountIdTrue();
 
     @Delete
     void remove(Account account);

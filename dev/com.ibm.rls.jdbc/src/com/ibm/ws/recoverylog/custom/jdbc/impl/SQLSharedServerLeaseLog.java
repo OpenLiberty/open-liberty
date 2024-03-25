@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,10 @@
 package com.ibm.ws.recoverylog.custom.jdbc.impl;
 
 import java.io.StringReader;
+import java.nio.file.attribute.FileTime;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -112,6 +116,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     private Statement _claimPeerlockingStmt;
     private PreparedStatement _claimPeerUpdateStmt;
     private ResultSet _claimPeerLockingRS;
+    private boolean _noLockOnLeaseScans = false;
 
     public SQLSharedServerLeaseLog(CustomLogProperties logProperties) {
         if (tc.isEntryEnabled())
@@ -119,6 +124,22 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 
         // Cache the supplied information
         _customLogProperties = logProperties;
+
+        try {
+            _noLockOnLeaseScans = AccessController.doPrivileged(
+                                                                new PrivilegedExceptionAction<Boolean>() {
+                                                                    @Override
+                                                                    public Boolean run() {
+                                                                        return Boolean.getBoolean("com.ibm.ws.recoverylog.nolockonleasescans");
+                                                                    }
+                                                                });
+        } catch (PrivilegedActionException e) {
+            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLSharedServerLeaseLog", "136");
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Exception setting lease scan variable ", e);
+        }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "The _noLockOnLeaseScans flag has been set to: " + _noLockOnLeaseScans);
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "SQLSharedServerStatusLog", this);
@@ -134,6 +155,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         // For exception handling
         Throwable nonTransientException = null;
         SQLException currentSqlEx = null;
+        int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
 
         // if the server is stopping, we should simply return
         if (FrameworkState.isStopping()) {
@@ -157,9 +179,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 throw new InternalLogException("Failed to get JDBC Connection", null);
             }
 
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Set autocommit FALSE on the connection");
-            conn.setAutoCommit(false);
+            initialIsolation = prepareConnectionForBatch(conn);
 
             getPeerLeasesFromTable(peerLeaseTable, recoveryGroup, conn);
 
@@ -200,7 +220,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                         _peerLockingStmt.close();
                     if (conn != null) {
                         conn.rollback();
-                        conn.close();
+                        closeConnectionAfterBatch(conn, initialIsolation);
                     }
                 } catch (Throwable exc) {
                     // Report the exception
@@ -258,7 +278,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             if (_peerLockingStmt != null && !_peerLockingStmt.isClosed())
                 _peerLockingStmt.close();
             if (conn != null)
-                conn.close();
+                closeConnectionAfterBatch(conn, initialIsolation);
         }
 
         if (tc.isEntryEnabled())
@@ -293,12 +313,23 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         synchronized (_CreateTableLock) // Guard against trying to create a table from multiple threads
         {
             try {
-                // Could use RDBMS SELECT FOR UPDATE semantics to lock table for recovery. The tradeoff is a performance impact.
-                String queryString = "SELECT SERVER_IDENTITY, LEASE_TIME" +
-                                     " FROM " + _leaseTableName +
-                                     " WHERE RECOVERY_GROUP = '" + recoveryGroup + "'";
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Attempt to select from the lease table - " + queryString);
+                String queryString = "";
+                // Use RDBMS SELECT FOR UPDATE semantics by default.
+                if (!_noLockOnLeaseScans) {
+                    queryString = "SELECT SERVER_IDENTITY, LEASE_TIME" +
+                                  " FROM " + _leaseTableName +
+                                  (_isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                  ((_isSQLServer) ? "" : " FOR UPDATE") +
+                                  ((_isPostgreSQL || _isSQLServer) ? "" : " OF LEASE_TIME");
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Attempt to select the row for UPDATE using - " + queryString);
+                } else {
+                    queryString = "SELECT SERVER_IDENTITY, LEASE_TIME" +
+                                  " FROM " + _leaseTableName +
+                                  " WHERE RECOVERY_GROUP = '" + recoveryGroup + "'";
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Attempt to select from the lease table - " + queryString);
+                }
                 _peerLockingRS = _peerLockingStmt.executeQuery(queryString);
 
                 newTable = false;
@@ -346,7 +377,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                     Tr.event(tc, "Lease Table: read leaseTime: " + Utils.traceTime(leaseTime));
                 }
 
-                PeerLeaseData pld = new PeerLeaseData(recoveryId, leaseTime, _leaseTimeout);
+                PeerLeaseData pld = new PeerLeaseData(recoveryId, FileTime.fromMillis(leaseTime), _leaseTimeout);
 
                 peerLeaseTable.addPeerEntry(pld);
             }
@@ -370,6 +401,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             Tr.entry(tc, "updateServerLease", recoveryIdentity, recoveryGroup, isServerStartup, this);
         boolean updateSuccess = false;
         Connection conn = null;
+        int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
         _updatelockingRS = null;
 
         // For exception handling
@@ -406,9 +438,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 }
             }
 
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Set autocommit FALSE on the connection");
-            conn.setAutoCommit(false);
+            initialIsolation = prepareConnectionForBatch(conn);
 
             // We can go ahead and query the Database
             boolean newTable = queryLeaseTable(recoveryIdentity, conn, isServerStartup);
@@ -473,7 +503,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                         _lockingStmt.close();
                     if (conn != null) {
                         conn.rollback();
-                        conn.close();
+                        closeConnectionAfterBatch(conn, initialIsolation);
                     }
                 } catch (Throwable exc) {
                     // Report the exception
@@ -536,7 +566,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             if (_lockingStmt != null && !_lockingStmt.isClosed())
                 _lockingStmt.close();
             if (conn != null)
-                conn.close();
+                closeConnectionAfterBatch(conn, initialIsolation);
         }
 
         if (tc.isEntryEnabled())
@@ -641,7 +671,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 
                 // If this is startup, check whether lease has expired
                 if (isServerStartup) {
-                    PeerLeaseData pld = new PeerLeaseData(recoveryIdentity, storedLease, _leaseTimeout);
+                    PeerLeaseData pld = new PeerLeaseData(recoveryIdentity, FileTime.fromMillis(storedLease), _leaseTimeout);
                     if (pld.isExpired()) {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Lease has expired, we should update lease and recover");
@@ -998,6 +1028,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         if (tc.isEntryEnabled())
             Tr.entry(tc, "dropLeaseTableIfEmpty", this);
         Connection conn = null;
+        int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
         Statement dropTableStmt = null;
         Exception currentEx = null;
         int rowCount = 99;
@@ -1013,9 +1044,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                     if (tc.isEntryEnabled())
                         Tr.debug(tc, "dropLeaseTableIfEmpty", "Null connection for table drop");
                 } else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Set autocommit FALSE on the connection");
-                    conn.setAutoCommit(false);
+                    initialIsolation = prepareConnectionForBatch(conn);
 
                     dropTableStmt = conn.createStatement();
                     String queryString = "SELECT COUNT(*) AS recordCount FROM " + _leaseTableName;
@@ -1042,7 +1071,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 }
                 if (conn != null) {
                     conn.commit();
-                    conn.close();
+                    closeConnectionAfterBatch(conn, initialIsolation);
                 }
                 // Get a new connection to the DB
                 conn = getConnection();
@@ -1052,9 +1081,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                     if (tc.isEntryEnabled())
                         Tr.debug(tc, "dropLeaseTableIfEmpty", "Null connection for table drop");
                 } else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Set autocommit FALSE on the connection");
-                    conn.setAutoCommit(false);
+                    initialIsolation = prepareConnectionForBatch(conn);
                     dropTableStmt = conn.createStatement();
                     //                   dropTableStmt.setQueryTimeout(300);
                     // we should drop the table
@@ -1080,7 +1107,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 dropTableStmt.close();
             }
             if (conn != null) {
-                conn.close();
+                closeConnectionAfterBatch(conn, initialIsolation);
             }
         }
 
@@ -1108,7 +1135,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             Tr.entry(tc, "deleteServerLease", recoveryIdentity, isPeerServer, this);
 
         Connection conn = null;
-
+        int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
         boolean deleteSuccess = false;
         // For exception handling
         Throwable nonTransientException = null;
@@ -1125,9 +1152,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 throw new InternalLogException("Failed to get JDBC Connection", null);
             }
 
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Set autocommit FALSE on the connection");
-            conn.setAutoCommit(false);
+            initialIsolation = prepareConnectionForBatch(conn);
 
             // We can go ahead and delete from the Database
 
@@ -1170,7 +1195,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                         _deleteStmt.close();
                     if (conn != null) {
                         conn.rollback();
-                        conn.close();
+                        closeConnectionAfterBatch(conn, initialIsolation);
                     }
                 } catch (Throwable exc) {
                     // Report the exception
@@ -1237,7 +1262,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                     if (_deleteStmt != null && !_deleteStmt.isClosed())
                         _deleteStmt.close();
                     if (conn != null)
-                        conn.close();
+                        closeConnectionAfterBatch(conn, initialIsolation);
 
                     // We can go ahead and drop the table from the Database
                     int dropReturn = dropLeaseTableIfEmpty();
@@ -1250,7 +1275,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             if (_deleteStmt != null && !_deleteStmt.isClosed())
                 _deleteStmt.close();
             if (conn != null)
-                conn.close();
+                closeConnectionAfterBatch(conn, initialIsolation);
 
         }
 
@@ -1294,6 +1319,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         boolean peerClaimed = false;
         boolean peerClaimSuccess = false;
         Connection conn = null;
+        int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
         // For exception handling
         Throwable nonTransientException = null;
         SQLException currentSqlEx = null;
@@ -1319,10 +1345,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 throw new InternalLogException("Failed to get JDBC Connection", null);
             }
 
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Set autocommit FALSE on the connection");
-            conn.setAutoCommit(false);
-
+            initialIsolation = prepareConnectionForBatch(conn);
             peerClaimed = claimPeerLeaseFromTable(recoveryIdentityToRecover, myRecoveryIdentity, leaseInfo, conn);
 
             if (tc.isDebugEnabled())
@@ -1373,7 +1396,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                         _claimPeerUpdateStmt.close();
                     if (conn != null) {
                         conn.rollback();
-                        conn.close();
+                        closeConnectionAfterBatch(conn, initialIsolation);
                     }
                 } catch (Throwable exc) {
                     // Report the exception
@@ -1435,7 +1458,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             if (_claimPeerUpdateStmt != null && !_claimPeerUpdateStmt.isClosed())
                 _claimPeerUpdateStmt.close();
             if (conn != null)
-                conn.close();
+                closeConnectionAfterBatch(conn, initialIsolation);
         }
 
         if (tc.isEntryEnabled())
@@ -1477,7 +1500,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 Tr.debug(tc, "Acquired server row, stored lease value is: " + Utils.traceTime(storedLease));
 
             // Has the lease expired?
-            PeerLeaseData pld = new PeerLeaseData(recoveryIdentityToRecover, storedLease, _leaseTimeout);
+            PeerLeaseData pld = new PeerLeaseData(recoveryIdentityToRecover, FileTime.fromMillis(storedLease), _leaseTimeout);
             if (pld.isExpired()) {
                 // Lease has expired, this means that this server is attempting peer recovery and
                 // it has acquired the lock. If any other server is also trying to peer recover then
@@ -1562,7 +1585,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         public void retryCode(Connection conn) throws SQLException, Exception {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "UpdateServerLeaseRetry.retryCode", conn);
-
+            int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
             // If we were unable to get a connection, throw an exception, but not if we're stopping
             if (FrameworkState.isStopping()) {
                 if (tc.isEntryEnabled())
@@ -1576,9 +1599,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 throw new InternalLogException("Failed to get JDBC Connection", null);
             }
 
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Set autocommit FALSE on the connection");
-            conn.setAutoCommit(false);
+            initialIsolation = prepareConnectionForBatch(conn);
 
             // We can go ahead and query the Database
             boolean newTable = queryLeaseTable(_recoveryIdentity, conn, _isServerStartup);
@@ -1638,7 +1659,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         public void retryCode(Connection conn) throws SQLException, Exception {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "DeleteServerLeaseRetry.retryCode", conn);
-
+            int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
             // If we were unable to get a connection, throw an exception, but not if we're stopping
             if (FrameworkState.isStopping()) {
                 if (tc.isEntryEnabled())
@@ -1651,9 +1672,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 throw new InternalLogException("Failed to get JDBC Connection", null);
             }
 
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Set autocommit FALSE on the connection");
-            conn.setAutoCommit(false);
+            initialIsolation = prepareConnectionForBatch(conn);
 
             // We can go ahead and delete from the Database
             int ret = deleteLeaseFromTable(_recoveryIdentity, conn);
@@ -1696,7 +1715,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         public void retryCode(Connection conn) throws SQLException, Exception {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "GetPeerLeaseRetry.retryCode", conn);
-
+            int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
             // If we were unable to get a connection, throw an exception, but not if we're stopping
             if (FrameworkState.isStopping()) {
                 if (tc.isEntryEnabled())
@@ -1709,9 +1728,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 throw new InternalLogException("Failed to get JDBC Connection", null);
             }
 
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Set autocommit FALSE on the connection");
-            conn.setAutoCommit(false);
+            initialIsolation = prepareConnectionForBatch(conn);
 
             getPeerLeasesFromTable(_peerLeaseTable, _recoveryGroup, conn);
 
@@ -1754,7 +1771,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
         public void retryCode(Connection conn) throws SQLException, Exception {
             if (tc.isEntryEnabled())
                 Tr.entry(tc, "ClaimPeerLeaseRetry.retryCode", conn);
-
+            int initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
             // If we were unable to get a connection, throw an exception, but not if we're stopping
             if (FrameworkState.isStopping()) {
                 if (tc.isEntryEnabled())
@@ -1767,9 +1784,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 throw new InternalLogException("Failed to get JDBC Connection", null);
             }
 
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Set autocommit FALSE on the connection");
-            conn.setAutoCommit(false);
+            initialIsolation = prepareConnectionForBatch(conn);
 
             _peerClaimed = claimPeerLeaseFromTable(_recoveryIdentityToRecover, _myRecoveryIdentity, _leaseInfo, conn);
 
@@ -1810,7 +1825,29 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
             } catch (Exception e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "setTransactionIsolation to RR threw Exception. Transaction isolation level was " + initialIsolation + " ", e);
-                FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.SQLMultiScopeRecoveryLog.prepareConnectionForBatch", "3668", this);
+                FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLSharedServerLeaseLog.prepareConnectionForBatch", "3668", this);
+                if (!isolationFailureReported) {
+                    isolationFailureReported = true;
+                    Tr.warning(tc, "CWRLS0024_EXC_DURING_RECOVERY", e);
+                }
+                // returning RR will prevent closeConnectionAfterBatch resetting isolation level
+                initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
+            }
+        } else if (_isSQLServer) {
+            // SQL Server is predisposed to deadlock on lower isolation levels. The SERIALIZABLE isolation level should mean that deadlocks are
+            // considerably less likely but could lead to poorer performance. Poorer performance wrt lease access is hopefully a price worth paying
+            // to avoid (unexpected) deadlocks.
+            try {
+                initialIsolation = conn.getTransactionIsolation();
+                if (Connection.TRANSACTION_SERIALIZABLE != initialIsolation) {
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Transaction isolation level was " + initialIsolation + " , setting to TRANSACTION_SERIALIZABLE");
+                    conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+                }
+            } catch (Exception e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "setTransactionIsolation to SERIALIZABLE threw Exception. Transaction isolation level was " + initialIsolation + " ", e);
+                FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLSharedServerLeaseLog.prepareConnectionForBatch", "3670", this);
                 if (!isolationFailureReported) {
                     isolationFailureReported = true;
                     Tr.warning(tc, "CWRLS0024_EXC_DURING_RECOVERY", e);
@@ -1819,6 +1856,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 initialIsolation = Connection.TRANSACTION_REPEATABLE_READ;
             }
         }
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "prepareConnectionForBatch", initialIsolation);
         return initialIsolation;
@@ -1833,22 +1871,28 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
     public void closeConnectionAfterBatch(Connection conn, int initialIsolation) throws SQLException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "closeConnectionAfterBatch", conn, initialIsolation);
-        if (_isDB2) {
-            if (Connection.TRANSACTION_REPEATABLE_READ != initialIsolation && Connection.TRANSACTION_SERIALIZABLE != initialIsolation)
-                try {
-                    conn.setTransactionIsolation(initialIsolation);
-                } catch (Exception e) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "setTransactionIsolation threw Exception. Specified transaction isolation level was " + initialIsolation + " ", e);
-                    FFDCFilter.processException(e, "com.ibm.ws.recoverylog.spi.SQLMultiScopeRecoveryLog.closeConnectionAfterBatch", "3696", this);
-                    if (!isolationFailureReported) {
-                        isolationFailureReported = true;
-                        Tr.warning(tc, "CWRLS0024_EXC_DURING_RECOVERY", e);
+        if (conn != null && !conn.isClosed()) {
+            if (_isDB2) {
+                if (Connection.TRANSACTION_REPEATABLE_READ != initialIsolation && Connection.TRANSACTION_SERIALIZABLE != initialIsolation)
+                    try {
+                        conn.setTransactionIsolation(initialIsolation);
+                    } catch (Exception e) {
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "setTransactionIsolation threw Exception. Specified transaction isolation level was " + initialIsolation + " ", e);
+                        FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLSharedServerLeaseLog.closeConnectionAfterBatch", "3696", this);
+                        if (!isolationFailureReported) {
+                            isolationFailureReported = true;
+                            Tr.warning(tc, "CWRLS0024_EXC_DURING_RECOVERY", e);
+                        }
                     }
-                }
+            }
+            conn.setAutoCommit(true);
+            conn.close();
+        } else {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Connection is null or already closed");
         }
-        conn.setAutoCommit(true);
-        conn.close();
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "closeConnectionAfterBatch");
     }

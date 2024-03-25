@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
@@ -28,10 +27,10 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.cdi.CDIServiceUtils;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
-import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.concurrent.internal.cdi.interceptor.AsyncInterceptor;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
+import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.Asynchronous;
 import jakarta.enterprise.concurrent.ContextService;
 import jakarta.enterprise.concurrent.ManagedExecutorService;
@@ -55,6 +54,11 @@ public class ConcurrencyExtension implements Extension {
     private static final Annotation[] DEFAULT_QUALIFIER_ARRAY = new Annotation[] { Default.Literal.INSTANCE };
 
     private static final Set<Annotation> DEFAULT_QUALIFIER_SET = Set.of(Default.Literal.INSTANCE);
+
+    /**
+     * OSGi service for the Concurrency extension;
+     */
+    private ConcurrencyExtensionMetadata extSvc;
 
     /**
      * List of the qualifier sets for each ManagedThreadFactory bean with qualifiers that is
@@ -85,25 +89,31 @@ public class ConcurrencyExtension implements Extension {
      */
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanManager) {
 
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (cmd == null)
+            throw new IllegalStateException(); // should be unreachable
+
+        J2EEName jeeName = cmd.getJ2EEName();
+
         BundleContext bundleContext = FrameworkUtil.getBundle(ConcurrencyExtension.class).getBundleContext();
         ServiceReference<QualifiedResourceFactories> ref = bundleContext.getServiceReference(QualifiedResourceFactories.class);
-        ConcurrencyExtensionMetadata ext = (ConcurrencyExtensionMetadata) bundleContext.getService(ref);
+        extSvc = (ConcurrencyExtensionMetadata) bundleContext.getService(ref);
 
         // Add beans for Concurrency default resources if not already present:
 
         CDI<Object> cdi = CDI.current();
 
         if (!cdi.select(ContextService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
-            event.addBean(new ContextServiceBean(ext.defaultContextServiceFactory, DEFAULT_QUALIFIER_SET));
+            event.addBean(new ContextServiceBean(extSvc.defaultContextServiceFactory, DEFAULT_QUALIFIER_SET));
 
         if (!cdi.select(ManagedExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
-            event.addBean(new ManagedExecutorBean(ext.defaultManagedExecutorFactory, DEFAULT_QUALIFIER_SET));
+            event.addBean(new ManagedExecutorBean(extSvc.defaultManagedExecutorFactory, DEFAULT_QUALIFIER_SET));
 
         if (!cdi.select(ManagedScheduledExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
-            event.addBean(new ManagedScheduledExecutorBean(ext.defaultManagedScheduledExecutorFactory, DEFAULT_QUALIFIER_SET));
+            event.addBean(new ManagedScheduledExecutorBean(extSvc.defaultManagedScheduledExecutorFactory, DEFAULT_QUALIFIER_SET));
 
         if (!cdi.select(ManagedThreadFactory.class, DEFAULT_QUALIFIER_ARRAY).isResolvable()) {
-            event.addBean(new ManagedThreadFactoryBean(ext.defaultManagedThreadFactoryFactory, DEFAULT_QUALIFIER_SET));
+            event.addBean(new ManagedThreadFactoryBean(cmd, extSvc, DEFAULT_QUALIFIER_SET));
             qualifierSetsPerMTF = new ArrayList<>();
             qualifierSetsPerMTF.add(Collections.emptySet());
         }
@@ -111,18 +121,12 @@ public class ConcurrencyExtension implements Extension {
         // Look for beans from the module and the application.
         // TODO EJBs and component level?
 
-        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        if (cmd == null)
-            throw new IllegalStateException(); // should be unreachable
-
-        J2EEName jeeName = cmd.getJ2EEName();
-
-        List<Map<List<String>, ResourceFactory>> listFromModule = ext.removeAll(cmd.getJ2EEName().toString());
+        List<Map<List<String>, QualifiedResourceFactory>> listFromModule = extSvc.removeAll(cmd.getJ2EEName().toString());
 
         if (listFromModule != null)
             addBeans(event, listFromModule);
 
-        List<Map<List<String>, ResourceFactory>> listFromApp = ext.removeAll(jeeName.getApplication());
+        List<Map<List<String>, QualifiedResourceFactory>> listFromApp = extSvc.removeAll(jeeName.getApplication());
         if (listFromApp != null)
             addBeans(event, listFromApp);
     }
@@ -137,79 +141,64 @@ public class ConcurrencyExtension implements Extension {
      *                  . . . . . . qualifiers -> ResourceFactory for ManagedScheduledExecutorService,
      *                  . . . . . . qualifiers -> ResourceFactory for ManagedThreadFactory ]
      */
-    private void addBeans(AfterBeanDiscovery event, List<Map<List<String>, ResourceFactory>> list) {
-        Map<List<String>, ResourceFactory> qualifiedContextServices = //
-                        list.get(QualifiedResourceFactories.Type.ContextService.ordinal());
+    private void addBeans(AfterBeanDiscovery event, List<Map<List<String>, QualifiedResourceFactory>> list) {
+        Map<List<String>, QualifiedResourceFactory> qualifiedContextServices = //
+                        list.get(QualifiedResourceFactory.Type.ContextService.ordinal());
 
-        for (Entry<List<String>, ResourceFactory> entry : qualifiedContextServices.entrySet()) {
-            List<String> qualifierList = entry.getKey();
-            ResourceFactory factory = entry.getValue();
+        for (QualifiedResourceFactory factory : qualifiedContextServices.values()) {
             try {
-                event.addBean(new ContextServiceBean(factory, qualifierList));
+                event.addBean(new ContextServiceBean(factory));
             } catch (Throwable x) {
                 // TODO NLS
                 System.out.println(" E Unable to create a bean for the " +
-                                   factory + " ContextServiceDefinition with the " + qualifierList + " qualifiers" +
+                                   factory + " ContextServiceDefinition with the " + factory.getQualifiers() + " qualifiers" +
                                    " due to the following error: ");
                 x.printStackTrace();
             }
         }
 
-        Map<List<String>, ResourceFactory> qualifiedManagedExecutors = //
-                        list.get(QualifiedResourceFactories.Type.ManagedExecutorService.ordinal());
+        Map<List<String>, QualifiedResourceFactory> qualifiedManagedExecutors = //
+                        list.get(QualifiedResourceFactory.Type.ManagedExecutorService.ordinal());
 
-        for (Entry<List<String>, ResourceFactory> entry : qualifiedManagedExecutors.entrySet()) {
-            List<String> qualifierList = entry.getKey();
-            ResourceFactory factory = entry.getValue();
+        for (QualifiedResourceFactory factory : qualifiedManagedExecutors.values()) {
             try {
-                event.addBean(new ManagedExecutorBean(factory, qualifierList));
+                event.addBean(new ManagedExecutorBean(factory));
             } catch (Throwable x) {
                 // TODO NLS
                 System.out.println(" E Unable to create a bean for the " +
-                                   factory + " ManagedExecutorDefinition with the " + qualifierList + " qualifiers" +
+                                   factory + " ManagedExecutorDefinition with the " + factory.getQualifiers() + " qualifiers" +
                                    " due to the following error: ");
                 x.printStackTrace();
             }
         }
 
-        Map<List<String>, ResourceFactory> qualifiedManagedScheduledExecutors = //
-                        list.get(QualifiedResourceFactories.Type.ManagedScheduledExecutorService.ordinal());
+        Map<List<String>, QualifiedResourceFactory> qualifiedManagedScheduledExecutors = //
+                        list.get(QualifiedResourceFactory.Type.ManagedScheduledExecutorService.ordinal());
 
-        for (Entry<List<String>, ResourceFactory> entry : qualifiedManagedScheduledExecutors.entrySet()) {
-            List<String> qualifierList = entry.getKey();
-            ResourceFactory factory = entry.getValue();
+        for (QualifiedResourceFactory factory : qualifiedManagedScheduledExecutors.values()) {
             try {
-                event.addBean(new ManagedScheduledExecutorBean(factory, qualifierList));
+                event.addBean(new ManagedScheduledExecutorBean(factory));
             } catch (Throwable x) {
                 // TODO NLS
                 System.out.println(" E Unable to create a bean for the " +
-                                   factory + " ManagedScheduledExecutorDefinition with the " + qualifierList + " qualifiers" +
+                                   factory + " ManagedScheduledExecutorDefinition with the " + factory.getQualifiers() + " qualifiers" +
                                    " due to the following error: ");
                 x.printStackTrace();
             }
         }
 
-        Map<List<String>, ResourceFactory> qualifiedManagedThreadFactories = //
-                        list.get(QualifiedResourceFactories.Type.ManagedThreadFactory.ordinal());
+        Map<List<String>, QualifiedResourceFactory> qualifiedManagedThreadFactories = //
+                        list.get(QualifiedResourceFactory.Type.ManagedThreadFactory.ordinal());
 
-        int count = qualifiedManagedThreadFactories.size();
-        if (count > 0) {
-            qualifierSetsPerMTF = qualifierSetsPerMTF == null ? new ArrayList<>(count) : qualifierSetsPerMTF;
-
-            for (Entry<List<String>, ResourceFactory> entry : qualifiedManagedThreadFactories.entrySet()) {
-                List<String> qualifierList = entry.getKey();
-                ResourceFactory factory = entry.getValue();
-                try {
-                    ManagedThreadFactoryBean bean = new ManagedThreadFactoryBean(factory, qualifierList);
-                    event.addBean(bean);
-                    qualifierSetsPerMTF.add(bean.getQualifiers());
-                } catch (Throwable x) {
-                    // TODO NLS
-                    System.out.println(" E Unable to create a bean for the " +
-                                       factory + " ManagedThreadFactoryDefinition with the " + qualifierList + " qualifiers" +
-                                       " due to the following error: ");
-                    x.printStackTrace();
-                }
+        for (QualifiedResourceFactory factory : qualifiedManagedThreadFactories.values()) {
+            try {
+                event.addBean(new ManagedThreadFactoryBean(factory, extSvc));
+            } catch (Throwable x) {
+                // TODO NLS
+                System.out.println(" E Unable to create a bean for the " +
+                                   factory + " ManagedThreadFactoryDefinition with the " + factory.getQualifiers() + " qualifiers" +
+                                   " due to the following error: ");
+                x.printStackTrace();
             }
         }
     }
@@ -221,6 +210,7 @@ public class ConcurrencyExtension implements Extension {
      * @param beanManager
      */
     public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
+        // TODO remove this once we handle the default instances similar to the qualified instances
         if (qualifierSetsPerMTF != null) {
             CDI<Object> cdi = CDI.current();
 

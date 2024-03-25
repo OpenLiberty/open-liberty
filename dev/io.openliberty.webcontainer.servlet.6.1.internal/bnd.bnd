@@ -25,11 +25,10 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 # for the exported API.
 Export-Package: \
     io.openliberty.webcontainer61.facade*;provide:=true,\
+    io.openliberty.webcontainer61.osgi.response*;provide:=true,\
     io.openliberty.webcontainer61.osgi.srt*;provide:=true,\
     io.openliberty.webcontainer61.osgi.webapp*;provide:=true,\
     io.openliberty.webcontainer61.srt*;provide:=true
-    
-    
 
 Import-Package: \
     com.ibm.websphere.security, \

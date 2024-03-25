@@ -18,7 +18,7 @@
     'net.sourceforge.htmlunit:htmlunit:2.44.0',
     'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
     'net.sourceforge.htmlunit:webdriver:2.6',
-    'org.apache.commons:commons-lang3:3.8',
+    'org.apache.commons:commons-lang3:3.14.0',
     'org.apache.httpcomponents:httpmime:4.3.1',
     'org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23',
     'org.brotli:dec:0.1.2',

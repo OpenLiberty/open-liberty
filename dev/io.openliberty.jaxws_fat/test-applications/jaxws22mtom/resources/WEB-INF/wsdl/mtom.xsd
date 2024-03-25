@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://server.mtom.jaxws22.cxf.fats/" version="1.0" targetNamespace="http://server.mtom.jaxws22.cxf.fats/">
+
+  <xs:element name="echobyte" type="tns:echobyte"></xs:element>
+
+  <xs:element name="echobyteResponse" type="tns:echobyteResponse"></xs:element>
+
+  <xs:complexType name="echobyte">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:base64Binary" nillable="true" minOccurs="0"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="echobyteResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:base64Binary" nillable="true" minOccurs="0"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

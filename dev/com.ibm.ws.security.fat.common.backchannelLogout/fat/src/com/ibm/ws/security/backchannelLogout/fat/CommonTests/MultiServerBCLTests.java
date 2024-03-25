@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -279,7 +279,7 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
     public static void registerClientsIfNeeded() throws Exception {
 
         if (currentRepeatAction.contains(Constants.MONGODB)) {
-            Log.info(thisClass, "setUP", "Setting up mongo clients");
+            Log.info(thisClass, "registerClientsIfNeeded", "Setting up mongo clients");
             regClients = new BackChannelLogout_RegisterClients(testOPServer, clientServer, clientServer2, genericTestServer);
             regClients.registerClientsForMultiServerBCLTests();
             testOPServer.addIgnoredServerException(MessageConstants.CWWKS1420E_CLIENT_NOT_AUTHORIZED_TO_INTROSPECT);
@@ -523,7 +523,7 @@ public class MultiServerBCLTests extends BackChannelLogoutCommonTests {
         if (passHint) {
             invokeLogout(webClientForLogout, updatedTestSettings1_1_testuser, logoutExpectations, keeper1_1_testuser.getIdToken(), reuseWebClientForLogout);
         } else {
-            invokeLogout(webClientForLogout, updatedTestSettings1_1_testuser, logoutExpectations, null, reuseWebClientForLogout);
+            invokeLogout(webClientForLogout, updatedTestSettings1_1_testuser, logoutExpectations, (String) null, reuseWebClientForLogout);
 
         }
 

@@ -1,0 +1,35 @@
+<server description="sharedLibServer">
+
+  <include location="../fatTestPorts.xml"/>
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <library id="snoopLibA">
+    <fileset dir="snoopLib" includes="test0.jar,test1.jar"/>
+  </library>
+
+  <library id="snoopLibB">
+    <fileset dir="snoopLib" includes="test0.jar,test1.jar"/>
+  </library>
+
+  <library id="snoopLibC">
+    <fileset dir="snoopLib" includes="test0.jar,test2.jar"/>
+  </library>
+
+  <library id="snoopLibD">
+    <fileset dir="snoopLib" includes="test0.jar,test3.jar"/>
+  </library>
+
+  //            A
+  // test0(1) [snoop0: y/y/n/n]
+  // test1(1)
+  // test2(0)
+  // test3(0)
+
+  <application type="war" id="snoop0" name="snoop0" location="sharedLibSnoop.war" context-root="snoop0">
+    <classloader delegation="parentLast" commonLibraryRef="snoopLibA"/>
+  </application>
+
+</server>

@@ -64,8 +64,8 @@ public class SchedAsyncTestServlet extends FATServlet {
     @Inject
     private SchedAsyncAppScopedBean bean;
 
-    private static CompletableFuture<Long> cfEveryFiveSeconds3Times;
-    private static AtomicInteger cfEveryFiveSeconds3TimesCountdown;
+    private static CompletableFuture<Long> cfEveryFiveSeconds4Times;
+    private static AtomicInteger cfEveryFiveSeconds4TimesCountdown;
 
     private static CompletableFuture<long[]> cfEveryThreeAndEvenSeconds8Times;
     private static final AtomicInteger cfEveryThreeAndEvenSeconds8TimesCount = new AtomicInteger();
@@ -92,7 +92,7 @@ public class SchedAsyncTestServlet extends FATServlet {
     public void init(ServletConfig config) throws ServletException {
         init_ns = System.nanoTime();
 
-        cfEveryFiveSeconds3Times = bean.everyFiveSeconds(cfEveryFiveSeconds3TimesCountdown = new AtomicInteger(3));
+        cfEveryFiveSeconds4Times = bean.everyFiveSeconds(cfEveryFiveSeconds4TimesCountdown = new AtomicInteger(4));
 
         bean.lookUpAtSixSecondIntervals("java:module/concurrent/max-2-executor",
                                         lookUpAtSixSecondIntervals2Times,
@@ -128,16 +128,16 @@ public class SchedAsyncTestServlet extends FATServlet {
     }
 
     /**
-     * An asynchronous method that is scheduled to run every 5 seconds for 3 executions
-     * and then complete must run exactly 3 times.
+     * An asynchronous method that is scheduled to run every 5 seconds for 4 executions
+     * and then complete must run exactly 4 times.
      */
     @Test
-    public void testEveryFiveSeconds3Times() throws Exception {
-        Long timeOfFinalExecution = cfEveryFiveSeconds3Times.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+    public void testEveryFiveSeconds4Times() throws Exception {
+        Long timeOfFinalExecution = cfEveryFiveSeconds4Times.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
 
         long elapsed = timeOfFinalExecution - init_ns;
         if (elapsed < TimeUnit.SECONDS.toNanos(10L))
-            fail("A task that runs every 5 seconds must not complete 3 executions in under 10 seconds. Elapsed nanoseconds: " + elapsed);
+            fail("A task that runs every 5 seconds must not complete 4 executions in under 10 seconds. Elapsed nanoseconds: " + elapsed);
     }
 
     /**
@@ -216,7 +216,7 @@ public class SchedAsyncTestServlet extends FATServlet {
         TimeUnit.SECONDS.sleep(7);
 
         assertEquals("If testEveryFiveSeconds3Times passed, then everyFiveSeconds should not run again.",
-                     0, cfEveryFiveSeconds3TimesCountdown.get());
+                     0, cfEveryFiveSeconds4TimesCountdown.get());
 
         assertEquals("If testEverySixSeconds3Times passed, then everySixSeconds should not run again.",
                      3, afterSixSeconds3TimesCount.get());

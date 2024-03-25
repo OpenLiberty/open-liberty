@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.jaxws.wsat.Constants.AssertionStatus;
 import com.ibm.ws.jaxws.wsat.components.WSATConfigService;
@@ -134,10 +135,12 @@ public class WSCoorUtil {
         }
     }
 
+    @Trivial
     public static WSATConfigService getConfigService() {
         return configService.getService();
     }
 
+    @Trivial
     public static Protocol getProtocolService() {
         return protocolService.getService();
     }
@@ -369,9 +372,7 @@ public class WSCoorUtil {
         return null;
     }
 
-    /**
-     * @return
-     */
+    @Trivial
     public static Handler getHandlerService() {
         return handlerService.getService();
     }

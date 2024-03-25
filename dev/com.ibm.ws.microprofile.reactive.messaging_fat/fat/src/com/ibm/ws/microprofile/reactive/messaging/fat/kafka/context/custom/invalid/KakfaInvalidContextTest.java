@@ -56,7 +56,6 @@ public class KakfaInvalidContextTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
         server.startServer();
     }
 

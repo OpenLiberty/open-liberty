@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
+import javax.sql.DataSource;
+
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -37,6 +39,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
+import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
 import com.ibm.ws.container.service.metadata.ApplicationMetaDataListener;
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.container.service.metadata.MetaDataException;
@@ -47,6 +50,7 @@ import com.ibm.wsspi.resource.ResourceFactory;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
 import jakarta.enterprise.inject.spi.Extension;
+import jakarta.persistence.EntityManagerFactory;
 
 /**
  * Simulates a provider for relational databases by delegating
@@ -55,8 +59,10 @@ import jakarta.enterprise.inject.spi.Extension;
 @Component(configurationPid = "io.openliberty.data.internal.persistence.cdi.DataExtensionProvider",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = { CDIExtensionMetadata.class, DataExtensionProvider.class, ApplicationMetaDataListener.class })
-public class DataExtensionProvider implements CDIExtensionMetadata, ApplicationMetaDataListener {
+public class DataExtensionProvider implements CDIExtensionMetadata, CDIExtensionMetadataInternal, ApplicationMetaDataListener {
     private static final TraceComponent tc = Tr.register(DataExtensionProvider.class);
+
+    private static final Set<Class<?>> beanClasses = Set.of(DataSource.class, EntityManagerFactory.class);
 
     private static final Set<Class<? extends Extension>> extensions = Collections.singleton(DataExtension.class);
 
@@ -88,6 +94,17 @@ public class DataExtensionProvider implements CDIExtensionMetadata, ApplicationM
      * Service that provides Jakarta Validation.
      */
     private transient Object validationService;
+
+    /**
+     * Makes DataSource and EntityManagerFactory beans that are produced by the application visible to our extension
+     * so that we can use them to implement the repository.
+     *
+     * @return true to make them visible.
+     */
+    @Override
+    public boolean applicationBeansVisible() {
+        return true;
+    }
 
     @Override
     @Trivial
@@ -138,6 +155,11 @@ public class DataExtensionProvider implements CDIExtensionMetadata, ApplicationM
             for (ServiceRegistration<ResourceFactory> reg; (reg = registrations.poll()) != null;)
                 reg.unregister();
         }
+    }
+
+    @Override
+    public Set<Class<?>> getBeanClasses() {
+        return beanClasses;
     }
 
     @Override

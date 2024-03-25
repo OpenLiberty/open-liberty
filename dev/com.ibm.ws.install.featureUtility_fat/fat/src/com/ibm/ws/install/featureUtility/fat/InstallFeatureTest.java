@@ -27,8 +27,10 @@ import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
@@ -41,11 +43,30 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 
 	private static final Class<?> c = InstallFeatureTest.class;
 	private static String userFeatureSigPath = "/com/ibm/ws/userFeature/testesa1/19.0.0.8/testesa1-19.0.0.8.esa.asc";
+	static Network network = Network.newNetwork();
+	
+//	@ClassRule
+	/*
+	 * Increased startup timeout because nexus container might take more than 60
+	 * seconds (default start up time) to start. Also wait for log
+	 * "Started Sonatype Nexus.*" to make sure repository is up and running.
+	 * Disabling due to intermittent time out
+	 */
+//	public static GenericContainer<?> nexusContainer = new GenericContainer<>("jiwoo/nexus:1.0")
+//		.withStartupTimeout(Duration.of(5, ChronoUnit.MINUTES))
+//        .waitingFor(Wait.forLogMessage("Started Sonatype Nexus.*", 1))
+//        .withNetwork(network)
+//        .withNetworkAliases("nexus");
 
 	@ClassRule
 	public static GenericContainer<?> container = new GenericContainer<>("jiwoo/simple-keyserver:1.0")
 		.withExposedPorts(8080).waitingFor(Wait.forHttp("/"))
-		.withLogConsumer(new SimpleLogConsumer(InstallFeatureTest.class, "keyserver"));
+		.withLogConsumer(new SimpleLogConsumer(InstallFeatureTest.class, "keyserver")).withNetwork(network)
+		.withNetworkAliases("keyserver");
+
+	@ClassRule
+	public static GenericContainer<?> proxyContainer = new GenericContainer<>("jiwoo/squid-proxy:1.0")
+		.withExposedPorts(3128).withNetwork(network);
 
 
 	@BeforeClass
@@ -927,6 +948,123 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    checkCommandOutput(po, 0, null, filesList);
 
 	    Log.exiting(c, METHOD_NAME);
+	}
+
+	/*
+	 * Test installFeature --verify=all from external test container
+	 */
+	@Test
+	public void testProxyAuth() throws Exception {
+	    final String METHOD_NAME = "testProxyAuth";
+	    Log.entering(c, METHOD_NAME);
+
+	    String proxyHost = "http://" + proxyContainer.getHost();
+	    String proxyPort = proxyContainer.getMappedPort(3128).toString();
+
+	    String containerUrl = "http://keyserver:8080/validKey.asc";
+
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "feature.verify", "all");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyid", "0x71f8e6239b6834aa");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "myKey.keyurl", containerUrl);
+
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyHost", proxyHost);
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyPort", proxyPort);
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyUser", "wasngi");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyPassword", "test");
+
+	    String[] filesList = { "usr/extension/lib/features/testesa1.mf", "usr/extension/bin/testesa1.bat" };
+
+	    String[] param1s = { "installFeature", "testesa1", "json-1.0",
+		    "--featuresBOM=com.ibm.ws.userFeature:features-bom:19.0.0.8", "--verbose" };
+	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+	  
+	    try {
+		checkCommandOutput(po, 0, null, filesList);
+	    } catch(Exception e) {
+		checkProxyLog(METHOD_NAME, proxyContainer);
+		  throw e;
+	    }
+	    
+	    Log.exiting(c, METHOD_NAME);
+	}
+	
+	@Test
+	@Ignore("Disabling due to intermittent nexusContianer startup timeout")
+	public void testProxyAndRepoAuth() throws Exception {
+	    final String METHOD_NAME = "testProxyAndRepoAuth";
+	    Log.entering(c, METHOD_NAME);
+	    
+//	    container.dependsOn(nexusContainer).start();
+	    
+	    String proxyHost = "http://" + proxyContainer.getHost();
+	    String proxyPort = proxyContainer.getMappedPort(3128).toString();
+	    String nexusURL = "http://nexus:8081/repository/maven-central/";
+	    
+	    //overwrite the local maven repo so it can fetch the artifact from nexus repo
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", "tmp");
+		    
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyHost", proxyHost);
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyPort", proxyPort);
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyUser", "wasngi");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyPassword", "test");
+	    
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.url", nexusURL);
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.user", "admin");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.password", "golf");
+	    
+	    String[] param1s = { "installFeature", "json-1.0", "--verbose" };
+	    String[] filesList = { "/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
+	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+
+	    try {
+		checkCommandOutput(po, 0, null, filesList);
+	    } catch (Exception e) {
+		checkProxyLog(METHOD_NAME, proxyContainer);
+		  throw e;
+	    }
+	    
+	    Log.exiting(c, METHOD_NAME);
+
+	}
+
+	@Test
+	@Ignore("Disabling due to intermittent nexusContianer startup timeout")
+	public void testProxyAndRepoAuthEncoded() throws Exception {
+	    final String METHOD_NAME = "testProxyAndRepoAuthEncoded";
+	    Log.entering(c, METHOD_NAME);
+
+//	    container.dependsOn(nexusContainer).start();
+
+	    String proxyHost = "http://" + proxyContainer.getHost();
+	    String proxyPort = proxyContainer.getMappedPort(3128).toString();
+	    String nexusURL = "http://nexus:8081/repository/maven-central/";
+
+	    // overwrite the local maven repo so it can fetch the artifact from nexus repo
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", "tmp");
+
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyHost", proxyHost);
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyPort", proxyPort);
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyUser", "wasngi");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "proxyPassword", "{xor}KzosKw==");
+
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.url", nexusURL);
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.user", "admin");
+	    writeToProps(minifiedRoot + "/etc/featureUtility.properties", "mavenCentralMirror.password",
+		    "{xor}ODAzOQ==");
+
+	    String[] param1s = { "installFeature", "json-1.0", "--verbose" };
+	    String[] filesList = { "/lib/features/com.ibm.websphere.appserver.json-1.0.mf" };
+	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
+
+	    try {
+		checkCommandOutput(po, 0, null, filesList);
+	    } catch (Exception e) {
+		checkProxyLog(METHOD_NAME, proxyContainer);
+		throw e;
+	    }
+	    
+	    Log.exiting(c, METHOD_NAME);
+	    
 	}
 
 }

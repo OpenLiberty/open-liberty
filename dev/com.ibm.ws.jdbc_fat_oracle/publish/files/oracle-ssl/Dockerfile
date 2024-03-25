@@ -1,3 +1,4 @@
+# TODO update to use gvenzl/oracle-free to test Oracle 23c
 FROM gvenzl/oracle-xe:21.3.0-full-faststart
 
 COPY setup/ /tmp/setup/

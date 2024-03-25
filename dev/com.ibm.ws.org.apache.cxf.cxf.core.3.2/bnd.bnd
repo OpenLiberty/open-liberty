@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -62,8 +62,8 @@ Import-Package: \
   javax.xml.bind.attachment;version=!, \
   !javax.xml.ws.*, \
   org.apache.cxf.helpers;version="[${exportVer},4.0.0)", \
-  com.ibm.ws.cxf.jaxrs21.client;version="[${exportVer},${exportVer}]", \
-  com.ibm.ws.cxf.jaxrs21.client.component;version="[${exportVer},${exportVer}]", \
+  com.ibm.ws.cxf.client;version="[${exportVer},${exportVer}]", \
+  com.ibm.ws.cxf.client.component;version="[${exportVer},${exportVer}]", \
   *
 
 Export-Package: \
@@ -141,8 +141,8 @@ Export-Package: \
   org.apache.cxf.ws.addressing.v200408;version=${exportVer}, \
   org.apache.cxf.ws.addressing.wsdl;version=${exportVer}, \
   org.apache.cxf.wsdl.http;version=${exportVer}, \
-  com.ibm.ws.cxf.jaxrs21.client;version=${exportVer}, \
-  com.ibm.ws.cxf.jaxrs21.client.component;version=${exportVer}
+  com.ibm.ws.cxf.client;version=${exportVer}, \
+  com.ibm.ws.cxf.client.component;version=${exportVer}
 
 DynamicImport-Package: \
   com.ctc.wstx.*, \
@@ -154,7 +154,7 @@ DynamicImport-Package: \
   org.apache.cxf.*;version="[${exportVer},4.0.0)"
 
 -dsannotations: \
-  com.ibm.ws.cxf.jaxrs21.client.component.*
+  com.ibm.ws.cxf.client.component.*
 
 -includeresource: \
   @${repo;org.apache.cxf:cxf-core;${importVer};EXACT}!/!*-INF/*, \
@@ -165,7 +165,10 @@ instrument.ffdc: false
 instrument.classesExcludes: \
   org/apache/cxf/common/jaxb/*.class, \
   org/apache/cxf/service/invoker/*.class, \
-  org/apache/cxf/phase/*.class
+  org/apache/cxf/phase/*.class, \
+  org/apache/cxf/interceptor/*.class, \
+  org/apache/cxf/service/model/*.class, \
+  org/apache/cxf/staxutils/*.class
 
 -buildpath: \
   javax.activation:activation;version=1.1, \
@@ -178,4 +181,5 @@ instrument.classesExcludes: \
   com.ibm.websphere.org.osgi.service.component;version=latest, \
   com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
   com.ibm.websphere.org.osgi.service.cm;version=latest, \
-  com.ibm.wsspi.org.osgi.core
+  com.ibm.wsspi.org.osgi.core, \
+  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3;version=latest
