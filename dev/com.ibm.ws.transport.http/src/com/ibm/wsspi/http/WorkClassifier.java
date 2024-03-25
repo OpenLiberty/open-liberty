@@ -33,6 +33,8 @@ public interface WorkClassifier {
      */
     Executor classify(HttpRequest request, HttpInboundConnection inboundConnection);
 
-    Executor classify(FullHttpRequest request, HttpInboundConnection inboundConnection);
+    default Executor classify(FullHttpRequest request, HttpInboundConnection inboundConnection) {
+        throw new UnsupportedOperationException("This method is Netty specific and it should be implemented!");
+    }
 
 }

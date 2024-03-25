@@ -24,6 +24,7 @@ import com.ibm.websphere.channelfw.osgi.ChannelFactoryProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.channelfw.ChannelConfiguration;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
@@ -31,6 +32,7 @@ import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.channelfw.exception.ChainException;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.openliberty.netty.internal.BootstrapExtended;
@@ -105,13 +107,12 @@ public class WsocOutboundChain {
      *                       populated/provided by config admin
      */
     protected void activate(Map<String, Object> properties, ComponentContext context) {
-
         sslOptions.activate(context);
         sslFactoryProvider.activate(context);
 
-        //useNettyTransport = ProductInfo.getBetaEdition() &&
-        //                    MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", properties.get("useNettyTransport"), true);
-        useNettyTransport = true;
+        // TODO: Updated this to use constants
+        useNettyTransport = ProductInfo.getBetaEdition() &&
+                           MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", properties.get("useNettyTransport"), true);
 
         System.out.println("Netty bundle: " + nettyBundle);
 
@@ -129,13 +130,11 @@ public class WsocOutboundChain {
 
     @Modified
     protected void modified(Map<String, Object> config) {
-        //useNettyTransport = ProductInfo.getBetaEdition() &&
-        //                    MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", properties.get("useNettyTransport"), true);
-        boolean usingNetty = true;
+        boolean usingNetty = ProductInfo.getBetaEdition() &&
+                           MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", config.get("useNettyTransport"), true);
         boolean unchangedTransport = useNettyTransport && usingNetty;
         useNettyTransport = usingNetty;
         modified(unchangedTransport);
-
     }
 
     private void modified(boolean unchangedTransport) {
