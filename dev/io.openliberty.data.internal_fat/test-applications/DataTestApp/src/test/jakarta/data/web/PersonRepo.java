@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,12 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static jakarta.data.repository.By.ID;
+
 import java.util.List;
 
 import jakarta.data.repository.By;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
@@ -35,9 +38,10 @@ import io.openliberty.data.repository.update.Assign;
 @Repository
 @Transactional(TxType.SUPPORTS)
 public interface PersonRepo {
-    @Query("SELECT o FROM Person o WHERE o.lastName=?1")
+    @Query("WHERE lastName=?1")
     List<Person> find(String lastName);
 
+    @Find
     @OrderBy("firstName")
     @Select("firstName")
     List<String> findFirstNames(@By("lastName") String surname);
@@ -54,28 +58,34 @@ public interface PersonRepo {
     @Save
     void save(List<Person> people);
 
+    @Find
     @Select("firstName")
     @Transactional(TxType.SUPPORTS)
     String getFirstNameInCurrentOrNoTransaction(Long ssn_id);
 
+    @Update
     @Transactional(TxType.REQUIRED)
     boolean setFirstNameInCurrentOrNewTransaction(Long ssn_id,
                                                   @Assign String firstName);
 
+    @Update
     @Transactional(TxType.MANDATORY)
-    boolean setFirstNameInCurrentTransaction(@By("id") Long ssn,
+    boolean setFirstNameInCurrentTransaction(@By(ID) Long ssn,
                                              @Assign("firstName") String newFirstName);
 
+    @Update
     @Transactional(TxType.REQUIRES_NEW)
     boolean setFirstNameInNewTransaction(Long ssn_id,
                                          @Assign("FirstName") String newFirstName);
 
+    @Update
     @Transactional(TxType.NEVER)
-    boolean setFirstNameWhenNoTransactionIsPresent(Long id,
+    boolean setFirstNameWhenNoTransactionIsPresent(@By(ID) Long id,
                                                    @Assign("FIRSTNAME") String newFirstName);
 
+    @Update
     @Transactional(TxType.NOT_SUPPORTED)
-    boolean setFirstNameWithCurrentTransactionSuspended(Long id,
+    boolean setFirstNameWithCurrentTransactionSuspended(@By(ID) Long id,
                                                         @Assign("firstname") String newFirstName);
 
     @Update

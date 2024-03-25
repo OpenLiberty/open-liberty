@@ -31,7 +31,8 @@ tested.features: mpReactiveMessaging-1.0, \
                  cdi-3.0, \
                  cdi-4.0, \
                  jsonp-2.0, \
-                 jsonp-2.1
+                 jsonp-2.1, \
+                 checkpoint
                  
 
 fat.project: true

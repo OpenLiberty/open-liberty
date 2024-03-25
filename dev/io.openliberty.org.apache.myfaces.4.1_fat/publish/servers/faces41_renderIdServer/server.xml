@@ -1,0 +1,21 @@
+<!--
+    Copyright (c) 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<server description="Server for testing Faces 4.1 ID Attribute Rendering">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>faces-4.1</feature>
+    </featureManager>
+
+    <!-- Needed to test refresh period when a xhtml file is updated -->
+    <applicationManager autoExpand="true" /> 
+
+</server>

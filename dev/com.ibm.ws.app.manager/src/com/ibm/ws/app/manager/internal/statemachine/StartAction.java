@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -132,7 +132,12 @@ class StartAction implements Action, CheckpointHook {
         _configurator = configurator;
         CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
         if (checkpointPhase == CheckpointPhase.AFTER_APP_START) {
+            // Only for afterAppStart; we need a hook that fails checkpoint if the application has not started yet
             checkpointPhase.addMultiThreadedHook(this);
+        }
+        if (checkpointPhase == CheckpointPhase.BEFORE_APP_START && !checkpointPhase.restored()) {
+            // Only for beforeAppStart; we need to reset the start time to get accurate app start time message
+            CheckpointPhase.onRestore(() -> _startTime.set(TimestampUtils.getStartTimeNano()));
         }
     }
 
@@ -207,10 +212,5 @@ class StartAction implements Action, CheckpointHook {
     public void cancel() {
         this.cancelled = true;
         stopSlowStartMessage();
-    }
-
-    @Override
-    public void resetStartTime() {
-        _startTime.set(System.nanoTime());
     }
 }

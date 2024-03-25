@@ -6,7 +6,7 @@ Subsystem-Type: osgi.subsystem.feature
 Subsystem-Description: This is the description text for a feature where all the files specified in the the icon header are missing
 Subsystem-Vendor: IBM
 Subsystem-Icon: OSGI-INF/missingtoolicon.png,OSGI-INF/toolicon.png
-Subsystem-Content: test.icons.missingIconsTool-1.0; version="[1,1.0.100)"
+Subsystem-Content: test.icons.missingIconsTool-1.0; version="[1,1.1)"
 IBM-Screenshots: 
 IBM-Feature-Version: 2
 IBM-AppliesTo: com.ibm.websphere.appserver; productVersion=2014.2.0.0; productInstallType=Archive

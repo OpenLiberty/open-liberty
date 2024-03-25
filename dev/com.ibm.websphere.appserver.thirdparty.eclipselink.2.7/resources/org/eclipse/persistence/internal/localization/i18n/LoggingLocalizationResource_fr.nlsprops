@@ -175,6 +175,16 @@ elements={0}{1} \u00e9l\u00e9ments
 
 enable_batch_operations_as_true_not_supported=Le param\u00e8tre CMP natif WLS "enable-batch-operations-as-true" n''est pas directement pris en charge dans EclipseLink CMP. Pour plus de d\u00e9tails, voir la doc de migration.
 
+encryptor_decrypt_old_algorithm=Le mot de passe de la base de donn\u00e9es utilis\u00e9 dans {0} a \u00e9t\u00e9 chiffr\u00e9 par un algorithme algorithm.Reencrypt \u00e0 l''aide de `passwordUpdate.sh ` \u00e0 partir du bundle eclipselink.zip .
+
+encryptor_decrypt_old_algorithm_without_session_name=Le mot de passe de la base de donn\u00e9es a \u00e9t\u00e9 chiffr\u00e9 par un algorithme algorithm.Reencrypt par `passwordUpdate.sh ` \u00e0 partir du bundle eclipselink.zip .
+
+encryptor_script_description=Cette application d\u00e9chiffre en interne un ancien mot de passe chiffr\u00e9 qui a \u00e9t\u00e9 utilis\u00e9 par une version pr\u00e9c\u00e9dente d'' EclipseLink et le chiffre par l''algorithme le plus r\u00e9cent.
+
+encryptor_script_output=Le mot de passe rechiffr\u00e9 est: {0}
+
+encryptor_script_usage=Syntaxe: `passwordUpdate.sh | .cmd -ip < ancien mot de passe chiffr\u00e9 > `
+
 entity_manager_ignores_jta_data_source=L''unit\u00e9 de persistance n''utilise pas JTA, par cons\u00e9quent le gestionnaire d''entit\u00e9s ignore la source de donn\u00e9es jta. 
 
 entity_manager_ignores_nonjta_data_source=L''unit\u00e9 de persistance utilise JTA, par cons\u00e9quent le gestionnaire d''entit\u00e9s ignore la source de donn\u00e9es non jta. 
@@ -737,7 +747,11 @@ toplink_warning=[EL Warning] :
 
 unit_of_work_thread_info=L''unit\u00e9 de travail en cours dans la session ({0}) a \u00e9t\u00e9 cr\u00e9\u00e9e par une autre unit\u00e9 d''ex\u00e9cution (ID : {1} nom : {2}), que l''unit\u00e9 d''ex\u00e9cution en cours (ID : {3} nom : {4})
 
-unit_of_work_thread_info_thread_dump=Unit\u00e9 d''ex\u00e9cution de cr\u00e9ation (ID : {0} nom : {1}) trace de pile : {2} Unit\u00e9 d''ex\u00e9cution en cours (ID : {3} nom : {4}) trace de pile : {5}
+unit_of_work_thread_info_thread_dump=Unit\u00e9 d''ex\u00e9cution de cr\u00e9ation (ID: {0} nom: {1}) trace de pile:
+#{2}
+
+Current unit\u00e9 d''ex\u00e9cution (id: {3} nom: {4}) trace de pile:
+#{5}
 
 unitofwork_identity_hashcode={0} Code de hachage identit\u00e9 unit\u00e9 d''oeuvre : {1}
 

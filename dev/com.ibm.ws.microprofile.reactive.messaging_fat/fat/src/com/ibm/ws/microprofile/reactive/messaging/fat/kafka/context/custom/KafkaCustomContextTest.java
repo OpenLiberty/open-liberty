@@ -106,8 +106,6 @@ public class KafkaCustomContextTest extends FATServletClient {
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
-        server.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
-
         server.startServer();
     }
 

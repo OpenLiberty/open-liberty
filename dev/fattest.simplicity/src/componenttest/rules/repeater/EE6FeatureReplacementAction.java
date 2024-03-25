@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ public class EE6FeatureReplacementAction extends FeatureReplacementAction {
     public static final String ID = "EE6_FEATURES";
 
     static final String[] EE6_FEATURES_ARRAY = { "webProfile-6.0",
-                                                 "javaeeClient-6.0",
                                                  "cdi-1.0",
                                                  "appSecurity-2.0",
                                                  "jsf-2.0",

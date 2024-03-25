@@ -32,6 +32,8 @@
       waitForRecovery="true"
     />
 
+	<wsAtomicTransaction asyncResponseTimeout="60000"/>
+
 	<javaPermission name="*" actions="*" className="java.security.AllPermission"/>
 
 </server>

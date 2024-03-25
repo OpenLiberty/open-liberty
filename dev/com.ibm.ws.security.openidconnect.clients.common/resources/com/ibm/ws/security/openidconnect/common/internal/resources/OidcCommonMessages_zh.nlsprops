@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -193,3 +193,13 @@ DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=\u8bf7\u4ece OpenID Connec
 JWT_MISSING_ISSUER=CWWKS1784E: \u8be5\u4ee4\u724c\u65e0\u6548\uff0c\u56e0\u4e3a\u5b83\u4e0d\u5305\u542b\u7b7e\u53d1\u8005\u58f0\u660e\u3002
 JWT_MISSING_ISSUER.explanation=\u8be5\u4ee4\u724c\u5fc5\u987b\u5305\u542b\u7b7e\u53d1\u8005\u58f0\u660e\uff0c\u4ee5\u6807\u8bc6\u53d1\u51fa\u8be5\u4ee4\u724c\u7684\u4eba\u5458\u3002
 JWT_MISSING_ISSUER.useraction=\u83b7\u53d6\u5305\u542b\u7b7e\u53d1\u8005\u58f0\u660e\u7684\u65b0\u4ee4\u724c\u3002
+
+# Do not translate "typ", "logout+jwt"
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER=CWWKS1785E: \u4ee4\u724c\u65e0\u6548\uff0c\u56e0\u4e3a\u4ee4\u724c\u7684 [{0}] "typ" \u5934\u6307\u793a\u5b83\u662f\u6ce8\u9500\u4ee4\u724c\u3002
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.explanation=\u4ee4\u724c\u4e0d\u5f97\u662f\u6ce8\u9500\u4ee4\u724c\u3002 \u6ce8\u9500\u6807\u8bb0\u53ef\u80fd\u5177\u6709\u503c\u4e3a "logout + jwt" \u7684 "typ" (type) \u5934\u53c2\u6570\u3002
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.useraction=\u8bf7\u786e\u4fdd\u6240\u4f7f\u7528\u7684\u4ee4\u724c\u4e0d\u662f\u6ce8\u9500\u4ee4\u724c\u3002
+
+# Do not translate "events", "http://schemas.openid.net/event/backchannel-logout"
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM=CWWKS1786E: \u4ee4\u724c\u65e0\u6548\uff0c\u56e0\u4e3a\u503c\u4e3a [{0}] \u7684 "events" \u58f0\u660e\u6307\u793a\u4ee4\u724c\u662f\u6ce8\u9500\u4ee4\u724c\u3002
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.explanation=\u4ee4\u724c\u4e0d\u5f97\u662f\u6ce8\u9500\u4ee4\u724c\u3002 \u6ce8\u9500\u4ee4\u724c\u5177\u6709 "events" \u58f0\u660e\uff0c\u8fd9\u662f\u4e00\u4e2a JSON \u5bf9\u8c61\uff0c\u5176\u4e2d\u5305\u542b "http://schemas.openid.net/event/backchannel-logout" \u4f5c\u4e3a\u5176\u5143\u7d20\u4e4b\u4e00\u3002
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.useraction=\u8bf7\u786e\u4fdd\u6240\u4f7f\u7528\u7684\u4ee4\u724c\u4e0d\u662f\u6ce8\u9500\u4ee4\u724c\u3002

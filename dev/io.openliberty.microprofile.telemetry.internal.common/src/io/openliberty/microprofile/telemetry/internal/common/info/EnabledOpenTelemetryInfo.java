@@ -38,7 +38,6 @@ public class EnabledOpenTelemetryInfo implements OpenTelemetryInfo {
 
     private final boolean enabled;
     private final OpenTelemetry openTelemetry;
-    private final Tracer tracer;
 
     /**
      * @param enabled true if enabled, otherwise false
@@ -49,7 +48,6 @@ public class EnabledOpenTelemetryInfo implements OpenTelemetryInfo {
         super();
         this.enabled = enabled;
         this.openTelemetry = openTelemetry;
-        tracer = openTelemetry.getTracer(INSTRUMENTATION_NAME);
     }
 
     /**
@@ -66,14 +64,6 @@ public class EnabledOpenTelemetryInfo implements OpenTelemetryInfo {
     @Override
     public OpenTelemetry getOpenTelemetry() {
         return openTelemetry;
-    }
-
-    /**
-     * @return the Tracer
-     */
-    @Override
-    public Tracer getTracer() {
-        return tracer;
     }
 
     /** {@inheritDoc} */

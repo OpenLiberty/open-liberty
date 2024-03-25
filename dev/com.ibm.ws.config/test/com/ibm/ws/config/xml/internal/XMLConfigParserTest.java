@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -75,8 +75,7 @@ public class XMLConfigParserTest {
     }
 
     @Before
-    public void setUp() throws Exception {
-    }
+    public void setUp() throws Exception {}
 
     @After
     public void tearDown() throws Exception {
@@ -89,8 +88,8 @@ public class XMLConfigParserTest {
         SharedLocationManager.createDefaultLocations(SharedConstants.SERVER_XML_INSTALL_ROOT, profileName);
         wsLocation = (WsLocationAdmin) SharedLocationManager.getLocationInstance();
 
-        configParser = new XMLConfigParser(wsLocation, variableRegistry);
         variableRegistry = new ConfigVariableRegistry(new VariableRegistryHelper(), new String[0], null, wsLocation);
+        configParser = new XMLConfigParser(wsLocation, variableRegistry);
     }
 
     private Dictionary<String, Object> evaluateToDictionary(ConfigElement entry) throws ConfigEvaluatorException {
@@ -626,27 +625,60 @@ public class XMLConfigParserTest {
 
     private static final boolean isWindows = System.getProperty("os.name", "unknown").toUpperCase(Locale.ENGLISH).contains("WINDOWS");
 
+    // Verify that the include process isn't doing anything crazy with the path.
     @Test
     public void testIncludesWithVariables() throws Exception {
         changeLocationSettings("default");
-        String base;
-        WsResource resource;
-        base = CONFIG_ROOT;
 
-        // Just checking that the include process isn't doing anything crazy with the path
+        // Note that the user directory might have a leading drive letter.
+        // This has been seen running bash on windows.
 
-        resource = configParser.resolveInclude("${wlp.user.dir}/server.xml", base, wsLocation);
-        String expected = "file:" + variableRegistry.resolveString("${wlp.user.dir}/server.xml");
-        assertEquals(new URI(expected), resource.toExternalURI());
+        verifyInclude("${wlp.user.dir}/server.xml");
+
+        // Only run on windows because unix platforms will mangle `c:\` style paths.
+        //
+        // (Taking into account the possibility that the user directory might
+        // have a drive letter, restricting this test to windows might be unnecessary.)
 
         if (isWindows) {
-
-            // Only run on windows because unix platforms will mangle `c:\` style paths
             SymbolRegistry.getRegistry().addStringSymbol("myHome", "C:\\users\\fernando");
+            verifyInclude("${myHome}/server.xml");
+        }
+    }
 
-            resource = configParser.resolveInclude("${myHome}/server.xml", base, wsLocation);
-            expected = "file:" + variableRegistry.resolveString("${myHome}/server.xml");
-            assertEquals(new URI(expected), resource.toExternalURI());
+    protected void verifyInclude(String unresolvedPath) throws Exception {
+        String base = CONFIG_ROOT;
+
+        WsResource actualResource = configParser.resolveInclude(unresolvedPath, base, wsLocation);
+        URI actualURI = actualResource.toExternalURI();
+
+        String expectedPath = variableRegistry.resolveString(unresolvedPath);
+        String expectedURIText = "file:" + expectedPath;
+        URI expectedURI = new URI(expectedURIText);
+
+        // On windows running with bash, the resource URI might have a extra slash:
+        //
+        // expected: <file:C:/dev/repos-pub/ol-sm/dev/com.ibm.ws.config/test-resources/test_xml_config/usr/server.xml>
+        // but was:  <file:/C:/dev/repos-pub/ol-sm/dev/com.ibm.ws.config/test-resources/test_xml_config/usr/server.xml>
+
+        if (isWindows && ((expectedPath.length() > 1) && (expectedPath.charAt(1) == ':'))) {
+            String altExpected = "file:" + "/" + expectedPath;
+            URI altExpectedURI = new URI(altExpected);
+
+            // The test passes if either of the possible text values is obtained.
+            // If neither is obtained, one or both of the asserts will fail, which
+            // correctly fails the test.
+
+            if (!expectedURI.equals(actualURI) && !altExpectedURI.equals(actualURI)) {
+                assertEquals(expectedURI, actualURI);
+                assertEquals(altExpectedURI, actualURI);
+            }
+
+        } else {
+            // If not on windows, or if the path doesn't start with a drive letter,
+            // the usual comparison can be used.
+
+            assertEquals(expectedURI, actualURI);
         }
     }
 

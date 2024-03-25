@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,10 @@ import jakarta.data.repository.Repository;
 @Repository(dataStore = "ServerDataSource") // id of dataSource in server.xml
 public interface ServerDSIdRepo {
 
+    boolean existsById(String id);
+
     // Entity type is inferred from the Delete annotation.
     // Do not add other methods or inheritance to this class.
     @Delete
-    boolean remove(ServerDSEntity e);
+    void remove(ServerDSEntity e);
 }

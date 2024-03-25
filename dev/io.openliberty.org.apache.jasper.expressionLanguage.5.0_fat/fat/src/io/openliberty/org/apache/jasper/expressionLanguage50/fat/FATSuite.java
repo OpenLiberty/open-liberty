@@ -53,7 +53,7 @@ import io.openliberty.org.apache.jasper.expressionLanguage50.fat.tests.EL50Metho
 public class FATSuite {
 
     // EE11 requires Java 17
-    // If we only specify EE11 for lite mode it will cause no tests to run which causes an error.
+    // If we only specify EE11 for lite mode it will cause no tests to run with lower Java versions which causes an error.
     // If we are running on Java 11, have EE10 be the lite mode test to run.
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17))

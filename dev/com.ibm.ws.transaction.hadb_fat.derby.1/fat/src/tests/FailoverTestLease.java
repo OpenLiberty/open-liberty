@@ -13,6 +13,7 @@
 package tests;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.List;
@@ -138,7 +139,12 @@ public class FailoverTestLease extends FATServletClient {
     @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer staleCloudServer;
 
+    @Server("com.ibm.ws.transaction_ANYDBCLOUD001.fastcheck")
+    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
+    public static LibertyServer server1fastcheck;
+
     @Server("com.ibm.ws.transaction_ANYDBCLOUD002.fastcheck")
+    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server2fastcheck;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete")
@@ -148,6 +154,7 @@ public class FailoverTestLease extends FATServletClient {
                                                         "com.ibm.ws.transaction_retriablecloud",
                                                         "com.ibm.ws.transaction_stalecloud",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete",
+                                                        "com.ibm.ws.transaction_ANYDBCLOUD001.fastcheck",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD002.fastcheck"
     };
 
@@ -156,6 +163,7 @@ public class FailoverTestLease extends FATServletClient {
         TxShrinkHelper.buildDefaultApp(retriableCloudServer, APP_NAME, APP_PATH, "web");
         TxShrinkHelper.buildDefaultApp(staleCloudServer, APP_NAME, APP_PATH, "web");
         TxShrinkHelper.buildDefaultApp(longLeaseCompeteServer1, APP_NAME, APP_PATH, "web");
+        TxShrinkHelper.buildDefaultApp(server1fastcheck, APP_NAME, APP_PATH, "web");
         TxShrinkHelper.buildDefaultApp(server2fastcheck, APP_NAME, APP_PATH, "web");
     }
 
@@ -220,6 +228,10 @@ public class FailoverTestLease extends FATServletClient {
         // WTRN0108I: Have recovered from SQLException when updating server lease for server with identity cloud0011
         assertNotNull("No warning message signifying failover", retriableCloudServer.waitForStringInLog("Have recovered from SQLException when updating server lease"));
 
+        // cleanup HATable
+        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropHATable");
+        Log.info(this.getClass(), method, "dropHATable returned: " + sb);
+
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
     }
 
@@ -271,6 +283,10 @@ public class FailoverTestLease extends FATServletClient {
         sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "deleteStaleLease");
 
         Log.info(this.getClass(), method, "deleteStaleLease returned: " + sb);
+
+        // cleanup HATable
+        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropHATable");
+        Log.info(this.getClass(), method, "dropHATable returned: " + sb);
 
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
     }
@@ -324,6 +340,10 @@ public class FailoverTestLease extends FATServletClient {
 
         Log.info(this.getClass(), method, "deleteStaleLease returned: " + sb);
 
+        // cleanup HATable
+        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropHATable");
+        Log.info(this.getClass(), method, "dropHATable returned: " + sb);
+
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
     }
 
@@ -376,6 +396,10 @@ public class FailoverTestLease extends FATServletClient {
 
         Log.info(this.getClass(), method, "deleteStaleLease returned: " + sb);
 
+        // cleanup HATable
+        sb = runTestWithResponse(retriableCloudServer, SERVLET_NAME, "dropHATable");
+        Log.info(this.getClass(), method, "dropHATable returned: " + sb);
+
         FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
     }
 
@@ -408,6 +432,58 @@ public class FailoverTestLease extends FATServletClient {
                             .waitForStringInTrace("Peer server cloudstale has missing recovery log SQL tables", LOG_SEARCH_TIMEOUT));
 
             FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, retriableCloudServer);
+        }
+        Log.info(this.getClass(), method, "test complete");
+    }
+
+    @Test
+    public void testBatchLeaseDeletion() throws Exception {
+        final String method = "testBatchLeaseDeletion";
+        if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
+            StringBuilder sb = null;
+
+            FATUtils.startServers(runner, server1fastcheck);
+
+            Log.info(this.getClass(), method, "set timeout");
+            server1fastcheck.setServerStartTimeout(30000);
+
+            // Insert stale leases
+            sb = runTestWithResponse(server1fastcheck, SERVLET_NAME, "setupBatchOfStaleLeases1");
+            Log.info(this.getClass(), method, "setupBatchOfStaleLeases1 returned: " + sb);
+            server2fastcheck.useSecondaryHTTPPort();
+            FATUtils.startServers(runner, server2fastcheck);
+
+            Log.info(this.getClass(), method, "set timeout");
+            server2fastcheck.setServerStartTimeout(30000);
+            // Insert more stale leases
+            sb = runTestWithResponse(server2fastcheck, SERVLET_NAME, "setupBatchOfStaleLeases2");
+            Log.info(this.getClass(), method, "setupBatchOfStaleLeases1 returned: " + sb);
+
+            // Check peer recovery attempts for dummy servers
+            int server1Recoveries = 0;
+            int server2Recoveries = 0;
+            boolean foundThemAll = false;
+            int searchAttempts = 0;
+            while (!foundThemAll && searchAttempts < 60) {
+                List<String> recoveredAlready1 = server1fastcheck.findStringsInLogs("has missing recovery log SQL tables");
+                List<String> recoveredAlready2 = server2fastcheck.findStringsInLogs("has missing recovery log SQL tables");
+                // Check number of recovery attempts
+                if (recoveredAlready1 != null)
+                    server1Recoveries = recoveredAlready1.size();
+                if (recoveredAlready2 != null)
+                    server2Recoveries = recoveredAlready2.size();
+                if (server1Recoveries + server2Recoveries > 19)
+                    foundThemAll = true;
+                if (!foundThemAll) {
+                    searchAttempts++;
+                    Thread.sleep(1000 * 5);
+                }
+                Log.info(this.getClass(), method, "testBatchLeaseDeletion found " + server1Recoveries +
+                                                  " in server1 logs and " + server2Recoveries + " in server2 logs");
+            }
+            if (!foundThemAll)
+                fail("Did not attempt peer recovery for all servers");
+            FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server1fastcheck, server2fastcheck);
         }
         Log.info(this.getClass(), method, "test complete");
     }
@@ -470,6 +546,10 @@ public class FailoverTestLease extends FATServletClient {
                 Log.info(this.getClass(), method, "Server2 did not peer recover server1");
             else
                 Log.info(this.getClass(), method, "Server2 did peer recover server1");
+
+            // cleanup HATable
+            sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "dropHATable");
+            Log.info(this.getClass(), method, "dropHATable returned: " + sb);
 
             FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server2fastcheck, longLeaseCompeteServer1);
         }
@@ -534,6 +614,10 @@ public class FailoverTestLease extends FATServletClient {
                 Log.info(this.getClass(), method, "Server2 did not peer recover server1");
             else
                 Log.info(this.getClass(), method, "Server2 did peer recover server1");
+
+            // cleanup HATable
+            sb = runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "dropHATable");
+            Log.info(this.getClass(), method, "dropHATable returned: " + sb);
 
             FATUtils.stopServers(new String[] { "WTRN0075W", "WTRN0076W", "CWWKE0701E", "DSRA8020E" }, server2fastcheck, longLeaseCompeteServer1);
         }

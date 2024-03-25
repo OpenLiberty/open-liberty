@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,18 +14,19 @@ package com.ibm.ws.jdbc.fat.oracle.containters;
 
 import java.time.Duration;
 
-import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.ws.jdbc.fat.oracle.FATSuite;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.container.OracleXEContainer;
 
 /**
  * Custom Oracle SSL Container class
+ * TODO replace with OracleFree
  */
-public class OracleSSLContainer extends OracleContainer {
+public class OracleSSLContainer extends OracleXEContainer {
 
     private static final int TCPS_PORT = 1522;
     private static final String WALLET_PASS = "WalletPasswd123";
@@ -44,7 +45,7 @@ public class OracleSSLContainer extends OracleContainer {
 
     //Do not allow developer to use a custom password
     @Override
-    public OracleContainer withPassword(String password) {
+    public OracleXEContainer withPassword(String password) {
         throw new UnsupportedOperationException("Oracle SSL container does not support use of a customer password.");
     }
 

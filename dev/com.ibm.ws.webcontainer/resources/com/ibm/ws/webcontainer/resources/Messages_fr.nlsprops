@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2023 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1578,10 +1578,7 @@ uncaught.exception.during.AsyncListener.onComplete.explanation=L'AsyncListener q
 uncaught.exception.during.AsyncListener.onComplete.useraction=V\u00e9rifiez le code source de l'AsyncListener et consultez les journaux serveur pour d\u00e9terminer la cause principale de l'erreur d'application.
 
 # Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
-# 0001 - 0199 for Base
-# 0200 - 0299 for Servlet 3.0
-# 0300 - 0399 for Servlet 3.1
-# 0400 - 0499 for Servlet 4
+# Sequential increment the message number for all new releases and services
 
 #name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
 #name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
@@ -1624,3 +1621,15 @@ uri.has.backslash.character=L'URI comporte une barre oblique invers\u00e9e ; cod
 multipart.file.count.max.exceeded=CWWWC0006E: La demande contenait plus de fichiers \u00e0 t\u00e9l\u00e9charger que ce qui est autoris\u00e9. Le nombre maximal de fichiers est [{0}].
 multipart.file.count.max.exceeded.explanation=Le nombre de fichiers t\u00e9l\u00e9charg\u00e9s par la demande multipartie/de donn\u00e9es de formulaire d\u00e9passait la limite d\u00e9finie.
 multipart.file.count.max.exceeded.useraction=Augmentez le nombre maximal de fichiers pouvant \u00eatre t\u00e9l\u00e9charg\u00e9s par demande en d\u00e9finissant la propri\u00e9t\u00e9 personnalis\u00e9e maxFileCount webContainer dans le fichier server.xml. La valeur par d\u00e9faut est 5000. Pour un t\u00e9l\u00e9chargement de fichiers illimit\u00e9, mettez la valeur \u00e0 -1.
+
+cannot.sendRedirect.response.already.committed=CWWWC0007E: La r\u00e9ponse sendRedirect n'est pas autoris\u00e9e apr\u00e8s la validation de la r\u00e9ponse.
+cannot.sendRedirect.response.already.committed.explanation=Lorsqu'une r\u00e9ponse est valid\u00e9e, elle ne peut pas envoyer de redirection.
+cannot.sendRedirect.response.already.committed.useraction=V\u00e9rifiez la logique sendRedirect pour vous assurer que la r\u00e9ponse n'est pas valid\u00e9e, manuellement ou automatiquement, avant l'appel de sendRedirect .
+
+redirect.location.cannot.be.null=CWWWC0008E: L'emplacement de redirection ne peut pas \u00eatre null.
+redirect.location.cannot.be.null.explanation=L'URL de l'emplacement de redirection doit \u00eatre une URL relative ou absolue. 
+redirect.location.cannot.be.null.useraction=Mettez \u00e0 jour l'emplacement de redirection en sp\u00e9cifiant une valeur d'URL qui n'est pas vide. L'URL peut \u00eatre relative ou absolue.
+
+sendRedirect.hyper.text.url=<html><body><p>Redirection vers <a href="{0}"></a></p></body></html>
+
+query.or.post.is.null=La cha\u00eene de requ\u00eate de demande ou les donn\u00e9es POST sont null.

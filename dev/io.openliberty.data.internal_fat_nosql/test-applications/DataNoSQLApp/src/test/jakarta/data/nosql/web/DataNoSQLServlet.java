@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 
 import org.junit.Test;
@@ -30,14 +31,13 @@ public class DataNoSQLServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
     private static final long TIMEOUT_MINUTES = 2L;
 
-    // TODO re-enable this once a version of jnsoql is available that uses the renamed packges
-    //@Inject
+    @Inject
     Employees employees;
 
     /**
      * Verify that implementation of a repository class can be injected.
      */
-    //TODO @Test
+    @Test
     public void testInjectRepository() {
         assertNotNull(employees);
     }
@@ -60,7 +60,7 @@ public class DataNoSQLServlet extends FATServlet {
      *
      * @throws Exception
      */
-    //TODO @Test
+    @Test
     public void testBasicQuery() throws Exception {
         Employee mark = new Employee(10L, "Mark", "BasicTest", "Engineer", "Rochester", 2010, 35, 60f);
         Employee dan = new Employee(11L, "Dan", "BasicTest", "Engineer", "Rochester", 2010, 35, 50f);

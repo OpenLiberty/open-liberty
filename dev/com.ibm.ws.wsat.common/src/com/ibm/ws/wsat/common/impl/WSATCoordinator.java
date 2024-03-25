@@ -17,6 +17,7 @@ import javax.xml.bind.JAXBElement;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 import org.apache.cxf.ws.addressing.EndpointReferenceUtils;
 import org.apache.cxf.ws.addressing.ReferenceParametersType;
+import org.w3c.dom.Node;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -70,9 +71,24 @@ public class WSATCoordinator extends WSATEndpoint {
         // back the originals plus our new participant id.
         ReferenceParametersType refs = new ReferenceParametersType();
         for (Object ref : getEndpointReference().getReferenceParameters().getAny()) {
+            if (TC.isDebugEnabled()) {
+
+                Tr.debug(TC, "Adding this reference parameter: {0}, {1}", ref.getClass().getCanonicalName(), ref);
+                if (ref instanceof Node) {
+                    Tr.debug(TC, "Local name: {0}", ((Node) ref).getLocalName());
+                    if (Constants.WS_WSAT_PART_ID.equals(((Node) ref).getLocalName())) {
+                        Tr.debug(TC, "Skipping");
+                        continue;
+                    }
+                }
+            }
             refs.getAny().add(ref);
         }
-        refs.getAny().add(new JAXBElement<String>(Constants.WS_WSAT_PART_REF, String.class, partId));
+        JAXBElement<String> part = new JAXBElement<String>(Constants.WS_WSAT_PART_REF, String.class, partId);
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "Now adding this additional reference parameter: {0}", part);
+        }
+        refs.getAny().add(part);
         epr.setReferenceParameters(refs);
         return epr;
     }

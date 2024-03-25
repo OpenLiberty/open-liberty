@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package test.jakarta.data.web;
 import static io.openliberty.data.repository.function.Extract.Field.HOUR;
 import static io.openliberty.data.repository.function.Extract.Field.MINUTE;
 import static io.openliberty.data.repository.function.Extract.Field.SECOND;
+import static jakarta.data.repository.By.ID;
 
 import java.time.OffsetDateTime;
 import java.util.AbstractCollection;
@@ -35,10 +36,12 @@ import java.util.stream.Stream;
 import jakarta.data.Limit;
 import jakarta.data.Sort;
 import jakarta.data.page.Page;
-import jakarta.data.page.Pageable;
+import jakarta.data.page.PageRequest;
 import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 import io.openliberty.data.repository.Select;
@@ -52,20 +55,33 @@ import io.openliberty.data.repository.function.Extract;
  */
 @Repository
 public interface Reservations extends BasicRepository<Reservation, Long> {
+
+    @Query("SELECT COUNT(o) FROM Reservation o") // JPQL
+    int count();
+
+    int countBy();
+
     boolean deleteByHostIn(List<String> hosts);
 
     long deleteByHostNot(String host);
 
+    void deleteByMeetingIdIn(Iterable<Long> ids);
+
+    @Find
     @Select("meetingId")
-    @OrderBy("id")
+    @OrderBy(ID)
     List<Long> endsAtSecond(@By("stop") @Extract(SECOND) int second);
+
+    Boolean existsByMeetingId(long meetingID);
 
     Iterable<Reservation> findByHost(String host);
 
-    @OrderBy("id")
+    @OrderBy(ID)
     Stream<Reservation> findByInviteesElementCount(int size);
 
     Collection<Reservation> findByLocationContainsOrderByMeetingID(String locationSubstring);
+
+    Stream<Reservation> findByMeetingIdIn(Iterable<Long> ids);
 
     List<Reservation> findByMeetingIDOrLocationLikeAndStartAndStopOrHost(long meetingID,
                                                                          String location,
@@ -85,7 +101,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     Stack<Reservation> findByStopGreaterThanOrderByLocationDescHostAscStopAsc(OffsetDateTime endAfter);
 
-    UserDefinedCollection<Reservation> findByStopLessThan(OffsetDateTime maxEndTime, Sort... sortBy);
+    UserDefinedCollection<Reservation> findByStopLessThan(OffsetDateTime maxEndTime, Sort<?>... sortBy);
 
     AbstractCollection<Reservation> findByStopLessThanEqual(OffsetDateTime maxEndTime);
 
@@ -103,7 +119,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     @Select({ "start", "stop" })
     Stream<ReservedTimeSlot> findByStopOrStopOrStop(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
 
-    Page<Reservation> findByHostStartsWith(String hostPrefix, Pageable pagination, Sort sort);
+    Page<Reservation> findByHostStartsWith(String hostPrefix, PageRequest<?> pagination, Sort<Reservation> sort);
 
     LinkedHashSet<Reservation> findByInviteesContainsOrderByMeetingID(String invitee);
 
@@ -123,6 +139,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     int removeByHostNotIn(Collection<String> hosts);
 
+    @Find
     @Select("meetingId")
     @OrderBy("host")
     List<Long> startsWithinHoursWithMinute(@By("start") @Extract(HOUR) @GreaterThanEqual int minHour,
@@ -133,6 +150,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     boolean updateByMeetingIDSetHost(long meetingID, String newHost);
 
-    @OrderBy("id")
+    @Find
+    @OrderBy(ID)
     Stream<Reservation> withInviteeCount(@By("invitees") @ElementCount int size);
 }

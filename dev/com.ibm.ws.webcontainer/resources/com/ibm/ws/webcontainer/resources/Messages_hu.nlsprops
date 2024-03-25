@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2023 IBM Corporation and others.
+# Copyright (c) 1997, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -442,7 +442,7 @@ class.transfered.using.binary.mode.explanation=Ez egy alkalmaz\u00e1shiba.
 class.transfered.using.binary.mode.useraction=Ellen\u0151rizze, hogy az oszt\u00e1ly \u00e1tvitele a f\u00e1jlrendszerbe bin\u00e1ris \u00e1tviteli m\u00f3d haszn\u00e1lat\u00e1val t\u00f6rt\u00e9nt-e.
 
 # -----------------------------------------------
-class.compiled.using.proper.case=SRVE0230E: Ellen\u0151rizze, hogy az oszt\u00e1ly kis- \u00e9s nagybet\u0171helyesen lett leford\u00edtva (ahogyan az oszt\u00e1ly meghat\u00e1roz\u00e1s\u00e1ban meg van hat\u00e1rozva).\n
+class.compiled.using.proper.case=SRVE0230E: Ellen\u0151rizze, hogy az oszt\u00e1ly kis- \u00e9s nagybet\u0171helyesen lett leford\u00edtva (ahogyan az oszt\u00e1ly meghat\ufffd\ufffdroz\u00e1s\u00e1ban meg van hat\u00e1rozva).\n
 class.compiled.using.proper.case.explanation=Ez egy alkalmaz\u00e1shiba.
 class.compiled.using.proper.case.useraction=Ellen\u0151rizze, hogy az oszt\u00e1ly kis- \u00e9s nagybet\u0171helyesen lett-e leford\u00edtva (ahogyan az oszt\u00e1ly meghat\u00e1roz\u00e1s\u00e1ban meg van hat\u00e1rozva).
 
@@ -1578,10 +1578,7 @@ uncaught.exception.during.AsyncListener.onComplete.explanation=A hiba\u00fczenet
 uncaught.exception.during.AsyncListener.onComplete.useraction=Keresse meg az alkalmaz\u00e1shiba f\u0151 ok\u00e1t az AsyncListener forr\u00e1sk\u00f3dj\u00e1ban \u00e9s a kiszolg\u00e1l\u00f3napl\u00f3kban
 
 # Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
-# 0001 - 0199 for Base
-# 0200 - 0299 for Servlet 3.0
-# 0300 - 0399 for Servlet 3.1
-# 0400 - 0499 for Servlet 4
+# Sequential increment the message number for all new releases and services
 
 #name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
 #name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
@@ -1624,3 +1621,15 @@ uri.has.backslash.character=Az URI ford\u00edtott t\u00f6rtvonal karakter; k\u00
 multipart.file.count.max.exceeded=CWWWC0006E: A k\u00e9r\u00e9s t\u00f6bb f\u00e1jlt tartalmazott a felt\u00f6lt\u00e9shez, mint a megengedett. A f\u00e1jlok maxim\u00e1lis sz\u00e1ma [{0}].
 multipart.file.count.max.exceeded.explanation=A multipart/form-data k\u00e9r\u00e9s \u00e1ltal felt\u00f6lt\u00f6tt f\u00e1jlok sz\u00e1ma t\u00fall\u00e9pte a be\u00e1ll\u00edtott korl\u00e1tot.
 multipart.file.count.max.exceeded.useraction=N\u00f6velje a k\u00e9r\u00e9senk\u00e9nt felt\u00f6lthet\u0151 f\u00e1jlok maxim\u00e1lis sz\u00e1m\u00e1t a maxFileCount webContainer egy\u00e9ni tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1val a server.xml f\u00e1jlban. Az\nalap\u00e9rtelmezett \u00e9rt\u00e9k 5000. A korl\u00e1tlan f\u00e1jlfelt\u00f6lt\u00e9shez \u00e1ll\u00edtsa be a -1 \u00e9rt\u00e9ket.
+
+cannot.sendRedirect.response.already.committed=CWWWC0007E: A v\u00e1lasz sendRedirect nem enged\u00e9lyezett a v\u00e1lasz v\u00e9gleges\u00edt\u00e9se ut\u00e1n.
+cannot.sendRedirect.response.already.committed.explanation=A v\u00e1lasz v\u00e9gleges\u00edt\u00e9sekor nem tud \u00e1tir\u00e1ny\u00edt\u00e1st k\u00fcldeni.
+cannot.sendRedirect.response.already.committed.useraction=Ellen\u0151rizze a sendRedirect funkci\u00f3t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a v\u00e1lasz nincs v\u00e9gleges\u00edtve, vagy k\u00e9zzel vagy automatikusan, miel\u0151tt a sendRedirect megh\u00edv\u00e1sra ker\u00fcl.
+
+redirect.location.cannot.be.null=CWWWC0008E: Az \u00e1tir\u00e1ny\u00edt\u00e1si hely nem lehet null.
+redirect.location.cannot.be.null.explanation=Az \u00e1tir\u00e1ny\u00edt\u00e1si hely URL c\u00edm\u00e9nek relat\u00edv vagy abszol\u00fat URL c\u00edmnek kell lennie. 
+redirect.location.cannot.be.null.useraction=Friss\u00edtse az \u00e1tir\u00e1ny\u00edt\u00e1si helyet olyan URL \u00e9rt\u00e9k megad\u00e1s\u00e1val, amely nem \u00fcres. Az URL lehet relat\u00edv vagy abszol\u00fat.
+
+sendRedirect.hyper.text.url=<html><body>Redirecting<p> <a href="{0}"></a></p></body></html>
+
+query.or.post.is.null=A k\u00e9r\u00e9s lek\u00e9rdez\u00e9si karaktersorozat vagy a post adat null.

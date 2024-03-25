@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2022 IBM Corporation and others.
+# Copyright (c) 2013, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -193,3 +193,13 @@ DISALLOWED_FORWARD_AUTHZ_PARAMS_CONFIGURED.useraction=Rimuovere i valori specifi
 JWT_MISSING_ISSUER=CWWKS1784E: Il token non \u00e8 valido perch\u00e9 non contiene un'attestazione di emittente.
 JWT_MISSING_ISSUER.explanation=Il token deve contenere un'attestazione di emittente per identificare chi ha emesso il token.
 JWT_MISSING_ISSUER.useraction=Ottenere un nuovo token che includa un'attestazione dell'emittente.
+
+# Do not translate "typ", "logout+jwt"
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER=CWWKS1785E: Il token non \u00e8 valido perch\u00e9 l''intestazione [{0}] ''typ '' del token indica che si tratta di un token di logout.
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.explanation=Il token non deve essere un token di logout. I token di logout potrebbero avere un parametro di intestazione "typ" (tipo) con il valore "logout + jwt".
+JWT_HAS_LOGOUT_TOKEN_TYP_HEADER.useraction=Assicurarsi che il token utilizzato non sia un token di logout.
+
+# Do not translate "events", "http://schemas.openid.net/event/backchannel-logout"
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM=CWWKS1786E: Il token non \u00e8 valido perch\u00e9 l''asserzione ''events'' con valore [{0}] indica che il token \u00e8 un token di logout.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.explanation=Il token non deve essere un token di logout. I token di logout hanno una richiesta di "eventi", che \u00e8 un oggetto JSON che comprende "http://schemas.openid.net/event/backchannel-logout" come uno dei suoi elementi.
+JWT_HAS_LOGOUT_TOKEN_EVENTS_CLAIM.useraction=Assicurarsi che il token utilizzato non sia un token di logout.

@@ -44,12 +44,12 @@ Subsystem-Name: Jakarta Faces 4.1
   io.openliberty.jakarta.faces-4.1, \
   io.openliberty.expressionLanguage-6.0, \
   io.openliberty.cdi-4.1
--bundles=io.openliberty.org.apache.myfaces.4.0, \
+-bundles=io.openliberty.org.apache.myfaces.4.1, \
  com.ibm.ws.jsf.shared.jakarta, \
  io.openliberty.faces.4.0.internal, \
  com.ibm.ws.cdi.interfaces.jakarta, \
  com.ibm.ws.cdi.2.0.jsf.jakarta, \
- io.openliberty.faces.4.0.thirdparty; location:="dev/api/third-party/"
+ io.openliberty.faces.4.1.thirdparty; location:="dev/api/third-party/"
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

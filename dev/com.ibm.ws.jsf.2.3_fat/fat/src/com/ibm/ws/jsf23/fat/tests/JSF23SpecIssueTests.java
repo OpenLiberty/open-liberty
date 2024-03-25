@@ -9,7 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -306,7 +306,7 @@ public class JSF23SpecIssueTests {
      * @throws Exception
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE10_FEATURES)
+    @SkipForRepeat(EE10_OR_LATER_FEATURES)
     public void testSpecIssue790Test1() throws Exception {
         try (WebClient webClient = new WebClient()) {
             // Use a synchronizing ajax controller to allow proper ajax updating

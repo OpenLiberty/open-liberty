@@ -25,7 +25,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.wsat.Constants;
 import com.ibm.ws.wsat.common.impl.WSATCoordinator;
-import com.ibm.ws.wsat.common.impl.WSATCoordinatorTran;
 import com.ibm.ws.wsat.common.impl.WSATParticipant;
 import com.ibm.ws.wsat.common.impl.WSATTransaction;
 import com.ibm.ws.wsat.service.WSATContext;
@@ -109,7 +108,7 @@ public class RegistrationImpl {
         }
 
         // Generate a new WSATTran control with the global transaction id
-        WSATCoordinatorTran wsatTran = new WSATCoordinatorTran(globalId, timeout, recovery);
+        WSATTransaction wsatTran = new WSATTransaction(globalId, timeout, recovery);
 
         // Set ourselves as the registration service and note the protocol
         // coordinator to return when others register with us.
@@ -163,7 +162,7 @@ public class RegistrationImpl {
         } else {
             // Get the transaction - this should exist.  We should always be registering
             // into an existing active transaction.
-            WSATCoordinatorTran wsatTran = WSATTransaction.getCoordTran(globalId);
+            WSATTransaction wsatTran = WSATTransaction.getCoordTran(globalId);
             if (wsatTran != null) {
                 // Add the new participant and enlist with the transaction manager so it
                 // will take part in 2PC transaction completion.

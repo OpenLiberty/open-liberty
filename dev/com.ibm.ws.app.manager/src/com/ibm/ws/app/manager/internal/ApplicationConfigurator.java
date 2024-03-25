@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -584,7 +584,6 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setServerStarted(ServerStarted serverStarted) {
         if (CheckpointPhase.getPhase() != CheckpointPhase.INACTIVE) {
-            _appFromName.values().forEach((a) -> a.getStateMachine().resetStartTime());
             _restoreMessages.forEach(Runnable::run);
             _restoreMessages.clear();
         }
@@ -2114,7 +2113,7 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
     }
 
     public void restoreMessage(Runnable message) {
-        if (_checkpointPhase != CheckpointPhase.INACTIVE) {
+        if (!_checkpointPhase.restored()) {
             _restoreMessages.add(message);
         }
     }

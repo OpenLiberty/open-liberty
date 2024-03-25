@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.cert.CertificateException;
 import java.text.DateFormat;
@@ -46,6 +47,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.batch.runtime.BatchStatus;
 import javax.json.Json;
@@ -131,6 +133,93 @@ public class BatchRestUtils {
         }
         return builder.build();
     }
+    
+    /*
+     * Utility method to get the instance log diractory
+     * 
+     * @param The instance id for which to obtain the log directory
+     * @return A File object representing the instance log directory
+     */
+    public File getInstanceDirectory(Long jobInstanceId) {
+        String method = "getInstanceDirectory";
+
+        File joblogsDir = new File(server.getServerRoot() + File.separator + "logs" + File.separator + "joblogs");
+        Path path = Paths.get(joblogsDir.getAbsolutePath());
+
+        File instanceDir = null;
+
+        Stream<Path> files = null;
+        try {
+            files = Files.walk(path);
+
+            Iterator<Path> iterator = files.iterator();
+            while (iterator.hasNext()) {
+                Path p = iterator.next();
+                p.getFileName();
+                if(p.endsWith("instance." + jobInstanceId)) {
+                    instanceDir = p.toFile();
+                    break;
+                }
+            }
+        } catch (IOException e) {
+             log(method,"Could not determine whether instance directory exists: " + e);
+        } finally {
+            if(files != null)
+                files.close();
+        }
+
+        return instanceDir;
+    }
+    
+    /**
+     * Expects response code 409 instead of 200 
+     * 
+     * @param jobInstanceId
+     * @param baseUrl
+     * @param username
+     * @param password
+     * 
+     * @return jobInstance
+     */
+    public void purgeJobInstanceExpectHttpConflict(long jobInstanceId, String baseUrl, String username, String password) throws IOException {
+        String method = "purgeJobInstanceExpectHttpConflict";
+
+        HttpURLConnection con = HttpUtils.getHttpConnection(buildURL(baseUrl + "jobinstances/" + jobInstanceId),
+                                                            HttpURLConnection.HTTP_CONFLICT,
+                                                            new int[0],
+                                                            10 * 1000,
+                                                            HTTPRequestMethod.DELETE,
+                                                            BatchRestUtils.buildHeaderMap(username,password),
+                                                            null);
+
+        logReaderContents(method, "Purge response: ", HttpUtils.getErrorStream(con));
+
+      }
+    
+    /**
+     * Expects response code 400 instead of 200 
+     * 
+     * @param jobInstanceId
+     * @param baseUrl
+     * @param username
+     * @param password
+     * 
+     * @return jobInstance
+     */
+    public void purgeJobInstanceExpectBadRequest(long jobInstanceId, String baseUrl, String username, String password) throws IOException {
+        String method = "purgeJobInstanceExpectBadRequest";
+
+        HttpURLConnection con = HttpUtils.getHttpConnection(buildURL(baseUrl + "jobinstances/" + jobInstanceId),
+                                                            HttpURLConnection.HTTP_BAD_REQUEST,
+                                                            new int[0],
+                                                            10 * 1000,
+                                                            HTTPRequestMethod.DELETE,
+                                                            BatchRestUtils.buildHeaderMap(username,password),
+                                                            null);
+
+        logReaderContents(method, "Purge response: ", HttpUtils.getErrorStream(con));
+
+      }
 
 
     /**

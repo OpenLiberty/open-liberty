@@ -22,6 +22,7 @@
   <AD id="a"        type="String" name="a"/>
   <AD id="b"        type="String" name="b"/>
   <AD id="c"        type="String" name="c"/>
+  <AD id="c"        type="String" name="c"/>
   <AD id="password" type="String"  ibm:type="password" name="password" required="false"/>
  </OCD>
 

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -110,7 +110,8 @@ public class ServiceConfigTests extends FATServletClient {
         GrpcTestUtils.stopGrpcService(worldChannel);
         // The testInvalidMaxInboundMessageSize() test generates this log message, don't flag it as an error
         // CWWKT0203E: The maxInboundMessageSize -1 is not valid. Sizes must greater than 0.
-        grpcServer.stopServer("CWWKT0203E");
+        // SRVE9015E: This occurs during testInvalidMaxInboundMessageSize where the protocol error prevents the response body being accessed
+        grpcServer.stopServer("CWWKT0203E", "SRVE9015E");
     }
 
     /**

@@ -16,12 +16,10 @@
 
 bVersion=1.0
 
-
 # all packages have packageinfo files (package-info.java with @version javadoc)
 DynamicImport-Package: *
 Export-Package: \
  com.ibm.tx.jta.embeddable,\
- com.ibm.tx.jta.embeddable.config,\
  com.ibm.tx.jta.embeddable.impl,\
  com.ibm.tx.ltc.embeddable.impl,\
  com.ibm.websphere.uow,\

@@ -1,0 +1,29 @@
+<server>
+  <featureManager>
+	<feature>localConnector-1.0</feature>
+	<feature>jsp-2.3</feature>
+	<feature>wsAtomicTransaction-1.2</feature>
+	<feature>jndi-1.0</feature>
+	<feature>timedexit-1.0</feature>
+	<feature>txtest-1.0</feature>
+	<feature>servlet-3.1</feature>
+	<feature>cdi-1.2</feature>
+  </featureManager>
+
+  <httpEndpoint host="*"
+                httpPort="${bvt.prop.HTTP_quaternary}"
+                httpsPort="${bvt.prop.HTTP_quaternary.secure}"
+                id="defaultHttpEndpoint">
+    <tcpOptions portOpenRetries="100000"/>
+  </httpEndpoint>
+
+  <transaction
+    backendURL="http://localhost:${bvt.prop.HTTP_quaternary}"
+    recoveryIdentity="FourthServer"
+    recoveryGroup="default-group"
+    recoverOnStartup="true"
+    waitForRecovery="true"
+  />
+
+  <javaPermission codebase="${server.config.dir}/dropins/endtoend.war" className="java.security.AllPermission"/>
+</server>

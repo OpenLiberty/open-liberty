@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,15 +12,16 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.service;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Map;
 
 import javax.xml.ws.BindingProvider;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.wsat.common.impl.WSATEndpoint;
+import com.ibm.ws.wsat.service.impl.WSATConfigServiceImpl;
 import com.ibm.ws.wsat.service.impl.WebClientImpl;
 
 /**
@@ -28,27 +29,19 @@ import com.ibm.ws.wsat.service.impl.WebClientImpl;
  * protocol web services.
  */
 public abstract class WebClient {
+    private static final TraceComponent TC = Tr.register(WebClient.class);
 
     private static WebClient testClient;
-
-    public static final String ASYNC_TIMEOUT = "com.ibm.ws.wsat.asyncResponseTimeout";
-    public static final String DEFAULT_ASYNC_TIMEOUT = "30000";
-
-    public static final String ASYNC_RESPONSE_TIMEOUT = AccessController.doPrivileged(new PrivilegedAction<String>() {
-        @Override
-        public String run() {
-            return System.getProperty(ASYNC_TIMEOUT, DEFAULT_ASYNC_TIMEOUT);
-        }
-    });
 
     public static WebClient getWebClient(WSATEndpoint toEpr, WSATEndpoint fromEpr) {
         return new WebClientImpl(toEpr, fromEpr);
     }
 
     protected void setTimeouts(Object bp) {
+        long timeout = WSATConfigServiceImpl.getInstance().getAsyncResponseTimeout();
         Map<String, Object> requestContext = ((BindingProvider) bp).getRequestContext();
-        requestContext.put("javax.xml.ws.client.connectionTimeout", ASYNC_RESPONSE_TIMEOUT);
-        requestContext.put("javax.xml.ws.client.receiveTimeout", ASYNC_RESPONSE_TIMEOUT);
+        requestContext.put("javax.xml.ws.client.connectionTimeout", timeout);
+        requestContext.put("javax.xml.ws.client.receiveTimeout", timeout);
     }
 
     /*

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,7 @@ package io.openliberty.checkpoint.fat;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-
-import java.io.File;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -32,9 +29,9 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
@@ -45,11 +42,6 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 public class CheckpointSPITest {
     @Rule
     public TestName testName = new TestName();
-
-    public final static String STATIC_SINGLE_PREPARE = "STATIC SINGLE PREPARE - ";
-    public final static String STATIC_SINGLE_RESTORE = "STATIC SINGLE RESTORE - ";
-    public final static String STATIC_MULTI_PREPARE = "STATIC MULTI PREPARE - ";
-    public final static String STATIC_MULTI_RESTORE = "STATIC MULTI RESTORE - ";
 
     private static final String USER_FEATURE_PATH = "usr/extension/lib/features/";
     private static final String USER_BUNDLE_PATH = "usr/extension/lib/";
@@ -74,37 +66,9 @@ public class CheckpointSPITest {
 
     private void findLogMessage(String testMessage, String expectedPrefix, String expectedPostfix, long timeout) {
         String actual = server.waitForStringInLogUsingMark(expectedPrefix, timeout);
-        assertNotNull("No message prefix found: " + expectedPrefix, actual);
+        assertNotNull(testMessage + ": No message prefix found: " + expectedPrefix, actual);
         actual = actual.substring(actual.indexOf(expectedPrefix));
-        assertEquals("Unexpected: ", expectedPrefix + expectedPostfix, actual);
-
-    }
-
-    @Test
-    public void testRestoreWithDefaults() throws Exception {
-        server.startServer(getTestMethodNameOnly(testName) + ".log");
-        findLogMessage("No restore config", "TESTING - restore config: ", "a=test1 b=test1 c=${c_value}", 0);
-        findLogMessage("No RESTORED true found in restore", "TESTING - in restore method RESTORED", " - true -- true", 500);
-        findLogMessage("Restore should have null running condition", "TESTING - restore running condition: ", "null", 500);
-        findLogMessage("Bind should have non-null running condition", "TESTING - bind running condition: ", "io.openliberty.process.running AFTER_APP_START", 500);
-    }
-
-    @Test
-    public void testRestoreWithEnvSet() throws Exception {
-        server.startServer(getTestMethodNameOnly(testName) + ".log");
-        findLogMessage("No restore config", "TESTING - modified config: ", "a=env2 b=env2 c=env2", 500);
-    }
-
-    @Test
-    public void testRestoreWithDropinConfig() throws Exception {
-        server.startServer(getTestMethodNameOnly(testName) + ".log");
-        findLogMessage("No restore config", "TESTING - modified config: ", "a=override b=override c=override", 500);
-    }
-
-    @Test
-    public void testRestoreWithVariableDirConfig() throws Exception {
-        server.startServer(getTestMethodNameOnly(testName) + ".log");
-        findLogMessage("No restore config", "TESTING - modified config: ", "a=fileValue b=fileValue c=fileValue", 500);
+        assertEquals(testMessage + ": Unexpected: ", expectedPrefix + expectedPostfix, actual);
     }
 
     @Test
@@ -134,28 +98,6 @@ public class CheckpointSPITest {
         ProgramOutput output = server.checkpointRestore();
         int retureCode = output.getReturnCode();
         assertEquals("Wrong return code for failed checkpoint.", 82, retureCode);
-    }
-
-    @Test
-    public void testStaticHook() throws Exception {
-        server.startServer(getTestMethodNameOnly(testName) + ".log");
-        findLogMessage("Static single prepare method", STATIC_SINGLE_RESTORE, "SUCCESS", 500);
-        findLogMessage("Static single prepare method", STATIC_MULTI_RESTORE, "SUCCESS", 500);
-    }
-
-    @Test
-    public void testProtectedString() throws Exception {
-        server.startServer(getTestMethodNameOnly(testName) + ".log");
-        String firstRestore = server.waitForStringInLogUsingMark("TESTING - ProtectedString restore password: ", 500);
-        assertNotNull("No restored ProtectedString found.", firstRestore);
-        server.stopServer();
-
-        server.checkpointRestore();
-        String secondRestore = server.waitForStringInLogUsingMark("TESTING - ProtectedString restore password: ", 500);
-        assertNotNull("No restored ProtectedString found.", secondRestore);
-
-        // the two trace strings must be different
-        assertFalse("ProtectedString traces strings must be different: " + firstRestore + " - " + secondRestore, firstRestore.equals(secondRestore));
     }
 
     @Before
@@ -207,7 +149,6 @@ public class CheckpointSPITest {
             expectRestoreFailure = true;
         }
         server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, autoRestore, expectCheckpointFailure, expectRestoreFailure, server -> {
-            findLogMessage("No prepare config", "TESTING - prepare config: ", "a=test1 b=test1 c=${c_value}", 0);
             findLogMessage("No RESTORED false found in prepare", "TESTING - in prepare method RESTORED", " - false -- false", 500);
             findLogMessage("Activate should have null running condition", "TESTING - activate running condition: ", "null", 500);
             findLogMessage("Prepare should have null running condition", "TESTING - prepare running condition: ", "null", 500);
@@ -225,27 +166,6 @@ public class CheckpointSPITest {
                 case testAddImmutableEnvKey:
                     findLogMessage("No message for env keys", "TESTING - in prepare envs -", " v1 - v2 - null - null", 500);
                     break;
-                case testRestoreWithEnvSet:
-                    // environment value overrides defaultValue in restore
-                    server.copyFileToLibertyServerRoot("envConfigChange/server.env");
-                    break;
-                case testRestoreWithDropinConfig:
-                    // dropin configs value overrides defaultValue in restore
-                    server.addDropinOverrideConfiguration("dropinConfigChange/override.xml");
-                    break;
-                case testRestoreWithVariableDirConfig:
-                    // add files to variables directory that overrides defaultValue in restore
-                    new File(server.getServerRoot(), "variables").mkdirs();
-                    server.copyFileToLibertyServerRoot("variables", "configVariables/a_value");
-                    server.copyFileToLibertyServerRoot("variables", "configVariables/b_value");
-                    server.copyFileToLibertyServerRoot("variables", "configVariables/c_value");
-                case testStaticHook:
-                    findLogMessage("Static single prepare method", STATIC_SINGLE_PREPARE, "SUCCESS", 500);
-                    findLogMessage("Static single prepare method", STATIC_MULTI_PREPARE, "SUCCESS", 500);
-                    break;
-                case testProtectedString:
-                    findLogMessage("ProtectedString should be *****", "TESTING - ProtectedString prepare password: ", "*****", 500);
-                    break;
                 default:
                     Log.info(getClass(), testName.getMethodName(), "No configuration required: " + testMethod);
                     break;
@@ -262,10 +182,6 @@ public class CheckpointSPITest {
             server.stopServer();
             server.restoreServerConfiguration();
             server.deleteFileFromLibertyServerRoot("server.env");
-            server.deleteDropinOverrideConfiguration("override.xml");
-            server.deleteFileFromLibertyServerRoot("variables/a_value");
-            server.deleteFileFromLibertyServerRoot("variables/b_value");
-            server.deleteFileFromLibertyServerRoot("variables/c_value");
 
         } finally {
             server.unsetCheckpoint();
@@ -273,16 +189,10 @@ public class CheckpointSPITest {
     }
 
     static enum TestMethod {
-        testRestoreWithDefaults,
-        testRestoreWithEnvSet,
-        testRestoreWithDropinConfig,
-        testRestoreWithVariableDirConfig,
         testAddImmutableEnvKey,
         testRunningConditionLaunch,
         testFailedCheckpoint,
         testFailedRestore,
-        testStaticHook,
-        testProtectedString,
         unknown
     }
 

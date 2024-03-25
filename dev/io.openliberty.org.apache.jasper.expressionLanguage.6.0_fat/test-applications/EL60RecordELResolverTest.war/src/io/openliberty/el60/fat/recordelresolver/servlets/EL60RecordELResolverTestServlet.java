@@ -133,7 +133,6 @@ public class EL60RecordELResolverTestServlet extends FATServlet {
         elProcessor.getELManager().importClass("io.openliberty.el60.fat.recordelresolver.records.TestRecordStringRecord");
 
         try {
-            // Try to get working with ELProcessor!
             elProcessor.setVariable("testRecordString", "TestRecordString(\"Test Data!\")");
             elProcessor.setVariable("testRecordStringRecord", "TestRecordStringRecord(\"Test Data!\", testRecordString)");
             log("testRecordString: " + elProcessor.getValue("testRecordString", TestRecordString.class));

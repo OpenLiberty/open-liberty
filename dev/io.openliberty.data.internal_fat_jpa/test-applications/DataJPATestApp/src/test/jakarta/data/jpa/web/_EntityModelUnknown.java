@@ -10,6 +10,8 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.time.Period;
+
 import jakarta.data.Sort;
 import jakarta.data.metamodel.SortableAttribute;
 import jakarta.data.metamodel.StaticMetamodel;
@@ -17,12 +19,12 @@ import jakarta.data.metamodel.StaticMetamodel;
 /**
  * Static metamodel for an non-JPA entity type to ignore.
  */
-@StaticMetamodel(java.time.Period.class)
+@StaticMetamodel(Period.class)
 public class _EntityModelUnknown {
-    public static volatile SortableAttribute days = new Sortable("Days", Sort.asc("Days"), Sort.desc("Days"));
-    public static volatile SortableAttribute months = new Sortable("Mon", Sort.asc("Mon"), Sort.desc("Mon"));
-    public static volatile SortableAttribute years;
+    public static volatile SortableAttribute<Period> days = new Sortable("Days", Sort.asc("Days"), Sort.desc("Days"));
+    public static volatile SortableAttribute<Period> months = new Sortable("Mon", Sort.asc("Mon"), Sort.desc("Mon"));
+    public static volatile SortableAttribute<Period> years;
 
-    private record Sortable(String name, Sort asc, Sort desc) implements SortableAttribute {
+    private record Sortable(String name, Sort<Period> asc, Sort<Period> desc) implements SortableAttribute<Period> {
     }
 }

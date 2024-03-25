@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -100,8 +100,6 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
     TAIRequestHelper taiRequestHelper = new TAIRequestHelper();
     SocialWebUtils webUtils = new SocialWebUtils();
     static ObscuredConfigIdManager configIdManager = new ObscuredConfigIdManager();
-
-    private static boolean issuedBetaMessage = false;
 
     protected void setSslSupport(ServiceReference<SSLSupport> ref) {
         sslSupportRef.setReference(ref);
@@ -454,26 +452,13 @@ public class SocialLoginTAI implements TrustAssociationInterceptor, UnprotectedR
             SocialLoginConfig socialLoginConfig = null;
             while (services.hasNext()) {
                 socialLoginConfig = services.next();
-                if (socialLoginConfig instanceof OidcLoginConfigImpl && isRunningBetaMode()) {
+                if (socialLoginConfig instanceof OidcLoginConfigImpl) {
                     OidcSessionUtils.removeOidcSession(request, response, (OidcLoginConfigImpl) socialLoginConfig);
                 }
                 // TODO remove all the cookies of the subject
             }
         }
         return bSetSubject;
-    }
-    
-    boolean isRunningBetaMode() {
-        if (!ProductInfo.getBetaEdition()) {
-            return false;
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
-        }
     }
 
     TAIResult handleOAuthLoginRequest(HttpServletRequest request, HttpServletResponse response, SocialLoginConfig clientConfig) throws WebTrustAssociationFailedException {
