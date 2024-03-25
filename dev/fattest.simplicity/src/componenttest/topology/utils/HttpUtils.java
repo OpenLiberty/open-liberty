@@ -61,8 +61,6 @@ public class HttpUtils {
 
     private final static int LOWEST_ERROR_CODE = 400;
 
-    public static final String PEER_CERTIFICATES = "PEER_CERTIFICATES";
-
     public enum HTTPRequestMethod {
         GET, POST, HEAD, OPTIONS, PUT, DELETE, TRACE
     }
