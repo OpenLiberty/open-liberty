@@ -60,6 +60,7 @@ import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
 import jakarta.annotation.Generated;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.metamodel.StaticMetamodel;
+import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
@@ -439,8 +440,15 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 } else if (c.isArray()) {
                     c = c.getComponentType();
                 }
-                if (Object.class.equals(c)) { // generic parameter like BasicRepository.save(S entity)
-                    entityParamType = method.getParameterTypes()[0];
+                if (Object.class.equals(c)) {
+                    // generic parameter like BasicRepository.save(S entity) or BasicRepository.deleteById(@By(ID) K id)
+                    boolean isEntity = true;
+                    for (Annotation anno : method.getParameterAnnotations()[0])
+                        if (By.class.equals(anno.annotationType()))
+                            isEntity = false;
+                    if (isEntity)
+                        entityParamType = c;
+                    // TODO is there any way to distinguish @Delete deleteById(K key) when @By is not present?
                 } else if (c != null &&
                            !c.isPrimitive() &&
                            !c.isInterface()) {

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static jakarta.data.repository.By.ID;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -38,6 +40,8 @@ import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
+import jakarta.data.page.CursoredPage;
+import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
@@ -249,7 +253,7 @@ public class QueryInfo {
      */
     @Trivial
     void addSort(boolean ignoreCase, String attribute, boolean descending) {
-        Set<String> names = entityInfo.idClassAttributeAccessors != null && "id".equalsIgnoreCase(attribute) //
+        Set<String> names = entityInfo.idClassAttributeAccessors != null && ID.equalsIgnoreCase(attribute) //
                         ? entityInfo.idClassAttributeAccessors.keySet() //
                         : Set.of(attribute);
 
@@ -273,13 +277,14 @@ public class QueryInfo {
      * TODO remove this method once we have Jakarta Persistence 3.2.
      *
      * @oaram o_ entity identifier variable followed by the . character.
-     * @param ql      Jakarta Data Query Language
-     * @param startAt position in query language to start at.
-     * @param q       simulated JPQL to which to append.
-     * @param q       simulated JPQL count query to which to append unless null. The ORDER BY clause is not appended.
+     * @param ql             Jakarta Data Query Language
+     * @param startAt        position in query language to start at.
+     * @param q              simulated JPQL to which to append.
+     * @param c              simulated JPQL count query to which to append unless null. The ORDER BY clause is not appended.
+     * @param isCursoredPage indicates if the return type is CursoredPage.
      * @return simulated JPQL.
      */
-    private StringBuilder appendWithIdentifierName(String o_, String ql, int startAt, StringBuilder q, StringBuilder c) {
+    private StringBuilder appendWithIdentifierName(String o_, String ql, int startAt, StringBuilder q, StringBuilder c, boolean isCursoredPage) {
         boolean appendToCountQuery = c != null;
         boolean isLiteral = false;
         boolean isNamedParamOrEmbedded = false;
@@ -330,6 +335,13 @@ public class QueryInfo {
                     if ("ORDER".equalsIgnoreCase(str)
                         && i + 3 < length
                         && (by = indexOfAfterWhitespace("BY", ql, i + 1)) > 0) {
+                        if (isCursoredPage)
+                            throw new UnsupportedOperationException("The " + ql + " query that is supplied to the " + method.getName() +
+                                                                    " method of the " + method.getDeclaringClass().getName() +
+                                                                    " repository cannot include an ORDER BY clause because" +
+                                                                    " the method returns a " + "CursoredPage" + ". Remove the ORDER BY" +
+                                                                    " clause and instead use the " + "OrderBy" +
+                                                                    " annotation to specify static sort criteria."); // TODO NLS
                         for (; i < by + 2; i++)
                             s.append(ql.charAt(i));
                         str = s.toString();
@@ -391,7 +403,7 @@ public class QueryInfo {
             Sort<Object> sort = addIt.next();
             if (sort == null)
                 throw new IllegalArgumentException("Sort: null");
-            else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
+            else if (hasIdClass && ID.equals(sort.property()))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
                     combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name, true), sort));
             else
@@ -417,7 +429,7 @@ public class QueryInfo {
         for (Sort<Object> sort : additional) {
             if (sort == null)
                 throw new IllegalArgumentException("Sort: null");
-            else if (hasIdClass && sort.property().equalsIgnoreCase("id"))
+            else if (hasIdClass && ID.equals(sort.property()))
                 for (String name : entityInfo.idClassAttributeAccessors.keySet())
                     combined.add(entityInfo.getWithAttributeName(entityInfo.getAttributeName(name, true), sort));
             else
@@ -618,89 +630,14 @@ public class QueryInfo {
     }
 
     /**
-     * Assembles the count query based on the Query annotation.
-     * If Query.count contains JPQL, it is used.
-     * If Query.count contains JDQL, it is transformed into JPQL.
-     *
-     * @param countQL Query.count() might be JPQL or JDQL.
-     * @return count query in JPQL, possibly created from supplied JDQL.
-     */
-    private String assembleCountQuery(String countQL) {
-
-        StringBuilder c = null;
-
-        int length = countQL.length();
-        int startAt = 0;
-        char firstChar = ' ';
-        for (; startAt < length && Character.isWhitespace(firstChar = countQL.charAt(startAt)); startAt++);
-
-        switch (firstChar) {
-            case 'S':
-            case 's': // SELECT
-                // TODO
-                throw new UnsupportedOperationException();
-            // break;
-            case 'F':
-            case 'f': // FROM
-                boolean continueToWhereClause = false;
-                if (startAt + 5 < length
-                    && countQL.regionMatches(true, startAt + 1, "ROM", 0, 3)
-                    && Character.isWhitespace(countQL.charAt(startAt + 4))) {
-
-                    startAt += 5; // EntityName optionally preceded by whitespace
-                    for (; startAt < length && Character.isWhitespace(countQL.charAt(startAt)); startAt++);
-                    StringBuilder entityName = new StringBuilder();
-                    for (char ch; startAt < length && Character.isLetterOrDigit(ch = countQL.charAt(startAt)); startAt++)
-                        entityName.append(ch);
-
-                    if (entityName.length() > 0) {
-                        if (c == null)
-                            c = new StringBuilder(countQL.length() * 5 / 4 + 25).append("SELECT COUNT(o)");
-                        c.append(" FROM ").append(entityName).append(" o");
-                        // EntityName might be followed by whitespace and a WHERE clause
-                        for (; startAt < length && Character.isWhitespace(countQL.charAt(startAt)); startAt++);
-                        if (startAt < length) {
-                            char w = countQL.charAt(startAt);
-                            continueToWhereClause = w == 'W' || w == 'w';
-                        }
-                        if (startAt == length)
-                            return c.toString();
-                    } // TODO error message for missing EntityName after FROM
-                }
-                if (!continueToWhereClause)
-                    break;
-            case 'W':
-            case 'w': // WHERE
-                if (startAt + 5 < length
-                    && countQL.regionMatches(true, startAt + 1, "HERE", 0, 4)
-                    && !Character.isLetterOrDigit(countQL.charAt(startAt + 5))) {
-
-                    if (c == null)
-                        c = new StringBuilder(countQL.length() * 5 / 4 + 25) //
-                                        .append("SELECT COUNT(o) FROM ").append(entityInfo.name).append(" o");
-                    c.append(" WHERE");
-
-                    return appendWithIdentifierName("o.", countQL, startAt + 5, c, null).toString();
-                }
-                break;
-            default:
-                throw new UnsupportedOperationException("The count query supplied to the " + method.getName() + " method of the " +
-                                                        method.getDeclaringClass().getName() + " repository does not apear to be " +
-                                                        "valid JDQL (Jakarta Data Query Language) or " +
-                                                        "valid JPQL (Jakarta Persistence Query Language) for a count query. The query is " + countQL); // TODO NLS
-        }
-
-        return countQL;
-    }
-
-    /**
      * Initializes query information based on the Query annotation.
      *
-     * @param ql         Query.value() might be JPQL or JDQL
-     * @param countQL    Query.count() might be JPQL or JDQL or "" (unspecified)
-     * @param countPages whether or not to obtain a count of pages.
+     * @param ql        Query.value() might be JPQL or JDQL
+     * @param multiType the type of data structure that returns multiple results for this query. Otherwise null.
      */
-    void initForQuery(String ql, String countQL, boolean countPages) {
+    void initForQuery(String ql, Class<?> multiType) {
+        boolean isCursoredPage = CursoredPage.class.equals(multiType);
+        boolean countPages = isCursoredPage || Page.class.equals(multiType);
 
         StringBuilder q = null; // main query
         StringBuilder c = null; // count query
@@ -741,7 +678,7 @@ public class QueryInfo {
                                 entityVar_ = "o.";
                                 q = new StringBuilder(ql.length() * 3 / 2) //
                                                 .append("DELETE FROM ").append(entityName).append(" o WHERE");
-                                jpql = appendWithIdentifierName(entityVar_, ql, startAt + 5, q, null).toString();
+                                jpql = appendWithIdentifierName(entityVar_, ql, startAt + 5, q, null, false).toString();
                             }
                         }
                     }
@@ -771,7 +708,7 @@ public class QueryInfo {
                             entityVar_ = "o.";
                             q = new StringBuilder(ql.length() * 3 / 2) //
                                             .append("UPDATE ").append(entityName).append(" o SET");
-                            jpql = appendWithIdentifierName(entityVar_, ql, startAt + 3, q, null).toString();
+                            jpql = appendWithIdentifierName(entityVar_, ql, startAt + 3, q, null, false).toString();
                         }
                     }
                 }
@@ -801,7 +738,7 @@ public class QueryInfo {
                         }
                         q.append(" FROM ").append(entityName).append(' ').append(entityVar);
 
-                        if (countPages && countQL.length() == 0) {
+                        if (countPages) {
                             if (c == null)
                                 c = new StringBuilder(ql.length() * 5 / 4 + 20).append("SELECT COUNT(").append(entityVar).append(")");
                             c.append(" FROM ").append(entityName).append(' ').append(entityVar);
@@ -824,6 +761,7 @@ public class QueryInfo {
                     && ql.regionMatches(true, startAt, "WHERE", 0, 5)
                     && !Character.isLetterOrDigit(ql.charAt(startAt + 5))) {
                     hasWhere = true;
+                    startAt += 5;
 
                     if (q == null) {
                         type = Type.FIND;
@@ -834,7 +772,7 @@ public class QueryInfo {
                     }
                     q.append(" WHERE");
 
-                    if (countPages && countQL.length() == 0) {
+                    if (countPages) {
                         if (c == null)
                             c = new StringBuilder(ql.length() * 5 / 4 + 20) // add 25% for identifier variable use
                                             .append("SELECT COUNT(").append(entityVar) //
@@ -842,13 +780,20 @@ public class QueryInfo {
                         c.append(" WHERE");
                     }
 
-                    jpql = appendWithIdentifierName(entityVar_, ql, startAt + 5, q, c).toString();
+                    // Cursor-based pagination queries must end with the WHERE clause, per the spec.
+                    // Insert parenthesis to allow later appending conditions.
+                    if (isCursoredPage)
+                        q.append(" (");
+
+                    appendWithIdentifierName(entityVar_, ql, startAt, q, c, isCursoredPage);
+
+                    if (isCursoredPage)
+                        q.append(')');
+
+                    jpql = q.toString();
 
                     if (countPages)
-                        if (c == null)
-                            jpqlCount = assembleCountQuery(countQL);
-                        else
-                            jpqlCount = c.toString();
+                        jpqlCount = c.toString();
 
                     break;
                 }
@@ -874,17 +819,14 @@ public class QueryInfo {
                         }
                         q.append(" ORDER BY");
 
-                        if (countPages && countQL.length() == 0 && c == null)
+                        if (countPages && c == null)
                             c = new StringBuilder(q.length()).append("SELECT COUNT(").append(entityVar) //
                                             .append(") FROM ").append(entityInfo.name).append(' ').append(entityVar);
 
-                        jpql = appendWithIdentifierName(entityVar_, ql, startAt, q, null).toString();
+                        jpql = appendWithIdentifierName(entityVar_, ql, startAt, q, null, false).toString();
 
                         if (countPages)
-                            if (c == null)
-                                jpqlCount = assembleCountQuery(countQL);
-                            else
-                                jpqlCount = c.toString();
+                            jpqlCount = c.toString();
 
                         break;
                     }
@@ -896,10 +838,7 @@ public class QueryInfo {
                         // FROM clause without WHERE and without ORDER BY
                         jpql = q.toString();
                         if (countPages)
-                            if (countQL.length() == 0)
-                                jpqlCount = c.toString();
-                            else
-                                jpqlCount = assembleCountQuery(countQL);
+                            jpqlCount = c.toString();
                     }
                 } else { // empty query
                     type = Type.FIND;
@@ -911,12 +850,9 @@ public class QueryInfo {
                                     .toString();
 
                     if (countPages)
-                        if (countQL.length() == 0)
-                            jpqlCount = new StringBuilder(entityInfo.name.length() + 23) //
-                                            .append("SELECT COUNT(o) FROM ").append(entityInfo.name).append(" o") //
-                                            .toString();
-                        else
-                            jpqlCount = assembleCountQuery(countQL);
+                        jpqlCount = new StringBuilder(entityInfo.name.length() + 23) //
+                                        .append("SELECT COUNT(o) FROM ").append(entityInfo.name).append(" o") //
+                                        .toString();
                 }
         }
 
@@ -930,7 +866,7 @@ public class QueryInfo {
                 int order = upper.lastIndexOf("ORDER BY");
                 type = Type.FIND;
                 sorts = sorts == null ? new ArrayList<>() : sorts;
-                jpqlCount = countQL.length() > 0 ? countQL : null; // TODO JDQL
+                jpqlCount = null; // TODO JDQL
 
                 int selectIndex = upper.length() - upperTrimmed.length();
                 int from = find("FROM", upper, selectIndex + 9);
@@ -971,6 +907,12 @@ public class QueryInfo {
             }
             hasWhere = upperTrimmed.contains("WHERE");
         }
+
+        if (isCursoredPage && !hasWhere)
+            throw new UnsupportedOperationException("The " + ql + " query that is supplied to the " + method.getName() +
+                                                    " method of the " + method.getDeclaringClass().getName() +
+                                                    " repository must end with a WHERE clause because the method returns a " +
+                                                    "CursoredPage" + "."); // TODO NLS
     }
 
     /**

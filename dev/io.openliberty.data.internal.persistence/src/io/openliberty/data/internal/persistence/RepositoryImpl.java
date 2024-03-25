@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static jakarta.data.repository.By.ID;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -299,7 +301,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                                              count, exists, select);
 
         if (query != null) { // @Query annotation
-            queryInfo.initForQuery(query.value(), query.count(), countPages);
+            queryInfo.initForQuery(query.value(), multiType);
         } else if (save != null) { // @Save annotation
             queryInfo.init(Save.class, QueryInfo.Type.SAVE);
         } else if (insert != null) { // @Insert annotation
@@ -695,7 +697,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
-        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName("id", true));
+        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName(ID, true));
         if (id == null) {
             jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
             if (version != null)
@@ -748,7 +750,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         String o_ = queryInfo.entityVar_;
         StringBuilder q;
         if (entityInfo.idClassAttributeAccessors == null) {
-            String idAttrName = entityInfo.attributeNames.get("id");
+            String idAttrName = entityInfo.attributeNames.get(ID);
             q = new StringBuilder(24 + entityInfo.name.length() + o.length() * 2 + idAttrName.length()) //
                             .append("DELETE FROM ").append(entityInfo.name).append(' ').append(o).append(" WHERE ") //
                             .append(o_).append(idAttrName).append("=?1");
@@ -785,7 +787,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
             q.append(" WHERE (");
 
-            String idName = entityInfo.getAttributeName("id", true);
+            String idName = entityInfo.getAttributeName(ID, true);
             if (idName == null && entityInfo.idClassAttributeAccessors != null) {
                 boolean first = true;
                 for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
@@ -981,7 +983,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (where + 8 == len)
                     q.delete(where, len); // Remove " WHERE " because there are no conditions
                 queryInfo.hasWhere = false;
-            } else if (queryInfo.entityInfo.idClassAttributeAccessors != null && attribute.equalsIgnoreCase("id")) {
+            } else if (queryInfo.entityInfo.idClassAttributeAccessors != null && ID.equals(attribute)) {
                 generateConditionsForIdClass(queryInfo, condition, ignoreCase, negated, q);
             }
             return;
@@ -1609,7 +1611,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             queryInfo.type = QueryInfo.Type.COUNT;
         } else if (methodName.startsWith("exists")) {
             int c = by < 0 ? 6 : (by + 2);
-            String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
+            String name = entityInfo.idClassAttributeAccessors == null ? ID : entityInfo.idClassAttributeAccessors.firstKey();
             String attrName = entityInfo.getAttributeName(name, true);
             q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
                             .append(" FROM ").append(entityInfo.name).append(' ').append(o);
@@ -1734,7 +1736,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
         } else if (methodTypeAnno instanceof Exists) {
             queryInfo.type = QueryInfo.Type.EXISTS;
-            String name = entityInfo.idClassAttributeAccessors == null ? "id" : entityInfo.idClassAttributeAccessors.firstKey();
+            String name = entityInfo.idClassAttributeAccessors == null ? ID : entityInfo.idClassAttributeAccessors.firstKey();
             String attrName = entityInfo.getAttributeName(name, true);
             q = new StringBuilder(200).append("SELECT ").append(o_).append(attrName) //
                             .append(" FROM ").append(entityInfo.name).append(' ').append(o);
@@ -1988,7 +1990,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         String o_ = queryInfo.entityVar_;
         StringBuilder q;
 
-        String idName = queryInfo.entityInfo.getAttributeName("id", true);
+        String idName = queryInfo.entityInfo.getAttributeName(ID, true);
         if (idName == null && queryInfo.entityInfo.idClassAttributeAccessors != null) {
             // TODO support this similar to what generateDeleteEntity does
             throw new MappingException("Update operations cannot be used on entities with composite IDs."); // TODO NLS
@@ -2517,7 +2519,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                             Object value = result;
                                             if (entityInfo.entityClass.isInstance(result) ||
                                                 entityInfo.recordClass != null && entityInfo.recordClass.isInstance(result)) {
-                                                List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.attributeNames.get("id"));
+                                                List<Member> accessors = entityInfo.attributeAccessors.get(entityInfo.attributeNames.get(ID));
                                                 if (accessors == null || accessors.isEmpty())
                                                     throw new MappingException("Unable to find the id attribute on the " + entityInfo.name + " entity."); // TODO NLS
                                                 for (Member accessor : accessors)
@@ -2973,7 +2975,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         Object id = null;
         if (entityInfo.idClassAttributeAccessors == null) {
-            id = entityInfo.getAttribute(e, entityInfo.getAttributeName("id", true));
+            id = entityInfo.getAttribute(e, entityInfo.getAttributeName(ID, true));
             if (id == null) {
                 jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
                 if (version != null)
@@ -3328,7 +3330,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
         }
 
-        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName("id", true));
+        Object id = entityInfo.getAttribute(e, entityInfo.getAttributeName(ID, true));
         if (id == null) {
             jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
             if (version != null)

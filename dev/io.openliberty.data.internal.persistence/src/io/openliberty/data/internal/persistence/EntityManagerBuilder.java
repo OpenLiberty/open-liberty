@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static jakarta.data.repository.By.ID;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
@@ -216,7 +218,7 @@ public abstract class EntityManagerBuilder implements Runnable {
                     } else {
                         SingularAttribute<?, ?> singleAttr = attr instanceof SingularAttribute ? (SingularAttribute<?, ?>) attr : null;
                         if (singleAttr != null && singleAttr.isId()) {
-                            attributeNames.put("id", attributeName);
+                            attributeNames.put(ID, attributeName);
                             idType = singleAttr.getJavaType();
                         } else if (singleAttr != null && singleAttr.isVersion()) {
                             versionAttrName = attributeName;
@@ -280,8 +282,7 @@ public abstract class EntityManagerBuilder implements Runnable {
                                 collectionElementTypes.put(fullAttributeName, ((PluralAttribute<?, ?, ?>) relAttr).getElementType().getJavaType());
                         } else if (relAttr instanceof SingularAttribute) {
                             SingularAttribute<?, ?> singleAttr = ((SingularAttribute<?, ?>) relAttr);
-                            if (singleAttr.isId()) {
-                                attributeNames.put("id", fullAttributeName);
+                            if (singleAttr.isId() && attributeNames.putIfAbsent(ID, fullAttributeName) == null) {
                                 idType = singleAttr.getJavaType();
                             } else if (singleAttr.isVersion()) {
                                 versionAttrName = relationAttributeName_; // to be suitable for query-by-method
@@ -299,7 +300,7 @@ public abstract class EntityManagerBuilder implements Runnable {
                         @SuppressWarnings("unchecked")
                         Set<SingularAttribute<?, ?>> idClassAttributes = (Set<SingularAttribute<?, ?>>) (Set<?>) entityType.getIdClassAttributes();
                         if (idClassAttributes != null) {
-                            attributeNames.remove("id");
+                            attributeNames.remove(ID);
                             idType = idClassType.getJavaType();
                             idClassAttributeAccessors = new TreeMap<>();
                             for (SingularAttribute<?, ?> attr : idClassAttributes) {

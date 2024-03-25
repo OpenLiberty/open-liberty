@@ -59,6 +59,8 @@ public interface Packages extends BasicRepository<Package, Integer> {
 
     Package[] deleteByDescriptionEndsWith(String ending, Sort<?>... sorts);
 
+    void deleteByIdIn(Iterable<Integer> ids);
+
     @Query("DELETE FROM Package")
     int deleteEverything();
 
