@@ -150,7 +150,7 @@ class ConfigurationMonitor implements ManagedService {
                 boolean modified = isFirstUpdate ? false : serverXMLConfig.isModified();
                 Collection<String> filesToMonitor = serverXMLConfig.getFilesToMonitor();
                 Collection<String> directoriesToMonitor = serverXMLConfig.getDirectoriesToMonitor();
-                fileMonitor = new ConfigFileMonitor(serverXMLConfig, bundleContext, filesToMonitor, directoriesToMonitor, monitorInterval, modified, fileMonitorType, configRefresher);
+                fileMonitor = new ConfigFileMonitor(bundleContext, filesToMonitor, directoriesToMonitor, monitorInterval, modified, fileMonitorType, configRefresher);
                 fileMonitor.register();
             }
         } else {

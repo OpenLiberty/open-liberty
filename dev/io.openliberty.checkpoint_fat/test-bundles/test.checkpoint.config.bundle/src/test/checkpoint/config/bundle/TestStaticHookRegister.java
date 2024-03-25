@@ -12,17 +12,21 @@
  */
 package test.checkpoint.config.bundle;
 
-import static io.openliberty.checkpoint.fat.CheckpointSPITest.STATIC_MULTI_PREPARE_RANK;
-import static io.openliberty.checkpoint.fat.CheckpointSPITest.STATIC_MULTI_RESTORE_RANK;
-import static io.openliberty.checkpoint.fat.CheckpointSPITest.STATIC_SINGLE_PREPARE_RANK;
-import static io.openliberty.checkpoint.fat.CheckpointSPITest.STATIC_SINGLE_RESTORE_RANK;
+import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.STATIC_MULTI_PREPARE;
+import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.STATIC_MULTI_PREPARE_RANK;
+import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.STATIC_MULTI_RESTORE;
+import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.STATIC_MULTI_RESTORE_RANK;
+import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.STATIC_ONRESTORE;
+import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.STATIC_SINGLE_PREPARE;
+import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.STATIC_SINGLE_PREPARE_RANK;
+import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.STATIC_SINGLE_RESTORE;
+import static io.openliberty.checkpoint.fat.CheckpointSPITestConfig.STATIC_SINGLE_RESTORE_RANK;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osgi.service.component.annotations.Component;
 
-import io.openliberty.checkpoint.fat.CheckpointSPITest;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.checkpoint.spi.CheckpointPhase.OnRestore;
@@ -38,26 +42,26 @@ public class TestStaticHookRegister {
         @Override
         public void prepare() {
             if (singleThreadedRestore.get() || multiThreadedRestore.get()) {
-                System.out.println(CheckpointSPITest.STATIC_SINGLE_PREPARE + "FAILED - restore called before prepare single already called once");
+                System.out.println(STATIC_SINGLE_PREPARE + "FAILED - restore called before prepare single already called once");
             } else if (!singleThreadedPrepare.compareAndSet(false, true)) {
-                System.out.println(CheckpointSPITest.STATIC_SINGLE_PREPARE + "FAILED - prepare single already called once");
+                System.out.println(STATIC_SINGLE_PREPARE + "FAILED - prepare single already called once");
             } else if (!multiThreadedPrepare.get()) {
-                System.out.println(CheckpointSPITest.STATIC_SINGLE_PREPARE + "FAILED - prepare single called before multi");
+                System.out.println(STATIC_SINGLE_PREPARE + "FAILED - prepare single called before multi");
             } else {
-                System.out.println(CheckpointSPITest.STATIC_SINGLE_PREPARE + "SUCCESS");
+                System.out.println(STATIC_SINGLE_PREPARE + "SUCCESS");
             }
         }
 
         @Override
         public void restore() {
             if (!singleThreadedPrepare.get() && !multiThreadedPrepare.get()) {
-                System.out.println(CheckpointSPITest.STATIC_SINGLE_PREPARE + "FAILED - restore called before prepare single already called once");
+                System.out.println(STATIC_SINGLE_PREPARE + "FAILED - restore called before prepare single already called once");
             } else if (!singleThreadedRestore.compareAndSet(false, true)) {
-                System.out.println(CheckpointSPITest.STATIC_SINGLE_RESTORE + "FAILED - restore single already called once");
+                System.out.println(STATIC_SINGLE_RESTORE + "FAILED - restore single already called once");
             } else if (multiThreadedRestore.get()) {
-                System.out.println(CheckpointSPITest.STATIC_SINGLE_RESTORE + "FAILED - restore single not called before multi");
+                System.out.println(STATIC_SINGLE_RESTORE + "FAILED - restore single not called before multi");
             } else {
-                System.out.println(CheckpointSPITest.STATIC_SINGLE_RESTORE + "SUCCESS");
+                System.out.println(STATIC_SINGLE_RESTORE + "SUCCESS");
             }
         }
     };
@@ -66,26 +70,26 @@ public class TestStaticHookRegister {
         @Override
         public void prepare() {
             if (singleThreadedRestore.get() || multiThreadedRestore.get()) {
-                System.out.println(CheckpointSPITest.STATIC_MULTI_PREPARE + "FAILED - restore called before prepare multi already called once");
+                System.out.println(STATIC_MULTI_PREPARE + "FAILED - restore called before prepare multi already called once");
             } else if (!multiThreadedPrepare.compareAndSet(false, true)) {
-                System.out.println(CheckpointSPITest.STATIC_MULTI_PREPARE + "FAILED - prepare multi already called once");
+                System.out.println(STATIC_MULTI_PREPARE + "FAILED - prepare multi already called once");
             } else if (singleThreadedPrepare.get()) {
-                System.out.println(CheckpointSPITest.STATIC_MULTI_PREPARE + "FAILED - prepare multi called aflter single");
+                System.out.println(STATIC_MULTI_PREPARE + "FAILED - prepare multi called aflter single");
             } else {
-                System.out.println(CheckpointSPITest.STATIC_MULTI_PREPARE + "SUCCESS");
+                System.out.println(STATIC_MULTI_PREPARE + "SUCCESS");
             }
         }
 
         @Override
         public void restore() {
             if (!singleThreadedPrepare.get() && !multiThreadedPrepare.get()) {
-                System.out.println(CheckpointSPITest.STATIC_MULTI_PREPARE + "FAILED - restore called before prepare multi already called once");
+                System.out.println(STATIC_MULTI_PREPARE + "FAILED - restore called before prepare multi already called once");
             } else if (!multiThreadedRestore.compareAndSet(false, true)) {
-                System.out.println(CheckpointSPITest.STATIC_MULTI_RESTORE + "FAILED - restore multi already called once");
+                System.out.println(STATIC_MULTI_RESTORE + "FAILED - restore multi already called once");
             } else if (!singleThreadedRestore.get()) {
-                System.out.println(CheckpointSPITest.STATIC_MULTI_RESTORE + "FAILED - restore multi called before single");
+                System.out.println(STATIC_MULTI_RESTORE + "FAILED - restore multi called before single");
             } else {
-                System.out.println(CheckpointSPITest.STATIC_MULTI_RESTORE + "SUCCESS");
+                System.out.println(STATIC_MULTI_RESTORE + "SUCCESS");
             }
         }
     };
@@ -105,9 +109,9 @@ public class TestStaticHookRegister {
         public void call() throws Throwable {
             int priorHook = priorRank.getAndSet(rank);
             if (priorHook <= rank) {
-                System.out.println(CheckpointSPITest.STATIC_ONRESTORE + rank + " " + hookCallIndex.addAndGet(1) + " SUCCESS");
+                System.out.println(STATIC_ONRESTORE + rank + " " + hookCallIndex.addAndGet(1) + " SUCCESS");
             } else {
-                System.out.println(CheckpointSPITest.STATIC_ONRESTORE + rank + " " + hookCallIndex.addAndGet(1) + " FAILED");
+                System.out.println(STATIC_ONRESTORE + rank + " " + hookCallIndex.addAndGet(1) + " FAILED");
             }
         }
     }

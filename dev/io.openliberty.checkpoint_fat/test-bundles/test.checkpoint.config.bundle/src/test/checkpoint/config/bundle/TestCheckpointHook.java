@@ -123,7 +123,7 @@ public class TestCheckpointHook implements CheckpointHook {
     }
 
     private String getConfig() {
-        return "config: a=" + config.get("a") + " b=" + config.get("b") + " c=" + config.get("c");
+        return "config: a=" + config.get("a") + " b=" + config.get("b") + " c=" + config.get("c") + " d=" + config.get("d");
     }
 
     private String getPassword() {
