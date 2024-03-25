@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package com.ibm.ws.os.packaging.fat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +27,6 @@ import org.junit.Test;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class InstallUbuntuTest extends InstallUtilityToolTest {
     private static final Class<?> c = InstallUbuntuTest.class;
     public static File openLib = new File("/var/lib/openliberty");
@@ -68,7 +66,7 @@ public class InstallUbuntuTest extends InstallUtilityToolTest {
         String METHOD_NAME = "testVerifyDebInstall";
         entering(c, METHOD_NAME);
 
-        assumeTrue(openLibExists);
+        assertTrue(openLibExists);
         assertTrue("OpenLiberty did not install successfully", openLibExists);
 
         //check Open Liberty was installed
@@ -84,14 +82,14 @@ public class InstallUbuntuTest extends InstallUtilityToolTest {
         // append JAVA_HOME to server.env
         //sudo sh -c 'echo line > file'
 
-        String[] param1j = { "sh -c ", " 'echo JAVA_HOME=" + javaHome + " >> /opt/ol/etc/server.env'" };
-        ProgramOutput po1j = runCommand(METHOD_NAME, "sudo ", param1j);
-        Log.info(c, METHOD_NAME, "setup server.env permissions RC:" + po1j.getReturnCode());
+        String[] paramSetJavaHome = { "sh -c ", " 'echo JAVA_HOME=" + javaHome + " >> /opt/ol/etc/server.env'" };
+        ProgramOutput poSetJavaHome = runCommand(METHOD_NAME, "sudo ", paramSetJavaHome);
+        Log.info(c, METHOD_NAME, "setup server.env permissions RC:" + poSetJavaHome.getReturnCode());
 
         // Output contents of server.env
         Log.info(c, METHOD_NAME, "Contents of opt/ol/etc/server.env");
-        String[] param2b = { "cat", "/opt/ol/etc/server.env" };
-        ProgramOutput po2b = runCommand(METHOD_NAME, "sudo ", param2b);
+        String[] paramCatServerEnv = { "cat", "/opt/ol/etc/server.env" };
+        ProgramOutput poCatServerEnv = runCommand(METHOD_NAME, "sudo ", paramCatServerEnv);
 
         // service tests
         Log.info(c, METHOD_NAME, "Starting defaultServer");
