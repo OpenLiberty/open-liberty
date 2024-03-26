@@ -23,6 +23,7 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -128,7 +129,7 @@ public class ShutdownHook implements Runnable {
         if (platformType == SelfExtractUtils.PlatformType_UNIX) {
             scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_UNIX);
             rt.exec("chmod 750 " + scriptFile.getAbsolutePath());
-            rt.exec("sh -c " + scriptFile.getAbsolutePath() + " 2>&1 > " + getHookLog().toAbsolutePath() + " &");
+            rt.exec("sh -c " + scriptFile.getAbsolutePath() + " 2>&1 >> " + getHookLog().toAbsolutePath());
         } else if (platformType == SelfExtractUtils.PlatformType_OS400) {
             scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_OS400);
             rt.exec("chmod 750 " + scriptFile.getAbsolutePath());
@@ -300,8 +301,7 @@ public class ShutdownHook implements Runnable {
 
         } catch (Exception e) {
             try {
-                Files.write(getHookLog(), (e.getMessage() + "\n" + Arrays.toString(e.getStackTrace())).getBytes());
-
+                Files.write(getHookLog(), (e.getMessage() + "\n" + Arrays.toString(e.getStackTrace())).getBytes(), StandardOpenOption.APPEND);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
