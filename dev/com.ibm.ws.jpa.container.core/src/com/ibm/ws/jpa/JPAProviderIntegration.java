@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,10 +26,10 @@ import com.ibm.ws.container.service.app.deploy.ModuleInfo;
 public interface JPAProviderIntegration {
     /**
      * Returns the provider class name.
-     *
+     * 
      * <li>provider configuration attribute -- server.xml</li> <li>provider specific to
      * implementors of this interface</li>
-     *
+     * 
      */
     public String getProviderClassName();
 
@@ -63,5 +63,4 @@ public interface JPAProviderIntegration {
     public void moduleStopping(ModuleInfo moduleInfo);
 
     public void moduleStopped(ModuleInfo moduleInfo);
-
 }

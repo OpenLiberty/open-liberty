@@ -1155,5 +1155,4 @@ public class JPAComponentImpl extends AbstractJPAComponent implements Applicatio
             return JPAVersion.UNKNOWN;
         }
     }
-
 }

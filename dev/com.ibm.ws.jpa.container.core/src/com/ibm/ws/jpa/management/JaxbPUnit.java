@@ -15,6 +15,7 @@ package com.ibm.ws.jpa.management;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_RESOURCE_BUNDLE_NAME;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -69,7 +70,7 @@ abstract class JaxbPUnit {
     List<String> getQualifier() {
         // Not available in 1.0, 2.0, 2.1, 2.2, 3.0 persistence schema
         // Per the spec, must return null when not in xml
-        return null;
+        return new ArrayList();
     }
 
     /**
