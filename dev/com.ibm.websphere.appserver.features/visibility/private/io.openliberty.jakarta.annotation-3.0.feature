@@ -5,7 +5,7 @@ IBM-Process-Types: server, \
  client
 -features=com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.noShip-1.0
--bundles=io.openliberty.jakarta.annotation.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.annotation:jakarta.annotation-api:3.0.0-M1"
+-bundles=io.openliberty.jakarta.annotation.3.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.annotation:jakarta.annotation-api:3.0.0-staged"
 kind=noship
 edition=full
 WLP-Activation-Type: parallel
