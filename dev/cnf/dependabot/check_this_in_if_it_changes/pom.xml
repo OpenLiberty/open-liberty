@@ -1309,7 +1309,7 @@
     <dependency>
       <groupId>jakarta.enterprise.concurrent</groupId>
       <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-      <version>3.1.0-M1</version>
+      <version>3.1.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>

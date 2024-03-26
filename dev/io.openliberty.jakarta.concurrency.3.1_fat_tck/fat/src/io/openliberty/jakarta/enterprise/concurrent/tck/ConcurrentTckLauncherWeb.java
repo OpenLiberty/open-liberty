@@ -36,7 +36,8 @@ import componenttest.topology.utils.tck.TCKRunner;
  * tests as if they were running as simplicity junit FAT tests in the standard location.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
+//TODO switch back to Java 17 for RC2
+@MinimumJavaLevel(javaLevel = 21)
 public class ConcurrentTckLauncherWeb {
 
     final static Map<String, String> additionalProps = new HashMap<>();
@@ -48,7 +49,7 @@ public class ConcurrentTckLauncherWeb {
     public static void setUp() throws Exception {
         //Comment out to use snapshot version
         additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
-        additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-M1");
+        additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-RC1");
 
         //Jakarta TCK platform
         additionalProps.put("jakarta.tck.platform", "web");
