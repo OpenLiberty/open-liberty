@@ -322,6 +322,9 @@ public interface Primes {
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")
     Page<Integer> romanNumeralLengths(long maxNumber, PageRequest<?> pagination);
 
+    @Query("SELECT hex WHERE numberId=?1")
+    Optional<String> toHexadecimal(long num);
+
     @Query("SELECT prime_ FROM Prime AS prime_ WHERE (prime_.numberId <= ?1)")
     @OrderBy(value = "even", descending = true)
     @OrderBy(value = "sumOfBits", descending = true)

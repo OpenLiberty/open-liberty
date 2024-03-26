@@ -4835,6 +4835,16 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Repository method with a SELECT clause but no FROM clause.
+     */
+    @Test
+    public void testSelectClauseWithoutFromClause() {
+        assertEquals("1D", primes.toHexadecimal(29).orElseThrow());
+        assertEquals("2B", primes.toHexadecimal(43).orElseThrow());
+        assertEquals(false, primes.toHexadecimal(18).isPresent());
+    }
+
+    /**
      * Repository method returns a single result or raises the specification-defined exceptions for none or too many.
      */
     @Test
