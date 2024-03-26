@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ import java.util.ResourceBundle;
 public class ShutdownHook implements Runnable {
 
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle(SelfExtract.class.getName() + "Messages");
+    private static final String hookLog = "shutdownHookFailure.txt";
 
     final int platformType;
     final String dir;
@@ -126,7 +128,7 @@ public class ShutdownHook implements Runnable {
         if (platformType == SelfExtractUtils.PlatformType_UNIX) {
             scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_UNIX);
             rt.exec("chmod 750 " + scriptFile.getAbsolutePath());
-            rt.exec("sh -c " + scriptFile.getAbsolutePath() + " &");
+            rt.exec("sh -c " + scriptFile.getAbsolutePath() + " 2>&1 > " + getHookLog().toAbsolutePath() + " &");
         } else if (platformType == SelfExtractUtils.PlatformType_OS400) {
             scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_OS400);
             rt.exec("chmod 750 " + scriptFile.getAbsolutePath());
@@ -298,8 +300,7 @@ public class ShutdownHook implements Runnable {
 
         } catch (Exception e) {
             try {
-                String hookLog = "shutdownHookFailure.txt";
-                Files.write(Paths.get(this.dir, hookLog), (e.getMessage() + "\n" + Arrays.toString(e.getStackTrace())).getBytes());
+                Files.write(getHookLog(), (e.getMessage() + "\n" + Arrays.toString(e.getStackTrace())).getBytes());
 
             } catch (IOException e1) {
                 e1.printStackTrace();
@@ -308,6 +309,13 @@ public class ShutdownHook implements Runnable {
             throw new RuntimeException("Shutdown hook failed with exception " + e.getMessage());
         }
 
+    }
+
+    /**
+     * @return
+     */
+    private Path getHookLog() {
+        return Paths.get(this.dir, hookLog);
     }
 
 }
