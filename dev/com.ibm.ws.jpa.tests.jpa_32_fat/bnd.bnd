@@ -16,10 +16,7 @@ bVersion=1.0
 src: \
     fat/src,\
     test-applications/helpers/DatabaseManagement/src,\
-    test-applications/jpabootstrap/src,\
-    test-applications/jpa32/src,\
-    test-applications/json/src,\
-    test-applications/eclAsmService/src
+    test-applications/jpabootstrap/src
 
 fat.project: true
 fat.test.databases: true

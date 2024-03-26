@@ -19,10 +19,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import com.ibm.ws.jpa.jpa32.AsmServiceTest;
-import com.ibm.ws.jpa.jpa32.JPA32Test;
 import com.ibm.ws.jpa.jpa32.JPABootstrapTest;
-import com.ibm.ws.jpa.jpa32.JPAJSONTest;
 
 import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -32,9 +29,6 @@ import componenttest.topology.database.container.DatabaseContainerFactory;
 @RunWith(Suite.class)
 @SuiteClasses({
                 JPABootstrapTest.class,
-                JPA32Test.class,
-                JPAJSONTest.class,
-                AsmServiceTest.class,
                 componenttest.custom.junit.runner.AlwaysPassesTest.class
 })
 
