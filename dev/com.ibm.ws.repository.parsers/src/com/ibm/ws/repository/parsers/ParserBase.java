@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -162,18 +162,13 @@ public abstract class ParserBase {
 
     /**
      * Reads from the input stream and copies to the output stream
-     *
-     * @param is
-     * @param os
-     * @throws IOException
      */
     protected void copyStreams(InputStream is, OutputStream os) throws IOException {
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[32 * 1024];
         try {
             int read;
             while ((read = is.read(buffer)) != -1) {
                 os.write(buffer, 0, read);
-                buffer = new byte[1024];
             }
         } finally {
             if (null != os)
@@ -345,7 +340,7 @@ public abstract class ParserBase {
         ZipInputStream zis = new ZipInputStream(fis);
         try {
             ZipEntry ze = zis.getNextEntry();
-            byte[] buf = new byte[2048];
+            byte[] buf = new byte[32 * 1024];
             while (ze != null) {
                 if (ze.isDirectory()) {
                     // Do nothing with pure directory entries
