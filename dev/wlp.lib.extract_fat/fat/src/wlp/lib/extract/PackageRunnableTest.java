@@ -26,15 +26,18 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -464,6 +467,14 @@ public class PackageRunnableTest {
                 // wait for process to die gracefully before landing in the finally block where it will be destroyed forcefully.
                 while (proc.isAlive() && Duration.between(start, Instant.now()).toMinutes() < 3) {
                     Thread.sleep(1000);
+                }
+                File shutdownHookLog = new File(extractLoc + File.separator + ".." + File.separator + "shutdownHookFailure.txt");
+                if (shutdownHookLog.exists()) {
+                    List<String> logStrings = Files.readAllLines(shutdownHookLog.toPath(), StandardCharsets.UTF_8);
+                    Log.info(c, method, "shutdown log found, contents:\n" + logStrings.stream().collect(Collectors.joining("\n")));
+                } else {
+                    Log.info(c, method, "shutdown hook log doesn't exist in: " + shutdownHookLog.getAbsolutePath());
+
                 }
             }
 
