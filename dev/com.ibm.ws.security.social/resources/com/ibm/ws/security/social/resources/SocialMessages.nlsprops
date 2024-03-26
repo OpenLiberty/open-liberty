@@ -658,6 +658,6 @@ CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=Configure a c
 
 # do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
 # used by client
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS2352E: A request to [{0}] is not valid. A required cookie with a name that begins with WASReqURLOidc is missing. The host name that is used to access the client might not match the name that is registered at the provider.
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=A request was received that did not include a required cookie.
-OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verify the OpenID Connect provider and client configurations. The missing cookie can be caused by accessing the client with a host name that differs from the host name of the redirect that is registered with the provider. If the sameSiteCookie attribute in the webAppSecurity element in the server configuration is set to Strict, try setting the value to Lax or None.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS2352E: A request to [{0}] is not valid. A required cookie with a name that begins with WASReqURLOidc is missing. The hostname that is used to access the client might not match the name that is registered at the provider.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=The client received a request that did not include a required cookie.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Verify the OpenID Connect provider and client configurations. The missing cookie might be caused by accessing the client with a hostname that differs from the hostname of the redirect that is registered with the provider. If the sameSiteCookie attribute in the webAppSecurity element in the server configuration is set to Strict, try setting the value to Lax or None.
