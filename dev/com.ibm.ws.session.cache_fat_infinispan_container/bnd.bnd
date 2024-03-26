@@ -22,7 +22,7 @@ fat.project: true
 # Uncomment to use remote docker host to simulate continuous build behavior.
 # fat.test.use.remote.docker: true
 
-fat.test.container.images: infinispan/server:10.0.1.Final
+fat.test.container.images: infinispan/server:12.1.7.Final
 
 tested.features: \
   servlet-5.0,\
