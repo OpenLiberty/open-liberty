@@ -13,10 +13,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.7
-javac.target: 1.7
-
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 Bundle-Name: WLP Lib Extract
 Bundle-SymbolicName: wlp.lib.extract
@@ -46,3 +43,11 @@ Private-Package: \
 instrument.disabled: true
 
 publish.wlp.jar.disabled: true
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+    	com.ibm.ws.junit.extensions;version=latest,\
+	org.jmock:jmock-junit4;strategy=exact;version='2.5.1',\
+	org.jmock:jmock;strategy=exact;version='2.5.1',\
+	org.jmock:jmock-legacy;version='2.5.0',\
+	org.mockito:mockito-all;version=1.9.5

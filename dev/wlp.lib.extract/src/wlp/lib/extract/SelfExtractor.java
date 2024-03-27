@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -238,11 +238,11 @@ public class SelfExtractor implements LicenseProvider {
      * be returned.</p>
      *
      * @param appliesTo The string to construct the {@link ProductMatch} objects from. It is a comma separated list of items in the form:</p>
-     *            <code>{product_id}; productVersion={product_version}; productInstallType={product_install_type}; productEdition={product_edition(s)}</code></p>
-     *            Note that the {product_edition(s)} can be either a single edition or a comma separated list of editions enclosed in quotes. For example the following is
-     *            a valid
-     *            applies to string:</p>
-     *            <code>com.ibm.websphere.appserver; productVersion=8.5.next.beta; productInstallType=Archive; productEdition="BASE,DEVELOPERS,EXPRESS,ND"</code>
+     *                      <code>{product_id}; productVersion={product_version}; productInstallType={product_install_type}; productEdition={product_edition(s)}</code></p>
+     *                      Note that the {product_edition(s)} can be either a single edition or a comma separated list of editions enclosed in quotes. For example the following is
+     *                      a valid
+     *                      applies to string:</p>
+     *                      <code>com.ibm.websphere.appserver; productVersion=8.5.next.beta; productInstallType=Archive; productEdition="BASE,DEVELOPERS,EXPRESS,ND"</code>
      * @return A list of {@link ProductMatch} objects or an empty list if none are found
      */
     public static List parseAppliesTo(String appliesTo) {
@@ -518,85 +518,143 @@ public class SelfExtractor implements LicenseProvider {
      * matches method must return either {@link ProductMatch#NOT_APPLICABLE} or {@link ProductMatch#MATCHED} for every properties file for this method to return
      * {@link ReturnCode#OK}.
      *
-     * @param outputDir Where the product is being installed to
+     * @param outputDir      Where the product is being installed to
      * @param productMatches The list of {@link ProductMatch} objects that need to be satisfied to the current install
      * @return A {@link ReturnCode} indicating if this was successful or not
      */
     public static ReturnCode validateProductMatches(File outputDir, List productMatches) {
-        boolean dirExists;
-        dirExists = outputDir.exists();
-        if (dirExists) {
-            File f = new File(outputDir, "lib/versions");
-            File[] files = f.listFiles();
+        List<Properties> props_list = getLibertyProperties(outputDir);
+        return validateProperties(productMatches, props_list);
+    }
+
+    /**
+     * @param productMatches
+     * @param rc
+     * @param props_list
+     * @return
+     */
+    protected static ReturnCode validateProperties(List productMatches, List<Properties> props_list) {
+        ReturnCode rc = ReturnCode.OK;
+        if (props_list.isEmpty()) {
+            rc = new ReturnCode(ReturnCode.BAD_OUTPUT);
+        } else {
+            for (int i = 0; i < props_list.size() && ReturnCode.isReturnCodeOK(rc); i++) {
+                rc = matchLibertyProperties(productMatches, props_list.get(i));
+            }
+        }
+        return rc;
+    }
+
+    /**
+     * TODO move this to ReturnCode class
+     *
+     * @param rc
+     * @return
+     */
+    private static boolean isReturnCodeOK(ReturnCode rc) {
+        return rc.getCode() == ReturnCode.OK.getCode();
+    }
+
+    /**
+     * @param productMatches
+     * @param props
+     */
+    protected static ReturnCode matchLibertyProperties(List productMatches, Properties props) {
+        Iterator<ProductMatch> matches = productMatches.iterator();
+        ReturnCode rc = ReturnCode.OK;
+        while (matches.hasNext() && ReturnCode.isReturnCodeOK(rc)) {
+            ProductMatch match = matches.next();
+            int result = match.matches(props);
+            rc = getReturnCode(props, match, result);
+        }
+        return rc;
+    }
+
+    /**
+     *
+     * Get the return code based on the product match result and the current Liberty properties.
+     *
+     * @param props  The Liberty properties under wlp/lib/versions
+     * @param match  The product match for the feature. Contains the valid version, edition, installType and licenseType for the feature.
+     * @param result The product match result.
+     * @return ReturnCode The ReturnCode with proper messages according to the result
+     */
+    protected static ReturnCode getReturnCode(Properties props, ProductMatch match, int result) {
+        String currentLicenseType = props.getProperty("com.ibm.websphere.productLicenseType");
+        String currentInstallType = props.getProperty("com.ibm.websphere.productInstallType");
+        String currentEdition = InstallUtils.getEditionName(props.getProperty("com.ibm.websphere.productEdition"));
+        String currentVersion = props.getProperty("com.ibm.websphere.productVersion");
+
+        ReturnCode rc;
+        switch (result) {
+            case ProductMatch.NOT_APPLICABLE:
+            case ProductMatch.MATCHED:
+                rc = ReturnCode.OK;
+                break;
+            case ProductMatch.INVALID_VERSION:
+            case ProductMatch.INVALID_EDITION:
+                List<String> applicableEditions = InstallUtils.getEditionNameFromList(match.getEditions());
+                String matchVersion = match.getVersion();
+                if (result == ProductMatch.INVALID_VERSION) {
+                    rc = new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidVersion", currentVersion, matchVersion, currentEdition, applicableEditions, currentLicenseType);
+                } else {
+                    rc = new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidEdition", currentEdition, applicableEditions, currentVersion, matchVersion, currentLicenseType);
+                }
+                break;
+            case ProductMatch.INVALID_INSTALL_TYPE:
+                rc = new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidInstallType", currentInstallType, match.getInstallType());
+                break;
+            case ProductMatch.INVALID_LICENSE:
+                rc = new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidLicense", currentLicenseType, match.getLicenseType());
+                break;
+            default:
+                rc = new ReturnCode(ReturnCode.BAD_OUTPUT);
+                break;
+        }
+
+        return rc;
+    }
+
+    /**
+     * @param outputDir
+     */
+    protected static List<Properties> getLibertyProperties(File outputDir) {
+        List<Properties> props = new ArrayList<>();
+
+        if (outputDir != null && outputDir.exists()) {
+            File directory = new File(outputDir, "lib/versions");
+            File[] files = directory.listFiles((dir, name) -> name.endsWith(".properties"));
             if (files == null || files.length == 0) {
                 // output error
-                return new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidInstall", outputDir.getAbsolutePath());
             } else {
-                propFiles: for (int i = 0; i < files.length; i++) {
-                    if (!files[i].getAbsolutePath().endsWith(".properties"))
-                        continue;
-                    Properties props = new Properties();
-                    InputStream is = null;
-                    try {
-                        is = new FileInputStream(files[i]);
-                        props.load(is);
-                    } catch (IOException e) {
-                        continue;
-                    } finally {
-                        if (is != null) {
-                            try {
-                                is.close();
-                            } catch (IOException e) {
-                            }
-                        }
-                    }
-
-                    Iterator matches = productMatches.iterator();
-                    while (matches.hasNext()) {
-                        ProductMatch match = (ProductMatch) matches.next();
-                        int result = match.matches(props);
-                        if (result == ProductMatch.NOT_APPLICABLE) {
-                            continue;
-                        } else if (result == ProductMatch.INVALID_VERSION || result == ProductMatch.INVALID_EDITION) {
-                            List longIDs = new ArrayList();
-                            Iterator matchesItr = match.getEditions().iterator();
-
-                            while (matchesItr.hasNext()) {
-                                String shortID = (String) matchesItr.next();
-                                String editionName = InstallUtils.getEditionName(shortID);
-                                longIDs.add(editionName);
-                            }
-                            String edition = InstallUtils.getEditionName(props.getProperty("com.ibm.websphere.productEdition"));
-
-                            if (result == ProductMatch.INVALID_VERSION) {
-                                return new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidVersion", new Object[] { props.getProperty("com.ibm.websphere.productVersion"),
-                                                                                                              match.getVersion(),
-                                                                                                              edition,
-                                                                                                              longIDs,
-                                                                                                              props.getProperty("com.ibm.websphere.productLicenseType") });
-                            } else if (result == ProductMatch.INVALID_EDITION) {
-                                return new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidEdition", new Object[] { edition,
-                                                                                                              longIDs,
-                                                                                                              props.getProperty("com.ibm.websphere.productVersion"),
-                                                                                                              match.getVersion(),
-                                                                                                              props.getProperty("com.ibm.websphere.productLicenseType") });
-                            }
-                        } else if (result == ProductMatch.INVALID_INSTALL_TYPE) {
-                            return new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidInstallType", new Object[] { props.getProperty("com.ibm.websphere.productInstallType"),
-                                                                                                              match.getInstallType() });
-                        } else if (result == ProductMatch.INVALID_LICENSE) {
-                            return new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidLicense", new Object[] { props.getProperty("com.ibm.websphere.productLicenseType"),
-                                                                                                          match.getLicenseType() });
-                        }
-                        break propFiles;
-                    }
+                try {
+                    props = getProperties(files);
+                } catch (IOException ioe) {
+                    System.err.println(ioe.getMessage());
                 }
             }
-        } else {
-            // output error
-            return new ReturnCode(ReturnCode.BAD_OUTPUT, "invalidInstall", outputDir.getAbsolutePath());
         }
-        return ReturnCode.OK;
+
+        return props;
+    }
+
+    /**
+     * @param props
+     * @param files
+     * @return
+     * @throws IOException
+     * @throws FileNotFoundException
+     */
+    private static List<Properties> getProperties(File[] files) throws IOException, FileNotFoundException {
+        List<Properties> propsFromFiles = new ArrayList<>();
+        for (File f : files) {
+            Properties prop = new Properties();
+            try (InputStream is = new FileInputStream(f)) {
+                prop.load(is);
+                propsFromFiles.add(prop);
+            }
+        }
+        return propsFromFiles;
     }
 
     public ReturnCode extract(File wlpInstallDir, ExtractProgress ep) {
@@ -984,7 +1042,7 @@ public class SelfExtractor implements LicenseProvider {
      * Retrieves the directory in common between the specified path and the archive root directory.
      * If the file path cannot be found among the valid paths then null is returned.
      *
-     * @param filePath Path to the file to check
+     * @param filePath       Path to the file to check
      * @param validFilePaths A list of valid file paths and their common directories with the root
      * @return The directory in common between the specified path and the root directory
      */
@@ -1025,7 +1083,7 @@ public class SelfExtractor implements LicenseProvider {
     }
 
     /**
-     * @param ep - The object that will invoke the chmod commands.
+     * @param ep        - The object that will invoke the chmod commands.
      * @param outputDir - The Liberty runtime install root.
      */
     public ReturnCode fixScriptPermissions(ExtractProgress ep, File outputDir) {
@@ -1033,9 +1091,9 @@ public class SelfExtractor implements LicenseProvider {
     }
 
     /**
-     * @param ep - The object that will invoke the chmod commands.
+     * @param ep        - The object that will invoke the chmod commands.
      * @param outputDir - The Liberty runtime install root.
-     * @param filter - A zip file containing files that we want to do the chmod against.
+     * @param filter    - A zip file containing files that we want to do the chmod against.
      */
     public ReturnCode fixScriptPermissions(ExtractProgress ep, File outputDir, ZipFile filter) {
         return SelfExtractUtils.fixScriptPermissions(ep, outputDir, filter);
@@ -1146,7 +1204,7 @@ public class SelfExtractor implements LicenseProvider {
     /**
      * If necessary this will print a message saying that the installed files mean that an iFix needs to be re-installed.
      *
-     * @param outputDir The directory where the files were extracted to (typically the "wlp" directory)
+     * @param outputDir      The directory where the files were extracted to (typically the "wlp" directory)
      * @param extractedFiles A list of Strings which are file paths within the directory
      */
     public static void printNeededIFixes(File outputDir, List extractedFiles) {
@@ -1335,9 +1393,9 @@ public class SelfExtractor implements LicenseProvider {
      * case insensitive.
      *
      * @param arg
-     *            User specified argument
+     *                   User specified argument
      * @param option
-     *            Option for test/comparison
+     *                   Option for test/comparison
      * @return true if the argument matches the option
      */
     protected static boolean argIsOption(String arg, String option) {
@@ -1377,7 +1435,7 @@ public class SelfExtractor implements LicenseProvider {
      * license file, exit with a message
      *
      * @param licenseFile
-     *            The license file to display
+     *                        The license file to display
      */
     public void showLicenseFile(InputStream licenseFile) {
         Object e = SelfExtract.class;
@@ -1394,7 +1452,7 @@ public class SelfExtractor implements LicenseProvider {
      * This method will print out information about the license and if necessary prompt the user to accept it.
      *
      * @param licenseProvider The license provider to use to get information about the license from the archive
-     * @param acceptLicense <code>true</code> if the license should be automatically accepted
+     * @param acceptLicense   <code>true</code> if the license should be automatically accepted
      */
     public void handleLicenseAcceptance(LicenseProvider licenseProvider, boolean acceptLicense) {
         //

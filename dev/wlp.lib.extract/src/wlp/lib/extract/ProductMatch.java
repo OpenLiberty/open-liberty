@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,7 +33,7 @@ public final class ProductMatch {
     private String productId;
     private String version;
     private String installType;
-    private final List editions = new ArrayList();
+    private List editions = new ArrayList();
     private String licenseType;
     private static final Pattern validNumericVersionOrRange = Pattern.compile("^(\\d+)\\.(\\d+)\\.(\\d+)\\.(\\d+)\\+?$");
     private static final Pattern validBaseVersion = Pattern.compile("^(\\d+)\\.(\\d+)\\.(\\d+)$");
@@ -156,6 +156,41 @@ public final class ProductMatch {
         } else {
             return substring;
         }
+    }
+
+    /**
+     * @param productId the productId to set
+     */
+    protected void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    /**
+     * @param version the version to set
+     */
+    protected void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+     * @param installType the installType to set
+     */
+    protected void setInstallType(String installType) {
+        this.installType = installType;
+    }
+
+    /**
+     * @param licenseType the licenseType to set
+     */
+    protected void setLicenseType(String licenseType) {
+        this.licenseType = licenseType;
+    }
+
+    /**
+     * @param editions the editions to set
+     */
+    protected void setEditions(List editions) {
+        this.editions = editions;
     }
 
     /**
