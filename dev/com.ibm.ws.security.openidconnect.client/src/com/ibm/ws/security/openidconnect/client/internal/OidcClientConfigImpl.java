@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -619,6 +619,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "hostNameVerificationEnabled: " + hostNameVerificationEnabled);
             Tr.debug(tc, "includeIdTokenInSubject: " + includeIdTokenInSubject);
             Tr.debug(tc, "includeCustomCacheKeyInSubject: " + includeCustomCacheKeyInSubject);
+            Tr.debug(tc, "allowCustomCacheKey: " + allowCustomCacheKey);
             Tr.debug(tc, "authContextClassReference: " + authenticationContextClassReferenceValue);
             Tr.debug(tc, "authFilterRef: " + authFilterRef);
             Tr.debug(tc, "authFilterId: " + authFilterId);
