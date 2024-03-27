@@ -86,7 +86,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     private String ivProviderClassName = null;
 
     // Persistence unit Qualifier
-    private List<String> ivQualifierClassName = null;
+    private List<String> ivQualifierClassNames = null;
 
     // Persistence unit Scope
     private String ivScopeClassName = null;
@@ -196,7 +196,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         ivApplInfo = applInfo;
         ivArchivePuId = puId;
         ivTxType = PersistenceUnitTransactionType.JTA;
-        ivQualifierClassName = new ArrayList<String>();
+        ivQualifierClassNames = new ArrayList<String>();
         ivJarFileURLs = new ArrayList<URL>();
         ivManagedClassNames = new ArrayList<String>();
         ivMappingFileNames = new ArrayList<String>();
@@ -296,17 +296,17 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
      *         specified
      */
     public final List<String> getQualifierAnnotationNames() {
-        return ivQualifierClassName;
+        return ivQualifierClassNames;
     }
 
     final void setQualifierAnnotationNames(List<String> list) {
-        ivQualifierClassName.clear();
+        ivQualifierClassNames.clear();
         addQualifierClassName(list);
     }
 
     private void addQualifierClassName(List<String> list) {
         for (String ormFName : list) {
-            ivQualifierClassName.add(trim(ormFName));
+            ivQualifierClassNames.add(trim(ormFName));
         }
     }
 
@@ -1233,9 +1233,9 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         sbuf.append(']');
 
         sbuf.append("\n Qualifier            : [");
-        if (ivQualifierClassName != null) {
+        if (ivQualifierClassNames != null) {
             first = true;
-            for (String strQualifier : ivQualifierClassName) {
+            for (String strQualifier : ivQualifierClassNames) {
                 sbuf.append(first ? "" : ",").append(strQualifier);
                 first = false;
             }

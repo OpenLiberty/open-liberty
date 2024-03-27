@@ -208,13 +208,13 @@ public final class PUInfoImpl implements PersistenceUnitInfo {
     }
 
     @Trivial
-    public String getQualifierAnnotationNames() {
-        return PersistenceProvider.class.getName();
+    public List<String> getQualifierAnnotationNames() {
+        return Collections.emptyList();
     }
 
     @Trivial
     public String getScopeAnnotationName() {
-        return PersistenceProvider.class.getName();
+        return null;
     }
 
     @Override

@@ -20,11 +20,11 @@ src: \
 
 fat.project: true
 fat.test.databases: true
-tested.features: el-3.0, persistence-3.0, servlet-5.0, cdi-3.0, beanValidation-3.0, enterprisebeanslite-4.0, persistence-3.1, persistencecontainer-3.1, xmlbinding-4.0, servlet-6.0, persistence-3.2, persistencecontainer-3.2, servlet-6.1
+tested.features: persistence-3.2, persistencecontainer-3.2, servlet-6.1
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
-#fat.minimum.java.level: 17
+fat.minimum.java.level: 17
 
 javac.source: 17
 javac.target: 17

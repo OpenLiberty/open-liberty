@@ -146,7 +146,7 @@ public class Persistence {
      */
     public String getVersion() {
         if (version == null) {
-            return "3.0";
+            return "3.2";
         } else {
             return version;
         }
