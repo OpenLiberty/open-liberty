@@ -437,6 +437,8 @@ public class FailoverTestLease extends FATServletClient {
     }
 
     @Test
+    // Can get a benign InternalLogException if heartbeat happens at same time as lease claim
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException" })
     public void testBatchLeaseDeletion() throws Exception {
         final String method = "testBatchLeaseDeletion";
         if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
