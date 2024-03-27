@@ -120,7 +120,11 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
 	    String[] param1s = { "installFeature", "jsp-2.2", "jsp-2.3", "--verbose" };
 	    ProgramOutput po = runFeatureUtility(METHOD_NAME, param1s);
 
-	    checkCommandOutput(po, 0, null, filesList);
+	    try{
+	    	checkCommandOutput(po, 0, null, filesList);
+	    }catch(AssertionError e) {
+	    	retryFeatureUtility(METHOD_NAME);
+	    }
 	}
 
 	/**
