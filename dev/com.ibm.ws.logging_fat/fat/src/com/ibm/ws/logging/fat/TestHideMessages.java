@@ -52,6 +52,10 @@ public class TestHideMessages {
 
     @Before
     public void setupTest() throws Exception {
+        if (msgServer != null && msgServer.isStarted()) {
+            msgServer.stopServer("SRVE0777E", "SRVE0315E", "CWWKG0032W", "CWWKG0075E", "CWWKE1102W", "CWWKE1105W");
+        }
+
         msgServer.restoreServerConfiguration();
         msgServer.startServer();
     }
@@ -59,8 +63,7 @@ public class TestHideMessages {
     @After
     public void cleanUp() throws Exception {
         if (msgServer != null && msgServer.isStarted()) {
-            msgServer.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E",
-                                 "CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W");
+            msgServer.stopServer("SRVE0777E", "SRVE0315E", "CWWKG0032W", "CWWKG0075E", "CWWKE1102W", "CWWKE1105W");
         }
     }
 
@@ -172,11 +175,6 @@ public class TestHideMessages {
 
         Log.info(logClass, name.getMethodName(), "Exiting test " + name.getMethodName());
 
-    }
-
-    @After
-    public void cleanupTest() throws Exception {
-        msgServer.stopServer();
     }
 
 }
