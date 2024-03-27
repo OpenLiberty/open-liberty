@@ -724,7 +724,7 @@ public class LibertySSLSocketFactory extends javax.net.ssl.SSLSocketFactory {
                 p.setProtocols(protocols);
 
             //Enable hostname verification
-            String enableEndpointId = sslprops.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false");
+            String enableEndpointId = sslprops.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION);
             if (enableEndpointId != null && enableEndpointId.equalsIgnoreCase("true")) {
                 p.setEndpointIdentificationAlgorithm(ENDPOINT_ALGORITHM);
             }

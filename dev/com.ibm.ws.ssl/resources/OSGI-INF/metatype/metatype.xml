@@ -123,7 +123,7 @@
             required="false" type="String" cardinality="2147483647" />    
          
         <AD id="verifyHostname" name="%repertoire.verifyHostname" description="%repertoire.verifyHostname.desc" 
-            required="false" type="Boolean" default="false" />
+            required="false" type="Boolean" default="true" />
             
         <AD id="trustDefaultCerts" name="%repertoire.trustDefaultCerts" description="%repertoire.trustDefaultCerts.desc" 
             required="false" type="Boolean" default="false" />
@@ -160,7 +160,7 @@
             required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
             
         <AD id="httpHostNameVerification" name="%default.httpHostNameVerification" description="%default.httpHostNameVerification.desc" 
-            required="false" type="Boolean" default="false" />
+            required="false" type="Boolean" default="true" />
             
     </OCD>
 

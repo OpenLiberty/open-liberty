@@ -1,0 +1,67 @@
+<server>
+    <featureManager>
+         <feature>appSecurity-2.0</feature>
+         <feature>jsp-2.3</feature>
+         <feature>jaxws-2.2</feature>
+         <feature>ejbLite-3.2</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+
+    <!-- Server SSL configuration -->
+    <ssl id="defaultSSLConfig" keyStoreRef="serverKeyStore" trustStoreRef="serverTrustStore" 
+       clientAuthenticationSupported="true" verifyHostname="false"/> 
+
+   <!-- customize SSL configuration for testEnableCNCheck -->
+   <keyStore id="serverKeyStore" location="oldServerKey.jks" type="JKS" password="passw0rd" /> 
+   <keyStore id="serverTrustStore" location="trust.jks" type="JKS" password="passw0rd" /> 
+
+   <!-- customize SSL configuration -->
+   <ssl id="customizeSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" verifyHostname="false" /> 
+   <keyStore id="clientKeyStore" location="clientKey.jks" type="JKS" password="passw0rd" /> 
+   <keyStore id="clientTrustStore" location="clientTrust.jks" type="JKS" password="passw0rd" /> 
+    
+   <application id="TransportSecurityClient" name="TransportSecurityClient" location="TransportSecurityClient.war"
+       context="TransportSecurityClient" type="war" />
+       
+   <application id="TransportSecurityProvider" name="TransportSecurityProvider" location="TransportSecurityProvider.ear" type="ear">
+       <application-bnd>
+           <security-role name="Employee">
+               <user name="employee0" />
+               <group name="employeeGroup" />
+           </security-role>        
+           <security-role name="Manager">
+               <user name="manager0" />
+           </security-role>
+           <security-role name="AllAuthenticated">
+               <special-subject type="ALL_AUTHENTICATED_USERS" />
+           </security-role>
+       </application-bnd>
+   </application>
+   
+   <basicRegistry id="basic" realm="BasicRealm">
+       <user name="employee0" password="emp0pwd" />
+       <user name="employee1" password="emp1pwd" />
+       <user name="manager0" password="mgr0pwd" />
+       <group name="employeeGroup">
+           <member name="employee0" />
+           <member name="employee1" />
+       </group>
+   </basicRegistry>   
+   <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+     <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+   <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.org.apache.xerces.internal.dom" />
+     <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>    
+     <javaPermission className="java.lang.RuntimePermission" name="createClassLoader"/>
+     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+   <javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader" />
+     <javaPermission className="java.lang.RuntimePermission" name="setFactory"/>
+   <javaPermission className="java.net.NetPermission" name="setDefaultAuthenticator" />
+     <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+     <javaPermission className="java.net.URLPermission" name="http://192.168.1.6:8010/helloServer/PeopleService" actions="POST:Accept,SOAPAction,User-Agent" />
+   <javaPermission className="java.security.SecurityPermission" name="getPolicy"/>
+   <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+     <javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get" />
+   <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*" />
+     <javaPermission className="javax.security.auth.AuthPermission" name="*" actions="getSubject" />   
+</server>

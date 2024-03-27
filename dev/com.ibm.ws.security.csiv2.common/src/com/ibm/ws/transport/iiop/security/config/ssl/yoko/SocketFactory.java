@@ -446,7 +446,7 @@ public class SocketFactory extends SocketFactoryHelper {
         SSLParameters params = socket.getSSLParameters();
 
         // Check to see if hostname verification needs to be enabled
-        boolean verifyHostname = Boolean.valueOf(sslProps.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false"));
+        boolean verifyHostname = Boolean.valueOf(sslProps.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "true"));
         if (verifyHostname) {
             params.setEndpointIdentificationAlgorithm("HTTPS");
         }

@@ -42,7 +42,7 @@
 	<include
 		location="${shared.resource.dir}/configs/ssl.xml" />
 	<ssl id="defaultSSLConfig" trustDefaultCerts="true"
-		keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" />
+		keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" verifyHostname="false" />
 	<keyStore id="defaultTrustStore"
 		location="${server.config.dir}/resources/security/truststore.p12"
 		password="trustPassword" />

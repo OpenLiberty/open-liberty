@@ -14,14 +14,14 @@
 -->
 <server>
 
-	<include location="${server.config.dir}/imports/socialLoginRunableFeatures.xml" />
 
-	<include location="${server.config.dir}/imports/misc.xml" />
-	<include location="${server.config.dir}/imports/helloworldApplication.xml" />
-	<include location="${server.config.dir}/imports/goodBasicRegistry.xml" />
+	<include location="${server.config.dir}/imports/oidc_features.xml" />
+	<include location="${server.config.dir}/imports/goodLibertyOPRegistry.xml" />
 	<include location="${server.config.dir}/imports/badHostNameVerifySSLSettings.xml" />
-	<include location="${server.config.dir}/imports/LibertyOP_hostNameVerify_oidc_SocialDiscoveryConfig.xml" />
-	<include location="${server.config.dir}/imports/basicConfig_SocialConfig_filters.xml" />
-	<include location="${server.config.dir}/imports/basicConfig_SocialConfig_builders.xml" />
+	<include location="${server.config.dir}/imports/op_misc.xml" />
+	<include location="${server.config.dir}/imports/op_ProviderDiscovery_configs.xml" />
+	<include location="${server.config.dir}/imports/provider_OAuthConfigTai.xml" />
+	<include location="${server.config.dir}/imports/provider_OAuthMediatorProvider.xml" />
+	<include location="${server.config.dir}/imports/op_fatTestPorts.xml" />
 
 </server>
