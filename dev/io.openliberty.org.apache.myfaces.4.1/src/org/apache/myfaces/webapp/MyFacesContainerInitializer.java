@@ -323,6 +323,10 @@ public class MyFacesContainerInitializer implements ServletContainerInitializer
 
         for (ServletRegistration servletRegistration : servlets.values())
         {
+            if(servletRegistration.getClassName() == null) // MYFACES-4657
+            {
+                return false;
+            }
             if (FacesServletMappingUtils.isFacesServlet(servletRegistration.getClassName()))
             {
                 // we found a FacesServlet; set an attribute for use during initialization
