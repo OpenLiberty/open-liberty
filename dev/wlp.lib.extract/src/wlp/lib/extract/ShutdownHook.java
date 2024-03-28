@@ -21,7 +21,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 /**
@@ -31,6 +35,7 @@ import java.util.ResourceBundle;
 public class ShutdownHook implements Runnable {
 
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle(SelfExtract.class.getName() + "Messages");
+    private static final String hookLog = "shutdownHookFailure.txt";
 
     final int platformType;
     final String dir;
@@ -124,7 +129,7 @@ public class ShutdownHook implements Runnable {
         if (platformType == SelfExtractUtils.PlatformType_UNIX) {
             scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_UNIX);
             rt.exec("chmod 750 " + scriptFile.getAbsolutePath());
-            rt.exec("sh -c " + scriptFile.getAbsolutePath() + " &");
+            rt.exec("sh -c " + scriptFile.getAbsolutePath() + " 2>&1 >> " + getHookLog().toAbsolutePath());
         } else if (platformType == SelfExtractUtils.PlatformType_OS400) {
             scriptFile = writeCleanupFile(SelfExtractUtils.PlatformType_OS400);
             rt.exec("chmod 750 " + scriptFile.getAbsolutePath());
@@ -286,22 +291,31 @@ public class ShutdownHook implements Runnable {
     @Override
     public void run() {
         try {
-
             stopServer(); // first, stop server
-
             // When the server is launched with java -jar, delete the server on exit minus
             // the /logs folder, unless WLP_JAR_EXTRACT_DIR is set at which point don't delete
             // anything.
-
             if (extractDirPredefined != true) {
                 startAsyncDelete(); // now launch async process to cleanup extraction directory
             }
 
         } catch (Exception e) {
+            try {
+                Files.write(getHookLog(), (e.getMessage() + "\n" + Arrays.toString(e.getStackTrace())).getBytes(), StandardOpenOption.APPEND);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
             e.printStackTrace();
             throw new RuntimeException("Shutdown hook failed with exception " + e.getMessage());
         }
 
+    }
+
+    /**
+     * @return
+     */
+    private Path getHookLog() {
+        return Paths.get(this.dir, hookLog);
     }
 
 }
