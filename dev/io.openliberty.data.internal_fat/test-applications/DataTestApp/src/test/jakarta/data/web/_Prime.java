@@ -25,7 +25,6 @@ public class _Prime {
     public static final String BINARYDIGITS = "binaryDigits";
     public static final String EVEN = "even";
     public static final String HEX = "hex";
-    public static final String ID = "id";
     public static final String NAME = "name";
     public static final String NUMBERID = "numberId";
     public static final String ROMANNUMERAL = "romanNumeral";
@@ -37,8 +36,6 @@ public class _Prime {
     public static volatile SortableAttribute<Prime> even;
 
     public static volatile TextAttribute<Prime> hex;
-
-    public static volatile SortableAttribute<Prime> id;
 
     public static volatile TextAttribute<Prime> name;
 

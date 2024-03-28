@@ -55,7 +55,6 @@ public class DataCoreTckLauncher {
     }
 
     @Test
-    @Ignore("Behavior change in spec after M3 caused failures") // TODO re-enable with M4 or RC1
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchDataTckCorePersistence() throws Exception {
 
@@ -75,7 +74,7 @@ public class DataCoreTckLauncher {
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-M3");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-M4");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckCorePersistence";
@@ -108,8 +107,8 @@ public class DataCoreTckLauncher {
         additionalProps.put("included.groups", "core & nosql & !signature");
 
         //Comment out to use SNAPSHOT
-//        additionalProps.put("jakarta.data.groupid", "jakarta.data");
-//        additionalProps.put("jakarta.data.tck.version", "1.0.0-M3");
+        additionalProps.put("jakarta.data.groupid", "jakarta.data");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-M4");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckCoreNoSQL";

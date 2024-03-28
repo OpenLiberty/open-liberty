@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,7 +72,7 @@ public class CustomAccessLogFieldsTest {
 
     private static final String MESSAGE_LOG = "logs/messages.log";
     private static final long LOG_TIMEOUT = 30 * 1000;
-    private static final int WAIT_TIMEOUT = 15 * 1000;
+    private static final long WAIT_TIMEOUT = 30 * 1000;
 
     @Server("CustomAccessLogFieldsEnv")
     public static LibertyServer envServer;

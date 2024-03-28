@@ -10,7 +10,11 @@
 		<feature>cdi-1.2</feature>
 	</featureManager>
 
-	<transaction recoverOnStartup="true" waitForRecovery="true"/>
+	<transaction
+		recoverOnStartup="true"
+		waitForRecovery="true"
+		totalTranLifetimeTimeout="5m"
+	/>
 
 	<include location="../fatTestPorts.xml" />
 	

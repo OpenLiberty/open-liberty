@@ -24,6 +24,8 @@
 		persistTimeout="150s"
 	/>
 
+	<wsAtomicTransaction asyncResponseTimeout="60000"/>
+
   <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
 
 </server>

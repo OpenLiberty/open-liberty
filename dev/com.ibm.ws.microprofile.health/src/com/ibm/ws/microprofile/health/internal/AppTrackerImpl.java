@@ -122,8 +122,14 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
                         appName = appName.replace(".ear", "");
                     }
 
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "Adding app found by configAdmin: " + appName);
+
                     configAdminMap.put(appName, ApplicationState.INSTALLED);
                 }
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "configAdmin could not find any configured apps");
             }
 
         } catch (IOException e) {

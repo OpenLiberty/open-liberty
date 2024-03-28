@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@
 package com.ibm.ws.recoverylog.spi;
 
 import java.lang.reflect.Constructor;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 import com.ibm.websphere.ras.Tr;
@@ -444,7 +446,7 @@ public class RecoveryLogManagerImpl implements RecoveryLogManager {
 
             FileLogProperties fileLogProperties = (FileLogProperties) logProperties;
 
-            String logDirStem = fileLogProperties.logDirectoryStem();
+            Path logDirStem = Paths.get(fileLogProperties.logDirectoryStem());
 
             // If necessary, create a new RecoveryLog object to be returned to the caller.
             leaseLog = FileSharedServerLeaseLog.getFileSharedServerLeaseLog(logDirStem, localRecoveryIdentity, recoveryGroup);

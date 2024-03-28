@@ -3,6 +3,6 @@ IBM-Test-Feature: true
 IBM-ShortName: samlUserResolver-1.0
 Subsystem-SymbolicName: com.ibm.ws.security.saml.resolver.sample; visibility:=public
 Subsystem-Version: 1.0.0
-Subsystem-Content: com.ibm.ws.security.saml.resolver.sample; version="[1,1.0.100)"; start-phase:=SERVICE
+Subsystem-Content: com.ibm.ws.security.saml.resolver.sample; version="[1,1.1)"; start-phase:=SERVICE
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2

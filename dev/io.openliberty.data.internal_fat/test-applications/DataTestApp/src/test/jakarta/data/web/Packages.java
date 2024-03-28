@@ -49,12 +49,20 @@ import io.openliberty.data.repository.update.SubtractFrom;
 @Repository
 public interface Packages extends BasicRepository<Package, Integer> {
 
+    @Query("SELECT COUNT(o) FROM Package o")
+    long countAll();
+
     @Delete
     long deleteAll();
 
     Optional<Package> deleteByDescription(String description);
 
     Package[] deleteByDescriptionEndsWith(String ending, Sort<?>... sorts);
+
+    void deleteByIdIn(Iterable<Integer> ids);
+
+    @Query("DELETE FROM Package")
+    int deleteEverything();
 
     Optional<Integer> deleteFirstBy(Sort<Package> sort);
 

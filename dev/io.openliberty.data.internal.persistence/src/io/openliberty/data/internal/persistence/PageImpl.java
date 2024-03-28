@@ -159,19 +159,21 @@ public class PageImpl<T> implements Page<T> {
     @Override
     @SuppressWarnings("unchecked")
     public PageRequest<T> nextPageRequest() {
-        if (!hasNext())
-            return null;
-
-        return (PageRequest<T>) pageRequest.next();
+        if (hasNext())
+            return (PageRequest<T>) pageRequest.next();
+        else
+            throw new NoSuchElementException("Cannot request a next page. To avoid this error, check for a " +
+                                             "true result of Page.hasNext before attempting this method."); // TODO NLS
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <E> PageRequest<E> nextPageRequest(Class<E> entityClass) {
-        if (!hasNext())
-            return null;
-
-        return (PageRequest<E>) pageRequest.next();
+        if (hasNext())
+            return (PageRequest<E>) pageRequest.next();
+        else
+            throw new NoSuchElementException("Cannot request a next page. To avoid this error, check for a " +
+                                             "true result of Page.hasNext before attempting this method."); // TODO NLS
     }
 
     @Override

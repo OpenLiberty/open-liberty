@@ -13,21 +13,21 @@ Include-Resource: \
      @${repo;com.sun.mail:javax.mail;1.5.6}!/META-INF/javamail.default.providers
 
 Import-Package: \
-  javax.mail;version="[1.5.0,1.5.200)",  \
-  javax.mail.event;version="[1.5.0,1.5.200)", \
-  javax.mail.internet;version="[1.5.0,1.5.200)", \
-  javax.mail.search;version="[1.5.0,1.5.200)", \
-  javax.mail.util;version="[1.5.0,1.5.200)", \
+  javax.mail;version="[1.5.0,1.6)",  \
+  javax.mail.event;version="[1.5.0,1.6)", \
+  javax.mail.internet;version="[1.5.0,1.6)", \
+  javax.mail.search;version="[1.5.0,1.6)", \
+  javax.mail.util;version="[1.5.0,1.6)", \
   com.sun.mail;version="1.5.16", \
   com.sun.mail.auth;version="1.5.16", \
-  com.sun.mail.imap;version="[1.5.0,1.5.200)", \
-  com.sun.mail.imap.protocol;version="[1.5.0,1.5.200)", \
-  com.sun.mail.iap;version="[1.5.0,1.5.200)", \
-  com.sun.mail.pop3;version="[1.5.0,1.5.200)", \
-  com.sun.mail.smtp;version="[1.5.0,1.5.200)", \
-  com.sun.mail.util;version="[1.5.0,1.5.200)", \
-  com.sun.mail.util.logging;version="[1.5.0,1.5.200)", \
-  com.sun.mail.handlers;version="[1.5.0,1.5.200)"
+  com.sun.mail.imap;version="[1.5.0,1.6)", \
+  com.sun.mail.imap.protocol;version="[1.5.0,1.6)", \
+  com.sun.mail.iap;version="[1.5.0,1.6)", \
+  com.sun.mail.pop3;version="[1.5.0,1.6)", \
+  com.sun.mail.smtp;version="[1.5.0,1.6)", \
+  com.sun.mail.util;version="[1.5.0,1.6)", \
+  com.sun.mail.util.logging;version="[1.5.0,1.6)", \
+  com.sun.mail.handlers;version="[1.5.0,1.6)"
 
 Export-Package: \
   javax.mail,  \

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,12 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static jakarta.data.repository.By.ID;
+
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Repository;
@@ -34,7 +37,8 @@ public interface MultiRepository {
     @Insert
     Product create(Product prod);
 
-    Person[] deleteByIdIn(Iterable<Long> ids);
+    @Delete
+    Optional<Person> deleteById(@By(ID) Long id);
 
     Optional<Package> findById(Number id);
 

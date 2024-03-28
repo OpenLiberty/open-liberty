@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -164,13 +164,17 @@ public class ServerXMLConfigurationMBeanTest {
         assertNotNull("Configuration file path collection should not be null.", configFilePaths);
 
         // Check that the collection contains the expected file paths.
-        assertEquals("Config file path collection size is not 3.", 3, configFilePaths.size());
+        assertEquals("Config file path collection size is not 5.", 5, configFilePaths.size());
         assertTrue("server.xml is missing from the collection.",
                    configFilePaths.contains("${server.config.dir}/server.xml"));
         assertTrue("fatTestPorts.xml is missing from the collection.",
                    configFilePaths.contains("${wlp.user.dir}/servers/fatTestPorts.xml"));
         assertTrue("fatTestCommon.xml is missing from the collection.",
                    configFilePaths.contains("${wlp.user.dir}/servers/fatTestCommon.xml"));
+        assertTrue("configDropins/defaults/a.xml is missing from the collection.",
+                   configFilePaths.contains("${server.config.dir}/configDropins/defaults/a.xml"));
+        assertTrue("configDropins/overrides/b.xml is missing from the collection.",
+                   configFilePaths.contains("${server.config.dir}/configDropins/overrides/b.xml"));
     }
 
     private static int getSSLPort() {

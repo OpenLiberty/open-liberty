@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.jose4j.jwt.consumer.JwtContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 
 import io.openliberty.security.common.jwt.JwtParsingUtils;
 import io.openliberty.security.common.jwt.exceptions.JwtContextMissingJoseObjects;
@@ -81,8 +82,13 @@ public class JwsSignatureVerifier {
         JwtConsumerBuilder builder = createJwtConsumerBuilderWithConstraints(algHeader);
 
         JwtConsumer jwtConsumer = builder.build();
-        JwtContext validatedJwtContext = jwtConsumer.process(jwtContext.getJwt());
-        return validatedJwtContext.getJwtClaims();
+        Object token = ThreadIdentityManager.runAsServer();
+        try {
+            JwtContext validatedJwtContext = jwtConsumer.process(jwtContext.getJwt());
+            return validatedJwtContext.getJwtClaims();
+        } finally {
+            ThreadIdentityManager.reset(token);
+        }
     }
 
     public JwtConsumerBuilder createJwtConsumerBuilderWithConstraints(String algHeader) throws SigningKeyNotSpecifiedException {

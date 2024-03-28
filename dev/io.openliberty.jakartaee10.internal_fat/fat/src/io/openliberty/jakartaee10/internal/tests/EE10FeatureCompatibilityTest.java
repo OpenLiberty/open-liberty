@@ -128,6 +128,7 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         compatibleFeatures.remove("springBoot-2.0");
 
         compatibleFeatures.remove("mpReactiveMessaging-3.0"); //still in development
+        compatibleFeatures.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
 
         compatibleFeatures.remove("mpHealth"); //versionless features in development
         compatibleFeatures.remove("mpMetrics");
@@ -174,6 +175,7 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         incompatibleFeatures.removeAll(compatibleFeatures);
 
         incompatibleFeatures.remove("mpReactiveMessaging-3.0"); //still in development
+        incompatibleFeatures.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
 
         // Test features may or may not be compatible, we don't want to assert either way
         incompatibleFeatures.removeAll(FeatureUtilities.allTestFeatures());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -66,6 +66,7 @@ public class JSPTests {
     private static final String TestJDT_APP_NAME = "TestJDT";
     private static final String OLGH20509_APP_NAME1 = "OLGH20509jar";
     private static final String OLGH20509_APP_NAME2 = "OLGH20509TDfalse";
+    private static final String OLGH27779_APP_NAME = "OLGH27779";
 
     @Server("jspServer")
     public static LibertyServer server;
@@ -89,6 +90,8 @@ public class JSPTests {
         ShrinkHelper.defaultDropinApp(server, TestJDT_APP_NAME + ".war");
 
         ShrinkHelper.defaultDropinApp(server, TestEDR_APP_NAME + ".war");
+
+        ShrinkHelper.defaultDropinApp(server, OLGH27779_APP_NAME + ".war");
 
         JavaArchive jspJar = ShrinkWrap.create(JavaArchive.class, "OLGH20509Include.jar");
         jspJar = (JavaArchive) ShrinkHelper.addDirectory(jspJar, "test-applications/includejar/resources");
@@ -985,6 +988,20 @@ public class JSPTests {
         server.deleteFileFromLibertyServerRoot(relEdrPath + orgEdrFile); // cleanup
         Thread.sleep(500L); // ensure file is deleted
     }
+
+    /*
+     * Verify a stackover flow error does not occur via the include(String relativeUrlPath, boolean flush) 
+     * 
+     * See https://github.com/OpenLiberty/open-liberty/issues/27779 for more details
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testOLGH27779() throws Exception {
+        this.verifyStringInResponse(OLGH27779_APP_NAME, "index.jsp", "Test Passed!");
+    }
+
+
+    // Helper Methods
 
     public void makeConcurrentRequests(WebConversation wc1, WebRequest request1, int numberOfCalls) throws Exception {
         final ExecutorService executor = Executors.newFixedThreadPool(numberOfCalls);

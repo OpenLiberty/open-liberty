@@ -13,6 +13,8 @@
 			type="Boolean" default="false" required="false" />
 		<AD id="externalURLPrefix" name="%proxy.name" description="%proxy.description"
 			type="String" default="" required="false" />
+		<AD id="asyncResponseTimeout" name="%asyncResponseTimeout.name" description="%asyncResponseTimeout.description"
+			type="String" ibm:type="duration" default="30s" required="false"  min="0" />
 	</OCD>
 
 	<Designate pid="com.ibm.ws.wsat.service.wsatconfigservice">

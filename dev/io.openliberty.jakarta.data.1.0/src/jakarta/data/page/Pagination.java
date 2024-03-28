@@ -38,16 +38,16 @@ record Pagination<T>(long page,
         if (size < 1)
             throw new IllegalArgumentException("maxPageSize: " + size);
         if (mode != Mode.OFFSET && (type == null || type.size() == 0))
-            throw new IllegalArgumentException("No keyset values were provided.");
+            throw new IllegalArgumentException("No key values were provided.");
     }
 
     @Override
-    public PageRequest<T> afterKeyset(Object... keyset) {
-        return new Pagination<T>(page, size, sorts, Mode.CURSOR_NEXT, new PageRequestCursor(keyset), requestTotal);
+    public PageRequest<T> afterKey(Object... componentsOfKey) {
+        return new Pagination<T>(page, size, sorts, Mode.CURSOR_NEXT, new PageRequestCursor(componentsOfKey), requestTotal);
     }
 
     @Override
-    public PageRequest<T> afterKeysetCursor(PageRequest.Cursor cursor) {
+    public PageRequest<T> afterCursor(PageRequest.Cursor cursor) {
         return new Pagination<T>(page, size, sorts, Mode.CURSOR_NEXT, cursor, requestTotal);
     }
 
@@ -75,12 +75,12 @@ record Pagination<T>(long page,
     }
 
     @Override
-    public PageRequest<T> beforeKeyset(Object... keyset) {
-        return new Pagination<T>(page, size, sorts, Mode.CURSOR_PREVIOUS, new PageRequestCursor(keyset), requestTotal);
+    public PageRequest<T> beforeKey(Object... componentsOfKey) {
+        return new Pagination<T>(page, size, sorts, Mode.CURSOR_PREVIOUS, new PageRequestCursor(componentsOfKey), requestTotal);
     }
 
     @Override
-    public PageRequest<T> beforeKeysetCursor(PageRequest.Cursor cursor) {
+    public PageRequest<T> beforeCursor(PageRequest.Cursor cursor) {
         return new Pagination<T>(page, size, sorts, Mode.CURSOR_PREVIOUS, cursor, requestTotal);
     }
 
@@ -104,7 +104,7 @@ record Pagination<T>(long page,
         if (mode == Mode.OFFSET)
             return new Pagination<T>(page + 1, size, sorts, mode, null, requestTotal);
         else
-            throw new UnsupportedOperationException("Not supported for keyset pagination. Instead use afterKeyset or afterKeysetCursor to provide the next keyset values or obtain the nextPageRequest from a CursoredPage.");
+            throw new UnsupportedOperationException("Not supported for cursor-based pagination. Instead use afterKey or afterCursor to provide a cursor or obtain the nextPageRequest from a CursoredPage.");
     }
 
     @Override
@@ -120,7 +120,7 @@ record Pagination<T>(long page,
             else
                 return null;
         else
-            throw new UnsupportedOperationException("Not supported for keyset pagination. Instead use beforeKeyset or beforeKeysetCursor to provide the previous keyset values or obtain the previousPageRequest from a CursoredPage.");
+            throw new UnsupportedOperationException("Not supported for cursor-based pagination. Instead use beforeKey or beforeCursor to provide a cursor or obtain the previousPageRequest from a CursoredPage.");
     }
 
     @Override

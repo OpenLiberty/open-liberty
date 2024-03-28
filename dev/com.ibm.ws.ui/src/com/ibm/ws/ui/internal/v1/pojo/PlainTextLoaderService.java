@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,7 @@ package com.ibm.ws.ui.internal.v1.pojo;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Base64;
+import java.nio.file.NoSuchFileException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +51,7 @@ public class PlainTextLoaderService implements IToolDataService {
 
     /**
      * Only set the FILE persistence provider. This service is required.
-     * 
+     *
      * @param provider
      */
     @Reference(service = IPersistenceProvider.class, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY,
@@ -70,7 +70,7 @@ public class PlainTextLoaderService implements IToolDataService {
 
     /**
      * Only set the COLLECTIVE persistence provider. This server is optional.
-     * 
+     *
      * @param provider
      */
     @Reference(service = IPersistenceProvider.class, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY,
@@ -89,14 +89,16 @@ public class PlainTextLoaderService implements IToolDataService {
     }
 
     @Activate
-    protected synchronized void activate() {}
+    protected synchronized void activate() {
+    }
 
     @Deactivate
-    protected synchronized void deactive() {}
+    protected synchronized void deactive() {
+    }
 
     /**
      * Gets the effective instance of the IPersistenceProvider.
-     * 
+     *
      * @return The instance of IPersistenceProvider
      */
     protected synchronized IPersistenceProvider getPersist() {
@@ -136,22 +138,22 @@ public class PlainTextLoaderService implements IToolDataService {
     }
 
     /**
-     * The persisted file name for the tool with user id in it in previous releases is not encrypted because it is sensitive. However, 
+     * The persisted file name for the tool with user id in it in previous releases is not encrypted because it is sensitive. However,
      * encryption is now done on the user id to avoid path traversal attack through the id and to provide an unique string.
      *
      * @param toolName The name of the tool
-     * @param userId The user id
+     * @param userId   The user id
      * @return The encrypted file path to the tool data
      */
     private String getEncodedPersistedName(final String toolName, final String userId) {
         return toolName + "/" + Toolbox.getEncodedUserId(userId);
     }
 
-     /**
+    /**
      * Each tool persists its data in non-encrypted persisted file path in previous releases.
      *
      * @param toolName The name of the tool
-     * @param userId The user id
+     * @param userId   The user id
      * @return The non-encrypted file path to the tool data
      */
     private String getNonencodedPersistedName(final String toolName, final String userId) {
@@ -162,7 +164,7 @@ public class PlainTextLoaderService implements IToolDataService {
      * Return the encrypted and non-encrypted persisted names for the given tool and user id.
      *
      * @param toolName The name of the tool
-     * @param userId The user id
+     * @param userId   The user id
      * @return The tool file paths including both encrypted and non-encrypted json file names
      */
     private String[] getPersistedNames(final String toolName, final String userId) {
@@ -181,14 +183,14 @@ public class PlainTextLoaderService implements IToolDataService {
      * Promote the tool data for the given tool and user from the specified persistence provider to its encrypted persisted name.
      *
      * @param persistProvider The persistence layer
-     * @param persistedNames String array containing the non-encrypted and encrypted persisted file paths 
-     * @param userId The user id
-     * @param toolName The name of the tool
-     * @param toolData The tool data to be persisted
+     * @param persistedNames  String array containing the non-encrypted and encrypted persisted file paths
+     * @param userId          The user id
+     * @param toolName        The name of the tool
+     * @param toolData        The tool data to be persisted
      * @return Returns the tool data, or null if the file is not found, or if IOException is thrown.
      */
-    private void convertToEncodedPersistedName(final IPersistenceProvider persistProvider, final String[] persistedNames, 
-            final String userId, final String toolName, final String toolData) {
+    private void convertToEncodedPersistedName(final IPersistenceProvider persistProvider, final String[] persistedNames,
+                                               final String userId, final String toolName, final String toolData) {
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "convertToEncodedPersistedName", "converting from " + persistedNames[0] + " to " + persistedNames[1]);
         }
@@ -197,7 +199,7 @@ public class PlainTextLoaderService implements IToolDataService {
         deleteToolDataFromPersistence(persistProvider, persistedNames[0], userId, toolName);
         // create the tool data in the encoded file name
         if (postAndPutToolDataToPersistence(persistProvider, persistedNames[1], userId, toolName, toolData) != null) {
-            Tr.info(tc, "TOOL_DATA_PROMOTED_TO_ENCODED_NAME", new Object[] {toolName, userId});
+            Tr.info(tc, "TOOL_DATA_PROMOTED_TO_ENCODED_NAME", new Object[] { toolName, userId });
         }
     }
 
@@ -205,11 +207,11 @@ public class PlainTextLoaderService implements IToolDataService {
     @Override
     public String getToolData(String userId, String toolName) {
         if (tc.isEntryEnabled()) {
-            Tr.entry(tc, "getToolData", new Object[] {"userId=" + userId, "toolName=" + toolName});
+            Tr.entry(tc, "getToolData", new Object[] { "userId=" + userId, "toolName=" + toolName });
         }
 
         String[] persistedNames = getPersistedNames(toolName, userId);
-        synchronized(getSyncObject(persistedNames[1])) {
+        synchronized (getSyncObject(persistedNames[1])) {
             final IPersistenceProvider persistenceProvider = getPersist();
             // if the persisted tool data stored in the encoded file name does not exist, then read the data from the non-ecoded file name.
             // If the non-ecoded file name does not exist, then it is safe to assume persisted data not available for this tool.
@@ -240,9 +242,9 @@ public class PlainTextLoaderService implements IToolDataService {
      * Load the tool data for the given persisted file path from the specified persistence provider.
      *
      * @param persistProvider The persistence layer
-     * @param persistedName The persisted file path for the tool
-     * @param userId The user id
-     * @param toolName the name of the tool
+     * @param persistedName   The persisted file path for the tool
+     * @param userId          The user id
+     * @param toolName        the name of the tool
      * @return Returns the tool data, or null if the file is not found, or if IOException is thrown.
      */
     @FFDCIgnore(FileNotFoundException.class)
@@ -256,6 +258,8 @@ public class PlainTextLoaderService implements IToolDataService {
             toolData = persist.loadPlainText(persistedName);
             Tr.info(tc, "LOADED_PERSISTED_TOOL_DATA", userId, toolName);
         } catch (FileNotFoundException e) {
+            // do nothing and return null toolData
+        } catch (NoSuchFileException e) {
             // do nothing and return null toolData
         } catch (IOException e) {
             // A general I/O error occured while accessing the persisted data.
@@ -274,18 +278,18 @@ public class PlainTextLoaderService implements IToolDataService {
     @Override
     public boolean deleteToolData(String userId, String toolName) {
         if (tc.isEntryEnabled()) {
-            Tr.entry(tc, "deleteToolData", new Object[] {"userId=" + userId, "toolName=" + toolName});
+            Tr.entry(tc, "deleteToolData", new Object[] { "userId=" + userId, "toolName=" + toolName });
         }
         String[] persistedNames = getPersistedNames(toolName, userId);
         boolean deletedFromCollective = true;
         boolean deletedFromFile = true;
-        synchronized(getSyncObject(persistedNames[1])) {
+        synchronized (getSyncObject(persistedNames[1])) {
             for (String persistedName : persistedNames) {
                 if (persistenceProviderCollective != null)
-                    deletedFromCollective  = deleteToolDataFromPersistence(persistenceProviderCollective, persistedName, userId, toolName) && deletedFromCollective;
+                    deletedFromCollective = deleteToolDataFromPersistence(persistenceProviderCollective, persistedName, userId, toolName) && deletedFromCollective;
 
                 if (persistenceProviderFile != null)
-                    deletedFromFile = deleteToolDataFromPersistence(persistenceProviderFile, persistedName,  userId, toolName) && deletedFromFile;
+                    deletedFromFile = deleteToolDataFromPersistence(persistenceProviderFile, persistedName, userId, toolName) && deletedFromFile;
             }
         }
         if (tc.isEntryEnabled()) {
@@ -299,10 +303,10 @@ public class PlainTextLoaderService implements IToolDataService {
     @Override
     public String addToolData(String userId, String toolName, String toolData) {
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "addToolData", new Object[] {"userId=" + userId, "toolName=" + toolName});
+            Tr.debug(tc, "addToolData", new Object[] { "userId=" + userId, "toolName=" + toolName });
         }
         String encodedPersistedName = getEncodedPersistedName(toolName, userId);
-        synchronized(getSyncObject(encodedPersistedName)) {
+        synchronized (getSyncObject(encodedPersistedName)) {
             return postAndPutToolDataToPersistence(getPersist(), encodedPersistedName, userId, toolName, toolData);
         }
     }
@@ -311,9 +315,9 @@ public class PlainTextLoaderService implements IToolDataService {
      * Deletes the tool data for the given persisted file path from the specified persistence provider.
      *
      * @param persistProvider The persistence layer
-     * @param persistedName The persisted file path for the tool
-     * @param userId The user id
-     * @param toolName the name of the tool
+     * @param persistedName   The persisted file path for the tool
+     * @param userId          The user id
+     * @param toolName        the name of the tool
      * @return Returns <code>true</code> if the tool data is deleted or does not exist. Otherwise return <code>false</code>.
      */
     private boolean deleteToolDataFromPersistence(final IPersistenceProvider persist, final String persistedName, final String userId, final String toolName) {
@@ -323,8 +327,7 @@ public class PlainTextLoaderService implements IToolDataService {
         // synchronized is done by the caller
         try {
             boolean ret = true;
-            if (persist != null && persist.exists(persistedName))
-            {
+            if (persist != null && persist.exists(persistedName)) {
                 ret = persist.delete(persistedName);
                 if (ret)
                     Tr.info(tc, "DELETED_PERSISTED_TOOL_DATA", userId, toolName);
@@ -340,9 +343,9 @@ public class PlainTextLoaderService implements IToolDataService {
      * Posts the tool data to the given encrypted persisted name using the specified persistence provider.
      *
      * @param persistProvider The persistence layer
-     * @param persistedName The encrypted persisted file path for the tool
-     * @param userId The userId of the tool data to be saved
-     * @param toolName the name of the tool
+     * @param persistedName   The encrypted persisted file path for the tool
+     * @param userId          The userId of the tool data to be saved
+     * @param toolName        the name of the tool
      * @return Returns tool data string, otherwise null if error
      */
     private String postAndPutToolDataToPersistence(final IPersistenceProvider persist, final String persistedName, final String userId, final String toolName,
@@ -368,7 +371,7 @@ public class PlainTextLoaderService implements IToolDataService {
     @Override
     public boolean exists(String userId, String toolName) {
         String encodedPersistedName = getEncodedPersistedName(toolName, userId);
-        synchronized(getSyncObject(encodedPersistedName)) {
+        synchronized (getSyncObject(encodedPersistedName)) {
             if (persistenceProviderCollective != null) {
                 return persistenceProviderCollective.exists(encodedPersistedName);
             } else {
@@ -379,15 +382,14 @@ public class PlainTextLoaderService implements IToolDataService {
 
     /** {@inheritDoc} */
     @Override
-    public void promoteIfPossible(String userId, String toolName)
-    {
+    public void promoteIfPossible(String userId, String toolName) {
         if (tc.isEntryEnabled()) {
-            Tr.entry(tc, "promoteIfPossible", new Object[] {"userId=" + userId, "toolName=" + toolName});
+            Tr.entry(tc, "promoteIfPossible", new Object[] { "userId=" + userId, "toolName=" + toolName });
         }
         // Try promoting the content in the encoded file name from the file persistence layer to collective first. If the file doesn't exist, then
         // promote the content in the non-encoded file name from the file to collective persistence layer.
         String[] persistedNames = getPersistedNames(toolName, userId);
-        synchronized(getSyncObject(persistedNames[1])) {
+        synchronized (getSyncObject(persistedNames[1])) {
             if (persistenceProviderCollective != null && persistenceProviderCollective.exists(persistedNames[1]) == false) {
                 if (!promoteIfPossible(persistedNames[1], persistedNames[1], userId, toolName)) {
                     promoteIfPossible(persistedNames[0], persistedNames[1], userId, toolName);
@@ -403,19 +405,18 @@ public class PlainTextLoaderService implements IToolDataService {
      * Promotes the tool data from file persistence layer to collective if data doesn't exist in collective.
      *
      * @param fromPersistedName The presisted file name in the file persistence layer to be prompted
-     * @param toPersistedName The persisted file name to be saved in the collective persistence layer
-     * @param userId The userId of the tool data to be saved
-     * @param toolName the name of the tool
+     * @param toPersistedName   The persisted file name to be saved in the collective persistence layer
+     * @param userId            The userId of the tool data to be saved
+     * @param toolName          the name of the tool
      * @return Returns tool data string, otherwise null if error
      */
     private boolean promoteIfPossible(final String fromPersistedName, final String toPersistedName, final String userId, final String toolName) {
         if (tc.isEntryEnabled()) {
-            Tr.entry(tc, "promoteIfPossible", new Object[] {"fromPersistedName=" + fromPersistedName, "toPersistedName=" + toPersistedName});
+            Tr.entry(tc, "promoteIfPossible", new Object[] { "fromPersistedName=" + fromPersistedName, "toPersistedName=" + toPersistedName });
         }
         boolean promoted = false;
- 
-        if (persistenceProviderFile.exists(fromPersistedName) == true)
-        {
+
+        if (persistenceProviderFile.exists(fromPersistedName) == true) {
             try {
                 String data = loadToolDataFromPersistence(persistenceProviderFile, fromPersistedName, userId, toolName);
                 if (data != null && !"IOException".equals(data)) {

@@ -18,7 +18,7 @@
     	<feature>appSecurity-2.0</feature>
 		<feature>jsp-2.3</feature>
 		<feature>securitylibertyinternals-1.0</feature>
-		<feature>spnego-1.0</feature>
+		<!--<feature>spnego-1.0</feature>-->
 		<feature>servlet-3.1</feature>
 	</featureManager>
 	

@@ -1065,8 +1065,21 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
      * 
      */
     private void addSTSHeader() {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+            logger.entering(CLASS_NAME,"addSTSHeader", this);
+        }
 
-        String value  = this.getRequest().getWebAppDispatcherContext().getWebApp().getConfiguration().getSTSHeaderValue(); 
+        WebApp webApp = this.getRequest().getWebAppDispatcherContext().getWebApp();
+
+        //webApp is null if there's any exception before WC can determine a target webapp 
+        if (webApp == null) {   
+            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
+                logger.exiting(CLASS_NAME,"addSTSHeader", "cannot determine WebApp.");
+            }
+            return;
+        }
+
+        String value  = webApp.getConfiguration().getSTSHeaderValue(); 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME,"addSTSHeader", " value -->" + value);
         }

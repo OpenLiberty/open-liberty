@@ -12,21 +12,21 @@ Include-Resource: \
      @${repo;com.sun.mail:javax.mail;1.6.2}!/META-INF/javamail.default.address.map, \
      @${repo;com.sun.mail:javax.mail;1.6.2}!/META-INF/javamail.default.providers
 
-Import-Package: javax.mail;version="[1.6.0,1.6.200)",  \
-javax.mail.event;version="[1.6.0,1.6.200)", \
-javax.mail.internet;version="[1.6.0,1.6.200)", \
-javax.mail.search;version="[1.6.0,1.6.200)", \
-javax.mail.util;version="[1.6.0,1.6.200)", \
-com.sun.mail;version="[1.6.0,1.6.200)", \
-com.sun.mail.auth;version="[1.6.0,1.6.200)", \
-com.sun.mail.imap;version="[1.6.0,1.6.200)", \
-com.sun.mail.imap.protocol;version="[1.6.0,1.6.200)", \
-com.sun.mail.iap;version="[1.6.0,1.6.200)", \
-com.sun.mail.pop3;version="[1.6.0,1.6.200)", \
-com.sun.mail.smtp;version="[1.6.0,1.6.200)", \
-com.sun.mail.util;version="[1.6.0,1.6.200)", \
-com.sun.mail.util.logging;version="[1.6.0,1.6.200)", \
-com.sun.mail.handlers;version="[1.6.0,1.6.200)"
+Import-Package: javax.mail;version="[1.6.0,1.7)",  \
+javax.mail.event;version="[1.6.0,1.7)", \
+javax.mail.internet;version="[1.6.0,1.7)", \
+javax.mail.search;version="[1.6.0,1.7)", \
+javax.mail.util;version="[1.6.0,1.7)", \
+com.sun.mail;version="[1.6.0,1.7)", \
+com.sun.mail.auth;version="[1.6.0,1.7)", \
+com.sun.mail.imap;version="[1.6.0,1.7)", \
+com.sun.mail.imap.protocol;version="[1.6.0,1.7)", \
+com.sun.mail.iap;version="[1.6.0,1.7)", \
+com.sun.mail.pop3;version="[1.6.0,1.7)", \
+com.sun.mail.smtp;version="[1.6.0,1.7)", \
+com.sun.mail.util;version="[1.6.0,1.7)", \
+com.sun.mail.util.logging;version="[1.6.0,1.7)", \
+com.sun.mail.handlers;version="[1.6.0,1.7)"
 
 
 Export-Package: \

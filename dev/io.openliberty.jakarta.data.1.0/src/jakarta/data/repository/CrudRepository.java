@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,19 +12,21 @@
  *******************************************************************************/
 package jakarta.data.repository;
 
+import java.util.List;
+
 /**
  * Interface methods copied from Jakarta Data.
  */
 public interface CrudRepository<T, K> extends BasicRepository<T, K> {
     @Insert
-    void insert(T entity);
+    <S extends T> S insert(S entity);
 
     @Insert
-    void insertAll(Iterable<T> entities);
+    <S extends T> List<S> insertAll(List<S> entities);
 
     @Update
-    boolean update(T entity);
+    <S extends T> S update(S entity);
 
     @Update
-    int updateAll(Iterable<T> entities);
+    <S extends T> List<S> updateAll(List<S> entities);
 }

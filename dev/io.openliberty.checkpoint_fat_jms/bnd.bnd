@@ -26,6 +26,7 @@ test.project: true
 tested.features:\
   wasJmsServer-1.0,\
   wasJmsClient-2.0,\
+  checkpoint
 
 
 # To define a global minimum java level for the FAT, use the following property.

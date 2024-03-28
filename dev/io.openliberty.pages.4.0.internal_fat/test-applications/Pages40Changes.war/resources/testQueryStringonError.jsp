@@ -16,7 +16,7 @@
     <!-- We are setting the error page to "errorPage.jsp" where iserrorpage is true -->
     <%@ page errorPage="errorPage.jsp" autoFlush="false" %>
     <%! int i=0; %>
-    <!-- Force a Divid by Zero -->
+    <!-- Force a Divide by Zero -->
     <%= 9/i %>
 
     </body>

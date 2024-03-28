@@ -8,8 +8,8 @@ Subsystem-Content:
  com.ibm.websphere.appserver.javax.ejb-3.2; type="osgi.subsystem.feature",
  com.ibm.websphere.appserver.javaeePlatform-7.0; type="osgi.subsystem.feature",
  com.ibm.websphere.appserver.javax.interceptor-1.2; type="osgi.subsystem.feature",
- com.ibm.ws.ejbcontainer.v32; version="[1.0.0,1.0.200)",
- com.ibm.ws.ejbcontainer.remote; version="[1.0.0,1.0.200)"
+ com.ibm.ws.ejbcontainer.v32; version="[1.0.0,1.1)",
+ com.ibm.ws.ejbcontainer.remote; version="[1.0.0,1.1)"
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2
 IBM-API-Package: test.iiop.common; type="ibm-api"

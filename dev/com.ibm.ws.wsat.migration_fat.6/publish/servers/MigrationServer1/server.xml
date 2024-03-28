@@ -12,14 +12,14 @@
     />
 
     <featureManager>
-        <feature>servlet-4.0</feature>
-        <feature>componenttest-1.0</feature>
-        <feature>jdbc-4.2</feature>
-        <feature>jndi-1.0</feature>
-        <feature>cdi-2.0</feature>
-        <feature>txtest-1.0</feature>
-        <feature>timedexit-1.0</feature>
-    <feature>wsAtomicTransaction-1.2</feature>
+      <feature>cdi-2.0</feature>
+      <feature>componenttest-1.0</feature>
+      <feature>jdbc-4.2</feature>
+      <feature>jndi-1.0</feature>
+      <feature>servlet-4.0</feature>
+      <feature>timedexit-1.0</feature>
+      <feature>txtest-1.0</feature>
+      <feature>wsAtomicTransaction-1.2</feature>
     </featureManager>
 
     <!-- Anonymously named jar used to prevent JDBCDriver auto-detection -->
@@ -34,6 +34,9 @@
     </dataSource>
 
     <include location="../fatTestPorts.xml"/>
+
+    <!-- This setting will be overridden in jvm.properties -->
+	<wsAtomicTransaction asyncResponseTimeout="100"/>
     
   <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
 </server>

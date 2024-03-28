@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,33 +13,40 @@ package test.jakarta.data.jpa.web;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
- *
+ * Employee entity for tests.
  */
 @Entity
 public class Employee {
+    @Embedded
+    public Badge badge;
+
+    @Id
+    public int empNum;
 
     @Column(name = "LNAME")
     public String firstName;
 
+    public String id;
+
     @Column(name = "FNAME")
     public String lastName;
-
-    @Embedded
-    public Badge badge;
 
     public Employee() {
     }
 
-    Employee(String firstName, String lastName, short badgeNum, char accessLevel) {
+    Employee(int empNum, String firstName, String lastName, short badgeNum, char accessLevel) {
+        this.empNum = empNum;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.id = firstName + " " + lastName;
         this.badge = new Badge(badgeNum, accessLevel);
     }
 
     @Override
     public String toString() {
-        return "Employee " + firstName + " " + lastName + " " + badge;
+        return "Employee #" + empNum + " " + firstName + " " + lastName + " " + badge;
     }
 }

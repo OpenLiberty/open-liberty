@@ -2,7 +2,7 @@ Subsystem-ManifestVersion: 1
 IBM-ShortName: jcabvtbundle-1.0
 Subsystem-SymbolicName: jcabvtbundle-1.0; visibility:=public
 Subsystem-Version: 1.0.0
-Subsystem-Content: test.jca.fat.bvt.bundle;  version="[1,1.0.100)",
+Subsystem-Content: test.jca.fat.bvt.bundle;  version="[1,1.1)",
  contextProviderSPI-1.0; type="osgi.subsystem.feature"
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2

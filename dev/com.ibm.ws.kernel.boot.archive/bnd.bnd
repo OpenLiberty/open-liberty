@@ -24,7 +24,15 @@ Private-Package: \
 	org.apache.commons.compress.compressors.deflate64, \
 	org.apache.commons.compress.compressors, \
 	org.apache.commons.compress.compressors.lzw, \
-	org.apache.commons.compress.utils
+	org.apache.commons.compress.utils, \
+	org.apache.commons.codec, \
+	org.apache.commons.io, \
+	org.apache.commons.io.file.attribute, \
+	org.apache.commons.io.input, \
+	org.apache.commons.io.output, \
+	org.apache.commons.io.function
+
+	
 	
 
 instrument.disabled: true
@@ -36,4 +44,6 @@ instrument.disabled: true
 	com.ibm.ws.logging.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
 	com.ibm.ws.logging;version=latest, \
-	com.ibm.ws.org.apache.commons.compress;version=latest
+	com.ibm.ws.org.apache.commons.compress;version=latest, \
+	com.ibm.ws.org.apache.commons.io;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest

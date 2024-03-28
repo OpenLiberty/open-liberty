@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,6 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.wsat.tm.impl;
-
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
@@ -27,6 +24,7 @@ import com.ibm.ws.wsat.common.impl.WSATParticipant;
 import com.ibm.ws.wsat.common.impl.WSATParticipantState;
 import com.ibm.ws.wsat.service.WSATException;
 import com.ibm.ws.wsat.service.WebClient;
+import com.ibm.ws.wsat.service.impl.WSATConfigServiceImpl;
 
 /**
  * This is an XAResource that wrappers a remote WSATParticipant. The tran mgr
@@ -36,22 +34,13 @@ import com.ibm.ws.wsat.service.WebClient;
  */
 public class ParticipantResource implements XAResource {
 
-    private static final String CLASS_NAME = ParticipantResource.class.getName();
     private static final TraceComponent TC = Tr.register(ParticipantResource.class);
-    private final static TranManagerImpl tranService = TranManagerImpl.getInstance();
 
-    private WSATParticipant participant;
+    private final WSATParticipant participant;
     private long timeoutMillis;
-    private long defaultTimeout;
 
     public ParticipantResource(WSATParticipant participant) {
-        defaultTimeout = AccessController.doPrivileged(new PrivilegedAction<Long>() {
-            @Override
-            public Long run() {
-                return Long.parseLong(System.getProperty(WebClient.ASYNC_TIMEOUT, WebClient.DEFAULT_ASYNC_TIMEOUT));
-            }
-        });
-        this.timeoutMillis = defaultTimeout;
+        this.timeoutMillis = WSATConfigServiceImpl.getInstance().getAsyncResponseTimeout();
         this.participant = participant;
     }
 
@@ -213,7 +202,7 @@ public class ParticipantResource implements XAResource {
     @Override
     public boolean setTransactionTimeout(int timeout) throws XAException {
         if (timeout == 0) {
-            timeoutMillis = defaultTimeout;
+            timeoutMillis = WSATConfigServiceImpl.getInstance().getAsyncResponseTimeout();;
         } else {
             timeoutMillis = timeout * 1000;
         }

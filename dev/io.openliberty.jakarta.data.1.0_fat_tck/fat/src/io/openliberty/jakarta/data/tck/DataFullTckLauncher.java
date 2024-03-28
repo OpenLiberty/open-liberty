@@ -17,7 +17,6 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -59,7 +58,6 @@ public class DataFullTckLauncher {
      * Run the TCK (controlled by autoFVT/publish/tckRunner/tck/*)
      */
     @Test
-    @Ignore("Behavior change in spec after M3 caused failures") // TODO re-enable with M4 or RC1
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchDataTckFullPersistence() throws Exception {
         // Test groups to run
@@ -73,7 +71,7 @@ public class DataFullTckLauncher {
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-M3");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-M4");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckFull";

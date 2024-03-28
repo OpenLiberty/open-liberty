@@ -387,6 +387,7 @@ public class JobExecutions implements RESTHandler {
         		// Note: headers must be set *before* writing to the output stream
         		response.setContentType("application/zip");
         		response.setResponseHeader("Content-Disposition", "attachment; filename=" + StringUtils.enquote(getZipFileName(jobExecutionLog)));
+        		BatchRequestUtil.addExtraResponseHeaders(response);
 
         		// If there are remote partition logs, fetch them now.
         		// The localOnly flag is used to prevent cascading requests
@@ -425,6 +426,7 @@ public class JobExecutions implements RESTHandler {
 
         		// Note: headers must be set *before* writing to the output stream
         		response.setContentType("text/plain; charset=UTF-8");
+        		BatchRequestUtil.addExtraResponseHeaders(response);
 
         		ZipHelper.aggregateFilesToStream(jobExecutionLog.getJobLogFiles(),
         				jobExecutionLog.getExecLogRootDir(),
@@ -464,6 +466,7 @@ public class JobExecutions implements RESTHandler {
 
         		// Note: headers must be set *before* writing to the output stream
         		response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+        		BatchRequestUtil.addExtraResponseHeaders(response);
 
         		BatchJSONHelper.writeJobExecutionLogLinks(jobExecutionLog,
         				BatchRequestUtil.getUrlRoot(request),
@@ -489,6 +492,7 @@ public class JobExecutions implements RESTHandler {
                 response.setContentType("application/zip");
                 response.setResponseHeader("Content-Disposition", "attachment; filename="
                                                                   + StringUtils.enquote(getZipFileName(jobExecutionLog, request.getParameter("part"))));
+                BatchRequestUtil.addExtraResponseHeaders(response);
 
                 ZipHelper.zipFileToStream(jobLogFile,
                                           jobExecutionLog.getExecLogRootDir(),
@@ -500,6 +504,7 @@ public class JobExecutions implements RESTHandler {
                 //       instead of an InputStream and specify the file encoding for writing to the output stream.
                 // Note: the FileInputStream is closed by copyStream.
                 response.setContentType("text/plain; charset=UTF-8");
+                BatchRequestUtil.addExtraResponseHeaders(response);
                 ZipHelper.copyStream(new FileInputStream(jobLogFile), response.getOutputStream());
             }
         }
@@ -566,6 +571,7 @@ public class JobExecutions implements RESTHandler {
 
         // Note: headers must be set *before* writing to the output stream
         response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+        BatchRequestUtil.addExtraResponseHeaders(response);
 
         List<WSJobExecution> jobExecutionList = new ArrayList<WSJobExecution>();
         Map<Long, List<WSStepThreadExecutionAggregate>> jobExecStepExecListMap = new HashMap<Long, List<WSStepThreadExecutionAggregate>>();
@@ -610,6 +616,7 @@ public class JobExecutions implements RESTHandler {
 
             // Note: headers must be set *before* writing to the output stream
             response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+            BatchRequestUtil.addExtraResponseHeaders(response);
 
             List<WSStepThreadExecutionAggregate> stepExecAggregateList = jobRepository.getStepExecutionAggregatesFromJobExecution(jobExecutionId);
 
@@ -631,6 +638,7 @@ public class JobExecutions implements RESTHandler {
 
             // Note: headers must be set *before* writing to the output stream
             response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+            BatchRequestUtil.addExtraResponseHeaders(response);
 
             BatchJSONHelper.writeJobInstance(jobRepository.getJobInstanceFromExecution(jobExecutionId),
                                              BatchRequestUtil.getUrlRoot(request),
@@ -656,6 +664,7 @@ public class JobExecutions implements RESTHandler {
 
             // Note: headers must be set *before* writing to the output stream
             response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+            BatchRequestUtil.addExtraResponseHeaders(response);
 
             List<WSStepThreadExecutionAggregate> stepExecAggregateList = jobRepository.getStepExecutionAggregatesFromJobExecution(jobExecutionId);
             
@@ -699,6 +708,7 @@ public class JobExecutions implements RESTHandler {
 
             // Note: headers must be set *before* writing to the output stream
             response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+            BatchRequestUtil.addExtraResponseHeaders(response);
 
             BatchJSONHelper.writeJobInstance(jobInstance,
                                              BatchRequestUtil.getUrlRoot(request),
@@ -740,6 +750,7 @@ public class JobExecutions implements RESTHandler {
 
             // Note: headers must be set *before* writing to the output stream
             response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+            BatchRequestUtil.addExtraResponseHeaders(response);
 
             List<WSStepThreadExecutionAggregate> stepExecAggregateList = jobRepository.getStepExecutionAggregatesFromJobExecution(jobExec.getExecutionId());
 

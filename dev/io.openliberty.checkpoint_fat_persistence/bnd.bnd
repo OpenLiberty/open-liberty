@@ -21,6 +21,8 @@ src: \
 
 fat.project: true
 
+
+
 fat.test.container.images: kyleaure/db2-ssl:3.0
 
 # To define a global minimum java level for the FAT, use the following property.
@@ -43,4 +45,4 @@ fat.test.container.images: kyleaure/db2-ssl:3.0
 	com.ibm.websphere.javaee.jaxrs.2.1,\
 	com.ibm.websphere.javaee.transaction.1.2
 
-tested.features=jdbc-4.3,jdbc-4.2,jdbc-4.1
+tested.features=checkpoint,jdbc-4.3,jdbc-4.2,jdbc-4.1

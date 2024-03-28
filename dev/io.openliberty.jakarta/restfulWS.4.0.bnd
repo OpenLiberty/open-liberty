@@ -1,0 +1,28 @@
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+Bundle-SymbolicName: io.openliberty.jakarta.restfulWS.4.0; singleton:=true
+
+Export-Package: jakarta.ws.rs.*; version="4.0.0"
+
+# Until we have the 4.0 API, remove Link$JaxbAdapter and Link$JaxbLink from the 3.1 jar since that is one of the changes in 4.0.
+-includeresource: \
+   @${repo;jakarta.ws.rs:jakarta.ws.rs-api;3.1.0;EXACT}!/!(META-INF/maven/*|module-info.class|jakarta/ws/rs/core/Link$JaxbAdapter.class|jakarta/ws/rs/core/Link$JaxbLink.class)
+
+-maven-dependencies: \
+   dep1;groupId=jakarta.ws.rs;artifactId=jakarta.ws.rs-api;version=3.1.0;scope=runtime
+

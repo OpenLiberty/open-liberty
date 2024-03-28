@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static jakarta.data.repository.By.ID;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -122,7 +124,7 @@ class EntityInfo {
         String lowerName = name.toLowerCase();
         String attributeName = attributeNames.get(lowerName);
         if (attributeName == null)
-            if ("id".equals(lowerName))
+            if (ID.equals(lowerName))
                 if (idClassAttributeAccessors == null && failIfNotFound)
                     throw new MappingException("Entity class " + getType().getName() + " does not have a property named " + name +
                                                " or which is designated as the @Id."); // TODO NLS
@@ -172,8 +174,8 @@ class EntityInfo {
         for (String name : attributeTypes.keySet())
             names.add(name);
 
-        names.remove("id");
-        names.remove(attributeNames.get("id"));
+        names.remove(ID);
+        names.remove(attributeNames.get(ID));
         names.remove(versionAttributeName);
 
         for (String name : attributeTypes.keySet()) {

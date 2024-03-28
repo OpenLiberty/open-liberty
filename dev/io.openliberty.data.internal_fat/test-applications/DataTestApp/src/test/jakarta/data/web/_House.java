@@ -40,8 +40,6 @@ public class _House {
 
     public static volatile SortableAttribute<House> kitchen_width;
 
-    public static volatile TextAttribute<House> id;
-
     public static volatile SortableAttribute<House> LotSize;
 
     public static final String NUM_BEDROOMS = "numBedrooms";

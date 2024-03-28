@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -48,7 +48,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 @SkipForRepeat(SkipForRepeat.EE9_FEATURES)
-public class BasicAuthTest extends ApacheKDCCommonTest {
+public class BasicAuthTest extends ContainerKDCCommonTest {
 
     private static final Class<?> c = BasicAuthTest.class;
 
@@ -75,19 +75,19 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
     @BeforeClass
     public static void setUp() throws Exception {
         Log.info(c, "setUp", "Starting the server and kerberos setup...");
-        ApacheKDCCommonTest.commonSetUp("BasicAuthTest", null,
-                                        SPNEGOConstants.NO_APPS,
-                                        SPNEGOConstants.NO_PROPS,
-                                        SPNEGOConstants.DONT_CREATE_SSL_CLIENT,
-                                        SPNEGOConstants.DONT_CREATE_SPN_AND_KEYTAB,
-                                        SPNEGOConstants.DEFAULT_REALM,
-                                        SPNEGOConstants.DONT_CREATE_SPNEGO_TOKEN,
-                                        SPNEGOConstants.SET_AS_COMMON_TOKEN,
-                                        SPNEGOConstants.USE_CANONICAL_NAME,
-                                        SPNEGOConstants.USE_COMMON_KEYTAB,
-                                        SPNEGOConstants.START_SERVER);
+        ContainerKDCCommonTest.commonSetUp("BasicAuthTest", null,
+                                           SPNEGOConstants.NO_APPS,
+                                           SPNEGOConstants.NO_PROPS,
+                                           SPNEGOConstants.DONT_CREATE_SSL_CLIENT,
+                                           SPNEGOConstants.DONT_CREATE_SPN_AND_KEYTAB,
+                                           SPNEGOConstants.DEFAULT_REALM,
+                                           SPNEGOConstants.DONT_CREATE_SPNEGO_TOKEN,
+                                           SPNEGOConstants.SET_AS_COMMON_TOKEN,
+                                           SPNEGOConstants.USE_CANONICAL_NAME,
+                                           SPNEGOConstants.USE_COMMON_KEYTAB,
+                                           SPNEGOConstants.START_SERVER);
 
-        testHelper.addShutdownMessages("CWWKS9127W", "CWWKS4317E", "CWWKS4308E", "CWWKS4309E", "CWWKS4318E", "CWWKG0083W", "CWWKS4313E", "CWWKS4312E", "CWWKG0027W");
+        testHelper.addShutdownMessages("CWWKS9127W", "CWWKS4317E", "CWWKS4308E", "CWWKS4309E", "CWWKS4318E", "CWWKG0083W", "CWWKS4313E", "CWWKS4312E", "CWWKG0027W", "CWWKG0011W");
     }
 
     @Before
@@ -114,14 +114,14 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
     @Test
     public void testSpnegoSuccessful() throws Exception {
-        preTestCheck();
+        refreshCommonSpnegoToken();
         setDefaultSpnegoServerConfig(ENABLE_INFO_LOGGING);
         commonSuccessfulSpnegoServletCall();
     }
 
     @Test
     public void testSpnegoSuccessful_withJwtSsoFeature() throws Exception {
-        preTestCheck();
+        refreshCommonSpnegoToken();
         setDefaultSpnegoServerConfig();
         ServerConfiguration newServerConfig = myServer.getServerConfiguration();
         newServerConfig.getFeatureManager().getFeatures().remove("servlet-3.1");
@@ -152,11 +152,11 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
         setDefaultSpnegoServerConfig();
         String targetSpn = "HTTP/" + TARGET_SERVER;
         String krb5Config = myServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE;
-        Subject subject = krb5Helper.kerberosLogin(myServer, ApacheKDCforSPNEGO.KRB5_USER1, ApacheKDCforSPNEGO.KRB5_USER1_PWD, krb5Config);
-        String token = krb5Helper.createToken(subject, ApacheKDCforSPNEGO.KRB5_USER1, targetSpn, true, 5, 6, 7, 8, Krb5Helper.KRB5_MECH_OID);
+        Subject subject = krb5Helper.kerberosLogin(myServer, this.krbUser1, this.krbUser1Pwd, krb5Config);
+        String token = krb5Helper.createToken(subject, this.krbUser1, targetSpn, true, 5, 6, 7, 8, Krb5Helper.KRB5_MECH_OID);
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + token, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         Log.info(c, name.getMethodName(), "Accessing SPNEGO servlet using raw Kerberos token");
-        successfulSpnegoServletCall(headers, ApacheKDCforSPNEGO.KRB5_USER1, SPNEGOConstants.IS_EMPLOYEE, SPNEGOConstants.IS_NOT_MANAGER);
+        successfulSpnegoServletCall(headers, this.krbUser1, SPNEGOConstants.IS_EMPLOYEE, SPNEGOConstants.IS_NOT_MANAGER);
     }
 
     /**
@@ -240,8 +240,8 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
             String userName = InitClass.FIRST_USER;
             String targetSpn = "HTTP/" + TARGET_SERVER;
             String krb5Config = myServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE;
-            String misMatchUserName = InitClass.SECOND_USER = "user2";
-            String misMatchUserPassword = InitClass.SECOND_USER_PWD = "user2pwd";
+            String misMatchUserName = InitClass.SECOND_USER;
+            String misMatchUserPassword = InitClass.SECOND_USER_PWD;
 
             //testHelper.reconfigureServer("spnegoServer.xml", name.getMethodName(), SPNEGOConstants.RESTART_SERVER);
             Subject subject = krb5Helper.kerberosLogin(myServer, misMatchUserName, misMatchUserPassword, krb5Config);
@@ -348,7 +348,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
     @Test
     public void testSpnegoNotSupportedFileErrorPage() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, SPNEGO_NOT_SUPPORTED_ERROR_PAGE, null, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, SPNEGO_NOT_SUPPORTED_ERROR_PAGE, null, false);
 
         Map<String, String> headerNotSpnegoToken = testHelper.setTestHeaders(null, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headerNotSpnegoToken, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
@@ -370,7 +370,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
     @Test
     public void testSpnegoNotSupportedWebErrorPage() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, SPNEGO_NOT_SUPPORTED_WEB_ERROR_PAGE, null, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, SPNEGO_NOT_SUPPORTED_WEB_ERROR_PAGE, null, false);
         Map<String, String> headerNotSpnegoToken = testHelper.setTestHeaders(null, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headerNotSpnegoToken, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
 
@@ -396,7 +396,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
     @Test
     @AllowedFFDC({ "java.io.FileNotFoundException" })
     public void testSpnegoNotSupportedFileErrorPageWithBadUrl() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, NOT_FOUND_FILE_ERROR_PAGE, null, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, NOT_FOUND_FILE_ERROR_PAGE, null, false);
         Map<String, String> headerNotSpnegoToken = testHelper.setTestHeaders(null, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headerNotSpnegoToken, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
 
@@ -426,7 +426,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
     @Test
     @AllowedFFDC({ "java.io.FileNotFoundException" })
     public void testSpnegoNotSupportedWebErrorPageWithBadUrl() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, NOT_FOUND_WEB_ERROR_PAGE, null, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, NOT_FOUND_WEB_ERROR_PAGE, null, false);
         Map<String, String> headerNotSpnegoToken = testHelper.setTestHeaders(null, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headerNotSpnegoToken, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
 
@@ -456,7 +456,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
     @Test
     @AllowedFFDC({ "java.net.MalformedURLException" })
     public void testSpnegoNotSupportedErrorPageWithMalformedUrl() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, MALFORMED_URL_ERROR_PAGE, null, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, MALFORMED_URL_ERROR_PAGE, null, false);
         Map<String, String> headerNotSpnegoToken = testHelper.setTestHeaders(null, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headerNotSpnegoToken, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
 
@@ -486,7 +486,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
     @Test
     public void testSpnegoNotSupportedErrorPageWithContentTypeAndPageEncoding() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, SPNEGO_ERROR_PAGE_WITH_CONTTYPE_AND_ENCODING, null, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, SPNEGO_ERROR_PAGE_WITH_CONTTYPE_AND_ENCODING, null, false);
         Map<String, String> headerNotSpnegoToken = testHelper.setTestHeaders(null, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headerNotSpnegoToken, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
 
@@ -545,7 +545,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
     @Test
     public void testNtlmTokenReceivedDefaultErrorPage() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, null, null, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, null, null, false);
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + NTLM_TOKEN, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headers, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
 
@@ -567,7 +567,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
     @Test
     public void testNtlmTokenReceivedFileErrorPage() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, null, NTLM_TOKEN_ERROR_PAGE, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, null, NTLM_TOKEN_ERROR_PAGE, false);
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + NTLM_TOKEN, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headers, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
 
@@ -589,7 +589,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
     @Test
     public void testNtlmTokenReceivedWebErrorPage() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, null, NTLM_TOKEN_WEB_ERROR_PAGE, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, null, NTLM_TOKEN_WEB_ERROR_PAGE, false);
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + NTLM_TOKEN, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headers, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
 
@@ -615,7 +615,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
     @Test
     @AllowedFFDC({ "java.io.FileNotFoundException" })
     public void testNtlmTokenReceivedFileErrorPageWithBadUrl() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, null, NOT_FOUND_FILE_ERROR_PAGE, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, null, NOT_FOUND_FILE_ERROR_PAGE, false);
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + NTLM_TOKEN, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headers, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
 
@@ -645,7 +645,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
     @Test
     @AllowedFFDC({ "java.io.FileNotFoundException" })
     public void testNtlmTokenReceivedWebErrorPageWithBadUrl() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, null, NOT_FOUND_WEB_ERROR_PAGE, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, null, NOT_FOUND_WEB_ERROR_PAGE, false);
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + NTLM_TOKEN, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headers, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
 
@@ -673,7 +673,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
     @Test
     @AllowedFFDC({ "java.net.MalformedURLException" })
     public void testNtlmTokenReceivedErrorPageWithMalformedUrl() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, MALFORMED_URL_ERROR_PAGE, null, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, MALFORMED_URL_ERROR_PAGE, null, false);
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + NTLM_TOKEN, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headers, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
 
@@ -703,7 +703,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
     @Test
     public void testNtlmTokenReceivedErrorPageWithContentTypeAndPageEncoding() throws Exception {
-        setSpnegoServerConfig(configFile, keytabFile, ApacheKDCforSPNEGO.SPN, "false", null, null, NTLM_ERROR_PAGE_WITH_CONTTYPE_AND_ENCODING, false);
+        setSpnegoServerConfig(configFile, keytabFile, this.SPN, "false", null, null, NTLM_ERROR_PAGE_WITH_CONTTYPE_AND_ENCODING, false);
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + NTLM_TOKEN, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         String response = unsuccessfulSpnegoServletCall(headers, SPNEGOConstants.DONT_IGNORE_ERROR_CONTENT);
 
@@ -850,11 +850,18 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
     @Test
     public void testTrimKerberosRealmNameFromPrincipalUsingCustomJaasLogin() throws Exception {
-        preTestCheck();
-
-        testHelper.reconfigureServer("trimKerberosRealmFromPrincipal_customJaasLogin.xml", name.getMethodName(), null, false);
+        refreshCommonSpnegoToken();
 
         ServerConfiguration newServerConfig = myServer.getServerConfiguration().clone();
+        newServerConfig.getFeatureManager().getFeatures().remove("spnego-1.0");
+        updateConfigDynamically(myServer, newServerConfig, false);
+
+        // The spnego feature is disabled in trimKerberosRealmFromPrincipal_customJaasLogin.xml
+        // because when the xml is applied it resets the spnego config, and the default krb5.conf location can cause problems.
+        testHelper.reconfigureServer("trimKerberosRealmFromPrincipal_customJaasLogin.xml", name.getMethodName(), null, false);
+
+        newServerConfig = myServer.getServerConfiguration().clone();
+        newServerConfig.getFeatureManager().getFeatures().add("spnego-1.0");
 
         Spnego spnego = newServerConfig.getSpnego();
         setDefaultSpnegoConfigValues(spnego);
@@ -863,7 +870,7 @@ public class BasicAuthTest extends ApacheKDCCommonTest {
 
         updateConfigDynamically(myServer, newServerConfig, false);
 
-        successfulSpnegoServletCallForMappedUser(ApacheKDCforSPNEGO.KRB5_USER1, ApacheKDCforSPNEGO.KRB5_USER1_PWD, ApacheKDCforSPNEGO.KRB5_USER2,
+        successfulSpnegoServletCallForMappedUser(this.krbUser1, this.krbUser1Pwd, this.krbUser2,
                                                  SPNEGOConstants.IS_NOT_EMPLOYEE,
                                                  SPNEGOConstants.IS_MANAGER);
     }

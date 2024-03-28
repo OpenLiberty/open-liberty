@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -508,7 +508,8 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             return false;
         }
         Set<String> features = provisionerService.getInstalledFeatures();
-        return features.contains("appSecurity-3.0") || features.contains("appSecurity-4.0") || features.contains("appSecurity-5.0") || features.contains("mpJwt-2.1");
+        return features.contains("appSecurity-3.0") || features.contains("appSecurity-4.0") || features.contains("appSecurity-5.0") || features.contains("appSecurity-6.0")
+               || features.contains("mpJwt-2.1");
     }
 
     /**

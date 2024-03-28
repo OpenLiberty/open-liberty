@@ -4,7 +4,7 @@ Subsystem-SymbolicName: com.ibm.websphere.appserver.logging-1.0; visibility:=pri
 Subsystem-Version: 1.0.0
 
 Subsystem-Content: com.ibm.websphere.appserver.kernel-1.0; type="osgi.subsystem.feature",
- p.q; version="[1.0.0,1.0.100)"; type="boot.jar"
+ p.q; version="[1.0.0,1.1)"; type="boot.jar"
 
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2

@@ -27,13 +27,13 @@ public interface PageRequest<T> {
     }
 
     public interface Cursor {
-        public static Cursor forKeyset(Object... keysetValues) {
-            return new PageRequestCursor(keysetValues);
+        public static Cursor forKey(Object... componentsOfKey) {
+            return new PageRequestCursor(componentsOfKey);
         }
 
         public List<?> elements();
 
-        public Object getKeysetElement(int index);
+        public Object get(int index);
 
         public int size();
     }
@@ -50,17 +50,17 @@ public interface PageRequest<T> {
         return new Pagination<T>(1, size, Collections.emptyList(), Mode.OFFSET, null, true);
     }
 
-    public PageRequest<T> afterKeyset(Object... keyset);
+    public PageRequest<T> afterCursor(PageRequest.Cursor cursor);
 
-    public PageRequest<T> afterKeysetCursor(PageRequest.Cursor cursor);
+    public PageRequest<T> afterKey(Object... componentsOfKey);
 
     public PageRequest<T> asc(String property);
 
     public PageRequest<T> ascIgnoreCase(String property);
 
-    public PageRequest<T> beforeKeyset(Object... keyset);
+    public PageRequest<T> beforeCursor(PageRequest.Cursor cursor);
 
-    public PageRequest<T> beforeKeysetCursor(PageRequest.Cursor cursor);
+    public PageRequest<T> beforeKey(Object... componentsOfKey);
 
     public Optional<Cursor> cursor();
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,14 +17,24 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ConfigElementList;
+import com.ibm.websphere.simplicity.config.Fileset;
+import com.ibm.websphere.simplicity.config.JMSActivationSpec;
+import com.ibm.websphere.simplicity.config.Library;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
+import com.ibm.websphere.simplicity.config.Variable;
+import com.ibm.websphere.simplicity.config.WasJmsProperties;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.SharedServer;
 
@@ -476,5 +486,160 @@ public abstract class JakartaEEAction extends FeatureReplacementAction {
     // uses the initialisation-on-demand holder idiom to provide safe and fast lazy loading
     private static class TransformerHolder {
         public static final TransformSubAction _INSTANCE = new componenttest.rules.repeater.TransformSubActionImpl();
+    }
+
+    /**
+     * Recursively copy a directory to a new location and transform all the jars in the copy
+     *
+     * @param  src         the source directory
+     * @param  dst         the destination directory
+     * @throws IOException if there's a problem copying files
+     */
+    public static void copyAndTransformLibrary(Path src, Path dst) throws IOException {
+        Log.info(c, "copyAndTransformLibrary", "Copy library from " + src + " to " + dst);
+
+        if (dst.getParent() != null) {
+            Files.createDirectories(dst.getParent());
+        }
+
+        Files.walk(src).forEach(path -> {
+            Path target = dst.resolve(src.relativize(path));
+
+            // Check and warn for files which would make a straight copy fail
+            // For some reason some library directories on test machines include broken symlinks
+            if (Files.notExists(path)) {
+                Log.warning(c, path + " does not exist");
+                return;
+            }
+            if (!Files.exists(path)) {
+                Log.warning(c, path + " can't be checked for existence");
+                return;
+            }
+            if (!Files.isDirectory(path) && !Files.isReadable(path)) {
+                Log.warning(c, path + " is not readable");
+                return;
+            }
+            if (Files.isDirectory(path) && Files.isDirectory(target)) {
+                Log.debug(c, "Directory " + target + " already exists, no need to create it");
+                return;
+            }
+
+            try {
+                Files.copy(path, target, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to copy " + path, e);
+            }
+        });
+
+        // Find and transform jars
+        Log.info(c, "copyAndTransformLibrary", "Transform jars under " + dst);
+        try (Stream<Path> dstFiles = Files.walk(dst)) {
+            dstFiles.filter(Files::isRegularFile)
+                            .filter(p -> p.getFileName().toString().endsWith(".jar"))
+                            .forEach(JakartaEEAction::transformApp);
+        }
+    }
+
+    /**
+     * Replace a prefix of all {@code dir} attributes of all filesets under top-level {@code <library>} elements.
+     * <p>
+     * For example, if called with {@code originalPrefix = "/old"} and {@code newPrefix = "/new"} then
+     * <p>
+     *
+     * <pre>
+     * {@code
+     * <library id="myLibrary>
+     *   <fileset dir="/old/jars" include="*.jar"/>
+     * </library>
+     * }
+     * </pre>
+     *
+     * is replaced with
+     *
+     * <pre>
+     * {@code
+     * <library id="myLibrary>
+     *   <fileset dir="/new/jars" include="*.jar"/>
+     * </library>
+     * }
+     * </pre>
+     *
+     * @param serverXml      the serverXml file to update
+     * @param originalPrefix the original directory prefix to replace
+     * @param newPrefix      the new string to replace {@code originalPrefix} with
+     */
+    public static void updateLibraryPrefix(File serverXml, String originalPrefix, String newPrefix) {
+        ServerConfiguration config;
+        try {
+            config = ServerConfigurationFactory.fromFile(serverXml);
+        } catch (Exception e) {
+            Log.warning(c, serverXml + " does not appear to be a valid server.xml file");
+            return;
+        }
+
+        boolean madeChanges = false;
+        for (Library lib : config.getLibraries()) {
+            for (Fileset fileset : lib.getFilesets()) {
+                if (fileset.getDir().startsWith(originalPrefix)) {
+                    String dirWithoutPrefix = fileset.getDir().substring(originalPrefix.length());
+                    fileset.setDir(newPrefix + dirWithoutPrefix);
+                    madeChanges = true;
+                }
+            }
+        }
+
+        if (madeChanges) {
+            try {
+                ServerConfigurationFactory.toFile(serverXml, config);
+            } catch (Exception e) {
+                Log.error(c, "updateLibraryPrefix", e, "Unable to write updated configuration to " + serverXml);
+                throw new RuntimeException("Unable to write updated configuration to " + serverXml, e);
+            }
+        }
+    }
+
+    /**
+     * Calls {@link #updateLibraryPrefix(File, String, String)} on each server.xml in the publish servers directory and in LibertyFATTestFiles
+     *
+     * @param  originalPrefix the original directory prefix to replace
+     * @param  newPrefix      the new string to replace {@code originalPrefix} with
+     * @throws IOException    if there's an error finding the xml files
+     */
+    public static void updateLibraryPrefix(String originalPrefix, String newPrefix) throws IOException {
+        Path pathToAutoFVTTestFiles = Paths.get("lib/LibertyFATTestFiles");
+        Path pathToAutoFVTTestServers = Paths.get("publish/servers");
+
+        try (Stream<Path> testServerWalk = Files.walk(pathToAutoFVTTestServers);
+                        Stream<Path> testFileWalk = Files.walk(pathToAutoFVTTestFiles)) {
+            Stream.concat(testServerWalk, testFileWalk)
+                            .filter(Files::isRegularFile)
+                            .map(Path::toFile)
+                            .filter(f -> f.getName().endsWith(".xml"))
+                            .forEach(f -> updateLibraryPrefix(f, originalPrefix, newPrefix));
+        }
+    }
+
+    @Override
+    protected void updateServerConfig(ServerConfiguration serverConfig) {
+        // Update JMS queue types
+        for (JMSActivationSpec spec : serverConfig.getJMSActivationSpecs()) {
+            for (WasJmsProperties properties : spec.getWasJmsProperties()) {
+                if ("javax.jms.Queue".equals(properties.getDestinationType())) {
+                    properties.setDestinationType("jakarta.jms.Queue");
+                } else if ("javax.jms.Topic".equals(properties.getDestinationType())) {
+                    properties.setDestinationType("jakarta.jms.Topic");
+                }
+            }
+        }
+        ConfigElementList<Variable> variables = serverConfig.getVariables();
+        for (Variable variable : variables) {
+            if (variable.getName().equalsIgnoreCase("wmqJmsClient.rar.location")) {
+                String value = variable.getValue();
+                value = value.replace("wmq.wlp.rar", "wmq.jakarta.jmsra.rar");
+                value = value.replace("wmq.jmsra.rar", "wmq.jakarta.jmsra.rar");
+                value = value.replace("wmq.jmsra.v7.rar", "wmq.jakarta.jmsra.rar");
+                variable.setValue(value);
+            }
+        }
     }
 }

@@ -216,6 +216,7 @@ public class StepExecutions implements RESTHandler {
 
             // Note: headers must be set *before* writing to the output stream
             response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+            BatchRequestUtil.addExtraResponseHeaders(response);
 
             BatchJSONHelper.writeStepExecutionsList(stepExecAggregateList,
                                                     BatchRequestUtil.getUrlRoot(request),
@@ -247,6 +248,7 @@ public class StepExecutions implements RESTHandler {
 
             // Note: headers must be set *before* writing to the output stream
             response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+            BatchRequestUtil.addExtraResponseHeaders(response);
 
             BatchJSONHelper.writeStepExecutionsList(stepExecAggregateList,
                                                     BatchRequestUtil.getUrlRoot(request),
@@ -291,6 +293,7 @@ public class StepExecutions implements RESTHandler {
 
             // Note: headers must be set *before* writing to the output stream
             response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+            BatchRequestUtil.addExtraResponseHeaders(response);
 
             BatchJSONHelper.writeStepExecutionsList(stepExecAggregateList,
                                                     BatchRequestUtil.getUrlRoot(request),
@@ -324,6 +327,7 @@ public class StepExecutions implements RESTHandler {
 
             // Note: headers must be set *before* writing to the output stream
             response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+            BatchRequestUtil.addExtraResponseHeaders(response);
 
             BatchJSONHelper.writeStepExecutionsList(stepExecAggregateList,
                                                     BatchRequestUtil.getUrlRoot(request),

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.KeyException;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
 import com.ibm.ws.security.common.jwk.impl.JwkKidBuilder;
 import com.ibm.ws.security.jwt.config.JwtConfig;
@@ -169,7 +170,13 @@ public class JweHelper {
         JsonWebEncryption jwe = new JsonWebEncryption();
         jwe.setCompactSerialization(jweString);
         jwe.setKey(decryptionKey);
-        String payload = jwe.getPayload();
+        String payload = null;
+        Object token = ThreadIdentityManager.runAsServer();
+        try {
+            payload = jwe.getPayload();
+        } finally {
+            ThreadIdentityManager.reset(token);
+        }
         if (isJws(payload)) {
             verifyContentType(jwe);
         }
@@ -317,10 +324,13 @@ public class JweHelper {
 
     static String getJwtString(JsonWebEncryption jwe) throws JwtTokenException {
         String jwt = null;
+        Object token = ThreadIdentityManager.runAsServer();
         try {
             jwt = jwe.getCompactSerialization();
         } catch (Exception e) {
             throw new JwtTokenException(e.getLocalizedMessage(), e);
+        } finally {
+            ThreadIdentityManager.reset(token);
         }
         return jwt;
     }

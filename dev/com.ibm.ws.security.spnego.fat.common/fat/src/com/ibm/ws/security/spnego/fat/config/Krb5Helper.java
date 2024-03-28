@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,7 +44,10 @@ public class Krb5Helper {
     public static Oid KRB5_MECH_OID = null;
     public static Oid SPNEGO_MECH_OID = null;
 
-    private String jaasConfFile = SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
+    // When running on zOS the file format is not properly converted for the jaas.conf file currently,
+    // so we will use zjaas.conf, which is already formatted for zOS.
+    private static final String JAAS_CONF_FILE = (System.getProperty("os.name")
+                    .equals("z/OS")) ? SPNEGOConstants.ZOS_CLIENT_JAAS_CONFIG_FILE : SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
 
     /**
      * Performs a Kerberos login on the given server using the provided login configuration and user credentials.
@@ -140,7 +143,7 @@ public class Krb5Helper {
         String thisMethod = "setupLoginConfig";
         Log.info(thisClass, thisMethod, "krb5Config: " + krb5Config + " realm: " + realm + " kdcHostName: " + InitClass.getKDCHostnameMask(kdcHostName));
         String loginContextEntry = IBM_JDK_KRB5_LOGIN;
-        String jaasLoginConfig = server.getServerRoot() + jaasConfFile;
+        String jaasLoginConfig = server.getServerRoot() + JAAS_CONF_FILE;
 
         if (realm != null && !realm.isEmpty()) {
             Log.info(thisClass, thisMethod, "Setting system properties java.security.krb5.realm and java.security.krb5.kdc");
@@ -158,6 +161,7 @@ public class Krb5Helper {
             System.setProperty("java.security.krb5.kdc", (kdcHostName == null) ? InitClass.KDC_HOSTNAME : kdcHostName);
         }
 
+        Log.info(thisClass, thisMethod, "Setting system property java.security.auth.login.config=" + jaasLoginConfig);
         System.setProperty("java.security.auth.login.config", jaasLoginConfig);
 
         if (jaasLoginContextEntry != null)
@@ -177,24 +181,6 @@ public class Krb5Helper {
             System.setProperty("sun.security.krb5.debug", "true");
             System.setProperty("sun.security.jgss.debug", "true");
         }
-    }
-
-    /**
-     * Sets the JAAS configuration file to be used for JAAS login.
-     *
-     * @param filename - Path and filename, relative to the server root, of the JAAS configuration file to use.
-     */
-    public void setJaasConfFile(String filename) {
-        Log.info(thisClass, "setJaasConfFile", "Setting JAAS config file to: " + filename);
-        jaasConfFile = filename;
-    }
-
-    /**
-     * Resets the JAAS configuration file to be used for JAAS login back to the default value.
-     */
-    public void resetJaasConfFile() {
-        Log.info(thisClass, "resetJaasConfFile", "Resetting JAAS config file to: " + SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE);
-        jaasConfFile = SPNEGOConstants.CLIENT_JAAS_CONFIG_FILE;
     }
 
     /**

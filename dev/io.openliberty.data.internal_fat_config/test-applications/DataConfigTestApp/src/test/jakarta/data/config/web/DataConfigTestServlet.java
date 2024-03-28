@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@
 package test.jakarta.data.config.web;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -85,10 +84,10 @@ public class DataConfigTestServlet extends FATServlet {
      * Adds new data to tables. The data must not already exist.
      */
     public void testEntitiesCanBeAdded(HttpServletRequest request, PrintWriter response) {
-        assertEquals(false, employees.existsById(111222));
+        assertEquals(false, employees.findById(111222).isPresent());
         employees.save(new Employee(111222, "Dan", "TestDropCreateTables", 52));
 
-        assertEquals(false, students.existsById(1234));
+        assertEquals(false, students.findById(1234).isPresent());
         students.save(new Student(1234, "Dylan", "TestDropCreateTables", 12));
     }
 
@@ -97,8 +96,8 @@ public class DataConfigTestServlet extends FATServlet {
      */
     public void testEntitiesDoNotHaveTables(HttpServletRequest request, PrintWriter response) {
         try {
-            boolean foundEntry = employees.existsById(111222);
-            fail("Employee table should not be found. Contains entry? " + foundEntry);
+            Employee found = employees.findById(111222).orElseGet(() -> null);
+            assertEquals("Employee table should not be found.", null, found);
         } catch (DataException x) {
             boolean expectedException = false;
             for (Throwable cause = x.getCause(); cause != null && !expectedException; cause = cause.getCause())
@@ -108,8 +107,8 @@ public class DataConfigTestServlet extends FATServlet {
         }
 
         try {
-            boolean foundEntry = students.existsById(1234);
-            fail("Student table should not be found. Contains entry? " + foundEntry);
+            Student found = students.findById(1234).orElseGet(() -> null);
+            assertEquals("Student table should not be found", null, found);
         } catch (DataException x) {
             boolean expectedException = false;
             for (Throwable cause = x.getCause(); cause != null && !expectedException; cause = cause.getCause())
@@ -123,16 +122,16 @@ public class DataConfigTestServlet extends FATServlet {
      * Verifies that entities are found in the database.
      */
     public void testEntitiesFound(HttpServletRequest request, PrintWriter response) {
-        assertEquals(true, employees.existsById(111222));
-        assertEquals(true, students.existsById(1234));
+        assertEquals(true, employees.findById(111222).isPresent());
+        assertEquals(true, students.findById(1234).isPresent());
     }
 
     /**
      * Verifies that entities are not found in the database.
      */
     public void testEntitiesNotFound(HttpServletRequest request, PrintWriter response) {
-        assertEquals(false, employees.existsById(111222));
-        assertEquals(false, students.existsById(1234));
+        assertEquals(false, employees.findById(111222).isPresent());
+        assertEquals(false, students.findById(1234).isPresent());
     }
 
     /**

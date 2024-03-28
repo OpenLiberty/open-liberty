@@ -85,11 +85,11 @@ public class PaginatedIterator<T> implements Iterator<T> {
                     pagination = pagination.next();
                 } else if (pagination.mode() == PageRequest.Mode.CURSOR_NEXT) {
                     PageRequest next = pagination.page() == Long.MAX_VALUE ? pagination : pagination.page(pagination.page() + 1);
-                    pagination = next.afterKeyset(queryInfo.getKeysetValues(page.get(page.size() - 1)));
+                    pagination = next.afterKey(queryInfo.getKeysetValues(page.get(page.size() - 1)));
                 } else { // CURSOR_PREVIOUS
                     // Decrement page number by 1 unless it would go below 1.
                     PageRequest prev = pagination.page() == 1 ? pagination : pagination.page(pagination.page() - 1);
-                    pagination = prev.beforeKeyset(queryInfo.getKeysetValues(page.get(0)));
+                    pagination = prev.beforeKey(queryInfo.getKeysetValues(page.get(0)));
                 }
             } else {
                 pagination = null;

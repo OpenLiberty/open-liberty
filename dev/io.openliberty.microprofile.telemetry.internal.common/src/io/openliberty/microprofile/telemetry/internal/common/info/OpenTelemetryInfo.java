@@ -24,11 +24,6 @@ public interface OpenTelemetryInfo {
     public OpenTelemetry getOpenTelemetry();
 
     /**
-     * @return the Tracer
-     */
-    public Tracer getTracer();
-
-    /**
      * Disposes of the OpenTelemetry object within
      */
     void dispose();

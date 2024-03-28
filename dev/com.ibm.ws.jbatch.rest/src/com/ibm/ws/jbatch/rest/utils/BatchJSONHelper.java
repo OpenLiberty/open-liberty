@@ -68,6 +68,8 @@ public class BatchJSONHelper {
     private static final JsonReaderFactory readerFactory = Json.createReaderFactory(null);
 
     private static final JsonWriterFactory prettyWriterFactory;
+    
+    public static final String CONTENT_SECURITY_POLICY_OPTIONS = "default-src 'self'";
 
     static {
         Map<String, Object> writerConfig = new HashMap<String, Object>(1);

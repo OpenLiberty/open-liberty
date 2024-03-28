@@ -51,9 +51,9 @@ public interface Counties {
 
     Timestamp findLastUpdatedByName(String name);
 
-    int[] findZipCodesById(String name);
-
     Optional<int[]> findZipCodesByName(String name);
+
+    int[] findZipCodesByNameContains(String substring);
 
     @OrderBy("population")
     Stream<int[]> findZipCodesByNameEndsWith(String ending);

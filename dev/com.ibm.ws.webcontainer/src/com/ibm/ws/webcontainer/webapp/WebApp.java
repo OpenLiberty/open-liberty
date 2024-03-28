@@ -4653,6 +4653,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         //since Servlet 6.1 
         if (com.ibm.ws.webcontainer.osgi.WebContainer.isServlet61orAbove()) {
             req.setAttribute("jakarta.servlet.error.method", httpServletReq.getMethod());
+            req.setAttribute("jakarta.servlet.error.query_string", httpServletReq.getQueryString());
 
             //All dispatches to error page MUST be GET method.
             ((IExtendedRequest) req).setMethod("GET");

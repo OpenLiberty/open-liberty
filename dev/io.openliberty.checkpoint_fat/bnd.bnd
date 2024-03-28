@@ -62,6 +62,7 @@ tested.features: \
         appsecurity-6.0,\
         beanvalidation-3.1,\
         cdi-4.1,\
+        checkpoint,\
         concurrent-3.1,\
         connectors-2.0,\
         connectors-2.1,\

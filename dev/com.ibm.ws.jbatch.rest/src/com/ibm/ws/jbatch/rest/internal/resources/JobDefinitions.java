@@ -26,6 +26,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.jbatch.container.ws.WSJobRepository;
+import com.ibm.ws.jbatch.rest.internal.BatchRequestUtil;
 import com.ibm.ws.jbatch.rest.utils.BatchJSONHelper;
 import com.ibm.ws.jbatch.rest.utils.StringUtils;
 import com.ibm.wsspi.rest.handler.RESTHandler;
@@ -96,6 +97,7 @@ public class JobDefinitions implements RESTHandler {
                 
                 // Note: headers must be set *before* writing to the output stream
                 response.setContentType(BatchJSONHelper.MEDIA_TYPE_APPLICATION_JSON);
+                BatchRequestUtil.addExtraResponseHeaders(response);
                 
                 BatchJSONHelper.writeJobDefinitions( jobRepository.getJobNames(), response.getOutputStream() );
             } else {

@@ -51,7 +51,7 @@ public class FATSuite {
                 return result = false;
             }
 
-            if (JavaInfo.JAVA_VERSION != 17 || JavaInfo.JAVA_VERSION != 21) {
+            if (JavaInfo.JAVA_VERSION != 17 && JavaInfo.JAVA_VERSION != 21) {
                 reason = "signature test not supported on non-LTS java versions: " + JavaInfo.JAVA_VERSION;
                 return result = false;
             }

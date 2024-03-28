@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -248,6 +248,48 @@ class ServerXMLConfiguration {
 
         if (configDropinOverrides != null) {
             files.add(configDropinOverrides.toRepositoryPath());
+        }
+
+        return files;
+    }
+
+    /**
+     * Gets all monitored config files, this contains the server.xml, all files within <include> tags
+     * and all files within configDropins/defaults and configDropins/overrides
+     * 
+     * @return
+     */
+    public Collection<String> getAllMonitoredConfigFiles(){
+        Collection<String> files = new HashSet<String>();
+
+        if (configDropinDefaults != null) {
+            File[] defaultFiles = getChildXMLFiles(configDropinDefaults);
+            if (defaultFiles != null) {
+                for (File f : defaultFiles) {
+                    String name = f.getName();
+                    WsResource resource = configDropinDefaults.resolveRelative(name);
+                    String path = resource.toRepositoryPath();
+                    if (path != null) {
+                        files.add(path);
+                    }
+                }
+            }
+        }
+
+        files.addAll(getFilesToMonitor());
+
+        if (configDropinOverrides != null) {
+            File[] overrideFiles = getChildXMLFiles(configDropinOverrides);
+            if (overrideFiles != null) {
+                for (File f : overrideFiles) {
+                    String name = f.getName();
+                    WsResource resource = configDropinOverrides.resolveRelative(name);
+                    String path = resource.toRepositoryPath();
+                    if (path != null) {
+                        files.add(path);
+                    }
+                }
+            }
         }
 
         return files;

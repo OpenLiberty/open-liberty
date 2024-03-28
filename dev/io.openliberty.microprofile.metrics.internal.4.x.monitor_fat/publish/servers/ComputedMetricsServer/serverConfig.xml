@@ -11,7 +11,7 @@
     <applicationManager autoExpand="true"/>
     <applicationMonitor updateTrigger="mbean"/>
 
-    <httpSession useSeparateSessionInvalidatorThreadPool = "false" delayInvalidationAlarmDuringServerStartup = "60"/>
+    <httpSession useSeparateSessionInvalidatorThreadPool = "false" delayInvalidationAlarmDuringServerStartup = "90"/>
   
     <!-- Java2 security -->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*"/>

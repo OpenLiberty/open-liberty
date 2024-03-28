@@ -42,7 +42,7 @@ Import-Package: \
   org.apache.cxf.wsdl;resolution:=optional, \
   !org.osgi.service.blueprint.*, \
   javax.servlet.*;resolution:=optional;version="[2.6.0,3.0.0)", \
-  com.ibm.ws.cxf.jaxrs21.client.*;version="[3.2,4)", \
+  com.ibm.ws.cxf.client.*;version="[3.2,4)", \
   *
 
 Service-Component: \

@@ -16,7 +16,7 @@ package jakarta.data.page;
  * Methods are copied from proposed interfaces in the Jakarta Data repo.
  */
 public interface CursoredPage<T> extends Page<T> {
-    PageRequest.Cursor getKeysetCursor(int index);
+    PageRequest.Cursor cursor(int index);
 
     @Override
     boolean hasPrevious();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonToken;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.encoder.Base64Coder;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 
 /**
  * Some utility functions for {@link JsonToken}s.
@@ -383,7 +384,12 @@ public class JsonTokenUtil {
         }
 
         JwtConsumer secondPassJwtConsumer = secondBuilder.build();
-        secondPassJwtConsumer.processContext(jwtContext);
+        Object token = ThreadIdentityManager.runAsServer();
+        try {
+            secondPassJwtConsumer.processContext(jwtContext);
+        } finally {
+            ThreadIdentityManager.reset(token);
+        }
     }
 
     static Object getJsonPrimitive(JsonPrimitive primitive) {

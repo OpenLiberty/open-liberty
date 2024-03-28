@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.Vector;
 
 import jakarta.data.Sort;
@@ -32,10 +33,10 @@ import jakarta.data.repository.Update;
  * Experiments with auto-generated keys.
  */
 @Repository
-public interface Orders extends CrudRepository<PurchaseOrder, Long> {
+public interface Orders extends CrudRepository<PurchaseOrder, UUID> {
 
     @Query("UPDATE Orders o SET o.total = o.total * :rate + :shipping WHERE o.id = :id")
-    boolean addTaxAndShipping(@Param("id") long orderId,
+    boolean addTaxAndShipping(@Param("id") UUID orderId,
                               @Param("rate") float taxRate,
                               @Param("shipping") float shippingCost);
 

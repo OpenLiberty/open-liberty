@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.jose4j.jwt.JwtClaims;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.security.oauth20.TraceConstants;
 import com.ibm.ws.webcontainer.security.openidconnect.OidcServerConfig;
 
@@ -82,12 +83,15 @@ public class JwsSigner {
         // base64url-encoded parts in the form Header.Payload.Signature
         // If you wanted to encrypt it, you can simply set this jwt as the payload
         // of a JsonWebEncryption object and set the cty (Content Type) header to "jwt".
+        Object token = ThreadIdentityManager.runAsServer();
         try {
             jwt = jws.getCompactSerialization();
         } catch (Exception e) {
             Object[] objs = new Object[] { oidcServerConfig.getProviderId(), e.getLocalizedMessage() };
             Tr.error(tc, "JWT_CANNOT_GENERATE_JWT", objs);
             throw new JWTTokenException(Tr.formatMessage(tc, "JWT_CANNOT_GENERATE_JWT", objs), e);
+        } finally {
+            ThreadIdentityManager.reset(token);
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "JWT=", jwt);

@@ -19,7 +19,8 @@ IBM-App-ForceRestart: uninstall, \
   com.ibm.websphere.appserver.eeCompatible-11.0, \
   com.ibm.websphere.appserver.jndi-1.0, \
   io.openliberty.jakarta.persistence-3.2, \
-  com.ibm.websphere.appserver.transaction-2.0
+  com.ibm.websphere.appserver.transaction-2.0, \
+  io.openliberty.noShip-1.0
 -bundles=com.ibm.ws.jpa.container.v32, \
  com.ibm.ws.jpa.container.jakarta, \
  com.ibm.ws.jpa.container.thirdparty.jakarta

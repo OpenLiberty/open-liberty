@@ -9,17 +9,24 @@
  *******************************************************************************/
 package com.ibm.wsspi.webcontainer.util;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.webcontainer.util.WSURLDecoder;
 import com.ibm.ws.webcontainer.webapp.WebAppRequestDispatcher;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
@@ -851,4 +858,278 @@ public class RequestUtils {
        return buff;
    }   
    
+   /**
+    * @since: Servlet 6.0
+    * https://jakarta.ee/specifications/servlet/6.0/jakarta-servlet-spec-6.0.html#uri-path-canonicalization
+    * This method will be called after the URI or path is decoded
+    * <p>
+    * Also see verifyEncodedCharacter(String)
+    * @param uri
+    * @return
+    * @throws IOException
+    */
+   public static String canonicalizeURI(String uri) throws IOException {
+       final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
+       final String METHOD_NAME ="canonicalizeURI";
+       
+       if (isTraceOn && logger.isLoggable(Level.FINE))
+           logger.entering(CLASS_NAME, METHOD_NAME + " [" + uri + "]");
+
+       String path = uri;
+       boolean startsWithSlash;
+       StringBuilder rebuildPath; 
+
+       //process path parameters ;
+       if (path.indexOf(';') >= 0){
+           if (isTraceOn && logger.isLoggable(Level.FINE)) 
+               logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Has path param [;] |  path -> [" + path + "]");
+
+           rebuildPath = new StringBuilder();
+           startsWithSlash = path.startsWith("/");
+
+           List<String> segments = new ArrayList<>(Arrays.asList(path.substring(startsWithSlash ? 1 : 0).split("/", -1)));
+
+           int count = 0;
+           for (ListIterator<String> s = segments.listIterator(); s.hasNext();) {
+               String segment = s.next();
+               count++;
+               if (segment.startsWith(".;") || segment.startsWith("..;")){
+                   if (isTraceOn && logger.isLoggable(Level.FINE))
+                       logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Bad Request - URI starting with dot segment and path param [/.;] or [/..;]");
+                   
+                   throw new IOException("Bad Request - URI starting with dot segment and path parameter");
+               }
+               else if (segment.startsWith(";") && count < segments.size()){ //empty other than last segment, with path parameter i.e /;anything/last
+                   if (isTraceOn && logger.isLoggable(Level.FINE))
+                       logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Bad Request - URI starting empty segment with path param [;anything] ");
+                   
+                   throw new IOException("Bad Request - URI starting empty segment with path parameter");
+               }
+
+               if (segment.toLowerCase().contains(";jsessionid")){     //leave it as-is ;jsessionid will be stripped out later
+                   rebuildPath.append("/" + segment); 
+                   continue;
+               }
+               else if (segment.contains(";")){                                // other than ;jsessionid, anything after ; has no meaning to the server; throw away
+                   segment = segment.substring(0, segment.indexOf(";"));       //The segment is replaced by the character sequence preceding the ";" (excluding ;)
+               }
+
+               rebuildPath.append("/" + segment);
+           }
+
+           path = rebuildPath.toString(); 
+
+           if (isTraceOn && logger.isLoggable(Level.FINE))
+               logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Done Has path param [;] | updated path -> [" + path + "]");
+       }
+
+       //process empty segment i.e // ex: /foo//bar --> /foo/bar
+       if (path.contains("//")){
+           path = path.replaceAll("//{1,}+", "/");     //X{n,}+        X, at least n times (of X) ... will also handle odd number of / (like ///)
+
+           if (isTraceOn && logger.isLoggable(Level.FINE))
+               logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Has empty segment [//] |  Replaced [//] with [/] ,  updated path -> [" + path + "]");
+       }
+
+
+       /*  process dot-segments part 1 - 
+        *      All segments that are exactly "." are removed from the segment series. 
+        *  /./ becomes /
+        *  /. becomes empty/null
+        */
+       if(path.contains("/.")) {
+           
+           while (path.contains("/./")) {   //  /foo/./././././bar/  -> /foo/bar/ (i.e /./ --> /)
+               path = path.replace("/./", "/");
+           }
+
+           if (isTraceOn && logger.isLoggable(Level.FINE))
+               logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Has possible dot-sequence [/./] |  Replaced any [/./] with [/] , updated path -> [" + path + "]");
+
+           
+           if (path.endsWith("/.")) {
+               path = path.substring(0, path.lastIndexOf("/."));
+
+               if (isTraceOn && logger.isLoggable(Level.FINE))
+                   logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Has end with  /dot-sequence [/.] |  Removed [/.] , updated path -> [" + path + "]");
+           }
+       }
+       
+       /*  process dot-segments part 2 - 
+        *      Segments that are exactly ".." AND are preceded by a non ".." segment are removed together with the preceding segment. 
+        *    
+        *  /foo/bar/..     -> /foo
+        *  /foo//../bar    -> /bar
+        */
+       if (path.contains("/..") || path.contains("/../")){
+           if (isTraceOn && logger.isLoggable(Level.FINE))
+               logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Has dot-dot [/../]");
+
+           startsWithSlash = path.startsWith("/");
+           List<String> segments = new ArrayList<>(Arrays.asList(path.substring(startsWithSlash ? 1 : 0).split("/", -1)));
+
+           int count = 0;
+           String segment, prevSegment;
+           int totalSBPathLength;      //rebuilPath length
+           int prevLength;             //previous segment length
+           rebuildPath = new StringBuilder();
+
+           for (ListIterator<String> s = segments.listIterator(); s.hasNext(); ){
+               segment = s.next();
+
+               if (isTraceOn && logger.isLoggable(Level.FINE))
+                   logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "  Processing segment ["+ segment +"] , count " + count);
+
+               if (segment.equals("..")){
+                   if (count == 0){       //first segment is .. | throw 400 . Same for /foo/../../bar
+                       if (isTraceOn && logger.isLoggable(Level.FINE))
+                           logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Bad Request - URI no preceding segment before ..");
+                       
+                       throw new IOException("Bad Request - URI no preceding segment before ..");
+                   }
+                   if (count > 0) {
+                       s.remove();
+                       prevSegment = s.previous();
+
+                       if (isTraceOn && logger.isLoggable(Level.FINE))
+                           logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "  Has [..] , previous segment [" + prevSegment + "] , rebuildPath ["+ rebuildPath +"]");
+
+                       s.remove();
+
+                       totalSBPathLength = rebuildPath.length();
+                       prevLength = prevSegment.length();
+                       rebuildPath.setLength(totalSBPathLength - prevLength - 1); //-1 to remove / as well
+
+                       if (isTraceOn && logger.isLoggable(Level.FINE))
+                           logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "  replaced [/"+ prevSegment + "/..] with a [/] , adjusted rebuildPath ["+rebuildPath+"]");
+
+                       count--;
+                   }
+               }
+               else {
+                   count++;
+                   rebuildPath.append("/" + segment);
+
+                   if (isTraceOn && logger.isLoggable(Level.FINE))
+                       logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "  count " + count + " rebuildPath [" + rebuildPath +"]"); 
+               }
+           }
+
+           //  case: /foo/../  -> /
+           if (rebuildPath.length() == 0){
+               rebuildPath.append("/");
+
+               if (isTraceOn && logger.isLoggable(Level.FINE))
+                   logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "  rebuildPath just slash [" + rebuildPath +"]");  
+           }
+
+           path = rebuildPath.toString();
+
+           if (isTraceOn && logger.isLoggable(Level.FINE))
+               logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Has dot-dot [/../] done, updated path [" + path + "]");
+       }
+
+       //reject ascii control character.
+       for (char c : path.toCharArray()) {
+           if (c < 0x20 || c == 0x7f) {
+               if (isTraceOn && logger.isLoggable(Level.FINE))
+                   logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Bad Request - URI has control character");
+               
+               throw new IOException("Bad Request - URI has a control character");
+           }
+       }
+       
+       if (isTraceOn && logger.isLoggable(Level.FINE))
+           logger.exiting(CLASS_NAME, METHOD_NAME + " Processed decoded path [" + path +"]");   
+
+       return path;
+   }
+   
+   /**
+    * Since Servlet 6.0:
+    *  Process original URI. It rejects any path has encoded character of:
+    *  %23 (#)
+    *  %2e (.)
+    *  %2f (/)
+    *  %5c (\)
+    *  
+    *  This verification is deferred until WC can determine the request is indeed for a servlet/JSP/filter
+    *  The uri/path should be origin/non-decoded uri/path
+    */
+   public static void verifyEncodedCharacter(String uri) throws IOException {
+       final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
+       final String METHOD_NAME ="verifyEncodedCharacter";
+
+       if (isTraceOn && logger.isLoggable(Level.FINER))
+           logger.entering(CLASS_NAME, METHOD_NAME + " [" + uri + "]");
+
+       String path = uri.toLowerCase();
+       String message = null;
+
+       try {
+           if (path.contains("#") || path.contains("%23")) {
+               message = nls.getString("uri.has.fragment.character", "URI has a fragment [#] character; encoded [%23] or not");
+           }
+           else if (path.contains("%2e")){
+               message = nls.getString("uri.has.dot.character", "URI has encoded dot [%2E] character");
+           }
+           else if (path.contains("%2f")) {
+               message = nls.getString("uri.has.forwarslash.character", "URI has encoded forward slash [%2F] character");
+           }
+           else if (path.contains("\\") || path.contains("%5c")){
+               message = nls.getString("uri.has.backslash.character", "URI has backslash character; encoded [%5C] or not");
+           }
+
+           if (message != null) {
+               if (isTraceOn && logger.isLoggable(Level.FINE))
+                   logger.logp(Level.FINE, CLASS_NAME, METHOD_NAME, "Bad Request : " + message);
+
+               throw new IOException(nls.getFormattedMessage("bad.request.uri:.{0}", new Object[] { ((uri.length() > 128) ? (uri.substring(0, 127)) : uri) }, 
+                               "Bad request URI") + " . " + message);
+           }
+       }
+       finally {
+           if (isTraceOn && logger.isLoggable(Level.FINER))
+               logger.exiting(CLASS_NAME, METHOD_NAME);
+       }
+   }
+   
+   /**
+    * <p>
+    * The provided {@code path} parameter is canonicalized as per <a href=
+    * "https://jakarta.ee/specifications/servlet/6.0/jakarta-servlet-spec-6.0.html#uri-path-canonicalization">Servlet 6.0,
+    * 3.5.2</a>
+    *
+    * Three steps processes: verify encoded, decode, canonicalize
+    * since 6.1
+    */
+   public static String normalizePath(String path) {
+       if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+           logger.entering(CLASS_NAME, "normalizePath , path [" + path + "]");
+
+       try {
+           //verify path does not have any suspicious encoded character %23 (#) ; %2e (.) ;  %2f (/) ;  %5c (\)
+           RequestUtils.verifyEncodedCharacter(path);
+
+           String decodePath;
+           //then decode path using UTF-8 encoding
+           if (WCCustomProperties.DECODE_URL_PLUS_SIGN) {
+               decodePath = URLDecoder.decode(path, "UTF-8");
+           } else {
+               decodePath = WSURLDecoder.decode(path, "UTF-8");
+           }
+
+           //canonicalize
+           path = RequestUtils.canonicalizeURI(decodePath);
+
+           if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+               logger.logp(Level.FINE, CLASS_NAME, "normalizePath", "RETURN; return path [" + path + "]");
+           }
+
+           return path;
+       } catch (Exception e) {
+           logger.logp(Level.FINE, CLASS_NAME, "normalizePath", "RETURN null. Exception normalizing the path.");
+           return null;
+       }
+   }
 }

@@ -18,6 +18,7 @@ import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.common.info.ErrorOpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.common.info.OpenTelemetryInfo;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryInfoFactory;
@@ -39,7 +40,7 @@ public class OpenTelemetryProducer {
 
     private final ApplicationMetaData metaData;
 
-    private OpenTelemetryProducer() {
+    protected OpenTelemetryProducer() {
         metaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData().getApplicationMetaData();
     }
 
@@ -63,7 +64,7 @@ public class OpenTelemetryProducer {
      */
     @Produces
     public Tracer getTracer() {
-        return getOpenTelemetryInfo().getTracer();
+        return getOpenTelemetryInfo().getOpenTelemetry().getTracer(OpenTelemetryConstants.INSTRUMENTATION_NAME);
     }
 
     /**

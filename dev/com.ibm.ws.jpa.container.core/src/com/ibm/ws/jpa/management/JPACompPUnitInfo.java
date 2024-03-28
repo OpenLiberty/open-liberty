@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,20 +33,19 @@ import com.ibm.ws.jpa.JPAPuId;
 
 /**
  * Java EE Component specific implementation of a PersistenceUnitInfo. <p>
- * 
+ *
  * Most persistence unit information is static for all components. The
  * datasources (both jta and non-jta) are the exception, as these may
  * be configured to be a resource reference in the java:comp/env
  * component naming context. <p>
- * 
+ *
  * This class is used when one of the datasources has been configured
  * in java:comp/env. All methods, except the ones to obtain the datasources
  * are delegated to the 'common' PersistenceUnitInfo implementation.
  * This allows the datasources to be cached per component, rather than
  * per persistence unit. <p>
  */
-final class JPACompPUnitInfo implements PersistenceUnitInfo
-{
+final class JPACompPUnitInfo implements PersistenceUnitInfo {
     private static final TraceComponent tc = Tr.register(JPACompPUnitInfo.class,
                                                          JPA_TRACE_GROUP,
                                                          JPA_RESOURCE_BUNDLE_NAME);
@@ -55,11 +54,11 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo
     protected JPAPuId ivPuId;
 
     // The common (real) PUnitInfo (non component specific).
-    private JPAPUnitInfo ivPUnitInfo;
+    private final JPAPUnitInfo ivPUnitInfo;
 
     // JavaEE unique identifier for the component, identifying the
     // java:comp/env context used.
-    private J2EEName ivJ2eeName;
+    private final J2EEName ivJ2eeName;
 
     // Component specific JTA DataSource object used, if specificed.
     private DataSource ivJtaDataSource = null;
@@ -69,17 +68,16 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo
 
     /**
      * Constructor.
-     * 
+     *
      * @param puId
-     *            Persistence unit id
+     *                     Persistence unit id
      * @param puInfo
-     *            the common PUnitInfo
+     *                     the common PUnitInfo
      * @param j2eeName
-     *            JavaEE unique identifier for the component, identifying the
-     *            java:comp/env context used.
+     *                     JavaEE unique identifier for the component, identifying the
+     *                     java:comp/env context used.
      */
-    JPACompPUnitInfo(JPAPuId puId, JPAPUnitInfo puInfo, J2EEName j2eeName)
-    {
+    JPACompPUnitInfo(JPAPuId puId, JPAPUnitInfo puInfo, J2EEName j2eeName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "<init> : " + puId + ", " + j2eeName);
 
@@ -97,45 +95,44 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#addTransformer()
      */
-    public void addTransformer(ClassTransformer transformerClass)
-    {
+    @Override
+    public void addTransformer(ClassTransformer transformerClass) {
         ivPUnitInfo.addTransformer(transformerClass);
     }
 
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#excludeUnlistedClasses()
      */
-    public boolean excludeUnlistedClasses()
-    {
+    @Override
+    public boolean excludeUnlistedClasses() {
         return ivPUnitInfo.excludeUnlistedClasses();
     }
 
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getClassLoader()
      */
-    public ClassLoader getClassLoader()
-    {
+    @Override
+    public ClassLoader getClassLoader() {
         return ivPUnitInfo.getClassLoader();
     }
 
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getMappingFileNames()
      */
-    public List<URL> getJarFileUrls()
-    {
+    @Override
+    public List<URL> getJarFileUrls() {
         return ivPUnitInfo.getJarFileUrls();
     }
 
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getJarFileUrls()
      */
-    public DataSource getJtaDataSource()
-    {
+    @Override
+    public DataSource getJtaDataSource() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "getJtaDataSource : " + this);
 
-        if (ivJtaDataSource == null)
-        {
+        if (ivJtaDataSource == null) {
             ivJtaDataSource = ivPUnitInfo.lookupJtaDataSource();
         }
 
@@ -148,37 +145,36 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getManagedClassNames()
      */
-    public List<String> getManagedClassNames()
-    {
+    @Override
+    public List<String> getManagedClassNames() {
         return ivPUnitInfo.getManagedClassNames();
     }
 
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getMappingFileNames()
      */
-    public List<String> getMappingFileNames()
-    {
+    @Override
+    public List<String> getMappingFileNames() {
         return ivPUnitInfo.getMappingFileNames();
     }
 
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getNewTempClassLoader()
      */
-    public ClassLoader getNewTempClassLoader()
-    {
+    @Override
+    public ClassLoader getNewTempClassLoader() {
         return ivPUnitInfo.getNewTempClassLoader();
     }
 
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getNonJtaDataSource()
      */
-    public DataSource getNonJtaDataSource()
-    {
+    @Override
+    public DataSource getNonJtaDataSource() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "getNonJtaDataSource : " + this);
 
-        if (ivNonJtaDataSource == null)
-        {
+        if (ivNonJtaDataSource == null) {
             ivNonJtaDataSource = ivPUnitInfo.lookupNonJtaDataSource();
         }
 
@@ -191,40 +187,54 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceProviderClassName()
      */
-    public final String getPersistenceProviderClassName()
-    {
+    @Override
+    public final String getPersistenceProviderClassName() {
         return ivPUnitInfo.getPersistenceProviderClassName();
     }
 
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceUnitName()
      */
-    public String getPersistenceUnitName()
-    {
+    @Override
+    public String getPersistenceUnitName() {
         return ivPUnitInfo.getPersistenceUnitName();
+    }
+
+    /**
+     * @see javax.persistence.spi.PersistenceUnitInfo#getQualifierAnnotationNames()
+     */
+    public final List<String> getQualifierAnnotationNames() {
+        return ivPUnitInfo.getQualifierAnnotationNames();
+    }
+
+    /**
+     * @see javax.persistence.spi.PersistenceUnitInfo#getScopeAnnotationName()
+     */
+    public final String getScopeAnnotationName() {
+        return ivPUnitInfo.getScopeAnnotationName();
     }
 
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceUnitRootUrl()
      */
-    public final URL getPersistenceUnitRootUrl()
-    {
+    @Override
+    public final URL getPersistenceUnitRootUrl() {
         return ivPUnitInfo.getPersistenceUnitRootUrl();
     }
 
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getProperties()
      */
-    public final Properties getProperties()
-    {
+    @Override
+    public final Properties getProperties() {
         return ivPUnitInfo.getProperties();
     }
 
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getTransactionType()
      */
-    public final PersistenceUnitTransactionType getTransactionType()
-    {
+    @Override
+    public final PersistenceUnitTransactionType getTransactionType() {
         return ivPUnitInfo.getTransactionType();
     }
 
@@ -232,6 +242,7 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getPersistenceXMLSchemaVersion()
      */
+    @Override
     public String getPersistenceXMLSchemaVersion() { // d603827
         return ivPUnitInfo.getPersistenceXMLSchemaVersion();
     }
@@ -239,6 +250,7 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getSharedCacheMode()
      */
+    @Override
     public SharedCacheMode getSharedCacheMode() { // d602618
         return ivPUnitInfo.getSharedCacheMode(); // d602618
     }
@@ -246,6 +258,7 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo
     /**
      * @see javax.persistence.spi.PersistenceUnitInfo#getValidationMode()
      */
+    @Override
     public ValidationMode getValidationMode() {
         return ivPUnitInfo.getValidationMode();
     }
@@ -259,8 +272,8 @@ final class JPACompPUnitInfo implements PersistenceUnitInfo
     /**
      * Overridden to provide meaningful trace output.
      */
-    public String toString()
-    {
+    @Override
+    public String toString() {
         String identity = Integer.toHexString(System.identityHashCode(this));
         return "JPACompPUnitInfo@" + identity + "[" + ivPuId + ", " + ivJ2eeName + "]";
     }

@@ -12,12 +12,11 @@ bVersion=1.0
 
 src: \
     fat/src,\
-    test-applications/SetResponseContentLengthLong_Spec1829.war/src,\
+    test-applications/Flow_Spec1342_Spec1739.war/src,\
     test-applications/RenderId_Spec1760.war/src,\
+    test-applications/SetResponseContentLengthLong_Spec1829.war/src,\
     test-applications/uuidConverter_Spec1819.war/src,\
-    test-applications/ViewScopeEvents_Spec1739.war/src,\
-    test-applications/Flow_Spec1342_Spec1739.war/src
-    
+    test-applications/ViewScopeEvents_Spec1739.war/src
 
 fat.test.container.images:\
     seleniarm/standalone-chromium:4.8.3,\
@@ -41,7 +40,7 @@ fat.minimum.java.level: 17
     io.openliberty.org.apache.commons.codec;version=latest,\
     io.openliberty.org.apache.xercesImpl;version=latest,\
     io.openliberty.jakarta.servlet.6.1;version=latest,\
-    io.openliberty.jakarta.annotation.2.1;version=latest,\
+    io.openliberty.jakarta.annotation.3.0;version=latest,\
     io.openliberty.jakarta.expressionLanguage.6.0;version=latest,\
     io.openliberty.org.testcontainers;version=latest,\
     org.seleniumhq.selenium:selenium-api;version=4.8.3,\

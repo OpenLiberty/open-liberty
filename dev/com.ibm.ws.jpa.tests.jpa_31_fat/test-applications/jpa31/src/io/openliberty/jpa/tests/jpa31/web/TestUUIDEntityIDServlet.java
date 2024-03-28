@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -437,6 +437,51 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
     }
 
     /**
+     * Verify that an entity using a UUID type for its identity can use the UUID generator for primary key generation.
+     */
+    @Test
+    public void testBasicUUIDIdentity_UUID_Generator_Merge_JTA() {
+        EntityManager tem = null;
+
+        try {
+            tem = emfJta.createEntityManager();
+            Assert.assertNotNull(tem);
+            Assert.assertTrue(tem.isOpen());
+
+            UUIDUUIDGenEntity entity = new UUIDUUIDGenEntity();
+            entity.setStrData("Some string data");
+
+            tx.begin();
+            tem.joinTransaction();
+            entity = tem.merge(entity);
+            tx.commit();
+
+            System.out.println("Merged entity " + entity);
+            UUID id = entity.getId();
+            Assert.assertNotNull(id);
+
+            tem.clear();
+            Assert.assertFalse(tem.contains(entity));
+
+            UUIDUUIDGenEntity findEntity = em.find(UUIDUUIDGenEntity.class, id);
+            Assert.assertNotNull(findEntity);
+            Assert.assertEquals(id, findEntity.getId());
+            Assert.assertNotSame(id, findEntity.getId());
+            Assert.assertNotSame(entity, findEntity);
+
+        } catch (AssertionError ae) {
+            throw ae;
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw new RuntimeException(t);
+        } finally {
+            if (tem != null && tem.isOpen()) {
+                tem.close();
+            }
+        }
+    }
+
+    /**
      * Verify that an entity using a UUID type for its identity can use the UUID generator for primary key generation. XML Variant.
      */
     @Test
@@ -457,6 +502,51 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
             tx.commit();
 
             System.out.println("Persisted entity " + entity);
+            UUID id = entity.getId();
+            Assert.assertNotNull(id);
+
+            tem.clear();
+            Assert.assertFalse(tem.contains(entity));
+
+            XMLUUIDUUIDGenEntity findEntity = em.find(XMLUUIDUUIDGenEntity.class, id);
+            Assert.assertNotNull(findEntity);
+            Assert.assertEquals(id, findEntity.getId());
+            Assert.assertNotSame(id, findEntity.getId());
+            Assert.assertNotSame(entity, findEntity);
+
+        } catch (AssertionError ae) {
+            throw ae;
+        } catch (Throwable t) {
+            t.printStackTrace();
+            throw new RuntimeException(t);
+        } finally {
+            if (tem != null && tem.isOpen()) {
+                tem.close();
+            }
+        }
+    }
+
+    /**
+     * Verify that an entity using a UUID type for its identity can use the UUID generator for primary key generation. XML Variant.
+     */
+    @Test
+    public void testBasicUUIDIdentity_UUID_Generator_Merge_JTA_XML() {
+        EntityManager tem = null;
+
+        try {
+            tem = emfJta.createEntityManager();
+            Assert.assertNotNull(tem);
+            Assert.assertTrue(tem.isOpen());
+
+            XMLUUIDUUIDGenEntity entity = new XMLUUIDUUIDGenEntity();
+            entity.setStrData("Some string data");
+
+            tx.begin();
+            tem.joinTransaction();
+            entity = tem.merge(entity);
+            tx.commit();
+
+            System.out.println("Merged entity " + entity);
             UUID id = entity.getId();
             Assert.assertNotNull(id);
 

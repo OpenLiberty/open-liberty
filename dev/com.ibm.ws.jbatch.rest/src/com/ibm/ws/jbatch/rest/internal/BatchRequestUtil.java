@@ -29,6 +29,7 @@ import javax.net.ssl.SSLHandshakeException;
 import org.apache.commons.io.IOUtils;
 
 import com.ibm.jbatch.container.ws.WSJobExecution;
+import com.ibm.ws.jbatch.rest.utils.BatchJSONHelper;
 import com.ibm.ws.jbatch.rest.utils.StringUtils;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
@@ -150,6 +151,7 @@ public class BatchRequestUtil {
      */
     public static void sendRedirect(RESTResponse response, String redirectUrl) {
         response.setResponseHeader("Location", redirectUrl);
+        addExtraResponseHeaders(response);    
         response.setStatus(HttpURLConnection.HTTP_MOVED_TEMP);
     }
     
@@ -333,8 +335,11 @@ public class BatchRequestUtil {
     					if ("zip".equals(request.getParameter("type"))) {
     						response.setContentType("application/zip");
     						response.setResponseHeader("Content-Disposition", connection.getHeaderField("Content-Disposition"));
+    						addExtraResponseHeaders(response);    
+    						
     					} else if ("text".equals(request.getParameter("type"))) {
     						response.setContentType("text/plain; charset=UTF-8");
+    						addExtraResponseHeaders(response);    
     					}
 
     					IOUtils.copy(connection.getInputStream(), response.getOutputStream());
@@ -366,4 +371,10 @@ public class BatchRequestUtil {
     public static boolean getSSLAvailable() {
     	return isSSLAvailable;
     }
+    
+    public static void addExtraResponseHeaders(RESTResponse response) {
+        response.setResponseHeader("X-XSS-Protection", "1");
+        response.setResponseHeader("X-Content-Type-Options", "nosniff");
+        response.setResponseHeader("Content-Security-Policy", BatchJSONHelper.CONTENT_SECURITY_POLICY_OPTIONS);
+      }
 }

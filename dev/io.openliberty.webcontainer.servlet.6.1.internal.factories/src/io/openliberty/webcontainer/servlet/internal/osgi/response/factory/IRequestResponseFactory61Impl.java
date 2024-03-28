@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.webcontainer.servlet.internal.osgi.response.factory;
@@ -18,7 +18,7 @@ import com.ibm.ws.webcontainer.osgi.response.IResponseFactory;
 import com.ibm.wsspi.http.HttpInboundConnection;
 
 import io.openliberty.webcontainer60.osgi.request.IRequest60Impl;
-import io.openliberty.webcontainer60.osgi.response.IResponse60Impl;
+import io.openliberty.webcontainer61.osgi.response.IResponse61Impl;
 
 @Component(property = { "service.vendor=IBM", "service.ranking:Integer=61", "servlet.version=6.1" })
 public class IRequestResponseFactory61Impl implements IRequestFactory, IResponseFactory {
@@ -40,6 +40,6 @@ public class IRequestResponseFactory61Impl implements IRequestFactory, IResponse
      */
     @Override
     public IResponse createResponse(IRequest ireq, HttpInboundConnection inboundConnection) {
-        return new IResponse60Impl(ireq, inboundConnection);
+        return new IResponse61Impl(ireq, inboundConnection);
     }
 }

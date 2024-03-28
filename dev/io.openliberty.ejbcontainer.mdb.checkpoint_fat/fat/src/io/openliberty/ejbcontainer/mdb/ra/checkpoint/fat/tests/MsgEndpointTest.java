@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -113,7 +113,8 @@ public class MsgEndpointTest extends FATServletClient {
     public static void tearDown() throws Exception {
         if (server.isStarted()) {
             server.stopServer("CNTR0020E", "CNTR0047E", "CNTR0067W", "J2CA8501E", "WLTC0017E", "CNTR4015W",
-                              "CWWKE0701E.*resourceadapter\\-class=com\\.ibm\\.ws\\.ejbcontainer\\.fat\\.rar\\.core\\.FVTAdapterImpl");
+                              "CWWKE0701E.*resourceadapter\\-class=com\\.ibm\\.ws\\.ejbcontainer\\.fat\\.rar\\.core\\.FVTAdapterImpl",
+                              "CWWKE0701E.*com\\.ibm\\.ws\\.jca\\.internal\\.BootstrapContextImpl"); // slow to start adapter
         }
     }
 

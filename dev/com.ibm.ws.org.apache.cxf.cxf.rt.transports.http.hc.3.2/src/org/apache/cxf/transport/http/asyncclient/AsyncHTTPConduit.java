@@ -96,7 +96,7 @@ import org.apache.http.nio.reactor.IOSession;
 import org.apache.http.nio.util.HeapByteBufferAllocator;
 // Liberty Change Start
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.cxf.jaxrs21.client.component.AsyncClientRunnableWrapperManager;
+import com.ibm.ws.cxf.client.component.AsyncClientRunnableWrapperManager;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 // Liberty Change End
 /**

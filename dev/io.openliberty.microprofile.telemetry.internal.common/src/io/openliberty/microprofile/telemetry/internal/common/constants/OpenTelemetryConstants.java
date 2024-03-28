@@ -22,5 +22,6 @@ public class OpenTelemetryConstants {
     public static final String ENV_LOGS_EXPORTER_PROPERTY = "OTEL_LOGS_EXPORTER";
     public static final String CONFIG_LOGS_EXPORTER_PROPERTY = "otel.logs.exporter";
     public static final String SERVICE_NAME_PROPERTY = "otel.service.name";
+    public static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
 
 }

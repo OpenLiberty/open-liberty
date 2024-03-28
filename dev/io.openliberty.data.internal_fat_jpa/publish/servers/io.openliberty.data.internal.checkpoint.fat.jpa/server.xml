@@ -22,6 +22,8 @@
 
   <include location="../fatTestPorts.xml"/>
 
+  <applicationManager startTimeout="60s"/>
+
   <application location="DataJPATestApp.war">
     <classloader commonLibraryRef="DerbyLib"/>
   </application>

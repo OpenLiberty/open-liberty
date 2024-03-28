@@ -35,9 +35,10 @@
 
   <transaction
     backendURL="https://localhost:9446"
-	  recoveryGroup="recovery-group-ssl"
-	  recoveryIdentity="WSATSSL_Server3"
-	  recoverOnStartup="true"
+	recoveryGroup="recovery-group-ssl"
+	recoveryIdentity="WSATSSL_Server3"
+	recoverOnStartup="true"
+    leaseExpiryThreshold="5"
 	/>
 
   <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>

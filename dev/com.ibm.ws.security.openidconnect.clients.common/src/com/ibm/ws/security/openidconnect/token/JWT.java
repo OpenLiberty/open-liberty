@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.security.openidconnect.clients.common.Constants;
 
 public class JWT {
@@ -360,8 +361,13 @@ public class JWT {
         }
         // todo: did we miss any?
         jws.setKey(getKey(alg)); // private key
-        return jws.getCompactSerialization();
 
+        Object threadIdentityToken = ThreadIdentityManager.runAsServer();
+        try {
+            return jws.getCompactSerialization();
+        } finally {
+            ThreadIdentityManager.reset(threadIdentityToken);
+        }
     }
 
     public String getSignedJWTString() throws SignatureException, InvalidKeyException {

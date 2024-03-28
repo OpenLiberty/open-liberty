@@ -26,15 +26,15 @@ import jakarta.data.repository.Save;
 @Repository(dataStore = "java:module/jdbc/env/DerbyDataSourceRef")
 public interface Vehicles {
 
-    Optional<Vehicle> findById(String vin);
+    Optional<Vehicle> findByVinId(String vin);
 
     @Delete
     long removeAll();
 
-    boolean removeById(String vin);
+    boolean removeByVinId(String vin);
 
     @Save
     Iterable<Vehicle> save(Iterable<Vehicle> v);
 
-    boolean updateByIdAddPrice(String vin, float priceIncrease);
+    boolean updateByVinIdAddPrice(String vin, float priceIncrease);
 }

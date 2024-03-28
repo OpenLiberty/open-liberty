@@ -42,6 +42,7 @@ fat.project: true
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	com.ibm.ws.org.apache.commons.compress;version=latest, \
+	com.ibm.ws.org.apache.commons.io;version=latest, \
 	com.ibm.websphere.org.osgi.core;version=latest, \
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\

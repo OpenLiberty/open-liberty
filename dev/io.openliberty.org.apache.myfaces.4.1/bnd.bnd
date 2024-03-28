@@ -138,4 +138,4 @@ Import-Package: \
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
-  io.openliberty.jakarta.annotation.2.1;version=latest
+  io.openliberty.jakarta.annotation.3.0;version=latest

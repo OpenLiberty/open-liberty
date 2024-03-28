@@ -7,6 +7,6 @@ Subsystem-Version: 1.0.0
 Subsystem-ManifestVersion: 1.0
 Subsystem-SymbolicName: jaccTestProvider-1.0;visibility:=public
 IBM-App-ForceRestart: install,uninstall
-Subsystem-Content: com.ibm.websphere.appserver.jacc-1.5;version="[1,1.0.100)"; type="osgi.subsystem.feature",
- com.ibm.ws.security.authorization.jacc.testprovider; version="[1,1.0.100)"
+Subsystem-Content: com.ibm.websphere.appserver.jacc-1.5;version="[1,1.1)"; type="osgi.subsystem.feature",
+ com.ibm.ws.security.authorization.jacc.testprovider; version="[1,1.1)"
 

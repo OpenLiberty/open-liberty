@@ -28,7 +28,7 @@ import io.openliberty.el60.fat.arraylengthtest.servlets.EL60ArrayLengthTestServl
 @RunWith(FATRunner.class)
 public class EL60ArrayLengthTest extends FATServletClient {
 
-    @Server("expressionLanguage60_arrayLengthTestServer")
+    @Server("expressionLanguage60_arrayLengthServer")
     @TestServlet(servlet = EL60ArrayLengthTestServlet.class, contextRoot = "EL60ArrayLengthTest")
     public static LibertyServer server;
 

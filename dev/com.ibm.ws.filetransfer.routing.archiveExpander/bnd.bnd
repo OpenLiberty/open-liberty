@@ -20,10 +20,12 @@ Bundle-Description: Archive Expander; version=${bVersion}
 Main-Class: com.ibm.ws.filetransfer.routing.archiveExpander.ArchiveExpander
 
 Export-Package: \
-  com.ibm.ws.filetransfer.routing.archiveExpander
+  com.ibm.ws.filetransfer.routing.archiveExpander 
 
 Private-Package: \
- org.apache.commons.compress.archivers.zip
+ org.apache.commons.compress.archivers.zip, \
+ org.apache.commons.io.build, \
+ org.apache.commons.io.file.attribute
 
 Import-Package: \
  !org.apache.commons.compress.compressors.lzw, \
@@ -53,4 +55,5 @@ instrument.disabled: true
 
 -buildpath: \
 	com.ibm.ws.org.apache.commons.compress;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

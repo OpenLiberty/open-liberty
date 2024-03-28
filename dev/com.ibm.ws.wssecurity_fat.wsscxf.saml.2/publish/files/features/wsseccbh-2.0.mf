@@ -1,7 +1,7 @@
 Subsystem-ManifestVersion: 1
 Subsystem-SymbolicName: wsseccbh-2.0; visibility:=public
 Subsystem-Version: 1.0.0
-Subsystem-Content: com.ibm.ws.wssecurity.example.cbhwss4j; version="[1,1.0.100)"; location:="lib/"; type="osgi.bundle"; start-phase:=APPLICATION_EARLY
+Subsystem-Content: com.ibm.ws.wssecurity.example.cbhwss4j; version="[1,1.1)"; location:="lib/"; type="osgi.bundle"; start-phase:=APPLICATION_EARLY
 
 IBM-ShortName: wsseccbh-2.0
 Subsystem-Name: wssecurity Test
