@@ -49,6 +49,8 @@ import javax.transaction.UserTransaction;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -62,6 +64,7 @@ import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.session.IStore;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.jcache.CacheManagerService;
 import io.openliberty.jcache.utils.CacheConfigUtil;
 
@@ -151,6 +154,12 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         configureProperties(props);
     }
 
+    @Reference(target = "(" + Condition.CONDITION_ID + "=" + "session.cache.config" + ")", updated = "configUpdated")
+    void setConfigCondition(Condition configCondition, Map<String, ?> props) {
+    }
+    void configUpdated(Condition configCondition, Map<String, ?> props) {
+        // get the CacheStoreServiceConfig map and do the right thing;
+    }
     /**
      * Performs deferred activation/initialization.
      */
