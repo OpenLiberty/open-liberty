@@ -49,7 +49,15 @@ import javax.transaction.UserTransaction;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
+import org.osgi.service.component.propertytypes.SatisfyingConditionTarget;
 import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
@@ -64,13 +72,14 @@ import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.session.IStore;
 
-import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.jcache.CacheManagerService;
 import io.openliberty.jcache.utils.CacheConfigUtil;
 
 /**
  * Constructs CacheStore instances.
  */
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = {Introspector.class, SessionStoreService.class})
+@SatisfyingConditionTarget("(" + Condition.CONDITION_ID + "=" + "session.cache.config" + ")")
 public class CacheStoreService implements Introspector, SessionStoreService {
 
     private static final TraceComponent tc = Tr.register(CacheStoreService.class);
@@ -89,10 +98,11 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     private volatile boolean completedPassivation = true;
 
     private volatile Library library;
-
-    final AtomicReference<ServiceReference<?>> monitorRef = new AtomicReference<ServiceReference<?>>();
+    
+    volatile AtomicReference<ServiceReference<?>> monitorRef;
 
     volatile SerializationService serializationService;
+    
     private volatile CacheManagerService cacheManagerService;
 
     /**
@@ -114,6 +124,8 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     private volatile String tcCachingProvider; // requires lazy activation
 
     volatile UserTransaction userTransaction;
+    
+    private volatile CacheStoreServiceConfig cacheStoreServiceConfig;
 
     /**
      * Declarative Services method to activate this component.
@@ -122,7 +134,9 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      * @param context for this component instance
      * @param props   service properties
      */
-    protected void activate(ComponentContext context, Map<String, Object> props) {
+    @Activate
+    public CacheStoreService(ComponentContext context, Map<String, Object> props, @Reference CacheStoreServiceConfig cacheStoreServiceConfig) {
+        this.cacheStoreServiceConfig = cacheStoreServiceConfig;
         configureProperties(props);
     }
 
@@ -149,16 +163,14 @@ public class CacheStoreService implements Introspector, SessionStoreService {
 
         isLibraryRefSet = props.containsKey(CONFIG_KEY_LIBRARY_REF);
     }
-    
-    protected void modified(Map<String, Object> props) {
-        configureProperties(props);
-    }
 
     @Reference(target = "(" + Condition.CONDITION_ID + "=" + "session.cache.config" + ")", updated = "configUpdated")
     void setConfigCondition(Condition configCondition, Map<String, ?> props) {
     }
+    
     void configUpdated(Condition configCondition, Map<String, ?> props) {
         // get the CacheStoreServiceConfig map and do the right thing;
+        configureProperties(cacheStoreServiceConfig.getConfig());        
     }
     /**
      * Performs deferred activation/initialization.
@@ -348,6 +360,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      *
      * @param context for this component instance
      */
+    @Deactivate
     protected void deactivate(ComponentContext context) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
@@ -557,10 +570,12 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         completedPassivation = isInProcessOfStopping;
     }
 
+    @Reference(policyOption = ReferencePolicyOption.GREEDY)
     protected void setLibrary(Library library) {        
         this.library = library;
     }
 
+    @Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.OPTIONAL)
     protected void setMonitor(ServiceReference<?> ref) {
         monitorRef.set(ref);
         if (cacheManager != null)
@@ -575,6 +590,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         this.serializationService = serializationService;
     }
 
+    @Reference(policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY, cardinality = ReferenceCardinality.OPTIONAL)
     protected void setUserTransaction(UserTransaction userTransaction) {
         this.userTransaction = userTransaction;
     }
@@ -596,15 +612,16 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         this.serializationService = null;
     }
 
+ 
     protected void unsetUserTransaction(UserTransaction userTransaction) {
         this.userTransaction = null;
     }
-
     /**
      * Set the {@link CacheManagerService} on this {@link CacheStoreService}.
      * 
      * @param cacheManagerService the {@link CacheManagerService}
      */
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
     protected void setCacheManagerService(CacheManagerService cacheManagerService) {
         this.cacheManagerService = cacheManagerService;
         cacheManager = null;
