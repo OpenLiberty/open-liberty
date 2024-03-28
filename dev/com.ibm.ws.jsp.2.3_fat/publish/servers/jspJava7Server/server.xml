@@ -1,0 +1,22 @@
+<!--
+    Copyright (c) 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<server description="Server for Java 7 Source Option in JSP">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>jsp-2.3</feature>
+        <feature>localConnector-1.0</feature>
+    </featureManager>
+
+    <!-- Note: jdkSourceLevel has been marked internal -->
+    <jspEngine jdkSourceLevel="17" prepareJSPs="0"/>
+    
+</server>
