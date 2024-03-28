@@ -231,7 +231,7 @@ task copyPKCEAndPrivateKeyJwtOPServer (dependsOn: [':com.ibm.ws.security.fat.com
       include 'goodBasicRegistry.xml'
       include 'oidcProvider_PKCEAndPrivateKeyJwt.xml'
       include 'oidcServerFeatures.xml'
-   }
+    }
     
     /* copy the test marker app - used to log test case start/stop in server side logs */
     copy { 
@@ -257,4 +257,70 @@ task copyPKCEAndPrivateKeyJwtOPServer (dependsOn: [':com.ibm.ws.security.fat.com
   }
 
 }
+}
+
+task copyWasReqUrlOPServer (dependsOn: [':com.ibm.ws.security.fat.common:assemble']) {
+  doLast {
+
+    println "in copyWasReqUrlOPServer"
+    def serverNames = project.findProperty('wasReqUrl_serverNames').split(",")
+    def srcServerName = project.findProperty('wasReqUrl_srcServerName')
+      
+    println "serverNames: ${serverNames}"
+    println "srcServerName: ${srcServerName}"
+	
+	serverNames.each { serverName ->
+      /*
+       * Copy common artifacts to test servers.
+       */
+      println "serverName: ${serverName}"
+
+      copy { 
+        from project(':com.ibm.ws.security.fat.common.SSO.clientTests').file("publish/servers/${srcServerName}")
+        into new File(autoFvtDir, "publish/servers/${serverName}")
+        include '**'
+      }
+    
+      /* copy shared config files */
+      copy { 
+        from project(':com.ibm.ws.security.fat.common').file('publish/shared/config/')
+        into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+        include 'allAlgSSLSettings.xml'
+      }
+ 
+      copy { 
+        from project(':com.ibm.ws.security.fat.common.SSO.clientTests').file('publish/shared/config/')
+        into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+        include 'goodBasicRegistry.xml'
+        include 'oidcServerFeatures.xml'
+        include 'goodSSLSettings.xml'
+        include 'miscNoSslSettings.xml'
+		include 'oauthProvider_1.xml'
+     }
+    
+      /* copy the test marker app - used to log test case start/stop in server side logs */
+      copy { 
+        from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+        into new File(autoFvtDir, "publish/servers/${serverName}/dropins")
+      }
+
+  	  /* copy shared key/trust stores from the common security fat project */
+      copy { 
+        from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+        into new File(autoFvtDir, "publish/servers/${serverName}/")
+        include 'commonBasicKeyStore.jks'
+        include 'commonTrustStore.jks'
+      }
+                 
+      copy {
+        from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+        into new File(autoFvtDir, "publish/servers/${serverName}/imports")
+        include 'oauthRoles_1.xml'
+        include 'formlogin_1.xml'
+        include 'op_fatTestPorts.xml'
+      }              
+    }
+
+  }
+ 
 }

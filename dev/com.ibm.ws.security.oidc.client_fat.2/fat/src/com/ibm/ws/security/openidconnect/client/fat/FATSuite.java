@@ -26,7 +26,6 @@ import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientEncryptionTest
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientLTPACookieTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientSameSiteTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientSignatureAlgTests;
-import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientWasReqURLTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcPropagationConsumeUserinfoTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcPropagationRemoteValidationTests;
 
@@ -39,7 +38,6 @@ import componenttest.rules.repeater.RepeatTests;
         OidcClientCookieNameTests.class,
         OidcClientLTPACookieTests.class,
         OidcClientSameSiteTests.class,
-        OidcClientWasReqURLTests.class,
         OidcClientSignatureAlgTests.class,
         OidcClientEncryptionTests.class,
         OidcClientConsumeUserinfoTests.class,
@@ -55,7 +53,7 @@ public class FATSuite extends CommonLocalLDAPServerSuite {
      *
      * This was done to increase coverage of EE9 and EE10 while not adding a large amount of of test runtime.
      */
-	@ClassRule
-	public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats();
+    @ClassRule
+    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats();
 
 }
