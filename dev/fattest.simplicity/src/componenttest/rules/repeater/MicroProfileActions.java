@@ -243,20 +243,35 @@ public class MicroProfileActions {
                                                           "mpTelemetry-1.1",
                                                           "mpRestClient-3.0" };
 
-    private static final String[] MP70_FEATURES_ARRAY = { "microProfile-6.1",
-                                                          "cdi-4.0",
-                                                          "restfulWS-3.1",
-                                                          "restfulWSClient-3.1",
-                                                          "jsonb-3.0",
-                                                          "jsonp-2.1",
-                                                          "mpConfig-3.1",
-                                                          "mpFaultTolerance-4.1",
-                                                          "mpHealth-4.0",
-                                                          "mpJwt-2.1",
-                                                          "mpOpenAPI-3.1",
-                                                          "mpMetrics-5.1",
-                                                          "mpTelemetry-2.0",
-                                                          "mpRestClient-3.0" };
+    private static final String[] MP70_EE10_FEATURES_ARRAY = { "microProfile-7.0",
+                                                               "cdi-4.0",
+                                                               "restfulWS-3.1",
+                                                               "restfulWSClient-3.1",
+                                                               "jsonb-3.0",
+                                                               "jsonp-2.1",
+                                                               "mpConfig-3.1",
+                                                               "mpFaultTolerance-4.1",
+                                                               "mpHealth-4.0",
+                                                               "mpJwt-2.1",
+                                                               "mpOpenAPI-4.0",
+                                                               "mpMetrics-5.1",
+                                                               "mpTelemetry-2.0",
+                                                               "mpRestClient-3.1" };
+
+    private static final String[] MP70_EE11_FEATURES_ARRAY = { "microProfile-7.0",
+                                                               "cdi-4.1",
+                                                               "restfulWS-4.0",
+                                                               "restfulWSClient-4.0",
+                                                               "jsonb-3.0",
+                                                               "jsonp-2.1",
+                                                               "mpConfig-3.1",
+                                                               "mpFaultTolerance-4.1",
+                                                               "mpHealth-4.0",
+                                                               "mpJwt-2.1",
+                                                               "mpOpenAPI-4.0",
+                                                               "mpMetrics-5.1",
+                                                               "mpTelemetry-2.0",
+                                                               "mpRestClient-3.1" };
 
     private static final Set<String> MP10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP10_FEATURES_ARRAY)));
     private static final Set<String> MP12_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP12_FEATURES_ARRAY)));
@@ -273,7 +288,8 @@ public class MicroProfileActions {
     private static final Set<String> MP50_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP50_FEATURES_ARRAY)));
     private static final Set<String> MP60_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP60_FEATURES_ARRAY)));
     private static final Set<String> MP61_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP61_FEATURES_ARRAY)));
-    private static final Set<String> MP70_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP70_FEATURES_ARRAY)));
+    private static final Set<String> MP70_EE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP70_EE10_FEATURES_ARRAY)));
+    private static final Set<String> MP70_EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP70_EE11_FEATURES_ARRAY)));
 
     //The FeatureSet IDs. Since these will be used as the RepeatAction IDs, they can also be used in annotations such as @SkipForRepeat
     public static final String MP10_ID = EE7FeatureReplacementAction.ID + "_MicroProfile_10";
@@ -291,7 +307,8 @@ public class MicroProfileActions {
     public static final String MP50_ID = JakartaEE9Action.ID + "_MicroProfile_50";
     public static final String MP60_ID = JakartaEE10Action.ID + "_MicroProfile_60";
     public static final String MP61_ID = JakartaEE10Action.ID + "_MicroProfile_61";
-    public static final String MP70_ID = JakartaEE10Action.ID + "_MicroProfile_70";
+    public static final String MP70_EE10_ID = JakartaEE10Action.ID + "_MicroProfile_70";
+    public static final String MP70_EE11_ID = JakartaEE11Action.ID + "_MicroProfile_70";
 
     //The MicroProfile FeatureSets
     public static final FeatureSet MP10 = new FeatureSet(MP10_ID, MP10_FEATURE_SET, EEVersion.EE7);
@@ -309,10 +326,11 @@ public class MicroProfileActions {
     public static final FeatureSet MP50 = new FeatureSet(MP50_ID, MP50_FEATURE_SET, EEVersion.EE9);
     public static final FeatureSet MP60 = new FeatureSet(MP60_ID, MP60_FEATURE_SET, EEVersion.EE10);
     public static final FeatureSet MP61 = new FeatureSet(MP61_ID, MP61_FEATURE_SET, EEVersion.EE10);
-    public static final FeatureSet MP70 = new FeatureSet(MP70_ID, MP70_FEATURE_SET, EEVersion.EE10);
+    public static final FeatureSet MP70_EE10 = new FeatureSet(MP70_EE10_ID, MP70_EE10_FEATURE_SET, EEVersion.EE10);
+    public static final FeatureSet MP70_EE11 = new FeatureSet(MP70_EE11_ID, MP70_EE11_FEATURE_SET, EEVersion.EE11);
 
     //All MicroProfile FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_SETS_ARRAY = { MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14, MP13, MP12, MP10 };
+    private static final FeatureSet[] ALL_SETS_ARRAY = { MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14, MP13, MP12, MP10 };
     public static final List<FeatureSet> ALL = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
 
     //TODO: These feature sets are only used by the EE Compatibility Tests and don't make sense in other contexts. We should move them to those tests.
@@ -335,20 +353,28 @@ public class MicroProfileActions {
                                                                   "mpReactiveMessaging-3.0",
                                                                   "mpReactiveStreams-3.0" };
 
+    private static final String[] STANDALONE11_FEATURES_ARRAY = { "mpContextPropagation-1.3",
+                                                                  "mpGraphQL-2.0",
+                                                                  "mpReactiveMessaging-3.0",
+                                                                  "mpReactiveStreams-3.0" };
+
     private static final Set<String> STANDALONE8_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE8_FEATURES_ARRAY)));
     private static final Set<String> STANDALONE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE9_FEATURES_ARRAY)));
     private static final Set<String> STANDALONE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE10_FEATURES_ARRAY)));
+    private static final Set<String> STANDALONE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(STANDALONE11_FEATURES_ARRAY)));
 
     public static final String STANDALONE8_ID = EE8FeatureReplacementAction.ID + "_STANDALONE";
     public static final String STANDALONE9_ID = JakartaEE9Action.ID + "_STANDALONE";
     public static final String STANDALONE10_ID = JakartaEE10Action.ID + "_STANDALONE";
+    public static final String STANDALONE11_ID = JakartaEE11Action.ID + "_STANDALONE";
 
     public static final FeatureSet MP_STANDALONE8 = new FeatureSet(STANDALONE8_ID, STANDALONE8_FEATURE_SET, EEVersion.EE8);
     public static final FeatureSet MP_STANDALONE9 = new FeatureSet(STANDALONE9_ID, STANDALONE9_FEATURE_SET, EEVersion.EE9);
     public static final FeatureSet MP_STANDALONE10 = new FeatureSet(STANDALONE10_ID, STANDALONE10_FEATURE_SET, EEVersion.EE10);
+    public static final FeatureSet MP_STANDALONE11 = new FeatureSet(STANDALONE11_ID, STANDALONE11_FEATURE_SET, EEVersion.EE11);
 
     //All MicroProfile Standalone FeatureSets
-    private static final FeatureSet[] ALL_STANDALONE_SETS_ARRAY = { MP_STANDALONE10, MP_STANDALONE9, MP_STANDALONE8 };
+    private static final FeatureSet[] ALL_STANDALONE_SETS_ARRAY = { MP_STANDALONE11, MP_STANDALONE10, MP_STANDALONE9, MP_STANDALONE8 };
     public static final List<FeatureSet> STANDALONE_ALL = Collections.unmodifiableList(Arrays.asList(ALL_STANDALONE_SETS_ARRAY));
 
     /**
