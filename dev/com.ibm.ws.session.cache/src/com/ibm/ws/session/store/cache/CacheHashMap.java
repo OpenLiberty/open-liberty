@@ -134,8 +134,8 @@ public class CacheHashMap extends BackedHashMap {
         // We know we're running multi-row..if not writeAllProperties and not time-based writes,
         // we must keep the app data tables per thread (rather than per session)
         appDataTablesPerThread = (!_smc.writeAllProperties() && !_smc.getEnableTimeBasedWrite());
-        // this MUST happen before the SessionContext starts the invalidator
-        CheckpointPhase.onRestore(0, () -> AccessController.doPrivileged((PrivilegedAction<Void>) () -> { cacheInit(); return null; }));
+        // this MUST happen after setting the cachingProvider and the cacheManager (io.openliberty.jcache.internal) and before the SessionContext starts the invalidator (com.ibm.ws.session) while restoring
+        CheckpointPhase.onRestore(2, () -> AccessController.doPrivileged((PrivilegedAction<Void>) () -> { cacheInit(); return null; }));
     }
 
     /**
@@ -149,7 +149,7 @@ public class CacheHashMap extends BackedHashMap {
         // Attempt lazy initialization if necessary
         try {
             if (cacheStoreService.cacheManager == null)
-                cacheStoreService.activateLazily();
+                cacheStoreService.activateLazily();              
 
             // Build a unique per-application cache name by starting with the application context root and percent encoding
             // the / and : characters (JCache spec does not allow these in cache names)
@@ -173,7 +173,7 @@ public class CacheHashMap extends BackedHashMap {
 
             if (trace && tc.isDebugEnabled())
                 tcInvoke(cacheStoreService.tcCacheManager, "getCache", metaCacheName, "String", "ArrayList");
-
+            
             sessionMetaCache = cacheStoreService.cacheManager.getCache(metaCacheName, String.class, ArrayList.class);
             boolean create;
             if (create = sessionMetaCache == null) {

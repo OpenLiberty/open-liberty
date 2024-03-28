@@ -37,6 +37,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
@@ -82,17 +83,12 @@ public class CacheServiceImpl implements CacheService {
 
     @Activate
     public void activate(Map<String, Object> configProps) {
-        /*
-         * Retrieve the id and cache name from the configuration properties.
-         */
-        this.id = (String) configProps.get(KEY_ID);
-        this.cacheName = (String) configProps.get(KEY_CACHE_NAME);
-
+        configureProperties(configProps);
         /*
          * Schedule a task to initialize the cache in the background. This will
          * alleviate delays on the first request to the cache.
          */
-        CheckpointPhase.onRestore(() -> {
+        CheckpointPhase.onRestore(1, () -> {
             getCacheFuture = scheduledExecutorService.schedule(new Runnable() {
                 @Override
                 public void run() {
@@ -100,6 +96,19 @@ public class CacheServiceImpl implements CacheService {
                 }
             }, 0, TimeUnit.SECONDS);
         });
+    }
+
+    private void configureProperties(Map<String, Object> configProps) {
+        /*
+         * Retrieve the id and cache name from the configuration properties.
+         */
+        this.id = (String) configProps.get(KEY_ID);
+        this.cacheName = (String) configProps.get(KEY_CACHE_NAME);
+    }
+
+    @Modified
+    public void modified(Map<String, Object> configProps) {
+        configureProperties(configProps);
     }
 
     @Deactivate

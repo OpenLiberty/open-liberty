@@ -28,21 +28,26 @@ instrument.classesExcludes: com/ibm/ws/session/store/cache/resources/*.class
 
 -dsannotations: \
   com.ibm.ws.session.store.cache.DefaultCachingProviderSupport,\
-  com.ibm.ws.session.store.cache.RuntimeUpdateListenerImpl
+  com.ibm.ws.session.store.cache.RuntimeUpdateListenerImpl,\
+  com.ibm.ws.session.store.cache.CacheStoreService,\
+  com.ibm.ws.session.store.cache.CacheStoreServiceConfig
 
-Service-Component=com.ibm.ws.session.cache;\
-  implementation:="com.ibm.ws.session.store.cache.CacheStoreService";\
-  provide:="com.ibm.ws.session.SessionStoreService,com.ibm.wsspi.logging.Introspector";\
-  configuration-policy:=optional;\
-  library=com.ibm.wsspi.library.Library;\
-  monitor=com.ibm.ws.monitor.internal.MonitoringFrameworkExtender;\
-  serializationService=com.ibm.ws.serialization.SerializationService;\
-  userTransaction=javax.transaction.UserTransaction;\
-  cacheManagerService=io.openliberty.jcache.CacheManagerService;\
-  dynamic:="monitor,userTransaction";\
-  greedy:="library,monitor,userTransaction";\
-  optional:="monitor,userTransaction,cacheManagerService";\
-  properties:="library.target=(id=unbound),monitor.target=(id=unbound),cacheManagerService.target=(id=unbound)"
+#**********************************************************************
+# Service-Component=com.ibm.ws.session.cache;\
+#  implementation:="com.ibm.ws.session.store.cache.CacheStoreService";\
+#  provide:="com.ibm.ws.session.SessionStoreService,com.ibm.wsspi.logging.Introspector";\
+#  configuration-policy:=optional;\
+#  library=com.ibm.wsspi.library.Library;\
+#  monitor=com.ibm.ws.monitor.internal.MonitoringFrameworkExtender;\
+#  serializationService=com.ibm.ws.serialization.SerializationService;\
+#  userTransaction=javax.transaction.UserTransaction;\
+#  cacheManagerService=io.openliberty.jcache.CacheManagerService;\
+#  dynamic:="monitor,userTransaction";\
+#  greedy:="library,monitor,userTransaction";\
+#  optional:="monitor,userTransaction,cacheManagerService";\
+#  modified:='modified';\
+#  properties:="library.target=(id=unbound),monitor.target=(id=unbound),cacheManagerService.target=(id=unbound)"
+#*********************
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\

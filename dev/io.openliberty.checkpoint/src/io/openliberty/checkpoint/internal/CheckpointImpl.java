@@ -457,8 +457,6 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
             }
             throw rethrow;
         }
-
-        waitForConfig();
         registerRunningCondition();
 
         Tr.audit(tc, "CHECKPOINT_RESTORE_CWWKC0452I", TimestampUtils.getElapsedTime());
