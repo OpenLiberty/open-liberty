@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,7 +24,7 @@ public interface FeatureProvisioner {
     /**
      * <p>Requests the set of features that are installed on the server. The result reported
      * to the caller is never null, but may be an empty set if no features are installed.</p>
-     * 
+     *
      * @return the set of feature names known to the feature provisioner.
      */
     public Set<String> getInstalledFeatures();
@@ -33,7 +33,7 @@ public interface FeatureProvisioner {
      * <p>Requests the feature definition for the given feature. If no matching feature is found then
      * null may be returned.
      * </p>
-     * 
+     *
      * @param featureName The name of the feature.
      * @return the feature definition, or null.
      */
@@ -41,7 +41,7 @@ public interface FeatureProvisioner {
 
     /**
      * TODO: FIXME -- this is for performance
-     * 
+     *
      * @return
      */
     public String getKernelApiServices();

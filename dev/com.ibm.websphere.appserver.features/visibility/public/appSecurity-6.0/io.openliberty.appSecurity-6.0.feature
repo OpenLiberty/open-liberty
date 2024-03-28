@@ -32,7 +32,6 @@ Subsystem-Name: Application Security 6.0 (Jakarta Security 4.0)
   io.openliberty.jsonp-2.1, \
   io.openliberty.webAppSecurity-2.0
 -bundles=\
-  com.ibm.json4j, \
   com.ibm.ws.org.apache.commons.lang3, \
   com.ibm.ws.org.apache.httpcomponents, \
   com.ibm.ws.org.jose4j, \

@@ -1,0 +1,59 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF CVE Reporting
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+# 
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKF1700 - CWWKF1799
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for com.ibm.ws.kernel.reporting: CWWKF1700 - CWWKF1799
+
+CWWKF1700.reporting.is.enabled=CWWKF1700I: CVE Reporting feature is enabled
+CWWKF1700.reporting.is.enabled.explanation=CVE Reporting feature is currently enabled
+CWWKF1700.reporting.is.enabled.useraction=To disabled CVE Reporting, specify <cveReporting enabled="false" /> in the server.xml file 
+
+CWWKF1701.reporting.is.disabled=CWWKF1701I: CVE Reporting feature is disabled
+CWWKF1701.reporting.is.disabled.explanation=CVE Reporting feature needs to be enabled to run
+CWWKF1701.reporting.is.disabled.useraction=To enable CVE Reporting, specify <cveReporting enabled="true" /> in the server.xml file 
+
+open.liberty.resposne=For more information you can review Open Liberty CVEs at https://openliberty.io/docs/latest/security-vulnerabilities.html
+
+websphere.liberty.response=For more information you can review IBM WebSphere Liberty CVEs at https://www.ibm.com/support/pages/node/710969
+
+CWWKF1702.cve.found=CWWKF1702W: Based on a assessment of the Liberty runtime. It is recommended that following CVEs are reviewed: {0}
+CWWKF1702.cve.found.explanation=There is something that has been found
+CWWKF1702.cve.found.useraction=Follow the message to resolve what has been found
+
+CWWKF1703.cve.not.found=CWWKF1703I: Based on assessment of the Liberty runtime, no applicable CVEs were found.
+CWWKF1703.cve.not.found.explanation=There is no problems
+CWWKF1703.cve.not.found.useraction=The following message has no issues
+
+CWWKF1704.incorrect.url=CWWKF1704W: The URL specified is not correct and a connection could not be made: {0}
+CWWKF1704.incorrect.url.explanation=Due to the URL provided no connection could be made
+CWWKF1704.incorrect.url.useraction=Verify that the URL is correct
+
+CWWKF1705.failed.response=CWWKF1705W: Unable to retrieve relevant CVE information due to a communication issue with the CVE Reporting Service.
+CWWKF1705.failed.response.explanation=The service was not able to give a response.
+CWWKF1705.failed.response.useraction=the service was not able to provide a response.
+
+CWWKF1706.issue.parsing=CWWKF1706W: Issue when parsing Product Information.
+CWWKF1706.issue.parsing.explanation=There was an issue when parsing the Product Information.
+CWWKF1706.issue.parsing.useraction=the service was not able to successfully parse the product information

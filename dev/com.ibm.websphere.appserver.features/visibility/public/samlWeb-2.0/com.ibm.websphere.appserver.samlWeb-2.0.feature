@@ -11,7 +11,6 @@ Subsystem-Name: SAML Web Single Sign-On 2.0
   io.openliberty.org.bouncycastle
 -bundles=\
   io.openliberty.org.apache.commons.logging, \
-  com.ibm.json4j, \
   io.openliberty.org.apache.commons.codec, \
   com.ibm.ws.org.jose4j
 kind=ga
