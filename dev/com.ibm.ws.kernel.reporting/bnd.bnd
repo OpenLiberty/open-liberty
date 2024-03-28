@@ -33,7 +33,7 @@ Include-Resource: \
 #Import-Package: !com.sun.management, !com.ibm.lang.management, com.ibm.json4j.java;version="[1.0.0,2.0.0)",* 
 Import-Package: !com.sun.management, !com.ibm.lang.management, *
 
--dsannotations: com.ibm.ws.kernel.reporting.CVEReportingComponent
+-dsannotations: com.ibm.ws.kernel.reporting.FixReportingComponent
 
 instrument.classesExcludes: io/**
 

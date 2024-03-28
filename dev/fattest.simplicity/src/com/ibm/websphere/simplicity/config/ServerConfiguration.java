@@ -333,8 +333,8 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "jwtBuilder")
     private ConfigElementList<JwtBuilder> jwtBuilders;
 
-    @XmlElement(name = "fixPackReporting")
-    private CVEReportingElement fixPackReporting;
+    @XmlElement(name = "cveReporting")
+    private CVEReportingElement cveReporting;
 
     public ServerConfiguration() {
         this.description = "Generation date: " + new Date();
@@ -1511,10 +1511,10 @@ public class ServerConfiguration implements Cloneable {
      * @return the fixPackReporting
      */
     public CVEReportingElement getCVEReporting() {
-        if (this.fixPackReporting == null)
-            this.fixPackReporting = new CVEReportingElement();
+        if (this.cveReporting == null)
+            this.cveReporting = new CVEReportingElement();
 
-        return this.fixPackReporting;
+        return this.cveReporting;
     }
 
 }
