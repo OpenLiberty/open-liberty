@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.session;
@@ -217,6 +214,8 @@ public class SessionManagerConfig implements Cloneable {
     
     private int connectionRetryCount = 2; // Feature 68570
     private SameSiteCookie sessionCookieSameSite;
+
+    private boolean sessionCookiePartitioned = false;
     
     // finished Custom Properties
 
@@ -1123,6 +1122,7 @@ public class SessionManagerConfig implements Cloneable {
             msg.append("sessionCookiePath=").append(this.getSessionCookiePath()).append("\n");
             msg.append("sessionCookieSecure=").append(this.getSessionCookieSecure()).append("\n");
             msg.append("sessionCookieSameSite=").append(this.getSessionCookieSameSite().getSameSiteCookieValue()).append("\n");
+            msg.append("sessionCookiePartitioned=").append(sessionCookiePartitioned).append("\n");
             msg.append("sessionCookieHttpOnly=").append(this.getSessionCookieHttpOnly()).append("\n");
             msg.append("inMemorySize=").append(inMemorySize).append("\n");
             msg.append("enableOverflow=").append(enableOverflow).append("\n");
@@ -1193,7 +1193,15 @@ public class SessionManagerConfig implements Cloneable {
     public final void setSessionCookieSameSite(SameSiteCookie sameSite) {
        this.sessionCookieSameSite = sameSite;
     }
+
+    //cookiePartitioned
+    public void setSessionCookiePartitioned(boolean b) {
+        this.sessionCookiePartitioned = b;
+    }
     
+    public boolean getSessionCookiePartitioned() {
+        return this.sessionCookiePartitioned;
+    }
 
     //Servlet 6.0 - updated to use interface
     // if web.xml cookie-config found, method will update the this SMC.cookieConfig with the webApp cookieConfig

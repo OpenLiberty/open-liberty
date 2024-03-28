@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2022 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.cookies;
 
@@ -390,6 +387,16 @@ public class CookieUtils {
             buffer.append(value);
         }
 
+        value = cookie.getAttribute("partitioned");
+        if (null != value) {
+            buffer.append("; Partitioned");
+        }
+
+        // // check for partitioned
+        // if (cookie.isPartitioned()) {
+        //     buffer.append("; Partitioned");
+        // }
+
         //Servlet 6.0
         setAttributes(cookie, buffer);
 
@@ -464,6 +471,11 @@ public class CookieUtils {
         if (null != value && 0 != value.length()) {
             buffer.append("; SameSite=");
             buffer.append(value);
+        }
+
+        value = cookie.getAttribute("partitioned");
+        if (null != value) {
+            buffer.append("; Partitioned");
         }
 
         //Servlet 6.0
@@ -558,6 +570,11 @@ public class CookieUtils {
             buffer.append(value);
         }
 
+        value = cookie.getAttribute("partitioned");
+        if (null != value) {
+            buffer.append("; Partitioned");
+        }
+
         //Servlet 6.0
         setAttributes(cookie, buffer);
 
@@ -578,7 +595,7 @@ public class CookieUtils {
             String key, value;
             for (Entry<String, String> entry : cookieAttrs.entrySet()) {
                 key = entry.getKey();
-                if (!(key.equals("samesite") || key.equals("port") || key.equals("commenturl"))) {
+                if (!(key.equals("samesite") || key.equals("port") || key.equals("commenturl") || key.equals("partitioned"))) {
                     value = entry.getValue();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "setAttribute (" + key + " , " + value + ")");
