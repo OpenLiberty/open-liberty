@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security;
 
@@ -113,7 +110,7 @@ public class PostParameterHelper {
                 saveToCookie((IExtendedRequest) req, reqURL, authResult, keepInput);
             } else if (postParamSaveMethod.equalsIgnoreCase(WebAppSecurityConfig.POST_PARAM_SAVE_TO_SESSION)) {
                 IExtendedRequest extRequest = (IExtendedRequest) req;
-                Map params = extRequest.getInputStreamData();
+                Map params = getInputStreamData(extRequest);
                 saveToSession(req, reqURL, params);
             }
         } catch (IOException exc) {
@@ -305,7 +302,7 @@ public class PostParameterHelper {
      */
     private String serializePostParam(IExtendedRequest req, String reqURL, boolean keepInput) throws IOException, UnsupportedEncodingException, IllegalStateException {
         String output = null;
-        HashMap params = req.getInputStreamData();
+        HashMap params = getInputStreamData(req);
         if (params != null) {
             long size = req.sizeInputStreamData(params);
             byte[] reqURLBytes = reqURL.getBytes("UTF-8");
@@ -398,7 +395,7 @@ public class PostParameterHelper {
             if (postParams == null) {
                 // let's save the parameters for restore
                 try {
-                    postParams = request.getInputStreamData();
+                    postParams = getInputStreamData(request);
                     request.setInputStreamData(postParams); // put it back immediately
                     request.setAttribute(ATTRIB_HASH_MAP, postParams);
                 } catch (IOException e) {
@@ -418,4 +415,15 @@ public class PostParameterHelper {
             }
         }
     }
+
+    @SuppressWarnings("rawtypes")
+    private static HashMap getInputStreamData(IExtendedRequest extRequest) throws IOException {
+        long maxAllowedLength = 1024 * 1024 * 128L;
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null) {
+            maxAllowedLength = globalConfig.postParamMaxRequestBodySize();
+        }
+        return extRequest.getInputStreamData(maxAllowedLength);
+    }
+
 }

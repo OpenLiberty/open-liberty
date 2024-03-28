@@ -261,6 +261,7 @@ public class WebAppSecurityCollaboratorImplTest {
         subjectManager.clearSubjects();
         configProps.put(WebAppSecurityConfigImpl.CFG_KEY_FAIL_OVER_TO_BASICAUTH, false);
         configProps.put(WebAppSecurityConfigImpl.CFG_KEY_USE_AUTH_DATA_FOR_UNPROTECTED, true);
+        configProps.put(WebAppSecurityConfigImpl.CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS, 1024 * 1024 * 128L);
 
         setSecurityServicesExpectations();
         setupCollaborator(new WebAppSecurityCollaboratorImpl(), cc, configProps);

@@ -117,7 +117,7 @@ public class PostParameterHelperTest {
                 one(srtReq).setAttribute(PostParameterHelper.ATTRIB_HASH_MAP, null);
                 one(srtReq).getRequestURI();
                 will(returnValue("/uri"));
-                one(srtReq).getInputStreamData();
+                one(srtReq).getInputStreamData(1024 * 1024 * 128L);
                 will(returnValue(map));
                 one(srtReq).sizeInputStreamData(map);
                 will(returnValue(20000L));
