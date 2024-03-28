@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.zip.ZipFile;
+import java.util.stream.*;
 
 import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.GenericContainer;
@@ -527,6 +529,15 @@ public abstract class FeatureUtilityToolTest {
 	Log.info(c, METHOD_NAME, "Test Failed. Proxy Log: " + stdout);
     }
 
+    
+    protected void retryFeatureUtility(String METHOD_NAME) throws Exception {
+		try (Stream <Path> walk = Files.walk(Paths.get(installRoot))) {
+			List<String> result = walk.filter(Files::isRegularFile).map(x -> x.toString()).collect(Collectors.toList());
+			result.forEach(x -> Log.info(c, METHOD_NAME, x));
+		}
+		String[] param1s = { "installFeature", "jsp-2.2", "jsp-2.3", "--verbose" };
+		runFeatureUtility(METHOD_NAME, param1s);
+	}
 
 
 }
