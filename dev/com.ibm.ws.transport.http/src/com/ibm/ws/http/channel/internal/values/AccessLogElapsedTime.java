@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,9 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.values;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import com.ibm.ws.http.channel.internal.HttpRequestMessageImpl;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
 
@@ -39,7 +39,7 @@ public class AccessLogElapsedTime extends AccessLogData {
             elapsedTime.set(elapsedTimeInMicroseconds);
             accessLogEntry.append(elapsedTimeInMicroseconds);
         } else {
-            elapsedTime.set((long) -1);
+            elapsedTime.set(-1L);
             accessLogEntry.append("-");
         }
 
@@ -47,16 +47,9 @@ public class AccessLogElapsedTime extends AccessLogData {
     }
 
     public static long getStartTime(HttpResponseMessage response, HttpRequestMessage request, Object data) {
-        HttpRequestMessageImpl requestMessageImpl = null;
-        long startTime = 0;
-        if (request != null) {
-            requestMessageImpl = (HttpRequestMessageImpl) request;
-        }
 
-        if (requestMessageImpl != null) {
-            startTime = requestMessageImpl.getStartTime();
-        }
-        return startTime;
+        return Objects.nonNull(request) ? request.getStartTime() : 0L;
+
     }
 
     public static long getElapsedTimeForJSON(HttpResponseMessage response, HttpRequestMessage request, Object data) {

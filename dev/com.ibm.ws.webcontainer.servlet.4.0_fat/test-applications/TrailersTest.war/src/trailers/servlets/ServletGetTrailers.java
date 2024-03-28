@@ -49,27 +49,37 @@ public class ServletGetTrailers extends HttpServlet {
 
         String test = request.getParameter("Test");
 
+        String netty = request.getParameter("usingNetty");
+
         pw.println("ServletGetTrailers : Test = " + test);
+        pw.println("ServletGetTrailers : usingNetty = " + netty);
 
         if (test != null && test.equals("RL")) {
             AsyncContext ac = request.startAsync();
             ServletInputStream input = request.getInputStream();
-            ReadListener readListener = new ReadListenerGetTrailers(input, response, ac, request);
+            ReadListener readListener = new ReadListenerGetTrailers(input, response, ac, request, Boolean.parseBoolean(netty));
             input.setReadListener(readListener);
 
         } else {
+            // If using Netty, we will always have the trailers available
 
-            if (request.isTrailerFieldsReady()) {
-                pw.println("FAIL : isTrailerFieldsReady() returned true before data was read.");
-            } else {
-                pw.println("PASS : isTrailerFieldsReady() returned false before data was read.");
-                try {
-                    request.getTrailerFields();
-                    pw.println("FAIL : getTrailerFields() did not throw IllegalStateException before data was read.");
-                } catch (IllegalStateException ise) {
-                    pw.println("PASS : getTrailerFields() threw IllegalStateException before data was read.");
+            if(!Boolean.parseBoolean(netty)){
+                if (request.isTrailerFieldsReady()) {
+                    pw.println("FAIL : isTrailerFieldsReady() returned true before data was read.");
+                } else {
+                    pw.println("PASS : isTrailerFieldsReady() returned false before data was read.");
+                    try {
+                        request.getTrailerFields();
+                        pw.println("FAIL : getTrailerFields() did not throw IllegalStateException before data was read.");
+                    } catch (IllegalStateException ise) {
+                        pw.println("PASS : getTrailerFields() threw IllegalStateException before data was read.");
+                    }
                 }
+            } else if(!request.isTrailerFieldsReady()){
+                pw.println("FAIL : isTrailerFieldsReady() returned false while using Netty.");
             }
+
+            
 
             ServletInputStream inStream = request.getInputStream();
             int len = -1;

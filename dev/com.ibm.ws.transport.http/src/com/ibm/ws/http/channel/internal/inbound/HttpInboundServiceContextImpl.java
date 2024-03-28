@@ -13,6 +13,7 @@
 package com.ibm.ws.http.channel.internal.inbound;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +21,7 @@ import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.h2internal.H2HttpInboundLinkWrap;
 import com.ibm.ws.http.channel.internal.CallbackIDs;
 import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
@@ -32,6 +34,11 @@ import com.ibm.ws.http.channel.internal.HttpResponseMessageImpl;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.values.ReturnCodes;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
+import com.ibm.ws.http.netty.message.NettyRequestMessage;
+import com.ibm.ws.http.netty.message.NettyResponseMessage;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
@@ -53,11 +60,17 @@ import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.MethodValues;
+import com.ibm.wsspi.http.channel.values.SchemeValues;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.logging.DebugLog;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
+
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpUtil;
 
 /**
  * Service context specific to an inbound HTTP message.
@@ -88,6 +101,13 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private String forwardedProto = null;
     private String forwardedHost = null;
     private boolean suppress0ByteChunk = false;
+    private long bytesWritten;
+
+    private ChannelHandlerContext nettyContext;
+    private FullHttpRequest nettyRequest;
+    private io.netty.handler.codec.http.HttpResponse nettyResponse;
+    private NettyRequestMessage requestMessage;
+    private HttpResponseMessage response;
 
     /**
      * Constructor for an HTTP inbound service context object.
@@ -100,6 +120,17 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public HttpInboundServiceContextImpl(TCPConnectionContext tsc, HttpInboundLink link, VirtualConnection vc, HttpChannelConfig hcc) {
         super();
         init(tsc, link, vc, hcc);
+    }
+
+    public HttpInboundServiceContextImpl(ChannelHandlerContext context, VirtualConnection vc) {
+        super();
+        nettyContext = context;
+
+        super.init(context);
+
+        this.setHeadersParsed();
+        setVC(vc);
+
     }
 
     /**
@@ -138,6 +169,41 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         super.reinit(tcc);
     }
 
+    @Override
+    public void setNettyRequest(FullHttpRequest request) {
+        this.nettyRequest = request;
+        super.setNettyRequest(request);
+
+        boolean isSecure = nettyContext.channel().hasAttr(NettyHttpConstants.IS_SECURE);
+        MSP.log("Setting scheme, secure: " + isSecure);
+        if (isSecure) {
+            getRequest().setScheme(SchemeValues.HTTPS);
+        } else {
+            MSP.log("Scheme should be set to http");
+            getRequest().setScheme(SchemeValues.HTTP);
+        }
+        MSP.log("Scheme set, exit isc init");
+
+    }
+
+    @Override
+    public void setNettyResponse(HttpResponse response) {
+        this.nettyResponse = response;
+        super.setNettyResponse(response);
+    }
+
+    public FullHttpRequest getNettyRequest() {
+        return this.nettyRequest;
+    }
+
+    public HttpResponse getNettyResponse() {
+        return this.nettyResponse;
+    }
+
+    public ChannelHandlerContext getNettyContext() {
+        return this.nettyContext;
+    }
+
     /*
      * @see com.ibm.ws.http.channel.internal.HttpServiceContextImpl#destroy()
      */
@@ -172,6 +238,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         this.forwardedRemoteAddress = null;
         this.forwardedRemotePort = -1;
         this.suppress0ByteChunk = false;
+
+        this.requestMessage = null;
 
         if (getHttpConfig().runningOnZOS()) {
             // @311734 - clean the statemap of the final write mark
@@ -448,6 +516,14 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     @Override
     public HttpRequestMessage getRequest() {
+        if (Objects.nonNull(nettyContext)) {
+            if (Objects.isNull(requestMessage)) {
+                MSP.log("getRequest -> creating new NettyRequestMessage");
+                this.requestMessage = new NettyRequestMessage(nettyRequest, this, nettyContext);
+            }
+            return this.requestMessage;
+        }
+
         return getRequestImpl();
     }
 
@@ -458,17 +534,22 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     protected HttpRequestMessageImpl getRequestImpl() {
         if (null == getMyRequest()) {
-            if (getObjectFactory() == null) {
-                return null;
+            if (Objects.nonNull(nettyContext)) {
+                getRequest();
+            } else {
+                if (getObjectFactory() == null) {
+                    return null;
+                }
+                setMyRequest(getObjectFactory().getRequest(this));
+                getMyRequest().setHeaderChangeLimit(getHttpConfig().getHeaderChangeLimit());
             }
-            setMyRequest(getObjectFactory().getRequest(this));
-            getMyRequest().setHeaderChangeLimit(getHttpConfig().getHeaderChangeLimit());
         }
         setStartTime();
         HttpRequestMessageImpl req = getMyRequest();
 
         // if applicable set the HTTP/2 specific content length
-        if (myLink instanceof H2HttpInboundLinkWrap) {
+        //TODO: Netty H2
+        if (!getHttpConfig().useNetty() && myLink instanceof H2HttpInboundLinkWrap) {
             int len = ((H2HttpInboundLinkWrap) myLink).getH2ContentLength();
             if (len != -1) {
                 req.setContentLength(len);
@@ -484,7 +565,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     @Override
     public HttpResponseMessage getResponse() {
-        return getResponseImpl();
+//        MSP.log("ISC - getResponse() - response: " + Objects.isNull(response) + ", context: " + Objects.nonNull(nettyContext));
+        if (Objects.isNull(this.response) && Objects.nonNull(this.nettyContext)) {
+            this.response = new NettyResponseMessage(nettyResponse, this, nettyRequest);
+        }
+
+        return Objects.nonNull(nettyContext) ? this.response : getResponseImpl();
     }
 
     /**
@@ -493,11 +579,18 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      * @return HttpResponseMessageImpl
      */
     final protected HttpResponseMessageImpl getResponseImpl() {
-        if (null == getMyResponse()) {
-            if (getObjectFactory() == null) {
-                return null;
+        if (Objects.isNull(getMyResponse())) {
+            if (Objects.nonNull(nettyContext)) {
+
+                throw new UnsupportedOperationException("HttpResponseMessageImpl is not valid in Netty context, use NettyResponseMessage instead.");
+
+            } else {
+
+                if (getObjectFactory() == null) {
+                    return null;
+                }
+                setMyResponse(getObjectFactory().getResponse(this));
             }
-            setMyResponse(getObjectFactory().getResponse(this));
         }
         return getMyResponse();
     }
@@ -586,13 +679,18 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             throw new MessageSentException("Message already sent");
         }
 
-        sendHeaders(getResponseImpl());
-        if (getResponseImpl().isTemporaryStatusCode()) {
-            // allow multiple temporary responses to be sent out
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Temp response sent, resetting send flags.");
+        if (getHttpConfig().useNetty()) {
+            sendHeaders(this.nettyResponse);
+            this.nettyContext.channel().flush();
+        } else {
+            sendHeaders(getResponseImpl());
+            if (getResponseImpl().isTemporaryStatusCode()) {
+                // allow multiple temporary responses to be sent out
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Temp response sent, resetting send flags.");
+                }
+                resetWrite();
             }
-            resetWrite();
         }
     }
 
@@ -677,6 +775,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
      */
     @Override
     public void sendResponseBody(WsByteBuffer[] body) throws IOException, MessageSentException {
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "sendResponseBody(body)");
         }
@@ -705,7 +804,14 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             setPartialBody(true);
         }
 
-        sendOutgoing(body, getResponseImpl());
+        MSP.log("sendResponseBody buffer size: " + GenericUtils.sizeOf(body));
+
+        if (getHttpConfig().useNetty()) {
+            sendOutgoing(body);
+
+        } else {
+            sendOutgoing(body, getResponseImpl());
+        }
     }
 
     /**
@@ -870,22 +976,30 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             Tr.debug(tc, "logFinalResponse", c, c.getAccessLog(), c.getAccessLog().isStarted(), numBytesWritten);
         }
 
-        // exit if access logging is disabled
-        if (!getHttpConfig().getAccessLog().isStarted()) {
-            return;
-        }
-        if(getRequest() == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "logFinalResponse", "getRequest() is null. HTTPAccess log entry is skipped." );
-            }
-            return; 
-        }
+        if (this.getHttpConfig().useNetty()) {
+            this.bytesWritten = numBytesWritten;
+            this.nettyContext.write(this);
+        } else {
 
-        if (MethodValues.UNDEF.equals(getRequest().getMethodValue())) {
-            // don't log anything if there wasn't a real request
-            return;
+            // exit if access logging is disabled
+            if (!getHttpConfig().getAccessLog().isStarted()) {
+                return;
+            }
+
+            if (getRequest() == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "logFinalResponse", "getRequest() is null. HTTPAccess log entry is skipped.");
+                }
+                return;
+            }
+
+            if (MethodValues.UNDEF.equals(getRequest().getMethodValue())) {
+                // don't log anything if there wasn't a real request
+                return;
+            }
+            getHttpConfig().getAccessLog().log(getRequest(), getResponse(), getRequestVersion().getName(), null, getRemoteAddr().getHostAddress(), numBytesWritten);
+
         }
-        getHttpConfig().getAccessLog().log(getRequest(), getResponse(), getRequestVersion().getName(), null, getRemoteAddr().getHostAddress(), numBytesWritten);
     }
 
     /**
@@ -912,7 +1026,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "finishResponseMessage(body)");
         }
-        if (!headersParsed()) {
+        if (!getHttpConfig().useNetty() && !headersParsed()) {
             // request message must have the headers parsed prior to sending
             // any data out (this is a completely invalid state in the channel
             // above)
@@ -934,26 +1048,57 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
         // if headers haven't been sent and chunked encoding is not explicitly
         // configured, then set this up for Content-Length
-        if (!headersSent() && !getResponseImpl().isChunkedEncodingSet()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "finishMessage() setting partial body false");
+        if (!headersSent()) {
+            boolean shouldContentLengthBeSet = Boolean.TRUE;
+
+            if (Objects.nonNull(nettyContext)) {
+                if (HttpUtil.isTransferEncodingChunked(nettyResponse)) {
+                    shouldContentLengthBeSet = Boolean.FALSE;
+                }
+            } else {
+                if (getResponseImpl().isChunkedEncodingSet()) {
+
+                    shouldContentLengthBeSet = Boolean.FALSE;
+                }
             }
-            setPartialBody(false);
+
+            if (shouldContentLengthBeSet) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "finishMessage() setting partial body false");
+                }
+                setPartialBody(false);
+                if (getHttpConfig().useNetty()) {
+                    MSP.log("Bytes to write: " + GenericUtils.sizeOf(body));
+                    // TODO Need to check if we should set the content length here or not
+                    // response.setContentLength(GenericUtils.sizeOf(body));
+                    nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(Long.valueOf(GenericUtils.sizeOf(body)));
+
+                }
+                // MSP.log("Bytes to write: " + GenericUtils.sizeOf(body));
+                //HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(body));
+            }
+
         }
 
-        if (getHttpConfig().runningOnZOS()) {
+        if (getHttpConfig().runningOnZOS() && Objects.isNull(nettyContext)) {
             // @311734 - add this to notify the xmem channel of our final write
             getVC().getStateMap().put(HttpConstants.FINAL_WRITE_MARK, "true");
         }
         try {
-            sendFullOutgoing(body, getResponseImpl());
+            if (Objects.nonNull(nettyContext)) {
+                sendFullOutgoing(body);
+            } else {
+                sendFullOutgoing(body, getResponseImpl());
+            }
         } finally {
             logFinalResponse(getNumBytesWritten());
         }
 
-        HttpInvalidMessageException inv = checkResponseValidity();
-        if (null != inv) {
-            throw inv;
+        if (!getHttpConfig().useNetty()) {
+            HttpInvalidMessageException inv = checkResponseValidity();
+            if (null != inv) {
+                throw inv;
+            }
         }
     }
 
@@ -1157,16 +1302,29 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             // PK30169 - some "error" status codes do not disable persistence
             setPersistent(false);
         }
-        getVC().getStateMap().put(HTTP_ERROR_IDENTIFIER, error);
+        if (Objects.nonNull(getVC())) {
+            getVC().getStateMap().put(HTTP_ERROR_IDENTIFIER, error);
+        }
         if (getHttpConfig().getDebugLog().isEnabled(DebugLog.Level.ERROR)) {
             getHttpConfig().getDebugLog().log(DebugLog.Level.ERROR, HttpMessages.MSG_CONN_SENDERROR + error.getErrorCode(), this);
         }
         // now figure out what buffers, if any, to send as the response body
-        WsByteBuffer[] body = loadErrorBody(error, getMyRequest(), getResponse());
-        VirtualConnection rc = finishResponseMessage(body, HttpISCWriteErrorCallback.getRef(), false);
-        if (null != rc) {
-            finishSendError(error.getClosingException());
+        WsByteBuffer[] body = loadErrorBody(error, getRequest(), getResponse());
+        if (Objects.isNull(nettyContext)) {
+            VirtualConnection rc = finishResponseMessage(body, HttpISCWriteErrorCallback.getRef(), false);
+            if (null != rc) {
+                finishSendError(error.getClosingException());
+            }
+        } else {
+            try {
+                finishResponseMessage(body);
+            } catch (IOException e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "finishResponseMessage failed with: " + e);
+                }
+            }
         }
+
     }
 
     /**
@@ -1568,6 +1726,13 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "getRequestBodyBuffer(async) hc: " + this.hashCode());
         }
+
+        // Netty involved so need to just call it complete
+        if (Objects.nonNull(this.nettyContext)) {
+            callback.complete(NettyVirtualConnectionImpl.DUMMY_NETTY_VC);
+            return null;
+        }
+
         boolean isError = false;
 
         try {
@@ -1934,7 +2099,13 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     public void setStartTime() {
         if (0 == startTime) {
             if (getHttpConfig().isAccessLoggingEnabled()) {
-                this.startTime = System.nanoTime();
+
+                if (Objects.nonNull(nettyContext) &&
+                    nettyContext.channel().hasAttr(NettyHttpConstants.REQUEST_START_TIME)) {
+                    this.startTime = nettyContext.channel().attr(NettyHttpConstants.REQUEST_START_TIME).get();
+                } else {
+                    this.startTime = System.nanoTime();
+                }
             }
         }
     }
@@ -2011,7 +2182,24 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(tc, "initForwardedValues");
         }
-        forwardedHeaderInitialized = true;
+
+        this.forwardedHeaderInitialized = Boolean.TRUE;
+
+        MSP.log("initForwardedValues, useNetty? " + Objects.nonNull(nettyRequest));
+
+        if (Objects.nonNull(nettyRequest)) {
+            nettyInitForwardedValues();
+        } else {
+            legacyInitForwardedValues();
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.exit(tc, "initForwardedValues");
+        }
+
+    }
+
+    private void legacyInitForwardedValues() {
         //Obtain the Regular Expression either from the configuration or default
         Pattern pattern = getHttpConfig().getForwardedProxiesRegex();
         Matcher matcher = null;
@@ -2020,14 +2208,17 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Verifying connected endpoint matches proxy regex");
         }
+
         String remoteIp = getTSC().getRemoteAddress().getHostAddress();
+
         matcher = pattern.matcher(remoteIp);
         if (matcher.matches()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Connected endpoint matched, verifying forwarded FOR list addresses");
             }
-            //if so, fetch the forwardedForList() from the base message
+            //fetch from the legacy base message
             String[] forwardedForList = this.getMessageBeingParsed().getForwardedForList();
+
             if (forwardedForList == null || forwardedForList.length == 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "No forwarded FOR addresses provided, forwarded values will not be used");
@@ -2080,8 +2271,88 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             this.forwardedProto = this.getMessageBeingParsed().getForwardedProto();
 
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.exit(tc, "initForwardedValues");
+    }
+
+    private void nettyInitForwardedValues() {
+        //Obtain the Regular Expression either from the configuration or default
+        Pattern pattern = getHttpConfig().getForwardedProxiesRegex();
+        Matcher matcher = null;
+
+        System.out.println("MSP: netty forwarded start");
+
+        String remoteIp = nettyContext.channel().remoteAddress().toString();
+        remoteIp = remoteIp.substring(1, remoteIp.indexOf(':'));
+
+        String attribute;
+
+        System.out.println("MSP: remote IP -> remoteIp : " + remoteIp);
+
+        matcher = pattern.matcher(remoteIp);
+
+        MSP.log("nettyInitForwardedValues 1");
+        if (matcher.matches()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Connected endpoint matched, verifying forwarded FOR list addresses");
+            }
+            MSP.log("nettyInitForwardedValues 2");
+            String[] forwardedForList = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_FOR_KEY).get();
+            if (Objects.isNull(forwardedForList) || forwardedForList.length == 0) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No forwarded FOR addresses provided, forwarded values will not be used");
+                    Tr.exit(tc, "initForwardedValues");
+                }
+                return;
+            }
+            MSP.log("nettyInitForwardedValues 3");
+            for (int i = forwardedForList.length - 1; i > 0; i--) {
+                MSP.log("Matching For List Element -> " + forwardedForList[i]);
+                matcher = pattern.matcher(forwardedForList[i]);
+                if (!matcher.matches()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Found address not defined in proxy regex, forwarded values will not be used");
+                        Tr.exit(tc, "initForwardedValues");
+                    }
+                    return;
+                }
+            }
+            MSP.log("nettyInitForwardedValues 4");
+            //if we get to the end, set the forwarded fields with correct values
+
+            //First check that the last node identifier is not an obfuscated address or
+            //unknown token
+            if (Objects.isNull(forwardedForList[0]) || "unknown".equals(forwardedForList[0]) || forwardedForList[0].startsWith("_")) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Client address is unknown or obfuscated, forwarded values will not be used");
+                    Tr.exit(tc, "initForwardedValues");
+                }
+                return;
+            }
+            MSP.log("nettyInitForwardedValues 5");
+
+            //Check if a port was included
+            attribute = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_PORT_KEY).get();
+            if (Objects.nonNull(attribute)) {
+                //If this port does not resolve to an integer, because it is obfuscated,
+                //malformed, or otherwise, then the address cannot be verified as being
+                //the client. If so, exit now.
+                try {
+                    this.forwardedRemotePort = Integer.parseInt(attribute);
+                } catch (NumberFormatException e) {
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Remote port provided was either obfuscated or malformed, forwarded values will not be used.");
+                        Tr.exit(tc, "initForwardedValues");
+                    }
+                    return;
+                }
+                MSP.log("nettyInitForwardedValues 6");
+            }
+            MSP.log("nettyInitForwardedValues 7");
+
+            this.forwardedRemoteAddress = forwardedForList[0];
+            this.forwardedHost = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_HOST_KEY).get();
+            this.forwardedProto = this.nettyContext.channel().attr(NettyHttpConstants.FORWARDED_PROTO_KEY).get();
+
         }
 
     }
@@ -2093,6 +2364,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return this.forwardedRemotePort;
     }
 
+    @Override
     public String getForwardedRemoteAddress() {
         if (!forwardedHeaderInitialized)
             initForwardedValues();
@@ -2100,6 +2372,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return this.forwardedRemoteAddress;
     }
 
+    @Override
     public String getForwardedRemoteProto() {
         if (!forwardedHeaderInitialized)
             initForwardedValues();
@@ -2107,6 +2380,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return this.forwardedProto;
     }
 
+    @Override
     public String getForwardedRemoteHost() {
         if (!forwardedHeaderInitialized)
             initForwardedValues();
@@ -2118,6 +2392,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return getHttpConfig().useForwardingHeaders();
     }
 
+    @Override
     public boolean useForwardedHeadersInAccessLog() {
         return getHttpConfig().useForwardingHeadersInAccessLog();
     }

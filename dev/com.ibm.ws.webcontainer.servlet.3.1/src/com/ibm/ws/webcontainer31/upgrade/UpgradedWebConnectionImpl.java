@@ -53,8 +53,8 @@ public class UpgradedWebConnectionImpl implements WebConnection {
     private ConnectionLink deviceConnLink,connLink,dispatcherLink ;
 
     //Input
-    private SRTUpgradeInputStream31 _in;
-    private UpgradeInputByteBufferUtil _inbb;
+    protected SRTUpgradeInputStream31 _in;
+    protected UpgradeInputByteBufferUtil _inbb;
 
     //Output
     protected SRTUpgradeOutputStream31 _out;
@@ -64,7 +64,7 @@ public class UpgradedWebConnectionImpl implements WebConnection {
     HttpUpgradeHandlerWrapper _upgradeHandler;
     protected boolean _outputStreamObtained = false;
 
-    private IExtendedRequest _req;
+    protected IExtendedRequest _req;
 
     private boolean webConnection_closeComplete = false;
     private boolean upgradeHandler_DestroyComplete = false;
@@ -136,7 +136,7 @@ public class UpgradedWebConnectionImpl implements WebConnection {
                     }
                 }          
 
-                if(_in != null && (_in.getInputBufferHelper().get_tcpChannelCallback() != null)){
+                if(_in != null && (_in.getInputBufferHelper() != null) && (_in.getInputBufferHelper().get_tcpChannelCallback() != null)){
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, " input callback");
                     }
@@ -188,7 +188,7 @@ public class UpgradedWebConnectionImpl implements WebConnection {
             closeUpgradeException = ioe;
         }
 
-        if(_outbb.isOutputStream_closed()) {
+        if(_outbb != null && _outbb.isOutputStream_closed()) {
             try {
                 // now call close on dispatcherlink
                 if(hasOutputCallback_CloseLinkHere || inputCallback){                        
@@ -228,7 +228,7 @@ public class UpgradedWebConnectionImpl implements WebConnection {
 
             //create the inputstream 
             _in = new SRTUpgradeInputStream31();       
-            _inbb = new UpgradeInputByteBufferUtil(this);
+            _inbb = new UpgradeInputByteBufferUtil(this, this.getTCPConnectionContext());
             _in.init(_inbb);
         }
         return _in;
@@ -245,7 +245,7 @@ public class UpgradedWebConnectionImpl implements WebConnection {
         if(_out == null ){
             //create the outputstream 
             _out = new SRTUpgradeOutputStream31();       
-            _outbb = new UpgradeOutputByteBufferUtil(this);
+            _outbb = new UpgradeOutputByteBufferUtil(this, this.getTCPConnectionContext());
             _out.init(_outbb,_req);
         }
         return _out;

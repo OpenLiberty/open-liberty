@@ -15,6 +15,7 @@ package com.ibm.ws.fat.wc.tests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -59,6 +60,8 @@ public class WCTrailersTest {
     @Server("servlet40_wcServer")
     public static LibertyServer server;
 
+    private static boolean usingNetty;
+
     @BeforeClass
     public static void before() throws Exception {
         LOG.info("Setup : add TrailersTest.war to the server if not already present.");
@@ -67,6 +70,20 @@ public class WCTrailersTest {
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(WCTrailersTest.class.getSimpleName() + ".log");
+        // Go through Logs and check if Netty is being used
+        // Wait for endpoints to finish loading and get the endpoint started messages
+        server.waitForStringInLog("CWWKO0219I.*");
+        List<String> test = server.findStringsInLogs("CWWKO0219I.*");
+        LOG.info("Got port list...... " + Arrays.toString(test.toArray()));
+        LOG.info("Looking for port: " + server.getHttpDefaultPort());
+        for (String endpoint : test) {
+            LOG.info("Endpoint: " + endpoint);
+            if (!endpoint.contains("port " + Integer.toString(server.getHttpDefaultPort())))
+                continue;
+            LOG.info("Netty? " + endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils"));
+            usingNetty = endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils");
+            break;
+        }
         LOG.info("Setup : complete, ready for Tests");
     }
 
@@ -142,10 +159,17 @@ public class WCTrailersTest {
 
         LOG.info("Target host : " + target.toURI());
 
+        LOG.info("Using Netty : " + usingNetty);
+
         String requestUri = "/TrailersTest/ServletGetTrailers";
 
-        if (parameters != null)
+        if (parameters != null){
             requestUri += parameters;
+            if(usingNetty)
+                requestUri += "&usingNetty=true";
+        }else if(usingNetty){
+            requestUri += "?usingNetty=true";
+        }
 
         ClassicHttpRequest request = new BasicClassicHttpRequest("POST", requestUri);
         Header[] trailers = { new BasicHeader("t1", "TestTrailer1"), new BasicHeader("t2", "TestTrailer2"),
@@ -181,10 +205,17 @@ public class WCTrailersTest {
 
         LOG.info("Target host : " + target.toURI());
 
+        LOG.info("Using Netty : " + usingNetty);
+
         String requestUri = "/TrailersTest/ServletSetTrailers";
 
-        if (parameters != null)
+        if (parameters != null){
             requestUri += parameters;
+            if(usingNetty)
+                requestUri += "&usingNetty=true";
+        }else if(usingNetty){
+            requestUri += "?usingNetty=true";
+        }
 
         ClassicHttpRequest request = new BasicClassicHttpRequest("POST", requestUri);
 

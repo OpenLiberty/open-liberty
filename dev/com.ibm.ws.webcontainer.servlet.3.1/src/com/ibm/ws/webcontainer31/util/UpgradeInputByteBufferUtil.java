@@ -39,27 +39,27 @@ public class UpgradeInputByteBufferUtil {
     private static final TraceComponent tc = Tr.register(UpgradeInputByteBufferUtil.class, WebContainerConstants.TR_GROUP, WebContainerConstants.NLS_PROPS);
     
     //WebConnection associated with this utility stream
-    private UpgradedWebConnectionImpl _upConn;
+    protected UpgradedWebConnectionImpl _upConn;
     //TCP Connection Context from the WebConnection which we use to do our reads
     private TCPConnectionContext _tcpContext;
     //Number of total bytes read over the duration of this stream. Please note: this isn't printed anywhere, but could be for debug purposes
     private long _totalBytesRead = 0L;
     //The ReadListener provided from the application
-    private ReadListener _rl;
+    protected ReadListener _rl;
     //The callback used by the TCP Channel when we do an async read. This will trigger the application's ReadListener
-    private UpgradeReadCallback _tcpChannelCallback;
+    protected UpgradeReadCallback _tcpChannelCallback;
     //Flag if the first async read is in progress. This read happens whenever the immediate reads don't return with more data and after the ReadListener has been invoked
     private boolean _isInitialRead = false;
     // The current buffer we are reading into
     private WsByteBuffer _buffer = null;
     //An IOException that may have occurred
-    private IOException _error = null;
+    protected IOException _error = null;
     //A Flag for whether we are in the process of closing or not
     private boolean _isClosing = false;
     //A flag for isReady, only used to throw an exception in read methods
     private boolean _isReady = true;
     //A flag for if this is the very first read on the connection
-    private boolean _isFirstRead = true;
+    protected boolean _isFirstRead = true;
     //A flag for if the stream is closed
     private boolean _closed = false;
     //Know when we need to force a sync read because of a readLine
@@ -73,7 +73,15 @@ public class UpgradeInputByteBufferUtil {
     public UpgradeInputByteBufferUtil(UpgradedWebConnectionImpl up)
     {
         _upConn = up;
-        _tcpContext = _upConn.getTCPConnectionContext();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
+            Tr.debug(tc, "UpgradeInputByteBufferUtil:: constructor");         
+        }
+    }
+
+    public UpgradeInputByteBufferUtil(UpgradedWebConnectionImpl up, TCPConnectionContext tcpContext)
+    {
+        _upConn = up;
+        _tcpContext = tcpContext;
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
             Tr.debug(tc, "UpgradeInputByteBufferUtil:: constructor");         
@@ -308,7 +316,7 @@ public class UpgradeInputByteBufferUtil {
      * 
      * @throws IOException
      */
-    private void validate() throws IOException {
+    protected void validate() throws IOException {
         if (null != _error) {
             throw _error;
         }

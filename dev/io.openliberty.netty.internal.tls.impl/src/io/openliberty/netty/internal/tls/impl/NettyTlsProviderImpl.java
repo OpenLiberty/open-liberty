@@ -26,7 +26,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.*;
 
+import io.netty.handler.codec.http2.Http2SecurityUtil;
 import io.netty.handler.ssl.*;
+import io.netty.handler.ssl.ApplicationProtocolConfig.Protocol;
+import io.netty.handler.ssl.ApplicationProtocolConfig.SelectedListenerFailureBehavior;
+import io.netty.handler.ssl.ApplicationProtocolConfig.SelectorFailureBehavior;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
 import io.netty.handler.ssl.SslContext;
 
@@ -157,6 +161,49 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "getInboundSSLContext exception caught creating JdkSslContext: " + e);
+            }
+            return null;
+        }
+    }
+    
+    /**
+     * Build a {@link io.netty.handler.ssl.SslContext} for an H2 Inbound connection
+     * with ALPN for H1 and H2
+     * 
+     * @param Map<String, Object> sslOptions
+     * @param String host
+     * @param String port
+     * @return SslContext
+     */
+    public SslContext getInboundALPNSSLContext(Map<String, Object> sslOptions, String host, String port) {
+
+        SSLContext jdkContext;
+        try {
+            jdkContext = getSSLContext(port, createProps(sslOptions), true, host, port, port, false);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                Tr.warning(tc, "getInboundALPNSSLContext exception caught creating SSLContext: " + e);
+            }
+            return null;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getInboundALPNSSLContext SSLContext: " + jdkContext);
+        }
+        try {
+            ApplicationProtocolConfig apn = new ApplicationProtocolConfig(Protocol.ALPN,
+                    // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
+                    SelectorFailureBehavior.NO_ADVERTISE,
+                    // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
+                    SelectedListenerFailureBehavior.ACCEPT,
+                    // Add Supported Protocols here for negotiation
+                    ApplicationProtocolNames.HTTP_2,
+                    ApplicationProtocolNames.HTTP_1_1);
+            SslContext nettyContext = new JdkSslContext(jdkContext, false, Http2SecurityUtil.CIPHERS, SupportedCipherSuiteFilter.INSTANCE,
+            apn, ClientAuth.OPTIONAL, null, false);
+            return nettyContext;
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                Tr.warning(tc, "getInboundALPNSSLContext exception caught creating JdkSslContext: " + e);
             }
             return null;
         }

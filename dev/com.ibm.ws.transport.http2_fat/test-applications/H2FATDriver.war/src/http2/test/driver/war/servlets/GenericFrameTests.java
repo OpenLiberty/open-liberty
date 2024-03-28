@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package http2.test.driver.war.servlets;
 
@@ -23,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
 import com.ibm.ws.http.channel.h2internal.frames.FramePing;
+import com.ibm.ws.http.channel.h2internal.frames.FrameRstStream;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
 import com.ibm.ws.http2.test.Http2Client;
@@ -48,11 +46,15 @@ public class GenericFrameTests extends H2FATDriverServlet {
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        // add the GOAWAY / error code that the server should emit following an illegal stream ID order
-        byte[] debugData = "received a new stream with a lower ID than previous; current stream-id: 5 highest stream-id: 7".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 7, false);
-        h2Client.addExpectedFrame(errorFrame);
-
+        if (USING_NETTY) {
+            FrameRstStream rstFrame = new FrameRstStream(5, STREAM_CLOSED, false);
+            h2Client.addExpectedFrame(rstFrame);
+        } else {
+            // add the GOAWAY / error code that the server should emit following an illegal stream ID order
+            byte[] debugData = "received a new stream with a lower ID than previous; current stream-id: 5 highest stream-id: 7".getBytes();
+            FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 7, false);
+            h2Client.addExpectedFrame(errorFrame);
+        }
         setupDefaultUpgradedConnection(h2Client);
 
         //Expected headers for stream 7 request
@@ -62,7 +64,11 @@ public class GenericFrameTests extends H2FATDriverServlet {
         secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
         // cannot assume language of test machine
         secondHeadersReceived.add(new H2HeaderField("content-language", ".*"));
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(7, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders;
+        if (USING_NETTY)
+            secondFrameHeaders = new FrameHeadersClient(7, null, 0, 0, 15, false, true, false, true, false, false);
+        else
+            secondFrameHeaders = new FrameHeadersClient(7, null, 0, 0, 0, false, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
 
         //Headers frame to send for stream 7 request
@@ -104,9 +110,13 @@ public class GenericFrameTests extends H2FATDriverServlet {
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        // add the GOAWAY / error code that the server should emit following an illegal stream ID order
-        byte[] debugData = "Did not receive the expected continuation frame".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "Did not receive the expected continuation frame".getBytes();
+        byte[] nettyDebugData = "Received frame of type 1 while processing headers on stream 3.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);
@@ -196,9 +206,13 @@ public class GenericFrameTests extends H2FATDriverServlet {
         String testName = "testDataOnStreamZero";
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        // add the expected error frame
-        byte[] debugData = "DATA frame stream ID cannot be 0x0".getBytes();
-        FrameGoAway errorFrame = new FrameGoAway(0, debugData, PROTOCOL_ERROR, 1, false);
+        byte[] chfwDebugData = "DATA frame stream ID cannot be 0x0".getBytes();
+        byte[] nettyDebugData = "Frame of type 0 must be associated with a stream.".getBytes();
+        FrameGoAway errorFrame;
+        if (USING_NETTY)
+            errorFrame = new FrameGoAway(0, nettyDebugData, PROTOCOL_ERROR, 2147483647, false);
+        else
+            errorFrame = new FrameGoAway(0, chfwDebugData, PROTOCOL_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client);

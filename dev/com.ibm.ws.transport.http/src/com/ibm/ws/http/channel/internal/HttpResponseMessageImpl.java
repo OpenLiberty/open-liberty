@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -68,7 +68,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
     private static final byte[] LONG_AGO = GenericUtils.getEnglishBytes("Thu, 01 Dec 1994 16:00:00 GMT");
 
     /** Status code */
-    private transient StatusCodes myStatusCode = StatusCodes.OK;
+    protected transient StatusCodes myStatusCode = StatusCodes.OK;
     /** Reason phrase as a byte[] */
     private byte[] myReasonBytes = null;
     /** Reason phrase as a String */
@@ -807,7 +807,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      * @return int
      */
     @Override
-    final public int getStatusCodeAsInt() {
+    public int getStatusCodeAsInt() {
         return this.myStatusCode.getIntCode();
     }
 
@@ -817,7 +817,7 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
      * @return StatusCodes
      */
     @Override
-    final public StatusCodes getStatusCode() {
+    public StatusCodes getStatusCode() {
         return this.myStatusCode;
     }
 
@@ -1143,6 +1143,16 @@ public class HttpResponseMessageImpl extends HttpBaseMessageImpl implements Http
         super.writeExternal(output);
         output.writeShort(getStatusCodeAsInt());
         writeByteArray(output, this.myReasonBytes);
+    }
+    
+    @Override
+    public long getBytesWritten() {
+        return this.getServiceContext().getNumBytesWritten();
+    }
+    
+    @Override
+    public long getEndTime() {
+       return 0; 
     }
 
 }

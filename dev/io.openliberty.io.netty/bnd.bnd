@@ -19,6 +19,8 @@ Bundle-Name: Netty as an OSGi bundle
 Bundle-SymbolicName: io.openliberty.io.netty
 Bundle-Description: Netty as an OSGi bundle for OpenLiberty, version ${bVersion}
 
+src: src
+
 Import-Package: \
   !com.aayushatharva.brotli4j*,\
   !com.github.luben.zstd,\

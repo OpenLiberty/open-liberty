@@ -19,6 +19,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.channel.internal.HttpTrailerGeneratorImpl;
 import com.ibm.ws.http.channel.internal.outbound.HttpOutputStreamImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.MSP;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
@@ -134,6 +135,7 @@ public class HttpResponseImpl implements HttpResponse, HttpResponseExt {
      */
     @Override
     public void setContentLength(long length) {
+        MSP.log("Content Length Test - " + length);
         this.message.setContentLength(length);
         if (this.body != null) {
             this.body.setContentLength(length);
@@ -339,6 +341,8 @@ public class HttpResponseImpl implements HttpResponse, HttpResponseExt {
     public void setTrailer(String name, String value) {
 
         HttpTrailers trailers = message.createTrailers();
+        if (trailers == null)// Netty implementation
+            trailers = message.getTrailers();
         HeaderKeys key = HttpHeaderKeys.find(name, false);
 
         if (trailers.containsDeferredTrailer(key)) {
@@ -359,6 +363,8 @@ public class HttpResponseImpl implements HttpResponse, HttpResponseExt {
     @Override
     public void writeTrailers() {
         HttpTrailers trailers = message.createTrailers();
+        if (trailers == null)// Netty implementation
+            trailers = message.getTrailers();
         trailers.computeRemainingTrailers();
 
     }

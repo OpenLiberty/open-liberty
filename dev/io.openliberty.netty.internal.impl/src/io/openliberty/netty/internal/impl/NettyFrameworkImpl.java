@@ -14,6 +14,7 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -77,7 +78,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     /** server started logic borrowed from CHFWBundle */
     private static AtomicBoolean serverCompletelyStarted = new AtomicBoolean(false);
-    private static Queue<FutureTask<?>> serverStartedTasks = new LinkedBlockingQueue<>();
+    private static Queue<FutureTask<ChannelFuture>> serverStartedTasks = new LinkedBlockingQueue<>();
     private static Object syncStarted = new Object() {
     }; // use brackets/inner class to make lock appear in dumps using class name
 
@@ -309,27 +310,67 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         // output. Use this signal to run tasks, mostly likely tasks that will
         // finish the port listening logic, that need to run at the end of server
         // startup
-
-        FutureTask<?> task;
+    	System.out.println("Started setServerStarted");
+        FutureTask<ChannelFuture> task;
+        CountDownLatch latch = new CountDownLatch(serverStartedTasks.size());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Netty Framework signaled- Server Completely Started signal received");
         }
         while ((task = serverStartedTasks.poll()) != null) {
             try {
-            	if(!task.isCancelled())
-            		executorService.submit(task);
+            	if(!task.isCancelled()) {
+            		executorService.submit(new StartTaskRunnable(task, latch));
+            	}else
+            		latch.countDown();
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
                 }
             }
         }
+        
+        try {
+        	latch.await();
+		} catch (InterruptedException e) {
+			// TODO: handle exception
+			System.out.println("Got interrupted exception");
+			throw new RuntimeException(e);
+		}
+        
 
         synchronized (syncStarted) {
             serverCompletelyStarted.set(true);
             isActive = true;
             syncStarted.notifyAll();
         }
+        System.out.println("Finished setServerStarted");
+    }
+    
+    private class StartTaskRunnable implements Runnable{
+    	
+    	private FutureTask<ChannelFuture> task;
+		private CountDownLatch latch;
+
+		public StartTaskRunnable(FutureTask<ChannelFuture> task, CountDownLatch latch) {
+			// TODO Auto-generated constructor stub
+    		this.task = task;
+    		this.latch = latch;
+		}
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			task.run();
+			try {
+				task.get(getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS);
+			}catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "caught exception performing startup task: " + e);
+                }
+            }
+			latch.countDown();
+		}
+    	
     }
     
     /**
@@ -342,9 +383,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      *         the task to denote it has ran.
      * @throws Exception
      */
-    public <T> FutureTask<T> runWhenServerStarted(Callable<T> callable) throws Exception {
+    public FutureTask<ChannelFuture> runWhenServerStarted(Callable<ChannelFuture> callable) throws Exception {
         synchronized (syncStarted) {
-        	FutureTask<T> future = new FutureTask<T>(callable);
+        	FutureTask<ChannelFuture> future = new FutureTask<ChannelFuture>(callable);
             if (!serverCompletelyStarted.get()) {
                 serverStartedTasks.add(future);
             }else {
