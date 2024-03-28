@@ -4,7 +4,8 @@ singleton=true
 visibility = private
 -features=com.ibm.websphere.appserver.servlet-6.1, \
   io.openliberty.pages-4.0, \
-  io.openliberty.jakarta.cdi-4.1; apiJar=false
+  io.openliberty.jakarta.cdi-4.1; apiJar=false, \
+  io.openliberty.noShip-1.0
 -bundles=\
   io.openliberty.security.common.internal, \
   io.openliberty.security.openidconnect.internal.clients.common, \
