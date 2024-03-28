@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -182,6 +182,68 @@ public class Servlet60CookieSetAttributeTest {
     public void test_setAttributeSameSitePrecedence() throws Exception {
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/CookieSetAttributeServlet?testName=setAttributeSameSite";
         String expectedSetCookie = "CookieSetAttributeServlet=TestSetAttributeSameSite; HttpOnly; SameSite=Strict";
+
+        LOG.info("\n Sending Request [" + url + "]");
+        HttpGet getMethod = new HttpGet(url);
+
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text: [" + responseText + "]");
+
+                //fail-fast check
+                assertTrue("The response did not contain the following String: " + expectedGeneralResponse, responseText.contains(expectedGeneralResponse));
+
+                Header[] headers = response.getHeaders();
+                for (Header header : headers) {
+                    LOG.info("\n" + "Header: " + header);
+                }
+                String headerValue = response.getHeader("Set-Cookie").getValue();
+                LOG.info("\n Set-Cookie value [" + headerValue + "]");
+                assertTrue("The response did not contain the following Set-Cookie header " + expectedSetCookie, headerValue.equals(expectedSetCookie));
+            }
+        }
+    }
+
+    /*
+     * Test cookie setAttribute("Partitioned","")
+     */
+    @Test
+    public void test_setAttributePartitioned() throws Exception {
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/CookieSetAttributeServlet?testName=setAttributePartitioned";
+        String expectedSetCookie = "CookieSetAttributeServlet=TestSetAttributePartitioned; HttpOnly; SameSite=None; partitioned=";
+
+        LOG.info("\n Sending Request [" + url + "]");
+        HttpGet getMethod = new HttpGet(url);
+
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (CloseableHttpResponse response = client.execute(getMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text: [" + responseText + "]");
+
+                //fail-fast check
+                assertTrue("The response did not contain the following String: " + expectedGeneralResponse, responseText.contains(expectedGeneralResponse));
+
+                Header[] headers = response.getHeaders();
+                for (Header header : headers) {
+                    LOG.info("\n" + "Header: " + header);
+                }
+                String headerValue = response.getHeader("Set-Cookie").getValue();
+                LOG.info("\n Set-Cookie value [" + headerValue + "]");
+                assertTrue("The response did not contain the following Set-Cookie header " + expectedSetCookie, headerValue.equals(expectedSetCookie));
+            }
+        }
+    }
+
+    /*
+     * Test null removes attributes
+     *     wcCookieAtt.setAttribute("TESTNAME", "");
+    *      wcCookieAtt.setAttribute("TESTNAME", null);
+     */
+    @Test
+    public void test_nullValueRemovesAttribute() throws Exception {
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/CookieSetAttributeServlet?testName=setNullValue";
+        String expectedSetCookie = "CookieSetAttributeServlet=TestNullValueRemovesAttribute; HttpOnly; SameSite=Lax";
 
         LOG.info("\n Sending Request [" + url + "]");
         HttpGet getMethod = new HttpGet(url);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -441,6 +441,8 @@ public class HttpConfigConstants {
 
     public static final String PROPNAME_SAMESITE_STRICT = "sameSiteStrictInternal";
 
+    public static final String PROPNAME_SAMESITE_PARTITIONED = "sameSitePartitionedInternal";
+
     public static final String WILDCARD_CHAR = "*";
 
     public static final String PROPNAME_RESPONSE_HEADERS = "headersInternal";
@@ -456,7 +458,8 @@ public class HttpConfigConstants {
     public static enum SameSite {
         LAX("Lax"),
         NONE("None"),
-        STRICT("Strict");
+        STRICT("Strict"),
+        PARTITIONED("Partitioned");
 
         SameSite(String name) {
             this.name = name;

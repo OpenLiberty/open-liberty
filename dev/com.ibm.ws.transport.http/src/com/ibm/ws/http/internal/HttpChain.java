@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -439,6 +439,7 @@ public class HttpChain implements ChainEventListener {
                         chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_LAX, null);
                         chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_NONE, null);
                         chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT, null);
+                        chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_PARTITIONED, "false");
                     }
 
                     else {
@@ -455,6 +456,10 @@ public class HttpChain implements ChainEventListener {
                         if (samesiteOptions.containsKey("strict")) {
                             enableSameSite = true;
                             chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_STRICT, samesiteOptions.get("strict"));
+                        }
+                        if (samesiteOptions.containsKey("partitioned")) {
+                            enableSameSite = true;
+                            chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE_PARTITIONED, samesiteOptions.get("partitioned"));
                         }
                         chanProps.put(HttpConfigConstants.PROPNAME_SAMESITE, enableSameSite);
                     }

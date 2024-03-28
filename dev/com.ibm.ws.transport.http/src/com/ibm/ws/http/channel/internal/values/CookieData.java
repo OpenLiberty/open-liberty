@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2020 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -57,6 +57,9 @@ public abstract class CookieData extends GenericKeys {
     public static final CookieData cookieHttpOnly = new CookieHttpOnly();
     /** SameSite attribute */
     public static final CookieData cookieSameSite = new CookieSameSiteData();
+    /** Partitioned attribute */
+    // BETA - KeyMatcher will only Added Paritioned if in Beta
+    public static final CookieData cookiePartitioned = new CookiePartitioned();
 
     /**
      * Constructor for a generic cookie data object.

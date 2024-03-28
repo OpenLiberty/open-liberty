@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,14 @@ public class CookieSetAttributeServlet extends HttpServlet {
         //setAttribute for SameSite
         else if (testName.equals("setAttributeSameSite")) {
             testSetAttributeSameSite(response);
+        }
+        // Partitioned will be generated as "paritioned="
+        else if (testName.equals("setAttributePartitioned")){
+            testSetAttributePartitioned(response);
+        }
+        // verify setting null as an value will remove the attribute from the cookie
+        else if (testName.equals("setNullValue")){
+            testNullValueRemovesAttribute(response);
         }
         // Test all default cookie setter
         else {
@@ -167,6 +175,36 @@ public class CookieSetAttributeServlet extends HttpServlet {
         response.addCookie(wcCookieAtt);
 
         LOG.info(" testSetAttributeSameSite END.");
+        LOG.info(addDivider());
+    }
+
+    private void testSetAttributePartitioned(HttpServletResponse response) {
+        LOG.info(addDivider());
+        LOG.info(" testSetAttributePartitioned : Cookie setAttribute Partitioned");
+
+        Cookie wcCookieAtt = new Cookie("CookieSetAttributeServlet", "TestSetAttributePartitioned");
+        wcCookieAtt.setHttpOnly(true);
+        wcCookieAtt.setAttribute("PARTITIONED", "");
+        wcCookieAtt.setAttribute("SAMESITE", "None");
+
+        response.addCookie(wcCookieAtt);
+
+        LOG.info(" testSetAttributePartitioned END.");
+        LOG.info(addDivider());
+    }
+
+    private void testNullValueRemovesAttribute(HttpServletResponse response) {
+        LOG.info(addDivider());
+        LOG.info(" testNullValueRemovesAttribute : Cookie setAttribute null value");
+
+        Cookie wcCookieAtt = new Cookie("CookieSetAttributeServlet", "TestNullValueRemovesAttribute");
+        wcCookieAtt.setHttpOnly(true);
+        wcCookieAtt.setAttribute("TESTNAME", "");
+        wcCookieAtt.setAttribute("TESTNAME", null);
+
+        response.addCookie(wcCookieAtt);
+
+        LOG.info(" testNullValueRemovesAttribute END.");
         LOG.info(addDivider());
     }
 

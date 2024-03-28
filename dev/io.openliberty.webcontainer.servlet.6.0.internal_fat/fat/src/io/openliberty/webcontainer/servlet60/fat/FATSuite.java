@@ -23,6 +23,7 @@ import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60CookieSetAttributeTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60GetMappingAsyncDispatchTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60GetRealPathTest;
+import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60PartitionedAttributeTests;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60RequestConnectionTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60RequestCookieHeaderTest;
 import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60ResponseNullCharacterEncodingTest;
@@ -50,7 +51,8 @@ import io.openliberty.webcontainer.servlet60.fat.tests.Servlet60XPoweredByHeader
                 Servlet60URIPathCanonicalizationInvalidWebXMLTest.class,
                 Servlet60URIPathCanonicalizationServerXMLTest.class,
                 Servlet60URIPathCanonicalizationTest.class,
-                Servlet60URIPathCanonicalizationWebXMLTest.class
+                Servlet60URIPathCanonicalizationWebXMLTest.class,
+                Servlet60PartitionedAttributeTests.class
 })
 public class FATSuite {
 
