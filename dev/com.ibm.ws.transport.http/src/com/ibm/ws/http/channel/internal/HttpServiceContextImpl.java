@@ -2988,7 +2988,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             System.out.println("Content: " + WsByteBufferUtils.asString(buffers));
 
         }
-        if (Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
+        boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS) && !nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get().equals("HTTP2");
+        if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             MSP.log("sendOutgoing are buffers good? " + GenericUtils.sizeOf(buffers));
             String streamId = nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), "-1");
             if (this.getTSC() instanceof NettyTCPConnectionContext) {
@@ -3378,7 +3379,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         }
         DefaultHttpContent content;
-        if (Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
+        boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS) && !nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get().equals("HTTP2");
+        if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             for (WsByteBuffer buffer : buffers) {
                 if (Objects.nonNull(buffer)) {
                     if (buffer.remaining() == 0) {
