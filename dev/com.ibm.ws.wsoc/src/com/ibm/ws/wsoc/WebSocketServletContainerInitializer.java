@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,10 @@ public class WebSocketServletContainerInitializer implements ServletContainerIni
             WsocHttpSessionListener listener = new WsocHttpSessionListener();
             listener.initialize(serverContainer.getEndpointManager());
             servletContext.addListener(listener);
+
+            WsocHttpSessionIdListener sessionIdListener = new WsocHttpSessionIdListener();
+            sessionIdListener.initialize(serverContainer.getEndpointManager());
+            servletContext.addListener(sessionIdListener);
 
             if (clazzes != null) {
                 String endPointContext = servletContext.getContextPath();

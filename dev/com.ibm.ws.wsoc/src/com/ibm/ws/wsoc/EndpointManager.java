@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.wsoc;
 
@@ -40,11 +37,11 @@ public class EndpointManager {
     // Map the Endpoint config object to an instance of the Annotated Endpoint it is a config for.  For cache and clone generation.
     private final ConcurrentHashMap<Class<? extends Object>, AnnotatedEndpoint> annotatedEndpointMap = new ConcurrentHashMap<Class<? extends Object>, AnnotatedEndpoint>();
 
-    // Map of active sessions for a given endpoint class
+    // Map of active websocket sessions for a given endpoint class - for getOpenSessions
     private final ConcurrentHashMap<Class<?>, ArrayList<Session>> endpointSessionMap = new ConcurrentHashMap<Class<?>, ArrayList<Session>>();
 
-    // Map of  sessions with corresponding active HttpSession
-    private final ConcurrentHashMap<String, SessionExt> httpSessionMap = new ConcurrentHashMap<String, SessionExt>();
+    // Map of websocket sessions with corresponding active HttpSession (httpSession id is the key) - for HttpSession expiration
+    private final ConcurrentHashMap<String, ArrayList<Session>> httpSessionMap = new ConcurrentHashMap<String, ArrayList<Session>>();
 
     public EndpointManager() {
         serverEndpointConfigMap.clear();
@@ -63,27 +60,36 @@ public class EndpointManager {
             cl = ae.getServerEndpointClass();
         }
 
-        // find the session array for the given endpoint
+        // find the websocket session array for the given endpoint
         ArrayList<Session> sa = endpointSessionMap.get(cl);
 
-        // create a new session list if none was found
+        // create a new websocket session list if none was found
         if (sa == null) {
             sa = new ArrayList<Session>();
         }
 
-        // add the new session to the list for this endpoint
+        // add the new websocket session to the list for this endpoint
         sa.add(sess);
 
         // put the updated list back into the Map
         endpointSessionMap.put(cl, sa);
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "added session of: " + sess + "  to endpoint class of: " + cl + " using list of: " + sa + " in endpointmanager of: " + this);
+         String id = sess.getSessionImpl().getHttpSessionID();
+
+        if (id != null) {
+            ArrayList<Session> http_sa = httpSessionMap.get(id);
+            if (http_sa == null) {
+                // a httpSession may have multiple websocket connections
+                http_sa = new ArrayList<Session>();
+            }
+            http_sa.add(sess);
+            httpSessionMap.put(id, http_sa);
         }
 
-        String id = sess.getSessionImpl().getHttpSessionID();
-        if (id != null) {
-            httpSessionMap.put(id, sess);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "added session of: " + sess + " id=" + id + "  to endpoint class of: " + cl + " using list of: " + sa + " in endpointmanager of: " + this);
+            Tr.debug(tc, "[add] httpSessionMap count: " + httpSessionMap.size() + " in endpointmanager of: " + this);
+            Tr.debug(tc, "[add] active websocket session count: " + sa.size() + " in endpointmanager of: " + this);
         }
     }
 
@@ -142,7 +148,9 @@ public class EndpointManager {
         endpointSessionMap.put(cl, sa);
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "removed session of: " + sess.getId() + "  from endpoint class of: " + cl.getName() + " in endpointmanager of: " + this.hashCode());
+            Tr.debug(tc, "removed session of: " + sess.getId() + " from endpoint class of: " + cl.getName() + " in endpointmanager of: " + this);
+            Tr.debug(tc, "[remove] httpSessionMap count: " + httpSessionMap.size() + " in endpointmanager of: " + this);
+            Tr.debug(tc, "[remove] active websocket session count: " + sa.size() + " in endpointmanager of: " + this);
         }
     }
 
@@ -169,17 +177,63 @@ public class EndpointManager {
 
     }
 
+    /* 
+     * When a HttpSession expires, we need to clean up both httpSessionMap and endpointSessionMap
+     * 
+     */
     public void httpSessionExpired(String httpSessionID) {
         if (httpSessionID != null) {
-            SessionExt session = httpSessionMap.remove(httpSessionID);
-            if (session != null) {
+            // httpSessionMap clean up
+            ArrayList<Session> sessionList = httpSessionMap.remove(httpSessionID);
+            if (sessionList != null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "sessionList count: " + sessionList.size() + " for sessionId: " + httpSessionID);
+                }
                 // can't use HttpSession object on another thread during this processing (which we do if CDI 1.0 is enabled on the complete or error
                 // callbacks) or else the Session API may deadlock.   Don't really need to do anything anyway with this session object since
                 // it is invalidating.
-                session.getSessionImpl().markHttpSessionInvalid();
-                if (session.isSecure() && (session.getUserPrincipal() != null)) {
-                    CloseReason cr = new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Secure HTTP Session Closed");
-                    session.getSessionImpl().close(cr, true);
+                for (Session session : sessionList) {
+                    ((SessionExt) session).getSessionImpl().markHttpSessionInvalid();
+                    if (session.isSecure() && (session.getUserPrincipal() != null)) {
+                        CloseReason cr = new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Secure HTTP Session Closed");
+                        ((SessionExt) session).getSessionImpl().close(cr, true);
+                    }
+                }
+
+                // endpointSessionMap cleanup
+                Set<Entry<Class<?>, ArrayList<Session>>> s = endpointSessionMap.entrySet();
+                Iterator<Entry<Class<?>, ArrayList<Session>>> i = s.iterator();
+                Class<?> endPointKey = null;
+
+                // find the key that contains our expired session
+                while (i.hasNext()) {
+                    Entry<Class<?>, ArrayList<Session>> e = i.next();
+                    for (Session session : sessionList) {
+                        if (e.getValue().contains(session)) {
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, "endPointKey key found: " + endPointKey + " in endpointmanager of: " + this);
+                            }
+                            endPointKey = e.getKey();
+                            break;
+                        }
+                    }
+                }
+
+                if (endPointKey != null) {
+                    ArrayList<Session> http_sa = endpointSessionMap.get(endPointKey);
+                    for (Session session : sessionList) {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "removing session from http_sa: " + session);
+                        }
+                        http_sa.remove(session);
+                    }
+                    endpointSessionMap.put(endPointKey, http_sa);
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "removed expired session of: " + httpSessionID + "  from endpoint class of: " + endPointKey.getName() + " with list " + http_sa
+                                    + " in endpointmanager of: " + this);
+                        Tr.debug(tc, "[expire] httpSessionMap count: " + httpSessionMap.size() + " in endpointmanager of: " + this);
+                        Tr.debug(tc, "[expire] active websocket session count: " + http_sa.size() + " in endpointmanager of: " + this);
+                    }
                 }
             }
         }
@@ -325,4 +379,14 @@ public class EndpointManager {
             return 0;
         }
     };
+
+    public void httpSessionIdChanged(String newSessionId, String oldSessionId) {
+        ArrayList<Session> sessionList = httpSessionMap.remove(oldSessionId);
+        if(sessionList != null){
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "changing key of httpSessionMap from " + oldSessionId + " to " + newSessionId + " within " + this);
+            }
+            httpSessionMap.put(newSessionId, sessionList);
+        }
+    }
 }
