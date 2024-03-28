@@ -4,6 +4,6 @@ visibility=private
 singleton=true
 -features=com.ibm.websphere.appserver.eeCompatible-11.0, \
   com.ibm.websphere.appserver.servlet-6.1
-kind=noship
-edition=full
+kind=beta
+edition=base
 WLP-Activation-Type: parallel

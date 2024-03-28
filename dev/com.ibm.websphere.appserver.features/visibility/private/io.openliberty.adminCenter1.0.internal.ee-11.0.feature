@@ -9,5 +9,5 @@ singleton=true
   io.openliberty.pages-4.0
 -bundles=\
   com.ibm.ws.ui.servlet.filter.jakarta
-kind=noship
-edition=full
+kind=beta
+edition=core
