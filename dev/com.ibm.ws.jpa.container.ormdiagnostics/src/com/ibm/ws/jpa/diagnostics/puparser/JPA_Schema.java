@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,7 +18,8 @@ public enum JPA_Schema {
     JPA_20(Constants.SUN_NAMESPACE, Constants.SCHEMA_LOCATION_20, "2.0", Constants.JPA_20_JAXB_PACKAGE),
     JPA_21(Constants.JCP_NAMESPACE, Constants.SCHEMA_LOCATION_21, "2.1", Constants.JPA_21_JAXB_PACKAGE),
     JPA_22(Constants.JCP_NAMESPACE, Constants.SCHEMA_LOCATION_22, "2.2", Constants.JPA_22_JAXB_PACKAGE),
-    JPA_30(Constants.JAKARTA_NAMESPACE, Constants.SCHEMA_LOCATION_30, "3.0", Constants.JPA_30_JAXB_PACKAGE);
+    JPA_30(Constants.JAKARTA_NAMESPACE, Constants.SCHEMA_LOCATION_30, "3.0", Constants.JPA_30_JAXB_PACKAGE),
+    JPA_32(Constants.JAKARTA_NAMESPACE, Constants.SCHEMA_LOCATION_32, "3.2", Constants.JPA_32_JAXB_PACKAGE);
 
     private String namespace;
     private String schema;
