@@ -62,4 +62,5 @@ instrument.ffdc: false
   com.ibm.websphere.org.osgi.core, \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
   com.ibm.ws.logging.core, \
-  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3
+  com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest
