@@ -2,7 +2,7 @@
 #COMPONENTPREFIX CWMMH
 #COMPONENTNAMEFOR CWMMH MicroProfile Health API 
 #NLS_ENCODING=UNICODE
-#NLS_MESSAGEFORMAT_NONE
+#NLS_MESSAGEFORMAT_VAR
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
@@ -45,6 +45,7 @@ healthcheck.bean.call.exception.CWMMH0050E.useraction=\u00dcberpr\u00fcfen Sie I
 healthcheck.application.down.CWMMH0052W=CWMMH0052W: Die Klasse {0}, die die HealthCheckResponse in der Anwendung {1} im Modul {2} implementiert, hat einen Status {3} mit den folgenden Daten berichtet: {4}.
 healthcheck.application.down.CWMMH0052W.explanation=Der Status DOWN kann dazu f\u00fchren, dass ein \u00dcberwachungsservice auf diesem Server ausgef\u00fchrt wird.
 healthcheck.application.down.CWMMH0052W.useraction=Es ist keine Benutzeraktion erforderlich. Diese Warnung ist eine Aufzeichnung des Status DOWN.
+
 # The Readiness HealthCheck had a DOWN outcome, when applications are not started yet
 readiness.healthcheck.applications.not.started.down.CWMMH0053W=CWMMH0053W: Die Statuspr\u00fcfung f\u00fcr die Bereitschaft hat einen Gesamtstatus von DOWN ergeben, weil die folgenden Anwendungen noch nicht gestartet sind: {0}
 readiness.healthcheck.applications.not.started.down.CWMMH0053W.explanation=Die Statuspr\u00fcfung f\u00fcr die Bereitschaft hat den Gesamtstatus DOWN gemeldet, weil die angegebenen Anwendungen noch nicht gestartet und daher f\u00fcr die Verarbeitung von Anforderungen nicht bereit sind.
