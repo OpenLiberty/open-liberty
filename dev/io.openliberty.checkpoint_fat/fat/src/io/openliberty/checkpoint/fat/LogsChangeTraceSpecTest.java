@@ -13,6 +13,7 @@
 package io.openliberty.checkpoint.fat;
 
 import static io.openliberty.checkpoint.fat.FATSuite.getTestMethodNameOnly;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
@@ -24,6 +25,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
@@ -39,6 +41,7 @@ public class LogsChangeTraceSpecTest {
     @Rule
     public TestName testName = new TestName();
     public static final String APP_NAME = "app2";
+    private static final String RESTORE_LOG_DIR = "restore_log_dir";
 
     @Server("checkpointfat.log.change.tracespec")
     public static LibertyServer server;
@@ -47,26 +50,51 @@ public class LogsChangeTraceSpecTest {
     public static void setUpClass() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, "app2");
         FATSuite.copyAppsAppToDropins(server, APP_NAME);
+
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
+        server.startServer();
     }
 
     @Before
-    public void startServer() throws Exception {
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
-        server.startServer(getTestMethodNameOnly(testName) + ".log");
+    public void setArchiveMarker() throws Exception {
+        server.setArchiveMarker(getTestMethodNameOnly(testName) + ".marker");
     }
 
     @After
     public void tearDown() throws Exception {
         server.stopServer();
-        server.deleteAllDropinConfigurations();
+        // There should be trace and messages after stopping
+        try {
+            checkForRestoreLogDir();
+        } finally {
+            server.deleteAllDropinConfigurations();
+            server.deleteDirectoryFromLibertyServerRoot("logs");
+            server.deleteDirectoryFromLibertyServerRoot(RESTORE_LOG_DIR);
+            server.setLogsRoot(server.getServerRoot() + File.separator + "logs" + File.separator);
+        }
     }
 
     @Test
-    public void testSetTraceSpec() throws Exception {
+    public void testSetTraceSpecBeforeRestore() throws Exception {
         server.addDropinOverrideConfiguration("dropinConfigChange/enableCheckpointTrace.xml");
         // Must set the logs root to the configured one; otherwise the check for successful restore will fail
-        server.setLogsRoot(server.getServerRoot() + File.separator + "restore_log_dir" + File.separator);
+        server.setLogsRoot(server.getServerRoot() + File.separator + RESTORE_LOG_DIR + File.separator);
         server.checkpointRestore();
     }
 
+    @Test
+    public void testSetTraceSpecAfterRestore() throws Exception {
+        server.checkpointRestore();
+        server.addDropinOverrideConfiguration("dropinConfigChange/enableCheckpointTrace.xml");
+        server.setLogsRoot(server.getServerRoot() + File.separator + RESTORE_LOG_DIR + File.separator);
+        // wait a bit to make sure file monitor runs
+        Thread.sleep(1000);
+    }
+
+    private void checkForRestoreLogDir() throws Exception {
+        RemoteFile messagesFile = server.getFileFromLibertyServerRoot(RESTORE_LOG_DIR + File.separator + "messages.log");
+        assertTrue("messages.log does not exist: " + messagesFile.getAbsolutePath(), messagesFile.isFile());
+        RemoteFile traceFile = server.getFileFromLibertyServerRoot(RESTORE_LOG_DIR + File.separator + "trace.log");
+        assertTrue("trace.log does not exist: " + traceFile.getAbsolutePath(), traceFile.isFile());
+    }
 }
