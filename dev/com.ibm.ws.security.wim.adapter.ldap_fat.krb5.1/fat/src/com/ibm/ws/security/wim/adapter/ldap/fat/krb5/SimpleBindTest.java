@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,9 @@ import static componenttest.topology.utils.LDAPFatUtils.updateConfigDynamically;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.nio.file.Paths;
 
 import org.apache.directory.server.core.api.DirectoryService;
 import org.junit.BeforeClass;
@@ -115,6 +118,20 @@ public class SimpleBindTest extends CommonBindTest {
     @AllowedFFDC("javax.naming.NoPermissionException")
     @Test
     public void loginChecksNoneBindAuth() throws Exception {
+        if (!ApacheDSandKDC.IS_BEING_USED) {
+            Log.info(c, testName.getMethodName(), "Run login checks with bindAuthMech of none, with anonymous access.");
+            ServerConfiguration newServer = emptyConfiguration.clone();
+            LdapRegistry ldap = getLdapRegistryWithSimpleBind();
+            ldap.setBindDN(null);
+            ldap.setBindPassword(null);
+            ldap.setBindAuthMechanism(ConfigConstants.CONFIG_AUTHENTICATION_TYPE_NONE);
+            newServer.getLdapRegistries().add(ldap);
+            updateConfigDynamically(server, newServer);
+
+            Log.info(c, testName.getMethodName(), "Login should be successful with bindAuth=none, allowed by DirectoryService.");
+            baselineLoginAndGetTests();
+            return;
+        } // otherwise, if ApacheDSandKDC is being used
         Log.info(c, testName.getMethodName(), "Run login checks with bindAuthMech of none, with and without allowing anon access.");
 
         DirectoryService ds = ApacheDSandKDC.getDirectoryService();
@@ -150,6 +167,20 @@ public class SimpleBindTest extends CommonBindTest {
     @AllowedFFDC("javax.naming.NoPermissionException")
     @Test
     public void loginChecksNone_withoutBindAuth() throws Exception {
+        if (!ApacheDSandKDC.IS_BEING_USED) {
+            Log.info(c, testName.getMethodName(), "Run login checks without bindAuthMech set, with anonymous access.");
+            ServerConfiguration newServer = emptyConfiguration.clone();
+            LdapRegistry ldap = getLdapRegistryWithSimpleBind();
+            ldap.setBindDN(null);
+            ldap.setBindPassword(null);
+            ldap.setBindAuthMechanism(null);
+            newServer.getLdapRegistries().add(ldap);
+            updateConfigDynamically(server, newServer);
+
+            Log.info(c, testName.getMethodName(), "Login should be successful with bindAuth=none, allowed by DirectoryService.");
+            baselineLoginAndGetTests();
+            return;
+        } // otherwise, if ApacheDSandKDC is being used
         Log.info(c, testName.getMethodName(), "Run login checks with none implied, with allowing anon access.");
 
         DirectoryService ds = ApacheDSandKDC.getDirectoryService();
@@ -222,7 +253,10 @@ public class SimpleBindTest extends CommonBindTest {
         assertFalse("LdapRegistry should modify: " + ldapModify, server.findStringsInLogsAndTraceUsingMark(ldapModify).isEmpty());
 
         Log.info(c, testName.getMethodName(), "Swap to a different valid config file, LdapRegistry should process a modify.");
-        String altConfigFile = ApacheDSandKDC.createConfigFile("altConfig-", KDC_PORT, true, false);
+        File krb5ConfigFile = File.createTempFile("altConfig-krb5", ".conf");
+        FATSuite.ldapkrb5.generateConf(Paths.get(krb5ConfigFile.getAbsolutePath()), true);
+
+        String altConfigFile = krb5ConfigFile.getAbsolutePath();//ApacheDSandKDC.createConfigFile("altConfig-", KDC_PORT, true, false);
         kerb.configFile = altConfigFile;
         updateConfigDynamically(server, newServer);
         loginUser();

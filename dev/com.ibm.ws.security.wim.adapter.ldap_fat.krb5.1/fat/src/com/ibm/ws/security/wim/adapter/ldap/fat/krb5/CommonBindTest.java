@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,9 +22,19 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.directory.kerberos.client.KdcConfig;
+import org.apache.directory.kerberos.client.KdcConnection;
+import org.apache.directory.kerberos.client.Kinit;
+import org.apache.directory.kerberos.credentials.cache.CredentialsCache;
+import org.apache.directory.shared.kerberos.codec.types.EncryptionType;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -46,6 +56,7 @@ import com.unboundid.ldap.sdk.LDAPConnection;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.utils.FileUtils;
 import componenttest.vulnerability.LeakedPasswordChecker;
 
 /**
@@ -60,6 +71,8 @@ public class CommonBindTest {
     @Rule
     public TestName testName = new TestName();
 
+    protected static boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
+
     protected static UserRegistryServletConnection servlet;
     private final LeakedPasswordChecker passwordChecker = new LeakedPasswordChecker(server);
 
@@ -71,9 +84,15 @@ public class CommonBindTest {
 
     public static final String DOMAIN = LdapKerberosUtils.DOMAIN;
 
+    public static String bindPassword = LdapKerberosUtils.BIND_PASSWORD;
+
+    public static String bindUserName = LdapKerberosUtils.BIND_USER;
+
     public static String bindPrincipalName = LdapKerberosUtils.BIND_PRINCIPAL_NAME;
 
     public static String ldapServerHostName = LdapKerberosUtils.HOSTNAME;
+
+    private static KdcConnection conn;
 
     protected static String ticketCacheFile = null;
 
@@ -98,22 +117,47 @@ public class CommonBindTest {
     protected static final String UNBOUNDID_USER_DN = "uid=" + UNBOUNDID_USER + "," + UNBOUNDID_BASE_DN;
     protected static final String UNBOUNDID_PWD = "usrpwd";
 
-    static int LDAP_PORT = ApacheDSandKDC.getLdapPort();
-    static int KDC_PORT = ApacheDSandKDC.getKdcPort();
+    static int LDAP_PORT = 389;//ApacheDSandKDC.getLdapPort();
+    static int KDC_PORT = 88;//ApacheDSandKDC.getKdcPort();
 
     protected static String[] stopStrings = null;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ticketCacheFile = ApacheDSandKDC.getDefaultTicketCacheFile();
-        assertNotNull("TicketCacheFile is null", ticketCacheFile);
-        Log.info(c, "setUp", "TicketCache file: " + ticketCacheFile);
+        ldapServerHostName = FATSuite.ldapkrb5.getHost();
+        Log.info(c, "setUp", "setting ldap hostname to: " + ldapServerHostName);
 
-        configFile = ApacheDSandKDC.getDefaultConfigFile();
+        if (conn == null) {
+            KdcConfig config = KdcConfig.getDefaultConfig();
+            config.setUseUdp(false);
+            config.setKdcPort(88);
+            config.setHostName(FATSuite.ldapkrb5.getHost());
+            Log.info(c, "setUp", "Setting KdcConfig hostname to: " + FATSuite.ldapkrb5.getHost());
+            Set<EncryptionType> encryptionTypes = new HashSet<EncryptionType>();
+            encryptionTypes.add(EncryptionType.AES128_CTS_HMAC_SHA1_96);
+            encryptionTypes.add(EncryptionType.AES256_CTS_HMAC_SHA1_96);
+            config.setEncryptionTypes(encryptionTypes);
+            config.setTimeout(Integer.MAX_VALUE);
+            conn = new KdcConnection(config);
+        }
+
+        //createTicketCacheFile(); //ApacheDSandKDC.getDefaultTicketCacheFile();
+        /// get ticket cache file from container for user17
+        Path krb5KeytabPath = Paths.get(server.getServerRoot(), "user17.cc");
+        ticketCacheFile = krb5KeytabPath.toAbsolutePath().toString();
+        assertNotNull("TicketCacheFile is null", ticketCacheFile);
+        FATSuite.ldapkrb5.copyFileFromContainer("/etc/user17.cc", ticketCacheFile);
+        /// END getting ticket cache file from container
+        Log.info(c, "setUp", "TicketCache file: " + ticketCacheFile);
+        Log.info(c, "setUp", "TicketCache file contents: " + FileUtils.readFile(ticketCacheFile));
+
+        File krb5ConfigFile = File.createTempFile("krb5", ".conf");
+        FATSuite.ldapkrb5.generateConf(Paths.get(krb5ConfigFile.getAbsolutePath()), false);
+        configFile = krb5ConfigFile.getAbsolutePath();
         assertNotNull("ConfigFile is null", configFile);
         Log.info(c, "setUp", "Config file: " + configFile);
 
-        keytabFile = ApacheDSandKDC.getDefaultKeytabFile();
+        keytabFile = ApacheDSandKDC.createKeyTabFile(bindUserName, bindPrincipalName, bindPassword);//ApacheDSandKDC.getDefaultKeytabFile();
         assertNotNull("Keytab is null", keytabFile);
         Log.info(c, "setUp", "Keytab file: " + keytabFile);
 
@@ -163,6 +207,38 @@ public class CommonBindTest {
         server.setJvmOptions(Arrays.asList("-Dsun.security.krb5.debug=true", "-Dcom.ibm.security.krb5.krb5Debug=true"));
         ServerConfiguration newServer = emptyConfiguration.clone();
         updateConfigDynamically(server, newServer);
+    }
+
+    public static void createTicketCacheFile() throws Exception {
+        final String methodName = "createTicketCacheFile";
+
+        Log.info(c, methodName, "Creating ticket cache for " + bindPrincipalName);
+        File ccFile = File.createTempFile(FATSuite.ldapkrb5.bindUserName + "Cache-", ".cc");
+        if (FAT_TEST_LOCALRUN) {
+            ccFile.deleteOnExit();
+        }
+        Kinit kinit = new Kinit(conn);
+        kinit.setCredCacheFile(ccFile);
+
+        //kinit.kinit("user1@EXAMPLE.COM", "admin");
+        Log.info(c, methodName, "calling kinit(" + bindPrincipalName + ", " + FATSuite.ldapkrb5.bindPassword + ")");
+        waitloop: for (int i = 1; i <= 5; i++) {
+            try {
+                kinit.kinit(bindPrincipalName, FATSuite.ldapkrb5.bindPassword);
+                break waitloop;
+            } catch (Exception e) {
+                Log.info(c, methodName, "kinit attempt:" + i + " failed with: " + e);
+                Log.info(c, methodName, "waiting 2 seconds..."); //KDC on the container may still be starting
+                Thread.sleep(2000);
+            }
+        }
+        CredentialsCache credCache = CredentialsCache.load(ccFile);
+        assertNotNull("TicketCache is null", credCache);
+
+        ticketCacheFile = ccFile.getAbsolutePath();
+
+        Log.info(c, methodName, "Created ticket cache: " + ticketCacheFile);
+        Log.info(c, methodName, "Ticket cache contents: " + FileUtils.readFile(ticketCacheFile));
     }
 
     /**
