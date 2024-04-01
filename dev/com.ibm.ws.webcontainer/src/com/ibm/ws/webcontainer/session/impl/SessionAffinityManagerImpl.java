@@ -22,6 +22,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 
 import com.ibm.websphere.security.WSSecurityHelper;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.session.SameSiteCookie;
 import com.ibm.ws.session.SessionAffinityManager;
@@ -508,8 +509,10 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
                         String sameSiteCookieValue = sessionSameSiteCookie.getSameSiteCookieValue();
                         requestState.setCookieAttributes(cookie.getName(), "SameSite=" + sameSiteCookieValue);
 
-                        if(sessionSameSiteCookie.equals(SameSiteCookie.NONE) && _smc.getSessionCookiePartitioned()) {
-                            requestState.setCookieAttributes(cookie.getName(), "Partitioned=true");
+                        if (ProductInfo.getBetaEdition()) {
+                            if(sessionSameSiteCookie.equals(SameSiteCookie.NONE) && _smc.getSessionCookiePartitioned()) {
+                                requestState.setCookieAttributes(cookie.getName(), "Partitioned=true");
+                            }
                         }
                     }
                     ((IExtendedResponse) response).addSessionCookie(cookie);

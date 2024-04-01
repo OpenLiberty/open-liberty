@@ -123,8 +123,8 @@
         </AD>
 
         <AD id="cookiePartitioned" 
-            name="%cookie.partitioned" 
-            description="%cookie.partitioned.desc" 
+            name="internal" 
+            description="internal use only"
             ibmui:group="cookies"
             required="false" type="Boolean" default="false" /> 
 

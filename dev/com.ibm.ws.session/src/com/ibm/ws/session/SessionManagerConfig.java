@@ -18,6 +18,7 @@ import javax.servlet.SessionCookieConfig;
 import javax.servlet.SessionTrackingMode;
 
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.session.utils.LoggingUtil;
 
 public class SessionManagerConfig implements Cloneable {
@@ -1122,7 +1123,9 @@ public class SessionManagerConfig implements Cloneable {
             msg.append("sessionCookiePath=").append(this.getSessionCookiePath()).append("\n");
             msg.append("sessionCookieSecure=").append(this.getSessionCookieSecure()).append("\n");
             msg.append("sessionCookieSameSite=").append(this.getSessionCookieSameSite().getSameSiteCookieValue()).append("\n");
-            msg.append("sessionCookiePartitioned=").append(sessionCookiePartitioned).append("\n");
+            if (ProductInfo.getBetaEdition()) {
+                msg.append("sessionCookiePartitioned=").append(sessionCookiePartitioned).append("\n");
+            }
             msg.append("sessionCookieHttpOnly=").append(this.getSessionCookieHttpOnly()).append("\n");
             msg.append("inMemorySize=").append(inMemorySize).append("\n");
             msg.append("enableOverflow=").append(enableOverflow).append("\n");
