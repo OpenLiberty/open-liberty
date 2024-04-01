@@ -228,15 +228,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     queries.put(queryInfo.method, CompletableFuture.failedFuture(x));
             }
 
-            // TODO this will cause all @Query methods to fail if any entity fails, even if the query does not use the entity.
-            // Can the above be avoided so that the method only fails if the entity it requires fails?
             CompletableFuture<?>[] futures = entityInfoFutures.toArray(new CompletableFuture<?>[entityInfoFutures.size()]);
-            CompletableFuture<Map<String, EntityInfo>> allEntityInfo = CompletableFuture.allOf(futures) //
-                            .thenApply(nullValue -> {
-                                Map<String, EntityInfo> entityInfos = new HashMap<>();
+            CompletableFuture<Map<String, CompletableFuture<EntityInfo>>> allEntityInfo = CompletableFuture.allOf(futures) //
+                            .handle((ignore, x) -> {
+                                Map<String, CompletableFuture<EntityInfo>> entityInfos = new HashMap<>();
                                 for (CompletableFuture<EntityInfo> future : entityInfoFutures) {
-                                    EntityInfo entityInfo = future.join();
-                                    entityInfos.put(entityInfo.name, entityInfo);
+                                    if (future.isCompletedExceptionally())
+                                        entityInfos.putIfAbsent(EntityInfo.FAILED, future);
+                                    else if (future.isDone())
+                                        entityInfos.put(future.join().name, future);
+                                    else
+                                        entityInfos.putIfAbsent(EntityInfo.FAILED, CompletableFuture.failedFuture(x));
                                 }
                                 return entityInfos;
                             });
@@ -306,7 +308,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     @Trivial
     private QueryInfo completeQueryInfo(EntityInfo entityInfo, QueryInfo queryInfo) {
-        return completeQueryInfo(Collections.singletonMap(entityInfo.name, entityInfo),
+        return completeQueryInfo(Collections.singletonMap(entityInfo.name, CompletableFuture.completedFuture(entityInfo)),
                                  queryInfo);
     }
 
@@ -319,14 +321,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     @FFDCIgnore(Throwable.class) // TODO look into these failures and decide if FFDC should be enabled
     @Trivial
-    private QueryInfo completeQueryInfo(Map<String, EntityInfo> entityInfos, QueryInfo queryInfo) {
+    private QueryInfo completeQueryInfo(Map<String, CompletableFuture<EntityInfo>> entityInfos, QueryInfo queryInfo) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "completeQueryInfo", entityInfos, queryInfo);
 
         try {
             queryInfo.entityInfo = entityInfos.size() == 1 //
-                            ? entityInfos.values().iterator().next() //
+                            ? entityInfos.values().iterator().next().join() //
                             : null; // defer to processing of Query value
 
             if (validator != null) {
