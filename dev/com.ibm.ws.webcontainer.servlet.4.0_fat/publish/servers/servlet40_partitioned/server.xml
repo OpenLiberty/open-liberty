@@ -8,7 +8,7 @@
     SPDX-License-Identifier: EPL-2.0
  -->
 <server description="Partitioned Cookies Test">
-
+    <!-- No SameSite Configurations in this server.xml becuase they are all setup individually in each test -->
   <include location="../fatTestPorts.xml"/>
 
     <featureManager>
@@ -19,7 +19,6 @@
                   host="*"
                   httpPort="${bvt.prop.HTTP_default}"
                   httpsPort="${bvt.prop.HTTP_default.secure}">
-        <samesite none="*" partitioned="true"/>
     </httpEndpoint>
 
 </server>
