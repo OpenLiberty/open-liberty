@@ -981,13 +981,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             // a different answer than what was used to find the virtual host (based on plugin headers,
             // and whether or not the Host header, etc. should be used)
             // Does it matter?
-            Executor classifyExecutor;// = workClassifier.classify(this.request, this);
-            if (this.usingNetty) {
-                classifyExecutor = workClassifier.classify(this.nettyRequest, null);
-            } else {
-                classifyExecutor = workClassifier.classify(request, null);
-            }
-
+            Executor classifyExecutor = workClassifier.classify(this.request, this);
             if (classifyExecutor != null) {
                 taskWrapper.setClassifiedExecutor(classifyExecutor);
                 classifyExecutor.execute(taskWrapper);
