@@ -19,7 +19,7 @@ import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 public class CookiePartitioned extends CookieData {
 
     /** Trace component for debugging */
-    private static final TraceComponent tc = Tr.register(CookieSecureData.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+    private static final TraceComponent tc = Tr.register(CookiePartitioned.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     /**
      * Constructor for a Cookie's Partitioned flag.

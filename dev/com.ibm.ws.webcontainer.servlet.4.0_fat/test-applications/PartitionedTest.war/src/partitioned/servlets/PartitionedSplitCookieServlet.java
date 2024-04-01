@@ -38,11 +38,6 @@ public class PartitionedSplitCookieServlet extends HttpServlet {
 
             resp.setHeader("Set-Cookie", "PartitionedCookieName_SetHeader=PartitionedCookieValue_SetHeader; Partitioned");
 
-            /*
-             * Lax and Partitioned is not a proper configuration, but this test makes sure it still work (not prevented);
-             * Warning could be logged, but that would be verbose if this method is called often.
-             * Developers responsibility to assure proper attributes are set 
-             */
             resp.addHeader("Set-Cookie", "PartitionedCookieName_AddHeader=PartitionedCookieValue_AddHeader; Partitioned");
             
             Cookie cookie = new Cookie("PartitionedCookieName_AddCookie","PartitionedCookieValue_AddCookie");

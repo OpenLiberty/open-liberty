@@ -44,7 +44,7 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class WCPartitionedAttributeTests {
 
-    private static final Logger LOG = Logger.getLogger(WCSameSiteCookieAttributeTests.class.getName());
+    private static final Logger LOG = Logger.getLogger(WCPartitionedAttributeTests.class.getName());
     private static final String APP_NAME = "PartitionedTest";
 
     @Server("servlet40_partitioned")
@@ -56,7 +56,7 @@ public class WCPartitionedAttributeTests {
         ShrinkHelper.defaultDropinApp(server, APP_NAME + ".war", "partitioned.servlets");
 
         // Start the server and use the class name so we can find logs easily.
-        server.startServer(WCSameSiteCookieAttributeTests.class.getSimpleName() + ".log");
+        server.startServer(WCPartitionedAttributeTests.class.getSimpleName() + ".log");
     }
 
     @AfterClass

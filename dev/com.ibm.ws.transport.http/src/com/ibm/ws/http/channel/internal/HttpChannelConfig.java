@@ -3013,7 +3013,7 @@ public class HttpChannelConfig {
     }
 
     /*
-     * Returns a boolean which indicates whether Partitioned should be added the the SameSite=None cookies. 
+     * Returns a boolean which indicates whether Partitioned should be added the SameSite=None cookies. 
      */
     public boolean getPartitioned() {
         return this.isPartitioned;
