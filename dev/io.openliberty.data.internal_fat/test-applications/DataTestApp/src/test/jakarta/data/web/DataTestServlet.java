@@ -1817,6 +1817,45 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Repository methods where the FROM clause identifies the entity.
+     */
+    @Test
+    public void testFromClauseIdentifiesEntity() {
+        products.clear();
+
+        Product prod1 = new Product();
+        prod1.pk = UUID.nameUUIDFromBytes("TestFromClauseIdentifiesEntity-1".getBytes());
+        prod1.name = "TestFromClauseIdentifiesEntity-Product-1";
+        prod1.price = 8.99f;
+        prod1 = multi.create(prod1);
+
+        Product prod2 = new Product();
+        prod2.pk = UUID.nameUUIDFromBytes("TestFromClauseIdentifiesEntity-2".getBytes());
+        prod2.name = "TestFromClauseIdentifiesEntity-Product-2";
+        prod2.price = 12.99f;
+        prod2 = multi.create(prod2);
+
+        Product prod3 = new Product();
+        prod3.pk = UUID.nameUUIDFromBytes("TestFromClauseIdentifiesEntity-3".getBytes());
+        prod3.name = "TestFromClauseIdentifiesEntity-Product-3";
+        prod3.price = 16.99f;
+        prod3 = multi.create(prod3);
+
+        assertEquals(3L, multi.countEverything());
+
+        assertEquals(1L, multi.discount("TestFromClauseIdentifiesEntity-Product-3", 0.30f));
+        assertEquals(3L, multi.discount("TestFromClauseIdentifiesEntity-Product-_", 0.20f));
+
+        assertEquals(8.79f, products.findByPK(prod1.pk).orElseThrow().price, 0.001f);
+        assertEquals(12.79f, products.findByPK(prod2.pk).orElseThrow().price, 0.001f);
+        assertEquals(16.49f, products.findByPK(prod3.pk).orElseThrow().price, 0.001f);
+
+        assertEquals(3L, multi.destroy("TestFromClauseIdentifiesEntity-%"));
+
+        assertEquals(0L, multi.countEverything());
+    }
+
+    /**
      * Verify that ORDER BY can be generated, taking into account the entity variable name of a custom query.
      * The custom query in this case has no WHERE clause.
      * Other tests cover similar scenarios in which a WHERE clause is present.

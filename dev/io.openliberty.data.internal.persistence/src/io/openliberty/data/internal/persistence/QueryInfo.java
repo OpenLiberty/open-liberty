@@ -147,7 +147,7 @@ public class QueryInfo {
     /**
      * Repository method to which this query information pertains.
      */
-    final Method method;
+    public final Method method;
 
     /**
      * Number of parameters to the JPQL query.
@@ -537,10 +537,11 @@ public class QueryInfo {
     /**
      * Initializes query information based on the Query annotation.
      *
-     * @param ql        Query.value() might be JPQL or JDQL
-     * @param multiType the type of data structure that returns multiple results for this query. Otherwise null.
+     * @param ql          Query.value() might be JPQL or JDQL
+     * @param multiType   the type of data structure that returns multiple results for this query. Otherwise null.
+     * @param entityInfos map of entity name to entity information.
      */
-    void initForQuery(String ql, Class<?> multiType) {
+    void initForQuery(String ql, Class<?> multiType, Map<String, EntityInfo> entityInfos) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         boolean isCursoredPage = CursoredPage.class.equals(multiType);
@@ -570,6 +571,12 @@ public class QueryInfo {
                     for (char ch; startAt < length && Character.isJavaIdentifierPart(ch = ql.charAt(startAt)); startAt++)
                         entityName.append(ch);
                     if (entityName.length() > 0) {
+                        EntityInfo info = entityInfos.get(entityName.toString());
+                        entityInfo = info == null ? entityInfo : info;
+                        if (entityInfo == null)
+                            throw new MappingException("@Repository " + method.getDeclaringClass().getName() + " does not specify an entity class." + // TODO NLS
+                                                       " To correct this, have the repository interface extend DataRepository" +
+                                                       " or another built-in repository interface and supply the entity class as the first parameter.");
                         // skip whitespace
                         for (; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
                         if (startAt >= length) {
@@ -604,6 +611,14 @@ public class QueryInfo {
                 StringBuilder entityName = new StringBuilder();
                 for (char ch; startAt < length && Character.isJavaIdentifierPart(ch = ql.charAt(startAt)); startAt++)
                     entityName.append(ch);
+                if (entityName.length() > 0) {
+                    EntityInfo info = entityInfos.get(entityName.toString());
+                    entityInfo = info == null ? entityInfo : info;
+                }
+                if (entityInfo == null)
+                    throw new MappingException("@Repository " + method.getDeclaringClass().getName() + " does not specify an entity class." + // TODO NLS
+                                               " To correct this, have the repository interface extend DataRepository" +
+                                               " or another built-in repository interface and supply the entity class as the first parameter.");
                 if (startAt + 1 < length && entityName.length() > 0 && Character.isWhitespace(ql.charAt(startAt))) {
                     for (startAt++; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
                     if (startAt + 4 < length
@@ -721,7 +736,6 @@ public class QueryInfo {
             entityVar = "this";
             entityVar_ = "";
             hasWhere = whereLen > 0;
-            String entityName = entityInfo.name;
 
             // Locate the entity identifier variable (if present). Examples of FROM clause:
             // FROM EntityName
@@ -731,8 +745,11 @@ public class QueryInfo {
             if (startAt < from0 + fromLen) {
                 int entityName0 = startAt, entityNameLen = 0; // starts at EntityName
                 for (; startAt < from0 + fromLen && Character.isJavaIdentifierPart(ql.charAt(startAt)); startAt++);
-                if ((entityNameLen = startAt - entityName0) > 0 && startAt < from0 + fromLen) {
-                    entityName = ql.substring(entityName0, entityName0 + entityNameLen);
+                if ((entityNameLen = startAt - entityName0) > 0) {
+                    String entityName = ql.substring(entityName0, entityName0 + entityNameLen);
+                    EntityInfo info = entityInfos.get(entityName.toString());
+                    entityInfo = info == null ? entityInfo : info;
+
                     for (; startAt < from0 + fromLen && Character.isWhitespace(ql.charAt(startAt)); startAt++);
                     if (startAt < from0 + fromLen) {
                         int idVar0 = startAt, idVarLen = 0; // starts at the entity identifier variable
@@ -755,6 +772,19 @@ public class QueryInfo {
                 }
             }
 
+            if (entityInfo == null) {
+                Class<?> entityType = getSingleResultType();
+                if (entityType != null) {
+                    for (EntityInfo info : entityInfos.values())
+                        if (entityType.equals(info.entityClass)) {
+                            entityInfo = info;
+                            break;
+                        }
+                }
+            }
+
+            String entityName = entityInfo == null ? null : entityInfo.name;
+
             if (trace && tc.isDebugEnabled()) {
                 Tr.debug(tc, ql, "JDQL query parts", // does not include GROUP BY, HAVING, or address subqueries or other complex JPQL
                          "  SELECT [" + (selectLen > 0 ? ql.substring(select0, select0 + selectLen) : "") + "]",
@@ -763,6 +793,11 @@ public class QueryInfo {
                          "  [" + (orderLen > 0 ? ql.substring(order0, order0 + orderLen) : "") + "]",
                          "  entity [" + entityName + "] [" + entityVar + "]");
             }
+
+            if (entityInfo == null)
+                throw new MappingException("@Repository " + method.getDeclaringClass().getName() + " does not specify an entity class." + // TODO NLS
+                                           " To correct this, have the repository interface extend DataRepository" +
+                                           " or another built-in repository interface and supply the entity class as the first parameter.");
 
             // TODO remove this once we have JPA 3.2
             boolean lacksEntityVar;

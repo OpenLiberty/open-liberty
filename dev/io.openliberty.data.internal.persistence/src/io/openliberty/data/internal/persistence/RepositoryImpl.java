@@ -36,6 +36,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -179,33 +180,70 @@ public class RepositoryImpl<R> implements InvocationHandler {
         Object validation = provider.validationService();
         this.validator = validation == null ? null : EntityValidator.newInstance(validation, repositoryInterface);
 
+        List<CompletableFuture<EntityInfo>> entityInfoFutures = new ArrayList<>();
+        List<QueryInfo> entitylessQueryInfos = null;
+
         for (Entry<Class<?>, List<QueryInfo>> entry : queriesPerEntityClass.entrySet()) {
             Class<?> entityClass = entry.getKey();
-            for (QueryInfo queryInfo : entry.getValue()) {
-                if (queryInfo.type == QueryInfo.Type.RESOURCE_ACCESS) {
-                    queryInfo.validateParams = validator != null && validator.isValidatable(queryInfo.method)[1];
-                    queries.put(queryInfo.method, CompletableFuture.completedFuture(queryInfo));
-                } else {
-                    boolean inheritance = entityClass.getAnnotation(Inheritance.class) != null; // TODO what do we need to do this with?
 
-                    Class<?> jpaEntityClass;
-                    Class<?> recordClass = null;
-                    if (entityClass.isRecord())
-                        try {
-                            recordClass = entityClass;
-                            jpaEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Entity");
-                        } catch (ClassNotFoundException x) {
-                            // TODO figure out how to best report this error to the user
-                            throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
-                        }
-                    else
-                        jpaEntityClass = entityClass;
+            if (Query.class.equals(entityClass)) {
+                entitylessQueryInfos = entry.getValue();
+            } else {
+                boolean inheritance = entityClass.getAnnotation(Inheritance.class) != null; // TODO what do we need to do this with?
 
-                    CompletableFuture<EntityInfo> entityInfoFuture = builder.entityInfoMap.computeIfAbsent(jpaEntityClass, EntityInfo::newFuture);
+                Class<?> jpaEntityClass;
+                Class<?> recordClass = null;
+                if (entityClass.isRecord())
+                    try {
+                        recordClass = entityClass;
+                        jpaEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Entity");
+                    } catch (ClassNotFoundException x) {
+                        // TODO figure out how to best report this error to the user
+                        throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
+                    }
+                else
+                    jpaEntityClass = entityClass;
 
-                    queries.put(queryInfo.method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(queryInfo),
-                                                                               this::completeQueryInfo));
+                CompletableFuture<EntityInfo> entityInfoFuture = builder.entityInfoMap.computeIfAbsent(jpaEntityClass, EntityInfo::newFuture);
+                entityInfoFutures.add(entityInfoFuture);
+
+                for (QueryInfo queryInfo : entry.getValue()) {
+                    if (queryInfo.type == QueryInfo.Type.RESOURCE_ACCESS) {
+                        queryInfo.validateParams = validator != null && validator.isValidatable(queryInfo.method)[1];
+                        queries.put(queryInfo.method, CompletableFuture.completedFuture(queryInfo));
+                    } else {
+                        queries.put(queryInfo.method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(queryInfo),
+                                                                                   this::completeQueryInfo));
+                    }
                 }
+            }
+        }
+
+        if (entitylessQueryInfos != null) {
+            if (entityInfoFutures.isEmpty()) {
+                MappingException x = new MappingException("@Repository " + repositoryInterface.getName() + " does not specify an entity class." + // TODO NLS
+                                                          " To correct this, have the repository interface extend DataRepository" +
+                                                          " or another built-in repository interface and supply the entity class as the first parameter.");
+                for (QueryInfo queryInfo : entitylessQueryInfos)
+                    queries.put(queryInfo.method, CompletableFuture.failedFuture(x));
+            }
+
+            // TODO this will cause all @Query methods to fail if any entity fails, even if the query does not use the entity.
+            // Can the above be avoided so that the method only fails if the entity it requires fails?
+            CompletableFuture<?>[] futures = entityInfoFutures.toArray(new CompletableFuture<?>[entityInfoFutures.size()]);
+            CompletableFuture<Map<String, EntityInfo>> allEntityInfo = CompletableFuture.allOf(futures) //
+                            .thenApply(nullValue -> {
+                                Map<String, EntityInfo> entityInfos = new HashMap<>();
+                                for (CompletableFuture<EntityInfo> future : entityInfoFutures) {
+                                    EntityInfo entityInfo = future.join();
+                                    entityInfos.put(entityInfo.name, entityInfo);
+                                }
+                                return entityInfos;
+                            });
+            for (QueryInfo queryInfo : entitylessQueryInfos) {
+                queries.put(queryInfo.method,
+                            allEntityInfo.thenCombine(CompletableFuture.completedFuture(queryInfo),
+                                                      this::completeQueryInfo));
             }
         }
     }
@@ -266,15 +304,30 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param queryInfo  partially populated query information
      * @return information about the query.
      */
-    @FFDCIgnore(Throwable.class) // TODO look into these failures and decide if FFDC should be enabled
     @Trivial
     private QueryInfo completeQueryInfo(EntityInfo entityInfo, QueryInfo queryInfo) {
+        return completeQueryInfo(Collections.singletonMap(entityInfo.name, entityInfo),
+                                 queryInfo);
+    }
+
+    /**
+     * Gathers the information that is needed to perform the query that the repository method represents.
+     *
+     * @param entityInfos map of entity name to entity information.
+     * @param queryInfo   partially populated query information
+     * @return information about the query.
+     */
+    @FFDCIgnore(Throwable.class) // TODO look into these failures and decide if FFDC should be enabled
+    @Trivial
+    private QueryInfo completeQueryInfo(Map<String, EntityInfo> entityInfos, QueryInfo queryInfo) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "completeQueryInfo", entityInfo, queryInfo);
+            Tr.entry(this, tc, "completeQueryInfo", entityInfos, queryInfo);
 
         try {
-            queryInfo.entityInfo = entityInfo;
+            queryInfo.entityInfo = entityInfos.size() == 1 //
+                            ? entityInfos.values().iterator().next() //
+                            : null; // defer to processing of Query value
 
             if (validator != null) {
                 boolean[] v = validator.isValidatable(queryInfo.method);
@@ -308,7 +361,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                                                  count, exists, select);
 
             if (query != null) { // @Query annotation
-                queryInfo.initForQuery(query.value(), multiType);
+                queryInfo.initForQuery(query.value(), multiType, entityInfos);
             } else if (save != null) { // @Save annotation
                 queryInfo.init(Save.class, QueryInfo.Type.SAVE);
             } else if (insert != null) { // @Insert annotation
@@ -379,6 +432,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     if (paramName != null) {
                         if (queryInfo.paramNames == null)
                             queryInfo.paramNames = new ArrayList<>();
+                        EntityInfo entityInfo = queryInfo.entityInfo;
                         if (entityInfo.idClassAttributeAccessors != null && paramType.equals(entityInfo.idType))
                             // TODO is this correct to do when @Query has a named parameter with type of the IdClass?
                             // It seems like the JPQL would not be consistent.
