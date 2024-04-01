@@ -60,12 +60,6 @@ public class SocialUtil {
             "0",
             "" };
 
-    static final String JCEPROVIDER_IBM = "IBMJCE";
-
-    static final String SECRANDOM_IBM = "IBMSecureRandom";
-
-    static final String SECRANDOM_SHA1PRNG = "SHA1PRNG";
-
     @Trivial
     public static String hash(String stringToEncrypt) {
         int hashCode = stringToEncrypt.hashCode();
@@ -117,19 +111,8 @@ public class SocialUtil {
     }
 
     @Trivial
-    @FFDCIgnore({ Exception.class })
     static Random getRandom() {
-        Random result = null;
-        try {
-            if (Security.getProvider(JCEPROVIDER_IBM) != null) {
-                result = SecureRandom.getInstance(SECRANDOM_IBM);
-            } else {
-                result = SecureRandom.getInstance(SECRANDOM_SHA1PRNG);
-            }
-        } catch (Exception e) {
-            result = new SecureRandom();
-        }
-        return result;
+        return new SecureRandom();
     }
 
     public static QName cloneQName(QName qName) {
