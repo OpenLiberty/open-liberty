@@ -422,15 +422,17 @@ public class CommonBindTest {
 
         updateConfigDynamically(server, newServer);
 
-        Log.info(c, testName.getMethodName(), "Stop all of the ApacheDS servers");
-        ApacheDSandKDC.stopAllServers();
+        if (ApacheDSandKDC.IS_BEING_USED) {
+            Log.info(c, testName.getMethodName(), "Stop all of the ApacheDS servers");
+            ApacheDSandKDC.stopAllServers();
 
-        Log.info(c, testName.getMethodName(), "With allowOp=false, both registries should fail to login");
-        assertLoginUserShouldFailUnboundID();
-        loginUserShouldFail();
+            Log.info(c, testName.getMethodName(), "With allowOp=false, both registries should fail to login");
+            assertLoginUserShouldFailUnboundID();
+            loginUserShouldFail();
 
-        Log.info(c, testName.getMethodName(), "Start all of the ApacheDS servers");
-        ApacheDSandKDC.startAllServers();
+            Log.info(c, testName.getMethodName(), "Start all of the ApacheDS servers");
+            ApacheDSandKDC.startAllServers();
+        }
 
         Log.info(c, testName.getMethodName(), "After apacheDS restart, all logins should succeed.");
         assertLoginUserUnboundID();
@@ -455,14 +457,16 @@ public class CommonBindTest {
         federatedRepository.getPrimaryRealm().setAllowOpIfRepoDown(true);
         updateConfigDynamically(server, newServer);
 
-        // Stop ApacheDS, with default behavior, we should not fail on the other registry
-        ApacheDSandKDC.stopAllServers();
+        if (ApacheDSandKDC.IS_BEING_USED) {
+            // Stop ApacheDS, with default behavior, we should not fail on the other registry
+            ApacheDSandKDC.stopAllServers();
 
-        assertLoginUserUnboundID();
-        loginUserShouldFail();
+            assertLoginUserUnboundID();
+            loginUserShouldFail();
 
-        // Start Apache DS, should succeed
-        ApacheDSandKDC.startAllServers();
+            // Start Apache DS, should succeed
+            ApacheDSandKDC.startAllServers();
+        }
 
         assertLoginUserUnboundID();
         loginUser();

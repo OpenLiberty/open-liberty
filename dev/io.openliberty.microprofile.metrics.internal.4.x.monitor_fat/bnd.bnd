@@ -45,6 +45,7 @@ tested.features:\
 	org.jmock:jmock-junit4;strategy=exact;version='2.5.1',\
 	org.jmock:jmock;strategy=exact;version='2.5.1',\
 	com.ibm.ws.org.apache.commons.compress;version=latest,\
+	com.ibm.ws.org.apache.commons.io;version=latest, \
 	com.ibm.websphere.rest.handler;version=latest,\
 	io.openliberty.jakarta.servlet.5.0;version=latest,\
 	io.openliberty.jakarta.cdi.3.0;version=latest,\

@@ -79,7 +79,8 @@ public class ApacheDSandKDC {
 
     protected static boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
 
-    protected static boolean IS_BEING_USED = false;
+    protected static boolean IS_BEING_USED = false; //Set to false when using testContainers.
+    // The FATSuite can be reconfigured to run using the ApacheDSAndKDC and change this boolean back to true.
 
     public static String BASE_DN = LdapKerberosUtils.BASE_DN; // default, override in extending class
 

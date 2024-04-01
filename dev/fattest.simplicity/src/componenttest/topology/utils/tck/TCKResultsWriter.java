@@ -17,6 +17,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -91,7 +93,12 @@ public class TCKResultsWriter {
 
         Path outputPath = Paths.get("results", filename);
         File outputFile = outputPath.toFile();
-        String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osName, osVersion, tckURL, tckSHA1, tckSHA256);
+
+        String timestamp = Instant.now()
+                        .truncatedTo(ChronoUnit.SECONDS)
+                        .toString();
+        String adocContent = getADocHeader(filename, fullSpecName, specURL, openLibertyVersion, javaMajorVersion, javaVersion, osName, osVersion, timestamp, tckURL, tckSHA1,
+                                           tckSHA256);
 
         try (FileWriter output = new FileWriter(outputFile)) {
             Path junitPath = Paths.get("results", "junit");
@@ -129,7 +136,7 @@ public class TCKResultsWriter {
     }
 
     private static String getADocHeader(String filename, String fullSpecName, String specURL, String openLibertyVersion, String javaMajorVersion, String javaVersion,
-                                        String osName, String osVersion, String tckURL, String tckSHA1, String tckSHA256) {
+                                        String osName, String osVersion, String timestamp, String tckURL, String tckSHA1, String tckSHA256) {
         StringBuilder builder = new StringBuilder();
 
         builder.append(":page-layout: certification ").append(NEW_LINE);
@@ -183,6 +190,9 @@ public class TCKResultsWriter {
         builder.append(osName);
         builder.append(": ");
         builder.append(osVersion).append(NEW_LINE);
+        builder.append(NEW_LINE);
+
+        builder.append("Report generated at: " + timestamp);
         builder.append(NEW_LINE);
 
         builder.append("Test results:").append(NEW_LINE);

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static jakarta.data.repository.By.ID;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -53,7 +55,8 @@ public interface Personnel {
     void deleteByFirstName(String firstName);
 
     @Asynchronous
-    CompletableFuture<Void> deleteById(long ssn);
+    @Delete
+    CompletableFuture<Void> deleteById(@By(ID) long ssn);
 
     @Asynchronous
     @Delete

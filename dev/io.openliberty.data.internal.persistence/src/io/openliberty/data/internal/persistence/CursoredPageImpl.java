@@ -33,7 +33,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.page.CursoredPage;
-import jakarta.data.page.KeysetAwarePage;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
 import jakarta.persistence.EntityManager;
@@ -43,7 +42,7 @@ import jakarta.persistence.TypedQuery;
  * Page with the ability to create cursors from the elements on the page.
  * A cursor can be used to request next and previous pages relative to the cursor.
  */
-public class CursoredPageImpl<T> implements CursoredPage<T>, KeysetAwarePage<T> {
+public class CursoredPageImpl<T> implements CursoredPage<T> {
     private static final TraceComponent tc = Tr.register(CursoredPageImpl.class);
 
     private final Object[] args;
@@ -134,7 +133,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T>, KeysetAwarePage<T> 
     }
 
     @Override
-    public PageRequest.Cursor getKeysetCursor(int index) {
+    public PageRequest.Cursor cursor(int index) {
         if (index < 0 || index >= pageRequest.size())
             throw new IllegalArgumentException("index: " + index);
 
@@ -156,7 +155,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T>, KeysetAwarePage<T> 
                 throw new DataException(x.getCause());
             }
 
-        return Cursor.forKeyset(keyValues);
+        return Cursor.forKey(keyValues);
     }
 
     @Override
@@ -226,27 +225,29 @@ public class CursoredPageImpl<T> implements CursoredPage<T>, KeysetAwarePage<T> 
     @Override
     public PageRequest<T> nextPageRequest() {
         if (!hasNext())
-            return null; // TODO error
+            throw new NoSuchElementException("Cannot request a next page. To avoid this error, check for a " +
+                                             "true result of CursoredPage.hasNext before attempting this method."); // TODO NLS
 
         PageRequest<T> p = pageRequest.page() == Long.MAX_VALUE ? pageRequest : pageRequest.page(pageRequest.page() + 1);
-        return p.afterKeyset(queryInfo.getKeysetValues(results.get(Math.min(results.size(), pageRequest.size()) - 1)));
+        return p.afterKey(queryInfo.getKeysetValues(results.get(Math.min(results.size(), pageRequest.size()) - 1)));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <E> PageRequest<E> nextPageRequest(Class<E> entityClass) {
-        // KeysetAwareSlice/Page must always have the same type result as sort criteria per the API.
+        // CursoredPage must always have the same type result as sort criteria per the API.
         return (PageRequest<E>) nextPageRequest();
     }
 
     @Override
     public PageRequest<T> previousPageRequest() {
         if (!hasPrevious())
-            return null; // TODO error
+            throw new NoSuchElementException("Cannot request a previous page. To avoid this error, check for a " +
+                                             "true result of CursoredPage.hasPrevious before attempting this method."); // TODO NLS
 
         // Decrement page number by 1 unless it would go below 1.
         PageRequest<T> p = pageRequest.page() == 1 ? pageRequest : pageRequest.page(pageRequest.page() - 1);
-        return p.beforeKeyset(queryInfo.getKeysetValues(results.get(0)));
+        return p.beforeKey(queryInfo.getKeysetValues(results.get(0)));
     }
 
     @Override

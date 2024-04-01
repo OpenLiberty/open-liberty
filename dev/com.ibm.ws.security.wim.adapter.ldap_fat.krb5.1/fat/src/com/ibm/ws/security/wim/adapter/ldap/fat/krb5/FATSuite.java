@@ -32,7 +32,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                  */
                 Krb5ConfigTest.class,
                 KeytabBindTest.class,
-                //KeytabBindLongRunTest.class,
+                KeytabBindLongRunTest.class,
                 KeytabBindMultiRegistryTest.class,
                 SimpleBindTest.class,
                 TicketCacheBindMultiRegistryTest.class

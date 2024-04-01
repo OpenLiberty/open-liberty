@@ -15,6 +15,7 @@ package test.jakarta.data.web;
 import static io.openliberty.data.repository.function.Extract.Field.HOUR;
 import static io.openliberty.data.repository.function.Extract.Field.MINUTE;
 import static io.openliberty.data.repository.function.Extract.Field.SECOND;
+import static jakarta.data.repository.By.ID;
 
 import java.time.OffsetDateTime;
 import java.util.AbstractCollection;
@@ -40,6 +41,7 @@ import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 import io.openliberty.data.repository.Select;
@@ -53,21 +55,33 @@ import io.openliberty.data.repository.function.Extract;
  */
 @Repository
 public interface Reservations extends BasicRepository<Reservation, Long> {
+
+    @Query("SELECT COUNT(o) FROM Reservation o") // JPQL
+    int count();
+
+    int countBy();
+
     boolean deleteByHostIn(List<String> hosts);
 
     long deleteByHostNot(String host);
 
+    void deleteByMeetingIdIn(Iterable<Long> ids);
+
     @Find
     @Select("meetingId")
-    @OrderBy("id")
+    @OrderBy(ID)
     List<Long> endsAtSecond(@By("stop") @Extract(SECOND) int second);
+
+    Boolean existsByMeetingId(long meetingID);
 
     Iterable<Reservation> findByHost(String host);
 
-    @OrderBy("id")
+    @OrderBy(ID)
     Stream<Reservation> findByInviteesElementCount(int size);
 
     Collection<Reservation> findByLocationContainsOrderByMeetingID(String locationSubstring);
+
+    Stream<Reservation> findByMeetingIdIn(Iterable<Long> ids);
 
     List<Reservation> findByMeetingIDOrLocationLikeAndStartAndStopOrHost(long meetingID,
                                                                          String location,
@@ -137,6 +151,6 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     boolean updateByMeetingIDSetHost(long meetingID, String newHost);
 
     @Find
-    @OrderBy("id")
+    @OrderBy(ID)
     Stream<Reservation> withInviteeCount(@By("invitees") @ElementCount int size);
 }

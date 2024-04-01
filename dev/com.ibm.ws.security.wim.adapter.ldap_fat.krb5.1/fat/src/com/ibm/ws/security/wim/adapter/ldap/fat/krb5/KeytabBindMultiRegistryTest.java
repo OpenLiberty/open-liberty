@@ -63,8 +63,7 @@ public class KeytabBindMultiRegistryTest extends CommonBindTest {
             Kerberos kerb = addKerberosConfigAndKeytab(newServer);
             newServer.getLdapRegistries().add(ldap);
 
-            Log.info(c, testName.getMethodName(), "Not running ApacheDS restart tests");
-            //bodyOfMultiRegistryTest(newServer);
+            bodyOfMultiRegistryTest(newServer);
 
             Log.info(c, testName.getMethodName(), "Update with an bad keytab");
             kerb.keytab = wrongUserKeytab;
@@ -104,8 +103,7 @@ public class KeytabBindMultiRegistryTest extends CommonBindTest {
             Kerberos kerb = addKerberosConfigAndKeytab(newServer);
             newServer.getLdapRegistries().add(ldap);
 
-            Log.info(c, testName.getMethodName(), "Not running ApacheDS restart tests");
-            //bodyOfMultiRegistryTest(newServer);
+            bodyOfMultiRegistryTestAllowOp(newServer);
 
             Log.info(c, testName.getMethodName(), "Update with an bad keytab");
             kerb.keytab = wrongUserKeytab;

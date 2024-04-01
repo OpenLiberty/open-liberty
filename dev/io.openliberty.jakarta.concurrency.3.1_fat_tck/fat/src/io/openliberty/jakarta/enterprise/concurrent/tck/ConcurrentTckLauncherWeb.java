@@ -48,7 +48,7 @@ public class ConcurrentTckLauncherWeb {
     public static void setUp() throws Exception {
         //Comment out to use snapshot version
         additionalProps.put("jakarta.concurrent.tck.groupid", "jakarta.enterprise.concurrent");
-        additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-M1");
+        additionalProps.put("jakarta.concurrent.tck.version", "3.1.0-RC2");
 
         //Jakarta TCK platform
         additionalProps.put("jakarta.tck.platform", "web");

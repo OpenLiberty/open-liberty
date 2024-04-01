@@ -31,7 +31,7 @@ tested.features: \
 	osgiConsole-1.0,\
 	webProfile-8.0,\
 	webProfile-9.1,\
-	webProfile-10.0 \
+	webProfile-10.0,\
 	checkpoint
 
 # To define a global minimum java level for the FAT, use the following property.

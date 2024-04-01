@@ -6,8 +6,8 @@ Subsystem-Version: 1.0.0
 WebSphere-LogProvider: dummy.LogProvider
 
 Subsystem-Content: com.ibm.websphere.appserver.kernel-1.0; type="osgi.subsystem.feature",
- x.y; version="[1.0.0,1.0.100)"; type="boot.jar",
- x.y; version="[1.0.0,1.0.100)"; start-phase:=BOOTSTRAP,
+ x.y; version="[1.0.0,1.1)"; type="boot.jar",
+ x.y; version="[1.0.0,1.1)"; start-phase:=BOOTSTRAP,
 
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2

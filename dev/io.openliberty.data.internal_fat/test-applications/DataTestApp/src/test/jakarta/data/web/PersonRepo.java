@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static jakarta.data.repository.By.ID;
+
 import java.util.List;
 
 import jakarta.data.repository.By;
@@ -36,7 +38,7 @@ import io.openliberty.data.repository.update.Assign;
 @Repository
 @Transactional(TxType.SUPPORTS)
 public interface PersonRepo {
-    @Query("SELECT o FROM Person o WHERE o.lastName=?1")
+    @Query("WHERE lastName=?1")
     List<Person> find(String lastName);
 
     @Find
@@ -68,7 +70,7 @@ public interface PersonRepo {
 
     @Update
     @Transactional(TxType.MANDATORY)
-    boolean setFirstNameInCurrentTransaction(@By("id") Long ssn,
+    boolean setFirstNameInCurrentTransaction(@By(ID) Long ssn,
                                              @Assign("firstName") String newFirstName);
 
     @Update
@@ -78,12 +80,12 @@ public interface PersonRepo {
 
     @Update
     @Transactional(TxType.NEVER)
-    boolean setFirstNameWhenNoTransactionIsPresent(Long id,
+    boolean setFirstNameWhenNoTransactionIsPresent(@By(ID) Long id,
                                                    @Assign("FIRSTNAME") String newFirstName);
 
     @Update
     @Transactional(TxType.NOT_SUPPORTED)
-    boolean setFirstNameWithCurrentTransactionSuspended(Long id,
+    boolean setFirstNameWithCurrentTransactionSuspended(@By(ID) Long id,
                                                         @Assign("firstname") String newFirstName);
 
     @Update

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.service.impl;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Map;
 
 import javax.xml.soap.SOAPException;
@@ -36,19 +38,27 @@ import com.ibm.ws.wsat.service.WSATUtil;
 import com.ibm.wsspi.http.VirtualHost;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
-/**
- *
- */
 @Component(name = "com.ibm.ws.wsat.service.wsatconfigservice",
            immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE,
            property = { "service.vendor=IBM" })
 public class WSATConfigServiceImpl implements WSATConfigService {
 
     private static final TraceComponent TC = Tr.register(WSATConfigServiceImpl.class);
+
+    public static final String ASYNC_RESPONSE_TIMEOUT_PROPERTY = "com.ibm.ws.wsat.asyncResponseTimeout";
+
+    public static final Long ASYNC_RESPONSE_TIMEOUT = AccessController.doPrivileged(new PrivilegedAction<Long>() {
+        @Override
+        public Long run() {
+            return Long.getLong(ASYNC_RESPONSE_TIMEOUT_PROPERTY);
+        }
+    });
+
     private static final String SSLEnabled = "sslEnabled";
     private static final String clientAuthRef = "clientAuth";
     private static final String SSLRef = "sslRef";
     private static final String proxyRef = "externalURLPrefix";
+    private static final String asyncResponseTimeoutRef = "asyncResponseTimeout";
     private static final String WSATContextRoot = "/ibm/wsatservice";
 
     private static final String HTTPCONFIGSERVICE_REFERENCE_NAME = "httpOptions";
@@ -60,7 +70,21 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     private boolean enabled;
     private String sslId;
     private String proxy;
+    private long asyncResponseTimeout;
     private boolean clientAuth;
+
+    private static WSATConfigService INSTANCE;
+
+    public WSATConfigServiceImpl() {
+        INSTANCE = this;
+    }
+
+    /**
+     * @return
+     */
+    public static WSATConfigService getInstance() {
+        return INSTANCE;
+    }
 
     @Reference(name = WSATHANDLERSERVICE_REFERENCE_NAME, service = Handler.class)
     protected void setHandlerService(ServiceReference<Handler> ref) {
@@ -88,6 +112,12 @@ public class WSATConfigServiceImpl implements WSATConfigService {
         return enabled;
     }
 
+    @Override
+    @Trivial
+    public long getAsyncResponseTimeout() {
+        return asyncResponseTimeout;
+    }
+
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> properties) throws SOAPException {
         modified(cc, properties);
@@ -96,7 +126,6 @@ public class WSATConfigServiceImpl implements WSATConfigService {
     @Deactivate
     protected void deactivate(ComponentContext cc) {
         httpOptions.deactivate(cc);
-
     }
 
     @Modified
@@ -107,9 +136,22 @@ public class WSATConfigServiceImpl implements WSATConfigService {
         enabled = (Boolean) properties.get(SSLEnabled);
         sslId = (String) properties.get(SSLRef);
         proxy = (String) properties.get(proxyRef);
+
+        if (ASYNC_RESPONSE_TIMEOUT != null) {
+            if (TC.isDebugEnabled()) {
+                // Tests will fail if you change the format of this debug message
+                Tr.debug(TC, "asyncResponseTimeout setting overridden to " + ASYNC_RESPONSE_TIMEOUT + " by " + ASYNC_RESPONSE_TIMEOUT_PROPERTY + " system property");
+            }
+            asyncResponseTimeout = ASYNC_RESPONSE_TIMEOUT;
+        } else {
+            asyncResponseTimeout = (Long) properties.get(asyncResponseTimeoutRef);
+        }
+
         clientAuth = (Boolean) properties.get(clientAuthRef);
+
         if (TC.isDebugEnabled()) {
-            Tr.debug(TC, "SSLEnabled = [{0}], SSLRefId = [{1}], proxy = [{2}], clientAuth = [{3}]", enabled, sslId, proxy, clientAuth);
+            Tr.debug(TC, "SSLEnabled = [{0}], SSLRefId = [{1}], proxy = [{2}], clientAuth = [{3}], asyncResponseTimeout = [{4}]", enabled, sslId, proxy, clientAuth,
+                     asyncResponseTimeout);
         }
 
         String host = getWSATUrl();

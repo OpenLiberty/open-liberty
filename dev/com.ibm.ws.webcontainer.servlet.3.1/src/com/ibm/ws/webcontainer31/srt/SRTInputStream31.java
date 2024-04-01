@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,13 +56,17 @@ public class SRTInputStream31 extends SRTInputStream
     public SRTInputStream31(SRTServletRequest31 request) {
         super();
         this.request = request;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "constructor SRTInputStream31 [" + this + "] , request [" + request + "]"); 
     }
     
     @Override
     public void init(InputStream in) throws IOException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "Initializing the stream : " + this);
+            Tr.debug(tc, "Initializing [" + this + "] ; underlying stream [" + in + "]");
+
         if(in != null){
 
             //The passed in should always be an HttpInputStreamExtended if Servlet 3.1 is enabled
@@ -465,13 +469,13 @@ public class SRTInputStream31 extends SRTInputStream
     @Override
     public void close() throws IOException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "The input stream has been closed : " + this + " read Listener running ->" + listener);
+            Tr.debug(tc, "close() this [" + this + "] ; read Listener [" + listener + "]");
         
         isClosed = true;
         listener = null;
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(tc, "The input stream has been closed : " + this + " read Listener ->" + listener);
+            Tr.debug(tc, "close() , set isClosed = true , read Listener is null out.");
         
         super.close();
     }

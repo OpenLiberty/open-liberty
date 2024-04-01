@@ -18,44 +18,44 @@ import java.util.List;
 /**
  */
 public class PageRequestCursor implements PageRequest.Cursor {
-    private final Object[] keyset;
+    private final Object[] keyComponents;
 
-    PageRequestCursor(Object... keyset) {
-        this.keyset = keyset;
+    PageRequestCursor(Object... keyComponents) {
+        this.keyComponents = keyComponents;
 
-        if (keyset == null || keyset.length < 1)
-            throw new IllegalArgumentException("No keyset values were provided.");
+        if (keyComponents == null || keyComponents.length < 1)
+            throw new IllegalArgumentException("No key values were provided.");
     }
 
     @Override
     public List<?> elements() {
-        return List.of(keyset);
+        return List.of(keyComponents);
     }
 
     @Override
     public boolean equals(Object o) {
-        return o == this || o != null && o.getClass().equals(getClass()) && Arrays.equals(((PageRequestCursor) o).keyset, keyset);
+        return o == this || o != null && o.getClass().equals(getClass()) && Arrays.equals(((PageRequestCursor) o).keyComponents, keyComponents);
     }
 
     @Override
-    public Object getKeysetElement(int index) {
-        return keyset[index];
+    public Object get(int index) {
+        return keyComponents[index];
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(keyset);
+        return Arrays.hashCode(keyComponents);
     }
 
     @Override
     public int size() {
-        return keyset.length;
+        return keyComponents.length;
     }
 
     @Override
     public String toString() {
         return new StringBuilder("Cursor@").append(Integer.toHexString(hashCode())) //
-                        .append(" with ").append(keyset.length).append(" keys") //
+                        .append(" with ").append(keyComponents.length).append(" keys") //
                         .toString();
     }
 }

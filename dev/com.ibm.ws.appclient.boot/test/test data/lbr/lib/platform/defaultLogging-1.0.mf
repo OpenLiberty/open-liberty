@@ -5,8 +5,8 @@ Subsystem-Version: 1.0.0
 
 WebSphere-LogProvider: com.ibm.ws.logging.internal.impl.LogProviderImpl
 
-Subsystem-Content: a.b; version="[1,1.0.100)"; type="boot.jar",
- a.b; version="[1,1.0.100)"
+Subsystem-Content: a.b; version="[1,1.1)"; type="boot.jar",
+ a.b; version="[1,1.1)"
 
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2

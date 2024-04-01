@@ -46,13 +46,6 @@ public class DisposedOpenTelemetryInfo implements OpenTelemetryInfo {
         return OpenTelemetry.noop();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Tracer getTracer() {
-        logWarning();
-        return OpenTelemetry.noop().getTracerProvider().get("");
-    }
-
     @Override
     public void dispose() {
         //no op

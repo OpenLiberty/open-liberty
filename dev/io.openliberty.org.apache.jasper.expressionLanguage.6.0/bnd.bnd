@@ -33,11 +33,8 @@ Import-Package: \
 Require-Capability: osgi.contract;
  filter:="(&(osgi.contract=JavaEL)(version=5.0.0))"
 
--includeresource: \
-    org/apache/el=${bin}/org/apache/el
-
 instrument.disabled: true
 
 -buildpath: \
-    org.apache.tomcat:tomcat-jasper-el;strategy=exact;version=11.0.0.M16,\
+    org.apache.tomcat:tomcat-jasper-el;strategy=exact;version=11.0.0.M18,\
     io.openliberty.jakarta.expressionLanguage.6.0;version=latest

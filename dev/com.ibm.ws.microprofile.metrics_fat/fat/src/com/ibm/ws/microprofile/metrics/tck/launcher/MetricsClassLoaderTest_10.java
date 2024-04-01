@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -55,7 +55,7 @@ public class MetricsClassLoaderTest_10 extends MetricsClassLoaderTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKE0912W", "CWWKE0921W"); // Ignore warning from FAT infrastructure when running locally
     }
 
     @Override

@@ -13,6 +13,7 @@
 package com.ibm.ws.recoverylog.custom.jdbc.impl;
 
 import java.io.StringReader;
+import java.nio.file.attribute.FileTime;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
@@ -376,7 +377,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                     Tr.event(tc, "Lease Table: read leaseTime: " + Utils.traceTime(leaseTime));
                 }
 
-                PeerLeaseData pld = new PeerLeaseData(recoveryId, leaseTime, _leaseTimeout);
+                PeerLeaseData pld = new PeerLeaseData(recoveryId, FileTime.fromMillis(leaseTime), _leaseTimeout);
 
                 peerLeaseTable.addPeerEntry(pld);
             }
@@ -670,7 +671,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
 
                 // If this is startup, check whether lease has expired
                 if (isServerStartup) {
-                    PeerLeaseData pld = new PeerLeaseData(recoveryIdentity, storedLease, _leaseTimeout);
+                    PeerLeaseData pld = new PeerLeaseData(recoveryIdentity, FileTime.fromMillis(storedLease), _leaseTimeout);
                     if (pld.isExpired()) {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Lease has expired, we should update lease and recover");
@@ -1499,7 +1500,7 @@ public class SQLSharedServerLeaseLog extends LeaseLogImpl implements SharedServe
                 Tr.debug(tc, "Acquired server row, stored lease value is: " + Utils.traceTime(storedLease));
 
             // Has the lease expired?
-            PeerLeaseData pld = new PeerLeaseData(recoveryIdentityToRecover, storedLease, _leaseTimeout);
+            PeerLeaseData pld = new PeerLeaseData(recoveryIdentityToRecover, FileTime.fromMillis(storedLease), _leaseTimeout);
             if (pld.isExpired()) {
                 // Lease has expired, this means that this server is attempting peer recovery and
                 // it has acquired the lock. If any other server is also trying to peer recover then

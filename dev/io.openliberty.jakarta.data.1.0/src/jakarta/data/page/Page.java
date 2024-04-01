@@ -19,41 +19,32 @@ import java.util.stream.StreamSupport;
 /**
  * Method signatures copied from proposals in the Jakarta Data git repo.
  */
-public interface Page<T> extends Slice<T> {
+public interface Page<T> extends Iterable<T> {
 
-    @Override
     List<T> content();
 
-    @Override
     boolean hasContent();
 
-    @Override
     boolean hasNext();
 
     boolean hasTotals();
 
     boolean hasPrevious();
 
-    @Override
     PageRequest<T> nextPageRequest();
 
-    @Override
     <E> PageRequest<E> nextPageRequest(Class<E> entityClass);
 
-    @Override
     int numberOfElements();
 
-    @Override
     PageRequest<T> pageRequest();
 
-    @Override
     <E> PageRequest<E> pageRequest(Class<E> entityClass);
 
     PageRequest<T> previousPageRequest();
 
     <E> PageRequest<E> previousPageRequest(Class<E> entityClass);
 
-    @Override
     default Stream<T> stream() {
         return StreamSupport.stream(spliterator(), false);
     }

@@ -50,12 +50,15 @@ public class TestErrorMethodAttributeServlet extends HttpServlet {
 
         LOG("ENTER doGet");
 
-        testErrorMethodAttribute();
+        switch (request.getHeader("runTest")) {
+            case "test_ErrorMethod_Attribute" : test_ErrorMethod_Attribute(); break;
+            case "test_ErrorQueryString_Attribute" : test_ErrorQueryString_Attribute(); break;
+        }
 
         LOG("EXIT doGet");
     }
 
-    private void testErrorMethodAttribute() throws IOException {
+    private void test_ErrorMethod_Attribute() throws IOException {
         String method = new Object() {}.getClass().getEnclosingMethod().getName();
         LOG(">>> TESTING [" + method + "]");
 
@@ -85,6 +88,21 @@ public class TestErrorMethodAttributeServlet extends HttpServlet {
             LOG(" Exception [" + e + "]");
             throw e;
         }
+    }
+
+    /*
+     * set request attribute ERROR_QUERY_STRING so that the ErrorPageServlet can determine which test to run.
+     * When run this test, ErrorPageServlet needs to:
+     * 1. retrieve the request attribute "jakarta.servlet.error.query_string",
+     * 2. append the retrieved value to the response which the client will compare with what was sent.
+     */
+    private void test_ErrorQueryString_Attribute() throws IOException {
+        String method = new Object() {}.getClass().getEnclosingMethod().getName();
+        LOG(">>> TESTING [" + method + "]");
+
+        //set attribute for ErrorPageServlet to run this test.
+        request.setAttribute("ERROR_QUERY_STRING", "run this test");
+        response.sendError(501, "SendError 501 to test jakarta.servlet.error.query_string attribute!");
     }
 
     public static void LOG(String s) {

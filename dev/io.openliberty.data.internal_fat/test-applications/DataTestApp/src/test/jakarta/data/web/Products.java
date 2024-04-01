@@ -54,10 +54,10 @@ public interface Products {
 
     Product[] findByVersionGreaterThanEqualOrderByPrice(long minVersion);
 
-    @Query("SELECT o FROM Product o WHERE o.pk=:productId")
+    @Query("WHERE pk=:productId")
     Product findItem(@Param("productId") UUID id);
 
-    Optional<Product> findById(UUID id);
+    Optional<Product> findByPK(UUID id);
 
     @Find
     @Select(function = Aggregate.MAXIMUM, value = "price")
@@ -87,7 +87,7 @@ public interface Products {
     // Custom repository method that combines multiple operations into a single transaction
     @Transactional
     default Product remove(UUID id) {
-        for (Optional<Product> product; (product = findById(id)).isPresent();)
+        for (Optional<Product> product; (product = findByPK(id)).isPresent();)
             if (discontinueProducts(Set.of(id)) == 1)
                 return product.get();
         return null;
@@ -100,7 +100,7 @@ public interface Products {
     Product[] saveMultiple(Product... p);
 
     @Update
-    boolean setPrice(UUID id,
+    boolean setPrice(UUID pk,
                      long version,
                      @Assign("price") float newPrice);
 
