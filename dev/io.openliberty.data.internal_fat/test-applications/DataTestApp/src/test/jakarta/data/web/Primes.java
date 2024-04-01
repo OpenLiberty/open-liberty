@@ -250,7 +250,7 @@ public interface Primes {
                                                         @By("name") @EndsWith String secondSuffix);
 
     @OrderBy(ID)
-    @Query("SELECT o.numberId FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR o.numberId=:num)")
+    @Query("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)")
     long[] matchAny(long num, String numeral, String hex, String numberName);
 
     @OrderBy(ID)
