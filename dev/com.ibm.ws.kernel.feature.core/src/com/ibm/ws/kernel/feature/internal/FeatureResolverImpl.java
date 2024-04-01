@@ -533,8 +533,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                             Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_FEATURE_VAL", new Object[] { shortName });
                         }
                     }
-                    baseSymbolicName = "";
-                    symbolicName = "";
+                    selectionContext.addConflict(includingFeature.getFeatureName(), null);
                     return;
                 }
             }
