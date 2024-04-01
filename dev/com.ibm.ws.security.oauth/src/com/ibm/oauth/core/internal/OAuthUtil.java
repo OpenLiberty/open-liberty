@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,7 +19,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.security.SecureRandom;
-import java.security.Security;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
@@ -27,52 +26,45 @@ import java.util.UUID;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Utility functions
- * 
+ *
  */
 public class OAuthUtil {
     private static TraceComponent tc = Tr.register(OAuthUtil.class);
-
-    static final String JCEPROVIDER_IBM = "IBMJCE";
-
-    static final String SECRANDOM_IBM = "IBMSecureRandom";
-
-    static final String SECRANDOM_SHA1PRNG = "SHA1PRNG";
 
     static final String UTF_ENCODING = "UTF-8";
 
     /**
      * Gets the first value from the values array of a Map <String, String[]>
-     * 
+     *
      * @param key
      * @param m
      *            Map <String, String[]>
      * @return
      */
 
-    private static final java.util.List<String> sensitives = java.util.Arrays.asList(new String[] {"client_secret", "sharedKey"});
-    
+    private static final java.util.List<String> sensitives = java.util.Arrays.asList(new String[] { "client_secret", "sharedKey" });
+
     @Sensitive
     public static String getValueFromMap(String key, Map<String, String[]> m) {
         String result = null;
 
-        String values[] = (String[]) m.get(key);
+        String values[] = m.get(key);
         if (values != null && values.length > 0) {
             result = values[0];
         }
 
         if (tc.isDebugEnabled()) {
             if (sensitives.contains(key)) {
-              if (result != null) {
-                Tr.debug(tc, "getValueFromMap("+key+") returns [*****]");
-              } else {
-                Tr.debug(tc, "getValueFromMap("+key+") returns [null]");
-              }
+                if (result != null) {
+                    Tr.debug(tc, "getValueFromMap(" + key + ") returns [*****]");
+                } else {
+                    Tr.debug(tc, "getValueFromMap(" + key + ") returns [null]");
+                }
             } else {
-              Tr.debug(tc, "getValueFromMap("+key+") returns ["+result+"]");
+                Tr.debug(tc, "getValueFromMap(" + key + ") returns [" + result + "]");
             }
         }
         return result;
@@ -80,7 +72,7 @@ public class OAuthUtil {
 
     /**
      * Converts an array of strings to a space delimited string
-     * 
+     *
      * @param array
      * @return
      */
@@ -103,7 +95,7 @@ public class OAuthUtil {
     /**
      * Generates a random alphanumeric string of length n to be used for OAuth
      * 2.0 keys, tokens, secrets etc
-     * 
+     *
      * @param length
      * @return
      */
@@ -130,28 +122,14 @@ public class OAuthUtil {
         return retVal;
     }
 
-    @FFDCIgnore({ Exception.class })
     static Random getRandom() {
-        Random result = null;
-        try {
-            if (Security.getProvider(JCEPROVIDER_IBM) != null) {
-                result = SecureRandom.getInstance(SECRANDOM_IBM);
-            } else {
-                result = SecureRandom.getInstance(SECRANDOM_SHA1PRNG);
-            }
-        } catch (Exception e) {
-            result = new SecureRandom();
-        }
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "getRandom() returns ["+result.getClass().getName()+"]");
-        }
-        return result;
+        return new SecureRandom();
     }
 
     public static String generateUUID() {
         String retVal = UUID.randomUUID().toString();
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "generateUUID returns ["+retVal+"]");
+            Tr.debug(tc, "generateUUID returns [" + retVal + "]");
         }
         return retVal;
     }
@@ -159,13 +137,12 @@ public class OAuthUtil {
     /**
      * Validate URI by constructing the URI class and checking if it is
      * absolute. We'll know if it's a valid URI if the exception is not thrown.
-     * 
+     *
      * @param strUri
      * @param requireHttps
      * @return
      */
-    public static boolean validateUri(String strUri)
-    {
+    public static boolean validateUri(String strUri) {
         boolean valid = false;
 
         try {
@@ -180,14 +157,13 @@ public class OAuthUtil {
         }
 
         if (tc.isDebugEnabled()) {
-            //inbound calls to this method aren't stripping any possible secrets out of the string when tracing, so I'm not doing it here either
-            Tr.debug(tc, "validateUri("+strUri+") returns ["+valid+"]");
+            // inbound calls to this method aren't stripping any possible secrets out of the string when tracing, so I'm not doing it here either
+            Tr.debug(tc, "validateUri(" + strUri + ") returns [" + valid + "]");
         }
         return valid;
     }
 
-    public static String stripQueryAndFragment(String uri)
-    {
+    public static String stripQueryAndFragment(String uri) {
         String result = uri;
 
         if (validateUri(uri)) {
@@ -203,14 +179,13 @@ public class OAuthUtil {
         }
 
         if (tc.isDebugEnabled()) {
-            //inbound calls to this method aren't stripping any possible secrets out of the string when tracing, so I'm not doing it here either
-            Tr.debug(tc, "stripQueryAndFragment("+uri+") returns ["+result+"]");
+            // inbound calls to this method aren't stripping any possible secrets out of the string when tracing, so I'm not doing it here either
+            Tr.debug(tc, "stripQueryAndFragment(" + uri + ") returns [" + result + "]");
         }
         return result;
     }
 
-    public static String getQuery(String uri)
-    {
+    public static String getQuery(String uri) {
         String result = uri;
 
         try {
@@ -220,8 +195,8 @@ public class OAuthUtil {
             // invalid uri, return null
         }
         if (tc.isDebugEnabled()) {
-            //inbound calls to this method aren't stripping any possible secrets out of the string when tracing, so I'm not doing it here either
-            Tr.debug(tc, "getQuery("+uri+") returns ["+result+"]");
+            // inbound calls to this method aren't stripping any possible secrets out of the string when tracing, so I'm not doing it here either
+            Tr.debug(tc, "getQuery(" + uri + ") returns [" + result + "]");
         }
         return result;
     }
@@ -229,7 +204,7 @@ public class OAuthUtil {
     /**
      * Encodes each parameter in the provided query. Expects the query argument to be the query string of a URL with parameters
      * in the format: param=value(&param2=value2)*
-     * 
+     *
      * @param query
      * @return
      */
@@ -264,7 +239,7 @@ public class OAuthUtil {
         String retVal = rebuiltQuery.toString();
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "encodeQuery("+query+") returns ["+retVal+"]");
+            Tr.debug(tc, "encodeQuery(" + query + ") returns [" + retVal + "]");
         }
         return retVal;
     }
