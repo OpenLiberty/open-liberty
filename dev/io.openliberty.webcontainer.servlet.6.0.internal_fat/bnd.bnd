@@ -28,7 +28,6 @@ fat.project: true
 
 # Define additional tested features that are NOT present in any XML files in this bucket.
 tested.features:\
-    noship-1.0,\
     servlet-6.1,\
     expressionlanguage-6.0,\
     pages-4.0
