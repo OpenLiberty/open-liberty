@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -52,8 +52,19 @@ public class TestHideMessages {
 
     @Before
     public void setupTest() throws Exception {
+        if (msgServer != null && msgServer.isStarted()) {
+            msgServer.stopServer("SRVE0777E", "SRVE0315E", "CWWKG0032W", "CWWKG0075E", "CWWKE1102W", "CWWKE1105W");
+        }
+
         msgServer.restoreServerConfiguration();
         msgServer.startServer();
+    }
+
+    @After
+    public void cleanUp() throws Exception {
+        if (msgServer != null && msgServer.isStarted()) {
+            msgServer.stopServer("SRVE0777E", "SRVE0315E", "CWWKG0032W", "CWWKG0075E", "CWWKE1102W", "CWWKE1105W");
+        }
     }
 
     @Test
@@ -164,11 +175,6 @@ public class TestHideMessages {
 
         Log.info(logClass, name.getMethodName(), "Exiting test " + name.getMethodName());
 
-    }
-
-    @After
-    public void cleanupTest() throws Exception {
-        msgServer.stopServer();
     }
 
 }
