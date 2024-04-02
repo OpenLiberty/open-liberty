@@ -510,8 +510,13 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
                         requestState.setCookieAttributes(cookie.getName(), "SameSite=" + sameSiteCookieValue);
 
                         if (ProductInfo.getBetaEdition()) {
-                            if(sessionSameSiteCookie.equals(SameSiteCookie.NONE) && _smc.getSessionCookiePartitioned()) {
-                                requestState.setCookieAttributes(cookie.getName(), "Partitioned=true");
+                            // not null means a user defined config was set
+                            if(_smc.getSessionCookiePartitioned() != null) {
+                                if(sessionSameSiteCookie.equals(SameSiteCookie.NONE) && _smc.getSessionCookiePartitioned()) {
+                                    requestState.setCookieAttributes(cookie.getName(), "Partitioned=true");
+                                } else if(!_smc.getSessionCookiePartitioned()) { // if set to false
+                                    requestState.setCookieAttributes(cookie.getName(), "Partitioned=false");
+                                }
                             }
                         }
                     }

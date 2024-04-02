@@ -229,7 +229,7 @@ public class WebContainerRequestState {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME, methodName, " cookieName --> " + cookieName + " cookieAttribute --> " + cookieAttributes);
         }
-        
+
         String[] attribute = cookieAttributes.split("=");
         /*
          * Beta: This method will start accepting "Parititioned" as a new attribute. It will need to be in the form "partitioned=boolean".
@@ -245,8 +245,8 @@ public class WebContainerRequestState {
                 return;
             }
         }
-
-        if (cookieAttributesMap == null) {
+        
+        if (cookieAttributesMap == null || cookieAttributesMap.isEmpty()) {
             cookieAttributesMap = new HashMap<String,HashMap<String,String>>();
             cookieAttributesMap.put(cookieName, new HashMap<String,String>() {{
                 put(attribute[0], attribute[1]);

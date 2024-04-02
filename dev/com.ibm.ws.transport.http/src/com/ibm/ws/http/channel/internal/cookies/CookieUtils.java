@@ -390,7 +390,7 @@ public class CookieUtils {
 
         if(ProductInfo.getBetaEdition()) {
             value = cookie.getAttribute("partitioned");
-            if (null != value) {
+            if (null != value && !value.equalsIgnoreCase("false")) {
                 buffer.append("; Partitioned");
             }
         }
@@ -473,7 +473,7 @@ public class CookieUtils {
 
         if(ProductInfo.getBetaEdition()) {
             value = cookie.getAttribute("partitioned");
-            if (null != value) {
+            if (null != value && !value.equalsIgnoreCase("false")) {
                 buffer.append("; Partitioned");
             }
         }
@@ -572,7 +572,7 @@ public class CookieUtils {
 
         if(ProductInfo.getBetaEdition()) {
             value = cookie.getAttribute("partitioned");
-            if (null != value) {
+            if (null != value && !value.equalsIgnoreCase("false")) {
                 buffer.append("; Partitioned");
             }
         }

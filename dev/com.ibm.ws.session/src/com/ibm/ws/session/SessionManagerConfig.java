@@ -216,7 +216,8 @@ public class SessionManagerConfig implements Cloneable {
     private int connectionRetryCount = 2; // Feature 68570
     private SameSiteCookie sessionCookieSameSite;
 
-    private boolean sessionCookiePartitioned = false;
+    // null by default - only true/false set when specified via config 
+    private Boolean sessionCookiePartitioned = null;
     
     // finished Custom Properties
 
@@ -1198,11 +1199,11 @@ public class SessionManagerConfig implements Cloneable {
     }
 
     //cookiePartitioned
-    public void setSessionCookiePartitioned(boolean b) {
+    public void setSessionCookiePartitioned(Boolean b) {
         this.sessionCookiePartitioned = b;
     }
     
-    public boolean getSessionCookiePartitioned() {
+    public Boolean getSessionCookiePartitioned() {
         return this.sessionCookiePartitioned;
     }
 
