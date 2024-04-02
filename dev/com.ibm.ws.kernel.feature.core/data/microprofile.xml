@@ -1,0 +1,57 @@
+<cases>
+    <case>
+        <name>MP Case 1: Multiple [ false ] Process [ SERVER ]</name>
+        <description>MP Case 1</description>
+        <input>
+            <server/>
+            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
+            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
+            <root>servlet-5.0</root>
+            <root>mpHealth</root>
+            <root>mpMetrics</root>
+        </input>
+        <output>
+           <resolved>cdi-3.0</resolved>
+           <resolved>distributedMap-1.0</resolved>
+           <resolved>jndi-1.0</resolved>
+           <resolved>json-1.0</resolved>
+           <resolved>monitor-1.0,</resolved>
+           <resolved>mpConfig-3.0</resolved>
+           <resolved>mpHealth</resolved>
+           <resolved>mpHealth-4.0</resolved>
+           <resolved>mpMetrics</resolved>
+           <resolved>mpMetrics-4.0</resolved>
+           <resolved>servlet-5.0</resolved>
+           <resolved>ssl-1.0</resolved>
+        </output>
+    </case>
+
+    <case>
+        <name>MP Case 2: Multiple [ false ] Process [ SERVER ]</name>
+        <description>MP Case 2</description>
+        <input>
+            <server/>
+            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
+            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
+            <root>servlet-6.0</root>
+            <root>mpHealth</root>
+            <root>mpMetrics</root>
+        </input>
+        <output>
+            <resolved></resolved>
+               <resolved>cdi-4.0</resolved>
+               <resolved>distributedMap-1.0</resolved>
+               <resolved>jndi-1.0</resolved>
+               <resolved>json-1.0</resolved>
+               <resolved>monitor-1.0</resolved>
+               <resolved>mpConfig-3.0</resolved>
+               <resolved>mpHealth</resolved>
+               <resolved>mpHealth-4.0</resolved>
+               <resolved>mpMetrics</resolved>
+               <resolved>mpMetrics-5.1</resolved>
+               <resolved>servlet-6.0</resolved>
+               <resolved>ssl-1.0</resolved>
+        </output>
+    </case>
+
+</cases>

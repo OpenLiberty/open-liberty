@@ -57,12 +57,24 @@ public class VerifyDelta {
         errors.clear();
     }
 
+    private void setErrors(String name, List<String> caseErrors) {
+        errors.put(name, caseErrors);
+    }
+
     private void addError(String name, String error) {
         List<String> caseErrors = errors.get(name);
         if (caseErrors == null) {
             errors.put(name, caseErrors = new ArrayList<>());
         }
         caseErrors.add(error);
+    }
+
+    private static List<String> addError(List<String> errors, String error) {
+        if (errors == null) {
+            errors = new ArrayList<>();
+        }
+        errors.add(error);
+        return errors;
     }
 
     public static final String GLOBAL_CASE_KEY = "global results";
@@ -101,19 +113,23 @@ public class VerifyDelta {
             if (expectedCase == null) {
                 return;
             }
-            compare(caseKey, expectedCase, actualCase);
+
+            List<String> caseErrors = compare(null, expectedCase, actualCase);
+            if ( caseErrors != null ) {
+                setErrors(caseKey, caseErrors);
+            }
         }
     }
 
-    public void compare(String caseKey, VerifyCase expectedCase, VerifyCase actualCase) {
-        compare(caseKey, "Resolved", expectedCase.output.resolved, actualCase.output.resolved);
+    public static List<String> compare(List<String> caseErrors, VerifyCase expectedCase, VerifyCase actualCase) {
+        return compare(caseErrors, expectedCase.output.resolved, actualCase.output.resolved);
     }
 
-    public void compare(String caseKey, String tag, List<String> expected, List<String> actual) {
+    public static List<String> compare(List<String> caseErrors, List<String> expected, List<String> actual) {
         int actualSize = actual.size();
         int expectedSize = expected.size();
         if (actualSize != expectedSize) {
-            addError(caseKey, "Incorrect count: expected [ " + expectedSize + " ] actual [ " + actualSize + " ]");
+            caseErrors = addError(caseErrors, "Incorrect count: expected [ " + expectedSize + " ] actual [ " + actualSize + " ]");
         }
 
         Set<String> expectedSet = new HashSet<>(expected);
@@ -121,13 +137,13 @@ public class VerifyDelta {
 
         for (String expectedElement : expectedSet) {
             if (!actualSet.contains(expectedElement)) {
-                addError(caseKey, "Missing [ " + expectedElement + " ]");
+                caseErrors = addError(caseErrors, "Missing [ " + expectedElement + " ]");
             }
         }
 
         for (String actualElement : actualSet) {
             if (!expectedSet.contains(actualElement)) {
-                addError(caseKey, "Extra       [ " + actualElement + " ]");
+                caseErrors = addError(caseErrors, "Extra       [ " + actualElement + " ]");
             }
         }
 
@@ -147,7 +163,9 @@ public class VerifyDelta {
         }
 
         if (orderError != null) {
-            addError(caseKey, orderError);
+            caseErrors = addError(caseErrors, orderError);
         }
+
+        return caseErrors;
     }
 }
