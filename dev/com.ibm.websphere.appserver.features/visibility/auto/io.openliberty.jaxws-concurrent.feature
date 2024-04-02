@@ -10,4 +10,4 @@ IBM-Install-Policy: when-satisfied
 -features=com.ibm.websphere.appserver.contextService-1.0
 -bundles=io.openliberty.cxf.concurrent
 kind=ga
-edition=core
+edition=base
