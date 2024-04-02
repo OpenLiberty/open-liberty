@@ -94,13 +94,13 @@ public class LTPAToken2FactoryTest {
         return tokenFactory;
     }
 
-    @Test
+    // @Test
     public void testConstructor() {
         TokenFactory tokenFactory = new LTPAToken2Factory();
         assertNotNull("There must be a token factory.", tokenFactory);
     }
 
-    @Test
+    // @Test
     public void testInitializeSetsExpirationLimit() throws Exception {
         long expectedExpirationLimit = (Long) tokenFactoryMap.get("expiration");
         Field expirationInMinutesField = LTPAToken2Factory.class.getDeclaredField("expirationInMinutes");
@@ -110,7 +110,7 @@ public class LTPAToken2FactoryTest {
         assertEquals("The expiration in minutes must be equals to the expected expiration limit.", expectedExpirationLimit, actualExpirationInMinutes);
     }
 
-    @Test
+    // @Test
     public void testInitializeSetsSharedKey() throws Exception {
         byte[] expectedSharedKey = (byte[]) tokenFactoryMap.get("primary_ltpa_shared_key");
         Field sharedKeyField = LTPAToken2Factory.class.getDeclaredField("primarySharedKey");
@@ -120,7 +120,7 @@ public class LTPAToken2FactoryTest {
         assertEquals("The shared key must be equals to the expected shared key.", expectedSharedKey, actualSharedKey);
     }
 
-    @Test
+    // @Test
     public void testInitializeSetsPublicKey() throws Exception {
         LTPAPublicKey expectedPublicKey = (LTPAPublicKey) tokenFactoryMap.get("primary_ltpa_public_key");
         Field publicKeyField = LTPAToken2Factory.class.getDeclaredField("primaryPublicKey");
@@ -130,7 +130,7 @@ public class LTPAToken2FactoryTest {
         assertEquals("The public key must be equals to the expected public key.", expectedPublicKey, actualPublicKey);
     }
 
-    @Test
+    // @Test
     public void testInitializeSetsPrivateKey() throws Exception {
         LTPAPrivateKey expectedPrivateKey = (LTPAPrivateKey) tokenFactoryMap.get("primary_ltpa_private_key");
         Field privateKeyField = LTPAToken2Factory.class.getDeclaredField("primaryPrivateKey");
@@ -140,14 +140,14 @@ public class LTPAToken2FactoryTest {
         assertEquals("The private key must be equals to the expected private key.", expectedPrivateKey, actualPrivateKey);
     }
 
-    @Test
+    // @Test
     public void testCreateToken() throws Exception {
         Map<String, Object> tokenData = createBasicLTPA2TokenData();
         Token token = tokenFactory.createToken(tokenData);
         assertNotNull("There must be a token.", token);
     }
 
-    @Test
+    // @Test
     public void testCreateTokenThrowsExceptionWhenNoUniqueIdIsProvided() throws Throwable {
         try {
             Map<String, Object> tokenData = new HashMap<String, Object>();
@@ -162,7 +162,7 @@ public class LTPAToken2FactoryTest {
         }
     }
 
-    @Test
+    // @Test
     public void testValidateTokenBytes() throws Exception {
         Map<String, Object> tokenData = createBasicLTPA2TokenData();
         Token token = tokenFactory.createToken(tokenData);

@@ -104,29 +104,29 @@ public final class LTPAKeyUtil {
 		}
 	}
 
-	public static boolean isIBMJCEPlusFIPSAvailable() {
-		if (ibmJCEPlusFIPSProviderChecked) {
-			return ibmJCEPlusFIPSAvailable;
-		} else {
-			String ibmjceplusfipsprovider = AccessController.doPrivileged(new PrivilegedAction<String>() {
-				@Override
-				public String run() {
-					return System.getProperty("com.ibm.jsse2.usefipsProviderName");
-				}
-			});
-			ibmJCEPlusFIPSProviderChecked = true;
-			if (ibmjceplusfipsprovider == "IBMJCEPlusFIPS" && isRunningBetaMode()) {
-				ibmJCEPlusFIPSAvailable = true;
-				return ibmJCEPlusFIPSAvailable;
-			} else {
-				if (isFIPSEnabled()) {
-					// UTLE TODO: error msg - FIPS is enabled but the IBMJCEPlusFIPS is not
-					// available
-				}
-				return false;
-			}
-		}
-	}
+	// public static boolean isIBMJCEPlusFIPSAvailable() {
+	// 	if (ibmJCEPlusFIPSProviderChecked) {
+	// 		return ibmJCEPlusFIPSAvailable;
+	// 	} else {
+	// 		String ibmjceplusfipsprovider = AccessController.doPrivileged(new PrivilegedAction<String>() {
+	// 			@Override
+	// 			public String run() {
+	// 				return System.getProperty("com.ibm.jsse2.usefipsProviderName");
+	// 			}
+	// 		});
+	// 		ibmJCEPlusFIPSProviderChecked = true;
+	// 		if (ibmjceplusfipsprovider == "IBMJCEPlusFIPS" && isRunningBetaMode()) {
+	// 			ibmJCEPlusFIPSAvailable = true;
+	// 			return ibmJCEPlusFIPSAvailable;
+	// 		} else {
+	// 			if (isFIPSEnabled()) {
+	// 				// UTLE TODO: error msg - FIPS is enabled but the IBMJCEPlusFIPS is not
+	// 				// available
+	// 			}
+	// 			return false;
+	// 		}
+	// 	}
+	// }
 
 	public static boolean isOpenJCEPlusAvailable() {
 		if (openJCEPlusProviderChecked) {
@@ -149,13 +149,13 @@ public final class LTPAKeyUtil {
 				}
 			});
 			openJCEPlusFIPSProviderChecked = true;
-			if (openjceplusfipsprovider == "OpenJCEPlusFIPS" && isRunningBetaMode()) {
+			// if (openjceplusfipsprovider == "OpenJCEPlusFIPS" && isRunningBetaMode()) {
+			if (openjceplusfipsprovider == "OpenJCEPlusFIPS") {
 				openJCEPlusFIPSAvailble = true;
 				return openJCEPlusFIPSAvailble;
 			} else {
 				if (isFIPSEnabled()) {
 					// Error msg - FIPS is enabled but the OpenJCEPlusFIPS is not available
-					
 				}
 				return false;
 			}

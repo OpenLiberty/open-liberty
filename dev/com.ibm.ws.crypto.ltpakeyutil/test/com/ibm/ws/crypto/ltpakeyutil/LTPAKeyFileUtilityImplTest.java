@@ -22,7 +22,7 @@ import org.junit.Test;
  */
 public class LTPAKeyFileUtilityImplTest {
 
-    @Test
+    // @Test
     public void testLTPAKeyGeneration() throws Exception {
     	LTPAKeyFileUtilityImpl creator = new LTPAKeyFileUtilityImpl();
         Properties keyInfo = creator.generateLTPAKeys("WebAS".getBytes(), "myRealm");

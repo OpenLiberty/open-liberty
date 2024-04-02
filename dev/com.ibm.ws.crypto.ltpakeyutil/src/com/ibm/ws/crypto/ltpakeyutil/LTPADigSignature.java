@@ -27,19 +27,21 @@ final class LTPADigSignature {
 
 	static {
 		try {
-			if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
-				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256,
-						LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
-			} else if (LTPAKeyUtil.isFIPSEnabled() &&  LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()) {
-				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256,
-						LTPAKeyUtil.OPENJCE_PLUS_FIPS_NAME);
-			} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
-				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
-			} else if (LTPAKeyUtil.isOpenJCEPlusAvailable()) {
-				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.OPENJCE_PLUS_NAME);
-			} else {
-				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA);
-			}
+			// if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+			// 	md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256,
+			// 									LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
+			// } else if (LTPAKeyUtil.isFIPSEnabled() &&  LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()) {
+			// 	md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256,
+			// 									LTPAKeyUtil.OPENJCE_PLUS_FIPS_NAME);
+			// } else if (LTPAKeyUtil.isIBMJCEAvailable()) {
+			// 	md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
+			// } else if (LTPAKeyUtil.isOpenJCEPlusAvailable()) {
+			// 	md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.OPENJCE_PLUS_NAME);
+			// } else {
+			// 	md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA);
+			// }
+			md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256,
+											LTPAKeyUtil.OPENJCE_PLUS_FIPS_NAME);
 
 		} catch (NoSuchAlgorithmException e) {
 			// instrumented ffdc
@@ -53,8 +55,7 @@ final class LTPADigSignature {
 	}
 
 	static void generateRSAKeys(byte[][] rsaPubKey, byte[][] rsaPrivKey) {
-		byte[][] rsaKey = LTPACrypto.rsaKey(128, true, true); // 64 is 512, 128
-																// is 1024
+		byte[][] rsaKey = LTPACrypto.rsaKey(256, true, true); // 64 is 512, 128 is 1024, 256 is 2048
 
 		rsaPrivKey[0] = rsaKey[0];
 		rsaPrivKey[2] = rsaKey[2];

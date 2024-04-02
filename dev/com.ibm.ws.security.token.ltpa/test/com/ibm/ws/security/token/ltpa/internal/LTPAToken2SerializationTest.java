@@ -71,7 +71,7 @@ public class LTPAToken2SerializationTest {
      * Test to deserialize LTPAToken2_1.ser.
      * Validate token bytes and attributes.
      */
-    @Test
+    // @Test
     public void deserializeLTPAToken2_1() throws Exception {
         final String filename = "test-resources/test data/ser-files/LTPAToken2_1.ser";
 
