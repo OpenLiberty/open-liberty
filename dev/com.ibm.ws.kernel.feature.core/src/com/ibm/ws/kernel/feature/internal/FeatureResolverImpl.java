@@ -117,36 +117,81 @@ public class FeatureResolverImpl implements FeatureResolver {
     private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
     private static boolean shownVersionlessError = false;
+    private static Set<String> noPreferredErrors = new HashSet<>();
 
-    private static final String preferedFeatureVersions = System.getenv("PREFERRED_FEATURE_VERSIONS");
-
-    private static String[][] parsedPreferedVersions;
-
-    private static Map<String, String[]> parseNAV = new HashMap<String, String[]>();
-
-    static {
-        String[] preferredVersions = (preferedFeatureVersions == null) ? new String[] {} : preferedFeatureVersions.split(",");
-        String[][] parsedVersions = new String[preferredVersions.length][2];
-        String invalid = "";
-        int invalidPadding = 0;
-        for (int i = 0; i < preferredVersions.length; i++) {
-            String[] current = parseNameAndVersion(preferredVersions[i].trim());
-            if(current[0] != null && current[1] != null && !current[0].isEmpty() && !current[1].isEmpty() && repository.getFeature(current[0] + "-" + current[1]) != null){
-                parsedVersions[i-invalidPadding] = current;
+    private static void showVersionlessError(String baseSymbolicName) {
+        if (preferredFeatureVersions == null) {
+            if (!shownVersionlessError) {
+                shownVersionlessError = true;
+                error("UPDATE_MISSING_VERSIONLESS_ENV_VAR");
             }
-            else{
-                invalidPadding++;
-                if(!invalid.isEmpty()){
-                    invalid += ",";
-                }
-                invalid += " \"" + preferredVersions[i] + "\"";
+
+        } else {
+            if (noPreferredErrors.add(baseSymbolicName)) {
+                String shortName = baseSymbolicName.replace("io.openliberty.internal.versionless.", "");
+                error("UPDATE_MISSING_VERSIONLESS_FEATURE_VAL", shortName);
             }
-        }
-        parsedPreferedVersions = Arrays.copyOf(parsedVersions, parsedVersions.length-invalidPadding);
-        if(!!!invalid.isEmpty()){
-            trace("Removing invalid entries in PREFERRED_FEATURE_VERSIONS:" + invalid);
         }
     }
+
+    private static String preferredFeatureVersions = System.getenv("PREFERRED_FEATURE_VERSIONS");
+    private static String[][] parsedPreferredVersions;
+
+    public void setPreferredVersion(String preferredFeatures) {
+        preferredFeatureVersions = preferredFeatures;
+        parsedPreferredVersions = null;
+    }
+
+    public static void verifyPreferredFeatures(Repository repository) {
+        if ( parsedPreferredVersions != null ) {
+            return;
+        }
+
+        String[] preferredVersions = (preferredFeatureVersions == null) ? new String[] {} : preferredFeatureVersions.split(",");
+        String[][] parsedVersions = new String[preferredVersions.length][2];
+
+        StringBuilder ususableMsg = null;
+        int numUnusable = 0;
+
+        for (int prefNo = 0; prefNo < preferredVersions.length; prefNo++) {
+            String preferredVersion = preferredVersions[prefNo].trim();
+
+            String[] parsedFeature = parseNameAndVersion(preferredVersion);
+            String parsedName = parsedFeature[0];
+            String parsedVersion = parsedFeature[1];
+
+            if ( ((parsedName != null) && !parsedName.isEmpty()) &&
+                 ((parsedVersion != null) && !parsedVersion.isEmpty()) &&
+                 (repository.getFeature(preferredVersion) != null) ) {
+
+                parsedVersions[prefNo - numUnusable] = parsedFeature;
+
+            } else {
+                numUnusable++;
+                if ( ususableMsg != null ) {
+                    ususableMsg.append(',');
+                } else {
+                    ususableMsg = new StringBuilder();
+                }
+                ususableMsg.append('"');
+                ususableMsg.append(preferredVersion);
+                ususableMsg.append('"');
+            }
+        }
+
+        if ( numUnusable == 0 ) {
+            parsedPreferredVersions = parsedVersions;
+        } else {
+            parsedPreferredVersions = Arrays.copyOf(parsedVersions, parsedVersions.length - numUnusable);
+
+            ususableMsg.insert(0, "Removed unsable entries from PREFERRED_FEATURE_VERSIONS [ ");
+            ususableMsg.append(" ]");
+            trace(ususableMsg.toString());
+>>>>>>> Merge of feature resolution unit and FAT test updates.
+        }
+    }
+
+    private static Map<String, String[]> parseNAV = new HashMap<String, String[]>();
 
     @Override
     public Result resolveFeatures(FeatureResolver.Repository repository, Collection<String> rootFeatures, Set<String> preResolved, boolean allowMultipleVersions) {
@@ -432,12 +477,12 @@ public class FeatureResolverImpl implements FeatureResolver {
      * @return A verification case created from the resolution parameters and
      * the resolution result.
      */
-    private VerifyCase asCase(Set<String> allowedMultiple,
-                              ProcessType processType,
-                              Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                              ProvisioningFeatureDefinition publicDef,
-                              Result result,
-                              long durationNs) {
+    public static VerifyCase asCase(Set<String> allowedMultiple,
+                                    ProcessType processType,
+                                    Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                                    ProvisioningFeatureDefinition publicDef,
+                                    Result result,
+                                    long durationNs) {
 
         // For now, only handle the distinction between null and an empty set.
         boolean allowMultiple = (allowedMultiple != null);
@@ -488,12 +533,16 @@ public class FeatureResolverImpl implements FeatureResolver {
                              Set<String> allowedMultipleVersions,
                              EnumSet<ProcessType> supportedProcessTypes) {
 
+        if (isBeta) {
+            verifyPreferredFeatures(repository);
+        }
+
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
-        if(isBeta){
+        if (isBeta) {
             verifyVersionlessEnvVar(repository);
         }
-        
+
         // this checks if the pre-resolved exists in the repo;
         // if one does not exist then we start over with an empty set of pre-resolved
         preResolved = checkPreResolvedExistAndSetFullName(preResolved, selectionContext);
@@ -807,7 +856,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (isBeta) {
             if (baseSymbolicName.startsWith("io.openliberty.internal.versionless.")) {
                 // parse and cache versionless feature versions
-                if (parsedPreferedVersions.length == 0) {
+                if (parsedPreferredVersions.length == 0) {
                     preferredVersion = "";
                     tolerates = new ArrayList<String>();
                 } else if ((tolerates = selectionContext.copyVersionless(baseSymbolicName)) != null) {
@@ -816,7 +865,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 } else {
                     preferredVersion = "";
                     tolerates = new ArrayList<String>();
-                    for (String[] nAV : parsedPreferedVersions) {
+                    for (String[] nAV : parsedPreferredVersions) {
                         if (baseSymbolicName.endsWith(nAV[0])) {
                             if (preferredVersion.isEmpty()) {
                                 preferredVersion = nAV[1];
@@ -831,6 +880,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                     allVersions.addAll(tolerates);
                     selectionContext.putVersionless(baseSymbolicName, allVersions);
                 }
+
                 if (preferredVersion.isEmpty()) {
                     if (!shownVersionlessError) {
                         shownVersionlessError = true;
@@ -869,7 +919,8 @@ public class FeatureResolverImpl implements FeatureResolver {
                 }
                 String toleratedSymbolicName = baseSymbolicName + '-' + tolerate;
                 ProvisioningFeatureDefinition toleratedCandidateDef = selectionContext.getRepository().getFeature(toleratedSymbolicName);
-                if ((toleratedCandidateDef != null) && !!!candidateNames.contains(toleratedCandidateDef.getSymbolicName()) && isAccessible(includingFeature, toleratedCandidateDef)) {
+                if ((toleratedCandidateDef != null) && !!!candidateNames.contains(toleratedCandidateDef.getSymbolicName())
+                    && isAccessible(includingFeature, toleratedCandidateDef)) {
                     checkForFullSymbolicName(toleratedCandidateDef, toleratedSymbolicName, chain.getLast());
                     isSingleton |= toleratedCandidateDef.isSingleton();
                     // Only check against the allowed tolerations if this candidate feature is public or protected (NOT private)
