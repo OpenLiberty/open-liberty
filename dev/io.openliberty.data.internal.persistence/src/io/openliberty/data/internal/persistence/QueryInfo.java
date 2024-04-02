@@ -43,6 +43,7 @@ import jakarta.data.exceptions.MappingException;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
+import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
@@ -321,7 +322,10 @@ public class QueryInfo {
                     String str = s.toString();
                     i--; // adjust for separate loop increment
 
-                    if ("this".equalsIgnoreCase(str)) {
+                    if ("id".equalsIgnoreCase(str) && ql.regionMatches(true, i + 1, "(THIS)", 0, 6)) {
+                        q.append(entityVar_).append(entityInfo.getAttributeName(By.ID, true));
+                        i += 6;
+                    } else if ("this".equalsIgnoreCase(str)) {
                         q.append(entityVar);
                     } else if (entityInfo.getAttributeName(str, false) == null) {
                         q.append(str);
