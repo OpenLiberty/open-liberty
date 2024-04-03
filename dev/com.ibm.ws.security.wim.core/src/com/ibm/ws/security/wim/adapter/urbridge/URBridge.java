@@ -163,6 +163,8 @@ public class URBridge implements Repository {
      */
     private static Map<String, String[]> defaultRDNProperties = null;
 
+    private static final int RACF_MAX_USER_LENGTH = 8;
+
     /*******************************************************************************************/
 
     private static void initializeSupportedEntities() {
@@ -1004,7 +1006,7 @@ public class URBridge implements Repository {
                     boolean isValidUser = false;
                     if (isSafRegistry()) {
                         try {
-                            isValidUser = userRegistry.isValidUser(pname);
+                            isValidUser = isValidSafUser(pname);
                         } catch (RegistryException e) {
                             if (tc.isDebugEnabled()) {
                                 Tr.debug(tc, SPI_PREFIX + METHODNAME, " principal, " + pname + ", not found in " + reposId);
@@ -1291,7 +1293,7 @@ public class URBridge implements Repository {
 
         if (isSafRegistry()) {
             try {
-                if (userRegistry.isValidUser(uniqueName)) {
+                if (isValidSafUser(uniqueName)) {
                     return true;
                 }
             } catch (Exception e) {
@@ -1340,7 +1342,7 @@ public class URBridge implements Repository {
 
         if (isSafRegistry()) {
             try {
-                if (userRegistry.isValidUser(entity)) {
+                if (isValidSafUser(entity)) {
                     List<String> returnValue = new ArrayList<String>();
                     returnValue.add(SchemaConstants.DO_PERSON_ACCOUNT);
                     returnValue.add(userRegistry.getUserSecurityName(entity)); // Handle SAF tokens.
@@ -1426,5 +1428,16 @@ public class URBridge implements Repository {
      */
     private boolean isSafRegistry() {
         return SAFRegistryImplClass.equalsIgnoreCase(userRegistry.getClass().getName());
+    }
+
+    private boolean isValidSafUser(String userSecurityName) throws RegistryException {
+        if(userSecurityName == null){
+            return false;
+        }
+        if (userSecurityName.trim().length() > RACF_MAX_USER_LENGTH){
+            Tr.debug(tc, "The user " + userSecurityName + " could not be checked in RACF because the username exceeds the maximun length of characters allowed by RACF.");
+            return false;
+        }
+        return userRegistry.isValidUser(userSecurityName);
     }
 }
