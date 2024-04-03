@@ -37,6 +37,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.persistence.model.Model;
+import jakarta.data.repository.Query;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
@@ -153,15 +154,16 @@ public abstract class EntityManagerBuilder implements Runnable {
      * @param staticMetamodels static metamodel class(es) per entity class.
      */
     public void populateStaticMetamodelClasses(Map<Class<?>, List<Class<?>>> staticMetamodels) {
-        for (Class<?> entityClass : entities) {
-            List<Class<?>> metamodelClasses = staticMetamodels.get(entityClass);
-            if (metamodelClasses != null) {
-                CompletableFuture<EntityInfo> entityInfoFuture = entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
-                EntityInfo entityInfo = entityInfoFuture.join();
-                for (Class<?> metamodelClass : metamodelClasses)
-                    Model.initialize(metamodelClass, entityInfo.attributeNames);
+        for (Class<?> entityClass : entities)
+            if (!Query.class.equals(entityClass)) {
+                List<Class<?>> metamodelClasses = staticMetamodels.get(entityClass);
+                if (metamodelClasses != null) {
+                    CompletableFuture<EntityInfo> entityInfoFuture = entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
+                    EntityInfo entityInfo = entityInfoFuture.join();
+                    for (Class<?> metamodelClass : metamodelClasses)
+                        Model.initialize(metamodelClass, entityInfo.attributeNames);
+                }
             }
-        }
     }
 
     /**

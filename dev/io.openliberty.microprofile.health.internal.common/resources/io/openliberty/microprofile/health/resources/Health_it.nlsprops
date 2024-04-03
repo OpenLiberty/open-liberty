@@ -2,7 +2,7 @@
 #COMPONENTPREFIX CWMMH
 #COMPONENTNAMEFOR CWMMH MicroProfile Health API 
 #NLS_ENCODING=UNICODE
-#NLS_MESSAGEFORMAT_NONE
+#NLS_MESSAGEFORMAT_VAR
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
@@ -37,12 +37,12 @@ OSGI_SERVICE_ERROR.explanation=Questo errore server interno viene emesso perch\u
 OSGI_SERVICE_ERROR.useraction=Riavviare il server con l'opzione clean.
 
 # The HealthCheck bean call method had an exception
-healthcheck.bean.call.exception.CWMMH0050E=CWMMH0050E: Il metodo HealthCheck {0} nell'applicazione {1} dal modulo {2} ha generato l'eccezione {3} con il seguente messaggio: {4}
+healthcheck.bean.call.exception.CWMMH0050E=CWMMH0050E: Il metodo HealthCheck {0} nell''applicazione {1} dal modulo {2} ha generato l''eccezione {3} con il seguente messaggio: {4}
 healthcheck.bean.call.exception.CWMMH0050E.explanation=Il metodo della chiamata specificato ha generato un'eccezione.
 healthcheck.bean.call.exception.CWMMH0050E.useraction=Esaminare il metodo della chiamata nel bean HealthCheck per identificare l'eccezione che si \u00e8 verificata.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMMH0052W=CWMMH0052W: L'HealthCheckResponse che implementa {0} nell'applicazione {1} nel modulo {2} ha riportato uno stato {3} con dati {4}.
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: L''HealthCheckResponse che implementa {0} nell''applicazione {1} nel modulo {2} ha riportato uno stato {3} con dati {4}.
 healthcheck.application.down.CWMMH0052W.explanation=A causa dello stato DOWN, il servizio di monitoraggio potrebbe intraprendere azioni su questo server.
 healthcheck.application.down.CWMMH0052W.useraction=Non \u00e8 richiesta alcuna azione da parte dell'utente.  Questa avvertenza \u00e8 una registrazione dello stato DOWN.
 

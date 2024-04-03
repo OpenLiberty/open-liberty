@@ -2,7 +2,7 @@
 #COMPONENTPREFIX CWMMH
 #COMPONENTNAMEFOR CWMMH MicroProfile Health API 
 #NLS_ENCODING=UNICODE
-#NLS_MESSAGEFORMAT_NONE
+#NLS_MESSAGEFORMAT_VAR
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
@@ -50,6 +50,7 @@ healthcheck.application.down.CWMMH0052W.useraction=\u7528\u6237\u4e0d\u9700\u898
 readiness.healthcheck.applications.not.started.down.CWMMH0053W=CWMMH0053W: \u51c6\u5907\u5c31\u7eea\u8fd0\u884c\u72b6\u51b5\u68c0\u67e5\u62a5\u544a\u4e86\u603b\u4f53\u72b6\u6001 DOWN\uff0c\u56e0\u4e3a\u4e0b\u5217\u5e94\u7528\u7a0b\u5e8f\u5c1a\u672a\u542f\u52a8\uff1a{0}
 readiness.healthcheck.applications.not.started.down.CWMMH0053W.explanation=\u51c6\u5907\u5c31\u7eea\u8fd0\u884c\u72b6\u51b5\u68c0\u67e5\u62a5\u544a\u4e86\u603b\u4f53\u72b6\u6001 DOWN\uff0c\u56e0\u4e3a\u6240\u6307\u5b9a\u7684\u5e94\u7528\u7a0b\u5e8f\u5c1a\u672a\u542f\u52a8\uff0c\u5e76\u4e14\u672a\u51c6\u5907\u597d\u5904\u7406\u8bf7\u6c42\u3002
 readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=\u6b64\u8b66\u544a\u662f DOWN \u72b6\u6001\u7684\u8bb0\u5f55\uff0c\u7528\u6237\u4e0d\u9700\u8981\u6267\u884c\u64cd\u4f5c\u3002\u8bf7\u4e00\u76f4\u7b49\u5230\u6240\u6709\u5e94\u7528\u7a0b\u5e8f\u90fd\u5df2\u542f\u52a8\u3002\u5728\u6240\u6709\u5e94\u7528\u7a0b\u5e8f\u90fd\u5df2\u542f\u52a8\u4e4b\u540e\uff0c\u5c06\u5904\u7406\u7528\u6237\u5b9a\u4e49\u7684\u8fd0\u884c\u72b6\u51b5\u68c0\u67e5\u3002
+
 # The Startup HealthCheck had a DOWN outcome, when applications are not started yet
 startup.healthcheck.applications.not.started.down.CWMMH0054W=CWMMH0054W: \u542f\u52a8\u8fd0\u884c\u72b6\u51b5\u68c0\u67e5\u62a5\u544a\u4e86\u603b\u4f53\u72b6\u6001 DOWN\uff0c\u56e0\u4e3a\u4e0b\u5217\u5e94\u7528\u7a0b\u5e8f\u5c1a\u672a\u542f\u52a8\uff1a{0}
 startup.healthcheck.applications.not.started.down.CWMMH0054W.explanation=\u542f\u52a8\u8fd0\u884c\u72b6\u51b5\u68c0\u67e5\u62a5\u544a\u4e86\u603b\u4f53\u72b6\u6001 DOWN\uff0c\u56e0\u4e3a\u6240\u6307\u5b9a\u7684\u5e94\u7528\u7a0b\u5e8f\u5c1a\u672a\u542f\u52a8\uff0c\u5e76\u4e14\u672a\u51c6\u5907\u597d\u5904\u7406\u8bf7\u6c42\u3002

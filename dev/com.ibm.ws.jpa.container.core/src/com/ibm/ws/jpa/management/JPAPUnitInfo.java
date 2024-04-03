@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2023 IBM Corporation and others.
+ * Copyright (c) 2005, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -84,6 +84,12 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     // Fully package qualified class name of the persistence provider used for this persistence
     // unit.
     private String ivProviderClassName = null;
+
+    // Persistence unit Qualifier
+    private List<String> ivQualifierClassNames = null;
+
+    // Persistence unit Scope
+    private String ivScopeClassName = null;
 
     // JTA DataSource object used, if specified.
     private DataSource ivJtaDataSource = null;
@@ -190,6 +196,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         ivApplInfo = applInfo;
         ivArchivePuId = puId;
         ivTxType = PersistenceUnitTransactionType.JTA;
+        ivQualifierClassNames = new ArrayList<String>();
         ivJarFileURLs = new ArrayList<URL>();
         ivManagedClassNames = new ArrayList<String>();
         ivMappingFileNames = new ArrayList<String>();
@@ -277,6 +284,46 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         // account the configuration property for the default provider and if that isn't set it
         // will call to the integration layer for the default.
         ivProviderClassName = trim(newValue == null ? getJPAComponent().getDefaultJPAProviderClassName() : newValue);
+    }
+
+    /**
+     * Returns the fully-qualified class names of annotations annotated
+     * {@code Qualifier}. Corresponds to the {@code qualifier} element in
+     * {@code persistence.xml}.
+     *
+     * @return the fully-qualified class names of the qualifier annotations,
+     *         or an empty list if no qualifier annotations were explicitly
+     *         specified
+     */
+    public final List<String> getQualifierAnnotationNames() {
+        return ivQualifierClassNames;
+    }
+
+    final void setQualifierAnnotationNames(List<String> list) {
+        ivQualifierClassNames.clear();
+        addQualifierClassName(list);
+    }
+
+    private void addQualifierClassName(List<String> list) {
+        for (String ormFName : list) {
+            ivQualifierClassNames.add(trim(ormFName));
+        }
+    }
+
+    /**
+     * Returns the fully-qualified class name of an annotation annotated
+     * {@code Scope} or {@code NormalScope}. Corresponds to the {@code scope}
+     * element in {@code persistence.xml}.
+     *
+     * @return the fully-qualified class name of the scope annotation,
+     *         or null if no scope was explicitly specified
+     */
+    public final String getScopeAnnotationName() {
+        return ivScopeClassName;
+    }
+
+    final void setScopeAnnotationName(String newValue) {
+        ivScopeClassName = (newValue == null) ? "" : trim(newValue);
     }
 
     // d473432.1 Ends
@@ -1146,6 +1193,7 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
         sbuf.append("\n Transaction Type     : ").append(ivTxType);
         sbuf.append("\n Description          : ").append(ivDesc);
         sbuf.append("\n Provider class name  : ").append(ivProviderClassName);
+        sbuf.append("\n Scope                : ").append(ivScopeClassName);
         sbuf.append("\n JTA Data Source      : ").append(ivJtaDataSourceJNDIName).append(" | ").append(ivJtaDataSource);
         sbuf.append("\n Non JTA Data Source  : ").append(ivNonJtaDataSourceJNDIName).append(" | ").append(ivNonJtaDataSource);
         sbuf.append("\n ExcludeUnlistedClass : ").append(ivExcludeUnlistedClasses);
@@ -1179,6 +1227,16 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
             first = true;
             for (String className : ivManagedClassNames) {
                 sbuf.append(first ? "" : ",").append(className);
+                first = false;
+            }
+        }
+        sbuf.append(']');
+
+        sbuf.append("\n Qualifier            : [");
+        if (ivQualifierClassNames != null) {
+            first = true;
+            for (String strQualifier : ivQualifierClassNames) {
+                sbuf.append(first ? "" : ",").append(strQualifier);
                 first = false;
             }
         }
