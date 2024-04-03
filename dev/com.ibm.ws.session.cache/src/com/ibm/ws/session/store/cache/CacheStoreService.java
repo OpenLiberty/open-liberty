@@ -49,6 +49,7 @@ import javax.transaction.UserTransaction;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -85,12 +86,12 @@ public class CacheStoreService implements Introspector, SessionStoreService {
 
     private volatile boolean completedPassivation = true;
 
-    private volatile Library library;
+    private Library library;
 
     final AtomicReference<ServiceReference<?>> monitorRef = new AtomicReference<ServiceReference<?>>();
 
-    volatile SerializationService serializationService;
-    private volatile CacheManagerService cacheManagerService;
+    SerializationService serializationService;
+    private CacheManagerService cacheManagerService;
 
     /**
      * Indicates whether or not the caching provider supports store by reference.
@@ -120,10 +121,10 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      * @param props   service properties
      */
     protected void activate(ComponentContext context, Map<String, Object> props) {
-        configureProperties(props);
+        processConfiguration(props);
     }
 
-    private void configureProperties(Map<String, Object> props) {
+    private void processConfiguration(Map<String, Object> props) {
         configurationProperties = new HashMap<String, Object>(props);
 
         Object scheduleInvalidationFirstHour = configurationProperties.get("scheduleInvalidationFirstHour");
@@ -146,11 +147,10 @@ public class CacheStoreService implements Introspector, SessionStoreService {
 
         isLibraryRefSet = props.containsKey(CONFIG_KEY_LIBRARY_REF);
     }
-    
-    protected void modified(Map<String, Object> props) {
-        configureProperties(props);
-    }
 
+    protected void modified(Map<String, Object> config) {
+        processConfiguration(config);
+    }
     /**
      * Performs deferred activation/initialization.
      */
@@ -196,6 +196,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                     for (Map.Entry<String, Object> entry : configurationProperties.entrySet()) {
                         String key = entry.getKey();
                         Object value = entry.getValue();
+
                         //properties start with properties.0.
                         if (key.length() > TOTAL_PREFIX_LENGTH && key.charAt(BASE_PREFIX_LENGTH) == '.' && key.startsWith(CONFIG_KEY_PROPERTIES)) {
                             key = key.substring(TOTAL_PREFIX_LENGTH);
@@ -548,7 +549,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         completedPassivation = isInProcessOfStopping;
     }
 
-    protected void setLibrary(Library library) {        
+    protected void setLibrary(Library library) {
         this.library = library;
     }
 
@@ -560,6 +561,10 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                     configureMonitoring(cacheName);
                 return null;
             });
+    }
+
+    protected void setConfigCondition(Condition configCondition) {
+        // do nothing; this is just a reference that we use to force the component to recycle
     }
 
     protected void setSerializationService(SerializationService serializationService) {
