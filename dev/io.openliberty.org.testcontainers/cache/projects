@@ -9,6 +9,7 @@ com.ibm.ws.concurrent.persistent_fat_locking
 com.ibm.ws.concurrent.persistent_fat_multiple
 com.ibm.ws.concurrent.persistent_fat_timers
 com.ibm.ws.couchdb_fat
+com.ibm.ws.gvt.rest_fat
 com.ibm.ws.install.featureUtility_fat
 com.ibm.ws.jdbc_fat
 com.ibm.ws.jdbc_fat_db2
@@ -126,8 +127,8 @@ com.ibm.ws.microprofile.reactive.messaging_fat
 com.ibm.ws.openapi.ui_fat
 com.ibm.ws.rest.handler.validator.cloudant_fat
 com.ibm.ws.security.acme_fat
-com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1
 com.ibm.ws.security.spnego_fat
+com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1
 com.ibm.ws.session.cache_fat_infinispan_container
 com.ibm.ws.transaction.cloud_fat.base
 com.ibm.ws.transaction.cloud_fat.db2.0

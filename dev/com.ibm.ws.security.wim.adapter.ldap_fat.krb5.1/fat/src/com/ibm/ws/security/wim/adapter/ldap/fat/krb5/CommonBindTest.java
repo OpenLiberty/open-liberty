@@ -124,15 +124,15 @@ public class CommonBindTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        ldapServerHostName = FATSuite.ldapkrb5.getHost();
+        ldapServerHostName = FATSuite.ldap.getHost();
         Log.info(c, "setUp", "setting ldap hostname to: " + ldapServerHostName);
 
         if (conn == null) {
             KdcConfig config = KdcConfig.getDefaultConfig();
             config.setUseUdp(false);
             config.setKdcPort(88);
-            config.setHostName(FATSuite.ldapkrb5.getHost());
-            Log.info(c, "setUp", "Setting KdcConfig hostname to: " + FATSuite.ldapkrb5.getHost());
+            config.setHostName(FATSuite.kerberos.getHost());
+            Log.info(c, "setUp", "Setting KdcConfig hostname to: " + FATSuite.kerberos.getHost());
             Set<EncryptionType> encryptionTypes = new HashSet<EncryptionType>();
             encryptionTypes.add(EncryptionType.AES128_CTS_HMAC_SHA1_96);
             encryptionTypes.add(EncryptionType.AES256_CTS_HMAC_SHA1_96);
@@ -146,13 +146,13 @@ public class CommonBindTest {
         Path krb5KeytabPath = Paths.get(server.getServerRoot(), "user17.cc");
         ticketCacheFile = krb5KeytabPath.toAbsolutePath().toString();
         assertNotNull("TicketCacheFile is null", ticketCacheFile);
-        FATSuite.ldapkrb5.copyFileFromContainer("/etc/user17.cc", ticketCacheFile);
+        FATSuite.ldap.copyFileFromContainer("/etc/user17.cc", ticketCacheFile);
         /// END getting ticket cache file from container
         Log.info(c, "setUp", "TicketCache file: " + ticketCacheFile);
         Log.info(c, "setUp", "TicketCache file contents: " + FileUtils.readFile(ticketCacheFile));
 
         File krb5ConfigFile = File.createTempFile("krb5", ".conf");
-        FATSuite.ldapkrb5.generateConf(Paths.get(krb5ConfigFile.getAbsolutePath()), false);
+        FATSuite.kerberos.generateConf(Paths.get(krb5ConfigFile.getAbsolutePath()), false);
         configFile = krb5ConfigFile.getAbsolutePath();
         assertNotNull("ConfigFile is null", configFile);
         Log.info(c, "setUp", "Config file: " + configFile);
@@ -187,6 +187,11 @@ public class CommonBindTest {
     public static void tearDown() throws Exception {
         try {
             if (server != null) {
+                Log.info(c, "tearDown", "copying ldap logs to liberty server folder");
+                Path ldapLogPath = Paths.get(server.getServerRoot(), "ldapstdout.log");
+                FATSuite.ldap.copyFileFromContainer("/etc/ldapstdout.log", ldapLogPath.toAbsolutePath().toString());
+                Path ldapErrLogPath = Paths.get(server.getServerRoot(), "ldapstderr.log");
+                FATSuite.ldap.copyFileFromContainer("/etc/ldapstderr.log", ldapErrLogPath.toAbsolutePath().toString());
                 Log.info(c, "tearDown", "stop strings provided: " + Arrays.toString(stopStrings));
                 server.stopServer(stopStrings);
             }
@@ -213,7 +218,7 @@ public class CommonBindTest {
         final String methodName = "createTicketCacheFile";
 
         Log.info(c, methodName, "Creating ticket cache for " + bindPrincipalName);
-        File ccFile = File.createTempFile(FATSuite.ldapkrb5.bindUserName + "Cache-", ".cc");
+        File ccFile = File.createTempFile(FATSuite.ldap.bindUserName + "Cache-", ".cc");
         if (FAT_TEST_LOCALRUN) {
             ccFile.deleteOnExit();
         }
@@ -221,10 +226,10 @@ public class CommonBindTest {
         kinit.setCredCacheFile(ccFile);
 
         //kinit.kinit("user1@EXAMPLE.COM", "admin");
-        Log.info(c, methodName, "calling kinit(" + bindPrincipalName + ", " + FATSuite.ldapkrb5.bindPassword + ")");
+        Log.info(c, methodName, "calling kinit(" + bindPrincipalName + ", " + FATSuite.ldap.bindPassword + ")");
         waitloop: for (int i = 1; i <= 5; i++) {
             try {
-                kinit.kinit(bindPrincipalName, FATSuite.ldapkrb5.bindPassword);
+                kinit.kinit(bindPrincipalName, FATSuite.ldap.bindPassword);
                 break waitloop;
             } catch (Exception e) {
                 Log.info(c, methodName, "kinit attempt:" + i + " failed with: " + e);

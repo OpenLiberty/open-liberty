@@ -21,7 +21,7 @@ fat.project: true
 #Ensure that a stub project is created in CL
 generate.replacement: true
 
-fat.test.container.images: zachhein/ldap-krb5-server:0.8
+fat.test.container.images: zachhein/ldap-server:0.1,zachhein/krb5-server:0.1
 
 -buildpath: \
 	io.openliberty.org.testcontainers;version=latest,\

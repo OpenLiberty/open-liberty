@@ -254,7 +254,7 @@ public class SimpleBindTest extends CommonBindTest {
 
         Log.info(c, testName.getMethodName(), "Swap to a different valid config file, LdapRegistry should process a modify.");
         File krb5ConfigFile = File.createTempFile("altConfig-krb5", ".conf");
-        FATSuite.ldapkrb5.generateConf(Paths.get(krb5ConfigFile.getAbsolutePath()), true);
+        FATSuite.kerberos.generateConf(Paths.get(krb5ConfigFile.getAbsolutePath()), true);
 
         String altConfigFile = krb5ConfigFile.getAbsolutePath();//ApacheDSandKDC.createConfigFile("altConfig-", KDC_PORT, true, false);
         kerb.configFile = altConfigFile;

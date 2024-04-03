@@ -1,0 +1,202 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.security.wim.adapter.ldap.fat.krb5;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import org.testcontainers.DockerClientFactory;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.Network;
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+
+import com.github.dockerjava.api.command.InspectContainerResponse;
+import com.github.dockerjava.api.model.ExposedPort;
+import com.github.dockerjava.api.model.InternetProtocol;
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
+import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.containers.SimpleLogConsumer;
+import componenttest.custom.junit.runner.FATRunner;
+
+public class KerberosContainer extends GenericContainer<KerberosContainer> {
+
+    private static final Class<?> c = KerberosContainer.class;
+
+    public static final String KRB5_REALM = "EXAMPLE.COM";
+    public static final String KRB5_KDC = "kerberos";
+    public static final String KRB5_PASS = "admin";
+
+    // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
+    private static final String IMAGE = "zachhein/krb5-server:0.1";
+
+    private int tcp_88;
+
+    public KerberosContainer(Network network) {
+        super(IMAGE);
+        withNetwork(network);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    protected void configure() {
+        //withExposedPorts(99, 464, 749);
+        withNetworkAliases(KRB5_KDC);
+        withCreateContainerCmdModifier(cmd -> {
+            cmd.withHostName(KRB5_KDC);
+        });
+        withEnv("KRB5_REALM", KRB5_REALM);
+        withEnv("KRB5_KDC", "localhost");
+        withEnv("KRB5_PASS", KRB5_PASS);
+
+        withLogConsumer(new SimpleLogConsumer(c, "krb5"));
+        waitingFor(new LogMessageWaitStrategy()
+                        .withRegEx("^.*KERB SETUP COMPLETE.*$")
+                        .withStartupTimeout(Duration.ofSeconds(FATRunner.FAT_TEST_LOCALRUN ? 15 : 300)));
+        withCreateContainerCmdModifier(cmd -> {
+
+            List<ExposedPort> exposedPorts = new ArrayList<ExposedPort>();
+            for (ExposedPort p : cmd.getExposedPorts()) {
+                Log.info(c, "configure", "ExposedPort=" + p.getPort());
+                exposedPorts.add(p);
+            }
+            exposedPorts.add(ExposedPort.tcp(88));
+            cmd.withExposedPorts(exposedPorts);
+
+            // Add previous port bindings and KDC and LDAP ports
+            Ports ports = cmd.getPortBindings();
+            int containerPort = 88;
+            int hostPort = 88;
+
+            String kdcPortMapping = String.format("%d:%d/%s", hostPort, containerPort, InternetProtocol.TCP);
+            Log.info(c, "configure", "adding KDC port mapping: " + kdcPortMapping);
+
+            Log.info(c, "configure", "PortBinding.parse(kdcPortMapping): " + PortBinding.parse(kdcPortMapping));
+            ports.add(PortBinding.parse(kdcPortMapping));
+
+            Log.info(c, "configure", "ports: " + ports);
+            cmd.withPortBindings(ports);
+
+            cmd.withHostName(KRB5_KDC);
+        });
+    }
+
+    @Override
+    protected void containerIsStarted(InspectContainerResponse containerInfo) {
+        String udp88 = containerInfo.getNetworkSettings().getPorts().getBindings().get(new ExposedPort(88, InternetProtocol.TCP))[0].getHostPortSpec();
+        tcp_88 = Integer.valueOf(udp88);
+    }
+
+    @Override
+    public void start() {
+        String dockerHostIp = DockerClientFactory.instance().dockerHostIpAddress();
+        withEnv("EXTERNAL_HOSTNAME", dockerHostIp);
+        Log.info(c, "start", "Using EXTERNAL_HOSTNAME=" + dockerHostIp);
+        super.start();
+    }
+
+    @Override
+    public Integer getMappedPort(int originalPort) {
+        // For this container assume we always want the UDP port when we ask for port 99
+        if (originalPort == 88) {
+            return tcp_88;
+        } else {
+            return super.getMappedPort(originalPort);
+        }
+    }
+
+    public void generateConf(Path outputPath, boolean optionalKdcPorts) throws IOException {
+        String conf = "[libdefaults]\n" +
+                      "        rdns = false\n" +
+                      "        renew_lifetime = 7d\n" +
+                      "        ticket_lifetime = 24h\n" +
+                      "        udp_preference_limit = 1\n" +
+                      "        ignore_acceptor_hostname = true\n" +
+                      "        dns_lookup_realm = false\n";
+        if (optionalKdcPorts)
+            conf += "        kdc_ports = " + FATSuite.kerberos.getMappedPort(88) + "\n";
+
+        conf += "        default_realm = " + KRB5_REALM.toUpperCase() + "\n" +
+                "\n" +
+                "# The following krb5.conf variables are only for MIT Kerberos.\n" +
+                "        kdc_timesync = 1\n" +
+                "        ccache_type = 4\n" +
+                "        forwardable = true\n" +
+                "        proxiable = false\n" +
+                "\n" +
+                "# The following libdefaults parameters are only for Heimdal Kerberos.\n" +
+                "        fcc-mit-ticketflags = true\n" +
+                "\n" +
+                "[realms]\n" +
+                "        " + KRB5_REALM.toUpperCase() + " = {\n" +
+                "                kdc = " + getHost() + ":" + getMappedPort(88) + "\n" +
+                "                admin_server = " + getHost() + "\n" +
+                //"                ldapserver_hostname = " + KRB5_KDC + "\n" +
+                "        }\n" +
+                "\n" +
+                //"[ldap]\n" +
+                //"        ldapserver_hostname = " + KRB5_KDC + "\n" +
+                //"\n" +
+                "[domain_realm]\n" +
+                "        ." + KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase() + "\n" +
+                "        " + KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase() + "\n";
+        outputPath.getParent().toFile().mkdirs();
+        Files.write(outputPath, conf.getBytes(StandardCharsets.UTF_8));
+        Log.info(c, "generateConf", "krb5.conf: \n" + conf);
+    }
+
+    public void origgenerateConf(Path outputPath) throws IOException {
+        String conf = "[libdefaults]\n" +
+                      "        rdns = false\n" +
+                      "        renew_lifetime = 7d\n" +
+                      "        ticket_lifetime = 24h\n" +
+                      "        dns_lookup_realm = false\n" +
+                      "        udp_preference_limit = 1\n" +
+                      "        default_realm = " + KRB5_REALM.toUpperCase() + "\n" +
+                      "\n" +
+                      "# The following krb5.conf variables are only for MIT Kerberos.\n" +
+                      "        kdc_timesync = 1\n" +
+                      "        ccache_type = 4\n" +
+                      "        forwardable = true\n" +
+                      "        proxiable = false\n" +
+                      "\n" +
+                      "# The following libdefaults parameters are only for Heimdal Kerberos.\n" +
+                      "        fcc-mit-ticketflags = true\n" +
+                      "\n" +
+                      "[realms]\n" +
+                      "        " + KRB5_REALM.toUpperCase() + " = {\n" +
+                      "                kdc = " + getHost() + ":" + getMappedPort(88) + "\n" +
+                      "                admin_server = " + getHost() + "\n" +
+                      "        }\n" +
+                      "\n" +
+                      "[domain_realm]\n" +
+                      "        ." + KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase() + "\n" +
+                      "        " + KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase() + "\n";
+        outputPath.getParent().toFile().mkdirs();
+        Files.write(outputPath, conf.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private static String readInputStream(InputStream is) {
+        @SuppressWarnings("resource")
+        Scanner s = new Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
+    }
+}

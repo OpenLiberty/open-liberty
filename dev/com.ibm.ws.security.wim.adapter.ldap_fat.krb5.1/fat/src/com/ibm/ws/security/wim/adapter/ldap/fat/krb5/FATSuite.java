@@ -52,7 +52,8 @@ public class FATSuite extends TestContainerSuite {
     public static String KDC_REALM = "EXAMPLE.COM";
 
     public static Network network;
-    public static LdapContainer ldapkrb5;
+    public static KerberosContainer kerberos;
+    public static LdapContainer ldap;
 
     static {
         // Needed for IBM JDK 8 support.
@@ -62,8 +63,10 @@ public class FATSuite extends TestContainerSuite {
     @BeforeClass
     public static void startKerberos() throws Exception {
         network = Network.newNetwork();
-        ldapkrb5 = new LdapContainer(network);
-        ldapkrb5.start();
+        kerberos = new KerberosContainer(network);
+        kerberos.start();
+        ldap = new LdapContainer(network);
+        ldap.start();
         //Wait 1 second for ldap / KDC to become ready
         Thread.sleep(1000);
         Log.info(FATSuite.class, "startKerberos", "Wait 1 second for ldap / KDC to become ready");
@@ -77,7 +80,8 @@ public class FATSuite extends TestContainerSuite {
             //TODO: remove
             //Log.info(FATSuite.class, "tearDown", "Sleeping 1000 seconds to allow time to check the container logs");
             //Thread.sleep(1000000);
-            ldapkrb5.stop();
+            ldap.stop();
+            kerberos.stop();
             network.close();
         } catch (Exception e) {
             if (firstError == null)
