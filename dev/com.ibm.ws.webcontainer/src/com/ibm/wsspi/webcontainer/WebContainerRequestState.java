@@ -39,7 +39,7 @@ public class WebContainerRequestState {
     private IExtendedRequest currentThreadsIExtendedRequest;
     private IExtendedResponse currentThreadsIExtendedResponse;
     // Each cookie has a Map of attributes
-    private Map<String,Map<String,String>> cookieAttributesMap = null;
+    private Map<String,HashMap<String,String>> cookieAttributesMap = null;
 
     public IExtendedResponse getCurrentThreadsIExtendedResponse() {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
@@ -232,7 +232,7 @@ public class WebContainerRequestState {
 
         String[] attribute = cookieAttributes.split("=");
         /*
-         * Beta: This method will start accepting "Parititioned" as a new attribute. It will need to be in the form "partitioned=boolean".
+         * Beta: This method will start accepting "Parititioned" as a new attribute. It will need to be in the form "partitioned=true/false".
          */
         if (ProductInfo.getBetaEdition()) { 
             if (!(attribute[0].equals("SameSite") || attribute[0].equals("Partitioned"))) {
@@ -245,7 +245,7 @@ public class WebContainerRequestState {
                 return;
             }
         }
-        
+
         if (cookieAttributesMap == null || cookieAttributesMap.isEmpty()) {
             cookieAttributesMap = new HashMap<String,HashMap<String,String>>();
             cookieAttributesMap.put(cookieName, new HashMap<String,String>() {{
@@ -253,6 +253,9 @@ public class WebContainerRequestState {
             }});
         } else {
             HashMap<String,String> existingAttributesMap = cookieAttributesMap.get(cookieName);
+            if(existingAttributesMap == null) { // avoid unit test NPEs
+                existingAttributesMap = new HashMap<String,String>();
+            }
             existingAttributesMap.put(attribute[0], attribute[1]);
             cookieAttributesMap.put(cookieName, existingAttributesMap);
         }

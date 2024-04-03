@@ -511,10 +511,18 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
 
                         if (ProductInfo.getBetaEdition()) {
                             // not null means a user defined config was set
-                            if(_smc.getSessionCookiePartitioned() != null) {
-                                if(sessionSameSiteCookie.equals(SameSiteCookie.NONE) && _smc.getSessionCookiePartitioned()) {
+                            if(_smc.getSessionCookiePartitioned() != null && sessionSameSiteCookie.equals(SameSiteCookie.NONE)) {
+                                if(_smc.getSessionCookiePartitioned()) {
+                                    if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+                                        LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[SET_COOKIE],
+                                                                             "Setting the Partitioned attribute to true");
+                                    }
                                     requestState.setCookieAttributes(cookie.getName(), "Partitioned=true");
-                                } else if(!_smc.getSessionCookiePartitioned()) { // if set to false
+                                } else { // set to false
+                                    if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+                                        LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[SET_COOKIE],
+                                                                             "Setting the Partitioned attribute to false");
+                                    }
                                     requestState.setCookieAttributes(cookie.getName(), "Partitioned=false");
                                 }
                             }

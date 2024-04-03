@@ -763,7 +763,7 @@ final public class SessionProperties {
             s = "cookiePartitioned";
             bValue = propertyToBoolean(xtpProperties.get(s));
             if (bValue != null) {
-                smc.setSessionCookiePartitioned(bValue.booleanValue());
+                smc.setSessionCookiePartitioned(bValue);
             }
         }
 
