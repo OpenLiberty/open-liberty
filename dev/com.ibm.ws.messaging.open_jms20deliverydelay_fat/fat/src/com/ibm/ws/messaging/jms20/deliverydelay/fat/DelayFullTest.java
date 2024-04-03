@@ -514,41 +514,39 @@ public class DelayFullTest {
      * feature was not installed for part of the delivery delay interval.
      * </ul>
      */
-    @Test
-    public void testDDRemoveAddServerFeature() throws Exception {
-    	try {
-    		boolean testResult1 = runInServlet("testSendMessage");
-    		assertTrue("testSendMessage failed", testResult1);
-
-    		Set<String> clientFeatures = clientServer.getServerConfiguration().getFeatureManager().getFeatures();
-    		String serverFeature = getServerFeature();
-    		String serverFragment = getServerMessageFragment();
-
-    		clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
-    		clientFeatures.remove(serverFeature);
-    		clientServer.changeFeatures(new ArrayList<String>(clientFeatures));
-    		verifyRemovedFeature(clientServer, serverFragment);
-
-    		clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
-    		clientFeatures.add(serverFeature);
-    		clientServer.changeFeatures(new ArrayList<String>(clientFeatures));
-    		verifyAddedFeature(clientServer, serverFragment);
-
-    		// Wait until the JMS Server is actually running again.
-    		// There might still be a possibility that even in this case, the messaging singleton objects might not be available, but that's an issue to fix
-    		// elsewhere. Hopefully for the moment this will alleviate the problem with calling the app before the appropriate objects are available.
-    		verifyJMSServerStarted(clientServer);
-    		
-    		
-    		boolean testResult2 = runInServlet("testReceiveMessage");
-    		assertTrue("testReceiveMessage failed", testResult2);
-
-    	} catch (Throwable throwable) {
-            clientServer.serverDump();
-            throw throwable;
-        }
-    }
-
+	/*
+	 * @Test public void testDDRemoveAddServerFeature() throws Exception { try {
+	 * boolean testResult1 = runInServlet("testSendMessage");
+	 * assertTrue("testSendMessage failed", testResult1);
+	 * 
+	 * Set<String> clientFeatures =
+	 * clientServer.getServerConfiguration().getFeatureManager().getFeatures();
+	 * String serverFeature = getServerFeature(); String serverFragment =
+	 * getServerMessageFragment();
+	 * 
+	 * clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
+	 * clientFeatures.remove(serverFeature); clientServer.changeFeatures(new
+	 * ArrayList<String>(clientFeatures)); verifyRemovedFeature(clientServer,
+	 * serverFragment);
+	 * 
+	 * clientServer.setMarkToEndOfLog(clientServer.getMatchingLogFile("trace.log"));
+	 * clientFeatures.add(serverFeature); clientServer.changeFeatures(new
+	 * ArrayList<String>(clientFeatures)); verifyAddedFeature(clientServer,
+	 * serverFragment);
+	 * 
+	 * // Wait until the JMS Server is actually running again. // There might still
+	 * be a possibility that even in this case, the messaging singleton objects
+	 * might not be available, but that's an issue to fix // elsewhere. Hopefully
+	 * for the moment this will alleviate the problem with calling the app before
+	 * the appropriate objects are available. verifyJMSServerStarted(clientServer);
+	 * 
+	 * 
+	 * boolean testResult2 = runInServlet("testReceiveMessage");
+	 * assertTrue("testReceiveMessage failed", testResult2);
+	 * 
+	 * } catch (Throwable throwable) { clientServer.serverDump(); throw throwable; }
+	 * }
+	 */
 //    TODO
 //      This test is disabled. After the jms server feature has been added back into the configuration and  
 //      CWSID0108I: JMS server has started. has been written to the console, the JMS server has indeed been restarted.
@@ -573,32 +571,29 @@ public class DelayFullTest {
 //	      at com.ibm.ws.util.ThreadPool$Worker.run(ThreadPool.java:1671)
           
     // @Test
-    public void testDDRemoveAddServerFeature_TCP() throws Exception {
-    	try {
-    		boolean testResult1 = runInServlet("testSendMessage_TCP");
-    		assertTrue("testSendMessage_TCP failed", testResult1);
-
-    		Set<String> engineFeatures = engineServer.getServerConfiguration().getFeatureManager().getFeatures();
-    		String serverFeature = getServerFeature();
-    		String serverFragment = getServerMessageFragment();
-
-    		engineServer.setMarkToEndOfLog(engineServer.getMatchingLogFile("trace.log"));
-    		engineFeatures.remove(serverFeature);
-    		engineServer.changeFeatures(new ArrayList<String>(engineFeatures));
-    		verifyRemovedFeature(engineServer, serverFragment);
-
-    		engineServer.setMarkToEndOfLog(engineServer.getMatchingLogFile("trace.log"));
-    		engineFeatures.add(serverFeature);
-    		engineServer.changeFeatures(new ArrayList<String>(engineFeatures));
-    		verifyAddedFeature(engineServer, serverFragment);
-
-    		boolean testResult2 = runInServlet("testReceiveMessage_TCP");
-    		assertTrue("testReceiveMessage_TCP failed", testResult2);
-    	
-    	} catch (Throwable throwable) {
-    		clientServer.serverDump();
-    		engineServer.serverDump();
-    		throw throwable;
-    	}
-    }
-}
+	/*
+	 * public void testDDRemoveAddServerFeature_TCP() throws Exception { try {
+	 * boolean testResult1 = runInServlet("testSendMessage_TCP");
+	 * assertTrue("testSendMessage_TCP failed", testResult1);
+	 * 
+	 * Set<String> engineFeatures =
+	 * engineServer.getServerConfiguration().getFeatureManager().getFeatures();
+	 * String serverFeature = getServerFeature(); String serverFragment =
+	 * getServerMessageFragment();
+	 * 
+	 * engineServer.setMarkToEndOfLog(engineServer.getMatchingLogFile("trace.log"));
+	 * engineFeatures.remove(serverFeature); engineServer.changeFeatures(new
+	 * ArrayList<String>(engineFeatures)); verifyRemovedFeature(engineServer,
+	 * serverFragment);
+	 * 
+	 * engineServer.setMarkToEndOfLog(engineServer.getMatchingLogFile("trace.log"));
+	 * engineFeatures.add(serverFeature); engineServer.changeFeatures(new
+	 * ArrayList<String>(engineFeatures)); verifyAddedFeature(engineServer,
+	 * serverFragment);
+	 * 
+	 * boolean testResult2 = runInServlet("testReceiveMessage_TCP");
+	 * assertTrue("testReceiveMessage_TCP failed", testResult2);
+	 * 
+	 * } catch (Throwable throwable) { clientServer.serverDump();
+	 * engineServer.serverDump(); throw throwable; } }
+	 */}

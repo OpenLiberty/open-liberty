@@ -43,6 +43,7 @@ import jakarta.data.exceptions.MappingException;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
+import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
@@ -147,7 +148,7 @@ public class QueryInfo {
     /**
      * Repository method to which this query information pertains.
      */
-    final Method method;
+    public final Method method;
 
     /**
      * Number of parameters to the JPQL query.
@@ -321,7 +322,10 @@ public class QueryInfo {
                     String str = s.toString();
                     i--; // adjust for separate loop increment
 
-                    if ("this".equalsIgnoreCase(str)) {
+                    if ("id".equalsIgnoreCase(str) && ql.regionMatches(true, i + 1, "(THIS)", 0, 6)) {
+                        q.append(entityVar_).append(entityInfo.getAttributeName(By.ID, true));
+                        i += 6;
+                    } else if ("this".equalsIgnoreCase(str)) {
                         q.append(entityVar);
                     } else if (entityInfo.getAttributeName(str, false) == null) {
                         q.append(str);
@@ -395,6 +399,69 @@ public class QueryInfo {
                 combined.add(entityInfo.getWithAttributeName(sort.property(), sort));
         }
         return combined;
+    }
+
+    /**
+     * Locate the entity information for the specified result class.
+     *
+     * @param entityType  single result type of a repository method, which is hopefully an entity class.
+     * @param entityInfos map of entity name to already-completed future for the entity information.
+     * @return entity information.
+     * @throws MappingException if the entity information is not found.
+     */
+    @Trivial
+    EntityInfo getEntityInfo(Class<?> entityType, Map<String, CompletableFuture<EntityInfo>> entityInfos) {
+        if (entityType != null) {
+            CompletableFuture<EntityInfo> failedFuture = null;
+            for (CompletableFuture<EntityInfo> future : entityInfos.values())
+                if (future.isCompletedExceptionally()) {
+                    failedFuture = future;
+                } else {
+                    EntityInfo info = future.join();
+                    if (entityType.equals(info.entityClass))
+                        return info;
+                }
+            if (failedFuture != null)
+                failedFuture.join(); // cause error to be raised
+        }
+        throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
+                                   " repository does not specify an entity class. To correct this, have the repository interface" +
+                                   " extend DataRepository or another built-in repository interface and supply the entity class" +
+                                   " as the first type variable."); // TODO NLS
+    }
+
+    /**
+     * Locate the entity information for the specified entity name.
+     *
+     * @param entityName  case sensitive entity name obtained from JDQL or JPQL.
+     * @param entityInfos map of entity name to already-completed future for the entity information.
+     * @return entity information.
+     * @throws MappingException if the entity information is not found.
+     */
+    @Trivial
+    EntityInfo getEntityInfo(String entityName, Map<String, CompletableFuture<EntityInfo>> entityInfos) {
+        CompletableFuture<EntityInfo> future = entityInfos.get(entityName);
+        if (future == null) {
+            // Identify possible case mismatch
+            for (String name : entityInfos.keySet())
+                if (entityName.equalsIgnoreCase(name))
+                    throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
+                                               " repository specifies query language that requires a " + entityName +
+                                               " entity that is not found but is a close match for the " + name +
+                                               " entity. Review the query language to ensure the correct entity name is used."); // TODO NLS
+
+            future = entityInfos.get(EntityInfo.FAILED);
+            if (future == null)
+                throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
+                                           " repository specifies query language that requires a " + entityName +
+                                           " entity that is not found. Check if " + entityName + " is the name of a valid entity." +
+                                           " To enable the entity to be found, give the repository a life cycle method that is" +
+                                           " annotated with one of " + "(Insert, Save, Update, Delete)" +
+                                           " and supply the entity as its parameter or have the repository extend" +
+                                           " DataRepository or another built-in repository interface with the entity class as the" +
+                                           " first type variable."); // TODO NLS
+        }
+        return future.join();
     }
 
     /**
@@ -537,10 +604,11 @@ public class QueryInfo {
     /**
      * Initializes query information based on the Query annotation.
      *
-     * @param ql        Query.value() might be JPQL or JDQL
-     * @param multiType the type of data structure that returns multiple results for this query. Otherwise null.
+     * @param ql          Query.value() might be JPQL or JDQL
+     * @param multiType   the type of data structure that returns multiple results for this query. Otherwise null.
+     * @param entityInfos map of entity name to entity information.
      */
-    void initForQuery(String ql, Class<?> multiType) {
+    void initForQuery(String ql, Class<?> multiType, Map<String, CompletableFuture<EntityInfo>> entityInfos) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         boolean isCursoredPage = CursoredPage.class.equals(multiType);
@@ -570,6 +638,7 @@ public class QueryInfo {
                     for (char ch; startAt < length && Character.isJavaIdentifierPart(ch = ql.charAt(startAt)); startAt++)
                         entityName.append(ch);
                     if (entityName.length() > 0) {
+                        entityInfo = getEntityInfo(entityName.toString(), entityInfos);
                         // skip whitespace
                         for (; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
                         if (startAt >= length) {
@@ -604,6 +673,12 @@ public class QueryInfo {
                 StringBuilder entityName = new StringBuilder();
                 for (char ch; startAt < length && Character.isJavaIdentifierPart(ch = ql.charAt(startAt)); startAt++)
                     entityName.append(ch);
+                if (entityName.length() > 0)
+                    entityInfo = getEntityInfo(entityName.toString(), entityInfos);
+                else if (entityInfo == null)
+                    throw new MappingException("@Repository " + method.getDeclaringClass().getName() + " does not specify an entity class." + // TODO NLS
+                                               " To correct this, have the repository interface extend DataRepository" +
+                                               " or another built-in repository interface and supply the entity class as the first parameter.");
                 if (startAt + 1 < length && entityName.length() > 0 && Character.isWhitespace(ql.charAt(startAt))) {
                     for (startAt++; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
                     if (startAt + 4 < length
@@ -721,7 +796,6 @@ public class QueryInfo {
             entityVar = "this";
             entityVar_ = "";
             hasWhere = whereLen > 0;
-            String entityName = entityInfo.name;
 
             // Locate the entity identifier variable (if present). Examples of FROM clause:
             // FROM EntityName
@@ -731,8 +805,10 @@ public class QueryInfo {
             if (startAt < from0 + fromLen) {
                 int entityName0 = startAt, entityNameLen = 0; // starts at EntityName
                 for (; startAt < from0 + fromLen && Character.isJavaIdentifierPart(ql.charAt(startAt)); startAt++);
-                if ((entityNameLen = startAt - entityName0) > 0 && startAt < from0 + fromLen) {
-                    entityName = ql.substring(entityName0, entityName0 + entityNameLen);
+                if ((entityNameLen = startAt - entityName0) > 0) {
+                    String entityName = ql.substring(entityName0, entityName0 + entityNameLen);
+                    entityInfo = getEntityInfo(entityName, entityInfos);
+
                     for (; startAt < from0 + fromLen && Character.isWhitespace(ql.charAt(startAt)); startAt++);
                     if (startAt < from0 + fromLen) {
                         int idVar0 = startAt, idVarLen = 0; // starts at the entity identifier variable
@@ -754,6 +830,11 @@ public class QueryInfo {
                     }
                 }
             }
+
+            if (entityInfo == null)
+                entityInfo = getEntityInfo(getSingleResultType(), entityInfos);
+
+            String entityName = entityInfo.name;
 
             if (trace && tc.isDebugEnabled()) {
                 Tr.debug(tc, ql, "JDQL query parts", // does not include GROUP BY, HAVING, or address subqueries or other complex JPQL

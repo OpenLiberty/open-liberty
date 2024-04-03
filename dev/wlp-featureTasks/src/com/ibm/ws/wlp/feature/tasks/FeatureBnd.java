@@ -508,9 +508,7 @@ public class FeatureBnd extends Task {
         vRange.append(major);
         vRange.append('.');
         vRange.append(minor);
-        vRange.append('.');
-        vRange.append(micro);
-        vRange.append(',');
+        vRange.append(".0,");
         vRange.append(major);
         vRange.append('.');
         vRange.append(minor + 1);

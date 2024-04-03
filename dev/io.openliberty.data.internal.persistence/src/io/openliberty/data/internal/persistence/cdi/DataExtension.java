@@ -295,7 +295,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 emBuilder = previous == null ? emBuilder : previous;
 
                 for (Class<?> entityClass : queriesPerEntityClass.keySet())
-                    emBuilder.add(entityClass);
+                    if (!Query.class.equals(entityClass))
+                        emBuilder.add(entityClass);
 
                 BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
                 Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>( //
@@ -332,6 +333,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
         Class<?> repositoryInterface = repositoryType.getJavaClass();
         Class<?> primaryEntityClass = null;
         Set<Class<?>> lifecycleMethodEntityClasses = new HashSet<>();
+        List<QueryInfo> queriesWithQueryAnno = new ArrayList<>();
+        List<QueryInfo> additionalQueriesForPrimaryEntity = new ArrayList<>();
 
         // Look for parameterized type variable of the repository interface, for example,
         // public interface MyRepository extends DataRepository<MyEntity, IdType>
@@ -415,14 +418,16 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
 
             Class<?> entityParamType = null;
 
+            boolean hasQueryAnno = method.isAnnotationPresent(Query.class);
+
             // Determine entity class from a lifecycle method parameter:
             if (method.getParameterCount() == 1
                 && !method.isDefault()
-                && method.getAnnotation(Query.class) == null
-                && (method.getAnnotation(Insert.class) != null
-                    || method.getAnnotation(Update.class) != null
-                    || method.getAnnotation(Save.class) != null
-                    || method.getAnnotation(Delete.class) != null)) {
+                && !hasQueryAnno
+                && (method.isAnnotationPresent(Insert.class)
+                    || method.isAnnotationPresent(Update.class)
+                    || method.isAnnotationPresent(Save.class)
+                    || method.isAnnotationPresent(Delete.class))) {
                 Class<?> c = method.getParameterTypes()[0];
                 if (Iterable.class.isAssignableFrom(c) || Stream.class.isAssignableFrom(c)) {
                     type = method.getGenericParameterTypes()[0];
@@ -468,27 +473,29 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 }
             }
 
-            QueryInfo queryInfo = new QueryInfo(method, entityParamType, returnArrayComponentType, returnTypeAtDepth);
+            List<QueryInfo> queries;
 
             if (entityClass == null) {
-                entityClass = Void.class;
+                queries = hasQueryAnno ? queriesWithQueryAnno : additionalQueriesForPrimaryEntity;
             } else {
                 // TODO find better ways of determining non-entities ******** require @Entity unless found on lifecycle method!!!!!!
                 String packageName = entityClass.getPackageName();
                 if (packageName.startsWith("java.")
                     || packageName.startsWith("jakarta.")
                     || entityClass.isPrimitive()
-                    || entityClass.isInterface())
-                    entityClass = Void.class;
+                    || entityClass.isInterface()) {
+                    queries = hasQueryAnno ? queriesWithQueryAnno : additionalQueriesForPrimaryEntity;
+                } else {
+                    queries = queriesPerEntity.get(entityClass);
+                    if (queries == null)
+                        queriesPerEntity.put(entityClass, queries = new ArrayList<>());
+                    if (hasQueryAnno)
+                        queries = queriesWithQueryAnno;
+                }
             }
 
-            List<QueryInfo> queries = queriesPerEntity.get(entityClass);
-            if (queries == null)
-                queriesPerEntity.put(entityClass, queries = new ArrayList<>());
-            queries.add(queryInfo);
+            queries.add(new QueryInfo(method, entityParamType, returnArrayComponentType, returnTypeAtDepth));
         }
-
-        List<QueryInfo> additionalQueriesForPrimaryEntity = queriesPerEntity.remove(Void.class);
 
         // Confirm which classes are actually entity classes and that all entity classes are supported
         boolean supportsAllEntities = true;
@@ -510,9 +517,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 if (c.getAnnotation(Entity.class) == null) {
                     // Our provider doesn't recognize this as an entity class. Find out if another provider might:
                     supportsAllEntities &= supportsEntity(c, repositoryType);
-                    if (additionalQueriesForPrimaryEntity == null)
-                        additionalQueriesForPrimaryEntity = new ArrayList<>();
-                    additionalQueriesForPrimaryEntity.addAll(entry.getValue());
+                    for (QueryInfo queryInfo : entry.getValue())
+                        additionalQueriesForPrimaryEntity.add(queryInfo);
                     it.remove();
                 } else {
                     // The entity class is supported because it is annotated with jakarta.persistence.Entity
@@ -537,7 +543,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 queriesPerEntity.put(primaryEntityClass, new ArrayList<>());
             }
 
-            if (additionalQueriesForPrimaryEntity != null && !additionalQueriesForPrimaryEntity.isEmpty())
+            if (!additionalQueriesForPrimaryEntity.isEmpty())
                 if (primaryEntityClass == null) {
                     throw new MappingException("@Repository " + repositoryInterface.getName() + " does not specify an entity class." + // TODO NLS
                                                " To correct this, have the repository interface extend DataRepository" + // TODO can we include example type vars?
@@ -549,6 +555,9 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                     else
                         queries.addAll(additionalQueriesForPrimaryEntity);
                 }
+
+            if (!queriesWithQueryAnno.isEmpty())
+                queriesPerEntity.put(Query.class, queriesWithQueryAnno);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
