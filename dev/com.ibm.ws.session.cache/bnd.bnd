@@ -26,6 +26,8 @@ Include-Resource: \
 
 instrument.classesExcludes: com/ibm/ws/session/store/cache/resources/*.class
 
+Bundle-Activator: com.ibm.ws.session.store.cache.Activator
+
 -dsannotations: \
   com.ibm.ws.session.store.cache.DefaultCachingProviderSupport,\
   com.ibm.ws.session.store.cache.RuntimeUpdateListenerImpl
@@ -34,16 +36,17 @@ Service-Component=com.ibm.ws.session.cache;\
   implementation:="com.ibm.ws.session.store.cache.CacheStoreService";\
   provide:="com.ibm.ws.session.SessionStoreService,com.ibm.wsspi.logging.Introspector";\
   configuration-policy:=optional;\
+  modified:=modified;\
   library=com.ibm.wsspi.library.Library;\
   monitor=com.ibm.ws.monitor.internal.MonitoringFrameworkExtender;\
   serializationService=com.ibm.ws.serialization.SerializationService;\
   userTransaction=javax.transaction.UserTransaction;\
   cacheManagerService=io.openliberty.jcache.CacheManagerService;\
+  configCondition=org.osgi.service.condition.Condition;\
   dynamic:="monitor,userTransaction";\
   greedy:="library,monitor,userTransaction";\
   optional:="monitor,userTransaction,cacheManagerService";\
-  modified:='modified';\
-  properties:="library.target=(id=unbound),monitor.target=(id=unbound),cacheManagerService.target=(id=unbound)"
+  properties:="library.target=(id=unbound),monitor.target=(id=unbound),cacheManagerService.target=(id=unbound),configCondition.target=(osgi.condition.id=session.cache.config)"
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.kernel.service,\
