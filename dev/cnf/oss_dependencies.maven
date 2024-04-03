@@ -875,6 +875,7 @@ org.springframework.boot:spring-boot:1.5.9.RELEASE
 org.springframework.boot:spring-boot:2.2.5.RELEASE
 org.springframework.boot:spring-boot:3.0.4
 org.springframework.boot:spring-boot:3.2.4
+org.springframework.data:spring-data-commons:3.0.4
 org.springframework.security:spring-security-config:4.2.3.RELEASE
 org.springframework.security:spring-security-config:5.2.2.RELEASE
 org.springframework.security:spring-security-config:6.0.3
