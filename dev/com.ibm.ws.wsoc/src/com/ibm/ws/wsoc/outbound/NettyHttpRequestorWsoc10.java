@@ -466,12 +466,12 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
          // TODO enable SSL
             if (requestor.endpointAddress.isSecure()) {
                 SSLEngine engine = null;
-                if(requestor.endpointAddress instanceof Wsoc21Address) {
-                    System.out.println("Attempting to pull sslcontext from Wsoc21Address");
-                    engine = ((Wsoc21Address) requestor.endpointAddress).getSSLContext().createSSLEngine();
-                    engine.setUseClientMode(true);
-                    System.out.println("Pulled engine: " + Objects.nonNull(engine));
-                }
+//                if(requestor.endpointAddress instanceof Wsoc21Address) {
+//                    System.out.println("Attempting to pull sslcontext from Wsoc21Address");
+//                    engine = ((Wsoc21Address) requestor.endpointAddress).getSSLContext().createSSLEngine();
+//                    engine.setUseClientMode(true);
+//                    System.out.println("Pulled engine: " + Objects.nonNull(engine));
+//                }
                 
                 
                 if (Objects.isNull(engine) &&( WsocOutboundChain.currentSSL == null || WsocOutboundChain.getNettyTlsProvider() == null)) { // This shouldn't happen

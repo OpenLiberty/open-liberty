@@ -92,7 +92,7 @@ Service-Component: \
     dynamic:='tcpOptions,httpOptions,sslOptions';\
     modified:='modified'; \
     optional:='sslOptions,sslSupport,nettyTlsProvider';\
-    greedy:='tcpOptions,httpOptions,sslOptions'; \
+    greedy:='nettyTlsProvider,tcpOptions,httpOptions,sslOptions'; \
     properties:='service.vendor=IBM', \
   ${bSymbolicName}_${replace;${bVersion};\\.;_}.ResourceProvider; \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \

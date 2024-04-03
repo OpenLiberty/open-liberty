@@ -89,7 +89,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static final String HTTP_KEEP_ALIVE_HANDLER_NAME = "httpKeepAlive";
     public static final String HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME = "H2C_UPGRADE_HANDLER";
 
-    long maxContentLength = Long.MAX_VALUE;
+    public static final long maxContentLength = Long.MAX_VALUE;
 
     private HttpPipelineInitializer(HttpPipelineBuilder builder) {
         Objects.requireNonNull(builder);
