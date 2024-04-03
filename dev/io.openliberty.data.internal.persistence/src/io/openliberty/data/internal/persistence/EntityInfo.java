@@ -37,6 +37,12 @@ import jakarta.persistence.Inheritance;
  * Entity information
  */
 class EntityInfo {
+    /**
+     * Constant to use in place of an entity name to indicate that processing of
+     * entity information has failed for an entity.
+     */
+    static final String FAILED = "ERROR!";
+
     // properly cased/qualified JPQL attribute name --> accessor methods or fields (multiple in the case of embeddable)
     final Map<String, List<Member>> attributeAccessors;
 

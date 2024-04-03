@@ -2,7 +2,7 @@
 #COMPONENTPREFIX CWMMH
 #COMPONENTNAMEFOR CWMMH MicroProfile Health API 
 #NLS_ENCODING=UNICODE
-#NLS_MESSAGEFORMAT_NONE
+#NLS_MESSAGEFORMAT_VAR
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################

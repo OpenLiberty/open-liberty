@@ -20,13 +20,14 @@ import java.util.Optional;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 
 /**
  * Repository with multiple entity classes,
- * and where this is no primary enitty class.
+ * and where this is no primary entity class.
  */
 @Repository
 public interface MultiRepository {
@@ -34,11 +35,20 @@ public interface MultiRepository {
     @Insert
     List<Person> add(Person... people);
 
+    @Query("SELECT COUNT(THIS) FROM Product")
+    long countEverything();
+
     @Insert
     Product create(Product prod);
 
     @Delete
     Optional<Person> deleteById(@By(ID) Long id);
+
+    @Query("DELETE FROM Product WHERE name LIKE ?1")
+    long destroy(String namePattern);
+
+    @Query("UPDATE Product SET price = price - :amount WHERE name LIKE :namePattern")
+    long discount(String namePattern, float amount);
 
     Optional<Package> findById(Number id);
 

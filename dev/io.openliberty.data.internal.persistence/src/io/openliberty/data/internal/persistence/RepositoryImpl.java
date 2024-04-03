@@ -36,6 +36,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -179,33 +180,72 @@ public class RepositoryImpl<R> implements InvocationHandler {
         Object validation = provider.validationService();
         this.validator = validation == null ? null : EntityValidator.newInstance(validation, repositoryInterface);
 
+        List<CompletableFuture<EntityInfo>> entityInfoFutures = new ArrayList<>();
+        List<QueryInfo> entitylessQueryInfos = null;
+
         for (Entry<Class<?>, List<QueryInfo>> entry : queriesPerEntityClass.entrySet()) {
             Class<?> entityClass = entry.getKey();
-            for (QueryInfo queryInfo : entry.getValue()) {
-                if (queryInfo.type == QueryInfo.Type.RESOURCE_ACCESS) {
-                    queryInfo.validateParams = validator != null && validator.isValidatable(queryInfo.method)[1];
-                    queries.put(queryInfo.method, CompletableFuture.completedFuture(queryInfo));
-                } else {
-                    boolean inheritance = entityClass.getAnnotation(Inheritance.class) != null; // TODO what do we need to do this with?
 
-                    Class<?> jpaEntityClass;
-                    Class<?> recordClass = null;
-                    if (entityClass.isRecord())
-                        try {
-                            recordClass = entityClass;
-                            jpaEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Entity");
-                        } catch (ClassNotFoundException x) {
-                            // TODO figure out how to best report this error to the user
-                            throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
-                        }
-                    else
-                        jpaEntityClass = entityClass;
+            if (Query.class.equals(entityClass)) {
+                entitylessQueryInfos = entry.getValue();
+            } else {
+                boolean inheritance = entityClass.getAnnotation(Inheritance.class) != null; // TODO what do we need to do this with?
 
-                    CompletableFuture<EntityInfo> entityInfoFuture = builder.entityInfoMap.computeIfAbsent(jpaEntityClass, EntityInfo::newFuture);
+                Class<?> jpaEntityClass;
+                Class<?> recordClass = null;
+                if (entityClass.isRecord())
+                    try {
+                        recordClass = entityClass;
+                        jpaEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Entity");
+                    } catch (ClassNotFoundException x) {
+                        // TODO figure out how to best report this error to the user
+                        throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
+                    }
+                else
+                    jpaEntityClass = entityClass;
 
-                    queries.put(queryInfo.method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(queryInfo),
-                                                                               this::completeQueryInfo));
+                CompletableFuture<EntityInfo> entityInfoFuture = builder.entityInfoMap.computeIfAbsent(jpaEntityClass, EntityInfo::newFuture);
+                entityInfoFutures.add(entityInfoFuture);
+
+                for (QueryInfo queryInfo : entry.getValue()) {
+                    if (queryInfo.type == QueryInfo.Type.RESOURCE_ACCESS) {
+                        queryInfo.validateParams = validator != null && validator.isValidatable(queryInfo.method)[1];
+                        queries.put(queryInfo.method, CompletableFuture.completedFuture(queryInfo));
+                    } else {
+                        queries.put(queryInfo.method, entityInfoFuture.thenCombine(CompletableFuture.completedFuture(queryInfo),
+                                                                                   this::completeQueryInfo));
+                    }
                 }
+            }
+        }
+
+        if (entitylessQueryInfos != null) {
+            if (entityInfoFutures.isEmpty()) {
+                MappingException x = new MappingException("@Repository " + repositoryInterface.getName() + " does not specify an entity class." + // TODO NLS
+                                                          " To correct this, have the repository interface extend DataRepository" +
+                                                          " or another built-in repository interface and supply the entity class as the first parameter.");
+                for (QueryInfo queryInfo : entitylessQueryInfos)
+                    queries.put(queryInfo.method, CompletableFuture.failedFuture(x));
+            }
+
+            CompletableFuture<?>[] futures = entityInfoFutures.toArray(new CompletableFuture<?>[entityInfoFutures.size()]);
+            CompletableFuture<Map<String, CompletableFuture<EntityInfo>>> allEntityInfo = CompletableFuture.allOf(futures) //
+                            .handle((ignore, x) -> {
+                                Map<String, CompletableFuture<EntityInfo>> entityInfos = new HashMap<>();
+                                for (CompletableFuture<EntityInfo> future : entityInfoFutures) {
+                                    if (future.isCompletedExceptionally())
+                                        entityInfos.putIfAbsent(EntityInfo.FAILED, future);
+                                    else if (future.isDone())
+                                        entityInfos.put(future.join().name, future);
+                                    else
+                                        entityInfos.putIfAbsent(EntityInfo.FAILED, CompletableFuture.failedFuture(x));
+                                }
+                                return entityInfos;
+                            });
+            for (QueryInfo queryInfo : entitylessQueryInfos) {
+                queries.put(queryInfo.method,
+                            allEntityInfo.thenCombine(CompletableFuture.completedFuture(queryInfo),
+                                                      this::completeQueryInfo));
             }
         }
     }
@@ -266,173 +306,204 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param queryInfo  partially populated query information
      * @return information about the query.
      */
+    @Trivial
     private QueryInfo completeQueryInfo(EntityInfo entityInfo, QueryInfo queryInfo) {
-        queryInfo.entityInfo = entityInfo;
+        return completeQueryInfo(Collections.singletonMap(entityInfo.name, CompletableFuture.completedFuture(entityInfo)),
+                                 queryInfo);
+    }
 
-        if (validator != null) {
-            boolean[] v = validator.isValidatable(queryInfo.method);
-            queryInfo.validateParams = v[0];
-            queryInfo.validateResult = v[1];
-        }
+    /**
+     * Gathers the information that is needed to perform the query that the repository method represents.
+     *
+     * @param entityInfos map of entity name to entity information.
+     * @param queryInfo   partially populated query information
+     * @return information about the query.
+     */
+    @FFDCIgnore(Throwable.class) // TODO look into these failures and decide if FFDC should be enabled
+    @Trivial
+    private QueryInfo completeQueryInfo(Map<String, CompletableFuture<EntityInfo>> entityInfos, QueryInfo queryInfo) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "completeQueryInfo", entityInfos, queryInfo);
 
-        Method method = queryInfo.method;
-        Class<?> multiType = queryInfo.getMultipleResultType();
-        boolean countPages = Page.class.equals(multiType) || CursoredPage.class.equals(multiType);
-        StringBuilder q = null;
+        try {
+            queryInfo.entityInfo = entityInfos.size() == 1 //
+                            ? entityInfos.values().iterator().next().join() //
+                            : null; // defer to processing of Query value
 
-        // TODO would it be more efficient to invoke method.getAnnotations() once?
-
-        // spec-defined annotation types
-        Delete delete = method.getAnnotation(Delete.class);
-        Find find = method.getAnnotation(Find.class);
-        Insert insert = method.getAnnotation(Insert.class);
-        Update update = method.getAnnotation(Update.class);
-        Save save = method.getAnnotation(Save.class);
-        Query query = method.getAnnotation(Query.class);
-        OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
-
-        // experimental annotation types
-        Count count = method.getAnnotation(Count.class);
-        Exists exists = method.getAnnotation(Exists.class);
-        Select select = method.getAnnotation(Select.class);
-
-        Annotation methodTypeAnno = queryInfo.validateAnnotationCombinations(delete, insert, update, save,
-                                                                             find, query, orderBy,
-                                                                             count, exists, select);
-
-        if (query != null) { // @Query annotation
-            queryInfo.initForQuery(query.value(), multiType);
-        } else if (save != null) { // @Save annotation
-            queryInfo.init(Save.class, QueryInfo.Type.SAVE);
-        } else if (insert != null) { // @Insert annotation
-            queryInfo.init(Insert.class, QueryInfo.Type.INSERT);
-        } else if (queryInfo.entityParamType != null) {
-            if (update != null) { // @Update annotation
-                q = generateUpdateEntity(queryInfo);
-            } else if (delete != null) { // @Delete annotation
-                q = generateDeleteEntity(queryInfo);
-            } else { // should be unreachable
-                throw new UnsupportedOperationException("The " + method.getName() + " method of the " + repositoryInterface.getName() +
-                                                        " repository interface must be annotated with one of " +
-                                                        "(Delete, Insert, Save, Update)" +
-                                                        " because the method's parameter accepts entity instances. The following" +
-                                                        " annotations were found: " + Arrays.toString(method.getAnnotations()));
+            if (validator != null) {
+                boolean[] v = validator.isValidatable(queryInfo.method);
+                queryInfo.validateParams = v[0];
+                queryInfo.validateResult = v[1];
             }
-        } else {
-            if (methodTypeAnno != null) {
-                // Query by Parameters
-                q = generateQueryFromMethodParams(queryInfo, methodTypeAnno, countPages);//keyset queries before orderby
+
+            Method method = queryInfo.method;
+            Class<?> multiType = queryInfo.getMultipleResultType();
+            boolean countPages = Page.class.equals(multiType) || CursoredPage.class.equals(multiType);
+            StringBuilder q = null;
+
+            // TODO would it be more efficient to invoke method.getAnnotations() once?
+
+            // spec-defined annotation types
+            Delete delete = method.getAnnotation(Delete.class);
+            Find find = method.getAnnotation(Find.class);
+            Insert insert = method.getAnnotation(Insert.class);
+            Update update = method.getAnnotation(Update.class);
+            Save save = method.getAnnotation(Save.class);
+            Query query = method.getAnnotation(Query.class);
+            OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
+
+            // experimental annotation types
+            Count count = method.getAnnotation(Count.class);
+            Exists exists = method.getAnnotation(Exists.class);
+            Select select = method.getAnnotation(Select.class);
+
+            Annotation methodTypeAnno = queryInfo.validateAnnotationCombinations(delete, insert, update, save,
+                                                                                 find, query, orderBy,
+                                                                                 count, exists, select);
+
+            if (query != null) { // @Query annotation
+                queryInfo.initForQuery(query.value(), multiType, entityInfos);
+            } else if (save != null) { // @Save annotation
+                queryInfo.init(Save.class, QueryInfo.Type.SAVE);
+            } else if (insert != null) { // @Insert annotation
+                queryInfo.init(Insert.class, QueryInfo.Type.INSERT);
+            } else if (queryInfo.entityParamType != null) {
+                if (update != null) { // @Update annotation
+                    q = generateUpdateEntity(queryInfo);
+                } else if (delete != null) { // @Delete annotation
+                    q = generateDeleteEntity(queryInfo);
+                } else { // should be unreachable
+                    throw new UnsupportedOperationException("The " + method.getName() + " method of the " + repositoryInterface.getName() +
+                                                            " repository interface must be annotated with one of " +
+                                                            "(Delete, Insert, Save, Update)" +
+                                                            " because the method's parameter accepts entity instances. The following" +
+                                                            " annotations were found: " + Arrays.toString(method.getAnnotations()));
+                }
             } else {
-                // Query by Method Name
-                q = generateQueryFromMethodName(queryInfo, countPages);
-            }
-
-            // TODO did we break the following? Maybe move this into the above methods?
-            // @Select annotation only
-            if (q == null && queryInfo.type == null && select != null) {
-                queryInfo.type = QueryInfo.Type.FIND;
-                q = generateSelectClause(queryInfo, select);
-                if (countPages)
-                    generateCount(queryInfo, null);
-            } else if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE
-                       && multiType != null
-                       && Stream.class.isAssignableFrom(multiType)) {
-                throw new UnsupportedOperationException("The " + method.getName() + " method of the " + repositoryInterface.getName() +
-                                                        " repository interface cannot use the " +
-                                                        method.getReturnType().getName() + " return type for a delete operation.");
-            }
-        }
-
-        // If we don't already know from generating the JPQL, find out how many
-        // parameters the JPQL takes and which parameters are named parameters.
-        if (query != null || queryInfo.paramNames != null) {
-            int initialParamCount = queryInfo.paramCount;
-            Parameter[] params = method.getParameters();
-            List<Integer> paramPositions = null;
-            Class<?> paramType;
-            boolean hasParamAnnotation = false;
-            for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(paramType = params[i].getType()); i++) {
-                Param param = params[i].getAnnotation(Param.class);
-                hasParamAnnotation |= param != null;
-                String paramName = param == null ? null : param.value();
-                if (param == null && queryInfo.jpql != null && params[i].isNamePresent()) {
-                    String name = params[i].getName();
-                    if (paramPositions == null)
-                        paramPositions = getParameterPositions(queryInfo.jpql);
-                    for (int p = 0; p < paramPositions.size() && paramName == null; p++) {
-                        int pos = paramPositions.get(p); // position at which the named parameter name must appear
-                        int next = pos + name.length(); // the next character must not be alphanumeric for the name to be a match
-                        if (queryInfo.jpql.regionMatches(paramPositions.get(p), name, 0, name.length())
-                            && (next >= queryInfo.jpql.length() || !Character.isLetterOrDigit(queryInfo.jpql.charAt(next)))) {
-                            paramName = name;
-                            paramPositions.remove(p);
-                        }
-                    }
+                if (methodTypeAnno != null) {
+                    // Query by Parameters
+                    q = generateQueryFromMethodParams(queryInfo, methodTypeAnno, countPages);//keyset queries before orderby
+                } else {
+                    // Query by Method Name
+                    q = generateQueryFromMethodName(queryInfo, countPages);
                 }
-                if (paramName != null) {
-                    if (queryInfo.paramNames == null)
-                        queryInfo.paramNames = new ArrayList<>();
-                    if (entityInfo.idClassAttributeAccessors != null && paramType.equals(entityInfo.idType))
-                        // TODO is this correct to do when @Query has a named parameter with type of the IdClass?
-                        // It seems like the JPQL would not be consistent.
-                        for (int p = 1, numIdClassParams = entityInfo.idClassAttributeAccessors.size(); p <= numIdClassParams; p++) {
-                            queryInfo.paramNames.add(new StringBuilder(paramName).append('_').append(p).toString());
-                            if (p > 1) {
-                                queryInfo.paramCount++;
-                                queryInfo.paramAddedCount++;
-                            }
-                        }
-                    else
-                        queryInfo.paramNames.add(paramName);
-                }
-                queryInfo.paramCount++;
 
-                if (initialParamCount != 0)
-                    throw new MappingException("Cannot mix positional and named parameters on repository method " +
-                                               method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
-
-                int numParamNames = queryInfo.paramNames == null ? 0 : queryInfo.paramNames.size();
-                if (numParamNames > 0 && numParamNames != queryInfo.paramCount)
-                    if (hasParamAnnotation) {
-                        throw new MappingException("Cannot mix positional and named parameters on repository method " +
-                                                   method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
-                    } else { // we might have mistaken a literal value for a named parameter
-                        queryInfo.paramNames = null;
-                        queryInfo.paramCount -= queryInfo.paramAddedCount;
-                        queryInfo.paramAddedCount = 0;
-                    }
-            }
-        }
-
-        // The @OrderBy annotation from Jakarta Data provides sort criteria statically
-        if (orderBy.length > 0) {
-            //queryInfo.type = queryInfo.type == null ? QueryInfo.Type.FIND : queryInfo.type;
-            queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>(orderBy.length + 2) : queryInfo.sorts;
-            if (q == null)
-                if (queryInfo.jpql == null) {
-                    q = generateSelectClause(queryInfo, select); // TODO can select ever be present here and not already handled by other code path?
+                // TODO did we break the following? Maybe move this into the above methods?
+                // @Select annotation only
+                if (q == null && queryInfo.type == null && select != null) {
+                    queryInfo.type = QueryInfo.Type.FIND;
+                    q = generateSelectClause(queryInfo, select);
                     if (countPages)
                         generateCount(queryInfo, null);
-                } else {
-                    q = new StringBuilder(queryInfo.jpql);
+                } else if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE
+                           && multiType != null
+                           && Stream.class.isAssignableFrom(multiType)) {
+                    throw new UnsupportedOperationException("The " + method.getName() + " method of the " + repositoryInterface.getName() +
+                                                            " repository interface cannot use the " +
+                                                            method.getReturnType().getName() + " return type for a delete operation.");
                 }
+            }
 
-            for (int i = 0; i < orderBy.length; i++)
-                queryInfo.addSort(orderBy[i].ignoreCase(), orderBy[i].value(), orderBy[i].descending());
+            // If we don't already know from generating the JPQL, find out how many
+            // parameters the JPQL takes and which parameters are named parameters.
+            if (query != null || queryInfo.paramNames != null) {
+                int initialParamCount = queryInfo.paramCount;
+                Parameter[] params = method.getParameters();
+                List<Integer> paramPositions = null;
+                Class<?> paramType;
+                boolean hasParamAnnotation = false;
+                for (int i = 0; i < params.length && !SPECIAL_PARAM_TYPES.contains(paramType = params[i].getType()); i++) {
+                    Param param = params[i].getAnnotation(Param.class);
+                    hasParamAnnotation |= param != null;
+                    String paramName = param == null ? null : param.value();
+                    if (param == null && queryInfo.jpql != null && params[i].isNamePresent()) {
+                        String name = params[i].getName();
+                        if (paramPositions == null)
+                            paramPositions = getParameterPositions(queryInfo.jpql);
+                        for (int p = 0; p < paramPositions.size() && paramName == null; p++) {
+                            int pos = paramPositions.get(p); // position at which the named parameter name must appear
+                            int next = pos + name.length(); // the next character must not be alphanumeric for the name to be a match
+                            if (queryInfo.jpql.regionMatches(paramPositions.get(p), name, 0, name.length())
+                                && (next >= queryInfo.jpql.length() || !Character.isLetterOrDigit(queryInfo.jpql.charAt(next)))) {
+                                paramName = name;
+                                paramPositions.remove(p);
+                            }
+                        }
+                    }
+                    if (paramName != null) {
+                        if (queryInfo.paramNames == null)
+                            queryInfo.paramNames = new ArrayList<>();
+                        EntityInfo entityInfo = queryInfo.entityInfo;
+                        if (entityInfo.idClassAttributeAccessors != null && paramType.equals(entityInfo.idType))
+                            // TODO is this correct to do when @Query has a named parameter with type of the IdClass?
+                            // It seems like the JPQL would not be consistent.
+                            for (int p = 1, numIdClassParams = entityInfo.idClassAttributeAccessors.size(); p <= numIdClassParams; p++) {
+                                queryInfo.paramNames.add(new StringBuilder(paramName).append('_').append(p).toString());
+                                if (p > 1) {
+                                    queryInfo.paramCount++;
+                                    queryInfo.paramAddedCount++;
+                                }
+                            }
+                        else
+                            queryInfo.paramNames.add(paramName);
+                    }
+                    queryInfo.paramCount++;
 
-            if (!queryInfo.hasDynamicSortCriteria())
-                generateOrderBy(queryInfo, q);
+                    if (initialParamCount != 0)
+                        throw new MappingException("Cannot mix positional and named parameters on repository method " +
+                                                   method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
+
+                    int numParamNames = queryInfo.paramNames == null ? 0 : queryInfo.paramNames.size();
+                    if (numParamNames > 0 && numParamNames != queryInfo.paramCount)
+                        if (hasParamAnnotation) {
+                            throw new MappingException("Cannot mix positional and named parameters on repository method " +
+                                                       method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
+                        } else { // we might have mistaken a literal value for a named parameter
+                            queryInfo.paramNames = null;
+                            queryInfo.paramCount -= queryInfo.paramAddedCount;
+                            queryInfo.paramAddedCount = 0;
+                        }
+                }
+            }
+
+            // The @OrderBy annotation from Jakarta Data provides sort criteria statically
+            if (orderBy.length > 0) {
+                //queryInfo.type = queryInfo.type == null ? QueryInfo.Type.FIND : queryInfo.type;
+                queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>(orderBy.length + 2) : queryInfo.sorts;
+                if (q == null)
+                    if (queryInfo.jpql == null) {
+                        q = generateSelectClause(queryInfo, select); // TODO can select ever be present here and not already handled by other code path?
+                        if (countPages)
+                            generateCount(queryInfo, null);
+                    } else {
+                        q = new StringBuilder(queryInfo.jpql);
+                    }
+
+                for (int i = 0; i < orderBy.length; i++)
+                    queryInfo.addSort(orderBy[i].ignoreCase(), orderBy[i].value(), orderBy[i].descending());
+
+                if (!queryInfo.hasDynamicSortCriteria())
+                    generateOrderBy(queryInfo, q);
+            }
+
+            queryInfo.jpql = q == null ? queryInfo.jpql : q.toString();
+
+            if (queryInfo.type == null)
+                throw new MappingException("Repository method name " + method.getName() +
+                                           " does not map to a valid query. Some examples of valid method names are:" +
+                                           " save(entity), findById(id), findByPriceLessThanEqual(maxPrice), deleteById(id)," +
+                                           " existsById(id), countByPriceBetween(min, max), updateByIdSetPrice(id, newPrice)"); // TODO NLS
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "completeQueryInfo", queryInfo);
+            return queryInfo;
+        } catch (Throwable x) {
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc, "completeQueryInfo", x);
+            throw x;
         }
 
-        queryInfo.jpql = q == null ? queryInfo.jpql : q.toString();
-
-        if (queryInfo.type == null)
-            throw new MappingException("Repository method name " + method.getName() +
-                                       " does not map to a valid query. Some examples of valid method names are:" +
-                                       " save(entity), findById(id), findByPriceLessThanEqual(maxPrice), deleteById(id)," +
-                                       " existsById(id), countByPriceBetween(min, max), updateByIdSetPrice(id, newPrice)"); // TODO NLS
-
-        return queryInfo;
     }
 
     /**
