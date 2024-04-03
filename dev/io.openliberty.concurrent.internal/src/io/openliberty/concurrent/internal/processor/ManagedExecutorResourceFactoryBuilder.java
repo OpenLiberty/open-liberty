@@ -31,6 +31,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.concurrent.WSManagedExecutorService;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -217,7 +218,7 @@ public class ManagedExecutorResourceFactoryBuilder implements ResourceFactoryBui
         concurrencyPolicyProps.put("maxWaitForEnqueue", 0L);
         concurrencyPolicyProps.put("runIfQueueFull", false);
 
-        if (Boolean.TRUE.equals(virtual)) { // only available in Concurrency 3.1+
+        if (Boolean.TRUE.equals(virtual) && JavaInfo.majorVersion() >= 21) { // only available in Concurrency 3.1+ and Java 21+
             concurrencyPolicyProps.put("virtual", virtual);
             // maxPolicy unspecified makes the policy conditional on whether or not the submitter thread is virtual
             // TODO remove the following once unspecified is supported
