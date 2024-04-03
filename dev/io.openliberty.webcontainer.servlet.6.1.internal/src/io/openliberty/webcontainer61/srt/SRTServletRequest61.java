@@ -60,7 +60,7 @@ public class SRTServletRequest61 extends SRTServletRequest60 implements HttpServ
      * @see jakarta.servlet.ServletRequest#getRequestDispatcher​(String)
      */
     @Override
-    public RequestDispatcher getRequestDispatcher​(String path) {
+    public RequestDispatcher getRequestDispatcher(String path) {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
             logger.entering(CLASS_NAME, "getRequestDispatcher", " path [" + path + "] " + this);
         }

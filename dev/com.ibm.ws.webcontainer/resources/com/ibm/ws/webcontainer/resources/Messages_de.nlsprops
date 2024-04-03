@@ -1632,4 +1632,14 @@ redirect.location.cannot.be.null.useraction=Aktualisieren Sie die Umleitungsposi
 
 sendRedirect.hyper.text.url=<html><body><p>Umleitung an <a href="{0}"></a></p></body></html>
 
-query.or.post.is.null=Anforderungsabfragezeichenfolge oder POST-Daten sind null.
+query.or.post.is.null=CWWWC0009E: Die Abfragezeichenfolge der HTTP -Anforderung oder die HTTP -POST-Anforderungsdaten sind null.
+query.or.post.is.null.explanation=Die Anwendung hat versucht, eine HTTP -Anforderungsabfragezeichenfolge mit Nullwert oder einen HTTP -POST-Anforderungshauptteil mit Nullwert zu parsen.
+query.or.post.is.null.useraction=Der Client muss eine HTTP -Anforderungsabfragezeichenfolge ungleich null oder einen HTTP POST-Anforderungshauptteil ungleich null senden.
+
+read.write.bytebuffer.null=CWWWC0010E: Ein Versuch, aus einer InputStream -Operation zu lesen oder in eine OutputStream -Operation zu schreiben, ist fehlgeschlagen, da ein Variablenargument ByteBuffer -Instanz null war.
+read.write.bytebuffer.null.explanation=Das variable Argument ByteBuffer -Instanz, das an die Lese-oder Schreib-API \u00fcbergeben wird, darf nicht null sein.
+read.write.bytebuffer.null.useraction=\u00c4ndern Sie den Anwendungscode, um eine ByteBuffer -Instanz ungleich null zu erstellen, die an die Operation InputStream oder OutputStream \u00fcbergeben wird.
+
+read.write.failed.isReady.false=CWWWC0011E: Der Versuch, aus einer InputStream -Operation zu lesen oder in eine OutputStream -Operation zu schreiben, ist fehlgeschlagen, denn die API isReady gibt ' false' zur\u00fcck.
+read.write.failed.isReady.false.explanation=Wenn die API isReady den Wert ' false' zur\u00fcckgibt, k\u00f6nnen Sie keine Lese-oder Schreibmethode aufrufen.
+read.write.failed.isReady.false.useraction=\u00c4ndern Sie die Anwendungslogik, um sicherzustellen, dass der Datenstrom f\u00fcr eine Operation InputStream oder OutputStream bereit ist.

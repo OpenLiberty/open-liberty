@@ -1714,7 +1714,7 @@ public abstract class WebContainer extends BaseContainer {
         res.addHeader("Content-Type", "text/html");
         res.setStatusCode(400);
 
-        String formattedMessage = nls.getFormattedMessage("bad.request.uri:.{0}", new Object[] { truncateURI(req.getRequestURI()) },
+        String formattedMessage = nls.getFormattedMessage("bad.request.uri:.{0}", new Object[] { ResponseUtils.encodeDataString(truncateURI(req.getRequestURI())) },
                         "Bad request URI");
 
         String output = "<H1>"

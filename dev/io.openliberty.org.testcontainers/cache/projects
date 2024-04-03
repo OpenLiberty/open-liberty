@@ -33,6 +33,7 @@ com.ibm.ws.jpa.tests.eclipselink_jpa_3.0_fat
 com.ibm.ws.jpa.tests.eclipselink_jpa_3.1_fat
 com.ibm.ws.jpa.tests.eclipselink_jpa_3.2_fat
 com.ibm.ws.jpa.tests.jpa_31_fat
+com.ibm.ws.jpa.tests.jpa_32_fat
 com.ibm.ws.jpa.tests.jpaconfig_jpa_2.1_fat
 com.ibm.ws.jpa.tests.jpaconfig_jpa_2.2_fat
 com.ibm.ws.jpa.tests.jpaconfig_jpa_3.0_fat
