@@ -1632,4 +1632,14 @@ redirect.location.cannot.be.null.useraction=Mettez \u00e0 jour l'emplacement de 
 
 sendRedirect.hyper.text.url=<html><body><p>Redirection vers <a href="{0}"></a></p></body></html>
 
-query.or.post.is.null=La cha\u00eene de requ\u00eate de demande ou les donn\u00e9es POST sont null.
+query.or.post.is.null=CWWWC0009E: La cha\u00eene de requ\u00eate de demande HTTP ou les donn\u00e9es de demande POST HTTP sont null.
+query.or.post.is.null.explanation=L'application a tent\u00e9 d'analyser une cha\u00eene de requ\u00eate de demande HTTP null ou un corps de demande POST HTTP null.
+query.or.post.is.null.useraction=Le client doit envoyer une cha\u00eene de requ\u00eate de requ\u00eate HTTP non null ou un corps de requ\u00eate POST HTTP non null.
+
+read.write.bytebuffer.null=CWWWC0010E: Une tentative de lecture \u00e0 partir d'une op\u00e9ration InputStream ou d'\u00e9criture dans une op\u00e9ration OutputStream a \u00e9chou\u00e9 car l'argument de variable ByteBuffer \u00e9tait null.
+read.write.bytebuffer.null.explanation=L'instance de l'argument de variable ByteBuffer transmise \u00e0 l'API de lecture ou d'\u00e9criture ne doit pas \u00eatre nulle.
+read.write.bytebuffer.null.useraction=Modifiez le code d'application pour cr\u00e9er une instance ByteBuffer non null \u00e0 transmettre \u00e0 l'op\u00e9ration InputStream ou OutputStream .
+
+read.write.failed.isReady.false=CWWWC0011E: Une tentative de lecture \u00e0 partir d'une op\u00e9ration InputStream ou d'\u00e9criture dans une op\u00e9ration OutputStream a \u00e9chou\u00e9 car l'API isReady renvoie la valeur false.
+read.write.failed.isReady.false.explanation=Si l'API isReady renvoie false, vous ne pouvez pas appeler de m\u00e9thode de lecture ou d'\u00e9criture.
+read.write.failed.isReady.false.useraction=Modifiez la logique de l'application pour vous assurer que le flux est pr\u00eat pour une op\u00e9ration InputStream ou OutputStream .

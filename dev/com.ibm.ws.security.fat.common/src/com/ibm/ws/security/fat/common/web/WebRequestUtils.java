@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -132,7 +132,7 @@ public class WebRequestUtils {
         }
 
         String replacementString = "#REPLACEME#";
-        String validSpaceRegex = "(?:\\\\+|%20)";
+        String validSpaceRegex = "(?:\\\\+|;|,|\\\\.|%20|%3B|%2C|%2E)";
 
         String result = getNormalizedUrlEncodedString(value, replacementString);
         result = getRegexFromNormalizedUrlEncodedString(result, replacementString, validSpaceRegex);
@@ -149,7 +149,10 @@ public class WebRequestUtils {
         if (spaceReplacementString == null) {
             return result;
         }
-        result = result.replaceAll("\\+", spaceReplacementString).replaceAll("%20", spaceReplacementString);
+        result = result.replaceAll("\\+", spaceReplacementString).replaceAll("%20", spaceReplacementString)
+                .replaceAll(";", spaceReplacementString).replaceAll("%3B", spaceReplacementString)
+                .replaceAll(",", spaceReplacementString).replaceAll("%2C", spaceReplacementString)
+                .replaceAll("\\.", spaceReplacementString).replaceAll("%2E", spaceReplacementString);
         return result;
     }
 

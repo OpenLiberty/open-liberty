@@ -1632,4 +1632,14 @@ redirect.location.cannot.be.null.useraction=Zaktualizuj po\u0142o\u017cenie prze
 
 sendRedirect.hyper.text.url=<html><body><p>Przekierowanie do <a href="{0}"></a></p></body></html>
 
-query.or.post.is.null=\u0141a\u0144cuch zapytania \u017c\u0105dania lub dane \u017c\u0105dania POST maj\u0105 warto\u015b\u0107 NULL.
+query.or.post.is.null=CWWWC0009E: \u0141a\u0144cuch zapytania \u017c\u0105dania HTTP lub dane \u017c\u0105dania HTTP POST maj\u0105 warto\u015b\u0107 NULL.
+query.or.post.is.null.explanation=Aplikacja pr\u00f3bowa\u0142a przeanalizowa\u0107 \u0142a\u0144cuch zapytania \u017c\u0105dania HTTP o warto\u015bci NULL lub tre\u015b\u0107 \u017c\u0105dania POST HTTP o warto\u015bci NULL.
+query.or.post.is.null.useraction=Klient musi wys\u0142a\u0107 \u0142a\u0144cuch zapytania \u017c\u0105dania HTTP o warto\u015bci innej ni\u017c NULL lub tre\u015b\u0107 \u017c\u0105dania POST HTTP o warto\u015bci innej ni\u017c NULL.
+
+read.write.bytebuffer.null=CWWWC0010E: Pr\u00f3ba odczytu z operacji InputStream lub zapisu do operacji OutputStream nie powiod\u0142a si\u0119, poniewa\u017c argument zmiennej instancji ByteBuffer mia\u0142 warto\u015b\u0107 NULL.
+read.write.bytebuffer.null.explanation=Argument zmiennej ByteBuffer , kt\u00f3ry jest przekazywany do funkcji API odczytu lub zapisu, nie mo\u017ce mie\u0107 warto\u015bci NULL.
+read.write.bytebuffer.null.useraction=Zmodyfikuj kod aplikacji, aby utworzy\u0107 instancj\u0119 ByteBuffer o warto\u015bci innej ni\u017c NULL w celu przekazania jej do operacji InputStream lub OutputStream .
+
+read.write.failed.isReady.false=CWWWC0011E: Pr\u00f3ba odczytu z operacji InputStream lub zapisu do operacji OutputStream nie powiod\u0142a si\u0119, poniewa\u017c funkcja API isReady zwraca warto\u015b\u0107 false.
+read.write.failed.isReady.false.explanation=Je\u015bli funkcja API isReady zwr\u00f3ci warto\u015b\u0107 false, nie mo\u017cna wywo\u0142a\u0107 metody odczytu lub zapisu.
+read.write.failed.isReady.false.useraction=Zmodyfikuj logik\u0119 aplikacji, aby upewni\u0107 si\u0119, \u017ce strumie\u0144 jest gotowy do wykonania operacji InputStream lub OutputStream .

@@ -2028,6 +2028,34 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method with a Query that hard codes a literal for a double value in E notation,
+     * as is done in an example within the spec.
+     */
+    @Test
+    public void testLiteralDouble() {
+        // Clear out data before test
+        accounts.deleteByOwnerEndsWith("testLiteralDouble");
+
+        accounts.create(new Account(1006520, 28002, "Think Bank", true, 21.04, "Lester TestLiteralDouble"));
+        accounts.create(new Account(2003291, 28002, "Think Bank", true, 331.01, "Laura TestLiteralDouble"));
+
+        AccountId id = AccountId.of(2003291, 28002);
+
+        assertEquals(true, accounts.addInterest(id)); // adds 15e-2, which is 0.15
+
+        assertEquals(1L, accounts.countByOwnerAndBalanceBetween("Laura TestLiteralDouble", 331.159, 331.161));
+
+        // TODO Enable the following once fixed,
+        //Account account = accounts.findByAccountId(id);
+        //assertEquals(331.16, account.balance, 0.001);
+        // Failure is:
+        // Caused by: java.lang.NullPointerException: Cannot read field "index" because "key" is null
+        // at org.eclipse.persistence.internal.sessions.ArrayRecord.get(ArrayRecord.java:139) ...
+
+        assertEquals(2L, accounts.deleteByOwnerEndsWith("TestLiteralDouble"));
+    }
+
+    /**
      * Use a custom join query so that a ManyToMany association can query by attributes of the many side of the relationship.
      */
     @Test
