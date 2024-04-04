@@ -14,7 +14,8 @@ IBM-API-Package: \
   jakarta.data.metamodel.impl; type="spec",\
   jakarta.data.page; type="spec",\
   jakarta.data.page.impl; type="spec",\
-  jakarta.data.repository; type="spec"
+  jakarta.data.repository; type="spec",\
+  jakarta.data.spi; type="spec"
 Subsystem-Name: Jakarta Data 1.0
 #TODO io.openliberty.jakartaeePlatform-11.0
 -features=\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,26 +10,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+package test.jakarta.data.inmemory.provider;
 
-package test.jakarta.data.inmemory.web;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import test.jakarta.data.inmemory.provider.Palindromic;
+import jakarta.data.spi.EntityDefining;
 
 /**
- * Entity class for tests
+ * Fake entity annotation.
  */
-@Palindromic
-public class Palindrome {
-    public long id;
-    public String letters;
-    public int length;
-
-    public Palindrome() {
-    }
-
-    public Palindrome(long id, String letters) {
-        this.id = id;
-        this.letters = letters;
-        this.length = letters.length();
-    }
+@EntityDefining
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Palindromic {
 }
