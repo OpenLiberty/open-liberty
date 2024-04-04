@@ -115,7 +115,7 @@ public class ListenerTask implements Queueable {
 	/**
 	 * default queue to send, this keeps a counter that would round robin all the app queues 
 	 */
-	private long _appQueueIndex = -1;
+	private int _appQueueIndex = -1;
 	
 	/**
 	 * which app queue to use
@@ -157,7 +157,7 @@ public class ListenerTask implements Queueable {
 					  EventObject event,
 					  int taskNum,
 					  SipAppDesc appDesc,
-					  long appQueueIndex){
+					  int appQueueIndex){
 		init(listener, event, taskNum);
 		this._appDesc = appDesc;
 		this._appQueueIndex = appQueueIndex;
@@ -356,9 +356,9 @@ public class ListenerTask implements Queueable {
 	/**
 	 *  @see com.ibm.ws.sip.container.util.QueueIndex#getQueueIndex()
 	 */
-	public long getQueueIndex() {
+	public int getQueueIndex() {
 		
-		long index = -1;
+		int index = -1;
 		// will try to get queue index for following well known type of events
 		// otherwise index 0 will be returned.
 		if (_event instanceof SipApplicationSessionBindingEvent) {
