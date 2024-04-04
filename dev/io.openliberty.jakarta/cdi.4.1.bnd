@@ -40,7 +40,7 @@ Export-Package: \
 
 #these imports are copied from the manifest files of the original bundles
 Import-Package: \
- jakarta.el;version="5.0",\
+ jakarta.el;version="6.0",\
  jakarta.enterprise.context;version="[4.1,5)",\
  jakarta.enterprise.context.spi;version="[4.1,5)",\
  jakarta.enterprise.event;version="[4.1,5)",\
