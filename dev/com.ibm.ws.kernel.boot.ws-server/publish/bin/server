@@ -1136,7 +1136,7 @@ serverCmd()
   # if [ ! jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc] then SERVER_IBM_JAVA_OPTIONS += -Xverbosegclog:verbosegc.%seq.log,10,1024
   if [ -n "${JVM_OPTIONS_QUOTED##*"verbosegc"*}" ] && [ -n "${JVM_OPTIONS_QUOTED##*"verbose:gc"*}"  ] && [ ! "${VERBOSEGC}" = "false" ]
   then
-    OPENJ9_JAVA_OPTIONS="-Xverbosegclog:${X_LOG_DIR}/verbosegc.%seq.log,10,1024 ${OPENJ9_JAVA_OPTIONS}"
+    OPENJ9_JAVA_OPTIONS="\"-Xverbosegclog:${X_LOG_DIR}/verbosegc.%seq.log,10,1024\" ${OPENJ9_JAVA_OPTIONS}"
   fi
 
   if $os400lib; then
