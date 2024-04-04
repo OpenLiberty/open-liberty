@@ -233,6 +233,7 @@ steps:
     fat.test.mode: lite
     fats_to_omit: "build.featureStart.part1_fat, build.featureStart.part2_fat, build.featureStart.part3_fat, build.featureStart.part4_fat, build.featureStart.part1.was_fat, build.featureStart.part2.was_fat, build.featureStart.part3.was_fat, build.featureStart.part4.was_fat, com.ibm.ws.collective.controller.deploy_fat, com.ibm.ws.health.manager.odrlib_fat, com.ibm.ws.dynamic.routing_ihs_fat, com.ibm.ws.node.scaling_fat, com.ibm.ws.scaling.member_fat_multinode, com.ibm.ws.node.health_fat"
     fat_uploads_to_expect: ${Compile Liberty Images:fat_uploads_to_expect},${Compile FATs:fat_uploads_to_expect}
+    product_image_type_under_test: wlp-embeddable-full
     # asyncArchive.zip is 6 directories up from the wlp-embeddable-full image.
     dependenciesRelativePath: ../../../../../..
     outputServer: libertyfs.hursley.ibm.com
@@ -278,6 +279,7 @@ steps:
     fat.test.mode: full
     fats_to_omit: "build.featureStart.part1_fat, build.featureStart.part2_fat, build.featureStart.part3_fat, build.featureStart.part4_fat, build.featureStart.part1.was_fat, build.featureStart.part2.was_fat, build.featureStart.part3.was_fat, build.featureStart.part4.was_fat, com.ibm.ws.collective.controller.deploy_fat, com.ibm.ws.health.manager.odrlib_fat, com.ibm.ws.dynamic.routing_ihs_fat, com.ibm.ws.node.scaling_fat, com.ibm.ws.scaling.member_fat_multinode, com.ibm.ws.node.health_fat"
     fat_uploads_to_expect: ${Compile Liberty Images:fat_uploads_to_expect},${Compile FATs:fat_uploads_to_expect}
+    product_image_type_under_test: wlp-embeddable-full
     # asyncArchive.zip is 6 directories up from the wlp-embeddable-full image.
     dependenciesRelativePath: ../../../../../..
     outputServer: libertyfs.hursley.ibm.com
@@ -502,6 +504,7 @@ steps:
     fat.test.mode: lite
     fats_to_omit: "com.ibm.ws.collective.controller.deploy_fat, com.ibm.ws.health.manager.odrlib_fat, com.ibm.ws.dynamic.routing_ihs_fat, com.ibm.ws.node.scaling_fat, com.ibm.ws.scaling.member_fat_multinode, com.ibm.ws.node.health_fat"
     fat_uploads_to_expect: ${Compile Liberty Images:fat_uploads_to_expect},${Compile FATs:fat_uploads_to_expect}
+    product_image_type_under_test: wlp-embeddable-full
     # asyncArchive.zip is 6 directories up from the wlp-embeddable-full image.
     dependenciesRelativePath: ../../../../../..
     outputServer: libertyfs.hursley.ibm.com
