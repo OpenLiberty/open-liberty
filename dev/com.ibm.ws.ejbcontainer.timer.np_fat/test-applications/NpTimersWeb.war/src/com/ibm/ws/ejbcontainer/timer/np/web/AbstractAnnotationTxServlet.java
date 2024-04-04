@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -664,7 +664,14 @@ public abstract class AbstractAnnotationTxServlet extends AbstractServlet {
     public void testCreateIntervalDateTimer() {
         svExpiredTimerInfos.clear();
 
-        long startTime = System.nanoTime();
+        // The tested timer is scheduled based on Date (currentTimeMillis), which due to
+        // inaccuracy may appear slightly in the past, causing the timers to run sooner
+        // than anticipated. So, while using nanoTime to calculate duration may be more
+        // accurate, that does not account for the first timeout being scheduled in the
+        // past. Therefore, the test will calculate duration using both nanoTime and
+        // currentTimeMillis and use the larger value for verification.
+        long startTimeNano = System.nanoTime();
+        long startTimeMillis = System.currentTimeMillis();
         try {
             ivBean.executeTest(TstName.TEST_INTERVAL_TIMER_DATE);
         } catch (EJBException ex) {
@@ -674,7 +681,9 @@ public abstract class AbstractAnnotationTxServlet extends AbstractServlet {
         // sleep long enough for initial wait time + two intervals
         long minimumDuration = AnnotationTxLocal.DURATION + AnnotationTxLocal.INTERVAL + AnnotationTxLocal.INTERVAL;
         ivBean.waitForTimer(AnnotationTxLocal.MAX_WAIT_TIME);
-        long actualDuration = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
+        long actualDurationNano = TimeUnit.MILLISECONDS.convert(System.nanoTime() - startTimeNano, TimeUnit.NANOSECONDS);
+        long actualDurationMillis = System.currentTimeMillis() - startTimeMillis;
+        long actualDuration = Math.max(actualDurationNano, actualDurationMillis);
 
         ivBean.clearAllTimers();
 
@@ -683,7 +692,8 @@ public abstract class AbstractAnnotationTxServlet extends AbstractServlet {
             assertEquals("Unexpected timer invoked (bad info)",
                          AnnotationTxLocal.INTERVAL_INFO, info);
         }
-        assertTrue("Timers ran too quickly; minimum=" + minimumDuration + ", actual=" + actualDuration, actualDuration >= minimumDuration);
+        assertTrue("Timers ran too quickly; minimum=" + minimumDuration + ", actualNano=" + actualDurationNano + ", actualMillis=" + actualDurationMillis,
+                   actualDuration >= minimumDuration);
     }
 
     /**

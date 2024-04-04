@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package com.ibm.ws.security.openidconnect.clients.common;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,7 +19,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.WebUtils;
-import com.ibm.ws.webcontainer.security.CookieHelper;
 
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 
@@ -115,7 +113,7 @@ public class RedirectionProcessor {
         String requestUrl = getOriginalRequestUrl(state);
 
         if (requestUrl == null || requestUrl.isEmpty()) {
-            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_NO_COOKIE", request.getRequestURL()); // CWWKS1750E
+            String errorMsg = Tr.formatMessage(tc, "OIDC_CLIENT_BAD_REQUEST_NO_COOKIE", request.getRequestURL()); // CWWKS1520E & CWWKS2352E
             Tr.error(tc, errorMsg);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
@@ -143,8 +141,9 @@ public class RedirectionProcessor {
 
     private String getOriginalRequestUrl(String state) {
         String cookieName = OidcStorageUtils.getOriginalReqUrlStorageKey(state);
-        Cookie[] cookies = request.getCookies();
-        String requestUrl = CookieHelper.getCookieValue(cookies, cookieName);
+        //Cookie[] cookies = request.getCookies();
+        //String requestUrl = CookieHelper.getCookieValue(cookies, cookieName);
+        String requestUrl = OidcClientUtil.getReferrerURLCookieHandler().getReferrerURLFromCookies(request, cookieName);
         OidcClientUtil.invalidateReferrerURLCookie(request, response, cookieName);
         return requestUrl;
     }

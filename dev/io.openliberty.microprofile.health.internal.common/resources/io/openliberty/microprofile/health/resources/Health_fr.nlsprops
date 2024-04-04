@@ -2,7 +2,7 @@
 #COMPONENTPREFIX CWMMH
 #COMPONENTNAMEFOR CWMMH MicroProfile Health API 
 #NLS_ENCODING=UNICODE
-#NLS_MESSAGEFORMAT_NONE
+#NLS_MESSAGEFORMAT_VAR
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
@@ -32,17 +32,17 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Health error message
 #-----------------------------------------------------------------------------------------------------------------------------
-OSGI_SERVICE_ERROR=CWMMH0000E: Le service OSGi {0} n'est pas disponible.
+OSGI_SERVICE_ERROR=CWMMH0000E: Le service OSGi {0} n''est pas disponible.
 OSGI_SERVICE_ERROR.explanation=Cette erreur de serveur interne est \u00e9mise car le service sp\u00e9cifi\u00e9 n'est pas disponible.
 OSGI_SERVICE_ERROR.useraction=Red\u00e9marrez le serveur en utilisant l'option clean.
 
 # The HealthCheck bean call method had an exception
-healthcheck.bean.call.exception.CWMMH0050E=CWMMH0050E: La m\u00e9thode HealthCheck {0} dans l'application {1} du module {2} a g\u00e9n\u00e9r\u00e9 une exception {3} avec le message suivant : {4}
+healthcheck.bean.call.exception.CWMMH0050E=CWMMH0050E: La m\u00e9thode HealthCheck {0} dans l''application {1} du module {2} a g\u00e9n\u00e9r\u00e9 une exception {3} avec le message suivant : {4}
 healthcheck.bean.call.exception.CWMMH0050E.explanation=La m\u00e9thode d'appel sp\u00e9cifi\u00e9e a g\u00e9n\u00e9r\u00e9 une exception.
 healthcheck.bean.call.exception.CWMMH0050E.useraction=V\u00e9rifiez votre m\u00e9thode d'appel dans le bean HealthCheck pour identifier l'exception qui s'est produite.
 
 # The HealthCheck bean call method had a DOWN outcome
-healthcheck.application.down.CWMMH0052W=CWMMH0052W: La classe {0} qui impl\u00e9mente HealthCheckResponse dans l'application {1} dans le module {2} a pour statut {3} avec les donn\u00e9es suivantes : {4}.
+healthcheck.application.down.CWMMH0052W=CWMMH0052W: La classe {0} qui impl\u00e9mente HealthCheckResponse dans l''application {1} dans le module {2} a pour statut {3} avec les donn\u00e9es suivantes : {4}.
 healthcheck.application.down.CWMMH0052W.explanation=Le statut DOWN peut entra\u00eener une action du service de surveillance sur ce serveur.
 healthcheck.application.down.CWMMH0052W.useraction=Aucune action de l'utilisateur n'est requise.  Cet avertissement est un enregistrement du statut DOWN.
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.wsspi.genericbnf;
+
+import java.nio.charset.StandardCharsets;
+
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * Matcher utility class that stores an enumerated list and will take various
@@ -93,9 +97,14 @@ public class KeyMatcher {
      */
     public synchronized void add(GenericKeys key) {
         KeyBucket bucket = makeBucket(key.getName().charAt(0));
-        if (null != bucket) {
-            bucket.add(key);
-        }
+            if (null != bucket) {
+                // if not beta and key=partitioned, then don't add the paritioned key to the bucket.
+                // basically, only beta edition should contain paritioned key
+                if(!ProductInfo.getBetaEdition() && key.getName().toLowerCase().equals("partitioned")) {
+                    return;
+                }
+                bucket.add(key);
+            }
     }
 
     /**

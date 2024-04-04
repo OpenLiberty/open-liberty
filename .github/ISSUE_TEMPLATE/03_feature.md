@@ -163,7 +163,8 @@ A feature is ready to GA after it is Feature Complete and has obtained all neces
   - [ ] All stop ship issues are completed.
 - [ ] Legal: all necessary approvals granted.
 - [ ] Innovation: IP identified and any applicable disclosures submitted
-- [ ] Translation: Feature may only proceed to GA if it has either `Translation - Complete` or `Translation - Missing` label
+- [ ] Translation: Feature may only proceed to GA if it has either `Translation - Not Required`, `Translation - Complete`, or `Translation - Missing` label
+  - If the feature does not have anything that required translation, the feature owner adds the label `Translation - Not Required`.
   - If all translation has been delivered to `release` branch, feature owner adds label `Translation - Complete`.
   - If missing translation does not cause a break in functionality, nor a security or production outage risk, feature owner adds label `Translation - Missing`.
     - Once all missing translations are delivered, the `Translation - Missing` label is replaced with `Translation - Complete`.

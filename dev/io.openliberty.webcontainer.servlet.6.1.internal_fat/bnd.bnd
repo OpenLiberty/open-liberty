@@ -20,6 +20,7 @@ src: \
     test-applications/EmptyURLPatternMappingTest.war/src,\
     test-applications/HTTPResponseCodesTest.war/src,\
     test-applications/HTTPServletMappingTest.war/src,\
+    test-applications/PathCanonicalizationTest.war/src,\
     test-applications/ReadWriteByteBuffer.war/src,\
     test-applications/RequestParameterTest.war/src,\
     test-applications/ResponseNoOpAfterCommit.war/src,\

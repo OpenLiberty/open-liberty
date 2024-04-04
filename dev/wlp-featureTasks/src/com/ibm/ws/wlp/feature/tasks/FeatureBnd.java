@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -503,22 +503,16 @@ public class FeatureBnd extends Task {
         int major = ver.getMajor();
         int minor = ver.getMinor();
         int micro = ver.getMicro();
-        int floor = micro - (micro % 200);
-        int ceiling = floor + 200;
 
         StringBuilder vRange = new StringBuilder("[");
         vRange.append(major);
         vRange.append('.');
         vRange.append(minor);
-        vRange.append('.');
-        vRange.append(floor);
-        vRange.append(',');
+        vRange.append(".0,");
         vRange.append(major);
         vRange.append('.');
-        vRange.append(minor);
-        vRange.append('.');
-        vRange.append(ceiling);
-        vRange.append(')');
+        vRange.append(minor + 1);
+        vRange.append(".0)");
         return vRange.toString();
     }
 

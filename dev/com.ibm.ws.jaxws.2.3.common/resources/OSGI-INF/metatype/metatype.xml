@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+-->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.jaxws.clientConfig.metatype" description="%webserviceClient.desc" name="%webserviceClient.name" ibm:alias="webServiceClient" ibm:beta="true" >
+         <AD id="serviceName" name="%serviceName" description="%serviceName.desc" required="false" type="String" />
+         <AD id="ignoreUnexpectedElements" name="%ignoreUnexpectedElements" description="%ignoreUnexpectedElements.desc" required="false" type="boolean" default="false" />
+         <AD id="enableSchemaValidation" name="%enableSchemaValidation" description="%enableSchemaValidation.desc" required="false" type="boolean" default="true" />
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.jaxws.clientConfig">
+        <Object ocdref="com.ibm.ws.jaxws.clientConfig.metatype" />
+    </Designate>
+   
+</metatype:MetaData>
