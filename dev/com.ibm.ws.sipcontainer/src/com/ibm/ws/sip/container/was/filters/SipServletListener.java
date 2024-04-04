@@ -59,7 +59,7 @@ public class SipServletListener implements ServletListener {
 		
 		SipServletRequestImpl sipRequest = null;
     	SipServletResponseImpl sipResponse = null;
-    	long index = -1;
+    	int index = -1;
     	
 		 //Read back the servlet request\response which we stored locally for 
         // this thread before entering the web-container.

@@ -135,10 +135,10 @@ public class ExpirationTimer extends BaseTimer {
 	/**
 	 * Extracts queue index from the related application session.
 	 */
-	protected long extractQueueIndex(){
+	protected int extractQueueIndex(){
 		if(m_expInvoker!= null){
 			String sessId = m_expInvoker.getApplicationId();
-	    	long result = SipApplicationSessionImpl.extractAppSessionCounter(sessId);
+	    	int result = SipApplicationSessionImpl.extractAppSessionCounter(sessId);
 			return result;
 		}
 		return 0;
