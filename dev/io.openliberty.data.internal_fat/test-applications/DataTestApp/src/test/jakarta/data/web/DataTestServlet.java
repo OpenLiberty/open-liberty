@@ -16,6 +16,7 @@ import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static test.jakarta.data.web.Assertions.assertArrayEquals;
 import static test.jakarta.data.web.Assertions.assertIterableEquals;
@@ -101,6 +102,9 @@ import componenttest.app.FATServlet;
 @WebServlet("/*")
 public class DataTestServlet extends FATServlet {
     private final long TIMEOUT_MINUTES = 2;
+
+    @Inject
+    EmptyRepository emptyRepo;
 
     @Inject
     Houses houses;
@@ -1230,6 +1234,17 @@ public class DataTestServlet extends FATServlet {
                                              .stream()
                                              .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Tests whether a user can write an empty repository class.
+     * This is only useful when just starting out developing and you don't have methods yet.
+     */
+    @Test
+    public void testEmptyRepository() {
+        assertNotNull(emptyRepo);
+        String str = emptyRepo.toString();
+        assertTrue(str, str.startsWith("test.jakarta.data.web.EmptyRepository(Proxy)@"));
     }
 
     /**
