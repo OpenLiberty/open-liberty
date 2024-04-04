@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,15 +28,16 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.tracingdisabled.TracingDisabledServlet;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -52,7 +53,7 @@ public class TelemetryDisabledTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = FATSuite.allMPRepeats(SERVER_NAME);
-    
+
     @BeforeClass
     public static void setUp() throws Exception {
         app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
@@ -64,6 +65,8 @@ public class TelemetryDisabledTest extends FATServletClient {
 
     //A warning should only be shown once
     @Test
+    @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,
+                     TelemetryActions.MP14_MPTEL20_ID }) // For mpTelemetry-2.0, there will be two SDK instances, that might be disabled (runtime vs app)
     public void testDisabledOpenTelemetry() throws Exception {
         server.setMarkToEndOfLog();
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY); //Call this here because TelemetryServletFilter triggers the required error message during its init.

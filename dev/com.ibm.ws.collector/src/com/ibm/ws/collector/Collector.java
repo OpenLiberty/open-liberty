@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -228,7 +228,13 @@ public abstract class Collector implements Handler, Formatter {
             tagList = validList.toArray(new String[validList.size()]);
         }
 
-        int maxFieldLength = (Integer) config.get(MAX_FIELD_KEY);
+        int maxFieldLength;
+        if (config.get(MAX_FIELD_KEY) != null) {
+            maxFieldLength = (Integer) config.get(MAX_FIELD_KEY);
+        } else {
+            maxFieldLength = 2048;
+        }
+
         int maxEvents = 0;
         //Events Throttling - maxEvents
         if (config.containsKey(MAX_EVENTS_KEY)) {
@@ -353,4 +359,13 @@ public abstract class Collector implements Handler, Formatter {
     }
 
     public abstract Target getTarget();
+
+    protected void stopAllTasks() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Stopping all configured tasks...");
+        }
+        for (Task t : taskMap.values()) {
+            t.stop();
+        }
+    }
 }

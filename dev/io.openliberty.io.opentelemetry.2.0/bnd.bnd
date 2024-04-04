@@ -41,7 +41,6 @@ Import-Package: \
 	com.ibm.websphere.ras,\
 	com.ibm.websphere.ras.annotation,\
 	io.openliberty.microprofile.telemetry.internal.common.resources
-
 Export-Package: \
   io.opentelemetry.extension.trace.propagation;version=${openTelemetryVersion};thread-context=true,\
   io.opentelemetry.exporter.otlp.internal;version=${openTelemetryVersion};thread-context=true,\
@@ -61,7 +60,10 @@ Export-Package: \
   !io.opentelemetry.internal.shaded.*;version=${openTelemetryVersion},\
   io.opentelemetry.api.common;version=${openTelemetryVersion},\
   io.opentelemetry.instrumentation.api.instrumenter.util;version=${openTelemetryVersion};thread-context=true,\
-  io.opentelemetry.*;version=${openTelemetryVersion}
+  io.opentelemetry.*;version=${openTelemetryVersion};thread-context=true,\
+  io.opentelemetry.exporter.otlp;version=${openTelemetryVersion};thread-context=true,\
+  io.opentelemetry.exporter.logging;version=${openTelemetryVersion};thread-context=true
+  
 
 Include-Resource: \
  META-INF=resources/META-INF
@@ -70,6 +72,7 @@ app-resources= \
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.ConfigurablePropagatorProvider |\
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider |\
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.metrics.ConfigurableMetricExporterProvider |\
+  META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.logs.ConfigurableLogRecordExporterProvider |\
   META-INF/services/io.opentelemetry.exporter.internal.grpc.GrpcSenderProvider |\
   META-INF/services/io.opentelemetry.exporter.internal.http.HttpSenderProvider |\
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.ResourceProvider

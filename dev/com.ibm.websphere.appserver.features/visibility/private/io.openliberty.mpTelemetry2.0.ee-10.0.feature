@@ -9,8 +9,10 @@ singleton=true
   io.openliberty.org.eclipse.microprofile.rest.client-4.0,\
   com.ibm.websphere.appserver.eeCompatible-10.0
 -bundles=\
+  com.ibm.ws.collector.jakarta, \
   com.ibm.ws.cdi.interfaces.jakarta, \
   io.openliberty.microprofile.telemetry.2.0.internal.jakarta,\
+  io.openliberty.microprofile.telemetry.2.0.logging.internal.jakarta, \
   io.openliberty.io.opentelemetry.2.0.jakarta,\
   io.openliberty.microprofile.telemetry.internal.common.jakarta
 kind=beta

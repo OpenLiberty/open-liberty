@@ -67,7 +67,7 @@ Import-Package: \
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
-        com.ibm.ws.org.apache.commons.lang3;version=latest,\
+	com.ibm.ws.org.apache.commons.lang3;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	io.openliberty.io.opentelemetry;version=latest,\
