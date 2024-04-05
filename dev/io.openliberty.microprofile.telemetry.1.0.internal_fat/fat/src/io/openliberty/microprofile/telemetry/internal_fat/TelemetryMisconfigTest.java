@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -34,6 +35,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrsmisconfig.JaxRsMisConfigEndpoints;
 
 //Tests behaviour when placing an invalid value into the OpenTelemetry configuration options
@@ -135,6 +137,7 @@ public class TelemetryMisconfigTest extends FATServletClient {
     @ExpectedFFDC(repeatAction = MicroProfileActions.MP60_ID, value = { "java.lang.IllegalArgumentException" })
     @ExpectedFFDC(repeatAction = { MicroProfileActions.MP61_ID, MicroProfileActions.MP50_ID, MicroProfileActions.MP41_ID, MicroProfileActions.MP14_ID },
                   value = { "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
+    @SkipForRepeat({ TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP61_MPTEL20_ID})
     public void testInvalidJaegerExporterEndpoint() throws Exception {
         deployAndWaitForApp(invalidJaegerEndpointApp, INVALID_JAEGER_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + INVALID_JAEGER_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
@@ -176,6 +179,7 @@ public class TelemetryMisconfigTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat({ TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP61_MPTEL20_ID})
     public void testNotKnownEndpoint() throws Exception {
         deployAndWaitForApp(notKnownEndpointApp, NOT_KNOWN_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + NOT_KNOWN_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
@@ -192,6 +196,7 @@ public class TelemetryMisconfigTest extends FATServletClient {
     }
 
     @Test
+    @SkipForRepeat({ TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP61_MPTEL20_ID})
     public void testDoesNotExistEndpoint() throws Exception {
         deployAndWaitForApp(doesNotExistEndpointApp, DOES_NOT_EXIST_ENDPOINT_APP_NAME);
         new HttpRequest(server, "/" + DOES_NOT_EXIST_ENDPOINT_APP_NAME + "/misconfig/jaxrsclient")
@@ -207,6 +212,7 @@ public class TelemetryMisconfigTest extends FATServletClient {
 
     @Test
     @ExpectedFFDC({ "io.opentelemetry.sdk.autoconfigure.spi.ConfigurationException" })
+    @SkipForRepeat({ TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP61_MPTEL20_ID})
     public void testInvalidJaegerTimeout() throws Exception {
         deployAndWaitForApp(invalidJaegerTimeoutApp, INVALID_JAEGER_TIMEOUT_APP_NAME);
         new HttpRequest(server, "/" + INVALID_JAEGER_TIMEOUT_APP_NAME + "/misconfig/jaxrsclient")

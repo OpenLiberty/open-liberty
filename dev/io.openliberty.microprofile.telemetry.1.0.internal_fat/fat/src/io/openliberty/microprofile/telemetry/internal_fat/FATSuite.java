@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,13 +53,22 @@ public class FATSuite {
     public static RepeatTests allMPRepeats(String serverName) {
         return TelemetryActions
                         .repeat(serverName, MicroProfileActions.MP61, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11,
+                                TelemetryActions.MP61_MPTEL20, TelemetryActions.MP50_MPTEL20, MicroProfileActions.MP60);
+    }
+
+
+    public static RepeatTests allMPRepeatsWithoutMPTel20(String serverName) {
+        return TelemetryActions
+                        .repeat(serverName, MicroProfileActions.MP61, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11,
                                 MicroProfileActions.MP60);
     }
 
     public static String getTelemetryVersionUnderTest() {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             return "1.0";
-        } else {
+        } else if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP61_MPTEL20_ID)){
+            return "2.0";
+        } else{
             return "1.1";
         }
     }
