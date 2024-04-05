@@ -112,7 +112,7 @@ public interface Cities {
     @OrderBy("stateName")
     CityId[] findByStateNameEndsWith(String ending);
 
-    CursoredPage<City> findByStateNameGreaterThan(String stateNameAfter, PageRequest<City> pagination);
+    CursoredPage<City> findByStateNameGreaterThan(String stateNameAfter, PageRequest pagination, Order<City> order);
 
     Stream<City> findByStateNameLessThan(String stateNameBefore, Sort<?>... sorts);
 
@@ -120,13 +120,13 @@ public interface Cities {
     Stream<City> findByStateNameNot(String exclude);
 
     @OrderBy(ID)
-    CursoredPage<City> findByStateNameNotEndsWith(String postfix, PageRequest<?> pagination);
+    CursoredPage<City> findByStateNameNotEndsWith(String postfix, PageRequest pagination);
 
     @OrderBy(ID)
-    CursoredPage<City> findByStateNameNotNull(PageRequest<City> pagination);
+    CursoredPage<City> findByStateNameNotNull(PageRequest pagination, Order<City> order);
 
     @OrderBy(value = ID, descending = true)
-    CursoredPage<City> findByStateNameNotStartsWith(String prefix, PageRequest<?> pagination);
+    CursoredPage<City> findByStateNameNotStartsWith(String prefix, PageRequest pagination);
 
     CityId findFirstByNameOrderByPopulationDesc(String name);
 
@@ -169,7 +169,7 @@ public interface Cities {
     @OrderBy(value = ID, descending = true)
     CursoredPage<City> sizedWithin(@By("population") @GreaterThanEqual int minPopulation,
                                    @By("population") @LessThanEqual int maxPopulation,
-                                   PageRequest<City> pagination);
+                                   PageRequest pagination);
 
     @Save
     City save(City c);

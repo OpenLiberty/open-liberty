@@ -57,7 +57,7 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     @OrderBy("location.address.zip")
     @OrderBy("houseNum")
     @OrderBy("id")
-    CursoredPage<Business> findByZipIn(Iterable<Integer> zipCodes, PageRequest<?> pagination);
+    CursoredPage<Business> findByZipIn(Iterable<Integer> zipCodes, PageRequest pagination);
 
     // embeddable 3 levels deep as result type
     @OrderBy("street")

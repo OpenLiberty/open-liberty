@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import jakarta.data.Order;
+import jakarta.data.Sort;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
@@ -38,7 +39,7 @@ public interface MixedRepository { // Do not inherit from a supertype
     List<City> all(Order<City> sortBy);
 
     @Query(value = "FROM Business WHERE location.address.zip = location.address.zip")
-    Page<Business> findAll(PageRequest<Business> pageRequest);
+    Page<Business> findAll(PageRequest pageRequest, Order<Business> order);
 
     @OrderBy("name")
     Business[] findByLocationAddressCity(String cityName);
@@ -49,11 +50,11 @@ public interface MixedRepository { // Do not inherit from a supertype
     LinkedList<Unpopulated> findBySomethingStartsWith(String prefix);
 
     @Query(value = "WHERE location.address.city=?1")
-    Page<Business> locatedIn(String city, PageRequest<Business> pageRequest);
+    Page<Business> locatedIn(String city, PageRequest pageRequest, Order<Business> order);
 
     @Query("FROM Business WHERE location.address.city=:city AND location.address.state=:state")
-    CursoredPage<Business> locatedIn(String city, String state, PageRequest<Business> pageRequest);
+    CursoredPage<Business> locatedIn(String city, String state, PageRequest pageRequest, Order<Business> order);
 
     @Query("FROM Business WHERE location.address.zip=?1 OR location.address.zip=?2")
-    CursoredPage<Business> withZipCodeIn(int zip1, int zip2, PageRequest<?> pageRequest);
+    CursoredPage<Business> withZipCodeIn(int zip1, int zip2, PageRequest pageRequest, Sort<?>... sorts);
 }
