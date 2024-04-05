@@ -27,10 +27,23 @@ public record CursoredPageRecord<T>(
                 List<T> content,
                 List<Cursor> cursors,
                 long totalElements,
-                PageRequest<T> pageRequest,
-                PageRequest<T> nextPageRequest,
-                PageRequest<T> previousPageRequest)
+                PageRequest pageRequest,
+                PageRequest nextPageRequest,
+                PageRequest previousPageRequest)
                 implements CursoredPage<T> {
+
+    public CursoredPageRecord(List<T> content,
+                              List<PageRequest.Cursor> cursors,
+                              long totalElements,
+                              PageRequest pageRequest,
+                              boolean first,
+                              boolean last) {
+        this(content, //
+             cursors, //
+             totalElements, //
+             pageRequest, last ? null : pageRequest.page(1 + pageRequest.page()).afterCursor(cursors.get(cursors.size() - 1)), //
+             first ? null : pageRequest.page(pageRequest.page() == 1 ? 1 : pageRequest.page() - 1).beforeCursor(cursors.get(0)));
+    }
 
     @Override
     public Cursor cursor(int i) {
@@ -63,17 +76,11 @@ public record CursoredPageRecord<T>(
     }
 
     @Override
-    public PageRequest<T> nextPageRequest() {
+    public PageRequest nextPageRequest() {
         if (nextPageRequest == null)
             throw new NoSuchElementException();
         else
             return nextPageRequest;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <E> PageRequest<E> nextPageRequest(Class<E> entityClass) {
-        return (PageRequest<E>) nextPageRequest();
     }
 
     @Override
@@ -81,24 +88,12 @@ public record CursoredPageRecord<T>(
         return content.size();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <E> PageRequest<E> pageRequest(Class<E> entityClass) {
-        return (PageRequest<E>) pageRequest;
-    }
-
-    @Override
-    public PageRequest<T> previousPageRequest() {
+    public PageRequest previousPageRequest() {
         if (previousPageRequest == null)
             throw new NoSuchElementException();
         else
             return previousPageRequest;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <E> PageRequest<E> previousPageRequest(Class<E> entityClass) {
-        return (PageRequest<E>) previousPageRequest();
     }
 
     @Override

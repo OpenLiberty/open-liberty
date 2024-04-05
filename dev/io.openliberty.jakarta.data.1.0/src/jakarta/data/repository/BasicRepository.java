@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import jakarta.data.Order;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 
@@ -39,7 +40,7 @@ public interface BasicRepository<T, K> extends DataRepository<T, K> {
     Stream<T> findAll();
 
     @Find
-    Page<T> findAll(PageRequest<T> pageRequest);
+    Page<T> findAll(PageRequest pageRequest, Order<T> sortBy);
 
     @Find
     Optional<T> findById(@By(ID) K id);
