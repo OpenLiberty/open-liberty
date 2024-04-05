@@ -47,13 +47,13 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
 
     private final Object[] args;
     private final boolean isForward;
-    private final PageRequest<T> pageRequest;
+    private final PageRequest pageRequest;
     private final QueryInfo queryInfo;
     private final List<T> results;
     private long totalElements = -1;
 
     @FFDCIgnore(Exception.class)
-    CursoredPageImpl(QueryInfo queryInfo, PageRequest<T> pageRequest, Object[] args) {
+    CursoredPageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {
 
         this.args = args;
         this.queryInfo = queryInfo;
@@ -185,15 +185,8 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     }
 
     @Override
-    public PageRequest<T> pageRequest() {
+    public PageRequest pageRequest() {
         return pageRequest;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <E> PageRequest<E> pageRequest(Class<E> entityClass) {
-        // KeysetAwareSlice/Page must always have the same type result as sort criteria per the API.
-        return (PageRequest<E>) pageRequest;
     }
 
     @Override
@@ -223,37 +216,24 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     }
 
     @Override
-    public PageRequest<T> nextPageRequest() {
+    public PageRequest nextPageRequest() {
         if (!hasNext())
             throw new NoSuchElementException("Cannot request a next page. To avoid this error, check for a " +
                                              "true result of CursoredPage.hasNext before attempting this method."); // TODO NLS
 
-        PageRequest<T> p = pageRequest.page() == Long.MAX_VALUE ? pageRequest : pageRequest.page(pageRequest.page() + 1);
+        PageRequest p = pageRequest.page() == Long.MAX_VALUE ? pageRequest : pageRequest.page(pageRequest.page() + 1);
         return p.afterKey(queryInfo.getKeysetValues(results.get(Math.min(results.size(), pageRequest.size()) - 1)));
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <E> PageRequest<E> nextPageRequest(Class<E> entityClass) {
-        // CursoredPage must always have the same type result as sort criteria per the API.
-        return (PageRequest<E>) nextPageRequest();
-    }
-
-    @Override
-    public PageRequest<T> previousPageRequest() {
+    public PageRequest previousPageRequest() {
         if (!hasPrevious())
             throw new NoSuchElementException("Cannot request a previous page. To avoid this error, check for a " +
                                              "true result of CursoredPage.hasPrevious before attempting this method."); // TODO NLS
 
         // Decrement page number by 1 unless it would go below 1.
-        PageRequest<T> p = pageRequest.page() == 1 ? pageRequest : pageRequest.page(pageRequest.page() - 1);
+        PageRequest p = pageRequest.page() == 1 ? pageRequest : pageRequest.page(pageRequest.page() - 1);
         return p.beforeKey(queryInfo.getKeysetValues(results.get(0)));
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <E> PageRequest<E> previousPageRequest(Class<E> entityClass) {
-        return (PageRequest<E>) previousPageRequest();
     }
 
     @Override
