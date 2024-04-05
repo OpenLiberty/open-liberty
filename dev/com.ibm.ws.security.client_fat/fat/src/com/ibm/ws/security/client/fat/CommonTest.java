@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -266,7 +266,7 @@ public class CommonTest {
         if (waitTime > 0) {
             startParms.add(Integer.toString(waitTime));
             String clientRoot = testClient.getClientRoot();
-            String keyLocation = clientRoot + "/resources/security/key.jks";
+            String keyLocation = clientRoot + "/resources/security/key.p12";
             Log.info(c, thisMethod, "wait Time is " + waitTime + " seconds. keyLocation is" + keyLocation);
             startParms.add(keyLocation);
         }
