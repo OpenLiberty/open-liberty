@@ -24,6 +24,12 @@ public class TelemetryActions {
     public static final String MP41_MPTEL11_ID = MicroProfileActions.MP41_ID + "_MPTEL11";
     public static final String MP50_MPTEL11_ID = MicroProfileActions.MP50_ID + "_MPTEL11";
 
+    public static final String MP14_MPTEL20_ID = MicroProfileActions.MP14_ID + "_MPTEL20";
+    public static final String MP41_MPTEL20_ID = MicroProfileActions.MP41_ID + "_MPTEL20";
+    public static final String MP50_MPTEL20_ID = MicroProfileActions.MP50_ID + "_MPTEL20";
+    public static final String MP60_MPTEL20_ID = MicroProfileActions.MP60_ID + "_MPTEL20";
+    public static final String MP61_MPTEL20_ID = MicroProfileActions.MP50_ID + "_MPTEL20";
+
     public static final FeatureSet MP14_MPTEL11 = MicroProfileActions.MP14
                     .addFeature("mpTelemetry-1.1")
                     .build(MP14_MPTEL11_ID);
@@ -36,8 +42,22 @@ public class TelemetryActions {
                     .addFeature("mpTelemetry-1.1")
                     .build(MP50_MPTEL11_ID);
 
+    public static final FeatureSet MP61_MPTEL20 = MicroProfileActions.MP61
+                    .removeFeature("mpTelemetry-1.1")
+                    .addFeature("mpTelemetry-2.0")
+                    .build(MP61_MPTEL20_ID);
+
+    public static final FeatureSet MP60_MPTEL20 = MicroProfileActions.MP60
+                    .removeFeature("mpTelemetry-1.0")
+                    .addFeature("mpTelemetry-2.0")
+                    .build(MP60_MPTEL20_ID);
+
+    public static final FeatureSet MP50_MPTEL20 = MicroProfileActions.MP50
+                    .addFeature("mpTelemetry-2.0")
+                    .build(MP50_MPTEL20_ID);
+
     //All MicroProfile Telemetry FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_MPTEL_SETS_ARRAY = { MicroProfileActions.MP61, MicroProfileActions.MP60, MP50_MPTEL11, MP41_MPTEL11, MP14_MPTEL11 };
+    private static final FeatureSet[] ALL_MPTEL_SETS_ARRAY = { MicroProfileActions.MP61, MicroProfileActions.MP60, MP50_MPTEL11, MP41_MPTEL11, MP14_MPTEL11, MP61_MPTEL20, MP60_MPTEL20, MP50_MPTEL20};
     private static final List<FeatureSet> ALL_MPTEL_SETS_LIST = Arrays.asList(ALL_MPTEL_SETS_ARRAY);
 
     /**
