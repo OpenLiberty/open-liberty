@@ -68,6 +68,7 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
+import jakarta.data.spi.EntityDefining;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
@@ -595,7 +596,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
             Class<? extends Annotation> annoClass = anno.annotationType();
             if (annoClass.equals(Entity.class))
                 return true;
-            else if (annoClass.getSimpleName().endsWith("Entity"))
+            else if (annoClass.getSimpleName().endsWith("Entity") // also covers Jakarta NoSQL entity
+                     || annoClass.isAnnotationPresent(EntityDefining.class))
                 hasEntityAnnos = true;
         }
 
