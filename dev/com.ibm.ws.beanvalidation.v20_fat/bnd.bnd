@@ -37,5 +37,4 @@ tested.features: \
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.javaee.validation.2.0;version=latest,\
-	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
-	javax.validation.api
+	com.ibm.websphere.javaee.ejb.3.2;version=latest
