@@ -6,7 +6,7 @@ package bval.v20.el.web;
 import javax.enterprise.context.ApplicationScoped;
 
 /**
- * Bean with Expression Language features
+ * CDI Bean with a single string for Expression language testing
  */
 @ApplicationScoped
 public class ELBean {
