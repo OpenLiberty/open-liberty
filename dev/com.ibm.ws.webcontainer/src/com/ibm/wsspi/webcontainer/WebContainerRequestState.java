@@ -248,17 +248,14 @@ public class WebContainerRequestState {
 
         if (cookieAttributesMap == null || cookieAttributesMap.isEmpty()) {
             cookieAttributesMap = new HashMap<String,HashMap<String,String>>();
-            cookieAttributesMap.put(cookieName, new HashMap<String,String>() {{
-                put(attribute[0], attribute[1]);
-            }});
-        } else {
-            HashMap<String,String> existingAttributesMap = cookieAttributesMap.get(cookieName);
-            if(existingAttributesMap == null) { // avoid unit test NPEs
-                existingAttributesMap = new HashMap<String,String>();
-            }
-            existingAttributesMap.put(attribute[0], attribute[1]);
-            cookieAttributesMap.put(cookieName, existingAttributesMap);
         }
+
+        HashMap<String,String> existingAttributesMap = cookieAttributesMap.get(cookieName);
+        if(existingAttributesMap == null) {
+            existingAttributesMap = new HashMap<String,String>();
+        }
+        existingAttributesMap.put(attribute[0], attribute[1]);
+        cookieAttributesMap.put(cookieName, existingAttributesMap);
     }
     
     /**

@@ -493,6 +493,8 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
                             } // end tWAS 755981 (Liberty - SCWI 135422)
                         }
                     }
+
+                    WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
                     // Get the appropriate SameSite value from the configuration and pass to the WebContainer using the RequestState 
                     SameSiteCookie sessionSameSiteCookie = _smc.getSessionCookieSameSite();
                     if (sessionSameSiteCookie != SameSiteCookie.DISABLED) {
@@ -505,29 +507,35 @@ public class SessionAffinityManagerImpl extends SessionAffinityManager {
                             cookie.setSecure(true);
                         }
 
-                        WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
                         String sameSiteCookieValue = sessionSameSiteCookie.getSameSiteCookieValue();
                         requestState.setCookieAttributes(cookie.getName(), "SameSite=" + sameSiteCookieValue);
+                    } 
 
-                        if (ProductInfo.getBetaEdition()) {
-                            // not null means a user defined config was set
-                            if(_smc.getSessionCookiePartitioned() != null && sessionSameSiteCookie.equals(SameSiteCookie.NONE)) {
-                                if(_smc.getSessionCookiePartitioned()) {
+                    if (ProductInfo.getBetaEdition()) {
+                        // not null means a user defined config was set
+                        if (_smc.getSessionCookiePartitioned() != null) {
+                            if (_smc.getSessionCookiePartitioned()) {
+                                // None is okay --  session config will set samesite=none and partitioned 
+                                // Disabled is okay -- http config may set samesite=none for all cookies and users may only want to partition the jsession cookie
+                                if (sessionSameSiteCookie != SameSiteCookie.LAX && sessionSameSiteCookie != SameSiteCookie.STRICT) {
                                     if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
                                         LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[SET_COOKIE],
                                                                              "Setting the Partitioned attribute to true");
                                     }
                                     requestState.setCookieAttributes(cookie.getName(), "Partitioned=true");
-                                } else { // set to false
-                                    if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
-                                        LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[SET_COOKIE],
-                                                                             "Setting the Partitioned attribute to false");
-                                    }
-                                    requestState.setCookieAttributes(cookie.getName(), "Partitioned=false");
                                 }
+
+                            } else {
+                                if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+                                    LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[SET_COOKIE],
+                                                                         "Setting the Partitioned attribute to false");
+                                }
+                                requestState.setCookieAttributes(cookie.getName(), "Partitioned=false");
                             }
                         }
+
                     }
+
                     ((IExtendedResponse) response).addSessionCookie(cookie);
                 } else {
                     if (isTraceOn && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
