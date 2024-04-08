@@ -197,7 +197,7 @@ public class SSLPropertyUtils {
                 sslParameters.setProtocols(protocols);
 
             //Enable hostname verification
-            String enableEndpointId = properties.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false");
+            String enableEndpointId = properties.getProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "true");
             if (enableEndpointId != null && enableEndpointId.equalsIgnoreCase("true")) {
                 sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
             }
