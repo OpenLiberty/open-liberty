@@ -32,7 +32,7 @@ IBM-API-Package: \
   io.openliberty.com.squareup.okio-jvm,\
   io.openliberty.org.jetbrains.kotlin,\
   io.openliberty.org.jetbrains.annotation,\
-  io.openliberty.io.zipkin.zipkin2
+  io.openliberty.io.zipkin.zipkin2.1.0
 -jars=io.openliberty.mpTelemetry.1.1.thirdparty; location:="dev/api/third-party/,lib/"
 kind=ga
 edition=core

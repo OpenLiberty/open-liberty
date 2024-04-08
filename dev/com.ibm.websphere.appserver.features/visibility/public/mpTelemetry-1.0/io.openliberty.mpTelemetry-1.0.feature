@@ -37,7 +37,7 @@ IBM-API-Package: \
   io.openliberty.com.squareup.okio-jvm,\
   io.openliberty.org.jetbrains.kotlin,\
   io.openliberty.org.jetbrains.annotation,\
-  io.openliberty.io.zipkin.zipkin2,\
+  io.openliberty.io.zipkin.zipkin2.1.0,\
   com.ibm.ws.cdi.interfaces.jakarta, \
   io.openliberty.microprofile.telemetry.1.0.internal,\
   io.openliberty.io.opentelemetry,\
