@@ -213,7 +213,7 @@ public class CommonTest {
      * @param pause          the maximum wait time in seconds prior to invoke init() method of the ORB object.
      *                           This can be used in order to make sure that a SSL certificate is being genereated.
      *                           At the worst case, it took more than 20 seconds to generate. So putting 30 seconds.
-     *                           When this value is set, the calc application will check whether key.jks file exists
+     *                           When this value is set, the calc application will check whether key.p12 file exists
      *                           in the default location for every two seconds, and if it's not there, wait up to specified wait time.
      *                           When it reaches the maximum wait time, the program resumes.
      * @param ignoreErrors
@@ -232,7 +232,7 @@ public class CommonTest {
      * @param pause          the maximum wait time in seconds prior to invoke init() method of the ORB object.
      *                           This can be used in order to make sure that a SSL certificate is being genereated.
      *                           At the worst case, it took more than 20 seconds to genereate. So putting 30 seconds.
-     *                           When this value is set, the calc application will check whether key.jks file exists
+     *                           When this value is set, the calc application will check whether key.p12 file exists
      *                           in the default location for every two seconds, and if it's not there, wait up to specified wait time.
      *                           When it reaches the maximum wait time, the program resumes.
      * @param ignoreErrors
@@ -333,11 +333,11 @@ public class CommonTest {
         // the file location of the current client keystore
         //String clientRoot = testClient.getInstallRoot();
         String clientRoot = testClient.getClientRoot();
-        String keyLocation = clientRoot + "/resources/security/key.jks";
+        String keyLocation = clientRoot + "/resources/security/key.p12";
         Log.info(c, thisMethod, "keyLocation is" + keyLocation);
         startParms.add(keyLocation);
         // the file location of the new client keystore
-        String newKeyLocation = clientRoot + "/resources/security/newkey.jks";
+        String newKeyLocation = clientRoot + "/resources/security/newkey.p12";
         Log.info(c, thisMethod, "newKeyLocation is" + newKeyLocation);
         startParms.add(newKeyLocation);
 
