@@ -32,7 +32,7 @@ public class MetricsDisabledServlet extends FATServlet {
     OpenTelemetry openTelemetry;
 
     @Test
-    @SkipForRepeat({TelemetryActions.MP61_MPTEL20_ID, TelemetryActions.MP60_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID}) //Metrics is not disabled for MpTelemetry-2.0
+    @SkipForRepeat({TelemetryActions.MP61_MPTEL20_ID, TelemetryActions.MP60_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID,  TelemetryActions.MP14_MPTEL20_ID}) //Metrics is not disabled for MpTelemetry-2.0
     public void testMetricsDisabledServlet() {
         //metricReaders should not contain an
         //The exporter should be set to `none` despite having `otel.metrics.exporter=otlp` in microprofile-config.properties
