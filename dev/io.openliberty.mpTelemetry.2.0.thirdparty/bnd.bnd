@@ -38,7 +38,8 @@ Private-Package: \
   io.opentelemetry.semconv.trace.attributes;version=${alphaOpenTelemetryVersion},\
   io.opentelemetry.semconv.resource.attributes;version=${alphaOpenTelemetryVersion},\
   io.opentelemetry.instrumentation.annotations;version=2.0.0,\
-  io.opentelemetry.extension.incubator.metrics;version=${openTelemetryVersion}
+  io.opentelemetry.extension.incubator.metrics;version=${openTelemetryVersion},\
+  io.opentelemetry.exporter.logging; version=${openTelemetryVersion}
 
 Import-Package:
 
@@ -47,7 +48,7 @@ Export-Package:
 -buildpath: \
   io.openliberty.jakarta.interceptor.2.1;version=latest,\
   io.openliberty.io.opentelemetry.2.0;version=latest
-  
+   
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 WS-TraceGroup: TELEMETRY

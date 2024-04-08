@@ -41,6 +41,10 @@
     <!-- Test makes requests to localhost using HttpUrlConnection -->
     <javaPermission className="java.net.URLPermission" name="http://localhost:*/-" actions="*" />
 
+    <javaPermission className= "java.util.logging.LoggingPermission" name="control"/>
+    <javaPermission className="java.lang.management.ManagementPermission" name="monitor"/>
+
+    <javaPermission className="java.lang.RuntimePermission" name="getenv.logbackDisableServletContainerInitializer" />
     
     <include location="../fatTestPorts.xml" />
 </server>

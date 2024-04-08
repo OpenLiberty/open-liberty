@@ -70,6 +70,7 @@ app-resources= \
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.ConfigurablePropagatorProvider |\
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.traces.ConfigurableSpanExporterProvider |\
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.metrics.ConfigurableMetricExporterProvider |\
+  META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.logs.ConfigurableLogRecordExporterProvider |\
   META-INF/services/io.opentelemetry.exporter.internal.grpc.GrpcSenderProvider |\
   META-INF/services/io.opentelemetry.exporter.internal.http.HttpSenderProvider |\
   META-INF/services/io.opentelemetry.sdk.autoconfigure.spi.ResourceProvider
@@ -117,5 +118,4 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2
-
 WS-TraceGroup: TELEMETRY
