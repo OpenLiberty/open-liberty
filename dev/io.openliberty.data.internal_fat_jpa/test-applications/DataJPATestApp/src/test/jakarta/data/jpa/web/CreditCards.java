@@ -27,6 +27,7 @@ import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
@@ -83,6 +84,7 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     @OrderBy(ID)
     Stream<CardId> findBySecurityCode(int code);
 
+    @Query("SELECT number WHERE EXTRACT (YEAR FROM expiresOn) <= ?1")
     @OrderBy("number")
     List<Long> findNumberByExpiresOnWithYearLessThanEqual(int maxYearOfExpiry);
 

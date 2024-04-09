@@ -211,7 +211,8 @@ public interface Primes {
     @Find
     Optional<Prime> findHexadecimal(String hex);
 
-    List<Object[]> findNumberIdAndNameBy(Sort<?>... sort);
+    @Query("SELECT o.numberId, o.name FROM Prime o")
+    List<Object[]> findNumberIdAndName(Sort<?>... sort);
 
     @OrderBy(value = ID, descending = true)
     Set<Long> findNumberIdByNumberIdBetween(long min, long max);
