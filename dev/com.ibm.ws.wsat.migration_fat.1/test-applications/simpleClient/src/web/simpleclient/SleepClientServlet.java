@@ -14,26 +14,20 @@ package web.simpleclient;
 
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Enumeration;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 import javax.transaction.xa.XAException;
 import javax.xml.ws.BindingProvider;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.tx.jta.ExtendedTransactionManager;
@@ -44,7 +38,6 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
 @WebServlet({ "/SleepClientServlet" })
@@ -57,72 +50,23 @@ public class SleepClientServlet extends FATServlet {
 	private static final int LONG_SLEEP = 1;
 	private static final int SHORT_SLEEP = 2;
 	
-	private static final String BASE_URL = "http://localhost:8030";
-	private static final String BASE_URL2 = "http://localhost:8050";
+	protected static final String BASE_URL = "http://localhost:" + System.getProperty("bvt.prop.HTTP_secondary");
+	protected static final String BASE_URL2 = "http://localhost:" + System.getProperty("bvt.prop.HTTP_tertiary");
 
 	private Instant tranEndTime;
 	private int timeout = (int) DEFAULT_TIMEOUT;
 	private float perfFactor;
 
 	private static final String[] noXARes = new String[]{};
-	private static final String[] OneXARes = new String[]{""}; 
-	private static final String[] OneXAResVoteRollback = new String[]{"rollback"}; 
-	private static final String[] OneXAResVoteReadonly = new String[]{"readonly"}; 
 	private static final String[] TwoXARes = new String[]{"" , ""};
-	private static final String[] TwoXAResVoteRollback = new String[]{"rollback" , "rollback"};
-	private static final String[] TwoXAResVoteReadonlyCommit = new String[]{"readonly" , ""};
-	private static final String[] TwoXAResVoteReadonly = new String[]{"readonly" , "readonly"};
-	
 	@Resource
 	UserTransaction ut;
 
-    private static String TEST_NAME_PARAM = "testName";
-
-//	protected String get(HttpServletRequest request) throws ServletException, IOException {
-//		String output = "";
-//		try {
-//			int method = Integer.parseInt(request.getParameter("method").trim());
-//			System.out.println("==============Test Number: " + method
-//					+ "================");
-//			XAResourceImpl.clear();
-//			String BASE_URL = request.getParameter("baseurl");
-//			String BASE_URL2 = request.getParameter("baseurl2");
-//			if (BASE_URL == null || BASE_URL.equals("")){
-//				BASE_URL = "http://localhost:9992";
-//			}
-//			String perf = request.getParameter("perf");
-//			if (perf != null && !perf.isEmpty()) {
-//				perfFactor = Float.parseFloat(perf);;
-//				timeout = Math.round(DEFAULT_TIMEOUT / Float.parseFloat(perf));
-//				ut.setTransactionTimeout(timeout);
-//				System.out.println("Timeout adjusted to " + timeout);
-//			} else {
-//				perfFactor = 1f;
-//				timeout = Math.round(DEFAULT_TIMEOUT);
-//			}
-//
-//			String[] noXARes = new String[]{};
-//			String[] OneXARes = new String[]{""}; 
-//			String[] OneXAResVoteRollback = new String[]{"rollback"}; 
-//			String[] OneXAResVoteReadonly = new String[]{"readonly"}; 
-//			String[] TwoXARes = new String[]{"" , ""};
-//			String[] TwoXAResVoteRollback = new String[]{"rollback" , "rollback"};
-//			String[] TwoXAResVoteReadonlyCommit = new String[]{"readonly" , ""};
-//			String[] TwoXAResVoteReadonly = new String[]{"readonly" , "readonly"};
-//
     @Override
     protected void before() throws Exception {
     	XAResourceImpl.clear();
     }
 
-
-
-
-
-
-
-    
-    
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException", "javax.transaction.SystemException" })
     public void testWSATRE094FVT() {
@@ -189,78 +133,12 @@ public class SleepClientServlet extends FATServlet {
     	assertTrue(execute(BASE_URL, TwoXARes, TwoXARes, NO_SLEEP, SHORT_SLEEP, "rollback", XAResourceImpl.DIRECTION_ROLLBACK, "NoException").contains("Test passed"));
     }
 
+    private String execute(String BASE_URL, String[] CoordinatorXAResouces, String[] ParticipantXAResouces,
+    		int sleepTimeClient, int sleepTimeServer, String commitRollback, int expectedDirection, String expectResult) {
+    	return execute(BASE_URL, "", CoordinatorXAResouces, ParticipantXAResouces, 
+    			new String[]{}, new String[]{}, "", sleepTimeClient, sleepTimeServer, commitRollback, expectedDirection, expectResult);
+    }
 
-
-
-
-				
-				
-				//			}
-//			
-//			output = "<html><header></header><body>" + output + "</body></html>";
-//		} catch (Exception e) {
-//			output = "<html><header></header><body> Client catch exception: "
-//							+ e.toString() + "</body></html>";
-//			e.printStackTrace();
-//		} finally{
-//			XAResourceImpl.clear();
-//		}
-//		
-//		System.out.println("end dispatch");
-//		return output;
-//	}
-	
-	private String execute(String BASE_URL, String commitRollback, int expectedDirection, String expectResult) {
-		return execute(BASE_URL, new String[]{}, new String[]{}, commitRollback, expectedDirection, expectResult);
-	}
-	
-	private String execute(String BASE_URL, String[] CoordinatorXAResouces, String[] ParticipantXAResouces,
-			String commitRollback, int expectedDirection, String expectResult) {
-		return execute(BASE_URL, CoordinatorXAResouces, ParticipantXAResouces, 
-				new String[]{}, commitRollback,expectedDirection, expectResult);
-	}
-	
-	
-	private String execute(String BASE_URL, String[] CoordinatorXAResouces, String[] ParticipantXAResouces,
-			int sleepTimeClient, int sleepTimeServer, String commitRollback, int expectedDirection, String expectResult) {
-		return execute(BASE_URL, "", CoordinatorXAResouces, ParticipantXAResouces, 
-				new String[]{}, new String[]{}, "", sleepTimeClient, sleepTimeServer, commitRollback, expectedDirection, expectResult);
-	}
-	
-	private String execute(String BASE_URL, String[] CoordinatorXAResouces, String[] ParticipantXAResouces,
-			String setRollbackOnly, String commitRollback, int expectedDirection, String expectResult) {
-		return execute(BASE_URL, CoordinatorXAResouces, ParticipantXAResouces, 
-				new String[]{}, setRollbackOnly, commitRollback, expectedDirection,expectResult);
-	}
-
-	private String execute(String BASE_URL, String[] CoordinatorXAResouces, String[] ParticipantXAResouces,
-			String[] CoordinatorXAResoucesAfterWSCall, String commitRollback, int expectedDirection, String expectResult) {
-		return execute(BASE_URL, CoordinatorXAResouces, ParticipantXAResouces, 
-				CoordinatorXAResoucesAfterWSCall, "", commitRollback, expectedDirection, expectResult);
-	}
-	
-	
-	private String execute(String BASE_URL, String[] CoordinatorXAResouces, String[] ParticipantXAResouces,
-			String[] CoordinatorXAResoucesAfterWSCall, String setRollbackOnly, 
-			String commitRollback, int expectedDirection, String expectResult) {
-		return execute(BASE_URL, "", CoordinatorXAResouces, ParticipantXAResouces, new String[]{},
-				CoordinatorXAResoucesAfterWSCall, setRollbackOnly, commitRollback, expectedDirection, expectResult);
-	}
-	
-	private String execute(String BASE_URL, String BASE_URL2, String[] CoordinatorXAResouces, String[] ParticipantXAResouces,
-			String[] ParticipantXAResoucesInSecondCall, String[] CoordinatorXAResoucesAfterWSCall,
-			String commitRollback, int expectedDirection, String expectResult) {
-		return execute(BASE_URL, BASE_URL2, CoordinatorXAResouces, ParticipantXAResouces, ParticipantXAResoucesInSecondCall,
-				CoordinatorXAResoucesAfterWSCall, "", commitRollback, expectedDirection, expectResult);
-	}
-	
-	private String execute(String BASE_URL, String BASE_URL2, String[] CoordinatorXAResouces, String[] ParticipantXAResouces,
-			String[] ParticipantXAResoucesInSecondCall, String[] CoordinatorXAResoucesAfterWSCall, String setRollbackOnly, 
-			String commitRollback, int expectedDirection, String expectResult) {
-		return execute(BASE_URL, BASE_URL2, CoordinatorXAResouces, ParticipantXAResouces, ParticipantXAResoucesInSecondCall,
-				CoordinatorXAResoucesAfterWSCall, setRollbackOnly, 0, 0, commitRollback, expectedDirection, expectResult);
-	}
-	
 	private String execute(String BASE_URL, String BASE_URL2, String[] CoordinatorXAResouces, String[] ParticipantXAResouces,
 			String[] ParticipantXAResoucesInSecondCall, String[] CoordinatorXAResoucesAfterWSCall, String setRollbackOnly, 
 			int sleepTimeClient, int sleepTimeServer, String commitRollback, int expectedDirection, String expectResult) {
@@ -504,26 +382,5 @@ public class SleepClientServlet extends FATServlet {
 			}
 		}
 		return true;
-	}
-	
-	private String init(String BASE_URL, String BASE_URL2) throws MalformedURLException{
-		String res = "First reply : '" + callWebservice(BASE_URL) + "'";
-		if(BASE_URL2 != null && !BASE_URL2.equals("")){
-			res += "; Second reply : " + callWebservice(BASE_URL2) + "'";
-		}
-		perfFactor = 1f;
-		timeout = Math.round(DEFAULT_TIMEOUT);
-		return res;
-	}
-	
-	private String callWebservice(String BASE_URL) throws MalformedURLException{
-		URL wsdlLocation = new URL(BASE_URL
-				+ "/simpleService/WSATSimpleService?wsdl");
-		WSATSimpleService service = new WSATSimpleService(wsdlLocation);
-		WSATSimple proxy = service.getWSATSimplePort();
-		BindingProvider bind = (BindingProvider) proxy;
-		bind.getRequestContext().put("javax.xml.ws.service.endpoint.address",
-				BASE_URL + "/simpleService/WSATSimpleService");
-		return proxy.echo("Init " + BASE_URL);
 	}
 }

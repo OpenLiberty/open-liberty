@@ -44,8 +44,8 @@ public abstract class ClientServletBase extends FATServlet {
 	protected static final int LONG_SLEEP = 1;
 	protected static final int SHORT_SLEEP = 2;
 	
-	protected static final String BASE_URL = "http://localhost:8030";
-	protected static final String BASE_URL2 = "http://localhost:8050";
+	protected static final String BASE_URL = "http://localhost:" + System.getProperty("bvt.prop.HTTP_secondary");
+	protected static final String BASE_URL2 = "http://localhost:" + System.getProperty("bvt.prop.HTTP_tertiary");
 
 	protected Instant tranEndTime;
 	protected int timeout = (int) DEFAULT_TIMEOUT;
@@ -59,7 +59,7 @@ public abstract class ClientServletBase extends FATServlet {
 	protected static final String[] TwoXAResVoteRollback = new String[]{"rollback" , "rollback"};
 	protected static final String[] TwoXAResVoteReadonlyCommit = new String[]{"readonly" , ""};
 	protected static final String[] TwoXAResVoteReadonly = new String[]{"readonly" , "readonly"};
-	
+
 	@Resource
 	protected UserTransaction ut;
 
@@ -362,26 +362,5 @@ public abstract class ClientServletBase extends FATServlet {
 			}
 		}
 		return true;
-	}
-	
-	private String init(String BASE_URL, String BASE_URL2) throws MalformedURLException{
-		String res = "First reply : '" + callWebservice(BASE_URL) + "'";
-		if(BASE_URL2 != null && !BASE_URL2.equals("")){
-			res += "; Second reply : " + callWebservice(BASE_URL2) + "'";
-		}
-		perfFactor = 1f;
-		timeout = Math.round(DEFAULT_TIMEOUT);
-		return res;
-	}
-	
-	private String callWebservice(String BASE_URL) throws MalformedURLException{
-		URL wsdlLocation = new URL(BASE_URL
-				+ "/simpleService/WSATSimpleService?wsdl");
-		WSATSimpleService service = new WSATSimpleService(wsdlLocation);
-		WSATSimple proxy = service.getWSATSimplePort();
-		BindingProvider bind = (BindingProvider) proxy;
-		bind.getRequestContext().put("javax.xml.ws.service.endpoint.address",
-				BASE_URL + "/simpleService/WSATSimpleService");
-		return proxy.echo("Init " + BASE_URL);
 	}
 }
