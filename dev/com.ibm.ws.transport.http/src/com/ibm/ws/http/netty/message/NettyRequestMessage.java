@@ -249,7 +249,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     }
 
     @Override
-    @FFDCIgnore({ MalformedURLException.class, URISyntaxException.class })
+    @FFDCIgnore({  URISyntaxException.class })
     public String getRequestURI() {
         MSP.log("getRequestURI: query.path()" + query.path() + "query uri: " + query.uri());
         if (getMethod().equalsIgnoreCase(HttpMethod.CONNECT.toString())) {
@@ -257,11 +257,14 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             return GenericUtils.getEnglishString(SLASH);
         }
         try {
-            URI requestUri = new URL(request.uri()).toURI();
+            //URI requestUri = new URL(request.uri()).toURI();
+            URI requestUri = new URI(request.uri());
             // If it works it means we have an absolute URI and not a path
-            return requestUri.getPath();
-        } catch (MalformedURLException e) {
-            return query.path();
+            System.out.println("MSP: requestURI path is set to -> " + requestUri.getPath() );
+            System.out.println("MSP: there is also the raw: " + requestUri.getRawPath());
+            return requestUri.getRawPath();
+     //   } catch (MalformedURLException e) {
+          //  return query.path();
         } catch (URISyntaxException e) {
             return query.path();
         }
@@ -690,17 +693,21 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     public List<HttpCookie> getAllCookies() {
         List<HttpCookie> list = new LinkedList<HttpCookie>();
         String cookieString = headers.get(HttpHeaders.Names.COOKIE);
-        if (Objects.nonNull(cookieString)) {
-            Set<Cookie> cookies = CookieDecoder.decode(cookieString);
-            if (!cookies.isEmpty()) {
-                for (Cookie cookie : cookies) {
-                    list.add(new HttpCookie(cookie.getName(), cookie.getValue()));
-                }
+        System.out.println("MSP getAllCookies -> " + cookieString);
+//        if (Objects.nonNull(cookieString)) {
+//            Set<Cookie> cookies = CookieDecoder.decode(cookieString);
+//            if (!cookies.isEmpty()) {
+//                for (Cookie cookie : cookies) {
+//                    list.add(new HttpCookie(cookie.getName(), cookie.getValue()));
+//                }
+//
+//            }
+//        }
+        
+        
+        return com.ibm.ws.http.netty.cookie.CookieDecoder.decode(cookieString);
 
-            }
-        }
-
-        return list;
+        
     }
 
     @Override
