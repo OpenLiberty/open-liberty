@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
@@ -37,11 +36,7 @@ import com.ibm.websphere.simplicity.config.wim.FederatedRepository;
 import com.ibm.websphere.simplicity.config.wim.LdapFilters;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 
-/**
- * Represents a server configuration document for the WAS 8.5 Liberty Profile.
- */
-@XmlRootElement(name = "server")
-public class ServerConfiguration implements Cloneable {
+public abstract class ServerConfiguration implements Cloneable {
 
     private String description;
     @XmlElement(name = "featureManager")
@@ -116,9 +111,6 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "cloudantDatabase")
     private ConfigElementList<CloudantDatabase> cloudantDatabases;
 
-    @XmlElement(name = "commonjTimerManager")
-    private ConfigElementList<CommonjTimerManager> commonjTimerManagers;
-
     @XmlElement(name = "concurrencyPolicy")
     private ConfigElementList<ConcurrencyPolicy> concurrencyPolicies;
 
@@ -130,9 +122,6 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "jdbcDriver")
     private ConfigElementList<JdbcDriver> jdbcDrivers;
-
-    @XmlElement(name = "jmsActivationSpec")
-    private ConfigElementList<JMSActivationSpec> jmsActivationSpecs;
 
     @XmlElement(name = "jmsConnectionFactory")
     private ConfigElementList<JMSConnectionFactory> jmsConnectionFactories;
@@ -276,14 +265,8 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "persistentExecutor")
     private ConfigElementList<PersistentExecutor> persistentExecutors;
 
-    @XmlElement(name = "scalingDefinitions")
-    private ScalingDefinitions scalingDefinitions;
-
     @XmlElement(name = "remoteFileAccess")
     private ConfigElementList<RemoteFileAccess> remoteFileAccesses;
-
-    @XmlElement(name = "apiDiscovery")
-    private APIDiscoveryElement apiDiscoveryElement;
 
     @XmlElement(name = "mpMetrics")
     private MPMetricsElement mpMetricsElement;
@@ -468,12 +451,6 @@ public class ServerConfiguration implements Cloneable {
         return this.cloudantDatabases;
     }
 
-    public ConfigElementList<CommonjTimerManager> getCommonjTimerManagers() {
-        if (this.commonjTimerManagers == null)
-            this.commonjTimerManagers = new ConfigElementList<CommonjTimerManager>();
-        return this.commonjTimerManagers;
-    }
-
     public ConfigElementList<ConcurrencyPolicy> getConcurrencyPolicies() {
         if (this.concurrencyPolicies == null)
             this.concurrencyPolicies = new ConfigElementList<ConcurrencyPolicy>();
@@ -605,11 +582,7 @@ public class ServerConfiguration implements Cloneable {
         return this.cacheManagers;
     }
 
-    public ConfigElementList<JMSActivationSpec> getJMSActivationSpecs() {
-        if (this.jmsActivationSpecs == null)
-            this.jmsActivationSpecs = new ConfigElementList<JMSActivationSpec>();
-        return this.jmsActivationSpecs;
-    }
+    abstract public ConfigElementList<? extends JMSActivationSpec> getJMSActivationSpecs();
 
     public ConfigElementList<JMSConnectionFactory> getJMSConnectionFactories() {
         if (this.jmsConnectionFactories == null)
@@ -799,14 +772,6 @@ public class ServerConfiguration implements Cloneable {
         return this.ejbContainer;
     }
 
-    public APIDiscoveryElement getAPIDiscoveryElement() {
-        if (this.apiDiscoveryElement == null) {
-            this.apiDiscoveryElement = new APIDiscoveryElement();
-        }
-
-        return this.apiDiscoveryElement;
-    }
-
     public OpenAPIElement getOpenAPIElement() {
         if (this.openAPIElement == null) {
             this.openAPIElement = new OpenAPIElement();
@@ -937,10 +902,10 @@ public class ServerConfiguration implements Cloneable {
     /**
      * Removes all applications with a specific name
      *
-     * @param  name
-     *                  the name of the applications to remove
-     * @return      the removed applications (no longer bound to the server
-     *              configuration)
+     * @param name
+     *                 the name of the applications to remove
+     * @return the removed applications (no longer bound to the server
+     *         configuration)
      */
     public ConfigElementList<Application> removeApplicationsByName(String name) {
         ConfigElementList<Application> installedApps = this.getApplications();
@@ -958,14 +923,14 @@ public class ServerConfiguration implements Cloneable {
      * Adds an application to the current config, or updates an application with
      * a specific name if it already exists
      *
-     * @param  name
-     *                  the name of the application
-     * @param  path
-     *                  the fully qualified path to the application archive on the
-     *                  liberty machine
-     * @param  type
-     *                  the type of the application (ear/war/etc)
-     * @return      the deployed application
+     * @param name
+     *                 the name of the application
+     * @param path
+     *                 the fully qualified path to the application archive on the
+     *                 liberty machine
+     * @param type
+     *                 the type of the application (ear/war/etc)
+     * @return the deployed application
      */
     public Application addApplication(String name, String path, String type) {
         ConfigElementList<Application> apps = this.getApplications();
@@ -1147,19 +1112,6 @@ public class ServerConfiguration implements Cloneable {
     }
 
     /**
-     * Returns the configured top level scalingDefinitions element.
-     *
-     * @return The configured top level scalingDefinitions element.
-     */
-    public ScalingDefinitions getScalingDefinitions() {
-        if (this.scalingDefinitions == null) {
-            this.scalingDefinitions = new ScalingDefinitions();
-        }
-
-        return this.scalingDefinitions;
-    }
-
-    /**
      * Returns a list of configured top level remoteFileAccess elements.
      *
      * @return A list of configured top level remoteFileAccess elements.
@@ -1185,7 +1137,7 @@ public class ServerConfiguration implements Cloneable {
 
     private List<Field> getAllXmlElements() {
         List<Field> xmlElements = new ArrayList<Field>();
-        for (Field field : getClass().getDeclaredFields()) {
+        for (Field field : ServerConfiguration.class.getDeclaredFields()) {
             if (field.isAnnotationPresent(XmlElement.class))
                 xmlElements.add(field);
         }
@@ -1217,22 +1169,28 @@ public class ServerConfiguration implements Cloneable {
     @Override
     public String toString() {
         String nl = System.getProperty("line.separator");
-        StringBuffer buf = new StringBuffer("ServerConfiguration" + nl);
+        StringBuilder builder = new StringBuilder("ServerConfiguration").append(nl);
 
+        fieldsToString(builder);
+        return builder.toString();
+    }
+
+    protected void fieldsToString(StringBuilder builder) {
+        String nl = System.getProperty("line.separator");
         for (Field field : getAllXmlElements()) {
             try {
-                buf.append(field.get(this).toString());
+                builder.append(field.get(this).toString());
+                builder.append(nl);
             } catch (Exception ignore) {
             }
         }
-        return buf.toString();
     }
 
     @Override
     public boolean equals(Object otherConfig) {
         if (otherConfig == null)
             return false;
-        if (!(otherConfig instanceof ServerConfiguration))
+        if (otherConfig.getClass() != getClass())
             return false;
 
         // Consider server configurations equal if their XmlElements match up
@@ -1273,8 +1231,8 @@ public class ServerConfiguration implements Cloneable {
      * which is currently deprecated. But this method is specific to Database rotation. If we start using the
      * fat.modify tag and modifiableConfigElement interface for other modification purposes this method can be un-deprecated
      *
-     * @param  element                  The config element to check.
-     * @param  modifiableConfigElements The list containing all modifiable elements.
+     * @param element                  The config element to check.
+     * @param modifiableConfigElements The list containing all modifiable elements.
      * @throws Exception
      */
     @Deprecated
@@ -1308,9 +1266,9 @@ public class ServerConfiguration implements Cloneable {
      * configuration for a feature which is not part of the product, for example one
      * that is built and installed by a FAT bucket.
      *
-     * @param   tagName The tag name that should be removed.
+     * @param tagName The tag name that should be removed.
      *
-     * @returns         A list of the items that were removed.
+     * @returns A list of the items that were removed.
      */
     public List<Element> removeUnknownElement(String tagName) {
         List<Element> removedElements = new LinkedList<Element>();

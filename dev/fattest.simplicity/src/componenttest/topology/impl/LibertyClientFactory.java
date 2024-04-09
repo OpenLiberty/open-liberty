@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -40,7 +40,7 @@ public class LibertyClientFactory {
     /**
      * This method will return a newly created LibertyClient instance with the specified client name
      *
-     * @return A stopped Liberty Client instance
+     * @return           A stopped Liberty Client instance
      * @throws Exception
      */
     public static LibertyClient getLibertyClient(String clientName) {
@@ -50,7 +50,7 @@ public class LibertyClientFactory {
     /**
      * This method will return a newly created LibertyClient instance with the specified client name
      *
-     * @return A stopped Liberty Client instance
+     * @return           A stopped Liberty Client instance
      * @throws Exception
      */
     public static LibertyClient getLibertyClient(String clientName, Bootstrap bootstrap, boolean ignoreCache) {
@@ -100,7 +100,7 @@ public class LibertyClientFactory {
                     } else {
                         Log.info(LibertyClientFactory.class, "getLibertyClient", "using supplied bootstrapping.properties");
                     }
-                    lc = new LibertyClient(clientName, bootstrap);
+                    lc = LibertyClientFactoryDelegate.createLibertyClient(clientName, bootstrap);
 
                     if (installClientFromSampleJar) {
                         if (!LibertyFileManager.libertyFileExists(lc.getMachine(), lc.getClientRoot())) {
@@ -111,7 +111,7 @@ public class LibertyClientFactory {
                         }
                     } else {
                         //copy the published FAT client content for the test
-                        recursivelyCopyDirectory(lc.getMachine(), new LocalFile(lc.getPathToAutoFVTNamedClient()), new RemoteFile(lc.getMachine(), lc.getClientRoot()));
+                        recursivelyCopyDirectory(lc.getMachine(), new LocalFile(lc.getPathToAutoFVTNamedClient()), lc.getMachine().getFile(lc.getClientRoot()));
 
                     }
 
@@ -141,7 +141,7 @@ public class LibertyClientFactory {
     /**
      * This method will return a newly created LibertyClient instance with the specified client name
      *
-     * @return A started Liberty Client instance
+     * @return           A started Liberty Client instance
      * @throws Exception
      */
     public static LibertyClient getStartedLibertyClient(String clientName) {
@@ -159,11 +159,12 @@ public class LibertyClientFactory {
      * client XML, that includes fatTestPorts.xml and the sample client.xml. The bootstrap.properties will be exchanged with a default properties file that includes the
      * "../testports.properties" file and the sample properties file. The client will then be added to the list of known clients and returned.
      *
-     * @param clientName The name of the client to install, must be matched by a local file named clientName.jar in the lib/LibertyFATTestFiles folder (populated from publish/files
-     *            in a FAT test project)
-     * @param bootstrap The bootstrap to use on the client
-     * @param ignoreCache <code>false</code> if we should load a cached client if available
-     * @return The client
+     * @param  clientName  The name of the client to install, must be matched by a local file named clientName.jar in the lib/LibertyFATTestFiles folder (populated from
+     *                         publish/files
+     *                         in a FAT test project)
+     * @param  bootstrap   The bootstrap to use on the client
+     * @param  ignoreCache <code>false</code> if we should load a cached client if available
+     * @return             The client
      *
      */
     public static LibertyClient installSampleClient(String clientName, Bootstrap bootstrap, boolean ignoreCache) {
@@ -178,7 +179,7 @@ public class LibertyClientFactory {
      * This method should not be ran by the user, it is ran by the JUnit runner at the end of each test
      * to recover the clients.
      *
-     * @param testClassName the name of the FAT test class to recover known clients for
+     * @param  testClassName the name of the FAT test class to recover known clients for
      * @throws Exception
      */
     public static void recoverAllclients(String testClassName) throws Exception {
@@ -260,7 +261,7 @@ public class LibertyClientFactory {
         for (String l : logs) {
             Log.finer(c, "recursivelyCopyDirectory", "Getting: " + l);
             LocalFile toCopy = new LocalFile(localDirectory, l);
-            RemoteFile toReceive = new RemoteFile(machine, destination, l);
+            RemoteFile toReceive = machine.getFile(destination, l);
             if (toCopy.isDirectory()) {
                 // Recurse
                 recursivelyCopyDirectory(machine, toCopy, toReceive);
@@ -312,7 +313,7 @@ public class LibertyClientFactory {
         LocalFile backup = getClientBackupZip(client);
 
         // Client is in the build.image/wlp/usr/clients dir
-        RemoteFile usrclientsDir = new RemoteFile(m, client.getClientRoot()).getParentFile(); //should be /wlp/usr/clients
+        RemoteFile usrclientsDir = m.getFile(client.getClientRoot()).getParentFile(); //should be /wlp/usr/clients
 
         if (backup.exists()) {
             Log.info(c, METHOD, "Backup file already exists... skipping backup");
@@ -340,7 +341,7 @@ public class LibertyClientFactory {
     private static void postTestRecover(LibertyClient client) throws Exception {
         final String METHOD = "postTestRecover";
         Machine m = client.getMachine();
-        RemoteFile usrclientsDir = new RemoteFile(m, client.getClientRoot()).getParentFile(); //should be /wlp/usr/clients
+        RemoteFile usrclientsDir = m.getFile(client.getClientRoot()).getParentFile(); //should be /wlp/usr/clients
 
         LocalFile backup = getClientBackupZip(client);
         if (!backup.exists()) {
@@ -349,7 +350,7 @@ public class LibertyClientFactory {
         }
         Log.info(c, METHOD, "Recovering Client: " + client.getClientName() + " from zip file: " + backup.getAbsolutePath());
 
-        RemoteFile clientFolder = new RemoteFile(m, client.getClientRoot());
+        RemoteFile clientFolder = m.getFile(client.getClientRoot());
         if (!!!clientFolder.delete()) {
             Log.warning(c, "Unable to delete old clientFolder. Recovery failed!");
             // retry up to 5 seconds

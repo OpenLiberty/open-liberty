@@ -61,7 +61,7 @@ public class CVEReportingConfigTest extends FATServletClient {
     @Test
     public void testIsDisabled() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
-        config.getCVEReporting().setEnabled(false);
+        config.getCVEReporting().setEnabled("false");
         server.updateServerConfiguration(config);
 
         server.startServer();
@@ -72,7 +72,7 @@ public class CVEReportingConfigTest extends FATServletClient {
     @Test
     public void testIsEnabled() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
-        config.getCVEReporting().setEnabled(true);
+        config.getCVEReporting().setEnabled("true");
         server.updateServerConfiguration(config);
 
         server.startServer();
@@ -84,7 +84,7 @@ public class CVEReportingConfigTest extends FATServletClient {
     @Test
     public void testDynamicUpdate() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
-        config.getCVEReporting().setEnabled(true);
+        config.getCVEReporting().setEnabled("true");
         server.updateServerConfiguration(config);
 
         server.startServer();
@@ -94,14 +94,14 @@ public class CVEReportingConfigTest extends FATServletClient {
 
         server.setMarkToEndOfLog();
 
-        config.getCVEReporting().setEnabled(false);
+        config.getCVEReporting().setEnabled("false");
         server.updateServerConfiguration(config);
 
         assertNotNull("The feature is enabled", server.waitForStringInLog("CWWKF1701I:.*"));
 
         server.setMarkToEndOfLog();
 
-        config.getCVEReporting().setEnabled(true);
+        config.getCVEReporting().setEnabled("true");
         server.updateServerConfiguration(config);
 
         assertNotNull("The feature is disabled", server.waitForStringInLog("CWWKF1700I:.*"));

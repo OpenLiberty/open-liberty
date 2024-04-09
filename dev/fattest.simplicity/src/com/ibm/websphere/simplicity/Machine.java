@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,9 @@
  *******************************************************************************/
 package com.ibm.websphere.simplicity;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -42,9 +44,9 @@ public class Machine {
     private final ConnectionInfo connInfo;
     protected OperatingSystem os;
     private String bootstrapFileKey;
-    private String osVersion;
-    private String rawOSName;
-    private String tempDir;
+    protected String osVersion;
+    protected String rawOSName;
+    protected String tempDir;
     private static int[] existingWindowsProcesses;
     protected String workDir;
     protected boolean isLocal = false;
@@ -99,7 +101,7 @@ public class Machine {
             if (connInfo.getHost().contains("localhost"))
                 machine = getLocalMachine();
             else
-                machine = new Machine(connInfo);
+                machine = RemoteMachineFactory.createRemoteMachine(connInfo);
             machineCache.put(connInfo, machine);
         }
         Log.exiting(c, "getMachine", machine);
@@ -229,6 +231,19 @@ public class Machine {
     }
 
     /**
+     * Constructs a RemoteFile object that represents the path to the remote file indicated by the
+     * input path. Note that the actual file is not guaranteed to exist. The input path may
+     * represent either a file or a directory.
+     *
+     * @param  path The absolute path to a file on the remote device.
+     * @param encoding The character set the file is encoded in
+     * @return      A RemoteFile representing the input abstract path name
+     */
+    public RemoteFile getFile(String path, Charset encoding) {
+        return new RemoteFile(this, path, encoding);
+    }
+
+    /**
      * Get the {@link OperatingSystem} that this Machine is running
      *
      * @return A representation of the operating system of the remote machine
@@ -267,7 +282,7 @@ public class Machine {
                 cmd = "/bin/sh";
                 params = new String[] { "-c", "\"cat", "/proc/version\"" };
             }
-            Log.finer(c, method, "Command to get OS version: " + cmd + " " + params);
+            Log.finer(c, method, "Command to get OS version: " + cmd + " " + Arrays.toString(params));
             this.osVersion = LocalProvider.executeCommand(this, cmd, params, null, null).getStdout().trim();
         }
         Log.exiting(c, method, this.osVersion);
@@ -472,7 +487,7 @@ public class Machine {
      * @return                    The result of the command
      * @throws ExecutionException
      */
-    public AsyncProgramOutput executeAsync(String cmd, String[] parameters) throws Exception {
+    public ProgramOutput executeAsync(String cmd, String[] parameters) throws Exception {
         return LocalProvider.executeCommandAsync(this, cmd, parameters, workDir, null);
     }
 

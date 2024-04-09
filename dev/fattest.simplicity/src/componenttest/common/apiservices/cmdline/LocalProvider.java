@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -86,21 +86,21 @@ public class LocalProvider {
      * of a remote file.
      *
      * A failure to delete any nested child file will cause the entire
-     * deletion to fail.  However, the delete operation will attempt to
+     * deletion to fail. However, the delete operation will attempt to
      * delete all nested children despite any failures on particular
      * children.
      *
-     * @param remoteFile The remote file providing the path which is to
-     *     be deleted.
+     * @param  remoteFile The remote file providing the path which is to
+     *                        be deleted.
      *
-     * @return True or false telling if the file was successfully deleted.
-     *     True if the file does not exist.
-     * 
-     * @throws Exception Thrown in case of an error deleting the file.
-     *     Not currently thrown.
+     * @return            True or false telling if the file was successfully deleted.
+     *                    True if the file does not exist.
+     *
+     * @throws Exception  Thrown in case of an error deleting the file.
+     *                        Not currently thrown.
      */
     public static boolean delete(RemoteFile remoteFile) throws Exception {
-        return delete( new File( remoteFile.getAbsolutePath() ) );
+        return delete(new File(remoteFile.getAbsolutePath()));
     }
 
     /**
@@ -109,17 +109,17 @@ public class LocalProvider {
      * If a directory, recursively delete the contents of the directory
      * before deleting the directory itself.
      *
-     * @param file The file which is to be deleted.
+     * @param  file The file which is to be deleted.
      *
-     * @return True or false telling if the file was deleted.
+     * @return      True or false telling if the file was deleted.
      */
     private static boolean delete(File file) {
-        if ( !file.exists() ) {
+        if (!file.exists()) {
             return true;
         }
 
-        if ( file.isDirectory() ) {
-            for ( File childFile : file.listFiles() ) {
+        if (file.isDirectory()) {
+            for (File childFile : file.listFiles()) {
                 // Ignore any child delete failure: The parent
                 // delete will subsequently fail.
                 @SuppressWarnings("unused")
@@ -274,7 +274,7 @@ public class LocalProvider {
      * This method takes the parameter array and turns it into one long string for
      * use by the sh -c part of running the command locally on linux
      *
-     * @param cmd
+     * @param  cmd
      * @return
      */
     private static String shArrayTransform(String[] cmd) {
@@ -337,7 +337,7 @@ public class LocalProvider {
             File child = new File(f, children[i]);
             list.add(child.getAbsolutePath());
             if (recursive && child.isDirectory()) {
-                RemoteFile childKey = new RemoteFile(file.getMachine(), child.getAbsolutePath());
+                RemoteFile childKey = file.getMachine().getFile(child.getAbsolutePath());
                 String[] grandchildren = list(childKey, recursive);
                 for (int k = 0; k < grandchildren.length; ++k) {
                     list.add(grandchildren[k]);
@@ -440,11 +440,11 @@ class InputCopier implements Runnable {
 
     /**
      * @param serverOut
-     *            the output from the Orca process, ownership is passed and this
-     *            stream is closed at the end of the thread
+     *                      the output from the Orca process, ownership is passed and this
+     *                      stream is closed at the end of the thread
      * @param writer
-     *            the file to write to, ownership is passed and this stream is
-     *            closed at the end of the thread
+     *                      the file to write to, ownership is passed and this stream is
+     *                      closed at the end of the thread
      */
     public InputCopier(InputStream serverOut, OutputStream writer) {
         input = serverOut;

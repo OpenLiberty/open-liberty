@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -59,7 +59,6 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.PortType;
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
-import com.ibm.websphere.simplicity.application.ApplicationType;
 import com.ibm.websphere.simplicity.config.ClientConfiguration;
 import com.ibm.websphere.simplicity.config.ClientConfigurationFactory;
 import com.ibm.websphere.simplicity.log.Log;
@@ -407,12 +406,12 @@ public class LibertyClient {
             jar += ".exe";
             java += ".exe";
         }
-        RemoteFile testJar = new RemoteFile(machine, machineJava + "/bin/" + jar);
-        RemoteFile testJava = new RemoteFile(machine, machineJava + "/bin/" + java);
+        RemoteFile testJar = machine.getFile(machineJava + "/bin/" + jar);
+        RemoteFile testJava = machine.getFile(machineJava + "/bin/" + java);
         machineJarPath = testJar.getAbsolutePath();
         if (!!!testJar.exists()) {
             //if we come in here we might be pointing at a JRE instead of a JDK so we'll go up a level in hope it's there
-            testJar = new RemoteFile(machine, machineJava + "/../bin/" + jar);
+            testJar = machine.getFile(machineJava + "/../bin/" + jar);
             machineJarPath = testJar.getAbsolutePath();
             if (!!!testJar.exists()) {
                 throw new TopologyException("cannot find a " + jar + " file in " + machineJava + "/bin. Please ensure you have set the machine javaHome to point to a JDK");
@@ -441,7 +440,7 @@ public class LibertyClient {
             // Ignore if doesn't exist
         }
         try {
-            RemoteFile applicationsFolder = new RemoteFile(machine, installRoot + "/usr/shared/apps");
+            RemoteFile applicationsFolder = machine.getFile(installRoot + "/usr/shared/apps");
             applicationsFolder.delete();
             applicationsFolder.mkdir();
         } catch (Exception e) {
@@ -458,7 +457,7 @@ public class LibertyClient {
      * @throws Exception
      */
     public void changeFeatures(List<String> newFeatures) throws Exception {
-        RemoteFile clientXML = new RemoteFile(machine, clientRoot + "/" + CLIENT_CONFIG_FILE_NAME);
+        RemoteFile clientXML = machine.getFile(clientRoot + "/" + CLIENT_CONFIG_FILE_NAME);
         LocalFile tempclientXML = new LocalFile(CLIENT_CONFIG_FILE_NAME);
         boolean createOriginalList;
         if (originalFeatureSet == null) {
@@ -708,7 +707,7 @@ public class LibertyClient {
                 if (includeFiles != null) {
                     String[] files = includeFiles.split("\\s*,\\s*");
                     for (String fileName : files) {
-                        RemoteFile x = new RemoteFile(machine, clientRoot + "/" + fileName);
+                        RemoteFile x = machine.getFile(clientRoot + "/" + fileName);
                         if (x.exists()) {
                             props.clear();
                             InputStream is = null;
@@ -1297,7 +1296,7 @@ public class LibertyClient {
                             + " seconds for client confirmation:  "
                             + START_MESSAGE_CODE.toString() + " to be found in " + messageAbsPath);
 
-        RemoteFile messagesLog = new RemoteFile(machine, messageAbsPath);
+        RemoteFile messagesLog = machine.getFile(messageAbsPath);
 
         try {
             RemoteFile f = getClientBootstrapPropertiesFile();
@@ -1361,7 +1360,7 @@ public class LibertyClient {
                             + " seconds for client confirmation:  "
                             + STOP_MESSAGE_CODE.toString() + " to be found in " + messageAbsPath);
 
-        RemoteFile messagesLog = new RemoteFile(machine, messageAbsPath);
+        RemoteFile messagesLog = machine.getFile(messageAbsPath);
 
         try {
             RemoteFile f = getClientBootstrapPropertiesFile();
@@ -1407,7 +1406,7 @@ public class LibertyClient {
     protected void checkLogsForErrorsAndWarnings() throws Exception {
         final String method = "checkLogsForErrorsAndWarnings";
 
-        if (!checkingDisabled) {
+        if (!isClientExemptFromChecking()) {
             // Get all warnings and errors in logs
             List<String> errorsInLogs = null;
             try {
@@ -1495,7 +1494,7 @@ public class LibertyClient {
 
             String logDirectoryName = pathToAutoFVTOutputClientsFolder + "/" + clientToUse + "-" + logStamp;
             LocalFile logFolder = new LocalFile(logDirectoryName);
-            RemoteFile clientFolder = new RemoteFile(machine, clientRoot);
+            RemoteFile clientFolder = machine.getFile(clientRoot);
 
             runJextract(clientFolder);
 
@@ -1562,7 +1561,7 @@ public class LibertyClient {
                 continue;
             }
 
-            RemoteFile toCopy = new RemoteFile(machine, remoteDirectory, l);
+            RemoteFile toCopy = machine.getFile(remoteDirectory, l);
             LocalFile toReceive = new LocalFile(destination, l);
             String absPath = toCopy.getAbsolutePath();
 
@@ -1631,7 +1630,7 @@ public class LibertyClient {
      * @throws Exception
      */
     public LocalFile copyFileToTempDir(String pathInClientRoot, String destination) throws Exception {
-        return copyFileToTempDir(new RemoteFile(machine, clientRoot + "/" + pathInClientRoot), destination);
+        return copyFileToTempDir(machine.getFile(clientRoot + "/" + pathInClientRoot), destination);
     }
 
     /**
@@ -1647,7 +1646,7 @@ public class LibertyClient {
      * @throws Exception
      */
     public LocalFile copyInstallRootFileToTempDir(String pathInInstallRoot, String destination) throws Exception {
-        return copyFileToTempDir(new RemoteFile(machine, installRoot + "/" + pathInInstallRoot), destination);
+        return copyFileToTempDir(machine.getFile(installRoot + "/" + pathInInstallRoot), destination);
     }
 
     protected LocalFile copyFileToTempDir(RemoteFile remoteToCopy, String destination) throws Exception {
@@ -1813,7 +1812,7 @@ public class LibertyClient {
     }
 
     public RemoteFile getClientBootstrapPropertiesFile() throws Exception {
-        return new RemoteFile(machine, clientRoot + "/bootstrap.properties");
+        return machine.getFile(clientRoot + "/bootstrap.properties");
     }
 
     /**
@@ -1866,7 +1865,7 @@ public class LibertyClient {
 
     protected ArrayList<String> listDirectoryContents(String path, String fileName) throws Exception {
 
-        RemoteFile clientDir = new RemoteFile(machine, path);
+        RemoteFile clientDir = machine.getFile(path);
         return listDirectoryContents(clientDir, fileName);
 
     }
@@ -2059,7 +2058,7 @@ public class LibertyClient {
         LibertyFileManager.copyFileIntoLiberty(machine, getClientRoot(), "client.xml", "productSampleClient.xml");
 
         //Move the test client bootstrap.properties into sample.properties if it exists
-        RemoteFile clientBootStrapProps = new RemoteFile(machine, getClientRoot() + "/bootstrap.properties");
+        RemoteFile clientBootStrapProps = machine.getFile(getClientRoot() + "/bootstrap.properties");
         if (clientBootStrapProps.exists()) {
             //This is optional
             RemoteFile samplePropertiesFile = LibertyFileManager.createRemoteFile(machine, getClientRoot() + "/sample.properties");
@@ -2108,45 +2107,6 @@ public class LibertyClient {
 
     public String getHostname() {
         return machine.getHostname();
-    }
-
-    /**
-     * Shortcut for new FATTests to uninstall apps
-     *
-     * @param  appName   The name of the application
-     * @throws Exception
-     */
-    public void uninstallApp(String appName) throws Exception {
-        ApplicationType type = this.getApplictionType(appName);
-        if (type.equals(ApplicationType.ZIP)) {
-            appName = appName.substring(0, (appName.length() - 4));
-        }
-
-        if (type.equals(ApplicationType.EAR) || type.equals(ApplicationType.WAR)) {
-            //do the same thing as above
-            appName = appName.substring(0, (appName.length() - 4));
-        }
-
-    }
-
-    protected ApplicationType getApplictionType(String appName) throws Exception {
-        ApplicationType type = null;
-        if (appName.endsWith("zip") || appName.endsWith("ZIP")) {
-            type = ApplicationType.ZIP;
-        } else if (appName.endsWith("ear") || appName.endsWith("EAR")) {
-            type = ApplicationType.EAR;
-        } else if (appName.endsWith("war") || appName.endsWith("WAR")) {
-            type = ApplicationType.WAR;
-        } else if (appName.endsWith("eba") || appName.endsWith("EBA")) {
-            type = ApplicationType.EBA;
-        }
-
-        if (type == null) {
-            //Application type not recognised
-            throw new TopologyException("Can't install the application " + appName
-                                        + " as the application type is not recognised.  We only support WAR, EAR, ZIP or EBA");
-        }
-        return type;
     }
 
     protected String getJvmOptionsFilePath() {
@@ -2404,7 +2364,7 @@ public class LibertyClient {
      */
     public void saveClientConfiguration() throws Exception {
         try {
-            savedClientXml = new RemoteFile(machine, clientRoot + "/savedClientXml" + System.currentTimeMillis() + ".xml");
+            savedClientXml = machine.getFile(clientRoot + "/savedClientXml" + System.currentTimeMillis() + ".xml");
             getClientConfigurationFile().copyToDest(savedClientXml);
         } catch (Exception e) {
             savedClientXml = null;
@@ -2557,9 +2517,9 @@ public class LibertyClient {
         // Find the currently configured/in-use console log file.
         final RemoteFile remoteFile;
         if (machineOS == OperatingSystem.ZOS) {
-            remoteFile = new RemoteFile(machine, consoleAbsPath, Charset.forName(EBCDIC_CHARSET_NAME));
+            remoteFile = machine.getFile(consoleAbsPath, Charset.forName(EBCDIC_CHARSET_NAME));
         } else {
-            remoteFile = new RemoteFile(machine, consoleAbsPath);
+            remoteFile = machine.getFile(consoleAbsPath);
         }
         return remoteFile;
     }
@@ -2656,7 +2616,7 @@ public class LibertyClient {
         final RemoteFile remoteFile;
         String absolutePath = clientRoot + "/" + filePath;
         if (machineOS == OperatingSystem.ZOS && absolutePath.equalsIgnoreCase(consoleAbsPath)) {
-            remoteFile = new RemoteFile(machine, absolutePath, Charset.forName(EBCDIC_CHARSET_NAME));
+            remoteFile = machine.getFile(absolutePath, Charset.forName(EBCDIC_CHARSET_NAME));
         } else {
             remoteFile = LibertyFileManager.getLibertyFile(machine, absolutePath);
         }
@@ -2679,7 +2639,7 @@ public class LibertyClient {
 
     public List<String> findStringsInCopiedLogs(String regexp) throws Exception {
         String logFile = pathToAutoFVTOutputClientsFolder + "/" + clientToUse + "-" + logStamp + "/logs/messages.log";
-        RemoteFile remoteLogFile = new RemoteFile(machine, logFile);
+        RemoteFile remoteLogFile = machine.getFile(logFile);
         return findStringsInLogs(regexp, remoteLogFile);
     }
 
@@ -3284,7 +3244,7 @@ public class LibertyClient {
 
     public String waitForStringInCopiedLog(String regexp, long timeout) {
         String logFile = pathToAutoFVTOutputClientsFolder + "/" + clientToUse + "-" + logStamp + "/logs/messages.log";
-        RemoteFile remoteLogFile = new RemoteFile(machine, logFile);
+        RemoteFile remoteLogFile = machine.getFile(logFile);
         return waitForStringInLogUsingMark(regexp, timeout, remoteLogFile);
     }
 
@@ -3617,7 +3577,7 @@ public class LibertyClient {
         if (messageAbsPath == null) {
             Log.info(c, method, "Messages file path  is null - no check for message in logs");
         } else {
-            RemoteFile outputFile = new RemoteFile(machine, messageAbsPath);
+            RemoteFile outputFile = machine.getFile(messageAbsPath);
             int oldNumber = counter.getAndIncrement();
             int newNumber = oldNumber + 1;
             int numberFound = waitForMultipleStringsInLog(newNumber, message_code, clientStartTimeout, outputFile);
@@ -3893,6 +3853,10 @@ public class LibertyClient {
         }
     }
 
+    protected boolean isClientExemptFromChecking() {
+        return checkingDisabled;
+    }
+
     protected Properties getBootstrapProperties() {
         Properties props = new Properties();
         try {
@@ -3903,7 +3867,7 @@ public class LibertyClient {
         return props;
     }
 
-    private boolean clientNeedsToRunWithJava2Security() {
+    protected boolean clientNeedsToRunWithJava2Security() {
         // Allow clients to opt-out of j2sec by setting
         // websphere.java.security.exempt=true
         // in their ${client.config.dir}/bootstrap.properties
