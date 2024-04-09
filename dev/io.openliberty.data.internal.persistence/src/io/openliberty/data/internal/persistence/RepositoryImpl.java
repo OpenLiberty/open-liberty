@@ -363,7 +363,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                                                  count, exists, select);
 
             if (query != null) { // @Query annotation
-                queryInfo.initForQuery(query.value(), multiType, entityInfos);
+                queryInfo.initForQuery(query.value(), multiType, entityInfos, primaryEntityInfoFuture);
             } else if (save != null) { // @Save annotation
                 queryInfo.init(Save.class, QueryInfo.Type.SAVE);
             } else if (insert != null) { // @Insert annotation
@@ -1629,26 +1629,34 @@ public class RepositoryImpl<R> implements InvocationHandler {
         int by = methodName.indexOf("By");
 
         if (methodName.startsWith("find")) {
-            Select select = queryInfo.method.getAnnotation(Select.class);
-            List<String> selections = select == null ? new ArrayList<>() : null;
-            int c = by < 0 ? 4 : (by + 2);
-            parseFindBy(queryInfo, methodName, by, selections);
-            q = generateSelectClause(queryInfo, select, selections == null ? null : selections.toArray(new String[selections.size()]));
-
-            int orderBy = methodName.indexOf("OrderBy", by + 2);
-            if (orderBy > c || orderBy == -1 && methodName.length() > c) {
+            int orderBy = -1;
+            if (by >= 9 && methodName.regionMatches(by - 5, "Order", 0, 5)) {
+                orderBy = by - 5;
+                by = -1;
+            } else if (by > 0) {
+                orderBy = methodName.indexOf("OrderBy", by + 2);
+            }
+            parseFindClause(queryInfo, methodName, by > 0 ? by : orderBy > 0 ? orderBy : -1);
+            q = generateSelectClause(queryInfo, queryInfo.method.getAnnotation(Select.class));
+            if (by > 0) {
                 int where = q.length();
-                generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
+                generateWhereClause(queryInfo, methodName, by + 2, orderBy > 0 ? orderBy : methodName.length(), q);
                 if (countPages)
                     generateCount(queryInfo, q.substring(where));
             }
-            if (orderBy >= c)
+            if (orderBy >= 0)
                 parseOrderBy(queryInfo, orderBy, q);
             queryInfo.type = QueryInfo.Type.FIND;
         } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
-            int c = by < 0 ? 6 : (by + 2);
+            int orderBy = -1;
             boolean isFindAndDelete = queryInfo.isFindAndDelete();
             if (isFindAndDelete) {
+                if (by >= 11 && methodName.regionMatches(by - 5, "Order", 0, 5)) {
+                    orderBy = by - 5;
+                    by = -1;
+                } else if (by > 0) {
+                    orderBy = methodName.indexOf("OrderBy", by + 2);
+                }
                 if (queryInfo.type != null)
                     throw new UnsupportedOperationException("The " + queryInfo.method.getGenericReturnType() +
                                                             " return type is not supported for the " + methodName +
@@ -1663,10 +1671,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 q = new StringBuilder(150).append("DELETE FROM ").append(entityInfo.name).append(' ').append(o);
             }
 
-            int orderBy = isFindAndDelete && by > 0 ? methodName.indexOf("OrderBy", by + 2) : -1;
-            if (orderBy > c || orderBy == -1 && methodName.length() > c)
-                generateWhereClause(queryInfo, methodName, c, orderBy > 0 ? orderBy : methodName.length(), q);
-            if (orderBy >= c)
+            if (by > 0)
+                generateWhereClause(queryInfo, methodName, by + 2, orderBy > 0 ? orderBy : methodName.length(), q);
+            if (orderBy > 0)
                 parseOrderBy(queryInfo, orderBy, q);
 
             queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
@@ -1675,19 +1682,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
             q = generateUpdateClause(queryInfo, methodName, c);
             queryInfo.type = QueryInfo.Type.UPDATE;
         } else if (methodName.startsWith("count")) {
-            int c = by < 0 ? 5 : (by + 2);
             q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
-            if (methodName.length() > c)
-                generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
+            if (by > 0 && methodName.length() > by + 2)
+                generateWhereClause(queryInfo, methodName, by + 2, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.COUNT;
         } else if (methodName.startsWith("exists")) {
-            int c = by < 0 ? 6 : (by + 2);
             String name = entityInfo.idClassAttributeAccessors == null ? ID : entityInfo.idClassAttributeAccessors.firstKey();
             String attrName = entityInfo.getAttributeName(name, true);
             q = new StringBuilder(200).append("SELECT ").append(o).append('.').append(attrName) //
                             .append(" FROM ").append(entityInfo.name).append(' ').append(o);
-            if (methodName.length() > c)
-                generateWhereClause(queryInfo, methodName, c, methodName.length(), q);
+            if (by > 0 && methodName.length() > by + 2)
+                generateWhereClause(queryInfo, methodName, by + 2, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.EXISTS;
         } else {
             throw new UnsupportedOperationException("The name of the " + methodName + " method of the " +
@@ -1696,7 +1701,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                     " Method names for Query by Method Name must begin with one of the " +
                                                     "(count, delete, exists, find, update)" +
                                                     " keywords, followed by 0 or more additional characters," +
-                                                    " followed by the 'By' keyword." +
+                                                    " optionally followed by the 'By' keyword and one or more conditions." +
                                                     " If you are not using Query by Method Name, " +
                                                     " query methods must be annotated with one of: " +
                                                     "(Delete, Find, Insert, Query, Save, Update)" + "."); // TODO NLS
@@ -1827,12 +1832,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
     /**
      * Generates the SELECT clause of the JPQL.
      *
-     * @param queryInfo  query information
-     * @param select     Select annotation if present on the method.
-     * @param selections selections from find...By if present and there is no Select annotation.
+     * @param queryInfo query information
+     * @param select    Select annotation if present on the method.
      * @return the SELECT clause.
      */
-    private StringBuilder generateSelectClause(QueryInfo queryInfo, Select select, String... selections) {
+    private StringBuilder generateSelectClause(QueryInfo queryInfo, Select select) {
         StringBuilder q = new StringBuilder(200);
         String o = queryInfo.entityVar;
         String o_ = queryInfo.entityVar_;
@@ -1842,10 +1846,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
         String function = select == null ? null : toFunctionName(select.function());
         String[] cols;
         if (select == null) {
-            cols = selections;
+            cols = null;
         } else {
-            selections = select.value();
-            cols = new String[selections == null ? 0 : selections.length];
+            String[] selections = select.value();
+            cols = new String[selections.length];
             for (int i = 0; i < cols.length; i++) {
                 String name = entityInfo.getAttributeName(selections[i], true);
                 cols[i] = name == null ? selections[i] : name;
@@ -2895,17 +2899,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Parses and handles the text between find___By of a repository method.
+     * Parses and handles the text between find___By or find___OrderBy or find___ of a repository method.
      * Currently this is only "First" or "First#" and entity property names to select.
      * "Distinct" is reserved for future use.
-     * Entity property names can be included (delimited by "And" when there are multiple) to select only those results.
      *
      * @param queryInfo  partially complete query information to populate with a maxResults value for findFirst(#)By...
      * @param methodName the method name.
-     * @param by         index of first occurrence of "By" in the method name. -1 if "By" is absent.
-     * @param selections order list to which to add selections int the find...By. If null, do not look for selections.
+     * @param by         index of first occurrence of "By" or "OrderBy" in the method name. -1 if both are absent.
      */
-    private void parseFindBy(QueryInfo queryInfo, String methodName, int by, List<String> selections) {
+    private void parseFindClause(QueryInfo queryInfo, String methodName, int by) {
         int start = 4;
         int endBefore = by == -1 ? methodName.length() : by;
 
@@ -2918,34 +2920,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else if (distinct) {
                 throw new UnsupportedOperationException("The keyword Distinct is not supported on the " + queryInfo.method.getName() + " method."); // TODO NLS
             }
-
-        if (selections != null) {
-            List<String> notFound = new ArrayList<>();
-            do {
-                int and = methodName.indexOf("And", start);
-                if (and == -1 || and > endBefore)
-                    and = endBefore;
-
-                if (start < and) {
-                    String name = methodName.substring(start, and);
-                    String attrName = queryInfo.entityInfo.getAttributeName(name, false);
-                    if (attrName == null)
-                        notFound.add(name);
-                    else
-                        selections.add(attrName);
-                }
-
-                start = and + 3;
-            } while (start < endBefore);
-
-            // Enforcement of missing names should only be done if the user is trying to specify
-            // property selections vs including descriptive text in the method name.
-            if (!selections.isEmpty() && !notFound.isEmpty())
-                throw new MappingException("Entity class " + queryInfo.entityInfo.getType().getName() +
-                                           " does not have properties named " + notFound +
-                                           ". The following are valid property names for the entity: " +
-                                           queryInfo.entityInfo.attributeTypes.keySet()); // TODO NLS
-        }
     }
 
     /**

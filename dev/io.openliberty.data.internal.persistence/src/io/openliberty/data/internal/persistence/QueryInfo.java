@@ -404,13 +404,15 @@ public class QueryInfo {
     /**
      * Locate the entity information for the specified result class.
      *
-     * @param entityType  single result type of a repository method, which is hopefully an entity class.
-     * @param entityInfos map of entity name to already-completed future for the entity information.
+     * @param entityType              single result type of a repository method, which is hopefully an entity class.
+     * @param entityInfos             map of entity name to already-completed future for the entity information.
+     * @param primaryEntityInfoFuture future for the repository's primary entity type if it has one, otherwise null.
      * @return entity information.
      * @throws MappingException if the entity information is not found.
      */
     @Trivial
-    EntityInfo getEntityInfo(Class<?> entityType, Map<String, CompletableFuture<EntityInfo>> entityInfos) {
+    EntityInfo getEntityInfo(Class<?> entityType, Map<String, CompletableFuture<EntityInfo>> entityInfos,
+                             CompletableFuture<EntityInfo> primaryEntityInfoFuture) {
         if (entityType != null) {
             CompletableFuture<EntityInfo> failedFuture = null;
             for (CompletableFuture<EntityInfo> future : entityInfos.values())
@@ -424,10 +426,13 @@ public class QueryInfo {
             if (failedFuture != null)
                 failedFuture.join(); // cause error to be raised
         }
-        throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
-                                   " repository does not specify an entity class. To correct this, have the repository interface" +
-                                   " extend DataRepository or another built-in repository interface and supply the entity class" +
-                                   " as the first type variable."); // TODO NLS
+        if (primaryEntityInfoFuture == null)
+            throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
+                                       " repository does not specify an entity class. To correct this, have the repository interface" +
+                                       " extend DataRepository or another built-in repository interface and supply the entity class" +
+                                       " as the first type variable."); // TODO NLS
+        else
+            return primaryEntityInfoFuture.join();
     }
 
     /**
@@ -604,11 +609,13 @@ public class QueryInfo {
     /**
      * Initializes query information based on the Query annotation.
      *
-     * @param ql          Query.value() might be JPQL or JDQL
-     * @param multiType   the type of data structure that returns multiple results for this query. Otherwise null.
-     * @param entityInfos map of entity name to entity information.
+     * @param ql                      Query.value() might be JPQL or JDQL
+     * @param multiType               the type of data structure that returns multiple results for this query. Otherwise null.
+     * @param entityInfos             map of entity name to entity information.
+     * @param primaryEntityInfoFuture future for the repository's primary entity type if it has one, otherwise null.
      */
-    void initForQuery(String ql, Class<?> multiType, Map<String, CompletableFuture<EntityInfo>> entityInfos) {
+    void initForQuery(String ql, Class<?> multiType, Map<String, CompletableFuture<EntityInfo>> entityInfos,
+                      CompletableFuture<EntityInfo> primaryEntityInfoFuture) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         boolean isCursoredPage = CursoredPage.class.equals(multiType);
@@ -832,7 +839,7 @@ public class QueryInfo {
             }
 
             if (entityInfo == null)
-                entityInfo = getEntityInfo(getSingleResultType(), entityInfos);
+                entityInfo = getEntityInfo(getSingleResultType(), entityInfos, primaryEntityInfoFuture);
 
             String entityName = entityInfo.name;
 
