@@ -590,7 +590,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setHeader(String header, String value) {
-        headers.set(header, value);
+        headers.set(header.trim(), value.trim());
 
     }
 
