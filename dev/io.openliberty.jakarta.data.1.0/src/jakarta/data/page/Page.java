@@ -31,19 +31,13 @@ public interface Page<T> extends Iterable<T> {
 
     boolean hasPrevious();
 
-    PageRequest<T> nextPageRequest();
-
-    <E> PageRequest<E> nextPageRequest(Class<E> entityClass);
+    PageRequest nextPageRequest();
 
     int numberOfElements();
 
-    PageRequest<T> pageRequest();
+    PageRequest pageRequest();
 
-    <E> PageRequest<E> pageRequest(Class<E> entityClass);
-
-    PageRequest<T> previousPageRequest();
-
-    <E> PageRequest<E> previousPageRequest(Class<E> entityClass);
+    PageRequest previousPageRequest();
 
     default Stream<T> stream() {
         return StreamSupport.stream(spliterator(), false);

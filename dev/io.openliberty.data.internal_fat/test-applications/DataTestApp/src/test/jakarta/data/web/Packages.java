@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import jakarta.data.Limit;
+import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.PageRequest;
@@ -84,9 +85,9 @@ public interface Packages extends BasicRepository<Package, Integer> {
     @OrderBy(value = "width", descending = true)
     @OrderBy(value = "height")
     @OrderBy(value = "id", descending = true)
-    CursoredPage<Package> findByHeightGreaterThan(float minHeight, PageRequest<?> pagination);
+    CursoredPage<Package> findByHeightGreaterThan(float minHeight, PageRequest pagination);
 
-    CursoredPage<Package> findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(float minHeight, PageRequest<?> pagination);
+    CursoredPage<Package> findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(float minHeight, PageRequest pagination);
 
     @OrderBy(value = "id")
     List<Integer> findIdByHeightRoundedDown(int height);
@@ -136,13 +137,14 @@ public interface Packages extends BasicRepository<Package, Integer> {
     @Find
     CursoredPage<Package> whereHeightNotWithin(@By("height") @LessThan float minToExclude,
                                                @Or @By("height") @GreaterThan float maxToExclude,
-                                               PageRequest<?> pagination);
+                                               Order<Package> order,
+                                               PageRequest pagination);
 
     @Query("SELECT p FROM Package p WHERE (p.length * p.width * p.height >= ?1 AND p.length * p.width * p.height <= ?2)")
     @OrderBy(value = "width", descending = true)
     @OrderBy(value = "length")
     @OrderBy(value = "id")
-    CursoredPage<Package> whereVolumeWithin(float minVolume, float maxVolume, PageRequest<?> pagination);
+    CursoredPage<Package> whereVolumeWithin(float minVolume, float maxVolume, PageRequest pagination);
 
     @Find
     @OrderBy(value = "id")

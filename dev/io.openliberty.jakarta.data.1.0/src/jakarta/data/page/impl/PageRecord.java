@@ -22,13 +22,13 @@ import jakarta.data.page.PageRequest;
 /**
  * Method signatures are copied from Jakarta Data.
  */
-public record PageRecord<T>(PageRequest<T> pageRequest,
+public record PageRecord<T>(PageRequest pageRequest,
                 List<T> content,
                 long totalElements,
                 boolean moreResults)
                 implements Page<T> {
 
-    public PageRecord(PageRequest<T> req,
+    public PageRecord(PageRequest req,
                       List<T> content,
                       long total) {
         this(req, //
@@ -63,17 +63,11 @@ public record PageRecord<T>(PageRequest<T> pageRequest,
     }
 
     @Override
-    public PageRequest<T> nextPageRequest() {
+    public PageRequest nextPageRequest() {
         if (hasNext())
             return pageRequest.next();
         else
             throw new NoSuchElementException();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <E> PageRequest<E> nextPageRequest(Class<E> entityClass) {
-        return (PageRequest<E>) nextPageRequest();
     }
 
     @Override
@@ -81,24 +75,12 @@ public record PageRecord<T>(PageRequest<T> pageRequest,
         return content.size();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <E> PageRequest<E> pageRequest(Class<E> entityClass) {
-        return (PageRequest<E>) pageRequest;
-    }
-
-    @Override
-    public PageRequest<T> previousPageRequest() {
+    public PageRequest previousPageRequest() {
         if (hasPrevious())
             return pageRequest.previous();
         else
             throw new NoSuchElementException();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <E> PageRequest<E> previousPageRequest(Class<E> entityClass) {
-        return (PageRequest<E>) previousPageRequest();
     }
 
     @Override

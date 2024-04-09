@@ -35,20 +35,20 @@ public class PageImpl<T> implements Page<T> {
     private static final TraceComponent tc = Tr.register(PageImpl.class);
 
     private final Object[] args;
-    private final PageRequest<?> pageRequest;
+    private final PageRequest pageRequest;
     private final QueryInfo queryInfo;
     private final List<T> results;
     private long totalElements = -1;
 
     @FFDCIgnore(Exception.class)
-    PageImpl(QueryInfo queryInfo, PageRequest<T> pageRequest, Object[] args) {
+    PageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {
         this.queryInfo = queryInfo;
         this.pageRequest = pageRequest == null ? PageRequest.ofSize(100) : pageRequest;
         this.args = args;
 
-        // BasicRepository.findAll(PageRequest) requires NullPointerException when PageRequest is null.
+        // BasicRepository.findAll(PageRequest, Order) requires NullPointerException when PageRequest is null.
         // TODO Should this apply in general?
-        if (pageRequest == null && queryInfo.paramCount == 0 && queryInfo.method.getParameterCount() == 1
+        if (pageRequest == null && queryInfo.paramCount == 0 && queryInfo.method.getParameterCount() == 2
             && PageRequest.class.equals(queryInfo.method.getParameterTypes()[0]))
             throw new NullPointerException("PageRequest: null");
 
@@ -145,53 +145,23 @@ public class PageImpl<T> implements Page<T> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public PageRequest<T> pageRequest() {
-        return (PageRequest<T>) pageRequest;
+    public PageRequest pageRequest() {
+        return pageRequest;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <E> PageRequest<E> pageRequest(Class<E> entityClass) {
-        return (PageRequest<E>) pageRequest;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public PageRequest<T> nextPageRequest() {
+    public PageRequest nextPageRequest() {
         if (hasNext())
-            return (PageRequest<T>) pageRequest.next();
+            return pageRequest.next();
         else
             throw new NoSuchElementException("Cannot request a next page. To avoid this error, check for a " +
                                              "true result of Page.hasNext before attempting this method."); // TODO NLS
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <E> PageRequest<E> nextPageRequest(Class<E> entityClass) {
-        if (hasNext())
-            return (PageRequest<E>) pageRequest.next();
-        else
-            throw new NoSuchElementException("Cannot request a next page. To avoid this error, check for a " +
-                                             "true result of Page.hasNext before attempting this method."); // TODO NLS
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public PageRequest<T> previousPageRequest() {
+    public PageRequest previousPageRequest() {
         if (pageRequest.page() > 1)
-            return (PageRequest<T>) pageRequest.previous();
-        else
-            throw new NoSuchElementException("Cannot request a page number prior to " + pageRequest.page() +
-                                             ". To avoid this error, check for a true result of Page.hasPrevious " +
-                                             "before attempting this method."); // TODO NLS
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <E> PageRequest<E> previousPageRequest(Class<E> entityClass) {
-        if (pageRequest.page() > 1)
-            return (PageRequest<E>) pageRequest.previous();
+            return pageRequest.previous();
         else
             throw new NoSuchElementException("Cannot request a page number prior to " + pageRequest.page() +
                                              ". To avoid this error, check for a true result of Page.hasPrevious " +

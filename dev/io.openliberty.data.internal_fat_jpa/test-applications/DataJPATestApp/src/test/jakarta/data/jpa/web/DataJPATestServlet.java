@@ -243,7 +243,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testCountQueryWithFromClauseOnly() {
-        Page<Business> page1 = mixed.findAll(PageRequest.of(Business.class).size(5).desc("name"));
+        Page<Business> page1 = mixed.findAll(PageRequest.ofSize(5), Order.by(Sort.desc("name")));
 
         assertEquals(5L, page1.numberOfElements());
         assertEquals(15L, page1.totalElements());
@@ -255,7 +255,7 @@ public class DataJPATestServlet extends FATServlet {
                                      .map(b -> b.name)
                                      .collect(Collectors.toList()));
 
-        Page<Business> page2 = mixed.findAll(page1.nextPageRequest());
+        Page<Business> page2 = mixed.findAll(page1.nextPageRequest(), Order.by(Sort.desc("name")));
 
         assertEquals(List.of("Metafile", "Mayo Clinic", "IBM", "Home Federal Savings Bank", "HALCON"),
                      page2.stream()
@@ -264,7 +264,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page2.hasNext());
 
-        Page<Business> page3 = mixed.findAll(page2.nextPageRequest());
+        Page<Business> page3 = mixed.findAll(page2.nextPageRequest(), Order.by(Sort.desc("name")));
 
         assertEquals(List.of("Geotek", "Custom Alarm", "Crenlo", "Cardinal", "Benike Construction"),
                      page3.stream()
@@ -278,7 +278,8 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testCountQueryWithFromAndWhereClausesOnly() {
-        Page<Business> page1 = mixed.locatedIn("Rochester", PageRequest.of(Business.class).size(6).asc("name"));
+        Order<Business> order = Order.by(Sort.asc("name"));
+        Page<Business> page1 = mixed.locatedIn("Rochester", PageRequest.ofSize(6), order);
 
         assertEquals(6L, page1.numberOfElements());
         assertEquals(13L, page1.totalElements());
@@ -290,7 +291,7 @@ public class DataJPATestServlet extends FATServlet {
                                      .map(b -> b.name)
                                      .collect(Collectors.toList()));
 
-        Page<Business> page2 = mixed.locatedIn("Rochester", page1.nextPageRequest());
+        Page<Business> page2 = mixed.locatedIn("Rochester", page1.nextPageRequest(), order);
 
         assertEquals(List.of("Mayo Clinic", "Metafile", "Olmsted Medical", "RAC", "Reichel Foods", "Silver Lake Foods"),
                      page2.stream()
@@ -299,7 +300,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page2.hasNext());
 
-        Page<Business> page3 = mixed.locatedIn("Rochester", page2.nextPageRequest());
+        Page<Business> page3 = mixed.locatedIn("Rochester", page2.nextPageRequest(), order);
 
         assertEquals(List.of("Think Bank"),
                      page3.stream()
@@ -1343,7 +1344,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testFromAndWhereClausesOnly() {
-        CursoredPage<Business> page1 = mixed.locatedIn("Rochester", "MN", PageRequest.of(Business.class).size(4).asc("name"));
+        CursoredPage<Business> page1 = mixed.locatedIn("Rochester", "MN", PageRequest.ofSize(4), Order.by(Sort.asc("name")));
 
         assertEquals(4L, page1.numberOfElements());
         assertEquals(13L, page1.totalElements());
@@ -1355,7 +1356,7 @@ public class DataJPATestServlet extends FATServlet {
                                      .map(b -> b.name)
                                      .collect(Collectors.toList()));
 
-        CursoredPage<Business> page2 = mixed.locatedIn("Rochester", "MN", page1.nextPageRequest());
+        CursoredPage<Business> page2 = mixed.locatedIn("Rochester", "MN", page1.nextPageRequest(), Order.by(Sort.asc("name")));
 
         assertEquals(List.of("Home Federal Savings Bank", "IBM", "Mayo Clinic", "Metafile"),
                      page2.stream()
@@ -1364,7 +1365,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page2.hasNext());
 
-        CursoredPage<Business> page3 = mixed.locatedIn("Rochester", "MN", page2.nextPageRequest());
+        CursoredPage<Business> page3 = mixed.locatedIn("Rochester", "MN", page2.nextPageRequest(), Order.by(Sort.asc("name")));
 
         assertEquals(List.of("Olmsted Medical", "RAC", "Reichel Foods", "Silver Lake Foods"),
                      page3.stream()
@@ -1373,7 +1374,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page3.hasNext());
 
-        CursoredPage<Business> page4 = mixed.locatedIn("Rochester", "MN", page3.nextPageRequest());
+        CursoredPage<Business> page4 = mixed.locatedIn("Rochester", "MN", page3.nextPageRequest(), Order.by(Sort.asc("name")));
 
         assertEquals(List.of("Think Bank"),
                      page4.stream()
@@ -1579,7 +1580,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByAnnotationWithKeysetPagination() {
-        PageRequest<?> pagination = PageRequest
+        PageRequest pagination = PageRequest
                         .ofSize(3)
                         .withoutTotal()
                         .afterKey(CityId.of("Rochester", "Minnesota"));
@@ -1612,7 +1613,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByAnnotationWithKeysetPaginationAndNamedParameters() {
-        PageRequest<City> pagination = PageRequest.ofSize(2);
+        PageRequest pagination = PageRequest.ofSize(2);
 
         CursoredPage<City> page1 = cities.sizedWithin(100000, 1000000, pagination);
         assertIterableEquals(List.of("Springfield Missouri",
@@ -1644,9 +1645,9 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByNamePatternWithKeysetPagination() {
-        PageRequest<City> pagination = PageRequest.of(City.class).size(5).withoutTotal();
+        PageRequest pagination = PageRequest.ofSize(5).withoutTotal();
 
-        CursoredPage<City> slice1 = cities.findByStateNameNotNull(pagination);
+        CursoredPage<City> slice1 = cities.findByStateNameNotNull(pagination, Order.by());
         assertIterableEquals(List.of("Kansas City Kansas",
                                      "Kansas City Missouri",
                                      "Rochester Minnesota",
@@ -1654,7 +1655,7 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Illinois"),
                              slice1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        CursoredPage<City> slice2 = cities.findByStateNameNotNull(slice1.nextPageRequest());
+        CursoredPage<City> slice2 = cities.findByStateNameNotNull(slice1.nextPageRequest(), Order.by());
         assertIterableEquals(List.of("Springfield Massachusetts",
                                      "Springfield Missouri",
                                      "Springfield Ohio",
@@ -1666,13 +1667,14 @@ public class DataJPATestServlet extends FATServlet {
         Cursor springfieldMO = slice2.cursor(1);
         pagination = pagination.size(3).beforeCursor(springfieldMO);
 
-        CursoredPage<City> beforeSpringfieldMO = cities.findByStateNameNotNull(pagination);
+        CursoredPage<City> beforeSpringfieldMO = cities.findByStateNameNotNull(pagination, Order.by());
         assertIterableEquals(List.of("Rochester New York",
                                      "Springfield Illinois",
                                      "Springfield Massachusetts"),
                              beforeSpringfieldMO.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        CursoredPage<City> beforeRochesterNY = cities.findByStateNameNotNull(beforeSpringfieldMO.previousPageRequest());
+        CursoredPage<City> beforeRochesterNY = cities.findByStateNameNotNull(beforeSpringfieldMO.previousPageRequest(),
+                                                                             Order.by());
         assertIterableEquals(List.of("Kansas City Kansas",
                                      "Kansas City Missouri",
                                      "Rochester Minnesota"),
@@ -1687,7 +1689,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByNamePatternWithKeysetPaginationDescending() {
-        PageRequest<?> pagination = PageRequest.ofSize(3).withTotal().afterKey(CityId.of("Springfield", "Tennessee"));
+        PageRequest pagination = PageRequest.ofSize(3).withTotal().afterKey(CityId.of("Springfield", "Tennessee"));
 
         CursoredPage<City> page1 = cities.findByStateNameNotStartsWith("Ma", pagination);
         assertIterableEquals(List.of("Springfield Oregon",
@@ -1722,9 +1724,10 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testIdClassOrderByPaginationWithKeyset() {
         // ascending:
-        PageRequest<City> pagination = PageRequest.of(City.class).size(5).sortBy(Sort.asc(ID));
+        Order<City> asc = Order.by(Sort.asc(ID));
+        PageRequest pagination = PageRequest.ofSize(5);
 
-        CursoredPage<City> page1 = cities.findByStateNameGreaterThan("Iowa", pagination);
+        CursoredPage<City> page1 = cities.findByStateNameGreaterThan("Iowa", pagination, asc);
         assertIterableEquals(List.of("Kansas City Kansas",
                                      "Kansas City Missouri",
                                      "Rochester Minnesota",
@@ -1732,7 +1735,7 @@ public class DataJPATestServlet extends FATServlet {
                                      "Springfield Massachusetts"),
                              page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        CursoredPage<City> page2 = cities.findByStateNameGreaterThan("Iowa", page1.nextPageRequest());
+        CursoredPage<City> page2 = cities.findByStateNameGreaterThan("Iowa", page1.nextPageRequest(), asc);
         assertIterableEquals(List.of("Springfield Missouri",
                                      "Springfield Ohio",
                                      "Springfield Oregon"),
@@ -1741,22 +1744,23 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, page2.hasNext());
 
         // descending:
-        pagination = PageRequest.of(City.class).size(4).sortBy(Sort.descIgnoreCase(ID));
-        page1 = cities.findByStateNameGreaterThan("Idaho", pagination);
+        Order<City> desc = Order.by(Sort.descIgnoreCase(ID));
+        pagination = PageRequest.ofSize(4);
+        page1 = cities.findByStateNameGreaterThan("Idaho", pagination, desc);
         assertIterableEquals(List.of("Springfield Oregon",
                                      "Springfield Ohio",
                                      "Springfield Missouri",
                                      "Springfield Massachusetts"),
                              page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        page2 = cities.findByStateNameGreaterThan("Idaho", page1.nextPageRequest());
+        page2 = cities.findByStateNameGreaterThan("Idaho", page1.nextPageRequest(), desc);
         assertIterableEquals(List.of("Springfield Illinois",
                                      "Rochester New York",
                                      "Rochester Minnesota",
                                      "Kansas City Missouri"),
                              page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
-        CursoredPage<City> page3 = cities.findByStateNameGreaterThan("Idaho", page2.nextPageRequest());
+        CursoredPage<City> page3 = cities.findByStateNameGreaterThan("Idaho", page2.nextPageRequest(), desc);
         assertIterableEquals(List.of("Kansas City Kansas"),
                              page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
@@ -2560,8 +2564,8 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testParenthesisInsertionForCursorPagination() {
-        PageRequest<?> page1Request = PageRequest.ofSize(3).asc("name").asc(ID);
-        CursoredPage<Business> page1 = mixed.withZipCodeIn(55901, 55904, page1Request);
+        PageRequest page1Request = PageRequest.ofSize(3);
+        CursoredPage<Business> page1 = mixed.withZipCodeIn(55901, 55904, page1Request, Sort.asc("name"), Sort.asc(ID));
 
         assertEquals(List.of("Benike Construction", "Crenlo", "Home Federal Savings Bank"),
                      page1.stream()
@@ -2570,7 +2574,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page1.hasNext());
 
-        CursoredPage<Business> page2 = mixed.withZipCodeIn(55901, 55904, page1.nextPageRequest());
+        CursoredPage<Business> page2 = mixed.withZipCodeIn(55901, 55904, page1.nextPageRequest(), Sort.asc("name"), Sort.asc(ID));
 
         assertEquals(List.of("IBM", "Metafile", "Olmsted Medical"),
                      page2.stream()
@@ -2579,7 +2583,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(true, page1.hasNext());
 
-        CursoredPage<Business> page3 = mixed.withZipCodeIn(55901, 55904, page2.nextPageRequest());
+        CursoredPage<Business> page3 = mixed.withZipCodeIn(55901, 55904, page2.nextPageRequest(), Sort.asc("name"), Sort.asc(ID));
 
         assertEquals(List.of("RAC", "Think Bank"),
                      page3.stream()

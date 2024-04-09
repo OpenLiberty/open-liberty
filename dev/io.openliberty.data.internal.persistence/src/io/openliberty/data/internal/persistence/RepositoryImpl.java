@@ -530,7 +530,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @throws IllegalArgumentException if the offset exceeds Integer.MAX_VALUE
      *                                      or the PageRequest requests cursor-based pagination.
      */
-    static int computeOffset(PageRequest<?> pagination) {
+    static int computeOffset(PageRequest pagination) {
         if (pagination.mode() != PageRequest.Mode.OFFSET)
             throw new IllegalArgumentException("Cursor-based pagination mode " + pagination.mode() +
                                                " can only be used with repository methods with the following return types: " +
@@ -2438,7 +2438,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     case FIND:
                     case FIND_AND_DELETE: {
                         Limit limit = null;
-                        PageRequest<?> pagination = null;
+                        PageRequest pagination = null;
                         List<Sort<Object>> sortList = null;
 
                         // Jakarta Data allows the method parameter positions after those used as query parameters
@@ -2456,7 +2456,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 sortList = queryInfo.combineSorts(sortList, order);
                             } else if (param instanceof PageRequest) {
                                 if (pagination == null)
-                                    pagination = (PageRequest<?>) param;
+                                    pagination = (PageRequest) param;
                                 else
                                     throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
                                                                             method.getDeclaringClass().getName() +
@@ -2472,27 +2472,31 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             }
                         }
 
-                        if (pagination != null) {
-                            if (limit != null)
-                                throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                                                        method.getDeclaringClass().getName() +
-                                                                        " repository cannot have both Limit and PageRequest as parameters."); // TODO NLS
-                            if (sortList == null) {
-                                @SuppressWarnings("unchecked")
-                                List<Sort<Object>> pageRequestSorts = (List<Sort<Object>>) (List<?>) pagination.sorts();
-                                sortList = queryInfo.combineSorts(null, pageRequestSorts);
-                            } else if (!pagination.sorts().isEmpty()) {
-                                throw new IllegalArgumentException("The " + method.getName() + " method of the " +
-                                                                   method.getDeclaringClass().getName() +
-                                                                   " repository cannot specify Sort parameters" +
-                                                                   " if PageRequest also has Sort parameters."); // TODO NLS
-                            }
-                        }
+                        if (pagination != null && limit != null)
+                            throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                                    method.getDeclaringClass().getName() +
+                                                                    " repository cannot have both Limit and PageRequest as parameters."); // TODO NLS
 
                         if (sortList == null && queryInfo.hasDynamicSortCriteria())
                             sortList = queryInfo.sorts;
 
-                        if (sortList != null && !sortList.isEmpty()) {
+                        if (sortList == null || sortList.isEmpty()) {
+                            if (pagination != null) {
+                                // BasicRepository.findAll(PageRequest, Order) requires NullPointerException when Order is null.
+                                if (queryInfo.paramCount == 0 && queryInfo.method.getParameterCount() == 2
+                                    && Order.class.equals(queryInfo.method.getParameterTypes()[1]))
+                                    throw new NullPointerException("Order: null");
+                                // TODO raise a helpful error to prevent some cases of attempted unordered pagination?
+                                //else if (!queryInfo.hasOrderBy)
+                                //    throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                //                                            queryInfo.method.getDeclaringClass().getName() +
+                                //                                            " repository has a PageRequest parameter without a way to " +
+                                //                                            " specify a deterministic ordering of results, which is required " +
+                                //                                            " when requesting pages. Use the OrderBy annotation or add a " +
+                                //                                            " parameter of type Order, Sort, or Sort... to specify an order" +
+                                //                                            " for results."); // TODO NLS
+                            }
+                        } else {
                             boolean forward = pagination == null || pagination.mode() != PageRequest.Mode.CURSOR_PREVIOUS;
                             StringBuilder q = new StringBuilder(queryInfo.jpql);
                             StringBuilder order = null; // ORDER BY clause based on Sorts
@@ -3254,7 +3258,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @return PageRequest.
      * @throws IllegalArgumentException if the Limit is a range with a starting point above 1.
      */
-    private static final <T> PageRequest<T> toPageRequest(Limit limit) {
+    private static final PageRequest toPageRequest(Limit limit) {
         if (limit.startAt() != 1L)
             throw new IllegalArgumentException("Limit with starting point " + limit.startAt() +
                                                ", which is greater than 1, cannot be used to request pages.");

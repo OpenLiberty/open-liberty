@@ -119,7 +119,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     @Select({ "start", "stop" })
     Stream<ReservedTimeSlot> findByStopOrStopOrStop(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
 
-    Page<Reservation> findByHostStartsWith(String hostPrefix, PageRequest<?> pagination, Sort<Reservation> sort);
+    Page<Reservation> findByHostStartsWith(String hostPrefix, PageRequest pagination, Sort<Reservation> sort);
 
     LinkedHashSet<Reservation> findByInviteesContainsOrderByMeetingID(String invitee);
 

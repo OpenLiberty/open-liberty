@@ -29,6 +29,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import jakarta.data.Limit;
+import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
@@ -65,7 +66,7 @@ import io.openliberty.data.repository.function.Trimmed;
 @Repository
 public interface Primes {
     @Query("SELECT (num.name) FROM Prime As num")
-    Page<String> all(PageRequest<?> pagination);
+    Page<String> all(Sort<Prime> sort, PageRequest pagination);
 
     @Exists
     boolean anyLessThanEndingWithBitPattern(@By("numberId") @LessThan long upperLimit,
@@ -119,7 +120,7 @@ public interface Primes {
     @OrderBy("sumOfBits")
     @OrderBy(ID)
     Iterator<Prime> findByNameStartsWithAndNumberIdLessThanOrNameContainsAndNumberIdLessThan(String prefix, long max1, String contains, long max2,
-                                                                                             PageRequest<?> pagination);
+                                                                                             PageRequest pagination);
 
     List<Prime> findByNameTrimmedCharCountAndNumberIdBetween(int length, long min, long max);
 
@@ -131,17 +132,17 @@ public interface Primes {
     CursoredPage<Prime> findByNumberIdBetween(long min, long max, Limit limit);
 
     @OrderBy(ID)
-    CursoredPage<Prime> findByNumberIdBetween(long min, long max, PageRequest<?> pagination);
+    CursoredPage<Prime> findByNumberIdBetween(long min, long max, PageRequest pagination);
 
     List<Prime> findByNumberIdBetween(long min, long max, Sort<?>... orderBy);
 
     CursoredPage<Prime> findByNumberIdBetweenAndBinaryDigitsNotNull(long min, long max, Sort<?>... orderBy); // Lacks PageRequest
 
-    CursoredPage<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, PageRequest<Prime> pagination);
+    CursoredPage<Prime> findByNumberIdBetweenAndEvenFalse(long min, long max, PageRequest pagination, Order<Prime> order);
 
-    Page<Prime> findByNumberIdBetweenAndSumOfBitsNotNull(long min, long max, PageRequest<?> pagination);
+    Page<Prime> findByNumberIdBetweenAndSumOfBitsNotNull(long min, long max, Order<Prime> order, PageRequest pagination);
 
-    CursoredPage<Prime> findByNumberIdBetweenOrderByEvenDescSumOfBitsDescNumberIdAsc(long min, long max, PageRequest<?> pagination);
+    CursoredPage<Prime> findByNumberIdBetweenOrderByEvenDescSumOfBitsDescNumberIdAsc(long min, long max, PageRequest pagination);
 
     List<Prime> findByNumberIdBetweenOrderByNameIgnoreCaseDesc(long min, long max);
 
@@ -167,32 +168,35 @@ public interface Primes {
 
     @OrderBy("even")
     @OrderBy("sumOfBits")
-    Page<Prime> findByNumberIdLessThan(long max, PageRequest<?> pagination);
+    Page<Prime> findByNumberIdLessThan(long max, Sort<Prime> sort, PageRequest pagination);
 
-    List<Prime> findByNumberIdLessThanEqualOrderByNumberIdAsc(long max, PageRequest<?> pagination);
+    List<Prime> findByNumberIdLessThanEqualOrderByNumberIdAsc(long max, PageRequest pagination);
 
     List<Prime> findByNumberIdLessThanEqualOrderByNumberIdDesc(long max, Limit limit);
 
-    Page<Prime> findByNumberIdLessThanEqualOrderByNumberIdDesc(long max, PageRequest<?> pagination);
+    Page<Prime> findByNumberIdLessThanEqualOrderByNumberIdDesc(long max, PageRequest pagination);
 
     Stream<Prime> findByNumberIdLessThanOrderByEven(long max, Sort<?>... sorts);
 
-    CursoredPage<Prime> findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(long max, PageRequest<?> pagination);
+    CursoredPage<Prime> findByNumberIdLessThanOrderByEvenAscSumOfBitsAsc(long max, PageRequest pagination, Sort<Prime> sort);
 
     @Asynchronous
-    CompletionStage<CursoredPage<Prime>> findByNumberIdLessThanOrderByNumberIdDesc(long max, PageRequest<?> pagination);
+    CompletionStage<CursoredPage<Prime>> findByNumberIdLessThanOrderByNumberIdDesc(long max, PageRequest pagination);
 
-    Iterator<Prime> findByNumberIdNotGreaterThan(long max, PageRequest<?> pagination);
+    Iterator<Prime> findByNumberIdNotGreaterThan(long max, PageRequest pageRequest, Order<Prime> pagination);
 
     Iterator<Prime> findByNumberIdNotGreaterThan(long max, Sort<?>... order);
 
     Page<Prime> findByRomanNumeralEndsWithAndNumberIdLessThan(String ending, long max, Limit limit, Sort<?>... orderBy);
 
-    Page<Prime> findByRomanNumeralEndsWithAndNumberIdLessThan(String ending, long max, PageRequest<?> pagination, Sort<?>... orderBy);
+    Page<Prime> findByRomanNumeralEndsWithAndNumberIdLessThan(String ending, long max,
+                                                              PageRequest pagination,
+                                                              Order<Prime> order,
+                                                              Sort<?>... orderBy);
 
     @OrderBy(value = "sumOfBits", descending = true)
     @OrderBy("name")
-    Page<Prime> findByRomanNumeralStartsWithAndNumberIdLessThan(String prefix, long max, PageRequest<?> pagination);
+    Page<Prime> findByRomanNumeralStartsWithAndNumberIdLessThan(String prefix, long max, PageRequest pagination);
 
     @Find
     Prime findFirst(Sort<Prime> sort, Limit limitOf1);
@@ -239,7 +243,7 @@ public interface Primes {
 
     // TODO after JDQL SELECT is added: "Select name Where length(romanNumeral) * 2 >= length(name) Order By name Asc",
     @Query(value = "Where numberId < 50 and romanNumeral is not null and length(romanNumeral) * 2 >= length(name) Order By name Desc")
-    Page<Prime> lengthBasedQuery(PageRequest<Prime> pageRequest);
+    Page<Prime> lengthBasedQuery(PageRequest pageRequest);
 
     @Find
     @OrderBy(value = "numberId", descending = true)
@@ -298,14 +302,14 @@ public interface Primes {
     Stack<String> minMaxSumCountAverageStack(long numBelow);
 
     @Query("SELECT o.name FROM Prime o WHERE o.numberId < ?1")
-    Page<String> namesBelow(long numBelow, PageRequest<Prime> pageRequest);
+    Page<String> namesBelow(long numBelow, Sort<Prime> sort, PageRequest pageRequest);
 
     @Query(value = "SELECT NEW java.util.AbstractMap.SimpleImmutableEntry(p.numberId, p.name) FROM Prime p WHERE p.numberId <= ?1 ORDER BY p.name")
-    Page<Map.Entry<Long, String>> namesByNumber(long maxNumber, PageRequest<?> pagination);
+    Page<Map.Entry<Long, String>> namesByNumber(long maxNumber, PageRequest pagination);
 
     @Query("SELECT prime.name, prime.hex FROM  Prime  prime  WHERE prime.numberId <= ?1")
     @OrderBy("numberId")
-    Page<Object[]> namesWithHex(long maxNumber, PageRequest<?> pagination);
+    Page<Object[]> namesWithHex(long maxNumber, PageRequest pagination);
 
     @Find
     @OrderBy(ID)
@@ -320,7 +324,7 @@ public interface Primes {
     void persist(Prime... primes);
 
     @Query("SELECT DISTINCT LENGTH(p.romanNumeral) FROM Prime p WHERE p.numberId <= ?1 ORDER BY LENGTH(p.romanNumeral) DESC")
-    Page<Integer> romanNumeralLengths(long maxNumber, PageRequest<?> pagination);
+    Page<Integer> romanNumeralLengths(long maxNumber, PageRequest pagination);
 
     @Query("SELECT hex WHERE numberId=?1")
     Optional<String> toHexadecimal(long num);
@@ -328,7 +332,7 @@ public interface Primes {
     @Query("SELECT prime_ FROM Prime AS prime_ WHERE (prime_.numberId <= ?1)")
     @OrderBy(value = "even", descending = true)
     @OrderBy(value = "sumOfBits", descending = true)
-    CursoredPage<Prime> upTo(long maxNumber, PageRequest<?> pagination);
+    CursoredPage<Prime> upTo(long maxNumber, PageRequest pagination, Order<Prime> order);
 
     @Find
     @OrderBy("name")
@@ -339,17 +343,17 @@ public interface Primes {
     Optional<Prime> withAnyCaseName(@By("name") @Trimmed @IgnoreCase String name);
 
     @Query("where numberId <= ?2 and numberId>=?1")
-    Page<Prime> within(long minimum, long maximum, PageRequest<Prime> pageRequest);
+    Page<Prime> within(long minimum, long maximum, PageRequest pageRequest, Sort<Prime> sort);
 
     @Query("where (numberId <= :maximum) and numberId>=10 order by name asc")
-    Page<Prime> within10toXAndSortedByName(long maximum, PageRequest<Prime> pageRequest);
+    Page<Prime> within10toXAndSortedByName(long maximum, PageRequest pageRequest);
 
     @OrderBy(value = "even", descending = true)
     @OrderBy(value = "name", descending = false)
     @Query(" WHERE( numberId<=:max AND UPPER(romanNumeral) NOT LIKE '%VII' AND (numberId-(numberId/10)* 10)<>3 AND\tnumberId\t>= :min)")
     CursoredPage<Prime> withinButNotEndingIn7or3(@Param("min") long minimum,
                                                  @Param("max") long maximum,
-                                                 PageRequest<Prime> pageRequest);
+                                                 PageRequest pageRequest);
 
     @Find
     List<Prime> withNameLengthAndWithin(@By("name") @Trimmed @CharCount int length,

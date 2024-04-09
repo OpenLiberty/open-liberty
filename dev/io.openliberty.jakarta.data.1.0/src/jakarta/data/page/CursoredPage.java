@@ -22,8 +22,8 @@ public interface CursoredPage<T> extends Page<T> {
     boolean hasPrevious();
 
     @Override
-    PageRequest<T> nextPageRequest();
+    PageRequest nextPageRequest();
 
     @Override
-    PageRequest<T> previousPageRequest();
+    PageRequest previousPageRequest();
 }
