@@ -738,6 +738,17 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             this.isc.setRemoteAddr(remoteAddress);
 
         }
+        
+      //Add for Servlet 6.0
+        //HttpDispatcherLink can be reused but ready(VirtualConnection) is always called to get a current VirtualConnection.
+        //If thats true, don't need to clean up this connectionID
+        this.connectionId = connectionCounter.getAndIncrement();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "ready , connection id [" + connectionId + "] for this [" + this + "]");
+        }
+        
+        
         // Make sure to initialize the response in case of an early-return-error message
         //((NettyHttpRequestImpl) this.request).init(this.nettyRequest, this.nettyContext.channel(), this.isc);
         // MSP.log("Init Request");
