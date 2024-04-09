@@ -37,6 +37,10 @@ public class PartitionedSessionCreationServlet extends HttpServlet {
             // in the response.
             req.getSession(true);
 
+            // Create a non session cookie
+            Cookie cookie = new Cookie("AddCookieName","AddCookieValue");
+            resp.addCookie(cookie);
+
         }
     
 }
