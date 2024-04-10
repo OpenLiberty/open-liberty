@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2020 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,196 +56,188 @@ import com.ibm.ws.kernel.provisioning.VersionUtility;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
- * Bootstrap the runtime: Resolve the few jar files required to construct the nested
- * classloader requierd for launching the framework, use reflection to find
- * the LauncherDelegate, and invoke the LauncherDelegate in the nested classloader.
- * <p>
- * This is called by both the {@link Launcher} for normal command-line invocation,
- * and the {@link EmbeddedServerImpl} for embedded server launch.
+ * Bootstrap the runtime: Resolve the jar files required by the framework classloader,
+ * locate the launcher delegate using reflection, then invoke the launcher delegate
+ * using the framework classloader.
+ *
+ * The bootstrap API is used by both the {@link Launcher} for normal command-line
+ * invocation, and the {@link EmbeddedServerImpl} for embedded server launch.
  */
 public class KernelBootstrap {
-
-    /** Initial configuration and location manager */
-    protected final BootstrapConfig bootProps;
-
-    /** Lock ensuring only one VM is using the server directory/workarea (as a server) */
-    protected final ServerLock serverLock;
-
-    protected final CountDownLatch delegateCreated = new CountDownLatch(1);
-    protected LauncherDelegate launcherDelegate;
-
-    /** File used to determine if JVM exited gracefully or not */
-    protected File serverRunning = null;
-
-    protected final boolean libertyBoot;
-
     /**
-     * @param bootProps BootstrapProperties carry forward all of the parameters and
-     *                      options used to launch the kernel.
+     * Standard constructor.
+     *
+     * @param bootProps The parameters of the launch.
      */
     public KernelBootstrap(BootstrapConfig bootProps) {
         this.bootProps = bootProps;
-        libertyBoot = Boolean.parseBoolean(bootProps.get(BootstrapConstants.LIBERTY_BOOT_PROPERTY));
+
+        this.libertyBoot = Boolean.parseBoolean(bootProps.get(BootstrapConstants.LIBERTY_BOOT_PROPERTY));
 
         // Use initialized bootstrap configuration to create the server lock.
-        // This ensures the server and nested workarea directory exist and are writable
-        serverLock = ServerLock.createServerLock(bootProps);
+        // This ensures the server and nested workarea directory exist and are writable.
+        this.serverLock = ServerLock.createServerLock(bootProps);
     }
 
+    /** Initial configuration and location manager. */
+    protected final BootstrapConfig bootProps;
+
     /**
-     * Start the kernel:
+     * Control parameter: Is liberty boot mode enabled.
+     * See {@link KernelResolver} for liberty boot mode details.
+     */
+    protected final boolean libertyBoot;
+
+    /** Lock ensuring only one VM is using the server directory/workarea (as a server). */
+    protected final ServerLock serverLock;
+
+    //
+
+    protected final CountDownLatch delegateCreated = new CountDownLatch(1);
+    protected LauncherDelegate launcherDelegate;
+    protected File serverRunning;
+
+    /**
+     * Start the kernel.
+     *
      * <ul>
      * <li>establish appropriate mechanisms to mark the server as started,
      * <li>identify kernel resources and log providers
      * <li>create a special bootstrap classlaoder
      * <li>Create an appropriate LauncherDelegate
      * <li>Launch the OSGi framework via the LauncherDelegate
+     * </ul>
+     *
+     * @return The launch return code. This method only ever returns
+     *         {@link ReturnCode#OK}. Failed launches throw exceptions.
      */
     public ReturnCode go() {
         try {
-            // obtaining a lock for the server (with timeout)
-            serverLock.obtainServerLock();
+            serverLock.obtainServerLock(); // This can fail with a timeout.
 
-            // IFF we can obtain the server lock....
-
-            // Ensure that the server state directory has been cleared prior to start
             clearServerStateDir();
 
             setupJMXOverride();
+            setupHttpRetryPost();
+            setupLogManager();
 
-            // Set default to not retry http post requests.  See java bug " JDK-6382788 : URLConnection is silently retrying POST request"
-            setHttpRetryPost();
-
-            // Only create resources (like the server dir) if the current return code is ok
-            setLoggerProperties();
-
-            // Create the server running marker file that is automatically deleted when JVM terminates normally
-            // If the file already exists, it will force a clean start
+            // Create the server running marker file.  This is automatically
+            // deleted when JVM terminates normally.
+            // If marker file already exists, a clean start will be performed.
             ServerLock.createServerRunningMarkerFile(bootProps);
 
-            // Clear workarea if directed via properties or service
-            cleanStart();
+            cleanStart(); // Refresh the service fingerprint.
+                          // Optionally, clear the workarea (perform a clean start).
 
-            // Read the bootstrap manifest
-            BootstrapManifest bootManifest = null;
+            BootstrapManifest bootManifest;
             try {
                 bootManifest = BootstrapManifest.readBootstrapManifest(libertyBoot);
             } catch (IOException e) {
-                throw new LaunchException("Could not read the jar manifest", BootstrapConstants.messages.getString("error.unknown.kernel.version"), e);
+                throw KernelUtils.launchException(e, "Failed to read bootstrap manifest", "error.unknown.kernel.version");
             }
 
-            // Read the bootstrap defaults (kernel, log provider, os extensions)
-            BootstrapDefaults bootDefaults = null;
+            BootstrapDefaults bootDefaults;
             try {
                 bootDefaults = new BootstrapDefaults(bootProps);
             } catch (IOException e) {
-                throw new LaunchException("Could not read the defaults file", BootstrapConstants.messages.getString("error.unknown.kernel.version"), e);
+                throw KernelUtils.launchException(e, "Failed to read bootstrap defaults", "error.unknown.kernel.version");
             }
 
-            // handle system packages & system.packages.extra -- MAY THROW if
-            // required system.packages list can't be read from the jar
             bootManifest.prepSystemPackages(bootProps);
 
-            // Get product version information & retrieve log provider
             String kernelVersion = BootstrapConstants.SERVER_NAME_PREFIX + bootManifest.getBundleVersion();
             String productInfo = getProductInfoDisplayName();
 
-            // Find the bootstrap resources we need to launch the nested framework.
-            // MAY THROW if these resources can not be found or read
-            KernelResolver resolver = new KernelResolver(bootProps.getInstallRoot(), bootProps.getWorkareaFile(KernelResolver.CACHE_FILE), bootDefaults.getKernelDefinition(bootProps), bootDefaults.getLogProviderDefinition(bootProps), bootDefaults.getOSExtensionDefinition(bootProps), libertyBoot);
+            KernelResolver resolver = newResolver(bootProps, bootDefaults, libertyBoot);
 
             // ISSUE LAUNCH FEEDBACK TO THE CONSOLE -- we've done the cursory validation at least.
             String logLevel = bootProps.get("com.ibm.ws.logging.console.log.level");
             boolean logVersionInfo = (logLevel == null || !logLevel.equalsIgnoreCase("off"));
+
             processVersion(bootProps, "info.serverLaunch", kernelVersion, productInfo, logVersionInfo);
+
             if (logVersionInfo) {
-                // if serial filter agent is loaded, log the information.
                 logSerialFilterMessage();
                 List<String> cmdArgs = bootProps.getCmdArgs();
-                if (cmdArgs != null && !cmdArgs.isEmpty()) {
-                    System.out.println("\t" + MessageFormat.format(BootstrapConstants.messages.getString("info.cmdArgs"), cmdArgs));
+                if ((cmdArgs != null) && !cmdArgs.isEmpty()) {
+                    System.out.println("\t" + KernelUtils.format("info.cmdArgs", cmdArgs));
                 }
             }
-            //now we have a resolver we should check if a clean start is being forced
-            //if we already cleaned once because of the cmd line arg, osgi prop or service changes
-            //then the resolver won't force us to clean again anyway
-            if (resolver.getForceCleanStart())
-                KernelUtils.cleanStart(bootProps.getWorkareaFile(null));
 
-            //add the service fingerprint
+            // Now that we have a resolver, check if a clean start is being forced.
+            // If we already cleaned once because of the cmd line, osgi property, or
+            // service changes then the resolver won't force us to clean again.
+            if (resolver.getForceCleanStart()) {
+                KernelUtils.cleanStart(bootProps.getWorkareaFile(null));
+            }
+
             ServiceFingerprint.putInstallDir(null, bootProps.getInstallRoot());
 
-            // Find additional/extra system packages from log providers and os extensions
             String packages = bootProps.get(BootstrapConstants.INITPROP_OSGI_EXTRA_PACKAGE);
             packages = resolver.appendExtraSystemPackages(packages);
-
-            // save new "extra" packages
-            if (packages != null)
+            if (packages != null) {
                 bootProps.put(BootstrapConstants.INITPROP_OSGI_EXTRA_PACKAGE, packages);
+            }
 
-            // Create a new classloader with boot.jars on the classpath
-            // Find the framework launcher, and invoke it
-            ClassLoader loader;
+            // Obtain a launcher delegate.
+            //
+            // When liberty boot mode is enabled, the current class loader is
+            // used.  Boot jar processing is needed only when boot mode is not
+            // enabled, in which case the boot jars are used to configure the
+            // launch delegate's class loader.
+
             List<URL> urlList = new ArrayList<URL>();
 
-            // for liberty boot all the jars are already on the classpath
             if (!libertyBoot) {
-                // Add bootstrap jar(s)
                 bootProps.addBootstrapJarURLs(urlList);
-                // Add OSGi framework, log provider, and/or os extension "boot.jar" elements
-                resolver.addBootJars(urlList);
+                resolver.addBootJars(urlList); // OSGi, log provider, os extension jars.
             }
-            // Build our new shiny nested classloader
-            loader = buildClassLoader(urlList, bootProps.get("verifyJarSignature"));
 
-            // Find LauncherDelegate, store the instance where we can find it (for server commands)
+            ClassLoader delegateLoader = buildClassLoader(urlList, bootProps.get("verifyJarSignature"));
+
             try {
-                Class<? extends LauncherDelegate> clazz = getLauncherDelegateClass(loader);
-                launcherDelegate = clazz.getConstructor(BootstrapConfig.class).newInstance(bootProps);
+                Class<? extends LauncherDelegate> launcherDelegateClass = getLauncherDelegateClass(delegateLoader);
+                launcherDelegate = launcherDelegateClass.getConstructor(BootstrapConfig.class).newInstance(bootProps);
             } catch (Exception e) {
-                rethrowException("Unable to create OSGi framework due to " + e, e);
+                throw KernelUtils.unwindException("Failed to create launcher delegate " + e, e);
             }
 
             delegateCreated.countDown();
 
-            // Pass some things along that the delegate in the nested classloader will need
-            bootProps.setFrameworkClassloader(loader);
+            bootProps.setFrameworkClassloader(delegateLoader);
             bootProps.setKernelResolver(resolver);
             bootProps.setInstrumentation(getInstrumentation());
 
-            if (!!!Boolean.parseBoolean(bootProps.get(BootstrapConstants.INTERNAL_START_SIMULATION))) {
+            if (!Boolean.parseBoolean(bootProps.get(BootstrapConstants.INTERNAL_START_SIMULATION))) {
                 // GO!!! We won't come back from this call until the framework has stopped
                 launcherDelegate.launchFramework();
             }
+
         } catch (LaunchException le) {
-            // This is one of ours, already packaged correctly, just rethrow
-            throw le;
+            throw le; // Already packaged correctly; rethrow.
         } catch (Throwable e) {
-            rethrowException("Caught unexpected exception " + e, e);
+            throw KernelUtils.unwindException("Unexpected exception", e);
+
         } finally {
             delegateCreated.countDown();
-            if (serverLock != null) {
-                serverLock.releaseServerLock();
-            }
+            serverLock.releaseServerLock();
         }
+
         return ReturnCode.OK;
     }
 
-    /**
-     *
-     */
+    private static KernelResolver newResolver(BootstrapConfig bootProps,
+                                              BootstrapDefaults bootDefaults,
+                                              boolean libertyBoot) {
+
+        return new KernelResolver(bootProps.getInstallRoot(), bootProps.getWorkareaFile(KernelResolver.CACHE_FILE), bootDefaults.getKernelDefinition(bootProps), bootDefaults.getLogProviderDefinition(bootProps), bootDefaults.getOSExtensionDefinition(bootProps), libertyBoot);
+    }
+
     private void clearServerStateDir() {
         File stateDir = bootProps.getOutputFile("logs/state");
         KernelUtils.cleanDirectory(stateDir, "state");
     }
 
-    /**
-     * @param osRequest
-     * @return
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws InterruptedException
-     */
     public Set<String> getServerContent(String osRequest) throws FileNotFoundException, IOException, InterruptedException {
         delegateCreated.await();
         if (launcherDelegate != null)
@@ -254,13 +246,6 @@ public class KernelBootstrap {
         return Collections.emptySet();
     }
 
-    /**
-     * @param osRequest
-     * @return
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws InterruptedException
-     */
     public Set<String> getServerFeatures() throws InterruptedException {
         delegateCreated.await();
         if (launcherDelegate != null)
@@ -269,9 +254,6 @@ public class KernelBootstrap {
         return Collections.emptySet();
     }
 
-    /**
-     * @throws InterruptedException
-     */
     public boolean waitForStarted() throws InterruptedException {
         delegateCreated.await();
         if (launcherDelegate != null)
@@ -284,117 +266,145 @@ public class KernelBootstrap {
      * Stop the server. This emulates the path that the server stop action takes:
      * it calls shutdown on the LauncherDelegate, and then waits until it can obtain
      * the server lock to ensure the server has stopped.
-     *
-     * @throws InterruptedException
      */
     public ReturnCode shutdown() throws InterruptedException {
-        return shutdown(false);
+        return shutdown(!DO_FORCE);
     }
+
+    public static final boolean DO_FORCE = true;
 
     /**
      * Force stop the server. This emulates the path that the server stop action takes:
      * it calls shutdown on the LauncherDelegate, and then waits until it can obtain
      * the server lock to ensure the server has stopped.
-     *
-     * @throws InterruptedException
      */
     public ReturnCode shutdown(boolean force) throws InterruptedException {
         delegateCreated.await();
-        // If we have a delegate, call shutdown with force flag to stop the server
-        if (launcherDelegate != null && launcherDelegate.shutdown(force)) {
-            // if shutdown stopped the server, we need to wait until we can obtain
-            // the server lock (the serverLock is released in the finally block of
-            // the go() method.. )
-            return serverLock.waitForStop();
-        }
 
-        // Server did not propertly start (no delegate), so stop is fine.
-        return ReturnCode.OK;
+        if ((launcherDelegate != null) && launcherDelegate.shutdown(force)) {
+            return serverLock.waitForStop();
+        } else {
+            return ReturnCode.OK;
+        }
     }
 
+    public static final String JMX_BUILDER_PROPERTY_NAME = "javax.management.builder.initial";
+    public static final String JMX_BUILDER_PROPERTY_VALUE = "com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilder";
+
     /**
-     * This sets up the system property which is consulted by
-     * java.lang.management.ManagementFactory and javax.management.MBeanServerFactory.
+     * Set the JMX builder property, {@link #JMX_BUILDER_PROPERTY_NAME}.
+     * Always set {@link #JMX_BUILDER_PROPERTY_VALUE}.
      */
     protected void setupJMXOverride() {
-        // This is normally done by the javaagent, but set it here in case the
-        // javaagent was not used.
-        System.setProperty("javax.management.builder.initial",
-                           "com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilder");
+        System.setProperty(JMX_BUILDER_PROPERTY_NAME, JMX_BUILDER_PROPERTY_VALUE);
     }
 
-    private void setLoggerProperties() {
-        // This is normally done by the javaagent, but set it here in case the
-        // javaagent was not used.
+    public static final String LOG_MANAGER_PROPERTY_NAME = "java.util.logging.manager";
+    public static final String LOG_MANAGER_DEFAULT = "com.ibm.ws.kernel.boot.logging.WsLogManager";
 
-        // bootProps.get(..) checks initProps, then system props
-        String logManager = bootProps.get("java.util.logging.manager");
-        if (logManager == null)
-            logManager = "com.ibm.ws.kernel.boot.logging.WsLogManager";
+    /**
+     * Set the logging manager system property, {@link #LOG_MANAGER_PROPERTY_NAME}.
+     *
+     * This is carried from the bootstrap properties, if possible.
+     * A default of {@link #LOG_MANAGER_DEFAULT} is used if the bootstrap property
+     * is not set.
+     *
+     * Usually, the log manager property is set by the java agent.
+     */
+    private void setupLogManager() {
+        String logManager = bootProps.get(LOG_MANAGER_PROPERTY_NAME);
+        if (logManager == null) {
+            logManager = LOG_MANAGER_DEFAULT;
+        }
 
-        // Set system props for j.u.l use.
-        System.setProperty("java.util.logging.manager", logManager);
+        System.setProperty(LOG_MANAGER_PROPERTY_NAME, logManager);
     }
 
-    private void setHttpRetryPost() {
-        // Set default to not retry http post requests.  See java bug " JDK-6382788 : URLConnection is silently retrying POST request"
-        String httpRetryPost = bootProps.get("sun.net.http.retryPost");
+    public static final String HTTP_RETRY_PROPERTY_NAME = "sun.net.http.retryPost";
+    public static final String HTTP_RETRY_DEFAULT = "false";
 
-        if (httpRetryPost == null)
-            httpRetryPost = "false";
-
-        // Set system props for http retryPost
-        System.setProperty("sun.net.http.retryPost", httpRetryPost);
+    /**
+     * Set the HTTP retry system property, {@link #HTTP_RETRY_PROPERTY_NAME}.
+     *
+     * This is carried from the bootstrap properties, if possible.
+     * A default of {@link #HTTP_RETRY_DEFAULT} is used if the bootstrap property
+     * is not set.
+     *
+     * This system property must be set per java bug "JDK-6382788" :
+     * "URLConnection is silently retrying POST request".
+     */
+    private void setupHttpRetryPost() {
+        String httpRetryPost = bootProps.get(HTTP_RETRY_PROPERTY_NAME);
+        if (httpRetryPost == null) {
+            httpRetryPost = HTTP_RETRY_DEFAULT;
+        }
+        System.setProperty(HTTP_RETRY_PROPERTY_NAME, httpRetryPost);
     }
 
     /**
-     * Check for clean start: clear entire work area if set
+     * Conditionally perform clean start steps.
      *
-     * @param bootProps
+     * Perform cleanup if either service has been applied, or
+     * if a clean start has been requested through the bootstrap
+     * properties.
+     *
+     * Cleanup means clearing the service fingerprint and emptying
+     * the server workarea.
+     *
+     * Cleanup also removes the clean paramaters from the bootstrap
+     * properties.
      */
     protected void cleanStart() {
         File workareaFile = bootProps.getWorkareaFile(null);
 
-        // If we're clean starting, remove all files from the working directory;
-        // Note: do not reverse the checks in the following if(); we need to call hasServiceBeenApplied each time
-        if (ServiceFingerprint.hasServiceBeenApplied(bootProps.getInstallRoot(), workareaFile) || bootProps.checkCleanStart()) {
-            // Must clean the static data from the ServiceFinterprint class; otherwise the stale data will be persisted.
-            ServiceFingerprint.clear();
-            KernelUtils.cleanStart(workareaFile);
+        // *ALWAYS* invoke 'hasServiceBeenApplied' first: The call has side
+        // effects which must always occur.
 
-            // clean up / remove various "clean" parameters
-            // storage area has already been wiped..
+        if (ServiceFingerprint.hasServiceBeenApplied(bootProps.getInstallRoot(), workareaFile) || bootProps.checkCleanStart()) {
+            ServiceFingerprint.clear(); // Force the fingerprint to be recalculated.
+            KernelUtils.cleanStart(workareaFile); // Clear the work directory.
+
+            // Clean parameters which trigger a clean up.
             bootProps.remove(BootstrapConstants.INITPROP_OSGI_CLEAN);
             bootProps.remove(BootstrapConstants.OSGI_CLEAN);
-
         }
     }
 
+    private static final String LAUNCHER_DELEGATE_CLASS_NAME = "com.ibm.ws.kernel.launch.internal.LauncherDelegateImpl";
+
     /**
-     * Trivial method: keep, as this is overridden for test.
+     * Load the launcher delegate class, {@link #LAUNCHER_DELEGATE_CLASS_NAME}.
      *
-     * @return the launcher delegate class
+     * This method must be retained, so that it can be overridden by test subclasses.
+     *
+     * @return The launcher delegate class.
      */
-    protected Class<? extends LauncherDelegate> getLauncherDelegateClass(ClassLoader loader) throws ClassNotFoundException {
-        String className = "com.ibm.ws.kernel.launch.internal.LauncherDelegateImpl";
-
-        Class<?> clazz = loader.loadClass(className);
-        if (clazz == null)
-            throw new ClassNotFoundException(className);
-
-        return clazz.asSubclass(LauncherDelegate.class);
+    protected Class<? extends LauncherDelegate> getLauncherDelegateClass(ClassLoader ldClassloader) throws ClassNotFoundException {
+        @SuppressWarnings("unchecked")
+        Class<? extends LauncherDelegate> ldClass = (Class<? extends LauncherDelegate>) ldClassloader.loadClass(LAUNCHER_DELEGATE_CLASS_NAME);
+        if (ldClass == null) {
+            throw new ClassNotFoundException(LAUNCHER_DELEGATE_CLASS_NAME);
+        }
+        return ldClass;
     }
 
     /**
-     * Build the nested classloader containing the OSGi framework, and the log provider.
+     * Obtain a class loader to be used to load the launcher delegate.
      *
-     * @param urlList
-     * @param verifyJarProperty
-     * @return
+     * When in liberty boot mode, use the class loader which loaded this class.
+     *
+     * Otherwise, construct a class loader using the supplied jar URLs.
+     *
+     * When verification is enabled, a failure to create the class loader
+     * results in a thrown exception.
+     *
+     * @param jarUrls           The URLs of the class path of the class loader.
+     * @param verifyJarProperty Property used to force verification of the JAR URLS.
+     *
+     * @return A class loader for the launcher delegate.
      */
-    protected ClassLoader buildClassLoader(final List<URL> urlList, String verifyJarProperty) {
+    protected ClassLoader buildClassLoader(List<URL> jarUrls, String verifyJarProperty) {
         if (libertyBoot) {
-            // for liberty boot we just use the class loader that loaded this class
             return AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
                 @Override
                 public ClassLoader run() {
@@ -402,24 +412,25 @@ public class KernelBootstrap {
                 }
             });
         }
-        final boolean verifyJar;
+
+        // Verify the classloader JARS ...
+        // Only if explicitly enabled when there is no security manager.
+        // Always if there is a security manager.
+
+        boolean verifyJar;
         if (System.getSecurityManager() == null) {
-            // do not perform verification if SecurityManager is not installed
-            // unless explicitly enabled.
             verifyJar = "true".equalsIgnoreCase(verifyJarProperty);
         } else {
-            // always perform verification if SecurityManager is installed.
             verifyJar = true;
         }
 
-        enableJava2SecurityIfSet(this.bootProps, urlList);
+        enableJava2SecurityIfSet(bootProps, jarUrls);
 
         ClassLoader loader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-
             @Override
             public ClassLoader run() {
                 ClassLoader parent = getClass().getClassLoader();
-                URL[] urls = urlList.toArray(new URL[urlList.size()]);
+                URL[] urls = jarUrls.toArray(new URL[jarUrls.size()]);
                 if (verifyJar) {
                     return new BootstrapChildFirstURLClassloader(urls, parent);
                 } else {
@@ -437,9 +448,6 @@ public class KernelBootstrap {
         return loader;
     }
 
-    /**
-     * Set Java 2 Security if enabled
-     */
     public static void enableJava2SecurityIfSet(BootstrapConfig bootProps, List<URL> urlList) {
         if (bootProps.get(BootstrapConstants.JAVA_2_SECURITY_PROPERTY) != null) {
 
@@ -520,43 +528,36 @@ public class KernelBootstrap {
                 System.out.println(consoleLogHeader);
             }
             if (!CheckpointPhase.getPhase().restored()) {
-                // store for later to log on restore; only if printVersion is requested
                 bootProps.put(BootstrapConstants.BOOTPROP_CONSOLE_LOG_HEADER, consoleLogHeader);
             }
         }
 
         displayWarningIfBeta(bootProps, consoleFormat);
 
-        // Store the product version in the map for use by log providers
         bootProps.put(BootstrapConstants.BOOTPROP_PRODUCT_INFO, versionString);
-
     }
 
     /**
-     * Display a warning in the console.log for each product that is early access ( determined by properties files
-     * in the lib/versions directory, with property com.ibm.websphere.productEdition=EARLY_ACCESS ).
+     * Display a warning in the console.log for each product that is early access.
      *
-     *
-     * @param bootProps
-     * @param consoleFormat
+     * These are determined from properties files in "lib/versions", using property
+     * "com.ibm.websphere.productEdition=EARLY_ACCESS".
      */
     private static void displayWarningIfBeta(BootstrapConfig bootProps, String consoleFormat) {
         try {
-            final Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
+            Map<String, ProductInfo> productInfos = ProductInfo.getAllProductInfo();
             for (ProductInfo info : productInfos.values()) {
-                if (info.isBeta()) {
-                    String message = MessageFormat.format(BootstrapConstants.messages.getString("warning.earlyRelease"),
-                                                          info.getName());
-                    if ("json".equals(consoleFormat)) {
-                        String jsonMessage = constructJSONHeader(message, bootProps);
-                        System.out.println(jsonMessage);
-                    } else {
-                        System.out.println(message);
-                    }
+                if (!info.isBeta()) {
+                    continue;
                 }
+                String message = KernelUtils.format("warning.earlyRelease", info.getName());
+                if ("json".equals(consoleFormat)) {
+                    message = constructJSONHeader(message, bootProps);
+                }
+                System.out.println(message);
             }
         } catch (Exception e) {
-            //FFDC and move on ... assume not early access
+            // FFDC
         }
     }
 
@@ -568,11 +569,9 @@ public class KernelBootstrap {
         String datetime = getDatetime();
         String sequenceNumber = getSequenceNumber();
 
-        //header field names and values
         List<String> headerFieldNames = new ArrayList<>(Arrays.asList("type", "host", "ibm_userDir", "ibm_serverName", "message", "ibm_datetime", "ibm_sequence"));
-        final String[] headerFieldValues = { "liberty_message", serverHostName, wlpUserDir, serverName, consoleLogHeader, datetime, sequenceNumber };
-
-        final String OMIT_FIELDS_STRING = "@@@OMIT@@@";
+        String[] headerFieldValues = { "liberty_message", serverHostName, wlpUserDir, serverName, consoleLogHeader, datetime, sequenceNumber };
+        String OMIT_FIELDS_STRING = "@@@OMIT@@@";
 
         //bootstrap fieldMappings should take precedence
         String bsFieldMappings = bootProps.get("com.ibm.ws.logging.json.field.mappings");
@@ -622,56 +621,54 @@ public class KernelBootstrap {
         return jsonHeader.append("}").toString();
     }
 
+    /**
+     * Answer a sequence number
+     *
+     * @return
+     */
     private static String getSequenceNumber() {
-        SequenceNumber sequenceNumber = new SequenceNumber();
-        long rawSequenceNumber = sequenceNumber.getRawSequenceNumber();
-        String sequenceId = null;
-        if (sequenceId == null || sequenceId.isEmpty()) {
-            sequenceId = SequenceNumber.formatSequenceNumber(System.currentTimeMillis(), rawSequenceNumber);
-        }
-        return sequenceId;
+        return SequenceNumber.formatSequenceNumber(System.currentTimeMillis(), 0);
     }
 
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
     private static String getDatetime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        String datetime = dateFormat.format(System.currentTimeMillis());
-        return datetime;
+        return dateFormat.format(System.currentTimeMillis());
     }
 
     private static String getServerHostName() {
-        String serverHostName = null;
-        //Resolve server name to be the DOCKER HOST name or the cannonical host name.
         String containerHost = System.getenv("CONTAINER_HOST");
-        if (containerHost == null || containerHost.equals("") || containerHost.length() == 0) {
-            try {
-                serverHostName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-                    @Override
-                    public String run() throws UnknownHostException {
-                        return InetAddress.getLocalHost().getCanonicalHostName();
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                serverHostName = "";
-            }
-        } else {
-            serverHostName = containerHost;
+        if ((containerHost != null) && !containerHost.isEmpty()) {
+            return containerHost;
         }
-        return serverHostName;
+
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+                @Override
+                public String run() throws UnknownHostException {
+                    return InetAddress.getLocalHost().getCanonicalHostName();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     /**
-     * // * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
-     * // *
-     * // * @param sb String builder to append to
-     * // * @param s String to escape
-     * //
+     * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
+     *
+     * @param sb String builder to append to
+     * @param s  String to escape
+     *
+     * @return The string builder.
      */
     private static StringBuilder jsonEscape(StringBuilder sb, String s) {
         if (s == null) {
             return sb.append(s);
         }
+
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             switch (c) {
@@ -691,13 +688,13 @@ public class KernelBootstrap {
                     sb.append("\\t");
                     break;
 
-                // Fall through because we just need to add \ (escaped) before the character
                 case '\\':
                 case '\"':
                 case '/':
                     sb.append("\\");
                     sb.append(c);
                     break;
+
                 default:
                     sb.append(c);
             }
@@ -733,36 +730,56 @@ public class KernelBootstrap {
         return result;
     }
 
-    private void rethrowException(String untranslatedMsg, Throwable ex) {
-        Throwable cause = ex.getCause();
-        if (cause == null)
-            cause = ex;
-        throw new LaunchException(untranslatedMsg, MessageFormat.format(BootstrapConstants.messages.getString("error.unknownException"), cause.toString()), cause);
+    public static final String KERNEL_AGENT = "com.ibm.ws.kernel.instrument.BootstrapAgent";
+    public static final String WLP_LIB_AGENT = "wlp.lib.extract.agent.BootstrapAgent";
+
+    /**
+     * Retrieve an instrumentation instance from the agent class.
+     *
+     * Try {@link #KERNEL_AGENT} then try {@link #WLP_LIB_AGENT}.
+     *
+     * Answer null if neither agent class is available, or neither has
+     * an instrumentation instance.
+     *
+     * Locate the agent classes uses the system class loader.
+     *
+     * @return An instrumentation instance. Null may be returned.
+     */
+    protected Instrumentation getInstrumentation() {
+        ClassLoader agentClassLoader = ClassLoader.getSystemClassLoader();
+        Instrumentation instrumentation = findInstrumentation(agentClassLoader, KERNEL_AGENT);
+        if (instrumentation == null) {
+            instrumentation = findInstrumentation(agentClassLoader, WLP_LIB_AGENT);
+        }
+        return instrumentation;
     }
 
     /**
-     * Fetch the BootstrapAgent instrumentation instance from the BootstrapAgent
-     * in the system classloader.
+     * Attempt to retrieve instrumentation from an agent class. Load the agent
+     * class using the supplied class loader.
      *
-     * @return Instrumentation instance initialized by the Launcher, may be null.
+     * Invoke <code>getInstrumentation</code> on the agent class.
+     *
+     * Answer null if the agent class cannot be found.
+     *
+     * @param agentClassLoader The class loader to use to load the agent class.
+     * @param agentClassName   The name of the agent class.
+     *
+     * @return The instrumentation from the agent class. Null if the agent
+     *         class is not available or does not have an instrumentation instance.
      */
-    protected Instrumentation getInstrumentation() {
-        ClassLoader cl = ClassLoader.getSystemClassLoader();
-        Instrumentation i = findInstrumentation(cl, "com.ibm.ws.kernel.instrument.BootstrapAgent");
-        if (i == null)
-            i = findInstrumentation(cl, "wlp.lib.extract.agent.BootstrapAgent");
-        return i;
-    }
-
-    private Instrumentation findInstrumentation(ClassLoader cl, String clazz) {
+    private Instrumentation findInstrumentation(ClassLoader agentClassLoader, String agentClassName) {
         try {
-            Class<?> agentClass = cl.loadClass(clazz);
+            Class<?> agentClass = agentClassLoader.loadClass(agentClassName);
             Method getInstrumentation = agentClass.getMethod("getInstrumentation");
             return (Instrumentation) getInstrumentation.invoke(null);
-        } catch (Exception t) { /* Eat the issue and rely on users to report */
+        } catch (Exception t) {
+            // Eat the issue and rely on users to report.
         }
         return null;
     }
+
+    //
 
     private void logSerialFilterMessage() {
         if (isSerialFilterLoaded()) {
@@ -777,9 +794,6 @@ public class KernelBootstrap {
                 return System.getProperty("com.ibm.websphere.serialfilter.active");
             }
         });
-        if ("true".equalsIgnoreCase(activeSerialFilter)) {
-            return true;
-        }
-        return false;
+        return ("true".equalsIgnoreCase(activeSerialFilter));
     }
 }

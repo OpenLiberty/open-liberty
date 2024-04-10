@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,74 +14,40 @@ package com.ibm.ws.kernel.boot.utils;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-/*
- * thread safe sequence number creator
- */
 public class SequenceNumber {
-    private final AtomicLong seq = new AtomicLong();
-    private final static String ZEROES = "0000000000000";
+    public static String formatSequenceNumber(long date, long value) {
+        return Long.toString(date) + "_" + toHex(value);
+    }
 
-    /*
-     * Creates the next sequence number
-     */
+    private static final String ZEROS = "0000000000000";
+
+    private static String toHex(long value) {
+        String hexValue = Long.toHexString(value);
+
+        int hexLen = hexValue.length();
+        if (hexLen < ZEROS.length()) {
+            hexValue = ZEROS.substring(hexLen) + hexValue;
+        }
+        return hexValue;
+    }
+
+    public static void main(String[] args) {
+        long[] testValues = { 0, 1, 2, 10, 16, 17, 30, 32, 33, 255, 256, 257, 1023, 1024, 1025 };
+
+        for (long value : testValues) {
+            System.out.println(" [ " + value + " ] [ " + toHex(value) + " ]");
+        }
+    }
+
+    //
+
+    private final AtomicLong seq = new AtomicLong();
+
     public long getRawSequenceNumber() {
         return seq.incrementAndGet();
     }
 
-    public static String formatSequenceNumber(long date, long n) {
-        return date + "_" + toPaddedHex(n);
-    }
-
-    /*
-     * Creates the next sequence number formatted string
-     */
     public String next(long date) {
-        long n = seq.incrementAndGet();
-        return formatSequenceNumber(date, n);
+        return formatSequenceNumber(date, seq.incrementAndGet());
     }
-
-    /*
-     * Converts a long to a 13 character 0-padded lower case hex string
-     */
-    private static String toPaddedHex(long n) {
-        String hexValue = Long.toHexString(n);
-        hexValue = upperCaseHex(hexValue);
-        String paddedHexValue = hexValue.length() <= 12 ? ZEROES.substring(hexValue.length()) + hexValue : hexValue;
-        return paddedHexValue;
-    }
-
-    /*
-     * Efficiently converts a string containing a hexadecimal number from lower case to upper case
-     */
-    private static String upperCaseHex(String s) {
-        char chars[] = s.toCharArray();
-        int length = s.length();
-
-        for (int i = 0; i < length; i++) {
-
-            switch (chars[i]) {
-                case 'a':
-                    chars[i] = 'A';
-                    break;
-                case 'b':
-                    chars[i] = 'B';
-                    break;
-                case 'c':
-                    chars[i] = 'C';
-                    break;
-                case 'd':
-                    chars[i] = 'D';
-                    break;
-                case 'e':
-                    chars[i] = 'E';
-                    break;
-                case 'f':
-                    chars[i] = 'F';
-                    break;
-            }
-        }
-
-        return new String(chars);
-    }
-
 }
