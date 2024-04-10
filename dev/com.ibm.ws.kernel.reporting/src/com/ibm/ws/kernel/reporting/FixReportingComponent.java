@@ -11,6 +11,8 @@ package com.ibm.ws.kernel.reporting;
 
 import static org.osgi.service.condition.Condition.CONDITION_ID;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -31,7 +33,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.kernel.feature.FixManager;
 import com.ibm.ws.kernel.feature.ServerStartedPhase2;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -75,16 +76,13 @@ public class FixReportingComponent {
 
 		reporterTask = new ReporterTask(featureProvisioner, fixManager, serverInfo, properties);
 
-		if (System.getProperty("set.reporting.to.working") != null && Boolean.getBoolean("set.reporting.to.working")) {
-			if (ProductInfo.getBetaEdition()) {
-				if (isEnabled(properties)) {
-					Tr.info(tc, "CWWKF1700.reporting.is.enabled");
-					future = scheduledExecutor.scheduleAtFixedRate(reporterTask, 0, 1, TimeUnit.DAYS);
-				} else {
-					Tr.info(tc, "CWWKF1701.reporting.is.disabled");
-				}
-			}
+		if (isEnabled(properties)) {
+			Tr.info(tc, "CWWKF1700.reporting.is.enabled");
+			future = scheduledExecutor.scheduleAtFixedRate(reporterTask, 0, 1, TimeUnit.DAYS);
+		} else {
+			Tr.info(tc, "CWWKF1701.reporting.is.disabled");
 		}
+
 	}
 
 	/**
@@ -93,20 +91,15 @@ public class FixReportingComponent {
 	 */
 	@Modified
 	protected void modified(Map<String, Object> properties) {
-		if (System.getProperty("set.reporting.to.working") != null
-				&& Boolean.valueOf(System.getProperty("set.reporting.to.working", "true"))) {
-			if (ProductInfo.getBetaEdition()) {
-				if (isEnabled(properties)) {
-					if (future == null || future.isDone()) {
-						Tr.info(tc, "CWWKF1700.reporting.is.enabled");
-						future = scheduledExecutor.scheduleAtFixedRate(reporterTask, 0, 1, TimeUnit.DAYS);
-					}
-				} else {
-					if (future != null && !future.isDone()) {
-						Tr.info(tc, "CWWKF1701.reporting.is.disabled");
-						future.cancel(false);
-					}
-				}
+		if (isEnabled(properties)) {
+			if (future == null || future.isDone()) {
+				Tr.info(tc, "CWWKF1700.reporting.is.enabled");
+				future = scheduledExecutor.scheduleAtFixedRate(reporterTask, 0, 1, TimeUnit.DAYS);
+			}
+		} else {
+			if (future != null && !future.isDone()) {
+				Tr.info(tc, "CWWKF1701.reporting.is.disabled");
+				future.cancel(false);
 			}
 		}
 
@@ -129,6 +122,20 @@ public class FixReportingComponent {
 	 */
 	private static boolean isEnabled(Map<String, Object> properties) {
 
-		return !Boolean.FALSE.equals(properties.get("enabled"));
+		return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+			public Boolean run() {
+				Boolean enabled = false;
+				enabled = Boolean.getBoolean("cve.insight.enabled");
+				// MUST BE ENABLED BEFORE BETA
+//				if (ProductInfo.getBetaEdition()) {
+				// check config
+				if (enabled) {
+					return !Boolean.FALSE.equals(properties.get("enabled"));
+				}
+//				}
+				return false;
+			}
+		});
+
 	}
 }
