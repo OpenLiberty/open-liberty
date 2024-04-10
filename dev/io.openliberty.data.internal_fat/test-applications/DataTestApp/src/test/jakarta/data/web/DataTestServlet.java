@@ -1151,7 +1151,7 @@ public class DataTestServlet extends FATServlet {
         // Find a single attribute type
 
         assertArrayEquals(new int[] { 180, 200, 220, 220 },
-                          houses.findGarageAreaByGarageNotNull());
+                          houses.findGarageAreas());
 
         // Find a DoubleStream for a single attribute type
 
@@ -1506,13 +1506,13 @@ public class DataTestServlet extends FATServlet {
         remaining.addAll(Set.of(80008, 80080, 80081, 80088));
 
         Sort<Package> sort = supportsOrderByForUpdate ? Sort.desc("width") : null;
-        Integer id = packages.deleteFirstBy(sort).orElseThrow();
+        Integer id = packages.deleteFirst(sort).orElseThrow();
         if (supportsOrderByForUpdate)
             assertEquals(Integer.valueOf(80080), id);
         assertEquals("Found " + id + "; expected one of " + remaining, true, remaining.remove(id));
 
         Sort<?>[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
-        int[] ids = packages.deleteFirst2By(sorts);
+        int[] ids = packages.deleteFirst2(sorts);
         assertEquals(Arrays.toString(ids), 2, ids.length);
         if (supportsOrderByForUpdate) {
             assertEquals(80081, ids[0]);
@@ -1522,7 +1522,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Found " + ids[1] + "; expected one of " + remaining, true, remaining.remove(ids[1]));
 
         // should have only 1 remaining
-        ids = packages.deleteFirst2By(sorts);
+        ids = packages.deleteFirst2(sorts);
         assertEquals(Arrays.toString(ids), 1, ids.length);
         assertEquals(remaining.iterator().next(), Integer.valueOf(ids[0]));
     }
@@ -1540,21 +1540,21 @@ public class DataTestServlet extends FATServlet {
         Sort<Package> sort = Sort.asc("id");
 
         try {
-            long[] deleted = packages.deleteFirst3By(sort);
+            long[] deleted = packages.deleteFirst3(sort);
             fail("Deleted with return type of long[]: " + Arrays.toString(deleted) + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
         }
 
         try {
-            List<String> deleted = packages.deleteFirst4By(sort);
+            List<String> deleted = packages.deleteFirst4(sort);
             fail("Deleted with return type of List<String>: " + deleted + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
         }
 
         try {
-            Collection<Number> deleted = packages.deleteFirst5By(sort);
+            Collection<Number> deleted = packages.deleteFirst5(sort);
             fail("Deleted with return type of Collection<Number>: " + deleted + " even though the id type is int.");
         } catch (MappingException x) {
             // expected
@@ -1820,7 +1820,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindSubsetOfAttributes() {
-        List<Object[]> all = primes.findNumberIdAndNameBy(Sort.asc("numberId"));
+        List<Object[]> all = primes.findNumberIdAndName(Sort.asc("numberId"));
 
         Object[] idAndName = all.get(5);
         assertEquals(13L, idAndName[0]);
@@ -3736,6 +3736,106 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use Query by Method Name repository methods that lack the By keyword.
+     */
+    @Test
+    public void testQueryByMethodNameWithoutBy() {
+        vehicles.delete();
+
+        Vehicle v1 = new Vehicle();
+        v1.make = "Ford";
+        v1.model = "Explorer";
+        v1.numSeats = 7;
+        v1.price = 37000f;
+        v1.vinId = "QBYM0000101010101";
+
+        Vehicle v2 = new Vehicle();
+        v2.make = "Subaru";
+        v2.model = "Outback";
+        v2.numSeats = 5;
+        v2.price = 29000f;
+        v2.vinId = "QBYM0000202020202";
+
+        Vehicle v3 = new Vehicle();
+        v3.make = "Honda";
+        v3.model = "CR-V";
+        v3.numSeats = 5;
+        v3.price = 30000f;
+        v3.vinId = "QBYM0000303030303";
+
+        Vehicle v4 = new Vehicle();
+        v4.make = "Honda";
+        v4.model = "HR-V";
+        v4.numSeats = 5;
+        v4.price = 24000f;
+        v4.vinId = "QBYM0000404040404";
+
+        Vehicle v5 = new Vehicle();
+        v5.make = "Subaru";
+        v5.model = "Impreza";
+        v5.numSeats = 5;
+        v5.price = 23000f;
+        v5.vinId = "QBYM0000505050505";
+
+        assertEquals(0L, vehicles.count());
+        assertEquals(false, vehicles.exists());
+        assertEquals(0L, vehicles.find().count());
+        assertEquals(false, vehicles.findFirstOrderByVinId().isPresent());
+        assertEquals(List.of(), vehicles.findOrderByMakeAscModelAscVinIdAsc());
+
+        vehicles.save(List.of(v1, v2, v3, v4, v5));
+
+        assertEquals(5L, vehicles.count());
+        assertEquals(true, vehicles.exists());
+        assertEquals(true, vehicles.existsAny());
+
+        assertEquals("Explorer", vehicles.findFirstOrderByVinId().orElseThrow().model);
+
+        assertEquals(List.of("CR-V", "Explorer", "HR-V", "Impreza", "Outback"),
+                     vehicles.find()
+                                     .map(v -> v.model)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of("CR-V", "Explorer", "HR-V", "Impreza", "Outback"),
+                     vehicles.findAll()
+                                     .map(v -> v.model)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of("Ford Explorer", "Honda CR-V", "Honda HR-V", "Subaru Impreza", "Subaru Outback"),
+                     vehicles.findOrderByMakeAscModelAscVinIdAsc()
+                                     .stream()
+                                     .map(v -> v.make + " " + v.model)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of("Explorer", "CR-V", "Outback", "HR-V", "Impreza"),
+                     vehicles.findAllOrderByPriceDescVinIdAsc()
+                                     .stream()
+                                     .map(v -> v.model)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of("Impreza", "HR-V"),
+                     vehicles.deleteFirst2FoundOrderByPriceAscVinIdAsc()
+                                     .stream()
+                                     .map(v -> v.model)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(3L, vehicles.countEverything());
+
+        assertEquals(List.of("CR-V", "Explorer", "Outback"),
+                     vehicles.deleteAll()
+                                     .stream()
+                                     .map(v -> v.model)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
+
+        assertEquals(false, vehicles.existsAny());
+        assertEquals(0L, vehicles.findAll().count());
+        assertEquals(List.of(), vehicles.findAllOrderByPriceDescVinIdAsc());
+    }
+
+    /**
      * Tests all BasicRepository methods with a record as the entity.
      */
     @Test
@@ -3915,7 +4015,7 @@ public class DataTestServlet extends FATServlet {
         // remove data that other tests previously inserted to the same table
         reservations.deleteByHostNot("never-ever-used@example.org");
 
-        assertEquals(0, reservations.countBy());
+        assertEquals(0, reservations.countAll());
 
         Reservation r1 = new Reservation();
         r1.host = "testRepository-host1@example.org";
@@ -3938,7 +4038,7 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(Boolean.TRUE, reservations.existsByMeetingId(r1.meetingID));
 
-        assertEquals(1, reservations.countBy());
+        assertEquals(1, reservations.countAll());
 
         Reservation r2 = new Reservation();
         r2.host = "testRepository-host2@example.org";
@@ -4056,7 +4156,7 @@ public class DataTestServlet extends FATServlet {
         // remove data that other tests previously inserted to the same table
         reservations.removeByHostNotIn(Set.of("never-ever-used@example.org"));
 
-        assertEquals(0, reservations.countBy());
+        assertEquals(0, reservations.countAll());
 
         // set up some data for the test to use
         Reservation r1 = new Reservation();
@@ -4918,9 +5018,9 @@ public class DataTestServlet extends FATServlet {
 
         reservations.saveAll(List.of(r1, r2, r3, r4));
 
-        ReservedTimeSlot[] reserved = reservations.findStartAndStopByLocationAndStartBetweenOrderByStart("30-2 C206",
-                                                                                                         OffsetDateTime.of(2022, 6, 3, 0, 0, 0, 0, CDT),
-                                                                                                         OffsetDateTime.of(2022, 6, 3, 23, 59, 59, 0, CDT));
+        ReservedTimeSlot[] reserved = reservations.findTimeSlotByLocationAndStartBetweenOrderByStart("30-2 C206",
+                                                                                                     OffsetDateTime.of(2022, 6, 3, 0, 0, 0, 0, CDT),
+                                                                                                     OffsetDateTime.of(2022, 6, 3, 23, 59, 59, 0, CDT));
         assertArrayEquals(new ReservedTimeSlot[] { new ReservedTimeSlot(r2.start, r2.stop),
                                                    new ReservedTimeSlot(r1.start, r1.stop),
                                                    new ReservedTimeSlot(r3.start, r3.stop) },

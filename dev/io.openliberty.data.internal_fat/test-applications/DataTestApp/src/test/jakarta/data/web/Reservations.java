@@ -59,7 +59,7 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     @Query("SELECT COUNT(o) FROM Reservation o") // JPQL
     int count();
 
-    int countBy();
+    int countAll();
 
     boolean deleteByHostIn(List<String> hosts);
 
@@ -131,7 +131,8 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     List<Long> findMeetingIdByStopWithSecond(int second);
 
     // Use a record as the return type
-    ReservedTimeSlot[] findStartAndStopByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
+    @Select({ "start", "stop" })
+    ReservedTimeSlot[] findTimeSlotByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
 
     ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
 
