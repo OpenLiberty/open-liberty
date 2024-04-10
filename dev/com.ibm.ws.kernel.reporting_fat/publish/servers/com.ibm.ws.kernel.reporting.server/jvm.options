@@ -8,4 +8,4 @@
 # SPDX-License-Identifier: EPL-2.0
 ###############################################################################
 -Dcom.ibm.ws.beta.edition=true
--Dset.reporting.to.working=true
+-Dcve.insight.enabled=true
