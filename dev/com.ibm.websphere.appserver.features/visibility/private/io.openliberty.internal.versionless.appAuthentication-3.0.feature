@@ -1,6 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.internal.versionless.appAuthentication-3.0
-WLP-AlsoKnownAs: io.openliberty.internal.versionless.jaspic-3.0
 visibility=private
 singleton=true
 -features= \

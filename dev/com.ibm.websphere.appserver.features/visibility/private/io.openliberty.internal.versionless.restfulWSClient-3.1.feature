@@ -1,6 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.internal.versionless.restfulWSClient-3.1
-WLP-AlsoKnownAs: io.openliberty.internal.versionless.jaxrsClient-3.1
 visibility=private
 singleton=true
 -features= \

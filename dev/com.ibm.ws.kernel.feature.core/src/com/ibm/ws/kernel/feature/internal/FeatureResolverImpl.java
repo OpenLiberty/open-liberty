@@ -332,7 +332,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             selectionContext.processPostponed();
             numBlocked = selectionContext.getBlockedCount();
             result = processRoots(rootFeatures, preResolved, selectionContext);
-        } while (selectionContext.hasPostponed() || numBlocked != selectionContext.getBlockedCount());
+        } while (selectionContext.hasPostponed() || numBlocked != selectionContext.getBlockedCount() || selectionContext.tryVersionlessResolution());
         // Save the result in the current permutation
         selectionContext._current._result.setResolvedFeatures(result);
         selectionContext.checkForBestSolution();
@@ -625,7 +625,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (overrideTolerates.contains(tolerate)) {
             return true;
         }
-        if (Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"))) {
+        if (!isBeta) {
             if (chain.peekFirst().startsWith("io.openliberty.versionless.")) {
                 return true;
             }
@@ -693,7 +693,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         static class Permutation {
             final Map<String, Chain> _selected = new HashMap<String, Chain>();
             final Map<String, Chains> _postponed = new LinkedHashMap<String, Chains>();
-            final Set<String> _postponedVersionless = new HashSet<String>();
+            final Map<String, Chains> _postponedVersionless = new LinkedHashMap<String, Chains>();
             final Set<String> _blockedFeatures = new HashSet<String>();
             final ResultImpl _result = new ResultImpl();
 
@@ -717,6 +717,11 @@ public class FeatureResolverImpl implements FeatureResolver {
                     copy._postponed.put(chainsEntry.getKey(), chainsEntry.getValue().copy());
                 }
 
+                // now we need to copy each postponed Chains
+                for (Map.Entry<String, Chains> chainsEntry : _postponedVersionless.entrySet()) {
+                    copy._postponedVersionless.put(chainsEntry.getKey(), chainsEntry.getValue().copy());
+                }
+
                 // NOTE the blocked features are NOT copied; they get recalculated
                 return copy;
             }
@@ -730,6 +735,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         private final Map<String, Collection<Chain>> _preResolveConflicts = new HashMap<String, Collection<Chain>>();
         private Permutation _current = _permutations.getFirst();
         private final Map<String, List<String>> versionless = new HashMap<String, List<String>>();
+        private boolean triedVersionless = false;
 
         SelectionContext(FeatureResolver.Repository repository, Set<String> allowedMultipleVersions, EnumSet<ProcessType> supportedProcessTypes) {
             this._repository = repository;
@@ -820,6 +826,10 @@ public class FeatureResolverImpl implements FeatureResolver {
         };
 
         void processCandidates(Collection<String> chain, List<String> candidateNames, String symbolicName, String baseSymbolicName, String preferredVersion, boolean isSingleton) {
+            if(baseSymbolicName.startsWith("io.openliberty.internal.versionless.") && getSelected("com.ibm.websphere.appserver.eeCompatible") == null){
+                addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
+                return;
+            }
             // first check for container type
             for (Iterator<String> iCandidateNames = candidateNames.iterator(); iCandidateNames.hasNext();) {
                 ProvisioningFeatureDefinition fd = _repository.getFeature(iCandidateNames.next());
@@ -896,8 +906,19 @@ public class FeatureResolverImpl implements FeatureResolver {
             return !!!_current._postponed.isEmpty();
         }
 
+        // Versionless features require eeCompatible to be resolved. In rare cases, eeCompatible will be resolved after
+        // all versionles features have been postponed, and nothing else is postponed except for versionless features.
+        // In that case we need to run the resolve loop one more time in order to not skip versionless features.
+        boolean tryVersionlessResolution(){
+            if(!triedVersionless){
+                triedVersionless = true;
+                return !!!_current._postponedVersionless.isEmpty();
+            }
+            return false;
+        }
+
         void processPostponed() {
-            if (_current._postponed.isEmpty()) {
+            if (_current._postponed.isEmpty() && _current._postponedVersionless.isEmpty()) {
                 return;
             }
             // Only process the first postponed and try again;
@@ -907,13 +928,17 @@ public class FeatureResolverImpl implements FeatureResolver {
             // unnecessary
 
             //if a versionless feature is postponed, process that first
-            if(isBeta){
-                if(!!!_current._postponedVersionless.isEmpty()){
-                    String postponedVersionless = _current._postponedVersionless.iterator().next();
-                    Chain selected = _current._postponed.get(postponedVersionless).select(postponedVersionless, this);
+            if(!isBeta){
+                if(!!!_current._postponedVersionless.isEmpty() && getSelected("com.ibm.websphere.appserver.eeCompatible") != null){
+                    Map.Entry<String, Chains> firstPostponedVersionless = _current._postponedVersionless.entrySet().iterator().next();
+                    // try to find a good selection
+                    Chain selected = firstPostponedVersionless.getValue().select(firstPostponedVersionless.getKey(), this);
                     if (selected != null) {
-                        _current._selected.put(postponedVersionless, selected);
+                        // found a good one, select it.
+                        _current._selected.put(firstPostponedVersionless.getKey(), selected);
                     }
+        
+                    // clean postponed since we will walk the tree again and find them again if necessary
                     _current._postponed.clear();
                     _current._postponedVersionless.clear();
                     return;
@@ -930,6 +955,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
             // clean postponed since we will walk the tree again and find them again if necessary
             _current._postponed.clear();
+            _current._postponedVersionless.clear();
         }
 
         void primeSelected(Collection<String> features) {
@@ -986,11 +1012,11 @@ public class FeatureResolverImpl implements FeatureResolver {
             Chains existing = _current._postponed.get(baseName);
             if (existing == null) {
                 existing = new Chains();
-                _current._postponed.put(baseName, existing);
-                if(isBeta){
-                    if(baseName.startsWith("io.openliberty.internal.versionless.")){
-                        _current._postponedVersionless.add(baseName);
-                    }
+                if(baseName.startsWith("io.openliberty.internal.versionless.")){
+                    _current._postponedVersionless.put(baseName, existing);
+                }
+                else{
+                    _current._postponed.put(baseName, existing);
                 }
             }
             existing.add(chain);

@@ -25,18 +25,18 @@ public class VersionlessFeatureCreator {
             pub.mkdirs();
         }
 
-        if(akaFeature != null){
-            if(feature.getAKAFutureFeature() != null){
-                System.out.println("AKA FUTURE FEATURE -------------" + feature.getFeatureName() + "------------");
-                // this feature is the older version of an newer feature
-                // ex. ejb
-                // in this scenario we add the future feature versions
-                ArrayList<String[]> temp = akaFeature.getFeaturesAndPlatform();
-                for(String[] featAndPlat : temp){
-                    feature.addFeaturePlatform(featAndPlat);
-                }
-            }
-        }
+        // if(akaFeature != null){
+        //     if(feature.getAKAFutureFeature() != null){
+        //         System.out.println("AKA FUTURE FEATURE -------------" + feature.getFeatureName() + "------------");
+        //         // this feature is the older version of an newer feature
+        //         // ex. ejb
+        //         // in this scenario we add the future feature versions
+        //         ArrayList<String[]> temp = akaFeature.getFeaturesAndPlatform();
+        //         for(String[] featAndPlat : temp){
+        //             feature.addFeaturePlatform(featAndPlat);
+        //         }
+        //     }
+        // }
 
         createPublicVersionlessFeature(feature);
         createPublicFeaturePropertiesFile(feature);
@@ -54,11 +54,11 @@ public class VersionlessFeatureCreator {
             //     createPrivateVersionedFeature(feature.getFeatureName(), features[0].split("-")[1], features[1].split("-")[0], dependencyVersions[0]+"; ibm.tolerates:=\"" + dependencyVersions[1] + "\"", features[2]);
             // }
             
-            if(feature.getAKAFutureFeature() != null){
-                if(!feature.getFeatureName().equals(features[0].split("-")[0])){
-                    continue;
-                }
-            }
+            // if(feature.getAKAFutureFeature() != null){
+            //     if(!feature.getFeatureName().equals(features[0].split("-")[0])){
+            //         continue;
+            //     }
+            // }
             if(feature.getAlsoKnownAs() != null){
                 System.out.println("AKA PAST FEATURE -------------" + feature.getFeatureName() + "------------");
             }
@@ -75,10 +75,10 @@ public class VersionlessFeatureCreator {
             writer.newLine();
             writer.append("symbolicName=io.openliberty.internal.versionless." + featureName + "-" + featureNum);
             writer.newLine();
-            if(aka != null){
-                writer.append("WLP-AlsoKnownAs: io.openliberty.internal.versionless." + aka + "-" + featureNum);
-                writer.newLine();
-            }
+            // if(aka != null){
+            //     writer.append("WLP-AlsoKnownAs: io.openliberty.internal.versionless." + aka + "-" + featureNum);
+            //     writer.newLine();
+            // }
             writer.append("visibility=private");
             writer.newLine();
             writer.append("singleton=true");
@@ -100,34 +100,37 @@ public class VersionlessFeatureCreator {
     	File dir = new File(publicPath + feature.getFeatureName());
     	if(!dir.exists()) {
     		dir.mkdirs();
-        	File f = new File(publicPath + feature.getFeatureName() + "/io.openliberty.versionless." + feature.getFeatureName() + ".feature");
-    		f.createNewFile();
-            BufferedWriter writer = new BufferedWriter(new FileWriter(f));
-            writer.append("-include= ~${workspace}/cnf/resources/bnd/feature.props");
-            writer.newLine();
-            writer.append("symbolicName=io.openliberty.versionless." + feature.getFeatureName());
-            writer.newLine();
-            writer.append("visibility=public");
-            writer.newLine();
-            writer.append("IBM-ShortName: " + feature.getFeatureName());
-            writer.newLine();
-            writer.append("Subsystem-Name: " + feature.getSubsystemName());
-            writer.newLine();
-            String[] versions = feature.getAllVersions();
-            if(versions.length == 1){
-                writer.append("-features=io.openliberty.internal.versionless." + feature.getFeatureName() + "-" + versions[0]);
-            }
-            else{
-                writer.append("-features=io.openliberty.internal.versionless." + feature.getFeatureName() + "-" + versions[0] + "; ibm.tolerates:=\"" + versions[1] + "\"");
-            }
-            writer.newLine();
-            writer.append("kind=noship");
-            writer.newLine();
-            writer.append("edition=full");
-            writer.newLine();
-            
-            writer.close();
-    	}
+        }
+        File f = new File(publicPath + feature.getFeatureName() + "/io.openliberty.versionless." + feature.getFeatureName() + ".feature");
+        if(f.exists()){
+            f.delete();
+        }
+        f.createNewFile();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(f));
+        writer.append("-include= ~${workspace}/cnf/resources/bnd/feature.props");
+        writer.newLine();
+        writer.append("symbolicName=io.openliberty.versionless." + feature.getFeatureName());
+        writer.newLine();
+        writer.append("visibility=public");
+        writer.newLine();
+        writer.append("IBM-ShortName: " + feature.getFeatureName());
+        writer.newLine();
+        writer.append("Subsystem-Name: " + feature.getSubsystemName());
+        writer.newLine();
+        String[] versions = feature.getAllVersions();
+        if(versions.length == 1){
+            writer.append("-features=io.openliberty.internal.versionless." + feature.getFeatureName() + "-" + versions[0]);
+        }
+        else{
+            writer.append("-features=io.openliberty.internal.versionless." + feature.getFeatureName() + "-" + versions[0] + "; ibm.tolerates:=\"" + versions[1] + "\"");
+        }
+        writer.newLine();
+        writer.append("kind=noship");
+        writer.newLine();
+        writer.append("edition=full");
+        writer.newLine();
+        
+        writer.close();
     }
     
     private void createPublicFeaturePropertiesFile(VersionlessFeatureDefinition feature) throws IOException {

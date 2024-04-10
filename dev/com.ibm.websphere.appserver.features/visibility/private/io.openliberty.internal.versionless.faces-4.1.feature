@@ -1,6 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.internal.versionless.faces-4.1
-WLP-AlsoKnownAs: io.openliberty.internal.versionless.jsf-4.1
 visibility=private
 singleton=true
 -features= \

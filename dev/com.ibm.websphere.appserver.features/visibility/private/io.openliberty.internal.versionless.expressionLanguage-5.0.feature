@@ -1,6 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.internal.versionless.expressionLanguage-5.0
-WLP-AlsoKnownAs: io.openliberty.internal.versionless.el-5.0
 visibility=private
 singleton=true
 -features= \
