@@ -333,11 +333,11 @@ public class CommonTest {
         // the file location of the current client keystore
         //String clientRoot = testClient.getInstallRoot();
         String clientRoot = testClient.getClientRoot();
-        String keyLocation = clientRoot + "/resources/security/key.p12";
+        String keyLocation = clientRoot + "/resources/security/key.jks";
         Log.info(c, thisMethod, "keyLocation is" + keyLocation);
         startParms.add(keyLocation);
         // the file location of the new client keystore
-        String newKeyLocation = clientRoot + "/resources/security/newkey.p12";
+        String newKeyLocation = clientRoot + "/resources/security/newkey.jks";
         Log.info(c, thisMethod, "newKeyLocation is" + newKeyLocation);
         startParms.add(newKeyLocation);
 

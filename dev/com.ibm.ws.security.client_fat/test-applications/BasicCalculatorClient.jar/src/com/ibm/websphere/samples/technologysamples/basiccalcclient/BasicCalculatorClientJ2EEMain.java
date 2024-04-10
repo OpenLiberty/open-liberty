@@ -158,9 +158,9 @@ public class BasicCalculatorClientJ2EEMain {
         // .p12 is the default for Liberty, but some tests still have .jks files specified.
         String keyLocationOtherEnding = "notSet";
 
-        if (keyLocation.contains(".jks")) {
+        if (keyLocation.endsWith(".jks")) {
             keyLocationOtherEnding = keyLocation.replace(".jks", ".p12");
-        } else if (keyLocation.contains(".p12")) {
+        } else if (keyLocation.endsWith(".p12")) {
             keyLocationOtherEnding = keyLocation.replace(".p12", ".jks");
         }
 
