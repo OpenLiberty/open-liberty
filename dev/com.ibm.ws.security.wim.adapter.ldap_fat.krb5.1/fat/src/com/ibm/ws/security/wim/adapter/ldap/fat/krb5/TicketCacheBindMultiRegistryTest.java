@@ -63,15 +63,7 @@ public class TicketCacheBindMultiRegistryTest extends CommonBindTest {
             addKerberosConfig(newServer);
             newServer.getLdapRegistries().add(ldap);
 
-            //Log.info(c, testName.getMethodName(), "Run ApacheDS restart tests");
-            //bodyOfMultiRegistryTest(newServer);
-
-            setupUnboundIDLdapServer();
-
-            LdapRegistry unboundID = getLdapRegistryForUnboundID();
-            newServer.getLdapRegistries().add(unboundID);
-
-            //updateConfigDynamically(server, newServer);
+            bodyOfMultiRegistryTest(newServer);
 
             Log.info(c, testName.getMethodName(), "Update with an expired ticketCache");
             String expiredCache = expiredTicketCache;
@@ -111,15 +103,7 @@ public class TicketCacheBindMultiRegistryTest extends CommonBindTest {
             addKerberosConfig(newServer);
             newServer.getLdapRegistries().add(ldap);
 
-            //Log.info(c, testName.getMethodName(), "Run ApacheDS restart tests");
-            //bodyOfMultiRegistryTestAllowOp(newServer);
-
-            setupUnboundIDLdapServer();
-
-            LdapRegistry unboundID = getLdapRegistryForUnboundID();
-            newServer.getLdapRegistries().add(unboundID);
-
-            //updateConfigDynamically(server, newServer);
+            bodyOfMultiRegistryTestAllowOp(newServer);
 
             Log.info(c, testName.getMethodName(), "Update with an expired ticketCache");
             String expiredCache = expiredTicketCache;

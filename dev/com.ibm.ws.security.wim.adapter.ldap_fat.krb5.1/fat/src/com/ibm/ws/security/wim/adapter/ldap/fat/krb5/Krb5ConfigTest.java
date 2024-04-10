@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,8 +49,7 @@ public class Krb5ConfigTest extends CommonBindTest {
 
     @BeforeClass
     public static void setStopMessages() {
-        //CWWKG0027W: Timeout while updating server configuration.
-        stopStrings = new String[] { "CWIML4520E", "CWWKS4345E", "CWIML4508E", "CWIML4507E", "CWIML4529E", "CWWKG0027W" };
+        stopStrings = new String[] { "CWIML4520E", "CWWKS4345E", "CWIML4508E", "CWIML4507E", "CWIML4529E" };
     }
 
     /**

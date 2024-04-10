@@ -18,7 +18,10 @@ src: \
 
 fat.project: true
 
+fat.test.container.images: zachhein/ldap-server:0.3,zachhein/krb5-server:0.1
+
 -buildpath: \
+	io.openliberty.org.testcontainers;version=latest,\
 	org.apache.directory.server:apacheds-all;version=latest, \
 	org.apache.directory.server:kerberos-client;version=latest, \
 	com.ibm.ws.security.registry;version=latest,\

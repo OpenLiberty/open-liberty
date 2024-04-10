@@ -53,6 +53,7 @@ import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 import com.ibm.ws.security.wim.adapter.ldap.fat.krb5.utils.LdapKerberosUtils;
 import com.unboundid.ldap.sdk.LDAPConnection;
 
+import componenttest.containers.ExternalDockerClientFilter;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -117,14 +118,16 @@ public class CommonBindTest {
     protected static final String UNBOUNDID_USER_DN = "uid=" + UNBOUNDID_USER + "," + UNBOUNDID_BASE_DN;
     protected static final String UNBOUNDID_PWD = "usrpwd";
 
-    static int LDAP_PORT = 389;//ApacheDSandKDC.getLdapPort();
-    static int KDC_PORT = 88;//ApacheDSandKDC.getKdcPort();
+    static int LDAP_PORT = 389; //ApacheDSandKDC.getLdapPort();
+    static int KDC_PORT = 88; //ApacheDSandKDC.getKdcPort();
 
     protected static String[] stopStrings = null;
 
     @BeforeClass
     public static void setup() throws Exception {
-        ldapServerHostName = FATSuite.ldap.getHost();
+        if (ExternalDockerClientFilter.instance().isValid()) {
+            ldapServerHostName = ExternalDockerClientFilter.instance().getHostname();
+        } // else defaulted to: localhost
         Log.info(c, "setUp", "setting ldap hostname to: " + ldapServerHostName);
 
         if (conn == null) {
@@ -143,8 +146,8 @@ public class CommonBindTest {
 
         //createTicketCacheFile(); //ApacheDSandKDC.getDefaultTicketCacheFile();
         /// get ticket cache file from container for user17
-        Path krb5KeytabPath = Paths.get(server.getServerRoot(), "user17.cc");
-        ticketCacheFile = krb5KeytabPath.toAbsolutePath().toString();
+        Path krb5ccachePath = Paths.get(server.getServerRoot(), "user17.cc");
+        ticketCacheFile = krb5ccachePath.toAbsolutePath().toString();
         assertNotNull("TicketCacheFile is null", ticketCacheFile);
         FATSuite.ldap.copyFileFromContainer("/etc/user17.cc", ticketCacheFile);
         /// END getting ticket cache file from container
@@ -157,9 +160,13 @@ public class CommonBindTest {
         assertNotNull("ConfigFile is null", configFile);
         Log.info(c, "setUp", "Config file: " + configFile);
 
-        keytabFile = ApacheDSandKDC.createKeyTabFile(bindUserName, bindPrincipalName, bindPassword);//ApacheDSandKDC.getDefaultKeytabFile();
+        Path krb5KeytabPath = Paths.get(server.getServerRoot(), "user17.keytab");
+        keytabFile = krb5KeytabPath.toAbsolutePath().toString();
+        FATSuite.ldap.copyFileFromContainer("/etc/user17.keytab", keytabFile);
+        //keytabFile = ApacheDSandKDC.createKeyTabFile(bindUserName, bindPrincipalName, bindPassword);//ApacheDSandKDC.getDefaultKeytabFile();
         assertNotNull("Keytab is null", keytabFile);
         Log.info(c, "setUp", "Keytab file: " + keytabFile);
+        Log.info(c, "setUp", "Keytab file contents: " + FileUtils.readFile(keytabFile));
 
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
 
@@ -209,7 +216,6 @@ public class CommonBindTest {
     @After
     public void resetServerConfig() throws Exception {
         Log.info(c, testName.getMethodName(), "Reset server config.");
-        server.setJvmOptions(Arrays.asList("-Dsun.security.krb5.debug=true", "-Dcom.ibm.security.krb5.krb5Debug=true"));
         ServerConfiguration newServer = emptyConfiguration.clone();
         updateConfigDynamically(server, newServer);
     }
@@ -419,7 +425,6 @@ public class CommonBindTest {
      * @throws Exception
      */
     public void bodyOfMultiRegistryTest(ServerConfiguration newServer) throws Exception {
-        Log.info(c, testName.getMethodName(), "Stop and restart the ApacheDS servers");
         setupUnboundIDLdapServer();
 
         LdapRegistry unboundID = getLdapRegistryForUnboundID();
@@ -451,7 +456,6 @@ public class CommonBindTest {
      * @throws Exception
      */
     public void bodyOfMultiRegistryTestAllowOp(ServerConfiguration newServer) throws Exception {
-        Log.info(c, testName.getMethodName(), "Stop and restart the ApacheDS servers");
         setupUnboundIDLdapServer();
 
         LdapRegistry unboundID = getLdapRegistryForUnboundID();
@@ -464,6 +468,7 @@ public class CommonBindTest {
 
         if (ApacheDSandKDC.IS_BEING_USED) {
             // Stop ApacheDS, with default behavior, we should not fail on the other registry
+            Log.info(c, testName.getMethodName(), "Stop and restart the ApacheDS servers");
             ApacheDSandKDC.stopAllServers();
 
             assertLoginUserUnboundID();

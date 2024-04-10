@@ -1,0 +1,94 @@
+# EXAMPLE.COM
+dn: dc=example,dc=com
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: exmaple.com
+dc: example
+
+# admin, EXAMPLE.COM
+#dn: cn=admin,dc=example,dc=com
+#objectClass: simpleSecurityObject
+#objectClass: organizationalRole
+#cn: admin
+#userPassword: admin
+#description: LDAP administrator
+
+# users, EXAMPLE.COM
+dn: ou=users,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: users
+
+# user17, users, EXAMPLE.COM
+dn: uid=user17,dc=example,dc=com
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+cn: user17
+sn: user17
+uid: user17
+userPassword: max_secret
+
+# vmmUser1
+dn: uid=vmmUser1,dc=example,dc=com
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+cn: user1
+sn: user1
+uid: vmmUser1
+userPassword: password
+
+# vmmGroup1
+dn: cn=vmmGroup1,dc=example,dc=com
+objectClass: top
+objectClass: groupOfNames
+cn: vmmGroup1
+member: uid=vmmUser1,dc=example,dc=com
+
+# admins, EXAMPLE.COM
+dn: cn=admins,dc=example,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: Admins
+uniqueMember: uid=user17,dc=example,dc=com
+
+# hosts, example.com
+dn: ou=hosts,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: hosts
+
+# ldap, hosts, EXAMPLE.COM
+dn: cn=localhost,ou=hosts,dc=example,dc=com
+objectClass: top
+objectClass: device
+objectClass: ipHost
+objectClass: ieee802Device
+cn: localhost
+ipHostNumber: 172.18.0.2
+macAddress: 02:42:3a:be:ac:52
+description: ldap server
+
+# ldap, hosts, EXAMPLE.COM
+dn: cn=ldap,ou=hosts,dc=example,dc=com
+objectClass: top
+objectClass: device
+objectClass: ipHost
+objectClass: ieee802Device
+cn: localhost
+ipHostNumber: 172.18.0.3
+macAddress: 02:42:3a:be:ac:53
+description: ldap server
+
+# kserver, hosts, EXAMPLE.COM
+dn: cn=kserver.example.com,ou=hosts,dc=example,dc=com
+objectClass: top
+objectClass: device
+objectClass: ipHost
+objectClass: ieee802Device
+cn: kserver.example.com
+ipHostNumber: 172.18.0.3
+macAddress: 00:00:00:00:00:00
+description: kerberos server
