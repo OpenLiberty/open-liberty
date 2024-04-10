@@ -111,7 +111,7 @@ public class CVEResponseTest extends FATServletClient {
 		server.startServer();
 		server.waitForSSLStart();
 		copyTrustStore(server, testServer);
-		testServer.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dset.reporting.to.working=true",
+		testServer.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dcve.insight.enabled=true",
 				"-Djavax.net.ssl.trustStore=" + testServer.getServerRoot() + "/resources/security/key.p12",
 				"-Djavax.net.ssl.trustStorePassword=password", "-Djavax.net.ssl.trustStoreType=PKCS12"));
 		testServer.startServer();
