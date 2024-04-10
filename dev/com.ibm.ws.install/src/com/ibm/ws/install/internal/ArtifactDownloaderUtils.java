@@ -339,6 +339,9 @@ public class ArtifactDownloaderUtils {
      * @throws InstallException if decoding the password fails due to an unsupported algorithm or invalid password.
      */
     protected static void verifyPassword(String pwd) throws InstallException {
+        if (pwd == null) {
+            return;
+        }
         if (!PasswordUtil.isEncrypted(pwd)) {
             logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_NOT_ENCRYPTED")
                                    + InstallUtils.NEWLINE);
