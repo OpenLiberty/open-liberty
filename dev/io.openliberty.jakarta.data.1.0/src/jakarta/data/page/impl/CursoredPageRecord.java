@@ -41,8 +41,15 @@ public record CursoredPageRecord<T>(
         this(content, //
              cursors, //
              totalElements, //
-             pageRequest, last ? null : pageRequest.page(1 + pageRequest.page()).afterCursor(cursors.get(cursors.size() - 1)), //
-             first ? null : pageRequest.page(pageRequest.page() == 1 ? 1 : pageRequest.page() - 1).beforeCursor(cursors.get(0)));
+             pageRequest, //
+             last ? null : PageRequest.afterCursor(cursors.get(cursors.size() - 1),
+                                                   1L + pageRequest.page(),
+                                                   pageRequest.size(),
+                                                   pageRequest.requestTotal()), //
+             first ? null : PageRequest.beforeCursor(cursors.get(0),
+                                                     pageRequest.page() == 1 ? 1 : pageRequest.page() - 1,
+                                                     pageRequest.size(),
+                                                     pageRequest.requestTotal()));
     }
 
     @Override

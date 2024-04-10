@@ -65,7 +65,7 @@ public record PageRecord<T>(PageRequest pageRequest,
     @Override
     public PageRequest nextPageRequest() {
         if (hasNext())
-            return pageRequest.next();
+            return PageRequest.ofPage(pageRequest.page() + 1L, pageRequest.size(), pageRequest.requestTotal());
         else
             throw new NoSuchElementException();
     }
@@ -78,7 +78,7 @@ public record PageRecord<T>(PageRequest pageRequest,
     @Override
     public PageRequest previousPageRequest() {
         if (hasPrevious())
-            return pageRequest.previous();
+            return PageRequest.ofPage(pageRequest.page() - 1L, pageRequest.size(), pageRequest.requestTotal());
         else
             throw new NoSuchElementException();
     }
