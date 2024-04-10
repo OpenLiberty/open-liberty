@@ -221,8 +221,13 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
             throw new NoSuchElementException("Cannot request a next page. To avoid this error, check for a " +
                                              "true result of CursoredPage.hasNext before attempting this method."); // TODO NLS
 
-        PageRequest p = pageRequest.page() == Long.MAX_VALUE ? pageRequest : pageRequest.page(pageRequest.page() + 1);
-        return p.afterKey(queryInfo.getKeysetValues(results.get(Math.min(results.size(), pageRequest.size()) - 1)));
+        int maxPageSize = pageRequest.size();
+        int endingResultIndex = Math.min(maxPageSize, results.size()) - 1; // CURSOR_PREVIOUS that reads a partial page can have a next page
+
+        return PageRequest.afterCursor(Cursor.forKey(queryInfo.getKeysetValues(results.get(endingResultIndex))),
+                                       pageRequest.page() == Long.MAX_VALUE ? Long.MAX_VALUE : pageRequest.page() + 1,
+                                       maxPageSize,
+                                       pageRequest.requestTotal());
     }
 
     @Override
@@ -232,8 +237,10 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
                                              "true result of CursoredPage.hasPrevious before attempting this method."); // TODO NLS
 
         // Decrement page number by 1 unless it would go below 1.
-        PageRequest p = pageRequest.page() == 1 ? pageRequest : pageRequest.page(pageRequest.page() - 1);
-        return p.beforeKey(queryInfo.getKeysetValues(results.get(0)));
+        return PageRequest.beforeCursor(Cursor.forKey(queryInfo.getKeysetValues(results.get(0))),
+                                        pageRequest.page() == 1 ? 1 : pageRequest.page() - 1,
+                                        pageRequest.size(),
+                                        pageRequest.requestTotal());
     }
 
     @Override
