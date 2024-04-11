@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,25 +10,28 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+def appDefs =
+  [ [ 'io.openliberty.checkpoint.springboot.fat30.app', '.jar' ],
+    [ 'io.openliberty.checkpoint.springboot.fat30.webflux.app', '.jar' ] ]
 
-dependencies {
-  requiredLibs 'io.openliberty.springboot.test:io.openliberty.checkpoint.springboot.fat30.app:1.0.0'
-  requiredLibs 'io.openliberty.springboot.test:io.openliberty.checkpoint.springboot.fat30.webflux.app:1.0.0'
+appDefs.each { appDef ->
+  autoFVT.dependsOn ':' + appDef[0] + ':build'
 }
 
 autoFVT.doLast {
   
   def server = 'checkpointSpringBoot'
   def appsDir = new File(autoFvtDir, 'publish/servers/' + server + '/apps')
-  
+ 
+  appDefs.each { appDef ->
+  	def appName = appDef[0]
+    def appExt = appDef[1]
 
-  copy {
-    from new File(autoFvtDir, 'lib/io.openliberty.checkpoint.springboot.fat30.app-1.0.0.jar')
-    into appsDir
-  }
-  
-  copy {
-    from new File(autoFvtDir, 'lib/io.openliberty.checkpoint.springboot.fat30.webflux.app-1.0.0.jar')
-    into appsDir
+    println 'FAT application [ ' + appName + ' ] [ ' + appExt + ' ]'
+
+    copy {
+      from new File( '../' + appDef[0] + '/build/libs/' + appDef[0] + '-0.0.1-SNAPSHOT' + appDef[1] )
+      into appsDir
+    }
   }
 }
