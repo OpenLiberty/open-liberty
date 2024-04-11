@@ -280,6 +280,10 @@ public class NettyChain extends HttpChain {
                 cancelToken.set(false);
     
                 channelFuture = nettyFramework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler, cancelToken);
+                
+                VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
+                String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
+                postEvent(topic, currentConfig, null);
     
     
                 //channelFuture.get(10, TimeUnit.SECONDS);
@@ -299,13 +303,14 @@ public class NettyChain extends HttpChain {
     private void channelFutureHandler(ChannelFuture future) {
         if(future.isSuccess()) {
             serverChannel = future.channel();
+            state.set(ChainState.STARTED);
 
             MSP.log("Channel is now active and listening on port " + getActivePort());
-            VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
-            String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
-            postEvent(topic, currentConfig, null);
+//            VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
+//            String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
+//            postEvent(topic, currentConfig, null);
 
-            state.set(ChainState.STARTED);
+//            state.set(ChainState.STARTED);
 
         } else {
             MSP.log("ChannelFutureHandler -> Failed to bind to port: " + future.cause());
