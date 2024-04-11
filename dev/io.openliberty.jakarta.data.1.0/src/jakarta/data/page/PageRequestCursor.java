@@ -24,7 +24,7 @@ public class PageRequestCursor implements PageRequest.Cursor {
         this.keyComponents = keyComponents;
 
         if (keyComponents == null || keyComponents.length < 1)
-            throw new IllegalArgumentException("No key values were provided.");
+            throw new IllegalArgumentException("No values were provided.");
     }
 
     @Override
@@ -55,7 +55,7 @@ public class PageRequestCursor implements PageRequest.Cursor {
     @Override
     public String toString() {
         return new StringBuilder("Cursor@").append(Integer.toHexString(hashCode())) //
-                        .append(" with ").append(keyComponents.length).append(" keys") //
+                        .append(" with ").append(keyComponents.length).append(" values") //
                         .toString();
     }
 }
