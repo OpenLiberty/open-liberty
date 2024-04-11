@@ -110,7 +110,7 @@ public final class LTPAKeyUtil {
 				}
 			});
 			ibmJCEPlusFIPSProviderChecked = true;
-			if (ibmjceplusfipsprovider == "IBMJCEPlusFIPS" && isRunningBetaMode()) {
+			if (isRunningBetaMode() && "IBMJCEPlusFIPS".equalsIgnoreCase(ibmjceplusfipsprovider)) {
 				ibmJCEPlusFIPSAvailable = true;
 				return ibmJCEPlusFIPSAvailable;
 			} else {
