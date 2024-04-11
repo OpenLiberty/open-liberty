@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,22 +31,18 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
 /**
- * This case is added for service change work item 87104.
- * When MTOM is enabled on service provider, if client use Service.create(QName serviceName)
- * to create service and there is no need to add
- * service.addPort(portName, SOAPBinding.SOAP11HTTP_MTOM_BINDING, mtom11URL) statement.
- *
- * Additional tests have been added for testing SOAPAction headers when set on the request and the ability for an MTOM enabled
+ * Tests based off MTOMTest which have been added for testing SOAPAction headers when set on the request and the ability for an MTOM enabled
  * Web Service Endpoint to handle them depending on if allowing for mismatching Actions are set in the server.xml configuration
  */
 @RunWith(FATRunner.class)
-public class MTOMTest {
+public class MismatchingSOAPActionMTOMTest {
     private static final int REQUEST_TIMEOUT = 10;
 
     @Server("MTOMTestServer")
@@ -95,19 +91,46 @@ public class MTOMTest {
     }
 
     /**
-     * TestDescription: Enable MTOM in Service Provide and invoke the MTOM Service by client(Servlet).
-     * Condition: The MTOM client servlet use Service.create(QName serviceName) to create service, there is no service.addPort(portName, SOAPBinding.SOAP11HTTP_MTOM_BINDING,
-     * mtom11URL) statement.
+     * TestDescription: Tests an MTOM enabled Web Service endpoint with SOAPAction being set on the request will throw a SOAPFault when allowNonMatchingToDefaultSoapAction=false is
+     * set in the server.xml
+     * Result:
+     * - response contains "The given SOAPAction " + soapAction + " does not match an operation"
+     *
+     * @throws IOException
+     */
+    @Test
+    @ExpectedFFDC("javax.xml.ws.soap.SOAPFaultException")
+    public void testMTOMWithMismatchingSOAPActionWithExpectedException() throws Exception {
+
+        server.reconfigureServer("MTOMTestServer/allowNonMatchingToDefaultSoapAction-false.xml", "CWWKG0017I");
+
+        String soapAction = "Mismatch";
+        int port = server.getHttpDefaultPort();
+        StringBuilder urlBuilder = new StringBuilder("http://").append(clientServer.getHostname()).append(":").append(clientServer.getHttpDefaultPort()).append(SERVLET_PATH).append("?service=MTOMService").append("&port=").append(port).append("&setSoapAction=").append(soapAction);
+
+        List<String> expectedResponses = new ArrayList<String>(1);
+        expectedResponses.add("The given SOAPAction Mismatch does not match an operation.");
+        assertTrue(printExpectedResponses(expectedResponses, false),
+                   checkExpectedResponses(urlBuilder.toString(), expectedResponses, false, HttpURLConnection.HTTP_INTERNAL_ERROR));
+    }
+
+    /**
+     * TestDescription: Tests an MTOM enabled Web Service endpoint with SOAPAction being set on the request will return appropriate response when
+     * allowNonMatchingToDefaultSoapAction=true is
+     * set in the server.xml
      * Result:
      * - response contains "getAttachment() returned"
      *
      * @throws IOException
      */
     @Test
-    public void testMTOMWithoutAddPort() throws Exception {
+    public void testMTOMWithMismatchingSOAPActionWithAllowingMismatchToDefaultSoapAction() throws Exception {
 
+        server.reconfigureServer("MTOMTestServer/allowNonMatchingToDefaultSoapAction-true.xml", "CWWKG0017I");
+
+        String soapAction = "Mismatch";
         int port = server.getHttpDefaultPort();
-        StringBuilder urlBuilder = new StringBuilder("http://").append(clientServer.getHostname()).append(":").append(clientServer.getHttpDefaultPort()).append(SERVLET_PATH).append("?service=MTOMService").append("&port=").append(port);
+        StringBuilder urlBuilder = new StringBuilder("http://").append(clientServer.getHostname()).append(":").append(clientServer.getHttpDefaultPort()).append(SERVLET_PATH).append("?service=MTOMService").append("&port=").append(port).append("&setSoapAction=").append(soapAction);
 
         List<String> expectedResponses = new ArrayList<String>(1);
         expectedResponses.add("getAttachment() returned");
@@ -115,22 +138,49 @@ public class MTOMTest {
     }
 
     /**
-     * TestDescription: Enable MTOM on client side in port-component-ref element of the deployment descriptor file.
-     * Service verifies that request is in MTOM format and if not, sends an error message.
+     * TestDescription: Tests an MTOM enabled Web Service endpoint with SOAPAction being set on the request will throw a SOAPFault when allowNonMatchingSoapAction=false is
+     * set in the server.xml
+     * Result:
+     * - response contains "The given SOAPAction " + soapAction + " does not match an operation"
      *
      * @throws IOException
      */
     @Test
-    public void testMTOMEnabledInPortComponentRef() throws Exception {
+    @ExpectedFFDC("javax.xml.ws.soap.SOAPFaultException")
+    public void testMTOMWithMismatchingSOAPActionWithNonMatchingExpectedException() throws Exception {
 
+        server.reconfigureServer("MTOMTestServer/allowNonMatchingSoapAction-false.xml", "CWWKG0017I");
+
+        String soapAction = "Mismatch";
         int port = server.getHttpDefaultPort();
-        StringBuilder urlBuilder = new StringBuilder("http://").append(clientServer.getHostname()).append(":").append(server.getHttpDefaultPort()).append(SERVLET_PATH2);
+        StringBuilder urlBuilder = new StringBuilder("http://").append(clientServer.getHostname()).append(":").append(clientServer.getHttpDefaultPort()).append(SERVLET_PATH).append("?service=MTOMService").append("&port=").append(port).append("&setSoapAction=").append(soapAction);
 
-        List<String> expectedResponse = new ArrayList<String>(3);
-        expectedResponse.add("Expected value is in Content-Type header.");
-        expectedResponse.add("Successfully received attachment!");
-        expectedResponse.add("MTOM enabled? true");
-        assertTrue(printExpectedResponses(expectedResponse, true), checkExpectedResponses(urlBuilder.toString(), expectedResponse, true, HttpURLConnection.HTTP_OK));
+        List<String> expectedResponses = new ArrayList<String>(1);
+        expectedResponses.add("The given SOAPAction Mismatch does not match an operation.");
+        assertTrue(printExpectedResponses(expectedResponses, false),
+                   checkExpectedResponses(urlBuilder.toString(), expectedResponses, false, HttpURLConnection.HTTP_INTERNAL_ERROR));
+    }
+
+    /**
+     * TestDescription: Tests an MTOM enabled Web Service endpoint with SOAPAction being set on the request will return appropriate response when allowNonMatchingSoapAction=true is
+     * set in the server.xml
+     * Result:
+     * - response contains "getAttachment() returned"
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testMTOMWithMismatchingSOAPActionWithAllowNonMatchingSoapAction() throws Exception {
+
+        server.reconfigureServer("MTOMTestServer/allowNonMatchingSoapAction-true.xml", "CWWKG0017I");
+
+        String soapAction = "Mismatch";
+        int port = server.getHttpDefaultPort();
+        StringBuilder urlBuilder = new StringBuilder("http://").append(clientServer.getHostname()).append(":").append(clientServer.getHttpDefaultPort()).append(SERVLET_PATH).append("?service=MTOMService").append("&port=").append(port).append("&setSoapAction=").append(soapAction);
+
+        List<String> expectedResponses = new ArrayList<String>(1);
+        expectedResponses.add("getAttachment() returned");
+        assertTrue(printExpectedResponses(expectedResponses, false), checkExpectedResponses(urlBuilder.toString(), expectedResponses, false, HttpURLConnection.HTTP_OK));
     }
 
     private boolean checkExpectedResponses(String servletUrl, List<String> expectedResponses, boolean exact, int responseCode) throws IOException {
@@ -155,7 +205,7 @@ public class MTOMTest {
 
             String responseContent = sb.toString();
 
-            Log.info(MTOMTest.class, "checkExpectedResponses", "responseContent = " + responseContent);
+            Log.info(MismatchingSOAPActionMTOMTest.class, "checkExpectedResponses", "responseContent = " + responseContent);
             if (exact) { //the response content must contain all the expect strings
                 for (String expectStr : expectedResponses) {
                     if (!responseContent.contains(expectStr)) {
