@@ -61,7 +61,6 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * 2.0 token in the HTTP POST request.
  */
 
-@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -135,7 +134,7 @@ public class CxfSAMLBasic1ServerTests extends CxfSAMLBasicTests {
      */
 
     //issue 23060
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" })
     @Test
     public void CxfSAMLBasicTests_clockSkew_test() throws Exception {
 
