@@ -34,18 +34,8 @@ record Pagination(long page,
     }
 
     @Override
-    public PageRequest afterKey(Object... componentsOfKey) {
-        return new Pagination(page, size, Mode.CURSOR_NEXT, new PageRequestCursor(componentsOfKey), requestTotal);
-    }
-
-    @Override
     public PageRequest afterCursor(PageRequest.Cursor cursor) {
         return new Pagination(page, size, Mode.CURSOR_NEXT, cursor, requestTotal);
-    }
-
-    @Override
-    public PageRequest beforeKey(Object... componentsOfKey) {
-        return new Pagination(page, size, Mode.CURSOR_PREVIOUS, new PageRequestCursor(componentsOfKey), requestTotal);
     }
 
     @Override
@@ -56,30 +46,6 @@ record Pagination(long page,
     @Override
     public Optional<Cursor> cursor() {
         return type == null ? Optional.empty() : Optional.of(type);
-    }
-
-    @Override
-    public Pagination next() {
-        if (mode == Mode.OFFSET)
-            return new Pagination(page + 1, size, mode, null, requestTotal);
-        else
-            throw new UnsupportedOperationException("Not supported for cursor-based pagination. Instead use afterKey or afterCursor to provide a cursor or obtain the nextPageRequest from a CursoredPage.");
-    }
-
-    @Override
-    public Pagination page(long pageNumber) {
-        return new Pagination(pageNumber, size, mode, type, requestTotal);
-    }
-
-    @Override
-    public PageRequest previous() {
-        if (mode == Mode.OFFSET)
-            if (page > 1)
-                return new Pagination(page - 1, size, mode, null, requestTotal);
-            else
-                return null;
-        else
-            throw new UnsupportedOperationException("Not supported for cursor-based pagination. Instead use beforeKey or beforeCursor to provide a cursor or obtain the previousPageRequest from a CursoredPage.");
     }
 
     @Override

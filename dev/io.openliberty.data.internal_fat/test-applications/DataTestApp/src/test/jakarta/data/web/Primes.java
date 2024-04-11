@@ -183,8 +183,6 @@ public interface Primes {
     @Asynchronous
     CompletionStage<CursoredPage<Prime>> findByNumberIdLessThanOrderByNumberIdDesc(long max, PageRequest pagination);
 
-    Iterator<Prime> findByNumberIdNotGreaterThan(long max, PageRequest pageRequest, Order<Prime> pagination);
-
     Iterator<Prime> findByNumberIdNotGreaterThan(long max, Sort<?>... order);
 
     Page<Prime> findByRomanNumeralEndsWithAndNumberIdLessThan(String ending, long max, Limit limit, Sort<?>... orderBy);

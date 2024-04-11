@@ -1587,8 +1587,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private void generateOrderBy(QueryInfo queryInfo, StringBuilder q) {
         Class<?> multiType = queryInfo.getMultipleResultType();
 
-        boolean needsKeysetQueries = CursoredPage.class.equals(multiType)
-                                     || Iterator.class.equals(multiType); // TODO remove this type
+        boolean needsKeysetQueries = CursoredPage.class.equals(multiType);
 
         StringBuilder fwd = needsKeysetQueries ? new StringBuilder(100) : q; // forward page order
         StringBuilder prev = needsKeysetQueries ? new StringBuilder(100) : null; // previous page order
@@ -2521,21 +2520,23 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                         Class<?> multiType = queryInfo.getMultipleResultType();
 
-                        if (pagination != null && Iterator.class.equals(multiType))
-                            returnValue = new PaginatedIterator<>(queryInfo, pagination, args);
-                        else if (CursoredPage.class.equals(multiType))
+                        if (CursoredPage.class.equals(multiType)) {
                             returnValue = new CursoredPageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
-                        else if (Page.class.equals(multiType))
+                        } else if (Page.class.equals(multiType)) {
                             returnValue = new PageImpl<>(queryInfo, limit == null ? pagination : toPageRequest(limit), args);
-                        else {
+                        } else if (pagination != null && !PageRequest.Mode.OFFSET.equals(pagination.mode())) {
+                            throw new IllegalArgumentException("A PageRequest that specifies the " + pagination.mode() +
+                                                               " mode must not be supplied to the " + method.getName() +
+                                                               " method of the " + method.getDeclaringClass().getName() +
+                                                               " repository because the method returns " + returnType.getName() +
+                                                               " rather than " + CursoredPage.class.getName() + "."); // TODO NLS
+                        } else {
                             em = entityInfo.builder.createEntityManager();
 
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                                 Tr.debug(this, tc, "createQuery", queryInfo.jpql, entityInfo.entityClass.getName());
 
-                            final QueryInfo qi = queryInfo;
-                            final EntityManager eMgr = em;
-                            TypedQuery<?> query = eMgr.createQuery(qi.jpql, qi.entityInfo.entityClass);
+                            TypedQuery<?> query = em.createQuery(queryInfo.jpql, queryInfo.entityInfo.entityClass);
                             queryInfo.setParameters(query, args);
 
                             if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE)

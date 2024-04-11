@@ -152,7 +152,7 @@ public class PageImpl<T> implements Page<T> {
     @Override
     public PageRequest nextPageRequest() {
         if (hasNext())
-            return pageRequest.next();
+            return PageRequest.ofPage(pageRequest.page() + 1, pageRequest.size(), pageRequest.requestTotal());
         else
             throw new NoSuchElementException("Cannot request a next page. To avoid this error, check for a " +
                                              "true result of Page.hasNext before attempting this method."); // TODO NLS
@@ -161,7 +161,7 @@ public class PageImpl<T> implements Page<T> {
     @Override
     public PageRequest previousPageRequest() {
         if (pageRequest.page() > 1)
-            return pageRequest.previous();
+            return PageRequest.ofPage(pageRequest.page() - 2, pageRequest.size(), pageRequest.requestTotal());
         else
             throw new NoSuchElementException("Cannot request a page number prior to " + pageRequest.page() +
                                              ". To avoid this error, check for a true result of Page.hasPrevious " +

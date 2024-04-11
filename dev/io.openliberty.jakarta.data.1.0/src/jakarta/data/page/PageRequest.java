@@ -35,8 +35,20 @@ public interface PageRequest {
         public int size();
     }
 
+    public static PageRequest afterCursor(Cursor cursor, long page, int size, boolean withTotal) {
+        return new Pagination(page, size, Mode.CURSOR_NEXT, cursor, withTotal);
+    }
+
+    public static PageRequest beforeCursor(Cursor cursor, long page, int size, boolean withTotal) {
+        return new Pagination(page, size, Mode.CURSOR_PREVIOUS, cursor, withTotal);
+    }
+
     public static PageRequest ofPage(long page) {
         return new Pagination(page, 10, Mode.OFFSET, null, true);
+    }
+
+    public static PageRequest ofPage(long page, int size, boolean withTotal) {
+        return new Pagination(page, size, Mode.OFFSET, null, withTotal);
     }
 
     public static PageRequest ofSize(int size) {
@@ -45,27 +57,17 @@ public interface PageRequest {
 
     public PageRequest afterCursor(PageRequest.Cursor cursor);
 
-    public PageRequest afterKey(Object... componentsOfKey);
-
     public PageRequest beforeCursor(PageRequest.Cursor cursor);
-
-    public PageRequest beforeKey(Object... componentsOfKey);
 
     public Optional<Cursor> cursor();
 
     public Mode mode();
-
-    public PageRequest next();
 
     public long page();
 
     public boolean requestTotal();
 
     public int size();
-
-    public PageRequest page(long page);
-
-    public PageRequest previous();
 
     public PageRequest size(int size);
 
