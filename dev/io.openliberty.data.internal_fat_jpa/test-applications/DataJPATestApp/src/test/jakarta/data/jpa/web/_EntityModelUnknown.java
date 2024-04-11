@@ -21,8 +21,8 @@ import jakarta.data.metamodel.StaticMetamodel;
  */
 @StaticMetamodel(Period.class)
 public class _EntityModelUnknown {
-    public static volatile SortableAttribute<Period> days = new Sortable("Days", Sort.asc("Days"), Sort.desc("Days"));
-    public static volatile SortableAttribute<Period> months = new Sortable("Mon", Sort.asc("Mon"), Sort.desc("Mon"));
+    public static final SortableAttribute<Period> days = new Sortable("Days", Sort.asc("Days"), Sort.desc("Days"));
+    public static final SortableAttribute<Period> months = new Sortable("Mon", Sort.asc("Mon"), Sort.desc("Mon"));
     public static volatile SortableAttribute<Period> years;
 
     private record Sortable(String name, Sort<Period> asc, Sort<Period> desc) implements SortableAttribute<Period> {

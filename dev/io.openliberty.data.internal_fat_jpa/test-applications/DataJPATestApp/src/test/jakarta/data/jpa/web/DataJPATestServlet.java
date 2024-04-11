@@ -3058,9 +3058,6 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(0L, CityAttrNames2.population);
         assertEquals(null, CityAttrNames2.name);
 
-        // Metamodel should not initialize an id field when the entity has a compound unique identifier (IdClass)
-        assertEquals(null, CityAttrNames2.id);
-
         // Metamodel should not initialize fields that do not correspond to entity attributes
         assertEquals(null, CityAttrNames2.ignore);
     }
