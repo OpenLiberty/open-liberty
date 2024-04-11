@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.cookie;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,6 +20,7 @@ import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.http.HttpCookie;
 
 import io.netty.handler.codec.http.Cookie;
+import io.openliberty.accesslists.AddressAndHostNameAccessLists.Lists;
 
 /**
  *
@@ -26,6 +28,12 @@ import io.netty.handler.codec.http.Cookie;
 public class CookieDecoder {
 
     public static List<HttpCookie> decode(String cookieString) {
+        
+            
+        if (cookieString == null || cookieString.isEmpty()) {
+            return Collections.emptyList();
+        }
+        
 
         List<HttpCookie> list = new LinkedList<HttpCookie>();
 

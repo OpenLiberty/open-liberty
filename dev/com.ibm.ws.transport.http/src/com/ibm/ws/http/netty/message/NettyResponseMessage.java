@@ -723,7 +723,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public boolean removeCookie(String name, HttpHeaderKeys cookieHeader) {
-        throw new UnsupportedOperationException("removeCookie leveraged to Netty codec");
+        return super.removeCookie(name, cookieHeader);
     }
 
     @Override
