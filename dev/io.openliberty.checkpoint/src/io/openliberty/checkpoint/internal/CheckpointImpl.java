@@ -32,9 +32,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -64,10 +62,6 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
-import com.ibm.ws.runtime.update.RuntimeUpdateListener;
-import com.ibm.ws.runtime.update.RuntimeUpdateManager;
-import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
-import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.kernel.feature.LibertyFeature;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
@@ -84,7 +78,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @Component(property = { Constants.SERVICE_RANKING + ":Integer=-10000" },
            // use immediate component to avoid lazy instantiation and deactivate
            immediate = true)
-public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus {
+public class CheckpointImpl implements ServerReadyStatus {
     private static final String INSTANTON_ENABLED_HEADER = "WLP-InstantOn-Enabled";
 
     private static final String CHECKPOINT_STUB_CRIU = "io.openliberty.checkpoint.stub.criu";
@@ -112,7 +106,6 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     private final ServiceRegistration<ClassFileTransformer> transformerReg;
 
     private final AtomicBoolean jvmRestore = new AtomicBoolean(false);
-    private final AtomicReference<CountDownLatch> waitForConfig = new AtomicReference<>();
     private final ExecuteCRIU criu;
     private final long pauseRestore;
     private final CheckpointFailedException forceFail;
@@ -289,28 +282,6 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
     void deactivate() {
         if (INSTANCE == this) {
             INSTANCE = null;
-        }
-    }
-
-    @Override
-    public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
-        if (RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName()) && jvmRestore.compareAndSet(true, false)) {
-            debug(tc, () -> "Processing config on restore.");
-            final CountDownLatch localLatch = new CountDownLatch(1);
-            waitForConfig.set(localLatch);
-            notification.onCompletion(new CompletionListener<Boolean>() {
-                @Override
-                public void successfulCompletion(Future<Boolean> future, Boolean result) {
-                    debug(tc, () -> "Config has been successfully processed on restore.");
-                    localLatch.countDown();
-                }
-
-                @Override
-                public void failedCompletion(Future<Boolean> future, Throwable t) {
-                    debug(tc, () -> "Failed to process config on restore");
-                    localLatch.countDown();
-                }
-            });
         }
     }
 
@@ -544,19 +515,6 @@ public class CheckpointImpl implements RuntimeUpdateListener, ServerReadyStatus 
         conditionProps.put(CONDITION_ID, CONDITION_PROCESS_RUNNING_ID);
         conditionProps.put(CHECKPOINT_PROPERTY, checkpointAt);
         bc.registerService(Condition.class, Condition.INSTANCE, conditionProps);
-    }
-
-    private void waitForConfig() {
-        CountDownLatch l = waitForConfig.getAndSet(null);
-        if (l != null) {
-            debug(tc, () -> "Waiting for config to be processed on restore.");
-            try {
-                l.await(30, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            debug(tc, () -> "Config to is done being processed on restore.");
-        }
     }
 
     /**
