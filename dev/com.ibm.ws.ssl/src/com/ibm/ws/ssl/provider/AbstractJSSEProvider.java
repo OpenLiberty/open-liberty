@@ -89,6 +89,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
     private static final String PKGNAME_DELIMITER = "|";
 
     public static String IBM_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.provider.IBMJCEPlusFIPS";
+    public static String Open_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlusFIPS";
     private static boolean handlersInitialized = false;
     private static Object _lockObj = new Object();
 
@@ -118,7 +119,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             Tr.debug(tc, "defaultProtocol: " + defaultProtocol);
         }
 
-        if (JavaInfo.isSystemClassAvailable(IBM_JCE_Plus_FIPS_PROVIDER))
+        if (JavaInfo.isSystemClassAvailable(IBM_JCE_Plus_FIPS_PROVIDER) || JavaInfo.isSystemClassAvailable(Open_JCE_Plus_FIPS_PROVIDER))
 
         {
             if (tc.isDebugEnabled()) {

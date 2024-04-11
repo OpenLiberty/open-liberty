@@ -48,9 +48,10 @@ import com.ibm.websphere.ras.annotation.Trivial;
 final class LTPACrypto {
 
 	private static final TraceComponent tc = Tr.register(LTPACrypto.class);
-	private static final String IBMJCE_NAME = "IBMJCE";
-	private static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
+	// private static final String IBMJCE_NAME = "IBMJCE";
+	// private static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
 	private static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
+	private static final String OPENJCE_PLUS_FIPS_NAME = "OpenJCEPlusFIPS";
 	private static final String provider = getProvider();
 
 	private static final String SIGNATURE_ALGORITHM_SHA1WITHRSA = "SHA1withRSA";
@@ -557,6 +558,9 @@ final class LTPACrypto {
 		for (int i = 0; i < 8; i++) {
 			if (key[i] != null) {
 				k[i] = new BigInteger(1, key[i]);
+				// Print key[i] and k[i] to the trace log
+				Tr.debug(tc, "key[" + i + "] = " + Arrays.toString(key[i]));
+				Tr.debug(tc, "k[" + i + "] = " + k[i]);
 			}
 		}
 
@@ -1159,36 +1163,41 @@ final class LTPACrypto {
 	}
 
 	private static String getProvider() {
-		String provider = null;
-		if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
-			provider = IBMJCE_PLUS_FIPS_NAME;
-		} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
-			provider = IBMJCE_NAME;
-		} else if (LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()) {
-			provider = OPENJCE_PLUS_NAME;
-		}
-		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			if (provider == null) {
-				Tr.debug(tc, "getProvider" + " Provider configured by JDK");
-			} else {
-				Tr.debug(tc, "getProvider" + " Provider configured is " + provider);
-			}
-		}
-		return provider;
+		// String provider = null;
+		// if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
+		// 	provider = IBMJCE_PLUS_FIPS_NAME;
+		// } else if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()) {
+		// 	provider = OPENJCE_PLUS_FIPS_NAME;
+		// } else if (LTPAKeyUtil.isIBMJCEAvailable()) {
+		// 	provider = IBMJCE_NAME;
+		// } else if (LTPAKeyUtil.isZOSandRunningJava11orHigher() && LTPAKeyUtil.isOpenJCEPlusAvailable()) {
+		// 	provider = OPENJCE_PLUS_NAME;
+		// }
+		// if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+		// 	if (provider == null) {
+		// 		Tr.debug(tc, "getProvider" + " Provider configured by JDK");
+		// 	} else {
+		// 		Tr.debug(tc, "getProvider" + " Provider configured is " + provider);
+		// 	}
+		// }
+		// return provider;
+		return OPENJCE_PLUS_FIPS_NAME;
 	}
 
 	private static String getSignatureAlgorithm() {
-		if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable())
-			return SIGNATURE_ALGORITHM_SHA256WITHRSA;
-		else
-			return SIGNATURE_ALGORITHM_SHA1WITHRSA;
+		// if (LTPAKeyUtil.isFIPSEnabled() && (LTPAKeyUtil.isIBMJCEPlusFIPSAvailable() || LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()))
+		// 	return SIGNATURE_ALGORITHM_SHA256WITHRSA;
+		// else
+		// 	return SIGNATURE_ALGORITHM_SHA1WITHRSA;
+		return SIGNATURE_ALGORITHM_SHA256WITHRSA;
 	}
 
 	private static String getEncryptionAlgorithm() {
-		if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable())
-			return ENCRYPT_ALGORITHM_RSA;
-		else
-			return ENCRYPT_ALGORITHM_DESEDE;
+		// if (LTPAKeyUtil.isFIPSEnabled() && (LTPAKeyUtil.isIBMJCEPlusFIPSAvailable() || LTPAKeyUtil.isOpenJCEPlusFIPSAvailable()))
+		// 	return ENCRYPT_ALGORITHM_RSA;
+		// else
+		// 	return ENCRYPT_ALGORITHM_DESEDE;
+		return ENCRYPT_ALGORITHM_RSA;
 	}
 
 }

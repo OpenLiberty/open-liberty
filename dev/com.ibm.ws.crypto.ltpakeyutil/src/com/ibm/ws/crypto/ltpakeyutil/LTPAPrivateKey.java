@@ -120,13 +120,13 @@ public final class LTPAPrivateKey implements PrivateKey {
     }
 
     /**
-     * Return the algorithm used - RSA/SHA-1.
+     * Return the algorithm used - RSA/SHA-256.
      * 
-     * @return Always RSA/SHA-1
+     * @return Always RSA/SHA-256
      */
     @Override
     public final String getAlgorithm() {
-        return "RSA/SHA-1";
+        return "RSA/SHA-256";
     }
 
     /** {@inheritDoc} */

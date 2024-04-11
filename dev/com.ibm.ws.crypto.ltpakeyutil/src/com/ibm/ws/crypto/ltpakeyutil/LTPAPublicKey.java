@@ -15,7 +15,7 @@ package com.ibm.ws.crypto.ltpakeyutil;
 import java.security.PublicKey;
 
 /**
- * Represents an LTPA Public Key based on RSA/SHA-1. Its based on a 128 byte RSA key.
+ * Represents an LTPA Public Key based on RSA/SHA-256. Its based on a 128 byte RSA key.
  */
 public final class LTPAPublicKey implements PublicKey {
 
@@ -64,7 +64,7 @@ public final class LTPAPublicKey implements PublicKey {
     /** {@inheritDoc} */
     @Override
     public final String getAlgorithm() {
-        return "RSA/SHA-1";
+        return "RSA/SHA-256";
     }
 
     /** {@inheritDoc} */

@@ -213,6 +213,8 @@ public class Constants {
     public static final String IBMJCEPlusFIPS = "com.ibm.crypto.fips.provider.IBMJCEPlusFIPS";
     public static final String IBMJCEFIPS_NAME = "IBMJCEFIPS";
     public static final String IBMJCEPlusFIPS_NAME = "IBMJCEPlusFIPS";
+    public static final String OpenJCEPlusFIPS = "com.ibm.crypto.plus.provider.OpenJCEPlusFIPS";
+    public static final String OpenJCEPlusFIPS_NAME = "IBMJCEPlusFIPS";
     public static final String IBMJSSE2 = "com.ibm.jsse2.IBMJSSEProvider2";
     public static final String IBMJSSE2_NAME = "IBMJSSE2";
     public static final String IBMJSSE_NAME = "IBMJSSE";

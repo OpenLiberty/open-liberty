@@ -49,6 +49,7 @@ public class LTPAKeyFileUtilityImpl implements LTPAKeyFileUtility {
 
         try {
             KeyEncryptor encryptor = new KeyEncryptor(keyPasswordBytes);
+            //temp
             LTPAKeyPair pair = LTPADigSignature.generateLTPAKeyPair();
             byte[] publicKey = pair.getPublic().getEncoded();
             byte[] privateKey = pair.getPrivate().getEncoded();

@@ -137,12 +137,12 @@ public class LTPAPublicKeyTest {
     public void testGetAlgorithm() {
         final String methodName = "testGetAlgorithm";
         try {
-            String expectedAlgorithm = "RSA/SHA-1";
+            String expectedAlgorithm = "RSA/SHA-256";
             byte[][] rawKey = getRawKey();
             LTPAPublicKey ltpaPublicKey = new LTPAPublicKey(rawKey);
             String actualAlgorithm = ltpaPublicKey.getAlgorithm();
 
-            assertEquals("The actual algorithm must be RSA/SHA-1", expectedAlgorithm, actualAlgorithm);
+            assertEquals("The actual algorithm must be RSA/SHA-256", expectedAlgorithm, actualAlgorithm);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
@@ -157,7 +157,7 @@ public class LTPAPublicKeyTest {
             LTPAPublicKey ltpaPublicKey = new LTPAPublicKey(rawKey);
             String actualFormat = ltpaPublicKey.getFormat();
 
-            assertEquals("The actual algorithm must be RSA/SHA-1", expectedFormat, actualFormat);
+            assertEquals("The actual algorithm must be RSA/SHA-256", expectedFormat, actualFormat);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
