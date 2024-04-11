@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,31 +15,9 @@ package test.jakarta.data.experimental.web;
 import java.time.OffsetDateTime;
 
 /**
- * Simulates a Java record, but usable on Java 11.
+ * A record to use as a repository method return type.
  */
-public class ReservedTimeSlot {
-    public ReservedTimeSlot(OffsetDateTime start,
-                            OffsetDateTime stop) {
-
-// TODO The remainder of the class would be unnecessary if it were actually a record
-        this.start = start;
-        this.stop = stop;
-    }
-
-    private final OffsetDateTime start;
-
-    private final OffsetDateTime stop;
-
-    public OffsetDateTime start() {
-        return start;
-    }
-
-    public OffsetDateTime stop() {
-        return stop;
-    }
-
-    @Override
-    public String toString() {
-        return "ReservedTimeSlot[start=" + start + ", stop=" + stop + "]";
-    }
+public record ReservedTimeSlot(
+                OffsetDateTime start,
+                OffsetDateTime stop) {
 }

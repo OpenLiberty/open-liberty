@@ -702,7 +702,7 @@ public class DataExperimentalServlet extends FATServlet {
     }
 
     /**
-     * Experiment with making a repository method return a record-like type.
+     * Experiment with making a repository method return a record.
      */
     @Test
     public void testSelectAsRecord() {
