@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
+package test.jakarta.data.experimental.web;
 
 import java.util.Set;
 
 /**
  * An unannotated entity that relies on an unannotated superclass.
+ * This entity has fields of type OffsetDateTime, which is not one of the
+ * temporal types that is currently supported by Jakarta Data.
  */
 public class Reservation extends Timeslot {
     public String host;

@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
+package test.jakarta.data.experimental.web;
 
 import static io.openliberty.data.repository.function.Extract.Field.HOUR;
 import static io.openliberty.data.repository.function.Extract.Field.MINUTE;
@@ -51,7 +51,9 @@ import io.openliberty.data.repository.function.ElementCount;
 import io.openliberty.data.repository.function.Extract;
 
 /**
- * Uses the Repository interface that is copied from Jakarta NoSQL
+ * Covers various patterns that are extensions to Jakarta Data, such as
+ * a variety of return types for collections, an Extract annotation,
+ * various other annotations for conditions, and a Select annotation.
  */
 @Repository
 public interface Reservations extends BasicRepository<Reservation, Long> {
