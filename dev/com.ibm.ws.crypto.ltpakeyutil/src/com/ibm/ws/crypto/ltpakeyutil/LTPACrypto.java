@@ -48,8 +48,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
 final class LTPACrypto {
 
 	private static final TraceComponent tc = Tr.register(LTPACrypto.class);
-	private static final String IBMJCE_NAME = "IBMJCE";
-	private static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
+	// private static final String IBMJCE_NAME = "IBMJCE";
+	// private static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
 	private static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
 	private static final String OPENJCE_PLUS_FIPS_NAME = "OpenJCEPlusFIPS";
 	private static final String provider = getProvider();
@@ -558,6 +558,9 @@ final class LTPACrypto {
 		for (int i = 0; i < 8; i++) {
 			if (key[i] != null) {
 				k[i] = new BigInteger(1, key[i]);
+				// Print key[i] and k[i] to the trace log
+				Tr.debug(tc, "key[" + i + "] = " + Arrays.toString(key[i]));
+				Tr.debug(tc, "k[" + i + "] = " + k[i]);
 			}
 		}
 

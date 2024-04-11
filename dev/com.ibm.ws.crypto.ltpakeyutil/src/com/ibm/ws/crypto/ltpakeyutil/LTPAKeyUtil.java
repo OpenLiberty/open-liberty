@@ -23,12 +23,12 @@ import com.ibm.ws.kernel.service.util.JavaInfo;
 public final class LTPAKeyUtil {
 	private static final TraceComponent tc = Tr.register(LTPAKeyUtil.class);
 
-	public static boolean ibmJCEAvailable = false;
-	public static boolean ibmJCEPlusFIPSAvailable = false;
+	// public static boolean ibmJCEAvailable = false;
+	// public static boolean ibmJCEPlusFIPSAvailable = false;
 	public static boolean openJCEPlusAvailable = false;
 	public static boolean openJCEPlusFIPSAvailble = false;
-	public static boolean ibmJCEProviderChecked = false;
-	public static boolean ibmJCEPlusFIPSProviderChecked = false;
+	// public static boolean ibmJCEProviderChecked = false;
+	// public static boolean ibmJCEPlusFIPSProviderChecked = false;
 	public static boolean openJCEPlusProviderChecked = false;
 	public static boolean openJCEPlusFIPSProviderChecked = false;
 
@@ -47,11 +47,11 @@ public final class LTPAKeyUtil {
 	public static String OPENJCE_PLUS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlus";
 	public static String OPENJCE_PLUS_FIPS_PROVIDER = "com.ibm.crypto.plus.provider.OpenJCEPlusFIPS";
 
-	public static final String MESSAGE_DIGEST_ALGORITHM_SHA = "SHA";
+	// public static final String MESSAGE_DIGEST_ALGORITHM_SHA = "SHA";
 	public static final String MESSAGE_DIGEST_ALGORITHM_SHA256 = "SHA256";
 
-	public static final String IBMJCE_NAME = "IBMJCE";
-	public static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
+	// public static final String IBMJCE_NAME = "IBMJCE";
+	// public static final String IBMJCE_PLUS_FIPS_NAME = "IBMJCEPlusFIPS";
 	public static final String OPENJCE_PLUS_NAME = "OpenJCEPlus";
 	public static final String OPENJCE_PLUS_FIPS_NAME = "OpenJCEPlusFIPS";
 
@@ -94,15 +94,15 @@ public final class LTPAKeyUtil {
 		return LTPACrypto.generate3DESKey();
 	}
 
-	public static boolean isIBMJCEAvailable() {
-		if (ibmJCEProviderChecked) {
-			return ibmJCEAvailable;
-		} else {
-			ibmJCEAvailable = JavaInfo.isSystemClassAvailable(IBMJCE_PROVIDER);
-			ibmJCEProviderChecked = true;
-			return ibmJCEAvailable;
-		}
-	}
+	// public static boolean isIBMJCEAvailable() {
+	// 	if (ibmJCEProviderChecked) {
+	// 		return ibmJCEAvailable;
+	// 	} else {
+	// 		ibmJCEAvailable = JavaInfo.isSystemClassAvailable(IBMJCE_PROVIDER);
+	// 		ibmJCEProviderChecked = true;
+	// 		return ibmJCEAvailable;
+	// 	}
+	// }
 
 	// public static boolean isIBMJCEPlusFIPSAvailable() {
 	// 	if (ibmJCEPlusFIPSProviderChecked) {
