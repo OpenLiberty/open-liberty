@@ -625,7 +625,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (overrideTolerates.contains(tolerate)) {
             return true;
         }
-        if (!isBeta) {
+        if (isBeta) {
             if (chain.peekFirst().startsWith("io.openliberty.versionless.")) {
                 return true;
             }
@@ -928,7 +928,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             // unnecessary
 
             //if a versionless feature is postponed, process that first
-            if(!isBeta){
+            if(isBeta){
                 if(!!!_current._postponedVersionless.isEmpty() && getSelected("com.ibm.websphere.appserver.eeCompatible") != null){
                     Map.Entry<String, Chains> firstPostponedVersionless = _current._postponedVersionless.entrySet().iterator().next();
                     // try to find a good selection
@@ -944,18 +944,19 @@ public class FeatureResolverImpl implements FeatureResolver {
                     return;
                 }
             }
-
-            Map.Entry<String, Chains> firstPostponed = _current._postponed.entrySet().iterator().next();
-            // try to find a good selection
-            Chain selected = firstPostponed.getValue().select(firstPostponed.getKey(), this);
-            if (selected != null) {
-                // found a good one, select it.
-                _current._selected.put(firstPostponed.getKey(), selected);
+            if(!!!_current._postponed.isEmpty()){
+                Map.Entry<String, Chains> firstPostponed = _current._postponed.entrySet().iterator().next();
+                // try to find a good selection
+                Chain selected = firstPostponed.getValue().select(firstPostponed.getKey(), this);
+                if (selected != null) {
+                    // found a good one, select it.
+                    _current._selected.put(firstPostponed.getKey(), selected);
+                }
+    
+                // clean postponed since we will walk the tree again and find them again if necessary
+                _current._postponed.clear();
+                _current._postponedVersionless.clear();
             }
-
-            // clean postponed since we will walk the tree again and find them again if necessary
-            _current._postponed.clear();
-            _current._postponedVersionless.clear();
         }
 
         void primeSelected(Collection<String> features) {
