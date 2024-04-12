@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: jndi
 Subsystem-Name: jndi
 -features=io.openliberty.internal.versionless.jndi-1.0
-kind=noship
-edition=full
+kind=beta
+edition=core

@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.expressionLanguage-6.0
-kind=noship
-edition=full
+kind=beta
+edition=core

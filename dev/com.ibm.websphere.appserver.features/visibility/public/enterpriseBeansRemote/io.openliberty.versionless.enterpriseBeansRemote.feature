@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: enterpriseBeansRemote
 Subsystem-Name: enterpriseBeansRemote
 -features=io.openliberty.internal.versionless.enterpriseBeansRemote-4.0
-kind=noship
-edition=full
+kind=beta
+edition=core

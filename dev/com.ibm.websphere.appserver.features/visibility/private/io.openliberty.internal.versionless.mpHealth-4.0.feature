@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.mpHealth-4.0
-kind=noship
-edition=full
+kind=beta
+edition=core

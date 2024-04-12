@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: xmlWS
 Subsystem-Name: xmlWS
 -features=io.openliberty.internal.versionless.xmlWS-3.0; ibm.tolerates:="4.0"
-kind=noship
-edition=full
+kind=beta
+edition=core

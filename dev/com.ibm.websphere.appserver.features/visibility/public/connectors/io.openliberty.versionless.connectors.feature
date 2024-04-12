@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: connectors
 Subsystem-Name: connectors
 -features=io.openliberty.internal.versionless.connectors-2.0; ibm.tolerates:="2.1"
-kind=noship
-edition=full
+kind=beta
+edition=core

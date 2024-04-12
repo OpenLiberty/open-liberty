@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: jaxrsClient
 Subsystem-Name: jaxrsClient
 -features=io.openliberty.internal.versionless.jaxrsClient-2.0; ibm.tolerates:="2.1"
-kind=noship
-edition=full
+kind=beta
+edition=core

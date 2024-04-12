@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: appAuthentication
 Subsystem-Name: appAuthentication
 -features=io.openliberty.internal.versionless.appAuthentication-2.0; ibm.tolerates:="3.0,3.1"
-kind=noship
-edition=full
+kind=beta
+edition=core

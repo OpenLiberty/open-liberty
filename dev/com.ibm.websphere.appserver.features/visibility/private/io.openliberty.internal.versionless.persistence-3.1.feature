@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.persistence-3.1
-kind=noship
-edition=full
+kind=beta
+edition=core

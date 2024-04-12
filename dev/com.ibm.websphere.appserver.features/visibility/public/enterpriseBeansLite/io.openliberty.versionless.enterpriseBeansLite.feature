@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: enterpriseBeansLite
 Subsystem-Name: enterpriseBeansLite
 -features=io.openliberty.internal.versionless.enterpriseBeansLite-4.0
-kind=noship
-edition=full
+kind=beta
+edition=core

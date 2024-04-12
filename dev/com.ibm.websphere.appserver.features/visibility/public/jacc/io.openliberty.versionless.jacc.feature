@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: jacc
 Subsystem-Name: jacc
 -features=io.openliberty.internal.versionless.jacc-1.5
-kind=noship
-edition=full
+kind=beta
+edition=core

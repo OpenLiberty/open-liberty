@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     com.ibm.websphere.appserver.jms-2.0
-kind=noship
-edition=full
+kind=beta
+edition=core
