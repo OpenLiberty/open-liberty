@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2023 IBM Corporation and others.
+# Copyright (c) 2019, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ Export-Package: \
   com.ibm.websphere.sip.*, \
   com.ibm.ws.sip.container.pmi.*, \
   com.ibm.ws.sip.container.was, \
+  com.ibm.sip.util.log;version=1.0.89, \
   com.ibm.ws.sip.container.was.filters;thread-context=true, \
   com.ibm.ws.sip.container.was.message;thread-context=true, \
   com.ibm.wsspi.sip.*
