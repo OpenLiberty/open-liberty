@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -57,9 +56,7 @@ import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.provider.PUnitEMBuilder;
 import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
-import jakarta.annotation.Generated;
 import jakarta.data.exceptions.MappingException;
-import jakarta.data.metamodel.StaticMetamodel;
 import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Delete;
@@ -104,11 +101,6 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
      */
     private final ConcurrentHashMap<AnnotatedType<?>, Repository> repositoryAnnos = new ConcurrentHashMap<>();
 
-    /**
-     * Map of entity class to list of static metamodel class.
-     */
-    private final Map<Class<?>, List<Class<?>>> staticMetamodels = new HashMap<>();
-
     @Trivial
     public <T> void annotatedRepository(@Observes @WithAnnotations(Repository.class) ProcessAnnotatedType<T> event) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -125,30 +117,6 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
 
         if (provide)
             repositoryAnnos.put(type, repository);
-    }
-
-    @Trivial
-    public <T> void annotatedStaticMetamodel(@Observes @WithAnnotations(StaticMetamodel.class) ProcessAnnotatedType<T> event) {
-        AnnotatedType<T> type = event.getAnnotatedType();
-
-        if (type.isAnnotationPresent(Generated.class)) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "annotatedStaticMetamodel ignoring generated " + type.getJavaClass().getName());
-        } else {
-            StaticMetamodel staticMetamodel = type.getAnnotation(StaticMetamodel.class);
-
-            Class<?> entityClass = staticMetamodel.value();
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "annotatedStaticMetamodel for " + entityClass.getName(),
-                         type.getJavaClass().getName());
-
-            List<Class<?>> newList = new LinkedList<>();
-            newList.add(type.getJavaClass());
-            List<Class<?>> existingList = staticMetamodels.putIfAbsent(entityClass, newList);
-            if (existingList != null)
-                existingList.add(type.getJavaClass());
-        }
     }
 
     @FFDCIgnore(NamingException.class)
@@ -309,10 +277,6 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
 
         for (EntityManagerBuilder builder : entityGroups.values()) {
             provider.executor.submit(builder);
-        }
-
-        for (EntityManagerBuilder builder : entityGroups.values()) {
-            builder.populateStaticMetamodelClasses(staticMetamodels);
         }
     }
 

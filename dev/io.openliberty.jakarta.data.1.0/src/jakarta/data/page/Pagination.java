@@ -60,7 +60,7 @@ record Pagination(long page,
                         .append(", mode=").append(mode);
 
         if (type != null)
-            b.append(", ").append(type.size()).append(" keys");
+            b.append(", cursor size=").append(type.size());
 
         b.append("}");
 

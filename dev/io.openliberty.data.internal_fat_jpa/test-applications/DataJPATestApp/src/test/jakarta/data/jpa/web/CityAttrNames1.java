@@ -13,13 +13,15 @@ package test.jakarta.data.jpa.web;
 import jakarta.data.metamodel.SortableAttribute;
 import jakarta.data.metamodel.StaticMetamodel;
 import jakarta.data.metamodel.TextAttribute;
+import jakarta.data.metamodel.impl.SortableAttributeRecord;
+import jakarta.data.metamodel.impl.TextAttributeRecord;
 
 /**
  * Static metamodel for the City entity.
  */
 @StaticMetamodel(City.class)
-public class CityAttrNames1 {
-    public static volatile TextAttribute<City> name;
-    public static volatile TextAttribute<City> stateName;
-    public static volatile SortableAttribute<City> population;
+public interface CityAttrNames1 {
+    TextAttribute<City> name = new TextAttributeRecord<>("name");
+    TextAttribute<City> stateName = new TextAttributeRecord<>("stateName");
+    SortableAttribute<City> population = new SortableAttributeRecord<>("population");
 }
