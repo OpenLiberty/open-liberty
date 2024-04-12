@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: mdb
 Subsystem-Name: mdb
 -features=io.openliberty.internal.versionless.mdb-4.0
-kind=noship
-edition=full
+kind=beta
+edition=core

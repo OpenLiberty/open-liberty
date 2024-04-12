@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     com.ibm.websphere.appserver.ejb-3.2
-kind=noship
-edition=full
+kind=beta
+edition=core

@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     com.ibm.websphere.appserver.jaspic-1.1
-kind=noship
-edition=full
+kind=beta
+edition=core

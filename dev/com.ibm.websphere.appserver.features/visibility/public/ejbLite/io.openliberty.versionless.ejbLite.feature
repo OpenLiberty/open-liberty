@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: ejbLite
 Subsystem-Name: ejbLite
 -features=io.openliberty.internal.versionless.ejbLite-3.2
-kind=noship
-edition=full
+kind=beta
+edition=core

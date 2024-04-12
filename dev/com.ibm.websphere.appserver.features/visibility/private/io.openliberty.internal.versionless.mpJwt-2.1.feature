@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.mpJwt-2.1
-kind=noship
-edition=full
+kind=beta
+edition=core

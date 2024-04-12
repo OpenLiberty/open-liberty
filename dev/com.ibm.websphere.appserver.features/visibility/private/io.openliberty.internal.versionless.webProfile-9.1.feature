@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.webProfile-9.1
-kind=noship
-edition=full
+kind=beta
+edition=core

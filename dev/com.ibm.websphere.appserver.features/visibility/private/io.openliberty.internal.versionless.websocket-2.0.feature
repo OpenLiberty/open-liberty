@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.websocket-2.0
-kind=noship
-edition=full
+kind=beta
+edition=core
