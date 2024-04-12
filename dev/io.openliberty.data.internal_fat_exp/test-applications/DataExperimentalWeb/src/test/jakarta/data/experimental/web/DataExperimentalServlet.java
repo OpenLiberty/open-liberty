@@ -150,6 +150,76 @@ public class DataExperimentalServlet extends FATServlet {
     }
 
     /**
+     * Repository methods that use the Extract annotation with a parameter of
+     * Year, Quarter, Month, and Day to compare different parts of a date.
+     */
+    @Test
+    public void testExtractFromDateFunctions() {
+        ZoneOffset CDT = ZoneOffset.ofHours(-5);
+
+        reservations.deleteByHostNot("no one");
+
+        Reservation r1 = new Reservation();
+        r1.host = "testExtractFromDateFunctions-H1@example.org";
+        r1.invitees = Set.of("testExtractFromDateFunctions-A@example.org",
+                             "testExtractFromDateFunctions-B@example.org",
+                             "testExtractFromDateFunctions-C@example.org");
+        r1.location = "050-2 H115";
+        r1.meetingID = 10100101;
+        r1.start = OffsetDateTime.of(2024, 12, 18, 10, 0, 0, 0, CDT);
+        r1.stop = OffsetDateTime.of(2024, 12, 18, 11, 30, 0, 0, CDT);
+        r1.setLengthInMinutes(90);
+
+        Reservation r2 = new Reservation();
+        r2.host = "testExtractFromDateFunctions-H2@example.org";
+        r2.invitees = Set.of("testExtractFromDateFunctions-A@example.org");
+        r2.location = "050-2 B120";
+        r2.meetingID = 20200202;
+        r2.start = OffsetDateTime.of(2024, 7, 10, 8, 0, 0, 0, CDT);
+        r2.stop = OffsetDateTime.of(2024, 7, 10, 9, 30, 0, 0, CDT);
+        r2.setLengthInMinutes(90);
+
+        Reservation r3 = new Reservation();
+        r3.host = "testExtractFromDateFunctions-H1@example.org";
+        r3.invitees = Set.of("testExtractFromDateFunctions-B@example.org");
+        r3.location = "050-2 G105";
+        r3.meetingID = 30300303;
+        r3.start = OffsetDateTime.of(2023, 4, 10, 8, 0, 0, 0, CDT);
+        r3.stop = OffsetDateTime.of(2023, 4, 14, 17, 0, 0, 0, CDT);
+        r3.setLengthInMinutes(6300);
+
+        Reservation r4 = new Reservation();
+        r4.host = "testExtractFromDateFunctions-H4@example.org";
+        r4.invitees = Set.of("testExtractFromDateFunctions-A@example.org",
+                             "testExtractFromDateFunctions-B@example.org");
+        r4.location = "050-2 B120";
+        r4.meetingID = 40400404;
+        r4.start = OffsetDateTime.of(2024, 4, 11, 16, 30, 0, 0, CDT);
+        r4.stop = OffsetDateTime.of(2024, 4, 11, 17, 30, 0, 0, CDT);
+        r4.setLengthInMinutes(60);
+
+        reservations.saveAll(List.of(r1, r2, r3, r4));
+
+        assertEquals(List.of(10100101L, 20200202L, 40400404L),
+                     reservations.startsInYear(2024));
+
+        assertEquals(List.of(10100101L, 30300303L, 40400404L),
+                     reservations.startsInQuarterOtherThan(3));
+
+        assertEquals(List.of(10100101L, 20200202L),
+                     reservations.endsInMonth(List.of(7, 12)));
+
+        assertEquals(List.of(30300303L, 40400404L),
+                     Arrays.stream(reservations.endsWithinDays(11, 14))
+                                     .collect(ArrayList::new, ArrayList::add, ArrayList::addAll));
+
+        assertEquals(List.of(60, 90),
+                     reservations.lengthsBelow(200));
+
+        assertEquals(4, reservations.deleteByHostNot("no one"));
+    }
+
+    /**
      * Use the provided methods of a Repository<T, K> interface that is a copy of Jakarta NoSQL's.
      */
     @Test
