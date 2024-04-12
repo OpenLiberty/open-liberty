@@ -237,6 +237,9 @@
         <AD name="%http2.maxStreamsRefused" description="%http2.maxStreamsRefused.desc"
             id="maxStreamsRefused" required="false" type="Integer" min="0" default="100" />
 
+        <AD name="%http2.maxHeaderBlockSize" description="%http2.maxHeaderBlockSize.desc"
+            id="maxHeaderBlockSize" required="false" type="Long" min="0" default="512000" />
+
         <!--  Not technically internal but specifying here to get the property types checked if specified -->    
         <AD name="internal" description="internal use only"
             id="v0CookieDateRFC1123compat" required="false" type="Boolean" default="true" />

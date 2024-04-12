@@ -161,6 +161,7 @@ public class HttpChannelConfig {
     // reset frames window size in milliseconds
     private int http2ResetFramesWindow = 30000;
     private int http2MaxStreamsRefused = 100;
+    private long http2MaxHeaderBlockSize = 512000;
     /** Identifies if the channel has been configured to use X-Forwarded-* and Forwarded headers */
     private boolean useForwardingHeaders = false;
     /** Regex to be used to verify that proxies in forwarded headers are known to user */
@@ -445,6 +446,9 @@ public class HttpChannelConfig {
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_H2_MAX_STREAMS_REFUSED)) {
                 props.put(HttpConfigConstants.PROPNAME_H2_MAX_STREAMS_REFUSED, value);
             }
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_H2_MAX_HEADER_BLOCK_SIZE)) {
+                props.put(HttpConfigConstants.PROPNAME_H2_MAX_HEADER_BLOCK_SIZE, value);
+            }
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_PURGE_REMAINING_RESPONSE)) {
                 props.put(HttpConfigConstants.PROPNAME_PURGE_REMAINING_RESPONSE, value);
                 continue;
@@ -573,6 +577,7 @@ public class HttpChannelConfig {
         parseH2MaxResetFrames(props);
         parseH2ResetFramesWindow(props);
         parseH2MaxStreamsRefused(props);
+        parseH2MaxHeaderBlockSize(props);
         parsePurgeRemainingResponseBody(props); //PI81572
         parseRemoteIp(props);
         parseRemoteIpProxies(props);
@@ -925,6 +930,24 @@ public class HttpChannelConfig {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxStreamsRefused", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: Invalid HTTP/2 Max Streams Refused; " + value);
+
+                }
+            }
+        }
+    }
+
+    private void parseH2MaxHeaderBlockSize(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_HEADER_BLOCK_SIZE);
+        if (null != value) {
+            try {
+                this.http2MaxHeaderBlockSize = convertLong(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: HTTP/2 Max Header Block Size is " + getH2MaxHeaderBlockSize());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxHeaderBlockSize", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid HTTP/2 Header Block Size; " + value);
 
                 }
             }
@@ -2436,6 +2459,10 @@ public class HttpChannelConfig {
 
     public int getH2MaxStreamsRefused() {
         return http2MaxStreamsRefused;
+    }
+
+    public long getH2MaxHeaderBlockSize() {
+        return http2MaxHeaderBlockSize;
     }
 
     /**
