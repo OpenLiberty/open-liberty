@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2024 IBM Corporation and others.
+# Copyright (c) 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -19,10 +19,10 @@ javac.target: 17
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Bundle-Name: Jakarta Data copy of API classes
-Bundle-SymbolicName: io.openliberty.jakarta.data.1.0
-Bundle-Description: Jakarta Data API classes; version=${bVersion}
+Bundle-SymbolicName: io.openliberty.jakarta.data.1.1
+Bundle-Description: Copied Jakarta Data API classes and some proposed or experimental ones; version=${bVersion}
 
--exportcontents: \
+Export-Package: \
   jakarta.data;version="1.0.0",\
   jakarta.data.exceptions;version="1.0.0",\
   jakarta.data.metamodel;version="1.0.0",\
@@ -34,8 +34,8 @@ Bundle-Description: Jakarta Data API classes; version=${bVersion}
 
 instrument.classesExcludes: jakarta/data/*.class
 
--includeresource: \
-  @${repo;io.openliberty.jakarta.data.1.1}
+#-includeresource: \
+#  @${repo;jakarta.data:jakarta.data-api;1.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 publish.wlp.jar.suffix: dev/api/spec
 
