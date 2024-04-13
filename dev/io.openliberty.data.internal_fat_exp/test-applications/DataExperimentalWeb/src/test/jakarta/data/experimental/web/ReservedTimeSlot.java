@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2022,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,26 +10,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
+package test.jakarta.data.experimental.web;
 
 import java.time.OffsetDateTime;
 
 /**
- * An unannotated superclass for the unannotated Reservation entity.
+ * A record to use as a repository method return type.
  */
-public class Timeslot {
-
-    private int lengthInMinutes;
-
-    public OffsetDateTime start;
-
-    public OffsetDateTime stop;
-
-    public int getLengthInMinutes() {
-        return lengthInMinutes;
-    }
-
-    public void setLengthInMinutes(int minutes) {
-        lengthInMinutes = minutes;
-    }
+public record ReservedTimeSlot(
+                OffsetDateTime start,
+                OffsetDateTime stop) {
 }

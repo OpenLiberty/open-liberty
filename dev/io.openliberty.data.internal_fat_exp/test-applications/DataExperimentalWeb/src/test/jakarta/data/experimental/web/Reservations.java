@@ -10,11 +10,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
+package test.jakarta.data.experimental.web;
 
+import static io.openliberty.data.repository.function.Extract.Field.DAY;
 import static io.openliberty.data.repository.function.Extract.Field.HOUR;
 import static io.openliberty.data.repository.function.Extract.Field.MINUTE;
+import static io.openliberty.data.repository.function.Extract.Field.MONTH;
+import static io.openliberty.data.repository.function.Extract.Field.QUARTER;
 import static io.openliberty.data.repository.function.Extract.Field.SECOND;
+import static io.openliberty.data.repository.function.Extract.Field.YEAR;
 import static jakarta.data.repository.By.ID;
 
 import java.time.OffsetDateTime;
@@ -46,12 +50,17 @@ import jakarta.data.repository.Repository;
 
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.comparison.GreaterThanEqual;
+import io.openliberty.data.repository.comparison.In;
+import io.openliberty.data.repository.comparison.LessThan;
 import io.openliberty.data.repository.comparison.LessThanEqual;
 import io.openliberty.data.repository.function.ElementCount;
 import io.openliberty.data.repository.function.Extract;
+import io.openliberty.data.repository.function.Not;
 
 /**
- * Uses the Repository interface that is copied from Jakarta NoSQL
+ * Covers various patterns that are extensions to Jakarta Data, such as
+ * a variety of return types for collections, an Extract annotation,
+ * various other annotations for conditions, and a Select annotation.
  */
 @Repository
 public interface Reservations extends BasicRepository<Reservation, Long> {
@@ -66,6 +75,17 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     long deleteByHostNot(String host);
 
     void deleteByMeetingIdIn(Iterable<Long> ids);
+
+    @Find
+    @Select("meetingID")
+    @OrderBy("meetingID")
+    List<Long> endsInMonth(@By("stop") @Extract(MONTH) @In Iterable<Integer> months);
+
+    @Find
+    @Select("meetingID")
+    @OrderBy("meetingID")
+    long[] endsWithinDays(@By("stop") @Extract(DAY) @GreaterThanEqual int minDayOfMonth,
+                          @By("stop") @Extract(DAY) @LessThanEqual int maxDayOfMonth);
 
     @Find
     @Select("meetingId")
@@ -138,7 +158,22 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     CopyOnWriteArrayList<Reservation> findByHostIgnoreCaseEndsWith(String hostPostfix);
 
+    @Find
+    @Select(distinct = true, value = "lengthInMinutes")
+    @OrderBy("lengthInMinutes")
+    List<Long> lengthsBelow(@By("lengthInMinutes") @LessThan int max);
+
     int removeByHostNotIn(Collection<String> hosts);
+
+    @Find
+    @Select("meetingID")
+    @OrderBy("meetingID")
+    List<Long> startsInQuarterOtherThan(@By("start") @Extract(QUARTER) @Not int quarterToExclude);
+
+    @Find
+    @Select("meetingID")
+    @OrderBy("meetingID")
+    List<Long> startsInYear(@By("start") @Extract(YEAR) int year);
 
     @Find
     @Select("meetingId")
