@@ -125,7 +125,6 @@ public class FeatureResolverImpl implements FeatureResolver {
                 shownVersionlessError = true;
                 error("UPDATE_MISSING_VERSIONLESS_ENV_VAR");
             }
-
         } else {
             if (noPreferredErrors.add(baseSymbolicName)) {
                 String shortName = baseSymbolicName.replace("io.openliberty.internal.versionless.", "");
@@ -187,7 +186,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             ususableMsg.insert(0, "Removed unsable entries from PREFERRED_FEATURE_VERSIONS [ ");
             ususableMsg.append(" ]");
             trace(ususableMsg.toString());
->>>>>>> Merge of feature resolution unit and FAT test updates.
         }
     }
 
@@ -1173,7 +1171,9 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         void processCandidates(Collection<String> chain, List<String> candidateNames, String symbolicName, String baseSymbolicName, String preferredVersion, boolean isSingleton) {
-            if(baseSymbolicName.startsWith("io.openliberty.internal.versionless.") && getSelected("com.ibm.websphere.appserver.eeCompatible") == null){
+            if  (baseSymbolicName.startsWith("io.openliberty.internal.versionless.") && 
+                getSelected("com.ibm.websphere.appserver.eeCompatible") == null && 
+                candidateNames.size() > 1){
                 addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
                 return;
             }
