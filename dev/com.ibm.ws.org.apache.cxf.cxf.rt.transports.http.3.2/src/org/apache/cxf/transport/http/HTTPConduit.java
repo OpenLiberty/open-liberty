@@ -1214,9 +1214,9 @@ public abstract class HTTPConduit
 
         @Override
         public void thresholdNotReached() {
-            if (chunking) {
-                setFixedLengthStreamingMode(buffer.size());
-            }
+//            if (chunking) {
+//                setFixedLengthStreamingMode(buffer.size());
+//            }
         }
 
         // methods used for the outgoing side
