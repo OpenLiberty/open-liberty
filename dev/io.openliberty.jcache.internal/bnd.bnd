@@ -16,6 +16,7 @@ bVersion=1.0
 Bundle-Name: JCache Internal
 Bundle-SymbolicName: io.openliberty.jcache.internal
 Bundle-Description: JCache Internal; version=${bVersion}
+Bundle-Activator: io.openliberty.jcache.internal.Activator
 
 WS-TraceGroup: jcache 
 
@@ -41,6 +42,7 @@ instrument.classesExcludes: io/openliberty/jcache/internal/resources/*.class
 	com.ibm.websphere.javaee.jcache.1.1.core;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.websphere.org.osgi.service.cm,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
