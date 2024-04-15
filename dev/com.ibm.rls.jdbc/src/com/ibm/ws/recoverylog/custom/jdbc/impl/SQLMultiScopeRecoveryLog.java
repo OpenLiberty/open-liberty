@@ -1450,10 +1450,7 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                 synchronized (this) {
                     if (failed() || _closesRequired > 0) {
                         if (tc.isDebugEnabled()) {
-                            // FFDC exception but allow processing to continue
-                            Exception e = new Exception();
-                            FFDCFilter.processException(e, "com.ibm.ws.recoverylog.custom.jdbc.impl.SQLMultiScopeRecoveryLog.delete", "1277", this);
-                            Tr.debug(tc, "do not delete logs as failed state is " + failed() + " or closesRequired is " + _closesRequired);
+                            Tr.debug(tc, "Do not delete logs as failed state is " + failed() + " or closesRequired is " + _closesRequired);
                         }
                     } else { // the log is in the right state, we can proceed
                         Connection conn = null;
