@@ -79,7 +79,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     private static boolean shownVersionlessError = false;
 
-    private static final String preferedFeatureVersions = System.getenv("PREFERRED_FEATURE_VERSIONS");
+    private static String preferedFeatureVersions = System.getenv("PREFERRED_FEATURE_VERSIONS");
 
     private static String[][] parsedPreferedVersions;
 
@@ -120,6 +120,17 @@ public class FeatureResolverImpl implements FeatureResolver {
         if(!!!invalid.isEmpty()){
             trace("Removing invalid entries in PREFERRED_FEATURE_VERSIONS:" + invalid);
         }
+    }
+
+    public void setPrefferedVersion(String preferredFeatures){
+        preferedFeatureVersions = preferredFeatures;
+        String[] preferredVersions = (preferedFeatureVersions == null) ? new String[] {} : preferedFeatureVersions.split(",");
+        String[][] parsedVersions = new String[preferredVersions.length][2];
+        for (int i = 0; i < preferredVersions.length; i++) {
+            parsedVersions[i] = parseNameAndVersion(preferredVersions[i].trim());
+        }
+        parsedPreferedVersions = parsedVersions;
+
     }
 
     @Override
@@ -495,49 +506,49 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         //Gets the preferred feature version for a versionless feature from the PREFERRED_FEATURE_VERSIONS env var.
         //PREFERRED_FEATURE_VERSIONS=mpMetrics-5.1,mpMetrics-5.0,mpMetrics-4.0,mpHealth-5.0,mpHealth-3.1
-        if (isBeta) {
-            if (baseSymbolicName.startsWith("io.openliberty.internal.versionless.")) {
-                // parse and cache versionless feature versions
-                if (parsedPreferedVersions.length == 0) {
-                    preferredVersion = "";
-                    tolerates = new ArrayList<String>();
-                } else if ((tolerates = selectionContext.copyVersionless(baseSymbolicName)) != null) {
-                    preferredVersion = tolerates.remove(0);
-                    symbolicName = baseSymbolicName + "-" + preferredVersion;
-                } else {
-                    preferredVersion = "";
-                    tolerates = new ArrayList<String>();
-                    for (String[] nAV : parsedPreferedVersions) {
-                        if (baseSymbolicName.endsWith(nAV[0])) {
-                            if (preferredVersion.isEmpty()) {
-                                preferredVersion = nAV[1];
-                                symbolicName = baseSymbolicName + "-" + nAV[1];
-                            } else {
-                                tolerates.add(nAV[1]);
-                            }
-                        }
-                    }
-                    List<String> allVersions = new ArrayList<String>(tolerates.size() + 1);
-                    allVersions.add(preferredVersion);
-                    allVersions.addAll(tolerates);
-                    selectionContext.putVersionless(baseSymbolicName, allVersions);
-                }
-                if (preferredVersion.isEmpty()) {
-                    if (!shownVersionlessError) {
-                        shownVersionlessError = true;
-                        if (preferedFeatureVersions == null) {
-                            Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_ENV_VAR");
-                        }
-                        else {
-                            String shortName = baseSymbolicName.replace("io.openliberty.internal.versionless.", "");
-                            Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_FEATURE_VAL", new Object[] { shortName });
-                        }
-                    }
-                    selectionContext.addConflict(includingFeature.getFeatureName(), null);
-                    return;
-                }
-            }
-        }
+        // if (isBeta) {
+        //     if (baseSymbolicName.startsWith("io.openliberty.internal.versionless.")) {
+        //         // parse and cache versionless feature versions
+        //         if (parsedPreferedVersions.length == 0) {
+        //             preferredVersion = "";
+        //             tolerates = new ArrayList<String>();
+        //         } else if ((tolerates = selectionContext.copyVersionless(baseSymbolicName)) != null) {
+        //             preferredVersion = tolerates.remove(0);
+        //             symbolicName = baseSymbolicName + "-" + preferredVersion;
+        //         } else {
+        //             preferredVersion = "";
+        //             tolerates = new ArrayList<String>();
+        //             for (String[] nAV : parsedPreferedVersions) {
+        //                 if (baseSymbolicName.endsWith(nAV[0])) {
+        //                     if (preferredVersion.isEmpty()) {
+        //                         preferredVersion = nAV[1];
+        //                         symbolicName = baseSymbolicName + "-" + nAV[1];
+        //                     } else {
+        //                         tolerates.add(nAV[1]);
+        //                     }
+        //                 }
+        //             }
+        //             List<String> allVersions = new ArrayList<String>(tolerates.size() + 1);
+        //             allVersions.add(preferredVersion);
+        //             allVersions.addAll(tolerates);
+        //             selectionContext.putVersionless(baseSymbolicName, allVersions);
+        //         }
+        //         if (preferredVersion.isEmpty()) {
+        //             if (!shownVersionlessError) {
+        //                 shownVersionlessError = true;
+        //                 if (preferedFeatureVersions == null) {
+        //                     Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_ENV_VAR");
+        //                 }
+        //                 else {
+        //                     String shortName = baseSymbolicName.replace("io.openliberty.internal.versionless.", "");
+        //                     Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_FEATURE_VAL", new Object[] { shortName });
+        //                 }
+        //             }
+        //             selectionContext.addConflict(includingFeature.getFeatureName(), null);
+        //             return;
+        //         }
+        //     }
+        // }
 
         List<String> candidateNames = new ArrayList<String>(1 + (tolerates == null ? 0 : tolerates.size()));
 
@@ -826,7 +837,9 @@ public class FeatureResolverImpl implements FeatureResolver {
         };
 
         void processCandidates(Collection<String> chain, List<String> candidateNames, String symbolicName, String baseSymbolicName, String preferredVersion, boolean isSingleton) {
-            if(baseSymbolicName.startsWith("io.openliberty.internal.versionless.") && getSelected("com.ibm.websphere.appserver.eeCompatible") == null){
+            if  (baseSymbolicName.startsWith("io.openliberty.internal.versionless.") && 
+                getSelected("com.ibm.websphere.appserver.eeCompatible") == null && 
+                candidateNames.size() > 1){
                 addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
                 return;
             }
