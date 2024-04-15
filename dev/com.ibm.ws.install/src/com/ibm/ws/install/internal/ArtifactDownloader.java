@@ -315,12 +315,7 @@ public class ArtifactDownloader implements AutoCloseable {
             ArtifactDownloaderUtils.verifyPassword(repository.getPassword());
             int responseCode = ArtifactDownloaderUtils.exists(repository.getRepositoryUrl(), envMap, repository);
             logger.fine("Response code - " + repository.getRepositoryUrl() + ":" + responseCode);
-            if (responseCode >= 200 && responseCode < 400) {
-                return true;
-            } else {
-                ArtifactDownloaderUtils.checkResponseCode(responseCode, repository.getRepositoryUrl());
-            }
-
+            return ArtifactDownloaderUtils.checkResponseCode(responseCode);
         } catch (IOException | InstallException e) {
             logger.warning(repository.getRepositoryUrl() + " cannot be connected");
             logger.fine(e.getMessage());
