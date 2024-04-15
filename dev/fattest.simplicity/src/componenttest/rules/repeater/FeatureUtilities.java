@@ -24,7 +24,6 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.common.apiservices.LocalMachine;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatActions.EEVersion;
 
 /**
@@ -65,6 +64,7 @@ public class FeatureUtilities {
 
         // EE-related features which aren't in one of the feature sets
         features.add("appSecurity-1.0");
+        features.add("data-1.1");
         features.add("jsp-2.2");
         features.add("websocket-1.0");
 
@@ -86,8 +86,8 @@ public class FeatureUtilities {
     /**
      * Returns the set of public MicroProfile features which are compatible with a given Java/Jakarta EE version
      *
-     * @param eeVersion the EE version
-     * @return the set of compatible MP feature short names
+     * @param  eeVersion the EE version
+     * @return           the set of compatible MP feature short names
      */
     public static Set<String> compatibleMpFeatures(EEVersion eeVersion) {
         return Stream.concat(MicroProfileActions.ALL.stream(),
@@ -117,8 +117,8 @@ public class FeatureUtilities {
     /**
      * Get the set of public feature short names by reading the feature files from a liberty install
      *
-     * @param libertyInstallRoot the wlp directory containing the liberty install
-     * @return the list of public short names
+     * @param  libertyInstallRoot the wlp directory containing the liberty install
+     * @return                    the list of public short names
      */
     public static Set<String> getFeaturesFromServer(File libertyInstallRoot, boolean openLibertyOnly) {
         try {
@@ -145,8 +145,8 @@ public class FeatureUtilities {
     /**
      * Get the short name from a feature file
      *
-     * @param feature the feature file
-     * @return the short name, or {@code null} if it could not be found
+     * @param  feature     the feature file
+     * @return             the short name, or {@code null} if it could not be found
      * @throws IOException if there is a problem reading the feature file
      */
     private static String parseShortName(File feature, boolean openLibertyOnly) throws IOException {
