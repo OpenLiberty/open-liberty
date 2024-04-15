@@ -23,8 +23,7 @@ Subsystem-Name: Jakarta Data 1.1
 -features=\
   com.ibm.websphere.appserver.eeCompatible-11.0,\
   io.openliberty.cdi-4.1,\
-  io.openliberty.jakarta.data-1.1,\
-  noShip-1.0
+  io.openliberty.jakarta.data-1.1
 -bundles=\
   io.openliberty.data; location:="dev/api/ibm/,lib/",\
   io.openliberty.data.internal
