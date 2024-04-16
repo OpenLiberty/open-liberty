@@ -22,7 +22,7 @@ Bundle-Name: Jakarta Data copy of API classes
 Bundle-SymbolicName: io.openliberty.jakarta.data.1.0
 Bundle-Description: Jakarta Data API classes; version=${bVersion}
 
--exportcontents: \
+Export-Package: \
   jakarta.data;version="1.0.0",\
   jakarta.data.exceptions;version="1.0.0",\
   jakarta.data.metamodel;version="1.0.0",\
@@ -34,11 +34,10 @@ Bundle-Description: Jakarta Data API classes; version=${bVersion}
 
 instrument.classesExcludes: jakarta/data/*.class
 
--includeresource: \
-  @${repo;io.openliberty.jakarta.data.1.1}
+#-includeresource: \
+#  @${repo;jakarta.data:jakarta.data-api;1.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  io.openliberty.jakarta.data.1.1
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest
