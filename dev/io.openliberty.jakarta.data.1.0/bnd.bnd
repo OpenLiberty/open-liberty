@@ -40,4 +40,5 @@ instrument.classesExcludes: jakarta/data/*.class
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  io.openliberty.jakarta.data.1.1
