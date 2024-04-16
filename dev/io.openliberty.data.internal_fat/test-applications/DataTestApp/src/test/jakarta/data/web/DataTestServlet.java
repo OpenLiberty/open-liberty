@@ -4924,7 +4924,7 @@ public class DataTestServlet extends FATServlet {
         tran.begin();
         try {
             assertEquals(true, persons.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty")); // update with MANDATORY
-            assertEquals("Ty", persons.getFirstNameInCurrentOrNoTransaction(p3.ssn_id)); // read value with SUPPORTS
+            assertEquals("Ty", persons.getPersonInCurrentOrNoTransaction(p3.ssn_id).firstName); // read value with SUPPORTS
         } finally {
             tran.rollback();
         }
@@ -4934,7 +4934,7 @@ public class DataTestServlet extends FATServlet {
 
         System.out.println("TxType.SUPPORTS from no transaction");
 
-        assertEquals("Tyler", persons.getFirstNameInCurrentOrNoTransaction(p3.ssn_id));
+        assertEquals("Tyler", persons.getPersonInCurrentOrNoTransaction(p3.ssn_id).firstName);
 
         System.out.println("TxType.REQUIRED in transaction");
 
@@ -5033,7 +5033,7 @@ public class DataTestServlet extends FATServlet {
 
         System.out.println("TxType.NOT_SUPPORTED from no transaction");
 
-        assertEquals("Tyler", persons.getFirstNameInCurrentOrNoTransaction(p3.ssn_id));
+        assertEquals("Tyler", persons.getPersonInCurrentOrNoTransaction(p3.ssn_id).firstName);
 
         personnel.removeAll().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
     }
