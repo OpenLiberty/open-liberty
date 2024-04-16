@@ -486,13 +486,14 @@ var Implementation;
         // we can use our lazy stream each functionality to run our chain here.
         // by passing a boolean as return value into the onElem call
         // we can stop early at the first false, just like the spec requests
-        let ret;
+        let ret = true;
         funcs.every(func => {
             let returnVal = resolveAndExecute(source, event, func);
-            if (returnVal !== false) {
-                ret = returnVal;
+            if (returnVal === false) {
+                ret = false;
             }
-            return returnVal !== false;
+            //we short circuit in case of false and break the every loop
+            return ret;
         });
         return ret;
     }
@@ -584,7 +585,7 @@ var Implementation;
         internalCtx.assign(Const_1.CTX_PARAM_SRC_FRM_ID).value = formId;
         // mojarra compatibility, mojarra is sending the form id as well
         // this is not documented behavior but can be determined by running
-        // mojarra under blackbox conditions.
+        // mojarra under closed box conditions.
         // I assume it does the same as our formId_submit=1 so leaving it out
         // won't hurt but for the sake of compatibility we are going to add it
         requestCtx.assign(Const_1.CTX_PARAM_REQ_PASS_THR, formId).value = formId;
@@ -878,13 +879,14 @@ var Implementation;
         }
     }
     /**
-     * transforms the user values to the expected one
-     * with the proper none all form and this handling
-     * (note we also could use a simple string replace, but then
-     * we would have had double entries under some circumstances)
+     * transforms the user values to the expected values
+     *  handling '@none', '@all', '@form', and '@this' appropriately.
+     * (Note: Although we could employ a simple string replacement method,
+     * it could result in duplicate entries under certain conditions.)
      *
-     * there are several standardized constants which need a special treatment
-     * like @all, @none, @form, @this
+     * Specific standardized constants such as
+     * '@all', '@none', '@form', and '@this'
+     * require special treatment.
      *
      * @param targetConfig the target configuration receiving the final values
      * @param targetKey the target key
@@ -979,15 +981,14 @@ var Implementation;
         return targetConfig;
     }
     /**
-     * Filter the options given with a blacklist, so that only
-     * the values required for params-through are processed in the ajax request
+     * Filters the provided options using a blocklist to ensure
+     * only pass-through parameters are processed for the Ajax request.
      *
-     * Note this is a bug carried over from the old implementation
-     * the spec conform behavior is to use params for pass - through values
-     * this will be removed soon, after it is cleared up whether removing
-     * it breaks any legacy code
+     * Note that this issue is leftover from a previous implementation.
+     * The specification-conforming behavior is to use parameters for pass-through values.
+     * This will be addressed soon, after confirming that removal won't break any legacy code.
      *
-     * @param {Context} mappedOpts the options to be filtered
+     * @param {Context} mappedOpts - The options to be filtered.
      */
     function extractLegacyParams(mappedOpts) {
         //we now can use the full code reduction given by our stream api
@@ -997,8 +998,9 @@ var Implementation;
             .reduce(collectAssoc, {});
     }
     /**
-     * extracts the myfaces config parameters which provide extra functionality
-     * on top of JSF
+     * Extracts the MyFaces configuration parameters
+     * that augment JSF with additional functionality.
+     *
      * @param mappedOpts
      * @private
      */
@@ -2021,14 +2023,14 @@ class ExtDomQuery extends mona_dish_1.DQ {
      * decorated run scripts which takes our jsf extensions into consideration
      * (standard DomQuery will let you pass anything)
      * @param sticky if set to true the internally generated element for the script is left in the dom
-     * @param whiteListed
+     * @param allowListed
      */
-    runScripts(sticky = false, whiteListed) {
-        const whitelistFunc = (src) => {
+    runScripts(sticky = false, allowListed) {
+        const allowListFunc = (src) => {
             var _a;
-            return ((_a = whiteListed === null || whiteListed === void 0 ? void 0 : whiteListed(src)) !== null && _a !== void 0 ? _a : true) && !IS_FACES_SOURCE(src) && !IS_INTERNAL_SOURCE(src);
+            return ((_a = allowListed === null || allowListed === void 0 ? void 0 : allowListed(src)) !== null && _a !== void 0 ? _a : true) && !IS_FACES_SOURCE(src) && !IS_INTERNAL_SOURCE(src);
         };
-        return super.runScripts(sticky, whitelistFunc);
+        return super.runScripts(sticky, allowListFunc);
     }
     /**
      * adds the elements in this ExtDomQuery to the head
@@ -2336,7 +2338,7 @@ class HiddenInputBuilder {
         const SEP = (0, Const_1.$faces)().separatorchar;
         let existingStates = (0, mona_dish_1.DQ$)(`[name*='${(0, Const_1.$nsp)(this.name)}']`);
         let cnt = existingStates.asArray.map(state => {
-            let ident = state.id.orElse("0").value;
+            let ident = state.id.orElse("-1").value;
             ident = ident.substring(ident.lastIndexOf(SEP) + 1);
             return parseInt(ident);
         })
@@ -2345,7 +2347,7 @@ class HiddenInputBuilder {
         })
             .reduce((item1, item2) => {
             return Math.max(item1, item2);
-        }, 0); //we start with 1 (see cnt++)
+        }, -1);
         //the maximum  new ident is the current max + 1
         cnt++;
         const newElement = mona_dish_1.DQ.fromMarkup((0, Const_1.$nsp)(this.template));
@@ -4387,10 +4389,10 @@ class XhrRequest extends AsyncRunnable_1.AsyncRunnable {
             const type = issuingItem.type.orElse("").value.toLowerCase();
             //Checkbox and radio only value pass if checked is set, otherwise they should not show
             //up at all, and if checked is set, they either can have a value or simply being boolean
-            if ((type == "checkbox" || type == "radio") && issuingItem.attr("checked").isAbsent()) {
+            if ((type == XhrRequest.TYPE_CHECKBOX || type == XhrRequest.TYPE_RADIO) && !issuingItem.checked) {
                 return;
             }
-            else if ((type == "checkbox" || type == "radio")) {
+            else if ((type == XhrRequest.TYPE_CHECKBOX || type == XhrRequest.TYPE_RADIO)) {
                 arr.assign(issuingItemId).value = itemValue.orElse(true).value;
             }
             else {
@@ -4400,6 +4402,8 @@ class XhrRequest extends AsyncRunnable_1.AsyncRunnable {
         }
     }
 }
+XhrRequest.TYPE_CHECKBOX = "checkbox";
+XhrRequest.TYPE_RADIO = "radio";
 exports.XhrRequest = XhrRequest;
 
 
@@ -5309,7 +5313,7 @@ exports.Style = Style;
  * small helper for the specialized jsf case
  * @constructor
  */
-const DEFAULT_WHITELIST = () => {
+const DEFAULT_allowList = () => {
     return true;
 };
 /**
@@ -6310,10 +6314,10 @@ class DomQuery {
     /**
      * Run through the given nodes in the DomQuery execute the inline scripts
      * @param sticky if set to true the evaluated elements will stick to the head, default false
-     * @param whitelisted: optional whitelist function which can filter out script tags which are not processed
+     * @param allowListed: optional allowList function which can filter out script tags which are not processed
      * defaults to the standard jsf.js exclusion (we use this code for myfaces)
      */
-    runScripts(sticky = false, whitelisted = DEFAULT_WHITELIST) {
+    runScripts(sticky = false, allowListed = DEFAULT_allowList) {
         const evalCollectedScripts = (scriptsToProcess) => {
             if (scriptsToProcess.length) {
                 // script source means we have to eval the existing
@@ -6358,7 +6362,7 @@ class DomQuery {
                     // we have to move this into an inner if because chrome otherwise chokes
                     // due to changing the and order instead of relying on left to right
                     // if jsf.js is already registered we do not replace it anymore
-                    if (whitelisted(src)) {
+                    if (allowListed(src)) {
                         // we run the collected scripts, before we run the 'include' command
                         finalScripts = evalCollectedScripts(finalScripts);
                         if (!sticky) {
