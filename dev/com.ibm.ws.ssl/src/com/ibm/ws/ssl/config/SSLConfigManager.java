@@ -564,16 +564,17 @@ public class SSLConfigManager {
             Tr.debug(tc, "keyStoreName: " + keyStoreName);
             Tr.debug(tc, "sslAlias: " + alias);
         }
-        //TODO: Adding check for com.ibm.ssl.keyStoreName=serverIdentity ??
-        if (alias != null && (alias.equals(CONTROLLER_SSL_CONFIG) || alias.equals(MEMBER_SSL_CONFIG))) {
-            isCollectiveCertSanExist = wsks_key.isSubjectAltNamesExist(wsks_key, keyStoreName);
+
+        if (SERVER_IDENTITY.equalsIgnoreCase(keyStoreName) &&
+            (CONTROLLER_SSL_CONFIG.equalsIgnoreCase(alias) || MEMBER_SSL_CONFIG.equalsIgnoreCase(alias))) {
+            isCollectiveCertSanExist = wsks_key.isCollectiveCertSubjectAltNamesExist(wsks_key, keyStoreName);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.debug(tc, alias + " Certificate Subject Alternative Name: " + isCollectiveCertSanExist);
+                Tr.debug(tc, alias + " Collective certificate subject alternative name exist: " + isCollectiveCertSanExist);
             }
         }
 
         if (!isCollectiveCertSanExist) {
-            Tr.warning(tc, "SSL Alias: " + alias + " keyStoreName: " + keyStoreName + " certificates are missing subject alternative names. Disable hostName verification");
+            Tr.warning(tc, "SSL Alias: " + alias + " keyStoreName: " + keyStoreName + " certificates are missing the subject alternative names. Disable hostName verification");
             sslprops.setProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false");
         } else { // Get it from the SSL configuration
             Boolean hostnameVerification = (Boolean) map.get("verifyHostname");
