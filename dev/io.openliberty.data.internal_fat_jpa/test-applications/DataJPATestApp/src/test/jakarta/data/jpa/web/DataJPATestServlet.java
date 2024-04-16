@@ -216,7 +216,7 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Test the AbsoluteValue Function by querying on values that could be positive or negative.
+     * Test the ABS JDQL function by querying on values that could be positive or negative.
      */
     @Test
     public void testAbsoluteValueFunction() {
@@ -501,44 +501,6 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Annotatively-defined repository operation to remove and return one or more IdClass
-     * instances corresponding to the removed entities.
-     */
-    @Test
-    public void testFindAndDeleteReturningIdClassArray(HttpServletRequest request, HttpServletResponse response) {
-
-        cities.save(new City("Bloomington", "Minnesota", 89987, Set.of(952)));
-        cities.save(new City("Plymouth", "Minnesota", 79828, Set.of(763)));
-        cities.save(new City("Woodbury", "Minnesota", 75102, Set.of(651)));
-        cities.save(new City("Brooklyn Park", "Minnesota", 86478, Set.of(763)));
-
-        CityId[] removed = cities.deleteWithinPopulationRange(75000, 99999);
-
-        assertEquals(Arrays.toString(removed), 4, removed.length);
-
-        Arrays.sort(removed, Comparator.comparing(CityId::toString));
-
-        assertEquals("Bloomington", removed[0].name);
-        assertEquals("Minnesota", removed[0].stateName);
-
-        assertEquals("Brooklyn Park", removed[1].name);
-        assertEquals("Minnesota", removed[1].stateName);
-
-        assertEquals("Plymouth", removed[2].name);
-        assertEquals("Minnesota", removed[2].stateName);
-
-        assertEquals("Woodbury", removed[3].name);
-        assertEquals("Minnesota", removed[3].stateName);
-
-        removed = cities.deleteWithinPopulationRange(75000, 99999);
-
-        assertEquals(Arrays.toString(removed), 0, removed.length);
-
-        // Ensure non-matching entities remain in the database
-        assertEquals(true, cities.existsById(CityId.of("Rochester", "Minnesota")));
-    }
-
-    /**
      * Query-by-method name repository operation to remove and return one or more IdClass
      * instances corresponding to the removed entities.
      */
@@ -574,7 +536,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(removed.toString(), 0, removed.size());
 
         // Ensure non-matching entities remain in the database
-        assertEquals(true, cities.existsById(CityId.of("Rochester", "Minnesota")));
+        assertEquals(true, cities.existsByNameAndStateName("Rochester", "Minnesota"));
     }
 
     /**
@@ -823,8 +785,11 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(b -> b.name)
                                              .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("Custom Alarm", "Mayo Clinic", "Olmsted Medical", "Reichel Foods"),
-                             businesses.onSouthSideOf("Rochester", "MN", "s"));
+        assertIterableEquals(List.of("Custom Alarm", "Mayo Clinic", "Reichel Foods"),
+                             businesses.onSouthSideOf("Rochester", "MN", "SW")
+                                             .stream()
+                                             .map(b -> b.name)
+                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -1457,15 +1422,6 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Repository method with the Count keyword that counts how many matching entities there are.
-     */
-    @Test
-    public void testIdClassCountKeyword() {
-        assertEquals(2L, cities.countByStateButNotCity_Or_NotCityButWithCityName("Missouri", CityId.of("Kansas City", "Missouri"),
-                                                                                 CityId.of("Rochester", "New York"), "Rochester"));
-    }
-
-    /**
      * Use CrudRepository-style delete(entity) operation where entity has a composite ID that is defined by IdClass.
      */
     @Test
@@ -1477,39 +1433,12 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Repository method with the Exists annotation that checks if any matching entities exist.
-     */
-    @Test
-    public void testIdClassExistsAnnotation() {
-        assertEquals(true, cities.areFoundIn("Minnesota"));
-        assertEquals(false, cities.areFoundIn("Antarctica"));
-    }
-
-    /**
      * Repository method with the Exists keyword that checks if any matching entities exist.
      */
     @Test
     public void testIdClassExistsKeyword() {
         assertEquals(true, cities.existsByNameAndStateName("Kansas City", "Kansas"));
         assertEquals(false, cities.existsByNameAndStateName("Kansas City", "Minnesota"));
-
-        assertEquals(true, cities.existsById(CityId.of("Kansas City", "Missouri")));
-        assertEquals(false, cities.existsById(CityId.of("Kansas City", "Nebraska")));
-    }
-
-    /**
-     * Repository method performing a parameter-based query on a compound entity Id which is an IdClass,
-     * where the method parameter is annotated with By.
-     */
-    @Test
-    public void testIdClassFindByAnnotatedParameter() {
-
-        assertIterableEquals(List.of("Springfield Massachusetts",
-                                     "Rochester Minnesota",
-                                     "Kansas City Missouri"),
-                             cities.largerThan(100000, CityId.of("springfield", "missouri"), "M%s")
-                                             .map(c -> c.name + ' ' + c.stateName)
-                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -1520,39 +1449,6 @@ public class DataJPATestServlet extends FATServlet {
         assertIterableEquals(List.of("Rochester Minnesota",
                                      "Rochester New York"),
                              cities.withNameOf("Rochester")
-                                             .map(c -> c.name + ' ' + c.stateName)
-                                             .collect(Collectors.toList()));
-    }
-
-    /**
-     * Repository method performing a parameter-based query on a compound entity Id which is an IdClass,
-     * without annotating the method parameter.
-     */
-    @Test
-    public void testIdClassFindByParametersUnannotated() {
-        assertEquals(true, cities.isBiggerThan(100000, CityId.of("Rochester", "Minnesota")));
-        assertEquals(false, cities.isBiggerThan(500000, CityId.of("Rochester", "Minnesota")));
-    }
-
-    /**
-     * Repository method with the Find keyword that queries based on multiple IdClass parameters.
-     */
-    @Test
-    public void testIdClassFindKeyword() {
-        assertIterableEquals(List.of("Kansas City Missouri",
-                                     "Rochester Minnesota",
-                                     "Springfield Illinois"),
-                             cities.findByIdIsOneOf(CityId.of("Rochester", "Minnesota"),
-                                                    CityId.of("springfield", "illinois"),
-                                                    CityId.of("Kansas City", "Missouri"))
-                                             .map(c -> c.name + ' ' + c.stateName)
-                                             .collect(Collectors.toList()));
-
-        assertIterableEquals(List.of("Springfield Illinois",
-                                     "Springfield Massachusetts",
-                                     "Springfield Missouri",
-                                     "Springfield Ohio"),
-                             cities.findByNameButNotId("Springfield", CityId.of("Springfield", "Oregon"))
                                              .map(c -> c.name + ' ' + c.stateName)
                                              .collect(Collectors.toList()));
     }
@@ -1605,39 +1501,6 @@ public class DataJPATestServlet extends FATServlet {
                              slice0.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         assertEquals(false, slice0.hasPrevious());
-    }
-
-    /**
-     * Use keyset pagination with the OrderBy annotation on a composite id that is defined by an IdClass attribute.
-     * Also use named parameters, which means the keyset portion of the query will also need to use named parameters.
-     */
-    @Test
-    public void testIdClassOrderByAnnotationWithKeysetPaginationAndNamedParameters() {
-        PageRequest pagination = PageRequest.ofSize(2);
-
-        CursoredPage<City> page1 = cities.sizedWithin(100000, 1000000, pagination);
-        assertIterableEquals(List.of("Springfield Missouri",
-                                     "Springfield Massachusetts"),
-                             page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
-
-        assertEquals(4L, page1.totalPages());
-        assertEquals(7L, page1.totalElements());
-
-        CursoredPage<City> page2 = cities.sizedWithin(100000, 1000000, page1.nextPageRequest());
-        assertIterableEquals(List.of("Springfield Illinois",
-                                     "Rochester New York"),
-                             page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
-
-        CursoredPage<City> page3 = cities.sizedWithin(100000, 1000000, page2.nextPageRequest());
-        assertIterableEquals(List.of("Rochester Minnesota",
-                                     "Kansas City Missouri"),
-                             page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
-
-        CursoredPage<City> page4 = cities.sizedWithin(100000, 1000000, page3.nextPageRequest());
-        assertIterableEquals(List.of("Kansas City Kansas"),
-                             page4.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
-
-        assertEquals(false, page4.hasNext());
     }
 
     /**
@@ -1813,92 +1676,6 @@ public class DataJPATestServlet extends FATServlet {
                              Stream.of(cities.findByStateNameEndsWith("s"))
                                              .map(CityId::toString)
                                              .collect(Collectors.toList()));
-    }
-
-    /**
-     * Repository method with the Assign annotation that makes an update by assigning the IdClass instance to something else.
-     */
-    @Test
-    public void testIdClassUpdateAssignIdClass() {
-        cities.save(new City("La Crosse", "Wisconsin", 52680, Set.of(608)));
-        try {
-            cities.findById(CityId.of("La Crosse", "Wisconsin")).orElseThrow();
-
-            assertEquals(1, cities.replace(CityId.of("La Crosse", "Wisconsin"),
-                                           "Decorah", "Iowa", 7587, Set.of(563))); // TODO CityId.of("Decorah", "Iowa"), 7587, Set.of(563)));
-
-            assertEquals(true, cities.findById(CityId.of("La Crosse", "Wisconsin")).isEmpty());
-            assertEquals(true, cities.existsById(CityId.of("Decorah", "Iowa")));
-
-            // TODO EclipseLink bug needs to be fixed:
-            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.jpa.web.City.areaCodes to java.lang.Integer
-            //City city = cities.findById(CityId.of("Decorah", "Iowa")).orElseThrow();
-            //assertEquals("Decorah", city.name);
-            //assertEquals("Iowa", city.stateName);
-            //assertEquals(7587, city.population);
-            //assertEquals(Set.of(563), city.areaCodes);
-        } finally {
-            cities.deleteById(CityId.of("La Crosse", "Wisconsin"));
-            cities.deleteById(CityId.of("Decorah", "Iowa"));
-        }
-    }
-
-    /**
-     * Repository method with the Update annotation that makes an update by assigning the IdClass components to something else.
-     */
-    @Test
-    public void testIdClassUpdateAssignIdClassComponents() {
-        cities.save(new City("Janesville", "Wisconsin", 65615, Set.of(608)));
-        try {
-            cities.findById(CityId.of("Janesville", "Wisconsin")).orElseThrow();
-
-            assertEquals(1, cities.replace("Janesville", "Wisconsin",
-                                           "Ames", "Iowa", Set.of(515), 66427));
-
-            assertEquals(true, cities.findById(CityId.of("Janesville", "Wisconsin")).isEmpty());
-            assertEquals(true, cities.existsById(CityId.of("Ames", "Iowa")));
-
-            // TODO EclipseLink bug needs to be fixed:
-            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.jpa.web.City.areaCodes to java.lang.Integer
-            //City city = cities.findById(CityId.of("Decorah", "Iowa")).orElseThrow();
-            //assertEquals("Ames", city.name);
-            //assertEquals("Iowa", city.stateName);
-            //assertEquals(66427, city.population);
-            //assertEquals(Set.of(515), city.areaCodes);
-        } finally {
-            cities.deleteById(CityId.of("Janesville", "Wisconsin"));
-            cities.deleteById(CityId.of("Ames", "Iowa"));
-        }
-    }
-
-    /**
-     * Repository method with the Update keyword that makes an update by assigning the IdClass instance to something else.
-     */
-    @Test
-    public void testIdClassUpdateKeyword() {
-        cities.save(new City("Madison", "Wisconsin", 269840, Set.of(608)));
-        try {
-            cities.findById(CityId.of("Madison", "Wisconsin")).orElseThrow();
-
-            // TODO enable once IdClass is supported for @Update
-            // UnsupportedOperationException: @Assign IdClass
-            //assertEquals(1, cities.updateIdPopulationAndAreaCodes(CityId.of("Madison", "Wisconsin"), 269840,
-            //                                                      CityId.of("Des Moines", "Iowa"), 214133, Set.of(515)));
-
-            //assertEquals(true, cities.findById(CityId.of("Madison", "Wisconsin")).isEmpty());
-            //assertEquals(true, cities.existsById(CityId.of("Des Moines", "Iowa")));
-
-            // TODO EclipseLink bug needs to be fixed:
-            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.jpa.web.City.areaCodes to java.lang.Integer
-            //City city = cities.findById(CityId.of("Des Moines", "Iowa")).orElseThrow();
-            //assertEquals("Des Moines", city.name);
-            //assertEquals("Iowa", city.stateName);
-            //assertEquals(214133, city.population);
-            //assertEquals(Set.of(515), city.areaCodes);
-        } finally {
-            cities.deleteById(CityId.of("Madison", "Wisconsin"));
-            cities.deleteById(CityId.of("Des Moines", "Iowa"));
-        }
     }
 
     /**

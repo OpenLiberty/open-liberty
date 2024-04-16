@@ -34,10 +34,15 @@ import java.util.stream.Collectors;
 
 import jakarta.data.Limit;
 import jakarta.data.Sort;
+import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.inject.Inject;
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.junit.Test;
 
@@ -51,6 +56,9 @@ public class DataExperimentalServlet extends FATServlet {
     @Inject
     Reservations reservations;
 
+    @Inject
+    Towns towns;
+
     public static <T> void assertArrayEquals(T[] expected, T[] actual, Comparator<T> comparator) {
         String errorMessage = "expected: " + Arrays.toString(expected) + " but was: " + Arrays.toString(actual);
 
@@ -61,6 +69,20 @@ public class DataExperimentalServlet extends FATServlet {
 
         for (int i = 0; i < expected.length; i++)
             assertEquals(errorMessage, 0, comparator.compare(expected[i], actual[i]));
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        // Some read-only data that is prepopulated for tests:
+        towns.add(new Town("Rochester", "Minnesota", 121395, Set.of(507)));
+        towns.add(new Town("Rochester", "New York", 211328, Set.of(585)));
+        towns.add(new Town("Springfield", "Missouri", 169176, Set.of(417)));
+        towns.add(new Town("Springfield", "Illinois", 114394, Set.of(217, 447)));
+        towns.add(new Town("Springfield", "Massachusetts", 155929, Set.of(413)));
+        towns.add(new Town("Springfield", "Oregon", 59403, Set.of(458, 541)));
+        towns.add(new Town("Springfield", "Ohio", 58662, Set.of(326, 937)));
+        towns.add(new Town("Kansas City", "Missouri", 508090, Set.of(816, 975)));
+        towns.add(new Town("Kansas City", "Kansas", 156607, Set.of(913)));
     }
 
     /**
@@ -146,6 +168,11 @@ public class DataExperimentalServlet extends FATServlet {
         assertEquals(List.of(113001L, 213002L, 413004L),
                      reservations.endsAtSecond(0));
 
+        // @Select as String
+
+        assertEquals(List.of("050-2 B120", "050-2 G105", "050-2 G105"),
+                     reservations.locationsThatStartWith("050-"));
+
         reservations.deleteByHostNot("nobody");
     }
 
@@ -217,6 +244,227 @@ public class DataExperimentalServlet extends FATServlet {
                      reservations.lengthsBelow(200));
 
         assertEquals(4, reservations.deleteByHostNot("no one"));
+    }
+
+    /**
+     * Annotatively-defined repository operation to remove and return one or more IdClass
+     * instances corresponding to the removed entities.
+     */
+    @Test
+    public void testFindAndDeleteReturningIdClassArray(HttpServletRequest request, HttpServletResponse response) {
+
+        towns.add(new Town("Bloomington", "Minnesota", 89987, Set.of(952)));
+        towns.add(new Town("Plymouth", "Minnesota", 79828, Set.of(763)));
+        towns.add(new Town("Woodbury", "Minnesota", 75102, Set.of(651)));
+        towns.add(new Town("Brooklyn Park", "Minnesota", 86478, Set.of(763)));
+
+        TownId[] removed = towns.deleteWithinPopulationRange(75000, 99999);
+
+        assertEquals(Arrays.toString(removed), 4, removed.length);
+
+        Arrays.sort(removed, Comparator.comparing(TownId::toString));
+
+        assertEquals("Bloomington", removed[0].name);
+        assertEquals("Minnesota", removed[0].stateName);
+
+        assertEquals("Brooklyn Park", removed[1].name);
+        assertEquals("Minnesota", removed[1].stateName);
+
+        assertEquals("Plymouth", removed[2].name);
+        assertEquals("Minnesota", removed[2].stateName);
+
+        assertEquals("Woodbury", removed[3].name);
+        assertEquals("Minnesota", removed[3].stateName);
+
+        removed = towns.deleteWithinPopulationRange(75000, 99999);
+
+        assertEquals(Arrays.toString(removed), 0, removed.length);
+
+        // Ensure non-matching entities remain in the database
+        assertEquals(true, towns.existsById(TownId.of("Rochester", "Minnesota")));
+    }
+
+    /**
+     * Repository method with the Count keyword that counts how many matching entities there are.
+     */
+    @Test
+    public void testIdClassCountKeyword() {
+        assertEquals(2L, towns.countByStateButNotTown_Or_NotTownButWithTownName("Missouri", TownId.of("Kansas City", "Missouri"),
+                                                                                TownId.of("Rochester", "New York"), "Rochester"));
+    }
+
+    /**
+     * Repository method with the Query annotation with JPQL that checks if any matching entities exist.
+     */
+    @Test
+    public void testIdClassExistsInQuery() {
+        assertEquals(true, towns.areFoundIn("Minnesota"));
+        assertEquals(false, towns.areFoundIn("Antarctica"));
+    }
+
+    /**
+     * Repository method performing a parameter-based query on a compound entity Id which is an IdClass,
+     * where the method parameter is annotated with By.
+     */
+    @Test
+    public void testIdClassFindByAnnotatedParameter() {
+
+        assertEquals(List.of("Springfield Massachusetts",
+                             "Rochester Minnesota",
+                             "Kansas City Missouri"),
+                     towns.largerThan(100000, TownId.of("springfield", "missouri"), "M%s")
+                                     .map(c -> c.name + ' ' + c.stateName)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Repository method performing a parameter-based query on a compound entity Id which is an IdClass,
+     * without annotating the method parameter.
+     */
+    @Test
+    public void testIdClassFindByParametersUnannotated() {
+        assertEquals(true, towns.isBiggerThan(100000, TownId.of("Rochester", "Minnesota")));
+        assertEquals(false, towns.isBiggerThan(500000, TownId.of("Rochester", "Minnesota")));
+    }
+
+    /**
+     * Repository method with the Find keyword that queries based on multiple IdClass parameters.
+     */
+    @Test
+    public void testIdClassFindKeyword() {
+        assertEquals(List.of("Kansas City Missouri",
+                             "Rochester Minnesota",
+                             "Springfield Illinois"),
+                     towns.findByIdIsOneOf(TownId.of("Rochester", "Minnesota"),
+                                           TownId.of("springfield", "illinois"),
+                                           TownId.of("Kansas City", "Missouri"))
+                                     .map(c -> c.name + ' ' + c.stateName)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of("Springfield Illinois",
+                             "Springfield Massachusetts",
+                             "Springfield Missouri",
+                             "Springfield Ohio"),
+                     towns.findByNameButNotId("Springfield", TownId.of("Springfield", "Oregon"))
+                                     .map(c -> c.name + ' ' + c.stateName)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use keyset pagination with the OrderBy annotation on a composite id that is defined by an IdClass attribute.
+     * Also use named parameters, which means the keyset portion of the query will also need to use named parameters.
+     */
+    @Test
+    public void testIdClassOrderByAnnotationWithKeysetPaginationAndNamedParameters() {
+        PageRequest pagination = PageRequest.ofSize(2);
+
+        CursoredPage<Town> page1 = towns.sizedWithin(100000, 1000000, pagination);
+        assertEquals(List.of("Springfield Missouri",
+                             "Springfield Massachusetts"),
+                     page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+
+        assertEquals(4L, page1.totalPages());
+        assertEquals(7L, page1.totalElements());
+
+        CursoredPage<Town> page2 = towns.sizedWithin(100000, 1000000, page1.nextPageRequest());
+        assertEquals(List.of("Springfield Illinois",
+                             "Rochester New York"),
+                     page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+
+        CursoredPage<Town> page3 = towns.sizedWithin(100000, 1000000, page2.nextPageRequest());
+        assertEquals(List.of("Rochester Minnesota",
+                             "Kansas City Missouri"),
+                     page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+
+        CursoredPage<Town> page4 = towns.sizedWithin(100000, 1000000, page3.nextPageRequest());
+        assertEquals(List.of("Kansas City Kansas"),
+                     page4.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+
+        assertEquals(false, page4.hasNext());
+    }
+
+    /**
+     * Repository method with the Assign annotation that makes an update by assigning the IdClass instance to something else.
+     */
+    @Test
+    public void testIdClassUpdateAssignIdClass() {
+        towns.add(new Town("La Crosse", "Wisconsin", 52680, Set.of(608)));
+        try {
+            assertEquals(true, towns.existsById(TownId.of("La Crosse", "Wisconsin")));
+
+            assertEquals(1, towns.replace(TownId.of("La Crosse", "Wisconsin"),
+                                          "Decorah", "Iowa", 7587, Set.of(563))); // TODO TownId.of("Decorah", "Iowa"), 7587, Set.of(563)));
+
+            assertEquals(false, towns.existsById(TownId.of("La Crosse", "Wisconsin")));
+            assertEquals(true, towns.existsById(TownId.of("Decorah", "Iowa")));
+
+            // TODO EclipseLink bug needs to be fixed:
+            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.experimental.web.Town.areaCodes to java.lang.Integer
+            //Town town = towns.findById(TownId.of("Decorah", "Iowa")).orElseThrow();
+            //assertEquals("Decorah", town.name);
+            //assertEquals("Iowa", town.stateName);
+            //assertEquals(7587, town.population);
+            //assertEquals(Set.of(563), town.areaCodes);
+        } finally {
+            towns.deleteWithinPopulationRange(7580, 7590);
+            towns.deleteWithinPopulationRange(52600, 52700);
+        }
+    }
+
+    /**
+     * Repository method with the Update annotation that makes an update by assigning the IdClass components to something else.
+     */
+    @Test
+    public void testIdClassUpdateAssignIdClassComponents() {
+        towns.add(new Town("Janesville", "Wisconsin", 65615, Set.of(608)));
+        try {
+            assertEquals(true, towns.existsById(TownId.of("Janesville", "Wisconsin")));
+
+            assertEquals(1, towns.replace("Janesville", "Wisconsin",
+                                          "Ames", "Iowa", Set.of(515), 66427));
+
+            assertEquals(false, towns.existsById(TownId.of("Janesville", "Wisconsin")));
+            assertEquals(true, towns.existsById(TownId.of("Ames", "Iowa")));
+
+            // TODO EclipseLink bug needs to be fixed:
+            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.experimental.web.Town.areaCodes to java.lang.Integer
+            //Town town = cities.findById(TownId.of("Decorah", "Iowa")).orElseThrow();
+            //assertEquals("Ames", town.name);
+            //assertEquals("Iowa", town.stateName);
+            //assertEquals(66427, town.population);
+            //assertEquals(Set.of(515), town.areaCodes);
+        } finally {
+            assertEquals(1, towns.deleteWithinPopulationRange(65000, 67000).length);
+        }
+    }
+
+    /**
+     * Repository method with the Update keyword that makes an update by assigning the IdClass instance to something else.
+     */
+    @Test
+    public void testIdClassUpdateKeyword() {
+        towns.add(new Town("Madison", "Wisconsin", 269840, Set.of(608)));
+        try {
+            assertEquals(true, towns.existsById(TownId.of("Madison", "Wisconsin")));
+
+            // TODO enable once IdClass is supported for @Update
+            // UnsupportedOperationException: @Assign IdClass
+            //assertEquals(1, cities.updateIdPopulationAndAreaCodes(TownId.of("Madison", "Wisconsin"), 269840,
+            //                                                      TownId.of("Des Moines", "Iowa"), 214133, Set.of(515)));
+
+            //assertEquals(false, cities.existsById(TownId.of("Madison", "Wisconsin")));
+            //assertEquals(true, cities.existsById(TownId.of("Des Moines", "Iowa")));
+
+            // TODO EclipseLink bug needs to be fixed:
+            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.experimental.web.Town.areaCodes to java.lang.Integer
+            //Town town = cities.findById(TownId.of("Des Moines", "Iowa")).orElseThrow();
+            //assertEquals("Des Moines", town.name);
+            //assertEquals("Iowa", town.stateName);
+            //assertEquals(214133, town.population);
+            //assertEquals(Set.of(515), town.areaCodes);
+        } finally {
+            assertEquals(1, towns.deleteWithinPopulationRange(214000, 270000).length);
+        }
     }
 
     /**
