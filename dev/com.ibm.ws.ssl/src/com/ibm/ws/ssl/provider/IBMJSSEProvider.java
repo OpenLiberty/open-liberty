@@ -62,8 +62,7 @@ public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvide
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "provider: " + ibmjceplusfipsprovider);
         }
-
-        if (fipsON != null && fipsON.equalsIgnoreCase("true") && ibmjceplusfipsprovider.equals("IBMJCEPlusFIPS") && isRunningBetaMode()) {
+        if (isRunningBetaMode() && "true".equalsIgnoreCase(fipsON) && "IBMJCEPlusFIPS".equalsIgnoreCase(ibmjceplusfipsprovider)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "fips is enabled and using IBMJCEPlusFIPS provider");
                 Tr.debug(tc, "key manager factory alg: " + JSSEProviderFactory.getKeyManagerFactoryAlgorithm());
