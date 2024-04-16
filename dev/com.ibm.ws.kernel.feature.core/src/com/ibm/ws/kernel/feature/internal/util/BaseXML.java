@@ -38,6 +38,15 @@ public class BaseXML {
         void accept(T consumed) throws E;
     }
 
+    public static void write(PrintStream output, FailableConsumer<PrintWriter, Exception> writer) throws Exception {
+        PrintWriter pW = new PrintWriter(output);
+        try {
+            writer.accept(pW);
+        } finally {
+            pW.flush();
+        }
+    }
+
     public static void write(File file, FailableConsumer<PrintWriter, Exception> writer) throws Exception {
         try (FileWriter fW = new FileWriter(file, !DO_APPEND);
                         PrintWriter pW = new PrintWriter(fW)) {
@@ -61,6 +70,10 @@ public class BaseXML {
 
         protected void println(String line) {
             pW.println(line);
+        }
+
+        public void flush() {
+            pW.flush();
         }
 
         @Override
@@ -565,28 +578,26 @@ public class BaseXML {
         }
     }
 
-    private static final long NS_IN_S = 1000000000L;
+    public static final long NS_IN_S = 1000000000L;
 
-    private static final long[] GAP_LIMIT =
-                { NS_IN_S / 10,           // 100,000,000
-                  NS_IN_S / 100,          //  10,000,000
-                  NS_IN_S / 1000,         //   1,000,000
-                  NS_IN_S / 10000,        //     100,000
-                  NS_IN_S / 100000,       //      10,000
-                  NS_IN_S / 1000000,      //       1,000
-                  NS_IN_S / 10000000,     //         100
-                  NS_IN_S / 100000000  }; //          10
+    private static final long[] GAP_LIMIT = { NS_IN_S / 10, // 100,000,000
+                                              NS_IN_S / 100, //  10,000,000
+                                              NS_IN_S / 1000, //   1,000,000
+                                              NS_IN_S / 10000, //     100,000
+                                              NS_IN_S / 100000, //      10,000
+                                              NS_IN_S / 1000000, //       1,000
+                                              NS_IN_S / 10000000, //         100
+                                              NS_IN_S / 100000000 }; //          10
 
-    private static final String[] GAPS =
-                { "",
-                  "0",
-                  "00",
-                  "000",
-                  "0000",
-                  "00000",
-                  "000000",
-                  "0000000",
-                  "00000000" };
+    private static final String[] GAPS = { "",
+                                           "0",
+                                           "00",
+                                           "000",
+                                           "0000",
+                                           "00000",
+                                           "000000",
+                                           "0000000",
+                                           "00000000" };
 
     public static String gap(long value) {
         int limitNo = 0;

@@ -21,7 +21,8 @@ package com.ibm.ws.kernel.feature.internal.util;
 //     <server/>
 //   </input>
 //   <output>
-//     <resolved>FeatureName</kernel>
+//     <dependent>FeatureName</dependent>
+//     <resolved>FeatureName</resolved>
 //   </output>
 // </case>
 // </cases>
@@ -42,4 +43,6 @@ public interface VerifyXMLConstants {
 
     String OUTPUT_TAG = "output";
     String RESOLVED_TAG = "resolved";
+    String KERNEL_ONLY_TAG = "kernelOnly";
+    String KERNEL_BLOCKED_TAG = "kernelBlocked";
 }

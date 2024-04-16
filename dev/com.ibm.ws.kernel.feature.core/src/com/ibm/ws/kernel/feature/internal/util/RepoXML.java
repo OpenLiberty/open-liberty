@@ -105,8 +105,12 @@ public class RepoXML extends BaseXML {
         write(file, new FailableConsumer<PrintWriter, Exception>() {
             @Override
             public void accept(PrintWriter pW) throws Exception {
-                try (RepoXMLWriter xW = new RepoXMLWriter(pW)) {
+                @SuppressWarnings("resource")
+                RepoXMLWriter xW = new RepoXMLWriter(pW);
+                try {
                     xW.write(features);
+                } finally {
+                    xW.flush();
                 }
             }
         });
@@ -116,8 +120,12 @@ public class RepoXML extends BaseXML {
         write(file, new FailableConsumer<PrintWriter, Exception>() {
             @Override
             public void accept(PrintWriter pW) throws Exception {
-                try (RepoXMLWriter xW = new RepoXMLWriter(pW)) {
+                @SuppressWarnings("resource")
+                RepoXMLWriter xW = new RepoXMLWriter(pW);
+                try {
                     xW.write(repo);
+                } finally {
+                    xW.flush();
                 }
             }
         });
@@ -142,7 +150,7 @@ public class RepoXML extends BaseXML {
 
         public void write(Repository repo) {
             List<ProvisioningFeatureDefinition> features = repo.getFeatures();
-            ProvisioningFeatureDefinition[] featuresArray = features.toArray( new ProvisioningFeatureDefinition[ features.size() ]);
+            ProvisioningFeatureDefinition[] featuresArray = features.toArray(new ProvisioningFeatureDefinition[features.size()]);
             Arrays.sort(featuresArray, RepoXML.COMPARE);
 
             openElement(REPOSITORY_TAG);
@@ -201,8 +209,8 @@ public class RepoXML extends BaseXML {
             printOptionalElement(VERSION_RANGE_TAG, resource.getVersionRange());
 
             List<String> tolerates = resource.getTolerates();
-            if ( (tolerates != null) && !tolerates.isEmpty() ) {
-                for ( String tolerate : tolerates ) {
+            if ((tolerates != null) && !tolerates.isEmpty()) {
+                for (String tolerate : tolerates) {
                     printElement(TOLERATE_TAG, tolerate);
                 }
             }

@@ -10,12 +10,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.kernel.feature.internal.test;
+package com.ibm.ws.feature.tests;
 
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -42,10 +41,12 @@ import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 
+import componenttest.common.apiservices.Bootstrap;
+
 /**
  * Feature resolution testing.
  */
-public class FeatureResolutionTest {
+public class FeatureResolutionUnitTestBase {
 
     public static void largeDashes(PrintStream stream) {
         stream.println("============================================================");
@@ -57,27 +58,28 @@ public class FeatureResolutionTest {
 
     //
 
-    private static VerifyData actualCases;
-
-    public static VerifyData getActualCases() {
-        return actualCases;
-    }
-
-    protected static void addActual(VerifyCase verifyCase) {
-        actualCases.addCase(verifyCase);
-    }
-
-    protected static void setupActual() {
-        actualCases = new VerifyData();
-    }
-
-    public static void printActual(PrintStream output) throws Exception {
-        VerifyXML.write(output, actualCases);
-    }
-
-    protected static void clearActual() {
-        actualCases = null;
-    }
+//    private static VerifyData actualCases;
+//
+//    public static VerifyData getActualCases() {
+//        return actualCases;
+//    }
+//
+//    protected static void addActual(VerifyCase verifyCase) {
+//        actualCases.addCase(verifyCase);
+//    }
+//
+//
+//    protected static void setupActual() {
+//        actualCases = new VerifyData();
+//    }
+//
+//    public static void printActual(PrintStream output) throws Exception {
+//        VerifyXML.write(output, actualCases);
+//    }
+//
+//    protected static void clearActual() {
+//        actualCases = null;
+//    }
 
     //
 
@@ -110,6 +112,8 @@ public class FeatureResolutionTest {
 
     public static void addFailure(String description, List<String> features, List<String> extra, List<String> missing) {
         failures.add(new FailureSummary(description, features, extra, missing));
+
+        System.out.println("Failures [ " + failures.size() + " ]");
     }
 
     public static void printFailures(PrintStream output) {
@@ -130,21 +134,30 @@ public class FeatureResolutionTest {
 
     //
 
-    public static final String UT_IMAGE_PATH = "/data/wlp";
-    public static final String FAT_IMAGE_PATH = "../build.image/wlp";
-
-    public static final String UT_BOOTSTRAP_LIB_PATH = "/data/wlp/lib";
-    public static final String FAT_BOOTSTRAP_LIB_PATH = "../build.image/wlp/lib";
-
-    public static final boolean IS_COMPLETE_BUILD = (new File(FAT_IMAGE_PATH)).exists();
-
-    public static final String IMAGE_PATH = (IS_COMPLETE_BUILD ? FAT_IMAGE_PATH : UT_IMAGE_PATH);
-    public static final String BOOTSTRAP_LIB_PATH = (IS_COMPLETE_BUILD ? FAT_BOOTSTRAP_LIB_PATH : UT_BOOTSTRAP_LIB_PATH);
-
-    public static File IMAGE_DIR = new File(IMAGE_PATH);
-    public static File BOOTSTRAP_LIB_DIR = new File(BOOTSTRAP_LIB_PATH);
-
     public static final String SERVER_NAME = "FeatureResolverTest";
+
+    public static String getServerName() {
+        return SERVER_NAME;
+    }
+
+    //
+
+    public static void doSetupClass(String serverName) throws Exception {
+        setupLocations();
+        setupRepo(serverName);
+        setupBeta();
+        // setupActual();
+    }
+
+    //
+
+    public static final String INSTALL_PATH_PROPERTY_NAME = "libertyInstallPath";
+
+    public static String IMAGE_PATH;
+    public static String BOOTSTRAP_LIB_PATH;
+
+    public static File IMAGE_DIR;
+    public static File BOOTSTRAP_LIB_DIR;
 
     public static File getImageDir() {
         return IMAGE_DIR;
@@ -154,24 +167,25 @@ public class FeatureResolutionTest {
         return BOOTSTRAP_LIB_DIR;
     }
 
-    public static String getServerName() {
-        return SERVER_NAME;
+    public static void setupLocations() throws Exception {
+        Bootstrap bootstrap = Bootstrap.getInstance(); // throws Exception
+
+        IMAGE_PATH = bootstrap.getValue(INSTALL_PATH_PROPERTY_NAME);
+        BOOTSTRAP_LIB_PATH = IMAGE_PATH + "/lib";
+
+        IMAGE_DIR = new File(IMAGE_PATH);
+        BOOTSTRAP_LIB_DIR = new File(BOOTSTRAP_LIB_PATH);
     }
 
-    public static void doSetupClass(File imageDir, File bootstrapLibDir, String serverName) throws Exception {
-        setupRepo(imageDir, bootstrapLibDir, serverName);
-        setupBeta();
-        setupActual();
-    }
+    //
 
-    public static void setupRepo(File imageDir, File bootstrapLibDir, String serverName) throws Exception {
-        System.out.println("Build type [ " + (IS_COMPLETE_BUILD ? "FAT" : "UnitTest") + " ]");
-        System.out.println("  Image directory [ " + imageDir.getAbsolutePath() + " ]");
-        System.out.println("  Bootstrap directory [ " + bootstrapLibDir.getAbsolutePath() + " ]");
-        System.out.println("Server [ " + serverName + " ]");
+    public static void setupRepo(String serverName) throws Exception {
+        System.out.println("Image   [ " + IMAGE_DIR.getAbsolutePath() + " ]");
+        System.out.println("BootLib [ " + BOOTSTRAP_LIB_DIR.getAbsolutePath() + " ]");
+        System.out.println("Server  [ " + serverName + " ]");
 
-        Utils.setInstallDir(imageDir);
-        KernelUtils.setBootStrapLibDir(bootstrapLibDir);
+        Utils.setInstallDir(IMAGE_DIR);
+        KernelUtils.setBootStrapLibDir(BOOTSTRAP_LIB_DIR);
         BundleRepositoryRegistry.initializeDefaults(serverName, true);
 
         FeatureRepository repoImpl = new FeatureRepository();
@@ -218,8 +232,8 @@ public class FeatureResolutionTest {
         printFailures(System.out);
         clearFailures();
 
-        printActual(System.out);
-        clearActual();
+        // printActual(System.out);
+        // clearActual();
 
         Utils.setInstallDir(null);
         KernelUtils.setBootStrapLibDir(null);
@@ -273,7 +287,7 @@ public class FeatureResolutionTest {
 
         List<Object[]> params = new ArrayList<>(cases.size());
         for (VerifyCase aCase : cases) {
-            params.add(new Object[] { aCase });
+            params.add(new Object[] { aCase.name, aCase });
         }
         return params;
     }
@@ -284,11 +298,17 @@ public class FeatureResolutionTest {
 
     //
 
-    public FeatureResolutionTest(VerifyCase testCase) {
+    public FeatureResolutionUnitTestBase(String name, VerifyCase testCase) {
+        this.name = name;
         this.testCase = testCase;
     }
 
+    private final String name;
     private final VerifyCase testCase;
+
+    public String getName() {
+        return name;
+    }
 
     public VerifyCase getTestCase() {
         return testCase;
@@ -360,7 +380,7 @@ public class FeatureResolutionTest {
 
         VerifyCase outputCase = new VerifyCase(inputCase, resolvedFeatures, durationNs);
 
-        addActual(outputCase);
+        // addActual(outputCase);
 
         List<String> warnings = new ArrayList<>();
         List<String> missing = new ArrayList<>();
@@ -369,6 +389,7 @@ public class FeatureResolutionTest {
         List<String> errors = VerifyDelta.compare(new RepoVisibilitySupplier(getRepository()),
                                                   null, warnings,
                                                   inputCase, outputCase,
+                                                  !VerifyDelta.UPDATED_USED_KERNEL,
                                                   extra, missing);
 
         if ((errors == null) || errors.isEmpty()) {
@@ -408,15 +429,24 @@ public class FeatureResolutionTest {
         }
     }
 
-    protected void write(String tag, VerifyCase verifyCase, PrintStream output) throws IOException {
+    protected void write(String tag, VerifyCase verifyCase, PrintStream output) {
         smallDashes(output);
         System.out.println(tag);
         smallDashes(output);
-        try (PrintWriter writer = new PrintWriter(System.out);
-                        VerifyXML.VerifyXMLWriter xmlWriter = new VerifyXML.VerifyXMLWriter(writer)) {
+        PrintWriter writer = new PrintWriter(output);
+
+        // Do not close the writer: 'output' is often System.out, which
+        // must not be closed.
+        @SuppressWarnings("resource")
+        VerifyXML.VerifyXMLWriter xmlWriter = new VerifyXML.VerifyXMLWriter(writer);
+
+        try {
             writer.println(tag);
             xmlWriter.write(verifyCase);
+        } finally {
+            xmlWriter.flush();
         }
+
         smallDashes(output);
     }
 }

@@ -254,7 +254,7 @@ public class KernelResolverRepository implements FeatureResolver.Repository {
      * @return The selected features.
      */
     @Override
-    public List<ProvisioningFeatureDefinition> select(Predicate<ProvisioningFeatureDefinition> selector) {
+    public List<ProvisioningFeatureDefinition> select(FeatureResolver.Selector<ProvisioningFeatureDefinition> selector) {
         // DO NOT USE 'getAllFeatures': That selects the preferred version of each feature.
 
         if (selector == null) {

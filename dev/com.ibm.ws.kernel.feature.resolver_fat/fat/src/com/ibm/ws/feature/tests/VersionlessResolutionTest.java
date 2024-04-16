@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.Assert;
 
 // import org.junit.Assert;
 
@@ -38,6 +38,8 @@ public class VersionlessResolutionTest {
 
     public static final String SERVER_NAME = "verify";
 
+    public static final String[] ALLOWED_ERRORS = { "CWWKF0001E", "CWWKF0048E" };
+
     // Expected results:
     //
     // open-liberty/dev/com.ibm.ws.kernel.feature.resolver_fat/publish/verify/expected.xml
@@ -50,15 +52,20 @@ public class VersionlessResolutionTest {
     //
     // When updating the expected results, copy the actual results to the root publish folder.
 
-    public static final String EXPECTED_PATH = "publish/verify/expected.xml";
-    public static final String ACTUAL_PATH = "build/verify/actual.xml";
     public static final String REPO_PATH = "build/verify/repo.xml";
+
+    public static final String ACTUAL_PATH = "build/verify/actual.xml";
+    public static final String DURATIONS_PATH = "build/verify/durations.txt";
+
+    public static final String EXPECTED_PATH = "publish/verify/expected.xml";
 
     public static File repoFile;
     public static String repoPath;
 
     public static File actualResultsFile;
     public static String actualResultsPath;
+    public static File durationsFile;
+    public static String durationsPath;
     public static VerifyData actualResults;
 
     public static File expectedResultsFile;
@@ -74,6 +81,10 @@ public class VersionlessResolutionTest {
         actualResultsFile = new File(ACTUAL_PATH);
         actualResultsPath = actualResultsFile.getAbsolutePath();
         System.out.println("Verifying: Actual results path [ " + actualResultsPath + " ]");
+
+        durationsFile = new File(DURATIONS_PATH);
+        durationsPath = durationsFile.getAbsolutePath();
+        System.out.println("Verifying: Durations path [ " + durationsPath + " ]");
 
         expectedResultsFile = new File(EXPECTED_PATH);
         expectedResultsPath = expectedResultsFile.getAbsolutePath();
@@ -91,8 +102,7 @@ public class VersionlessResolutionTest {
             Assert.fail("No expected [ " + expectedResultsPath + " ]");
 
         } else {
-
-            Map<String, List<String>> errors = VerifyDelta.compare(expectedResults, expectedResults);
+            Map<String, List<String>> errors = VerifyDelta.compare(expectedResults, expectedResults, !VerifyDelta.UPDATED_USED_KERNEL);
             if (!errors.isEmpty()) {
                 String firstError = displayErrors("Expected vs Expected", errors);
                 Assert.fail("Base comparison failure: First error: [ " + firstError + " ]");
@@ -104,21 +114,28 @@ public class VersionlessResolutionTest {
     public void verifyResolution() throws Exception {
         ensureDirectory(repoFile, repoPath);
         ensureDirectory(actualResultsFile, actualResultsPath);
+        ensureDirectory(durationsFile, durationsPath);
 
         LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         server.addEnvVar(VerifyEnv.REPO_PROPERTY_NAME, repoPath);
         server.addEnvVar(VerifyEnv.RESULTS_PROPERTY_NAME, actualResultsPath);
+        server.addEnvVar(VerifyEnv.DURATIONS_PROPERTY_NAME, durationsPath);
 
         server.startServer();
         try {
             // EMPTY
         } finally {
-            server.stopServer("CWWKF0001E");
+            server.stopServerAlways(ALLOWED_ERRORS);
         }
 
         if (!actualResultsFile.exists()) {
             Assert.fail("No actual results [ " + actualResultsPath + " ]");
-        } else if (expectedResults == null) {
+        }
+        if (!durationsFile.exists()) {
+            Assert.fail("No durations [ " + durationsPath + " ]");
+        }
+
+        if (expectedResults == null) {
             Assert.fail("No expected results [ " + expectedResultsPath + " ]");
         } else {
             actualResults = load("Actual", actualResultsPath);
@@ -131,7 +148,7 @@ public class VersionlessResolutionTest {
     protected void verify() throws Exception {
         System.out.println("Verifying: Expected [ " + expectedResultsPath + " ]; Actual [ " + actualResultsPath + " ]");
 
-        Map<String, List<String>> errors = VerifyDelta.compare(expectedResults, actualResults);
+        Map<String, List<String>> errors = VerifyDelta.compare(expectedResults, actualResults, !VerifyDelta.UPDATED_USED_KERNEL);
 
         if (errors.isEmpty()) {
             System.out.println("All cases pass");

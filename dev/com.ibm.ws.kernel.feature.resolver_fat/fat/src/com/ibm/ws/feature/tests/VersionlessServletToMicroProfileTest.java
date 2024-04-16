@@ -22,7 +22,7 @@ public class VersionlessServletToMicroProfileTest extends VersionlessTestBase {
 
     public static final String SERVER_NAME_SERVLET3_HEALTH = "Servlet3toHealth";
 
-    public static final String ALLOWED_ERRORS = "CWWKF0001E";
+    public static final String[] ALLOWED_ERRORS = { "CWWKF0001E", "CWWKF0048E" };
 
     @Test
     public void servlet3HealthMaxTest() throws Exception {

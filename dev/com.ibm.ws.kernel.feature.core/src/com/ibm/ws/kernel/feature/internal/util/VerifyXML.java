@@ -15,6 +15,8 @@ import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.CLIENT_
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.DESCRIPTION_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.DURATION_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.INPUT_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.KERNEL_BLOCKED_TAG;
+import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.KERNEL_ONLY_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.KERNEL_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.MULTIPLE_TAG;
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.NAME_TAG;
@@ -24,6 +26,7 @@ import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.ROOT_TA
 import static com.ibm.ws.kernel.feature.internal.util.VerifyXMLConstants.SERVER_TAG;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
@@ -36,14 +39,90 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyInput;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyOutput;
 
 public class VerifyXML extends BaseXML {
+    public static void writeDurations(File file, List<LazySupplier<VerifyCase>> cases) throws Exception {
+        try (FileWriter fW = new FileWriter(file, !DO_APPEND);
+                        PrintWriter pW = new PrintWriter(fW)) {
+            writeDurations(pW, cases);
+        }
+    }
+
+    public static void writeDurations(PrintWriter output, List<LazySupplier<VerifyCase>> cases) throws Exception {
+        StringBuilder lineBuilder = new StringBuilder();
+
+        for (LazySupplier<VerifyCase> caseSupplier : cases) {
+            // Only write the case if the supplier was previously
+            // successful.
+
+            VerifyCase verifyCase = caseSupplier.getSupplied();
+            if (verifyCase == null) {
+                continue;
+            }
+
+            long durationNs = verifyCase.durationNs;
+            long ns = durationNs % BaseXML.NS_IN_S;
+            long s = (durationNs - ns) / BaseXML.NS_IN_S;
+
+            String nsText = Long.toString(ns);
+            String sText = Long.toString(s);
+
+            lineBuilder.append(verifyCase.name);
+            lineBuilder.append(' ');
+
+            lineBuilder.append(sText);
+            lineBuilder.append('.');
+            lineBuilder.append(BaseXML.gap(ns));
+            lineBuilder.append(nsText);
+            lineBuilder.append(' ');
+            lineBuilder.append('s');
+
+            output.println(lineBuilder);
+
+            lineBuilder.setLength(0);
+        }
+    }
+
     //
+
+    public static void writeCases(PrintStream output, final List<? extends VerifyCase> cases) throws Exception {
+        write(output, new FailableConsumer<PrintWriter, Exception>() {
+            @Override
+            public void accept(PrintWriter pW) throws Exception {
+                @SuppressWarnings("resource")
+                VerifyXMLWriter xW = new VerifyXMLWriter(pW);
+                try {
+                    xW.writeCases(cases);
+                } finally {
+                    xW.flush();
+                }
+            }
+        });
+    }
 
     public static void write(File file, final List<LazySupplier<VerifyCase>> cases) throws Exception {
         write(file, new FailableConsumer<PrintWriter, Exception>() {
             @Override
             public void accept(PrintWriter pW) throws Exception {
-                try (VerifyXMLWriter xW = new VerifyXMLWriter(pW)) {
+                @SuppressWarnings("resource")
+                VerifyXMLWriter xW = new VerifyXMLWriter(pW);
+                try {
                     xW.write(cases);
+                } finally {
+                    xW.flush();
+                }
+            }
+        });
+    }
+
+    public static void write(PrintStream output, final VerifyData verifyData) throws Exception {
+        write(output, new FailableConsumer<PrintWriter, Exception>() {
+            @Override
+            public void accept(PrintWriter pW) throws Exception {
+                @SuppressWarnings("resource")
+                VerifyXMLWriter xW = new VerifyXMLWriter(pW);
+                try {
+                    xW.write(verifyData);
+                } finally {
+                    xW.flush();
                 }
             }
         });
@@ -53,8 +132,12 @@ public class VerifyXML extends BaseXML {
         write(file, new FailableConsumer<PrintWriter, Exception>() {
             @Override
             public void accept(PrintWriter pW) throws Exception {
-                try (VerifyXMLWriter xW = new VerifyXMLWriter(pW)) {
+                @SuppressWarnings("resource")
+                VerifyXMLWriter xW = new VerifyXMLWriter(pW);
+                try {
                     xW.write(verifyData);
+                } finally {
+                    xW.flush();
                 }
             }
         });
@@ -70,6 +153,18 @@ public class VerifyXML extends BaseXML {
             upIndent();
 
             for (VerifyCase verifyCase : verifyData.cases) {
+                write(verifyCase);
+            }
+
+            downIndent();
+            closeElement(CASES_TAG);
+        }
+
+        public void writeCases(List<? extends VerifyCase> cases) throws Exception {
+            openElement(CASES_TAG);
+            upIndent();
+
+            for (VerifyCase verifyCase : cases) {
                 write(verifyCase);
             }
 
@@ -95,7 +190,11 @@ public class VerifyXML extends BaseXML {
 
             printElement(NAME_TAG, verifyCase.name);
             printElement(DESCRIPTION_TAG, verifyCase.description);
-            printElementNsAsS(DURATION_TAG, verifyCase.durationNs);
+
+            // Don't print this, since it makes comparing repository listings
+            // difficult.
+
+            // printElementNsAsS(DURATION_TAG, verifyCase.durationNs);
 
             write(verifyCase.input);
             write(verifyCase.output);
@@ -132,6 +231,12 @@ public class VerifyXML extends BaseXML {
             openElement(OUTPUT_TAG);
             upIndent();
 
+            for (String feature : verifyOutput.kernelOnly) {
+                printElement(KERNEL_ONLY_TAG, feature);
+            }
+            for (String feature : verifyOutput.kernelBlocked) {
+                printElement(KERNEL_BLOCKED_TAG, feature);
+            }
             for (String resolved : verifyOutput.resolved) {
                 printElement(RESOLVED_TAG, resolved);
             }

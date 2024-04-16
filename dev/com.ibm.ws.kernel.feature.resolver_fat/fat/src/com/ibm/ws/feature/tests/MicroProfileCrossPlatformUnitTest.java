@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.kernel.feature.internal.test;
+package com.ibm.ws.feature.tests;
 
 import java.io.File;
 import java.util.Collection;
@@ -29,10 +29,10 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
  * Micro profile cross platform tests.
  */
 @RunWith(Parameterized.class)
-public class MicroProfileCrossPlatformTest extends FeatureResolutionTest {
+public class MicroProfileCrossPlatformUnitTest extends FeatureResolutionUnitTestBase {
     @BeforeClass
     public static void setupClass() throws Exception {
-        doSetupClass(getImageDir(), getBootstrapLibDir(), getServerName());
+        doSetupClass(getServerName());
     }
 
     @AfterClass
@@ -40,19 +40,31 @@ public class MicroProfileCrossPlatformTest extends FeatureResolutionTest {
         doTearDownClass();
     }
 
-    public static final String DATA_FILE_PATH = "data/microprofile.xml";
+    public static final String DATA_FILE_PATH = "publish/verify/microprofile.xml";
 
     public static File getDataFile() {
         return new File(DATA_FILE_PATH);
     }
+
+    // To use change the name of parameterized tests, you say:
+    //
+    // @Parameters(name="namestring")
+    //
+    // namestring is a string, which can have the following special placeholders:
+    //
+    //   {index} - the index of this set of arguments. The default namestring is {index}.
+    //   {0} - the first parameter value from this invocation of the test.
+    //   {1} - the second parameter value
+    //   and so on
+    // @Parameterized.Parameters(name = "{0}")
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws Exception {
         return readCases(getDataFile());
     }
 
-    publpic MicroProfileCrossPlatformTest(VerifyCase testCase) throws Exception {
-        super(testCase);
+    public MicroProfileCrossPlatformUnitTest(String name, VerifyCase testCase) throws Exception {
+        super(name, testCase);
     }
 
     @Override
@@ -73,7 +85,7 @@ public class MicroProfileCrossPlatformTest extends FeatureResolutionTest {
     }
 
     @Test
-    public void testResolve() throws Exception {
+    public void testResolve_mp() throws Exception {
         doTestResolve();
     }
 }

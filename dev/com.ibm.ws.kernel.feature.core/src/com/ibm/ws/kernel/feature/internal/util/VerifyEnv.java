@@ -15,4 +15,7 @@ public interface VerifyEnv {
 
     String RESULTS_PROPERTY_NAME = "featureVerify_results";
     String RESULTS_FILE_NAME = System.getenv(RESULTS_PROPERTY_NAME);
+
+    String DURATIONS_PROPERTY_NAME = "featureVerify_durations";
+    String DURATIONS_FILE_NAME = System.getenv(DURATIONS_PROPERTY_NAME);
 }

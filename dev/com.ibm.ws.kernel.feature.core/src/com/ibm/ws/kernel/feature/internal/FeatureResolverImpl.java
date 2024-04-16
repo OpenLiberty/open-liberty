@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.osgi.framework.Version;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -43,14 +45,13 @@ import com.ibm.ws.kernel.feature.internal.util.RepoXML;
 import com.ibm.ws.kernel.feature.internal.util.Transformer;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
+import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
 import com.ibm.ws.kernel.feature.internal.util.VerifyEnv;
 import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
-
-import org.osgi.framework.Version;
 
 //import org.osgi.framework.Version;
 
@@ -141,52 +142,68 @@ public class FeatureResolverImpl implements FeatureResolver {
         parsedPreferredVersions = null;
     }
 
-    public static void verifyPreferredFeatures(Repository repository) {
-        if ( parsedPreferredVersions != null ) {
+    public static void parsePreferredVersions(Repository repository) {
+        if (parsedPreferredVersions != null) {
             return;
         }
 
-        String[] preferredVersions = (preferredFeatureVersions == null) ? new String[] {} : preferredFeatureVersions.split(",");
-        String[][] parsedVersions = new String[preferredVersions.length][2];
+        if (preferredFeatureVersions == null) {
+            parsedPreferredVersions = new String[][] {};
+            return;
+        }
 
-        StringBuilder ususableMsg = null;
+        String[] rawPrefs = preferredFeatureVersions.split(",");
+        String[][] parsedPrefs = new String[rawPrefs.length][2];
+
+        StringBuilder unusableMsg = null;
         int numUnusable = 0;
 
-        for (int prefNo = 0; prefNo < preferredVersions.length; prefNo++) {
-            String preferredVersion = preferredVersions[prefNo].trim();
+        StringBuilder missingMsg = null;
+        int numMissing = 0;
 
-            String[] parsedFeature = parseNameAndVersion(preferredVersion);
-            String parsedName = parsedFeature[0];
-            String parsedVersion = parsedFeature[1];
+        for (int prefNo = 0; prefNo < rawPrefs.length; prefNo++) {
+            String pref = rawPrefs[prefNo].trim();
 
-            if ( ((parsedName != null) && !parsedName.isEmpty()) &&
-                 ((parsedVersion != null) && !parsedVersion.isEmpty()) &&
-                 (repository.getFeature(preferredVersion) != null) ) {
+            String[] parsedPref = parseNameAndVersion(pref);
+            String prefName = parsedPref[0];
+            String prefVersion = parsedPref[1];
 
-                parsedVersions[prefNo - numUnusable] = parsedFeature;
-
+            if (((prefName != null) && !prefName.isEmpty()) &&
+                ((prefVersion != null) && !prefVersion.isEmpty())) {
+                if (repository.getFeature(pref) != null) {
+                    parsedPrefs[prefNo - (numUnusable + numMissing)] = parsedPref;
+                } else {
+                    numMissing++;
+                    missingMsg = append(missingMsg, pref);
+                }
             } else {
                 numUnusable++;
-                if ( ususableMsg != null ) {
-                    ususableMsg.append(',');
-                } else {
-                    ususableMsg = new StringBuilder();
-                }
-                ususableMsg.append('"');
-                ususableMsg.append(preferredVersion);
-                ususableMsg.append('"');
+                unusableMsg = append(unusableMsg, pref);
             }
         }
 
-        if ( numUnusable == 0 ) {
-            parsedPreferredVersions = parsedVersions;
+        if ((numUnusable == 0) && (numMissing == 0)) {
+            parsedPreferredVersions = parsedPrefs;
+
         } else {
-            parsedPreferredVersions = Arrays.copyOf(parsedVersions, parsedVersions.length - numUnusable);
+            parsedPreferredVersions = Arrays.copyOf(parsedPrefs, parsedPrefs.length - (numMissing + numUnusable));
 
             ususableMsg.insert(0, "Removed unsable entries from PREFERRED_FEATURE_VERSIONS [ ");
             ususableMsg.append(" ]");
             trace(ususableMsg.toString());
         }
+    }
+
+    private static StringBuilder append(StringBuilder builder, String value) {
+        if (builder != null) {
+            builder.append(',');
+        } else {
+            builder = new StringBuilder(1 + value.length() + 1);
+        }
+        builder.append('"');
+        builder.append(value);
+        builder.append('"');
+        return builder;
     }
 
     private static Map<String, String[]> parseNAV = new HashMap<String, String[]>();
@@ -244,7 +261,8 @@ public class FeatureResolverImpl implements FeatureResolver {
             generate(repository,
                      allowedMultipleVersions,
                      kernelFeatures,
-                     VerifyEnv.RESULTS_FILE_NAME);
+                     VerifyEnv.RESULTS_FILE_NAME,
+                     VerifyEnv.DURATIONS_FILE_NAME);
         }
 
         return doResolve(repository,
@@ -290,21 +308,37 @@ public class FeatureResolverImpl implements FeatureResolver {
     private void generate(Repository repository,
                           Set<String> allowedMultiple,
                           Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                          String resultsFileName) {
+                          String resultsFileName,
+                          String durationsFileName) {
 
         File resultsFile = new File(resultsFileName);
         String resultsFilePath = resultsFile.getAbsolutePath();
 
         info("Performing feature resolution ...");
-
-        info("Resolving and writing to [ " + resultsFilePath + " ] ...");
         List<LazySupplier<VerifyCase>> cases = generate(repository, allowedMultiple, kernelFeatures);
+        info("Performing feature resolution ... done");
+
+        info("Writing to [ " + resultsFilePath + " ] ...");
         try {
             VerifyXML.write(resultsFile, cases);
-            info("Resolving and writing to [ " + resultsFilePath + " ] ... done");
+            info("Writing to [ " + resultsFilePath + " ] ... done");
         } catch ( Exception e ) {
             // FFDC
-            error("Failed resolving and writing to [ " + resultsFilePath + " ] ...");
+            error("Failed writing to [ " + resultsFilePath + " ] ...");
+        }
+
+        if ( durationsFileName != null ) {
+            File durationsFile = new File(durationsFileName);
+            String durationsFilePath = durationsFile.getAbsolutePath();
+
+            info("Writing durations to [ " + durationsFilePath + " ] ...");
+            try {
+                VerifyXML.writeDurations(durationsFile, cases);
+                info("Writing durations to [ " + durationsFilePath + " ] ... done");
+            } catch ( Exception e ) {
+                // FFDC
+                error("Failed writing durations to [ " + durationsFilePath + " ] ...");
+            }
         }
     }
 
@@ -445,16 +479,24 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         long startTimeNs = VerifyData.getTimeNs();
 
-        Result result = doResolve(repository,
-                                  kernelFeatures, rootFeatures, preResolved,
-                                  allowedMultiple, processTypes);
+        Result resultWithKernel = doResolve(repository,
+                                            kernelFeatures, rootFeatures, preResolved,
+                                            allowedMultiple, processTypes);
+
+        Collection<ProvisioningFeatureDefinition> emptyDefs = Collections.emptySet();
+        Result resultWithoutKernel = doResolve(repository,
+                                               emptyDefs, rootFeatures, preResolved,
+                                               allowedMultiple, processTypes);
 
         long endTimeNs = VerifyData.getTimeNs();
         long durationNs = endTimeNs - startTimeNs;
 
         info("Creating test result ... done [ " + Long.toString(durationNs) + " ns ]");
 
-        return asCase(allowedMultiple, processType, kernelFeatures, featureDef, result, durationNs);
+        return asCase(allowedMultiple, processType, kernelFeatures, featureDef,
+                      resultWithKernel,
+                      resultWithoutKernel,
+                      durationNs);
     }
 
     /**
@@ -467,9 +509,10 @@ public class FeatureResolverImpl implements FeatureResolver {
      *     during resolution.
      * @param kernelFeatures Kernel features to be used to perform the
      *     resolution.
-     * @param featureDef A single public feature used as the root resolution
+     * @param publicDef A single public feature used as the root resolution
      *     feature.
-     * @param result The feature resolution result.
+     * @param resultWithKernel The feature resolution result, using kernel features.
+     * @param resultWithKernel The feature resolution result, without using kernel features.
      * @param durationNS The resolution time, in nano-seconds.
      *
      * @return A verification case created from the resolution parameters and
@@ -479,7 +522,8 @@ public class FeatureResolverImpl implements FeatureResolver {
                                     ProcessType processType,
                                     Collection<ProvisioningFeatureDefinition> kernelFeatures,
                                     ProvisioningFeatureDefinition publicDef,
-                                    Result result,
+                                    Result resultWithKernel,
+                                    Result resultWithoutKernel,
                                     long durationNs) {
 
         // For now, only handle the distinction between null and an empty set.
@@ -487,10 +531,14 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         VerifyCase verifyCase = new VerifyCase();
 
-        verifyCase.name = "Resolution [ " + publicDef.getSymbolicName() + " ]" +
-                          " Multiple [ " + allowMultiple + " ]" +
-                          " Process [ " + processType + " ]";
-        verifyCase.description = "Singleton feature resolution";
+        verifyCase.name = ( publicDef.getSymbolicName() +
+                            "_" + processType +
+                            (allowMultiple ? "_n" : "") );
+
+        verifyCase.description =
+                        ( "Singleton [ " + publicDef.getSymbolicName() + " ]" +
+                          " [ " + processType + " ]" +
+                          (allowMultiple ? " [ Multiple ]" : "") );
 
         verifyCase.durationNs = durationNs;
 
@@ -508,11 +556,15 @@ public class FeatureResolverImpl implements FeatureResolver {
             verifyCase.input.addKernel(kernelDef.getSymbolicName());
         }
 
-        verifyCase.input.addRoot(publicDef.getIbmShortName());
+        verifyCase.input.addRoot(publicDef.getSymbolicName());
 
-        for ( String featureName : result.getResolvedFeatures() ) {
+        for ( String featureName : resultWithKernel.getResolvedFeatures() ) {
             verifyCase.output.addResolved(featureName);
         }
+
+        verifyCase.kernelAdjust(VerifyDelta.ORIGINAL_USED_KERNEL,
+                                resultWithoutKernel.getResolvedFeatures(),
+                                !VerifyDelta.UPDATED_USED_KERNEL);
 
         return verifyCase;
     }
@@ -532,14 +584,10 @@ public class FeatureResolverImpl implements FeatureResolver {
                              EnumSet<ProcessType> supportedProcessTypes) {
 
         if (isBeta) {
-            verifyPreferredFeatures(repository);
+            parsePreferredVersions(repository);
         }
 
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
-
-        if (isBeta) {
-            verifyVersionlessEnvVar(repository);
-        }
 
         // this checks if the pre-resolved exists in the repo;
         // if one does not exist then we start over with an empty set of pre-resolved

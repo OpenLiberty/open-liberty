@@ -22,7 +22,7 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
 
     public static final String SERVER_NAME_EE10 = "ee10toMP";
 
-    public static final String ALLOWED_ERRORS = "CWWKF0001E";
+    public static final String[] ALLOWED_ERRORS = { "CWWKF0001E", "CWWKF0048E" };
 
     @Test
     public void ee10toHealthAndMetricsMaxTest() throws Exception {
@@ -31,7 +31,7 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
                                    ",mpHealth-4.0,mpHealth-3.1,mpHealth-3.0,mpHealth-2.2,mpHealth-2.1" +
                                    ",mpHealth-2.0,mpHealth-1.0";
 
-        String[] expectedResolved = { "mpMetrics-5.0", "mpHealth-4.0" };
+        String[] expectedResolved = { "mpMetrics-5.1", "mpHealth-4.0" };
 
         test(SERVER_NAME_EE10, ALLOWED_ERRORS, preferredVersions, expectedResolved);
     }
@@ -96,14 +96,12 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
 
     public static final String SERVER_EE8 = "ee8toMP";
 
-    public static final String EXPECTED_ERROR = "CWWKF0001E";
-
     @Test
     public void envVarEE8Test() throws Exception {
         String preferredVersions = "mpMetrics-2.3,mpHealth-2.2";
         String[] expectedResolved = { "mpMetrics-2.3", "mpHealth-2.2" };
 
-        test(SERVER_EE8, EXPECTED_ERROR, preferredVersions, expectedResolved);
+        test(SERVER_EE8, ALLOWED_ERRORS, preferredVersions, expectedResolved);
     }
 
     public static final String SERVER_SERV4_HEALTH = "Servlet4toHealth";
@@ -113,7 +111,7 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
         String preferredVersions = "mpMetrics-2.3,mpHealth-2.2";
         String[] expectedResolved = { "mpHealth-2.2" };
 
-        test(SERVER_SERV4_HEALTH, EXPECTED_ERROR, preferredVersions, expectedResolved);
+        test(SERVER_SERV4_HEALTH, ALLOWED_ERRORS, preferredVersions, expectedResolved);
     }
 
     public static final String SERVER_SERV4_METRICS = "Servlet4toMetrics";
@@ -123,7 +121,7 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTestBase {
         String preferredVersions = "mpMetrics-3.0,mpHealth-2.2";
         String[] expectedResolved = { "mpMetrics-3.0" };
 
-        test(SERVER_SERV4_HEALTH, EXPECTED_ERROR, preferredVersions, expectedResolved);
+        test(SERVER_SERV4_METRICS, ALLOWED_ERRORS, preferredVersions, expectedResolved);
     }
 
     //

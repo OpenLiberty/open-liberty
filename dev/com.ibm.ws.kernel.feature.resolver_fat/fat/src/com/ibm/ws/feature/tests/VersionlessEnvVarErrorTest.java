@@ -36,7 +36,7 @@ public class VersionlessEnvVarErrorTest {
             assertNotNull("Expected error message for no env var", errorMsg);
 
         } finally {
-            server.stopServer("CWWKF0001E", "CWWKF0048E");
+            server.stopServerAlways("CWWKF0001E", "CWWKF0048E");
         }
     }
 
@@ -52,7 +52,7 @@ public class VersionlessEnvVarErrorTest {
             String errorMsg = server.waitForStringInLog("CWWKF0049E");
             assertNotNull("Expected error message for no mpMetrics in env var", errorMsg);
         } finally {
-            server.stopServer("CWWKF0001E", "CWWKF0049E");
+            server.stopServerAlways("CWWKF0001E", "CWWKF0049E");
         }
     }
 }

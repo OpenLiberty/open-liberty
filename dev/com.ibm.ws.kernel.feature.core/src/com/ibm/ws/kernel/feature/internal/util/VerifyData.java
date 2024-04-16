@@ -10,81 +10,14 @@
 package com.ibm.ws.kernel.feature.internal.util;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.ibm.ws.kernel.feature.ProcessType;
-import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
-
 //Source restricted to java7.
 
 public class VerifyData {
-    /**
-     * Create a verification case from resolution parameters and from
-     * the result of resolving those parameters.
-     *
-     * @param allowedMultiple Control parameters: When non-null, allow
-     *                            multiple features.
-     * @param processType     Control parameter: Sets the process type active
-     *                            during resolution.
-     * @param kernelFeatures  Kernel features to be used to perform the
-     *                            resolution.
-     * @param featureDef      A single public feature used as the root resolution
-     *                            feature.
-     * @param result          The feature resolution result.
-     * @param durationNS      The resolution time, in nano-seconds.
-     *
-     * @return A verification case created from the resolution parameters and
-     *         the resolution result.
-     */
-    public static VerifyCase asCase(Set<String> allowedMultiple,
-                                    ProcessType processType,
-                                    Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                                    ProvisioningFeatureDefinition publicDef,
-                                    Result result,
-                                    long durationNs) {
-
-        // For now, only handle the distinction between null and an empty set.
-        boolean allowMultiple = (allowedMultiple != null);
-
-        VerifyCase verifyCase = new VerifyCase();
-
-        verifyCase.name = "Resolution [ " + publicDef.getSymbolicName() + " ]" +
-                          " Multiple [ " + allowMultiple + " ]" +
-                          " Process [ " + processType + " ]";
-        verifyCase.description = "Singleton feature resolution";
-
-        verifyCase.durationNs = durationNs;
-
-        if (allowMultiple) {
-            verifyCase.input.setMultiple();
-        }
-
-        if (processType == ProcessType.CLIENT) {
-            verifyCase.input.setClient();
-        } else if (processType == ProcessType.SERVER) {
-            verifyCase.input.setServer();
-        }
-
-        for (ProvisioningFeatureDefinition kernelDef : kernelFeatures) {
-            verifyCase.input.addKernel(kernelDef.getSymbolicName());
-        }
-
-        verifyCase.input.addRoot(publicDef.getIbmShortName());
-
-        for (String featureName : result.getResolvedFeatures()) {
-            verifyCase.output.addResolved(featureName);
-        }
-
-        return verifyCase;
-    }
-
-    //
 
     public VerifyData() {
         this.cases = new ArrayList<>();
@@ -225,6 +158,12 @@ public class VerifyData {
             keyBuilder.setLength(0);
             return key;
         }
+
+        public void kernelAdjust(boolean usedKernel,
+                                 Set<String> altResolved, boolean altUsedKernel) {
+
+            VerifyDelta.kernelAdjust(this, usedKernel, altResolved, altUsedKernel);
+        }
     }
 
     public static class VerifyInput {
@@ -255,22 +194,6 @@ public class VerifyData {
         public void addRoot(String name) {
             roots.add(name);
         }
-
-        public EnumSet<ProcessType> getProcessTypes() {
-            if (isClient) {
-                if (isServer) {
-                    return EnumSet.of(ProcessType.CLIENT, ProcessType.SERVER);
-                } else {
-                    return EnumSet.of(ProcessType.CLIENT);
-                }
-            } else {
-                if (isServer) {
-                    return EnumSet.of(ProcessType.SERVER);
-                } else {
-                    return EnumSet.noneOf(ProcessType.class);
-                }
-            }
-        }
     }
 
     public static class VerifyOutput {
@@ -278,6 +201,18 @@ public class VerifyData {
 
         public void addResolved(String feature) {
             resolved.add(feature);
+        }
+
+        public final List<String> kernelOnly = new ArrayList<>();
+
+        public void addKernelOnly(String feature) {
+            kernelOnly.add(feature);
+        }
+
+        public final List<String> kernelBlocked = new ArrayList<>();
+
+        public void addKernelBlocked(String feature) {
+            kernelBlocked.add(feature);
         }
     }
 }

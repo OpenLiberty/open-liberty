@@ -48,13 +48,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javax.naming.ConfigurationException;
+
 import org.eclipse.equinox.region.RegionDigraph;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.Constants;
-import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.Version;
@@ -66,7 +67,6 @@ import org.osgi.framework.wiring.BundleRequirement;
 import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.resource.Requirement;
-import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -77,7 +77,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
-import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
 import com.ibm.websphere.ras.Tr;
@@ -1637,6 +1636,31 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         }
 
         return status;
+    }
+
+    /**
+     * Tell if a versioned feature is a version of a versionless feature.
+     * For example:
+     *
+     * <pre>
+     * "mpHealth" vs "mpHealth": false
+     * "mpHealth-3.0" vs "mpHealth": true
+     * "mpHealthx-3.0" vs "mpHealth": false
+     * </pre>
+     *
+     * @param versionedFeature   A versioned feature.
+     * @param versionlessFeature A versionless feature.
+     *
+     * @return True or false telling if the versioned feature is a version of
+     *         the versionless feature.
+     */
+    private static boolean isVersionOf(String versionedFeature, String versionlessFeature) {
+        int fullLen = versionedFeature.length();
+        int headLen = versionlessFeature.length();
+
+        return ((fullLen > headLen) &&
+                (versionedFeature.charAt(headLen) == '-') &&
+                versionedFeature.regionMatches(true, 0, versionlessFeature, 0, headLen));
     }
 
     private boolean sameJavaSpecVersion() {

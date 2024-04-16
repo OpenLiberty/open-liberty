@@ -17,13 +17,12 @@ import java.util.Map;
 import java.util.Set;
 
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
-import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
 
 public class VerifyDelta {
-    public static Map<String, List<String>> compare(VerifyData expectedCases, VerifyData actualCases) {
+    public static Map<String, List<String>> compare(VerifyData expectedCases,
+                                                    VerifyData actualCases, boolean actualUsedKernel) {
         VerifyDelta delta = new VerifyDelta();
-        delta.doCompare(expectedCases, actualCases);
+        delta.doCompare(expectedCases, actualCases, actualUsedKernel);
         return delta.getErrors();
     }
 
@@ -121,7 +120,10 @@ public class VerifyDelta {
 
     public static final String GLOBAL_CASE_KEY = "global results";
 
-    public void doCompare(VerifyData expectedCases, VerifyData actualCases) {
+    public static final boolean USED_KERNEL = true;
+
+    public void doCompare(VerifyData expectedCases, VerifyData actualCases, boolean actualUsedKernel) {
+
         int actualSize = actualCases.cases.size();
         int expectedSize = expectedCases.cases.size();
         if (actualSize != expectedSize) {
@@ -159,7 +161,8 @@ public class VerifyDelta {
             List<String> caseWarnings = new ArrayList<>(0);
 
             List<String> caseErrors = compare(null, caseWarnings,
-                                              expectedCase, actualCase,
+                                              expectedCase,
+                                              actualCase, actualUsedKernel,
                                               null, null);
 
             if (caseErrors != null) {
@@ -172,36 +175,43 @@ public class VerifyDelta {
     }
 
     public static List<String> compare(List<String> caseErrors, List<String> caseWarnings,
-                                       VerifyCase expectedCase, VerifyCase actualCase,
+                                       VerifyCase expectedCase,
+                                       VerifyCase actualCase, boolean actualUsedKernel,
                                        List<String> extra, List<String> missing) {
 
         return compare(null,
                        caseErrors, caseWarnings,
-                       expectedCase.output.resolved, actualCase.output.resolved,
+                       expectedCase.output.resolved,
+                       expectedCase.output.kernelOnly,
+                       expectedCase.output.kernelBlocked,
+                       actualCase.output.resolved, actualUsedKernel,
                        extra, missing);
     }
 
-    public static List<String> compare(Repository repo,
+    public static List<String> compare(VisibilitySupplier repo,
                                        List<String> caseErrors, List<String> caseWarnings,
-                                       VerifyCase expectedCase, VerifyCase actualCase,
+                                       VerifyCase expectedCase,
+                                       VerifyCase actualCase, boolean actualUsedKernel,
                                        List<String> extra, List<String> missing) {
 
         return compare(repo,
                        caseErrors, caseWarnings,
-                       expectedCase.output.resolved, actualCase.output.resolved,
+                       expectedCase.output.resolved,
+                       expectedCase.output.kernelOnly,
+                       expectedCase.output.kernelBlocked,
+                       actualCase.output.resolved, actualUsedKernel,
                        extra, missing);
     }
 
-    protected static String getType(Repository repo, String featureName) {
-        ProvisioningFeatureDefinition featureDef = repo.getFeature(featureName);
-        if (featureDef == null) {
-            return "MISSING";
-        } else {
-            return featureDef.getVisibility().toString();
-        }
+    public static interface VisibilitySupplier {
+        String getVisibility(String featureName);
     }
 
-    protected static String addType(Repository repo, String featureName) {
+    protected static String getType(VisibilitySupplier repo, String featureName) {
+        return repo.getVisibility(featureName);
+    }
+
+    protected static String addType(VisibilitySupplier repo, String featureName) {
         if (repo == null) {
             return featureName;
         } else {
@@ -209,18 +219,26 @@ public class VerifyDelta {
         }
     }
 
-    public static List<String> compare(Repository repo,
+    public static List<String> compare(VisibilitySupplier repo,
                                        List<String> caseErrors, List<String> caseWarnings,
-                                       List<String> expected, List<String> actual,
+                                       List<String> expected,
+                                       List<String> expectedKernelOnly,
+                                       List<String> expectedKernelBlocked,
+                                       List<String> actual,
+                                       boolean actualUsedKernel,
                                        List<String> extra, List<String> missing) {
+
         int actualSize = actual.size();
+
         int expectedSize = expected.size();
+        expectedSize += (actualUsedKernel ? expectedKernelOnly.size() : expectedKernelBlocked.size());
         if (actualSize != expectedSize) {
             caseErrors = addError(caseErrors, "Incorrect count: expected [ " + expectedSize + " ] actual [ " + actualSize + " ]");
         }
 
-        Set<String> expectedSet = new HashSet<>(expected);
         Set<String> actualSet = new HashSet<>(actual);
+        Set<String> expectedSet = new HashSet<>(expected);
+        Set<String> expectedExtraSet = new HashSet<>(actualUsedKernel ? expectedKernelOnly : expectedKernelBlocked);
 
         for (String expectedElement : expectedSet) {
             if (!actualSet.contains(expectedElement)) {
@@ -231,38 +249,141 @@ public class VerifyDelta {
             }
         }
 
+        String usedKernelTag = (actualUsedKernel ? "Kernel Only" : "Kernel Blocked");
+
+        for (String expectedElement : expectedExtraSet) {
+            if (!actualSet.contains(expectedElement)) {
+                if (missing != null) {
+                    missing.add(expectedElement);
+                }
+                caseErrors = addError(caseErrors, "Missing [ " + addType(repo, expectedElement) + " ]" + usedKernelTag);
+            }
+        }
+
         for (String actualElement : actualSet) {
-            if (!expectedSet.contains(actualElement)) {
+            String extraTag;
+            if (expectedSet.contains(actualElement)) {
+                extraTag = null;
+            } else if (expectedKernelOnly.contains(actualElement)) {
+                if (actualUsedKernel) {
+                    extraTag = null;
+                } else {
+                    extraTag = "Extra kernel only";
+                }
+            } else if (expectedKernelBlocked.contains(actualElement)) {
+                if (actualUsedKernel) {
+                    extraTag = "Extra kernel blocked";
+                } else {
+                    extraTag = null;
+                }
+            } else {
+                extraTag = "Extra";
+            }
+
+            if (extraTag != null) {
                 if (extra != null) {
                     extra.add(actualElement);
                 }
-                caseErrors = addError(caseErrors, "Extra   [ " + addType(repo, actualElement) + " ]");
+                caseErrors = addError(caseErrors, extraTag + " [ " + addType(repo, actualElement) + " ]");
             }
         }
 
-        int minSize = ((actualSize > expectedSize) ? expectedSize : actualSize);
+        // Don't bother with the order if the resolved are incorrect.  The order
+        // is likely wildly off because of omissions.
 
-        String orderError = null;
+        if (caseErrors == null) {
+            int minSize = ((actualSize > expectedSize) ? expectedSize : actualSize);
 
-        for (int elementNo = 0; (orderError == null) && (elementNo < minSize); elementNo++) {
-            String expectedAt = expected.get(elementNo);
-            String actualAt = actual.get(elementNo);
+            String orderError = null;
 
-            if (!expectedAt.contentEquals(actualAt)) {
-                orderError = "Order error at [ " + elementNo + " ]" +
-                             ": Expected [ " + expectedAt + " ]" +
-                             " Actual [ " + actualAt + " ]";
+            // Only test the order of elements which are unaffected
+            // by the presence of kernel features.
+
+            // Always consume this actual.
+            //
+            // Only consume the expected if the actual is in the
+            // unaffected features.
+
+            int actualNo = 0;
+            int expectedNo = 0;
+            while ((orderError == null) && (actualNo < minSize)) {
+                String actualAt = actual.get(actualNo);
+                actualNo++;
+                if (expectedExtraSet.contains(actualAt)) {
+                    continue;
+                }
+
+                String expectedAt = expected.get(expectedNo);
+                expectedNo++;
+
+                if (!expectedAt.contentEquals(actualAt)) {
+                    orderError = "Order error at [ " + (actualNo - 1) + " ]" +
+                                 ": Expected [ " + expectedAt + " ]" +
+                                 " Actual [ " + actualAt + " ]";
+                }
             }
-        }
 
-        if (orderError != null) {
-            if (caseWarnings != null) {
-                caseWarnings.add(orderError);
-            } else {
-                caseErrors = addError(caseErrors, orderError);
+            if (orderError != null) {
+                if (caseWarnings != null) {
+                    caseWarnings.add(orderError);
+                } else {
+                    caseErrors = addError(caseErrors, orderError);
+                }
             }
         }
 
         return caseErrors;
+    }
+
+    public static final boolean ORIGINAL_USED_KERNEL = true;
+    public static final boolean UPDATED_USED_KERNEL = true;
+
+    public static void kernelAdjust(VerifyCase original, boolean originalUsedKernel,
+                                    Set<String> updatedResolved, boolean updatedUsedKernel) {
+
+        if (originalUsedKernel == updatedUsedKernel) {
+            return; // Unexpected; nothing to do.
+        }
+
+        // If the original used kernel features, and the updated did not use kernel features,
+        // then features added by the updated resolved features kernel blocked, and the
+        // the features moved by the updated resolved features are kernel only.
+        //
+        // Conversely, if the updated used kernel features, the added features are kernel only
+        // and the removed features are kernel blocked.
+
+        List<String> added;
+        List<String> removed;
+        if (originalUsedKernel) {
+            added = original.output.kernelBlocked;
+            removed = original.output.kernelOnly;
+        } else {
+            added = original.output.kernelBlocked;
+            removed = original.output.kernelOnly;
+        }
+
+        moveDifference(original.output.resolved, updatedResolved, added, removed);
+    }
+
+    protected static void moveDifference(List<String> original, Set<String> updated,
+                                         List<String> added, List<String> removed) {
+
+        int numOriginal = original.size();
+        for (int originalNo = 0; originalNo < numOriginal; originalNo++) {
+            String originalElement = original.get(originalNo);
+            if (!updated.contains(originalElement)) {
+                removed.add(originalElement);
+                original.remove(originalNo);
+                numOriginal--;
+            }
+        }
+
+        Set<String> originalSet = new HashSet<>(original);
+
+        for (String updatedElement : updated) {
+            if (!originalSet.contains(updatedElement)) {
+                added.add(updatedElement);
+            }
+        }
     }
 }

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
+// import org.junit.Assert;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -27,7 +28,7 @@ public class VersionlessTestBase {
         void accept(T value) throws E;
     }
 
-    public void withServer(String serverName, String allowedErrors, String preferredVersions,
+    public void withServer(String serverName, String[] allowedErrors, String preferredVersions,
                            String[] expectedResolved,
                            FailableConsumer<LibertyServer, Exception> action) throws Exception {
         LibertyServer server = LibertyServerFactory.getLibertyServer(serverName);
@@ -58,12 +59,12 @@ public class VersionlessTestBase {
         }
     }
 
-    public void test(String serverName, String allowedErrors, String preferredVersions,
+    public void test(String serverName, String[] allowedErrors, String preferredVersions,
                      String[] expectedResolved) throws Exception {
         test(serverName, allowedErrors, preferredVersions, expectedResolved, null);
     }
 
-    public void test(String serverName, String allowedErrors, String preferredVersions,
+    public void test(String serverName, String[] allowedErrors, String preferredVersions,
                      String[] expectedResolved, String[] expectedFailed) throws Exception {
         withServer(serverName, allowedErrors, preferredVersions, expectedResolved, (LibertyServer server) -> {
 

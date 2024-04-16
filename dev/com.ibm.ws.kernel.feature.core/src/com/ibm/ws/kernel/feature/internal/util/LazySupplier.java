@@ -14,6 +14,10 @@ public abstract class LazySupplier<T> {
 
     public abstract T supply();
 
+    public T getSupplied() {
+        return supplied;
+    }
+
     public T get() {
         if (supplied == null) {
             supplied = supply();
