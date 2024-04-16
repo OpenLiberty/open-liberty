@@ -14,6 +14,7 @@ package com.ibm.ws.feature.tests;
 
 import static org.junit.Assert.fail;
 
+import java.beans.Visibility;
 import java.io.File;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -24,10 +25,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
-import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.feature.ProcessType;
-import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureRepository;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData;
@@ -36,12 +35,7 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
 import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
-
-import componenttest.common.apiservices.Bootstrap;
 
 /**
  * Feature resolution testing.
@@ -55,31 +49,6 @@ public class FeatureResolutionUnitTestBase {
     public static void smallDashes(PrintStream stream) {
         stream.println("------------------------------------------------------------");
     }
-
-    //
-
-//    private static VerifyData actualCases;
-//
-//    public static VerifyData getActualCases() {
-//        return actualCases;
-//    }
-//
-//    protected static void addActual(VerifyCase verifyCase) {
-//        actualCases.addCase(verifyCase);
-//    }
-//
-//
-//    protected static void setupActual() {
-//        actualCases = new VerifyData();
-//    }
-//
-//    public static void printActual(PrintStream output) throws Exception {
-//        VerifyXML.write(output, actualCases);
-//    }
-//
-//    protected static void clearActual() {
-//        actualCases = null;
-//    }
 
     //
 
@@ -146,7 +115,6 @@ public class FeatureResolutionUnitTestBase {
         setupLocations();
         setupRepo(serverName);
         setupBeta();
-        // setupActual();
     }
 
     //
@@ -232,9 +200,6 @@ public class FeatureResolutionUnitTestBase {
         printFailures(System.out);
         clearFailures();
 
-        // printActual(System.out);
-        // clearActual();
-
         Utils.setInstallDir(null);
         KernelUtils.setBootStrapLibDir(null);
     }
@@ -253,6 +218,51 @@ public class FeatureResolutionUnitTestBase {
 
     public static ProvisioningFeatureDefinition getFeature(String featureName) {
         return getRepository().getFeature(featureName);
+    }
+
+    private static List<String> publicFeatures;
+
+    public static List<String> getPublicFeatures() {
+        if (publicFeatures == null) {
+            List<String> features = new ArrayList<>();
+            for (ProvisioningFeatureDefinition featureDef : getRepository().getFeatures()) {
+                if (isPublic(featureDef)) {
+                    features.add(publicDef.getSymbolicName());
+                }
+            }
+            publicFeatures = features;
+        }
+        return publicFeatures;
+    }
+
+    private static List<String> versionlessFeatures;
+
+    public static List<String> getVersionlessFeatures() {
+        if (versionlessFeatures == null) {
+            List<String> features = new ArrayList<>();
+            for (String publicFeature : getPublicFeatures()) {
+                if (publicFeature.startsWith("io.openliberty.versionless")) {
+                    features.add(publicFeature);
+                }
+            }
+            versionlessFeatures = features;
+        }
+        return versionlessFeatures;
+    }
+
+    private static List<String> servletFeatures;
+
+    public static List<String> getServletFeatures() {
+        if (servletFeatures == null) {
+            List<String> features = new ArrayList<>();
+            for (String publicFeature : getPublicFeatures()) {
+                if (publicFeature.startsWith("servlet-")) {
+                    features.add(publicFeature);
+                }
+            }
+            servletFeatures = features;
+        }
+        return servletFeatures;
     }
 
     public static List<ProvisioningFeatureDefinition> ignoreFeatures(String tag, List<String> featureNames) {
@@ -379,8 +389,6 @@ public class FeatureResolutionUnitTestBase {
         resolvedFeatures.addAll(resultFeatures);
 
         VerifyCase outputCase = new VerifyCase(inputCase, resolvedFeatures, durationNs);
-
-        // addActual(outputCase);
 
         List<String> warnings = new ArrayList<>();
         List<String> missing = new ArrayList<>();

@@ -899,6 +899,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         //Gets the preferred feature version for a versionless feature from the PREFERRED_FEATURE_VERSIONS env var.
         //PREFERRED_FEATURE_VERSIONS=mpMetrics-5.1,mpMetrics-5.0,mpMetrics-4.0,mpHealth-5.0,mpHealth-3.1
+
         if (isBeta) {
             if (baseSymbolicName.startsWith("io.openliberty.internal.versionless.")) {
                 // parse and cache versionless feature versions
@@ -1126,6 +1127,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         private final Map<String, Collection<Chain>> _preResolveConflicts = new HashMap<String, Collection<Chain>>();
         private Permutation _current = _permutations.getFirst();
         private final Map<String, List<String>> versionless = new HashMap<String, List<String>>();
+
         private boolean triedVersionless = false;
 
         SelectionContext(FeatureResolver.Repository repository, Set<String> allowedMultipleVersions, EnumSet<ProcessType> supportedProcessTypes) {
@@ -1332,13 +1334,13 @@ public class FeatureResolverImpl implements FeatureResolver {
                         // found a good one, select it.
                         _current._selected.put(firstPostponedVersionless.getKey(), selected);
                     }
-        
                     // clean postponed since we will walk the tree again and find them again if necessary
                     _current._postponed.clear();
                     _current._postponedVersionless.clear();
                     return;
                 }
             }
+
             if(!!!_current._postponed.isEmpty()){
                 Map.Entry<String, Chains> firstPostponed = _current._postponed.entrySet().iterator().next();
                 // try to find a good selection
@@ -1347,7 +1349,6 @@ public class FeatureResolverImpl implements FeatureResolver {
                     // found a good one, select it.
                     _current._selected.put(firstPostponed.getKey(), selected);
                 }
-    
                 // clean postponed since we will walk the tree again and find them again if necessary
                 _current._postponed.clear();
                 _current._postponedVersionless.clear();
