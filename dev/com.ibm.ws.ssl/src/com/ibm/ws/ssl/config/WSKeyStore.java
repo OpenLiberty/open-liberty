@@ -124,6 +124,7 @@ public class WSKeyStore extends Properties {
 
     private static final String IBMPKCS11Impl_PROVIDER_NAME = "IBMPKCS11Impl";
     private static final String SUNPKCS11_PROVIDER_NAME = "SunPKCS11";
+
     private final String contextProvider = JSSEProviderFactory.getInstance().getContextProvider();
 
     /** SafKeyring prefixes **/
@@ -133,6 +134,13 @@ public class WSKeyStore extends Properties {
     private static final String PREFIX_SAFKEYRINGJCE = "safkeyringjce:";
     private static final String PREFIX_SAFKEYRINGJCEHYBRID = "safkeyringjcehybrid:";
     private static final String PREFIX_SAFKEYRINGJCECCA = "safkeyringjcecca:";
+
+    /** Constant: controller root alias */
+    static final String CONTROLLER_ROOT_KEY_ALIAS = "controllerRoot";
+    /** Constant: member root alias */
+    static final String MEMBER_ROOT_KEY_ALIAS = "memberRoot";
+    /** Constant: server identity alias */
+    static final String SERVER_IDENTITY_KEY_ALIAS = "serverIdentity";
 
     private final Map<String, SerializableProtectedString> certAliasInfo = new HashMap<String, SerializableProtectedString>();
 
@@ -1236,14 +1244,15 @@ public class WSKeyStore extends Properties {
             Tr.exit(tc, "provideExpirationWarnings");
     }
 
-    public boolean isSubjectAltNamesExist(WSKeyStore wsKeystore, String ksName) {
+    public boolean isCollectiveCertSubjectAltNamesExist(WSKeyStore wsKeystore, String ksName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "isSubjectAltNamesExist " + ksName);
+            Tr.entry(tc, "isCollectiveCertSubjectAltNamesExist " + ksName);
         KeyStore keystore = null;
         try {
             keystore = wsKeystore.getKeyStore(false, false, false);
-        } catch (Exception e1) {
-            // do nothing
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Exception getting the keystore, " + e);
         }
         if (keystore != null) {
             try {
@@ -1257,9 +1266,11 @@ public class WSKeyStore extends Properties {
                         if (null == cert_chain)
                             continue;
                         for (int i = 0; i < cert_chain.length; i++) {
-                            Collection<List<?>> san = getCertSan((X509Certificate) cert_chain[i]);
-                            if (san == null || san.isEmpty()) {
-                                return false;
+                            if (isDefaultServerIdentityCert((X509Certificate) cert_chain[i])) {
+                                if (!isSanExist((X509Certificate) cert_chain[i])) {
+                                    return false;
+                                }
+
                             }
                         }
                     }
@@ -1273,25 +1284,41 @@ public class WSKeyStore extends Properties {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "isSubjectAltNamesExist ", true);
+            Tr.exit(tc, "isCollectiveCertSubjectAltNamesExist ", true);
         return true;
     }
 
-    /**
-     * @param x509Certificate
-     * @return
-     */
-    private Collection<List<?>> getCertSan(X509Certificate x509Certificate) {
+    private boolean isDefaultServerIdentityCert(X509Certificate x509Certificate) {
+        boolean result = false;
+        String issuerDN = x509Certificate.getIssuerX500Principal().getName();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.debug(tc, "Certificate's Subject DN: " + x509Certificate.getSubjectX500Principal().getName() + " issuerDN: "
+                         + issuerDN);
+        if (issuerDN != null && (issuerDN.contains(MEMBER_ROOT_KEY_ALIAS) || issuerDN.contains(CONTROLLER_ROOT_KEY_ALIAS))) {
+            result = true;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "isDefaultServerIdentityCert ", result);
+        return result;
+    }
+
+    private boolean isSanExist(X509Certificate x509Certificate) {
+        boolean result = false;
         try {
             Collection<List<?>> san = x509Certificate.getSubjectAlternativeNames();
-            String dn = x509Certificate.getSubjectDN().getName();
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                Tr.debug(tc, "Certificate's SubjectDN: " + dn + " Subject Alternative Name: " + (san != null ? san.toString() : "NULL"));
-            return san;
+                Tr.debug(tc, "Certificate's Subject DN: " + x509Certificate.getSubjectX500Principal().getName() + " Subject Alternative Name: "
+                             + (san != null ? "<NOT NULL>" : "<NULL>"));
+            if (san != null)
+                result = true;
+
         } catch (CertificateParsingException e) {
-            // Do nothing
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Exception getting Certifificate subject alternative name, " + e);
         }
-        return null;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            Tr.exit(tc, "isSanExist ", result);
+        return result;
     }
 
     /**
