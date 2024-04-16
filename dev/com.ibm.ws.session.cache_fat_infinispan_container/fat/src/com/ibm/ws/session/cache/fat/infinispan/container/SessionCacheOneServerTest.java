@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package com.ibm.ws.session.cache.fat.infinispan.container;
 
 import static com.ibm.ws.session.cache.fat.infinispan.container.FATSuite.infinispan;
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.util.ArrayList;
@@ -422,7 +423,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
      * can be obtained and report statistics about the cache.
      */
     @Test
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, //Needs further attention for jakartaee 9
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES, //Needs further attention for jakartaee 9
                      CacheManagerRepeatAction.ID }) // Passes when run alone, fails when repeated
     public void testMXBeansEnabled() throws Exception {
         app.invokeServlet("testMXBeansEnabled", new ArrayList<>());
@@ -467,7 +468,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
      * Error Thrown: ISPN021011: Incompatible cache value types specified, expected class java.lang.String but class java.lang.Object was specified
      */
     @Test
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, //Needs further attention for jakartaee 9
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES, //Needs further attention for jakartaee 9
                      CacheManagerRepeatAction.ID }) // Passes when run alone, fails when repeated
     public void testInfinispanClassCastException() throws Exception {
         //This should not fail here as this is the first test suite running.

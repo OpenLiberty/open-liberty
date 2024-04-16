@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.JakartaEEAction;
@@ -71,6 +72,12 @@ public class FATSuite extends TestContainerSuite {
                                                         "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB")
                                             .fullFATOnly())
                             .andWith(new JakartaEE10Action()
+                                            .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerA",
+                                                        "com.ibm.ws.session.cache.fat.infinispan.container.timeoutServerB"))
+                            .andWith(FeatureReplacementAction.EE11_FEATURES()
                                             .forServers("com.ibm.ws.session.cache.fat.infinispan.container.server",
                                                         "com.ibm.ws.session.cache.fat.infinispan.container.serverA",
                                                         "com.ibm.ws.session.cache.fat.infinispan.container.serverB",
