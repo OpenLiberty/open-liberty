@@ -63,10 +63,13 @@ public class ConvergedHttpSessionContext31Impl extends HttpSessionContext31Impl 
         return ConvergedHttpSessionContextImpl.getSipBaseUrlForEncoding(_smc, contextPath, relativePath, scheme, this);
     }
 
-        /*
+    /*
      * Added for SIP/HTTP Converged App Support. SIP container calls this method via
      * com.ibm.wsspi.servlet.session.ConvergedAppUtils to get an HTTP session reference
      * for those HTTP sessions that belong to application sessions.
+     * 
+     * NOTE: This was copied from com.ibm.ws.sipcontainer/src/com/ibm/wsspi/sip/converge/ConvergedHttpSessionContextImpl.java
+     * Any changes should be applied to both methods. 
      */
     public HttpSession getHttpSessionById(String sessId) {
     	HttpSessionImpl sd = null;

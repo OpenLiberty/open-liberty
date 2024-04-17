@@ -25,7 +25,7 @@ Export-Package: \
   com.ibm.websphere.sip.*, \
   com.ibm.ws.sip.container.pmi.*, \
   com.ibm.ws.sip.container.was, \
-  com.ibm.sip.util.log;version=1.0.89, \
+  com.ibm.sip.util.log, \
   com.ibm.ws.sip.container.was.filters;thread-context=true, \
   com.ibm.ws.sip.container.was.message;thread-context=true, \
   com.ibm.wsspi.sip.*

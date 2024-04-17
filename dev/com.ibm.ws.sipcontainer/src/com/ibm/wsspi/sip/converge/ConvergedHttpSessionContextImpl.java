@@ -210,6 +210,9 @@ public class ConvergedHttpSessionContextImpl extends HttpSessionContextImpl impl
      * Added for SIP/HTTP Converged App Support. SIP container calls this method via
      * com.ibm.wsspi.servlet.session.ConvergedAppUtils to get an HTTP session reference
      * for those HTTP sessions that belong to application sessions.
+     * 
+     * NOTE: This method was duplicated to com.ibm.ws.sipcontainer.servlet.3.1/com/ibm/ws/sip/container/was/servlet31/converged/ConvergedHttpSessionContext31Impl.java
+     * Any changes should be applied to both methods. 
      */
     public HttpSession getHttpSessionById(String sessId) {
     	HttpSessionImpl sd = null;
