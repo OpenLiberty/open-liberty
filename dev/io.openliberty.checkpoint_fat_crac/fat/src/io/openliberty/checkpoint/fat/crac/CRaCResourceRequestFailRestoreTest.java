@@ -27,23 +27,23 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
-import io.openliberty.checkpoint.fat.crac.app.request.fail.incorrect.phase.CRaCResourceRequestFailIncorrectPhaseServlet;
+import io.openliberty.checkpoint.fat.crac.app.request.fail.restore.CRaCResourceRequestFailRestoreServlet;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @RunWith(FATRunner.class)
 @CheckpointTest
-public class CRaCResourceRequestPhaseAfterAppStartTest {
+public class CRaCResourceRequestFailRestoreTest {
     public static final String APP_NAME = "testApp";
-    public static final String APP_PACKAGE = CRaCResourceRequestFailIncorrectPhaseServlet.class.getPackage().getName();
+    public static final String APP_PACKAGE = CRaCResourceRequestFailRestoreServlet.class.getPackage().getName();
 
     @Rule
     public TestName testName = new TestName();
@@ -64,22 +64,30 @@ public class CRaCResourceRequestPhaseAfterAppStartTest {
 
     @Before
     public void setUp() throws Exception {
-        // AFTER_APP_START is the wrong phase, for app initiated checkpoint must use APP_REQUESTED
-        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, true, true, true, //
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.APP_REQUESTED, false, false, true, //
                         server -> {
                             assertNotNull("'SRVE0169I: ' message not found in log before rerstore",
                                           server.waitForStringInLogUsingMark("SRVE0169I: Loading Web Module: " + APP_NAME, 0));
-                            assertNotNull("'CWWKZ0001I: ' message not found in log.",
-                                          server.waitForStringInLogUsingMark("CWWKZ0001I: Application " + APP_NAME + " started", 0));
+                            assertNotNull("beforeCheckpoint not called",
+                                          server.waitForStringInLogUsingMark("TESTING - beforeCheckpoint " + 3, 0));
+                            assertNotNull("beforeCheckpoint not called",
+                                          server.waitForStringInLogUsingMark("TESTING - beforeCheckpoint " + 2, 0));
+                            assertNotNull("beforeCheckpoint not called",
+                                          server.waitForStringInLogUsingMark("TESTING - beforeCheckpoint " + 1, 0));
                         }));
+
     }
 
     @Test
     @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
-    public void testRequestCheckpointAfterStartPhase() throws Exception {
-        ProgramOutput checkpointOutput = server.startServer(getTestMethodNameOnly(testName) + ".log");
-        assertEquals("Wrong return code.", 72, checkpointOutput.getReturnCode());
-        assertNotNull("Application did not get CheckpointException", server.waitForStringInLogUsingMark("TESTING - got CheckpointException: CWWKC0461E", 0));
+    public void testRequestRestoreFail() throws Exception {
+        server.startServer(getTestMethodNameOnly(testName) + ".log");
+        ProgramOutput output = server.checkpointRestore();
+        int retureCode = output.getReturnCode();
+        assertEquals("Wrong return code for failed restore.", 82, retureCode);
+        assertNotNull("Applicaiton did not get RestoreException", server.waitForStringInLogUsingMark("TESTING - got RestoreException.", 0));
+        assertNotNull("'CWWKZ0001I: ' message not found in log.",
+                      server.waitForStringInLogUsingMark("CWWKZ0001I: Application " + APP_NAME + " started", 0));
     }
 
     @After

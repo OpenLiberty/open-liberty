@@ -29,6 +29,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.checkpoint.internal.criu.AppRequestedCheckpoint;
+import io.openliberty.checkpoint.internal.criu.CheckpointFailedException;
 import io.openliberty.checkpoint.spi.CheckpointHook;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
@@ -109,20 +111,37 @@ public class LibertyCheckpoint implements CheckpointHook {
         hooks.addLast(hook);
     }
 
+    @FFDCIgnore(CheckpointFailedException.class)
     public static void checkpointRestore() throws RestoreException, CheckpointException {
         debug(tc, () -> "Requesting an application initiated checkpoint.");
-        String errorMessage = Tr.formatMessage(tc, "CRAC_RESOURCE_REQUEST_CHECKPOINT_CWWKC0553");
-        final Exception fail = CheckpointPhase.INACTIVE == CheckpointPhase.getPhase() ? new UnsupportedOperationException(errorMessage) : new CheckpointException(errorMessage);
-        fail.fillInStackTrace();
-        // Add a hook to fail checkpoint in case afterAppStart checkpoint;
-        // We don't want to risk a bad application state after throwing the following exception
-        CheckpointPhase.getPhase().addMultiThreadedHook(new CheckpointHook() {
-            @Override
-            public void prepare() {
-                sneakyThrow(fail);
-            }
-        });
-        sneakyThrow(fail);
+        try {
+            AppRequestedCheckpoint.checkpoint();
+        } catch (CheckpointFailedException e) {
+            throwCRaCException(e);
+        }
+    }
+
+    static void throwCRaCException(CheckpointFailedException e) throws RestoreException, CheckpointException {
+        debug(tc, () -> "converting CheckpointFailedException to CRaC exception.");
+        if (e.isRestore()) {
+            Supplier<RestoreException> supplier = () -> new RestoreException(e.getMessage());
+            throw getCause(e, RestoreException.class, supplier);
+        } else {
+            Supplier<CheckpointException> supplier = () -> new CheckpointException(e.getMessage());
+            throw getCause(e, CheckpointException.class, supplier);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T extends Throwable> T getCause(Throwable t, Class<T> type, Supplier<T> supplier) {
+        Throwable cause = t.getCause();
+        while (cause != null && !(type.isInstance(cause))) {
+            cause = cause.getCause();
+        }
+        if (cause == null) {
+            cause = supplier.get().initCause(t);
+        }
+        return (T) cause;
     }
 
     @Trivial

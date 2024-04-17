@@ -464,7 +464,7 @@ public class CheckpointImplTest {
         setHooks(checkpoint, h1, h2, h3);
 
         try {
-            checkpoint.checkpoint();
+            checkpoint.checkpoint(CheckpointPhase.AFTER_APP_START);
             fail("Expected CheckpointFailed exception.");
         } catch (CheckpointFailedException e) {
             assertEquals("Wrong type.", Type.LIBERTY_PREPARE_FAILED, e.getType());
@@ -521,7 +521,7 @@ public class CheckpointImplTest {
         setHooks(checkpoint, h1, h2, h3);
 
         try {
-            checkpoint.checkpoint();
+            checkpoint.checkpoint(CheckpointPhase.AFTER_APP_START);
             fail("Expected CheckpointFailed exception.");
         } catch (CheckpointFailedException e) {
             assertEquals("Wrong type.", Type.LIBERTY_RESTORE_FAILED, e.getType());
@@ -590,7 +590,7 @@ public class CheckpointImplTest {
         ComponentContextHandler contextHandler = new ComponentContextHandler(new HashSet<>(Arrays.asList("notSupported1", "notSupported2")));
         CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(contextHandler), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
         try {
-            checkpoint.checkpoint();
+            checkpoint.checkpoint(CheckpointPhase.AFTER_APP_START);
         } catch (CheckpointFailedException e) {
             assertEquals("Unexpected type", Type.LIBERTY_PREPARE_FAILED, e.getType());
             String msg = e.getMessage();
@@ -605,7 +605,7 @@ public class CheckpointImplTest {
         WsLocationAdmin locAdmin = (WsLocationAdmin) SharedLocationManager.createLocations(testbuildDir, testName.getMethodName());
         ComponentContextHandler contextHandler = new ComponentContextHandler(new HashSet<>(Arrays.asList("supported1", "supported2")));
         CheckpointImpl checkpoint = new CheckpointImpl(createComponentContext(contextHandler), criu, locAdmin, CheckpointPhase.AFTER_APP_START);
-        checkpoint.checkpoint();
+        checkpoint.checkpoint(CheckpointPhase.AFTER_APP_START);
     }
 
     @Test
@@ -650,14 +650,14 @@ public class CheckpointImplTest {
     }
 
     private void checkDirectory(CheckpointImpl checkpoint, TestCRIU criu, WsLocationAdmin locAdmin) throws CheckpointFailedException {
-        checkpoint.checkpoint();
+        checkpoint.checkpoint(CheckpointPhase.AFTER_APP_START);
         assertTrue("Wrong file.", criu.imageDir.getAbsolutePath().contains(locAdmin.getServerName()));
     }
 
     private void checkFailDump(CheckpointImpl checkpoint, TestCRIU criu, WsLocationAdmin locAdmin) {
         criu.throwIOException = true;
         try {
-            checkpoint.checkpoint();
+            checkpoint.checkpoint(CheckpointPhase.AFTER_APP_START);
             fail("Expected CheckpointFailed exception.");
         } catch (CheckpointFailedException e) {
             assertEquals("Wrong type.", Type.SYSTEM_CHECKPOINT_FAILED, e.getType());

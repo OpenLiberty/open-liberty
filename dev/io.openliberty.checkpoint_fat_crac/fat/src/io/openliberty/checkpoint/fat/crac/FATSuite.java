@@ -31,7 +31,11 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 CRaCResourceRequestPhaseAfterAppStartTest.class,
                 CRaCResourceRequestPhaseBeforeAppStartTest.class,
                 CRaCResourceMultiAppTest.class,
-                CRaCMXBeanTest.class
+                CRaCMXBeanTest.class,
+                CRaCResourceRequestSucceedTest.class,
+                CRaCResourceRequestFailCheckpointTest.class,
+                CRaCResourceRequestFailRestoreTest.class,
+                CRaCResourceRequestMultiple.class
 })
 
 public class FATSuite {

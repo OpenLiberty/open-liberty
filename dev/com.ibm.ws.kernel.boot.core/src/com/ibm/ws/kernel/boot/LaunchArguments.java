@@ -322,6 +322,8 @@ public class LaunchArguments {
                 return CheckpointPhase.AFTER_APP_START.toString();
             case "beforeappstart":
                 return CheckpointPhase.BEFORE_APP_START.toString();
+            case "apprequested":
+                return CheckpointPhase.APP_REQUESTED.toString();
 
             //INACTIVE is not a valid command line option. It and any non-valid phase name passed in
             // map to themselves and are coded as errors by follow on argument handling.
@@ -344,6 +346,12 @@ public class LaunchArguments {
         }
 
         if (CheckpointPhase.getPhase() == CheckpointPhase.INACTIVE && checkpointPhase != null) {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.invalidPhaseName"), checkpointPhase));
+            System.out.println();
+            return ReturnCode.BAD_ARGUMENT;
+        }
+        // beta check for APP_REQUESTED
+        if (!isBetaEdition() && CheckpointPhase.getPhase() == CheckpointPhase.APP_REQUESTED) {
             System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("error.invalidPhaseName"), checkpointPhase));
             System.out.println();
             return ReturnCode.BAD_ARGUMENT;

@@ -32,13 +32,13 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.checkpoint.fat.crac.app.request.fail.notsupported.CRaCResourceRequestFailNotSupportedServlet;
+import io.openliberty.checkpoint.fat.crac.app.request.fail.incorrect.phase.CRaCResourceRequestFailIncorrectPhaseServlet;
 
 @RunWith(FATRunner.class)
 @CheckpointTest
 public class CRaCResourceRequestNotSupportedTest {
     public static final String APP_NAME = "testApp";
-    public static final String APP_PACKAGE = CRaCResourceRequestFailNotSupportedServlet.class.getPackage().getName();
+    public static final String APP_PACKAGE = CRaCResourceRequestFailIncorrectPhaseServlet.class.getPackage().getName();
 
     @Rule
     public TestName testName = new TestName();
@@ -65,7 +65,7 @@ public class CRaCResourceRequestNotSupportedTest {
     @Test
     public void testRequestCheckpointInactivePhase() throws Exception {
         server.startServer(getTestMethodNameOnly(testName) + ".log");
-        assertNotNull("Application did not get UnsupportedOperationException", server.waitForStringInLogUsingMark("TESTING - got UnsupportedOperationException: CWWKC0553E"));
+        assertNotNull("Applicaiton did not get CheckpointException", server.waitForStringInLogUsingMark("TESTING - got CheckpointException."));
     }
 
     @After
