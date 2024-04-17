@@ -23,6 +23,8 @@
 			<property name="appDeployTimeout">${tck_appDeployTimeout}</property>
 			<property name="appUndeployTimeout">${tck_appUndeployTimeout}</property>
 			<property name="testProtocol">rest</property>
+			<property name="deployType">xml</property>
+			<property name="apiTypeVisibility">spec, ibm-api, third-party, stable</property>
 		</configuration>
 	</container>
 </arquillian> 

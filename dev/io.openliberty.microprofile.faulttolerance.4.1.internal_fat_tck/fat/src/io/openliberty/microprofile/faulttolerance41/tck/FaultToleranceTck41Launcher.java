@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.microprofile.faulttolerance40.tck;
+package io.openliberty.microprofile.faulttolerance41.tck;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.MicroProfileActions;
@@ -42,14 +43,15 @@ import componenttest.topology.utils.tck.TCKRunner;
  * location.
  */
 @RunWith(FATRunner.class)
-public class FaultToleranceTck40Launcher {
+@Mode(TestMode.EXPERIMENTAL) //Enable this test when the fault tolerence 4.1 tck is published
+public class FaultToleranceTck41Launcher {
 
-    private static final String SERVER_NAME = "FaultTolerance40TCKServer";
+    private static final String SERVER_NAME = "FaultTolerance41TCKServer";
 
     private static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP61, MicroProfileActions.MP50);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
@@ -118,7 +120,7 @@ public class FaultToleranceTck40Launcher {
      */
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
-    public void launchFaultTolerance40TCK() throws Exception {
+    public void launchFaultTolerance41TCK() throws Exception {
         boolean isFullMode = TestModeFilter.shouldRun(TestMode.FULL);
 
         String suiteFileName = isFullMode ? "tck-suite.xml" : "tck-suite-lite.xml";
@@ -129,8 +131,8 @@ public class FaultToleranceTck40Launcher {
             additionalProps.put("timeoutMultiplier", "1.0");
         }
 
-        String bucketName = "io.openliberty.microprofile.faulttolerance.4.0.internal_fat_tck";
-        String testName = this.getClass() + ":launchFaultTolerance40TCK";
+        String bucketName = "io.openliberty.microprofile.faulttolerance.4.1.internal_fat_tck";
+        String testName = this.getClass() + ":launchFaultTolerance41TCK";
         Type type = Type.MICROPROFILE;
         String specName = "Fault Tolerance";
         TCKRunner.runTCK(server, bucketName, testName, type, specName, suiteFileName, additionalProps);

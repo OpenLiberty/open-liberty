@@ -7,10 +7,10 @@
     the specific language governing permissions and limitations under the License. -->
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="microprofile-faulttolerance-4.0-TCK" verbose="2"
+<suite name="microprofile-faulttolerance-4.1-TCK" verbose="2"
     configfailurepolicy="continue">
 
-    <test name="microprofile-faulttolerance 4.0 TCK">
+    <test name="microprofile-faulttolerance 4.1 TCK">
         <classes>
             <!-- Reduced test list for lite mode, retains coverage of core functionality -->
             <class name="org.eclipse.microprofile.fault.tolerance.tck.AsyncCancellationTest">
@@ -126,6 +126,23 @@
             <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.MetricsDisabledTest"></class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.RetryMetricTest"></class>
             <class name="org.eclipse.microprofile.fault.tolerance.tck.metrics.TimeoutMetricTest">
+                <methods>
+                    <include name="testTimeoutMetric"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.AllAnnotationTelemetryTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.BulkheadTelemetryTest">
+                <methods>
+                    <include name="bulkheadMetricTest"/>
+                    <include name="bulkheadMetricRejectionTest"/>
+                </methods>
+            </class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.CircuitBreakerTelemetryTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.ClassLevelTelemetryTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.FallbackTelemetryTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.FaultToleranceDisabledTelemetryTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.RetryTelemetryTest"></class>
+            <class name="org.eclipse.microprofile.fault.tolerance.tck.telemetryMetrics.TimeoutTelemetryTest">
                 <methods>
                     <include name="testTimeoutMetric"/>
                 </methods>
