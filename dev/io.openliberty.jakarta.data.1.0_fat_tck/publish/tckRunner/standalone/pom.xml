@@ -152,10 +152,10 @@
 						<java.util.logging.config.file>${basedir}/../logging.properties</java.util.logging.config.file>
 						<jimage.dir>${jimage.dir}</jimage.dir>
 						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.data-api.jar:${jimage.dir}/java.base:${jimage.dir}/java.rmi:${jimage.dir}/java.sql:${jimage.dir}/java.naming</signature.sigTestClasspath>
-						<jakarta.tck.profile>${jakarta.tck.profile}</jakarta.tck.profile>
+						<jakarta.tck.standalone>true</jakarta.tck.standalone>
 					</systemPropertyVariables>
 					<groups>${included.groups}</groups>
-					<reportNameSuffix>${jakarta.tck.profile}</reportNameSuffix>
+					<reportNameSuffix>${jakarta.profile}</reportNameSuffix>
 					<testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
 				</configuration>
 			</plugin>

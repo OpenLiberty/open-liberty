@@ -57,14 +57,14 @@ public class DataWebTckLauncher {
      * Run the TCK (controlled by autoFVT/publish/tckRunner/tck/*)
      */
     @Test
-    @Ignore("Broken by PageRequest/Sort decoupling") // TODO enable when we have RC1
+    @Ignore("Broken by PageRequest/Sort decoupling and TCK Profile change") // TODO enable when we have RC1
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchDataTckWebPersistence() throws Exception {
         // Test groups to run
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", server.getServerSharedPath() + "jimage/output/");
         additionalProps.put("tck_protocol", "servlet");
-        additionalProps.put("jakarta.tck.profile", "web");
+        additionalProps.put("jakarta.profile", "web");
 
         //Always skip signature tests on Web profile (already tested in core profile)
         additionalProps.put("included.groups", "web & persistence & !signature");
