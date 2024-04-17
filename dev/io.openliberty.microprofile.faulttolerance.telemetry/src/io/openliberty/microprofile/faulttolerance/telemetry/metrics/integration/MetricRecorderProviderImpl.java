@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.metrics_20;
+package io.openliberty.microprofile.faulttolerance.telemetry.metrics.integration;
 
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
@@ -22,9 +22,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
@@ -35,9 +33,12 @@ import com.ibm.ws.microprofile.faulttolerance.spi.MetricRecorderProvider;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
 import com.ibm.ws.microprofile.faulttolerance.utils.DummyMetricRecorder;
-import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
-@Component(name = "com.ibm.ws.microprofile.faulttolerance.metrics.integration.MetricRecorderProviderImpl", service = MetricRecorderProvider.class, configurationPolicy = IGNORE)
+import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
+import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
+import io.opentelemetry.api.metrics.Meter;
+
+@Component(configurationPolicy = IGNORE)
 public class MetricRecorderProviderImpl implements MetricRecorderProvider {
 
     private final static SecureAction secureAction = AccessController.doPrivileged(SecureAction.get());
@@ -55,9 +56,6 @@ public class MetricRecorderProviderImpl implements MetricRecorderProvider {
     private final Map<ClassLoader, Boolean> metricsEnabledCache = new WeakHashMap<>();
 
     private final static String CONFIG_METRICS_ENABLED = "MP_Fault_Tolerance_Metrics_Enabled";
-
-    @Reference
-    protected SharedMetricRegistries sharedRegistries;
 
     private final WeakHashMap<Method, MetricRecorder> recorders = new WeakHashMap<>();
 
@@ -78,16 +76,12 @@ public class MetricRecorderProviderImpl implements MetricRecorderProvider {
     private MetricRecorder createNewRecorder(Method method, RetryPolicy retryPolicy, CircuitBreakerPolicy circuitBreakerPolicy, TimeoutPolicy timeoutPolicy,
                                              BulkheadPolicy bulkheadPolicy, FallbackPolicy fallbackPolicy, AsyncType isAsync) {
         if (isMetricsEnabled(method.getDeclaringClass())) {
-            MetricRegistry registry = sharedRegistries.getOrCreate(MetricRegistry.Type.APPLICATION.getName());
-            return new MetricRecorderImpl(getMetricPrefix(method), registry, retryPolicy, circuitBreakerPolicy, timeoutPolicy, bulkheadPolicy, fallbackPolicy, isAsync);
+            Meter meter = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry().getMeter(OpenTelemetryConstants.INSTRUMENTATION_NAME);
+            return new MetricRecorderImpl(method.getDeclaringClass().getName() + "."
+                                          + method.getName(), meter, retryPolicy, circuitBreakerPolicy, timeoutPolicy, bulkheadPolicy, fallbackPolicy, isAsync);
         } else {
             return DummyMetricRecorder.get();
         }
-    }
-
-    private String getMetricPrefix(Method method) {
-        String name = "ft." + method.getDeclaringClass().getCanonicalName() + "." + method.getName();
-        return name;
     }
 
     private boolean isMetricsEnabled(Class<?> clazz) {
