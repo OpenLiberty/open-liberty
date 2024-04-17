@@ -448,6 +448,17 @@ public class VisibilityTest {
         // If they get marked beta, they should be removed from this list.
         expectedFailures.add("io.openliberty.persistentExecutor.internal.ee-10.0"); // the persistentExecutor feature is no ship
 
+        // Temporarily until mark them beta.
+        expectedFailures.add("io.openliberty.audit1.0.internal.ee-11.0");
+        expectedFailures.add("io.openliberty.constrainedDelegation1.0.internal.ee-11.0");
+        expectedFailures.add("io.openliberty.jwtSso1.0.internal.ee-11.0");
+        expectedFailures.add("io.openliberty.oauth2.0.internal.ee-11.0");
+        expectedFailures.add("io.openliberty.passwordUtilities1.0.internal.ee-11.0");
+        expectedFailures.add("io.openliberty.passwordUtilities1.1.internal.ee-11.0");
+        expectedFailures.add("io.openliberty.samlWeb2.0.internal.ee-11.0");
+        expectedFailures.add("io.openliberty.spnego1.0.internal.ee-11.0");
+        expectedFailures.add("io.openliberty.wsSecurity1.1.internal.jaxws-11.0");
+
         StringBuilder errorMessage = new StringBuilder();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
             String featureName = entry.getKey();
