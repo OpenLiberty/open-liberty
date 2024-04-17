@@ -57,7 +57,7 @@ public class CrossFeatureZipkinTest {
     private static final Class<?> c = CrossFeatureZipkinTest.class;
 
     public static ZipkinContainer zipkinContainer = new ZipkinContainer().withLogConsumer(new SimpleLogConsumer(ZipkinTest.class, "zipkin"));
-    public static RepeatTests repeat = FATSuite.allMPRepeats(CROSS_FEATURE_TELEMETRY_SERVER);
+    public static RepeatTests repeat = FATSuite.telemetry10and11Repeats(CROSS_FEATURE_TELEMETRY_SERVER);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(zipkinContainer).around(repeat);

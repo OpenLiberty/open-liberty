@@ -30,6 +30,7 @@ dependencies {
   requiredLibs 'com.google.protobuf:protobuf-java-util:3.19.2'
   requiredLibs 'io.opentelemetry:opentelemetry-api:1.19.0'
   requiredLibs 'io.opentelemetry:opentelemetry-semconv:1.19.0-alpha'
+  requiredLibs 'io.opentelemetry.semconv:opentelemetry-semconv:1.23.1-alpha'
   requiredLibs 'io.perfmark:perfmark-api:0.23.0'
   requiredLibs 'com.google.guava:failureaccess:1.0.1'
   requiredLibs project(':com.ibm.ws.com.google.guava')

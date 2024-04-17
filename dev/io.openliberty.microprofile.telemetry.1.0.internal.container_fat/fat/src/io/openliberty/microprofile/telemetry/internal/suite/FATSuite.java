@@ -64,7 +64,7 @@ public class FATSuite extends TestContainerSuite {
 
     public static RepeatTests allMPRepeats(String serverName) {
         return TelemetryActions.repeat(serverName, MicroProfileActions.MP60, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11,
-                                       MicroProfileActions.MP61);
+                                       MicroProfileActions.MP61, TelemetryActions.MP14_MPTEL20, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP50_MPTEL20, TelemetryActions.MP60_MPTEL20, TelemetryActions.MP61_MPTEL20);
     }
 
     public static RepeatTests mp60Repeat(String serverName) {
@@ -73,6 +73,14 @@ public class FATSuite extends TestContainerSuite {
 
     public static RepeatTests telemetry11Repeats(String serverName) {
         return TelemetryActions.repeat(serverName, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11, MicroProfileActions.MP61);
+    }
+
+    public static RepeatTests telemetry10and11Repeats(String serverName) {
+        return TelemetryActions.repeat(serverName, MicroProfileActions.MP60, TelemetryActions.MP14_MPTEL11, TelemetryActions.MP41_MPTEL11, TelemetryActions.MP50_MPTEL11, MicroProfileActions.MP61);
+    }
+
+    public static RepeatTests telemetry20Repeats(String serverName) {
+        return TelemetryActions.repeat(serverName, TelemetryActions.MP14_MPTEL20, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP50_MPTEL20, TelemetryActions.MP60_MPTEL20, TelemetryActions.MP61_MPTEL20);
     }
 
 }

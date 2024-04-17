@@ -40,6 +40,7 @@
     <!-- Required by Tests -->
     <!-- Test makes requests to localhost using HttpUrlConnection -->
     <javaPermission className="java.net.URLPermission" name="http://localhost:*/-" actions="*" />
+
     
     <include location="../fatTestPorts.xml" />
 </server>

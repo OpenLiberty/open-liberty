@@ -43,7 +43,7 @@ import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryCl
 public class JaegerLegacyTest extends JaegerBaseTest {
 
     public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
-    public static RepeatTests repeat = FATSuite.allMPRepeats(SERVER_NAME);
+    public static RepeatTests repeat = FATSuite.telemetry10and11Repeats(SERVER_NAME);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
