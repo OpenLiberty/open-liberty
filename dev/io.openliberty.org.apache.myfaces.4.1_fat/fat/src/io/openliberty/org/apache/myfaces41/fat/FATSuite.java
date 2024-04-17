@@ -26,6 +26,7 @@ import io.openliberty.org.apache.myfaces41.fat.test.CompositeExtensionTest;
 import io.openliberty.org.apache.myfaces41.fat.test.ConfigTests;
 import io.openliberty.org.apache.myfaces41.fat.test.ContentLengthTest;
 import io.openliberty.org.apache.myfaces41.fat.test.Faces41CDITests;
+import io.openliberty.org.apache.myfaces41.fat.test.FacesMessagesTest;
 import io.openliberty.org.apache.myfaces41.fat.test.RenderIdTest;
 import io.openliberty.org.apache.myfaces41.fat.test.UUIDConverterTest;
 
@@ -35,7 +36,8 @@ import io.openliberty.org.apache.myfaces41.fat.test.UUIDConverterTest;
                 ContentLengthTest.class,
                 CompositeExtensionTest.class,
                 UUIDConverterTest.class,
-                Faces41CDITests.class
+                Faces41CDITests.class,
+                FacesMessagesTest.class
                 // RenderIdTest.class, id in head is not rendered
 })
 
