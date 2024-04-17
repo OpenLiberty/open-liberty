@@ -13,9 +13,15 @@ public interface VerifyEnv {
     String REPO_PROPERTY_NAME = "featureVerify_repo";
     String REPO_FILE_NAME = System.getenv(REPO_PROPERTY_NAME);
 
-    String RESULTS_PROPERTY_NAME = "featureVerify_results";
-    String RESULTS_FILE_NAME = System.getenv(RESULTS_PROPERTY_NAME);
+    String RESULTS_SINGLETON_PROPERTY_NAME = "featureVerify_results_singleton";
+    String RESULTS_SINGLETON_FILE_NAME = System.getenv(RESULTS_SINGLETON_PROPERTY_NAME);
 
-    String DURATIONS_PROPERTY_NAME = "featureVerify_durations";
-    String DURATIONS_FILE_NAME = System.getenv(DURATIONS_PROPERTY_NAME);
+    String DURATIONS_SINGLETON_PROPERTY_NAME = "featureVerify_durations_singleton";
+    String DURATIONS_SINGLETON_FILE_NAME = System.getenv(DURATIONS_SINGLETON_PROPERTY_NAME);
+
+    String RESULTS_SERVLET_PROPERTY_NAME = "featureVerify_results_servlet";
+    String RESULTS_SERVLET_FILE_NAME = System.getenv(RESULTS_SERVLET_PROPERTY_NAME);
+
+    String DURATIONS_SERVLET_PROPERTY_NAME = "featureVerify_durations_servlet";
+    String DURATIONS_SERVLET_FILE_NAME = System.getenv(DURATIONS_SERVLET_PROPERTY_NAME);
 }

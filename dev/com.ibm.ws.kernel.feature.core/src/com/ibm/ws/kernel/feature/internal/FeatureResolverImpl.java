@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal;
 
-import java.io.File;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,14 +39,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.Visibility;
-import com.ibm.ws.kernel.feature.internal.util.LazySupplier;
-import com.ibm.ws.kernel.feature.internal.util.RepoXML;
-import com.ibm.ws.kernel.feature.internal.util.Transformer;
-import com.ibm.ws.kernel.feature.internal.util.VerifyData;
-import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
-import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
 import com.ibm.ws.kernel.feature.internal.util.VerifyEnv;
-import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
@@ -91,7 +83,7 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     @Trivial
-    private static void trace(String message) {
+    protected static void trace(String message) {
         if (tc != null) {
             if (TraceComponent.isAnyTracingEnabled() && ((TraceComponent) tc).isDebugEnabled()) {
                 Tr.debug((TraceComponent) tc, message);
@@ -100,14 +92,14 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     @Trivial
-    private static void error(String message, Object... parms) {
+    protected static void error(String message, Object... parms) {
         if (tc != null) {
             Tr.error((TraceComponent) tc, message, parms);
         }
     }
 
     @Trivial
-    private static void info(String message, Object... parms) {
+    protected static void info(String message, Object... parms) {
         if (tc != null) {
             Tr.info((TraceComponent) tc, message, parms);
         }
@@ -241,7 +233,7 @@ public class FeatureResolverImpl implements FeatureResolver {
      * When {@link VerifyEnv#REPO_FILE_NAME} is specified, write the
      * repository.
      *
-     * When {@link VerifyEnv#RESULTS_FILE_NAME} is specified, perform
+     * When {@link VerifyEnv#RESULTS_SINGLETON_FILE_NAME} is specified, perform
      * test resolutions and write the results.
      *
      * After performing test actions, proceed to {@link #doResolve}.
@@ -250,326 +242,15 @@ public class FeatureResolverImpl implements FeatureResolver {
     public Result resolveFeatures(Repository repository,
                                   Collection<ProvisioningFeatureDefinition> kernelFeatures,
                                   Collection<String> rootFeatures, Set<String> preResolved,
-                                  Set<String> allowedMultipleVersions,
+                                  Set<String> allowedMultiple,
                                   EnumSet<ProcessType> supportedProcessTypes) {
 
-        if (VerifyEnv.REPO_FILE_NAME != null) {
-            write(repository, VerifyEnv.REPO_FILE_NAME);
-        }
-
-        if (VerifyEnv.RESULTS_FILE_NAME != null) {
-            generate(repository,
-                     allowedMultipleVersions,
-                     kernelFeatures,
-                     VerifyEnv.RESULTS_FILE_NAME,
-                     VerifyEnv.DURATIONS_FILE_NAME);
-        }
+        FeatureResolverBaseline.generate(this, repository, allowedMultiple, kernelFeatures);
 
         return doResolve(repository,
                          kernelFeatures, rootFeatures, preResolved,
-                         allowedMultipleVersions, supportedProcessTypes);
+                         allowedMultiple, supportedProcessTypes);
     }
-
-    /**
-     * Write the feature repository to the specified file.
-     *
-     * @param repository The repository which is to be written.
-     *
-     * @param repoFileName The file which is to be written.
-     */
-    private void write(Repository repository, String repoFileName) {
-        File repoFile = new File(repoFileName);
-        String repoFilePath = repoFile.getAbsolutePath();
-
-        info("Writing feature repository to [ " + repoFilePath + " ] ...");
-
-        try {
-            RepoXML.write(new File(repoFileName), repository);
-            info("Writing feature repository to [ " + repoFilePath + " ] ... done");
-
-        } catch (Exception e) {
-            // FFDC
-            error("Error writing feature repository to [ " + repoFilePath + " ]");
-        }
-    }
-
-    /**
-     * Perform resolutions using the supplied parameters.  Write
-     * the results.
-     *
-     * @param repository The repository used to perform resolutions.
-     * @param allowedMultiple Control parameters: When non-null, allow
-     *     multiple features.
-     * @param kernelFeatures Kernel features to be used to perform the
-     *     resolution.
-     * @param resultsFileName File which is to receive the resolution
-     *     results.
-     */
-    private void generate(Repository repository,
-                          Set<String> allowedMultiple,
-                          Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                          String resultsFileName,
-                          String durationsFileName) {
-
-        File resultsFile = new File(resultsFileName);
-        String resultsFilePath = resultsFile.getAbsolutePath();
-
-        info("Performing feature resolution ...");
-        List<LazySupplier<VerifyCase>> cases = generate(repository, allowedMultiple, kernelFeatures);
-        info("Performing feature resolution ... done");
-
-        info("Writing to [ " + resultsFilePath + " ] ...");
-        try {
-            VerifyXML.write(resultsFile, cases);
-            info("Writing to [ " + resultsFilePath + " ] ... done");
-        } catch ( Exception e ) {
-            // FFDC
-            error("Failed writing to [ " + resultsFilePath + " ] ...");
-        }
-
-        if ( durationsFileName != null ) {
-            File durationsFile = new File(durationsFileName);
-            String durationsFilePath = durationsFile.getAbsolutePath();
-
-            info("Writing durations to [ " + durationsFilePath + " ] ...");
-            try {
-                VerifyXML.writeDurations(durationsFile, cases);
-                info("Writing durations to [ " + durationsFilePath + " ] ... done");
-            } catch ( Exception e ) {
-                // FFDC
-                error("Failed writing durations to [ " + durationsFilePath + " ] ...");
-            }
-        }
-    }
-
-    private static Comparator<ProvisioningFeatureDefinition> COMPARE_SYMBOLIC =
-        new Comparator<ProvisioningFeatureDefinition>() {
-
-        /**
-         * Compare two features by their symbolic name.
-         * (Not all public features have a short name.)
-         *
-         * Use a case insensitive comparison.
-         *
-         * @param def1 A feature definition which is to be compared.
-         * @param def2 Another feature definition which is to be compared.
-         *
-         * @return The features compared by their symbolic name.
-         */
-        @Override
-        public int compare(ProvisioningFeatureDefinition def1,
-                           ProvisioningFeatureDefinition def2) {
-            return def1.getSymbolicName().compareToIgnoreCase(def2.getSymbolicName());
-        }
-    };
-
-    /**
-     * Generate resolution results for the specified parameters.  Generate
-     * results for each single public feature and for each supported process
-     * type of that feature.
-     *
-     * The results placed with server results then with client results.
-     * Both results collections are sorted by feature short name.
-     *
-     * @param repository The repository used to resolve the features.
-     * @param allowedMultiple Control parameters: When non-null, allow
-     *     multiple features.
-     * @param kernelFeatures Kernel features to be used to perform the
-     *     resolution.
-     *
-     * @return A list of (lazy) case data.
-     */
-    private List<LazySupplier<VerifyCase>> generate(final Repository repository,
-                                                    final Set<String> allowedMultiple,
-                                                    final Collection<ProvisioningFeatureDefinition> kernelFeatures) {
-
-        List<ProvisioningFeatureDefinition> publicDefs = repository.select(RepoXML.IS_PUBLIC);
-        int numDefs = publicDefs.size();
-        ProvisioningFeatureDefinition[] publicDefsArray = publicDefs.toArray( new ProvisioningFeatureDefinition[numDefs]);
-        Arrays.sort(publicDefsArray, COMPARE_SYMBOLIC);
-
-        List<ProvisioningFeatureDefinition> publicServerDefs = new ArrayList<>(numDefs);
-        List<ProvisioningFeatureDefinition> publicClientDefs = new ArrayList<>(numDefs);
-
-        for ( ProvisioningFeatureDefinition def : publicDefsArray ) {
-            if ( RepoXML.isServer(def) ) {
-                publicServerDefs.add(def);
-            }
-            if ( RepoXML.isClient(def) ) {
-                publicClientDefs.add(def);
-            }
-        }
-
-        final Transformer<ProvisioningFeatureDefinition, VerifyCase> createServerResult =
-            new Transformer<ProvisioningFeatureDefinition, VerifyCase>() {
-                @Override
-                public VerifyCase apply(ProvisioningFeatureDefinition def) {
-                    return createResult(repository,
-                                        allowedMultiple,
-                                        kernelFeatures,
-                                        def,
-                                        ProcessType.SERVER);
-                }
-        };
-
-        final Transformer<ProvisioningFeatureDefinition, VerifyCase> createClientResult =
-            new Transformer<ProvisioningFeatureDefinition, VerifyCase>() {
-                @Override
-                public VerifyCase apply(ProvisioningFeatureDefinition def) {
-                    return createResult(repository,
-                                        allowedMultiple,
-                                        kernelFeatures,
-                                        def,
-                                        ProcessType.CLIENT);
-                }
-        };
-
-        List<LazySupplier<VerifyCase>> cases = new ArrayList<>( publicServerDefs.size() + publicClientDefs.size() );
-
-        for (ProvisioningFeatureDefinition def : publicServerDefs ) {
-            final ProvisioningFeatureDefinition useDef = def;
-            cases.add( new LazySupplier<VerifyCase>() {
-                @Override
-                public VerifyCase supply() {
-                    return createServerResult.apply(useDef);
-                }
-            });
-        }
-
-        for (ProvisioningFeatureDefinition def : publicClientDefs ) {
-            final ProvisioningFeatureDefinition useDef = def;
-            cases.add( new LazySupplier<VerifyCase>() {
-                @Override
-                public VerifyCase supply() {
-                    return createClientResult.apply(useDef);
-                }
-            });
-        }
-
-        return cases;
-    }
-
-    /**
-     * Perform resolution then convert the resolution result to a verification
-     * case.
-     *
-     * @param repository The repository used to resolve the features.
-     * @param allowedMultiple Control parameters: When non-null, allow
-     *     multiple features.
-     * @param kernelFeatures Kernel features to be used to perform the
-     *     resolution.
-     * @param featureDef A single public feature used as the root resolution
-     *     feature.
-     * @param processType Control parameter: Sets the process type active
-     *     during resolution.
-     *
-     * @return The resolution result converted into a verification case.
-     */
-    private VerifyCase createResult(Repository repository,
-                                    Set<String> allowedMultiple,
-                                    Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                                    ProvisioningFeatureDefinition featureDef,
-                                    ProcessType processType) {
-
-        Collection<String> rootFeatures = Collections.singleton(featureDef.getSymbolicName());
-        Set<String> preResolved = Collections.emptySet();
-        EnumSet<ProcessType> processTypes = EnumSet.of(processType);
-
-        info("Creating test result ... ");
-
-        long startTimeNs = VerifyData.getTimeNs();
-
-        Result resultWithKernel = doResolve(repository,
-                                            kernelFeatures, rootFeatures, preResolved,
-                                            allowedMultiple, processTypes);
-
-        Collection<ProvisioningFeatureDefinition> emptyDefs = Collections.emptySet();
-        Result resultWithoutKernel = doResolve(repository,
-                                               emptyDefs, rootFeatures, preResolved,
-                                               allowedMultiple, processTypes);
-
-        long endTimeNs = VerifyData.getTimeNs();
-        long durationNs = endTimeNs - startTimeNs;
-
-        info("Creating test result ... done [ " + Long.toString(durationNs) + " ns ]");
-
-        return asCase(allowedMultiple, processType, kernelFeatures, featureDef,
-                      resultWithKernel,
-                      resultWithoutKernel,
-                      durationNs);
-    }
-
-    /**
-     * Create a verification case from resolution parameters and from
-     * the result of resolving those parameters.
-     *
-     * @param allowedMultiple Control parameters: When non-null, allow
-     *     multiple features.
-     * @param processType Control parameter: Sets the process type active
-     *     during resolution.
-     * @param kernelFeatures Kernel features to be used to perform the
-     *     resolution.
-     * @param publicDef A single public feature used as the root resolution
-     *     feature.
-     * @param resultWithKernel The feature resolution result, using kernel features.
-     * @param resultWithKernel The feature resolution result, without using kernel features.
-     * @param durationNS The resolution time, in nano-seconds.
-     *
-     * @return A verification case created from the resolution parameters and
-     * the resolution result.
-     */
-    public static VerifyCase asCase(Set<String> allowedMultiple,
-                                    ProcessType processType,
-                                    Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                                    ProvisioningFeatureDefinition publicDef,
-                                    Result resultWithKernel,
-                                    Result resultWithoutKernel,
-                                    long durationNs) {
-
-        // For now, only handle the distinction between null and an empty set.
-        boolean allowMultiple = (allowedMultiple != null);
-
-        VerifyCase verifyCase = new VerifyCase();
-
-        verifyCase.name = ( publicDef.getSymbolicName() +
-                            "_" + processType +
-                            (allowMultiple ? "_n" : "") );
-
-        verifyCase.description =
-                        ( "Singleton [ " + publicDef.getSymbolicName() + " ]" +
-                          " [ " + processType + " ]" +
-                          (allowMultiple ? " [ Multiple ]" : "") );
-
-        verifyCase.durationNs = durationNs;
-
-        if ( allowMultiple ) {
-            verifyCase.input.setMultiple();
-        }
-
-        if (processType == ProcessType.CLIENT) {
-            verifyCase.input.setClient();
-        } else if (processType == ProcessType.SERVER) {
-            verifyCase.input.setServer();
-        }
-
-        for ( ProvisioningFeatureDefinition kernelDef : kernelFeatures ) {
-            verifyCase.input.addKernel(kernelDef.getSymbolicName());
-        }
-
-        verifyCase.input.addRoot(publicDef.getSymbolicName());
-
-        for ( String featureName : resultWithKernel.getResolvedFeatures() ) {
-            verifyCase.output.addResolved(featureName);
-        }
-
-        verifyCase.kernelAdjust(VerifyDelta.ORIGINAL_USED_KERNEL,
-                                resultWithoutKernel.getResolvedFeatures(),
-                                !VerifyDelta.UPDATED_USED_KERNEL);
-
-        return verifyCase;
-    }
-
-    // @formatter:on
 
     /*
      * Here are the steps this uses to resolve:
@@ -577,11 +258,11 @@ public class FeatureResolverImpl implements FeatureResolver {
      * 2) Resolve the root features
      * 3) Check if there are any auto features to resolve; if so return to step 2 and resolve the auto-features as root features
      */
-    private Result doResolve(Repository repository,
-                             Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                             Collection<String> rootFeatures, Set<String> preResolved,
-                             Set<String> allowedMultipleVersions,
-                             EnumSet<ProcessType> supportedProcessTypes) {
+    protected Result doResolve(Repository repository,
+                               Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                               Collection<String> rootFeatures, Set<String> preResolved,
+                               Set<String> allowedMultipleVersions,
+                               EnumSet<ProcessType> supportedProcessTypes) {
 
         if (isBeta) {
             parsePreferredVersions(repository);
@@ -1127,7 +808,6 @@ public class FeatureResolverImpl implements FeatureResolver {
         private final Map<String, Collection<Chain>> _preResolveConflicts = new HashMap<String, Collection<Chain>>();
         private Permutation _current = _permutations.getFirst();
         private final Map<String, List<String>> versionless = new HashMap<String, List<String>>();
-
         private boolean triedVersionless = false;
 
         SelectionContext(FeatureResolver.Repository repository, Set<String> allowedMultipleVersions, EnumSet<ProcessType> supportedProcessTypes) {

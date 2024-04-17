@@ -40,7 +40,7 @@ public class BaselineSingletonUnitTest extends FeatureResolutionUnitTestBase {
         doTearDownClass();
     }
 
-    public static final String DATA_FILE_PATH = "publish/verify/singleton.xml";
+    public static final String DATA_FILE_PATH = "publish/verify/singleton_expected.xml";
 
     public static File getDataFile() {
         return new File(DATA_FILE_PATH);
@@ -78,7 +78,7 @@ public class BaselineSingletonUnitTest extends FeatureResolutionUnitTestBase {
     }
 
     @Test
-    public void testResolve_baseline() throws Exception {
+    public void testResolve_singleton_baseline() throws Exception {
         doTestResolve();
     }
 }

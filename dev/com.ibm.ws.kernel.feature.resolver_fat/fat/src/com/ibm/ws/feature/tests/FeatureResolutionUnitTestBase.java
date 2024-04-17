@@ -14,7 +14,6 @@ package com.ibm.ws.feature.tests;
 
 import static org.junit.Assert.fail;
 
-import java.beans.Visibility;
 import java.io.File;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -25,8 +24,10 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.feature.ProcessType;
+import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
 import com.ibm.ws.kernel.feature.internal.subsystem.FeatureRepository;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData;
@@ -35,7 +36,11 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
 import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
+
+import componenttest.common.apiservices.Bootstrap;
 
 /**
  * Feature resolution testing.
@@ -227,7 +232,7 @@ public class FeatureResolutionUnitTestBase {
             List<String> features = new ArrayList<>();
             for (ProvisioningFeatureDefinition featureDef : getRepository().getFeatures()) {
                 if (isPublic(featureDef)) {
-                    features.add(publicDef.getSymbolicName());
+                    features.add(featureDef.getSymbolicName());
                 }
             }
             publicFeatures = features;
@@ -424,11 +429,11 @@ public class FeatureResolutionUnitTestBase {
     }
 
     private class RepoVisibilitySupplier implements VerifyDelta.VisibilitySupplier {
-        public RepoVisibilitySupplier(Repository repo) {
+        public RepoVisibilitySupplier(FeatureResolver.Repository repo) {
             this.repo = repo;
         }
 
-        private final Repository repo;
+        private final FeatureResolver.Repository repo;
 
         @Override
         public String getVisibility(String featureName) {

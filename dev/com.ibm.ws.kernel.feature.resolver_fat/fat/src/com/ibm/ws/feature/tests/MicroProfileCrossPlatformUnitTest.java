@@ -40,7 +40,7 @@ public class MicroProfileCrossPlatformUnitTest extends FeatureResolutionUnitTest
         doTearDownClass();
     }
 
-    public static final String DATA_FILE_PATH = "publish/verify/microprofile.xml";
+    public static final String DATA_FILE_PATH = "publish/verify/microprofile_expected.xml";
 
     public static File getDataFile() {
         return new File(DATA_FILE_PATH);
@@ -73,6 +73,21 @@ public class MicroProfileCrossPlatformUnitTest extends FeatureResolutionUnitTest
                ",mpMetrics-2.0,mpMetrics-1.1,mpMetrics-1.0,mpHealth-4.0,mpHealth-3.1,mpHealth-3.0" +
                ",mpHealth-2.2,mpHealth-2.1,mpHealth-2.0,mpHealth-1.0";
     }
+
+    // Features [ [servlet-6.0, mpHealth, mpMetrics] ]
+    // Extra    [ [io.openliberty.internal.versionless.mpMetrics-5.0,
+    //             io.openliberty.mpCompatible-6.0,
+    //             mpConfig-3.0,
+    //             io.openliberty.org.eclipse.microprofile.config-3.0,
+    //             io.openliberty.org.eclipse.microprofile.config.3.0.ee-10.0,
+    //             mpMetrics-5.0,
+    //             io.openliberty.org.eclipse.microprofile.metrics-5.0] ]
+    // Missing  [ [io.openliberty.internal.versionless.mpMetrics-5.1,
+    //             io.openliberty.mpCompatible-6.1,
+    //             mpConfig-3.1,
+    //             io.openliberty.org.eclipse.microprofile.config-3.1,
+    //             mpMetrics-5.1,
+    //             io.openliberty.org.eclipse.microprofile.metrics-5.1] ]
 
     @Before
     public void setupTest() throws Exception {

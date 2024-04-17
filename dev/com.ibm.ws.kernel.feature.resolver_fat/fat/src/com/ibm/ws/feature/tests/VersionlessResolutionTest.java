@@ -13,16 +13,16 @@
 package com.ibm.ws.feature.tests;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Assert;
+// import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-// import org.junit.Assert;
 
 import com.ibm.ws.kernel.feature.internal.util.VerifyData;
 import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
@@ -52,74 +52,98 @@ public class VersionlessResolutionTest {
     //
     // When updating the expected results, copy the actual results to the root publish folder.
 
-    public static final String REPO_PATH = "build/verify/repo.xml";
+    public static final String REPO_PATH = "build/verify/repository.xml";
 
-    public static final String ACTUAL_PATH = "build/verify/actual.xml";
-    public static final String DURATIONS_PATH = "build/verify/durations.txt";
+    public static final String SINGLETON_ACTUAL_PATH = "build/verify/singleton_actual.xml";
+    public static final String SINGLETON_DURATIONS_PATH = "build/verify/singleton_durations.txt";
+    public static final String SINGLETON_EXPECTED_PATH = "publish/verify/singleton_expected.xml";
 
-    public static final String EXPECTED_PATH = "publish/verify/expected.xml";
+    public static final String SERVLET_ACTUAL_PATH = "build/verify/servlet_actual.xml";
+    public static final String SERVLET_DURATIONS_PATH = "build/verify/servlet_durations.txt";
+    public static final String SERVLET_EXPECTED_PATH = "publish/verify/servlet_expected.xml";
 
     public static File repoFile;
     public static String repoPath;
 
-    public static File actualResultsFile;
-    public static String actualResultsPath;
-    public static File durationsFile;
-    public static String durationsPath;
-    public static VerifyData actualResults;
+    public static File singletonActualResultsFile;
+    public static String singletonActualResultsPath;
+    public static VerifyData singletonActualResults;
 
-    public static File expectedResultsFile;
-    public static String expectedResultsPath;
-    public static VerifyData expectedResults;
+    public static File singletonDurationsFile;
+    public static String singletonDurationsPath;
+
+    public static File singletonExpectedResultsFile;
+    public static String singletonExpectedResultsPath;
+    public static VerifyData singletonExpectedResults;
+
+    public static File servletActualResultsFile;
+    public static String servletActualResultsPath;
+    public static VerifyData servletActualResults;
+
+    public static File servletDurationsFile;
+    public static String servletDurationsPath;
+
+    public static File servletExpectedResultsFile;
+    public static String servletExpectedResultsPath;
+    public static VerifyData servletExpectedResults;
 
     @BeforeClass
     public static void setupXML() throws Exception {
+        System.out.println("Results paths:");
+
         repoFile = new File(REPO_PATH);
         repoPath = repoFile.getAbsolutePath();
-        System.out.println("Verifying: Repo path [ " + repoPath + " ]");
+        System.out.println("Repo path [ " + repoPath + " ]");
 
-        actualResultsFile = new File(ACTUAL_PATH);
-        actualResultsPath = actualResultsFile.getAbsolutePath();
-        System.out.println("Verifying: Actual results path [ " + actualResultsPath + " ]");
+        singletonActualResultsFile = new File(SINGLETON_ACTUAL_PATH);
+        singletonActualResultsPath = singletonActualResultsFile.getAbsolutePath();
+        System.out.println("Actual singleton results path [ " + singletonActualResultsPath + " ]");
 
-        durationsFile = new File(DURATIONS_PATH);
-        durationsPath = durationsFile.getAbsolutePath();
-        System.out.println("Verifying: Durations path [ " + durationsPath + " ]");
+        singletonDurationsFile = new File(SINGLETON_DURATIONS_PATH);
+        singletonDurationsPath = singletonDurationsFile.getAbsolutePath();
+        System.out.println("Singleton durations path [ " + singletonDurationsPath + " ]");
 
-        expectedResultsFile = new File(EXPECTED_PATH);
-        expectedResultsPath = expectedResultsFile.getAbsolutePath();
-        System.out.println("Verifying: Expected results path [ " + expectedResultsPath + " ]");
+        singletonExpectedResultsFile = new File(SINGLETON_EXPECTED_PATH);
+        singletonExpectedResultsPath = singletonExpectedResultsFile.getAbsolutePath();
+        System.out.println("Expected singleton results path [ " + singletonExpectedResultsPath + " ]");
 
-        if (expectedResultsFile.exists()) {
-            expectedResults = load("Expected Results", expectedResultsPath);
-            System.out.println("Expected cases [ " + expectedResults.cases.size() + " ]");
+        if (singletonExpectedResultsFile.exists()) {
+            singletonExpectedResults = load("Expected Results", singletonExpectedResultsPath);
+            System.out.println("Expected singleton cases [ " + singletonExpectedResults.cases.size() + " ]");
         }
-    }
 
-    @Test
-    public void verifyExpected() throws Exception {
-        if (expectedResults == null) {
-            Assert.fail("No expected [ " + expectedResultsPath + " ]");
+        servletActualResultsFile = new File(SERVLET_ACTUAL_PATH);
+        servletActualResultsPath = servletActualResultsFile.getAbsolutePath();
+        System.out.println("Actual servlet results path [ " + servletActualResultsPath + " ]");
 
-        } else {
-            Map<String, List<String>> errors = VerifyDelta.compare(expectedResults, expectedResults, !VerifyDelta.UPDATED_USED_KERNEL);
-            if (!errors.isEmpty()) {
-                String firstError = displayErrors("Expected vs Expected", errors);
-                Assert.fail("Base comparison failure: First error: [ " + firstError + " ]");
-            }
+        servletDurationsFile = new File(SERVLET_DURATIONS_PATH);
+        servletDurationsPath = servletDurationsFile.getAbsolutePath();
+        System.out.println("Servlet durations path [ " + servletDurationsPath + " ]");
+
+        servletExpectedResultsFile = new File(SERVLET_EXPECTED_PATH);
+        servletExpectedResultsPath = servletExpectedResultsFile.getAbsolutePath();
+        System.out.println("Expected servlet results path [ " + servletExpectedResultsPath + " ]");
+
+        if (servletExpectedResultsFile.exists()) {
+            servletExpectedResults = load("Expected Results", servletExpectedResultsPath);
+            System.out.println("Expected servlet cases [ " + servletExpectedResults.cases.size() + " ]");
         }
     }
 
     @Test
     public void verifyResolution() throws Exception {
         ensureDirectory(repoFile, repoPath);
-        ensureDirectory(actualResultsFile, actualResultsPath);
-        ensureDirectory(durationsFile, durationsPath);
+        ensureDirectory(singletonActualResultsFile, singletonActualResultsPath);
+        ensureDirectory(singletonDurationsFile, singletonDurationsPath);
+        ensureDirectory(servletActualResultsFile, servletActualResultsPath);
+        ensureDirectory(servletDurationsFile, servletDurationsPath);
 
         LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         server.addEnvVar(VerifyEnv.REPO_PROPERTY_NAME, repoPath);
-        server.addEnvVar(VerifyEnv.RESULTS_PROPERTY_NAME, actualResultsPath);
-        server.addEnvVar(VerifyEnv.DURATIONS_PROPERTY_NAME, durationsPath);
+        server.addEnvVar(VerifyEnv.RESULTS_SINGLETON_PROPERTY_NAME, singletonActualResultsPath);
+        server.addEnvVar(VerifyEnv.DURATIONS_SINGLETON_PROPERTY_NAME, singletonDurationsPath);
+        server.addEnvVar(VerifyEnv.RESULTS_SERVLET_PROPERTY_NAME, servletActualResultsPath);
+        server.addEnvVar(VerifyEnv.DURATIONS_SERVLET_PROPERTY_NAME, servletDurationsPath);
 
         server.startServer();
         try {
@@ -128,52 +152,82 @@ public class VersionlessResolutionTest {
             server.stopServerAlways(ALLOWED_ERRORS);
         }
 
-        if (!actualResultsFile.exists()) {
-            Assert.fail("No actual results [ " + actualResultsPath + " ]");
-        }
-        if (!durationsFile.exists()) {
-            Assert.fail("No durations [ " + durationsPath + " ]");
-        }
+        List<String> singletonFailures = new ArrayList<>();
+        Map<String, List<String>> singletonErrors = Collections.emptyMap();
 
-        if (expectedResults == null) {
-            Assert.fail("No expected results [ " + expectedResultsPath + " ]");
+        if (!singletonDurationsFile.exists()) {
+            singletonFailures.add("No singleton durations [ " + singletonDurationsPath + " ]");
+        }
+        if (!singletonActualResultsFile.exists()) {
+            singletonFailures.add("No singleton actual results [ " + singletonActualResultsPath + " ]");
         } else {
-            actualResults = load("Actual", actualResultsPath);
-            System.out.println("Actual cases [ " + actualResults.cases.size() + " ]");
+            if (singletonExpectedResults == null) {
+                singletonFailures.add("No singleton expected results [ " + singletonExpectedResultsPath + " ]");
+            } else {
+                singletonActualResults = load("Actual", singletonActualResultsPath);
+                System.out.println("Actual singleton cases [ " + singletonActualResults.cases.size() + " ]");
 
-            verify();
+                System.out.println("Expected [ " + singletonExpectedResultsPath + " ]; Actual [ " + singletonActualResultsPath + " ]");
+                singletonErrors = VerifyDelta.compare(singletonExpectedResults, singletonActualResults, !VerifyDelta.UPDATED_USED_KERNEL);
+            }
+        }
+
+        List<String> servletFailures = new ArrayList<>();
+        Map<String, List<String>> servletErrors = Collections.emptyMap();
+        if (!servletDurationsFile.exists()) {
+            servletFailures.add("No servlet durations [ " + servletDurationsPath + " ]");
+        }
+        if (!servletActualResultsFile.exists()) {
+            servletFailures.add("No servlet actual results [ " + servletActualResultsPath + " ]");
+        } else {
+            if (servletExpectedResults == null) {
+                servletFailures.add("No servlet expected results [ " + servletExpectedResultsPath + " ]");
+            } else {
+                servletActualResults = load("Actual", servletActualResultsPath);
+                System.out.println("Actual servlet cases [ " + servletActualResults.cases.size() + " ]");
+
+                System.out.println("Expected [ " + servletExpectedResultsPath + " ]; Actual [ " + servletActualResultsPath + " ]");
+                servletErrors = VerifyDelta.compare(servletExpectedResults, servletActualResults, !VerifyDelta.UPDATED_USED_KERNEL);
+            }
+        }
+
+        if (displayErrors("Singleton generation errors", singletonFailures) ||
+            displayErrors("Singleton case errors", singletonErrors) ||
+            displayErrors("Servlet generation errors", servletFailures) ||
+            displayErrors("Servlet case errors", servletErrors)) {
+
+            Assert.fail("Resolution failure");
+
+        } else {
+            System.out.println("Resolution success");
         }
     }
 
-    protected void verify() throws Exception {
-        System.out.println("Verifying: Expected [ " + expectedResultsPath + " ]; Actual [ " + actualResultsPath + " ]");
-
-        Map<String, List<String>> errors = VerifyDelta.compare(expectedResults, actualResults, !VerifyDelta.UPDATED_USED_KERNEL);
-
+    protected boolean displayErrors(String title, List<String> errors) {
         if (errors.isEmpty()) {
-            System.out.println("All cases pass");
-        } else {
-            String firstError = displayErrors("Expected vs Actual", errors);
-            Assert.fail("Incorrect resolutions detected: First error: [ " + firstError + " ].");
+            return false;
         }
+        System.out.println(title);
+        for (String error : errors) {
+            System.out.println("  " + error);
+        }
+        return true;
     }
 
-    protected String displayErrors(String title, Map<String, List<String>> errors) {
-        final AtomicReference<String> firstError = new AtomicReference<>();
+    protected boolean displayErrors(String title, Map<String, List<String>> errors) {
+        if (errors.isEmpty()) {
+            return false;
+        }
 
         System.out.println(title);
         errors.forEach((String caseName, List<String> caseErrors) -> {
             System.out.println("Case errors [ " + caseName + " ]:");
             for (String caseError : caseErrors) {
                 System.out.println("  [ " + caseError + " ]");
-
-                if (firstError.get() == null) {
-                    firstError.set(caseName + " : " + caseError);
-                }
             }
         });
 
-        return firstError.get();
+        return true;
     }
 
     protected static VerifyData load(String tag, String path) throws Exception {
