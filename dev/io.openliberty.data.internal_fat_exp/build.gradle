@@ -16,3 +16,9 @@ addRequiredLibraries.dependsOn addDerby
 dependencies {
   requiredLibs project(':io.openliberty.jakarta.data.1.0')
 }
+
+apply plugin: 'java'
+
+compileJava {
+  options.compilerArgs << '-parameters'
+}

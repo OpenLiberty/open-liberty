@@ -53,6 +53,7 @@ import io.openliberty.data.repository.comparison.GreaterThanEqual;
 import io.openliberty.data.repository.comparison.In;
 import io.openliberty.data.repository.comparison.LessThan;
 import io.openliberty.data.repository.comparison.LessThanEqual;
+import io.openliberty.data.repository.comparison.StartsWith;
 import io.openliberty.data.repository.function.ElementCount;
 import io.openliberty.data.repository.function.Extract;
 import io.openliberty.data.repository.function.Not;
@@ -162,6 +163,11 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     @Select(distinct = true, value = "lengthInMinutes")
     @OrderBy("lengthInMinutes")
     List<Long> lengthsBelow(@By("lengthInMinutes") @LessThan int max);
+
+    @Find
+    @Select("location")
+    @OrderBy("location")
+    List<String> locationsThatStartWith(@By("location") @StartsWith String beginningOfLocationName);
 
     int removeByHostNotIn(Collection<String> hosts);
 
