@@ -55,7 +55,7 @@ public class DataCoreTckLauncher {
     }
 
     @Test
-    @Ignore("Broken by PageRequest/Sort decoupling") // TODO enable when we have RC1
+    @Ignore("Broken by PageRequest/Sort decoupling and TCK Profile change") // TODO enable when we have RC1
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchDataTckCorePersistence() throws Exception {
 
@@ -68,7 +68,7 @@ public class DataCoreTckLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", persistenceServer.getServerSharedPath() + "jimage/output/");
         additionalProps.put("tck_protocol", "rest");
-        additionalProps.put("jakarta.tck.profile", "core");
+        additionalProps.put("jakarta.profile", "core");
 
         //FIXME Always skip signature tests since our implementation has experimental API
         additionalProps.put("included.groups", "core & persistence & !signature");
@@ -102,7 +102,7 @@ public class DataCoreTckLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", noSQLServer.getServerSharedPath() + "jimage/output/");
         additionalProps.put("tck_protocol", "rest");
-        additionalProps.put("jakarta.tck.profile", "core");
+        additionalProps.put("jakarta.profile", "core");
 
         //FIXME Always skip signature tests since our implementation has experimental API
         additionalProps.put("included.groups", "core & nosql & !signature");
