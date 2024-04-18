@@ -671,9 +671,8 @@ public class NettyBaseMessage implements HttpBaseMessage {
     @Override
     public void setCommitted() {
         this.committed = Boolean.TRUE;
-
     }
-
+    
     @Override
     public void clear() {
 
@@ -681,6 +680,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
         this.cookie2Cache = null;
         this.setCookieCache = null;
         this.setCookie2Cache = null;
+        this.committed = false;
 
     }
 
