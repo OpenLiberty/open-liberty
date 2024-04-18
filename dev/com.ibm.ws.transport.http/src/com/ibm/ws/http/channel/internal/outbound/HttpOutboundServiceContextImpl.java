@@ -31,6 +31,7 @@ import com.ibm.wsspi.genericbnf.BNFHeaders;
 import com.ibm.wsspi.genericbnf.HeaderStorage;
 import com.ibm.wsspi.genericbnf.exception.IllegalRequestObjectException;
 import com.ibm.wsspi.genericbnf.exception.MessageSentException;
+import com.ibm.wsspi.http.channel.HttpBaseMessage;
 import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
@@ -2299,6 +2300,11 @@ public class HttpOutboundServiceContextImpl extends HttpServiceContextImpl imple
     @Override
     final protected HttpBaseMessageImpl getMessageBeingSent() {
         return getRequestImpl();
+    }
+    
+    @Override
+    protected HttpBaseMessage getCurrentMessage() {
+        return getRequest();
     }
 
     /**

@@ -530,31 +530,44 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                 }
            // }
         }
+        
+        System.out.println(" Done setting response commited, should we write? ");
 
         if (this.ignoreFlush) {
             this.ignoreFlush = false;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Ignoring first flush attempt");
             }
+            System.out.println(" First flush ignored ... should this be happening?");
             return;
         }
 
         final boolean writingBody = (hasBufferedContent());
+        
+        System.out.println( " Writing body? -> " + hasBufferedContent());
         // flip the last buffer for the write...
         if (writingBody && null != this.output[this.outputIndex]) {
             this.output[this.outputIndex].flip();
         }
         try {
             WsByteBuffer[] content = (writingBody) ? this.output : null;
+            
+            System.out.println( "isClosed -> " + isClosed() + " | isClosing -> " + isClosing);
+            
             if (isClosed() || this.isClosing) {
                 if (!hasFinished) { //if we've already called finishResponseMessage - don't call again
                     // on a closed stream, use the final write api
+                    
+                    System.out.println(" should be calling finish Response message -> ");
+                    
+                    
                     this.isc.finishResponseMessage(content);
                     this.isClosing = false;
                     this.hasFinished = true;
                 }
             } else {
                 // else use the partial body api
+                System.out.println(" sending response instead? ");
                 this.isc.sendResponseBody(content);
             }
         } catch (MessageSentException mse) {

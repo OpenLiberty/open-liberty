@@ -364,7 +364,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                     // nonwhitespace found [q=1 q] invalid
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Invalid char after trailing whitespace (1) ["
-                                     + data[index] + "]");
+                                        + data[index] + "]");
                     }
                     rc.setBooleanValue(false);
                 }
@@ -411,7 +411,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                     if (index < len && ',' != data[index]) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Invalid char after trailing whitespace (2) ["
-                                         + data[index] + "]");
+                                            + data[index] + "]");
                         }
                         rc.setBooleanValue(false);
                     }
@@ -688,13 +688,19 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             this.nettyContext.channel().flush();
         } else {
             sendHeaders(getResponseImpl());
-            if (getResponseImpl().isTemporaryStatusCode()) {
-                // allow multiple temporary responses to be sent out
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Temp response sent, resetting send flags.");
-                }
-                resetWrite();
+
+        }
+
+        int status = getResponse().getStatusCodeAsInt();
+        boolean isTemporaryStatus = HttpDispatcher.useEE7Streams() && status == 101 ? false: (100<=status && 200 > status);
+
+
+        if (isTemporaryStatus) {
+            // allow multiple temporary responses to be sent out
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Temp response sent, resetting send flags.");
             }
+            resetWrite();
         }
     }
 
@@ -747,7 +753,13 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         if (null != vc) {
             // Note: if forcequeue is true, then we will not get a VC object as
             // the lower layer will use the callback and return null
-            if (getResponseImpl().isTemporaryStatusCode()) {
+            int status = getResponse().getStatusCodeAsInt();
+            boolean isTemporaryStatus = HttpDispatcher.useEE7Streams() && status == 101 ? false: (100<=status && 200 > status);
+
+
+
+
+            if (isTemporaryStatus) {
                 // allow multiple temporary responses to be sent
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Temp response sent, resetting send flags.");
@@ -1053,6 +1065,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
         // if headers haven't been sent and chunked encoding is not explicitly
         // configured, then set this up for Content-Length
+
+
         if (!headersSent()) {
             boolean shouldContentLengthBeSet = Boolean.TRUE;
 
@@ -1071,26 +1085,25 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "finishMessage() setting partial body false");
                 }
+
                 setPartialBody(false);
                 if (getHttpConfig().useNetty()) {
-                    MSP.log("Bytes to write: " + GenericUtils.sizeOf(body));
-                    // TODO Need to check if we should set the content length here or not
-                    // response.setContentLength(GenericUtils.sizeOf(body));
+
                     nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(Long.valueOf(GenericUtils.sizeOf(body)));
 
                 }
-                // MSP.log("Bytes to write: " + GenericUtils.sizeOf(body));
-                //HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(body));
+
             }
 
         }
 
-        if (getHttpConfig().runningOnZOS() && Objects.isNull(nettyContext)) {
+        if (getHttpConfig().runningOnZOS()) {
             // @311734 - add this to notify the xmem channel of our final write
             getVC().getStateMap().put(HttpConstants.FINAL_WRITE_MARK, "true");
         }
         try {
             if (Objects.nonNull(nettyContext)) {
+
                 sendFullOutgoing(body);
             } else {
                 sendFullOutgoing(body, getResponseImpl());
@@ -1988,6 +2001,11 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return getResponseImpl();
     }
 
+    @Override
+    protected HttpBaseMessage getCurrentMessage() {
+        return getResponse();
+    }
+
     /*
      * @see
      * com.ibm.ws.http.channel.internal.HttpServiceContextImpl#parsingComplete()
@@ -2115,7 +2133,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             if (getHttpConfig().isAccessLoggingEnabled()) {
 
                 if (Objects.nonNull(nettyContext) &&
-                    nettyContext.channel().hasAttr(NettyHttpConstants.REQUEST_START_TIME)) {
+                                nettyContext.channel().hasAttr(NettyHttpConstants.REQUEST_START_TIME)) {
                     this.startTime = nettyContext.channel().attr(NettyHttpConstants.REQUEST_START_TIME).get();
                 } else {
                     this.startTime = System.nanoTime();
@@ -2292,14 +2310,10 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         Pattern pattern = getHttpConfig().getForwardedProxiesRegex();
         Matcher matcher = null;
 
-        System.out.println("MSP: netty forwarded start");
-
         String remoteIp = nettyContext.channel().remoteAddress().toString();
         remoteIp = remoteIp.substring(1, remoteIp.indexOf(':'));
 
         String attribute;
-
-        System.out.println("MSP: remote IP -> remoteIp : " + remoteIp);
 
         matcher = pattern.matcher(remoteIp);
 
