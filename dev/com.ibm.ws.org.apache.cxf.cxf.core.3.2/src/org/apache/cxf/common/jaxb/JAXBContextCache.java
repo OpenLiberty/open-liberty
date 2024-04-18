@@ -35,6 +35,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -45,6 +48,7 @@ import org.apache.cxf.common.classloader.ClassLoaderUtils;
 import org.apache.cxf.common.util.CacheMap;
 import org.apache.cxf.common.util.CachedClass;
 import org.apache.cxf.common.util.StringUtils;
+import org.apache.cxf.common.logging.LogUtils;
 
 /**
  *
@@ -60,6 +64,9 @@ public final class JAXBContextCache {
      * has a chance to copy those into a place where they can hold onto it strongly as
      * needed.
      */
+    private static final Logger LOG = LogUtils.getLogger(JAXBContextCache.class);  // Liberty Change start
+    private static boolean isLoggableFine = LOG.isLoggable(Level.FINE);
+    private static boolean isLoggableInfo = LOG.isLoggable(Level.INFO);   // Liberty Change end
     public static final class CachedContextAndSchemas {
         private final JAXBContext context;
         private final Set<Class<?>> classes;
@@ -131,6 +138,9 @@ public final class JAXBContextCache {
             JAXBContext ctx = JAXBContext.newInstance(String.class);
             b = ctx.getClass().getName().contains(".eclipse");
         } catch (Throwable t) {
+	    if (isLoggableInfo) {  // Liberty Change start
+	       LOG.info("Ignoring throwable: " + t);
+            } // Liberty Change end	
             //ignore
         }
         HAS_MOXY = b;
@@ -234,6 +244,9 @@ public final class JAXBContextCache {
                             JAXBCONTEXT_CACHE.remove(cls);
                         }
                     } else {
+		        if (isLoggableFine) {  // Liberty Change start
+			    LOG.fine("JAXBContext found in cache.");
+			} // Liberty Change end
                         return new CachedContextAndSchemas(context, cachedContextAndSchemasInternal.getClasses(),
                             cachedContextAndSchemasInternal);
                     }
@@ -242,17 +255,32 @@ public final class JAXBContextCache {
         }
 
         try {
+	    long startTime = System.currentTimeMillis();  // Liberty Change start
             context = createContext(classes, map, typeRefs);
+	    if (isLoggableFine) {
+	       long endTime = System.currentTimeMillis();
+	       int elapsedTime = (int)(endTime - startTime);
+	       LOG.fine("JAXBContext creation time in milliseconds: " + elapsedTime);
+	    }  // Liberty Change end
         } catch (JAXBException ex) {
+	    if (isLoggableInfo) {  // Liberty Change start
+	       LOG.info("Exception from createContext: " + ex);
+            }  // Liberty Change end
             // load jaxb needed class and try to create jaxb context
             boolean added = addJaxbObjectFactory(ex, classes);
             if (added) {
                 try {
+	            long startTime = System.currentTimeMillis();  // Liberty Change start
                     context = AccessController.doPrivileged(new PrivilegedExceptionAction<JAXBContext>() {
                         public JAXBContext run() throws Exception {
                             return JAXBContext.newInstance(classes.toArray(new Class<?>[0]), null);
                         }
                     });
+	            if (isLoggableFine) {
+	               long endTime = System.currentTimeMillis();
+	               int elapsedTime = (int)(endTime - startTime);
+	               LOG.fine("JAXBContext2 creation time in milliseconds: " + elapsedTime);
+	            }  // Liberty Change end
                 } catch (PrivilegedActionException e) {
                     throw ex;
                 }
@@ -308,6 +336,9 @@ public final class JAXBContextCache {
                                                       JAXBContextCache.class);
                     pfx = "com.sun.xml.internal.bind.";
                 } catch (Throwable t2) {
+	            if (isLoggableInfo) {  // Liberty Change start
+	               LOG.info("Ignoring throwable t2: " + t2);  
+                    } // Liberty Change end	
                     //ignore
                 }
             }
@@ -333,6 +364,9 @@ public final class JAXBContextCache {
                                      map.get("retainReferenceToInfo") == null
                                          ? Boolean.FALSE : map.get("retainReferenceToInfo"));
                         } catch (Throwable e) {
+	                    if (isLoggableInfo) {  // Liberty Change start
+	                       LOG.info("createContext: Ignoring throwable: " + e);  
+                            } // Liberty Change end
                             //ignore
                         }
                     }
@@ -398,6 +432,9 @@ public final class JAXBContextCache {
         try {
             classes.add(Class.forName(pkg + ".ObjectFactory", false, loader));
         } catch (Exception ex) {
+	    if (isLoggableInfo) {  // Liberty Change start
+	       LOG.info("addPackage: Ignoring exception: " + ex);
+            } // Liberty Change end
             //ignore
         }
         try (InputStream ins = loader.getResourceAsStream('/' + pkg.replace('.', '/') + "/jaxb.index");
@@ -417,6 +454,9 @@ public final class JAXBContextCache {
                         Class<?> ncls = Class.forName(pkg + line, false, loader);
                         classes.add(ncls);
                     } catch (Exception e) {
+	                if (isLoggableInfo) {  // Liberty Change start
+	                   LOG.info("addPackage: Ignoring exception 1: " + e);
+                        } // Liberty Change end
                         // ignore
                     }
                 }
@@ -424,6 +464,9 @@ public final class JAXBContextCache {
             }
 
         } catch (Exception ex) {
+	    if (isLoggableInfo) {  // Liberty Change start
+	       LOG.info("addPackage: Ignoring exception 2: " + ex);
+            } // Liberty Change end
             //ignore
         }
     }

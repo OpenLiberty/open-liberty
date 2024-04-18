@@ -20,6 +20,9 @@
 package org.apache.cxf.common.jaxb;
 
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.cxf.common.logging.LogUtils;
 
 import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
 
@@ -29,6 +32,7 @@ public final class NamespaceMapper extends NamespacePrefixMapper {
 
     private final Map<String, String> nspref;
     private String[] nsctxt = EMPTY_STRING;
+    private static final Logger LOG = LogUtils.getLogger(NamespaceMapper.class);
 
     public NamespaceMapper(Map<String, String> nspref) {
         this.nspref = nspref;
@@ -38,6 +42,9 @@ public final class NamespaceMapper extends NamespacePrefixMapper {
                                      String suggestion,
                                      boolean requirePrefix) {
         String prefix = nspref.get(namespaceUri);
+        if (LOG.isLoggable(Level.FINEST)) {  // Liberty Change start
+	   LOG.finest("getPreferredPrefix: Got NS prefix: " + prefix);
+	} // Liberty Change end
         if (prefix != null) {
             return prefix;
         }

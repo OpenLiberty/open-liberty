@@ -21,10 +21,14 @@ package org.apache.cxf.common.jaxb;
 import java.io.Writer;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.cxf.common.logging.LogUtils;
 
 public final class EscapeHandlerInvocationHandler implements InvocationHandler {
 
     private Object target; 
+    private static final Logger LOG = LogUtils.getLogger(EscapeHandlerInvocationHandler.class);  // Liberty Change 
     public EscapeHandlerInvocationHandler(Object obj) {
         target = obj;
     }
@@ -35,9 +39,15 @@ public final class EscapeHandlerInvocationHandler implements InvocationHandler {
             if ((Integer)args[1] == 0 && (Integer)args[2] == 0) {
                 Writer writer = (Writer)args[4];
                 writer.write("");
+	        if (LOG.isLoggable(Level.FINE)) {  // Liberty Change start
+		   LOG.fine("escape method returning null.");
+	        } // Liberty Change end
                 return null;
             }
             result =  method.invoke(target, args);
+	    if (LOG.isLoggable(Level.FINE)) { // Liberty Change start
+	       LOG.fine("escape method returned result: " + result);
+	    } // Liberty Change end
         } 
         return result;
     }

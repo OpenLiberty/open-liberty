@@ -30,6 +30,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -48,12 +50,15 @@ import org.apache.cxf.common.xmlschema.SchemaCollection;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.constants.Constants;
+import org.apache.cxf.common.logging.LogUtils;
 
 /**
  *
  */
 public class SchemaCollectionContextProxy implements JAXBContextProxy {
     private static final Map<Class<?>, QName> TYPE_MAP = new HashMap<>();
+    private static final Logger LOG = LogUtils.getLogger(SchemaCollectionContextProxy.class);  // Liberty Change
+    private static boolean isLoggableFine = LOG.isLoggable(Level.FINE);
 
     final JAXBContext context;
     final SchemaCollection schemas;
@@ -143,11 +148,17 @@ public class SchemaCollectionContextProxy implements JAXBContextProxy {
                 namespace = sc.namespace();
             }
         }
+        if (isLoggableFine) {  // Liberty Change start
+	    LOG.fine("getBeanInfo: namespace=" + namespace + ", name=" + name + ", postfix=" + postfix); 
+	} // Liberty Change end
         if ("##default".equals(namespace) || StringUtils.isEmpty(namespace)) {
             namespace = JAXBUtils.getPackageNamespace(cls);
             if (namespace == null) {
                 namespace = defaultNamespace;
             }
+            if (isLoggableFine) {  // Liberty Change start
+	       LOG.fine("getBeanInfo: namespace changed to: " + namespace);
+	    } // Liberty Change end
         }
         final QName qname = new QName(namespace, name + postfix);
         final XmlSchemaElement el = schemas.getElementByQName(qname);
@@ -157,12 +168,22 @@ public class SchemaCollectionContextProxy implements JAXBContextProxy {
         }
         if (type == null) {
             type = schemas.getTypeByQName(getTypeQName(origCls, namespace));
+            if (isLoggableFine) {  // Liberty Change start
+	       LOG.fine("getBeanInfo: getTypeByQName for origCls: " + (origCls != null ? origCls.getName() : "NULL") +
+		" and namespace: " + namespace + " returned type: " + (type != null ? type.getQName() : "NULL"));
+	    } // Liberty Change end
             if (type == null) {
                 type = schemas.getTypeByQName(qname);
+                if (isLoggableFine) {  // Liberty Change start
+	           LOG.fine("getBeanInfo: getTypeByQName for QName: " + qname + " returned type: " + (type != null ? type.getQName() : "NULL"));
+	        } // Liberty Change end
             }
         }
         if (type == null) {
             type = mapToSchemaType(origCls, namespace);
+            if (isLoggableFine) {  // Liberty Change start
+	       LOG.fine("getBeanInfo: mapToSchemaType returned type: " + (type != null ? type.getQName() : "NULL"));
+	    } // Liberty Change end
             /*
             if (type == null) {
                 type = mapToSchemaType(cls, namespace);
@@ -170,6 +191,9 @@ public class SchemaCollectionContextProxy implements JAXBContextProxy {
             */
         }
         if (el == null && type == null) {
+            if (isLoggableFine) {  // Liberty Change start
+	       LOG.fine("getBeanInfo: el and type are null, returning null");
+	    } // Liberty Change end
             return null;
         }
         final QName typeName = type == null ? null : type.getQName();
