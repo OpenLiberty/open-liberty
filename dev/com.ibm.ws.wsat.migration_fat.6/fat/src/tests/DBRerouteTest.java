@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package tests;
+
+import java.time.Duration;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,7 +28,6 @@ import com.ibm.ws.wsat.fat.util.DBTestBase;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.database.container.PostgreSQLContainer;
@@ -76,11 +77,7 @@ public class DBRerouteTest extends SimpleTest {
 //		System.getProperties().entrySet().stream().forEach(e -> Log.info(RerouteTest.class, "Properties", e.getKey() + " -> " + e.getValue()));
 //		System.getenv().entrySet().stream().forEach(e -> Log.info(RerouteTest.class, "Environment", e.getKey() + " -> " + e.getValue()));
 
-		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
-
 		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
-		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
-
 		server3.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_tertiary")));
 
 		DBTestBase.initWSATTest(server);
@@ -89,7 +86,10 @@ public class DBRerouteTest extends SimpleTest {
 		ShrinkHelper.defaultDropinApp(server, "simpleClient", "web.simpleclient");
 		ShrinkHelper.defaultDropinApp(server2, "simpleService", "web.simpleservice");
 
-		FATUtils.startServers(runner, server, server2, server3);
+		final Duration meanStartTime = FATUtils.startServers(runner, server, server2, server3);
+		final float perfFactor = (float)normalStartTime.getSeconds() / (float)meanStartTime.getSeconds();
+		Log.info(DBRerouteTest.class, "beforeTests", "Mean startup time: "+meanStartTime+", Perf factor="+perfFactor);
+		setTestQuerySuffix("perfFactor="+perfFactor);
 	}
 
 	@AfterClass
