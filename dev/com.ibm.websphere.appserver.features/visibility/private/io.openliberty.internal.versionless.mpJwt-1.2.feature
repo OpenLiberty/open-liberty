@@ -5,4 +5,4 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.mpJwt-1.2
 kind=beta
-edition=core
+edition=base

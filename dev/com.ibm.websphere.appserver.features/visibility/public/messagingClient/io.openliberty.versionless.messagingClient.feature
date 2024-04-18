@@ -5,4 +5,4 @@ IBM-ShortName: messagingClient
 Subsystem-Name: messagingClient
 -features=io.openliberty.internal.versionless.messagingClient-3.0
 kind=beta
-edition=core
+edition=base

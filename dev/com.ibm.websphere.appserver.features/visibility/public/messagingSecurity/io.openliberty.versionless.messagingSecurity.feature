@@ -5,4 +5,4 @@ IBM-ShortName: messagingSecurity
 Subsystem-Name: messagingSecurity
 -features=io.openliberty.internal.versionless.messagingSecurity-3.0
 kind=beta
-edition=core
+edition=base

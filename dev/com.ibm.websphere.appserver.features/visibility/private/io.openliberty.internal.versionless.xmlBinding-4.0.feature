@@ -5,4 +5,4 @@ singleton=true
 -features= \
     io.openliberty.xmlBinding-4.0
 kind=beta
-edition=core
+edition=base

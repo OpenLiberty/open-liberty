@@ -5,4 +5,4 @@ singleton=true
 -features= \
     io.openliberty.mpTelemetry-1.1
 kind=beta
-edition=core
+edition=base

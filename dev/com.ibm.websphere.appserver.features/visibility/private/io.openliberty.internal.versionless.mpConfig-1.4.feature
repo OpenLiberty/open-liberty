@@ -5,4 +5,4 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.mpConfig-1.4
 kind=beta
-edition=core
+edition=base

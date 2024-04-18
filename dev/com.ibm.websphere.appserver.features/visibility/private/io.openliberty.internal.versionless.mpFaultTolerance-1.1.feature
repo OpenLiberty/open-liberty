@@ -5,4 +5,4 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.mpFaultTolerance-1.1
 kind=beta
-edition=core
+edition=base

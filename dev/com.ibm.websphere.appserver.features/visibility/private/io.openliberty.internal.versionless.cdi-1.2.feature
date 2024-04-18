@@ -5,4 +5,4 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.cdi-1.2
 kind=beta
-edition=core
+edition=base

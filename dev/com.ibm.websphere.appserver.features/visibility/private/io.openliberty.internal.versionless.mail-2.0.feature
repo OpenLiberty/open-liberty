@@ -5,4 +5,4 @@ singleton=true
 -features= \
     io.openliberty.mail-2.0
 kind=beta
-edition=core
+edition=base

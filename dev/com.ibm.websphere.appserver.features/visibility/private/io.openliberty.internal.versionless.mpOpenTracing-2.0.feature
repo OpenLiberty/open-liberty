@@ -5,4 +5,4 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.mpOpenTracing-2.0
 kind=beta
-edition=core
+edition=base

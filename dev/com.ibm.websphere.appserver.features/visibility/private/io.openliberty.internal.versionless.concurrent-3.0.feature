@@ -5,4 +5,4 @@ singleton=true
 -features= \
     io.openliberty.concurrent-3.0
 kind=beta
-edition=core
+edition=base

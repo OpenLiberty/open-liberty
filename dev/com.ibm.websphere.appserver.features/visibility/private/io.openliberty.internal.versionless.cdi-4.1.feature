@@ -5,4 +5,4 @@ singleton=true
 -features= \
     io.openliberty.cdi-4.1
 kind=beta
-edition=core
+edition=base

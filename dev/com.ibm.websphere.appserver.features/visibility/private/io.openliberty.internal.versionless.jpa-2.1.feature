@@ -5,4 +5,4 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.jpa-2.1
 kind=beta
-edition=core
+edition=base

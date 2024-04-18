@@ -5,4 +5,4 @@ singleton=true
 -features= \
     io.openliberty.messaging-3.1
 kind=beta
-edition=core
+edition=base

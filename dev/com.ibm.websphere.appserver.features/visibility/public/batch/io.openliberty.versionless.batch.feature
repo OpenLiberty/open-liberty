@@ -5,4 +5,4 @@ IBM-ShortName: batch
 Subsystem-Name: batch
 -features=io.openliberty.internal.versionless.batch-1.0; ibm.tolerates:="2.0,2.1"
 kind=beta
-edition=core
+edition=base

@@ -5,4 +5,4 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.beanValidation-2.0
 kind=beta
-edition=core
+edition=base

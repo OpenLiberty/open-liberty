@@ -5,4 +5,4 @@ singleton=true
 -features= \
     io.openliberty.mdb-4.0
 kind=beta
-edition=core
+edition=base

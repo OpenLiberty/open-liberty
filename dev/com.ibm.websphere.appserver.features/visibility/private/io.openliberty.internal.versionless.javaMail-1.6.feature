@@ -5,4 +5,4 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.javaMail-1.6
 kind=beta
-edition=core
+edition=base

@@ -5,4 +5,4 @@ singleton=true
 -features= \
     io.openliberty.restfulWSClient-3.1
 kind=beta
-edition=core
+edition=base

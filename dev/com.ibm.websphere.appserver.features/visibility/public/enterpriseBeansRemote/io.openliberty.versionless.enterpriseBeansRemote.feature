@@ -5,4 +5,4 @@ IBM-ShortName: enterpriseBeansRemote
 Subsystem-Name: enterpriseBeansRemote
 -features=io.openliberty.internal.versionless.enterpriseBeansRemote-4.0
 kind=beta
-edition=core
+edition=base
