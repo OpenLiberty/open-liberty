@@ -3514,7 +3514,7 @@
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator-cdi</artifactId>
-      <version>6.1.7.Final</version>
+      <version>6.2.5.Final</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
@@ -3524,7 +3524,7 @@
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>6.1.7.Final</version>
+      <version>6.2.5.Final</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
