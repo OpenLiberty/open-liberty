@@ -449,17 +449,6 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Test the CharCount Function to query based on string length.
-     */
-    @Test
-    public void testCharCountFunction() {
-        assertIterableEquals(List.of("eleven", "five", "seven", "three"),
-                             primes.whereNameLengthWithin(4, 6)
-                                             .map(p -> p.name)
-                                             .collect(Collectors.toList()));
-    }
-
-    /**
      * Test the CharCount keyword to query based on string length.
      */
     @Test
@@ -511,31 +500,6 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Integer.valueOf(3), primes.countByNumberIdBetween(40, 50));
 
         assertEquals(Short.valueOf((short) 14), primes.countByNumberIdBetweenAndEvenNot(0, 50, true).get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
-    }
-
-    /**
-     * Parameter-based query with the Count annotation to indicate that it performs a count rather than a find operation.
-     */
-    @Test
-    public void testCountAnnoParameterBasedQuery() {
-        assertEquals(1, primes.numEvenWithSumOfBits(1, true));
-        assertEquals(0, primes.numEvenWithSumOfBits(1, false));
-        assertEquals(0, primes.numEvenWithSumOfBits(2, true));
-        assertEquals(3, primes.numEvenWithSumOfBits(2, false));
-    }
-
-    /**
-     * Count the number of matching entries in the database using annotatively defined queries.
-     */
-    @Test
-    public void testCountAnnotation() throws ExecutionException, InterruptedException, TimeoutException {
-
-        assertEquals(6, primes.howManyIn(17L, 37L));
-        assertEquals(0, primes.howManyIn(24L, 28L));
-
-        assertEquals(Long.valueOf(5), primes.howManyBetweenExclusive(5, 20));
-        assertEquals(Long.valueOf(0), primes.howManyBetweenExclusive(19, 20));
-        assertEquals(Long.valueOf(0), primes.howManyBetweenExclusive(21, 20));
     }
 
     /**
@@ -1057,38 +1021,6 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(Boolean.TRUE, primes.existsByNumberIdBetween(Long.valueOf(14), Long.valueOf(18)));
         assertEquals(Boolean.FALSE, primes.existsByNumberIdBetween(Long.valueOf(24), Long.valueOf(28)));
-    }
-
-    /**
-     * Identify whether elements exist in the database using an annotatively defined query.
-     */
-    @Test
-    public void testExistsAnnotation() {
-        assertEquals(true, primes.anyLessThanEndingWithBitPattern(25L, "1101"));
-        assertEquals(false, primes.anyLessThanEndingWithBitPattern(25L, "1111"));
-        assertEquals(false, primes.anyLessThanEndingWithBitPattern(12L, "1101"));
-    }
-
-    /**
-     * Parameter-based query with the Exists annotation.
-     */
-    @Test
-    public void testExistsAnnotationWithParameterBasedQuery() {
-        assertEquals(true, primes.isFoundWith(47, "2F"));
-        assertEquals(false, primes.isFoundWith(41, "2F")); // 2F is not hex for 41 decimal
-        assertEquals(false, primes.isFoundWith(15, "F")); // not prime
-    }
-
-    /**
-     * Define a parameter-based find operation with IgnoreCase, Like, and Contains annotations.
-     */
-    @Test
-    public void testFind() {
-        assertIterableEquals(List.of(37L, 17L, 7L, 5L), // 11 has no V in the roman numeral and 47 is too big
-                             primes.inRangeHavingNumeralLikeAndSubstringOfName(5L, 45L, "%v%", "ve"));
-
-        assertIterableEquals(List.of(),
-                             primes.inRangeHavingNumeralLikeAndSubstringOfName(1L, 18L, "%v%", "nine"));
     }
 
     /**
@@ -3186,18 +3118,6 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Test the Not annotation on a parameter-based query.
-     */
-    @Test
-    public void testNot() {
-        assertEquals(List.of("thirteen"),
-                     primes.withRomanNumeralSuffixAndWithoutNameSuffix("III", "three", 50));
-
-        assertEquals(List.of("seventeen"),
-                     primes.withRomanNumeralSuffixAndWithoutNameSuffix("VII", "seven", 50));
-    }
-
-    /**
      * BasicRepository.findAll(PageRequest, null) must raise NullPointerException.
      */
     @Test
@@ -3239,15 +3159,6 @@ public class DataTestServlet extends FATServlet {
                                              .stream()
                                              .map(p -> p.numberId)
                                              .collect(Collectors.toList()));
-    }
-
-    /**
-     * Test the Or annotation on a parameter-based query.
-     */
-    @Test
-    public void testOr() {
-        assertIterableEquals(List.of(2L, 3L, 5L, 7L, 41L, 43L, 47L),
-                             primes.notWithinButBelow(10, 40, 50));
     }
 
     /**
@@ -3388,18 +3299,6 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(List.of("forty-one", "thirty-seven"), // ordered by name
                      primes.matchAnyExceptLiteralValueThatLooksLikeANamedParameter("thirty-seven", 41));
-    }
-
-    /**
-     * Use a repository method that has both AND and OR keywords.
-     * The AND keywords should take precedence over OR and be computed first.
-     */
-    @Test
-    public void testPrecedenceOfAndOverOr() {
-        assertIterableEquals(List.of(41L, 37L, 31L, 11L, 7L),
-                             primes.lessThanWithSuffixOrBetweenWithSuffix(40L, "even", 30L, 50L, "one")
-                                             .map(p -> p.numberId)
-                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -4823,22 +4722,6 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Test the Trimmed Function by querying against data that has leading and trailing blank space.
-     */
-    @Test
-    public void testTrimmedFunction() {
-        List<Prime> found = primes.withNameLengthAndWithin(24, 4000L, 4025L);
-        assertNotNull(found);
-        assertEquals("Found: " + found, 1, found.size());
-        assertEquals(4021L, found.get(0).numberId);
-        assertEquals(" Four thousand twenty-one ", found.get(0).name);
-
-        Prime prime = primes.withAnyCaseName("FOUR THOUSAND TWENTY-ONE").orElseThrow();
-        assertEquals(4021L, prime.numberId);
-        assertEquals(" Four thousand twenty-one ", prime.name);
-    }
-
-    /**
      * Test the Trimmed keyword by querying against data that has leading and trailing blank space.
      */
     @Test
@@ -4859,6 +4742,8 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testUpdateMultiple() {
+        products.clear();
+
         assertEquals(0, products.putOnSale("TestUpdateMultiple-match", .10f));
 
         Product prod1 = new Product();
@@ -4905,6 +4790,8 @@ public class DataTestServlet extends FATServlet {
         Product p4 = products.findItem(prod4.pk);
         assertEquals(16.00f, p4.price, 0.001f);
         assertEquals(p[3].version + 1, p4.version); // updated
+
+        products.clear();
     }
 
     /**

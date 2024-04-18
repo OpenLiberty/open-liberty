@@ -30,6 +30,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -57,6 +59,9 @@ public class DataExperimentalServlet extends FATServlet {
 
     @Inject
     Items items;
+
+    @Inject
+    PrimeNumbers primes;
 
     @Inject
     Reservations reservations;
@@ -91,6 +96,28 @@ public class DataExperimentalServlet extends FATServlet {
         towns.add(new Town("Springfield", "Ohio", 58662, Set.of(326, 937)));
         towns.add(new Town("Kansas City", "Missouri", 508090, Set.of(816, 975)));
         towns.add(new Town("Kansas City", "Kansas", 156607, Set.of(913)));
+
+        primes.write(new PrimeNum(2, "2", "10", 1, "II", "two"),
+                     new PrimeNum(3, "3", "11", 2, "III", "three"),
+                     new PrimeNum(5, "5", "101", 2, "V", "five"),
+                     new PrimeNum(7, "7", "111", 3, "VII", "seven"),
+                     new PrimeNum(11, "B", "1011", 3, "XI", "eleven"),
+                     new PrimeNum(13, "D", "1101", 3, "XIII", "thirteen"),
+                     new PrimeNum(17, "11", "10001", 2, "XVII", "seventeen"),
+                     new PrimeNum(19, "13", "10011", 3, "XIX", "nineteen"),
+                     new PrimeNum(23, "17", "10111", 4, "XXIII", "twenty-three"),
+                     new PrimeNum(29, "1D", "11101", 4, "XXIX", "twenty-nine"),
+                     new PrimeNum(31, "1F", "11111", 5, "XXXI", "thirty-one"),
+                     new PrimeNum(37, "25", "100101", 3, "XXXVII", "thirty-seven"),
+                     new PrimeNum(41, "29", "101001", 3, "XLI", "forty-one"),
+                     new PrimeNum(43, "2B", "101011", 4, "XLIII", "forty-three"),
+                     new PrimeNum(47, "2F", "101111", 5, "XLVII", "forty-seven"),
+                     new PrimeNum(4001, "FA1", "111110100001", 7, null, "four thousand one"), // romanNumeralSymbols null
+                     new PrimeNum(4003, "FA3", "111110100011", 8, null, "four thousand three"), // romanNumeralSymbols null
+                     new PrimeNum(4007, "Fa7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
+                     new PrimeNum(4013, "FAD", "111110101101", 9, "", "Four Thousand Thirteen"), // empty list of romanNumeralSymbols
+                     new PrimeNum(4019, "FB3", "111110110011", 9, "", "four thousand nineteen"), // empty list of romanNumeralSymbols
+                     new PrimeNum(4021, "FB5", "111110110101", 9, "", " Four thousand twenty-one ")); // extra blank space at beginning and end
     }
 
     /**
@@ -143,6 +170,42 @@ public class DataExperimentalServlet extends FATServlet {
         assertEquals(4, stats.totalPrices);
 
         items.destroy();
+    }
+
+    /**
+     * Test the CharCount Function to query based on string length.
+     */
+    @Test
+    public void testCharCountFunction() {
+        assertEquals(List.of("eleven", "five", "seven", "three"),
+                     primes.whereNameLengthWithin(4, 6)
+                                     .map(p -> p.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Count the number of matching entries in the database using annotatively defined queries.
+     */
+    @Test
+    public void testCountAnnotation() throws ExecutionException, InterruptedException, TimeoutException {
+
+        assertEquals(6, primes.howManyIn(17L, 37L));
+        assertEquals(0, primes.howManyIn(24L, 28L));
+
+        assertEquals(Long.valueOf(5), primes.howManyBetweenExclusive(5, 20));
+        assertEquals(Long.valueOf(0), primes.howManyBetweenExclusive(19, 20));
+        assertEquals(Long.valueOf(0), primes.howManyBetweenExclusive(21, 20));
+    }
+
+    /**
+     * Parameter-based query with the Count annotation to indicate that it performs a count rather than a find operation.
+     */
+    @Test
+    public void testCountAnnotationParameterBasedQuery() {
+        assertEquals(1, primes.numEvenWithSumOfBits(1, true));
+        assertEquals(0, primes.numEvenWithSumOfBits(1, false));
+        assertEquals(0, primes.numEvenWithSumOfBits(2, true));
+        assertEquals(3, primes.numEvenWithSumOfBits(2, false));
     }
 
     /**
@@ -292,6 +355,26 @@ public class DataExperimentalServlet extends FATServlet {
     }
 
     /**
+     * Identify whether elements exist in the database using an annotatively defined query.
+     */
+    @Test
+    public void testExistsAnnotation() {
+        assertEquals(true, primes.anyLessThanEndingWithBitPattern(25L, "1101"));
+        assertEquals(false, primes.anyLessThanEndingWithBitPattern(25L, "1111"));
+        assertEquals(false, primes.anyLessThanEndingWithBitPattern(12L, "1101"));
+    }
+
+    /**
+     * Parameter-based query with the Exists annotation.
+     */
+    @Test
+    public void testExistsAnnotationWithParameterBasedQuery() {
+        assertEquals(true, primes.isFoundWith(47, "2F"));
+        assertEquals(false, primes.isFoundWith(41, "2F")); // 2F is not hex for 41 decimal
+        assertEquals(false, primes.isFoundWith(15, "F")); // not prime
+    }
+
+    /**
      * Repository methods that use the Extract annotation with a parameter of
      * Year, Quarter, Month, and Day to compare different parts of a date.
      */
@@ -359,6 +442,18 @@ public class DataExperimentalServlet extends FATServlet {
                      reservations.lengthsBelow(200));
 
         assertEquals(4, reservations.deleteByHostNot("no one"));
+    }
+
+    /**
+     * Define a parameter-based find operation with IgnoreCase, Like, and Contains annotations.
+     */
+    @Test
+    public void testFind() {
+        assertEquals(List.of(37L, 17L, 7L, 5L), // 11 has no V in the roman numeral and 47 is too big
+                     primes.inRangeHavingNumeralLikeAndSubstringOfName(5L, 45L, "%v%", "ve"));
+
+        assertEquals(List.of(),
+                     primes.inRangeHavingNumeralLikeAndSubstringOfName(1L, 18L, "%v%", "nine"));
     }
 
     /**
@@ -583,6 +678,27 @@ public class DataExperimentalServlet extends FATServlet {
     }
 
     /**
+     * Test the Not annotation on a parameter-based query.
+     */
+    @Test
+    public void testNot() {
+        assertEquals(List.of("thirteen"),
+                     primes.withRomanNumeralSuffixAndWithoutNameSuffix("III", "three", 50));
+
+        assertEquals(List.of("seventeen"),
+                     primes.withRomanNumeralSuffixAndWithoutNameSuffix("VII", "seven", 50));
+    }
+
+    /**
+     * Test the Or annotation on a parameter-based query.
+     */
+    @Test
+    public void testOr() {
+        assertEquals(List.of(2L, 3L, 5L, 7L, 41L, 43L, 47L),
+                     primes.notWithinButBelow(10, 40, 50));
+    }
+
+    /**
      * Invoke methods that are annotated with the Select, Where, Update, and Delete annotations.
      */
     @Test
@@ -664,6 +780,18 @@ public class DataExperimentalServlet extends FATServlet {
         assertEquals(2, shipments.statusBasedRemoval("CANCELED"));
 
         assertEquals(3, shipments.removeEverything());
+    }
+
+    /**
+     * Use a repository method that has both AND and OR keywords.
+     * The AND keywords should take precedence over OR and be computed first.
+     */
+    @Test
+    public void testPrecedenceOfAndOverOr() {
+        assertEquals(List.of(41L, 37L, 31L, 11L, 7L),
+                     primes.lessThanWithSuffixOrBetweenWithSuffix(40L, "even", 30L, 50L, "one")
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -1324,6 +1452,22 @@ public class DataExperimentalServlet extends FATServlet {
                           reserved,
                           Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.start().toInstant())
                                           .thenComparing(Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.stop().toInstant())));
+    }
+
+    /**
+     * Test the Trimmed Function by querying against data that has leading and trailing blank space.
+     */
+    @Test
+    public void testTrimmedFunction() {
+        List<PrimeNum> found = primes.withNameLengthAndWithin(24, 4000L, 4025L);
+        assertNotNull(found);
+        assertEquals("Found: " + found, 1, found.size());
+        assertEquals(4021L, found.get(0).numberId);
+        assertEquals(" Four thousand twenty-one ", found.get(0).name);
+
+        PrimeNum prime = primes.withAnyCaseName("FOUR THOUSAND TWENTY-ONE").orElseThrow();
+        assertEquals(4021L, prime.numberId);
+        assertEquals(" Four thousand twenty-one ", prime.name);
     }
 
     /**
