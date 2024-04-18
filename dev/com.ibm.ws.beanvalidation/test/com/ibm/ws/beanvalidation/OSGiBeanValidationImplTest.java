@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2016 IBM Corporation and others.
+ * Copyright (c) 2014, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
@@ -35,10 +38,10 @@ import org.osgi.service.component.ComponentContext;
 import com.ibm.ws.beanvalidation.config.ValidationConfigurationFactory;
 import com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface;
 import com.ibm.ws.beanvalidation.mock.MockValidationConfigurator;
-import com.ibm.ws.beanvalidation.service.BeanValidationRuntimeVersion;
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
 import com.ibm.ws.javaee.dd.bval.ValidationConfig;
+import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
@@ -60,21 +63,16 @@ public class OSGiBeanValidationImplTest {
     private final ComponentContext cc = mockery.mock(ComponentContext.class);
 
     @SuppressWarnings("unchecked")
-    private final ServiceReference<ValidationConfigurationFactory> configFactorySR =
-                    mockery.mock(ServiceReference.class, "configFactorySR");
-    @SuppressWarnings("unchecked")
-    private final ServiceReference<BeanValidationRuntimeVersion> runtimeVersionSR =
-                    mockery.mock(ServiceReference.class, "runtimeVersionSR");
+    private final ServiceReference<ValidationConfigurationFactory> configFactorySR = mockery.mock(ServiceReference.class, "configFactorySR");
 
     @SuppressWarnings("unchecked")
-    private final ServiceReference<ClassLoadingService> classLoadingServiceSR =
-                    mockery.mock(ServiceReference.class, "classLoadingServiceSR");
+    private final ServiceReference<ClassLoadingService> classLoadingServiceSR = mockery.mock(ServiceReference.class, "classLoadingServiceSR");
 
-    private final ValidationConfigurationFactory configFactory =
-                    mockery.mock(ValidationConfigurationFactory.class);
+    private final ValidationConfigurationFactory configFactory = mockery.mock(ValidationConfigurationFactory.class);
 
-    private final ClassLoadingService classLoadingService =
-                    mockery.mock(ClassLoadingService.class);
+    private final ClassLoadingService classLoadingService = mockery.mock(ClassLoadingService.class);
+
+    private final FeatureProvisioner featureProvisioner = mockery.mock(FeatureProvisioner.class);
 
     @SuppressWarnings("unchecked")
     private final MetaDataEvent<ModuleMetaData> event = mockery.mock(MetaDataEvent.class);
@@ -107,7 +105,7 @@ public class OSGiBeanValidationImplTest {
      * This test ensures that a ValidatorFactory can still be retrieved after the
      * moduleMetaDataDestroyed method is called. Due to lack of design, an app thread
      * can still be running so for bval-1.0 compatibility continue to allow this.
-     * 
+     *
      * 1. Get a ValidatorFactory successfully
      * 2. Run moduleMetaDataDestroyed
      * 3. Get a ValidatorFactory successfully
@@ -119,6 +117,7 @@ public class OSGiBeanValidationImplTest {
 
         setupExpectations(mockery, scopeData, configurator, 3, null);
 
+        bval.provisionerService = featureProvisioner;
         bval.setMetaDataSlotService(slotService);
         bval.setValidationConfigFactory(configFactorySR);
         bval.setClassLoadingService(classLoadingServiceSR);
@@ -155,7 +154,7 @@ public class OSGiBeanValidationImplTest {
     /**
      * This test ensures that a ValidatorFactory cannot be retrieved after the
      * moduleMetaDataDestroyed method is called for bval-1.1 and up.
-     * 
+     *
      * 1. Get a ValidatorFactory successfully
      * 2. Run moduleMetaDataDestroyed
      * 3. Try to get a ValidatorFactory, but fail
@@ -167,9 +166,9 @@ public class OSGiBeanValidationImplTest {
 
         setupExpectations(mockery, scopeData, configurator, 3, "1.1");
 
+        bval.provisionerService = featureProvisioner;
         bval.setMetaDataSlotService(slotService);
         bval.setValidationConfigFactory(configFactorySR);
-        bval.setRuntimeVersion(runtimeVersionSR);
         bval.setClassLoadingService(classLoadingServiceSR);
         bval.activate(cc);
 
@@ -217,6 +216,7 @@ public class OSGiBeanValidationImplTest {
 
         setupExpectations(mockery, scopeData, configurator, 2, null);
 
+        bval.provisionerService = featureProvisioner;
         bval.setMetaDataSlotService(slotService);
         bval.setValidationConfigFactory(configFactorySR);
         bval.setClassLoadingService(classLoadingServiceSR);
@@ -254,9 +254,9 @@ public class OSGiBeanValidationImplTest {
 
         setupExpectations(mockery, scopeData, configurator, 2, "1.1");
 
+        bval.provisionerService = featureProvisioner;
         bval.setMetaDataSlotService(slotService);
         bval.setValidationConfigFactory(configFactorySR);
-        bval.setRuntimeVersion(runtimeVersionSR);
         bval.setClassLoadingService(classLoadingServiceSR);
         bval.activate(cc);
 
@@ -291,6 +291,7 @@ public class OSGiBeanValidationImplTest {
 
         setupExpectations(mockery, scopeData, configurator, 2, null);
 
+        bval.provisionerService = featureProvisioner;
         bval.setMetaDataSlotService(slotService);
         bval.setValidationConfigFactory(configFactorySR);
         bval.setClassLoadingService(classLoadingServiceSR);
@@ -323,8 +324,8 @@ public class OSGiBeanValidationImplTest {
         // the irrelevant fields here.
         setupExpectations(mockery, scopeData, null, 2, "1.1", null, cc, configFactory, 0, 0);
 
+        bval.provisionerService = featureProvisioner;
         bval.setMetaDataSlotService(slotService);
-        bval.setRuntimeVersion(runtimeVersionSR);
         bval.setValidationConfigFactory(configFactorySR);
         bval.setClassLoadingService(classLoadingServiceSR);
         bval.activate(cc);
@@ -373,13 +374,16 @@ public class OSGiBeanValidationImplTest {
                 oneOf(slotService).reserveMetaDataSlot(ModuleMetaData.class);
                 will(returnValue(mmdSlot));
 
+                Set<String> set = new HashSet<String>(1);
+                if (runtimeVersion == null)
+                    set.add("beanValidation-1.0");
+                else
+                    set.add("beanValidation-" + runtimeVersion);
+                oneOf(featureProvisioner).getInstalledFeatures();
+                will(returnValue(set));
+
                 exactly(numberOfGetMetaDataCalls).of(mmd).getMetaData(mmdSlot);
                 will(returnValue(scopeData));
-
-                if (runtimeVersion != null) {
-                    oneOf(runtimeVersionSR).getProperty("version");
-                    will(returnValue(runtimeVersion));
-                }
 
                 if (container != null) {
                     oneOf(container).adapt(ValidationConfig.class);
