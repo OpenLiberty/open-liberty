@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -53,6 +54,9 @@ import junit.framework.AssertionFailedError;
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataExperimentalServlet extends FATServlet {
+
+    @Inject
+    Items items;
 
     @Inject
     Reservations reservations;
@@ -87,6 +91,113 @@ public class DataExperimentalServlet extends FATServlet {
         towns.add(new Town("Springfield", "Ohio", 58662, Set.of(326, 937)));
         towns.add(new Town("Kansas City", "Missouri", 508090, Set.of(816, 975)));
         towns.add(new Town("Kansas City", "Kansas", 156607, Set.of(913)));
+    }
+
+    /**
+     * Use repository methods with aggregate functions in the select clause.
+     */
+    @Test
+    public void testAggregateFunctions() {
+        // Remove data from previous test:
+        items.destroy();
+
+        // Add data for this test to use:
+        Item item1 = new Item();
+        item1.pk = UUID.nameUUIDFromBytes("AF-006E905-LE".getBytes());
+        item1.name = "TestAggregateFunctions Lite Edition";
+        item1.price = 104.99f;
+        items.save(item1);
+
+        Item item2 = new Item();
+        item2.pk = UUID.nameUUIDFromBytes("AF-006E005-RK".getBytes());
+        item2.name = "TestAggregateFunctions Repair Kit";
+        item2.price = 104.99f;
+        items.save(item2);
+
+        Item item3 = new Item();
+        item3.pk = UUID.nameUUIDFromBytes("AF-006E905-CE".getBytes());
+        item3.name = "TestAggregateFunctions Classic Edition";
+        item3.price = 306.99f;
+        items.save(item3);
+
+        Item item4 = new Item();
+        item4.pk = UUID.nameUUIDFromBytes("AF-006E205-CE".getBytes());
+        item4.name = "TestAggregateFunctions Classic Edition";
+        item4.description = "discontinued";
+        item4.price = 286.99f;
+        items.save(item4);
+
+        assertEquals(306.99f, items.highestPrice(), 0.001f);
+
+        assertEquals(104.99f, items.lowestPrice(), 0.001f);
+
+        assertEquals(200.99f, items.meanPrice(), 0.001f);
+
+        assertEquals(698.97f, items.totalOfDistinctPrices(), 0.001f);
+
+        // EclipseLink says that multiple distinct attribute are not support at this time,
+        // so we are testing this with distinct=false
+        ItemCount stats = items.stats();
+        assertEquals(4, stats.totalNames);
+        assertEquals(1, stats.totalDescriptions);
+        assertEquals(4, stats.totalPrices);
+
+        items.destroy();
+    }
+
+    /**
+     * Query for distinct values of an attribute.
+     */
+    @Test
+    public void testDistinctAttribute() {
+        items.destroy();
+
+        Item item1 = new Item();
+        item1.pk = UUID.nameUUIDFromBytes("TDA-T-L1".getBytes());
+        item1.name = "TestDistinctAttribute T-Shirt Size Large";
+        item1.price = 7.99f;
+        items.save(item1);
+
+        Item item2 = new Item();
+        item2.pk = UUID.nameUUIDFromBytes("TDA-T-M1".getBytes());
+        item1.name = "TestDistinctAttribute T-Shirt Size Medium";
+        item2.price = 7.89f;
+        items.save(item2);
+
+        Item item3 = new Item();
+        item3.pk = UUID.nameUUIDFromBytes("TDA-T-S1".getBytes());
+        item3.name = "TestDistinctAttribute T-Shirt Size Small";
+        item3.price = 7.79f;
+        items.save(item3);
+
+        Item item4 = new Item();
+        item4.pk = UUID.nameUUIDFromBytes("TDA-T-M2".getBytes());
+        item4.name = "TestDistinctAttribute T-Shirt Size Medium";
+        item4.price = 7.49f;
+        items.save(item4);
+
+        Item item5 = new Item();
+        item5.pk = UUID.nameUUIDFromBytes("TDA-T-XS1".getBytes());
+        item5.name = "TestDistinctAttribute T-Shirt Size Extra Small";
+        item5.price = 7.59f;
+        items.save(item5);
+
+        Item item6 = new Item();
+        item6.pk = UUID.nameUUIDFromBytes("TDA-T-L2".getBytes());
+        item6.name = "TestDistinctAttribute T-Shirt Size Large";
+        item6.price = 7.49f;
+        items.save(item6);
+
+        List<String> uniqueItemNames = items.findByNameLike("TestDistinctAttribute %");
+
+        // only 4 of the 6 names are unique
+        assertEquals(List.of("TestDistinctAttribute T-Shirt Size Extra Small",
+                             "TestDistinctAttribute T-Shirt Size Large",
+                             "TestDistinctAttribute T-Shirt Size Medium",
+                             "TestDistinctAttribute T-Shirt Size Small"),
+                     uniqueItemNames);
+
+        items.destroy();
     }
 
     /**
@@ -1108,6 +1219,52 @@ public class DataExperimentalServlet extends FATServlet {
     }
 
     /**
+     * Use repository methods with annotations for rounding.
+     */
+    @Test
+    public void testRoundingAnnotations() {
+        items.destroy();
+
+        Item item1 = new Item();
+        item1.pk = UUID.nameUUIDFromBytes("RND-ANNO-1".getBytes());
+        item1.name = "TestRoundingAnnotations Item 1";
+        item1.price = 19.22f;
+        items.save(item1);
+
+        Item item2 = new Item();
+        item2.pk = UUID.nameUUIDFromBytes("RND-ANNO-2".getBytes());
+        item2.name = "TestRoundingAnnotations Item 2";
+        item2.price = 12.38f;
+        items.save(item2);
+
+        Item item3 = new Item();
+        item3.pk = UUID.nameUUIDFromBytes("RND-ANNO-3".getBytes());
+        item3.name = "TestRoundingAnnotations Item 3";
+        item3.price = 18.76f;
+        items.save(item3);
+
+        Item item4 = new Item();
+        item4.pk = UUID.nameUUIDFromBytes("RND-ANNO-4".getBytes());
+        item4.name = "TestRoundingAnnotations Item 4";
+        item4.price = 18.02f;
+        items.save(item4);
+
+        assertEquals(List.of("TestRoundingAnnotations Item 3", "TestRoundingAnnotations Item 4"),
+                     items.withPriceFloored(18.0f));
+
+        assertEquals(List.of("TestRoundingAnnotations Item 1"),
+                     items.withPriceFloored(19.0f));
+
+        assertEquals(List.of("TestRoundingAnnotations Item 3", "TestRoundingAnnotations Item 4"),
+                     items.withPriceCeiling(19.0f));
+
+        assertEquals(List.of("TestRoundingAnnotations Item 1", "TestRoundingAnnotations Item 3"),
+                     items.withPriceAbout(19.0f));
+
+        items.destroy();
+    }
+
+    /**
      * Experiment with making a repository method return a record.
      */
     @Test
@@ -1167,5 +1324,154 @@ public class DataExperimentalServlet extends FATServlet {
                           reserved,
                           Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.start().toInstant())
                                           .thenComparing(Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.stop().toInstant())));
+    }
+
+    /**
+     * Use repository methods with the Update annotation that perform division, subtraction, and addition,
+     */
+    @Test
+    public void testUpdateAnnotationDivideSubtractAdd() {
+        items.destroy();
+
+        Item item1 = new Item();
+        item1.pk = UUID.nameUUIDFromBytes("UPD-ANNO-DSA-1".getBytes());
+        item1.name = "TestUpdateAnnotationDivideSubtractAdd Item 1";
+        item1.description = "Item 1";
+        item1.price = 70.00f;
+        items.save(item1);
+
+        Item item2 = new Item();
+        item2.pk = UUID.nameUUIDFromBytes("UPD-ANNO-DSA-2".getBytes());
+        item2.name = "TestUpdateAnnotationDivideSubtractAdd Item 2";
+        item2.description = "Item 2";
+        item2.price = 80.00f;
+        items.save(item2);
+
+        // divide price and append to description via Update method
+        assertEquals(1, items.reduceBy(item2.pk, 2, " halved"));
+
+        Item item = items.get(item2.pk);
+        assertEquals(40.0f, item.price, 0.01f);
+        assertEquals("Item 2 halved", item.description);
+
+        // subtract from price and append to description via Update method with property names inferred from parameters
+        assertEquals(true, items.shorten(item2.pk, 1.0f, " and reduced $1"));
+
+        item = items.get(item2.pk);
+        assertEquals(39.0f, item.price, 0.01f);
+        assertEquals("Item 2 halved and reduced $1", item.description);
+
+        // subtract from price and append to description via Update method with annotatively specified property names
+        items.shortenBy(2, " and then another $2", item2.pk);
+
+        item = items.get(item2.pk);
+        assertEquals(37.0f, item.price, 0.01f);
+        assertEquals("Item 2 halved and reduced $1 and then another $2", item.description);
+
+        item = items.get(item1.pk);
+        assertEquals(70.0f, item.price, 0.01f);
+        assertEquals("Item 1", item.description);
+
+        items.destroy();
+    }
+
+    /**
+     * Use repository methods with the Update annotation that multiply values.
+     */
+    @Test
+    public void testUpdateAnnotationMultiply() {
+        items.destroy();
+
+        Item item1 = new Item();
+        item1.pk = UUID.nameUUIDFromBytes("UPD-ANNO-1".getBytes());
+        item1.name = "Fairly Priced TestUpdateAnnotation Item";
+        item1.price = 5.00f;
+        items.save(item1);
+
+        Item item2 = new Item();
+        item2.pk = UUID.nameUUIDFromBytes("UPD-ANNO-2".getBytes());
+        item2.name = "Highly Priced TestUpdateAnnotation Item";
+        item2.price = 100.00f;
+        items.save(item2);
+
+        Item item3 = new Item();
+        item3.pk = UUID.nameUUIDFromBytes("UPD-ANNO-3".getBytes());
+        item3.name = "Middle Priced TestUpdateAnnotation Item";
+        item3.price = 40.00f;
+        items.save(item3);
+
+        Item item4 = new Item();
+        item4.pk = UUID.nameUUIDFromBytes("UPD-ANNO-4".getBytes());
+        item4.name = "Inexpensive TestUpdateAnnotation Item";
+        item4.price = 2.00f;
+        items.save(item4);
+
+        Item item5 = new Item();
+        item5.pk = UUID.nameUUIDFromBytes("UPD-ANNO-5".getBytes());
+        item5.name = "Ridiculously High Priced TestUpdateAnnotation Item";
+        item5.price = 500.00f;
+        items.save(item5);
+
+        Item item6 = new Item();
+        item6.pk = UUID.nameUUIDFromBytes("UPD-ANNO-6".getBytes());
+        item6.name = "Lowest Priced TestUpdateAnnotation Item";
+        item6.price = 1.00f;
+        items.save(item6);
+
+        assertEquals(true, items.isNotEmpty());
+        assertEquals(6, items.total());
+
+        assertEquals(5, items.inflatePrices("Priced TestUpdateAnnotation Item", 1.07f)); // item4 does not match
+
+        Item[] found = items.versionedAtOrAbove(2);
+
+        assertEquals(Stream.of(found).map(p -> p.pk).collect(Collectors.toList()).toString(),
+                     5, found.length);
+
+        assertEquals(1.07f, found[0].price, 0.001f);
+        assertEquals(5.35f, found[1].price, 0.001f);
+        assertEquals(42.80f, found[2].price, 0.001f);
+        assertEquals(107.00f, found[3].price, 0.001f);
+        assertEquals(535.00f, found[4].price, 0.001f);
+
+        Item item = items.get(item4.pk);
+        assertEquals(2.00f, item.price, 0.001f);
+
+        items.undoPriceIncrease(Set.of(item5.pk, item2.pk, item1.pk), 1.07f);
+
+        found = items.versionedAtOrAbove(1);
+
+        assertEquals(Stream.of(found).map(p -> p.pk).collect(Collectors.toList()).toString(),
+                     6, found.length);
+
+        assertEquals(1.07f, found[0].price, 0.001f); // update remains in place
+        assertEquals(2.00f, found[1].price, 0.001f); // never updated
+        assertEquals(5.00f, found[2].price, 0.001f); // reverted
+        assertEquals(42.80f, found[3].price, 0.001f); // update remains in place
+        assertEquals(100.00f, found[4].price, 0.001f); // reverted
+        assertEquals(500.00f, found[5].price, 0.001f); // reverted
+
+        assertEquals(2, found[0].version); // update remains in place
+        assertEquals(1, found[1].version); // never updated
+        assertEquals(1, found[2].version); // reverted
+        assertEquals(2, found[3].version); // update remains in place
+        assertEquals(1, found[4].version); // reverted
+        assertEquals(1, found[5].version); // reverted
+
+        assertEquals(6, items.inflateAllPrices(1.05f));
+
+        found = items.versionedAtOrAbove(2);
+
+        assertEquals(1.12f, found[0].price, 0.01f);
+        assertEquals(2.10f, found[1].price, 0.01f);
+        assertEquals(5.25f, found[2].price, 0.01f);
+        assertEquals(44.94f, found[3].price, 0.01f);
+        assertEquals(105.00f, found[4].price, 0.01f);
+        assertEquals(525.00f, found[5].price, 0.01f);
+
+        items.destroy();
+
+        assertEquals(0, items.total());
+        assertEquals(false, items.isNotEmpty());
     }
 }

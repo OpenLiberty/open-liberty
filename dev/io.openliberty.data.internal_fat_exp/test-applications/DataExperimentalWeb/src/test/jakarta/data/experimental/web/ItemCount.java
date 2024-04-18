@@ -10,17 +10,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package test.jakarta.data.web;
+package test.jakarta.data.experimental.web;
 
 /**
  * This is not an entity. One of the repository methods uses this class to return multiple values.
  */
-public class ProductCount {
+public class ItemCount {
     public final long totalNames;
     public final long totalDescriptions;
     public final long totalPrices;
 
-    public ProductCount(long numDistinctNames, long numDistinctDescriptions, long numDistinctPrices) {
+    public ItemCount(long numDistinctNames, long numDistinctDescriptions, long numDistinctPrices) {
         this.totalNames = numDistinctNames;
         this.totalDescriptions = numDistinctDescriptions;
         this.totalPrices = numDistinctPrices;
