@@ -275,27 +275,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Close called , vc ->" + this.vc + " hc: " + this.hashCode());
         }
+        
 
         for (String handler : nettyContext.pipeline().names()) {
             MSP.log("Dispatcher close handler -> " + handler);
         }
         if (this.nettyContext.pipeline().get(RemoteIpHandler.class) != null)
             this.nettyContext.pipeline().get(RemoteIpHandler.class).resetState();
-//        if (nettyContext.pipeline().get("httpKeepAlive") != null) {
-//            this.nettyContext.pipeline().remove("httpKeepAlive");
-//        //}
-//        // if (nettyContext.pipeline().get("HTTP_SERVER_HANDLER") != null) {
-        //   this.nettyContext.pipeline().remove("HTTP_SERVER_HANDLER");
 
-//
-//    }
-//
-//        if(nettyContext.pipeline().get(NettyServletUpgradeHandler.class) !=null) {
-//            this.nettyContext.channel().close();
-//        }
-//
-//
-//        return;
         if (nettyRequest.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Doing nothing on close since Netty request is HTTP2 enabled. Codec will handle shutdown");
@@ -326,10 +313,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (nettyContext.pipeline().get("httpKeepAlive") == null) {
             MSP.log("DispatcherLink close because no keep alive handler");
             this.nettyContext.channel().close();
-            //}
-            // if (nettyContext.pipeline().get("HTTP_SERVER_HANDLER") != null) {
-            //   this.nettyContext.pipeline().remove("HTTP_SERVER_HANDLER");
 
+        } else {
+            // RESET FOR NEW CONNECTION
+            System.out.println("Resetting and reading new rqeuest ... ");
+            this.isc.getResponse().clear();
+            
+            System.out.println("Is comitted? -> " + isc.getResponse().isCommitted());
         }
 
         if (nettyContext.pipeline().get(NettyServletUpgradeHandler.class) != null) {
@@ -738,8 +728,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             this.isc.setRemoteAddr(remoteAddress);
 
         }
-        
-      //Add for Servlet 6.0
+
+        //Add for Servlet 6.0
         //HttpDispatcherLink can be reused but ready(VirtualConnection) is always called to get a current VirtualConnection.
         //If thats true, don't need to clean up this connectionID
         this.connectionId = connectionCounter.getAndIncrement();
@@ -747,8 +737,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "ready , connection id [" + connectionId + "] for this [" + this + "]");
         }
-        
-        
+
         // Make sure to initialize the response in case of an early-return-error message
         //((NettyHttpRequestImpl) this.request).init(this.nettyRequest, this.nettyContext.channel(), this.isc);
         // MSP.log("Init Request");
