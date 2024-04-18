@@ -5,4 +5,4 @@ IBM-ShortName: connectorsInboundSecurity
 Subsystem-Name: connectorsInboundSecurity
 -features=io.openliberty.internal.versionless.connectorsInboundSecurity-2.0
 kind=beta
-edition=core
+edition=base

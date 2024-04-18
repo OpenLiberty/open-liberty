@@ -5,4 +5,4 @@ IBM-ShortName: expressionLanguage
 Subsystem-Name: expressionLanguage
 -features=io.openliberty.internal.versionless.expressionLanguage-4.0; ibm.tolerates:="5.0,6.0"
 kind=beta
-edition=core
+edition=base

@@ -5,4 +5,4 @@ singleton=true
 -features= \
     io.openliberty.appSecurity-5.0
 kind=beta
-edition=core
+edition=base

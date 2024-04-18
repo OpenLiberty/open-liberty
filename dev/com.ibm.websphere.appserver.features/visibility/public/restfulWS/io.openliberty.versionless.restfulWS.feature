@@ -3,6 +3,6 @@ symbolicName=io.openliberty.versionless.restfulWS
 visibility=public
 IBM-ShortName: restfulWS
 Subsystem-Name: restfulWS
--features=io.openliberty.internal.versionless.restfulWS-3.0; ibm.tolerates:="3.1,4.0"
+-features=io.openliberty.internal.versionless.restfulWS-3.0; ibm.tolerates:="3.1"
 kind=beta
-edition=core
+edition=base

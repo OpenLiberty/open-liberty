@@ -5,4 +5,4 @@ singleton=true
 -features= \
     io.openliberty.jsonp-2.0
 kind=beta
-edition=core
+edition=base

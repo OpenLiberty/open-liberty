@@ -5,4 +5,4 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.mpHealth-3.0
 kind=beta
-edition=core
+edition=base

@@ -1,8 +1,8 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.internal.versionless.jaxb-2.2
+symbolicName=io.openliberty.internal.versionless.jms-3.0
 visibility=private
 singleton=true
 -features= \
-    com.ibm.websphere.appserver.jaxb-2.2
+    io.openliberty.messaging-3.0
 kind=beta
-edition=core
+edition=base

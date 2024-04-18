@@ -4,5 +4,4 @@ visibility=private
 singleton=true
 kind=beta
 edition=core
-WLP-DisableAllFeatures-OnConflict: false
 WLP-Activation-Type: parallel

@@ -5,4 +5,4 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.servlet-5.0
 kind=beta
-edition=core
+edition=base

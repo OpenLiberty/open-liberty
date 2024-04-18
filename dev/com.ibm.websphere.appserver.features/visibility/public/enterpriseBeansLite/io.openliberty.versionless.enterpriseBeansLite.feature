@@ -5,4 +5,4 @@ IBM-ShortName: enterpriseBeansLite
 Subsystem-Name: enterpriseBeansLite
 -features=io.openliberty.internal.versionless.enterpriseBeansLite-4.0
 kind=beta
-edition=core
+edition=base

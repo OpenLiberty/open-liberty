@@ -3,6 +3,6 @@ symbolicName=io.openliberty.versionless.jaspic
 visibility=public
 IBM-ShortName: jaspic
 Subsystem-Name: jaspic
--features=io.openliberty.internal.versionless.jaspic-1.1
+-features=io.openliberty.internal.versionless.jaspic-1.1; ibm.tolerates:="2.0,3.0"
 kind=beta
-edition=core
+edition=base

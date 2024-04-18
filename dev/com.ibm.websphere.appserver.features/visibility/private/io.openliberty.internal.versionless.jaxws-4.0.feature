@@ -1,8 +1,8 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.internal.versionless.websocket-2.2
+symbolicName=io.openliberty.internal.versionless.jaxws-4.0
 visibility=private
 singleton=true
 -features= \
-    io.openliberty.websocket-2.2
+    io.openliberty.xmlWS-4.0
 kind=beta
-edition=core
+edition=base

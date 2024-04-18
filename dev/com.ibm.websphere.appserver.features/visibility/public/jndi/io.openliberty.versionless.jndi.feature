@@ -5,4 +5,4 @@ IBM-ShortName: jndi
 Subsystem-Name: jndi
 -features=io.openliberty.internal.versionless.jndi-1.0
 kind=beta
-edition=core
+edition=base

@@ -5,4 +5,4 @@ singleton=true
 -features= \
     io.openliberty.mpMetrics-4.0
 kind=beta
-edition=core
+edition=base

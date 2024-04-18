@@ -5,4 +5,4 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.jdbc-4.2
 kind=beta
-edition=core
+edition=base

@@ -5,4 +5,4 @@ IBM-ShortName: mail
 Subsystem-Name: mail
 -features=io.openliberty.internal.versionless.mail-2.0; ibm.tolerates:="2.1"
 kind=beta
-edition=core
+edition=base

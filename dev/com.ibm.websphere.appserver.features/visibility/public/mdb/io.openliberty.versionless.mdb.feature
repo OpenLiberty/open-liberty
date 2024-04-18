@@ -5,4 +5,4 @@ IBM-ShortName: mdb
 Subsystem-Name: mdb
 -features=io.openliberty.internal.versionless.mdb-4.0
 kind=beta
-edition=core
+edition=base

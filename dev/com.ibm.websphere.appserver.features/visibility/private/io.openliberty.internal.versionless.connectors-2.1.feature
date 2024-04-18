@@ -5,4 +5,4 @@ singleton=true
 -features= \
     io.openliberty.connectors-2.1
 kind=beta
-edition=core
+edition=base

@@ -5,4 +5,4 @@ IBM-ShortName: enterpriseBeansPersistentTimer
 Subsystem-Name: enterpriseBeansPersistentTimer
 -features=io.openliberty.internal.versionless.enterpriseBeansPersistentTimer-4.0
 kind=beta
-edition=core
+edition=base

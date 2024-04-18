@@ -1,8 +1,8 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.internal.versionless.persistence-3.2
+symbolicName=io.openliberty.internal.versionless.ejb-4.0
 visibility=private
 singleton=true
 -features= \
-    io.openliberty.persistence-3.2
+    io.openliberty.enterpriseBeans-4.0
 kind=beta
-edition=core
+edition=base

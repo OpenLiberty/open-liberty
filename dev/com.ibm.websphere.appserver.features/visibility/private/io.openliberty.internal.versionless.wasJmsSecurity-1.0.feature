@@ -5,4 +5,4 @@ singleton=true
 -features= \
     com.ibm.websphere.appserver.wasJmsSecurity-1.0
 kind=beta
-edition=core
+edition=base

@@ -5,4 +5,4 @@ IBM-ShortName: pages
 Subsystem-Name: pages
 -features=io.openliberty.internal.versionless.pages-3.0; ibm.tolerates:="3.1,4.0"
 kind=beta
-edition=core
+edition=base
