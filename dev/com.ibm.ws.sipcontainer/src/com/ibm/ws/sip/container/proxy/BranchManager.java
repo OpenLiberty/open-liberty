@@ -1196,18 +1196,19 @@ abstract class BranchManager implements ProxyParent
 				throw new IllegalArgumentException ("Unsupported Scheme");
 			}
 	    }
-	    ProxyBranchImpl curBranch =  ThreadLocalStorage.getCurrentBranch();
-	    if((curBranch != null) && curBranch.isCancelled()){
-	    	throw new IllegalStateException("Cannot create Branches on a canceled proxy branch during doBranchResponse");
-	    }
+	    //ProxyBranchImpl curBranch =  ThreadLocalStorage.getCurrentBranch();
+	    //if((curBranch != null) && curBranch.isCancelled()){
+	    //	throw new IllegalStateException("Cannot create Branches on a canceled proxy branch during doBranchResponse");
+	    //}
 
 		
 	    //if this is a virtual branch we need special treatment
     	if (isVirtual) {
     		
     		if (proxy.isVirtualBranchExists()) {
-    	        //if the virtual branch exists already, we should throw IllegalStateException
-    			throw new IllegalStateException("Virtual Branch Already exists"); 			
+    	        //if the virtual branch exists already, return it
+    			//throw new IllegalStateException("Virtual Branch Already exists"); 
+				return proxy.getVirtualBranch();			
         	}
     	}else {
     		//check that no branch was created for this destination
