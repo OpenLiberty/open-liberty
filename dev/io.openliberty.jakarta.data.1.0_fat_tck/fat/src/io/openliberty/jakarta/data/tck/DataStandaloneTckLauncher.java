@@ -59,7 +59,7 @@ public class DataStandaloneTckLauncher {
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-M4");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-RC1");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckStandaloneNoSQL";
