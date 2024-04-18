@@ -55,7 +55,6 @@ public class DataCoreTckLauncher {
     }
 
     @Test
-    @Ignore("Broken by PageRequest/Sort decoupling and TCK Profile change") // TODO enable when we have RC1
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchDataTckCorePersistence() throws Exception {
 
@@ -75,7 +74,7 @@ public class DataCoreTckLauncher {
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-M4");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-RC1");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckCorePersistence";
@@ -109,7 +108,7 @@ public class DataCoreTckLauncher {
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-M4");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-RC1");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckCoreNoSQL";
