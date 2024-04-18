@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.Duration;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -56,9 +57,6 @@ public class SimpleTest extends DBTestBase {
 
 	public static String[] serverNames = new String[] {"MigrationServer1", "MigrationServer2"};
 
-	public static String BASE_URL;
-	public static String BASE_URL2;
-
 	@BeforeClass
 	public static void beforeTests() throws Exception {
 
@@ -71,10 +69,8 @@ public class SimpleTest extends DBTestBase {
 	            s.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 	        }
 	    };
-	    
-		BASE_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();
+
 		server2.setHttpDefaultPort(Integer.parseInt(System.getProperty("HTTP_secondary")));
-		BASE_URL2 = "http://" + server2.getHostname() + ":" + server2.getHttpDefaultPort();
 
 		DBTestBase.initWSATTest(server);
 		DBTestBase.initWSATTest(server2);
@@ -82,7 +78,10 @@ public class SimpleTest extends DBTestBase {
 		ShrinkHelper.defaultDropinApp(server, "simpleClient", "web.simpleclient");
 		ShrinkHelper.defaultDropinApp(server2, "simpleService", "web.simpleservice");
 
-		FATUtils.startServers(runner, server, server2);;
+		final Duration meanStartTime = FATUtils.startServers(runner, server, server2);
+		final float perfFactor = (float)normalStartTime.getSeconds() / (float)meanStartTime.getSeconds();
+		Log.info(SimpleTest.class, "beforeTests", "Mean startup time: "+meanStartTime+", Perf factor="+perfFactor);
+		setTestQuerySuffix("perfFactor="+perfFactor);
 	}
 
 	@AfterClass

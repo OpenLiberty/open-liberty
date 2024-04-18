@@ -19,6 +19,8 @@ import java.time.Duration;
 import java.time.Instant;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
@@ -49,7 +51,7 @@ public abstract class ClientServletBase extends FATServlet {
 
 	protected Instant tranEndTime;
 	protected int timeout = (int) DEFAULT_TIMEOUT;
-	protected float perfFactor;
+	protected float perfFactor = 1.0f;
 
 	protected static final String[] noXARes = new String[]{};
 	protected static final String[] OneXARes = new String[]{""}; 
@@ -64,8 +66,17 @@ public abstract class ClientServletBase extends FATServlet {
 	protected UserTransaction ut;
 
 	@Override
-    protected void before() throws Exception {
+    protected void before(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
     	XAResourceImpl.clear();
+    	
+    	final String pf = request.getParameter("perfFactor");
+    	if (pf != null) {
+    		perfFactor = Float.parseFloat(pf);
+    		
+    		timeout = (int)((float)DEFAULT_TIMEOUT / perfFactor);
+    		System.out.println("Transaction timeout will be "+timeout);
+    	}
     }
 
 	protected String execute(String BASE_URL, String commitRollback, int expectedDirection, String expectResult) {

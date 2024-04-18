@@ -22,6 +22,8 @@ import java.time.Instant;
 
 import javax.annotation.Resource;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
@@ -62,9 +64,18 @@ public class SleepClientServlet extends FATServlet {
 	@Resource
 	UserTransaction ut;
 
-    @Override
-    protected void before() throws Exception {
+	@Override
+    protected void before(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
     	XAResourceImpl.clear();
+    	
+    	final String pf = request.getParameter("perfFactor");
+    	if (pf != null) {
+    		perfFactor = Float.parseFloat(pf);
+    		
+    		timeout = (int)((float)DEFAULT_TIMEOUT / perfFactor);
+    		System.out.println("Transaction timeout will be "+timeout);
+    	}
     }
 
     @Test
