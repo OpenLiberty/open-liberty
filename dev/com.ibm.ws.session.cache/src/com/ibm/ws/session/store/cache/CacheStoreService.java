@@ -49,7 +49,6 @@ import javax.transaction.UserTransaction;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -121,10 +120,6 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      * @param props   service properties
      */
     protected void activate(ComponentContext context, Map<String, Object> props) {
-        processConfiguration(props);
-    }
-
-    private void processConfiguration(Map<String, Object> props) {
         configurationProperties = new HashMap<String, Object>(props);
 
         Object scheduleInvalidationFirstHour = configurationProperties.get("scheduleInvalidationFirstHour");
@@ -148,9 +143,6 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         isLibraryRefSet = props.containsKey(CONFIG_KEY_LIBRARY_REF);
     }
 
-    protected void modified(Map<String, Object> config) {
-        processConfiguration(config);
-    }
     /**
      * Performs deferred activation/initialization.
      */
@@ -561,10 +553,6 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                     configureMonitoring(cacheName);
                 return null;
             });
-    }
-
-    protected void setConfigCondition(Condition configCondition) {
-        // do nothing; this is just a reference that we use to force the component to recycle
     }
 
     protected void setSerializationService(SerializationService serializationService) {

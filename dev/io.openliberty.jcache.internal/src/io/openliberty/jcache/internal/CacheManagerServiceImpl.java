@@ -12,7 +12,6 @@
  *******************************************************************************/
 package io.openliberty.jcache.internal;
 
-import static io.openliberty.jcache.internal.Activator.CACHE_MANAGER_CONFIG_CONDITION;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.REQUIRE;
 
 import java.io.IOException;
@@ -30,10 +29,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -82,27 +79,12 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     @Activate
     public void activate(Map<String, Object> config) {
         id = (String) config.get(KEY_ID);
+
         /*
          * Get the URI.
          */
         this.uriValue = (String) config.get(KEY_URI);
-        configureProperties(config);
-        /*
-         * Schedule a task to initialize the CacheManager in the background. This will
-         * alleviate delays on the first request to any caches that use this
-         * CacheManager.
-         */
-        CheckpointPhase.onRestore(1, () -> {
-            getCacheManagerFuture = scheduledExecutorService.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    getCacheManager();
-                }
-            }, 0, TimeUnit.SECONDS);
-        });
-    }
 
-    private void configureProperties(Map<String, Object> config) {
         /*
          * Get the configured vendor properties.
          */
@@ -121,11 +103,20 @@ public class CacheManagerServiceImpl implements CacheManagerService {
                     this.properties.setProperty(key, (String) value);
             }
         }
-    }
 
-    @Modified
-    public void modified(Map<String, Object> config) {
-        configureProperties(config);
+        /*
+         * Schedule a task to initialize the CacheManager in the background. This will
+         * alleviate delays on the first request to any caches that use this
+         * CacheManager.
+         */
+        CheckpointPhase.onRestore(() -> {
+            getCacheManagerFuture = scheduledExecutorService.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    getCacheManager();
+                }
+            }, 0, TimeUnit.SECONDS);
+        });
     }
 
     /**
@@ -282,11 +273,6 @@ public class CacheManagerServiceImpl implements CacheManagerService {
      */
     public void unsetScheduledExecutorService(ServiceReference<ScheduledExecutorService> scheduledExecutorService) {
         this.scheduledExecutorService = null;
-    }
-
-    @Reference(name = "configCondition", service = Condition.class, target = "(" + Condition.CONDITION_ID + "=" + CACHE_MANAGER_CONFIG_CONDITION + ")")
-    protected void setConfigCondition(Condition configCondition) {
-        // do nothing; this is just a reference that we use to force the component to recycle
     }
 
     @Override
