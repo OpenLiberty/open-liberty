@@ -316,29 +316,28 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Netty Framework signaled- Server Completely Started signal received");
         }
-        while ((task = serverStartedTasks.poll()) != null) {
-            try {
-            	if(!task.isCancelled()) {
-            		executorService.submit(new StartTaskRunnable(task, latch));
-            	}else
-            		latch.countDown();
-            } catch (Exception e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
-                }
-            }
-        }
-        
-        try {
-        	latch.await();
-		} catch (InterruptedException e) {
-			// TODO: handle exception
-			System.out.println("Got interrupted exception");
-			throw new RuntimeException(e);
-		}
-        
-
         synchronized (syncStarted) {
+	        while ((task = serverStartedTasks.poll()) != null) {
+	            try {
+	            	if(!task.isCancelled()) {
+	            		executorService.submit(new StartTaskRunnable(task, latch));
+	            	}else
+	            		latch.countDown();
+	            } catch (Exception e) {
+	                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	                    Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
+	                }
+	            }
+	        }
+	        
+	        try {
+	        	latch.await();
+			} catch (InterruptedException e) {
+				// TODO: handle exception
+				System.out.println("Got interrupted exception");
+				throw new RuntimeException(e);
+			}
+        
             serverCompletelyStarted.set(true);
             isActive = true;
             syncStarted.notifyAll();
