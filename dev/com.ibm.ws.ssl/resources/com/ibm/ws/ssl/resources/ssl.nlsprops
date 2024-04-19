@@ -227,8 +227,9 @@ ssl.config.not.using.fips.CWPKI0049W=CWPKI0049W: UseFIPS is enabled but the SSL 
 ssl.config.not.using.fips.CWPKI0049W.explanation=Although UseFIPS has been enabled, the FIPS-approved cryptographic algorithms cannot be used because the SSL configuration is not using a FIPS-approved JSSE Provider.
 ssl.config.not.using.fips.CWPKI0049W.useraction=To ensure the use of FIPS-approved cryptographic algorithms, modify the SSL configuration to use a FIPS-approved JSSE Provider.
 # -------------------------------------------------------------------------------------------------
-
-
+ssl.san.warning.CWPKI0050W=CWPKI0050W: The certificate with the {0} alias from the {1} keyStore has no subject alternative name. HostName verification is disabled for serverIdentity collective controller, replica and member SSL communication.
+ssl.san.warning.CWPKI0050W.explanation=A certificate does not have subject alternative name in the keyStore.
+ssl.san.warning.CWPKI0050W.useraction=Open the keyStore and check the subject alternative name on all certificates in the keyStore. Generate new certificates to enable the hostname verification.
 ################################################################################
 # Range 100-110 reserved for TrustManager Prompt
 ################################################################################
