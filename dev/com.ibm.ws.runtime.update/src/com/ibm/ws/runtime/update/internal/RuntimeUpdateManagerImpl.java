@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.runtime.update.internal;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
@@ -67,6 +69,7 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
            property = { "service.vendor=IBM" })
 public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, SynchronousBundleListener {
     private static final TraceComponent tc = Tr.register(RuntimeUpdateManagerImpl.class);
+    public static final ResourceBundle messages = ResourceBundle.getBundle("com.ibm.ws.runtime.update.internal.resources.Messages");
 
     private volatile FutureMonitor futureMonitor;
     private final AtomicBoolean normalServerStop = new AtomicBoolean(true);
@@ -102,7 +105,8 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
     }
 
     @Reference(service = ExecutorService.class,
-               cardinality = ReferenceCardinality.MANDATORY)
+               cardinality = ReferenceCardinality.MANDATORY,
+               target = "(component.name=com.ibm.ws.threading)")
     protected void setExecutorService(ExecutorService executorService) {
         this.executorService = executorService;
     }
@@ -318,6 +322,43 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         }
     }
 
+    public static boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
+
+    /**
+     * Gets the amount of time to wait for quiesce work to complete before continuing with shutdown.
+     *
+     * @return
+     */
+    private int getQuiesceTimeout() {
+
+        final int MINIMUM_QUIESCE_TIMEOUT = 30;
+        int quiesceTimeout = MINIMUM_QUIESCE_TIMEOUT;
+
+        if (isBeta) {
+            // The quiesceTimeout is configured on the <applicationManager> element in server.xml.  RuntimeUpdateManagerImpl
+            // only needs the ApplicationManager to lookup this one value.  The approach we are using to reference the service is
+            // rarely appropriate, but is OK here since we only need to lookup the value at a single point in time (i.e. server shutdown).
+            ServiceReference<?> appMgr = bundleCtx.getServiceReference("com.ibm.ws.app.manager.ApplicationManager");
+            Long valueFromConfig = null;
+            if (appMgr != null) {
+                valueFromConfig = ((Long) appMgr.getProperty("quiesceTimeout"));
+            }
+
+            // The timeout is in seconds.  So conversion to int is fine.
+            if (valueFromConfig != null) {
+                quiesceTimeout = valueFromConfig.intValue();
+            } else {
+                Tr.warning(tc, MessageFormat.format(messages.getString("quiesce.timeout.not.available"), quiesceTimeout, MINIMUM_QUIESCE_TIMEOUT));
+            }
+        }
+
+        if (quiesceTimeout < MINIMUM_QUIESCE_TIMEOUT) {
+            Tr.warning(tc, MessageFormat.format(messages.getString("quiesce.timeout.too.low"), quiesceTimeout, MINIMUM_QUIESCE_TIMEOUT));
+            quiesceTimeout = MINIMUM_QUIESCE_TIMEOUT;
+        }
+        return quiesceTimeout;
+    }
+
     /**
      * Call the {@code ServerQuiesceListener#serverStopping()} method on all discovered
      * references. Calls are queued to a small thread pool, which is then stopped.
@@ -338,8 +379,7 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         if (listenerRefs.isEmpty() && existingNotifications.isEmpty())
             return;
 
-        ThreadQuiesce tq = (ThreadQuiesce) executorService;
-        int quiesceTimeout = tq.getQuiesceTimeout();
+        int quiesceTimeout = getQuiesceTimeout();
 
         if (isServer())
             Tr.audit(tc, "quiesce.begin", quiesceTimeout);
@@ -400,8 +440,9 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
         // Notify the executor service that we are quiescing
 
+        ThreadQuiesce tq = (ThreadQuiesce) executorService;
         long startTime = System.currentTimeMillis();
-        if (tq.quiesceThreads() && quiesceListenerFutures.isComplete(startTime, quiesceTimeout)) {
+        if (tq.quiesceThreads(quiesceTimeout) && quiesceListenerFutures.isComplete(startTime, quiesceTimeout)) {
             if (isServer())
                 Tr.info(tc, "quiesce.end");
             else
@@ -480,11 +521,11 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             long endTime = startTime + quiesceTimeout * 1000;
 
             for (Future<?> f : quiesceListenerFutures) {
-                long waitTime = endTime - System.currentTimeMillis();
-                if (waitTime < 0)
+                long remainingTime = endTime - System.currentTimeMillis();
+                if (remainingTime < 0)
                     return false;
                 try {
-                    f.get(waitTime, TimeUnit.MILLISECONDS);
+                    f.get(remainingTime, TimeUnit.MILLISECONDS);
                 } catch (TimeoutException e) {
                     return false;
                 } catch (Exception e) {
