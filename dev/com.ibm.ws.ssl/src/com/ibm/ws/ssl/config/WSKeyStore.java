@@ -1268,9 +1268,9 @@ public class WSKeyStore extends Properties {
                         for (int i = 0; i < cert_chain.length; i++) {
                             if (isDefaultServerIdentityCert((X509Certificate) cert_chain[i])) {
                                 if (!isSanExist((X509Certificate) cert_chain[i])) {
+                                    Tr.warning(tc, "ssl.san.warning.CWPKI0050W", new Object[] { alias, ksName });
                                     return false;
                                 }
-
                             }
                         }
                     }

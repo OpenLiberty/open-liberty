@@ -574,7 +574,6 @@ public class SSLConfigManager {
         }
 
         if (!isCollectiveCertSanExist) {
-            Tr.warning(tc, "SSL Alias: " + alias + " keyStoreName: " + keyStoreName + " certificates are missing the subject alternative names. Disable hostName verification");
             sslprops.setProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION, "false");
         } else { // Get it from the SSL configuration
             Boolean hostnameVerification = (Boolean) map.get("verifyHostname");
