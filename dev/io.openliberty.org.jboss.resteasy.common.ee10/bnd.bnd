@@ -81,6 +81,7 @@ Export-Package: \
   org.jboss.resteasy.client.jaxrs.internal;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.client.jaxrs;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.concurrent;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.core.concurrent;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.core.interception.jaxrs;version=${resteasy-version}, \
   org.jboss.resteasy.core.messagebody;version=${resteasy-version}, \
   org.jboss.resteasy.core.providerfactory;version=${resteasy-version};thread-context=true, \

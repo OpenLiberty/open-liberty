@@ -78,20 +78,20 @@ public class MultipartTestServlet extends FATServlet {
         System.out.println("testMultipartResponse - got list of parts: " + parts);
         assertEquals(4, parts.size());
 
-        EntityPart part = parts.get(3);
+        EntityPart part = parts.get(0);
         assertEquals("file1", Util.getPartName(part));
         assertEquals("some.xml", Util.getFileName(part));
         assertEquals(MediaType.APPLICATION_XML_TYPE, part.getMediaType());
 
-        part = parts.get(2);
+        part = parts.get(1);
         assertEquals("file2", Util.getPartName(part));
         assertEquals("mpRestClient2.0.asciidoc", part.getFileName().get());
         assertEquals("mpRestClient2.0.asciidoc", Util.getFileName(part));
         assertEquals("text/asciidoc", part.getMediaType().getType() + "/" + part.getMediaType().getSubtype());
-        assertEquals("[myContentId]", part.getHeaders().get("Content-ID").get(0));
-        assertEquals("[SomeValue]", part.getHeaders().get("MyCoolHeader").get(0));
+        assertEquals("myContentId", part.getHeaders().get("Content-ID").get(0));
+        assertEquals("SomeValue", part.getHeaders().get("MyCoolHeader").get(0));
 
-        part = parts.get(1);
+        part = parts.get(2);
         assertEquals("notAFile", Util.getPartName(part));
 
         assertEquals("notAFile", part.getName());
@@ -107,7 +107,7 @@ public class MultipartTestServlet extends FATServlet {
                     contentDisposition.contains("filename="));
         assertEquals("text/asciidoc", part.getMediaType().getType() + "/" + part.getMediaType().getSubtype());
         MultivaluedMap<String, String> headers = part.getHeaders();
-        assertEquals("[Value1]", headers.getFirst("Header1"));
+        assertEquals("Value1", headers.getFirst("Header1"));
         // there is a behavior difference between CXF and RESTEasy
         List<String> header2ValuesList = headers.get("Header2");
         assertNotNull(header2ValuesList);
@@ -126,14 +126,14 @@ public class MultipartTestServlet extends FATServlet {
             assertEquals("Value4", header2ValuesArr[2].strip());
         } else if (header2ValuesList.size() == 3) {
             // RESTEasy returns a list of 3 strings
-            assertEquals("[Value2]", header2ValuesList.get(0));
-            assertEquals("[Value3]", header2ValuesList.get(1));
-            assertEquals("[Value4]", header2ValuesList.get(2));
+            assertEquals("Value2", header2ValuesList.get(0));
+            assertEquals("Value3", header2ValuesList.get(1));
+            assertEquals("Value4", header2ValuesList.get(2));
         } else {
             fail("unexpected number of header values for Header2");
         }
         
-        part = parts.get(0);
+        part = parts.get(3);
         assertEquals("noSpecifiedContentType", Util.getPartName(part));
         assertEquals("noSpecifiedContentType", part.getName());
         contentDisposition = part.getHeaders().get("Content-Disposition").get(0);

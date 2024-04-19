@@ -121,43 +121,41 @@ public class MultipartResource extends Application {
             System.out.println("postListOfAttachments - got list of parts: " + parts);
             assertEquals(4, parts.size());
 
-            EntityPart part = parts.get(3);
+            EntityPart part = parts.get(0);
             assertEquals("file1", part.getName());
             assertEquals("some.xml", part.getFileName().get());
             assertEquals(MediaType.APPLICATION_XML_TYPE, part.getMediaType());
             assertEquals(Util.toString(Util.xmlFile()), Util.toString(part.getContent()));
 
-            part = parts.get(2);
+            part = parts.get(1);
             assertEquals("file2", part.getName());
             assertEquals("mpRestClient2.0.asciidoc", part.getFileName().get());
             assertEquals("text", part.getMediaType().getType());
             assertEquals("asciidoc", part.getMediaType().getSubtype());
-            assertEquals("[[myContentId]]", part.getHeaders().get("Content-ID").toString());
+            assertEquals("[myContentId]", part.getHeaders().get("Content-ID").toString());
             assertEquals(Util.toString(Util.asciidocFile()), Util.toString(part.getContent()));
-            assertEquals("[[SomeValue]]", part.getHeaders().get("MyCoolHeader").toString());
+            assertEquals("[SomeValue]", part.getHeaders().get("MyCoolHeader").toString());
 
-            part = parts.get(1);
+            part = parts.get(2);
             assertEquals("notAFile", part.getName());
              assertEquals("text", part.getMediaType().getType());
             assertEquals("asciidoc", part.getMediaType().getSubtype());
             String contentDisposition = part.getHeaders().get("Content-Disposition").get(0);
             assertFalse("Content-Disposition header contains filename attr, but should not: " + contentDisposition,
                         contentDisposition.contains("filename="));
-            assertEquals("[[Value1]]", part.getHeaders().get("Header1").toString());
+            assertEquals("[Value1]", part.getHeaders().get("Header1").toString());
             MultivaluedMap<String, String> headers = part.getHeaders();
-            assertEquals("[Value1]", headers.getFirst("Header1").toString());
+            assertEquals("Value1", headers.getFirst("Header1").toString());
             List<String> header2ValuesList = headers.get("Header2");
             assertNotNull(header2ValuesList);
             
-            if (header2ValuesList.size() == 1) {
-                // Resteasy now returns a single-entry list of one comma-separated string
-                String header2Values = headers.getFirst("Header2");
-                assertEquals("[Value2, Value3, Value4]", header2Values);
+            if (header2ValuesList.size() == 3) {
+                assertEquals("[Value2, Value3, Value4]", header2ValuesList.toString());
             } else {
-                fail("unexpected number of header values for Header2");
+                fail("Unexpected number of header values for Header2: " + header2ValuesList.toString());
            }
 
-            part = parts.get(0);
+            part = parts.get(3);
 
             assertEquals("noSpecifiedContentType", part.getName());
             contentDisposition = part.getHeaders().get("Content-Disposition").get(0);
