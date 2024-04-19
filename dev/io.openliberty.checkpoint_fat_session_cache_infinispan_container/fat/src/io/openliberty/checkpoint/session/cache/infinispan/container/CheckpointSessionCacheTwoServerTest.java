@@ -12,11 +12,8 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.session.cache.infinispan.container;
 
-import static io.openliberty.checkpoint.session.cache.infinispan.container.FATSuite.configureEnvVariable;
 import static io.openliberty.checkpoint.session.cache.infinispan.container.FATSuite.infinispan;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonMap;
-import static org.junit.Assert.assertNotNull;
+import static io.openliberty.checkpoint.session.cache.infinispan.container.FATSuite.updateVariableConfig;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -98,23 +95,16 @@ public class CheckpointSessionCacheTwoServerTest extends FATServletClient {
         // Since we initialize the JCache provider lazily, use an HTTP session on serverA before starting serverB,
         // so that the JCache provider has fully initialized on serverA. Otherwise, serverB might start up its own
         // cluster and not join to the cluster created on serverA.
-        serverA.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
+        updateVariableConfig(serverA, "INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222));
+        serverA.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
         serverA.startServer();
-        configureEnvVariable(serverA, singletonMap("INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222)));
-        serverA.checkpointRestore();
-        assertNotNull("'CWWKG0017I: The server configuration was successfully updated' not found in log.",
-                      serverA.waitForStringInLogUsingMark("CWWKG0017I"));
-
         List<String> sessionA = new ArrayList<>();
         appA.sessionPut("init-app-A", "A", sessionA, true);
         appA.invalidateSession(sessionA);
 
-        serverB.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
+        updateVariableConfig(serverB, "INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222));
+        serverB.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
         serverB.startServer();
-        configureEnvVariable(serverB, singletonMap("INF_SERVERLIST", infinispan.getHost() + ":" + infinispan.getMappedPort(11222)));
-        serverB.checkpointRestore();
-        assertNotNull("'CWWKG0017I: The server configuration was successfully updated' not found in log.",
-                      serverB.waitForStringInLogUsingMark("CWWKG0017I"));
     }
 
     @AfterClass
@@ -129,8 +119,6 @@ public class CheckpointSessionCacheTwoServerTest extends FATServletClient {
                 if (serverB.isStarted())
                     serverB.stopServer();
             }
-            configureEnvVariable(serverA, emptyMap());
-            configureEnvVariable(serverB, emptyMap());
         }
     }
 
