@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="@FAT_BUCKET_NAME@" default="buildandrun" basedir=".">
+	<import file="../ant_build/public_imports/fat_imports.xml" />
+</project>

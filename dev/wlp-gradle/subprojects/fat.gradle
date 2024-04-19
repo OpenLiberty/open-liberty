@@ -399,11 +399,27 @@ task zipAutoFVT(type: Zip) {
   archiveFileName = 'autoFVT.zip'
 }
 
+task createBuildTestXml {
+  dependsOn autoFVT
+  doLast {
+    copy {
+      into project.buildDir
+      if(project.file('build-test.xml').exists()) {
+         from 'build-test.xml'
+      } else {
+         from new File(project(':fattest.simplicity').projectDir, 'autoFVT-templates/build-test.xml')
+      }
+      filter { line -> line.replace('@FAT_BUCKET_NAME@',project.name) }
+    }
+  }
+}
+
 task zipProjectFVT(type: Zip) {
   dependsOn zipAutoFVT
+  dependsOn createBuildTestXml
   archiveBaseName = project.name
   into project.name + '/build/lib', {from "${distsDirectory}/autoFVT.zip"}
-  into project.name, {from 'build-test.xml'}
+  into project.name, {from "${project.buildDir}/build-test.xml"}
 }
 
 if (isAutomatedBuild || rootProject.projectNames.contains(project.name)) {
