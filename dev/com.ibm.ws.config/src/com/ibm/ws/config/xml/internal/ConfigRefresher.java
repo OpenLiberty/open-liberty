@@ -16,6 +16,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -24,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.config.ConfigUpdateException;
@@ -61,6 +64,7 @@ public class ConfigRefresher {
     private Collection<Future<?>> futuresForChanges = null;
 
     private final ChangesEndedHook changesEndedHook;
+    private final ServiceRegistration<CheckpointHook> checkpointHookRegistration;
 
     ConfigRefresher(BundleContext bundleContext,
                     ChangeHandler changeHandler, ServerXMLConfiguration serverXMLConfig, ConfigVariableRegistry variableRegistry) {
@@ -79,7 +83,12 @@ public class ConfigRefresher {
         metatypeTracker.open();
 
         changesEndedHook = new ChangesEndedHook();
-        CheckpointPhase.getPhase().addMultiThreadedHook(Integer.MIN_VALUE, changesEndedHook);
+        Hashtable<String, Object> hookProps = new Hashtable<>();
+        // Lesser ranking ensures changesEnded() executes ASAP after the SystemConfiguration
+        // single-threaded restore hook
+        hookProps.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE + 10000);
+        hookProps.put(CheckpointHook.MULTI_THREADED_HOOK, Boolean.TRUE);
+        checkpointHookRegistration = bundleContext.registerService(CheckpointHook.class, changesEndedHook, hookProps);
     }
 
     void start() {
@@ -92,6 +101,10 @@ public class ConfigRefresher {
     void stop() {
         configurationMonitor.stopConfigurationMonitoring();
         runtimeUpdateManagerTracker.close();
+
+        if (checkpointHookRegistration != null) {
+            checkpointHookRegistration.unregister();
+        }
     }
 
     public void refreshConfiguration() {
@@ -315,7 +328,6 @@ public class ConfigRefresher {
             RuntimeUpdateNotification notification = null;
             while ((notification = configUpdatesToDeliver.pollFirst()) != null) {
                 changesEnded(notification);
-                notification.waitForCompletion();
             }
         }
     }
