@@ -44,4 +44,6 @@
 	    <jdbcDriver libraryRef="DerbyLib"/>
 	    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
 	</dataSource>
+	
+	 <variable name="INF_SERVERLIST" defaultValue="*:0" />
 </server>
