@@ -21,7 +21,21 @@ task assembleBootstrap(type: Copy) {
 }
 
 task assembleBinaryDependencies() {
+    dependsOn ':com.ibm.websphere.javaee.jaxb.2.2:jar'
+    dependsOn ':com.ibm.websphere.javaee.jsonp.1.0:jar'
+    dependsOn ':com.ibm.ws.common.encoder:jar'
     dependsOn ':com.ibm.ws.jaxb.tools:jar'
+    dependsOn ':com.ibm.ws.junit.extensions:jar'
+    dependsOn ':com.ibm.ws.logging.core:jar'
+    dependsOn ':com.ibm.ws.org.glassfish.json:jar'
+    dependsOn ':com.ibm.ws.org.slf4j.api:jar'
+    dependsOn ':com.ibm.ws.org.slf4j.simple:jar'
+    dependsOn ':io.openliberty.com.fasterxml.jackson:jar'
+    dependsOn ':io.openliberty.org.apache.commons.logging:jar'
+    dependsOn ':io.openliberty.org.bouncycastle.bcpkix-jdk18on:jar'
+    dependsOn ':io.openliberty.org.bouncycastle.bcprov-jdk18on:jar'
+    dependsOn ':io.openliberty.org.bouncycastle.bcutil-jdk18on:jar'
+    dependsOn ':io.openliberty.org.testcontainers:jar'
     File buildDirLib = new File(buildDir, 'lib')
     outputs.dir buildDirLib
     doLast {
@@ -38,8 +52,36 @@ task assembleBinaryDependencies() {
             }
         }
         copy {
+            from new File(project(':com.ibm.websphere.javaee.jaxb.2.2').buildDir, 'com.ibm.websphere.javaee.jaxb.2.2.jar')
+            from new File(project(':com.ibm.websphere.javaee.jsonp.1.0').buildDir, 'com.ibm.websphere.javaee.jsonp.1.0.jar')
             from new File(project(':com.ibm.ws.jaxb.tools').buildDir, 'com.ibm.ws.jaxb.tools.jar')
+            from new File(project(':com.ibm.ws.junit.extensions').buildDir, 'com.ibm.ws.junit.extensions.jar')
+            from new File(project(':com.ibm.ws.logging.core').buildDir, 'com.ibm.ws.logging.core.jar')
+            from new File(project(':com.ibm.ws.org.glassfish.json').buildDir, 'com.ibm.ws.org.glassfish.json.1.0.jar')
+            from new File(project(':com.ibm.ws.org.slf4j.api').buildDir, 'com.ibm.ws.org.slf4j.api.jar')
+            from new File(project(':com.ibm.ws.org.slf4j.simple').buildDir, 'com.ibm.ws.org.slf4j.simple.jar')
+            from new File(project(':io.openliberty.com.fasterxml.jackson').buildDir, 'io.openliberty.com.fasterxml.jackson.jar')
+            from new File(project(':io.openliberty.org.apache.commons.logging').buildDir, 'io.openliberty.org.apache.commons.logging.jar')
+            from new File(project(':io.openliberty.org.bouncycastle.bcpkix-jdk18on').buildDir, 'io.openliberty.org.bouncycastle.bcpkix-jdk18on.jar')
+            from new File(project(':io.openliberty.org.bouncycastle.bcprov-jdk18on').buildDir, 'io.openliberty.org.bouncycastle.bcprov-jdk18on.jar')
+            from new File(project(':io.openliberty.org.bouncycastle.bcutil-jdk18on').buildDir, 'io.openliberty.org.bouncycastle.bcutil-jdk18on.jar')
+            from new File(project(':io.openliberty.org.testcontainers').buildDir, 'io.openliberty.org.testcontainers.jar')
             into buildDirLib
+        }
+        copy {
+            from cnf.file('mavenlibs')
+            into buildDirLib
+            include 'infra.buildtasks-core-7.0.2.jar'
+            include 'asm-all-5.2.jar'
+            include 'org.apache.aries.util-*.jar'
+            include 'osgi.core*.jar'
+            include 'jsch-*.jar'
+        }
+        copy {
+            from project(':com.ibm.ws.common.encoder').buildDir
+            into buildDirLib
+            include 'com.ibm.ws.common.encoder.jar'
+            rename 'com.ibm.ws.common.encoder.jar', 'fattest.encoder.jar'
         }
     }
 }
