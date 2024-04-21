@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -137,6 +137,8 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
     // 
     protected Servlet target;
 
+    private String metricsKey;
+    
     private List cacheWrappers = null;
 
     protected ClassLoader targetLoader;
@@ -241,6 +243,10 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
             // in handleRequest so preInvoke can reference the component
             // meta data
             secObject = collabHelper.getSecurityCollaborator().preInvoke(servletConfig.getServletName());
+
+            String servletName = conf.getServletName();
+            String appName = context.getApplicationName();
+            metricsKey = appName + "." + servletName; 
 
           collabHelper.doInvocationCollaboratorsPreInvoke(webAppInvocationCollaborators, (WebComponentMetaData)(getWebApp().getWebAppCmd()));
 
@@ -1905,6 +1911,10 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
         if (servletConfig == null)
             return null;
         return servletConfig.getServletName();
+    }
+
+    public String getMetricsKey() {
+        return metricsKey;
     }
 
     private IServletWrapper getMimeFilterWrapper(String mimeType) {
