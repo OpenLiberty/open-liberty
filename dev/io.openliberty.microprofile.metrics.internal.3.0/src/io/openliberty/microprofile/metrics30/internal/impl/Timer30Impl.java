@@ -145,8 +145,7 @@ public class Timer30Impl implements Timer {
         synchronized (this) {
             if (duration.toNanos() >= 0) {
                 histogram.update(duration.toNanos());
-                manager.update(duration.getSeconds());
-                System.out.println("Duration(default): " + duration + " -- toNanos: " + duration.toNanos() + " seconds:" + duration.getSeconds());
+                manager.updateTimer(duration.toNanos());
                 meter.mark();
                 elapsedTime = elapsedTime.plus(duration);
             }
@@ -249,24 +248,18 @@ public class Timer30Impl implements Timer {
         String metricName = metadata.getName();
         if (percentileConfiguration.isPresent()) {
             MetricPercentileConfiguration percentileConfig = MetricsConfigurationManager.getInstance().getPercentilesConfiguration(metricName);
-            System.out.println("MetricName: " + metricName);
+
             if (percentileConfig != null && percentileConfig.getValues() != null
-                && percentileConfig.getValues().length > 0) {
+                && percentileConfig.getValues().length > 0 && !percentileConfig.isDisabled()) {
                 double[] vals = Stream.of(percentileConfig.getValues()).mapToDouble(Double::doubleValue).toArray();
 
-                for (Double value : vals) {
-                    System.out.println("Timer Pecentile Value: " + value + " -- " + metadata.getUnit());
-
-                }
                 return vals;
             } else if (percentileConfig == null) {
                 return null;
             } else {
-                System.out.println("Returning empty double for percentiles");
                 return new double[0];
             }
         }
-        System.out.println("Returning null for percentiles.");
         return null;
 
     }

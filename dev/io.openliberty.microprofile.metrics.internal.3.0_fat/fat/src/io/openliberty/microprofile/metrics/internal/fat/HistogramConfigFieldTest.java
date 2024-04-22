@@ -47,6 +47,7 @@ import javax.net.ssl.X509TrustManager;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,29 +58,28 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-public class TimerConfigFieldTest {
+public class HistogramConfigFieldTest {
 
-	private final static String TIMER_NAME_6 = "injected.precedence.timer";
+	private static Class<?> c = HistogramConfigFieldTest.class;
 
-	private final static String TIMER_NAME_7 = "injected.precedence.override.timer";
-
-	private static Class<?> c = TimerConfigFieldTest.class;
-
-	@Server("TimerConfig")
+	@Server("HistogramConfig")
 	public static LibertyServer server;
 
 	@BeforeClass
 	public static void setUp() throws Exception {
 		trustAll();
 
-		WebArchive testWAR = ShrinkWrap.create(WebArchive.class, "timer.war")
+		WebArchive testWAR = ShrinkWrap
+				.create(WebArchive.class, "histogram.war")
 				.addPackage(
-						"io.openliberty.microprofile.metrics.internal.fat.timer")
+						"io.openliberty.microprofile.metrics.internal.fat.histogram")
 				.addAsManifestResource(new File(
-						"test-applications/testTimerApp/resources/META-INF/microprofile-config.properties"),
+						"test-applications/testHistogramApp/resources/META-INF/microprofile-config.properties"),
 						"microprofile-config.properties");
 
 		ShrinkHelper.exportDropinAppToServer(server, testWAR,
@@ -88,13 +88,53 @@ public class TimerConfigFieldTest {
 		server.startServer();
 
 		String line = server.waitForStringInLog(
-				"CWWKT0016I: Web application available.*timer*");
+				"CWWKT0016I: Web application available.*histogram*");
 		Log.info(c, "setUp",
 				"Web Application available message found: " + line);
 		assertNotNull(
 				"The CWWKT0016I Web Application available message did not appear in messages.log",
 				line);
+		Thread.sleep(1000);
 	}
+
+	@Before
+	public void ensureServerStarted() throws Exception {
+		trustAll();
+
+		if (!server.isStarted()) {
+			WebArchive testWAR = ShrinkWrap
+					.create(WebArchive.class, "histogram.war")
+					.addPackage(
+							"io.openliberty.microprofile.metrics.internal.fat.histogram")
+					.addAsManifestResource(new File(
+							"test-applications/testHistogramApp/resources/META-INF/microprofile-config.properties"),
+							"microprofile-config.properties");
+
+			ShrinkHelper.exportDropinAppToServer(server, testWAR,
+					DeployOptions.SERVER_ONLY);
+
+			server.startServer();
+
+			String line = server.waitForStringInLog(
+					"CWWKT0016I: Web application available.*histogram*");
+			Log.info(c, "setUp",
+					"Web Application available message found: " + line);
+			assertNotNull(
+					"The CWWKT0016I Web Application available message did not appear in messages.log",
+					line);
+			Thread.sleep(1000);
+		}
+	}
+
+	// @After
+	// public void cleanUp() throws Exception {
+	// if (server.isStarted()) {
+	// server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E",
+	// "CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W");
+	// }
+	// server.removeAllInstalledAppsForValidation();
+	//
+	// }
 
 	@AfterClass
 	public static void afterClass() throws Exception {
@@ -108,12 +148,19 @@ public class TimerConfigFieldTest {
 	}
 
 	@Test
-	public void checkTimerCustomPercentiles() throws Exception {
+	public void checkHistogramCustomPercentiles() throws Exception {
 
-		final String method = "injectedTimerCustomPercentiles";
-		String res = getHttpServlet("/timer/test/getTimers");
+		final String method = "injectedHistogramCustomPercentiles";
+		String res = getHttpServlet("/histogram/test/getHistograms");
 
-		String metrics = getHttpsServlet("/metrics");
+		String metrics = "";
+		try {
+			metrics = getHttpsServlet("/metrics");
+
+		} catch (Exception e) {
+			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
+			metrics = getHttpsServlet("/metrics");
+		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -129,9 +176,8 @@ public class TimerConfigFieldTest {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				if (line.contains(
-						"application_io_openliberty_microprofile_metrics_internal_fat_timer_MetricsResource_injectedTimerCustomPercentiles_seconds{quantile=\"")) {
+						"application_io_openliberty_microprofile_metrics_internal_fat_histogram_MetricsResource_injectedHistogramCustomPercentiles{quantile=\"")) {
 					count++;
-					System.out.println("Quantile line found: " + line);
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
@@ -141,22 +187,27 @@ public class TimerConfigFieldTest {
 
 			}
 		}
-		assertThat("Configured percentiles length do not match", count,
-				equalTo(2));
+		assertThat("Configured buckets length do not match", count, equalTo(2));
 
 		// Check if actualValues contain all expectedValues
 		assertThat("Configured buckets do not match", actualValues,
 				containsInAnyOrder(expectedValues.toArray(new Double[0])));
-
 	}
 
 	@Test
-	public void checkTimerNoPercentiles() throws Exception {
+	public void checkHistogramNoPercentiles() throws Exception {
 
-		final String method = "injectedTimerNoPercentiles";
-		String res = getHttpServlet("/timer/test/getTimers");
+		final String method = "injectedHistogramNoPercentiles";
+		String res = getHttpServlet("/histogram/test/getHistograms");
 
-		String metrics = getHttpsServlet("/metrics");
+		String metrics = "";
+		try {
+			metrics = getHttpsServlet("/metrics");
+
+		} catch (Exception e) {
+			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
+			metrics = getHttpsServlet("/metrics");
+		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -169,23 +220,31 @@ public class TimerConfigFieldTest {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				if (line.contains(
-						"application_io_openliberty_microprofile_metrics_internal_fat_timer_MetricsResource_injectedTimerNoPercentiles_seconds{quantile=\"")) {
+						"application_io_openliberty_microprofile_metrics_internal_fat_histogram_MetricsResource_injectedHistogramNoPercentiles{quantile=\"")) {
 					count++;
 				}
 
 			}
 		}
-		assertThat("Configured percentiles length do not match", count,
-				equalTo(0));
+		assertThat("Configured buckets length do not match", count, equalTo(0));
 
 	}
 
 	@Test
-	public void checkTimerCustomBucketsDefaultPercentiles() throws Exception {
-		final String method = "injectedTimerCustomBucketsDefaultPercentiles";
-		String res = getHttpServlet("/timer/test/getTimers");
+	public void checkHistogramCustomBucketsDefaultPercentiles()
+			throws Exception {
 
-		String metrics = getHttpsServlet("/metrics");
+		final String method = "injectedHistogramCustomBucketsDefaultPercentiles";
+		String res = getHttpServlet("/histogram/test/getHistograms");
+
+		String metrics = "";
+		try {
+			metrics = getHttpsServlet("/metrics");
+
+		} catch (Exception e) {
+			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
+			metrics = getHttpsServlet("/metrics");
+		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -201,16 +260,15 @@ public class TimerConfigFieldTest {
 		Set<Double> actualPercentileValues = new HashSet<>();
 
 		Set<Double> expectedBucketValues = new HashSet<>(
-				Arrays.asList(0.1, 2.0));
+				Arrays.asList(100.0, 200.0));
 		Set<Double> actualBucketValues = new HashSet<>();
 
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				if (line.contains(
-						"application_io_openliberty_microprofile_metrics_internal_fat_timer_MetricsResource_injectedTimerCustomBucketsDefaultPercentiles_seconds{quantile=\"")) {
+						"application_io_openliberty_microprofile_metrics_internal_fat_histogram_MetricsResource_injectedHistogramCustomBucketsDefaultPercentiles{quantile=\"")) {
 					percentileCount++;
-					System.out.println("Quantile line found: " + line);
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
@@ -218,8 +276,7 @@ public class TimerConfigFieldTest {
 								.add(Double.parseDouble(matcher.group(1)));
 					}
 				} else if (line.contains(
-						"application_io_openliberty_microprofile_metrics_internal_fat_timer_MetricsResource_injectedTimerCustomBucketsDefaultPercentiles_seconds_bucket{le=\"")) {
-					System.out.println("Quantile line found: " + line);
+						"application_io_openliberty_microprofile_metrics_internal_fat_histogram_MetricsResource_injectedHistogramCustomBucketsDefaultPercentiles_bucket{le=\"")) {
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
@@ -246,16 +303,22 @@ public class TimerConfigFieldTest {
 		assertThat("Configured buckets do not match", actualBucketValues,
 				containsInAnyOrder(
 						expectedBucketValues.toArray(new Double[0])));
-
 	}
 
 	@Test
-	public void checkTimerCustomBucketsCustomPercentiles() throws Exception {
+	public void checkHistogramCustomBucketsCustomPercentiles()
+			throws Exception {
+		final String method = "injectedHistogramCustomBucketsCustomPercentiles";
+		String res = getHttpServlet("/histogram/test/getHistograms");
 
-		final String method = "injectedTimerCustomBucketsCustomPercentiles";
-		String res = getHttpServlet("/timer/test/getTimers");
+		String metrics = "";
+		try {
+			metrics = getHttpsServlet("/metrics");
 
-		String metrics = getHttpsServlet("/metrics");
+		} catch (Exception e) {
+			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
+			metrics = getHttpsServlet("/metrics");
+		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -271,16 +334,15 @@ public class TimerConfigFieldTest {
 		Set<Double> actualPercentileValues = new HashSet<>();
 
 		Set<Double> expectedBucketValues = new HashSet<>(
-				Arrays.asList(0.12, 0.15));
+				Arrays.asList(150.0, 120.0));
 		Set<Double> actualBucketValues = new HashSet<>();
 
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				if (line.contains(
-						"application_io_openliberty_microprofile_metrics_internal_fat_timer_MetricsResource_injectedTimerCustomBucketsCustomPercentiles_seconds{quantile=\"")) {
+						"application_io_openliberty_microprofile_metrics_internal_fat_histogram_MetricsResource_injectedHistogramCustomBucketsCustomPercentiles{quantile=\"")) {
 					percentileCount++;
-					System.out.println("Quantile line found: " + line);
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
@@ -288,8 +350,7 @@ public class TimerConfigFieldTest {
 								.add(Double.parseDouble(matcher.group(1)));
 					}
 				} else if (line.contains(
-						"application_io_openliberty_microprofile_metrics_internal_fat_timer_MetricsResource_injectedTimerCustomBucketsCustomPercentiles_seconds_bucket{le=\"")) {
-					System.out.println("Quantile line found: " + line);
+						"application_io_openliberty_microprofile_metrics_internal_fat_histogram_MetricsResource_injectedHistogramCustomBucketsCustomPercentiles_bucket{le=\"")) {
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
@@ -320,12 +381,19 @@ public class TimerConfigFieldTest {
 	}
 
 	@Test
-	public void checkTimerCustomBucketsNoPercentiles() throws Exception {
+	public void checkHistogramCustomBucketsNoPercentiles() throws Exception {
 
-		final String method = "injectedTimerCustomBucketsNoPercentiles";
-		String res = getHttpServlet("/timer/test/getTimers");
+		final String method = "injectedHistogramCustomBucketsNoPercentiles";
+		String res = getHttpServlet("/histogram/test/getHistograms");
 
-		String metrics = getHttpsServlet("/metrics");
+		String metrics = "";
+		try {
+			metrics = getHttpsServlet("/metrics");
+
+		} catch (Exception e) {
+			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
+			metrics = getHttpsServlet("/metrics");
+		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -337,18 +405,17 @@ public class TimerConfigFieldTest {
 		int bucketCount = 0;
 
 		Set<Double> expectedBucketValues = new HashSet<>(
-				Arrays.asList(0.555, 2.0));
+				Arrays.asList(444.0, 555.0));
 		Set<Double> actualBucketValues = new HashSet<>();
 
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				if (line.contains(
-						"application_io_openliberty_microprofile_metrics_internal_fat_timer_MetricsResource_injectedTimerCustomBucketsNoPercentiles_seconds{quantile=\"")) {
+						"application_io_openliberty_microprofile_metrics_internal_fat_histogram_MetricsResource_injectedHistogramCustomBucketsNoPercentiles{quantile=\"")) {
 					percentileCount++;
 				} else if (line.contains(
-						"application_io_openliberty_microprofile_metrics_internal_fat_timer_MetricsResource_injectedTimerCustomBucketsNoPercentiles_seconds_bucket{le=\"")) {
-					System.out.println("Quantile line found: " + line);
+						"application_io_openliberty_microprofile_metrics_internal_fat_histogram_MetricsResource_injectedHistogramCustomBucketsNoPercentiles_bucket{le=\"")) {
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
@@ -374,12 +441,20 @@ public class TimerConfigFieldTest {
 	}
 
 	@Test
-	public void checkPrecedenceTimer() throws Exception {
+	@Mode(TestMode.FULL)
+	public void checkPrecedenceHistogram() throws Exception {
+		final String method = "injected_precedence_histogram";
 
-		final String method = "injected_precedence_timer";
-		String res = getHttpServlet("/timer/test/getTimers");
+		String res = getHttpServlet("/histogram/test/getHistograms");
 
-		String metrics = getHttpsServlet("/metrics");
+		String metrics = "";
+		try {
+			metrics = getHttpsServlet("/metrics");
+
+		} catch (Exception e) {
+			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
+			metrics = getHttpsServlet("/metrics");
+		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -389,31 +464,28 @@ public class TimerConfigFieldTest {
 
 		int percentileCount = 0;
 		int bucketCount = 0;
-
 		Set<Double> expectedPercentileValues = new HashSet<>(
-				Arrays.asList(0.9, 0.8));
+				Arrays.asList(0.8, 0.9));
 		Set<Double> actualPercentileValues = new HashSet<>();
 
 		Set<Double> expectedBucketValues = new HashSet<>(
-				Arrays.asList(0.023, 0.455));
+				Arrays.asList(23.0, 45.0));
 		Set<Double> actualBucketValues = new HashSet<>();
 
 		try (Scanner sc = new Scanner(metrics)) {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				if (line.contains(
-						"application_injected_precedence_timer_seconds{quantile=\"")) {
-					percentileCount++;
-					System.out.println("Quantile line found: " + line);
+						"injected_precedence_histogram{quantile=\"")) {
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
 						actualPercentileValues
 								.add(Double.parseDouble(matcher.group(1)));
+						percentileCount++;
 					}
 				} else if (line.contains(
-						"application_injected_precedence_timer_seconds_bucket{le=\"")) {
-					System.out.println("Quantile line found: " + line);
+						"injected_precedence_histogram_bucket{le=\"")) {
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
@@ -425,30 +497,39 @@ public class TimerConfigFieldTest {
 
 			}
 		}
+
 		assertThat("Configured buckets length do not match", percentileCount,
 				equalTo(2));
 
 		// Check if actualValues contain all expectedValues
-		assertThat("Configured buckets do not match", actualPercentileValues,
+		assertThat("Configured buckets do not match", expectedPercentileValues,
 				containsInAnyOrder(
-						expectedPercentileValues.toArray(new Double[0])));
+						actualPercentileValues.toArray(new Double[0])));
 
 		assertThat("Configured buckets length do not match", bucketCount,
 				equalTo(2));
 
 		// Check if actualValues contain all expectedValues
-		assertThat("Configured buckets do not match", actualBucketValues,
-				containsInAnyOrder(
-						expectedBucketValues.toArray(new Double[0])));
+		assertThat("Configured buckets do not match", expectedBucketValues,
+				containsInAnyOrder(actualBucketValues.toArray(new Double[0])));
 	}
 
 	@Test
-	public void checkPrecedenceOverrideTimer() throws Exception {
+	@Mode(TestMode.FULL)
+	public void checkPrecedenceOverrideHistogram() throws Exception {
 
-		final String method = "injected_precedence_override_timer";
-		String res = getHttpServlet("/timer/test/getTimers");
+		final String method = "injected_precedence_override_histogram";
 
-		String metrics = getHttpsServlet("/metrics");
+		String res = getHttpServlet("/histogram/test/getHistograms");
+
+		String metrics = "";
+		try {
+			metrics = getHttpsServlet("/metrics");
+
+		} catch (Exception e) {
+			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
+			metrics = getHttpsServlet("/metrics");
+		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -458,7 +539,6 @@ public class TimerConfigFieldTest {
 
 		int percentileCount = 0;
 		int bucketCount = 0;
-
 		Set<Double> expectedPercentileValues = new HashSet<>(
 				Arrays.asList(0.2));
 		Set<Double> actualPercentileValues = new HashSet<>();
@@ -470,18 +550,16 @@ public class TimerConfigFieldTest {
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				if (line.contains(
-						"application_injected_precedence_override_timer_seconds{quantile=\"")) {
-					percentileCount++;
-					System.out.println("Quantile line found: " + line);
+						"injected_precedence_override_histogram{quantile=\"")) {
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
 						actualPercentileValues
 								.add(Double.parseDouble(matcher.group(1)));
+						percentileCount++;
 					}
 				} else if (line.contains(
-						"application_injected_precedence_override_timer_seconds_bucket{le=\"")) {
-					System.out.println("Quantile line found: " + line);
+						"injected_precedence_override_histogram_bucket{le=\"")) {
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
@@ -493,21 +571,21 @@ public class TimerConfigFieldTest {
 
 			}
 		}
+
 		assertThat("Configured buckets length do not match", percentileCount,
 				equalTo(1));
 
 		// Check if actualValues contain all expectedValues
-		assertThat("Configured buckets do not match", actualPercentileValues,
+		assertThat("Configured buckets do not match", expectedPercentileValues,
 				containsInAnyOrder(
-						expectedPercentileValues.toArray(new Double[0])));
+						actualPercentileValues.toArray(new Double[0])));
 
 		assertThat("Configured buckets length do not match", bucketCount,
 				equalTo(1));
 
 		// Check if actualValues contain all expectedValues
-		assertThat("Configured buckets do not match", actualBucketValues,
-				containsInAnyOrder(
-						expectedBucketValues.toArray(new Double[0])));
+		assertThat("Configured buckets do not match", expectedBucketValues,
+				containsInAnyOrder(actualBucketValues.toArray(new Double[0])));
 
 	}
 
@@ -539,6 +617,9 @@ public class TimerConfigFieldTest {
 	}
 
 	private String getHttpsServlet(String servletPath) throws Exception {
+		Log.info(c, "HistogramConfig",
+				"Server status(2): " + server.isStarted());
+
 		HttpsURLConnection con = null;
 		try {
 			String sURL = "https://" + server.getHostname() + ":"
@@ -582,6 +663,7 @@ public class TimerConfigFieldTest {
 	}
 
 	private String getHttpServlet(String servletPath) throws Exception {
+		Log.info(c, "HistogramConfig", "Server status: " + server.isStarted());
 		HttpURLConnection con = null;
 		try {
 			String sURL = "http://" + server.getHostname() + ":"

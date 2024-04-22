@@ -82,8 +82,6 @@ public class PercentileHistogramBuckets {
      * @return The set of histogram buckets for use in computing aggregable percentiles.
      */
     public static NavigableSet<Double> buckets(double minimumBucket, double maximumBucket) {
-        // System.out.println("BUCKET SIZE EARLY: " + PERCENTILE_BUCKETS.subSet(minimumBucket, false,
-        // maximumBucket, false).size());
         return PERCENTILE_BUCKETS.subSet(minimumBucket, true, maximumBucket, true);
         //return PERCENTILE_BUCKETS;
     }
@@ -95,9 +93,7 @@ public class PercentileHistogramBuckets {
             Iterator<Double> itr = buckets(0.00, Double.MAX_VALUE).iterator();
 
             while (itr.hasNext()) {
-                //double test = itr.next() / 1000000000.0;
                 double nextValue = itr.next();
-                // System.out.println("Value: " + nextValue);
                 BigDecimal decimalValue = new BigDecimal(nextValue / 1000000000.0);
                 decimalValue = decimalValue.setScale(9, RoundingMode.HALF_UP).stripTrailingZeros();
 
@@ -110,24 +106,20 @@ public class PercentileHistogramBuckets {
 
             }
 
-            System.out.println("timer default added: " + defaultBuckets);
             if (!defaultBuckets.contains(minimumBucket) && minimumBucket >= 0.001) {
                 BigDecimal minBucketValue = new BigDecimal(minimumBucket).setScale(9, RoundingMode.HALF_UP).stripTrailingZeros();
                 defaultBuckets.add(minBucketValue.doubleValue());
-                System.out.println("Adding min here? -- " + minimumBucket);
-            } else {
-                System.out.println("Not adding! min bucket: " + minimumBucket);
             }
+
             if (!defaultBuckets.contains(maximumBucket) && maximumBucket <= 30) {
                 BigDecimal maxBucketValue = new BigDecimal(maximumBucket).setScale(9, RoundingMode.HALF_UP).stripTrailingZeros();;
                 defaultBuckets.add(maxBucketValue.doubleValue());
             }
 
         } else {
-            // try {
             Double minValue = minimumBucket >= 1 ? minimumBucket : 1;
             Double maxValue = maximumBucket <= Double.MAX_VALUE ? maximumBucket : Double.MAX_VALUE;
-            System.out.println("Min/max: " + minValue + " -- " + maxValue);
+
             NavigableSet<Double> originalBuckets = buckets(minValue, maxValue);
             defaultBuckets.addAll(originalBuckets);
 
@@ -139,48 +131,10 @@ public class PercentileHistogramBuckets {
                 BigDecimal maxBucketValue = new BigDecimal(maximumBucket).setScale(9, RoundingMode.HALF_UP).stripTrailingZeros();;
                 defaultBuckets.add(maxBucketValue.doubleValue());
             }
-//            } catch(Exception e) {
-//                System.out.println("EXCEPTION HERE!: " + e.getMessage());
-//            }
 
         }
 
-        System.out.println("IN HERE---5");
-        System.out.println(defaultBuckets);
         return defaultBuckets;
-    }
-
-    public static void main(String args[]) {
-        NavigableSet<Double> test = getDefaultBuckets(1, 30, false);
-        System.out.println(test.size() + " -- " + test);
-        //test.add(0.003495251);
-        //System.out.println(test);
-
-//        System.out.println(Double.POSITIVE_INFINITY / 1000000000.0);
-//        System.out.println("size: " + buckets(0.00, Double.MAX_VALUE).size());
-//
-//        //Iterator<Double> itr = buckets(0.01, 28.633115306).iterator();
-//        Iterator<Double> itr = buckets(0.00, Double.MAX_VALUE).iterator();
-//        while (itr.hasNext()) {
-//            //double test = itr.next() / 1000000000.0;
-//            double nextValue = itr.next();
-//            // System.out.println("Value: " + nextValue);
-//            BigDecimal decimalValue = new BigDecimal(nextValue / 1000000000.0);
-//            decimalValue = decimalValue.round(new java.math.MathContext(10)).stripTrailingZeros();
-//            BigDecimal maxValue = new BigDecimal(10.0);
-//            BigDecimal minValue = new BigDecimal(0.001);
-//
-//            int compareResult = decimalValue.compareTo(maxValue);
-//
-//            if (decimalValue.compareTo(maxValue) < 0 && decimalValue.compareTo(minValue) > 0) {
-//
-//                //double test = itr.next();
-//                System.out.println(decimalValue);
-//            } else {
-//                // System.out.println("Not in subset");
-//            }
-//
-//        }
     }
 
 }

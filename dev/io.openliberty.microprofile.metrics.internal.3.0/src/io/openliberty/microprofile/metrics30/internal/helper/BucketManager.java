@@ -12,11 +12,10 @@ package io.openliberty.microprofile.metrics30.internal.helper;
 import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.NavigableSet;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Stream;
 
@@ -38,8 +37,8 @@ import io.openliberty.microprofile.metrics30.setup.config.TimerBucketMaxConfigur
 import io.openliberty.microprofile.metrics30.setup.config.TimerBucketMinConfiguration;
 
 public class BucketManager {
-    private final Map<Double, BucketValue> buckets = new LinkedHashMap<>();
-    private final Map<String, Map<Double, BucketValue>> allBuckets = new LinkedHashMap<>();
+    private final Map<Double, BucketValue> buckets = new TreeMap<>();
+    private final Map<String, Map<Double, BucketValue>> allBuckets = new TreeMap<>();
     private final BucketValue infiniteObject;
 
     public BucketManager(Metadata metadata) {
@@ -77,7 +76,6 @@ public class BucketManager {
                     TimerBucketMaxConfiguration defaultTimerMaxConfig = MetricsConfigurationManager.getInstance().getDefaultTimerMaxBucketConfiguration(metricName);
                     TimerBucketMinConfiguration defaultTimerMinConfig = MetricsConfigurationManager.getInstance().getDefaultTimerMinBucketConfiguration(metricName);
 
-                    System.out.println(defaultTimerMaxConfig);
                     double minTimerValue = defaultTimerMinConfig != null ? defaultTimerMinConfig.getValue().toMillis() / 1000.0 : 0.001;
                     double maxTimerValue = defaultTimerMaxConfig != null ? defaultTimerMaxConfig.getValue().toMillis() / 1000.0 : 30;
 
@@ -95,69 +93,72 @@ public class BucketManager {
 
         }
 
-        Optional<String> input3 = ConfigProvider.getConfig().getOptionalValue("mp.metrics.distribution.histogram.buckets", String.class);
-        Optional<String> input4 = ConfigProvider.getConfig().getOptionalValue("mp.metrics.distribution.timer.buckets", String.class);
+        Optional<String> histogramOptionalData = ConfigProvider.getConfig().getOptionalValue("mp.metrics.distribution.histogram.buckets", String.class);
+        Optional<String> timerOptionalData = ConfigProvider.getConfig().getOptionalValue("mp.metrics.distribution.timer.buckets", String.class);
 
-        if (input3.isPresent() || input4.isPresent()) {
+        if (histogramOptionalData.isPresent() || timerOptionalData.isPresent()) {
             HistogramBucketConfiguration bucketsConfig = MetricsConfigurationManager.getInstance().getHistogramBucketConfiguration(metricName);
 
             TimerBucketConfiguration timerBucketsConfig = MetricsConfigurationManager.getInstance().getTimerBucketConfiguration(metricName);
 
-            if (bucketsConfig != null && bucketsConfig.getValues() != null
-                && bucketsConfig.getValues().length > 0) {
-                double[] vals = Stream.of(bucketsConfig.getValues()).mapToDouble(Double::doubleValue).toArray();
-                System.out.println("Bucket(histogram) values: " + vals);
+            if (metadata.getType().equals("histogram")) {
+                if (bucketsConfig != null && bucketsConfig.getValues() != null
+                    && bucketsConfig.getValues().length > 0) {
+                    double[] vals = Stream.of(bucketsConfig.getValues()).mapToDouble(Double::doubleValue).toArray();
 
-                bucketArr = vals;
+                    bucketArr = vals;
 
-                for (Double value : bucketArr) {
-                    System.out.println("bucketValue: " + value + " -- " + metadata.getUnit());
-
-                    buckets.put(value, new BucketValue(0, metadata.getUnit()));
-
-                }
-                buckets.put(Double.POSITIVE_INFINITY, infiniteObject);
-
-            } else if (timerBucketsConfig != null && timerBucketsConfig.getValues() != null
-                       && timerBucketsConfig.getValues().length > 0) {
-
-                Duration[] vals = timerBucketsConfig.getValues(); //DURATION
-
-                System.out.println("Bucket(timer) values: " + vals);
-
-                for (Duration value : vals) {
-                    System.out.println("timerValue:" + value.toMillis());
-
-                    try {
-                        buckets.put(value.toMillis() / 1000.0, new BucketValue(0, metadata.getUnit()));
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                        System.out.println(e.getStackTrace());
+                    for (Double value : bucketArr) {
+                        buckets.put(value, new BucketValue(0, metadata.getUnit()));
                     }
+                    buckets.put(Double.POSITIVE_INFINITY, infiniteObject);
 
                 }
-                buckets.put(Double.POSITIVE_INFINITY, infiniteObject);
             }
 
-        } else
-            System.out.println("CONFIG DOES NOT EXIST1111!!");
+            if (metadata.getType().equals("timer")) {
+                if (timerBucketsConfig != null && timerBucketsConfig.getValues() != null
+                    && timerBucketsConfig.getValues().length > 0) {
+                    Duration[] vals = timerBucketsConfig.getValues(); //DURATION
 
-        if (metadata != null && buckets != null) {
+                    for (Duration value : vals) {
+                        try {
+                            buckets.put(value.toMillis() / 1000.0, new BucketValue(0, metadata.getUnit()));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    buckets.put(Double.POSITIVE_INFINITY, infiniteObject);
+                }
+            }
+
+        }
+
+        if (metadata != null && buckets != null && !buckets.isEmpty()) {
             allBuckets.put(metricName, buckets);
-            System.out.println("Added buckets for metricName: " + metricName);
-            System.out.println(buckets);
         }
 
     }
 
-    public void update(long value) {
-
+    public void updateTimer(long value) {
         for (Map.Entry<String, Map<Double, BucketValue>> entry : allBuckets.entrySet()) {
-            String outerKey = entry.getKey();
+
             Map<Double, BucketValue> innerMap = entry.getValue();
             for (Map.Entry<Double, BucketValue> innerEntry : innerMap.entrySet()) {
 
-                Entry<String, Double> test = resolveConversionFactorXappendUnitEntry(innerEntry.getValue().getUnit());
+                if (innerEntry.getKey() >= (value) / 1000000000.00)
+                    innerEntry.getValue().increment();
+            }
+        }
+    }
+
+    public void updateHistogram(long value) {
+        for (Map.Entry<String, Map<Double, BucketValue>> entry : allBuckets.entrySet()) {
+
+            Map<Double, BucketValue> innerMap = entry.getValue();
+            for (Map.Entry<Double, BucketValue> innerEntry : innerMap.entrySet()) {
+
                 if (innerEntry.getKey() >= (value))
                     innerEntry.getValue().increment();
             }

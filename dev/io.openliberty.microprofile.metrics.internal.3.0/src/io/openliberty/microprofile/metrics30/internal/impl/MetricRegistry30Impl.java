@@ -58,6 +58,8 @@ import com.ibm.ws.microprofile.metrics.impl.CounterImpl;
 import com.ibm.ws.microprofile.metrics.impl.ExponentiallyDecayingReservoir;
 import com.ibm.ws.microprofile.metrics.impl.MeterImpl;
 
+import io.openliberty.microprofile.metrics30.setup.config.MetricsConfigurationManager;
+
 /**
  * A registry of metric instances.
  */
@@ -301,6 +303,8 @@ public class MetricRegistry30Impl implements MetricRegistry {
                 remove(metricID);
             }
         }
+
+        MetricsConfigurationManager.getInstance().removeConfiguration(appName);
     }
 
     /**
@@ -894,27 +898,19 @@ public class MetricRegistry30Impl implements MetricRegistry {
         MetricID metricID = new MetricID(metadata.getName(), tags); // Change this to metadata and look at all values.
         final Metric metric = metricsMID.get(metricID);
 
-        System.out.println("METADATA NAME(new): " + metadata.getName());
         //Found an existing metric with matching MetricID
         if (builder.isInstance(metric)) {
-
-            System.out.println(metadata.getName() + " -- IS INSTANCE!!!");
             return (T) metric;
         } else if (metric == null) { //otherwise register this new metric..
-            System.out.println(metadata.getName() + " -- Register new metric!!!");
 
             try {
-                System.out.println("METADATA NAME: " + metadata.getName());
-                System.out.println(metadata.getName() + " -- Register new metric2!!!");
                 return register(metadata, builder.newMetric(metadata), true, tags);
             } catch (IllegalArgumentException e) {
-                System.out.println(metadata.getName() + " -- EXCEPTION?!!! -- " + e.getMessage());
 
                 validateMetricNameToSingleType(metadata.getName(), builder);
 
                 final Metric added = metricsMID.get(metricID);
                 if (builder.isInstance(added)) {
-                    System.out.println(metadata.getName() + " -- ADDED!!!");
 
                     return (T) added;
                 }

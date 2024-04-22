@@ -338,12 +338,6 @@ public class PrometheusBuilder30 extends PrometheusBuilder23 {
 
             double medianVal = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getMedian() * conversionFactor : sampling.getSnapshot().getMedian();
 
-//            if (percentilesConfig != null && percentilesConfig.getValues() == null
-//                       && percentilesConfig.isDisabled()) {
-//                System.out.println("No custom percentiles configured? " + percentilesConfig.isDisabled());
-//                //do nothing - percentiles were disabled
-//            } else 
-
             if (Histogram.class.isInstance(sampling) && ((Histogram30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles() != null) {
 
                 if (((Histogram30Impl) currentMetricMap.get(mid)).getConfiguredPercentiles() != null) {
@@ -371,7 +365,6 @@ public class PrometheusBuilder30 extends PrometheusBuilder23 {
                 }
 
             } else {
-                System.out.println("No custom percentiles configured. MetricName: " + mid.getName());
 
                 double percentile75th = (!(Double.isNaN(conversionFactor))) ? sampling.getSnapshot().getValue(0.75)
                                                                               * conversionFactor : sampling.getSnapshot().getValue(0.75);

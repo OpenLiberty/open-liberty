@@ -91,3 +91,5 @@ task copySimpleClient(type: Copy) {
   dependsOn copySimpleClientTracerOtel
   dependsOn copySimpleClient
 }
+
+addRequiredLibraries.dependsOn addJakartaTransformer

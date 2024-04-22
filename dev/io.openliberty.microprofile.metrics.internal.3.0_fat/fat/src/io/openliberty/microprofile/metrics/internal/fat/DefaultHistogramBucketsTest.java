@@ -14,6 +14,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.io.BufferedReader;
@@ -25,9 +26,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.HashSet;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,7 +43,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -56,29 +54,12 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
-/**
- *
- */
 @RunWith(FATRunner.class)
 public class DefaultHistogramBucketsTest {
 
 	private static Class<?> c = DefaultHistogramBucketsTest.class;
-
-	static String[] addedFeatures = {"jaxrs-2.1", "mpMetrics-3.0", "cdi-2.0"};
-
-	static String[] removedFeatures = {"restfulWS-3.0", "mpMetrics-4.0"};
-
-	@ClassRule
-	public static RepeatTests r = RepeatTests.withoutModification()
-			.andWith(new FeatureReplacementAction().withID("mpMetrics-4.0")
-					.removeFeatures(
-							new HashSet<>(Arrays.asList(removedFeatures)))
-					.addFeatures(new HashSet<>(Arrays.asList(addedFeatures)))
-					.forServers("DefaultBucketServer"));
 
 	@Server("DefaultBucketServer")
 	public static LibertyServer server;
@@ -99,6 +80,44 @@ public class DefaultHistogramBucketsTest {
 				DeployOptions.SERVER_ONLY);
 
 		server.startServer();
+
+		String line = server.waitForStringInLog(
+				"CWWKT0016I: Web application available.*testDefaultBuckets*");
+		Log.info(c, "setUp",
+				"Web Application available message found: " + line);
+		assertNotNull(
+				"The CWWKT0016I Web Application available message did not appear in messages.log",
+				line);
+		Thread.sleep(1000);
+	}
+
+	@Before
+	public void ensureServerStarted() throws Exception {
+		trustAll();
+
+		if (!server.isStarted()) {
+			WebArchive testWAR = ShrinkWrap
+					.create(WebArchive.class, "testDefaultBuckets.war")
+					.addPackage(
+							"io.openliberty.microprofile.metrics.internal.fat.defaultBuckets")
+					.addAsManifestResource(new File(
+							"test-applications/testDefaultBucketsApp/resources/META-INF/microprofile-config.properties"),
+							"microprofile-config.properties");
+
+			ShrinkHelper.exportDropinAppToServer(server, testWAR,
+					DeployOptions.SERVER_ONLY);
+
+			server.startServer();
+
+			String line = server.waitForStringInLog(
+					"CWWKT0016I: Web application available.*testDefaultBuckets*");
+			Log.info(c, "setUp",
+					"Web Application available message found: " + line);
+			assertNotNull(
+					"The CWWKT0016I Web Application available message did not appear in messages.log",
+					line);
+			Thread.sleep(1000);
+		}
 	}
 
 	@AfterClass
@@ -108,22 +127,13 @@ public class DefaultHistogramBucketsTest {
 			server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E",
 					"CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W");
 		}
-	}
-
-	@Before
-	public void beforeTest() {
-
-		// Check that both CWWKO0219I messages for non-secure and secured http
-		// endpoints are initialized
-		server.waitForMultipleStringsInLog(2, "CWWKO0219I");
-
+		server.removeAllInstalledAppsForValidation();
 	}
 
 	@Test
 	@Mode(TestMode.FULL)
 	public void testDefaultBucketsEnabledHistogram() throws Exception {
 		final String method = "testDefaultBucketsEnabledHistogram";
-		// hit rest endpoint
 
 		String res = getHttpServlet("/testDefaultBuckets/test/histogram");
 
@@ -155,7 +165,6 @@ public class DefaultHistogramBucketsTest {
 	public void testDefaultBucketsEnabledTimer() throws Exception {
 
 		final String method = "testDefaultBucketsEnabledTimer";
-		// hit rest endpoint
 
 		String res = getHttpServlet("/testDefaultBuckets/test/timer");
 
@@ -188,7 +197,6 @@ public class DefaultHistogramBucketsTest {
 	public void testHistogramDefaultBucketsMinMax() throws Exception {
 
 		final String method = "testHistogramDefaultBucketsMinMax";
-		// hit rest endpoint
 
 		String res = getHttpServlet("/testDefaultBuckets/test/histogramMinMax");
 
@@ -231,8 +239,6 @@ public class DefaultHistogramBucketsTest {
 
 		final String method = "testTimerDefaultBucketsMinMax";
 
-		// hit rest endpoint
-
 		String res = getHttpServlet("/testDefaultBuckets/test/timerMinMax");
 
 		Log.info(c, method, "REST return " + res);
@@ -274,8 +280,6 @@ public class DefaultHistogramBucketsTest {
 
 		final String method = "testHistogramBadEnableConfig";
 
-		// hit rest endpoint
-
 		String res = getHttpServlet(
 				"/testDefaultBuckets/test/histogramBadEnableConfig");
 
@@ -300,9 +304,7 @@ public class DefaultHistogramBucketsTest {
 				}
 			}
 		}
-
 		assertThat("Count is: " + count, count, equalTo(0));
-
 	}
 
 	@Test
@@ -343,17 +345,12 @@ public class DefaultHistogramBucketsTest {
 				}
 			}
 		}
-
 		assertThat("Count is: " + count, count, greaterThan(5));
-
 	}
 
 	@Test
 	public void timerBadMinGoodMaxConfig() throws Exception {
-
 		final String method = "timerBadMinGoodMaxConfig";
-
-		// hit rest endpoint
 
 		String res = getHttpServlet(
 				"/testDefaultBuckets/test/timerBadMinGoodMaxConfig");
@@ -386,17 +383,12 @@ public class DefaultHistogramBucketsTest {
 				}
 			}
 		}
-
 		assertThat("Count is: " + count, count, greaterThan(5));
-
 	}
 
 	@Test
 	public void histogramBadMinGoodMaxConfig() throws Exception {
-
 		final String method = "histogramBadMinGoodMaxConfig";
-
-		// hit rest endpoint
 
 		String res = getHttpServlet(
 				"/testDefaultBuckets/test/histogramBadMinGoodMaxConfig");
@@ -429,9 +421,7 @@ public class DefaultHistogramBucketsTest {
 				}
 			}
 		}
-
 		assertThat("Count is: " + count, count, greaterThan(5));
-
 	}
 
 	@Test
@@ -472,17 +462,12 @@ public class DefaultHistogramBucketsTest {
 				}
 			}
 		}
-
 		assertThat("Count is: " + count, count, greaterThan(5));
-
 	}
 
 	@Test
 	public void timerGoodMinGoodMaxConfig() throws Exception {
-
 		final String method = "timerGoodMinGoodMaxConfig";
-
-		// hit rest endpoint
 
 		String res = getHttpServlet(
 				"/testDefaultBuckets/test/timerGoodMinGoodMaxConfig");
@@ -516,17 +501,12 @@ public class DefaultHistogramBucketsTest {
 				}
 			}
 		}
-
 		assertThat("Count is: " + count, count, greaterThan(5));
-
 	}
 
 	@Test
 	public void histogramGoodMaxGoodMinConfig() throws Exception {
-
 		final String method = "histogramGoodMaxGoodMinConfig";
-
-		// hit rest endpoint
 
 		String res = getHttpServlet(
 				"/testDefaultBuckets/test/histogramGoodMaxGoodMinConfig");
@@ -560,9 +540,7 @@ public class DefaultHistogramBucketsTest {
 				}
 			}
 		}
-
 		assertThat("Count is: " + count, count, greaterThan(5));
-
 	}
 
 	private static void trustAll() throws Exception {

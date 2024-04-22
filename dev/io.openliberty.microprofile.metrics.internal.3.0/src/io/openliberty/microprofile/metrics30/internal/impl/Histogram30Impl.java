@@ -64,8 +64,6 @@ public class Histogram30Impl implements Histogram {
      */
     public Histogram30Impl(Reservoir reservoir, Metadata metadata) {
 
-        //System.out.println("Current Metrics: " + metricName.getDisplayName() + " -- " + metricName.getName() + " -- " + metricID.getTagsAsArray() + " -- " + metricID.getName());
-
         this.reservoir = reservoir;
         this.count = LongAdderProxy.create();
         this.sum = LongAdderProxy.create();
@@ -93,7 +91,7 @@ public class Histogram30Impl implements Histogram {
         count.increment();
         sum.add(value);
         reservoir.update(value);
-        manager.update(value);
+        manager.updateHistogram(value);
     }
 
     /**
@@ -136,26 +134,19 @@ public class Histogram30Impl implements Histogram {
         if (percentileConfiguration.isPresent()) {
 
             MetricPercentileConfiguration percentileConfig = MetricsConfigurationManager.getInstance().getPercentilesConfiguration(metricName);
-            System.out.println("MetricName: " + metricName);
 
             if (percentileConfig != null && percentileConfig.getValues() != null
-                && percentileConfig.getValues().length > 0) {
+                && percentileConfig.getValues().length > 0 && !percentileConfig.isDisabled()) {
                 double[] vals = Stream.of(percentileConfig.getValues()).mapToDouble(Double::doubleValue).toArray();
 
-                for (Double value : vals) {
-                    System.out.println("Histogram Percentile Value: " + value + " -- " + metadata.getUnit());
-
-                }
                 return vals;
             } else if (percentileConfig == null) {
                 return null;
             } else {
-                System.out.println("Returning empty double for percentiles");
                 return new double[0];
             }
         }
 
-        System.out.println("Returning null for percentiles.");
         return null;
 
     }

@@ -48,6 +48,7 @@ import javax.net.ssl.X509TrustManager;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,9 +65,6 @@ import componenttest.topology.impl.LibertyServer;
 public class BadHistogramTimerConfigTest {
 
 	private static Class<?> c = BadHistogramTimerConfigTest.class;
-
-	static String[] removedFeatures = {"jaxrs-2.1", "mpMetrics-3.0", "cdi-2.0",
-			"localConnector-1.0"};
 
 	@Server("BadHistogramTimer")
 	public static LibertyServer server;
@@ -95,8 +93,48 @@ public class BadHistogramTimerConfigTest {
 		assertNotNull(
 				"The CWWKT0016I Web Application available message did not appear in messages.log",
 				line);
+		Thread.sleep(1000);
+	}
+
+	@Before
+	public void ensureServerStarted() throws Exception {
+		trustAll();
+
+		if (!server.isStarted()) {
+			WebArchive testWAR = ShrinkWrap
+					.create(WebArchive.class, "histogram.war")
+					.addPackage(
+							"io.openliberty.microprofile.metrics.internal.fat.histogram")
+					.addAsManifestResource(new File(
+							"test-applications/testHistogramApp/resources/META-INF/microprofile-config.properties"),
+							"microprofile-config.properties");
+
+			ShrinkHelper.exportDropinAppToServer(server, testWAR,
+					DeployOptions.SERVER_ONLY);
+
+			server.startServer();
+
+			String line = server.waitForStringInLog(
+					"CWWKT0016I: Web application available.*histogram*");
+			Log.info(c, "setUp",
+					"Web Application available message found: " + line);
+			assertNotNull(
+					"The CWWKT0016I Web Application available message did not appear in messages.log",
+					line);
+			Thread.sleep(1000);
+		}
 
 	}
+
+	// @After
+	// public void cleanUp() throws Exception {
+	// if (server.isStarted()) {
+	// server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E",
+	// "CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W");
+	// }
+	// server.removeAllInstalledAppsForValidation();
+	//
+	// }
 
 	@AfterClass
 	public static void afterClass() throws Exception {
@@ -115,7 +153,14 @@ public class BadHistogramTimerConfigTest {
 		String res = getHttpServlet(
 				"/badHistogramTimer/test/badHistogramPercentiles");
 
-		String metrics = getHttpsServlet("/metrics");
+		String metrics = "";
+		try {
+			metrics = getHttpsServlet("/metrics");
+
+		} catch (Exception e) {
+			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
+			metrics = getHttpsServlet("/metrics");
+		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -134,7 +179,6 @@ public class BadHistogramTimerConfigTest {
 				if (line.contains(
 						"application_badHistogramPercentiles{quantile=\"")) {
 					count++;
-					System.out.println("Quantile line found: " + line);
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
@@ -160,7 +204,14 @@ public class BadHistogramTimerConfigTest {
 		String res = getHttpServlet(
 				"/badHistogramTimer/test/badHistogramPercentiles");
 
-		String metrics = getHttpsServlet("/metrics");
+		String metrics = "";
+		try {
+			metrics = getHttpsServlet("/metrics");
+
+		} catch (Exception e) {
+			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
+			metrics = getHttpsServlet("/metrics");
+		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -178,7 +229,6 @@ public class BadHistogramTimerConfigTest {
 				if (line.contains(
 						"application_badTimerPercentiles_seconds{quantile=\"")) {
 					count++;
-					System.out.println("Quantile line found: " + line);
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
@@ -206,7 +256,14 @@ public class BadHistogramTimerConfigTest {
 		String res = getHttpServlet(
 				"/badHistogramTimer/test/badHistogramPercentiles");
 
-		String metrics = getHttpsServlet("/metrics");
+		String metrics = "";
+		try {
+			metrics = getHttpsServlet("/metrics");
+
+		} catch (Exception e) {
+			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
+			metrics = getHttpsServlet("/metrics");
+		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -224,7 +281,6 @@ public class BadHistogramTimerConfigTest {
 				String line = sc.nextLine();
 				if (line.contains(
 						"application_badHistogramBuckets_bucket{le=\"")) {
-					System.out.println("Quantile line found: " + line);
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
@@ -251,7 +307,14 @@ public class BadHistogramTimerConfigTest {
 		String res = getHttpServlet(
 				"/badHistogramTimer/test/badHistogramPercentiles");
 
-		String metrics = getHttpsServlet("/metrics");
+		String metrics = "";
+		try {
+			metrics = getHttpsServlet("/metrics");
+
+		} catch (Exception e) {
+			Log.info(c, method, "Metrics endpoint failed! " + e.getMessage());
+			metrics = getHttpsServlet("/metrics");
+		}
 
 		Log.info(c, method, "[SCOPED METRICS]: " + metrics);
 
@@ -269,7 +332,6 @@ public class BadHistogramTimerConfigTest {
 				String line = sc.nextLine();
 				if (line.contains(
 						"application_badTimerBuckets_seconds_bucket{le=\"")) {
-					System.out.println("Quantile line found: " + line);
 					Matcher matcher = Pattern.compile("\"(\\d+(\\.\\d+)?)\"")
 							.matcher(line);
 					while (matcher.find()) {
@@ -316,6 +378,8 @@ public class BadHistogramTimerConfigTest {
 	}
 
 	private String getHttpsServlet(String servletPath) throws Exception {
+		Log.info(c, "BadHistogram", "Server status(2): " + server.isStarted());
+
 		HttpsURLConnection con = null;
 		try {
 			String sURL = "https://" + server.getHostname() + ":"
@@ -359,6 +423,7 @@ public class BadHistogramTimerConfigTest {
 	}
 
 	private String getHttpServlet(String servletPath) throws Exception {
+		Log.info(c, "BadHistogram", "Server status: " + server.isStarted());
 		HttpURLConnection con = null;
 		try {
 			String sURL = "http://" + server.getHostname() + ":"

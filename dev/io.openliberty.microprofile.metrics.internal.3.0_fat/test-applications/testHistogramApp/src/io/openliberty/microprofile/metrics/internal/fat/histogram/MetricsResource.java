@@ -15,21 +15,36 @@
  */
 package io.openliberty.microprofile.metrics.internal.fat.histogram;
 
+import java.time.Duration;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 
 @ApplicationScoped
 @Path("/test")
 public class MetricsResource {
 
+	Timer timer;
+
+	@Inject
+	MetricRegistry mr;
+
 	@GET
 	@Path("/getHistograms")
 	public String badHistogramPercentiles() throws InterruptedException {
+
+		timer = mr.timer("myTimer");
+
+		// tm.update(Duration.ofMillis(val));
+
+		timer.update(Duration.ofMillis(100));
 		return "Histogram registered";
 	}
 
@@ -40,6 +55,10 @@ public class MetricsResource {
 	@Inject
 	@Metric(name = "injectedHistogramNoPercentiles")
 	private Histogram injectedHistogramNoPercentiles;
+
+	@Inject
+	@Metric(name = "injectedTimerNoPercentiles")
+	private Timer injectedTimerNoPercentiles;
 
 	@Inject
 	@Metric(name = "injectedHistogramCustomBucketsDefaultPercentiles")
