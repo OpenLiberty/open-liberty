@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * @version 1.0.17
- */
-@org.osgi.annotation.versioning.Version("1.0.17")
-package com.ibm.ws.sip.container.was.servlet31.converged;
+package com.ibm.wsspi.sip.converge;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+
+import com.ibm.wsspi.session.ISession;
+
+public interface IConvergedHttpSessionContext {
+    public Object createSessionObject(ISession isess, ServletContext servCtx);
+
+    public String getSipBaseUrlForEncoding(String contextPath, String relativePath, String scheme);
+
+    public HttpSession getHttpSessionById(String sessId);
+}
