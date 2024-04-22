@@ -29,6 +29,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -53,6 +56,12 @@ import junit.framework.AssertionFailedError;
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataExperimentalServlet extends FATServlet {
+
+    @Inject
+    Items items;
+
+    @Inject
+    PrimeNumbers primes;
 
     @Inject
     Reservations reservations;
@@ -87,6 +96,171 @@ public class DataExperimentalServlet extends FATServlet {
         towns.add(new Town("Springfield", "Ohio", 58662, Set.of(326, 937)));
         towns.add(new Town("Kansas City", "Missouri", 508090, Set.of(816, 975)));
         towns.add(new Town("Kansas City", "Kansas", 156607, Set.of(913)));
+
+        primes.write(new PrimeNum(2, "2", "10", 1, "II", "two"),
+                     new PrimeNum(3, "3", "11", 2, "III", "three"),
+                     new PrimeNum(5, "5", "101", 2, "V", "five"),
+                     new PrimeNum(7, "7", "111", 3, "VII", "seven"),
+                     new PrimeNum(11, "B", "1011", 3, "XI", "eleven"),
+                     new PrimeNum(13, "D", "1101", 3, "XIII", "thirteen"),
+                     new PrimeNum(17, "11", "10001", 2, "XVII", "seventeen"),
+                     new PrimeNum(19, "13", "10011", 3, "XIX", "nineteen"),
+                     new PrimeNum(23, "17", "10111", 4, "XXIII", "twenty-three"),
+                     new PrimeNum(29, "1D", "11101", 4, "XXIX", "twenty-nine"),
+                     new PrimeNum(31, "1F", "11111", 5, "XXXI", "thirty-one"),
+                     new PrimeNum(37, "25", "100101", 3, "XXXVII", "thirty-seven"),
+                     new PrimeNum(41, "29", "101001", 3, "XLI", "forty-one"),
+                     new PrimeNum(43, "2B", "101011", 4, "XLIII", "forty-three"),
+                     new PrimeNum(47, "2F", "101111", 5, "XLVII", "forty-seven"),
+                     new PrimeNum(4001, "FA1", "111110100001", 7, null, "four thousand one"), // romanNumeralSymbols null
+                     new PrimeNum(4003, "FA3", "111110100011", 8, null, "four thousand three"), // romanNumeralSymbols null
+                     new PrimeNum(4007, "Fa7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
+                     new PrimeNum(4013, "FAD", "111110101101", 9, "", "Four Thousand Thirteen"), // empty list of romanNumeralSymbols
+                     new PrimeNum(4019, "FB3", "111110110011", 9, "", "four thousand nineteen"), // empty list of romanNumeralSymbols
+                     new PrimeNum(4021, "FB5", "111110110101", 9, "", " Four thousand twenty-one ")); // extra blank space at beginning and end
+    }
+
+    /**
+     * Use repository methods with aggregate functions in the select clause.
+     */
+    @Test
+    public void testAggregateFunctions() {
+        // Remove data from previous test:
+        items.destroy();
+
+        // Add data for this test to use:
+        Item item1 = new Item();
+        item1.pk = UUID.nameUUIDFromBytes("AF-006E905-LE".getBytes());
+        item1.name = "TestAggregateFunctions Lite Edition";
+        item1.price = 104.99f;
+        items.save(item1);
+
+        Item item2 = new Item();
+        item2.pk = UUID.nameUUIDFromBytes("AF-006E005-RK".getBytes());
+        item2.name = "TestAggregateFunctions Repair Kit";
+        item2.price = 104.99f;
+        items.save(item2);
+
+        Item item3 = new Item();
+        item3.pk = UUID.nameUUIDFromBytes("AF-006E905-CE".getBytes());
+        item3.name = "TestAggregateFunctions Classic Edition";
+        item3.price = 306.99f;
+        items.save(item3);
+
+        Item item4 = new Item();
+        item4.pk = UUID.nameUUIDFromBytes("AF-006E205-CE".getBytes());
+        item4.name = "TestAggregateFunctions Classic Edition";
+        item4.description = "discontinued";
+        item4.price = 286.99f;
+        items.save(item4);
+
+        assertEquals(306.99f, items.highestPrice(), 0.001f);
+
+        assertEquals(104.99f, items.lowestPrice(), 0.001f);
+
+        assertEquals(200.99f, items.meanPrice(), 0.001f);
+
+        assertEquals(698.97f, items.totalOfDistinctPrices(), 0.001f);
+
+        // EclipseLink says that multiple distinct attribute are not support at this time,
+        // so we are testing this with distinct=false
+        ItemCount stats = items.stats();
+        assertEquals(4, stats.totalNames);
+        assertEquals(1, stats.totalDescriptions);
+        assertEquals(4, stats.totalPrices);
+
+        items.destroy();
+    }
+
+    /**
+     * Test the CharCount Function to query based on string length.
+     */
+    @Test
+    public void testCharCountFunction() {
+        assertEquals(List.of("eleven", "five", "seven", "three"),
+                     primes.whereNameLengthWithin(4, 6)
+                                     .map(p -> p.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Count the number of matching entries in the database using annotatively defined queries.
+     */
+    @Test
+    public void testCountAnnotation() throws ExecutionException, InterruptedException, TimeoutException {
+
+        assertEquals(6, primes.howManyIn(17L, 37L));
+        assertEquals(0, primes.howManyIn(24L, 28L));
+
+        assertEquals(Long.valueOf(5), primes.howManyBetweenExclusive(5, 20));
+        assertEquals(Long.valueOf(0), primes.howManyBetweenExclusive(19, 20));
+        assertEquals(Long.valueOf(0), primes.howManyBetweenExclusive(21, 20));
+    }
+
+    /**
+     * Parameter-based query with the Count annotation to indicate that it performs a count rather than a find operation.
+     */
+    @Test
+    public void testCountAnnotationParameterBasedQuery() {
+        assertEquals(1, primes.numEvenWithSumOfBits(1, true));
+        assertEquals(0, primes.numEvenWithSumOfBits(1, false));
+        assertEquals(0, primes.numEvenWithSumOfBits(2, true));
+        assertEquals(3, primes.numEvenWithSumOfBits(2, false));
+    }
+
+    /**
+     * Query for distinct values of an attribute.
+     */
+    @Test
+    public void testDistinctAttribute() {
+        items.destroy();
+
+        Item item1 = new Item();
+        item1.pk = UUID.nameUUIDFromBytes("TDA-T-L1".getBytes());
+        item1.name = "TestDistinctAttribute T-Shirt Size Large";
+        item1.price = 7.99f;
+        items.save(item1);
+
+        Item item2 = new Item();
+        item2.pk = UUID.nameUUIDFromBytes("TDA-T-M1".getBytes());
+        item1.name = "TestDistinctAttribute T-Shirt Size Medium";
+        item2.price = 7.89f;
+        items.save(item2);
+
+        Item item3 = new Item();
+        item3.pk = UUID.nameUUIDFromBytes("TDA-T-S1".getBytes());
+        item3.name = "TestDistinctAttribute T-Shirt Size Small";
+        item3.price = 7.79f;
+        items.save(item3);
+
+        Item item4 = new Item();
+        item4.pk = UUID.nameUUIDFromBytes("TDA-T-M2".getBytes());
+        item4.name = "TestDistinctAttribute T-Shirt Size Medium";
+        item4.price = 7.49f;
+        items.save(item4);
+
+        Item item5 = new Item();
+        item5.pk = UUID.nameUUIDFromBytes("TDA-T-XS1".getBytes());
+        item5.name = "TestDistinctAttribute T-Shirt Size Extra Small";
+        item5.price = 7.59f;
+        items.save(item5);
+
+        Item item6 = new Item();
+        item6.pk = UUID.nameUUIDFromBytes("TDA-T-L2".getBytes());
+        item6.name = "TestDistinctAttribute T-Shirt Size Large";
+        item6.price = 7.49f;
+        items.save(item6);
+
+        List<String> uniqueItemNames = items.findByNameLike("TestDistinctAttribute %");
+
+        // only 4 of the 6 names are unique
+        assertEquals(List.of("TestDistinctAttribute T-Shirt Size Extra Small",
+                             "TestDistinctAttribute T-Shirt Size Large",
+                             "TestDistinctAttribute T-Shirt Size Medium",
+                             "TestDistinctAttribute T-Shirt Size Small"),
+                     uniqueItemNames);
+
+        items.destroy();
     }
 
     /**
@@ -181,6 +355,26 @@ public class DataExperimentalServlet extends FATServlet {
     }
 
     /**
+     * Identify whether elements exist in the database using an annotatively defined query.
+     */
+    @Test
+    public void testExistsAnnotation() {
+        assertEquals(true, primes.anyLessThanEndingWithBitPattern(25L, "1101"));
+        assertEquals(false, primes.anyLessThanEndingWithBitPattern(25L, "1111"));
+        assertEquals(false, primes.anyLessThanEndingWithBitPattern(12L, "1101"));
+    }
+
+    /**
+     * Parameter-based query with the Exists annotation.
+     */
+    @Test
+    public void testExistsAnnotationWithParameterBasedQuery() {
+        assertEquals(true, primes.isFoundWith(47, "2F"));
+        assertEquals(false, primes.isFoundWith(41, "2F")); // 2F is not hex for 41 decimal
+        assertEquals(false, primes.isFoundWith(15, "F")); // not prime
+    }
+
+    /**
      * Repository methods that use the Extract annotation with a parameter of
      * Year, Quarter, Month, and Day to compare different parts of a date.
      */
@@ -248,6 +442,18 @@ public class DataExperimentalServlet extends FATServlet {
                      reservations.lengthsBelow(200));
 
         assertEquals(4, reservations.deleteByHostNot("no one"));
+    }
+
+    /**
+     * Define a parameter-based find operation with IgnoreCase, Like, and Contains annotations.
+     */
+    @Test
+    public void testFind() {
+        assertEquals(List.of(37L, 17L, 7L, 5L), // 11 has no V in the roman numeral and 47 is too big
+                     primes.inRangeHavingNumeralLikeAndSubstringOfName(5L, 45L, "%v%", "ve"));
+
+        assertEquals(List.of(),
+                     primes.inRangeHavingNumeralLikeAndSubstringOfName(1L, 18L, "%v%", "nine"));
     }
 
     /**
@@ -472,6 +678,27 @@ public class DataExperimentalServlet extends FATServlet {
     }
 
     /**
+     * Test the Not annotation on a parameter-based query.
+     */
+    @Test
+    public void testNot() {
+        assertEquals(List.of("thirteen"),
+                     primes.withRomanNumeralSuffixAndWithoutNameSuffix("III", "three", 50));
+
+        assertEquals(List.of("seventeen"),
+                     primes.withRomanNumeralSuffixAndWithoutNameSuffix("VII", "seven", 50));
+    }
+
+    /**
+     * Test the Or annotation on a parameter-based query.
+     */
+    @Test
+    public void testOr() {
+        assertEquals(List.of(2L, 3L, 5L, 7L, 41L, 43L, 47L),
+                     primes.notWithinButBelow(10, 40, 50));
+    }
+
+    /**
      * Invoke methods that are annotated with the Select, Where, Update, and Delete annotations.
      */
     @Test
@@ -553,6 +780,18 @@ public class DataExperimentalServlet extends FATServlet {
         assertEquals(2, shipments.statusBasedRemoval("CANCELED"));
 
         assertEquals(3, shipments.removeEverything());
+    }
+
+    /**
+     * Use a repository method that has both AND and OR keywords.
+     * The AND keywords should take precedence over OR and be computed first.
+     */
+    @Test
+    public void testPrecedenceOfAndOverOr() {
+        assertEquals(List.of(41L, 37L, 31L, 11L, 7L),
+                     primes.lessThanWithSuffixOrBetweenWithSuffix(40L, "even", 30L, 50L, "one")
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -1108,6 +1347,52 @@ public class DataExperimentalServlet extends FATServlet {
     }
 
     /**
+     * Use repository methods with annotations for rounding.
+     */
+    @Test
+    public void testRoundingAnnotations() {
+        items.destroy();
+
+        Item item1 = new Item();
+        item1.pk = UUID.nameUUIDFromBytes("RND-ANNO-1".getBytes());
+        item1.name = "TestRoundingAnnotations Item 1";
+        item1.price = 19.22f;
+        items.save(item1);
+
+        Item item2 = new Item();
+        item2.pk = UUID.nameUUIDFromBytes("RND-ANNO-2".getBytes());
+        item2.name = "TestRoundingAnnotations Item 2";
+        item2.price = 12.38f;
+        items.save(item2);
+
+        Item item3 = new Item();
+        item3.pk = UUID.nameUUIDFromBytes("RND-ANNO-3".getBytes());
+        item3.name = "TestRoundingAnnotations Item 3";
+        item3.price = 18.76f;
+        items.save(item3);
+
+        Item item4 = new Item();
+        item4.pk = UUID.nameUUIDFromBytes("RND-ANNO-4".getBytes());
+        item4.name = "TestRoundingAnnotations Item 4";
+        item4.price = 18.02f;
+        items.save(item4);
+
+        assertEquals(List.of("TestRoundingAnnotations Item 3", "TestRoundingAnnotations Item 4"),
+                     items.withPriceFloored(18.0f));
+
+        assertEquals(List.of("TestRoundingAnnotations Item 1"),
+                     items.withPriceFloored(19.0f));
+
+        assertEquals(List.of("TestRoundingAnnotations Item 3", "TestRoundingAnnotations Item 4"),
+                     items.withPriceCeiling(19.0f));
+
+        assertEquals(List.of("TestRoundingAnnotations Item 1", "TestRoundingAnnotations Item 3"),
+                     items.withPriceAbout(19.0f));
+
+        items.destroy();
+    }
+
+    /**
      * Experiment with making a repository method return a record.
      */
     @Test
@@ -1167,5 +1452,170 @@ public class DataExperimentalServlet extends FATServlet {
                           reserved,
                           Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.start().toInstant())
                                           .thenComparing(Comparator.<ReservedTimeSlot, Instant> comparing(o -> o.stop().toInstant())));
+    }
+
+    /**
+     * Test the Trimmed Function by querying against data that has leading and trailing blank space.
+     */
+    @Test
+    public void testTrimmedFunction() {
+        List<PrimeNum> found = primes.withNameLengthAndWithin(24, 4000L, 4025L);
+        assertNotNull(found);
+        assertEquals("Found: " + found, 1, found.size());
+        assertEquals(4021L, found.get(0).numberId);
+        assertEquals(" Four thousand twenty-one ", found.get(0).name);
+
+        PrimeNum prime = primes.withAnyCaseName("FOUR THOUSAND TWENTY-ONE").orElseThrow();
+        assertEquals(4021L, prime.numberId);
+        assertEquals(" Four thousand twenty-one ", prime.name);
+    }
+
+    /**
+     * Use repository methods with the Update annotation that perform division, subtraction, and addition,
+     */
+    @Test
+    public void testUpdateAnnotationDivideSubtractAdd() {
+        items.destroy();
+
+        Item item1 = new Item();
+        item1.pk = UUID.nameUUIDFromBytes("UPD-ANNO-DSA-1".getBytes());
+        item1.name = "TestUpdateAnnotationDivideSubtractAdd Item 1";
+        item1.description = "Item 1";
+        item1.price = 70.00f;
+        items.save(item1);
+
+        Item item2 = new Item();
+        item2.pk = UUID.nameUUIDFromBytes("UPD-ANNO-DSA-2".getBytes());
+        item2.name = "TestUpdateAnnotationDivideSubtractAdd Item 2";
+        item2.description = "Item 2";
+        item2.price = 80.00f;
+        items.save(item2);
+
+        // divide price and append to description via Update method
+        assertEquals(1, items.reduceBy(item2.pk, 2, " halved"));
+
+        Item item = items.get(item2.pk);
+        assertEquals(40.0f, item.price, 0.01f);
+        assertEquals("Item 2 halved", item.description);
+
+        // subtract from price and append to description via Update method with property names inferred from parameters
+        assertEquals(true, items.shorten(item2.pk, 1.0f, " and reduced $1"));
+
+        item = items.get(item2.pk);
+        assertEquals(39.0f, item.price, 0.01f);
+        assertEquals("Item 2 halved and reduced $1", item.description);
+
+        // subtract from price and append to description via Update method with annotatively specified property names
+        items.shortenBy(2, " and then another $2", item2.pk);
+
+        item = items.get(item2.pk);
+        assertEquals(37.0f, item.price, 0.01f);
+        assertEquals("Item 2 halved and reduced $1 and then another $2", item.description);
+
+        item = items.get(item1.pk);
+        assertEquals(70.0f, item.price, 0.01f);
+        assertEquals("Item 1", item.description);
+
+        items.destroy();
+    }
+
+    /**
+     * Use repository methods with the Update annotation that multiply values.
+     */
+    @Test
+    public void testUpdateAnnotationMultiply() {
+        items.destroy();
+
+        Item item1 = new Item();
+        item1.pk = UUID.nameUUIDFromBytes("UPD-ANNO-1".getBytes());
+        item1.name = "Fairly Priced TestUpdateAnnotation Item";
+        item1.price = 5.00f;
+        items.save(item1);
+
+        Item item2 = new Item();
+        item2.pk = UUID.nameUUIDFromBytes("UPD-ANNO-2".getBytes());
+        item2.name = "Highly Priced TestUpdateAnnotation Item";
+        item2.price = 100.00f;
+        items.save(item2);
+
+        Item item3 = new Item();
+        item3.pk = UUID.nameUUIDFromBytes("UPD-ANNO-3".getBytes());
+        item3.name = "Middle Priced TestUpdateAnnotation Item";
+        item3.price = 40.00f;
+        items.save(item3);
+
+        Item item4 = new Item();
+        item4.pk = UUID.nameUUIDFromBytes("UPD-ANNO-4".getBytes());
+        item4.name = "Inexpensive TestUpdateAnnotation Item";
+        item4.price = 2.00f;
+        items.save(item4);
+
+        Item item5 = new Item();
+        item5.pk = UUID.nameUUIDFromBytes("UPD-ANNO-5".getBytes());
+        item5.name = "Ridiculously High Priced TestUpdateAnnotation Item";
+        item5.price = 500.00f;
+        items.save(item5);
+
+        Item item6 = new Item();
+        item6.pk = UUID.nameUUIDFromBytes("UPD-ANNO-6".getBytes());
+        item6.name = "Lowest Priced TestUpdateAnnotation Item";
+        item6.price = 1.00f;
+        items.save(item6);
+
+        assertEquals(true, items.isNotEmpty());
+        assertEquals(6, items.total());
+
+        assertEquals(5, items.inflatePrices("Priced TestUpdateAnnotation Item", 1.07f)); // item4 does not match
+
+        Item[] found = items.versionedAtOrAbove(2);
+
+        assertEquals(Stream.of(found).map(p -> p.pk).collect(Collectors.toList()).toString(),
+                     5, found.length);
+
+        assertEquals(1.07f, found[0].price, 0.001f);
+        assertEquals(5.35f, found[1].price, 0.001f);
+        assertEquals(42.80f, found[2].price, 0.001f);
+        assertEquals(107.00f, found[3].price, 0.001f);
+        assertEquals(535.00f, found[4].price, 0.001f);
+
+        Item item = items.get(item4.pk);
+        assertEquals(2.00f, item.price, 0.001f);
+
+        items.undoPriceIncrease(Set.of(item5.pk, item2.pk, item1.pk), 1.07f);
+
+        found = items.versionedAtOrAbove(1);
+
+        assertEquals(Stream.of(found).map(p -> p.pk).collect(Collectors.toList()).toString(),
+                     6, found.length);
+
+        assertEquals(1.07f, found[0].price, 0.001f); // update remains in place
+        assertEquals(2.00f, found[1].price, 0.001f); // never updated
+        assertEquals(5.00f, found[2].price, 0.001f); // reverted
+        assertEquals(42.80f, found[3].price, 0.001f); // update remains in place
+        assertEquals(100.00f, found[4].price, 0.001f); // reverted
+        assertEquals(500.00f, found[5].price, 0.001f); // reverted
+
+        assertEquals(2, found[0].version); // update remains in place
+        assertEquals(1, found[1].version); // never updated
+        assertEquals(1, found[2].version); // reverted
+        assertEquals(2, found[3].version); // update remains in place
+        assertEquals(1, found[4].version); // reverted
+        assertEquals(1, found[5].version); // reverted
+
+        assertEquals(6, items.inflateAllPrices(1.05f));
+
+        found = items.versionedAtOrAbove(2);
+
+        assertEquals(1.12f, found[0].price, 0.01f);
+        assertEquals(2.10f, found[1].price, 0.01f);
+        assertEquals(5.25f, found[2].price, 0.01f);
+        assertEquals(44.94f, found[3].price, 0.01f);
+        assertEquals(105.00f, found[4].price, 0.01f);
+        assertEquals(525.00f, found[5].price, 0.01f);
+
+        items.destroy();
+
+        assertEquals(0, items.total());
+        assertEquals(false, items.isNotEmpty());
     }
 }

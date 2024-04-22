@@ -12,9 +12,6 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import static io.openliberty.data.repository.function.Rounded.Direction.DOWN;
-import static io.openliberty.data.repository.function.Rounded.Direction.UP;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,21 +25,9 @@ import jakarta.data.page.PageRequest;
 import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
-import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Update;
-
-import io.openliberty.data.repository.Or;
-import io.openliberty.data.repository.comparison.GreaterThan;
-import io.openliberty.data.repository.comparison.GreaterThanEqual;
-import io.openliberty.data.repository.comparison.LessThan;
-import io.openliberty.data.repository.comparison.LessThanEqual;
-import io.openliberty.data.repository.function.Rounded;
-import io.openliberty.data.repository.update.Add;
-import io.openliberty.data.repository.update.Divide;
-import io.openliberty.data.repository.update.SubtractFrom;
 
 /**
  *
@@ -89,6 +74,11 @@ public interface Packages extends BasicRepository<Package, Integer> {
 
     CursoredPage<Package> findByHeightGreaterThanOrderByLengthAscWidthDescHeightDescIdAsc(float minHeight, PageRequest pagination);
 
+    CursoredPage<Package> findByHeightLessThanOrHeightGreaterThan(float minToExclude,
+                                                                  float maxToExclude,
+                                                                  Order<Package> order,
+                                                                  PageRequest pagination);
+
     @OrderBy(value = "id")
     List<Integer> findIdByHeightRoundedDown(int height);
 
@@ -98,32 +88,15 @@ public interface Packages extends BasicRepository<Package, Integer> {
     @OrderBy(value = "id")
     List<Integer> findIdByWidthRounded(int width);
 
-    @Update
-    int reduceBy(int id,
-                 @Divide("height") float heightDivisor,
-                 @Add("description") String additionalDescription);
-
-    @Update
-    boolean shorten(int id,
-                    @SubtractFrom float height,
-                    @Add String description);
-
-    @Update
-    void shortenBy(@SubtractFrom("height") int reduction,
-                   @Add("description") String moreDescription,
-                   int id);
-
     @Delete
     Package take(@By("id") int packageNum);
 
     @Delete
-    List<Package> takeWithin(@By("length") @GreaterThanEqual float minLength,
-                             @By("length") @LessThanEqual float maxLength);
+    List<Package> take(@By("description") String desc);
 
     @Delete
     @OrderBy("id")
-    List<Package> takeWithinOrdered(@By("length") @GreaterThanEqual float minLength,
-                                    @By("length") @LessThanEqual float maxLength);
+    List<Package> takeOrdered(String description);
 
     boolean updateByIdAddHeightMultiplyLengthDivideWidth(int id, float heightToAdd, float lengthMultiplier, float widthDivisor);
 
@@ -134,27 +107,9 @@ public interface Packages extends BasicRepository<Package, Integer> {
     long updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(float maxLength, float minHeight, float maxHeight,
                                                                                          float lengthMultiplier, float widthMultiplier, float newHeight);
 
-    @Find
-    CursoredPage<Package> whereHeightNotWithin(@By("height") @LessThan float minToExclude,
-                                               @Or @By("height") @GreaterThan float maxToExclude,
-                                               Order<Package> order,
-                                               PageRequest pagination);
-
     @Query("SELECT p FROM Package p WHERE (p.length * p.width * p.height >= ?1 AND p.length * p.width * p.height <= ?2)")
     @OrderBy(value = "width", descending = true)
     @OrderBy(value = "length")
     @OrderBy(value = "id")
     CursoredPage<Package> whereVolumeWithin(float minVolume, float maxVolume, PageRequest pagination);
-
-    @Find
-    @OrderBy(value = "id")
-    List<Integer> withHeightAbout(@Rounded float height);
-
-    @Find
-    @OrderBy(value = "id")
-    List<Integer> withLengthFloored(@Rounded(DOWN) float length);
-
-    @Find
-    @OrderBy(value = "id")
-    List<Integer> withWidthCeiling(@Rounded(UP) float width);
 }

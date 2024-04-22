@@ -43,22 +43,6 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.concurrent.Asynchronous;
 
-import io.openliberty.data.repository.Count;
-import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Or;
-import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.comparison.Contains;
-import io.openliberty.data.repository.comparison.EndsWith;
-import io.openliberty.data.repository.comparison.GreaterThan;
-import io.openliberty.data.repository.comparison.GreaterThanEqual;
-import io.openliberty.data.repository.comparison.LessThan;
-import io.openliberty.data.repository.comparison.LessThanEqual;
-import io.openliberty.data.repository.comparison.Like;
-import io.openliberty.data.repository.function.CharCount;
-import io.openliberty.data.repository.function.IgnoreCase;
-import io.openliberty.data.repository.function.Not;
-import io.openliberty.data.repository.function.Trimmed;
-
 /**
  * Repository with data that is pre-populated.
  * This should be treated as read-only to avoid interference between with tests.
@@ -67,10 +51,6 @@ import io.openliberty.data.repository.function.Trimmed;
 public interface Primes {
     @Query("SELECT (num.name) FROM Prime As num")
     Page<String> all(Sort<Prime> sort, PageRequest pagination);
-
-    @Exists
-    boolean anyLessThanEndingWithBitPattern(@By("numberId") @LessThan long upperLimit,
-                                            @By("binaryDigits") @EndsWith String pattern);
 
     Integer countByNumberIdBetween(long first, long last);
 
@@ -222,35 +202,9 @@ public interface Primes {
 
     Boolean existsByNumberIdBetween(Long first, Long last);
 
-    @Count
-    long howManyIn(@By(ID) @GreaterThanEqual long min,
-                   @By(ID) @LessThanEqual long max);
-
-    @Count
-    Long howManyBetweenExclusive(@By("NumberId") @GreaterThan long exclusiveMin,
-                                 @By("NumberId") @LessThan long exclusiveMax);
-
-    @Find
-    @OrderBy(value = ID, descending = true)
-    List<Long> inRangeHavingNumeralLikeAndSubstringOfName(@By(ID) @GreaterThanEqual long min,
-                                                          @By(ID) @LessThanEqual long max,
-                                                          @By("romanNumeral") @IgnoreCase @Like String pattern,
-                                                          @By("name") @Contains String nameSuffix);
-
-    @Exists
-    boolean isFoundWith(long numberId, String hex);
-
     // TODO after JDQL SELECT is added: "Select name Where length(romanNumeral) * 2 >= length(name) Order By name Asc",
     @Query(value = "Where numberId < 50 and romanNumeral is not null and length(romanNumeral) * 2 >= length(name) Order By name Desc")
     Page<Prime> lengthBasedQuery(PageRequest pageRequest);
-
-    @Find
-    @OrderBy(value = "numberId", descending = true)
-    Stream<Prime> lessThanWithSuffixOrBetweenWithSuffix(@By(ID) @LessThan long numLessThan,
-                                                        @By("name") @EndsWith String firstSuffix,
-                                                        @Or @By(ID) @GreaterThanEqual long lowerLimit,
-                                                        @By(ID) @LessThanEqual long upperLimit,
-                                                        @By("name") @EndsWith String secondSuffix);
 
     @OrderBy(ID)
     @Query("SELECT ID(THIS) FROM Prime o WHERE (o.name = :numberName OR :numeral=o.romanNumeral OR o.hex =:hex OR ID(THIS)=:num)")
@@ -310,15 +264,6 @@ public interface Primes {
     @OrderBy("numberId")
     Page<Object[]> namesWithHex(long maxNumber, PageRequest pagination);
 
-    @Find
-    @OrderBy(ID)
-    List<Long> notWithinButBelow(@By(ID) @LessThan int rangeMin,
-                                 @Or @By(ID) @GreaterThan int rangeMax,
-                                 @By(ID) @LessThan int below);
-
-    @Count
-    int numEvenWithSumOfBits(int sumOfBits, boolean even);
-
     @Insert
     void persist(Prime... primes);
 
@@ -333,14 +278,6 @@ public interface Primes {
     @OrderBy(value = "sumOfBits", descending = true)
     CursoredPage<Prime> upTo(long maxNumber, PageRequest pagination, Order<Prime> order);
 
-    @Find
-    @OrderBy("name")
-    Stream<Prime> whereNameLengthWithin(@By("name") @CharCount @GreaterThanEqual int minLength,
-                                        @By("name") @CharCount @LessThanEqual int maxLength);
-
-    @Find
-    Optional<Prime> withAnyCaseName(@By("name") @Trimmed @IgnoreCase String name);
-
     @Query("where numberId <= ?2 and numberId>=?1")
     Page<Prime> within(long minimum, long maximum, PageRequest pageRequest, Sort<Prime> sort);
 
@@ -354,14 +291,4 @@ public interface Primes {
                                                  @Param("max") long maximum,
                                                  PageRequest pageRequest);
 
-    @Find
-    List<Prime> withNameLengthAndWithin(@By("name") @Trimmed @CharCount int length,
-                                        @By(ID) @GreaterThanEqual long min,
-                                        @By(ID) @LessThanEqual long max);
-
-    @Find
-    @Select("name")
-    List<String> withRomanNumeralSuffixAndWithoutNameSuffix(@By("romanNumeral") @EndsWith String numeralSuffix,
-                                                            @By("name") @Not @EndsWith String nameSuffixToExclude,
-                                                            @By(ID) @LessThanEqual long max);
 }
