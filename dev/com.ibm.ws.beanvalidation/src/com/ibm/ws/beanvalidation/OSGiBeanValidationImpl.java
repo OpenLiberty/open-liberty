@@ -712,9 +712,9 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     private void setVersion() {
         provisionerService.getInstalledFeatures().forEach(feature -> {
             String subString = null;
-            if (feature.startsWith("beanValidation")) {
+            if (feature.startsWith("beanValidation-")) {
                 subString = feature.substring("beanValidation-".length());
-            } else if (feature.startsWith("validation")) {
+            } else if (feature.startsWith("validation-")) {
                 subString = feature.substring("validation-".length());
             }
             if (subString != null) {
