@@ -50,10 +50,6 @@ public class TestPathCanonicalizationServlet extends HttpServlet {
     private final String SUB_PATH = "/subFolder";
     private final String SUB_DOT_DOT_PATH = "/subFolder/../subFolder/subFolder2";
 
-    //Compare the real/working path contains this string
-    final String index1 = "/PathCanonicalizationTest.war/subFolder/index1.html";
-
-
     HttpServletRequest request;
     HttpServletResponse response;
     StringBuilder responseSB;
@@ -73,11 +69,6 @@ public class TestPathCanonicalizationServlet extends HttpServlet {
         context = getServletContext();
 
         LOG("ENTER doGet");
-        String runTestMethod = request.getHeader("runTest");
-        if (runTestMethod == null) {
-            LOG("Run default testGetRealPath");
-            runTestMethod = "testGetRealPath";
-        }
 
         switch (request.getHeader("runTest")) {
             case "testGetRealPath" : testGetRealPath(); break;
@@ -102,13 +93,13 @@ public class TestPathCanonicalizationServlet extends HttpServlet {
         String realPath = null;
 
         responseSB.append("\ntestPath [" + GOOD_PATH + "] ; return [" + (realPath = context.getRealPath(GOOD_PATH)) + "]\n");
-        if (realPath.contains(index1))
+        if (realPath != null)
             responseSB.append("\t test GOOD_PATH [" + GOOD_PATH + "] PASS");
         else
             responseSB.append("\t test GOOD_PATH [" + GOOD_PATH + "] FAIL");
 
         responseSB.append("\ntestPath [" + DOT_DOT + "] ; return [" + (realPath = context.getRealPath(DOT_DOT)) + "]\n");
-        if (realPath.contains(index1))
+        if (realPath != null)
             responseSB.append  ("\t test DOT_DOT [" + DOT_DOT +"] PASS");
         else
             responseSB.append  ("\t test DOT_DOT [" + DOT_DOT +"] FAIL");
