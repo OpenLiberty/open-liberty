@@ -83,7 +83,6 @@ public class PercentileHistogramBuckets {
      */
     public static NavigableSet<Double> buckets(double minimumBucket, double maximumBucket) {
         return PERCENTILE_BUCKETS.subSet(minimumBucket, true, maximumBucket, true);
-        //return PERCENTILE_BUCKETS;
     }
 
     public static NavigableSet<Double> getDefaultBuckets(double minimumBucket, double maximumBucket, boolean isTimer) {

@@ -126,16 +126,6 @@ public class BadHistogramTimerConfigTest {
 
 	}
 
-	// @After
-	// public void cleanUp() throws Exception {
-	// if (server.isStarted()) {
-	// server.stopServer("CWMCG0007E", "CWMCG0014E", "CWMCG0015E",
-	// "CWMCG5003E", "CWPMI2006W", "CWMMC0013E", "CWWKG0033W");
-	// }
-	// server.removeAllInstalledAppsForValidation();
-	//
-	// }
-
 	@AfterClass
 	public static void afterClass() throws Exception {
 		// catch if a server is still running.
@@ -398,8 +388,8 @@ public class BadHistogramTimerConfigTest {
 			});
 			String authorization = "Basic "
 					+ Base64.getEncoder().encodeToString(("theUser:thePassword")
-							.getBytes(StandardCharsets.UTF_8)); // Java
-																// 8
+							.getBytes(StandardCharsets.UTF_8));
+
 			con.setRequestProperty("Authorization", authorization);
 			con.setRequestProperty("Accept", "text/plain");
 			con.setRequestMethod("GET");

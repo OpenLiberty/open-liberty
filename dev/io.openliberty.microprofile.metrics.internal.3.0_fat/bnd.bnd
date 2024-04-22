@@ -34,7 +34,11 @@ javac.target: 11
 
 tested.features: \
 	mpMetrics-3.0,\
-	mpMetrics-4.0
+	mpMetrics-4.0, \
+	restfulwsclient-3.0, \
+	concurrent-2.0, \
+	restfulws-3.0, \
+	jsonp-2.0
 
 -buildpath: \
 	io.openliberty.org.eclipse.microprofile.metrics.5.0;version=latest,\

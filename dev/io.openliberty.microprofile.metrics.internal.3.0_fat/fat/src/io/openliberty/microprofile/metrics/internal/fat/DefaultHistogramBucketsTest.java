@@ -589,8 +589,8 @@ public class DefaultHistogramBucketsTest {
 			});
 			String authorization = "Basic "
 					+ Base64.getEncoder().encodeToString(("theUser:thePassword")
-							.getBytes(StandardCharsets.UTF_8)); // Java
-																// 8
+							.getBytes(StandardCharsets.UTF_8));
+
 			con.setRequestProperty("Authorization", authorization);
 			con.setRequestProperty("Accept", "text/plain");
 			con.setRequestMethod("GET");

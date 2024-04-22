@@ -67,7 +67,7 @@ public class Histogram30Impl implements Histogram {
         this.reservoir = reservoir;
         this.count = LongAdderProxy.create();
         this.sum = LongAdderProxy.create();
-        this.manager = new BucketManager(metadata); //read config here for buckets and perce
+        this.manager = new BucketManager(metadata);
         this.percentiles = setConfiguredPercentiles(metadata);
     }
 

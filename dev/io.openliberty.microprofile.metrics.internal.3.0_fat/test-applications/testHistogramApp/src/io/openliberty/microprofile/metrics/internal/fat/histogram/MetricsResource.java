@@ -15,8 +15,6 @@
  */
 package io.openliberty.microprofile.metrics.internal.fat.histogram;
 
-import java.time.Duration;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -39,12 +37,6 @@ public class MetricsResource {
 	@GET
 	@Path("/getHistograms")
 	public String badHistogramPercentiles() throws InterruptedException {
-
-		timer = mr.timer("myTimer");
-
-		// tm.update(Duration.ofMillis(val));
-
-		timer.update(Duration.ofMillis(100));
 		return "Histogram registered";
 	}
 

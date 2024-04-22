@@ -35,11 +35,8 @@ public class MetricsResource {
 	@GET
 	@Path("/badHistogramPercentiles")
 	public String badHistogramPercentiles() throws InterruptedException {
-		// Histogram histogram = metricRegistry
-		// .histogram("badHistogramPercentiles");
 		return "Histogram registered";
 	}
-	//
 
 	@Inject
 	@Metric(name = "badHistogramPercentiles", absolute = true)

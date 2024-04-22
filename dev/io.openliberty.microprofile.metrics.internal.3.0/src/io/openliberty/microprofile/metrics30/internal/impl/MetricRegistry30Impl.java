@@ -895,7 +895,7 @@ public class MetricRegistry30Impl implements MetricRegistry {
 
         tags = combineApplicationTagsWithMPConfigAppNameTag(tags);
 
-        MetricID metricID = new MetricID(metadata.getName(), tags); // Change this to metadata and look at all values.
+        MetricID metricID = new MetricID(metadata.getName(), tags);
         final Metric metric = metricsMID.get(metricID);
 
         //Found an existing metric with matching MetricID

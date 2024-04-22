@@ -24,6 +24,9 @@ import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Snapshot;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.microprofile.metrics.Constants;
 
 import io.openliberty.microprofile.metrics30.internal.micrometer.PercentileHistogramBuckets;
@@ -40,6 +43,10 @@ public class BucketManager {
     private final Map<Double, BucketValue> buckets = new TreeMap<>();
     private final Map<String, Map<Double, BucketValue>> allBuckets = new TreeMap<>();
     private final BucketValue infiniteObject;
+    private static boolean issuedBetaMessage = false;
+    private static boolean issuedBetaWarning = false;
+
+    private static final TraceComponent tc = Tr.register(BucketManager.class);
 
     public BucketManager(Metadata metadata) {
         String metricName = metadata.getName();
@@ -119,7 +126,7 @@ public class BucketManager {
             if (metadata.getType().equals("timer")) {
                 if (timerBucketsConfig != null && timerBucketsConfig.getValues() != null
                     && timerBucketsConfig.getValues().length > 0) {
-                    Duration[] vals = timerBucketsConfig.getValues(); //DURATION
+                    Duration[] vals = timerBucketsConfig.getValues();
 
                     for (Duration value : vals) {
                         try {
@@ -135,10 +142,28 @@ public class BucketManager {
 
         }
 
-        if (metadata != null && buckets != null && !buckets.isEmpty()) {
+        if (metadata != null && buckets != null && !buckets.isEmpty() && betaFenceCheck()) {
             allBuckets.put(metricName, buckets);
         }
 
+    }
+
+    private boolean betaFenceCheck() throws UnsupportedOperationException {
+        // Not running beta edition, throw exception
+        if (!ProductInfo.getBetaEdition()) {
+            if (!issuedBetaWarning) {
+                Tr.warning(tc, "This method is beta and is not available.");
+                issuedBetaWarning = true;
+            }
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = true;
+            }
+        }
+
+        return issuedBetaMessage;
     }
 
     public void updateTimer(long value) {
