@@ -112,7 +112,7 @@ public class HttpStatsMonitor extends StatisticActions {
 		httpStat.setNetworkProtocolVersion(networkVersion);
 	}
 
-	//TODO: Use this instead.
+	//TODO: Use this instead. - related to the SendResponse
 	private void testJustHttpDispatcherLink(HttpDispatcherLink hdl ) {
 		
 		System.out.println("Testing it out - START");
@@ -181,7 +181,7 @@ public class HttpStatsMonitor extends StatisticActions {
 				// TODO: ^^^^what if "httpInboundServiceContextImplObj" is null?! -- or it blows up due to modifying access
 				// (i.e. the catches below)
 				// Maybe use a method to encapsulate , if failure or null or excepton use
-				// alternative method
+				// alternative method -> see testJustHttpDispatcherLink()
 
 				HttpInboundServiceContext hisc = (HttpInboundServiceContext) httpInboundServiceContextImplObj;
 				
@@ -310,6 +310,8 @@ public class HttpStatsMonitor extends StatisticActions {
 		httpRoute.ifPresent(route -> {
 			sb.append(";httpRoute:" + route.replace("*", "\\*"));
 		});
+		
+		//!!!: not used
 		exception.ifPresent(throwable -> sb.append(";error:" + exception.getClass().getName()));
 
 		// double check if responseStatus is 4xx or 5xx
