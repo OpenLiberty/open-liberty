@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2023, 2024 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 -include= \
   ~../cnf/resources/bnd/bundle.props, \
   ~../cnf/resources/bnd/bundle.spring.props
+
 -nouses=true
 
 bVersion=1.0
@@ -28,15 +29,15 @@ src: \
   src/main/java, \
   src/main/resources
 
-
--buildpath: \
-  io.openliberty.jakarta.servlet.6.0
-
 -testpath: \
-  org.springframework.boot:spring-boot;${checkpointSpringBootVersion30}, \
   org.springframework.boot:spring-boot-autoconfigure;${checkpointSpringBootVersion30}, \
+  org.springframework.boot:spring-boot;${checkpointSpringBootVersion30}, \
+\
   org.springframework:spring-beans;${checkpointSpringVersion30}, \
+  org.springframework:spring-core;${checkpointSpringVersion30}, \
   org.springframework:spring-context;${checkpointSpringVersion30}, \
   org.springframework:spring-web;${checkpointSpringVersion30}, \
-  io.openliberty.jakarta.servlet.6.0
-
+  org.springframework:spring-webflux;${checkpointSpringVersion30}, \
+\
+  com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest, \
+  io.projectreactor:reactor-core;version=3.5.16
