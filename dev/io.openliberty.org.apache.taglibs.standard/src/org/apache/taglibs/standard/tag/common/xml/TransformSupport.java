@@ -22,6 +22,10 @@
  import java.io.Reader;
  import java.io.StringReader;
  import java.io.Writer;
+ import java.security.AccessController;
+ import java.security.PrivilegedAction;
+ import java.security.PrivilegedActionException;
+ import java.security.PrivilegedExceptionAction;
  import java.util.List;
  
  import jakarta.servlet.http.HttpServletRequest;
@@ -83,9 +87,11 @@
      private DocumentBuilder db;			   // reusable factory
      private DocumentBuilderFactory dbf;		   // reusable factory
  
+     // Liberty Change Start
      // To secure XML processing
-     private String ACCESS_EXTERNAL_DTD_SETTING = "javax.xml.accessExternalDTD";
-     private String ACCESS_EXTERNAL_SCHEMA_SETTING = "javax.xml.accessExternalSchema";
+     private static final String ACCESS_EXTERNAL_DTD_SETTING = "javax.xml.accessExternalDTD";
+     private static final String ACCESS_EXTERNAL_SCHEMA_SETTING = "javax.xml.accessExternalSchema";
+     // Liberty Change End
      
      //*********************************************************************
      // Constructor and initialization
@@ -127,10 +133,32 @@
              try {
                  dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
                  
+                 // Liberty Change Start
                  // JDK may not implement FEATURE_SECURE_PROCESSING, so force it to be secure if 
                  // neither property is set explicity.
-                 String accessExternalDTD = System.getProperty("javax.xml.accessExternalDTD");
-                 String accessExternalSchema = System.getProperty("javax.xml.accessExternalSchema");
+                 String accessExternalDTD = null;
+                 String accessExternalSchema = null;
+                 final SecurityManager sm = System.getSecurityManager();
+                 if (sm != null) {
+                	 try {
+	                     accessExternalDTD = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+	                         public String run() throws PrivilegedActionException {
+	                             return System.getProperty(ACCESS_EXTERNAL_DTD_SETTING);
+	                         }
+	                     });
+                	 } catch (PrivilegedActionException pae) {} // eat the exception
+                	 
+                	 try {
+	                     accessExternalDTD = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+	                         public String run() throws PrivilegedActionException {
+	                             return System.getProperty(ACCESS_EXTERNAL_SCHEMA_SETTING);
+	                         }
+	                     });
+                	 } catch (PrivilegedActionException pae) {} // eat the exception
+                 } else {
+                	 accessExternalDTD = System.getProperty(ACCESS_EXTERNAL_DTD_SETTING);
+                	 accessExternalSchema = System.getProperty(ACCESS_EXTERNAL_SCHEMA_SETTING);
+                 }
    
                  if(accessExternalDTD == null){
                      dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
@@ -138,6 +166,7 @@
                  if(accessExternalSchema == null){
                      dbf.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
                  }
+                 // Liberty Change End
              } catch (ParserConfigurationException e) {
                  throw new AssertionError("Parser does not support secure processing");
              }
@@ -150,18 +179,6 @@
              tf = TransformerFactory.newInstance();
              try {
                  tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
- 
-                 // JDK may not implement FEATURE_SECURE_PROCESSING, so force it to be secure if 
-                 // neither property is set explicity.
-                 String accessExternalDTD = System.getProperty("javax.xml.accessExternalDTD");
-                 String accessExternalSchema = System.getProperty("javax.xml.accessExternalSchema");
-   
-                 if(accessExternalDTD == null){
-                    tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-                 }
-                 if(accessExternalSchema == null){
-                    tf.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-                 }
              } catch (TransformerConfigurationException e) {
                  throw new AssertionError(
                          "TransformerFactory does not support secure processing");
