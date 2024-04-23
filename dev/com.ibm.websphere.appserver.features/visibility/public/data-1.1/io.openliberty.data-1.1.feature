@@ -27,7 +27,7 @@ Subsystem-Name: Jakarta Data 1.1
 -bundles=\
   io.openliberty.data; location:="dev/api/ibm/,lib/",\
   io.openliberty.data.internal,\
-  io.openliberty.data.internal.v1_1
+  io.openliberty.data.1.1.internal
 -files=dev/api/ibm/javadoc/io.openliberty.data_1.1-javadoc.zip
 kind=noship
 edition=full
