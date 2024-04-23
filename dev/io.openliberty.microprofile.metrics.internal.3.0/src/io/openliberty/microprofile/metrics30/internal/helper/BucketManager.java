@@ -10,7 +10,6 @@
 package io.openliberty.microprofile.metrics30.internal.helper;
 
 import java.time.Duration;
-import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableSet;
@@ -21,13 +20,11 @@ import java.util.stream.Stream;
 
 import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.metrics.Metadata;
-import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Snapshot;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
-import com.ibm.ws.microprofile.metrics.Constants;
 
 import io.openliberty.microprofile.metrics30.internal.micrometer.PercentileHistogramBuckets;
 import io.openliberty.microprofile.metrics30.setup.config.DefaultBucketConfiguration;
@@ -232,67 +229,4 @@ public class BucketManager {
         return (Snapshot) buckets;
     }
 
-    /**
-     * Calculates the unit String suffix and conversion factor used for later calculations
-     *
-     * @param unit String that encompasses the unit needed to calculate appropriate conversion factor and value to append
-     * @return Map.Entry<String, Double> that contains the unit string suffix and conversion factor
-     */
-    protected Map.Entry<String, Double> resolveConversionFactorXappendUnitEntry(String unit) {
-
-        if (unit == null || unit.trim().isEmpty() || unit.equals(MetricUnits.NONE)) {
-            return new AbstractMap.SimpleEntry<String, Double>(null, Double.NaN);
-
-        } else if (unit.equals(MetricUnits.NANOSECONDS)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.NANOSECONDCONVERSION);
-
-        } else if (unit.equals(MetricUnits.MICROSECONDS)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.MICROSECONDCONVERSION);
-        } else if (unit.equals(MetricUnits.SECONDS)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.SECONDCONVERSION);
-
-        } else if (unit.equals(MetricUnits.MINUTES)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.MINUTECONVERSION);
-
-        } else if (unit.equals(MetricUnits.HOURS)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.HOURCONVERSION);
-
-        } else if (unit.equals(MetricUnits.DAYS)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.DAYCONVERSION);
-
-        } else if (unit.equals(MetricUnits.PERCENT)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDPERCENT, Double.NaN);
-
-        } else if (unit.equals(MetricUnits.BYTES)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.BYTECONVERSION);
-
-        } else if (unit.equals(MetricUnits.KILOBYTES)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.KILOBYTECONVERSION);
-
-        } else if (unit.equals(MetricUnits.MEGABYTES)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.MEGABYTECONVERSION);
-
-        } else if (unit.equals(MetricUnits.GIGABYTES)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.GIGABYTECONVERSION);
-
-        } else if (unit.equals(MetricUnits.KILOBITS)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.KILOBITCONVERSION);
-
-        } else if (unit.equals(MetricUnits.MEGABITS)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.MEGABITCONVERSION);
-        } else if (unit.equals(MetricUnits.GIGABITS)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.GIGABITCONVERSION);
-
-        } else if (unit.equals(MetricUnits.KIBIBITS)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.KIBIBITCONVERSION);
-        } else if (unit.equals(MetricUnits.MEBIBITS)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.MEBIBITCONVERSION);
-        } else if (unit.equals(MetricUnits.GIBIBITS)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDBYTES, Constants.GIBIBITCONVERSION);
-        } else if (unit.equals(MetricUnits.MILLISECONDS)) {
-            return new AbstractMap.SimpleEntry<String, Double>(Constants.APPENDEDSECONDS, Constants.MILLISECONDCONVERSION);
-        } else {
-            return new AbstractMap.SimpleEntry<String, Double>("_" + unit, Double.NaN);
-        }
-    }
 }
