@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,15 +29,15 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import jaxb.thirdparty.web.ThirdPartyJAXBTestServlet;
+import jaxb.thirdparty.web.ThirdPartyJAXBFromJDKTestServlet;
 
 @RunWith(FATRunner.class)
 @SkipForRepeat({ SkipForRepeat.EE9_FEATURES })
 @MaximumJavaLevel(javaLevel = 8) // Do not run these tests on JDK 9+ where there is no JAX-B api/impl in the JDK
-public class ThirdPartyJAXBTest extends FATServletClient {
+public class ThirdPartyJAXBFromJDKTest extends FATServletClient {
 
-    private static final String SERVER = "jaxb_fat.no-jaxb-feature";
-    private static final String APP_NAME = "thirdPartyJaxbApp";
+    private static final String SERVER = "jaxb_fat.no-jaxb-feature-jdk";
+    private static final String APP_NAME = "thirdPartyJaxbJDKApp";
 
     // Iterate over some features that tend to use JAX-B internally to ensure they don't leak into the app classloader space
     @ClassRule
@@ -46,7 +46,7 @@ public class ThirdPartyJAXBTest extends FATServletClient {
                     .andWith(new FeatureReplacementAction("jpa-2.1", "jaxrs-2.0").withID("JAXRS").forServers(SERVER));
 
     @Server(SERVER)
-    @TestServlet(servlet = ThirdPartyJAXBTestServlet.class, contextRoot = APP_NAME)
+    @TestServlet(servlet = ThirdPartyJAXBFromJDKTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass
