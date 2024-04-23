@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-addRequiredLibraries.dependsOn addJakartaTransformer
+package com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.isolation;
 
-dependencies {
-  requiredLibs project(':io.openliberty.org.apache.commons.logging'), project(':io.openliberty.org.apache.commons.codec')
-  requiredLibs project(path: ':com.ibm.websphere.org.eclipse.microprofile', configuration: 'ft11')
-  requiredLibs project(':com.ibm.ws.microprofile.faulttolerance_repeat_tests') // For RepeatFaultTolerance
-  requiredLibs project(':io.openliberty.mpTelemetry.2.0.thirdparty')
+import javax.enterprise.context.ApplicationScoped;
+
+import org.eclipse.microprofile.faulttolerance.Retry;
+
+/**
+ * Simple bean with Fault Tolerance annotation which should result in metrics being produced
+ */
+@ApplicationScoped
+public class IsolationBean {
+
+    @Retry
+    public void doWorkWithRetry() {
+        // Do nothing
+    }
+
 }
