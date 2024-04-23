@@ -31,7 +31,6 @@ import jakarta.data.repository.Update;
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
 import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.Select.Aggregate;
 import io.openliberty.data.repository.comparison.Contains;
 import io.openliberty.data.repository.comparison.GreaterThanEqual;
 import io.openliberty.data.repository.function.Rounded;
@@ -52,15 +51,14 @@ public interface Items {
     @Delete
     void destroy();
 
-    @Select(value = "name", distinct = true)
+    @Query("SELECT DISTINCT name FROM Item WHERE name LIKE :namePattern")
     @OrderBy("name")
     List<String> findByNameLike(String namePattern);
 
     @Find
     Item get(@By("pk") UUID id);
 
-    @Find
-    @Select(function = Aggregate.MAXIMUM, value = "price")
+    @Query("SELECT MAX(price) FROM Item")
     float highestPrice();
 
     @Update
@@ -73,12 +71,10 @@ public interface Items {
     @Exists
     boolean isNotEmpty();
 
-    @Find
-    @Select(function = Aggregate.MINIMUM, value = "price")
+    @Query("SELECT MIN(price) FROM Item")
     float lowestPrice();
 
-    @Find
-    @Select(function = Aggregate.AVERAGE, value = "price")
+    @Query("SELECT AVG(price) FROM Item")
     float meanPrice();
 
     @Update
@@ -99,15 +95,13 @@ public interface Items {
                    @Add("description") String moreDescription,
                    UUID pk);
 
-    @Find
-    @Select(function = Aggregate.COUNT, distinct = false, value = { "name", "description", "price" })
+    @Query("SELECT NEW test.jakarta.data.experimental.web.ItemCount(COUNT(name), COUNT(description), COUNT(price)) FROM Item")
     ItemCount stats();
 
     @Count
     int total();
 
-    @Find
-    @Select(function = Aggregate.SUM, distinct = true, value = "price")
+    @Query("SELECT SUM(DISTINCT price) FROM Item")
     float totalOfDistinctPrices();
 
     @Query("UPDATE Item SET price=price/?2, version=version-1 WHERE (pk IN ?1)")
