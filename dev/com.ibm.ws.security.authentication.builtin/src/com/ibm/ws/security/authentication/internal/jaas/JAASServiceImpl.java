@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -40,6 +40,7 @@ import com.ibm.ws.security.authentication.AuthenticationService;
 import com.ibm.ws.security.authentication.CertificateAuthenticator;
 import com.ibm.ws.security.authentication.collective.CollectiveAuthenticationPlugin;
 import com.ibm.ws.security.authentication.internal.JAASService;
+import com.ibm.ws.security.authentication.jaas.modules.LoginModuleHelper;
 import com.ibm.ws.security.credentials.CredentialsService;
 import com.ibm.ws.security.jaas.common.JAASChangeNotifier;
 import com.ibm.ws.security.jaas.common.JAASConfigurationFactory;
@@ -313,7 +314,9 @@ public class JAASServiceImpl implements JAASService {
             jaasConfigurationFactory.installJAASConfiguration(jaasLoginContextEntries);
 
             configReady();
+            LoginModuleHelper.setTestJaasService(this);
         }
+
     }
 
     /**
