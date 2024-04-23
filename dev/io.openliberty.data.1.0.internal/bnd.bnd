@@ -19,7 +19,7 @@ javac.target: 17
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 Bundle-Name: Jakarta Data 1.0 Compatibility
-Bundle-SymbolicName: io.openliberty.data.internal.v1_0
+Bundle-SymbolicName: io.openliberty.data.1.0.internal
 Bundle-Description: Compatibility for Jakarta Data 1.0; version=${bVersion}
 
 WS-TraceGroup: data
