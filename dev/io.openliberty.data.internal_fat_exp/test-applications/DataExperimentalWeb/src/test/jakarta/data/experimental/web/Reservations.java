@@ -45,13 +45,13 @@ import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.comparison.GreaterThanEqual;
 import io.openliberty.data.repository.comparison.In;
-import io.openliberty.data.repository.comparison.LessThan;
 import io.openliberty.data.repository.comparison.LessThanEqual;
 import io.openliberty.data.repository.comparison.StartsWith;
 import io.openliberty.data.repository.function.ElementCount;
@@ -159,10 +159,9 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     CopyOnWriteArrayList<Reservation> findByHostIgnoreCaseEndsWith(String hostPostfix);
 
-    @Find
-    @Select(distinct = true, value = "lengthInMinutes")
+    @Query("SELECT DISTINCT r.lengthInMinutes FROM Reservation r WHERE r.lengthInMinutes<:lengthInMinutes")
     @OrderBy("lengthInMinutes")
-    List<Long> lengthsBelow(@By("lengthInMinutes") @LessThan int max);
+    List<Long> lengthsBelow(@Param("lengthInMinutes") int max);
 
     @Find
     @Select("location")
