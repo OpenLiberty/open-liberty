@@ -6845,6 +6845,50 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     /**
+     * Issues a server script command against this server with environment variables
+     *
+     * @param  command
+     * @param  optionalArgs
+     * @param  envVars
+     * @return
+     * @throws Exception
+     */
+    public ProgramOutput executeServerScript(String command, String[] optionalArgs, Properties envVars) throws Exception {
+        final String method = "executeServerScript";
+        Log.info(c, method, "Running server script with command=" + command, optionalArgs);
+
+        String cmd = installRoot + "/bin/server";
+
+        // organize parms properly - the command name comes first, followed by the server name, followed
+        // by an optional arguments
+        String[] parms;
+        if (optionalArgs == null) {
+            parms = new String[2];
+        } else {
+            parms = new String[2 + optionalArgs.length];
+            System.arraycopy(optionalArgs, 0, parms, 2, optionalArgs.length);
+        }
+        parms[0] = command;
+        parms[1] = serverToUse;
+
+        Properties _envVars = null;
+        if (envVars != null) {
+            _envVars = new Properties();
+            _envVars.putAll(envVars);
+        }
+
+        if (customUserDir) {
+            _envVars = new Properties();
+            _envVars.setProperty("WLP_USER_DIR", userDir);
+        }
+
+        if (!_envVars.isEmpty())
+            Log.info(c, method, "Adding env vars: " + _envVars);
+
+        return LibertyServerUtils.execute(machine, machineJava, _envVars, cmd, parms);
+    }
+
+    /**
      * If the server is running, this will execute:
      * WLP/bin/server javadump SERVERNAME
      *
