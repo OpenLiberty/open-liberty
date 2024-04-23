@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2008 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.async;
 
@@ -221,7 +218,7 @@ public class AsyncContextImpl implements AsyncContext {
         dispatchURI = null;
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
-            logger.exiting(CLASS_NAME, "complete",this);
+            logger.exiting(CLASS_NAME, "complete",this + " " + this.completeRunnable);
         }
 
     }
@@ -269,7 +266,7 @@ public class AsyncContextImpl implements AsyncContext {
         dispatchURI = null;
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {
-            logger.exiting(CLASS_NAME, "dispatch(ctx,path)",this);
+            logger.exiting(CLASS_NAME, "dispatch(ctx,path)",this + " " + this.dispatchRunnable);
         }
     }
 
@@ -531,7 +528,7 @@ public class AsyncContextImpl implements AsyncContext {
                 notifyITransferContextPreProcessWorkState();
                 
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {            
-                    logger.logp(Level.FINEST, CLASS_NAME, "startWithExecutorThread(Runnable...)", "start new thread with wrapperRunnable");
+                    logger.logp(Level.FINEST, CLASS_NAME, "startWithExecutorThread(Runnable...)", "start new thread with wrapperRunnable [" + wrapperRunnable + "]");
                 }
 
                 com.ibm.ws.webcontainer.osgi.WebContainer.getExecutorService().execute(wrapperRunnable);
@@ -539,7 +536,7 @@ public class AsyncContextImpl implements AsyncContext {
             } else { //don't wrap for complete and dispatch
 
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINEST)) {            
-                    logger.logp(Level.FINEST, CLASS_NAME, "startWithExecutorThread(Runnable...)", "start new thread with Runnable");
+                    logger.logp(Level.FINEST, CLASS_NAME, "startWithExecutorThread(Runnable...)", "start new thread with Runnable [" + run + "]");
                 }
 
                 com.ibm.ws.webcontainer.osgi.WebContainer.getExecutorService().execute(run);
