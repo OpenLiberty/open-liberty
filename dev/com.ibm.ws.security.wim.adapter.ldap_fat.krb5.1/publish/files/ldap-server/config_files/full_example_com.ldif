@@ -6,14 +6,6 @@ objectClass: organization
 o: exmaple.com
 dc: example
 
-# admin, EXAMPLE.COM
-#dn: cn=admin,dc=example,dc=com
-#objectClass: simpleSecurityObject
-#objectClass: organizationalRole
-#cn: admin
-#userPassword: admin
-#description: LDAP administrator
-
 # users, EXAMPLE.COM
 dn: ou=users,dc=example,dc=com
 objectClass: top
@@ -53,42 +45,3 @@ objectClass: top
 objectClass: groupOfUniqueNames
 cn: Admins
 uniqueMember: uid=user17,dc=example,dc=com
-
-# hosts, example.com
-dn: ou=hosts,dc=example,dc=com
-objectClass: top
-objectClass: organizationalUnit
-ou: hosts
-
-# ldap, hosts, EXAMPLE.COM
-dn: cn=localhost,ou=hosts,dc=example,dc=com
-objectClass: top
-objectClass: device
-objectClass: ipHost
-objectClass: ieee802Device
-cn: localhost
-ipHostNumber: 172.18.0.2
-macAddress: 02:42:3a:be:ac:52
-description: ldap server
-
-# ldap, hosts, EXAMPLE.COM
-dn: cn=ldap,ou=hosts,dc=example,dc=com
-objectClass: top
-objectClass: device
-objectClass: ipHost
-objectClass: ieee802Device
-cn: localhost
-ipHostNumber: 172.18.0.3
-macAddress: 02:42:3a:be:ac:53
-description: ldap server
-
-# kserver, hosts, EXAMPLE.COM
-dn: cn=kserver.example.com,ou=hosts,dc=example,dc=com
-objectClass: top
-objectClass: device
-objectClass: ipHost
-objectClass: ieee802Device
-cn: kserver.example.com
-ipHostNumber: 172.18.0.3
-macAddress: 00:00:00:00:00:00
-description: kerberos server

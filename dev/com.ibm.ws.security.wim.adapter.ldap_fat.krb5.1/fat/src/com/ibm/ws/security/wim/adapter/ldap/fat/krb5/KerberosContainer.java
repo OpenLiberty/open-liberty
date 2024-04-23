@@ -41,10 +41,11 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
 
     public static final String KRB5_REALM = "EXAMPLE.COM";
     public static final String KRB5_KDC = "kerberos";
-    public static final String KRB5_PASS = "admin";
+    public static final String KRB5_PWD = "pwd";
+    public static String DOCKERHOST_DOMAIN = "fyre.ibm.com";
 
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "zachhein/krb5-server:0.1";
+    private static final String IMAGE = "zachhein/krb5-server:0.2";
 
     private int tcp_88;
 
@@ -65,6 +66,8 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
         String hostname = "";
         if (ExternalDockerClientFilter.instance().isValid()) {
             hostname = ExternalDockerClientFilter.instance().getHostname();
+            DOCKERHOST_DOMAIN = hostname.substring(hostname.indexOf('.') + 1);
+            Log.info(c, "configure", "Setting DOCKERHOST_DOMAIN to: " + DOCKERHOST_DOMAIN);
         } else {
             Log.info(c, "configure", "external docker hostname is null, using getHost(ip) instead");
             hostname = getHost();
@@ -75,7 +78,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
 
         withEnv("KRB5_REALM", KRB5_REALM);
         withEnv("KRB5_KDC", "localhost");
-        withEnv("KRB5_PASS", KRB5_PASS);
+        withEnv("KRB5_PASS", KRB5_PWD);
 
         withLogConsumer(new SimpleLogConsumer(c, "krb5"));
         waitingFor(new LogMessageWaitStrategy()
@@ -134,7 +137,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
                       "        ignore_acceptor_hostname = true\n" +
                       "        dns_lookup_realm = false\n";
         if (optionalKdcPorts)
-            conf += "        kdc_ports = " + FATSuite.kerberos.getMappedPort(88) + "\n";
+            conf += "        kdc_ports = " + getMappedPort(88) + "\n";
 
         conf += "        default_realm = " + KRB5_REALM.toUpperCase() + "\n" +
                 "\n" +
@@ -154,8 +157,8 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
                 "        }\n" +
                 "\n" +
                 "[domain_realm]\n" +
-                "        .liberty.hur.hdclab.intranet.ibm.com = EXAMPLE.COM \n" +
-                "        liberty.hur.hdclab.intranet.ibm.com = EXAMPLE.COM \n" +
+                "        ." + DOCKERHOST_DOMAIN + " = EXAMPLE.COM \n" +
+                "        " + DOCKERHOST_DOMAIN + " = EXAMPLE.COM \n" +
                 "        .fyre.ibm.com = EXAMPLE.COM \n" +
                 "        fyre.ibm.com = EXAMPLE.COM \n" +
                 "        ." + KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase() + "\n" +

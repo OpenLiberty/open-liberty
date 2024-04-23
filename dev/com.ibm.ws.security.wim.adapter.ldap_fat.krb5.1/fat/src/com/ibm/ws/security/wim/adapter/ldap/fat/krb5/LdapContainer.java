@@ -37,14 +37,11 @@ public class LdapContainer extends GenericContainer<LdapContainer> {
 
     public static final String KRB5_REALM = "EXAMPLE.COM";
     public static String LDAP_HOSTNAME = "notsetyet";
-    public static final String KRB5_PASS = "admin";
     public static String KDC_HOSTNAME = "kerberos";
     public static String EXTERNAL_HOSTNAME = "notsetyet";
+    public static String DOCKERHOST_DOMAIN = "fyre.ibm.com";
 
     public static String BASE_DN = LdapKerberosUtils.BASE_DN; // default, override in extending class
-
-    /* The Domain needs to be capitalized for Kerberos, but not necessarily for LDAP. */
-    public static String DOMAIN = LdapKerberosUtils.DOMAIN; // default, override in extending class
 
     protected static String bindPassword = LdapKerberosUtils.BIND_PASSWORD; // default, override in extending class
 
@@ -53,7 +50,7 @@ public class LdapContainer extends GenericContainer<LdapContainer> {
     protected static String bindPrincipalName = LdapKerberosUtils.BIND_PRINCIPAL_NAME; // default, override in extending class
 
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "zachhein/ldap-server:0.3";
+    private static final String IMAGE = "zachhein/ldap-server:0.5";
 
     private int tcp_389;
 
@@ -69,10 +66,13 @@ public class LdapContainer extends GenericContainer<LdapContainer> {
 
         if (ExternalDockerClientFilter.instance().isValid()) {
             EXTERNAL_HOSTNAME = ExternalDockerClientFilter.instance().getHostname();
+            DOCKERHOST_DOMAIN = EXTERNAL_HOSTNAME.substring(EXTERNAL_HOSTNAME.indexOf('.') + 1);
+            Log.info(c, "configure", "Setting DOCKERHOST_DOMAIN to: " + DOCKERHOST_DOMAIN);
         } else {
             Log.info(c, "configure", "external docker hostname is null, using getHost(ip) instead");
             EXTERNAL_HOSTNAME = getHost();
         }
+        withEnv("DOCKERHOST_DOMAIN", DOCKERHOST_DOMAIN);
         withEnv("EXTERNAL_HOSTNAME", EXTERNAL_HOSTNAME);
         Log.info(c, method, "Using EXTERNAL_HOSTNAME=" + EXTERNAL_HOSTNAME);
 
@@ -84,15 +84,12 @@ public class LdapContainer extends GenericContainer<LdapContainer> {
             cmd.withHostName(LDAP_HOSTNAME);
         });
         withEnv("KRB5_REALM", KRB5_REALM);
-        Log.info(c, method, "setting env LDAP_HOSTNAME: " + LDAP_HOSTNAME);
-        withEnv("LDAP_HOSTNAME", LDAP_HOSTNAME);
-        withEnv("KRB5_PASS", KRB5_PASS);
         withEnv("KDC_HOSTNAME", KDC_HOSTNAME);
         Log.info(c, method, "setting env KDC_HOSTNAME: " + KDC_HOSTNAME);
 
         withLogConsumer(new SimpleLogConsumer(c, "ldap"));
         waitingFor(new LogMessageWaitStrategy()
-                        .withRegEx("^.*stop the ldap.*$")
+                        .withRegEx("^.*LDAP SERVER SETUP COMPLETE.*$")
                         .withStartupTimeout(Duration.ofSeconds(FATRunner.FAT_TEST_LOCALRUN ? 50 : 300)));
         withCreateContainerCmdModifier(cmd -> {
             //Add previously exposed ports and UDP port
@@ -119,12 +116,6 @@ public class LdapContainer extends GenericContainer<LdapContainer> {
             cmd.withHostName(LDAP_HOSTNAME);
         });
     }
-
-    //@Override
-    //protected void containerIsStarted(InspectContainerResponse containerInfo) {
-    ///    String tcp389 = containerInfo.getNetworkSettings().getPorts().getBindings().get(new ExposedPort(389, InternetProtocol.TCP))[0].getHostPortSpec();
-    //    tcp_389 = Integer.valueOf(tcp389);
-    // }
 
     @Override
     public Integer getMappedPort(int originalPort) {

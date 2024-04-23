@@ -1,6 +1,4 @@
 #!/bin/sh
-KRB5_PASS="admin"
-
 if [ -z ${DOMAIN} ]; then
     echo "No DOMAIN Provided. Using default: DOMAIN=\"dc=example,dc=com\""
 	echo "Example: -e DOMAIN=\"dc=example,dc=com\""
@@ -9,14 +7,8 @@ fi
 
 if [ -z ${KDC_HOSTNAME} ]; then
     echo "No KDC_HOSTNAME Provided. Using default: kerberos"
-	echo "Example: -e KDC_HOSTNAME=\"kerberos\""
-	KDC_HOSTNAME="kerberos"
-fi
-
-if [ -z ${LDAP_HOSTNAME} ]; then
-    echo "No LDAP_HOSTNAME Provided. Using default: ldap"
-	echo "Example: -e LDAP_HOSTNAME=\"ldap\""
-	LDAP_HOSTNAME="ldap"
+	echo "Example: -e KDC_HOSTNAME=\"kerberosKDC\""
+	KDC_HOSTNAME="kerberosKDC"
 fi
 
 if [ -z ${EXTERNAL_HOSTNAME} ]; then
@@ -25,28 +17,29 @@ if [ -z ${EXTERNAL_HOSTNAME} ]; then
 fi
 
 echo "KDC_HOSTNAME=$KDC_HOSTNAME"
-echo "LDAP_HOSTNAME=$LDAP_HOSTNAME"
 echo "EXTERNAL_HOSTNAME=$EXTERNAL_HOSTNAME"
 
 echo "/etc/hosts:"
 cat /etc/hosts
 
-echo "Configuring openLdap"
+echo "Configuring openLDAP Server"
 echo "delete old files..."
 rm -rf /etc/openldap/slapd.d
 rm -rf /var/lib/openldap/openldap-data/*
 echo "Creating slapd.d dir"
 ls /etc/openldap/
 install -m 755 -o ldap -g ldap -d /etc/openldap/slapd.d
+echo "All OpenLDAP server config files are located in /etc/openldap/slapd.d"
 ls /etc/openldap/
 
-echo "setting ldap hostname in ldap.conf: ${LDAP_HOSTNAME}"
-sed -i~ -e "s/LDAP_HOSTNAME_NOT_SET_IN_LDAP_CONF/${LDAP_HOSTNAME}/" /etc/openldap/ldap.conf
+echo "setting ldap hostname in ldap.conf: ${EXTERNAL_HOSTNAME}"
+sed -i~ -e "s/LDAP_HOSTNAME_NOT_SET_IN_LDAP_CONF/${EXTERNAL_HOSTNAME}/" /etc/openldap/ldap.conf
 
 
 echo "Importing slapd configuration..."
 slapadd -n 0 -F /etc/openldap/slapd.d -l /etc/openldap/slapd.ldif
  
+#todo: remove if able
 echo "Importing kerberos schema"
 slapadd -n 0 -l /etc/kerberos.openldap.ldif
  
@@ -71,8 +64,8 @@ cat <<EOT > /etc/krb5.conf
  forwardable = true
  rdns = false
  default_realm = EXAMPLE.COM
- default_tkt_enctypes = aes128-cts-hmac-sha1-96
- default_tgs_enctypes = aes128-cts-hmac-sha1-96
+ default_tkt_enctypes = aes256-cts-hmac-sha1-96
+ default_tgs_enctypes = aes256-cts-hmac-sha1-96
  
 [realms]
  EXAMPLE.COM = {
@@ -81,27 +74,13 @@ cat <<EOT > /etc/krb5.conf
  }
  
 [domain_realm]
- .liberty.hur.hdclab.intranet.ibm.com = EXAMPLE.COM
- liberty.hur.hdclab.intranet.ibm.com = EXAMPLE.COM
- .fyre.ibm.com = EXAMPLE.COM
- fyre.ibm.com = EXAMPLE.COM
+ .${DOCKERHOST_DOMAIN} = EXAMPLE.COM
+ ${DOCKERHOST_DOMAIN} = EXAMPLE.COM
  .example.com = EXAMPLE.COM
  example.com = EXAMPLE.COM
 EOT
 
-echo "Creating Default Policy - Admin Access to */admin"
-echo "*/admin@EXAMPLE.COM *" > /var/lib/krb5kdc/kadm5.acl
-echo "*/service@$EXAMPLE.COM aci" >> /var/lib/krb5kdc/kadm5.acl
-
-echo "Creating Temp krb5_pass file"
-cat <<EOT > /etc/krb5_pass
-${KRB5_PASS}
-${KRB5_PASS}
-EOT
-echo "Creating Temp user17_pass file"
-cat <<EOT > /etc/user17_pass
-max_secret
-EOT
+cat /etc/krb5.conf
 
 echo "Starting ldap as root so kerberos can create its database"
 slapd -h "ldap:/// ldapi:///" -u root -g root -d -1 >> "/etc/ldapstdout.log" 2>> "/etc/ldapstderr.log" &
@@ -111,10 +90,10 @@ chmod 777 /etc/krb5.keytab
 chmod 777 /etc/krb5.conf
 
 echo "Adding static keytab entry for user17@EXAMPLE.COM"
-printf 'add_entry -password -p user17@EXAMPLE.COM -k 1 -e aes128-cts\nmax_secret\nwkt /etc/krb5.keytab' | ktutil
+printf 'add_entry -password -p user17@EXAMPLE.COM -k 1 -e aes256-cts\nmax_secret\nwkt /etc/krb5.keytab' | ktutil
 
 echo "Adding dynamic keytab entry for ldap/${EXTERNAL_HOSTNAME}@EXAMPLE.COM"
-printf 'add_entry -password -p ldap/'"${EXTERNAL_HOSTNAME}"'@EXAMPLE.COM -k 1 -e aes128-cts\nadmin\nwkt /etc/krb5.keytab' | ktutil
+printf 'add_entry -password -p ldap/'"${EXTERNAL_HOSTNAME}"'@EXAMPLE.COM -k 1 -e aes256-cts\npwd\nwkt /etc/krb5.keytab' | ktutil
 
 echo "Initialize(kinit) ldap SPN: ldap/$EXTERNAL_HOSTNAME@EXAMPLE.COM"
 kinit -k -t /etc/krb5.keytab ldap/${EXTERNAL_HOSTNAME}@EXAMPLE.COM
@@ -150,8 +129,9 @@ echo "docker entry ldapsearch tests COMPLETE ---" >> "/etc/ldapstderr.log"
 LDAP_PID=$(ps | grep slapd | awk 'NR==1 {print $1}')
 echo "ldap pid: $LDAP_PID"=
 
-echo "dont stop the ldap so it can be restarted using supervisord"
+echo "stop the ldap so it can be restarted using supervisord"
 kill $LDAP_PID
+echo "LDAP SERVER SETUP COMPLETE"
 
 #Start the slapd(openLdap) process as service using supervisord
 #supervisord will start the openLdap with this command:  slapd -h "ldap:/// ldapi:///" -u ldap -g ldap

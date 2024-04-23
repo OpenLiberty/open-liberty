@@ -19,4 +19,7 @@ ENTRYPOINT ["/sbin/tini", "--"]
 RUN ["chmod", "+x", "/docker-entrypoint.sh"]
 CMD ["/docker-entrypoint.sh"]
 
-# Currently tagged in DockerHub as: zachhein/ldap-server:0.3
+
+
+
+# Currently tagged in DockerHub as: zachhein/ldap-server:0.5

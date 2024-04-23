@@ -4,10 +4,10 @@
 USER_NAME=zachhein
 
 #Version of docker image.  Increment if doing a new release
-VERSION=0.5
+VERSION=0.2
 
 #Name of the final image
-IMAGE_NAME=ldap-server
+IMAGE_NAME=krb5-server
 
 #Docker image signiture in form username/image:version
 SIGNATURE=$USER_NAME/$IMAGE_NAME:$VERSION
