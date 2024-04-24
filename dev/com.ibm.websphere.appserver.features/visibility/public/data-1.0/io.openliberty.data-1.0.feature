@@ -18,10 +18,9 @@ Subsystem-Name: Jakarta Data 1.0
   com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0",\
   io.openliberty.cdi-4.0; ibm.tolerates:="4.1",\
   io.openliberty.jakarta.data-1.0
-#TODO remove io.openliberty.data from this feature before GA or move it out of dev/api/
 -bundles=\
-  io.openliberty.data; location:="dev/api/ibm/,lib/",\
-  io.openliberty.data.internal
+  io.openliberty.data.internal,\
+  io.openliberty.data.1.0.internal
 kind=beta
 edition=base
 WLP-Activation-Type: parallel
