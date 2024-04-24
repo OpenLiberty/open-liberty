@@ -349,8 +349,6 @@ public class HttpConfigConstants {
     public static final int MAX_BUFFER_SIZE = 1048576;
     /** Maximum size to allow the byte cache to be set to */
     public static final int MAX_BYTE_CACHE_SIZE = 2048;
-    /** Maximum allowed setting for the limit on the field size */
-    public static final int MAX_LIMIT_FIELDSIZE = 32768;
     /** Maximum allowed setting for the limit on the number of headers */
     public static final int MAX_LIMIT_NUMHEADERS = 500;
     /** Maximum number of responses to skip past */
