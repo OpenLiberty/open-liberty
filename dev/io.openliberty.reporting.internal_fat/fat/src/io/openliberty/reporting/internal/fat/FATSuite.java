@@ -15,7 +15,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ CVEReportingConfigTest.class, CVEDataTest.class, CVEResponseTest.class })
+@SuiteClasses({ CVEReportingConfigTest.class, CVEDataTest.class, CVEResponseTest.class,
+        CVEReportingCheckpointTest.class })
 public class FATSuite {
 
 }
