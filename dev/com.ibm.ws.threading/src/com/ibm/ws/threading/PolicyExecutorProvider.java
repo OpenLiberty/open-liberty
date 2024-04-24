@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,13 +20,12 @@ import java.util.concurrent.ExecutorService;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.threading.internal.ExecutorServiceImpl;
 import com.ibm.ws.threading.internal.PolicyExecutorImpl;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
+
+import io.openliberty.threading.virtual.VirtualThreadOps;
 
 /**
  * <p>Provider class which can programmatically create policy executors.
@@ -60,11 +59,9 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
     private final ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors = new ConcurrentHashMap<String, PolicyExecutorImpl>();
 
     /**
-     * Virtual thread operations that are only available when a Java 21+ feature includes the io.openliberty.threading.internal.java21 bundle.
+     * Virtual thread operations that are only available when a Java 21+ feature includes the io.openliberty.threading.virtual.internal bundle.
      */
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY)
+    @Reference
     protected volatile VirtualThreadOps virtualThreadOps;
 
     /**

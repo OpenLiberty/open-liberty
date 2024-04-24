@@ -53,7 +53,6 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
-import com.ibm.ws.threading.VirtualThreadOps;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -61,6 +60,8 @@ import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.resource.ResourceInfo;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
+
+import io.openliberty.threading.virtual.VirtualThreadOps;
 
 /**
  * Resource factory for ManagedThreadFactory.
@@ -151,7 +152,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     private ThreadGroupTracker threadGroupTracker;
 
     /**
-     * Virtual thread operations that are only available when a Java 21+ feature includes the io.openliberty.threading.internal.java21 bundle.
+     * Virtual thread operations that are only available when a Java 21+ feature includes the io.openliberty.threading.virtual.internal bundle.
      */
     @Reference(cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.DYNAMIC,

@@ -10,23 +10,33 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.threading.internal.java21;
+package io.openliberty.threading.virtual.internal;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ThreadFactory;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.propertytypes.SatisfyingConditionTarget;
+import org.osgi.service.condition.Condition;
 
-import com.ibm.ws.threading.VirtualThreadOps;
+import io.openliberty.threading.virtual.VirtualThreadOps;
 
 /**
  * Makes Jakarta Data's Repository annotation into a bean defining annotation.
  */
-@Component(name = "io.openliberty.threading.internal.java21.VirtualThreadOperations",
+@Component(name = "io.openliberty.threading.virtual.internal.VirtualThreadOperations",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = VirtualThreadOps.class)
+@SatisfyingConditionTarget("(&(" + Condition.CONDITION_ID + "=io.openliberty.java.version)(io.openliberty.java.version>=21))")
 public class VirtualThreadOperations implements VirtualThreadOps {
+
+    @Activate // TODO remove
+    protected void activate() {
+        System.out.println("KJA1017 - VirtualThreadOperations activated");
+    }
+
     @Override
     public ThreadFactory createFactoryOfVirtualThreads(String namePrefix,
                                                        long initialCountValue,
@@ -52,5 +62,10 @@ public class VirtualThreadOperations implements VirtualThreadOps {
     @Override
     public boolean isVirtual(Thread thread) {
         return thread.isVirtual();
+    }
+
+    @Override
+    public boolean isSupported() {
+        return true;
     }
 }

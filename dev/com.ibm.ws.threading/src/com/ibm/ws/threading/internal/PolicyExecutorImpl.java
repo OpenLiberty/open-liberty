@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,8 +47,9 @@ import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.PolicyTaskFuture;
 import com.ibm.ws.threading.StartTimeoutException;
-import com.ibm.ws.threading.VirtualThreadOps;
 import com.ibm.ws.threading.internal.PolicyTaskFutureImpl.InvokeAnyLatch;
+
+import io.openliberty.threading.virtual.VirtualThreadOps;
 
 /**
  * Policy executors are backed by the Liberty thread pool or virtual threads,
@@ -152,7 +153,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
     /**
      * Whether or not to create virtual threads.
-     * Allow setting this to true only if virtualThreadOps is non-null.
+     * Allow setting this to true only if virtualThreadOps is available.
      */
     private volatile boolean virtual;
 
@@ -1499,8 +1500,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         boolean useVirtualThreads = null == (v = props.get("virtual")) ? false : (Boolean) v;;
 
         // Validation that cannot be performed by metatype:
-        if (useVirtualThreads && virtualThreadOps == null)
-            throw new IllegalArgumentException("virtual: true");
+        if (useVirtualThreads && !virtualThreadOps.isSupported()) {
+            useVirtualThreads = false;
+        }
 
         if (u_expedite > u_max)
             throw new IllegalArgumentException("expedite: " + u_expedite + " > max: " + u_max);

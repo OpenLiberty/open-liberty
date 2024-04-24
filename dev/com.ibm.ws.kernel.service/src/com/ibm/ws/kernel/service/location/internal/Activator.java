@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,11 +24,13 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.pseudo.internal.PseudoContextFactory;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -37,6 +39,8 @@ import io.openliberty.checkpoint.spi.CheckpointHook;
 
 public class Activator implements BundleActivator {
     private static final TraceComponent tc = Tr.register(Activator.class);
+
+    private static final String JAVA_CONDITION_ID = "io.openliberty.java.version";
 
     /** Reference to active BundleContext (will be null between stop and start) */
     protected BundleContext context = null;
@@ -71,6 +75,8 @@ public class Activator implements BundleActivator {
             // This is important in order to maintain the order of running the hooks.
             checkpointHookRegistration = context.registerService(CheckpointHook.class, locServiceImpl,
                                                                  FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, 100)));
+            context.registerService(Condition.class, Condition.INSTANCE,
+                                    FrameworkUtil.asDictionary(Collections.singletonMap(JAVA_CONDITION_ID, JavaInfo.majorVersion())));
 
             // Assume this is the first place that tries to set this
             try {

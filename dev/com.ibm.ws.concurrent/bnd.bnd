@@ -29,7 +29,7 @@ Export-Package:\
 
 Import-Package:\
   org.eclipse.microprofile.context; version="[1.0.0,2.0.0)",\
-  io.openliberty.concurrent.internal.compat; version="[1.0.0,2.0.0)",\
+  io.openliberty.concurrent.internal.compat; version="[1.0.0,2.0.0)"
   *
 
 Private-Package:\
