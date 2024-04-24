@@ -51,23 +51,22 @@ import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
  * Sesion Bean JAX-RS components.
  *
  * @author Jozef Hartinger
- *
  */
 public class ResteasyCdiExtension implements Extension {
-   private static boolean active;
-   private static final String JAKARTA_EJB_STATELESS = "jakarta.ejb.Stateless";
-   private static final String JAKARTA_EJB_SINGLETON = "jakarta.ejb.Singleton";
+    private static boolean active;
+    private static final String JAKARTA_EJB_STATELESS = "jakarta.ejb.Stateless";
+    private static final String JAKARTA_EJB_SINGLETON = "jakarta.ejb.Singleton";
 
-   // Scope literals
-   private static final Annotation requestScopedLiteral = new AnnotationLiteral<RequestScoped>() {
-      private static final long serialVersionUID = 3381824686081435817L;
-   };
+    // Scope literals
+    private static final Annotation requestScopedLiteral = new AnnotationLiteral<RequestScoped>() {
+        private static final long serialVersionUID = 3381824686081435817L;
+    };
    //Liberty change start:  Changed this field from private to protected so it can be accessed from
    //LibertyResteasyCdiExtension.   Previously this field was public.
    protected static final Annotation applicationScopedLiteral = new AnnotationLiteral<ApplicationScoped>() { 
    //Liberty change end
-      private static final long serialVersionUID = -8211157243671012820L;
-   };
+        private static final long serialVersionUID = -8211157243671012820L;
+    };
 
     public static boolean isCDIActive() {
         return active;
