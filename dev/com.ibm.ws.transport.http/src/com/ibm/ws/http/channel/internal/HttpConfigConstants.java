@@ -459,8 +459,7 @@ public class HttpConfigConstants {
     public static enum SameSite {
         LAX("Lax"),
         NONE("None"),
-        STRICT("Strict"),
-        PARTITIONED("Partitioned");
+        STRICT("Strict");
 
         SameSite(String name) {
             this.name = name;
