@@ -349,11 +349,8 @@ public class VisibilityTest {
         }
 
         for (Entry<String, Set<FeatureInfo>> featureInfosEntry : baseFeatureNameMap.entrySet()) {
-            String baseFeatureName = featureInfosEntry.getKey();
             Set<FeatureInfo> featureInfos = featureInfosEntry.getValue();
-            // Have fixed this one, but for now leaving the bad feature files in until can update a test
-            // that will think that it is a breaking change.
-            if (featureInfos.size() == 1 || baseFeatureName.equals("io.openliberty.connectors-")) {
+            if (featureInfos.size() == 1) {
                 continue;
             }
 
@@ -363,6 +360,94 @@ public class VisibilityTest {
                     visibility = featureInfo.getVisibility();
                 } else if (!visibility.equals(featureInfo.getVisibility())) {
                     errorMessage.append("Mismatched visibility ").append(featureInfos).append("\n\n");
+                    break;
+                }
+            }
+        }
+        if (errorMessage.length() != 0) {
+            Assert.fail("Found features with the same base name with errors: " + '\n' + errorMessage.toString());
+        }
+    }
+
+    /**
+     * Tests that all features with the same base name have the same edition
+     */
+    @Test
+    public void testMatchingEditionSingletonFeatures() {
+        StringBuilder errorMessage = new StringBuilder();
+
+        Map<String, Set<FeatureInfo>> baseFeatureNameMap = new HashMap<>();
+        for (Entry<String, FeatureInfo> entry : features.entrySet()) {
+            FeatureInfo featureInfo = entry.getValue();
+            if (!featureInfo.isSingleton()) {
+                continue;
+            }
+            String feature = entry.getKey();
+            int lastIndex = feature.indexOf('-');
+            if (lastIndex == -1) {
+                continue;
+            }
+            String baseFeatureName = feature.substring(0, lastIndex + 1);
+            Set<FeatureInfo> featureInfos = baseFeatureNameMap.get(baseFeatureName);
+            if (featureInfos == null) {
+                featureInfos = new HashSet<>();
+                baseFeatureNameMap.put(baseFeatureName, featureInfos);
+            }
+            if (!featureInfo.getKind().equals("noship")) {
+                featureInfos.add(featureInfo);
+            }
+        }
+
+        for (Entry<String, Set<FeatureInfo>> featureInfosEntry : baseFeatureNameMap.entrySet()) {
+            String baseFeatureName = featureInfosEntry.getKey();
+            Set<FeatureInfo> featureInfos = featureInfosEntry.getValue();
+
+            if (baseFeatureName.equals("com.ibm.websphere.appserver.certificateCreator-")) {
+                // The 1.0 feature is in core because it is used by the ssl-1.0 feature which is in core.
+                // The 2.0 feature is in base because it is used by the acmeCA-2.0 feature which is in base.
+                // If a future version comes along and it doesn't match base, this test will fail and need to be updated.
+                for (Iterator<FeatureInfo> it = featureInfos.iterator(); it.hasNext();) {
+                    FeatureInfo featureInfo = it.next();
+                    if (featureInfo.getName().equals("com.ibm.websphere.appserver.certificateCreator-1.0") && featureInfo.getEdition().equals("core")) {
+                        it.remove();
+                        break;
+                    }
+                }
+            } else if (baseFeatureName.equals("com.ibm.websphere.appserver.org.eclipse.persistence-")) {
+                // The 2.6 and 2.7 versions are used by the jpa-2.6 and 2.7 features, but in 3.0 and later features it is not used by the persistence features.
+                // As such, the 2.6 and 2.7 features are in core and the 3.0 and later versions are in base because they are only used by base features.
+                // If future versions end up being needed by core features, this test will fail and need to be updated.
+                for (Iterator<FeatureInfo> it = featureInfos.iterator(); it.hasNext();) {
+                    FeatureInfo featureInfo = it.next();
+                    if ((featureInfo.getName().equals("com.ibm.websphere.appserver.org.eclipse.persistence-2.6") ||
+                         featureInfo.getName().equals("com.ibm.websphere.appserver.org.eclipse.persistence-2.7"))
+                        && featureInfo.getEdition().equals("core")) {
+                        it.remove();
+                    }
+                }
+            } else if (baseFeatureName.equals("com.ibm.websphere.appserver.passwordUtilities-")) {
+                // The 1.0 feature depended on a jca / connectors feature which is in base.
+                // When 1.1 was created, the dependency on jca / connectors was removed to allow it to move to core.
+                // If a future version comes along and it doesn't match core, this test will fail and need to be updated.
+                for (Iterator<FeatureInfo> it = featureInfos.iterator(); it.hasNext();) {
+                    FeatureInfo featureInfo = it.next();
+                    if (featureInfo.getName().equals("com.ibm.websphere.appserver.passwordUtilities-1.0") && featureInfo.getEdition().equals("base")) {
+                        it.remove();
+                        break;
+                    }
+                }
+            }
+
+            if (featureInfos.size() == 1) {
+                continue;
+            }
+
+            String edition = null;
+            for (FeatureInfo featureInfo : featureInfos) {
+                if (edition == null) {
+                    edition = featureInfo.getEdition();
+                } else if (!edition.equals(featureInfo.getEdition())) {
+                    errorMessage.append("Mismatched edition ").append(featureInfos).append("\n\n");
                     break;
                 }
             }
@@ -447,17 +532,6 @@ public class VisibilityTest {
         // The following features are marked no ship, but are not ready for beta yet.
         // If they get marked beta, they should be removed from this list.
         expectedFailures.add("io.openliberty.persistentExecutor.internal.ee-10.0"); // the persistentExecutor feature is no ship
-
-        // Temporarily until mark them beta.
-        expectedFailures.add("io.openliberty.audit1.0.internal.ee-11.0");
-        expectedFailures.add("io.openliberty.constrainedDelegation1.0.internal.ee-11.0");
-        expectedFailures.add("io.openliberty.jwtSso1.0.internal.ee-11.0");
-        expectedFailures.add("io.openliberty.oauth2.0.internal.ee-11.0");
-        expectedFailures.add("io.openliberty.passwordUtilities1.0.internal.ee-11.0");
-        expectedFailures.add("io.openliberty.passwordUtilities1.1.internal.ee-11.0");
-        expectedFailures.add("io.openliberty.samlWeb2.0.internal.ee-11.0");
-        expectedFailures.add("io.openliberty.spnego1.0.internal.ee-11.0");
-        expectedFailures.add("io.openliberty.wsSecurity1.1.internal.jaxws-11.0");
 
         StringBuilder errorMessage = new StringBuilder();
         for (Entry<String, FeatureInfo> entry : features.entrySet()) {
