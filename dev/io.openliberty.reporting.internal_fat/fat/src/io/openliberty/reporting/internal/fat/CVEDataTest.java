@@ -69,19 +69,19 @@ public class CVEDataTest extends FATServletClient {
         Properties props = createJSON("\\{\"productEdition.*\\}");
 
         assertTrue("The property 'id' is not null or empty",
-                props.getProperty("id") != null && !props.getProperty("id").isEmpty());
+                   props.getProperty("id") != null && !props.getProperty("id").isEmpty());
 
         String[] productEdition = new String[] { "Core", "CORE", "BASE", "DEVELOPERS", "EXPRESS", "BLUEMIX",
-                "EARLY_ACCESS", "zOS", "ND", "BASE_ILAN", "Open" };
+                                                 "EARLY_ACCESS", "zOS", "ND", "BASE_ILAN", "Open" };
 
         assertThat("The property 'productEdition' did not match", props.getProperty("productEdition"),
-                Matchers.isIn(productEdition));
+                   Matchers.isIn(productEdition));
 
         assertTrue("The property 'productVersion' did not match at the start",
-                props.getProperty("productVersion").matches("^\\d\\d\\..*"));
+                   props.getProperty("productVersion").matches("^\\d\\d\\..*"));
 
         assertTrue("The property 'productVersion' did not match at the end",
-                props.getProperty("productVersion").matches("^\\d\\d.0.0.([1-9]|1[0123])$"));
+                   props.getProperty("productVersion").matches("^\\d\\d.0.0.([1-9]|1[0123])$"));
 
         String javaVendor = System.getProperty("java.vendor").toLowerCase();
 
@@ -92,7 +92,7 @@ public class CVEDataTest extends FATServletClient {
         assertEquals("The property 'javaVendor' did not match", javaVendor, props.getProperty("javaVendor"));
 
         assertEquals("The property 'javaVersion' did not match", System.getProperty("java.runtime.version"),
-                props.getProperty("javaVersion"));
+                     props.getProperty("javaVersion"));
 
         assertEquals("The property 'os' did not match", System.getProperty("os.name"), props.getProperty("os"));
 
@@ -122,19 +122,19 @@ public class CVEDataTest extends FATServletClient {
         String features = String.valueOf(props.get("features"));
 
         assertTrue("The property 'features' are incorrect",
-                features.contains("servlet-") && features.contains("test.InterimFixes-1.0"));
+                   features.contains("servlet-") && features.contains("test.InterimFixes-1.0"));
 
         String iFixes = String.valueOf(props.get("iFixes"));
 
         assertTrue("The property 'iFixes' did not match",
-                iFixes.contains("APAR0007") && iFixes.contains("APAR0006") && iFixes.contains("APAR0008"));
+                   iFixes.contains("APAR0007") && iFixes.contains("APAR0006") && iFixes.contains("APAR0008"));
 
     }
 
     /**
      * This method takes the line found within the logs which contains the
      * JSONString and then parses it as a json object using jsonb library.
-     * 
+     *
      * @param regex
      * @return
      */

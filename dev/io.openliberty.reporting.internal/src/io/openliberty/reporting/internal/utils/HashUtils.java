@@ -21,7 +21,7 @@ public class HashUtils {
      * <p>
      * Builds a hashed String which is then used as the id.
      * </p>
-     * 
+     *
      * @param input A String
      * @return A String
      * @throws DataCollectorException

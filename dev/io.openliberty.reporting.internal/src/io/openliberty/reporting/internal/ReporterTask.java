@@ -35,7 +35,7 @@ public class ReporterTask implements Runnable {
     private final Map<String, Object> props;
 
     public ReporterTask(FeatureProvisioner featureProvisioner, FixManager fixManager, ServerInfoMBean serverInfo,
-            Map<String, Object> properties) {
+                        Map<String, Object> properties) {
         this.featureProvisioner = featureProvisioner;
         this.fixManager = fixManager;
         this.serverInfo = serverInfo;
@@ -44,7 +44,7 @@ public class ReporterTask implements Runnable {
 
     /**
      * <p>
-     * 1. Calls the DataCollector 
+     * 1. Calls the DataCollector
      * 2. Retrieves the CVE Data from the cloud service
      * 3. Handles the response
      * </p>
@@ -84,12 +84,12 @@ public class ReporterTask implements Runnable {
      * <p>
      * Creates a string with the type and message of a Throwable and its causes.
      * </p>
-     * 
+     *
      * <pre>
-     * 	Example: 
+     * 	Example:
      * 			com.example.MyException: My Exception Message: com.example.MyException: The cause of my exception
      * </pre>
-     * 
+     *
      * @param e The Throwable
      * @return A string with the type and message of a Throwable and its causes.
      */

@@ -14,7 +14,7 @@ package io.openliberty.reporting.internal;
 public class DataCollectorException extends Exception {
 
     /**
-     * 
+     *
      * @param message
      * @param cause
      */
