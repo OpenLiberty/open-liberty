@@ -33,7 +33,7 @@ public class CVEReportingResponseEndpoints extends Application {
 
     /**
      * Used to build a sample response back to the feature
-     * 
+     *
      * @param dataReceived
      * @return
      * @throws IOException

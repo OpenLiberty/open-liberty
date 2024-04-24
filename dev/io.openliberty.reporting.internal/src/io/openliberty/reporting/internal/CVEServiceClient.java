@@ -41,7 +41,7 @@ public class CVEServiceClient {
      * <p>
      * Retrieves the CVE Data from the cloud service.
      * </p>
-     * 
+     *
      * @param data    Map<String, String>
      * @param urlLink URL link which is set in the Server.xml
      * @return json JSONObject
@@ -77,7 +77,7 @@ public class CVEServiceClient {
      * <p>
      * Creates a connection with the cloud Service.
      * </p>
-     * 
+     *
      * @param url URL
      * @return
      * @throws IOException
@@ -97,8 +97,8 @@ public class CVEServiceClient {
      * <p>
      * Sends the data collected from the server to the cloud service.
      * </p>
-     * 
-     * 
+     *
+     *
      * @param connection HttpsURLConnection
      * @param jsonData   String
      * @throws ConnectException
@@ -115,14 +115,14 @@ public class CVEServiceClient {
      * <p>
      * Builds the data collected as a string (JSONString) to send.
      * </p>
-     * 
+     *
      * <pre>
-     * 	Example: 
+     * 	Example:
      * 			 {"productEdition": "edition", "features": ["feature1", "feature2", "feature3"], "productVersion": "12.3.4.56", "iFixes": ["ifix1", "ifix2", "ifix3"], "javaVersion": "17.0.8+7", "id": "STRING", "javaVendor": "javaVendor"}
      * </pre>
-     * 
-     * 
-     * 
+     *
+     *
+     *
      * @param data A Map<String, String>
      * @return A string
      */
