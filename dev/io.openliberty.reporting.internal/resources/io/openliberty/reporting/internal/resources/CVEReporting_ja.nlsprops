@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF CVE Reporting
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKF1700 - CWWKF1799
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.reporting.internal: CWWKF1700 - CWWKF1799
+
+CWWKF1700.reporting.is.enabled=CWWKF1700I: The checking for security vulnerabilities is enabled. Information about this Liberty runtime will be analyzed against known vulnerabilities.
+CWWKF1700.reporting.is.enabled.explanation= The checking for security vulnerabilities is currently enabled.
+CWWKF1700.reporting.is.enabled.useraction=To disable the checking for security vulnerabilities, specify <cveReporting enabled="false" /> in the server.xml file.
+
+CWWKF1701.reporting.is.disabled=CWWKF1701I: The checking for security vulnerabilities is disabled.
+CWWKF1701.reporting.is.disabled.explanation=The checking for security vulnerabilities must be enabled to run.
+CWWKF1701.reporting.is.disabled.useraction=To enable the checking for security vulnerabilities, specify <cveReporting enabled="true" /> in the server.xml file.
+
+more.information.message=For more information, you can review {0}
+
+CWWKF1702.cve.found=CWWKF1702W: Based on an assessment of {0}, review the following security bulletins: {1}
+CWWKF1702.cve.found.explanation=Security vulnerabilities were found.
+CWWKF1702.cve.found.useraction=Review the CVEs in the message and resolve the security vulnerabilities.
+
+CWWKF1703.cve.not.found=CWWKF1703I: Based on analysis of the Runtime, no security vulnerabilities requiring further analysis were found.
+CWWKF1703.cve.not.found.explanation=No security vulnerabilities were found at this time.
+CWWKF1703.cve.not.found.useraction=None.
+
+CWWKF1704.incorrect.url=CWWKF1704W: The specified URL is not correct and a connection cannot be made: {0}
+CWWKF1704.incorrect.url.explanation=No connection can be made for the provided URL.
+CWWKF1704.incorrect.url.useraction=Verify that the URL is correct.
+
+CWWKF1705.failed.response=CWWKF1705W: Unable to retrieve relevant CVE information due to a communication issue with the CVE Reporting Service.
+CWWKF1705.failed.response.explanation=The service cannot provide a response.
+CWWKF1705.failed.response.useraction=Fix the communication issue and try again.
+
+CWWKF1706.issue.parsing=CWWKF1706W: Issue when parsing Product Information.
+CWWKF1706.issue.parsing.explanation=The service cannot successfully parse the product information.
+CWWKF1706.issue.parsing.useraction=Fix the communication issue and try again.
