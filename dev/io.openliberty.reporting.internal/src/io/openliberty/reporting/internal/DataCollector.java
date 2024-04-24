@@ -39,11 +39,11 @@ import io.openliberty.reporting.internal.utils.HashUtils;
 public class DataCollector {
 
     /**
-     * 
+     *
      * @return data Map<String, String>
      */
     public Map<String, String> getData() {
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
 
         data.put("id", uniqueID);
         data.put("productEdition", productEdition);
@@ -63,12 +63,12 @@ public class DataCollector {
     private String javaVendor = "";
     private final String javaRuntimeInfo;
 
-    private final Set<String> installedFeatures = new HashSet<String>();
+    private final Set<String> installedFeatures = new HashSet<>();
 
     private final String productVersion;
     private final String productEdition;
 
-    private final Set<String> iFixSet = new HashSet<String>();
+    private final Set<String> iFixSet = new HashSet<>();
 
     private final String os;
 
@@ -78,15 +78,14 @@ public class DataCollector {
      * <p>
      * Collects all the required data.
      * </p>
-     * 
+     *
      * @param featureProvisioner
      * @param FixManager
      * @param serverInfo
      * @throws IOException
      * @throws DataCollectorException
      */
-    public DataCollector(FeatureProvisioner featureProvisioner, FixManager FixManager, ServerInfoMBean serverInfo)
-            throws IOException, DataCollectorException {
+    public DataCollector(FeatureProvisioner featureProvisioner, FixManager FixManager, ServerInfoMBean serverInfo) throws IOException, DataCollectorException {
 
         Map<String, ? extends ProductInfo> allProductInfo;
         try {
@@ -127,12 +126,12 @@ public class DataCollector {
     }
 
     /**
-     * 
+     *
      * @param featureProvisioner
      * @return Set<String>
      */
     private Set<String> getPublicFeatures(FeatureProvisioner featureProvisioner) {
-        Set<String> publicFeatures = new TreeSet<String>();
+        Set<String> publicFeatures = new TreeSet<>();
         Iterator<String> it = featureProvisioner.getInstalledFeatures().iterator();
         while (it.hasNext()) {
             String feature = it.next();

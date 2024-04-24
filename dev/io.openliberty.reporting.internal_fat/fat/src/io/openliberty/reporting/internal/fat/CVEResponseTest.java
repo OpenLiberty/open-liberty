@@ -45,7 +45,7 @@ import io.openliberty.reporting.internal.fat.response.CVEReportingResponseEndpoi
  * These tests are run using two different servers.
  * APP_SERVER runs the app (CVEReporting feature is disabled for this server)
  * TEST_SERVER runs the tests (CVEReporting feature is enabled for this server)
- * 
+ *
  * The reason for this is that because the CVE Reporting feature runs in the kernel the app was not
  * starting quick enough for the endpoints to be available to POST the data.
  */
@@ -79,8 +79,7 @@ public class CVEResponseTest extends FATServletClient {
     @BeforeClass
     public static void setup() throws Exception {
 
-        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                .addPackage(CVEReportingResponseEndpoints.class.getPackage());
+        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addPackage(CVEReportingResponseEndpoints.class.getPackage());
         ShrinkHelper.exportDropinAppToServer(server, app, SERVER_ONLY);
         testServer.useSecondaryHTTPPort();
 
@@ -102,13 +101,13 @@ public class CVEResponseTest extends FATServletClient {
 
     public static void copyTrustStore(LibertyServer server, LibertyServer testServer) throws Exception {
         testServer.copyFileToLibertyServerRoot(server.getServerRoot() + "/resources/security/", "resources/security",
-                KEYSTORE_FILENAME);
+                                               KEYSTORE_FILENAME);
     }
 
     /**
      * This test makes a call to the /getResponse after the CVE reporting feature
      * runs
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -117,8 +116,8 @@ public class CVEResponseTest extends FATServletClient {
         server.waitForSSLStart();
         copyTrustStore(server, testServer);
         testServer.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dcve.insight.enabled=true",
-                "-Djavax.net.ssl.trustStore=" + testServer.getServerRoot() + "/resources/security/key.p12",
-                "-Djavax.net.ssl.trustStorePassword=password", "-Djavax.net.ssl.trustStoreType=PKCS12"));
+                                               "-Djavax.net.ssl.trustStore=" + testServer.getServerRoot() + "/resources/security/key.p12",
+                                               "-Djavax.net.ssl.trustStorePassword=password", "-Djavax.net.ssl.trustStoreType=PKCS12"));
         testServer.startServer();
         testServer.addIgnoredErrors(Collections.singletonList("CWWKF1702W"));
 
@@ -126,10 +125,9 @@ public class CVEResponseTest extends FATServletClient {
 
         server.waitForStringInLog("POST COMPLETED");
 
-        JsonObject json = new HttpRequest(server, "/CVEReportingResponseEndpoints/endpoints/getResponse")
-                .run(JsonObject.class);
+        JsonObject json = new HttpRequest(server, "/CVEReportingResponseEndpoints/endpoints/getResponse").run(JsonObject.class);
 
-        List<String> features = new ArrayList<String>();
+        List<String> features = new ArrayList<>();
 
         for (int i = 0; i < json.getJsonArray("features").size(); i++) {
             features.add(json.getJsonArray("features").getString(i));
@@ -138,19 +136,19 @@ public class CVEResponseTest extends FATServletClient {
         String featuresAsString = Arrays.toString(features.toArray());
 
         assertTrue("The property 'id' is not null or empty",
-                json.getString("id") != null && !json.getString("id").isEmpty());
+                   json.getString("id") != null && !json.getString("id").isEmpty());
 
         String[] productEdition = new String[] { "Core", "CORE", "BASE", "DEVELOPERS", "EXPRESS", "BLUEMIX",
-                "EARLY_ACCESS", "zOS", "ND", "BASE_ILAN", "Open" };
+                                                 "EARLY_ACCESS", "zOS", "ND", "BASE_ILAN", "Open" };
 
         assertThat("The property 'productEdition' did not match", json.getString("productEdition"),
-                Matchers.isIn(productEdition));
+                   Matchers.isIn(productEdition));
 
         assertTrue("The property 'productVersion' did not match at the start",
-                json.getString("productVersion").matches("^\\d\\d\\..*"));
+                   json.getString("productVersion").matches("^\\d\\d\\..*"));
 
         assertTrue("The property 'productVersion' did not match at the end",
-                json.getString("productVersion").matches("^\\d\\d.0.0.([1-9]|1[0123])$"));
+                   json.getString("productVersion").matches("^\\d\\d.0.0.([1-9]|1[0123])$"));
 
         String javaVendor = System.getProperty("java.vendor").toLowerCase();
 
@@ -165,10 +163,10 @@ public class CVEResponseTest extends FATServletClient {
         assertEquals("The property 'javaVendor' did not match", javaVendor, json.getString("javaVendor"));
 
         assertEquals("The property 'javaVersion' did not match", System.getProperty("java.runtime.version"),
-                json.getString("javaVersion"));
+                     json.getString("javaVersion"));
 
         assertTrue("The property 'features' are incorrect", featuresAsString.contains("componenttest-")
-                && featuresAsString.contains("jsonb-") && featuresAsString.contains("mpRestClient-"));
+                                                            && featuresAsString.contains("jsonb-") && featuresAsString.contains("mpRestClient-"));
 
         assertTrue("The property 'iFixes' is not empty", json.getJsonArray("iFixes").isEmpty());
 
@@ -178,7 +176,7 @@ public class CVEResponseTest extends FATServletClient {
      * Testing that the CVE Reporting feature successfully receives the correct
      * response from the cloud service and is the able to successfully parse that
      * information and output it into the logs for the users.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -187,8 +185,8 @@ public class CVEResponseTest extends FATServletClient {
         server.waitForSSLStart();
         copyTrustStore(server, testServer);
         testServer.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dcve.insight.enabled=true",
-                "-Djavax.net.ssl.trustStore=" + testServer.getServerRoot() + "/resources/security/key.p12",
-                "-Djavax.net.ssl.trustStorePassword=password", "-Djavax.net.ssl.trustStoreType=PKCS12"));
+                                               "-Djavax.net.ssl.trustStore=" + testServer.getServerRoot() + "/resources/security/key.p12",
+                                               "-Djavax.net.ssl.trustStorePassword=password", "-Djavax.net.ssl.trustStoreType=PKCS12"));
         testServer.startServer();
         testServer.addIgnoredErrors(Collections.singletonList("CWWKF1702W"));
 
@@ -199,22 +197,22 @@ public class CVEResponseTest extends FATServletClient {
         System.out.println("READY");
 
         assertNotNull("Response message for Open Liberty is incorrect",
-                testServer.waitForStringInTrace("CWWKF1702W: Based on an assessment of Open Liberty,"));
+                      testServer.waitForStringInTrace("CWWKF1702W: Based on an assessment of Open Liberty,"));
         assertNotNull("First CVE for Open Liberty is incorrect",
-                testServer.waitForStringInTrace("https://www.ibm.com/support/pages/node/7125527 - CVE-2023-50312"));
+                      testServer.waitForStringInTrace("https://www.ibm.com/support/pages/node/7125527 - CVE-2023-50312"));
         assertNotNull("Second CVE for Open Liberty is incorrect",
-                testServer.waitForStringInTrace("https://www.ibm.com/support/pages/node/7125528 - CVE-2023-50313"));
+                      testServer.waitForStringInTrace("https://www.ibm.com/support/pages/node/7125528 - CVE-2023-50313"));
         assertNotNull("Response message for Open Liberty is incorrect",
-                testServer.waitForStringInTrace("CWWKF1702W: Based on an assessment of IBM Semeru Java,"));
+                      testServer.waitForStringInTrace("CWWKF1702W: Based on an assessment of IBM Semeru Java,"));
         assertNotNull("CVE for IBM Semeru Java is incorrect", testServer.waitForStringInTrace(
-                "https://www.ibm.com/support/pages/node/7125529 - CVE-2023-50314, CVE-2023-50315"));
+                                                                                              "https://www.ibm.com/support/pages/node/7125529 - CVE-2023-50314, CVE-2023-50315"));
 
     }
 
     /**
      * Testing that if a server that does not exist is provided there will be no
      * connection made and the correct warning message will be outputted to the logs
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -232,7 +230,7 @@ public class CVEResponseTest extends FATServletClient {
     /**
      * testing that the feature wont be able to make a connection to services with
      * incorrect protocols.
-     * 
+     *
      * @throws Exception
      */
     @Test

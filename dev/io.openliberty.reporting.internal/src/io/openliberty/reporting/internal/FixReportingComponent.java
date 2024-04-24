@@ -68,9 +68,9 @@ public class FixReportingComponent {
      */
     @Activate
     public FixReportingComponent(ComponentContext ignored, Map<String, Object> properties,
-            @Reference ServerStartedPhase2 justAMarker, @Reference final FeatureProvisioner featureProvisioner,
-            @Reference final FixManager fixManager, @Reference final ServerInfoMBean serverInfo,
-            @Reference(target = "(deferrable=true)") final ScheduledExecutorService scheduledExecutor) {
+                                 @Reference ServerStartedPhase2 justAMarker, @Reference final FeatureProvisioner featureProvisioner,
+                                 @Reference final FixManager fixManager, @Reference final ServerInfoMBean serverInfo,
+                                 @Reference(target = "(deferrable=true)") final ScheduledExecutorService scheduledExecutor) {
 
         this.scheduledExecutor = scheduledExecutor;
 
@@ -86,7 +86,7 @@ public class FixReportingComponent {
     }
 
     /**
-     * 
+     *
      * @param properties
      */
     @Modified
@@ -118,13 +118,14 @@ public class FixReportingComponent {
      * <p>
      * Check server.xml to see if any are explicitly disabling CVE Reporting.
      * </p>
-     * 
+     *
      * @param properties Map<String,String>
      * @return enabled boolean
      */
     private static boolean isEnabled(Map<String, Object> properties) {
 
         return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+            @Override
             public Boolean run() {
                 Boolean enabled = false;
                 enabled = Boolean.getBoolean("cve.insight.enabled");

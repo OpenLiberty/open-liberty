@@ -34,7 +34,7 @@ public class CVEResponseHandler {
     /**
      * Handles the response from the cloud service which comes back as a JSONObject
      * and is then parsed into a string to be printed in the logs.
-     * 
+     *
      * @param productEdition The product edition the kernel is using.
      * @param response       The response from the cloud service.
      */
