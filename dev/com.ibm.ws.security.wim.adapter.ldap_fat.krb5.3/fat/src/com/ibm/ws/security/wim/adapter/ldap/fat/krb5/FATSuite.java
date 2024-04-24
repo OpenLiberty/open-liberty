@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,17 +25,9 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                  * Currently all tests are > Java8 as ApacheDS fails to authenticate the Kerberos token on Java8
                  */
                 TicketCacheBindLongRunTest.class
-                /*
-                 * If you add more tests and the Windows Full FAT runs start timing out, add another krb5 project
-                 */
+/*
+ * If you add more tests and the Windows Full FAT runs start timing out, add another krb5 project
+ */
 
 })
-public class FATSuite extends LdapApacheDSandKDC {
-    /*
-     * The ApacheDS Directory Service, Ldap and KDC are started globally in ApacheDSandKDC (beforeClass and afterClass).
-     *
-     * ApacheDS trace will appear in output.txt. To enable more ApacheDS trace, see the setupService method in ApacheDSandKDC.
-     *
-     */
-
-}
+public class FATSuite extends LdapKrb5TestContainerSuite {}

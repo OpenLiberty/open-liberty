@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -59,6 +59,7 @@ public class RealmNameJVMProp extends CommonBindTest {
     @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
     @AllowedFFDC({ "com.ibm.wsspi.security.wim.exception.WIMSystemException" })
     public void setRealmViaJVMProp() throws Exception {
+        assumeTrue(ApacheDSandKDC.IS_BEING_USED); //this test will only run if the FATSuite is reconfigured to use ApacheDSandKDC instead of testContainers.
         /*
          * Can only run this test if we were able to set the default port of 88 for the KDC. The
          * -Djava.security.krb5.kdc property will only connect on the default port (can't set a custom port). To test the
