@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,20 +37,12 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                  * vvv Leave Krb5ConfigJVMProp as the last test, the JVM prop changes the rest of the tests
                  */
                 Krb5ConfigJVMProp.class
-                /*
-                 * ^^^ Leave Krb5ConfigJVMProp as the last test, the JVM prop changes the rest of the tests
-                 */
-                /*
-                 * Do not add more tests to this suite or the FULL fat tends to time out on Window runs.
-                 */
+/*
+ * ^^^ Leave Krb5ConfigJVMProp as the last test, the JVM prop changes the rest of the tests
+ */
+/*
+ * Do not add more tests to this suite or the FULL fat tends to time out on Window runs.
+ */
 
 })
-public class FATSuite extends LdapApacheDSandKDC {
-    /*
-     * The ApacheDS Directory Service, Ldap and KDC are started globally in ApacheDSandKDC (beforeClass and afterClass).
-     *
-     * ApacheDS trace will appear in output.txt. To enable more ApacheDS trace, see the setupService method in ApacheDSandKDC.
-     *
-     */
-
-}
+public class FATSuite extends LdapKrb5TestContainerSuite {}
