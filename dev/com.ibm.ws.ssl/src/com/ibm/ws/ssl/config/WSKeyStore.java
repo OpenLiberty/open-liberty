@@ -1266,7 +1266,7 @@ public class WSKeyStore extends Properties {
                         if (null == cert_chain)
                             continue;
                         for (int i = 0; i < cert_chain.length; i++) {
-                            if (isDefaultServerIdentityCert((X509Certificate) cert_chain[i])) {
+                            if (isDefaultServerIdentityCert((X509Certificate) cert_chain[i], alias)) {
                                 if (!isSanExist((X509Certificate) cert_chain[i])) {
                                     Tr.warning(tc, "ssl.san.warning.CWPKI0050W", new Object[] { alias, ksName });
                                     return false;
@@ -1288,15 +1288,20 @@ public class WSKeyStore extends Properties {
         return true;
     }
 
-    private boolean isDefaultServerIdentityCert(X509Certificate x509Certificate) {
+    private boolean isDefaultServerIdentityCert(X509Certificate x509Certificate, String alias) {
         boolean result = false;
         String issuerDN = x509Certificate.getIssuerX500Principal().getName();
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.debug(tc, "Certificate's Subject DN: " + x509Certificate.getSubjectX500Principal().getName() + " issuerDN: "
-                         + issuerDN);
+            Tr.debug(tc, "alias: " + alias + " issuer DN: " + issuerDN);
         if (issuerDN != null && (issuerDN.contains(MEMBER_ROOT_KEY_ALIAS) || issuerDN.contains(CONTROLLER_ROOT_KEY_ALIAS))) {
-            result = true;
+            String subjectDN = x509Certificate.getSubjectX500Principal().getName();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                Tr.debug(tc, "subject DN: " + subjectDN);
+            if (!subjectDN.contains(MEMBER_ROOT_KEY_ALIAS) && !subjectDN.contains(CONTROLLER_ROOT_KEY_ALIAS)) {
+                result = true;
+            }
         }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "isDefaultServerIdentityCert ", result);
         return result;
