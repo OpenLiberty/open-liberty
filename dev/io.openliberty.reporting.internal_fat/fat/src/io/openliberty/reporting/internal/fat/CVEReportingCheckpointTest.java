@@ -1,11 +1,16 @@
 package io.openliberty.reporting.internal.fat;
 
+import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Properties;
 
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,15 +32,10 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @CheckpointTest
 public class CVEReportingCheckpointTest extends FATServletClient {
 
-    public static final String SERVER_NAME = "io.openliberty.reporting.server";
+    public static final String SERVER_NAME = "io.openliberty.reporting.checkpoint.server";
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
-    }
 
     @After
     public void tearDown() throws Exception {
@@ -49,6 +49,7 @@ public class CVEReportingCheckpointTest extends FATServletClient {
 
     @Test
     public void testIsEnabledByDefault() throws Exception {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
         server.checkpointRestore();
         server.addIgnoredErrors(Collections.singletonList("CWWKF1704W"));
@@ -58,6 +59,7 @@ public class CVEReportingCheckpointTest extends FATServletClient {
 
     @Test
     public void testIsDisabled() throws Exception {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         ServerConfiguration config = server.getServerConfiguration();
         config.getCVEReporting().setEnabled(false);
         server.updateServerConfiguration(config);
@@ -69,6 +71,7 @@ public class CVEReportingCheckpointTest extends FATServletClient {
 
     @Test
     public void testIsEnabled() throws Exception {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         ServerConfiguration config = server.getServerConfiguration();
         config.getCVEReporting().setEnabled(true);
         server.updateServerConfiguration(config);
@@ -77,6 +80,28 @@ public class CVEReportingCheckpointTest extends FATServletClient {
         server.addIgnoredErrors(Collections.singletonList("CWWKF1704W"));
 
         assertNotNull("The feature is disabled", server.waitForStringInLog("CWWKF1700I:.*"));
+    }
+
+    @Test
+    public void testConfigChangeAfterRestore() throws Exception {
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
+        server.startServer();
+
+        configureEnvVariable(server, singletonMap("ENABLED_A", "false"));
+
+        server.checkpointRestore();
+        server.addIgnoredErrors(Collections.singletonList("CWWKF1704W"));
+
+        assertNotNull("The feature is enabled", server.waitForStringInLog("CWWKF1701I:.*"));
+    }
+
+    static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
+        Properties serverEnvProperties = new Properties();
+        serverEnvProperties.putAll(newEnv);
+        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
+            serverEnvProperties.store(out, "");
+        }
     }
 
 }
