@@ -155,7 +155,7 @@ public class DBRotationTest extends CloudFATServletClient {
     @AfterClass
     public static void teardown() throws Exception {
 
-        TxTestContainerSuite.afterSuite();
+        dropTables();
     }
 
     /**
