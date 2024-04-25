@@ -2562,7 +2562,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 } else if (queryInfo.returnArrayType != null) {
                                     int size = results.size();
                                     Object firstResult = size == 0 ? null : results.get(0);
-                                    if (firstResult != null && firstResult.getClass().isArray()) {
+                                    if (firstResult == null
+                                        || queryInfo.type == QueryInfo.Type.FIND_AND_DELETE
+                                        || queryInfo.returnArrayType != Object.class && queryInfo.returnArrayType.isInstance(firstResult)
+                                        || queryInfo.returnArrayType.isPrimitive() && isWrapperClassFor(queryInfo.returnArrayType, firstResult.getClass())) {
+                                        returnValue = Array.newInstance(queryInfo.returnArrayType, size);
+                                        int i = 0;
+                                        for (Object result : results)
+                                            Array.set(returnValue, i++, result);
+                                    } else if (firstResult.getClass().isArray()) {
                                         if (size == 1) {
                                             Class<?> optionalType = queryInfo.getOptionalResultType();
                                             if (firstResult.getClass().equals(optionalType))
@@ -2580,13 +2588,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                             returnValue = results;
                                         }
                                     } else {
-                                        // TODO Size 0 should be an error when the selected attribute is an array.
-                                        // The following makes sense when not selecting an array attribute, and instead
-                                        // using array to represent multiple results returned.
-                                        returnValue = Array.newInstance(queryInfo.returnArrayType, size);
-                                        int i = 0;
-                                        for (Object result : results)
-                                            Array.set(returnValue, i++, result);
+                                        throw new MappingException("The " + queryInfo.returnArrayType.getName() +
+                                                                   " array type that is declared to be returned by the " +
+                                                                   queryInfo.method.getName() + " method of the " +
+                                                                   queryInfo.method.getDeclaringClass().getName() +
+                                                                   " repository is incompatible with the " +
+                                                                   firstResult.getClass().getName() +
+                                                                   " type of the observed query results."); // TODO NLS
                                     }
                                 } else if (results.isEmpty()) {
                                     throw new EmptyResultException("Query with return type of " + returnType.getName() +
@@ -2798,6 +2806,24 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() + '.' + method.getName(), x);
             throw x;
         }
+    }
+
+    /**
+     * Indicates if the specified class is a wrapper for the primitive class.
+     *
+     * @param primitive primitive class.
+     * @param cl        another class that might be a wrapper class for the primitive class.
+     * @return true if the class is the wrapper class for the primitive class, otherwise false.
+     */
+    private final boolean isWrapperClassFor(Class<?> primitive, Class<?> cl) {
+        return primitive == long.class && cl == Long.class ||
+               primitive == int.class && cl == Integer.class ||
+               primitive == float.class && cl == Float.class ||
+               primitive == double.class && cl == Double.class ||
+               primitive == char.class && cl == Character.class ||
+               primitive == byte.class && cl == Byte.class ||
+               primitive == boolean.class && cl == Boolean.class ||
+               primitive == short.class && cl == Short.class;
     }
 
     @Trivial
