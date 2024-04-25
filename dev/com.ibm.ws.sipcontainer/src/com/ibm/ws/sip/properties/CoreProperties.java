@@ -34,8 +34,8 @@ public class CoreProperties
 	/**
      * Check branch state before creating new branch
      */
-	public static final String CHECK_FOR_CURRENT_STATE_WHEN_CREATING_PROXY_BRANCH = "checkForStateWhenCreatingProxyBranch";
-	public static final boolean CHECK_FOR_CURRENT_STATE_WHEN_CREATING_PROXY_BRANCH_DEFAULT = true;
+	public static final String CHECK_STATE_WHEN_CREATING_PROXY_BRANCH = "checkStateWhenCreatingProxyBranch";
+	public static final boolean CHECK_STATE_WHEN_CREATING_PROXY_BRANCH_DEFAULT = true;
 
 	
 	
@@ -801,7 +801,7 @@ public class CoreProperties
 					"loadDefaultProperties");
 		}
     	
-    	properties.setBoolean(CHECK_FOR_CURRENT_STATE_WHEN_CREATING_PROXY_BRANCH, CHECK_FOR_CURRENT_STATE_WHEN_CREATING_PROXY_BRANCH_DEFAULT, CustPropSource.DEFAULT);
+    	properties.setBoolean(CHECK_STATE_WHEN_CREATING_PROXY_BRANCH, CHECK_STATE_WHEN_CREATING_PROXY_BRANCH_DEFAULT, CustPropSource.DEFAULT);
     	properties.setInt(MAX_APP_SESSIONS, MAX_APP_SESSIONS_DEFAULT,CustPropSource.DEFAULT);
 		properties.setInt(MAX_MESSAGE_RATE, MAX_MESSAGE_RATE_DEFAULT,CustPropSource.DEFAULT);
 		properties.setInt(MAX_RESPONSE_TIME, MAX_RESPONSE_TIME_DEFAULT,CustPropSource.DEFAULT);

@@ -1203,7 +1203,7 @@ abstract class BranchManager implements ProxyParent
     		}
 	    }
 
-	    if (PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.CHECK_FOR_CURRENT_STATE_WHEN_CREATING_PROXY_BRANCH)){
+	    if (PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.CHECK_STATE_WHEN_CREATING_PROXY_BRANCH)){
 	    	
 	    	ProxyBranchImpl curBranch =  ThreadLocalStorage.getCurrentBranch();
 	    	
@@ -1222,7 +1222,7 @@ abstract class BranchManager implements ProxyParent
 	    	}
 	    }
 	    
-	    if(!PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.CHECK_FOR_CURRENT_STATE_WHEN_CREATING_PROXY_BRANCH)){
+	    if(!PropertiesStore.getInstance().getProperties().getBoolean(CoreProperties.CHECK_STATE_WHEN_CREATING_PROXY_BRANCH)){
 	    	if (isVirtual) {
 	    		//if the virtual branch exists already, return it
 	    		if (proxy.isVirtualBranchExists()) {
