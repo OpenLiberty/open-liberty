@@ -304,6 +304,8 @@ public class SseEventSourceImpl implements SseEventSource {
             }
 
             SseEventInputImpl eventInput = null;
+            InboundSseEvent event = null; // Liberty change - declaring earlier for invocation in two try blocks
+            final Providers providers = (ClientConfiguration) target.getConfiguration(); //Liberty change
             try {
                 final Invocation.Builder requestBuilder = buildRequest(mediaTypes);
                 Invocation request = null;
@@ -321,16 +323,18 @@ public class SseEventSourceImpl implements SseEventSource {
                         runCompleteConsumers();
                         return;
                     }
+                    // liberty change end
                     eventInput = clientResponse.readEntity(SseEventInputImpl.class);
                     //if 200<= response code <300 and response contentType is null, fail the connection.
                     if (eventInput == null) {
                         if (!alwaysReconnect) {
-                            internalClose();
+                           runCompleteConsumers(); // Liberty change - just run completion listeners instead of internalClose()
                         } else {
                             reconnect(this.reconnectDelay);
                         }
                         return;
                     }
+                    event = eventInput.read(providers); // Liberty change
                 } else {
                     //Let's buffer the entity in case the response contains an entity the user would like to retrieve from the exception.
                     //This will also ensure that the connection is correctly closed.
@@ -356,21 +360,34 @@ public class SseEventSourceImpl implements SseEventSource {
                 onUnrecoverableError(e);
                 return;
             }
-            final Providers providers = (ClientConfiguration) target.getConfiguration();
+
             while (!Thread.currentThread().isInterrupted() && state.get() == State.OPEN) {
-                if (eventInput == null || eventInput.isClosed()) {
-                    if (alwaysReconnect) {
-                        reconnect(reconnectDelay);
-                    } else {
-                        internalClose();
-                    }
+                // Liberty start
+                if (event == null && eventInput.isClosed()) {
+                    reconnect(reconnectDelay);
+                    break;
+                }
+                // Liberty end
+                if (eventInput != null && eventInput.isClosed()) {
                     break;
                 }
                 try {
-                    InboundSseEvent event = eventInput.read(providers);
                     if (event != null) {
                         onEvent(event);
                     }
+                    //event sink closed
+                    else if (!alwaysReconnect || eventInput == null || eventInput.isClosed()) // liberty change - check for eventInput == null
+                    {
+                        runCompleteConsumers(); // Liberty change - just run completion listeners instead of internalClose()
+                        break;
+                    }
+                    // Liberty change start - effectively making this a do/while instead of while loop
+                    event = eventInput.read(providers);
+                    if (event == null) {
+                        runCompleteConsumers();
+                        break;
+                    }
+                    // Liberty change end
                 } catch (IOException e) {
                     reconnect(reconnectDelay);
                     break;
