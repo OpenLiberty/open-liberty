@@ -40,5 +40,5 @@ selenium/standalone-chrome:4.8.3
 testcontainers/ryuk:0.6.0
 testcontainers/sshd:1.1.0
 testcontainers/vnc-recorder:1.3.0
-zachhein/krb5-server:0.1
-zachhein/ldap-server:0.3
+zachhein/krb5-server:0.2
+zachhein/ldap-server:0.5
