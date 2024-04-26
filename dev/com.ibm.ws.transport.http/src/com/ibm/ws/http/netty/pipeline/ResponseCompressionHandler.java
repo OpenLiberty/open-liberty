@@ -45,6 +45,7 @@ public class ResponseCompressionHandler {
     private final HttpChannelConfig config;
     private final HttpResponse response;
     private final HttpHeaders headers;
+    private int currentContentLength = -1;
 
     private String acceptEncodingHeader;
 
@@ -482,6 +483,14 @@ public class ResponseCompressionHandler {
         return result;
     }
 
+    private int getCurrentContentLength() {
+        return currentContentLength;
+    }
+
+    public void setCurrentContentLength(int length) {
+        currentContentLength = length;
+    }
+
     /**
      * Verifies if the response meets all criteria for compression to take place
      */
@@ -498,7 +507,7 @@ public class ResponseCompressionHandler {
             mimeTypeWildcard = new StringBuilder().append(mimeType.split(HttpConstants.SLASH)[0]).append(HttpConstants.SLASH).append(HttpConstants.STAR).toString();
         }
 
-        if (HttpUtil.isContentLengthSet(response) && HttpUtil.getContentLength(response) < this.contentLengthMinimum) {
+        if (getCurrentContentLength() >= 0 && getCurrentContentLength() < this.contentLengthMinimum) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, method, "Response content length is less than 2048 bytes, do not attempt to compress");
             }

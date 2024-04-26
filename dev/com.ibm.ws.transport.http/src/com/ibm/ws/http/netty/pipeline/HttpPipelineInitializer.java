@@ -49,6 +49,7 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.impl.NettyConstants;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
 
 /**
@@ -176,7 +177,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         }
 
-//        pipeline.remove(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME);
+        pipeline.remove(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME);
 
         Tr.exit(tc, "initChannel");
     }

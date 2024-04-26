@@ -1144,7 +1144,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
         }
         this.bIsResponseOwner = true;
-
         this.msgSentState = STATE_NONE;
         this.msgParsedState = STATE_NONE;
         this.writingHeaders = false;
@@ -2278,17 +2277,20 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
 
         MSP.log("should write netty response");
-        final boolean isSwitching = response.status() == HttpResponseStatus.SWITCHING_PROTOCOLS;
+        final boolean isSwitching = response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS);
 
         if (isSwitching && "websocket".equalsIgnoreCase(response.headers().get(HttpHeaderNames.UPGRADE))) {
             nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
         }
 
+        System.out.println("Is content length set?: " + HttpUtil.isContentLengthSet(nettyResponse));
+        System.out.println("Is transfer encoding set?: " + HttpUtil.isTransferEncodingChunked(nettyResponse));
+
         this.nettyContext.channel().writeAndFlush(this.nettyResponse);
         this.setHeadersSent();
+
         try {
         } catch (Exception e) {
-
         }
 
         //setupCompressionHandler();
@@ -2788,7 +2790,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             // check whether we need to pass data through the compression handler
             if (null != this.compressHandler) {
-
+                System.out.println("Non null compress handler!!!");
                 List<WsByteBuffer> list = this.compressHandler.compress(buffers);
                 if (this.isFinalWrite) {
                     list.addAll(this.compressHandler.finish());
@@ -2882,16 +2884,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Compression enabled. Prepping data");
             }
-            if (getResponse().getContentLength() == HttpGenerics.NOT_SET) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Found compression with no content length set. Setting and removing afterwards " + GenericUtils.sizeOf(buffers));
-                }
-                addedCompressionContentLength = true;
-                HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
-            }
             String acceptEncoding = nettyContext.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
-            if (this.compressHandler == null) {
+            System.out.println("Found accept encoding before: " + acceptEncoding);
+            acceptEncoding = nettyRequest.headers().get(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName());
+            System.out.println("Found accept encoding: " + acceptEncoding);
+            if (this.compressHandler == null && acceptEncoding != null) {
                 ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(getHttpConfig(), nettyResponse, acceptEncoding);
+                compressionHandler.setCurrentContentLength(GenericUtils.sizeOf(buffers));
                 compressionHandler.process();
                 if (compressionHandler.getEncoding() != null) {
                     setupCompressionHandler(compressionHandler.getEncoding());
@@ -2984,10 +2983,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         if (this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) != null) {
             System.out.println("Skipping HTTP content because upgrade was triggered!");
-           // System.out.println("Content: " + WsByteBufferUtils.asString(buffers));
-
         }
-        boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS) && !nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get().equals("HTTP2");
+        boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)
+                                           && !nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get().equals("HTTP2");
         if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             MSP.log("sendOutgoing are buffers good? " + GenericUtils.sizeOf(buffers));
             String streamId = nettyResponse.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), "-1");
@@ -3209,8 +3207,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "sendFullOutgoing : " + isOutgoingBodyValid() + ", " + wsbb + ", " + this);
         }
-        
-        
+
         if (this.isFinalWrite) {
             setMessageSent();
             return;
@@ -3223,16 +3220,13 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Compression enabled. Prepping data");
             }
-            if (getResponse().getContentLength() == HttpGenerics.NOT_SET) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Found compression with no content length set. Setting and removing afterwards " + GenericUtils.sizeOf(buffers));
-                }
-                addedCompressionContentLength = true;
-                HttpUtil.setContentLength(nettyResponse, GenericUtils.sizeOf(buffers));
-            }
             String acceptEncoding = nettyContext.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
-            if (this.compressHandler == null) {
+            System.out.println("Found accept encoding before: " + acceptEncoding);
+            acceptEncoding = nettyRequest.headers().get(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName());
+            System.out.println("Found accept encoding: " + acceptEncoding);
+            if (this.compressHandler == null && acceptEncoding != null) {
                 ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(getHttpConfig(), nettyResponse, acceptEncoding);
+                compressionHandler.setCurrentContentLength(GenericUtils.sizeOf(buffers));
                 compressionHandler.process();
                 if (compressionHandler.getEncoding() != null) {
                     setupCompressionHandler(compressionHandler.getEncoding());
@@ -3320,9 +3314,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 }
             }
         }
-        
+
         DefaultHttpContent content;
-        boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS) && !nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get().equals("HTTP2");
+        boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)
+                                           && !nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get().equals("HTTP2");
         if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
             for (WsByteBuffer buffer : buffers) {
                 if (Objects.nonNull(buffer)) {
@@ -3759,7 +3754,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      * @return HttpBaseMessageImpl
      */
     protected abstract HttpBaseMessageImpl getMessageBeingSent();
-    
+
     protected abstract HttpBaseMessage getCurrentMessage();
 
     /**

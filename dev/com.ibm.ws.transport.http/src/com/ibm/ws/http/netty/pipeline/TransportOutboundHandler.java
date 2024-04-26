@@ -28,7 +28,6 @@ import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpUtil;
-import io.openliberty.netty.internal.tcp.InactivityTimeoutHandler;
 
 /**
  *
@@ -93,16 +92,16 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
                     if (future.isSuccess() && isSwitching) {
 
                         ctx.pipeline().remove(TransportOutboundHandler.class);
-                        if(Objects.nonNull(ctx.pipeline().get(HttpServerCodec.class))){
-                            ctx.pipeline().remove(HttpServerCodec.class); 
+                        if (Objects.nonNull(ctx.pipeline().get(HttpServerCodec.class))) {
+                            ctx.pipeline().remove(HttpServerCodec.class);
                         }
-                        
+
                         ctx.pipeline().remove("maxConnectionHandler");
                         ctx.pipeline().remove("chunkLoggingHandler");
                         ctx.pipeline().remove("chunkWriteHandler");
                         ctx.pipeline().remove(ByteBufferCodec.class);
-                        ctx.pipeline().remove(InactivityTimeoutHandler.class);
-                        
+//                        ctx.pipeline().remove(InactivityTimeoutHandler.class);
+
                         if (ctx.pipeline().get(NettyServletUpgradeHandler.class) == null) {
 
                             NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(ctx.channel());
@@ -111,7 +110,7 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
                     }
                 }
             });
-
+            MSP.log("After header compliance, msg is: " + msg);
         }
 
         else {
