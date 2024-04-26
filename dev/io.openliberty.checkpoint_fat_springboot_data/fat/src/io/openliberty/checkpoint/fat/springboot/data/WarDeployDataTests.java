@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,12 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat.springboot.data;
 
+import static io.openliberty.checkpoint.fat.springboot.data.FATSuite.configureEnvVariable;
 import static io.openliberty.checkpoint.fat.springboot.data.FATSuite.doSpringBootDataTest;
 import static io.openliberty.checkpoint.fat.springboot.data.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.springboot.data.FATSuite.setUp;
+
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -55,6 +58,7 @@ public class WarDeployDataTests extends FATServletClient {
     @After
     public void tearDown() throws Exception {
         server.stopServer();
+        configureEnvVariable(server, Map.of());
     }
 
     @Test

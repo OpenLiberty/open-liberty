@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -108,7 +108,7 @@ public class FATSuite extends TestContainerSuite {
                                  envMap.put("SPRING_DATASOURCE_URL", postgre.getJdbcUrl().replace("\\", ""));
                                  envMap.put("SPRING_DATASOURCE_USERNAME", postgre.getUsername());
                                  envMap.put("SPRING_DATASOURCE_PASSWORD", postgre.getPassword());
-                                 FATSuite.configureEnvVariable(s, envMap);
+                                 configureEnvVariable(s, envMap);
                              });
 
         server.setArchiveMarker("SpringBootDataTest." + (asWar ? "asWar." : "asJar.") + testMethod);
