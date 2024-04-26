@@ -623,7 +623,7 @@ org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-stream
 org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core:1.0.1
 org.eclipse.microprofile.reactive-streams-operators:microprofile-reactive-streams-operators-core:3.0
 org.eclipse.microprofile.reactive.messaging:microprofile-reactive-messaging-api:1.0
-org.eclipse.microprofile.reactive.messaging:microprofile-reactive-messaging-api:3.0
+org.eclipse.microprofile.reactive.messaging:microprofile-reactive-messaging-api:3.0.1
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.0.1
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.1
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:1.2.0
