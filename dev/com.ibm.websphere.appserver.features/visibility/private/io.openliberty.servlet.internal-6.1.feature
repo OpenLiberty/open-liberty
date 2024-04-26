@@ -26,6 +26,7 @@ Subsystem-Category: JakartaEE11Application
  com.ibm.ws.webserver.plugin.runtime.jakarta, \
  com.ibm.ws.webserver.plugin.runtime.interfaces,\
  io.openliberty.session.6.0.internal, \
+ io.openliberty.session.6.1.internal, \
  io.openliberty.webcontainer.servlet.6.0.internal, \
  io.openliberty.webcontainer.servlet.6.1.internal, \
  io.openliberty.webcontainer.servlet.6.1.internal.factories

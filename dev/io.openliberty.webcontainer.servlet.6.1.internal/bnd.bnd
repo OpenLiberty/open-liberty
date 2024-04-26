@@ -28,6 +28,7 @@ Export-Package: \
     io.openliberty.webcontainer61.osgi.response*;provide:=true,\
     io.openliberty.webcontainer61.osgi.srt*;provide:=true,\
     io.openliberty.webcontainer61.osgi.webapp*;provide:=true,\
+    io.openliberty.webcontainer61.session.impl*;provide:=true,\
     io.openliberty.webcontainer61.srt*;provide:=true
 
 Import-Package: \
@@ -59,6 +60,7 @@ instrument.disabled: true
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.websphere.security;version=latest,\
-	io.openliberty.webcontainer.servlet.6.0.internal,\
 	io.openliberty.jakarta.servlet.6.1;version=latest,\
-	io.openliberty.session.6.0.internal;version=latest
+	io.openliberty.session.6.1.internal;version=latest,\
+	io.openliberty.webcontainer.servlet.6.0.internal
+

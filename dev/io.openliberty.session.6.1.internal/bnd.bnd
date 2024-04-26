@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2024 IBM Corporation and others.
+# Copyright (c) 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -11,25 +11,25 @@
 bVersion=1.0
 
 Bundle-Name: WAS Session
-Bundle-SymbolicName: io.openliberty.session.6.0.internal
-Bundle-Description: WAS Session for Servlet 6.0
+Bundle-SymbolicName: io.openliberty.session.6.1.internal
+Bundle-Description: Liberty Session for Servlet 6.1
 
-javac.source: 11
-javac.target: 11
+javac.source: 17
+javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
-    io.openliberty.session.impl*;provide:=true, \
-    io.openliberty.session.resources;provide:=true
+    io.openliberty.session61.http.impl;provide:=true
 	
 Import-Package: \
     com.ibm.ws.session.utils, \
     com.ibm.wsspi.session, \
+    io.openliberty.session.resources, \
     !*.internal.*, \
     *
 
@@ -41,4 +41,5 @@ instrument.disabled: true
     com.ibm.ws.logging.core,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.session.jakarta;version=latest,\
-    io.openliberty.jakarta.servlet.6.0;version=latest
+    io.openliberty.jakarta.servlet.6.1;version=latest,\
+    io.openliberty.session.6.0.internal;version=latest
