@@ -672,7 +672,7 @@ public class NettyBaseMessage implements HttpBaseMessage {
     public void setCommitted() {
         this.committed = Boolean.TRUE;
     }
-    
+
     @Override
     public void clear() {
 
@@ -721,6 +721,8 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public void setContentLength(long length) {
+        if (HttpUtil.isTransferEncodingChunked(message))
+            HttpUtil.setTransferEncodingChunked(message, false);
         HttpUtil.setContentLength(message, length);
 
     }
