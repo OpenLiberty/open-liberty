@@ -2561,31 +2561,60 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     returnValue = results.iterator();
                                 } else if (queryInfo.returnArrayType != null) {
                                     int size = results.size();
-                                    Object firstResult = size == 0 ? null : results.get(0);
-                                    if (firstResult == null
+                                    Object firstNonNullResult = null;
+                                    for (Object result : results)
+                                        if (result != null) {
+                                            firstNonNullResult = result;
+                                            break;
+                                        }
+                                    if (firstNonNullResult == null
                                         || queryInfo.type == QueryInfo.Type.FIND_AND_DELETE
-                                        || queryInfo.returnArrayType != Object.class && queryInfo.returnArrayType.isInstance(firstResult)
-                                        || queryInfo.returnArrayType.isPrimitive() && isWrapperClassFor(queryInfo.returnArrayType, firstResult.getClass())) {
+                                        || queryInfo.returnArrayType != Object.class && queryInfo.returnArrayType.isInstance(firstNonNullResult)
+                                        || queryInfo.returnArrayType.isPrimitive() && isWrapperClassFor(queryInfo.returnArrayType, firstNonNullResult.getClass())) {
                                         returnValue = Array.newInstance(queryInfo.returnArrayType, size);
                                         int i = 0;
                                         for (Object result : results)
                                             Array.set(returnValue, i++, result);
-                                    } else if (firstResult.getClass().isArray()) {
-                                        if (size == 1) {
+                                    } else if (firstNonNullResult.getClass().isArray()) {
+                                        if (trace && tc.isDebugEnabled())
+                                            Tr.debug(this, tc, "convert " + firstNonNullResult.getClass().getName() +
+                                                               " to " + queryInfo.returnArrayType.getName());
+                                        if (queryInfo.returnArrayType.isArray()) {
+                                            // convert List<Object[]> to array of array
+                                            returnValue = Array.newInstance(queryInfo.returnArrayType, size);
+                                            int i = 0;
+                                            for (Object result : results)
+                                                if (result == null) {
+                                                    Array.set(returnValue, i++, result);
+                                                } else {
+                                                    // Object[] needs conversion to returnArrayType
+                                                    Class<?> subarrayType = queryInfo.returnArrayType.getComponentType();
+                                                    int len = Array.getLength(result);
+                                                    Object subarray = Array.newInstance(subarrayType, len);
+                                                    for (int j = 0; j < len; j++) {
+                                                        Object element = Array.get(result, j);
+                                                        Array.set(subarray, j, subarrayType.isInstance(element) //
+                                                                        ? element : to(subarrayType, element, true));
+                                                    }
+                                                    Array.set(returnValue, i++, subarray);
+                                                }
+                                        } else if (size == 1) {
+                                            // convert size 1 List<Object[]> to array
                                             Class<?> optionalType = queryInfo.getOptionalResultType();
-                                            if (firstResult.getClass().equals(optionalType))
-                                                returnValue = firstResult;
+                                            if (firstNonNullResult.getClass().equals(optionalType))
+                                                returnValue = firstNonNullResult;
                                             else {
-                                                int len = Array.getLength(firstResult);
+                                                int len = Array.getLength(firstNonNullResult);
                                                 returnValue = Array.newInstance(queryInfo.returnArrayType, len);
                                                 for (int i = 0; i < len; i++) {
-                                                    Object element = Array.get(firstResult, i);
+                                                    Object element = Array.get(firstNonNullResult, i);
                                                     Array.set(returnValue, i, queryInfo.returnArrayType.isInstance(element) //
                                                                     ? element : to(queryInfo.returnArrayType, element, true));
                                                 }
                                             }
-                                        } else { // result is a list of multiple arrays
-                                            returnValue = results;
+                                        } else {
+                                            // List<Object[]> with multiple Object[] elements cannot convert to a one dimensional array
+                                            throw new NonUniqueResultException(""); // TODO NLS
                                         }
                                     } else {
                                         throw new MappingException("The " + queryInfo.returnArrayType.getName() +
@@ -2593,7 +2622,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                                    queryInfo.method.getName() + " method of the " +
                                                                    queryInfo.method.getDeclaringClass().getName() +
                                                                    " repository is incompatible with the " +
-                                                                   firstResult.getClass().getName() +
+                                                                   firstNonNullResult.getClass().getName() +
                                                                    " type of the observed query results."); // TODO NLS
                                     }
                                 } else if (results.isEmpty()) {
@@ -3033,11 +3062,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param failIfNotConverted whether or not to fail if unable to convert the value.
      * @return new instance of the requested type.
      */
+    @Trivial // avoid tracing value from customer data
     private static final Object to(Class<?> type, Object item, boolean failIfNotConverted) {
         Object result = item;
         if (item == null) {
             if (type.isPrimitive())
-                throw new NullPointerException(); // TODO NLS
+                throw new MappingException("Query returned a null result which is not compatible with the type that is " +
+                                           "expected by the repository method signature: " + type.getName()); // TODO NLS
         } else if (item instanceof Number && (type.isPrimitive() || Number.class.isAssignableFrom(type))) {
             Number n = (Number) item;
             if (long.class.equals(type) || Long.class.equals(type))
@@ -3054,13 +3085,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 result = n.byteValue();
             else if (boolean.class.equals(type) || Boolean.class.equals(type))
                 result = n.longValue() != 0L;
+            else if (failIfNotConverted)
+                throw new MappingException("Query returned a result of type " + item.getClass().getName() +
+                                           " which is not compatible with the type that is expected by the repository method signature: " +
+                                           type.getName()); // TODO
         } else if (type.isAssignableFrom(String.class)) {
             result = item.toString();
-        }
-        if (failIfNotConverted && result == item && item != null)
+        } else if (failIfNotConverted) {
             throw new MappingException("Query returned a result of type " + item.getClass().getName() +
                                        " which is not compatible with the type that is expected by the repository method signature: " +
                                        type.getName()); // TODO
+        }
         return result;
     }
 
