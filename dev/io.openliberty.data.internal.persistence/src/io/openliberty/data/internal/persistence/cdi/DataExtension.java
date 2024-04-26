@@ -52,6 +52,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.provider.PUnitEMBuilder;
@@ -275,8 +276,18 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
             }
         }
 
+        boolean beforeCheckpoint = !CheckpointPhase.getPhase().restored();
         for (EntityManagerBuilder builder : entityGroups.values()) {
-            provider.executor.submit(builder);
+            if (beforeCheckpoint) {
+                // Run the task in the foreground if before a checkpoint.
+                // This is necessary to ensure this task completes before the checkpoint.
+                // Application startup performance is not as important before checkpoint
+                // and this ensures we don't do this work on restore side which will make
+                // restore faster.
+                builder.run();
+            } else {
+                provider.executor.submit(builder);
+            }
         }
     }
 
