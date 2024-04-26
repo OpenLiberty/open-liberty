@@ -22,10 +22,6 @@ addRequiredLibraries.dependsOn copyTestContainers
 // publish/shared/resources/jdbc directory
 addRequiredLibraries.dependsOn copyJdbcDrivers
 
-dependencies {
-  requiredLibs project(':io.openliberty.jakarta.data.1.0')
-}
-
 apply plugin: 'java'
 
 compileJava {

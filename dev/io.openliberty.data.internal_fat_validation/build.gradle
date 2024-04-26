@@ -12,7 +12,3 @@
  *******************************************************************************/
 
 addRequiredLibraries.dependsOn addDerby
-
-dependencies {
-  requiredLibs project(':io.openliberty.jakarta.data.1.0')
-}

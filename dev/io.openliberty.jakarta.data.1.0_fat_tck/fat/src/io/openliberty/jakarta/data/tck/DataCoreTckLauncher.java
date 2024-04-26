@@ -70,7 +70,7 @@ public class DataCoreTckLauncher {
         additionalProps.put("jakarta.profile", "core");
 
         //FIXME Always skip signature tests since our implementation has experimental API
-        additionalProps.put("included.groups", "core & persistence & !signature");
+        additionalProps.put("included.groups", "core & persistence");
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");

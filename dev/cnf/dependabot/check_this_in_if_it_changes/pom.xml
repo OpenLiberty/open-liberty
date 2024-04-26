@@ -1317,6 +1317,11 @@
       <version>2.1.1</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.data</groupId>
+      <artifactId>jakarta.data-api</artifactId>
+      <version>1.0.0-RC1</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.ejb</groupId>
       <artifactId>jakarta.ejb-api</artifactId>
       <version>4.0.1</version>

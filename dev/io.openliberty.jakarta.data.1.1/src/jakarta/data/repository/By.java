@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface By {
-    String ID = "#id";
+    String ID = "id(this)";
 
     String value();
 }
