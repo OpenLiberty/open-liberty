@@ -29,6 +29,7 @@
 
 	<webAppSecurity
 		sameSiteCookie="${mySameSiteCookie}"
+		partitionedCookie="${myPartitionedCookie}"
 		ssoRequiresSSL="${mySsoRequiresSSL}"/>
 				
 	<javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject" />
