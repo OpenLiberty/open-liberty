@@ -241,8 +241,11 @@ io.smallrye:smallrye-metrics:5.1.0
 io.smallrye:smallrye-open-api-core:3.1.1
 io.smallrye:smallrye-open-api-jaxrs:3.1.1
 io.zipkin.reporter2:zipkin-reporter:2.16.4
+io.zipkin.reporter2:zipkin-reporter:3.3.0
 io.zipkin.reporter2:zipkin-sender-okhttp3:2.16.4
+io.zipkin.reporter2:zipkin-sender-okhttp3:3.3.0
 io.zipkin.zipkin2:zipkin:2.24.3
+io.zipkin.zipkin2:zipkin:3.1.1
 jakarta.activation:jakarta.activation-api:2.0.1
 jakarta.activation:jakarta.activation-api:2.1.1
 jakarta.annotation:jakarta.annotation-api:2.0.0
