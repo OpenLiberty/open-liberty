@@ -84,7 +84,7 @@ public class HttpChannelConfig {
     /** Debug/error logger reference */
     private final DebugLog debugLogger = DisabledLogger.getRef();
     /** Setting for the maximum field size of a message */
-    private int limitFieldSize = HttpConfigConstants.MAX_LIMIT_FIELDSIZE;
+    private int limitFieldSize = 32768;
     /** Setting for the maximum number of headers per message */
     private int limitNumHeaders = HttpConfigConstants.MAX_LIMIT_NUMHEADERS;
     /** Setting limiting the number of temporary responses we will skip */
@@ -1083,7 +1083,7 @@ public class HttpChannelConfig {
         Object value = props.get(HttpConfigConstants.PROPNAME_LIMIT_FIELDSIZE);
         if (null != value) {
             try {
-                this.limitFieldSize = rangeLimit(convertInteger(value), HttpConfigConstants.MIN_LIMIT_FIELDSIZE, HttpConfigConstants.MAX_LIMIT_FIELDSIZE);
+                this.limitFieldSize = minLimit(convertInteger(value), HttpConfigConstants.MIN_LIMIT_FIELDSIZE);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: field size limit is " + getLimitOfFieldSize());
                 }
