@@ -21,6 +21,6 @@ public class FipsUtils {
 				return System.getProperty("com.ibm.jsse2.usefipsprovider");
 			}
 		});
-		return fipsEnabled == "true" ? true : false;
+		return Boolean.parseBoolean(fipsEnabled);
 	}
 }
