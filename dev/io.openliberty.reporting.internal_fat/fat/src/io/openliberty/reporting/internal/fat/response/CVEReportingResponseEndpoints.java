@@ -58,9 +58,9 @@ public class CVEReportingResponseEndpoints extends Application {
 
         Cves cves = new Cves();
         Cves cvesNew = new Cves();
-        cves.setCveId("CVE-2023-50312");
+        cves.setId("CVE-2023-50312");
         cves.setUrl("https://www.ibm.com/support/pages/node/7125527");
-        cvesNew.setCveId("CVE-2023-50313");
+        cvesNew.setId("CVE-2023-50313");
         cvesNew.setUrl("https://www.ibm.com/support/pages/node/7125528");
 
         cvesList.add(cves);
@@ -76,10 +76,10 @@ public class CVEReportingResponseEndpoints extends Application {
         Cves cvesJava = new Cves();
         Cves cvesNewJava = new Cves();
 
-        cvesJava.setCveId("CVE-2023-50314");
+        cvesJava.setId("CVE-2023-50314");
         cvesJava.setUrl("https://www.ibm.com/support/pages/node/7125529");
 
-        cvesNewJava.setCveId("CVE-2023-50315");
+        cvesNewJava.setId("CVE-2023-50315");
         cvesNewJava.setUrl("https://www.ibm.com/support/pages/node/7125529");
 
         cvesList.clear();
