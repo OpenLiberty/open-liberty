@@ -314,6 +314,19 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(Arrays.toString(list.get(4)), 0, Arrays.compare(new byte[] { 36, 77, 85 }, list.get(4)));
         assertEquals(Arrays.toString(list.get(5)), 0, Arrays.compare(new byte[] { 39, 80, 89 }, list.get(5)));
 
+        // select values including a function on byte[] column
+        int[][] sidesInfo = triangles.sidesInfo((byte) 65);
+        assertEquals(2, sidesInfo.length);
+        assertEquals(0, sidesInfo[0][0]);
+        assertEquals(3, sidesInfo[0][1]);
+        assertEquals(0, sidesInfo[1][0]);
+        assertEquals(3, sidesInfo[1][1]);
+
+        sidesInfo = triangles.sidesInfo((byte) 89);
+        assertEquals(sidesInfo.toString(), 1, sidesInfo.length);
+        assertEquals(0, sidesInfo[0][0]);
+        assertEquals(3, sidesInfo[0][1]);
+
         // empty stream
         assertEquals(1, triangles.deleteByHypotenuseNull());
         stream = triangles.sidesWherePerimeter((short) 30);

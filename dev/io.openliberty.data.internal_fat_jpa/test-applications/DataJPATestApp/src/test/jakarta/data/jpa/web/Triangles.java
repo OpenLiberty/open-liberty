@@ -42,6 +42,9 @@ public interface Triangles extends BasicRepository<Triangle, Integer> {
     @Query("UPDATE Triangle SET sides=?2, perimeter=?3 WHERE id(this)=?1")
     boolean resizePreservingHypotenuse(int key, byte[] newSides, short newPerimeter);
 
+    @Query("SELECT t.sameLengthSides, length(t.sides) FROM Triangle t WHERE t.hypotenuse=?1")
+    int[][] sidesInfo(byte hypotenuse);
+
     @Query("SELECT sides FROM Triangle WHERE hypotenuse >= :min AND hypotenuse <= :max")
     @OrderBy("hypotenuse")
     @OrderBy("distinctKey")
