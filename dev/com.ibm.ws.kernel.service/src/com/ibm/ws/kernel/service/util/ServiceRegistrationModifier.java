@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -123,34 +123,29 @@ public class ServiceRegistrationModifier<S> {
                     ServiceRegistration<S> currentReg = registration;
                     Hashtable<String, Object> currentProps = serviceProperties;
 
-                    ServiceRegistration<S> newReg = null;
-                    Hashtable<String, Object> newProps = null;
                     modifyLock.unlock();
                     try {
-                        if (isUnregistered) {
+                        if (isUnregistered)
                             return; // nothing to do if already unregistered
-                        }
                         if (doUnregister) {
-                            if (currentReg != null) {
-                                currentReg.unregister();
-                                return; // we are done after unregistering
-                            }
-                        } else {
-                            if (currentReg != null || currentContext != null) {
-                                newProps = supplier.getServiceProperties();
-                                if (newProps != null && (currentProps == null || !currentProps.equals(newProps))) {
-                                    // make a copy of the new props to protect ourselves of external changes to the results
-                                    newProps = new Hashtable<String, Object>(newProps);
-                                    if (currentReg != null) {
-                                        currentReg.setProperties(newProps);
-                                    } else {
-                                        newReg = currentContext.registerService(serviceClass, service, newProps);
-                                        currentReg = newReg;
-                                    }
-                                    currentProps = newProps;
-                                }
-                            }
+                            if (currentReg == null)
+                                continue;
+                            currentReg.unregister();
+                            return; // we are done after unregistering
                         }
+                        if (currentReg == null && currentContext == null)
+                            continue;
+                        Hashtable<String, Object> newProps = supplier.getServiceProperties();
+                        if (newProps == null || newProps.equals(currentProps))
+                            continue;
+                        // make a copy of the new props to protect ourselves from external changes to the results
+                        newProps = new Hashtable<String, Object>(newProps);
+                        if (currentReg == null) {
+                            currentReg = currentContext.registerService(serviceClass, service, newProps);
+                        } else {
+                            currentReg.setProperties(newProps);
+                        }
+                        currentProps = newProps;
                     } catch (IllegalStateException e) {
                         // happens if already unregistered
                         return;

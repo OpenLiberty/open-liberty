@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,7 +40,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.bnd.metatype.annotation.Ext;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier;
-import com.ibm.ws.kernel.service.util.ServiceRegistrationModifier.ServicePropertySupplier;
 import com.ibm.ws.security.registry.ExternalUserRegistryWrapper;
 import com.ibm.ws.security.registry.FederationRegistry;
 import com.ibm.ws.security.registry.RegistryException;
@@ -91,12 +91,11 @@ interface UserRegistryRefConfig {
  * UserRegistry objects.
  */
 @Component(immediate = true,
-//order means config.displayId comes from factory config
-           configurationPid = { "com.ibm.ws.security.registry.internal.UserRegistryRefConfig", "com.ibm.ws.security.registry" },
+           configurationPid = "com.ibm.ws.security.registry.internal.UserRegistryRefConfig",
            configurationPolicy = ConfigurationPolicy.OPTIONAL,
            property = "service.vendor=IBM",
            service = {})
-public class UserRegistryServiceImpl implements UserRegistryService, ServicePropertySupplier {
+public class UserRegistryServiceImpl implements UserRegistryService {
 
     private static final TraceComponent tc = Tr.register(UserRegistryServiceImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
@@ -136,8 +135,8 @@ public class UserRegistryServiceImpl implements UserRegistryService, ServiceProp
 
     private boolean isFederationActive = false;
 
-    private final ServiceRegistrationModifier<UserRegistryService> userRegistryServiceRegistration = new ServiceRegistrationModifier<>(UserRegistryService.class, this, this);
     private volatile Hashtable<String, Object> userRegistryServiceProps;
+    private final ServiceRegistrationModifier<UserRegistryService> userRegistryServiceRegistration = new ServiceRegistrationModifier<>(UserRegistryService.class, () -> userRegistryServiceProps, this);
 
     /**
      * Method will be called for each UserRegistryConfiguration that is
@@ -159,7 +158,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, ServiceProp
      * </pre>
      *
      * <p>
-     * In this case, there are two basic1 IDs. If this situatoin occurs,
+     * In this case, there are two basic1 IDs. If this situation occurs,
      * the first instance of the ID is used, and all subsequent instances
      * are ignored. The decision of which one to ignore was arbitrary and
      * due to the nature of Declarative Services, non-deterministic as the
@@ -172,30 +171,21 @@ public class UserRegistryServiceImpl implements UserRegistryService, ServiceProp
         String configId = (String) ref.getProperty(KEY_CONFIG_ID);
         String type = (String) ref.getProperty(KEY_TYPE);
 
-        if (configId != null && type != null) {
-            configId = parseIdFromConfigID(configId);
-            userRegistries.putReference(configId, ref);
-        } else {
+        if (configId == null || type == null) {
             if (type == null) {
                 Tr.error(tc, "USER_REGISTRY_SERVICE_WITHOUT_TYPE", ref.getProperty(KEY_COMPONENT_NAME));
+                type = UNKNOWN_TYPE;
             }
             if (configId == null) {
-                if (type != null) {
-                    Tr.error(tc, "USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID", type);
-                } else {
-                    Tr.error(tc, "USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID", UNKNOWN_TYPE);
-                }
+                Tr.error(tc, "USER_REGISTRY_SERVICE_CONFIGURATION_WITHOUT_ID", type);
             }
-        }
-
-        if (type != null) {
-            registryTypes.add(type);
         } else {
-            registryTypes.add(UNKNOWN_TYPE);
+            configId = parseIdFromConfigID(configId);
+            userRegistries.putReference(configId, ref);
         }
 
+        registryTypes.add(type);
         notifyListeners();
-
         updateUserRegistryServiceRegistration();
     }
 
@@ -510,7 +500,6 @@ public class UserRegistryServiceImpl implements UserRegistryService, ServiceProp
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getUserRegistryType() {
         synchronized (userRegistrySync) {
@@ -518,16 +507,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, ServiceProp
                 return FEDERATION_REGISTRY_TYPE;
             }
         }
-        if (registryTypes.isEmpty() || registryTypes.size() > 1) {
-            return UNKNOWN_TYPE;
-        } else {
-            return registryTypes.get(0);
-        }
-    }
-
-    @Override
-    public Hashtable<String, Object> getServiceProperties() {
-        return userRegistryServiceProps;
+        return registryTypes.size() == 1 ? registryTypes.get(0) : UNKNOWN_TYPE;
     }
 
     private void updateUserRegistryServiceRegistration() {
@@ -554,15 +534,8 @@ public class UserRegistryServiceImpl implements UserRegistryService, ServiceProp
         Hashtable<String, Object> result = new Hashtable<String, Object>(props);
         try {
             UserRegistry userRegistry = determineActiveUserRegistry(false);
-            if (userRegistry == null) {
-                result.put(SERVICE_PROPERTY_USER_REGISTRY_CONFIGURED, false);
-            } else {
-                result.put(SERVICE_PROPERTY_USER_REGISTRY_CONFIGURED, true);
-                String realm = userRegistry.getRealm();
-                if (realm != null) {
-                    result.put(SERVICE_PROPERTY_REALM, userRegistry.getRealm());
-                }
-            }
+            result.put(SERVICE_PROPERTY_USER_REGISTRY_CONFIGURED, userRegistry != null);
+            Optional.ofNullable(userRegistry).map(UserRegistry::getRealm).ifPresent(realm -> result.put(SERVICE_PROPERTY_REALM, realm));
         } catch (RegistryException e) {
             //apparently it wasn't configured very successfully
         }
