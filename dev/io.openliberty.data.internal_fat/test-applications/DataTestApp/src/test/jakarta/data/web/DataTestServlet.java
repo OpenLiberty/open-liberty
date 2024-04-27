@@ -1330,16 +1330,16 @@ public class DataTestServlet extends FATServlet {
         Package p0 = (Package) deletesList.get(0);
         Package p1 = (Package) deletesList.get(1);
         if (supportsOrderByForUpdate) {
-            assertEquals(70071, p0);
-            assertEquals(17.0f, p.length, 0.001f);
-            assertEquals(17.1f, p.width, 0.001f);
-            assertEquals(7.7f, p.height, 0.001f);
-            assertEquals("testFindAndDeleteReturnsObjects#70071", p.description);
-            assertEquals(70077, p1);
-            assertEquals(77.0f, p.length, 0.001f);
-            assertEquals(17.7f, p.width, 0.001f);
-            assertEquals(7.7f, p.height, 0.001f);
-            assertEquals("testFindAndDeleteReturnsObjects#70077", p.description);
+            assertEquals(70071, p0.id);
+            assertEquals(17.0f, p0.length, 0.001f);
+            assertEquals(17.1f, p0.width, 0.001f);
+            assertEquals(7.7f, p0.height, 0.001f);
+            assertEquals("testFindAndDeleteReturnsObjects#70071", p0.description);
+            assertEquals(70077, p1.id);
+            assertEquals(77.0f, p1.length, 0.001f);
+            assertEquals(17.7f, p1.width, 0.001f);
+            assertEquals(7.7f, p1.height, 0.001f);
+            assertEquals("testFindAndDeleteReturnsObjects#70077", p1.description);
         }
         assertEquals("Found " + p0.id + "; expected one of " + remaining, true, remaining.remove(p0.id));
         assertEquals("Found " + p1.id + "; expected one of " + remaining, true, remaining.remove(p1.id));
