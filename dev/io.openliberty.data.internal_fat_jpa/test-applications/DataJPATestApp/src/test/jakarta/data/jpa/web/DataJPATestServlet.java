@@ -147,6 +147,9 @@ public class DataJPATestServlet extends FATServlet {
     @Resource
     private UserTransaction tran;
 
+    @Inject
+    Triangles triangles;
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         // Some read-only data that is prepopulated for tests:
@@ -235,6 +238,111 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(found);
         assertEquals("Found " + found.toString(), 1, found.size());
         assertEquals("IBM", found.get(0).name);
+    }
+
+    /**
+     * Use an entity that has an attribute that is a byte[], performing repository operations
+     * that query by the byte[] and return the byte[] attribute in various ways.
+     */
+    @Test
+    public void testByteArrayAttributeType() {
+        // remove all data before test
+        triangles.deleteByHypotenuseNot((byte) 0);
+
+        List<Triangle> saved = triangles.saveAll(List.of(new Triangle((byte) 10, (byte) 10, (byte) 10), // keys[0]
+                                                         new Triangle((byte) 13, (byte) 84, (byte) 85), // keys[1]
+                                                         new Triangle((byte) 16, (byte) 63, (byte) 65), // keys[2]
+                                                         new Triangle((byte) 28, (byte) 45, (byte) 53), // keys[3]
+                                                         new Triangle((byte) 33, (byte) 56, (byte) 65), // keys[4]
+                                                         new Triangle((byte) 39, (byte) 80, (byte) 89), // keys[5]
+                                                         new Triangle((byte) 48, (byte) 55, (byte) 73))); // keys[6]
+
+        int[] keys = new int[] { saved.get(0).distinctKey,
+                                 saved.get(1).distinctKey,
+                                 saved.get(2).distinctKey,
+                                 saved.get(3).distinctKey,
+                                 saved.get(4).distinctKey,
+                                 saved.get(5).distinctKey,
+                                 saved.get(6).distinctKey };
+
+        // byte[] as return value
+        assertEquals(0, Arrays.compare(new byte[] { 13, 84, 85 },
+                                       triangles.getSides(keys[1])));
+
+        // Optional byte[] as return value
+        assertEquals(0, Arrays.compare(new byte[] { 39, 80, 89 },
+                                       triangles.getSidesIfPresent(keys[5]).orElseThrow()));
+
+        // updates to a byte[] attribute
+        assertEquals(true, triangles.resizePreservingHypotenuse(keys[1],
+                                                                new byte[] { 36, 77, 85 },
+                                                                (short) (198)));
+
+        List<Triangle> found = triangles.withPerimeter((short) (36 + 77 + 85));
+        assertEquals(1, found.size());
+        Triangle t = found.get(0);
+        assertEquals(0, Arrays.compare(new byte[] { 36, 77, 85 }, t.sides));
+        assertEquals(t.distinctKey, Integer.valueOf(keys[1]));
+        assertEquals(t.hypotenuse, Byte.valueOf((byte) 85));
+        assertEquals(t.perimeter, (short) (36 + 77 + 85));
+        assertEquals(Short.valueOf((short) 0), t.sameLengthSides);
+
+        // update to cause triangles 2 and 4 to have the same sides
+        assertEquals(true, triangles.resizePreservingHypotenuse(keys[2],
+                                                                new byte[] { 33, 56, 65 },
+                                                                (short) (154)));
+
+        // results as array of byte[], ordered by hypotenuse, then key
+        byte[][] array = triangles.sidesWhereHypotenuseWithin((byte) 65, (byte) 75);
+        assertEquals(Arrays.deepToString(array), 3, array.length);
+        assertEquals(0, Arrays.compare(new byte[] { 33, 56, 65 }, array[0]));
+        assertEquals(0, Arrays.compare(new byte[] { 33, 56, 65 }, array[1]));
+        assertEquals(0, Arrays.compare(new byte[] { 48, 55, 73 }, array[2]));
+
+        // results as a stream of byte[]
+        Stream<byte[]> stream = triangles.sidesWherePerimeter((short) 30);
+        byte[] sides = stream.findFirst().orElseThrow();
+        assertEquals(Arrays.toString(sides), 0, Arrays.compare(new byte[] { 10, 10, 10 }, sides));
+
+        // results as a list of byte[]
+        List<byte[]> list = triangles.sidesWhereNumSidesEqual((short) 0);
+        assertEquals(6, list.size());
+        assertEquals(Arrays.toString(list.get(0)), 0, Arrays.compare(new byte[] { 28, 45, 53 }, list.get(0)));
+        assertEquals(Arrays.toString(list.get(1)), 0, Arrays.compare(new byte[] { 33, 56, 65 }, list.get(1)));
+        assertEquals(Arrays.toString(list.get(2)), 0, Arrays.compare(new byte[] { 33, 56, 65 }, list.get(2)));
+        assertEquals(Arrays.toString(list.get(3)), 0, Arrays.compare(new byte[] { 48, 55, 73 }, list.get(3)));
+        assertEquals(Arrays.toString(list.get(4)), 0, Arrays.compare(new byte[] { 36, 77, 85 }, list.get(4)));
+        assertEquals(Arrays.toString(list.get(5)), 0, Arrays.compare(new byte[] { 39, 80, 89 }, list.get(5)));
+
+        // select values including a function on byte[] column
+        int[][] sidesInfo = triangles.sidesInfo((byte) 65);
+        assertEquals(2, sidesInfo.length);
+        assertEquals(0, sidesInfo[0][0]);
+        assertEquals(3, sidesInfo[0][1]);
+        assertEquals(0, sidesInfo[1][0]);
+        assertEquals(3, sidesInfo[1][1]);
+
+        sidesInfo = triangles.sidesInfo((byte) 89);
+        assertEquals(sidesInfo.toString(), 1, sidesInfo.length);
+        assertEquals(0, sidesInfo[0][0]);
+        assertEquals(3, sidesInfo[0][1]);
+
+        // empty stream
+        assertEquals(1, triangles.deleteByHypotenuseNull());
+        stream = triangles.sidesWherePerimeter((short) 30);
+        assertEquals(0, stream.count());
+
+        assertEquals(4L, triangles.deleteByHypotenuseNot((byte) 65));
+
+        assertEquals(2L, triangles.deleteByHypotenuseNot((byte) 0));
+
+        // empty array
+        array = triangles.sidesWhereHypotenuseWithin((byte) 5, (byte) 125);
+        assertEquals(Arrays.deepToString(array), 0, array.length);
+
+        // empty list
+        list = triangles.sidesWhereNumSidesEqual((short) 0);
+        assertEquals(List.of(), list);
     }
 
     /**
