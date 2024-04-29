@@ -58,9 +58,9 @@ If you need assistance, reach out to the [OpenLiberty/release-architect](https:/
 The [OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) and area leads are responsible for prioritizing the features and determining which features are being actively worked on.
 
 ### **Prioritization**
-- [ ] Feature added to the "New" column of the [Open Liberty project board](https://github.com/orgs/OpenLiberty/projects/2)
-  - Feature owner adds label `Prioritization - Requested`
-  - Feature added to "New" column of the Open Liberty Roadmap. ([OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager))
+- [ ] Feature owner adds label `Prioritization - Requested`
+  - This puts the feature on the radar of the [OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) and [OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager). They are responsible for querying for new features that need to be prioritized.
+- [ ] [OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager) adds feature to the "New" column of the [Open Liberty project board](https://github.com/orgs/OpenLiberty/projects/2)
 - [ ] Priority assigned
   - Attend the Liberty Backlog Prioritization meeting
   - `Prioritization - Requested` label removed ([OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager) or feature owner)

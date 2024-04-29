@@ -58,6 +58,7 @@ public class VerboseLogTest {
     private final static String SERVER_NAME = "com.ibm.ws.kernel.boot.verbose.fat";
     static String executionDir;
     static File verboseLog;
+    static File verboseLogSpace;
     static File verboseLogServerRoot;
     static String serverCommand;
     static File jvmoptionsserverroot;
@@ -69,6 +70,7 @@ public class VerboseLogTest {
         server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         executionDir = server.getInstallRoot();
         verboseLog = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/logs/verbosegc.001.log");
+        verboseLogSpace = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/add space/logs/verbosegc.001.log");
         verboseLogServerRoot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/verbosegc.log");
         jvmoptionsserverroot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/jvm.options");
         serverEnvServerRoot = new File(executionDir + "/usr/servers/" + SERVER_NAME + "/server.env");
@@ -334,6 +336,46 @@ public class VerboseLogTest {
         server.stopServer();
     }
 
+    //Add a space in the file path of the verbosegc logs to make sure server starts correctly
+    @Test
+    public void testOpenJ9SpaceInPath() throws Exception {
+        assumeTrue(isOpenJ9);
+
+        Log.entering(c, testName.getMethodName());
+
+        deleteLeftoverFiles();
+
+        Writer isw = new OutputStreamWriter(new FileOutputStream(serverEnvServerRoot), "UTF-8");
+        BufferedWriter bw = new BufferedWriter(isw);
+        if (server.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS){
+            bw.write("LOG_DIR=" + executionDir + "\\usr\\servers\\" + SERVER_NAME + "\\add space\\logs\n");
+        }
+        else{
+            bw.write("LOG_DIR=" + executionDir + "/usr/servers/" + SERVER_NAME + "/add space/logs\n");
+        }
+        bw.close();
+
+        String[] parms = new String[2];
+        parms[0] = "start";
+        parms[1] = SERVER_NAME;
+
+        Properties envVars = new Properties();
+        envVars.put("CDPATH", ".");
+
+        ProgramOutput po = server.getMachine().execute(serverCommand, parms, executionDir, envVars);
+
+        Log.info(c, testName.getMethodName(), "server start stdout = " + po.getStdout());
+        Log.info(c, testName.getMethodName(), "server start stderr = " + po.getStderr());
+
+        server.waitForStringInLog("CWWKF0011I");
+        server.resetStarted();
+
+        assertTrue("the server should have been started", server.isStarted());
+        assertTrue("verbosegc log should have been created", verboseLogSpace.exists());
+
+        server.stopServer();
+    }
+
     private void deleteLeftoverFiles() {
         if(jvmoptionsserverroot.exists()){
             jvmoptionsserverroot.delete();
@@ -343,6 +385,9 @@ public class VerboseLogTest {
         }
         if(verboseLog.exists()){
             verboseLog.delete();
+        }
+        if(verboseLogSpace.exists()){
+            verboseLogSpace.delete();
         }
         if(verboseLogServerRoot.exists()){
             verboseLogServerRoot.delete();

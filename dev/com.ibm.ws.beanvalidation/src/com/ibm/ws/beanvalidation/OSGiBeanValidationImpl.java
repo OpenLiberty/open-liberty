@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,7 +46,6 @@ import com.ibm.ws.beanvalidation.config.ValidationConfigurationFactory;
 import com.ibm.ws.beanvalidation.config.ValidationConfigurationInterface;
 import com.ibm.ws.beanvalidation.service.BeanValidation;
 import com.ibm.ws.beanvalidation.service.BeanValidationExtensionHelper;
-import com.ibm.ws.beanvalidation.service.BeanValidationRuntimeVersion;
 import com.ibm.ws.beanvalidation.service.BeanValidationUsingClassLoader;
 import com.ibm.ws.beanvalidation.service.ConstrainedHelper;
 import com.ibm.ws.beanvalidation.service.LoadConfig;
@@ -57,6 +56,7 @@ import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
 import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
 import com.ibm.ws.javaee.dd.bval.ValidationConfig;
+import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
@@ -100,8 +100,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
 
     private final AtomicServiceReference<LoadConfig> loadConfigSR = new AtomicServiceReference<LoadConfig>(REFERENCE_LOAD_CONFIG);
 
-    private static final Version DEFAULT_VERSION = BeanValidationRuntimeVersion.VERSION_1_0;
-    private Version runtimeVersion = DEFAULT_VERSION;
+    private Version runtimeVersion = new Version(1, 0, 0);
 
     private static final PrivilegedAction<ThreadContextAccessor> getThreadContextAccessorAction = new PrivilegedAction<ThreadContextAccessor>() {
         @Override
@@ -139,7 +138,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
                                           mmd.getName() + "; MetaDataSlotService not active");
         }
 
-        if (isBeanValidationVersion20()) {
+        if (isBeanValidationVersion20OrGreater()) {
             return getValidatorFactoryHVProvider(mmd, loader);
         } else {
             return getValidatorFactoryApacheProvider(mmd, loader, validatorFactoryToSave);
@@ -166,7 +165,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
                         tmpClassLoader = beanValMetaData.getModuleClassLoader();
                     }
                     ValidatorFactoryBuilder validatorFactoryBuilder = validatorFactoryBuilderSR.getServiceWithException();
-                    vf = validatorFactoryBuilder.buildValidatorFactory(tmpClassLoader, beanValMetaData.getModuleUri());
+                    vf = validatorFactoryBuilder.buildValidatorFactory(tmpClassLoader, beanValMetaData.getModuleUri(), runtimeVersion);
                     beanValMetaData.setValidatorFactory(vf);
                     mmd.setMetaData(ivModuleMetaDataSlot, beanValMetaData);
                 }
@@ -197,7 +196,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
                     // leave the v10 case as is.
                     if (scopeData.configuratorReleased && isBeanValidationVersion11OrGreater()) {
                         throw new ValidationException("the module is stopped, so either the ValidatorFactory has " +
-                                                      "already been destroyed or it was never created");
+                                                      "already been destroyed or it was never created.");
                     }
 
                     ClassLoaderTuple tuple = null;
@@ -302,7 +301,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
 
     @Override
     public void moduleMetaDataCreated(MetaDataEvent<ModuleMetaData> event) {
-        if (isBeanValidationVersion20()) {
+        if (isBeanValidationVersion20OrGreater()) {
             moduleMetaDataCreatedHVProvider(event);
         } else {
             moduleMetaDataCreatedApacheProvider(event);
@@ -434,7 +433,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     @Override
     public void moduleMetaDataDestroyed(MetaDataEvent<ModuleMetaData> event) {
 
-        if (isBeanValidationVersion20()) {
+        if (isBeanValidationVersion20OrGreater()) {
             moduleMetaDataDestroyedHVProvider(event);
         } else {
             moduleMetaDataDestroyedApacheProvider(event);
@@ -443,6 +442,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
 
     @Activate
     protected void activate(ComponentContext cc) {
+        setVersion();
         setInstance(this);
         classLoadingServiceSR.activate(cc);
         validationConfigFactorySR.activate(cc);
@@ -472,16 +472,8 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
             Tr.debug(tc, "unsetMetaDataSlotService");
     }
 
-    @Reference(service = BeanValidationRuntimeVersion.class,
-               cardinality = ReferenceCardinality.OPTIONAL,
-               policyOption = ReferencePolicyOption.GREEDY)
-    protected void setRuntimeVersion(ServiceReference<BeanValidationRuntimeVersion> ref) {
-        runtimeVersion = Version.parseVersion((String) ref.getProperty(BeanValidationRuntimeVersion.VERSION));
-    }
-
-    protected void unsetRuntimeVersion(ServiceReference<BeanValidationRuntimeVersion> ref) {
-        runtimeVersion = DEFAULT_VERSION;
-    }
+    @Reference
+    protected FeatureProvisioner provisionerService;
 
     @Reference(name = REFERENCE_CLASSLOADING_SERVICE,
                service = ClassLoadingService.class)
@@ -542,19 +534,19 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
     }
 
     private boolean isBeanValidationVersion11OrGreater() {
-        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) >= 0;
+        return runtimeVersion.compareTo(new Version(1, 1, 0)) >= 0;
     }
 
     private boolean isBeanValidationVersion10() {
-        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_0) == 0;
+        return runtimeVersion.compareTo(new Version(1, 0, 0)) == 0;
     }
 
     private boolean isBeanValidationVersion11() {
-        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) == 0;
+        return runtimeVersion.compareTo(new Version(1, 1, 0)) == 0;
     }
 
-    private boolean isBeanValidationVersion20() {
-        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_2_0) == 0;
+    private boolean isBeanValidationVersion20OrGreater() {
+        return runtimeVersion.compareTo(new Version(2, 0, 0)) >= 0;
     }
 
     @Override
@@ -715,5 +707,27 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
         }
         beanValMetaData.addExecutableToConstrainedCache(constructor.toString(), isConstructorConstrained);
         return isConstructorConstrained;
+    }
+
+    private void setVersion() {
+        provisionerService.getInstalledFeatures().forEach(feature -> {
+            String subString = null;
+            if (feature.startsWith("beanValidation-")) {
+                subString = feature.substring("beanValidation-".length());
+            } else if (feature.startsWith("validation-")) {
+                subString = feature.substring("validation-".length());
+            }
+            if (subString != null) {
+                try {
+                    runtimeVersion = Version.parseVersion(subString);
+                } catch (IllegalArgumentException e) {
+                    //This is possible if there's ever a validationOtherFeature feature,
+                    //so we should just ignore if this occurs. Essentially if the version
+                    //doesn't parse correctly, then we had additional characters in the
+                    //subString, and this isn't one of the Jakarta Validation features.
+                }
+            }
+        });
+
     }
 }

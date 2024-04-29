@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,14 +17,15 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.transaction.fat.util.TxFATServletClient;
-import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -39,7 +40,6 @@ public class FailoverTest extends TxFATServletClient {
 
     public static final String APP_NAME = "transaction";
     public static final String SERVLET_NAME = APP_NAME + "/FailoverServlet";
-    public static final String APP_PATH = "../../com.ibm.ws.transaction.hadb_fat.derby.1/";
 
     protected static final int START_TIMEOUT = 30000;
 
@@ -100,9 +100,10 @@ public class FailoverTest extends TxFATServletClient {
         }
     };
 
-    protected static void commonSetUp(String testClassName) throws Exception {
-        for (LibertyServer server : LibertyServerFactory.getKnownLibertyServers(testClassName)) {
-            TxShrinkHelper.buildDefaultApp(server, APP_NAME, APP_PATH, "web");
+    protected static void commonSetUp(Class<?> testClass) throws Exception {
+        final WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "web");
+        for (LibertyServer server : LibertyServerFactory.getKnownLibertyServers(testClass.getName())) {
+            ShrinkHelper.exportAppToServer(server, app);
         }
     }
 

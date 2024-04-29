@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.cookies;
 
@@ -393,7 +390,7 @@ public class CookieUtils {
 
         if(ProductInfo.getBetaEdition()) {
             value = cookie.getAttribute("partitioned");
-            if (null != value) {
+            if (null != value && !value.equalsIgnoreCase("false")) {
                 buffer.append("; Partitioned");
             }
         }
@@ -476,7 +473,7 @@ public class CookieUtils {
 
         if(ProductInfo.getBetaEdition()) {
             value = cookie.getAttribute("partitioned");
-            if (null != value) {
+            if (null != value && !value.equalsIgnoreCase("false")) {
                 buffer.append("; Partitioned");
             }
         }
@@ -575,7 +572,7 @@ public class CookieUtils {
 
         if(ProductInfo.getBetaEdition()) {
             value = cookie.getAttribute("partitioned");
-            if (null != value) {
+            if (null != value && !value.equalsIgnoreCase("false")) {
                 buffer.append("; Partitioned");
             }
         }

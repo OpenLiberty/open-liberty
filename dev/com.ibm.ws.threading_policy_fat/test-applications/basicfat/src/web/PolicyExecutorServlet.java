@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017,2023 IBM Corporation and others.
+ * Copyright (c) 2017,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -3792,7 +3792,10 @@ public class PolicyExecutorServlet extends FATServlet {
         } catch (RejectedExecutionException x) { // pass
             if (!x.getMessage().startsWith("CWWKE1202E")) // submit rejected due to shutdown
                 throw x;
-            expectedCancels = 1; // ShutdownTask triggered by queue size callback runs before invokeAny's second enqueue returns, so there is 1 queued task to cancel. The other was rejected.
+            // If ShutdownTask triggered by queue size callback runs before invokeAny's second enqueue returns,
+            // then there may be 1 queued task to cancel. The other was rejected. Unless invokeAny completes
+            // before shutdown, then invokeAny will have canceled that one as well, so really 0 or 1.
+            expectedCancels = 1;
         }
         long duration = System.nanoTime() - start;
 
@@ -3800,7 +3803,11 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(duration + "ns", duration < TIMEOUT_NS);
 
         List<Runnable> canceledFromQueue = shutdownFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
-        assertEquals(expectedCancels, canceledFromQueue.size());
+        if (expectedCancels == 2) {
+            assertEquals(expectedCancels, canceledFromQueue.size());
+        } else {
+            assertTrue(expectedCancels + " >= " + canceledFromQueue.size(), expectedCancels >= canceledFromQueue.size());
+        }
     }
 
     // Submit a group of tasks via untimed invokeAny. Have all of the tasks block and then invoke shutdownNow on the executor.
@@ -4094,7 +4101,10 @@ public class PolicyExecutorServlet extends FATServlet {
         } catch (RejectedExecutionException x) { // pass
             if (!x.getMessage().startsWith("CWWKE1202E")) // submit rejected due to shutdown
                 throw x;
-            expectedCancels = 1; // ShutdownTask triggered by queue size callback runs before invokeAny's second enqueue returns, so there is 1 queued task to cancel. The other was rejected.
+            // If ShutdownTask triggered by queue size callback runs before invokeAny's second enqueue returns,
+            // then there may be 1 queued task to cancel. The other was rejected. Unless invokeAny completes
+            // before shutdown, then invokeAny will have canceled that one as well, so really 0 or 1.
+            expectedCancels = 1;
         }
         long duration = System.nanoTime() - start;
 
@@ -4102,7 +4112,11 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(duration + "ns", duration < TIMEOUT_NS);
 
         List<Runnable> canceledFromQueue = shutdownFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
-        assertEquals(expectedCancels, canceledFromQueue.size());
+        if (expectedCancels == 2) {
+            assertEquals(expectedCancels, canceledFromQueue.size());
+        } else {
+            assertTrue(expectedCancels + " >= " + canceledFromQueue.size(), expectedCancels >= canceledFromQueue.size());
+        }
     }
 
     // Submit a group of tasks via timed invokeAny. Have all of the tasks block and then invoke shutdownNow on the executor.

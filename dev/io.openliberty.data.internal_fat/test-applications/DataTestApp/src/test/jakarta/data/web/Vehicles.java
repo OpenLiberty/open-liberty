@@ -12,7 +12,9 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Repository;
@@ -25,6 +27,30 @@ import jakarta.data.repository.Save;
  */
 @Repository(dataStore = "java:module/jdbc/env/DerbyDataSourceRef")
 public interface Vehicles {
+
+    long count();
+
+    long countEverything();
+
+    long delete();
+
+    List<Vehicle> deleteAll();
+
+    List<Vehicle> deleteFirst2FoundOrderByPriceAscVinIdAsc();
+
+    boolean exists();
+
+    boolean existsAny();
+
+    Stream<Vehicle> find();
+
+    Stream<Vehicle> findAll();
+
+    Optional<Vehicle> findFirstOrderByVinId();
+
+    List<Vehicle> findAllOrderByPriceDescVinIdAsc();
+
+    List<Vehicle> findOrderByMakeAscModelAscVinIdAsc();
 
     Optional<Vehicle> findByVinId(String vin);
 

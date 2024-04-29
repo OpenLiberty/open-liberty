@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,11 +33,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.util.TraceClassVisitor;
 
 import com.ibm.ws.ras.instrument.internal.main.LibertyRuntimeTransformer;
+
+import io.openliberty.asm.ASMHelper;
 
 //TODO add tests that make sure classes are instrumented with trace.
 @SuppressWarnings("deprecation")
@@ -73,6 +74,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
         majorCodeMap.put("20", 64);
         majorCodeMap.put("21", 65);
         majorCodeMap.put("22", 66);
+	majorCodeMap.put("23", 67);
 	}
 	
 	/**
@@ -157,7 +159,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
         StringWriter sw = null;
         sw = new StringWriter();
         ClassReader reader = new ClassReader(classBytes);
-        ClassNode directory = new ClassNode(Opcodes.ASM9);
+        ClassNode directory = new ClassNode(ASMHelper.getCurrentASM());
         ClassVisitor visitor = new TraceClassVisitor(directory, new PrintWriter(sw));
         
         try {

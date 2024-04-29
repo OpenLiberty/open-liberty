@@ -460,7 +460,7 @@ public class DataValidationTestServlet extends FATServlet {
         assertEquals(violations.toString(), 1, violations.size());
 
         // The violation on r6 must prevent the valid update to r7:
-        assertEquals(17, rectangles.findWidthById("R7"));
+        assertEquals(17, rectangles.getWidth("R7"));
 
         // First valid, second not valid:
         r6 = new Rectangle("R6", 600l, 660l, 6, 60);
@@ -475,7 +475,7 @@ public class DataValidationTestServlet extends FATServlet {
         assertEquals(violations.toString(), 1, violations.size());
 
         // The violation on r7 must prevent the valid update to r6:
-        assertEquals(16, rectangles.findWidthById("R6"));
+        assertEquals(16, rectangles.getWidth("R6"));
     }
 
     /**

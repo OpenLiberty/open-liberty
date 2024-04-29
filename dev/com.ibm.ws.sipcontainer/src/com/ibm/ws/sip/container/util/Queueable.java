@@ -39,7 +39,7 @@ public interface Queueable extends Runnable {
 	 * object belongs to.
 	 * @return
 	 */
-	public long getQueueIndex();
+	public int getQueueIndex();
 	
 	/**
 	 * Returns the priority level of the queueable element
