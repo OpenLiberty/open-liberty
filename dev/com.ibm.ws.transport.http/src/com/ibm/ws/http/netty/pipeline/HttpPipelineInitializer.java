@@ -158,6 +158,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         this.chain.getBootstrap().getBaseInitializer().init(channel);
 
         channel.attr(NettyHttpConstants.IS_OUTBOUND_KEY).set(false);
+        channel.attr(NettyHttpConstants.ENDPOINT_PID).set(chain.getEndpointPID());
 
         if (chain.isHttps()) {
             if (chain.isHttp2Enabled()) { // h2 setup starts here
