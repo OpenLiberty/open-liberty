@@ -1309,7 +1309,7 @@ public class RecoveryManager implements Runnable {
                 if (tc.isEventEnabled())
                     Tr.event(tc, "completed wait for replay completion");
             } catch (InterruptedException exc) {
-                if (localRecovery)
+                if (localRecovery && !FrameworkState.isStopping())
                     FFDCFilter.processException(exc, "com.ibm.tx.jta.impl.RecoveryManager.waitForReplayCompletion", "1242", this);
                 if (tc.isEventEnabled())
                     Tr.event(tc, "Wait for resync complete interrupted.");
