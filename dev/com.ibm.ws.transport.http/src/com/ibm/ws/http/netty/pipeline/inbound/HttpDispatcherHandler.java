@@ -24,20 +24,19 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Exception;
-import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.Http2Exception.StreamException;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.util.ReferenceCountUtil;
-import io.openliberty.netty.internal.impl.NettyConstants;
 
 /**
  *
  */
 public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
-//    HttpDispatcherLink link;
     HttpChannelConfig config;
     private ChannelHandlerContext context;
+    private HttpDispatcherLink link;
 
     public HttpDispatcherHandler(HttpChannelConfig config) {
 
@@ -46,28 +45,23 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
         Objects.requireNonNull(config);
         this.config = config;
     }
-    
-    
-    
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) {
         // Store the context for later use
-       context = ctx;
+        context = ctx;
     }
-    
- // Method to allow direct invocation
+
+    // Method to allow direct invocation
     public void processMessageDirectly(FullHttpRequest request) throws Exception {
         channelRead0(context, request);
     }
-    
 
     @Override
     protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
         // TODO Need to see if we need to check decoder result from request to ensure data is properly parsed as expected
         if (request.decoderResult().isFinished() && request.decoderResult().isSuccess()) {
-//          FullHttpRequest msg = request.duplicate();
-//          newRequest(context, request);
+
             FullHttpRequest msg = ReferenceCountUtil.retain(request, 1);
             HttpDispatcher.getExecutorService().execute(new Runnable() {
                 @Override
@@ -79,9 +73,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
                         try {
                             exceptionCaught(context, t);
                         } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                            e.printStackTrace();
                             context.close();
                         }
                     } finally {
@@ -119,29 +110,32 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     }
 
     public void newRequest(ChannelHandlerContext context, FullHttpRequest request) {
-        MSP.log("Shiny new dispatcher link");
-        HttpDispatcherLink link = new HttpDispatcherLink();
-        if(context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
+
+        if (link == null) {
+            MSP.log("Shiny new dispatcher link");
+            link = new HttpDispatcherLink();
+        } else {
+            MSP.log("Reusing link for new request");
+        }
+
+        if (context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
             MSP.log("Found content length previously set from past request, removing");
             context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
             MSP.log("Removed content length attribute: " + context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH));
-            
-            
+
         }
-        
-      //TODO: better way to set connection as isH2
-        if(request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+
+        //TODO: better way to set connection as isH2
+        if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
             context.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
-               }
-        else {
-        
-        context.channel().attr(NettyHttpConstants.PROTOCOL).set("http");
-        
+        } else {
+
+            context.channel().attr(NettyHttpConstants.PROTOCOL).set("http");
+
         }
-        
-        MSP.log("Protocol set to: "+ context.channel().attr(NettyHttpConstants.PROTOCOL).get());
-        
-        
+
+        MSP.log("Protocol set to: " + context.channel().attr(NettyHttpConstants.PROTOCOL).get());
+
         context.channel().closeFuture().addListener(new ChannelFutureListener() {
 
             @Override
@@ -154,10 +148,5 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
         });
         link.init(context, request, config);
         link.ready();
-
-//        link = new HttpDispatcherLink();
-//        link.init(context, request, config);
-//        link.ready();
     }
-
 }
