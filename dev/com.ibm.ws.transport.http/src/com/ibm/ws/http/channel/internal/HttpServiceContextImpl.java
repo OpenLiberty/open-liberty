@@ -2889,10 +2889,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Compression enabled. Prepping data");
             }
-<<<<<<< Updated upstream
-=======
-            
->>>>>>> Stashed changes
             String acceptEncoding = nettyContext.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
             System.out.println("Found accept encoding before: " + acceptEncoding);
             acceptEncoding = nettyRequest.headers().get(HttpHeaderKeys.HDR_ACCEPT_ENCODING.getName());
@@ -2992,11 +2988,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
         if (this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) != null) {
             System.out.println("Skipping HTTP content because upgrade was triggered!");
-<<<<<<< Updated upstream
-=======
-            // System.out.println("Content: " + WsByteBufferUtils.asString(buffers));
 
->>>>>>> Stashed changes
         }
         boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)
                                            && !nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get().equals("HTTP2");
