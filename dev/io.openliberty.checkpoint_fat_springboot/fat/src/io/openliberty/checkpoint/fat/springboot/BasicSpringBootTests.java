@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,9 +21,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
-import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -38,7 +38,7 @@ public class BasicSpringBootTests extends FATServletClient {
     @Server("checkpointSpringBoot")
     public static LibertyServer server;
 
-    public static final String APP_NAME = "io.openliberty.checkpoint.springboot.fat30.app-1.0.0.jar";
+    public static final String APP_NAME = "io.openliberty.checkpoint.springboot.fat30.app-0.0.1-SNAPSHOT.jar";
 
     @BeforeClass
     public static void setUp() throws Exception {

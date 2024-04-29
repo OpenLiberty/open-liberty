@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
 
     private boolean valid;
     private String host;
+    private String hostname;
     private String verify;
     private String certPath;
 
@@ -95,6 +96,7 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
         writeFile(new File(certDir, "cert.pem"), cert);
         writeFile(new File(certDir, "key.pem"), key);
 
+        hostname = dockerService.getHostname();
         host = dockerHostURL;
         verify = "1";
         certPath = certDir.getAbsolutePath();
@@ -171,8 +173,15 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
         return valid;
     }
 
+    /*
+     * @return - location of remote docker host. Example: tcp://127.0.0.1:65239
+     */
     public String getHost() {
         return host;
+    }
+
+    public String getHostname() {
+        return hostname;
     }
 
     public String getVerify() {

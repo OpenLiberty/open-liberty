@@ -1358,7 +1358,8 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             password = PasswordUtil.getCryptoAlgorithm(password) == null ? password : PasswordUtil.decode(matcher.group(1));
             
             //This appends a replacement for group(0), so we want to just replace group(1) with [decoded password]
-            matcher.appendReplacement(sb, matcher.group(0).replace(matcher.group(1), password));
+            //  Escape '$' in a password otherwise the matcher will attempt to replace based on group number
+            matcher.appendReplacement(sb, matcher.group(0).replace(matcher.group(1), password).replace("$", "\\$"));
         }
         
         //Append any trailing characters after matches

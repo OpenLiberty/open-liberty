@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2022, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.session.6.0.internal/resources/io/openliberty/session/resources/SessionMessages.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Note:
+#Last used error meessage code was SESN8502I
+#
+#Use 8600 - 8699 for Servlet 6.0 - EE10
+#
+# -----------------------------------------------
+cookie.attribute.name.null=SESN8600E: Le nom d'attribut dans la classe Cookie a la valeur null.
+cookie.attribute.name.null.explanation=Le nom d'attribut ne peut pas avoir la valeur null.
+cookie.attribute.name.null.useraction=Assurez-vous que le nom d'attribut n'ait pas la valeur null.
+# -----------------------------------------------
+cookie.attribute.name.invalid.[{0}]=SESN8601E: Le nom d''attribut [{0}] contient des caract\u00e8res non valides.
+cookie.attribute.name.invalid.[{0}].explanation=Le nom d'attribut contient au moins l'un des caract\u00e8res de s\u00e9paration suivants, qui ne peuvent pas \u00eatre utilis\u00e9s dans le nom d'attribut de la classe Cookie : ( ) < > @ , ; :  " / [ ] ? = { }
+cookie.attribute.name.invalid.[{0}].useraction=Assurez-vous que le nom d'attribut ne contienne pas de caract\u00e8res de s\u00e9paration et qu'il soit valide.

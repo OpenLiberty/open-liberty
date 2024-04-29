@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2023 IBM Corporation and others.
+    Copyright (c) 2011, 2024 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -1295,9 +1295,15 @@
  
   <OCD id="com.ibm.ws.jdbc.dataSource.properties.oracle.ucp" name="%properties.oracle.ucp" description="%properties.oracle.ucp.desc" ibm:extendsAlias="oracle.ucp" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
   <AD id="connectionFactoryClassName"         required="false" type="String" name="%connectionFactoryClassName" description="%connectionFactoryClassName.desc">
+   <!-- Traditional DataSource classes from the ojdbc driver -->
    <Option value="oracle.jdbc.pool.OracleDataSource"               label="oracle.jdbc.pool.OracleDataSource"/>
    <Option value="oracle.jdbc.pool.OracleConnectionPoolDataSource" label="oracle.jdbc.pool.OracleConnectionPoolDataSource"/>
    <Option value="oracle.jdbc.xa.client.OracleXADataSource"        label="oracle.jdbc.xa.client.OracleXADataSource"/>
+   
+   <!-- Replay DataSource classes from the ojdbc driver used for Application Continuity -->
+   <Option value="oracle.jdbc.replay.OracleDataSourceImpl"           	 label="oracle.jdbc.replay.OracleDataSourceImpl"/>
+   <Option value="oracle.jdbc.replay.OracleConnectionPoolDataSourceImpl" label="oracle.jdbc.replay.OracleConnectionPoolDataSourceImpl"/>
+   <Option value="oracle.jdbc.replay.OracleXADataSourceImpl"             label="oracle.jdbc.replay.OracleXADataSourceImpl"/>
   </AD>
   <AD id="connectionPoolName"                 required="false" type="String"  name="%connectionPoolName" description="%connectionPoolName.desc"/>
   <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseNameIgnored.desc"/>

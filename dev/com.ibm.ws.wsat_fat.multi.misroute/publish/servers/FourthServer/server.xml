@@ -23,7 +23,10 @@
     recoveryGroup="default-group"
     recoverOnStartup="true"
     waitForRecovery="true"
+	clientInactivityTimeout="2m"
   />
+	
+  <wsAtomicTransaction asyncResponseTimeout="1m"/>
 
   <javaPermission codebase="${server.config.dir}/dropins/endtoend.war" className="java.security.AllPermission"/>
 </server>

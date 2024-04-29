@@ -17,5 +17,13 @@
                   httpPort="${bvt.prop.HTTP_secondary}"
                   httpsPort="${bvt.prop.HTTP_secondary.secure}">
         <tcpOptions soReuseAddr="true" />
-    </httpEndpoint>   
+    </httpEndpoint>
+
+    <httpOptions
+        maxHeaderBlockSize="1000"
+        limitNumHeaders="50"
+        limitFieldSize="100"
+        id="defaultHttpOptions"
+    />
+
 </server>

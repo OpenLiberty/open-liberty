@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -42,6 +42,7 @@ public class TimerRetryBeanE {
 
     public static volatile int count = 0;
     public static ArrayList<Long> timestamps = new ArrayList<Long>();
+    public static ArrayList<Long> nextTimes = new ArrayList<Long>();
     private static CountDownLatch timerLatch;
     public static String timerInfo;
     public static boolean timerExists;
@@ -68,7 +69,8 @@ public class TimerRetryBeanE {
     public void doTimeoutStuff(Timer timer) {
         svLogger.info("Entering TimerRetryBeanE.doTimeoutStuff(), with pre-execution count of **" + count + "**");
 
-        svLogger.info("NEXT TIMEOUT" + timer.getNextTimeout());
+        svLogger.info("NEXT TIMEOUT " + timer.getNextTimeout() + ", " + timer.getNextTimeout().getTime());
+        nextTimes.add(Long.valueOf(timer.getNextTimeout().getTime()));
 
         count++;
         timestamps.add(Long.valueOf(System.currentTimeMillis()));

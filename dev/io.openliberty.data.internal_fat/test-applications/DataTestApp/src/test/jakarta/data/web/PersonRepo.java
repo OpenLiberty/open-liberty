@@ -12,23 +12,18 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import static jakarta.data.repository.By.ID;
-
 import java.util.List;
 
-import jakarta.data.repository.By;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
-
-import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.update.Assign;
 
 /**
  * This example only references the entity class as a parameterized type.
@@ -41,10 +36,9 @@ public interface PersonRepo {
     @Query("WHERE lastName=?1")
     List<Person> find(String lastName);
 
-    @Find
+    @Query("SELECT firstName WHERE lastName=:lastName")
     @OrderBy("firstName")
-    @Select("firstName")
-    List<String> findFirstNames(@By("lastName") String surname);
+    List<String> findFirstNames(@Param("lastName") String surname);
 
     @Insert
     void insert(Person p);
@@ -59,34 +53,33 @@ public interface PersonRepo {
     void save(List<Person> people);
 
     @Find
-    @Select("firstName")
     @Transactional(TxType.SUPPORTS)
-    String getFirstNameInCurrentOrNoTransaction(Long ssn_id);
+    Person getPersonInCurrentOrNoTransaction(Long ssn_id);
 
-    @Update
+    @Query("UPDATE Person SET firstName=?2 WHERE ID(THIS)=?1")
     @Transactional(TxType.REQUIRED)
     boolean setFirstNameInCurrentOrNewTransaction(Long ssn_id,
-                                                  @Assign String firstName);
+                                                  String firstName);
 
-    @Update
+    @Query("UPDATE Person SET firstName=:newFirstName WHERE id(this)=:ssn")
     @Transactional(TxType.MANDATORY)
-    boolean setFirstNameInCurrentTransaction(@By(ID) Long ssn,
-                                             @Assign("firstName") String newFirstName);
+    boolean setFirstNameInCurrentTransaction(Long ssn,
+                                             String newFirstName);
 
-    @Update
+    @Query("UPDATE Person SET firstName=:firstName WHERE id(THIS)=:id")
     @Transactional(TxType.REQUIRES_NEW)
-    boolean setFirstNameInNewTransaction(Long ssn_id,
-                                         @Assign("FirstName") String newFirstName);
+    boolean setFirstNameInNewTransaction(@Param("id") Long ssn,
+                                         @Param("firstName") String newFirstName);
 
-    @Update
+    @Query("UPDATE Person SET firstName=?2 WHERE ID(this)=?1")
     @Transactional(TxType.NEVER)
-    boolean setFirstNameWhenNoTransactionIsPresent(@By(ID) Long id,
-                                                   @Assign("FIRSTNAME") String newFirstName);
+    boolean setFirstNameWhenNoTransactionIsPresent(Long id,
+                                                   String newFirstName);
 
-    @Update
+    @Query("UPDATE Person SET firstName=?2 WHERE Id(This)=?1")
     @Transactional(TxType.NOT_SUPPORTED)
-    boolean setFirstNameWithCurrentTransactionSuspended(@By(ID) Long id,
-                                                        @Assign("firstname") String newFirstName);
+    boolean setFirstNameWithCurrentTransactionSuspended(Long id,
+                                                        String newFirstName);
 
     @Update
     boolean updateOne(Person person);

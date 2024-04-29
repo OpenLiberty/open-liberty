@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package com.ibm.ws.security.wim.adapter.ldap.fat.krb5;
 
 import static componenttest.topology.utils.LDAPFatUtils.updateConfigDynamically;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assume.assumeTrue;
 
 import java.util.Arrays;
 
@@ -57,6 +58,7 @@ public class Krb5ConfigJVMProp extends CommonBindTest {
     @Test
     @CheckForLeakedPasswords(LdapKerberosUtils.BIND_PASSWORD)
     public void swapToJVMConfigProp() throws Exception {
+        assumeTrue(ApacheDSandKDC.IS_BEING_USED); //this test will only run if the FATSuite is reconfigured to use ApacheDSandKDC instead of testContainers.
         Log.info(c, testName.getMethodName(), "Swap config from Kerberos file to JVM property");
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryForKeytabWithContextPool();

@@ -1,16 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.session.cache.fat;
+
+import static componenttest.annotation.SkipForRepeat.EE9_OR_LATER_FEATURES;
 
 import java.io.File;
 import java.util.Arrays;
@@ -35,7 +37,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
+@SkipForRepeat({ EE9_OR_LATER_FEATURES })
 public class HazelcastClientTest extends FATServletClient {
 
     @Server("sessionCacheServerA")

@@ -581,13 +581,11 @@ findRealPath() {
   # doesn't work as expected.  cd -P is also not supported. So we avoid all three for OS/390.
   if [ "$uname" != "OS/390" ]; then
 
-
     # Try realpath command
     if command -v realpath >/dev/null; then
 
       resolvedPath=$(realpath "${path}" 2>/dev/null)
     fi
-
   
     # If unsuccessful, try readlink -e
     if [ -z "${resolvedPath}" ] && command -v readlink >/dev/null; then
@@ -1136,7 +1134,7 @@ serverCmd()
   # if [ ! jvmargs, javaoptions, jvmoptionsquoted contains verbose:gc, verbosegc, etc] then SERVER_IBM_JAVA_OPTIONS += -Xverbosegclog:verbosegc.%seq.log,10,1024
   if [ -n "${JVM_OPTIONS_QUOTED##*"verbosegc"*}" ] && [ -n "${JVM_OPTIONS_QUOTED##*"verbose:gc"*}"  ] && [ ! "${VERBOSEGC}" = "false" ]
   then
-    OPENJ9_JAVA_OPTIONS="-Xverbosegclog:${X_LOG_DIR}/verbosegc.%seq.log,10,1024 ${OPENJ9_JAVA_OPTIONS}"
+    OPENJ9_JAVA_OPTIONS="\"-Xverbosegclog:${X_LOG_DIR}/verbosegc.%seq.log,10,1024\" ${OPENJ9_JAVA_OPTIONS}"
   fi
 
   if $os400lib; then
@@ -1538,6 +1536,11 @@ SERVER_UNKNOWN_STATUS=5
 
 ##
 ## Determine the platform and absolute path of the installation directory.
+##
+## IMPORTANT: Be cautious when updating WLP_INSTALL_DIR as it affects the process name of the 
+## Liberty server shown by the Linux 'ps' command. Changes introducing ".." to the path 
+## may break users' ability to find the Liberty process based on the normalized path. The pwd 
+## command normalizes the path.
 ##
 case $OSTYPE in
   cygwin)

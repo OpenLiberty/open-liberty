@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019,2021 IBM Corporation and others.
+ * Copyright (c) 2019,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -47,8 +47,8 @@ import failover1serv.web.Failover1ServerTestServlet;
  */
 @RunWith(FATRunner.class)
 public class Failover1ServerTest extends FATServletClient {
-	private static final String APP_NAME = "failover1servApp";
-	private static final Set<String> APP_NAMES = Collections.singleton(APP_NAME);
+    private static final String APP_NAME = "failover1servApp";
+    private static final Set<String> APP_NAMES = Collections.singleton(APP_NAME);
 
     private static ServerConfiguration originalConfig;
 
@@ -71,7 +71,14 @@ public class Failover1ServerTest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            server.stopServer();
+            // Tasks are cancelled at end of test, but if already running then they
+            // can fail badly during server shutdown; tolerate those errors.
+            server.stopServer(
+                    "DSRA0302E", // XAException for task running during shutdown
+                    "DSRA0304E", // XAException for task running during shutdown
+                    "DSRA0230E", // TRANSACTION_FAIL state during server shutdown
+                    "DSRA0180W"  // Fail to destroy connection during server shutdown
+                    );
         } finally {
             server.updateServerConfiguration(originalConfig);
         }

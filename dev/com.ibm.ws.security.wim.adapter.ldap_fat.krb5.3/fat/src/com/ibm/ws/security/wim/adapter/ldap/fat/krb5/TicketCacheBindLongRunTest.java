@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package com.ibm.ws.security.wim.adapter.ldap.fat.krb5;
 
 import static componenttest.topology.utils.LDAPFatUtils.updateConfigDynamically;
+import static org.junit.Assume.assumeTrue;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -59,6 +60,7 @@ public class TicketCacheBindLongRunTest extends CommonBindTest {
     @Test
     @AllowedFFDC({ "javax.naming.CommunicationException", "javax.security.auth.login.LoginException" })
     public void restartLdapServerNoContextPool() throws Exception {
+        assumeTrue(ApacheDSandKDC.IS_BEING_USED); //this test will only run if the FATSuite is reconfigured to use ApacheDSandKDC instead of testContainers.
         Log.info(c, testName.getMethodName(), "Stop and restart the ApacheDS servers");
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryWithTicketCache();
@@ -79,6 +81,9 @@ public class TicketCacheBindLongRunTest extends CommonBindTest {
     @Test
     @AllowedFFDC({ "javax.naming.CommunicationException", "javax.security.auth.login.LoginException" })
     public void restartLdapServerWithContextPool() throws Exception {
+        //this test will only run if the FATSuite is reconfigured to use ApacheDSandKDC instead of testContainers.
+        assumeTrue(ApacheDSandKDC.IS_BEING_USED);
+
         Log.info(c, testName.getMethodName(), "Stop and restart the ApacheDS servers");
         ServerConfiguration newServer = emptyConfiguration.clone();
         LdapRegistry ldap = getLdapRegistryWithTicketCacheWithContextPool();

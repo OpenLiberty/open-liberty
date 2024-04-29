@@ -10,24 +10,29 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+fat.test.container.images:\
+	seleniarm/standalone-chromium:4.8.3,\
+	selenium/standalone-chrome:4.8.3,\
+	alpine:3.16
+
 src: \
-    fat/src,\
-    test-applications/AcceptInputFileTest.war/src,\
-    test-applications/AjaxRenderExecuteThisTest.war/src,\
-    test-applications/AnnotationLiteralsTest.war/src,\
-    test-applications/ClientWindowScopedTest.war/src,\
-    test-applications/ExternalContextAddResponseCookie.war/src,\
-    test-applications/Faces40URN.war/src,\
-    test-applications/FacesContextGetLifecycle.war/src,\
-    test-applications/LayoutAttribute.war/src,\
-    test-applications/SelectItemTests.war/src,\
-    test-applications/UIViewRootGetDoctypeTest.war/src,\
-    test-applications/Faces40ThirdPartyApi.war/src,\
-    test-applications/MultipleInputFileTest.war/src,\
-    test-applications/ProgrammaticFaceletTests.war/src,\
-    test-applications/SubscribeToEventTest.war/src,\
-    test-applications/WebSocket.war/src,\
-    test-applications/MYFACES-4628.war/src
+	fat/src,\
+	test-applications/AcceptInputFileTest.war/src,\
+	test-applications/AjaxRenderExecuteThisTest.war/src,\
+	test-applications/AnnotationLiteralsTest.war/src,\
+	test-applications/ClientWindowScopedTest.war/src,\
+	test-applications/ExternalContextAddResponseCookie.war/src,\
+	test-applications/Faces40URN.war/src,\
+	test-applications/FacesContextGetLifecycle.war/src,\
+	test-applications/LayoutAttribute.war/src,\
+	test-applications/SelectItemTests.war/src,\
+	test-applications/UIViewRootGetDoctypeTest.war/src,\
+	test-applications/Faces40ThirdPartyApi.war/src,\
+	test-applications/MultipleInputFileTest.war/src,\
+	test-applications/ProgrammaticFaceletTests.war/src,\
+	test-applications/SubscribeToEventTest.war/src,\
+	test-applications/WebSocket.war/src,\
+	test-applications/MYFACES-4628.war/src
 
 tested.features:\
     expressionlanguage-6.0,\
@@ -43,6 +48,7 @@ javac.source: 11
 javac.target: 11
 
 -buildpath: \
+	com.google.guava:guava;version=latest,\
 	io.openliberty.jakarta.faces.4.0;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	io.openliberty.org.apache.myfaces.4.0;version=latest,\
@@ -52,4 +58,10 @@ javac.target: 11
 	io.openliberty.org.apache.xercesImpl;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
-	io.openliberty.jakarta.expressionLanguage.5.0;version=latest
+	io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
+	io.openliberty.org.testcontainers;version=latest,\
+	org.seleniumhq.selenium:selenium-api;version=4.8.3,\
+	org.seleniumhq.selenium:selenium-chrome-driver;version=4.8.3,\
+	org.seleniumhq.selenium:selenium-chromium-driver;version=4.8.3,\
+	org.seleniumhq.selenium:selenium-remote-driver;version=4.8.3,\
+	org.seleniumhq.selenium:selenium-support;version=4.8.3
