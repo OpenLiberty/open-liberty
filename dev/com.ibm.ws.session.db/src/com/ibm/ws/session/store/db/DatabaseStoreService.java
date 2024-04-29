@@ -173,7 +173,7 @@ public class DatabaseStoreService implements SessionStoreService {
         // Block the progress of deactivate so that session manager is able to access the DB until it finishes stopping applications.
         // The approach of blocking is aligned CacheStoreService with MAX_WAIT
         final long MAX_WAIT = TimeUnit.SECONDS.toNanos(20);
-        for (long start = System.nanoTime(); !completedPassivation && System.nanoTime() - start < MAX_WAIT;)
+        for (long start = System.nanoTime(); !isCompletedPassivation() && System.nanoTime() - start < MAX_WAIT;)
             try {
                 TimeUnit.MILLISECONDS.sleep(100); // sleep 1/10th of a second
             } catch (InterruptedException e) {
