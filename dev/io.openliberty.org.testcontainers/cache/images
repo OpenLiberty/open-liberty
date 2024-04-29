@@ -34,6 +34,7 @@ mongo:6.0.6
 openzipkin/zipkin-slim:2.23
 otel/opentelemetry-collector:0.74.0
 postgres:14.1-alpine
+postgres:16.0-alpine
 ryanesch/acme-boulder:1.2
 seleniarm/standalone-chromium:4.8.3
 selenium/standalone-chrome:4.8.3
