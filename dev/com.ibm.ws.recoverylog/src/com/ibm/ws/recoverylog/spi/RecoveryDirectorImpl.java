@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 //------------------------------------------------------------------------------
 //Class: RecoveryDirectorImpl
@@ -516,6 +517,12 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
     public void directInitialization(FailureScope failureScope) throws RecoveryFailedException, PeerLostLogOwnershipException, LogsUnderlyingTablesMissingException {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "directInitialization", new Object[] { failureScope, this });
+
+        if (FrameworkState.isStopping()) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "directInitialization", "Server is stopping");
+            return;
+        }
 
         // Use configuration to determine if recovery is local (for z/OS).
         final FailureScope currentFailureScope = Configuration.localFailureScope(); /* @LI1578-22A */
