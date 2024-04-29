@@ -204,17 +204,6 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
             this.myTrailers.destroy();
             this.myTrailers = null;
         }
-        
-        
-        
-        System.out.println("DEBUG -> HTTPBaseMessage.clear() -> " );
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        System.out.println("Current stack trace:");
-        for (StackTraceElement element : stackTraceElements) {
-            System.out.println(element.toString());
-            
-            
-        }
     }
 
     /*
@@ -500,18 +489,6 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      */
     @Override
     public boolean isCommitted() {
-        
-
-        System.out.println("DEBUG -> isCommitted() -> " + this.bIsCommitted);
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        System.out.println("Current stack trace:");
-        for (StackTraceElement element : stackTraceElements) {
-            System.out.println(element.toString());
-            
-            
-        }
-        
-        
         return this.bIsCommitted;
     }
 
@@ -526,19 +503,8 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         this.bIsCommitted = true;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Committed flag set on " + this);
-            
-            
+
         }
-        
-        System.out.println("DEBUG -> setCommitted() -> " + this.bIsCommitted);
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        System.out.println("Current stack trace:");
-        for (StackTraceElement element : stackTraceElements) {
-            System.out.println(element.toString());
-            
-            
-        }
-        
     }
 
     /**
@@ -549,15 +515,6 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      */
     protected void setCommitted(boolean b) {
         this.bIsCommitted = b;
-        
-        System.out.println("DEBUG -> setCommitted(boolean) -> " + this.bIsCommitted);
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        System.out.println("Current stack trace:");
-        for (StackTraceElement element : stackTraceElements) {
-            System.out.println(element.toString());
-            
-            
-        }
     }
 
     /**
