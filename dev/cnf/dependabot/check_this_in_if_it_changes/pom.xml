@@ -394,7 +394,7 @@
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
-      <version>1.15</version>
+      <version>1.16.1</version>
     </dependency>
     <dependency>
       <groupId>commons-collections</groupId>
@@ -414,7 +414,7 @@
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.11.0</version>
+      <version>2.15.1</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -633,6 +633,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
+      <artifactId>opentelemetry-instrumentation-annotations-support</artifactId>
+      <version>2.1.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry.instrumentation</groupId>
       <artifactId>opentelemetry-instrumentation-annotations</artifactId>
       <version>1.19.0-alpha</version>
     </dependency>
@@ -643,6 +648,16 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
+      <artifactId>opentelemetry-instrumentation-annotations</artifactId>
+      <version>2.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry.instrumentation</groupId>
+      <artifactId>opentelemetry-instrumentation-api-incubator</artifactId>
+      <version>2.1.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry.instrumentation</groupId>
       <artifactId>opentelemetry-instrumentation-api-semconv</artifactId>
       <version>1.19.0-alpha</version>
     </dependency>
@@ -650,6 +665,11 @@
       <groupId>io.opentelemetry.instrumentation</groupId>
       <artifactId>opentelemetry-instrumentation-api-semconv</artifactId>
       <version>1.29.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry.instrumentation</groupId>
+      <artifactId>opentelemetry-instrumentation-api-semconv</artifactId>
+      <version>1.32.0-alpha</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry.instrumentation</groupId>
@@ -662,9 +682,24 @@
       <version>1.29.0</version>
     </dependency>
     <dependency>
+      <groupId>io.opentelemetry.instrumentation</groupId>
+      <artifactId>opentelemetry-instrumentation-api</artifactId>
+      <version>2.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry.semconv</groupId>
+      <artifactId>opentelemetry-semconv</artifactId>
+      <version>1.23.1-alpha</version>
+    </dependency>
+    <dependency>
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-api-events</artifactId>
       <version>1.29.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api-events</artifactId>
+      <version>1.35.0-alpha</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
@@ -683,6 +718,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-api</artifactId>
+      <version>1.35.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-context</artifactId>
       <version>1.19.0</version>
     </dependency>
@@ -693,6 +733,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-context</artifactId>
+      <version>1.35.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-exporter-common</artifactId>
       <version>1.19.0</version>
     </dependency>
@@ -700,6 +745,11 @@
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-exporter-common</artifactId>
       <version>1.29.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-common</artifactId>
+      <version>1.35.0</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
@@ -723,6 +773,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-logging</artifactId>
+      <version>1.35.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-exporter-otlp-common</artifactId>
       <version>1.19.0</version>
     </dependency>
@@ -733,6 +788,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp-common</artifactId>
+      <version>1.35.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-exporter-otlp</artifactId>
       <version>1.19.0</version>
     </dependency>
@@ -740,6 +800,11 @@
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-exporter-otlp</artifactId>
       <version>1.29.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp</artifactId>
+      <version>1.35.0</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
@@ -748,6 +813,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-sender-okhttp</artifactId>
+      <version>1.35.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-exporter-zipkin</artifactId>
       <version>1.19.0</version>
     </dependency>
@@ -758,6 +828,16 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-zipkin</artifactId>
+      <version>1.35.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-extension-incubator</artifactId>
+      <version>1.35.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-extension-trace-propagators</artifactId>
       <version>1.19.0</version>
     </dependency>
@@ -765,6 +845,11 @@
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-extension-trace-propagators</artifactId>
       <version>1.29.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-extension-trace-propagators</artifactId>
+      <version>1.35.0</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
@@ -788,6 +873,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-common</artifactId>
+      <version>1.35.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-sdk-extension-autoconfigure-spi</artifactId>
       <version>1.19.0</version>
     </dependency>
@@ -795,6 +885,11 @@
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-sdk-extension-autoconfigure-spi</artifactId>
       <version>1.29.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-extension-autoconfigure-spi</artifactId>
+      <version>1.35.0</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
@@ -808,6 +903,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-extension-autoconfigure</artifactId>
+      <version>1.35.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-sdk-logs</artifactId>
       <version>1.19.0-alpha</version>
     </dependency>
@@ -818,6 +918,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-logs</artifactId>
+      <version>1.35.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-sdk-metrics</artifactId>
       <version>1.19.0</version>
     </dependency>
@@ -825,6 +930,11 @@
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-sdk-metrics</artifactId>
       <version>1.29.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-metrics</artifactId>
+      <version>1.35.0</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
@@ -838,6 +948,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk-trace</artifactId>
+      <version>1.35.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-sdk</artifactId>
       <version>1.19.0</version>
     </dependency>
@@ -845,6 +960,11 @@
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-sdk</artifactId>
       <version>1.29.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-sdk</artifactId>
+      <version>1.35.0</version>
     </dependency>
     <dependency>
       <groupId>io.opentelemetry</groupId>
@@ -855,6 +975,11 @@
       <groupId>io.opentelemetry</groupId>
       <artifactId>opentelemetry-semconv</artifactId>
       <version>1.29.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-semconv</artifactId>
+      <version>1.30.1-alpha</version>
     </dependency>
     <dependency>
       <groupId>io.opentracing</groupId>
@@ -885,6 +1010,11 @@
       <groupId>io.projectreactor</groupId>
       <artifactId>reactor-core</artifactId>
       <version>3.4.19</version>
+    </dependency>
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-core</artifactId>
+      <version>3.5.16</version>
     </dependency>
     <dependency>
       <groupId>io.prometheus</groupId>
@@ -1098,13 +1228,28 @@
     </dependency>
     <dependency>
       <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-reporter</artifactId>
+      <version>3.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
       <artifactId>zipkin-sender-okhttp3</artifactId>
       <version>2.16.4</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.reporter2</groupId>
+      <artifactId>zipkin-sender-okhttp3</artifactId>
+      <version>3.3.0</version>
     </dependency>
     <dependency>
       <groupId>io.zipkin.zipkin2</groupId>
       <artifactId>zipkin</artifactId>
       <version>2.24.3</version>
+    </dependency>
+    <dependency>
+      <groupId>io.zipkin.zipkin2</groupId>
+      <artifactId>zipkin</artifactId>
+      <version>3.1.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.activation</groupId>
@@ -1127,6 +1272,11 @@
       <version>2.1.1</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.annotation</groupId>
+      <artifactId>jakarta.annotation-api</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.authentication</groupId>
       <artifactId>jakarta.authentication-api</artifactId>
       <version>2.0.0</version>
@@ -1135,6 +1285,11 @@
       <groupId>jakarta.authentication</groupId>
       <artifactId>jakarta.authentication-api</artifactId>
       <version>3.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.authentication</groupId>
+      <artifactId>jakarta.authentication-api</artifactId>
+      <version>3.1.0-M1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.authorization</groupId>
@@ -1147,6 +1302,11 @@
       <version>2.1.0</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.authorization</groupId>
+      <artifactId>jakarta.authorization-api</artifactId>
+      <version>3.0.0-M1</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.batch</groupId>
       <artifactId>jakarta.batch-api</artifactId>
       <version>2.0.0</version>
@@ -1155,6 +1315,11 @@
       <groupId>jakarta.batch</groupId>
       <artifactId>jakarta.batch-api</artifactId>
       <version>2.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.data</groupId>
+      <artifactId>jakarta.data-api</artifactId>
+      <version>1.0.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.ejb</groupId>
@@ -1174,7 +1339,7 @@
     <dependency>
       <groupId>jakarta.enterprise.concurrent</groupId>
       <artifactId>jakarta.enterprise.concurrent-api</artifactId>
-      <version>3.1.0-M1</version>
+      <version>3.1.0-RC2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
@@ -1189,12 +1354,12 @@
     <dependency>
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.cdi-api</artifactId>
-      <version>4.1.0.Alpha1</version>
+      <version>4.1.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.cdi-el-api</artifactId>
-      <version>4.1.0.Alpha1</version>
+      <version>4.1.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.enterprise</groupId>
@@ -1204,7 +1369,7 @@
     <dependency>
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.lang-model</artifactId>
-      <version>4.1.0.Alpha1</version>
+      <version>4.1.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.inject</groupId>
@@ -1224,7 +1389,7 @@
     <dependency>
       <groupId>jakarta.interceptor</groupId>
       <artifactId>jakarta.interceptor-api</artifactId>
-      <version>2.2.0-RC1</version>
+      <version>2.2.0</version>
     </dependency>
     <dependency>
       <groupId>jakarta.jms</groupId>
@@ -1304,7 +1469,7 @@
     <dependency>
       <groupId>jakarta.persistence</groupId>
       <artifactId>jakarta.persistence-api</artifactId>
-      <version>3.2.0-M1</version>
+      <version>3.2.0-M2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.resource</groupId>
@@ -1325,6 +1490,11 @@
       <groupId>jakarta.security.enterprise</groupId>
       <artifactId>jakarta.security.enterprise-api</artifactId>
       <version>3.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.security.enterprise</groupId>
+      <artifactId>jakarta.security.enterprise-api</artifactId>
+      <version>4.0.0-M1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.servlet.jsp.jstl</groupId>
@@ -1349,7 +1519,7 @@
     <dependency>
       <groupId>jakarta.servlet.jsp</groupId>
       <artifactId>jakarta.servlet.jsp-api</artifactId>
-      <version>4.0.0-M1</version>
+      <version>4.0.0-M2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.servlet</groupId>
@@ -1364,7 +1534,7 @@
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
-      <version>6.1.0-M1</version>
+      <version>6.1.0-M2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.transaction</groupId>
@@ -1380,6 +1550,11 @@
       <groupId>jakarta.validation</groupId>
       <artifactId>jakarta.validation-api</artifactId>
       <version>3.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.validation</groupId>
+      <artifactId>jakarta.validation-api</artifactId>
+      <version>3.1.0-M2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.websocket</groupId>
@@ -1695,6 +1870,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
       <version>1.24.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.26.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -2069,17 +2249,17 @@
     <dependency>
       <groupId>org.apache.james</groupId>
       <artifactId>apache-mime4j-core</artifactId>
-      <version>0.8.9</version>
+      <version>0.8.10</version>
     </dependency>
     <dependency>
       <groupId>org.apache.james</groupId>
       <artifactId>apache-mime4j-dom</artifactId>
-      <version>0.8.9</version>
+      <version>0.8.10</version>
     </dependency>
     <dependency>
       <groupId>org.apache.james</groupId>
       <artifactId>apache-mime4j-storage</artifactId>
-      <version>0.8.9</version>
+      <version>0.8.10</version>
     </dependency>
     <dependency>
       <groupId>org.apache.johnzon</groupId>
@@ -2274,7 +2454,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>11.0.0-M16</version>
+      <version>11.0.0-M19</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -2289,7 +2469,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>11.0.0-M16</version>
+      <version>11.0.0-M19</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wink</groupId>
@@ -2354,7 +2534,7 @@
     <dependency>
       <groupId>org.bitbucket.b_c</groupId>
       <artifactId>jose4j</artifactId>
-      <version>0.9.3</version>
+      <version>0.9.5</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
@@ -3009,7 +3189,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.asm</artifactId>
-      <version>9.6.0</version>
+      <version>9.7.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3364,7 +3544,7 @@
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator-cdi</artifactId>
-      <version>6.1.7.Final</version>
+      <version>6.2.5.Final</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
@@ -3374,7 +3554,7 @@
     <dependency>
       <groupId>org.hibernate.validator</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>6.1.7.Final</version>
+      <version>6.2.5.Final</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
@@ -3654,7 +3834,7 @@
     <dependency>
       <groupId>org.jboss.weld.environment</groupId>
       <artifactId>weld-environment-common</artifactId>
-      <version>6.0.0.Alpha1</version>
+      <version>6.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -3674,7 +3854,7 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <version>6.0.0.Alpha1</version>
+      <version>6.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld</groupId>
@@ -3699,7 +3879,7 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-osgi-bundle</artifactId>
-      <version>6.0.0.Alpha1</version>
+      <version>6.0.0.Beta1</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
@@ -4064,27 +4244,27 @@
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-analysis</artifactId>
-      <version>9.6</version>
+      <version>9.7</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-commons</artifactId>
-      <version>9.6</version>
+      <version>9.7</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-tree</artifactId>
-      <version>9.6</version>
+      <version>9.7</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-util</artifactId>
-      <version>9.6</version>
+      <version>9.7</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
-      <version>9.6</version>
+      <version>9.7</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -4193,6 +4373,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>3.2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
       <version>1.5.9.RELEASE</version>
     </dependency>
@@ -4205,6 +4390,16 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
       <version>3.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>3.2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-commons</artifactId>
+      <version>3.2.4</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -4318,6 +4513,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>6.1.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
       <version>3.0.7.RELEASE</version>
     </dependency>
@@ -4338,6 +4538,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>6.1.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
       <version>3.0.7.RELEASE</version>
     </dependency>
@@ -4355,6 +4560,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
       <version>6.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>6.1.5</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4403,6 +4613,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>6.1.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-webflux</artifactId>
       <version>5.3.21</version>
     </dependency>
@@ -4410,6 +4625,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-webflux</artifactId>
       <version>6.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webflux</artifactId>
+      <version>6.1.5</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

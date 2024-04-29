@@ -1632,3 +1632,14 @@ redirect.location.cannot.be.null.useraction=Aktualizujte um\u00edst\u011bn\u00ed
 
 sendRedirect.hyper.text.url=<html><body><p>P\u0159esm\u011brov\u00e1n\u00ed na <a href="{0}"></a></p></body></html>
 
+query.or.post.is.null=CWWWC0009E: \u0158et\u011bzec dotazu po\u017eadavku HTTP nebo data po\u017eadavku HTTP POST maj\u00ed hodnotu null.
+query.or.post.is.null.explanation=Aplikace se pokusila analyzovat \u0159et\u011bzec dotazu po\u017eadavku HTTP s hodnotou null nebo t\u011blo po\u017eadavku POST HTTP s hodnotou null.
+query.or.post.is.null.useraction=Klient mus\u00ed odeslat nenulov\u00fd \u0159et\u011bzec dotazu HTTP nebo nenulov\u00fd text HTTP po\u017eadavku POST.
+
+read.write.bytebuffer.null=CWWWC0010E: Pokus o \u010dten\u00ed z operace InputStream nebo o z\u00e1pis do operace OutputStream se nezda\u0159il, proto\u017ee instance argumentu prom\u011bnn\u00e9 ByteBuffer m\u011bla hodnotu null.
+read.write.bytebuffer.null.explanation=Instance argumentu prom\u011bnn\u00e9 ByteBuffer p\u0159edan\u00e1 rozhran\u00ed API pro \u010dten\u00ed nebo z\u00e1pis nesm\u00ed m\u00edt hodnotu null.
+read.write.bytebuffer.null.useraction=Upravte k\u00f3d aplikace tak, aby byla vytvo\u0159ena instance ByteBuffer s jinou hodnotou ne\u017e null pro p\u0159ed\u00e1n\u00ed do operace InputStream nebo OutputStream .
+
+read.write.failed.isReady.false=CWWWC0011E: Pokus o \u010dten\u00ed z operace InputStream nebo o z\u00e1pis do operace OutputStream se nezda\u0159il, proto\u017ee rozhran\u00ed API isReady vrac\u00ed hodnotu false.
+read.write.failed.isReady.false.explanation=Pokud rozhran\u00ed API isReady vr\u00e1t\u00ed hodnotu false, nem\u016f\u017eete volat metodu \u010dten\u00ed ani z\u00e1pisu.
+read.write.failed.isReady.false.useraction=Upravte logiku aplikace, abyste se ujistili, \u017ee je proud p\u0159ipraven na operaci InputStream nebo OutputStream .

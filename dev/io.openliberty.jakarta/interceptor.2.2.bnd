@@ -18,14 +18,14 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 Bundle-SymbolicName: io.openliberty.jakarta.interceptor.2.2; singleton:=true
 
 #export copied from the original bundle
-Export-Package: jakarta.interceptor;version="2.2.0-RC1"
+Export-Package: jakarta.interceptor;version="2.2.0"
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -includeresource: \
-  @${repo;jakarta.interceptor:jakarta.interceptor-api;2.2.0.RC1;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.interceptor:jakarta.interceptor-api;2.2.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
-  dep1;groupId=jakarta.interceptor;artifactId=jakarta.interceptor-api;version=2.2.0-RC1;scope=runtime
+  dep1;groupId=jakarta.interceptor;artifactId=jakarta.interceptor-api;version=2.2.0;scope=runtime

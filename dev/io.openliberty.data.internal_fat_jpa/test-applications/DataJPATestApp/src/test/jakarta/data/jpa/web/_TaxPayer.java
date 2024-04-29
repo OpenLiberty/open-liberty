@@ -13,15 +13,17 @@ package test.jakarta.data.jpa.web;
 import jakarta.data.metamodel.Attribute;
 import jakarta.data.metamodel.SortableAttribute;
 import jakarta.data.metamodel.StaticMetamodel;
+import jakarta.data.metamodel.impl.AttributeRecord;
+import jakarta.data.metamodel.impl.SortableAttributeRecord;
 
 /**
  * Static metamodel for the TaxPayer entity.
  */
 @StaticMetamodel(TaxPayer.class)
-public class _TaxPayer {
-    public static volatile Attribute bankAccounts;
-    public static volatile SortableAttribute filingStatus;
-    public static volatile SortableAttribute income;
-    public static volatile SortableAttribute numDependents;
-    public static volatile SortableAttribute ssn; // the id attribute
+public interface _TaxPayer {
+    Attribute<TaxPayer> bankAccounts = new AttributeRecord<>("bankAccounts");
+    SortableAttribute<TaxPayer> filingStatus = new SortableAttributeRecord<>("filingStatus");
+    SortableAttribute<TaxPayer> income = new SortableAttributeRecord<>("income");
+    SortableAttribute<TaxPayer> numDependents = new SortableAttributeRecord<>("numDependents");
+    SortableAttribute<TaxPayer> ssn = new SortableAttributeRecord<>("ssn"); // the id attribute
 }

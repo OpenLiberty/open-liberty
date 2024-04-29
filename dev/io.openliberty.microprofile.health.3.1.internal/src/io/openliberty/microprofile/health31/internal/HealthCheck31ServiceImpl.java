@@ -102,8 +102,6 @@ public class HealthCheck31ServiceImpl implements HealthCheck31Service {
     public void performHealthCheck(HttpServletRequest request, HttpServletResponse httpResponse, String healthCheckProcedure) {
         Set<HealthCheckResponse> hcResponses = null;
         Set<String> unstartedAppsSet = new HashSet<String>();
-        Set<String> apps = appTracker.getAllAppNames();
-        Iterator<String> appsIt = apps.iterator();
         boolean anyAppsInstalled = false;
 
         HealthCheck30HttpResponseBuilder hcHttpResponseBuilder = new HealthCheck30HttpResponseBuilder();
@@ -120,6 +118,26 @@ public class HealthCheck31ServiceImpl implements HealthCheck31Service {
         }
         Status defaultOverallReadiness = defaultReadinessProp.equalsIgnoreCase("UP") ? Status.UP : Status.DOWN;
         Status defaultOverallStartup = defaultStartupProp.equalsIgnoreCase("UP") ? Status.UP : Status.DOWN;
+
+        Set<String> apps = appTracker.getAllAppNames();
+
+        Set<String> configApps = appTracker.getAllConfigAppNames();
+        Iterator<String> configAppsIt = configApps.iterator();
+
+        while (configAppsIt.hasNext()) {
+            String nextAppName = configAppsIt.next();
+            if (apps.contains(nextAppName)) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "In performHealthCheck(): configAdmin found an application that the applicationStateListener already found. configAdminAppName = " + nextAppName);
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "In performHealthCheck(): applicationStateListener couldn't find application. configAdmin added appName = " + nextAppName);
+                appTracker.addAppName(nextAppName);
+            }
+        }
+
+        apps = appTracker.getAllAppNames();
+        Iterator<String> appsIt = apps.iterator();
 
         while (appsIt.hasNext()) {
             String appName = appsIt.next();

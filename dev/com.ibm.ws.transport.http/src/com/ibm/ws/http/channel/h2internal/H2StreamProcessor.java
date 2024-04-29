@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -123,6 +123,9 @@ public class H2StreamProcessor {
 
     // handle various stream close conditions
     private boolean rstStreamSent = false;
+
+    // handle maximum size of header block
+    private long currentHeaderBlockSize = 0;
 
     /**
      * Create a stream processor initialized in idle state
@@ -264,7 +267,6 @@ public class H2StreamProcessor {
         Http2Exception addFrameException = null;
 
         while (addFrame != ADDITIONAL_FRAME.NO) {
-
             currentFrame = frame;
 
             // skip only first debug here, since it was done on entry
@@ -380,9 +382,9 @@ public class H2StreamProcessor {
                 // This frame type is artificially generated, process it as a headers frame,
                 // as if it had come in off the wire
                 if (frameType == FrameTypes.PUSHPROMISEHEADERS) {
-                    getHeadersFromFrame();
-                    setHeadersComplete();
                     try {
+                        getHeadersFromFrame();
+                        setHeadersComplete();
                         processCompleteHeaders(true);
                         setReadyForRead();
                     } catch (Http2Exception he) {
@@ -1565,14 +1567,29 @@ public class H2StreamProcessor {
     /**
      * Appends the header block fragment in the current header frame to this stream's incomplete header block
      */
-    private void getHeadersFromFrame() {
+    private void getHeadersFromFrame() throws Http2Exception {
         byte[] hbf = null;
         if (currentFrame.getFrameType() == FrameTypes.HEADERS || currentFrame.getFrameType() == FrameTypes.PUSHPROMISEHEADERS) {
             hbf = ((FrameHeaders) currentFrame).getHeaderBlockFragment();
         } else if (currentFrame.getFrameType() == FrameTypes.CONTINUATION) {
             hbf = ((FrameContinuation) currentFrame).getHeaderBlockFragment();
         }
-
+        currentHeaderBlockSize += hbf.length;
+        // According to RFC 9113 A receiver MUST terminate the connection with a connection error (Section 5.4.1)
+        // of type COMPRESSION_ERROR if it does not decompress a field block
+        // In this case we haven't decompressed the header block because we are still queueing blocks from frames,
+        // so we will close the connection with a EnhanceYourCalm error to keep the Header tables in sync since
+        // we won't be processing any more headers
+        if (muxLink.maxHeaderBlockSize > 0 && currentHeaderBlockSize > muxLink.maxHeaderBlockSize) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getHeadersFromFrame entry: Found header exceeding maximum header block size. According to RFC we should shut the connection down since we don't have any processing done for headers.");
+            }
+            muxLink.setContinuationExpected(false);
+            muxLink.setWriteContinuationExpected(false);
+            Http2Exception headersTooBig = new EnhanceYourCalmException("Stream: " + myID + " exceeds the maximum header block size configured.");
+            headersTooBig.setConnectionError(true);
+            throw headersTooBig;
+        }
         if (hbf != null && hbf.length > 0) {
             if (headerBlock == null) {
                 headerBlock = new ArrayList<byte[]>();
@@ -1615,6 +1632,9 @@ public class H2StreamProcessor {
             boolean isFirstHeaderBlock;
             boolean isFirstHeader = true;
             boolean processTrailerHeaders = headersCompleted;
+
+            int limitTokenSize = muxLink.config.getLimitOfFieldSize();
+            int limitNumberOfHeaders = muxLink.config.getLimitOnNumberOfHeaders();
 
             //Decode headers until we reach the end of the buffer
             while (buf.hasRemaining()) {
@@ -1670,6 +1690,17 @@ public class H2StreamProcessor {
                     }
 
                     headers.add(current);
+                }
+                // If the headers exceeds the limits configured, we will stop handling headers and
+                // we will close the connection with a compression error according to RFC 9113 Section 4.3
+                // "A receiver MUST terminate the connection with a connection error (Section 5.4.1) of
+                // type COMPRESSION_ERROR if it does not decompress a field block"
+                if(current.getName().length() > limitTokenSize || current.getValue().length() > limitTokenSize ||
+                        pseudoHeaders.size() + headers.size() > limitNumberOfHeaders) {
+                    buf.release();
+                    CompressionException comp = new CompressionException("Headers on stream: " + myID + " exceed limits configured for the server.");
+                    comp.setConnectionError(true);
+                    throw comp;
                 }
             }
             buf.release();

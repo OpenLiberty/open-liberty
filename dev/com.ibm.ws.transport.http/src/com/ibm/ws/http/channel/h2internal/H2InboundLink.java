@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -113,6 +113,7 @@ public class H2InboundLink extends HttpInboundLink {
     volatile int maxResetFrames = 100;
     volatile int resetFrameWindow = 30000; // milliseconds
     volatile int maxStreamsRefused = 100;
+    volatile long maxHeaderBlockSize = 512000;
 
     FrameReadProcessor frameReadProcessor = null;
 
@@ -223,6 +224,7 @@ public class H2InboundLink extends HttpInboundLink {
         maxResetFrames = this.config.getH2MaxResetFrames();
         resetFrameWindow = this.config.getH2ResetFramesWindow();
         maxStreamsRefused = this.config.getH2MaxStreamsRefused();
+        maxHeaderBlockSize = this.config.getH2MaxHeaderBlockSize();
         rateState = new H2RateState(maxResetFrames, resetFrameWindow, maxStreamsRefused);
 
         writeQ = new H2WriteTree();

@@ -48,6 +48,7 @@ import com.ibm.ws.concurrent.cdi.MTFBeanResourceInfo;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
@@ -204,7 +205,8 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
         threadGroup = AccessController.doPrivileged(new CreateThreadGroupAction(name + " Thread Group", maxPriority),
                                                     threadGroupTracker.serverAccessControlContext);
 
-        boolean virtual = Boolean.TRUE.equals(properties.get(VIRTUAL));
+        //Ignore virtual configuration unless Java 21+
+        boolean virtual = JavaInfo.majorVersion() >= 21 ? Boolean.TRUE.equals(properties.get(VIRTUAL)) : false;
 
         // TODO check the SPI to override virtual=true for CICS
 
@@ -292,9 +294,10 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
                             throw new IllegalStateException("Web module " + mData.getJ2EEName() + " is not available."); // TODO NLS
                     }
                 } else {
-                    // TODO implement
-                    throw new UnsupportedOperationException("Managed thread factory definitions are not supported in " +
-                                                            "application.xml yet. Metadata: " + metadata);
+                    // Should be unreachable because mock ComponentMetaData is created for resources defined in application.xml.
+                    throw new UnsupportedOperationException("A ManagedThreadFactory resource defined is in the " +
+                                                            metadata.getName() + " application artifact with " +
+                                                            metadata.getClass().getName() + " metadata.");
                 }
 
                 appName = cData.getJ2EEName().getApplication();

@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2022, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.session.6.0.internal/resources/io/openliberty/session/resources/SessionMessages.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Note:
+#Last used error meessage code was SESN8502I
+#
+#Use 8600 - 8699 for Servlet 6.0 - EE10
+#
+# -----------------------------------------------
+cookie.attribute.name.null=SESN8600E: Cookie \u985e\u5225\u4e0a\u7684\u5c6c\u6027\u540d\u7a31\u662f\u7a7a\u503c\u3002
+cookie.attribute.name.null.explanation=\u5c6c\u6027\u540d\u7a31\u4e0d\u80fd\u662f\u7a7a\u503c\u3002
+cookie.attribute.name.null.useraction=\u8acb\u78ba\u5b9a\u5c6c\u6027\u540d\u7a31\u4e0d\u662f\u7a7a\u503c\u3002
+# -----------------------------------------------
+cookie.attribute.name.invalid.[{0}]=SESN8601E: [{0}] \u5c6c\u6027\u540d\u7a31\u5305\u542b\u7121\u6548\u5b57\u5143\u3002
+cookie.attribute.name.invalid.[{0}].explanation=\u5c6c\u6027\u540d\u7a31\u81f3\u5c11\u5305\u542b\u4e0b\u5217\u5176\u4e2d\u4e00\u500b\u5206\u9694\u5b57\u5143\uff0c\u9019\u4e9b\u5206\u9694\u5b57\u5143\u4e0d\u80fd\u7528\u65bc Cookie \u985e\u5225\u7684\u5c6c\u6027\u540d\u7a31\u4e2d\uff1a( ) < > @ , ; :  " / [ ] ? = { }
+cookie.attribute.name.invalid.[{0}].useraction=\u8acb\u78ba\u5b9a\u5c6c\u6027\u540d\u7a31\u4e0d\u5305\u542b\u4efb\u4f55\u5206\u9694\u5b57\u5143\uff0c\u4e14\u5c6c\u6027\u540d\u7a31\u6709\u6548\u3002

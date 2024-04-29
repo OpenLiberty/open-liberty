@@ -67,14 +67,14 @@ public class DataCoreTckLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", persistenceServer.getServerSharedPath() + "jimage/output/");
         additionalProps.put("tck_protocol", "rest");
-        additionalProps.put("jakarta.tck.profile", "core");
+        additionalProps.put("jakarta.profile", "core");
 
         //FIXME Always skip signature tests since our implementation has experimental API
-        additionalProps.put("included.groups", "core & persistence & !signature");
+        additionalProps.put("included.groups", "core & persistence");
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-M3");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-RC1");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckCorePersistence";
@@ -101,14 +101,14 @@ public class DataCoreTckLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", noSQLServer.getServerSharedPath() + "jimage/output/");
         additionalProps.put("tck_protocol", "rest");
-        additionalProps.put("jakarta.tck.profile", "core");
+        additionalProps.put("jakarta.profile", "core");
 
         //FIXME Always skip signature tests since our implementation has experimental API
         additionalProps.put("included.groups", "core & nosql & !signature");
 
         //Comment out to use SNAPSHOT
-//        additionalProps.put("jakarta.data.groupid", "jakarta.data");
-//        additionalProps.put("jakarta.data.tck.version", "1.0.0-M3");
+        additionalProps.put("jakarta.data.groupid", "jakarta.data");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-RC1");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckCoreNoSQL";

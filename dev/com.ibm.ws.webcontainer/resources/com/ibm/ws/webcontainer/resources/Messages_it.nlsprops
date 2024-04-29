@@ -1632,3 +1632,14 @@ redirect.location.cannot.be.null.useraction=Aggiornare l'ubicazione di reindiriz
 
 sendRedirect.hyper.text.url=<html><body><p>Reindirizzamento a <a href="{0}"></a></p></body></html>
 
+query.or.post.is.null=CWWWC0009E: La stringa di query di richiesta HTTP o i dati di richiesta POST HTTP sono null.
+query.or.post.is.null.explanation=L'applicazione ha tentato di analizzare una stringa di query di richiesta HTTP o un corpo di richiesta POST HTTP null.
+query.or.post.is.null.useraction=Il client deve inviare una stringa di query della richiesta HTTP non null o un corpo della richiesta POST HTTP non null.
+
+read.write.bytebuffer.null=CWWWC0010E: Un tentativo di lettura da un'operazione InputStream o di scrittura in un'operazione OutputStream ha avuto esito negativo perch\u00e9 un'istanza ByteBuffer dell'argomento variabile era null.
+read.write.bytebuffer.null.explanation=L'istanza dell'argomento della variabile ByteBuffer passato all'API di lettura o scrittura non deve essere null.
+read.write.bytebuffer.null.useraction=Modificare il codice dell'applicazione per creare un'istanza ByteBuffer non null da trasmettere all'operazione InputStream o OutputStream .
+
+read.write.failed.isReady.false=CWWWC0011E: Un tentativo di lettura da un'operazione InputStream o scrittura in un'operazione OutputStream non \u00e8 riuscito perch\u00e9 l'API isReady restituisce false.
+read.write.failed.isReady.false.explanation=Se l'API isReady restituisce false, non \u00e8 possibile chiamare un metodo di lettura o scrittura.
+read.write.failed.isReady.false.useraction=Modificare la logica dell'applicazione per assicurarsi che il flusso sia pronto per un'operazione InputStream o OutputStream .

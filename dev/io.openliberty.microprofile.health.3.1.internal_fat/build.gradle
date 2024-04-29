@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,10 +11,36 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+configurations {
+    kafkaClient
+    requiredLibs.extendsFrom kafkaClient
+}
 
 dependencies {
   //requiredLibs 'org.glassfish:javax.json:1.1'
+  kafkaClient 'org.apache.kafka:kafka-clients:3.5.1'
+  kafkaClient 'org.lz4:lz4-java:1.8.0'
+  kafkaClient 'com.github.luben:zstd-jni:1.5.5-1'
+  kafkaClient 'org.xerial.snappy:snappy-java:1.1.10.1'
+  kafkaClient project(':com.ibm.ws.org.slf4j.api')
+  kafkaClient project(':com.ibm.ws.org.slf4j.jdk14')
+  requiredLibs 'org.testng:testng:7.5.1'
+  requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
+  requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka')
+  requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka.adapter')
+  requiredLibs project(':com.ibm.ws.microprofile.reactive.messaging.kafka.adapter.impl')
+  requiredLibs project(':com.ibm.ws.io.smallrye.reactive.streams-operators')
+  requiredLibs project(':com.ibm.ws.crypto.passwordutil');
   requiredLibs 'org.apache.johnzon:johnzon-core:1.1.0'
   
   addRequiredLibraries.dependsOn addJakartaTransformer
 }
+
+task addKafkaClientLibs (type: Copy) {
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/libs')
+    from configurations.kafkaClient
+    shouldRunAfter autoFVT
+}
+
+zipAutoFVT.dependsOn addKafkaClientLibs
+addRequiredLibraries.dependsOn copyTestContainers

@@ -13,6 +13,7 @@
 package test.jakarta.data.jpa.web;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -27,9 +28,9 @@ import jakarta.persistence.Version;
 @Entity(name = "Orders") // overrides the default name PurchaseOrder
 public class PurchaseOrder {
 
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Id
-    public Long id;
+    public UUID id;
 
     public String purchasedBy;
 

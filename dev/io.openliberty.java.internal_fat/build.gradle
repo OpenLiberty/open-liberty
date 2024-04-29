@@ -26,7 +26,7 @@ configurations {
     app19 'io.openliberty:java-apps:19.0.0'
     app20 'io.openliberty:java-apps:20.0.0'
     app21 'io.openliberty:java-apps:21.0.0'
-    app22 'io.openliberty:java-apps:22.0.0'
+    app22 'io.openliberty:java-apps:22.1.0'
  }
 
 task copyKernelService(type: Copy) {

@@ -29,20 +29,17 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
-import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import suite.FATSuite;
-import web.FailoverServlet;
 
 /**
  * These tests are designed to exercise the ability of the SQLMultiScopeRecoveryLog (transaction logs stored
@@ -129,22 +126,17 @@ public class FailoverTestLease extends FATServletClient {
     private static final int LOG_SEARCH_TIMEOUT = 300000;
     public static final String APP_NAME = "transaction";
     public static final String SERVLET_NAME = APP_NAME + "/FailoverServlet";
-    public static final String APP_PATH = "../../../../com.ibm.ws.transaction.hadb_fat.derby.1/";
 
     @Server("com.ibm.ws.transaction_retriablecloud")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer retriableCloudServer;
 
     @Server("com.ibm.ws.transaction_stalecloud")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer staleCloudServer;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.fastcheck")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server1fastcheck;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD002.fastcheck")
-    @TestServlet(servlet = FailoverServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server2fastcheck;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.longleasecompete")
@@ -160,11 +152,7 @@ public class FailoverTestLease extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        TxShrinkHelper.buildDefaultApp(retriableCloudServer, APP_NAME, APP_PATH, "web");
-        TxShrinkHelper.buildDefaultApp(staleCloudServer, APP_NAME, APP_PATH, "web");
-        TxShrinkHelper.buildDefaultApp(longLeaseCompeteServer1, APP_NAME, APP_PATH, "web");
-        TxShrinkHelper.buildDefaultApp(server1fastcheck, APP_NAME, APP_PATH, "web");
-        TxShrinkHelper.buildDefaultApp(server2fastcheck, APP_NAME, APP_PATH, "web");
+        FailoverTest.commonSetUp(FailoverTestLease.class);
     }
 
     @AfterClass
@@ -437,6 +425,8 @@ public class FailoverTestLease extends FATServletClient {
     }
 
     @Test
+    // Can get a benign InternalLogException if heartbeat happens at same time as lease claim
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException" })
     public void testBatchLeaseDeletion() throws Exception {
         final String method = "testBatchLeaseDeletion";
         if (!TxTestContainerSuite.isDerby()) { // Exclude Derby

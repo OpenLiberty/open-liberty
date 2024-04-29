@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -474,7 +474,7 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
                     String sealedString = null;
 
                     if (manifestEntryAttributes != null) {
-                        String unixName = packageName.replaceAll("\\.", "/") + "/"; //replace all dots with slash and add trailing slash
+                        String unixName = packageName.replace('.', '/') + "/"; //replace all dots with slash and add trailing slash
                         Map<Name, String> entryAttributes = manifestEntryAttributes.get(unixName);
                         if (entryAttributes != null) {
                             specTitle = entryAttributes.get(Name.SPECIFICATION_TITLE);

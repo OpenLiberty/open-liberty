@@ -12,29 +12,18 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import static io.openliberty.data.repository.function.Extract.Field.DAY;
-import static io.openliberty.data.repository.function.Extract.Field.MONTH;
-import static io.openliberty.data.repository.function.Extract.Field.QUARTER;
-import static io.openliberty.data.repository.function.Extract.Field.WEEK;
-import static io.openliberty.data.repository.function.Extract.Field.YEAR;
+import static jakarta.data.repository.By.ID;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
-import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
-import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.comparison.GreaterThanEqual;
-import io.openliberty.data.repository.comparison.In;
-import io.openliberty.data.repository.comparison.LessThanEqual;
-import io.openliberty.data.repository.function.Extract;
-import io.openliberty.data.repository.function.Not;
 import test.jakarta.data.jpa.web.CreditCard.CardId;
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
 
@@ -47,22 +36,19 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     @OrderBy("issuer")
     Stream<CreditCard> findByDebtorEmailIgnoreCaseStartsWith(String beginning);
 
+    @Query("SELECT DISTINCT c.debtor.email FROM CreditCard c WHERE c.expiresOn BETWEEN ?1 AND ?2")
     @OrderBy("debtorEmail")
-    @Select(distinct = true, value = "debtorEmail")
     List<String> findByExpiresOnBetween(LocalDate expiresOnOrAfter, LocalDate expiresOnOrBefore);
 
-    @Find
-    @OrderBy("number")
-    Stream<CreditCard> expiresInQuarterOtherThan(@By("expiresOn") @Extract(QUARTER) @Not int quarterToExclude);
+    @Query("SELECT card FROM CreditCard card WHERE NOT (EXTRACT (QUARTER FROM card.expiresOn)) = ?1 ORDER BY card.number")
+    Stream<CreditCard> expiresInQuarterOtherThan(int quarterToExclude);
 
-    @Find
-    @Select("number")
-    @OrderBy("number")
-    List<Long> expiringInOrBefore(@By("expiresOn") @Extract(YEAR) @LessThanEqual int maxYearOfExpiry);
+    @Query("SELECT c.number FROM CreditCard c WHERE EXTRACT (YEAR FROM c.expiresOn) <= ?1 ORDER BY c.number")
+    List<Long> expiringInOrBefore(int maxYearOfExpiry);
 
-    @Find
+    @Query("SELECT o FROM CreditCard o WHERE (EXTRACT (WEEK FROM o.expiresOn)=?1)")
     @OrderBy("number")
-    List<CreditCard> expiringInWeek(@By("expiresOn") @Extract(WEEK) int weekNumber);
+    List<CreditCard> expiringInWeek(int weekNumber);
 
     @OrderBy("number")
     Stream<CreditCard> findByExpiresOnWithQuarterNot(int quarterToExclude);
@@ -79,20 +65,20 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     @OrderBy("debtor_email")
     Stream<Customer> findByIssuer(Issuer cardIssuer);
 
-    @OrderBy("id")
+    @OrderBy(ID)
     Stream<CardId> findBySecurityCode(int code);
 
+    @Query("SELECT number WHERE EXTRACT (YEAR FROM expiresOn) <= ?1")
     @OrderBy("number")
     List<Long> findNumberByExpiresOnWithYearLessThanEqual(int maxYearOfExpiry);
 
-    @Find
+    @Query("SELECT o FROM CreditCard o WHERE EXTRACT (DAY FROM o.issuedOn) BETWEEN ?1 AND ?2")
     @OrderBy("number")
-    Stream<CreditCard> issuedBetween(@By("issuedOn") @Extract(DAY) @GreaterThanEqual int minDayOfMonth,
-                                     @By("issuedOn") @Extract(DAY) @LessThanEqual int maxDayOfMonth);
+    Stream<CreditCard> issuedBetween(int minDayOfMonth, int maxDayOfMonth);
 
-    @Find
+    @Query("SELECT o FROM CreditCard o WHERE EXTRACT (MONTH FROM o.issuedOn) IN ?1")
     @OrderBy("number")
-    Stream<CreditCard> issuedInMonth(@By("issuedOn") @Extract(MONTH) @In Iterable<Integer> months);
+    Stream<CreditCard> issuedInMonth(Iterable<Integer> months);
 
     @Save
     void save(CreditCard... cards);

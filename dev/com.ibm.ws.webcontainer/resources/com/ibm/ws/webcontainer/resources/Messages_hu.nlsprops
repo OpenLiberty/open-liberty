@@ -1632,3 +1632,14 @@ redirect.location.cannot.be.null.useraction=Friss\u00edtse az \u00e1tir\u00e1ny\
 
 sendRedirect.hyper.text.url=<html><body>Redirecting<p> <a href="{0}"></a></p></body></html>
 
+query.or.post.is.null=CWWWC0009E: A HTTP k\u00e9r\u00e9s lek\u00e9rdez\u00e9si karaktersorozat vagy HTTP POST k\u00e9r\u00e9s adatok null\u00e9rt\u00e9k\u0171ek.
+query.or.post.is.null.explanation=Az alkalmaz\u00e1s megpr\u00f3b\u00e1lt \u00e9rtelmezni egy null HTTP lek\u00e9rdez\u00e9si karaktersorozatot vagy egy null HTTP POST k\u00e9r\u00e9s t\u00f6rzset.
+query.or.post.is.null.useraction=Az \u00fcgyf\u00e9lnek nem null HTTP k\u00e9r\u00e9s lek\u00e9rdez\u00e9si karaktersorozatot vagy nem null HTTP POST k\u00e9r\u00e9s testet kell k\u00fcldenie.
+
+read.write.bytebuffer.null=CWWWC0010E: Egy InputStream m\u0171velet vagy egy OutputStream m\u0171velet \u00edr\u00e1sa meghi\u00fasult, mert egy v\u00e1ltoz\u00f3 argumentum ByteBuffer p\u00e9ld\u00e1ny null volt.
+read.write.bytebuffer.null.explanation=Az olvas\u00e1si vagy \u00edr\u00e1si API sz\u00e1m\u00e1ra \u00e1tadott ByteBuffer p\u00e9ld\u00e1ny nem lehet null.
+read.write.bytebuffer.null.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sk\u00f3dot egy nem null ByteBuffer p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1s\u00e1hoz az InputStream vagy a OutputStream m\u0171velethez.
+
+read.write.failed.isReady.false=CWWWC0011E: Egy InputStream m\u0171velet vagy egy OutputStream m\u0171velet \u00edr\u00e1sa meghi\u00fasult, mert a isReady API false \u00e9rt\u00e9ket ad vissza.
+read.write.failed.isReady.false.explanation=Ha a isReady API false \u00e9rt\u00e9ket ad vissza, akkor nem h\u00edvhat olvas\u00e1si vagy \u00edr\u00e1si met\u00f3dust.
+read.write.failed.isReady.false.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1slogik\u00e1t, hogy a folyam k\u00e9szen \u00e1lljon egy InputStream vagy a OutputStream m\u0171veletre.

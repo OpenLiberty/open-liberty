@@ -11,6 +11,7 @@ package errormethod.servlets;
 
 import java.io.IOException;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,6 +26,8 @@ import jakarta.servlet.http.HttpServletResponse;
  * Also test the actual method during the error dispatch is "GET"
  *
  * Request method is POST --Dispatching-to-Error-Page--> during error page dispatch method is GET --return-from-from-Error-Dispatch--> after exited error page dispach, method is POST.
+ *
+ * Also test the request attribute "jakarta.servlet.error.query_string attribute"
  */
 
 @WebServlet(urlPatterns = {"/ErrorPageServlet/*"}, name = "ErrorPageServlet")
@@ -34,7 +37,6 @@ public class ErrorPageServlet extends HttpServlet {
 
     //available to all methods
     HttpServletRequest request;
-    HttpServletResponse response;
     StringBuilder responseSB;
     ServletOutputStream sos;
 
@@ -47,32 +49,45 @@ public class ErrorPageServlet extends HttpServlet {
         LOG("ENTER doGet");
 
         request = req;
-        response = resp;
         responseSB = new StringBuilder();
-        sos = response.getOutputStream();
+        sos = resp.getOutputStream();
 
-        String errorMethodAtt;          // request error.method attribute which is the original method BEFORE going into sendError
-        String dispatchingMethod;       // method DURING the sendError().  This should always be "GET"
-        String initialRequestMethod;    // saved original request method before the dispatch; it is used to compare with errorMethodAtt
+        boolean testErrorQueryString = ((request.getAttribute("ERROR_QUERY_STRING") != null) ? true : false);
 
-        LOG(" Initial request method [" + (initialRequestMethod = (String) request.getAttribute("REQUEST_METHOD")) + "]\n");
-        LOG(" Error method attribute : from request dispatch attribute jakarta.servlet.error.method [" + (errorMethodAtt = (String) request.getAttribute("jakarta.servlet.error.method")) + "]\n");
-        LOG(" Method during error-page handling path (which is this ErrorPageServlet) [" + (dispatchingMethod = request.getMethod()) + "]\n");
+        if (testErrorQueryString) {     //test error query string attribute
 
-        responseSB.append(" Response from ErrorPageServlet\n");
+            LOG(" checking for request attribute jakarta.servlet.error.query_string from error dispatch");
+            responseSB.append(" Error Page request.getAttribute(\"" + RequestDispatcher.ERROR_QUERY_STRING + "\")" );
 
-        if (errorMethodAtt.equalsIgnoreCase(initialRequestMethod)) {
-            responseSB.append("Test request dispatcher jakarta.servlet.error.method attribute [PASS]\n");
+            String qsAttributeValue = (String) request.getAttribute(RequestDispatcher.ERROR_QUERY_STRING) ;
+            if (qsAttributeValue != null) {
+                responseSB.append(" . Found attribute with value [" + qsAttributeValue + "]");
+            }
         }
-        else {
-            responseSB.append("Test request dispatcher jakarta.servlet.error.method attribute [FAIL]. Expected the initial request method [" +initialRequestMethod +"] in the jakarta.servlet.error.method attribute but found ["+errorMethodAtt+"]\n");
-        }
+        else {                          //test error method attribute
+            String errorMethodAtt;          // request error.method attribute which is the original method BEFORE going into sendError
+            String dispatchingMethod;       // method DURING the sendError().  This should always be "GET"
+            String initialRequestMethod;    // saved original request method before the dispatch; it is used to compare with errorMethodAtt
 
-        if (dispatchingMethod.equals("GET")) {
-            responseSB.append("Test error dispatch method [PASS]\n");
-        }
-        else {
-            responseSB.append("Test error dispatch method[FAIL] . Expected [GET] but found [" + dispatchingMethod + "]\n");
+            LOG(" Initial request method [" + (initialRequestMethod = (String) request.getAttribute("REQUEST_METHOD")) + "]\n");
+            LOG(" Error method attribute : from request dispatch attribute jakarta.servlet.error.method [" + (errorMethodAtt = (String) request.getAttribute(RequestDispatcher.ERROR_METHOD)) + "]\n");
+            LOG(" Method during error-page handling path (which is this ErrorPageServlet) [" + (dispatchingMethod = request.getMethod()) + "]\n");
+
+            responseSB.append(" Response from ErrorPageServlet\n");
+
+            if (errorMethodAtt.equalsIgnoreCase(initialRequestMethod)) {
+                responseSB.append("Test request dispatcher jakarta.servlet.error.method attribute [PASS]\n");
+            }
+            else {
+                responseSB.append("Test request dispatcher jakarta.servlet.error.method attribute [FAIL]. Expected the initial request method [" +initialRequestMethod +"] in the jakarta.servlet.error.method attribute but found ["+errorMethodAtt+"]\n");
+            }
+
+            if (dispatchingMethod.equals("GET")) {
+                responseSB.append("Test error dispatch method [PASS]\n");
+            }
+            else {
+                responseSB.append("Test error dispatch method[FAIL] . Expected [GET] but found [" + dispatchingMethod + "]\n");
+            }
         }
 
         LOG(responseSB.toString());
@@ -85,4 +100,3 @@ public class ErrorPageServlet extends HttpServlet {
         System.out.println(CLASS_NAME + " " + s);
     }
 }
-

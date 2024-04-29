@@ -82,12 +82,6 @@ public class BackchannelLogoutRequestHelper {
     }
 
     boolean shouldSendLogoutRequests(String user, String idTokenString) {
-        if (!ProductInfo.getBetaEdition()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Beta mode is not enabled; back-channel logout will not be performed");
-            }
-            return false;
-        }
         if ((user == null || user.isEmpty()) && (idTokenString == null || idTokenString.isEmpty())) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Neither a user name nor an ID token string was provided, so back-channel logout will not be performed.");

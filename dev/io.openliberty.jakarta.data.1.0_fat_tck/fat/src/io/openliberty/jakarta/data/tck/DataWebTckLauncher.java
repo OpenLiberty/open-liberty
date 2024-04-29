@@ -62,14 +62,14 @@ public class DataWebTckLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("jimage.dir", server.getServerSharedPath() + "jimage/output/");
         additionalProps.put("tck_protocol", "servlet");
-        additionalProps.put("jakarta.tck.profile", "web");
+        additionalProps.put("jakarta.profile", "web");
 
         //Always skip signature tests on Web profile (already tested in core profile)
         additionalProps.put("included.groups", "web & persistence & !signature");
 
         //Comment out to use SNAPSHOT
         additionalProps.put("jakarta.data.groupid", "jakarta.data");
-        additionalProps.put("jakarta.data.tck.version", "1.0.0-M3");
+        additionalProps.put("jakarta.data.tck.version", "1.0.0-RC1");
 
         String bucketName = "io.openliberty.jakarta.data.1.0_fat_tck";
         String testName = this.getClass() + ":launchDataTckWeb";

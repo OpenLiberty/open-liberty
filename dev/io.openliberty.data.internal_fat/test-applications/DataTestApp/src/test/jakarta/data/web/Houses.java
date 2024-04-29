@@ -12,16 +12,20 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
+import static jakarta.data.repository.By.ID;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 import jakarta.data.Order;
+import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
@@ -32,7 +36,8 @@ import jakarta.data.repository.Save;
 @Repository
 public interface Houses {
 
-    long deleteById(String parcel);
+    @Delete
+    long deleteById(@By(ID) String parcel);
 
     long deleteByKitchenWidthGreaterThan(int widthAbove);
 
@@ -42,22 +47,27 @@ public interface Houses {
     @Delete
     long dropAll();
 
-    boolean existsById(String parcel);
+    boolean existsByParcelId(String parcel);
 
     Stream<House> findByAreaGreaterThan(int minArea, Order<House> sorts);
 
     List<House> findByGarageTypeOrderByGarageDoorWidthDesc(Garage.Type type);
 
-    House findById(String parcel);
+    @Find
+    House findById(@By(ID) String parcel);
 
+    @Query("SELECT garage.area WHERE garage IS NOT NULL")
     @OrderBy("purchasePrice")
-    int[] findGarageAreaByGarageNotNull();
+    int[] findGarageAreas();
 
-    Optional<Object[]> findGarageDoorAndKitchenLengthAndKitchenWidthById(String parcel);
+    @Query("SELECT garage.door, kitchen.length, kitchen.width WHERE parcelId = ?1")
+    Optional<Object[]> findGarageDoorAndKitchenLengthAndKitchenWidthByParcelId(String parcel);
 
+    @Query("SELECT kitchen.length, kitchen.width, garage.area, area WHERE area < :maxArea")
     @OrderBy("lotSize")
     Stream<Object[]> findKitchenLengthAndKitchenWidthAndGarageAreaAndAreaByAreaLessThan(int maxArea);
 
+    @Query("SELECT purchasePrice WHERE lotSize > ?1")
     @OrderBy("area")
     DoubleStream findPurchasePriceByLotSizeGreaterThan(float minLotSize);
 
@@ -73,5 +83,5 @@ public interface Houses {
     @Save
     List<House> save(House... h);
 
-    boolean updateByIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms(String parcel, Garage updatedGarage, int addedArea, int addedKitchenLength, int newNumBedrooms);
+    boolean updateByParcelIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms(String parcel, Garage updatedGarage, int addedArea, int addedKitchenLength, int newNumBedrooms);
 }

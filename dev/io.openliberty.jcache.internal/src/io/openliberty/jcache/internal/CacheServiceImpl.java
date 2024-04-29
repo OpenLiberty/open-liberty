@@ -87,12 +87,11 @@ public class CacheServiceImpl implements CacheService {
          */
         this.id = (String) configProps.get(KEY_ID);
         this.cacheName = (String) configProps.get(KEY_CACHE_NAME);
-
         /*
          * Schedule a task to initialize the cache in the background. This will
          * alleviate delays on the first request to the cache.
          */
-        CheckpointPhase.onRestore(() -> {
+        CheckpointPhase.onRestore(1, () -> {
             getCacheFuture = scheduledExecutorService.schedule(new Runnable() {
                 @Override
                 public void run() {

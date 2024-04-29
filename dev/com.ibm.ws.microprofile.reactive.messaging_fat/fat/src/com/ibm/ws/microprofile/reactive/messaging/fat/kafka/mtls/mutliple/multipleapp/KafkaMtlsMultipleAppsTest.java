@@ -43,7 +43,6 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.Connec
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaClientLibs;
 import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaUtils.kafkaPermissions;
 import static componenttest.topology.utils.FATServletClient.runTest;
-import static org.junit.Assert.assertNull;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -93,8 +92,8 @@ public class KafkaMtlsMultipleAppsTest {
         ConnectorProperties outgoingProperties2 = simpleOutgoingChannel(null, MessagingBeanTwo.CHANNEL_OUT)
                 // Valid Keystore
                 .addProperty(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, KafkaUtils.KEYSTORE2_FILENAME)
-                .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsMultipleKeyStoresTests.kafkaContainer.getKeystorePassword());
-                //.addProperty(ProducerConfig.CLIENT_ID_CONFIG, "AppTwo");
+                .addProperty(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, MtlsMultipleKeyStoresTests.kafkaContainer.getKeystorePassword())
+                .addProperty(ProducerConfig.CLIENT_ID_CONFIG, "AppTwo");
 
         ConnectorProperties incomingProperties2 = simpleIncomingChannel(null, MessagingBeanTwo.CHANNEL_IN, APP_GROUP_ID2)
                 // Valid Keystore
@@ -146,14 +145,12 @@ public class KafkaMtlsMultipleAppsTest {
 
         // the Kafka JMX issues are reported as Errors, not exceptions/ffdcs or have codes
         // so is not picked up on shutdown of the server, meaning that it passes
-        assertNull("Unexpected Kafka Error",
-                server.waitForStringInLog("E Error.*kafka", 1000));
     }
 
     @AfterClass
     public static void teardownTest() throws Exception {
         try {
-            server.stopServer();
+            KafkaUtils.kafkaStopServer(server);
         } finally {
             KafkaUtils.deleteKafkaTopics(MtlsMultipleKeyStoresTests.getAdminClient());
         }

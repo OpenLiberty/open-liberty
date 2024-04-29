@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
- 
+ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 // To test snapshots locally
 //repositories {
 //   mavenLocal()
@@ -20,6 +20,8 @@
 
 // Define G:A:V coordinates of each dependency
 dependencies {
+    requiredLibs 'org.seleniumhq.selenium:selenium-java:4.8.3'
+    requiredLibs 'com.google.guava:guava:32.0.1-jre'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit:2.44.0'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0'
     requiredLibs 'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0'
@@ -66,6 +68,7 @@ dependencies {
     requiredLibs 'org.brotli:dec:0.1.2'
     requiredLibs 'xalan:xalan:2.7.2'
     requiredLibs 'xml-apis:xml-apis:1.4.01'
+    requiredLibs project(':io.openliberty.jakarta.faces.4.1')
     requiredLibs project(':com.ibm.ws.org.apache.commons.io')
     requiredLibs project(':com.ibm.ws.org.slf4j.api')
     requiredLibs project(':io.openliberty.org.apache.commons.codec')
@@ -83,3 +86,4 @@ dependencies {
 //addRequiredLibraries {
 //    dependsOn addMojarra40
 //}
+addRequiredLibraries.dependsOn copyTestContainers

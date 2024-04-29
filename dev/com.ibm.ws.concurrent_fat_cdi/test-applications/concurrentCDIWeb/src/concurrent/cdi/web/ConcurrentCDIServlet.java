@@ -70,6 +70,7 @@ import concurrent.cdi.context.location.Location;
 import concurrent.cdi.ejb.ClearingAppContext;
 import concurrent.cdi.ejb.IgnoringTransactionContext;
 import concurrent.cdi.ejb.Invoker;
+import concurrent.cdi.ejb.PropagatingAppContext;
 import concurrent.cdi.ejb.PropagatingLocationContext;
 
 @ContextServiceDefinition(name = "java:app/concurrent/with-app-context",
@@ -178,12 +179,20 @@ public class ConcurrentCDIServlet extends HttpServlet {
     ManagedThreadFactory threadFactoryWithAppContext;
 
     @Inject
+    @PropagatingAppContext
+    ManagedThreadFactory threadFactoryWithAppContextAppDD;
+
+    @Inject
     @WithLocationContext
     ManagedThreadFactory threadFactoryWithLocationContext;
 
     @Inject
     @WithoutAppContext
     ManagedThreadFactory threadFactoryWithoutAppContext;
+
+    @Inject
+    @ClearingAppContext
+    ManagedThreadFactory threadFactoryWithoutAppContextAppDD;
 
     @Inject
     @WithoutTransactionContext
@@ -635,10 +644,10 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         CompletableFuture<?> future = new CompletableFuture<>();
 
-        // Requires the application's context (to look up a java:comp name)
+        // Requires the application's context (to look up a java:app name)
         Runnable task = () -> {
             try {
-                future.complete(InitialContext.doLookup("java:comp/env/entry2"));
+                future.complete(InitialContext.doLookup("java:app/env/entry1"));
             } catch (Throwable x) {
                 future.completeExceptionally(x);
             }
@@ -649,9 +658,8 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         assertEquals(Thread.NORM_PRIORITY, thread.getPriority());
 
-        // TODO re-enable once context capture is deterministic even if there are multiple modules
-        //Object result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
-        //assertEquals("value2", result);
+        Object result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value1", result);
     }
 
     /**
@@ -700,6 +708,60 @@ public class ConcurrentCDIServlet extends HttpServlet {
         try {
             Object result2 = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("Should not be abl to look up java:comp name because application context should be cleared. Found: " + result2);
+        } catch (ExecutionException x) {
+            if (x.getCause() instanceof NamingException)
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Inject qualified instances of ManagedThreadFactory and verify that the behavior of each
+     * matches the configuration that the qualifier points to. The qualifiers are defined
+     * on managed-thread-factory elements in application.xml.
+     */
+    public void testInjectManagedThreadFactoryQualifiedFromAppDD() throws Exception {
+        assertNotNull(threadFactoryWithAppContextAppDD);
+        assertNotNull(threadFactoryWithoutAppContextAppDD);
+
+        CompletableFuture<?> future1 = new CompletableFuture<>();
+        CompletableFuture<?> future2 = new CompletableFuture<>();
+
+        // Requires the application's context (to look up a java:app name)
+        Runnable task1 = () -> {
+            try {
+                future1.complete(InitialContext.doLookup("java:app/env/entry1"));
+            } catch (Throwable x) {
+                future1.completeExceptionally(x);
+            }
+        };
+
+        // Requires the application's context (to look up a java:app name).
+        // Expect an exception because this context should be cleared.
+        Runnable task2 = () -> {
+            try {
+                future2.complete(InitialContext.doLookup("java:app/env/entry1"));
+            } catch (Throwable x) {
+                future2.completeExceptionally(x);
+            }
+        };
+
+        Thread thread1 = threadFactoryWithAppContextAppDD.newThread(task1);
+        Thread thread2 = threadFactoryWithoutAppContextAppDD.newThread(task2);
+
+        thread1.start();
+        thread2.start();
+
+        assertEquals(1, thread1.getPriority());
+        assertEquals(2, thread2.getPriority());
+
+        Object result1 = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value1", result1);
+
+        try {
+            Object result2 = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Should not be abl to look up java:app name because application context should be cleared. Found: " + result2);
         } catch (ExecutionException x) {
             if (x.getCause() instanceof NamingException)
                 ; // expected
@@ -1224,10 +1286,10 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         CompletableFuture<?> future = new CompletableFuture<>();
 
-        // Requires the application's context (to look up a java:comp name)
+        // Requires the application's context (to look up a java:app name)
         Runnable task = () -> {
             try {
-                future.complete(InitialContext.doLookup("java:comp/env/entry2"));
+                future.complete(InitialContext.doLookup("java:app/env/entry1"));
             } catch (Throwable x) {
                 future.completeExceptionally(new AssertionError("A failure occurred on the new thread.", x));
             }
@@ -1238,9 +1300,8 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         assertEquals(Thread.NORM_PRIORITY, thread.getPriority());
 
-        // TODO re-enable once context capture is deterministic even if there are multiple modules
-        //Object result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
-        //assertEquals("value2", result);
+        Object result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("value1", result);
     }
 
     /**

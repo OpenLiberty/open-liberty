@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -134,6 +134,7 @@ public class TimerRetryDriverBean implements TimerRetryDriver {
         currentBean = BEAN_E;
         TimerRetryBeanE.count = 0;
         TimerRetryBeanE.timestamps.clear();
+        TimerRetryBeanE.nextTimes.clear();
         ivTimerRetryBeanE.doWork(testName, retries);
 
         svLogger.info("Leaving TimerRetryDriverBean.forceEverythingToFailIntervalTimer()...");
@@ -177,6 +178,7 @@ public class TimerRetryDriverBean implements TimerRetryDriver {
             svLogger.info("Getting results for BeanE...");
             props.put(COUNT_KEY, Integer.valueOf(TimerRetryBeanE.count));
             props.put(TIMESTAMP_KEY, TimerRetryBeanE.timestamps);
+            props.put(NEXTTIMEOUT_KEY, TimerRetryBeanE.nextTimes);
             props.put(TIMER_EXISTS, Boolean.valueOf(TimerRetryBeanE.timerExists));
         } else if (currentBean == BEAN_F) {
             svLogger.info("Getting results for BeanF...");

@@ -2,10 +2,9 @@
 symbolicName=io.openliberty.jakarta.authentication-3.1
 singleton=true
 -features=\
-  com.ibm.websphere.appserver.eeCompatible-11.0, \
-  io.openliberty.noShip-1.0
+  com.ibm.websphere.appserver.eeCompatible-11.0
 -bundles=\
-  io.openliberty.jakarta.authentication.3.0; location:=dev/api/spec/; mavenCoordinates="jakarta.authentication:jakarta.authentication-api:3.0.0"
-kind=noship
-edition=full
+  io.openliberty.jakarta.authentication.3.1; location:=dev/api/spec/; mavenCoordinates="jakarta.authentication:jakarta.authentication-api:3.1.0-M1"
+kind=beta
+edition=core
 

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -73,9 +73,7 @@ public interface DefaultSSLCertificateCreator {
      * Valid signature algorithms
      */
     public static final List<String> VALID_SIG_ALG = Arrays.asList(new String[] {
-                                                                                  "SHA1withRSA",
                                                                                   "SHA256withRSA",
-                                                                                  "SHA1withECDSA",
                                                                                   "SHA256withECDSA",
                                                                                   "SHA384withRSA",
                                                                                   "SHA512withRSA",
@@ -96,17 +94,17 @@ public interface DefaultSSLCertificateCreator {
     /**
      * Creates a default SSL certificate.
      *
-     * @param filePath The valid, complete path on the file system of the keystore to create. e.g. /tmp/key.p12
-     * @param password Minimum 6 characters
-     * @param keyStoreType Keystore type
+     * @param filePath         The valid, complete path on the file system of the keystore to create. e.g. /tmp/key.p12
+     * @param password         Minimum 6 characters
+     * @param keyStoreType     Keystore type
      * @param keyStoreProvider Keystore provider
-     * @param validity Minimum 365 days (?)
-     * @param subjectDN The subjectDN. Use {@link DefaultSubjectDN} to construct the default value.
-     * @param keySize The size of the certificate key. Default is 2048.
-     * @param sigAlg The signature algorithm of the certificate. Default is SHA256withRSA.
-     * @param extInfo Extension information to include in the certificate.
+     * @param validity         Minimum 365 days (?)
+     * @param subjectDN        The subjectDN. Use {@link DefaultSubjectDN} to construct the default value.
+     * @param keySize          The size of the certificate key. Default is 2048.
+     * @param sigAlg           The signature algorithm of the certificate. Default is SHA256withRSA.
+     * @param extInfo          Extension information to include in the certificate.
      * @return File representing the created keystore
-     * @throws CertificateException if the certificate could not be created
+     * @throws CertificateException     if the certificate could not be created
      * @throws IllegalArgumentException if an argument violates the minimum required value or if the value is otherwise considered invalid
      */
     File createDefaultSSLCertificate(String filePath, String password, String keyStoreType, String keyStoreProvider, int validity, String subjectDN, int keySize, String sigAlg,
@@ -116,9 +114,9 @@ public interface DefaultSSLCertificateCreator {
      * Updates the default SSL certificate. It is expected that if the default certificate is replaced,
      * that both the {@link KeyStore} and the file are updated with the new certificate.
      *
-     * @param keyStore The {@link KeyStore} that contains the default certificate.
+     * @param keyStore     The {@link KeyStore} that contains the default certificate.
      * @param keyStoreFile The file where the {@link KeyStore} was loaded.
-     * @param password The password to the {@link KeyStore}.
+     * @param password     The password to the {@link KeyStore}.
      * @throws CertificateException If there was an error updating the certificate.
      */
     void updateDefaultSSLCertificate(KeyStore keyStore, File keyStoreFile, String password) throws CertificateException;

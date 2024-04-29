@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,24 +13,22 @@
 
 // Define G:A:V coordinates of each dependency
 dependencies {
-  requiredLibs project(":com.ibm.ws.tx.embeddable"),
-               project(":com.ibm.ws.wsat.migration_fat.1"),
-               project(":com.ibm.ws.wsat.migration_fat.4"),
-               project(":com.ibm.ws.transaction.fat.util"),
-               project(':io.openliberty.org.apache.commons.logging')
+  requiredLibs project(":com.ibm.ws.wsat.migration_fat.4")
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
 
-autoFVT.doLast {
-  copy {
-    from project(':com.ibm.ws.wsat.migration_fat.4').autoFvtDir
-    into autoFvtDir
-    include 'test-applications/**'
+task copyTestApps (dependsOn: [':com.ibm.ws.wsat.migration_fat.4:autoFVT']) {
+  doLast {
+    copy {
+      from project(':com.ibm.ws.wsat.migration_fat.4').autoFvtDir
+      into autoFvtDir
+      include 'test-applications/**'
+    }
   }
 }
 
-autoFVT.dependsOn project(':com.ibm.ws.wsat.migration_fat.4').autoFVT
+autoFVT.dependsOn copyTestApps
 
 clean.doLast {
   if (file('build').exists()){

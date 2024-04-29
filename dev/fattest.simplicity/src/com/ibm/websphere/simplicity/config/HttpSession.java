@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ public class HttpSession extends ConfigElement {
     private Boolean cookieSecure;
     private Boolean cookieHttpOnly;
     private String cookieSameSite;
+    private Boolean cookiePartitioned;
     private Integer maxInMemorySessionCount;
     private Boolean allowOverflow;
     private String invalidationTimeout;
@@ -339,6 +340,15 @@ public class HttpSession extends ConfigElement {
         this.cookieSameSite = cookieSameSite;
     }
 
+    public Boolean getCookiePartitioned() {
+        return cookiePartitioned;
+    }
+
+    @XmlAttribute
+    public void setCookiePartitioned(Boolean cookiePartitioned) {
+        this.cookiePartitioned = cookiePartitioned;
+    }
+
     public Boolean getAllowOverflow() {
         return allowOverflow;
     }
@@ -401,6 +411,10 @@ public class HttpSession extends ConfigElement {
             buf.append("cookieSecure=\"" + cookieSecure + "\" ");
         if (cookiesEnabled != null)
             buf.append("cookiesEnabled=\"" + cookiesEnabled + "\" ");
+        if (cookieSameSite != null)
+            buf.append("cookieSameSite=\"" + cookieSameSite + "\" ");
+        if (cookiePartitioned != null)
+            buf.append("cookiePartitioned=\"" + cookiePartitioned + "\" ");
         if (idLength != null)
             buf.append("idLength=\"" + idLength + "\" ");
         if (invalidationTimeout != null)

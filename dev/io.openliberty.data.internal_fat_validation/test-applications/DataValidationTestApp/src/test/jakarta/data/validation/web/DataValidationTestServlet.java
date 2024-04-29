@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -460,7 +460,7 @@ public class DataValidationTestServlet extends FATServlet {
         assertEquals(violations.toString(), 1, violations.size());
 
         // The violation on r6 must prevent the valid update to r7:
-        assertEquals(17, rectangles.findWidthById("R7"));
+        assertEquals(17, rectangles.getWidth("R7"));
 
         // First valid, second not valid:
         r6 = new Rectangle("R6", 600l, 660l, 6, 60);
@@ -475,7 +475,7 @@ public class DataValidationTestServlet extends FATServlet {
         assertEquals(violations.toString(), 1, violations.size());
 
         // The violation on r7 must prevent the valid update to r6:
-        assertEquals(16, rectangles.findWidthById("R6"));
+        assertEquals(16, rectangles.getWidth("R6"));
     }
 
     /**
@@ -511,7 +511,7 @@ public class DataValidationTestServlet extends FATServlet {
         c1.weight = 5.7f;
         c3.latitude = BigDecimal.valueOf(44040337, 6);
         try {
-            creatures.saveAll(Set.of(c1, c3));
+            creatures.saveAll(List.of(c1, c3));
         } catch (ConstraintViolationException x) {
             violations = x.getConstraintViolations();
             if (violations.isEmpty())

@@ -24,3 +24,4 @@ Subsystem-Category: JakartaEE10Application
 kind=ga
 edition=base
 WLP-Activation-Type: parallel
+WLP-InstantOn-Enabled: true; type:=beta

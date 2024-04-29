@@ -267,9 +267,6 @@ public class AuthenticateApi {
     }
 
     String getUserNameFromCallerSubject() {
-        if (!ProductInfo.getBetaEdition()) {
-            return null;
-        }
         Subject subject = subjectManager.getCallerSubject();
         if (subject != null && !subjectHelper.isUnauthenticated(subject)) {
             Set<WSPrincipal> wsPrincipals = subject.getPrincipals(WSPrincipal.class);

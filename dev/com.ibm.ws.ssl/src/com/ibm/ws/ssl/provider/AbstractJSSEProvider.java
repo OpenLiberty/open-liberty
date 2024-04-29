@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,9 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.runtime.util.StreamHandlerUtils;
 import com.ibm.ws.ssl.JSSEProviderFactory;
+import com.ibm.ws.ssl.LibertySSLContext;
+import com.ibm.ws.ssl.LibertySSLContextSpi;
+import com.ibm.ws.ssl.LibertySSLSocketFactoryWrapper;
 import com.ibm.ws.ssl.config.KeyStoreManager;
 import com.ibm.ws.ssl.config.SSLConfigManager;
 import com.ibm.ws.ssl.config.ThreadManager;
@@ -100,7 +103,8 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
     /**
      * Constructor.
      */
-    public AbstractJSSEProvider() {}
+    public AbstractJSSEProvider() {
+    }
 
     protected void initialize(String keyMgr, String trustMgr, String cxtProvider, String keyProvider, String factory, String packageHandler, String protocolType) {
         this.keyManager = keyMgr;
@@ -280,13 +284,19 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             }
         }
 
-        sslContextCacheJAVAX.put(sslConfig, sslContext);
+        // wrap the SSLContext with LibertySSLContext to bind our SSL config on the resulting socket
+        // alias will be null if it hasn't been configured
+        LibertySSLContextSpi libertySSLContextSpi = new LibertySSLContextSpi(sslContext, sslConfig.getProperty(Constants.SSLPROP_ALIAS));
+        LibertySSLContext libertySSLContext = new LibertySSLContext(libertySSLContextSpi, sslContext.getProvider(), sslContext.getProtocol());
+
+        sslContextCacheJAVAX.put(sslConfig, libertySSLContext);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "SSLContext cache size: " + sslContextCacheJAVAX.size());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "getSSLContext -> (new)");
-        return sslContext;
+
+        return libertySSLContext;
     }
 
     /**
@@ -588,7 +598,6 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 
         try {
             SSLContext context = getSSLContext(null, config);
-
             if (context != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                     Tr.exit(tc, "getSSLServerSocketFactory");
@@ -618,9 +627,15 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         SSLContext context = getSSLContext(connectionInfo, config);
         if (context != null) {
             SSLSocketFactory factory = context.getSocketFactory();
+
+            // wrap the SSLSocketFactory to apply Liberty's config to its sockets
+            // alias will be null if it hasn't been configured
+            LibertySSLSocketFactoryWrapper wrapper = new LibertySSLSocketFactoryWrapper(factory, config.getProperty(Constants.SSLPROP_ALIAS));
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 Tr.exit(tc, "getSSLSocketFactory -> " + factory.getClass().getName());
-            return factory;
+
+            return wrapper;
         }
 
         throw new SSLException("SSLContext could not be created to return an SSLSocketFactory.");

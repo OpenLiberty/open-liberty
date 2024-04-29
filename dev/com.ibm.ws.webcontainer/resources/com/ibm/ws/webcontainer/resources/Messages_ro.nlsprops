@@ -1632,3 +1632,14 @@ redirect.location.cannot.be.null.useraction=Actualiza\u021bi loca\u021bia redire
 
 sendRedirect.hyper.text.url=<html><body><p>Redirecting to <a href="{0}"></a></p></body></html>
 
+query.or.post.is.null=CWWWC0009E: The HTTP request query string or HTTP POST request data is null.
+query.or.post.is.null.explanation=Aplica\u021bia a \u00eencercat s\u0103 parseze un null HTTP interogare sau un null HTTP corp cerere POST.
+query.or.post.is.null.useraction=Clientul trebuie s\u0103 trimit\u0103 un non-null HTTP interogare sau un non-null HTTP POST corp cerere.
+
+read.write.bytebuffer.null=CWWWC0010E: O \u00eencercare de a citi dintr-o opera\u021biune de tip InputStream a lui InputStream sau de a scrie o opera\u021biune OutputStream e\u0219uat deoarece un argument variabil ByteBuffer
+read.write.bytebuffer.null.explanation=Argumentul variabil ByteBuffer care este trecut la citit sau scrie API nu trebuie s\u0103 fie nul.
+read.write.bytebuffer.null.useraction=Modifica\u021bi codul de aplicare pentru a crea o instan\u021b\u0103 non-nul\u0103 ByteBuffer exemplu pentru a trece la opera\u021biunea de tip " InputStream sau OutputStream .
+
+read.write.failed.isReady.false=CWWWC0011E: O \u00eencercare de a citi dintr-o InputStream sau de a scrie la o OutputStream e\u0219uat, deoarece API-ul isReady \u00eentoarce fals.
+read.write.failed.isReady.false.explanation=\u00cen cazul isReady \u00eentoarce fals, nu pute\u021bi apela o metod\u0103 de citire sau scriere.
+read.write.failed.isReady.false.useraction=Modifica\u021bi logica aplica\u021biei pentru a v\u0103 asigura c\u0103 fluxul este gata pentru o InputStream sau " OutputStream .

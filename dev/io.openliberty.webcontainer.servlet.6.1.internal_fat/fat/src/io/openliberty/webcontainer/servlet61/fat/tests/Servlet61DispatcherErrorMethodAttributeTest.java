@@ -13,6 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.logging.Logger;
 
+import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
@@ -66,19 +67,46 @@ public class Servlet61DispatcherErrorMethodAttributeTest {
         }
     }
 
+    /*
+     * Test request attribute "jakarta.servlet.error.method"
+     */
     @Test
     public void test_Dispatcher_requestErrorMethodAttribute() throws Exception {
         LOG.info("====== <test_Dispatcher_requestErrorMethodAttribute> ======");
 
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/TestErrorMethodAttribute";
-        HttpPost getMethod = new HttpPost(url);         //POST without any body
+        HttpPost httpMethod = new HttpPost(url);         //POST without any body
+        httpMethod.addHeader("runTest", "test_ErrorMethod_Attribute");
 
         try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+            try (final CloseableHttpResponse response = client.execute(httpMethod)) {
                 String responseText = EntityUtils.toString(response.getEntity());
                 LOG.info("\n" + "Response Text: \n[" + responseText + "]");
 
                 assertTrue("FOUND a FAIL result. Check log" , !responseText.contains("FAIL"));
+            }
+        }
+    }
+
+    /*
+     * Test request attribute RequestDispacher.ERROR_QUERY_STRING "jakarta.servlet.error.query_string" retrieved from inside the error page
+     */
+    @Test
+    public void test_Dispatcher_requestErrorQueryStringAttribute() throws Exception {
+        LOG.info("====== <test_Dispatcher_requestErrorQueryStringAttribute> ======");
+
+        final String QUERYSTRING = "QueryString=TestValue&QS2=Value2&TestQS=Value3";
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/TestErrorMethodAttribute" + "?" + QUERYSTRING;
+        HttpGet httpMethod = new HttpGet(url);
+
+        httpMethod.addHeader("runTest", "test_ErrorQueryString_Attribute");
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(httpMethod)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                LOG.info("\n" + "Response Text: \n[" + responseText + "]");
+
+                assertTrue("Expected response contains string [" + QUERYSTRING + "] but found [" + responseText + "]", responseText.trim().contains(QUERYSTRING));
             }
         }
     }

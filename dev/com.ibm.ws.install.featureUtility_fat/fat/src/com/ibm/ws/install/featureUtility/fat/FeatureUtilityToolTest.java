@@ -18,7 +18,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -28,6 +30,10 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.zip.ZipFile;
+import java.util.stream.*;
+
+import org.testcontainers.containers.Container.ExecResult;
+import org.testcontainers.containers.GenericContainer;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.RemoteFile;
@@ -334,25 +340,28 @@ public abstract class FeatureUtilityToolTest {
 
 
     protected static void replaceWlpProperties(String version) throws Exception {
-        OutputStream os = null;
-        try {
             RemoteFile rf = new RemoteFile(server.getMachine(), minifiedRoot+ "/lib/versions/openliberty.properties");
-//            RemoteFile rf = server.getFileFromLibertyInstallRoot("lib/versions/openliberty.properties");
-            os = rf.openForWriting(false);
-            wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
-            Log.info(c, "replaceWlpProperties", "Set the version to : " + version);
-	    // beta
-	    wlpVersionProps.setProperty("com.ibm.websphere.productPublicKeyId", "0xBD9FD5BE9E68CA00");
-	    Log.info(c, "replaceWlpProperties", "Set product Key ID to : " + "0xBD9FD5BE9E68CA00");
-            wlpVersionProps.store(os, null);
-            os.close();
-        } finally {
-            try {
-                os.close();
-            } catch (IOException e) {
-                // ignore we are trying to close.
-            }
-        }
+	    try (OutputStream os = rf.openForWriting(false)) {
+		wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
+		Log.info(c, "replaceWlpProperties", "Set the version to : " + version);
+		wlpVersionProps.store(os, null);
+	    }
+	    // replace cl properties version if it exits
+	    rf = new RemoteFile(server.getMachine(),
+		    minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
+	    if (rf.exists()) {
+		Properties wlProps = new Properties();
+		try (InputStream is = rf.openForReading();) {
+		    wlProps.load(is);
+		    wlProps.setProperty("com.ibm.websphere.productVersion", version);
+		    Log.info(c, "replaceWlpProperties - closed ", "Set the version to : " + version);
+		}
+
+		try (OutputStream os = rf.openForWriting(false)) {
+		    wlProps.store(os, null);
+		}
+	    }
+
     }
     protected static void resetOriginalWlpProps() throws Exception {
         replaceWlpProperties(originalWlpVersion);
@@ -512,7 +521,27 @@ public abstract class FeatureUtilityToolTest {
 
     }
 
+    /**
+     * @param METHOD_NAME
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    protected void checkProxyLog(final String METHOD_NAME, GenericContainer<?> proxyContainer)
+	    throws IOException, InterruptedException {
+	ExecResult lsResult = proxyContainer.execInContainer("cat", "/var/log/squid/access.log");
+	String stdout = lsResult.getStdout();
+	Log.info(c, METHOD_NAME, "Test Failed. Proxy Log: " + stdout);
+    }
 
+    
+    protected void retryFeatureUtility(String METHOD_NAME) throws Exception {
+		try (Stream <Path> walk = Files.walk(Paths.get(installRoot))) {
+			List<String> result = walk.filter(Files::isRegularFile).map(x -> x.toString()).collect(Collectors.toList());
+			result.forEach(x -> Log.info(c, METHOD_NAME, x));
+		}
+		String[] param1s = { "installFeature", "jsp-2.2", "jsp-2.3", "--verbose" };
+		runFeatureUtility(METHOD_NAME, param1s);
+	}
 
 
 }

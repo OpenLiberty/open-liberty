@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.persistence.EntityManager;
@@ -46,25 +47,32 @@ public interface Counties {
 
     Optional<County> findByZipCodes(int... zipcodes);
 
+    @Query("SELECT cities WHERE name LIKE CONCAT(?1, '%')")
     @OrderBy("name")
     List<Set<CityId>> findCitiesByNameStartsWith(String beginning);
 
     Timestamp findLastUpdatedByName(String name);
 
-    int[] findZipCodesById(String name);
-
+    @Query("SELECT zipcodes WHERE name = ?1")
     Optional<int[]> findZipCodesByName(String name);
 
+    @Query("SELECT zipcodes WHERE name LIKE CONCAT('%', ?1, '%')")
+    int[] findZipCodesByNameContains(String substring);
+
+    @Query("SELECT zipcodes WHERE name LIKE CONCAT('%', ?1)")
     @OrderBy("population")
     Stream<int[]> findZipCodesByNameEndsWith(String ending);
 
+    @Query("SELECT zipcodes WHERE name NOT LIKE CONCAT(?1, '%')")
     @OrderBy("name")
     List<int[]> findZipCodesByNameNotStartsWith(String beginning);
 
+    @Query("SELECT zipcodes WHERE name LIKE CONCAT(?1, '%')")
     @OrderBy("population")
     @OrderBy("name")
     Page<int[]> findZipCodesByNameStartsWith(String beginning, PageRequest pagination);
 
+    @Query("SELECT zipcodes WHERE population <= ?1")
     @OrderBy("population")
     Optional<Iterator<int[]>> findZipCodesByPopulationLessThanEqual(int maxPopulation);
 
@@ -89,7 +97,7 @@ public interface Counties {
     }
 
     @Delete
-    boolean remove(County c);
+    void remove(County c);
 
     @Save
     Stream<County> save(County... c);

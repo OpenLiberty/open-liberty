@@ -1632,4 +1632,14 @@ redirect.location.cannot.be.null.useraction=Update the redirect location by spec
 
 sendRedirect.hyper.text.url=<html><body><p>Redirecting to <a href="{0}"></a></p></body></html>
 
-query.or.post.is.null=Request query string or post data is null.
+query.or.post.is.null=CWWWC0009E: The HTTP request query string or HTTP POST request data is null.
+query.or.post.is.null.explanation=The application tried to parse a null HTTP request query string or a null HTTP POST request body.
+query.or.post.is.null.useraction=The client must send a non-null HTTP request query string or a non-null HTTP POST request body.
+
+read.write.bytebuffer.null=CWWWC0010E: An attempt to read from an InputStream operation or write to an OutputStream operation failed because a variable argument ByteBuffer instance was null.
+read.write.bytebuffer.null.explanation=The variable argument ByteBuffer instance that is passed to the read or write API must not be null.
+read.write.bytebuffer.null.useraction=Modify the application code to create a non-null ByteBuffer instance to pass to the InputStream or OutputStream operation.
+
+read.write.failed.isReady.false=CWWWC0011E: An attempt to read from an InputStream operation or write to an OutputStream operation failed because the isReady API returns false.
+read.write.failed.isReady.false.explanation=If the isReady API returns false, you cannot call a read or write method.
+read.write.failed.isReady.false.useraction=Modify the application logic to make sure that the stream is ready for an InputStream or OutputStream operation.

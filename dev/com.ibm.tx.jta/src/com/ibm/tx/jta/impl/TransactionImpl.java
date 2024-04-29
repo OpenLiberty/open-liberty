@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2023 IBM Corporation and others.
+ * Copyright (c) 2002, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -257,6 +257,8 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     int _txType = UOWCoordinator.TXTYPE_INTEROP_GLOBAL;
 
     private final TransactionSynchronizationRegistry tsr = TransactionSynchronizationRegistryFactory.getTransactionSynchronizationRegistry();
+
+    protected boolean _alarmsCancelled;
 
     private static TraceComponent tc = Tr.register(com.ibm.tx.jta.impl.TransactionImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
@@ -1455,7 +1457,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
     /**
      * Stop all active timers associated with this transaction.
      */
-    protected void cancelAlarms() {
+    protected synchronized void cancelAlarms() {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "cancelAlarms");
 
@@ -1463,6 +1465,9 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
             TimeoutManager.setTimeout(this, TimeoutManager.CANCEL_TIMEOUT, 0);
             _timeout = 0;
         }
+
+        // Tell any queued up abort processing not to bother
+        _alarmsCancelled = true;
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "cancelAlarms");
@@ -2785,6 +2790,12 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
         if (tc.isEventEnabled())
             Tr.event(tc, "(SPI) Transaction TIMEOUT occurred for TX: " + getLocalTID());
+
+        if (_alarmsCancelled) {
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "timeoutTransaction", "Transaction already completing.");
+            return;
+        }
 
         _timedOut = true; // mark
         _rollbackOnly = true; // for the case of server quiesce?

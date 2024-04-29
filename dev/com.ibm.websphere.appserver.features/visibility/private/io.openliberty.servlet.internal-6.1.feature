@@ -26,6 +26,7 @@ Subsystem-Category: JakartaEE11Application
  com.ibm.ws.webserver.plugin.runtime.jakarta, \
  com.ibm.ws.webserver.plugin.runtime.interfaces,\
  io.openliberty.session.6.0.internal, \
+ io.openliberty.session.6.1.internal, \
  io.openliberty.webcontainer.servlet.6.0.internal, \
  io.openliberty.webcontainer.servlet.6.1.internal, \
  io.openliberty.webcontainer.servlet.6.1.internal.factories
@@ -33,6 +34,6 @@ Subsystem-Category: JakartaEE11Application
 -files=bin/tools/ws-webserverPluginutil.jar, \
  bin/pluginUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/pluginUtility.bat
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

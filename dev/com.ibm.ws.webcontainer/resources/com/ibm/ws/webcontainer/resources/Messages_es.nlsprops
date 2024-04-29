@@ -1632,3 +1632,14 @@ redirect.location.cannot.be.null.useraction=Actualice la ubicaci\u00f3n de redir
 
 sendRedirect.hyper.text.url=<html><body><p>Redirecci\u00f3n a <a href="{0}"></a></p></body></html>
 
+query.or.post.is.null=CWWWC0009E: La serie de consulta de solicitud HTTP o los datos de solicitud POST HTTP son nulos.
+query.or.post.is.null.explanation=La aplicaci\u00f3n ha intentado analizar una serie de consulta de solicitud HTTP nula o un cuerpo de solicitud POST HTTP nulo.
+query.or.post.is.null.useraction=El cliente debe enviar una serie de consulta de solicitud HTTP no nula o un cuerpo de solicitud POST HTTP no nulo.
+
+read.write.bytebuffer.null=CWWWC0010E: Un intento de leer de una operaci\u00f3n InputStream o escribir en una operaci\u00f3n OutputStream ha fallado porque un argumento de variable ByteBuffer era nulo.
+read.write.bytebuffer.null.explanation=La instancia del argumento de variable ByteBuffer que se pasa a la API de lectura o grabaci\u00f3n no debe ser nula.
+read.write.bytebuffer.null.useraction=Modifique el c\u00f3digo de aplicaci\u00f3n para crear una instancia de ByteBuffer no nula para pasar a la operaci\u00f3n InputStream o OutputStream .
+
+read.write.failed.isReady.false=CWWWC0011E: Un intento de leer de una operaci\u00f3n InputStream o escribir en una operaci\u00f3n OutputStream ha fallado porque la API isReady devuelve false.
+read.write.failed.isReady.false.explanation=Si la API isReady devuelve false, no puede llamar a un m\u00e9todo de lectura o escritura.
+read.write.failed.isReady.false.useraction=Modifique la l\u00f3gica de la aplicaci\u00f3n para asegurarse de que la corriente est\u00e1 preparada para una operaci\u00f3n InputStream o OutputStream .

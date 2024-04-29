@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2021 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer31.osgi.response;
 
@@ -190,6 +187,9 @@ public class WCOutputStream31 extends WCOutputStream
      */
     public void write(byte[] b, int start, int len) throws IOException
     {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
+            Tr.debug(tc, "write(byte[], int, int) ENTRY");         
+        }
         
         if(b == null){
             Tr.error(tc, "read.write.bytearray.null"); 
@@ -216,6 +216,9 @@ public class WCOutputStream31 extends WCOutputStream
             }
         }
         else{
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
+                Tr.debug(tc, "super.write(byte[], int, int)");         
+            }
             super.write(b, start, len);
         }
     }
@@ -228,6 +231,10 @@ public class WCOutputStream31 extends WCOutputStream
      */
     private void write_NonBlocking(byte[] value, int start, int len) throws IOException
     {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
+            Tr.debug(tc, "write_NonBlocking(byte[], int, int)");        
+        }
+
         // check if we are allowed to write on this thread, check for com.ibm.ws.webcontainer.WriteAllowedonThisThread
         WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);        
         if (reqState!=null && reqState.getAttribute("com.ibm.ws.webcontainer.WriteAllowedonThisThread")!=null){
@@ -253,7 +260,6 @@ public class WCOutputStream31 extends WCOutputStream
     public void write(byte[] value) throws IOException
     {
         this.write(value, 0, value.length);  
-
     }
 
     /*

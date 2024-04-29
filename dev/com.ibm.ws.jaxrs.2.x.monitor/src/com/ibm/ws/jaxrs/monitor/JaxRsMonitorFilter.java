@@ -113,6 +113,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
      */
     @Override
     public void filter(ContainerRequestContext reqCtx) throws IOException {
+        if (!MonitorAppStateListener.isRESTEnabled()) return;
         Class<?> resourceClass = resourceInfo.getResourceClass();
 
         if (resourceClass != null) {
@@ -168,7 +169,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
      */
     @Override
     public void filter(ContainerRequestContext reqCtx, ContainerResponseContext respCtx) throws IOException {
-
+        if (!MonitorAppStateListener.isRESTEnabled()) return;
         // Check that the StatsContext has been set on the request context.  This will happen when 
         // the ContainerRequestFilter.filter() method is invoked.  Situations, such as an improper jwt will cause the 
         // request filter to not be called and we will therefore not record any statistics.

@@ -46,6 +46,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.FieldVisitor;
@@ -86,6 +87,7 @@ import jakarta.persistence.EntityManager;
  */
 public class DBStoreEMBuilder extends EntityManagerBuilder {
     private static final String EOLN = String.format("%n");
+    private static final long MAX_WAIT_FOR_SERVICE_NS = TimeUnit.SECONDS.toNanos(60);
     private static final TraceComponent tc = Tr.register(DBStoreEMBuilder.class);
 
     private final ClassDefiner classDefiner = new ClassDefiner();
@@ -493,12 +495,25 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         BundleContext bc = FrameworkUtil.getBundle(DatabaseStore.class).getBundleContext();
-        Collection<ServiceReference<DatabaseStore>> refs = bc.getServiceReferences(DatabaseStore.class,
-                                                                                   FilterUtils.createPropertyFilter("id", databaseStoreId));
-        if (refs.isEmpty())
-            throw new IllegalArgumentException("Not found: " + databaseStoreId);
 
-        ServiceReference<DatabaseStore> ref = refs.iterator().next();
+        ServiceReference<DatabaseStore> ref = null;
+        for (long start = System.nanoTime(), poll_ms = 125L; ref == null; poll_ms = poll_ms < 1000L ? poll_ms * 2 : 1000L) {
+            Collection<ServiceReference<DatabaseStore>> refs = bc.getServiceReferences(DatabaseStore.class,
+                                                                                       FilterUtils.createPropertyFilter("id", databaseStoreId));
+            if (refs.isEmpty()) {
+                if (System.nanoTime() - start < MAX_WAIT_FOR_SERVICE_NS) {
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "Wait " + poll_ms + " ms for service reference to become available...");
+                    TimeUnit.MILLISECONDS.sleep(poll_ms);
+                } else {
+                    throw new IllegalStateException("The " + databaseStoreId + " service component did not become available within " +
+                                                    TimeUnit.NANOSECONDS.toSeconds(MAX_WAIT_FOR_SERVICE_NS) + " seconds.");
+                }
+            } else {
+                ref = refs.iterator().next();
+            }
+        }
+
         String tablePrefix = (String) ref.getProperty("tablePrefix");
 
         if (trace && tc.isDebugEnabled())

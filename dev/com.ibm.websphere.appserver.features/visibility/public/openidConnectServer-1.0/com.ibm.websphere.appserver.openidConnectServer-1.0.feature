@@ -6,7 +6,7 @@ IBM-API-Package: com.ibm.websphere.security.openidconnect; type="ibm-api"
 IBM-ShortName: openidConnectServer-1.0
 Subsystem-Name: OpenID Connect Provider 1.0
 Subsystem-Category: adminCenter
-Subsystem-Endpoint-Content: com.ibm.ws.security.openidconnect.server; version="[1.0.0,1.0.200)"
+Subsystem-Endpoint-Content: com.ibm.ws.security.openidconnect.server; version="[1.0.0,1.1.0)"
 Subsystem-Endpoint-Names: clientManagement=OpenID Connect Client Management, personalTokenManagement=OpenID Connect Personal Token Management, usersTokenManagement=OpenID Connect Users Token Management
 Subsystem-Endpoint-Urls: className=com.ibm.ws.security.openidconnect.server.plugins.UIHelperService, methodName=getProviderInfo
 Subsystem-Endpoint-ShortNames: clientManagement=clientManagement-1.0, personalTokenManagement=personalTokenManagement-1.0, usersTokenManagement=usersTokenManagement-1.0

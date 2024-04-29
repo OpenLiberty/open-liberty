@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,6 @@ import javax.ws.rs.core.Response;
 
 import org.junit.Test;
 
-import com.ibm.ws.jaxrs20.client.JAXRSClientConstants;
-
 import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 
@@ -40,8 +38,11 @@ public class MisMatchingSSLCiphersClientTestServlet extends FATServlet {
 
     @Override
     public void before() throws ServletException {
-        client = ClientBuilder.newClient();
-        client.property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig");
+        ClientBuilder cb = ClientBuilder.newBuilder();
+        // Property must be set on the ClientBuilder for EE9+
+        // Setting on the Client technically works for EE7 & EE8, but we don't document it.
+        cb.property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfig");
+        client = cb.build();
     }
 
     @Override
@@ -49,7 +50,7 @@ public class MisMatchingSSLCiphersClientTestServlet extends FATServlet {
         client.close();
     }
 
-//    @Test
+    @Test
     @AllowedFFDC( { "javax.ws.rs.ProcessingException", "java.lang.IllegalArgumentException" })
     public void testSimpleSSLRequestWithMisMatchingSSLCiphers() {
         try {

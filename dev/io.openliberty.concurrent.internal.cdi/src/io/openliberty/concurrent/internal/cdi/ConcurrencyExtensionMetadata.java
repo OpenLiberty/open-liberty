@@ -29,6 +29,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ws.cdi.extension.CDIExtensionMetadataInternal;
+import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.javaee.version.JavaEEVersion;
 import com.ibm.wsspi.resource.ResourceFactory;
 
@@ -85,6 +86,12 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
      * Jakarta EE version.
      */
     public static Version eeVersion;
+
+    /**
+     * Creates dummy component metadata for ManagedThreadFactories based on the application metadata.
+     */
+    @Reference(target = "(deferredMetaData=MTF)")
+    public volatile DeferredMetaDataFactory mtfMetadataFactory;
 
     /**
      * Maintains associations of qualifiers to resource factory for

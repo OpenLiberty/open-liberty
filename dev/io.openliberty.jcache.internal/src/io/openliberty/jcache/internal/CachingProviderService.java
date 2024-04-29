@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,6 +33,8 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.library.spi.SpiLibrary;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.library.Library;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * Service that configures a {@link CachingProvider} to use with JCache caching.
@@ -80,17 +82,19 @@ public class CachingProviderService {
          * TODO???? No doPriv due to limitations in OSGi and security manager. If
          * running with SecurityManager, permissions will need to be granted explicitly.
          */
-        try {
-            ClassLoader classloader = getUnifiedClassLoader();
-            if (cachingProviderClass != null && !cachingProviderClass.trim().isEmpty()) {
-                cachingProvider = Caching.getCachingProvider(cachingProviderClass, classloader);
-            } else {
-                cachingProvider = Caching.getCachingProvider(classloader);
+        CheckpointPhase.onRestore(0, () -> {
+            try {
+                ClassLoader classloader = getUnifiedClassLoader();
+                if (cachingProviderClass != null && !cachingProviderClass.trim().isEmpty()) {
+                    cachingProvider = Caching.getCachingProvider(cachingProviderClass, classloader);
+                } else {
+                    cachingProvider = Caching.getCachingProvider(classloader);
+                }
+            } catch (Throwable e) {
+                Tr.error(tc, "CWLJC0004_GET_PROVIDER_FAILED", id, e);
+                throw e;
             }
-        } catch (Throwable e) {
-            Tr.error(tc, "CWLJC0004_GET_PROVIDER_FAILED", id, e);
-            throw e;
-        }
+        });
     }
 
     @Deactivate

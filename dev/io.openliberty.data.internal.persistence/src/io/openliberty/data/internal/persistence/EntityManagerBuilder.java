@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static jakarta.data.repository.By.ID;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
@@ -34,7 +36,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import io.openliberty.data.internal.persistence.model.Model;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
@@ -145,24 +146,6 @@ public abstract class EntityManagerBuilder implements Runnable {
     protected abstract void initialize() throws Exception;
 
     /**
-     * Assigns the public static volatile fields of @StaticMetamodel classes
-     * to be the corresponding entity attribute name from the metamodel.
-     *
-     * @param staticMetamodels static metamodel class(es) per entity class.
-     */
-    public void populateStaticMetamodelClasses(Map<Class<?>, List<Class<?>>> staticMetamodels) {
-        for (Class<?> entityClass : entities) {
-            List<Class<?>> metamodelClasses = staticMetamodels.get(entityClass);
-            if (metamodelClasses != null) {
-                CompletableFuture<EntityInfo> entityInfoFuture = entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
-                EntityInfo entityInfo = entityInfoFuture.join();
-                for (Class<?> metamodelClass : metamodelClasses)
-                    Model.initialize(metamodelClass, entityInfo.attributeNames);
-            }
-        }
-    }
-
-    /**
      * Initializes the builder once before using it.
      */
     @Override
@@ -216,7 +199,7 @@ public abstract class EntityManagerBuilder implements Runnable {
                     } else {
                         SingularAttribute<?, ?> singleAttr = attr instanceof SingularAttribute ? (SingularAttribute<?, ?>) attr : null;
                         if (singleAttr != null && singleAttr.isId()) {
-                            attributeNames.put("id", attributeName);
+                            attributeNames.put(ID, attributeName);
                             idType = singleAttr.getJavaType();
                         } else if (singleAttr != null && singleAttr.isVersion()) {
                             versionAttrName = attributeName;
@@ -280,8 +263,7 @@ public abstract class EntityManagerBuilder implements Runnable {
                                 collectionElementTypes.put(fullAttributeName, ((PluralAttribute<?, ?, ?>) relAttr).getElementType().getJavaType());
                         } else if (relAttr instanceof SingularAttribute) {
                             SingularAttribute<?, ?> singleAttr = ((SingularAttribute<?, ?>) relAttr);
-                            if (singleAttr.isId()) {
-                                attributeNames.put("id", fullAttributeName);
+                            if (singleAttr.isId() && attributeNames.putIfAbsent(ID, fullAttributeName) == null) {
                                 idType = singleAttr.getJavaType();
                             } else if (singleAttr.isVersion()) {
                                 versionAttrName = relationAttributeName_; // to be suitable for query-by-method
@@ -299,7 +281,7 @@ public abstract class EntityManagerBuilder implements Runnable {
                         @SuppressWarnings("unchecked")
                         Set<SingularAttribute<?, ?>> idClassAttributes = (Set<SingularAttribute<?, ?>>) (Set<?>) entityType.getIdClassAttributes();
                         if (idClassAttributes != null) {
-                            attributeNames.remove("id");
+                            attributeNames.remove(ID);
                             idType = idClassType.getJavaType();
                             idClassAttributeAccessors = new TreeMap<>();
                             for (SingularAttribute<?, ?> attr : idClassAttributes) {

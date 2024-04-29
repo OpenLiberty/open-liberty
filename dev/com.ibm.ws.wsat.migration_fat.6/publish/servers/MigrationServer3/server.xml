@@ -48,5 +48,7 @@
       <properties.derby.embedded  createDatabase="create" databaseName="${shared.resource.dir}/data/tranlogdb" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
+	<wsAtomicTransaction asyncResponseTimeout="60000"/>
+
   <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
 </server>

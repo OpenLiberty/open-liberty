@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data;
 
+import static componenttest.annotation.SkipIfSysProp.DB_DB2;
+
 import jakarta.enterprise.inject.build.compatible.spi.BuildCompatibleExtension;
 import jakarta.enterprise.inject.spi.Extension;
 
@@ -29,6 +31,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
@@ -114,6 +117,7 @@ public class DataTest extends FATServletClient {
      * This test has conditional logic based on the JDBC driver/database.
      */
     @Test
+    @SkipIfSysProp(DB_DB2) //Failing on Db2 due to eclipselink issue.
     public void testFindAndDeleteReturnsObjects() throws Exception {
         runTest(server, "DataTestApp", "testFindAndDeleteReturnsObjects&jdbcJarName=" + jdbcJarName);
     }

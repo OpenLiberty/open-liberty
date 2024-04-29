@@ -82,8 +82,9 @@ testsrc: test/src
         com.ibm.ws.webcontainer;version=latest,\
         com.ibm.ws.org.apache.commons.lang3;version=latest,\
         org.eclipse.osgi;version=latest,\
+        com.ibm.ws.microprofile.health;version=latest,\
         com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
-        com.ibm.ws.microprofile.health;version=latest
+        com.ibm.websphere.org.osgi.service.cm;version=latest
 
 -testpath: \
         ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

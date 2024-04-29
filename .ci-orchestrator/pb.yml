@@ -1,9 +1,10 @@
 type: pipeline_definition
 product: Liberty
 name: Open Liberty Personal Build
-description: A build run against Open Liberty Pull Requests
+description: "Run a Personal build against an Open Liberty PR."
 triggers:
 - type: github
+  description: "Runs an optimised Open Liberty personal build, running FATs using the CIOrchestrator/Jenkins."
   triggerName: "ol-pbbeta"
   triggerRank: 50
   groups: ["LibertyDev"]
@@ -35,26 +36,41 @@ triggers:
     - stepName: Compile FATs
     - stepName: z/OS FATs
     - stepName: z/OS Unittests
+  # Enable the testing of the checkpoint feature, running the FATs (if any) in lite mode where only @CheckpointTest annotated test cases will be run.
+  - name: spawn.checkpoint
+    defaultValue: "true"
+    steps:
+    - stepName: Checkpoint FATs (Lite)
 
 - type: manual
   triggerName: "ol-pbbeta-manual"
+  description: "Runs an optimised Open Liberty personal build, running FATs using the CIOrchestrator/Jenkins."
   triggerRank: 50
   groups: ["LibertyDev"]
   propertyDefinitions:
   - name: github_pr_user
     isRequired: true
-    defaultValue: "Name of org to checkout"
+    defaultValue: "Name of Open Liberty user or organization for checkout."
+    description: "Name of Open Liberty user or organization for checkout."
   - name: github_pr_branch
     isRequired: true
-    defaultValue: "Name of branch to checkout"
+    defaultValue: "Name of Open Liberty branch to checkout."
+    description: "Name of Open Liberty branch to checkout."
   - name: github_pr_number
     isRequired: true
-    defaultValue: "PR number in open-liberty"
+    defaultValue: "PR number in Open Liberty to checkout."
+    description: "PR number in Open Liberty to checkout."
   - name: github_pr_api
     defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${github_pr_number}"
+  # Enable the testing of the checkpoint feature, running the FATs (if any) in lite mode where only @CheckpointTest annotated test cases will be run.
+  - name: spawn.checkpoint
+    defaultValue: "true"
+    steps:
+    - stepName: Checkpoint FATs (Lite)
 
 - type: github
   triggerName: "ol-fullpbbeta"
+  description: "Runs an optimised Open Liberty personal build, including building the IM and z/OS images, then running all FATs using the CIOrchestrator/Jenkins."
   triggerRank: 50
   groups: ["LibertyDev"]
   keyword: "!fullpbbeta"
@@ -81,171 +97,11 @@ triggers:
     - stepName: Compile FATs
     - stepName: z/OS FATs
     - stepName: z/OS Unittests
-
-- type: manual
-  triggerName: "Open Liberty Personal product only change"
-  triggerRank: 50
-  groups: ["CSD"]
-  propertyDefinitions:
-  - name: git.laos.clone.repository.username
-    defaultValue: "fritze2"
+  # Enable the testing of the checkpoint feature, running the FATs (if any) in lite mode where only @CheckpointTest annotated test cases will be run.
+  - name: spawn.checkpoint
+    defaultValue: "true"
     steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: git.laos.clone.checkout.branch
-    defaultValue: "test-change-com.ibm.ws.jca"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: buildLabelPrefix
-    defaultValue: "fritze2-23250-"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: githubPRApi
-    defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/23250"
-    steps:
-    - stepName: PR Changes
-    - stepName: Determine FATs Needed
-  - name: githubPRNumber
-    defaultValue: "23250"
-    steps:
-    - stepName: PR Changes
-
-- type: manual
-  triggerName: "Open Liberty Personal unittest only change"
-  triggerRank: 50
-  groups: ["CSD"]
-  propertyDefinitions:
-  - name: git.laos.clone.repository.username
-    defaultValue: "fritze2"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: git.laos.clone.checkout.branch
-    defaultValue: "test-change-com.ibm.ws.jmx-unittest"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: buildLabelPrefix
-    defaultValue: "fritze2-23738-"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: githubPRApi
-    defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/23738"
-    steps:
-    - stepName: PR Changes
-    - stepName: Determine FATs Needed
-  - name: githubPRNumber
-    defaultValue: "23738"
-    steps:
-    - stepName: PR Changes
-
-- type: manual
-  triggerName: "Open Liberty Personal FAT only change"
-  triggerRank: 50
-  groups: ["CSD"]
-  propertyDefinitions:
-  - name: git.laos.clone.repository.username
-    defaultValue: "fritze2"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: git.laos.clone.checkout.branch
-    defaultValue: "test-change-com.ibm.ws.jca_fat"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: buildLabelPrefix
-    defaultValue: "fritze2-23249-"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: githubPRApi
-    defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/23249"
-    steps:
-    - stepName: PR Changes
-    - stepName: Determine FATs Needed
-  - name: githubPRNumber
-    defaultValue: "23249"
-    steps:
-    - stepName: PR Changes
-
-- type: manual
-  triggerName: "Open Liberty Personal BVT only change"
-  triggerRank: 50
-  groups: ["CSD"]
-  propertyDefinitions:
-  - name: git.laos.clone.repository.username
-    defaultValue: "fritze2"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: git.laos.clone.checkout.branch
-    defaultValue: "test-change-com.ibm.ws.jca_fat_bvt"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: buildLabelPrefix
-    defaultValue: "fritze2-23248-"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: githubPRApi
-    defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/23248"
-    steps:
-    - stepName: PR Changes
-    - stepName: Determine FATs Needed
-  - name: githubPRNumber
-    defaultValue: "23248"
-    steps:
-    - stepName: PR Changes
-
-- type: manual
-  triggerName: "Open Liberty Personal infrastructure only change"
-  triggerRank: 50
-  groups: ["CSD"]
-  propertyDefinitions:
-  - name: git.laos.clone.repository.username
-    defaultValue: "fritze2"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: git.laos.clone.checkout.branch
-    defaultValue: "test-change-infra"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: buildLabelPrefix
-    defaultValue: "fritze2-23739-"
-    steps:
-    - stepName: Compile Liberty Images
-    - stepName: Unittest Open Liberty
-    - stepName: Compile FATs
-  - name: githubPRApi
-    defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/23739"
-    steps:
-    - stepName: PR Changes
-    - stepName: Determine FATs Needed
-  - name: githubPRNumber
-    defaultValue: "23739"
-    steps:
-    - stepName: PR Changes
+    - stepName: Checkpoint FATs (Lite)
 
 steps:
 - stepName: PR Changes
@@ -368,15 +224,18 @@ steps:
   properties:
     product_image_artifact_execution_id: ${Compile Liberty Images:execution_id}
     bucket_image_artifact_execution_id: ${Compile FATs:execution_id}
-    changes_summary_artifact_execution_id: ${Determine FATs Needed:execution_id}
+    changes_summary_artifact_execution_id: ${Compile Liberty Images:execution_id}
     runner_projectName: ebcTestRunner
     runner_workType: Jenkins
     runner_threshold: 5
     runner_minimum_total: 10
     fat.buckets.to.run: ${PR Changes:fat.buckets.to.run}
     fat.test.mode: lite
-    fats_to_omit: "com.ibm.ws.collective.controller.deploy_fat, com.ibm.ws.health.manager.odrlib_fat, com.ibm.ws.dynamic.routing_ihs_fat, com.ibm.ws.node.scaling_fat, com.ibm.ws.scaling.member_fat_multinode, com.ibm.ws.node.health_fat"
+    fats_to_omit: "build.featureStart.part1_fat, build.featureStart.part2_fat, build.featureStart.part3_fat, build.featureStart.part4_fat, build.featureStart.part1.was_fat, build.featureStart.part2.was_fat, build.featureStart.part3.was_fat, build.featureStart.part4.was_fat, com.ibm.ws.collective.controller.deploy_fat, com.ibm.ws.health.manager.odrlib_fat, com.ibm.ws.dynamic.routing_ihs_fat, com.ibm.ws.node.scaling_fat, com.ibm.ws.scaling.member_fat_multinode, com.ibm.ws.node.health_fat"
     fat_uploads_to_expect: ${Compile Liberty Images:fat_uploads_to_expect},${Compile FATs:fat_uploads_to_expect}
+    product_image_type_under_test: wlp-embeddable-full
+    # asyncArchive.zip is 6 directories up from the wlp-embeddable-full image.
+    dependenciesRelativePath: ../../../../../..
     outputServer: libertyfs.hursley.ibm.com
     outputPath: /liberty/personal/2/ciorchestrator
     command: ant -f build-test.xml localrun -propertyfile ../../../buildandbucket.properties -DhaltOnFailure=false -lib ../ant_build/lib.antClasspath
@@ -411,15 +270,18 @@ steps:
   properties:
     product_image_artifact_execution_id: ${Compile Liberty Images:execution_id}
     bucket_image_artifact_execution_id: ${Compile FATs:execution_id}
-    changes_summary_artifact_execution_id: ${Determine FATs Needed:execution_id}
+    changes_summary_artifact_execution_id: ${Compile Liberty Images:execution_id}
     runner_projectName: ebcTestRunner
     runner_workType: Jenkins
     runner_threshold: 5
     runner_minimum_total: 10
     fat.buckets.to.run: ${PR Changes:spawn.fullfat.buckets}
     fat.test.mode: full
-    fats_to_omit: "com.ibm.ws.collective.controller.deploy_fat, com.ibm.ws.health.manager.odrlib_fat, com.ibm.ws.dynamic.routing_ihs_fat, com.ibm.ws.node.scaling_fat, com.ibm.ws.scaling.member_fat_multinode, com.ibm.ws.node.health_fat"
+    fats_to_omit: "build.featureStart.part1_fat, build.featureStart.part2_fat, build.featureStart.part3_fat, build.featureStart.part4_fat, build.featureStart.part1.was_fat, build.featureStart.part2.was_fat, build.featureStart.part3.was_fat, build.featureStart.part4.was_fat, com.ibm.ws.collective.controller.deploy_fat, com.ibm.ws.health.manager.odrlib_fat, com.ibm.ws.dynamic.routing_ihs_fat, com.ibm.ws.node.scaling_fat, com.ibm.ws.scaling.member_fat_multinode, com.ibm.ws.node.health_fat"
     fat_uploads_to_expect: ${Compile Liberty Images:fat_uploads_to_expect},${Compile FATs:fat_uploads_to_expect}
+    product_image_type_under_test: wlp-embeddable-full
+    # asyncArchive.zip is 6 directories up from the wlp-embeddable-full image.
+    dependenciesRelativePath: ../../../../../..
     outputServer: libertyfs.hursley.ibm.com
     outputPath: /liberty/personal/2/ciorchestrator
     command: ant -f build-test.xml localrun -propertyfile ../../../buildandbucket.properties -DhaltOnFailure=false -lib ../ant_build/lib.antClasspath
@@ -431,6 +293,96 @@ steps:
     retry_failing_fats: true
     repeat_if_few_fats: true  #If there are fewer than x fat buckets then we will run each fat multiple times
     testBucketPriorityStrategy: 50%|ci-bucket-failure-predictor-v1 #We want to 50% of the time run buckets in order of predicted failures    
+  includeProperties:
+  - file: fatMaxDurationOverrides.properties
+  - file: jvms/dev/linux_x86_64.properties
+
+- stepName: Open Liberty Feature Start FATs
+  workType: FAT
+  dependsOn:
+    - stepName: PR Changes
+      awaitOutputProperties: true
+    - stepName: Compile Liberty Images
+      awaitOutputProperties: true
+    - stepName: Compile FATs
+      allowFailures: false
+      awaitOutputProperties: true
+    - stepName: Determine FATs Needed
+      allowFailures: true
+  conditionalRun:
+    - type: ifSet
+      value: ${fat.buckets.to.run}
+  timeoutInMinutes: 1920
+  properties:
+    aggregationId: ${Compile Liberty Images:execution_id}
+    bucket_image_artifact_execution_id: ${Compile FATs:execution_id}
+    buildType: personal
+    changes_summary_artifact_execution_id: ${Compile Liberty Images:execution_id}
+    command: ant -f build-test.xml localrun -propertyfile ../../../buildandbucket.properties -DhaltOnFailure=false -lib ../ant_build/lib.antClasspath
+    ebcPlan: See Shortlist 
+    ebcShortlist: jenkins-child.yml
+    fat_uploads_to_expect: ${Compile Liberty Images:fat_uploads_to_expect},${Compile FATs:fat_uploads_to_expect}
+    fat.buckets.to.run: ${PR Changes:fat.buckets.to.run}
+    fat.test.mode: full
+    fatPatternToMatch: build.featureStart.part\d*_fat
+    outputPath: /liberty/personal/2/ciorchestrator
+    outputServer: libertyfs.hursley.ibm.com
+    product_image_artifact_execution_id: ${Compile Liberty Images:execution_id}
+    product_image_type_under_test: wlp-embeddable-full
+    # asyncArchive.zip is 6 directories up from the wlp-embeddable-full image.
+    dependenciesRelativePath: ../../../../../..
+    reportingOS: ubuntu22_x86
+    retry_failing_fats: true
+    runner_minimum_total: 1
+    runner_projectName: ebcTestRunner
+    runner_threshold: 4
+    runner_workType: Jenkins
+    testBucketPriorityStrategy: 50%|ci-bucket-failure-predictor-v1 #We want to 50% of the time run buckets in order of predicted failures
+  includeProperties:
+  - file: fatMaxDurationOverrides.properties
+  - file: jvms/dev/linux_x86_64.properties
+
+- stepName: Liberty Feature Start FATs
+  workType: FAT
+  dependsOn:
+    - stepName: PR Changes
+      awaitOutputProperties: true
+    - stepName: Compile Liberty Images
+      awaitOutputProperties: true
+    - stepName: Compile FATs
+      allowFailures: false
+      awaitOutputProperties: true
+    - stepName: Determine FATs Needed
+      allowFailures: true
+  conditionalRun:
+    - type: ifSet
+      value: ${fat.buckets.to.run}
+  timeoutInMinutes: 1920
+  properties:
+    aggregationId: ${Compile Liberty Images:execution_id}
+    bucket_image_artifact_execution_id: ${Compile FATs:execution_id}
+    buildType: personal
+    changes_summary_artifact_execution_id: ${Compile Liberty Images:execution_id}
+    command: ant -f build-test.xml localrun -propertyfile ../../../buildandbucket.properties -DhaltOnFailure=false -lib ../ant_build/lib.antClasspath
+    ebcPlan: See Shortlist 
+    ebcShortlist: jenkins-child.yml
+    fat_uploads_to_expect: ${Compile Liberty Images:fat_uploads_to_expect},${Compile FATs:fat_uploads_to_expect}
+    fat.buckets.to.run: ${PR Changes:fat.buckets.to.run}
+    fat.test.mode: full
+    fatPatternToMatch: build.featureStart.part\d*.was_fat
+    outputPath: /liberty/personal/2/ciorchestrator
+    outputServer: libertyfs.hursley.ibm.com
+    product_image_artifact_execution_id: ${Compile Liberty Images:execution_id}
+    product_image_type_under_test: wlp-embeddable-full
+    # asyncArchive.zip is 6 directories up from the wlp-embeddable-full image.
+    dependenciesRelativePath: ../../../../../..
+    reportingOS: ubuntu22_x86
+    retry_failing_fats: true
+    runner_minimum_total: 1
+    runner_projectName: ebcTestRunner
+    runner_threshold: 4
+    runner_workType: Jenkins
+    testBucketPriorityStrategy: 50%|ci-bucket-failure-predictor-v1 #We want to 50% of the time run buckets in order of predicted failures
   includeProperties:
   - file: fatMaxDurationOverrides.properties
   - file: jvms/dev/linux_x86_64.properties
@@ -455,7 +407,7 @@ steps:
     aggregationId: ${Compile Liberty Images:execution_id}
     product_image_artifact_execution_id: ${Compile Liberty Images:execution_id}
     bucket_image_artifact_execution_id: ${Compile FATs:execution_id}
-    changes_summary_artifact_execution_id: ${Determine FATs Needed:execution_id}
+    changes_summary_artifact_execution_id: ${Compile Liberty Images:execution_id}
     buildType: personal
     command: ant -f build-ztest.xml localrun -propertyfile ../../../buildandbucket.properties -DhaltOnFailure=false -lib ../ant_build/lib.antClasspath
     ebcPlan: managed-pool-zos-fat-test-jenkins-middleware.yml
@@ -496,7 +448,7 @@ steps:
     aggregationId: ${Compile Liberty Images:execution_id}
     product_image_artifact_execution_id: ${Compile Liberty Images:execution_id}
     bucket_image_artifact_execution_id: ${Compile FATs:execution_id}
-    changes_summary_artifact_execution_id: ${Determine FATs Needed:execution_id}
+    changes_summary_artifact_execution_id: ${Compile Liberty Images:execution_id}
     buildType: personal
     command: ant -f build-zunittest.xml unittest -propertyfile ../../../buildandbucket.properties -DhaltOnFailure=false -lib ../ant_build/lib.antClasspath -lib ../prereq.published/lib -lib ../ant_build/lib/biz.aQute.bnd-3.3.0.jar -lib ../ant_build/lib/jsoup-1.7.2.jar
     ebcPlan: managed-pool-zos-fat-test-jenkins-middleware.yml
@@ -516,3 +468,58 @@ steps:
     testBucketPriorityStrategy: 50%|ci-bucket-failure-predictor-v1 #We want to 50% of the time run buckets in order of predicted failures
   includeProperties:
   - file: jvms/dev/zOS_s390_64_java11.properties
+
+# This step runs any FATs which declare that they test the 'checkpoint' feature in an environment with CRIU installed.
+# Checkpoint FATs therefore run twice in builds but the @CheckpointTest annotation and use of the fat.test.run.checkpoint.only property mean that in CRIU environments
+# they only run the test cases with @CheckpointTest (skipping the others) and in non-CRIU environments they only run the unannotated test cases. Hence, there's no duplication of testing.
+- stepName: Checkpoint FATs (Lite)
+  workType: FAT
+  dependsOn:
+    - stepName: PR Changes
+      awaitOutputProperties: true
+    - stepName: Compile Liberty Images
+      awaitOutputProperties: true
+    - stepName: Compile FATs
+      allowFailures: false
+      awaitOutputProperties: true
+    - stepName: Determine FATs Needed
+      allowFailures: true
+  conditionalRun:
+    - type: ifTrue
+      value: ${spawn.checkpoint}
+  timeoutInMinutes: 1920
+  properties:
+    product_image_artifact_execution_id: ${Compile Liberty Images:execution_id}
+    bucket_image_artifact_execution_id: ${Compile FATs:execution_id}
+    changes_summary_artifact_execution_id: ${Compile Liberty Images:execution_id}
+    runner_projectName: ebcTestRunner
+    runner_workType: Jenkins
+    runner_threshold: 5
+    runner_minimum_total: 10
+    fat.buckets.to.run: ${PR Changes:fat.buckets.to.run}
+    # Limit the FATs to only those supporting the checkpoint feature.
+    limit.fat.buckets.to.feature: checkpoint
+    # Only run test cases with the @CheckpointTest annotation.
+    fat.test.run.checkpoint.only: true
+    fat.test.mode: lite
+    fats_to_omit: "com.ibm.ws.collective.controller.deploy_fat, com.ibm.ws.health.manager.odrlib_fat, com.ibm.ws.dynamic.routing_ihs_fat, com.ibm.ws.node.scaling_fat, com.ibm.ws.scaling.member_fat_multinode, com.ibm.ws.node.health_fat"
+    fat_uploads_to_expect: ${Compile Liberty Images:fat_uploads_to_expect},${Compile FATs:fat_uploads_to_expect}
+    product_image_type_under_test: wlp-embeddable-full
+    # asyncArchive.zip is 6 directories up from the wlp-embeddable-full image.
+    dependenciesRelativePath: ../../../../../..
+    outputServer: libertyfs.hursley.ibm.com
+    outputPath: /liberty/personal/2/ciorchestrator
+    command: ant -f build-test.xml localrun -propertyfile ../../../buildandbucket.properties -DhaltOnFailure=false -lib ../ant_build/lib.antClasspath
+    aggregationId: ${Compile Liberty Images:execution_id}
+    buildType: personal
+    reportingOS: ubuntu22_x86
+    ebcPlan: See Shortlist 
+    ebcShortlist: jenkinsbuild-checkpoint-ubuntu22_x86.yml
+    retry_failing_fats: true
+    # Only a small number of FATs exercise the checkpoint feature and so we should not repeat them by default otherwise they'll run 10 times.
+    repeat_if_few_fats: false
+    testBucketPriorityStrategy: 50%|ci-bucket-failure-predictor-v1 #We want to 50% of the time run buckets in order of predicted failures
+  includeProperties:
+  - file: fatMaxDurationOverrides.properties
+  # Custom JVM properties as Checkpoint is only supported on specific JVMs/levels.
+  - file: jvms/dev/checkpoint_linux_x86_64.properties

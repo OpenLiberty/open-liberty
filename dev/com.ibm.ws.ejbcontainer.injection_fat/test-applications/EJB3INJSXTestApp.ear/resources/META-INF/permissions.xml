@@ -5,10 +5,11 @@
         http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
     version="7">
 
+    <!-- Permissions for ORB -->
     <permission>
         <class-name>java.util.PropertyPermission</class-name>
-        <name>line.separator</name>
-        <actions>read</actions>
+        <name>*</name>
+        <actions>read,write</actions>
     </permission> 
 
     <permission>

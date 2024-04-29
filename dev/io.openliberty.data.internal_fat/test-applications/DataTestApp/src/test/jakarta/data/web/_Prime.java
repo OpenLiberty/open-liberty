@@ -16,38 +16,37 @@ import jakarta.data.metamodel.Attribute;
 import jakarta.data.metamodel.SortableAttribute;
 import jakarta.data.metamodel.StaticMetamodel;
 import jakarta.data.metamodel.TextAttribute;
+import jakarta.data.metamodel.impl.AttributeRecord;
+import jakarta.data.metamodel.impl.SortableAttributeRecord;
+import jakarta.data.metamodel.impl.TextAttributeRecord;
 
 /**
  * Metamodel for the Prime entity.
  */
 @StaticMetamodel(Prime.class)
-public class _Prime {
-    public static final String BINARYDIGITS = "binaryDigits";
-    public static final String EVEN = "even";
-    public static final String HEX = "hex";
-    public static final String ID = "id";
-    public static final String NAME = "name";
-    public static final String NUMBERID = "numberId";
-    public static final String ROMANNUMERAL = "romanNumeral";
-    public static final String ROMANNUMERALSYMBOLS = "romanNumeralSymbols";
-    public static final String SUMOFBITS = "sumOfBits";
+public interface _Prime {
+    String BINARYDIGITS = "binaryDigits";
+    String EVEN = "even";
+    String HEX = "hex";
+    String NAME = "name";
+    String NUMBERID = "numberId";
+    String ROMANNUMERAL = "romanNumeral";
+    String ROMANNUMERALSYMBOLS = "romanNumeralSymbols";
+    String SUMOFBITS = "sumOfBits";
 
-    public static volatile TextAttribute<Prime> binaryDigits;
+    TextAttribute<Prime> binaryDigits = new TextAttributeRecord<>(BINARYDIGITS);
 
-    public static volatile SortableAttribute<Prime> even;
+    SortableAttribute<Prime> even = new SortableAttributeRecord<>(EVEN);
 
-    public static volatile TextAttribute<Prime> hex;
+    TextAttribute<Prime> hex = new TextAttributeRecord<>(HEX);
 
-    public static volatile SortableAttribute<Prime> id;
+    TextAttribute<Prime> name = new TextAttributeRecord<>(NAME);
 
-    public static volatile TextAttribute<Prime> name;
+    SortableAttribute<Prime> numberId = new SortableAttributeRecord<>(NUMBERID);
 
-    public static volatile SortableAttribute<Prime> numberId;
+    TextAttribute<Prime> romanNumeral = new TextAttributeRecord<>(ROMANNUMERAL);
 
-    public static volatile TextAttribute<Prime> romanNumeral;
+    Attribute<Prime> romanNumeralSymbols = new AttributeRecord<>(ROMANNUMERALSYMBOLS);
 
-    public static volatile Attribute romanNumeralSymbols;
-
-    public static volatile SortableAttribute<Prime> sumOfBits;
-
+    SortableAttribute<Prime> sumOfBits = new SortableAttributeRecord<>(SUMOFBITS);
 }

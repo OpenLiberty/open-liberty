@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,7 +23,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 21)
+@MinimumJavaLevel(javaLevel = 17)
 @Mode(TestMode.LITE)
 public class DDValidAppTests_J11 extends CommonTests_Core {
     public static final Class<?> TEST_CLASS = DDValidAppTests_J11.class;
