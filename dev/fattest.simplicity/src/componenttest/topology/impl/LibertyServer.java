@@ -1866,9 +1866,9 @@ public class LibertyServer implements LogMonitorClient {
                 // RXA has its own timeouts in case the command "hangs".
                 output = machine.execute(cmd, parameters, envVars);
             }
+            boolean shouldFail = doCheckpoint() ? checkpointInfo.expectCheckpointFailure : expectStartFailure;
             int rc = output.getReturnCode();
             if (rc != 0) {
-                boolean shouldFail = doCheckpoint() ? checkpointInfo.expectCheckpointFailure : expectStartFailure;
                 if (shouldFail) {
                     Log.info(c, method, "EXPECTED: Server didn't start");
                     deleteServerMarkerFile();
@@ -1877,6 +1877,12 @@ public class LibertyServer implements LogMonitorClient {
                 } else {
                     Log.info(c, method, "Response from script is: " + output.getStdout());
                     Log.info(c, method, "Return code from script is: " + rc);
+                }
+            } else {
+                if (shouldFail) {
+                    Exception fail = new Exception("Checkpoint should have failed.");
+                    Log.error(c, fail.getMessage(), fail);
+                    throw fail;
                 }
             }
             if (doCheckpoint()) {
