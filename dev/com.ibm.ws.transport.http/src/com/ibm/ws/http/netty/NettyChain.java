@@ -332,6 +332,10 @@ public class NettyChain extends HttpChain {
         return endpointMgr.getEndPoint(endpointName);
     }
 
+    public String getEndpointPID() {
+        return (currentConfig != null) ? currentConfig.getEndpointPID() : null;
+    }
+
     /**
      * Helper method to check if the chain is enabled with HTTP/2.0 or only HTTP/1.1. To do this
      * we check the HttpProtocolBehavior reference which is set according to the different servlet
