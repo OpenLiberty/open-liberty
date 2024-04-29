@@ -69,7 +69,6 @@ public class HeaderHandler {
             if (response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)) {
 
                 MSP.log("100-continue do not chunk");
-                HttpUtil.setTransferEncodingChunked(response, false);
                 HttpUtil.setContentLength(response, 0);
                 HttpUtil.setTransferEncodingChunked(response, false);
 

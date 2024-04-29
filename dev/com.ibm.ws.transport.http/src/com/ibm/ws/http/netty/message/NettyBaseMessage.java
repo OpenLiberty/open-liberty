@@ -687,14 +687,6 @@ public class NettyBaseMessage implements HttpBaseMessage {
         this.setCookie2Cache = null;
         this.committed = false;
 
-        System.out.println("DEBUG -> NettyBase .clear() -> ");
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        System.out.println("Current stack trace:");
-        for (StackTraceElement element : stackTraceElements) {
-            System.out.println(element.toString());
-
-        }
-
     }
 
     @Override

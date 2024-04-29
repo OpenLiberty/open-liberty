@@ -2276,9 +2276,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             HeaderHandler headerHandler = new HeaderHandler(myChannelConfig, response);
             headerHandler.complianceCheck();
             
-            if(getResponse().getStatusCode().getIntCode() == 302) {
-                getResponse().setContentLength(0);
-            }
+//            if(getResponse().getStatusCode().getIntCode() == 302) {
+//                getResponse().setContentLength(0);
+//            }
 
            
             if (HttpUtil.isContentLengthSet(response)) {
@@ -2292,7 +2292,6 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
         }
         this.nettyContext.channel().writeAndFlush(this.nettyResponse);
-        this.synchWrite();
         
         this.setHeadersSent();
 
@@ -2898,7 +2897,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 compressionHandler.setCurrentContentLength(GenericUtils.sizeOf(buffers));
                 compressionHandler.process();
                 if (compressionHandler.getEncoding() != null) {
-                    setupCompressionHandler(compressionHandler.getEncoding()); setupCompressionHandler(compressionHandler.getEncoding());
+                    setupCompressionHandler(compressionHandler.getEncoding());
                 }
             }
             if (this.compressHandler != null) {
