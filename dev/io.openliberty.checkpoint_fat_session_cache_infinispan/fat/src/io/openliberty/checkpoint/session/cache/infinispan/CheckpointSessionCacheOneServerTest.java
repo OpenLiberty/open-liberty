@@ -16,6 +16,9 @@ import static io.openliberty.checkpoint.session.cache.infinispan.FATSuite.CACHE_
 import static io.openliberty.checkpoint.session.cache.infinispan.FATSuite.CACHE_MANAGER_EE9_ID;
 import static io.openliberty.checkpoint.session.cache.infinispan.FATSuite.checkpointRepeatActionEE10;
 import static io.openliberty.checkpoint.session.cache.infinispan.FATSuite.checkpointRepeatActionEE9;
+import static io.openliberty.checkpoint.session.cache.infinispan.FATSuite.configureEnvVariable;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,14 +92,17 @@ public class CheckpointSessionCacheOneServerTest extends FATServletClient {
         options.put("-Dinfinispan.cluster.name", rand);
         options.put("-Dsession.cache.config.file", sessionCacheConfigFile);
         server.setJvmOptions(options);
-        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, true, null);
+        server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();
+        configureEnvVariable(server, singletonMap("uri_location", "file:///${shared.resource.dir}/infinispan/infinispan-attr-meta-configuration.xml"));
+        server.checkpointRestore();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         executor.shutdownNow();
         server.stopServer();
+        configureEnvVariable(server, emptyMap());
     }
 
     /**
