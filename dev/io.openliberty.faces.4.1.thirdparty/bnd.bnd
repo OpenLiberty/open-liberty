@@ -40,4 +40,4 @@ publish.wlp.jar.suffix: dev/api/third-party
 
 # Use this format (4.1.0.RC#) once we have an official release and not an RC Version
 -buildpath: io.openliberty.org.apache.myfaces.4.1;version=project, \
-    org.apache.myfaces.core:myfaces-impl;version=4.1.0.RC1
+    org.apache.myfaces.core:myfaces-impl;version=4.1.0.RC2

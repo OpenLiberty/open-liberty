@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -248,6 +248,8 @@ public class JSFSimpleHtmlUnit {
 
     /**
      * Create a testcase 169346: Port MYFACES-3949, javax.faces.ViewState autocomplete
+     * 
+     * In Faces 4.1, AUTOCOMPLETE_OFF_VIEW_STATE changed to false -- see MYFACES-4659
      *
      * @throws Exception
      */
@@ -260,6 +262,9 @@ public class JSFSimpleHtmlUnit {
             webClient.getPage(url);
 
             String msg = "No context init parameter 'org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE' found, using default value 'true'";
+            if(JakartaEEAction.isEE11OrLaterActive()) {
+                msg = "No context init parameter 'org.apache.myfaces.AUTOCOMPLETE_OFF_VIEW_STATE' found, using default value 'false'";
+            } 
             // Check the trace.log
             // There should be a match so fail if there is not.
             assertFalse(msg, jsfTestServer1.findStringsInLogs(msg).isEmpty());
