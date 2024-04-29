@@ -81,12 +81,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
      */
     @Activate
     public void activate(Map<String, Object> config) {
-        id = (String) config.get(KEY_ID);
-        /*
-         * Get the URI.
-         */
-        this.uriValue = (String) config.get(KEY_URI);
-        configureProperties(config);
+        processConfiguration(config);
         /*
          * Schedule a task to initialize the CacheManager in the background. This will
          * alleviate delays on the first request to any caches that use this
@@ -102,7 +97,13 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         });
     }
 
-    private void configureProperties(Map<String, Object> config) {
+    private void processConfiguration(Map<String, Object> config) {
+        id = (String) config.get(KEY_ID);
+        /*
+         * Get the URI.
+         */
+        this.uriValue = (String) config.get(KEY_URI);
+
         /*
          * Get the configured vendor properties.
          */
@@ -125,7 +126,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
     @Modified
     public void modified(Map<String, Object> config) {
-        configureProperties(config);
+        processConfiguration(config);
     }
 
     /**
