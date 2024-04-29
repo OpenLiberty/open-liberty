@@ -685,7 +685,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
         if (getHttpConfig().useNetty()) {
             sendHeaders(this.nettyResponse);
-            this.nettyContext.channel().flush();
         } else {
             sendHeaders(getResponseImpl());
 

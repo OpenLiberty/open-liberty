@@ -71,6 +71,8 @@ public class HeaderHandler {
                 MSP.log("100-continue do not chunk");
                 HttpUtil.setTransferEncodingChunked(response, false);
                 HttpUtil.setContentLength(response, 0);
+                HttpUtil.setTransferEncodingChunked(response, false);
+
             } else {
                 HttpUtil.setTransferEncodingChunked(response, true);
             }

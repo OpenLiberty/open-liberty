@@ -665,12 +665,17 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public boolean isCommitted() {
+
         return this.committed;
     }
 
     @Override
     public void setCommitted() {
         this.committed = Boolean.TRUE;
+    }
+
+    public void setCommitted(boolean committed) {
+        this.committed = committed;
     }
 
     @Override
@@ -681,6 +686,14 @@ public class NettyBaseMessage implements HttpBaseMessage {
         this.setCookieCache = null;
         this.setCookie2Cache = null;
         this.committed = false;
+
+        System.out.println("DEBUG -> NettyBase .clear() -> ");
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        System.out.println("Current stack trace:");
+        for (StackTraceElement element : stackTraceElements) {
+            System.out.println(element.toString());
+
+        }
 
     }
 
