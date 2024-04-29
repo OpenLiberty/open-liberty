@@ -11,6 +11,7 @@
 package io.openliberty.reporting.internal;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -94,8 +95,6 @@ public class DataCollector {
         try {
             allProductInfo = ProductInfo.getAllProductInfo();
 
-            uniqueID = HashUtils.hashString(serverInfo.getInstallDirectory()); // placeholder.
-
             javaRuntimeInfo = serverInfo.getJavaRuntimeVersion();
 
             installedFeatures.addAll(getPublicFeatures(featureProvisioner));
@@ -122,6 +121,11 @@ public class DataCollector {
                 productVersion = allProductInfo.get("io.openliberty").getVersion();
                 productEdition = allProductInfo.get("io.openliberty").getEdition();
             }
+
+            StringBuilder input = new StringBuilder().append(serverInfo.getInstallDirectory()).append(productEdition)
+                    .append(javaVendor).append(osArch).append(os).append(InetAddress.getLocalHost().getHostName());
+
+            uniqueID = HashUtils.hashString(input.toString()); // placeholder.
 
         } catch (ProductInfoParseException | DuplicateProductInfoException | ProductInfoReplaceException e) {
             throw new DataCollectorException("Unable to parse Product Info", e);
