@@ -818,6 +818,10 @@ public class HttpChain implements ChainEventListener {
         public int getConfigPort() {
             return configPort;
         }
+        
+        public String getEndpointPID() {
+            return (String) endpointOptions.get(Constants.SERVICE_PID);
+        }
 
         /**
          * @return true if the active port matches the listening port. False otherwise (not listening or no match)

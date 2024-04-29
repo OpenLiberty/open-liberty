@@ -46,6 +46,7 @@ import com.ibm.ws.http.internal.VirtualHostImpl;
 import com.ibm.ws.http.internal.VirtualHostMap;
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
 import com.ibm.ws.http.netty.MSP;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.ws.http.netty.pipeline.RemoteIpHandler;
@@ -275,7 +276,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Close called , vc ->" + this.vc + " hc: " + this.hashCode());
         }
-        
 
         for (String handler : nettyContext.pipeline().names()) {
             MSP.log("Dispatcher close handler -> " + handler);
@@ -637,7 +637,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         // Try to find a virtual host for the requested host/port..
         //VirtualHostImpl vhost = VirtualHostMap.findVirtualHost(this.myChannel.getEndpointPid(), this);
-        VirtualHostImpl vhost = VirtualHostMap.findVirtualHost(null, this);
+        VirtualHostImpl vhost = VirtualHostMap.findVirtualHost(nettyContext.channel().attr(NettyHttpConstants.ENDPOINT_PID).get(), this);
         if (vhost == null) {
             String url = this.isc.getRequest().getRequestURI();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
