@@ -23,32 +23,32 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 # Message prefix block for io.openliberty.reporting.internal: CWWKF1700 - CWWKF1799
 
-CWWKF1700.reporting.is.enabled=CWWKF1700I: The checking for security vulnerabilities is enabled. Information about this Liberty runtime will be analyzed against known vulnerabilities.
-CWWKF1700.reporting.is.enabled.explanation= The checking for security vulnerabilities is currently enabled.
-CWWKF1700.reporting.is.enabled.useraction=To disable the checking for security vulnerabilities, specify <cveReporting enabled="false" /> in the server.xml file.
+CWWKF1700.reporting.is.enabled=CWWKF1700I: Il controllo delle vulnerabilit\u00e0 di sicurezza \u00e8 abilitato. Le informazioni su questo runtime Liberty verranno analizzate rispetto alle vulnerabilit\u00e0 note.
+CWWKF1700.reporting.is.enabled.explanation= Il controllo delle vulnerabilit\u00e0 di sicurezza \u00e8 attualmente abilitato.
+CWWKF1700.reporting.is.enabled.useraction=Per disabilitare il controllo delle vulnerabilit\u00e0 di sicurezza, specifica <cveReporting enabled="false" /> nel file server.xml .
 
-CWWKF1701.reporting.is.disabled=CWWKF1701I: The checking for security vulnerabilities is disabled.
-CWWKF1701.reporting.is.disabled.explanation=The checking for security vulnerabilities must be enabled to run.
-CWWKF1701.reporting.is.disabled.useraction=To enable the checking for security vulnerabilities, specify <cveReporting enabled="true" /> in the server.xml file.
+CWWKF1701.reporting.is.disabled=CWWKF1701I: Il controllo delle vulnerabilit\u00e0 di sicurezza \u00e8 disabilitato.
+CWWKF1701.reporting.is.disabled.explanation=Il controllo delle vulnerabilit\u00e0 di sicurezza deve essere abilitato per l'esecuzione.
+CWWKF1701.reporting.is.disabled.useraction=Per abilitare il controllo delle vulnerabilit\u00e0 di protezione, specificare <cveReporting enabled="true" /> nel file server.xml .
 
-more.information.message=For more information, you can review {0}
+more.information.message=Per ulteriori informazioni, \u00e8 possibile esaminare {0}
 
-CWWKF1702.cve.found=CWWKF1702W: Based on an assessment of {0}, review the following security bulletins: {1}
-CWWKF1702.cve.found.explanation=Security vulnerabilities were found.
-CWWKF1702.cve.found.useraction=Review the CVEs in the message and resolve the security vulnerabilities.
+CWWKF1702.cve.found=CWWKF1702W: In base alla valutazione di {0}, esaminare i seguenti bollettini di sicurezza: {1}
+CWWKF1702.cve.found.explanation=Sono state trovate vulnerabilit\u00e0 di sicurezza.
+CWWKF1702.cve.found.useraction=Esaminare i CVE nel messaggio e risolvere le vulnerabilit\u00e0 di sicurezza.
 
-CWWKF1703.cve.not.found=CWWKF1703I: Based on analysis of the Runtime, no security vulnerabilities requiring further analysis were found.
-CWWKF1703.cve.not.found.explanation=No security vulnerabilities were found at this time.
-CWWKF1703.cve.not.found.useraction=None.
+CWWKF1703.cve.not.found=CWWKF1703I: In base all'analisi del Runtime, non sono state trovate vulnerabilit\u00e0 di sicurezza che richiedono ulteriori analisi.
+CWWKF1703.cve.not.found.explanation=Al momento non sono state trovate vulnerabilit\u00e0 di sicurezza.
+CWWKF1703.cve.not.found.useraction=Nessuna.
 
-CWWKF1704.incorrect.url=CWWKF1704W: The specified URL is not correct and a connection cannot be made: {0}
-CWWKF1704.incorrect.url.explanation=No connection can be made for the provided URL.
-CWWKF1704.incorrect.url.useraction=Verify that the URL is correct.
+CWWKF1704.incorrect.url=CWWKF1704W: L'URL specificato non \u00e8 corretto e non \u00e8 possibile effettuare una connessione: {0}
+CWWKF1704.incorrect.url.explanation=Impossibile stabilire una connessione per l'URL fornito.
+CWWKF1704.incorrect.url.useraction=Controllare che l'URL sia corretto.
 
-CWWKF1705.failed.response=CWWKF1705W: Unable to retrieve relevant CVE information due to a communication issue with the CVE Reporting Service.
-CWWKF1705.failed.response.explanation=The service cannot provide a response.
-CWWKF1705.failed.response.useraction=Fix the communication issue and try again.
+CWWKF1705.failed.response=CWWKF1705W: Impossibile richiamare le informazioni CVE rilevanti a causa di un problema di comunicazione con CVE Reporting Service.
+CWWKF1705.failed.response.explanation=Il servizio non pu\u00f2 fornire una risposta.
+CWWKF1705.failed.response.useraction=Correggere il problema di comunicazione e riprovare.
 
-CWWKF1706.issue.parsing=CWWKF1706W: Issue when parsing Product Information.
-CWWKF1706.issue.parsing.explanation=The service cannot successfully parse the product information.
-CWWKF1706.issue.parsing.useraction=Fix the communication issue and try again.
+CWWKF1706.issue.parsing=CWWKF1706W: Problema durante l'analisi delle informazioni sul prodotto.
+CWWKF1706.issue.parsing.explanation=Il servizio non pu\u00f2 analizzare correttamente le informazioni sul prodotto.
+CWWKF1706.issue.parsing.useraction=Correggere il problema di comunicazione e riprovare.
