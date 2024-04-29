@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,6 +41,9 @@ import componenttest.topology.impl.LibertyServer;
 public class FATServletClient {
     public static final String SUCCESS = "SUCCESS";
     public static final String TEST_METHOD = "testMethod";
+
+    // Extra query parameters
+    private static String querySuffix;
 
     @Rule
     public TestName testName = new TestName();
@@ -225,10 +228,22 @@ public class FATServletClient {
      * @return          the path and query (e.g., {@code "/test?testMethod=test"})
      */
     public static String getPathAndQuery(String path, String testName) {
+        StringBuffer ret = new StringBuffer("/").append(path);
         if (!path.contains("?")) {
-            return '/' + path + '?' + FATServletClient.TEST_METHOD + '=' + testName;
+            ret.append('?');
         } else {
-            return '/' + path + '&' + FATServletClient.TEST_METHOD + '=' + testName;
+            ret.append('&');
         }
+
+        ret.append(FATServletClient.TEST_METHOD).append('=').append(testName);
+        if (querySuffix != null) {
+            ret.append('&').append(querySuffix);
+        }
+
+        return ret.toString();
+    }
+
+    public static void setTestQuerySuffix(String suffix) {
+        querySuffix = suffix;
     }
 }

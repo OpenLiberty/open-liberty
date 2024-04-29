@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -2921,9 +2921,33 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                         cookie.setSecure(true);
                     }
 
+                    // Set Partitioned Flag for SameSite=None Cookie
+                    if (getServiceContext().getHttpConfig().getPartitioned() == true
+                        && sameSiteAttributeValue.equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName())) {
+                            if(cookie.getAttribute("partitioned") == null) {  // null means no value has been set yet
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "[1] Setting the Partitioned attribute for SameSite=None");
+                                }
+                                cookie.setAttribute("partitioned", "");
+                            }
+                    }
+
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "No SameSite configuration found");
+                    }
+                }
+            }
+            
+            // If SameSite=None is set programmatically, but partitioned is set via server.xml, then add the parititioned attribute
+            if (getServiceContext().getHttpConfig().useSameSiteConfig() && cookie.getAttribute("samesite") != null) {
+                boolean sameSiteNoneUsed = cookie.getAttribute("samesite").equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName());
+                if(getServiceContext().getHttpConfig().getPartitioned() && sameSiteNoneUsed) {
+                    if(cookie.getAttribute("partitioned") == null) {  // null means no value has been set yet
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "[2] Setting the Partitioned attribute for SameSite=None");
+                        }
+                        cookie.setAttribute("partitioned", "");
                     }
                 }
             }

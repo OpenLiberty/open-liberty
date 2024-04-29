@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -128,6 +132,35 @@ public class JarResourceHandler implements ResourceHandler {
         }
 
         return jarFile.getManifest();
+    }
+
+    @Override
+    public Set<String> getClassPackages() {
+        try {
+            ensureOpen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Collections.emptySet();
+        }
+
+        Enumeration<JarEntry> enumer = jarFile.entries();
+        Set<String> packageResourceNames = new HashSet<>();
+        while (enumer.hasMoreElements()) {
+            JarEntry jarEntry = enumer.nextElement();
+            if (!jarEntry.isDirectory()) {
+                String name = jarEntry.getName();
+                if (name.endsWith(".class")) {
+                    int index = name.lastIndexOf('/');
+                    packageResourceNames.add(index <= 0 ? "" : name.substring(0, index));
+                }
+            }
+        }
+        Set<String> packageNames = new HashSet<>(packageResourceNames.size());
+        for (String packageResourceName : packageResourceNames) {
+            packageNames.add(packageResourceName.replace('/', '.'));
+        }
+
+        return packageNames;
     }
 
     JarFile getJarFile() {

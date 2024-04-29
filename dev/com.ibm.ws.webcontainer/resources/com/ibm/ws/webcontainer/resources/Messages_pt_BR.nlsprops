@@ -1632,4 +1632,14 @@ redirect.location.cannot.be.null.useraction=Atualize o local de redirecionamento
 
 sendRedirect.hyper.text.url=<html><body><p>Redirecionando para <a href="{0}"></a></p></body></html>
 
-query.or.post.is.null=A sequ\u00eancia de consultas de solicita\u00e7\u00e3o ou os dados de post s\u00e3o nulos.
+query.or.post.is.null=CWWWC0009E: A sequ\u00eancia de consultas de solicita\u00e7\u00e3o de HTTP ou os dados de solicita\u00e7\u00e3o de POST HTTP s\u00e3o nulos.
+query.or.post.is.null.explanation=O aplicativo tentou analisar uma sequ\u00eancia de consultas de solicita\u00e7\u00e3o HTTP nula ou um corpo de solicita\u00e7\u00e3o POST HTTP nulo.
+query.or.post.is.null.useraction=O cliente deve enviar uma sequ\u00eancia de consultas de solicita\u00e7\u00e3o HTTP n\u00e3o nula ou um corpo de solicita\u00e7\u00e3o POST HTTP n\u00e3o nulo.
+
+read.write.bytebuffer.null=CWWWC0010E: Uma tentativa de ler a partir de uma opera\u00e7\u00e3o InputStream ou gravar em uma opera\u00e7\u00e3o OutputStream falhou porque uma inst\u00e2ncia ByteBuffer de argumento vari\u00e1vel era nula.
+read.write.bytebuffer.null.explanation=A inst\u00e2ncia ByteBuffer do argumento vari\u00e1vel que \u00e9 transmitida para a API de leitura ou grava\u00e7\u00e3o n\u00e3o deve ser nula.
+read.write.bytebuffer.null.useraction=Modifique o c\u00f3digo do aplicativo para criar uma inst\u00e2ncia ByteBuffer n\u00e3o nula a ser transmitida para a opera\u00e7\u00e3o InputStream ou OutputStream .
+
+read.write.failed.isReady.false=CWWWC0011E: Uma tentativa de ler uma opera\u00e7\u00e3o InputStream ou gravar em uma opera\u00e7\u00e3o OutputStream falhou porque a API isReady retorna false.
+read.write.failed.isReady.false.explanation=Se a API isReady retornar false, n\u00e3o ser\u00e1 poss\u00edvel chamar um m\u00e9todo de leitura ou grava\u00e7\u00e3o..
+read.write.failed.isReady.false.useraction=Modifique a l\u00f3gica de aplicativo para assegurar que o fluxo esteja pronto para uma opera\u00e7\u00e3o InputStream ou OutputStream .

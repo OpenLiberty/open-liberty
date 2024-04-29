@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -53,13 +52,12 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.provider.PUnitEMBuilder;
 import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
-import jakarta.annotation.Generated;
 import jakarta.data.exceptions.MappingException;
-import jakarta.data.metamodel.StaticMetamodel;
 import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Delete;
@@ -68,6 +66,7 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
+import jakarta.data.spi.EntityDefining;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
@@ -103,11 +102,6 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
      */
     private final ConcurrentHashMap<AnnotatedType<?>, Repository> repositoryAnnos = new ConcurrentHashMap<>();
 
-    /**
-     * Map of entity class to list of static metamodel class.
-     */
-    private final Map<Class<?>, List<Class<?>>> staticMetamodels = new HashMap<>();
-
     @Trivial
     public <T> void annotatedRepository(@Observes @WithAnnotations(Repository.class) ProcessAnnotatedType<T> event) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -124,30 +118,6 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
 
         if (provide)
             repositoryAnnos.put(type, repository);
-    }
-
-    @Trivial
-    public <T> void annotatedStaticMetamodel(@Observes @WithAnnotations(StaticMetamodel.class) ProcessAnnotatedType<T> event) {
-        AnnotatedType<T> type = event.getAnnotatedType();
-
-        if (type.isAnnotationPresent(Generated.class)) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "annotatedStaticMetamodel ignoring generated " + type.getJavaClass().getName());
-        } else {
-            StaticMetamodel staticMetamodel = type.getAnnotation(StaticMetamodel.class);
-
-            Class<?> entityClass = staticMetamodel.value();
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "annotatedStaticMetamodel for " + entityClass.getName(),
-                         type.getJavaClass().getName());
-
-            List<Class<?>> newList = new LinkedList<>();
-            newList.add(type.getJavaClass());
-            List<Class<?>> existingList = staticMetamodels.putIfAbsent(entityClass, newList);
-            if (existingList != null)
-                existingList.add(type.getJavaClass());
-        }
     }
 
     @FFDCIgnore(NamingException.class)
@@ -295,7 +265,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 emBuilder = previous == null ? emBuilder : previous;
 
                 for (Class<?> entityClass : queriesPerEntityClass.keySet())
-                    emBuilder.add(entityClass);
+                    if (!Query.class.equals(entityClass))
+                        emBuilder.add(entityClass);
 
                 BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
                 Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>( //
@@ -305,12 +276,18 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
             }
         }
 
+        boolean beforeCheckpoint = !CheckpointPhase.getPhase().restored();
         for (EntityManagerBuilder builder : entityGroups.values()) {
-            provider.executor.submit(builder);
-        }
-
-        for (EntityManagerBuilder builder : entityGroups.values()) {
-            builder.populateStaticMetamodelClasses(staticMetamodels);
+            if (beforeCheckpoint) {
+                // Run the task in the foreground if before a checkpoint.
+                // This is necessary to ensure this task completes before the checkpoint.
+                // Application startup performance is not as important before checkpoint
+                // and this ensures we don't do this work on restore side which will make
+                // restore faster.
+                builder.run();
+            } else {
+                provider.executor.submit(builder);
+            }
         }
     }
 
@@ -332,6 +309,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
         Class<?> repositoryInterface = repositoryType.getJavaClass();
         Class<?> primaryEntityClass = null;
         Set<Class<?>> lifecycleMethodEntityClasses = new HashSet<>();
+        List<QueryInfo> queriesWithQueryAnno = new ArrayList<>();
+        List<QueryInfo> additionalQueriesForPrimaryEntity = new ArrayList<>();
 
         // Look for parameterized type variable of the repository interface, for example,
         // public interface MyRepository extends DataRepository<MyEntity, IdType>
@@ -415,14 +394,16 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
 
             Class<?> entityParamType = null;
 
+            boolean hasQueryAnno = method.isAnnotationPresent(Query.class);
+
             // Determine entity class from a lifecycle method parameter:
             if (method.getParameterCount() == 1
                 && !method.isDefault()
-                && method.getAnnotation(Query.class) == null
-                && (method.getAnnotation(Insert.class) != null
-                    || method.getAnnotation(Update.class) != null
-                    || method.getAnnotation(Save.class) != null
-                    || method.getAnnotation(Delete.class) != null)) {
+                && !hasQueryAnno
+                && (method.isAnnotationPresent(Insert.class)
+                    || method.isAnnotationPresent(Update.class)
+                    || method.isAnnotationPresent(Save.class)
+                    || method.isAnnotationPresent(Delete.class))) {
                 Class<?> c = method.getParameterTypes()[0];
                 if (Iterable.class.isAssignableFrom(c) || Stream.class.isAssignableFrom(c)) {
                     type = method.getGenericParameterTypes()[0];
@@ -468,27 +449,29 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 }
             }
 
-            QueryInfo queryInfo = new QueryInfo(method, entityParamType, returnArrayComponentType, returnTypeAtDepth);
+            List<QueryInfo> queries;
 
             if (entityClass == null) {
-                entityClass = Void.class;
+                queries = hasQueryAnno ? queriesWithQueryAnno : additionalQueriesForPrimaryEntity;
             } else {
                 // TODO find better ways of determining non-entities ******** require @Entity unless found on lifecycle method!!!!!!
                 String packageName = entityClass.getPackageName();
                 if (packageName.startsWith("java.")
                     || packageName.startsWith("jakarta.")
                     || entityClass.isPrimitive()
-                    || entityClass.isInterface())
-                    entityClass = Void.class;
+                    || entityClass.isInterface()) {
+                    queries = hasQueryAnno ? queriesWithQueryAnno : additionalQueriesForPrimaryEntity;
+                } else {
+                    queries = queriesPerEntity.get(entityClass);
+                    if (queries == null)
+                        queriesPerEntity.put(entityClass, queries = new ArrayList<>());
+                    if (hasQueryAnno)
+                        queries = queriesWithQueryAnno;
+                }
             }
 
-            List<QueryInfo> queries = queriesPerEntity.get(entityClass);
-            if (queries == null)
-                queriesPerEntity.put(entityClass, queries = new ArrayList<>());
-            queries.add(queryInfo);
+            queries.add(new QueryInfo(method, entityParamType, returnArrayComponentType, returnTypeAtDepth));
         }
-
-        List<QueryInfo> additionalQueriesForPrimaryEntity = queriesPerEntity.remove(Void.class);
 
         // Confirm which classes are actually entity classes and that all entity classes are supported
         boolean supportsAllEntities = true;
@@ -510,9 +493,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 if (c.getAnnotation(Entity.class) == null) {
                     // Our provider doesn't recognize this as an entity class. Find out if another provider might:
                     supportsAllEntities &= supportsEntity(c, repositoryType);
-                    if (additionalQueriesForPrimaryEntity == null)
-                        additionalQueriesForPrimaryEntity = new ArrayList<>();
-                    additionalQueriesForPrimaryEntity.addAll(entry.getValue());
+                    for (QueryInfo queryInfo : entry.getValue())
+                        additionalQueriesForPrimaryEntity.add(queryInfo);
                     it.remove();
                 } else {
                     // The entity class is supported because it is annotated with jakarta.persistence.Entity
@@ -537,7 +519,7 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                 queriesPerEntity.put(primaryEntityClass, new ArrayList<>());
             }
 
-            if (additionalQueriesForPrimaryEntity != null && !additionalQueriesForPrimaryEntity.isEmpty())
+            if (!additionalQueriesForPrimaryEntity.isEmpty())
                 if (primaryEntityClass == null) {
                     throw new MappingException("@Repository " + repositoryInterface.getName() + " does not specify an entity class." + // TODO NLS
                                                " To correct this, have the repository interface extend DataRepository" + // TODO can we include example type vars?
@@ -549,6 +531,9 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                     else
                         queries.addAll(additionalQueriesForPrimaryEntity);
                 }
+
+            if (!queriesWithQueryAnno.isEmpty())
+                queriesPerEntity.put(Query.class, queriesWithQueryAnno);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -586,7 +571,8 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
             Class<? extends Annotation> annoClass = anno.annotationType();
             if (annoClass.equals(Entity.class))
                 return true;
-            else if (annoClass.getSimpleName().endsWith("Entity"))
+            else if (annoClass.getSimpleName().endsWith("Entity") // also covers Jakarta NoSQL entity
+                     || annoClass.isAnnotationPresent(EntityDefining.class))
                 hasEntityAnnos = true;
         }
 

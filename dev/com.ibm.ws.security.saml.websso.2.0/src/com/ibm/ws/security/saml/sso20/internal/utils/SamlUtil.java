@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,7 +13,6 @@
 package com.ibm.ws.security.saml.sso20.internal.utils;
 
 import java.security.SecureRandom;
-import java.security.Security;
 import java.util.Random;
 import java.util.Set;
 
@@ -24,7 +23,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.security.cred.WSCredential;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.saml.Constants;
 
 /**
@@ -37,12 +35,6 @@ public class SamlUtil {
                                                          TraceConstants.MESSAGE_BUNDLE);
 
     static final String chars = Constants.CHARS;
-
-    static final String JCEPROVIDER_IBM = "IBMJCE";
-
-    static final String SECRANDOM_IBM = "IBMSecureRandom";
-
-    static final String SECRANDOM_SHA1PRNG = "SHA1PRNG";
 
     public static String hash(String stringToEncrypt) {
         if (stringToEncrypt == null) {
@@ -84,19 +76,8 @@ public class SamlUtil {
         return sb.toString();
     }
 
-    @FFDCIgnore({ Exception.class })
     static Random getRandom() {
-        Random result = null;
-        try {
-            if (Security.getProvider(JCEPROVIDER_IBM) != null) {
-                result = SecureRandom.getInstance(SECRANDOM_IBM);
-            } else {
-                result = SecureRandom.getInstance(SECRANDOM_SHA1PRNG);
-            }
-        } catch (Exception e) {
-            result = new SecureRandom();
-        }
-        return result;
+        return new SecureRandom();
     }
 
     public static QName cloneQName(QName qName) {

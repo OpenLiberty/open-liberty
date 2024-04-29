@@ -262,7 +262,7 @@ public class ServletTimerImpl extends BaseTimer implements ServletTimer,
     /**
      * Returns the hash code of the applicationId 
      */
-    protected long extractQueueIndex() {
+    protected int extractQueueIndex() {
 		if(m_appSession != null){
 			//Moti: fix for defect 487485
 			return m_appSession.extractAppSessionCounter();

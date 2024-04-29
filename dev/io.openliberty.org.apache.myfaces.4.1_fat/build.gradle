@@ -68,6 +68,7 @@ dependencies {
     requiredLibs 'org.brotli:dec:0.1.2'
     requiredLibs 'xalan:xalan:2.7.2'
     requiredLibs 'xml-apis:xml-apis:1.4.01'
+    requiredLibs project(':io.openliberty.jakarta.faces.4.1')
     requiredLibs project(':com.ibm.ws.org.apache.commons.io')
     requiredLibs project(':com.ibm.ws.org.slf4j.api')
     requiredLibs project(':io.openliberty.org.apache.commons.codec')

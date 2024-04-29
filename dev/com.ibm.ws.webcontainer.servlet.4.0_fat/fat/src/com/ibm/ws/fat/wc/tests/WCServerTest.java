@@ -258,7 +258,11 @@ public class WCServerTest {
         // First request will get a new session and will verify that the
         // getSessionTimeout method returns the correct timeout.
         String[] expectedResponseStrings;
-        if (JakartaEEAction.isEE10OrLaterActive()) {
+        if (JakartaEEAction.isEE11OrLaterActive()) {
+            expectedResponseStrings = new String[] { "Session Timeout: 1", "Session object: # HttpSessionImpl61 #",
+                                                     "max inactive interval : 60", "valid session : true",
+                                                     "new session : true" };
+        } else if (JakartaEEAction.isEE10Active()) {
             expectedResponseStrings = new String[] { "Session Timeout: 1", "Session object: # HttpSessionImpl60 #",
                                                      "max inactive interval : 60", "valid session : true",
                                                      "new session : true" };
@@ -284,7 +288,10 @@ public class WCServerTest {
             // The second url.
             url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + SERVLET_40_APP_JAR_NAME + "/SessionTimeoutServlet?TestSessionTimeout=current";
             LOG.info("url: " + url);
-            if (JakartaEEAction.isEE10OrLaterActive()) {
+            if (JakartaEEAction.isEE11OrLaterActive()) {
+                expectedResponseStrings = new String[] { "Session object: # HttpSessionImpl61 #", "max inactive interval : 60",
+                                                         "valid session : true", "new session : false" };
+            } else if (JakartaEEAction.isEE10Active()) {
                 expectedResponseStrings = new String[] { "Session object: # HttpSessionImpl60 #", "max inactive interval : 60",
                                                          "valid session : true", "new session : false" };
             } else {

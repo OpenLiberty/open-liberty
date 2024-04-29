@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,7 +16,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.Principal;
 import java.security.SecureRandom;
-import java.security.Security;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -25,7 +24,6 @@ import javax.security.auth.Subject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.webcontainer.security.CookieHelper;
 
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
@@ -48,12 +46,6 @@ public class OidcUtil {
             'U', 'V', 'W', 'X', 'Y', 'Z' };
     static final int iCharlength = chars.length;
     static final int iTwoCharsLenth = chars.length * chars.length;
-
-    static final String JCEPROVIDER_IBM = "IBMJCE";
-
-    static final String SECRANDOM_IBM = "IBMSecureRandom";
-
-    static final String SECRANDOM_SHA1PRNG = "SHA1PRNG";
 
     public static final int TIMESTAMP_LENGTH = 15;
     public static final int RANDOM_LENGTH = 9;
@@ -95,22 +87,8 @@ public class OidcUtil {
     }
 
     @Trivial
-    @FFDCIgnore({ Exception.class })
     static Random getRandom() {
-        Random result = null;
-        try {
-            if (Security.getProvider(JCEPROVIDER_IBM) != null) {
-                result = SecureRandom.getInstance(SECRANDOM_IBM);
-            } else {
-                result = SecureRandom.getInstance(SECRANDOM_SHA1PRNG);
-            }
-        } catch (Exception e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "OLGH24469 - encountered exception : " + e.getMessage() + ", try without algorithm ");
-            }
-            result = new SecureRandom();
-        }
-        return result;
+        return new SecureRandom();
     }
 
     @Trivial
@@ -134,7 +112,7 @@ public class OidcUtil {
         OidcClientUtil.invalidateReferrerURLCookie(oidcClientRequest.getRequest(), oidcClientRequest.getResponse(), cookieName);
     }
 
-    // The sujbect has to be non-null
+    // The subject has to be non-null
     public static String getUserNameFromSubject(Subject subject) {
         Iterator<Principal> it = subject.getPrincipals().iterator();
         String username = it.next().getName();

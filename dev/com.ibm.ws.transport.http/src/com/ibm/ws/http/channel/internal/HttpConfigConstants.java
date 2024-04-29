@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -349,8 +349,6 @@ public class HttpConfigConstants {
     public static final int MAX_BUFFER_SIZE = 1048576;
     /** Maximum size to allow the byte cache to be set to */
     public static final int MAX_BYTE_CACHE_SIZE = 2048;
-    /** Maximum allowed setting for the limit on the field size */
-    public static final int MAX_LIMIT_FIELDSIZE = 32768;
     /** Maximum allowed setting for the limit on the number of headers */
     public static final int MAX_LIMIT_NUMHEADERS = 500;
     /** Maximum number of responses to skip past */
@@ -405,6 +403,7 @@ public class HttpConfigConstants {
     public static final String PROPNAME_H2_MAX_RESET_FRAMES = "maxResetFrames";
     public static final String PROPNAME_H2_RESET_FRAMES_WINDOW = "resetFramesWindow";
     public static final String PROPNAME_H2_MAX_STREAMS_REFUSED = "maxStreamsRefused";
+    public static final String PROPNAME_H2_MAX_HEADER_BLOCK_SIZE = "maxHeaderBlockSize";
 
     public static final String DEFAULT_PROXIES_REGEX = "10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|192\\.168\\.\\d{1,3}\\.\\d{1,3}|169\\.254\\.\\d{1,3}\\.\\d{1,3}|127\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|172\\.1[6-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.2[0-9]{1}\\.\\d{1,3}\\.\\d{1,3}|172\\.3[0-1]{1}\\.\\d{1,3}\\.\\d{1,3}|0:0:0:0:0:0:0:1|::1";
 
@@ -440,6 +439,8 @@ public class HttpConfigConstants {
     public static final String PROPNAME_SAMESITE_NONE = "sameSiteNoneInternal";
 
     public static final String PROPNAME_SAMESITE_STRICT = "sameSiteStrictInternal";
+
+    public static final String PROPNAME_SAMESITE_PARTITIONED = "sameSitePartitionedInternal";
 
     public static final String WILDCARD_CHAR = "*";
 

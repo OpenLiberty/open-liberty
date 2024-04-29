@@ -18,6 +18,7 @@ import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.Duration;
 
 import org.junit.Rule;
 import org.junit.rules.TestName;
@@ -36,6 +37,11 @@ public abstract class WSATTest extends FATServletClient {
 	public static String WSAT_DETECTED = "Detected WS-AT policy, however there is no active transaction in current thread";
 
 	@Rule public TestName testName = new TestName();
+	
+	// Normal number of seconds it takes a server to start up
+	// Transaction timeouts will be adjusted if actual startup
+	// time varies from this
+	protected final static Duration normalStartTime = Duration.ofSeconds(12);
 
 	public final static int REQUEST_TIMEOUT = 60;
 	public final static int START_TIMEOUT = 600000;

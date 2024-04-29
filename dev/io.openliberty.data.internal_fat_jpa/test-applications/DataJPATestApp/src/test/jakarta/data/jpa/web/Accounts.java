@@ -20,14 +20,20 @@ import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
 /**
- *
+ * Repository for the Account entity, which has an EmbeddedId.
  */
 @Repository
 public interface Accounts {
+
+    @Query("UPDATE Account SET balance = balance + 15e-2 WHERE accountId = ?1")
+    boolean addInterest(AccountId id);
+
+    long countByOwnerAndBalanceBetween(String owner, double min, double max);
 
     @Insert
     void create(Account a);
@@ -48,7 +54,7 @@ public interface Accounts {
     Stream<Account> findByAccountIdNotAndOwner(AccountId idToExclude, String owner);
 
     @OrderBy("bankName")
-    Stream<Account> findByAccountIdAccountNum(long routingNum);
+    Stream<Account> findByAccountIdAccountNum(long accountNum);
 
     @OrderBy("owner")
     Stream<Account> findByAccountIdRoutingNum(long routingNum);

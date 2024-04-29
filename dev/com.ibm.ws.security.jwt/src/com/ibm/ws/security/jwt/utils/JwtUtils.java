@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,7 +19,6 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
@@ -92,10 +91,6 @@ public class JwtUtils {
     public static final String CFG_KEY_KEY_MANAGEMENT_KEY_ALG = "keyManagementKeyAlgorithm";
     public static final String CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS = "keyManagementKeyAlias";
     public static final String CFG_KEY_CONTENT_ENCRYPTION_ALG = "contentEncryptionAlgorithm";
-
-    public static final String JCEPROVIDER_IBM = "IBMJCE";
-    public static final String SECRANDOM_SHA1PRNG = "SHA1PRNG";
-    public static final String SECRANDOM_IBM = "IBMSecureRandom";
 
     public static final String ISSUER = "iss";
     public static final String SUBJECT = "sub";
@@ -399,22 +394,8 @@ public class JwtUtils {
         return result.toString();
     }
 
-    @FFDCIgnore({ Exception.class })
     static Random getRandom() {
-        Random result = null;
-        try {
-            if (Security.getProvider(JCEPROVIDER_IBM) != null) {
-                result = SecureRandom.getInstance(SECRANDOM_IBM);
-            } else {
-                result = SecureRandom.getInstance(SECRANDOM_SHA1PRNG);
-            }
-        } catch (Exception e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "OLGH24469 - encountered exception : " + e.getMessage() + ", try without algorithm ");
-            }
-            result = new SecureRandom();
-        }
-        return result;
+        return new SecureRandom();
     }
 
     public static long calculate(long valid) {

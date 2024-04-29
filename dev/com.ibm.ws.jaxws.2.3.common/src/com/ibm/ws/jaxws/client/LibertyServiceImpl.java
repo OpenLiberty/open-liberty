@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.namespace.QName;
@@ -45,6 +46,7 @@ import org.apache.cxf.feature.Feature;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.JaxWsConstants;
+import com.ibm.ws.jaxws.internal.WebServiceConfigConstants;
 import com.ibm.ws.jaxws.metadata.ConfigProperties;
 import com.ibm.ws.jaxws.metadata.PortComponentRefInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceFeatureInfo;
@@ -53,6 +55,7 @@ import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
 import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
 import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.jaxws23.client.security.LibertyJaxWsClientSecurityOutInterceptor;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * All the Web Service ports and dispatches are created via the class
@@ -69,7 +72,7 @@ public class LibertyServiceImpl extends ServiceImpl {
     private final WebServiceRefInfo wsrInfo;
 
     private final JaxWsSecurityConfigurationService securityConfigService;
-
+   
     /**
      * The map contains the port QName to port properties entry
      */
@@ -79,6 +82,10 @@ public class LibertyServiceImpl extends ServiceImpl {
         // Add more if need other service pid to property prefix
         servicePidToPropertyPrefixMap.put(JaxWsConstants.HTTP_CONDUITS_SERVICE_FACTORY_PID, JaxWsConstants.HTTP_CONDUIT_PREFIX);
     }
+    
+    // Flag tells us if the message for a call to a beta method has been issued
+    private static boolean issuedBetaMessage = false;
+    
 
     /**
      * @param bus
@@ -89,18 +96,22 @@ public class LibertyServiceImpl extends ServiceImpl {
      */
     public LibertyServiceImpl(JaxWsSecurityConfigurationService securityConfigService, WebServiceRefInfo wsrInfo,
                               Bus bus, URL url, QName name, Class<?> clazz, WebServiceFeature... features) {
+        
         super(bus, url, name, clazz, features);
+
         this.securityConfigService = securityConfigService;
         this.wsrInfo = wsrInfo;
-
-        if (null != wsrInfo) {
+        
+        if (null != wsrInfo) { 
             try {
                 //Configure each port's properties defined in the custom binding files.
                 configureClientProperties();
+                
             } catch (IOException e) {
                 throw new Fault(e);
             }
-        }
+        } 
+        
     }
 
     @Override
@@ -116,6 +127,23 @@ public class LibertyServiceImpl extends ServiceImpl {
         Client client = ClientProxy.getClient(clientProxy);
 
         configureCustomizeBinding(client, portName);
+        
+        if (!ProductInfo.getBetaEdition()) {           
+
+            // Because we have to apply webService and webServiceClient configuration to existing code
+            // we need to not apply it when not in beta. That means
+            // we can't throw the normal UnsupportedOperationException when not in beta
+            // so we just return the clientProxy as was done originally at this point in the code.
+            return clientProxy;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A webServiceClient configuration beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+        }
+		
+        configureWebServiceClientProperties(client);
 
         return clientProxy;
     }
@@ -128,9 +156,43 @@ public class LibertyServiceImpl extends ServiceImpl {
         Client client = dispatch.getClient();
 
         configureCustomizeBinding(client, portName);
+		
+		if (!ProductInfo.getBetaEdition()) {           
 
+            // Because we have to apply webService and webServiceClient configuration to existing code
+            // we need to not apply it when not in beta. That means
+            // we can't throw the normal UnsupportedOperationException when not in beta
+            // so we just return the clientProxy as was done originally at this point in the code.
+            return dispatch;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A webServiceClient configuration beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+        }
+		
+        configureWebServiceClientProperties(client); 
+		
         return dispatch;
     }
+    
+    /**
+     *  This method is used to apply webServiceClient configuration to the Client instance
+     *  Given that all of the current configuration is meant to be applied to inbound response processing
+     *  This method simply sets a new instances of the LibertyWebServiceClientInInterceptor to the InterceptorChain.
+     * @param client
+     * @param map
+     */
+    private void configureWebServiceClientProperties(Client client) {
+        // add the a new instance of LibertyWebServiceClientInInterceptor
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Adding the LibertyWebServiceClintInInterceptor ");
+        }
+        client.getInInterceptors().add(new LibertyWebServiceClientInInterceptor());
+        
+    }
+
 
     /**
      * Add the LibertyCustomizeBindingOutInterceptor in the out interceptor chain.

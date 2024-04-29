@@ -16,7 +16,7 @@ Subsystem-Name: Jakarta Expression Language 6.0
 -features=io.openliberty.jakarta.expressionLanguage-6.0, \
   com.ibm.websphere.appserver.eeCompatible-11.0
 -bundles=io.openliberty.org.apache.jasper.expressionLanguage.6.0
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

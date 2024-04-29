@@ -1,11 +1,11 @@
 /*******************************************************************************
-* Copyright (c) 2020 IBM Corporation and others.
+* Copyright (c) 2020, 2024 IBM Corporation and others.
 *
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License 2.0
 * which accompanies this distribution, and is available at
 * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
 *
 *******************************************************************************
@@ -26,9 +26,14 @@
 package io.openliberty.microprofile.metrics30.internal.impl;
 
 import java.time.Duration;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.Snapshot;
 import org.eclipse.microprofile.metrics.Timer;
@@ -39,6 +44,11 @@ import com.ibm.ws.microprofile.metrics.impl.HistogramImpl;
 import com.ibm.ws.microprofile.metrics.impl.MeterImpl;
 import com.ibm.ws.microprofile.metrics.impl.Reservoir;
 import com.ibm.ws.microprofile.metrics.impl.TimerImpl;
+
+import io.openliberty.microprofile.metrics30.internal.helper.BucketManager;
+import io.openliberty.microprofile.metrics30.internal.helper.BucketManager.BucketValue;
+import io.openliberty.microprofile.metrics30.setup.config.MetricPercentileConfiguration;
+import io.openliberty.microprofile.metrics30.setup.config.MetricsConfigurationManager;
 
 /**
  * A timer metric which aggregates timing durations and provides duration statistics, plus
@@ -84,23 +94,28 @@ public class Timer30Impl implements Timer {
     protected Duration elapsedTime;
     protected final Meter meter;
     protected final Histogram histogram;
+    protected final BucketManager manager;
     protected final Clock clock;
+    private final double[] percentiles;
 
     /**
      * Creates a new {@link TimerImpl} using an {@link ExponentiallyDecayingReservoir} and the default
      * {@link Clock}.
+     *
+     * @param metadata
      */
-    public Timer30Impl() {
-        this(new ExponentiallyDecayingReservoir());
+    public Timer30Impl(Metadata metadata) {
+        this(new ExponentiallyDecayingReservoir(), metadata);
     }
 
     /**
      * Creates a new {@link TimerImpl} that uses the given {@link Reservoir}.
      *
      * @param reservoir the {@link Reservoir} implementation the timer should use
+     * @param metadata
      */
-    public Timer30Impl(Reservoir reservoir) {
-        this(reservoir, Clock.defaultClock());
+    public Timer30Impl(Reservoir reservoir, Metadata metadata) {
+        this(reservoir, Clock.defaultClock(), metadata);
     }
 
     /**
@@ -109,11 +124,14 @@ public class Timer30Impl implements Timer {
      * @param reservoir the {@link Reservoir} implementation the timer should use
      * @param clock     the {@link Clock} implementation the timer should use
      */
-    protected Timer30Impl(Reservoir reservoir, Clock clock) {
+    protected Timer30Impl(Reservoir reservoir, Clock clock, Metadata metadata) {
         this.meter = new MeterImpl(clock);
         this.clock = clock;
         this.histogram = new HistogramImpl(reservoir);
+        this.manager = new BucketManager(metadata);
         this.elapsedTime = Duration.ZERO;
+        this.percentiles = setConfiguredPercentiles(metadata);
+
     }
 
     /**
@@ -127,6 +145,7 @@ public class Timer30Impl implements Timer {
         synchronized (this) {
             if (duration.toNanos() >= 0) {
                 histogram.update(duration.toNanos());
+                manager.updateTimer(duration.toNanos());
                 meter.mark();
                 elapsedTime = elapsedTime.plus(duration);
             }
@@ -214,6 +233,35 @@ public class Timer30Impl implements Timer {
     @Override
     public Duration getElapsedTime() {
         return elapsedTime;
+    }
+
+    public Map<String, Map<Double, BucketValue>> getBuckets() {
+        return manager.getBuckets();
+    }
+
+    public double[] getConfiguredPercentiles() {
+        return percentiles;
+    }
+
+    public double[] setConfiguredPercentiles(Metadata metadata) {
+        Optional<String> percentileConfiguration = ConfigProvider.getConfig().getOptionalValue("mp.metrics.distribution.percentiles", String.class);
+        String metricName = metadata.getName();
+        if (percentileConfiguration.isPresent()) {
+            MetricPercentileConfiguration percentileConfig = MetricsConfigurationManager.getInstance().getPercentilesConfiguration(metricName);
+
+            if (percentileConfig != null && percentileConfig.getValues() != null
+                && percentileConfig.getValues().length > 0 && !percentileConfig.isDisabled()) {
+                double[] vals = Stream.of(percentileConfig.getValues()).mapToDouble(Double::doubleValue).toArray();
+
+                return vals;
+            } else if (percentileConfig == null) {
+                return null;
+            } else {
+                return new double[0];
+            }
+        }
+        return null;
+
     }
 
 }

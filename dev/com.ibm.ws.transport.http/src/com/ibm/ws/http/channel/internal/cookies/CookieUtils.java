@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2022 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.cookies;
 
@@ -22,6 +19,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
@@ -390,6 +388,13 @@ public class CookieUtils {
             buffer.append(value);
         }
 
+        if(ProductInfo.getBetaEdition()) {
+            value = cookie.getAttribute("partitioned");
+            if (null != value && !value.equalsIgnoreCase("false")) {
+                buffer.append("; Partitioned");
+            }
+        }
+
         //Servlet 6.0
         setAttributes(cookie, buffer);
 
@@ -464,6 +469,13 @@ public class CookieUtils {
         if (null != value && 0 != value.length()) {
             buffer.append("; SameSite=");
             buffer.append(value);
+        }
+
+        if(ProductInfo.getBetaEdition()) {
+            value = cookie.getAttribute("partitioned");
+            if (null != value && !value.equalsIgnoreCase("false")) {
+                buffer.append("; Partitioned");
+            }
         }
 
         //Servlet 6.0
@@ -558,6 +570,13 @@ public class CookieUtils {
             buffer.append(value);
         }
 
+        if(ProductInfo.getBetaEdition()) {
+            value = cookie.getAttribute("partitioned");
+            if (null != value && !value.equalsIgnoreCase("false")) {
+                buffer.append("; Partitioned");
+            }
+        }
+
         //Servlet 6.0
         setAttributes(cookie, buffer);
 
@@ -578,7 +597,12 @@ public class CookieUtils {
             String key, value;
             for (Entry<String, String> entry : cookieAttrs.entrySet()) {
                 key = entry.getKey();
-                if (!(key.equals("samesite") || key.equals("port") || key.equals("commenturl"))) {
+                // add partitioned if not in beta.
+                // skip if in beta since it's added above already
+                if((key.equals("partitioned") && ProductInfo.getBetaEdition())){
+                    continue;
+                }
+                if (!(key.equals("samesite") || key.equals("port") || key.equals("commenturl")) ) {
                     value = entry.getValue();
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "setAttribute (" + key + " , " + value + ")");

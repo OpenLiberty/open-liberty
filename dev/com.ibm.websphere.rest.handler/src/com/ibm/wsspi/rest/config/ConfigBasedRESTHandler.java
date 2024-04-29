@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -155,6 +155,10 @@ public abstract class ConfigBasedRESTHandler implements RESTHandler {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "handleRequest", path); // /apiRoot/{elementName}/{uid}
+
+        response.setResponseHeader("X-XSS-Protection", "1");
+        response.setResponseHeader("X-Content-Type-Options", "nosniff");
+        response.setResponseHeader("Content-Security-Policy", "default-src 'self'");
 
         if (requireAdministratorRole() && !request.isUserInRole(ManagementSecurityConstants.ADMINISTRATOR_ROLE_NAME)) {
             response.sendError(403, "Forbidden");

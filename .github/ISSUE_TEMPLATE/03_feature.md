@@ -58,9 +58,9 @@ If you need assistance, reach out to the [OpenLiberty/release-architect](https:/
 The [OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) and area leads are responsible for prioritizing the features and determining which features are being actively worked on.
 
 ### **Prioritization**
-- [ ] Feature added to the "New" column of the [Open Liberty project board](https://github.com/orgs/OpenLiberty/projects/2)
-  - Feature owner adds label `Prioritization - Requested`
-  - Feature added to "New" column of the Open Liberty Roadmap. ([OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager))
+- [ ] Feature owner adds label `Prioritization - Requested`
+  - This puts the feature on the radar of the [OpenLiberty/chief-architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) and [OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager). They are responsible for querying for new features that need to be prioritized.
+- [ ] [OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager) adds feature to the "New" column of the [Open Liberty project board](https://github.com/orgs/OpenLiberty/projects/2)
 - [ ] Priority assigned
   - Attend the Liberty Backlog Prioritization meeting
   - `Prioritization - Requested` label removed ([OpenLiberty/project-manager](https://github.com/orgs/OpenLiberty/teams/project-manager) or feature owner)
@@ -163,7 +163,8 @@ A feature is ready to GA after it is Feature Complete and has obtained all neces
   - [ ] All stop ship issues are completed.
 - [ ] Legal: all necessary approvals granted.
 - [ ] Innovation: IP identified and any applicable disclosures submitted
-- [ ] Translation: Feature may only proceed to GA if it has either `Translation - Complete` or `Translation - Missing` label
+- [ ] Translation: Feature may only proceed to GA if it has either `Translation - Not Required`, `Translation - Complete`, or `Translation - Missing` label
+  - If the feature does not have anything that required translation, the feature owner adds the label `Translation - Not Required`.
   - If all translation has been delivered to `release` branch, feature owner adds label `Translation - Complete`.
   - If missing translation does not cause a break in functionality, nor a security or production outage risk, feature owner adds label `Translation - Missing`.
     - Once all missing translations are delivered, the `Translation - Missing` label is replaced with `Translation - Complete`.

@@ -24,11 +24,17 @@ import java.security.CodeSource;
 import java.security.SecureClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -56,9 +62,14 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
     private final CopyOnWriteArrayList<ResourceHandler> resourceHandlers;
     private final boolean verify;
     private final ClassLoaderHook hook;
+    private final ReentrantLock lock = new ReentrantLock();
+    private volatile Map<String, List<ResourceHandler>> handlerMap;
+
+    protected final ClassLoader parent;
 
     public JarFileClassLoader(URL[] urls, boolean verify, ClassLoader parent) {
         super(parent);
+        this.parent = parent;
 
         if (System.getSecurityManager() != null) {
             throw new IllegalStateException("This ClassLoader does not work with SecurityManager");
@@ -66,6 +77,7 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
 
         this.verify = verify;
         hook = ClassLoaderHookFactory.getClassLoaderHook(this);
+        this.handlerMap = new HashMap<>();
         if (urls == null) {
             this.urls = new CopyOnWriteArrayList<URL>();
             this.resourceHandlers = new CopyOnWriteArrayList<ResourceHandler>();
@@ -75,7 +87,9 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
             // avoid adding resource handlers one at a time to a copy on write list
             List<ResourceHandler> tempResourceHandlers = new ArrayList<ResourceHandler>(urls.length);
             for (URL url : urls) {
-                tempResourceHandlers.add(createResoureHandler(url, verify));
+                ResourceHandler handler = createResourceHandler(url, verify);
+                populateHandlerMap(handlerMap, handler);
+                tempResourceHandlers.add(handler);
             }
             // Create resourceHandler list in one go
             this.resourceHandlers = new CopyOnWriteArrayList<ResourceHandler>(tempResourceHandlers);
@@ -92,7 +106,7 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
         return classNameLockStore.getLock(className);
     }
 
-    private ResourceHandler createResoureHandler(URL url, boolean verify) {
+    private ResourceHandler createResourceHandler(URL url, boolean verify) {
         String urlFile = url.getFile();
         try {
             if (urlFile != null && urlFile.endsWith("/")) {
@@ -112,6 +126,12 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
 
     @Override
     public void close() {
+        lock.lock();
+        try {
+            handlerMap.clear();
+        } finally {
+            lock.unlock();
+        }
         for (ResourceHandler handler : resourceHandlers) {
             close(handler);
         }
@@ -120,22 +140,79 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
 
     protected void addURL(URL url) {
         urls.add(url);
-        resourceHandlers.add(createResoureHandler(url, verify));
+        ResourceHandler handler = createResourceHandler(url, verify);
+        lock.lock();
+        try {
+            Map<String, List<ResourceHandler>> copy = new HashMap<>(handlerMap.size());
+            for (Entry<String, List<ResourceHandler>> entry : handlerMap.entrySet()) {
+                List<ResourceHandler> value = entry.getValue();
+                copy.put(entry.getKey(), value.size() == 1 ? value : new ArrayList<>(value));
+            }
+            populateHandlerMap(copy, handler);
+            handlerMap = copy;
+        } finally {
+            lock.unlock();
+        }
+        resourceHandlers.add(handler);
     }
 
     public URL[] getURLs() {
         return urls.toArray(new URL[0]);
     }
 
-    @Override
-    protected Class<?> findClass(String className) throws ClassNotFoundException {
-        return findClass(className, false);
+    protected Class<?> _loadClass(String name, boolean parentFirst) throws ClassNotFoundException {
+
+        int index = name.lastIndexOf('.');
+        String pkg = index < 0 ? "" : name.substring(0, index);
+
+        List<ResourceHandler> pkgHandlers = handlerMap.get(pkg);
+
+        // If the package is not known to this ClassLoader, just call the parent
+        if (pkgHandlers == null) {
+            return parent.loadClass(name);
+        }
+
+        if (parentFirst) {
+            Class<?> result = null;
+            synchronized (getClassLoadingLock(name)) {
+                result = findLoadedClass(name);
+                if (result == null) {
+                    try {
+                        result = parent.loadClass(name);
+                    } catch (ClassNotFoundException cnfe) {
+                        result = findClass(name, pkgHandlers, true);
+                        if (result == null) {
+                            throw cnfe;
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        // If child first
+        Class<?> result = null;
+
+        synchronized (getClassLoadingLock(name)) {
+            result = findLoadedClass(name);
+            if (result == null) {
+                // Try to load the class from this classpath
+                result = findClass(name, pkgHandlers, true);
+            }
+        }
+
+        return (result != null) ? result : parent.loadClass(name);
     }
 
-    protected Class<?> findClass(String className, boolean returnNull) throws ClassNotFoundException {
-        String resourceName = new StringBuilder(className.replace('.', '/')).append(".class").toString();
+    @Override
+    protected Class<?> findClass(String className) throws ClassNotFoundException {
+        return findClass(className, resourceHandlers, false);
+    }
 
-        ResourceEntry entry = findResourceEntry(resourceName);
+    private Class<?> findClass(String className, List<ResourceHandler> handlers, boolean returnNull) throws ClassNotFoundException {
+        String resourceName = new StringBuilder(className.length() + 6).append(className.replace('.', '/')).append(".class").toString();
+
+        ResourceEntry entry = findResourceEntry(resourceName, handlers);
         if (entry == null) {
             if (returnNull) {
                 return null;
@@ -249,7 +326,7 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
 
     @Override
     public URL findResource(String resourceName) {
-        ResourceEntry entry = findResourceEntry(resourceName);
+        ResourceEntry entry = findResourceEntry(resourceName, resourceHandlers);
         return (entry == null) ? null : entry.toURL();
     }
 
@@ -258,8 +335,26 @@ public class JarFileClassLoader extends SecureClassLoader implements Closeable {
         return new ResourceEntryEnumeration(resourceHandlers, resourceName);
     }
 
-    private ResourceEntry findResourceEntry(String resourceName) {
-        for (ResourceHandler handler : resourceHandlers) {
+    private static void populateHandlerMap(Map<String, List<ResourceHandler>> pkgHandlerMap, ResourceHandler handler) {
+        List<ResourceHandler> list = Collections.singletonList(handler);
+        Set<String> packages = handler.getClassPackages();
+        for (String pkg : packages) {
+            List<ResourceHandler> previousList = pkgHandlerMap.putIfAbsent(pkg, list);
+            if (previousList != null) {
+                if (previousList.size() > 1) {
+                    previousList.add(handler);
+                } else {
+                    List<ResourceHandler> newList = new ArrayList<>();
+                    newList.add(previousList.get(0));
+                    newList.add(handler);
+                    pkgHandlerMap.put(pkg, newList);
+                }
+            }
+        }
+    }
+
+    private static ResourceEntry findResourceEntry(String resourceName, List<ResourceHandler> handlers) {
+        for (ResourceHandler handler : handlers) {
             ResourceEntry entry = handler.getEntry(resourceName);
             if (entry != null) {
                 return entry;

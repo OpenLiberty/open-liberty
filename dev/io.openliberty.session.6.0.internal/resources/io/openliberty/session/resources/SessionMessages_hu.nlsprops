@@ -1,0 +1,29 @@
+###############################################################################
+# Copyright (c) 2022, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.session.6.0.internal/resources/io/openliberty/session/resources/SessionMessages.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# Note:
+#Last used error meessage code was SESN8502I
+#
+#Use 8600 - 8699 for Servlet 6.0 - EE10
+#
+# -----------------------------------------------
+cookie.attribute.name.null=SESN8600E: A cookie oszt\u00e1ly attrib\u00fatumneve null\u00e9rt\u00e9k.
+cookie.attribute.name.null.explanation=Az attrib\u00fatum neve nem lehet null\u00e9rt\u00e9k.
+cookie.attribute.name.null.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az attrib\u00fatum neve ne null\u00e9rt\u00e9k legyen.
+# -----------------------------------------------
+cookie.attribute.name.invalid.[{0}]=SESN8601E: A(z) [{0}] attrib\u00fatumn\u00e9v \u00e9rv\u00e9nytelen karaktereket tartalmaz.
+cookie.attribute.name.invalid.[{0}].explanation=Az attrib\u00fatumn\u00e9v legal\u00e1bb az egyik olyan al\u00e1bbi elv\u00e1laszt\u00f3 karaktert tartalmazza, amely nem haszn\u00e1lhat\u00f3 a Cookie oszt\u00e1ly attrib\u00fatumnev\u00e9ben: ( ) < > @ , ; :  " / [ ] ? = { }
+cookie.attribute.name.invalid.[{0}].useraction=Gondoskodj\u00e9k r\u00f3la, hogy az attrib\u00fatumn\u00e9v ne tartalmazzon elv\u00e1laszt\u00f3 karaktereket, \u00e9s hogy az attrib\u00fatumn\u00e9v \u00e9rv\u00e9nyes legyen.

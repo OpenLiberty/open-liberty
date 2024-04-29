@@ -1,0 +1,55 @@
+/*******************************************************************************
+ * Copyright (c) 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ ********************************************************************************/
+
+// https://plugins.gradle.org/plugin/org.springframework.boot
+plugins {
+  id 'java'
+  id 'org.springframework.boot' version '3.2.4'
+  id 'io.spring.dependency-management' version '1.1.4'
+  id 'war'
+}
+
+group = 'io.openliberty.example.spring'
+version = '1.0.0'
+java {
+  sourceCompatibility = 17
+}
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+ext {
+  set('springCloudVersion', "2023.0.1")
+}
+
+dependencies {
+  implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+  implementation('org.springframework.boot:spring-boot-starter-web')
+  implementation('org.springframework.boot:spring-boot-starter-actuator')
+  implementation('org.springframework.cloud:spring-cloud-starter')
+
+  implementation('org.postgresql:postgresql')
+  implementation('org.crac:crac:1.4.0')
+  implementation('org.apache.commons:commons-collections4:4.4')
+
+  providedCompile('jakarta.servlet:jakarta.servlet-api')
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+  }
+}
+
+bootJar {
+  duplicatesStrategy 'warn'
+}
