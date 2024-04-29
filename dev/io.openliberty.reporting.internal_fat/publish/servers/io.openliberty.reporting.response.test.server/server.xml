@@ -14,11 +14,11 @@
     
     <featureManager>
         <feature>componentTest-2.0</feature>
-        <feature>restfulWS-3.1</feature>
+        <feature>restfulWS-3.0</feature>
         <feature>mpRestClient-3.0</feature>
-        <feature>jsonp-2.1</feature>
-        <feature>jsonb-3.0</feature>
-        <feature>cdi-4.0</feature>
+        <feature>jsonp-2.0</feature>
+        <feature>jsonb-2.0</feature>
+        <feature>cdi-3.0</feature>
 	</featureManager>
     
     <logging  traceSpecification="io.openliberty.reporting.internal*=all"
