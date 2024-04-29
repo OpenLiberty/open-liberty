@@ -7,11 +7,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.org.apache.myfaces41.fat.namespace.view;
+package io.openliberty.org.apache.myfaces41.fat.rowStatePreserved;
 
-import jakarta.faces.component.NamingContainer;
-import jakarta.faces.component.UIViewRoot;
+public class Item {
 
-public class NamespacedView extends UIViewRoot implements NamingContainer {
+    private String value;
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    @Override
+    public String toString(){
+        return value == null ? "" : value.toString();
+    }
     
 }
