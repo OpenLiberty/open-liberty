@@ -166,7 +166,28 @@ public class NettyChain extends HttpChain {
             return;
         }
 
-        if (configurationsDiffer(resolvedHostName)) {
+        final ActiveConfiguration oldConfig = currentConfig;
+        final ActiveConfiguration newConfig;
+
+        // The old configuration was valid if it existed and was correctly configured
+        final boolean validOldConfig = (Objects.isNull(oldConfig)) ? false : oldConfig.validConfiguration;
+
+        newConfig = new ActiveConfiguration(isHttps(), getOwner().getTcpOptions(), isHttps() ? getOwner().getSslOptions() : null, getOwner().getHttpOptions(), getOwner().getRemoteIpConfig(), getOwner().getCompressionConfig(), getOwner().getSamesiteConfig(), getOwner().getHeadersConfig(), getOwner().getEndpointOptions(), resolvedHostName);
+
+        if (newConfig.configPort < 0 || !newConfig.complete()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Stopping chain due to configuration " + newConfig);
+            }
+            MSP.log("Stopping chain due to configuration " + newConfig);
+            // save the new/changed configuration before we start setting up the new chain
+            currentConfig = newConfig;
+            stopAndWait();
+        }
+
+        if (!newConfig.unchanged(oldConfig)) {
+            MSP.log("This configuration differs and should cause an update");
+            currentConfig = newConfig;
+
             //Cancel ongoing channelFuture if necessary
 //            if(Objects.nonNull(channelFuture)) {
 //                cancelToken.set(true);
@@ -184,26 +205,6 @@ public class NettyChain extends HttpChain {
         }
     }
 
-    private boolean configurationsDiffer(String resolvedHostName) {
-        final ActiveConfiguration oldConfig = currentConfig;
-        final ActiveConfiguration newConfig;
-        boolean result = false;
-
-        //The old configuration was valid if it existed and was correctly configured
-        final boolean validOldConfig = (Objects.isNull(oldConfig)) ? false : oldConfig.validConfiguration;
-
-        newConfig = new ActiveConfiguration(isHttps(), getOwner().getTcpOptions(), isHttps() ? getOwner().getSslOptions() : null, getOwner().getHttpOptions(), getOwner().getRemoteIpConfig(), getOwner().getCompressionConfig(), getOwner().getSamesiteConfig(), getOwner().getHeadersConfig(), getOwner().getEndpointOptions(), resolvedHostName);
-
-        if (newConfig.configPort > 0 && newConfig.complete() && !newConfig.unchanged(oldConfig)) {
-            MSP.log("This configuration differs and should cause an update");
-            result = true;
-            currentConfig = newConfig;
-        }
-
-        return result;
-
-    }
-
     public synchronized void startNettyChannel() {
 
         startCount++;
@@ -215,6 +216,10 @@ public class NettyChain extends HttpChain {
             stopAndWait();
 
         }
+
+        // Don't update or start the chain if it is disabled or the framework is stopping..
+        if (!enabled || FrameworkState.isStopping())
+            return;
 
         if (state.compareAndSet(ChainState.STOPPED, ChainState.STARTING)) {
 
