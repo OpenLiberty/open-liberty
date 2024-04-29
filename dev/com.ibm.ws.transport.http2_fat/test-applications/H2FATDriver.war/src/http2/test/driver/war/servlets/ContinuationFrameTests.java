@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.http.channel.h2internal.frames.FrameData;
 import com.ibm.ws.http.channel.h2internal.frames.FrameGoAway;
+import com.ibm.ws.http.channel.h2internal.frames.FrameRstStream;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
 import com.ibm.ws.http2.test.Http2Client;
@@ -154,6 +155,140 @@ public class ContinuationFrameTests extends H2FATDriverServlet {
         h2Client.sendFrame(frameHeadersToSend);
         h2Client.sendFrame(new FrameData(3, "derp".getBytes(), false));
         h2Client.sendFrame(firstContinuationHeaders);
+
+        blockUntilConnectionIsDone.await();
+        this.handleErrors(h2Client, testName);
+    }
+
+    /**
+     * Send a big header that exceeds the established token field size. Expect a go away frame from the server.
+     */
+    public void testHeaderTokenSizeExceeded(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testHeaderTokenSizeExceeded";
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        byte[] debugData = "Headers on stream: 3 exceed limits configured for the server.".getBytes();
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
+        setupDefaultUpgradedConnection(h2Client);
+
+        String extraLongHeaderValue = "This is a test header which should be relatively long and will repeat.This is a test header which should be relatively long and will repeat.";
+
+        // create headers to send over to the server; note that end_headers IS set
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader1", extraLongHeaderValue), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+
+        // send over the header frames followed by the data and continuation frames
+        h2Client.sendFrame(frameHeadersToSend);
+
+        blockUntilConnectionIsDone.await();
+        this.handleErrors(h2Client, testName);
+    }
+
+    /**
+     * Sends a big number of header that exceeds the established limit number of headers. Expect a go away frame from the server.
+     */
+    public void testHeaderSizeExceeded(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testHeaderSizeExceeded";
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        byte[] debugData = "Headers on stream: 3 exceed limits configured for the server.".getBytes();
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, COMPRESSION_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
+        setupDefaultUpgradedConnection(h2Client);
+
+        // create headers to send over to the server; note that end_headers IS set
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        for (int i = 1; i<= 50; i++) {
+            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("header"+i, ""+i), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        }
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+
+        // send over the header frames followed by the data and continuation frames
+        h2Client.sendFrame(frameHeadersToSend);
+
+        blockUntilConnectionIsDone.await();
+        this.handleErrors(h2Client, testName);
+    }
+
+    /**
+     * Send a big header block on a stream exceeding the configured header block size. Expect a go away frame from the server.
+     */
+    public void testHeaderLimitReached(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testHeaderLimitReached";
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        byte[] debugData = "Stream: 3 exceeds the maximum header block size configured.".getBytes();
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
+        setupDefaultUpgradedConnection(h2Client);
+
+        // create headers to send over to the server; note that end_headers IS set
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        for (int i = 1; i<= 50; i++) {
+            firstHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader"+i, "This is test header"+i), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        }
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, false, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+
+        // send over the header frames followed by the data and continuation frames
+        h2Client.sendFrame(frameHeadersToSend);
+
+        blockUntilConnectionIsDone.await();
+        this.handleErrors(h2Client, testName);
+    }
+
+    /**
+     * Send a big header block through multiple continuation frames on a stream with no end headers flag. Expect a go away frame from the server.
+     */
+    public void testHeaderContinuationLimitReached(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testHeaderContinuationLimitReached";
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        byte[] debugData = "Stream: 3 exceeds the maximum header block size configured.".getBytes();
+        FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 1, false);
+        h2Client.addExpectedFrame(errorFrame);
+
+        setupDefaultUpgradedConnection(h2Client);
+
+        // create headers to send over to the server; note that end_headers IS set
+        List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_AND_BODY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(3, null, 0, 0, 0, false, false, false, false, false, false);
+        frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
+
+        // create the first continuation frame to send over; note that end_headers IS set
+        List<HeaderEntry> continuationHeadersToSend = new ArrayList<HeaderEntry>();
+        for (int i = 1; i<= 50; i++) {
+            continuationHeadersToSend.add(new HeaderEntry(new H2HeaderField("testHeader"+i, "This is test header"+i), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        }
+        FrameContinuationClient frameContinuationHeaders = new FrameContinuationClient(3, null, false, false, false);
+        frameContinuationHeaders.setHeaderEntries(continuationHeadersToSend);
+
+        // send over the header frames followed by the data and continuation frames
+        h2Client.sendFrame(frameHeadersToSend);
+        h2Client.sendFrame(frameContinuationHeaders);
 
         blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);

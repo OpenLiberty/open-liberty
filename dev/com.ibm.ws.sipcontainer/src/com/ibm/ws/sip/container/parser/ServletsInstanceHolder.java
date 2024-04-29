@@ -250,7 +250,7 @@ public class ServletsInstanceHolder implements ServletInstanceHolderInterface{
 	/**
 	 * @see ServletsInstanceHolder#triggerSipletInitServlet()
 	 */
-	public void triggerSipletInitServlet(long appQueueIndex) {
+	public void triggerSipletInitServlet(int appQueueIndex) {
 		InitMembers members = sipServletThreadLocal.get();
 		sipServletThreadLocal.set(null);
 		

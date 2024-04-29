@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,7 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.PrivHelper;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
 
@@ -51,16 +52,19 @@ public class JsonpTckLauncher {
     public void launchJsonp21TCK() throws Exception {
         Map<String, String> additionalProps = new HashMap<>();
 
-        // Skip signature testing on Windows and Semeru JDK.
+        // Skip signature testing on Windows
         // So far as I can tell the signature test plugin is not supported on this configuration
-        //Opened an issue against jsonb tck https://github.com/eclipse-ee4j/jsonb-api/issues/327
-        // Also skip the JsonProviderTest, because if any other test has already run before, the provider has been set
-        // and the test fails because you can't then set a different provider
-        // Opened an issue against the jsonp tck https://github.com/eclipse-ee4j/jsonp/issues/376
+        // Opened an issue against jsonb tck https://github.com/eclipse-ee4j/jsonb-api/issues/327
         if (System.getProperty("os.name").contains("Windows")) {
             Log.info(JsonpTckLauncher.class, "launchJsonp21TCK", "Skipping JSONP Signature Test on Windows and Semeru JDK");
             additionalProps.put("exclude.tests", "ee.jakarta.tck.jsonp.signaturetest.jsonp.JSONPSigTest.java");
         }
+
+        // Since the signature tests are run in standalone mode (not inside the container)
+        // we need to ensure that the temporary file location the signature tests
+        // use to read/write files to is accessible to the maven wrapper (.mvnw)
+        // Persist the java.io.tempdir property from this test client to the TCK.
+        additionalProps.put("java.io.tmpdir", PrivHelper.getProperty("java.io.tmpdir", "/tmp"));
 
         String bucketName = "io.openliberty.jakarta.jsonp.2.1_fat_tck";
         String testName = this.getClass() + ":launchJsonp21TCK";

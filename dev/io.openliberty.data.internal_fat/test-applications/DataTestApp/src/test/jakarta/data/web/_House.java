@@ -16,35 +16,38 @@ import jakarta.data.metamodel.Attribute;
 import jakarta.data.metamodel.SortableAttribute;
 import jakarta.data.metamodel.StaticMetamodel;
 import jakarta.data.metamodel.TextAttribute;
+import jakarta.data.metamodel.impl.AttributeRecord;
+import jakarta.data.metamodel.impl.SortableAttributeRecord;
+import jakarta.data.metamodel.impl.TextAttributeRecord;
 
 /**
  * Metamodel for the House entity.
  */
 @StaticMetamodel(House.class)
-public class _House {
-    public static volatile SortableAttribute<House> AREA;
+public interface _House {
+    SortableAttribute<House> AREA = new SortableAttributeRecord<>("area");
 
-    public static volatile Attribute<House> garage;
+    Attribute<House> garage = new AttributeRecord<>("garage");
 
-    public static volatile SortableAttribute<House> GARAGE_AREA;
+    SortableAttribute<House> GARAGE_AREA = new SortableAttributeRecord<>("garage.area");
 
-    public static volatile SortableAttribute<House> garage_door_height;
+    SortableAttribute<House> garage_door_height = new SortableAttributeRecord<>("garage.door.height");
 
-    public static volatile SortableAttribute<House> Garage_Door_Width;
+    SortableAttribute<House> Garage_Door_Width = new SortableAttributeRecord<>("garage.door.width");
 
-    public static volatile SortableAttribute<House> garage_type;
+    SortableAttribute<House> garage_type = new SortableAttributeRecord<>("garage.type");
 
-    public static volatile Attribute<House> kitchen;
+    Attribute<House> kitchen = new AttributeRecord<>("kitchen");
 
-    public static volatile SortableAttribute<House> kitchen_length;
+    SortableAttribute<House> kitchen_length = new SortableAttributeRecord<>("kitchen.length");
 
-    public static volatile SortableAttribute<House> kitchen_width;
+    SortableAttribute<House> kitchen_width = new SortableAttributeRecord<>("kitchen.width");
 
-    public static volatile SortableAttribute<House> LotSize;
+    SortableAttribute<House> LotSize = new SortableAttributeRecord<>("lotSize");
 
-    public static final String NUM_BEDROOMS = "numBedrooms";
+    String NUM_BEDROOMS = "numBedrooms";
 
-    public static volatile SortableAttribute<House> numBedrooms;
+    SortableAttribute<House> numBedrooms = new SortableAttributeRecord<>(NUM_BEDROOMS);
 
-    public static volatile TextAttribute<House> parcelid;
+    TextAttribute<House> parcelid = new TextAttributeRecord<>("parcelId");
 }

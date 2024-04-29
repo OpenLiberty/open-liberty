@@ -57,6 +57,7 @@ public class JakartaEE11Test extends FATServletClient {
         compatFeatures.remove("acmeCA-2.0");
 
         // remove noship features
+        compatFeatures.remove("data-1.1");
         compatFeatures.remove("jcacheContainer-1.1");
         compatFeatures.remove("netty-1.0");
         compatFeatures.remove("noShip-1.0");

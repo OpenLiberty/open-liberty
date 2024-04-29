@@ -115,6 +115,7 @@ public class EE11FeatureCompatibilityTest extends FATServletClient {
         // compatibleFeatures.addAll(FeatureUtilities.compatibleMpFeatures(EEVersion.EE11)); // add back when MP adds EE 11 support
 
         compatibleFeatures.addAll(JakartaEE11Action.EE11_FEATURE_SET);
+        compatibleFeatures.add("data-1.1"); // nonship feature temporarily compatible with EE 11
 
         // Value-add features which aren't compatible
         compatibleFeatures.remove("openid-2.0"); // stabilized

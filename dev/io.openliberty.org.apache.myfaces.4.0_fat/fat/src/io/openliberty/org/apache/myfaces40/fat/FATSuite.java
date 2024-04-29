@@ -17,6 +17,7 @@ import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.FatLogHandler;
@@ -47,6 +48,8 @@ import io.openliberty.org.apache.myfaces40.fat.tests.UIViewRootGetDoctypeTest;
 import io.openliberty.org.apache.myfaces40.fat.tests.WebSocketTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.bugfixes.MyFaces4628Test;
 
+import componenttest.containers.TestContainerSuite;
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 AcceptInputFileTest.class,
@@ -73,7 +76,7 @@ import io.openliberty.org.apache.myfaces40.fat.tests.bugfixes.MyFaces4628Test;
 
 })
 
-public class FATSuite {
+public class FATSuite  extends TestContainerSuite {
 
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17))
@@ -103,6 +106,14 @@ public class FATSuite {
             fos.write(xmlContent.getBytes());
         } catch (Exception e) {
             //ignore only using for debugging
+        }
+    }
+
+    public static DockerImageName getChromeImage() {
+        if (FATRunner.ARM_ARCHITECTURE) {
+            return DockerImageName.parse("seleniarm/standalone-chromium:4.8.3").asCompatibleSubstituteFor("selenium/standalone-chrome");
+        } else {
+            return DockerImageName.parse("selenium/standalone-chrome:4.8.3");
         }
     }
 

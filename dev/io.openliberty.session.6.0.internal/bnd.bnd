@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2022, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,9 +24,8 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
-    io.openliberty.session.impl*;provide:=true
-    
-Private-Package: io.openliberty.session60.internal.resources.*
+    io.openliberty.session.impl*;provide:=true, \
+    io.openliberty.session.resources;provide:=true
 	
 Import-Package: \
     com.ibm.ws.session.utils, \

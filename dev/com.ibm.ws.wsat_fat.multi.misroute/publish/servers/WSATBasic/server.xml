@@ -16,7 +16,11 @@
       recoveryGroup="client-group"
 	  recoverOnStartup="true"
 	  waitForRecovery="true"
+	  totalTranLifetimeTimeout="4m"
+	  clientInactivityTimeout="2m"
 	/>
+	
+	<wsAtomicTransaction asyncResponseTimeout="1m"/>
 
 	<include location="../fatTestPorts.xml" />
 

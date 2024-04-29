@@ -139,7 +139,7 @@ public class AsynchronousWorkTask extends RoutedTask implements AsynchronousWork
     /**
 	 * @see com.ibm.ws.sip.container.util.Queueable#getQueueIndex()
 	 */
-	public long getQueueIndex() {
+	public int getQueueIndex() {
 		if (_index < 0){
 			throw new RuntimeException("Dispatching error, transaction-user not found!");
 		}		
@@ -281,9 +281,9 @@ public class AsynchronousWorkTask extends RoutedTask implements AsynchronousWork
 				}
 				
 				//calculate the queue id of the async work
-				long asyncQueueId = this.getQueueIndex() % NativeMessageDispatchingHandler.s_dispatchers;
+				int asyncQueueId = this.getQueueIndex() % NativeMessageDispatchingHandler.s_dispatchers;
 				
-				if (asyncQueueId == currentQueueId.longValue()){
+				if (asyncQueueId == currentQueueId.intValue()){
 					//the async work should run on the same queue as the current thread, run it now
 					setForDispatching(false);
 					

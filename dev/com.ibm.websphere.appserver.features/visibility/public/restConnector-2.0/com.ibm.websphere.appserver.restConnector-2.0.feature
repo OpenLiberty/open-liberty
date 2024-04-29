@@ -16,7 +16,6 @@ Subsystem-Name: Admin REST Connector 2.0
  com.ibm.ws.filetransfer, \
  com.ibm.websphere.filetransfer, \
  com.ibm.ws.jmx.request, \
- com.ibm.json4j, \
  com.ibm.ws.rest.handler.config
 -jars=com.ibm.websphere.appserver.spi.restHandler; location:=dev/spi/ibm/, \
  com.ibm.websphere.appserver.api.restConnector; location:=dev/api/ibm/

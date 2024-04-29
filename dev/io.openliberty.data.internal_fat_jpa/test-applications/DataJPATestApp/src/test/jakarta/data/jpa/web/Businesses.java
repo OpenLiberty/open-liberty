@@ -26,13 +26,6 @@ import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 
-import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.comparison.GreaterThanEqual;
-import io.openliberty.data.repository.comparison.LessThanEqual;
-import io.openliberty.data.repository.comparison.StartsWith;
-import io.openliberty.data.repository.function.AbsoluteValue;
-import io.openliberty.data.repository.function.IgnoreCase;
-
 /**
  *
  */
@@ -57,7 +50,7 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     @OrderBy("location.address.zip")
     @OrderBy("houseNum")
     @OrderBy("id")
-    CursoredPage<Business> findByZipIn(Iterable<Integer> zipCodes, PageRequest<?> pagination);
+    CursoredPage<Business> findByZipIn(Iterable<Integer> zipCodes, PageRequest pagination);
 
     // embeddable 3 levels deep as result type
     @OrderBy("street")
@@ -74,10 +67,9 @@ public interface Businesses extends BasicRepository<Business, Integer> {
 
     @Find
     @OrderBy("name") // Business.name, not Business.Location.Address.Street.name
-    @Select("name")
-    List<String> onSouthSideOf(@By("locationAddressCity") String city,
-                               @By("locationAddressState") String state,
-                               @By("locationAddress.street_direction") @IgnoreCase @StartsWith String streetDirectionPrefix);
+    List<Business> onSouthSideOf(@By("locationAddressCity") String city,
+                                 @By("locationAddressState") String state,
+                                 @By("locationAddress.street_direction") String streetDirection);
 
     // Save with a different entity type does not conflict with the primary entity type from BasicRepository
     @Save
@@ -89,7 +81,6 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     @Query("UPDATE Business b SET b.location=?1, b.name=?2 WHERE b.id=?3")
     boolean updateWithJPQL(Location newLocation, String newName, long id);
 
-    @Find
-    List<Business> withLongitudeIgnoringSignWithin(@By("location.longitude") @AbsoluteValue @GreaterThanEqual float min,
-                                                   @By("location.longitude") @AbsoluteValue @LessThanEqual float max);
+    @Query("WHERE ABS(location.longitude) >= :min AND ABS(location.longitude) <= :max")
+    List<Business> withLongitudeIgnoringSignWithin(float min, float max);
 }

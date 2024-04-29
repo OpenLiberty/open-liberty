@@ -33,9 +33,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-import io.openliberty.data.repository.Count;
-import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Select;
 import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
@@ -404,13 +401,15 @@ public class QueryInfo {
     /**
      * Locate the entity information for the specified result class.
      *
-     * @param entityType  single result type of a repository method, which is hopefully an entity class.
-     * @param entityInfos map of entity name to already-completed future for the entity information.
+     * @param entityType              single result type of a repository method, which is hopefully an entity class.
+     * @param entityInfos             map of entity name to already-completed future for the entity information.
+     * @param primaryEntityInfoFuture future for the repository's primary entity type if it has one, otherwise null.
      * @return entity information.
      * @throws MappingException if the entity information is not found.
      */
     @Trivial
-    EntityInfo getEntityInfo(Class<?> entityType, Map<String, CompletableFuture<EntityInfo>> entityInfos) {
+    EntityInfo getEntityInfo(Class<?> entityType, Map<String, CompletableFuture<EntityInfo>> entityInfos,
+                             CompletableFuture<EntityInfo> primaryEntityInfoFuture) {
         if (entityType != null) {
             CompletableFuture<EntityInfo> failedFuture = null;
             for (CompletableFuture<EntityInfo> future : entityInfos.values())
@@ -424,10 +423,13 @@ public class QueryInfo {
             if (failedFuture != null)
                 failedFuture.join(); // cause error to be raised
         }
-        throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
-                                   " repository does not specify an entity class. To correct this, have the repository interface" +
-                                   " extend DataRepository or another built-in repository interface and supply the entity class" +
-                                   " as the first type variable."); // TODO NLS
+        if (primaryEntityInfoFuture == null)
+            throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
+                                       " repository does not specify an entity class. To correct this, have the repository interface" +
+                                       " extend DataRepository or another built-in repository interface and supply the entity class" +
+                                       " as the first type variable."); // TODO NLS
+        else
+            return primaryEntityInfoFuture.join();
     }
 
     /**
@@ -604,11 +606,13 @@ public class QueryInfo {
     /**
      * Initializes query information based on the Query annotation.
      *
-     * @param ql          Query.value() might be JPQL or JDQL
-     * @param multiType   the type of data structure that returns multiple results for this query. Otherwise null.
-     * @param entityInfos map of entity name to entity information.
+     * @param ql                      Query.value() might be JPQL or JDQL
+     * @param multiType               the type of data structure that returns multiple results for this query. Otherwise null.
+     * @param entityInfos             map of entity name to entity information.
+     * @param primaryEntityInfoFuture future for the repository's primary entity type if it has one, otherwise null.
      */
-    void initForQuery(String ql, Class<?> multiType, Map<String, CompletableFuture<EntityInfo>> entityInfos) {
+    void initForQuery(String ql, Class<?> multiType, Map<String, CompletableFuture<EntityInfo>> entityInfos,
+                      CompletableFuture<EntityInfo> primaryEntityInfoFuture) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         boolean isCursoredPage = CursoredPage.class.equals(multiType);
@@ -832,7 +836,7 @@ public class QueryInfo {
             }
 
             if (entityInfo == null)
-                entityInfo = getEntityInfo(getSingleResultType(), entityInfos);
+                entityInfo = getEntityInfo(getSingleResultType(), entityInfos, primaryEntityInfoFuture);
 
             String entityName = entityInfo.name;
 
@@ -1178,14 +1182,14 @@ public class QueryInfo {
      * @param orderBy array of OrderBy annotations if present, otherwise an empty array.
      * @param count   The Count annotation if present, otherwise null.
      * @param exists  The Exists annotation if present, otherwise null.
-     * @param select  The Select annotation if present, otherwise null.
+     * @param select  The Select annotation value if present, otherwise null.
      * @return Count, Delete, Exists, Find, Insert, Query, Save, or Update annotation if present. Otherwise null.
      * @throws UnsupportedOperationException if the combination of annotations is not valid.
      */
     @Trivial
     Annotation validateAnnotationCombinations(Delete delete, Insert insert, Update update, Save save,
                                               Find find, jakarta.data.repository.Query query, OrderBy[] orderBy,
-                                              Count count, Exists exists, Select select) {
+                                              Annotation count, Annotation exists, Annotation select) {
         int o = orderBy.length == 0 ? 0 : 1;
 
         // These can be paired with OrderBy:
