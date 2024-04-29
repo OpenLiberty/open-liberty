@@ -102,7 +102,6 @@ public class OidcIdentityStore implements IdentityStore {
                     return CredentialValidationResult.INVALID_RESULT;
                 }
             }
-            Tr.error(tc, "CREDENTIAL_VALIDATION_OMISSION", tokenResponse, client, tokenResponse.getAccessTokenString());
         }
         return CredentialValidationResult.INVALID_RESULT;
     }
@@ -237,7 +236,7 @@ public class OidcIdentityStore implements IdentityStore {
         String issuer = getIssuer(clientConfig, accessToken, idTokenClaims, userInfoClaims); //realm
         String caller = getCallerName(clientConfig, accessToken, idTokenClaims, userInfoClaims);
         if (caller == null) {
-            Tr.error(tc, "CREDENTIAL_VALIDATION_CALLER_MISSING");
+            Tr.error(tc, "CREDENTIAL_VALIDATION_CALLER_MISSING", getCallerNameClaim(clientConfig));
             return CredentialValidationResult.INVALID_RESULT;
         }
         Set<String> groups = getCallerGroups(clientConfig, accessToken, idTokenClaims, userInfoClaims);

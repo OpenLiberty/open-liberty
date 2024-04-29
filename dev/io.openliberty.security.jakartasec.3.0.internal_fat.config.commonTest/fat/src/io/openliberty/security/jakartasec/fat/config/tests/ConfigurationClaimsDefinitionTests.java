@@ -182,7 +182,7 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = get401Expectations();
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2509E_CALLER_MISSING, "Did not receive an error message stating that the credential could not be validated since the caller was missing."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2508E_CALLER_MISSING, "Did not receive an error message stating that the credential could not be validated since the caller was missing."));
 
         validationUtils.validateResult(response, expectations);
 
@@ -206,7 +206,7 @@ public class ConfigurationClaimsDefinitionTests extends CommonAnnotatedSecurityT
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
         Expectations expectations = get401Expectations();
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2509E_CALLER_MISSING, "Did not receive an error message stating that the credential could not be validated since the caller was missing."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2508E_CALLER_MISSING, "Did not receive an error message stating that the credential could not be validated since the caller was missing."));
 
         validationUtils.validateResult(response, expectations);
 

@@ -1012,7 +1012,7 @@ public class ConfigurationUserInfoTests extends CommonAnnotatedSecurityTests {
 
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(Constants.UNAUTHORIZED_STATUS));
-        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2509E_CALLER_MISSING, "Did not receive an error message stating that the credential could not be validated since the caller was missing."));
+        expectations.addExpectation(new ServerMessageExpectation(rpServer, MessageConstants.CWWKS2508E_CALLER_MISSING, "Did not receive an error message stating that the credential could not be validated since the caller was missing."));
 
         response = actions.doFormLogin(response, Constants.TESTUSER, Constants.TESTUSERPWD);
 
