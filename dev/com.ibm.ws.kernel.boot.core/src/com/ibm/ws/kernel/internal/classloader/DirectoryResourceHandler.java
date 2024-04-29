@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.jar.Manifest;
 
 /**
@@ -35,7 +37,8 @@ public class DirectoryResourceHandler implements ResourceHandler {
     }
 
     @Override
-    public void close() throws IOException {}
+    public void close() throws IOException {
+    }
 
     @Override
     public ResourceEntry getEntry(String name) {
@@ -71,6 +74,33 @@ public class DirectoryResourceHandler implements ResourceHandler {
             manifestLoaded = true;
         }
         return manifest;
+    }
+
+    @Override
+    public Set<String> getClassPackages() {
+        Set<String> packages = new HashSet<>();
+        StringBuilder sb = new StringBuilder();
+        getPackages(directory, packages, sb);
+        return packages;
+    }
+
+    private static void getPackages(File directory, Set<String> packages, StringBuilder sb) {
+        File[] files = directory.listFiles();
+        int builderLength = sb.length();
+        String packageName = null;
+        for (File file : files) {
+            if (file.isDirectory()) {
+                if (builderLength != 0) {
+                    sb.append('.');
+                }
+                sb.append(file.getName());
+                getPackages(file, packages, sb);
+                sb.setLength(builderLength);
+            } else if (packageName == null && file.getName().endsWith(".class")) {
+                packageName = sb.toString();
+                packages.add(packageName);
+            }
+        }
     }
 
     private static String getCanonicalPath(File file) {

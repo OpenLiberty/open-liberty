@@ -86,7 +86,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 -buildpath: \
 	io.openliberty.com.squareup.okhttp;version=latest,\
 	io.openliberty.com.squareup.okio-jvm;version=latest,\
-	io.openliberty.io.zipkin.zipkin2;version=latest,\
+	io.openliberty.io.zipkin.zipkin2.2.0;version=latest,\
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations-support;version='${alphaOpenTelemetryInstrumentationVersion}';strategy=exact,\
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations;version='${openTelemetryInstrumentationVersion}';strategy=exact,\
 	io.opentelemetry.instrumentation:opentelemetry-instrumentation-api;version='${openTelemetryInstrumentationVersion}';strategy=exact,\

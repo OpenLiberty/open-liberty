@@ -1,24 +1,24 @@
 <server>
-	<featureManager>
+  <featureManager>
+    <feature>cdi-1.2</feature>
     <feature>componentTest-1.0</feature>
-		<feature>cdi-1.2</feature>
-		<feature>jndi-1.0</feature>
-		<feature>jsp-2.3</feature>
-		<feature>localConnector-1.0</feature>
-		<feature>servlet-3.1</feature>
-		<feature>txtest-1.0</feature>
-		<feature>wsAtomicTransaction-1.2</feature>
-	</featureManager>
+    <feature>jndi-1.0</feature>
+    <feature>jsp-2.3</feature>
+    <feature>localConnector-1.0</feature>
+    <feature>servlet-3.1</feature>
+    <feature>txtest-1.0</feature>
+    <feature>wsAtomicTransaction-1.2</feature>
+  </featureManager>
 
-	<include location="../fatTestPorts.xml" />
+  <include location="../fatTestPorts.xml" />
 
   <transaction
     recoverOnStartup="true"
-    waitForRecovery="false"
+    waitForRecovery="true"
     heuristicRetryInterval="5"
   />
 
-	<wsAtomicTransaction asyncResponseTimeout="60000"/>
-	
+  <wsAtomicTransaction asyncResponseTimeout="2m"/>
+
   <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
 </server>

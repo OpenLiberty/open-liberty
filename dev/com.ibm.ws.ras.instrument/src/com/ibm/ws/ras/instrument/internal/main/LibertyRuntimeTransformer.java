@@ -240,8 +240,8 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
                 return null;
             }
         } else {
-            if ( classFileVersion > Opcodes.V22 ) {
-                return "Class version [ " + classFileVersion + " ] Maximum [ " + Opcodes.V22 + " ]";
+            if ( classFileVersion > ASMHelper.getMaximumJavaLevel() ) {
+                return "Class version [ " + classFileVersion + " ] Maximum [ " + ASMHelper.getMaximumJavaLevel() + " ]";
             } else {
                 return null;
             }

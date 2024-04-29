@@ -11,7 +11,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.0.16
+ * @version 1.0.17
  */
-@org.osgi.annotation.versioning.Version("1.0.16")
+@org.osgi.annotation.versioning.Version("1.0.17")
 package com.ibm.ws.sip.container.was.servlet31.converged;

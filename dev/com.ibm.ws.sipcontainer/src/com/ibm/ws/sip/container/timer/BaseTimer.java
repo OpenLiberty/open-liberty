@@ -100,7 +100,7 @@ public abstract class BaseTimer extends ReplicatableImpl implements Runnable, Qu
      * Holds queue index which is used for the invocation on the 
      * application thread.
      */
-    protected long m_queueIndex = 0;
+    protected int m_queueIndex = 0;
     
     /**
      * Used to schedule timer actions
@@ -132,7 +132,7 @@ public abstract class BaseTimer extends ReplicatableImpl implements Runnable, Qu
      * Set queue index for this timer
      * @param timerId
      */
-    public void setQueueIndex(long queueIndex) {
+    public void setQueueIndex(int queueIndex) {
     	m_queueIndex = queueIndex;
     }
       
@@ -141,12 +141,12 @@ public abstract class BaseTimer extends ReplicatableImpl implements Runnable, Qu
      * It allows the 
      * @return the appropriate queue index where this timer should be run.
      */
-    abstract protected long extractQueueIndex() ;
+    abstract protected int extractQueueIndex() ;
     
     /**
 	 *  @see com.ibm.ws.sip.container.util.Queueable#getQueueIndex()
 	 */
-	public long getQueueIndex() {
+	public int getQueueIndex() {
 		return m_queueIndex;
 	}
     

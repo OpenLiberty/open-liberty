@@ -24,6 +24,9 @@ Bundle-Description: Declares bean defining annotations for Jakarta Data; version
 
 WS-TraceGroup: data
 
+Export-Package: \
+  io.openliberty.data.internal.version.*
+
 Private-Package: \
   io.openliberty.data.internal.cdi.*,\
   io.openliberty.data.internal.resources.*

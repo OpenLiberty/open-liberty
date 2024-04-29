@@ -58,6 +58,8 @@ import com.ibm.ws.microprofile.metrics.impl.CounterImpl;
 import com.ibm.ws.microprofile.metrics.impl.ExponentiallyDecayingReservoir;
 import com.ibm.ws.microprofile.metrics.impl.MeterImpl;
 
+import io.openliberty.microprofile.metrics30.setup.config.MetricsConfigurationManager;
+
 /**
  * A registry of metric instances.
  */
@@ -193,6 +195,7 @@ public class MetricRegistry30Impl implements MetricRegistry {
     @Override
 
     public <T extends Metric> T register(Metadata metadata, T metric, Tag... tags) throws IllegalArgumentException {
+
         return register(metadata, metric, false, tags);
     }
 
@@ -300,6 +303,8 @@ public class MetricRegistry30Impl implements MetricRegistry {
                 remove(metricID);
             }
         }
+
+        MetricsConfigurationManager.getInstance().removeConfiguration(appName);
     }
 
     /**
@@ -897,14 +902,16 @@ public class MetricRegistry30Impl implements MetricRegistry {
         if (builder.isInstance(metric)) {
             return (T) metric;
         } else if (metric == null) { //otherwise register this new metric..
+
             try {
-                return register(metadata, builder.newMetric(), true, tags);
+                return register(metadata, builder.newMetric(metadata), true, tags);
             } catch (IllegalArgumentException e) {
 
                 validateMetricNameToSingleType(metadata.getName(), builder);
 
                 final Metric added = metricsMID.get(metricID);
                 if (builder.isInstance(added)) {
+
                     return (T) added;
                 }
             }
@@ -1042,8 +1049,12 @@ public class MetricRegistry30Impl implements MetricRegistry {
      */
     public interface MetricBuilder30<T extends Metric> {
         MetricBuilder30<Counter> COUNTERS = new MetricBuilder30<Counter>() {
-            @Override
             public Counter newMetric() {
+                return new CounterImpl();
+            }
+
+            @Override
+            public Counter newMetric(Metadata metadata) {
                 return new CounterImpl();
             }
 
@@ -1054,8 +1065,12 @@ public class MetricRegistry30Impl implements MetricRegistry {
         };
 
         MetricBuilder30<ConcurrentGauge> CONCURRENT_GAUGE = new MetricBuilder30<ConcurrentGauge>() {
-            @Override
             public ConcurrentGauge newMetric() {
+                return new ConcurrentGaugeImpl();
+            }
+
+            @Override
+            public ConcurrentGauge newMetric(Metadata metadata) {
                 return new ConcurrentGaugeImpl();
             }
 
@@ -1066,20 +1081,27 @@ public class MetricRegistry30Impl implements MetricRegistry {
         };
 
         MetricBuilder30<Histogram> HISTOGRAMS = new MetricBuilder30<Histogram>() {
+
             @Override
-            public Histogram newMetric() {
-                return new Histogram30Impl(new ExponentiallyDecayingReservoir());
+            public Histogram newMetric(Metadata metadata) {
+
+                return new Histogram30Impl(new ExponentiallyDecayingReservoir(), metadata);
             }
 
             @Override
             public boolean isInstance(Metric metric) {
                 return Histogram.class.isInstance(metric);
             }
+
         };
 
         MetricBuilder30<Meter> METERS = new MetricBuilder30<Meter>() {
-            @Override
             public Meter newMetric() {
+                return new MeterImpl();
+            }
+
+            @Override
+            public Meter newMetric(Metadata metadata) {
                 return new MeterImpl();
             }
 
@@ -1090,9 +1112,10 @@ public class MetricRegistry30Impl implements MetricRegistry {
         };
 
         MetricBuilder30<Timer> TIMERS = new MetricBuilder30<Timer>() {
+
             @Override
-            public Timer newMetric() {
-                return new Timer30Impl();
+            public Timer newMetric(Metadata metadata) {
+                return new Timer30Impl(metadata);
             }
 
             @Override
@@ -1102,8 +1125,13 @@ public class MetricRegistry30Impl implements MetricRegistry {
         };
 
         MetricBuilder30<SimpleTimer> SIMPLE_TIMER = new MetricBuilder30<SimpleTimer>() {
-            @Override
+
             public SimpleTimer newMetric() {
+                return new SimpleTimer30Impl();
+            }
+
+            @Override
+            public SimpleTimer newMetric(Metadata metadata) {
                 return new SimpleTimer30Impl();
             }
 
@@ -1113,7 +1141,7 @@ public class MetricRegistry30Impl implements MetricRegistry {
             }
         };
 
-        T newMetric();
+        T newMetric(Metadata metadata);
 
         boolean isInstance(Metric metric);
     }

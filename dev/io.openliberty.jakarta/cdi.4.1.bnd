@@ -40,7 +40,7 @@ Export-Package: \
 
 #these imports are copied from the manifest files of the original bundles
 Import-Package: \
- jakarta.el;version="5.0",\
+ jakarta.el;version="6.0",\
  jakarta.enterprise.context;version="[4.1,5)",\
  jakarta.enterprise.context.spi;version="[4.1,5)",\
  jakarta.enterprise.event;version="[4.1,5)",\
@@ -61,14 +61,14 @@ publish.wlp.jar.suffix: dev/api/spec
 
 -includeresource: \
    @${repo;jakarta.inject:jakarta.inject-api;2.0.1;EXACT}!/!(META-INF/maven/*|module-info.class),\
-   @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;4.1.0.RC1;EXACT}!/!(META-INF/maven/*|module-info.class),\
-   @${repo;jakarta.enterprise:jakarta.enterprise.cdi-el-api;4.1.0.RC1;EXACT}!/!(META-INF/maven/*|module-info.class),\
-   @${repo;jakarta.enterprise:jakarta.enterprise.lang-model;4.1.0.RC1;EXACT}!/!(META-INF/maven/*|module-info.class)
+   @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;4.1.0;EXACT}!/!(META-INF/maven/*|module-info.class),\
+   @${repo;jakarta.enterprise:jakarta.enterprise.cdi-el-api;4.1.0;EXACT}!/!(META-INF/maven/*|module-info.class),\
+   @${repo;jakarta.enterprise:jakarta.enterprise.lang-model;4.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
    dep1;groupId=jakarta.inject;artifactId=jakarta.inject-api;version=2.0.1;scope=runtime,\
-   dep2;groupId=jakarta.enterprise;artifactId=jakarta.enterprise.cdi-api;version=4.1.0.RC1;scope=runtime,\
-   dep3;groupId=jakarta.enterprise;artifactId=jakarta.enterprise.cdi-el-api;version=4.1.0.RC1;scope=runtime,\
-   dep4;groupId=jakarta.enterprise;artifactId=jakarta.enterprise.lang-model;version=4.1.0.RC1;scope=runtime
+   dep2;groupId=jakarta.enterprise;artifactId=jakarta.enterprise.cdi-api;version=4.1.0;scope=runtime,\
+   dep3;groupId=jakarta.enterprise;artifactId=jakarta.enterprise.cdi-el-api;version=4.1.0;scope=runtime,\
+   dep4;groupId=jakarta.enterprise;artifactId=jakarta.enterprise.lang-model;version=4.1.0;scope=runtime
 
 
