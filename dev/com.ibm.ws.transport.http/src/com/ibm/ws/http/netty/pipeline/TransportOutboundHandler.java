@@ -25,11 +25,6 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
-<<<<<<< Updated upstream
-import io.netty.handler.codec.http.HttpUtil;
-=======
-import io.openliberty.netty.internal.tcp.InactivityTimeoutHandler;
->>>>>>> Stashed changes
 
 /**
  *
@@ -74,8 +69,6 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
                         ctx.pipeline().remove("chunkLoggingHandler");
                         ctx.pipeline().remove("chunkWriteHandler");
                         ctx.pipeline().remove(ByteBufferCodec.class);
-//                        ctx.pipeline().remove(InactivityTimeoutHandler.class);
-                        ctx.pipeline().remove(InactivityTimeoutHandler.class);
 
                         if (ctx.pipeline().get(NettyServletUpgradeHandler.class) == null) {
 
