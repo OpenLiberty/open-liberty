@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016,2023 IBM Corporation and others.
+ * Copyright (c) 2016,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -90,27 +90,27 @@ public class ExtractedAppTests30 extends CommonWebServerTests {
         installDir = System.setProperty(PROPERTY_KEY_INSTALL_DIR, server.getInstallRoot());
 
         // make sure the usr/shared/resources folder exists
-        sharedResourcesDir = new RemoteFile(server.getFileFromLibertyInstallRoot(""), "usr/shared/resources");
+        sharedResourcesDir = server.getMachine().getFile(server.getFileFromLibertyInstallRoot(""), "usr/shared/resources");
         sharedResourcesDir.mkdirs();
         appsDir = server.getFileFromLibertyServerRoot("apps");
 
-        RemoteFile sourceApp = new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_30_APP_BASE);
-        RemoteFile thinApp = new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_30_APP_BASE_THIN);
+        RemoteFile sourceApp = server.getMachine().getFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_30_APP_BASE);
+        RemoteFile thinApp = server.getMachine().getFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_30_APP_BASE_THIN);
 
         List<String> cmd = new ArrayList<>();
         cmd.add("thin");
         cmd.add("--sourceAppPath=" + sourceApp.getAbsolutePath());
-        cmd.add("--targetLibCachePath=" + new RemoteFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE).getAbsolutePath());
+        cmd.add("--targetLibCachePath=" + server.getMachine().getFile(sharedResourcesDir, SPRING_LIB_INDEX_CACHE).getAbsolutePath());
         cmd.add("--targetThinAppPath=" + thinApp.getAbsolutePath());
         List<String> output = SpringBootUtilityScriptUtils.execute(null, cmd);
 
         Assert.assertTrue("Failed to thin the application",
                           SpringBootUtilityScriptUtils.findMatchingLine(output, "Thin application: .*\\." + SPRING_APP_TYPE));
 
-        RemoteFile baseExtracted = new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_30_APP_BASE_EXTRACTED);
+        RemoteFile baseExtracted = server.getMachine().getFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_30_APP_BASE_EXTRACTED);
         extract(sourceApp, baseExtracted);
-        extract(thinApp, new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_30_APP_BASE_THIN_EXTRACTED));
-        createLoose(baseExtracted, new RemoteFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_30_APP_BASE_LOOSE));
+        extract(thinApp, server.getMachine().getFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_30_APP_BASE_THIN_EXTRACTED));
+        createLoose(baseExtracted, server.getMachine().getFile(server.getFileFromLibertyServerRoot("/apps"), SPRING_BOOT_30_APP_BASE_LOOSE));
     }
 
     private static void createLoose(RemoteFile extractedApp, RemoteFile looseApp) throws FileNotFoundException {
@@ -185,7 +185,7 @@ public class ExtractedAppTests30 extends CommonWebServerTests {
             // note that stop server also deletes the shared and workarea library caches
             stopServer();
         } finally {
-            new RemoteFile(appsDir, SPRING_BOOT_30_APP_BASE_THIN).delete();
+            server.getMachine().getFile(appsDir, SPRING_BOOT_30_APP_BASE_THIN).delete();
             server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_BOOT_30_APP_BASE_EXTRACTED);
             server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_BOOT_30_APP_BASE_THIN_EXTRACTED);
             server.deleteDirectoryFromLibertyServerRoot("apps/" + SPRING_LIB_INDEX_CACHE);

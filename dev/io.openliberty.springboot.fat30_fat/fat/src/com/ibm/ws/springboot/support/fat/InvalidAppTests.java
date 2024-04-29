@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016,2023 IBM Corporation and others.
+ * Copyright (c) 2016,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.RemoteFile;
 
 import componenttest.annotation.MinimumJavaLevel;
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import junit.framework.Assert;
@@ -91,13 +90,13 @@ public class InvalidAppTests extends CommonWebServerTests {
 
         appsDir = server.getFileFromLibertyServerRoot("apps");
 
-        RemoteFile noManifest = new RemoteFile(appsDir, SPRING_BOOT_NO_MANIFEST);
+        RemoteFile noManifest = server.getMachine().getFile(appsDir, SPRING_BOOT_NO_MANIFEST);
         noManifest.mkdirs();
-        RemoteFile noStartClass = new RemoteFile(appsDir, SPRING_BOOT_NO_START_CLASS);
+        RemoteFile noStartClass = server.getMachine().getFile(appsDir, SPRING_BOOT_NO_START_CLASS);
         noStartClass.mkdirs();
-        RemoteFile noStartClassManifest = new RemoteFile(noStartClass, "META-INF");
+        RemoteFile noStartClassManifest = server.getMachine().getFile(noStartClass, "META-INF");
         noStartClassManifest.mkdirs();
-        noStartClassManifest = new RemoteFile(noStartClassManifest, "MANIFEST.MF");
+        noStartClassManifest = server.getMachine().getFile(noStartClassManifest, "MANIFEST.MF");
         try (PrintWriter pw = new PrintWriter(noStartClassManifest.getAbsolutePath())) {
             pw.println("Manifest-Version: 1.0");
             pw.println();

@@ -28,8 +28,8 @@ import org.junit.rules.RuleChain;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -109,7 +109,7 @@ public class AuditTest extends FATServletClient {
     }
 
     private void assertAuditLogsCount(int expectedAuditLogFilesCount) throws Exception {
-        RemoteFile logsDirectory = new RemoteFile(server.getMachine(), server.getLogsRoot());
+        RemoteFile logsDirectory = server.getMachine().getFile(server.getLogsRoot());
 
         RemoteFile[] logs = logsDirectory.list(false);
         int actualAuditLogFilesCount = 0;

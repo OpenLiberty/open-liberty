@@ -187,7 +187,7 @@ public class CommonTest {
             Machine machine = myServer.getMachine();
 
             Log.info(thisClass, "transformAppsInDefaultDirs", "Processing " + appDirName + " for serverName: " + myServer.getServerName());
-            RemoteFile appDir = new RemoteFile(machine, LibertyServerUtils.makeJavaCompatible(myServer.getServerRoot() + File.separatorChar + appDirName, machine));
+            RemoteFile appDir = machine.getFile(LibertyServerUtils.makeJavaCompatible(myServer.getServerRoot() + File.separatorChar + appDirName, machine));
 
             RemoteFile[] list = null;
             if (appDir.isDirectory()) {

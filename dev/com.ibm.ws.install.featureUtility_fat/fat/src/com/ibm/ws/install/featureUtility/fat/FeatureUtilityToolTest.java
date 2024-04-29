@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -189,7 +189,7 @@ public abstract class FeatureUtilityToolTest {
         OutputStream os = null;
         featureUtilityProps = new Properties();
         try {
-            RemoteFile rf = new RemoteFile(server.getMachine(), remoteFileName);
+            RemoteFile rf = server.getMachine().getFile(remoteFileName);
             os = rf.openForWriting(true);
             featureUtilityProps.setProperty(property, value);
             Log.info(c, "writeToProps", "Set the " + property + " to : " + value);
@@ -319,7 +319,7 @@ public abstract class FeatureUtilityToolTest {
         OutputStream os = null;
         featureUtilityProps = new Properties();
         try {
-            RemoteFile rf = new RemoteFile(server.getMachine(), remoteFileName);
+            RemoteFile rf = server.getMachine().getFile(remoteFileName);
             os = rf.openForWriting(false);
             Set<String> keyset = map.keySet();
             for (String key: keyset) {
@@ -340,15 +340,14 @@ public abstract class FeatureUtilityToolTest {
 
 
     protected static void replaceWlpProperties(String version) throws Exception {
-            RemoteFile rf = new RemoteFile(server.getMachine(), minifiedRoot+ "/lib/versions/openliberty.properties");
+            RemoteFile rf = server.getMachine().getFile(minifiedRoot+ "/lib/versions/openliberty.properties");
 	    try (OutputStream os = rf.openForWriting(false)) {
 		wlpVersionProps.setProperty("com.ibm.websphere.productVersion", version);
 		Log.info(c, "replaceWlpProperties", "Set the version to : " + version);
 		wlpVersionProps.store(os, null);
 	    }
 	    // replace cl properties version if it exits
-	    rf = new RemoteFile(server.getMachine(),
-		    minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
+	    rf = server.getMachine().getFile(minifiedRoot + "/lib/versions/WebSphereApplicationServer.properties");
 	    if (rf.exists()) {
 		Properties wlProps = new Properties();
 		try (InputStream is = rf.openForReading();) {
