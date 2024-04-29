@@ -469,7 +469,12 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
 
         this.ignoreFlush = false;
         if ((null != this.isc.getResponse()) && !this.isc.getResponse().isCommitted()) {
+            if(isc.getResponse().getStatusCode().getIntCode() == 302) {
+                System.out.println("Redirect found, dont commit? Does this work?");
+            }else {
+            
             this.isc.getResponse().setCommitted();
+            }
         } else {
             // response headers already committed (written)
             // or response has been freed on previous error

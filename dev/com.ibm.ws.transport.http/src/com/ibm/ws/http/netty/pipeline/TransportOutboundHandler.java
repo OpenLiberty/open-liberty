@@ -14,7 +14,6 @@ import java.util.Objects;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.NettyHttpConstants;
-import com.ibm.ws.http.netty.pipeline.outbound.HeaderHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 
 import io.netty.channel.ChannelFuture;
@@ -23,11 +22,14 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
+<<<<<<< Updated upstream
 import io.netty.handler.codec.http.HttpUtil;
+=======
+import io.openliberty.netty.internal.tcp.InactivityTimeoutHandler;
+>>>>>>> Stashed changes
 
 /**
  *
@@ -50,40 +52,12 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
         //TODO: only if first time running through here (persist needs to clear)
 
         if (msg instanceof HttpResponse) {
+
             HttpResponse response = (HttpResponse) msg;
-            HeaderHandler headerHandler = new HeaderHandler(config, response);
-            headerHandler.complianceCheck();
-
-            if (HttpUtil.isContentLengthSet(response)) {
-                if (HttpUtil.isContentLengthSet(response)) {
-                    MSP.log("Setting content length attribute");
-                    ctx.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(Long.valueOf(HttpUtil.getContentLength(response)));
-                }
-            }
-
-//            if (ctx.channel().hasAttr(NettyHttpConstants.ACCEPT_ENCODING)) {
-//                String acceptEncoding = ctx.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).get();
-//                ResponseCompressionHandler compressionHandler = new ResponseCompressionHandler(config, response, acceptEncoding);
-//                compressionHandler.process();
-//                if (compressionHandler.getEncoding() != null) {
-//                    MSP.log("setting compression attribute -> " + compressionHandler.getEncoding());
-//                    ctx.channel().attr(NettyHttpConstants.COMPRESSION_ENCODING).set(compressionHandler.getEncoding());
-//                }
-//            }
-
-            final boolean isSwitching = response.status() == HttpResponseStatus.SWITCHING_PROTOCOLS;
-
-            if (isSwitching && "websocket".equalsIgnoreCase(response.headers().get(HttpHeaderNames.UPGRADE))) {
-                ctx.channel().attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
-            }
 
             System.out.println("MSP PROTOCOL SET TO: " + ctx.channel().attr(NettyHttpConstants.PROTOCOL).get());
+            final boolean isSwitching = response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS);
 
-//            if (response.status() == HttpResponseStatus.SWITCHING_PROTOCOLS) {
-////
-//                isSwitching = true;
-//
-//            }
             ChannelFuture future = ctx.writeAndFlush(msg);
 
             future.addListener(new ChannelFutureListener() {
@@ -101,6 +75,7 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
                         ctx.pipeline().remove("chunkWriteHandler");
                         ctx.pipeline().remove(ByteBufferCodec.class);
 //                        ctx.pipeline().remove(InactivityTimeoutHandler.class);
+                        ctx.pipeline().remove(InactivityTimeoutHandler.class);
 
                         if (ctx.pipeline().get(NettyServletUpgradeHandler.class) == null) {
 
@@ -115,34 +90,9 @@ public class TransportOutboundHandler extends ChannelOutboundHandlerAdapter {
 
         else {
 
-//            if (msg instanceof ByteBuf) {
-//                // Optionally manipulate the data
-//                ByteBuf data = (ByteBuf) msg;
-//                // Proceed with writing
-//                super.write(ctx, data, promise);
-//            } else {
-//                // Forward to the next handler if not a ByteBuf
-//                super.write(ctx, msg, promise);
-//
-//            }
-
             MSP.log("writeAndFlush for message: " + msg.toString());
             super.write(ctx, msg, promise);
-            //ctx.writeAndFlush(ReferenceCountUtil.retain(msg));
         }
     }
-
-//    @Override
-//    public void close(ChannelHandlerContext ctx, ChannelPromise promise) throws Exception {
-//        // Log or dump caller information before closing
-//        MSP.log("Intercepting close");
-//        Thread.dumpStack();
-//        Exception callerInfo = new Exception("Closing channel triggered by:");
-//        callerInfo.printStackTrace();
-//        promise.setFailure(new IllegalStateException("Channel close is prevented"));
-//
-//        // Proceed with the actual close operation
-//        // super.close(ctx, promise);
-//    }
 
 }

@@ -747,6 +747,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     public void setStatusCode(int code) {
         MSP.log("Setting status: " + code);
         this.nettyResponse.setStatus(HttpResponseStatus.valueOf(code));
+ 
 
     }
 

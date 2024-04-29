@@ -25,6 +25,7 @@ import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.debug.DebugHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
@@ -159,6 +160,9 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         channel.attr(NettyHttpConstants.IS_OUTBOUND_KEY).set(false);
         channel.attr(NettyHttpConstants.ENDPOINT_PID).set(chain.getEndpointPID());
+
+        //TODO:Uncomment for debug
+        //pipeline.addLast(new DebugHandler());
 
         if (chain.isHttps()) {
             if (chain.isHttp2Enabled()) { // h2 setup starts here
