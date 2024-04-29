@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -122,25 +122,24 @@ public class ExceptionsSubresourcesTest {
         StringEntity entity = new StringEntity("<comment><id>10000</id><author>Anonymous</author><message>Hi there</message></comment>");
         entity.setContentType("text/xml");
         postMethod.setEntity(entity);
-        HttpResponse resp;
-
+        HttpResponse postResponse, getResponse;
         try {
-            resp = client.execute(postMethod);
-            assertEquals(201, resp.getStatusLine().getStatusCode());
+            postResponse = client.execute(postMethod);
+            assertEquals(201, postResponse.getStatusLine().getStatusCode());
         } finally {
             // Do this so that connection for GET below doesn't fail
             client.getConnectionManager().shutdown();
             client = new DefaultHttpClient();
         }
 
-        String postURILocation = resp.getFirstHeader("Location").getValue();
+        String postURILocation = postResponse.getFirstHeader("Location").getValue();
 
         HttpGet getMethod = new HttpGet(postURILocation);
 
-        client.execute(getMethod);
-        assertEquals(201, resp.getStatusLine().getStatusCode());
+        getResponse = client.execute(getMethod);
+        assertEquals(200, getResponse.getStatusLine().getStatusCode());
 
-        Comment c = (Comment) JAXBContext.newInstance(Comment.class.getPackage().getName()).createUnmarshaller().unmarshal(resp.getEntity().getContent());
+        Comment c = (Comment) JAXBContext.newInstance(Comment.class.getPackage().getName()).createUnmarshaller().unmarshal(getResponse.getEntity().getContent());
         assertEquals("Anonymous", c.getAuthor());
         assertEquals(10000, c.getId().intValue());
         assertEquals("Hi there", c.getMessage());
