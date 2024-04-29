@@ -12,10 +12,10 @@
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
 
-    <OCD id="com.ibm.ws.jaxws.clientConfig.metatype" description="%webserviceClient.desc" name="%webserviceClient.name" ibm:alias="webServiceClient" ibm:beta="true" >
+    <OCD id="com.ibm.ws.jaxws.clientConfig.metatype" description="%webserviceClient.desc" name="%webserviceClient" ibm:alias="webServiceClient" ibm:beta="true" >
          <AD id="serviceName" name="%serviceName" description="%serviceName.desc" required="false" type="String" />
-         <AD id="ignoreUnexpectedElements" name="%ignoreUnexpectedElements" description="%ignoreUnexpectedElements.desc" required="false" type="boolean" default="false" />
-         <AD id="enableSchemaValidation" name="%enableSchemaValidation" description="%enableSchemaValidation.desc" required="false" type="boolean" default="true" />
+         <AD id="ignoreUnexpectedElements" name="%ignoreUnexpectedElements" description="%ignoreUnexpectedElements.desc" required="false" type="Boolean" default="false" />
+         <AD id="enableSchemaValidation" name="%enableSchemaValidation" description="%enableSchemaValidation.desc" required="false" type="Boolean" default="true" />
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.jaxws.clientConfig">
