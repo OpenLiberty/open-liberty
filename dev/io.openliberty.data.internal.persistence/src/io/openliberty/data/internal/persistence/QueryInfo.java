@@ -1182,20 +1182,18 @@ public class QueryInfo {
      * @param orderBy array of OrderBy annotations if present, otherwise an empty array.
      * @param count   The Count annotation if present, otherwise null.
      * @param exists  The Exists annotation if present, otherwise null.
-     * @param select  The Select annotation value if present, otherwise null.
      * @return Count, Delete, Exists, Find, Insert, Query, Save, or Update annotation if present. Otherwise null.
      * @throws UnsupportedOperationException if the combination of annotations is not valid.
      */
     @Trivial
     Annotation validateAnnotationCombinations(Delete delete, Insert insert, Update update, Save save,
                                               Find find, jakarta.data.repository.Query query, OrderBy[] orderBy,
-                                              Annotation count, Annotation exists, Annotation select) {
+                                              Annotation count, Annotation exists) {
         int o = orderBy.length == 0 ? 0 : 1;
 
         // These can be paired with OrderBy:
         int f = find == null ? 0 : 1;
         int q = query == null ? 0 : 1;
-        int s = select == null ? 0 : 1;
 
         // These cannot be paired with OrderBy or with each other:
         int ius = (insert == null ? 0 : 1) +
@@ -1209,12 +1207,12 @@ public class QueryInfo {
 
         if (iusdce + f > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists, Find)
             || iusdce + o > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists, OrderBy)
-            || iusdce + q + s > 1) { // one of (Insert, Update, Save, Delete, Count, Exists) with Query or Select, or both Query and Select
+            || iusdce + q > 1) { // one of (Insert, Update, Save, Delete, Count, Exists) with Query
 
             // Invalid combination of multiple annotations
 
             List<String> annoClassNames = new ArrayList<String>();
-            for (Annotation anno : Arrays.asList(count, delete, exists, find, insert, query, save, select, update))
+            for (Annotation anno : Arrays.asList(count, delete, exists, find, insert, query, save, update))
                 if (anno != null)
                     annoClassNames.add(anno.annotationType().getName());
             if (orderBy.length > 0)

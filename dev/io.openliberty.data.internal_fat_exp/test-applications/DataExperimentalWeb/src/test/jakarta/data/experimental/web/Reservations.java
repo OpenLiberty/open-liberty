@@ -49,6 +49,7 @@ import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
+import io.openliberty.data.repository.Or;
 import io.openliberty.data.repository.Select;
 import io.openliberty.data.repository.comparison.GreaterThanEqual;
 import io.openliberty.data.repository.comparison.In;
@@ -130,15 +131,25 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     Stream<Reservation> findByStopOrStart(OffsetDateTime stop, OffsetDateTime start);
 
+    @Find
     @Select("location")
-    Stream<String> findByStopOrStartOrStart(OffsetDateTime stop, OffsetDateTime start1, OffsetDateTime start2);
+    Stream<String> findByStopOrStartAtAnyOf(OffsetDateTime stop,
+                                            @Or @By("start") OffsetDateTime start1,
+                                            @Or @By("start") OffsetDateTime start2);
 
+    @Find
     @Select("meetingID")
-    LongStream findByStopOrStartOrStartOrStart(OffsetDateTime stop, OffsetDateTime start1, OffsetDateTime start2, OffsetDateTime start3);
+    LongStream findByStopOrStartAtAnyOf(OffsetDateTime stop,
+                                        @Or @By("start") OffsetDateTime start1,
+                                        @Or @By("start") OffsetDateTime start2,
+                                        @Or @By("start") OffsetDateTime start3);
 
     // Use a stream of record as the return type
+    @Find
     @Select({ "start", "stop" })
-    Stream<ReservedTimeSlot> findByStopOrStopOrStop(OffsetDateTime stop1, OffsetDateTime stop2, OffsetDateTime stop3);
+    Stream<ReservedTimeSlot> findByStoppingAtAnyOf(@By("stop") OffsetDateTime stop1,
+                                                   @Or @By("stop") OffsetDateTime stop2,
+                                                   @Or @By("stop") OffsetDateTime stop3);
 
     Page<Reservation> findByHostStartsWith(String hostPrefix, PageRequest pagination, Sort<Reservation> sort);
 
@@ -152,8 +163,12 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     List<Long> findMeetingIdByStopWithSecond(int second);
 
     // Use a record as the return type
+    @Find
     @Select({ "start", "stop" })
-    ReservedTimeSlot[] findTimeSlotByLocationAndStartBetweenOrderByStart(String location, OffsetDateTime startAfter, OffsetDateTime startBefore);
+    @OrderBy("start")
+    ReservedTimeSlot[] findTimeSlotWithin(String location,
+                                          @By("start") @GreaterThanEqual OffsetDateTime startAfter,
+                                          @By("start") @LessThanEqual OffsetDateTime startBefore);
 
     ArrayDeque<Reservation> findByLocationStartsWith(String locationPrefix);
 
