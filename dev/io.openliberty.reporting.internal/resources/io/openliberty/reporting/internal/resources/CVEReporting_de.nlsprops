@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF CVE Reporting
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKF1700 - CWWKF1799
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.reporting.internal: CWWKF1700 - CWWKF1799
+
+CWWKF1700.reporting.is.enabled=CWWKF1700I: Die \u00dcberpr\u00fcfung auf Sicherheitsl\u00fccken ist aktiviert. Die Informationen zu dieser Liberty -Laufzeit werden anhand bekannter Schwachstellen analysiert.
+CWWKF1700.reporting.is.enabled.explanation= Die \u00dcberpr\u00fcfung auf Sicherheitsl\u00fccken ist derzeit aktiviert.
+CWWKF1700.reporting.is.enabled.useraction=Um die \u00dcberpr\u00fcfung auf Sicherheitsl\u00fccken zu inaktivieren, geben Sie <cveReporting enabled="false" /> in der Datei server.xml an.
+
+CWWKF1701.reporting.is.disabled=CWWKF1701I: Die \u00dcberpr\u00fcfung auf Sicherheitsl\u00fccken ist inaktiviert.
+CWWKF1701.reporting.is.disabled.explanation=Die \u00dcberpr\u00fcfung auf Sicherheitsl\u00fccken muss f\u00fcr die Ausf\u00fchrung aktiviert sein.
+CWWKF1701.reporting.is.disabled.useraction=Um die \u00dcberpr\u00fcfung auf Sicherheitsl\u00fccken zu aktivieren, geben Sie <cveReporting enabled="true" /> in der Datei server.xml an.
+
+more.information.message=Weitere Informationen finden Sie unter {0} .
+
+CWWKF1702.cve.found=CWWKF1702W: \u00dcberpr\u00fcfen Sie anhand einer Bewertung von {0}die folgenden Sicherheitsbulletins: {1}
+CWWKF1702.cve.found.explanation=Es wurden Sicherheitsl\u00fccken gefunden.
+CWWKF1702.cve.found.useraction=\u00dcberpr\u00fcfen Sie die CVEs in der Nachricht und beheben Sie die Sicherheitsl\u00fccken.
+
+CWWKF1703.cve.not.found=CWWKF1703I: Basierend auf der Analyse der Laufzeit wurden keine Sicherheitsl\u00fccken gefunden, die eine weitere Analyse erfordern.
+CWWKF1703.cve.not.found.explanation=Derzeit wurden keine Sicherheitsl\u00fccken gefunden.
+CWWKF1703.cve.not.found.useraction=Keine.
+
+CWWKF1704.incorrect.url=CWWKF1704W: Die angegebene URL ist falsch und es kann keine Verbindung hergestellt werden: {0}
+CWWKF1704.incorrect.url.explanation=F\u00fcr die angegebene URL kann keine Verbindung hergestellt werden.
+CWWKF1704.incorrect.url.useraction=Stellen Sie sicher, dass die URL korrekt ist.
+
+CWWKF1705.failed.response=CWWKF1705W: Relevante CVE-Informationen k\u00f6nnen aufgrund eines Kommunikationsfehlers mit dem CVE-Berichtsservice nicht abgerufen werden.
+CWWKF1705.failed.response.explanation=Der Service kann keine Antwort bereitstellen.
+CWWKF1705.failed.response.useraction=Beheben Sie das Kommunikationsproblem und versuchen Sie es erneut.
+
+CWWKF1706.issue.parsing=CWWKF1706W: Problem beim Parsing von Produktinformationen.
+CWWKF1706.issue.parsing.explanation=Der Service kann die Produktinformationen nicht erfolgreich analysieren.
+CWWKF1706.issue.parsing.useraction=Beheben Sie das Kommunikationsproblem und versuchen Sie es erneut.

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -78,6 +78,9 @@ public class ApacheDSandKDC {
     private static final Class<?> c = ApacheDSandKDC.class;
 
     protected static boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
+
+    protected static boolean IS_BEING_USED = false; //Set to false when using testContainers.
+    // The FATSuite can be reconfigured to run using the ApacheDSAndKDC and change this boolean back to true.
 
     public static String BASE_DN = LdapKerberosUtils.BASE_DN; // default, override in extending class
 
@@ -731,7 +734,7 @@ public class ApacheDSandKDC {
 
         String file = keyTabTemp.getAbsolutePath();
 
-        Log.info(c, methodName, "Created keytab: " + keytabFile);
+        Log.info(c, methodName, "Created keytab: " + file);
         Log.info(c, methodName, "Keytab actual contents: " + FileUtils.readFile(file));
         return file;
     }

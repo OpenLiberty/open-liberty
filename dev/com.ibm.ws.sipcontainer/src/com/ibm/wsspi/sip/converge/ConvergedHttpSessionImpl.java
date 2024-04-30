@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -199,7 +199,7 @@ public class ConvergedHttpSessionImpl extends HttpSessionImpl implements Converg
             	c_logger.traceEntry(this,"encodeURL", "encoding url with relative path = " + relativePath +" and scheme = " + scheme);
             }
             String contextPath = getServletContext().getContextPath();
-            ConvergedHttpSessionContextImpl sessCtx = (ConvergedHttpSessionContextImpl)this.getSessCtx();
+            IConvergedHttpSessionContext sessCtx = (IConvergedHttpSessionContext)this.getSessCtx();
             String fullyQualifiedUrl = sessCtx.getSipBaseUrlForEncoding(contextPath, relativePath, scheme);
             if (c_logger.isTraceEntryExitEnabled()) {
             	c_logger.traceExit(this, "encodeURL", "going to encode fully qualified url = " + fullyQualifiedUrl);

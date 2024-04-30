@@ -48,7 +48,9 @@ instrument.classesExcludes: io/openliberty/jcache/internal/resources/*.class
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.serialization;version=latest,\
-	com.ibm.ws.kernel.boot.common;version=latest
+	com.ibm.ws.kernel.boot.common;version=latest,\
+	com.ibm.ws.runtime.update;version=latest,\
+	com.ibm.ws.threading;version=latest
 	
 	
 -testpath: \

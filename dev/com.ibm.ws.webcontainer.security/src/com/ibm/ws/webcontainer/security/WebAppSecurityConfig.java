@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security;
 
@@ -161,4 +158,7 @@ public interface WebAppSecurityConfig {
      * Returns the value of useContextRootForSSOCookiePath
      */
     boolean isUseContextRootForSSOCookiePath();
+
+    long postParamMaxRequestBodySize();
+
 }

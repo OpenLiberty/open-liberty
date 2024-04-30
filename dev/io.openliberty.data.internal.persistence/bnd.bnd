@@ -33,6 +33,7 @@ DynamicImport-Package: \
 Import-Package: \
   !*.internal.*, \
   !com.ibm.ws.beanvalidation.service, \
+  io.openliberty.data.internal.version, \
   !jakarta.validation, \
   !jakarta.validation.executable, \
   !jakarta.validation.metadata, \
@@ -63,13 +64,13 @@ instrument.classesExcludes: io/openliberty/data/internal/persistence/resources/*
   com.ibm.ws.beanvalidation.jakarta;version=latest,\
   com.ibm.ws.cdi.interfaces.jakarta;version=latest, \
   com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.kernel.boot.common;version=latest,\
   com.ibm.ws.org.objectweb.asm;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.persistence.jakarta;version=latest,\
   com.ibm.ws.resource;version=latest,\
   com.ibm.ws.threading,\
   com.ibm.ws.tx.embeddable.jakarta;version=latest,\
-  io.openliberty.data,\
   io.openliberty.data.internal,\
   io.openliberty.jakarta.annotation.2.1,\
   io.openliberty.jakarta.cdi.4.0,\

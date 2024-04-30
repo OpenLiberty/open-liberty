@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF CVE Reporting
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKF1700 - CWWKF1799
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.reporting.internal: CWWKF1700 - CWWKF1799
+
+CWWKF1700.reporting.is.enabled=CWWKF1700I: \ubcf4\uc548 \ucde8\uc57d\uc131\uc5d0 \ub300\ud55c \uac80\uc0ac\uac00 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ub418\uc5b4 \uc788\uc2b5\ub2c8\ub2e4. \uc774 Liberty \ub7f0\ud0c0\uc784\uc5d0 \ub300\ud55c \uc815\ubcf4\ub294 \uc54c\ub824\uc9c4 \ucde8\uc57d\uc131\uc5d0 \ub300\ud574 \ubd84\uc11d\ub429\ub2c8\ub2e4.
+CWWKF1700.reporting.is.enabled.explanation= \ubcf4\uc548 \ucde8\uc57d\uc131\uc5d0 \ub300\ud55c \uac80\uc0ac\uac00 \ud604\uc7ac \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ub418\uc5b4 \uc788\uc2b5\ub2c8\ub2e4.
+CWWKF1700.reporting.is.enabled.useraction=\ubcf4\uc548 \ucde8\uc57d\uc131 \uac80\uc0ac\ub97c \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc73c\ub824\uba74 server.xml \ud30c\uc77c\uc5d0\uc11c <cveReporting enabled="false" /> \ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+CWWKF1701.reporting.is.disabled=CWWKF1701I: \ubcf4\uc548 \ucde8\uc57d\uc131 \uac80\uc0ac\ub97c \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+CWWKF1701.reporting.is.disabled.explanation=\ubcf4\uc548 \ucde8\uc57d\uc131 \uac80\uc0ac\ub97c \uc2e4\ud589\ud558\ub824\uba74 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ud574\uc57c \ud569\ub2c8\ub2e4.
+CWWKF1701.reporting.is.disabled.useraction=\ubcf4\uc548 \ucde8\uc57d\uc131 \uac80\uc0ac\ub97c \uc0ac\uc6a9\ud558\ub824\uba74 server.xml \ud30c\uc77c\uc5d0\uc11c <cveReporting enabled="true" /> \ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+more.information.message=\uc790\uc138\ud55c \uc815\ubcf4\ub294 {0} \uc744 (\ub97c) \uac80\ud1a0\ud558\uc2ed\uc2dc\uc624.
+
+CWWKF1702.cve.found=CWWKF1702W: {0}\uc758 \ud3c9\uac00\uc5d0 \ub530\ub77c \ub2e4\uc74c \ubcf4\uc548 \uac8c\uc2dc\ud310\uc744 \uac80\ud1a0\ud558\uc2ed\uc2dc\uc624. {1}
+CWWKF1702.cve.found.explanation=\ubcf4\uc548 \ucde8\uc57d\uc131\uc774 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+CWWKF1702.cve.found.useraction=\uba54\uc2dc\uc9c0\uc5d0\uc11c CVE\ub97c \uac80\ud1a0\ud558\uace0 \ubcf4\uc548 \ucde8\uc57d\uc131\uc744 \ud574\uacb0\ud558\uc2ed\uc2dc\uc624.
+
+CWWKF1703.cve.not.found=CWWKF1703I: \ub7f0\ud0c0\uc784 \ubd84\uc11d\uc744 \uae30\ubc18\uc73c\ub85c \ucd94\uac00 \ubd84\uc11d\uc774 \ud544\uc694\ud55c \ubcf4\uc548 \ucde8\uc57d\uc810\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWWKF1703.cve.not.found.explanation=\ud604\uc7ac \ubcf4\uc548 \ucde8\uc57d\uc131\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWWKF1703.cve.not.found.useraction=\uc5c6\uc74c.
+
+CWWKF1704.incorrect.url=CWWKF1704W: \uc9c0\uc815\ub41c URL\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc73c\uba70 \uc5f0\uacb0\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {0}
+CWWKF1704.incorrect.url.explanation=\uc81c\uacf5\ub41c URL\uc5d0 \ub300\ud55c \uc5f0\uacb0\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWWKF1704.incorrect.url.useraction=URL\uc774 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+CWWKF1705.failed.response=CWWKF1705W: CVE\ubcf4\uace0 \uc11c\ube44\uc2a4\uc640\uc758 \ud1b5\uc2e0 \ubb38\uc81c\ub85c \uc778\ud574 \uad00\ub828 CVE \uc815\ubcf4\ub97c \uac80\uc0c9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWWKF1705.failed.response.explanation=\uc11c\ube44\uc2a4\uac00 \uc751\ub2f5\uc744 \uc81c\uacf5\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWWKF1705.failed.response.useraction=\ud1b5\uc2e0 \ubb38\uc81c\ub97c \uc218\uc815\ud558\uace0 \ub2e4\uc2dc \uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624.
+
+CWWKF1706.issue.parsing=CWWKF1706W: \uc81c\ud488 \uc815\ubcf4\ub97c \uad6c\ubb38 \ubd84\uc11d\ud560 \ub54c \ubb38\uc81c\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+CWWKF1706.issue.parsing.explanation=\uc11c\ube44\uc2a4\uac00 \uc81c\ud488 \uc815\ubcf4\ub97c \uad6c\ubb38 \ubd84\uc11d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWWKF1706.issue.parsing.useraction=\ud1b5\uc2e0 \ubb38\uc81c\ub97c \uc218\uc815\ud558\uace0 \ub2e4\uc2dc \uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624.

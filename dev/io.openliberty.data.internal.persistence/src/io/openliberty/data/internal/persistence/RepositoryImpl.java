@@ -69,33 +69,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
-import io.openliberty.data.repository.Count;
-import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Or;
-import io.openliberty.data.repository.Select;
-import io.openliberty.data.repository.Select.Aggregate;
-import io.openliberty.data.repository.comparison.Contains;
-import io.openliberty.data.repository.comparison.EndsWith;
-import io.openliberty.data.repository.comparison.GreaterThan;
-import io.openliberty.data.repository.comparison.GreaterThanEqual;
-import io.openliberty.data.repository.comparison.In;
-import io.openliberty.data.repository.comparison.LessThan;
-import io.openliberty.data.repository.comparison.LessThanEqual;
-import io.openliberty.data.repository.comparison.Like;
-import io.openliberty.data.repository.comparison.StartsWith;
-import io.openliberty.data.repository.function.AbsoluteValue;
-import io.openliberty.data.repository.function.CharCount;
-import io.openliberty.data.repository.function.ElementCount;
-import io.openliberty.data.repository.function.Extract;
-import io.openliberty.data.repository.function.IgnoreCase;
-import io.openliberty.data.repository.function.Not;
-import io.openliberty.data.repository.function.Rounded;
-import io.openliberty.data.repository.function.Trimmed;
-import io.openliberty.data.repository.update.Add;
-import io.openliberty.data.repository.update.Assign;
-import io.openliberty.data.repository.update.Divide;
-import io.openliberty.data.repository.update.Multiply;
-import io.openliberty.data.repository.update.SubtractFrom;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -130,30 +103,9 @@ import jakarta.transaction.Status;
 public class RepositoryImpl<R> implements InvocationHandler {
     private static final TraceComponent tc = Tr.register(RepositoryImpl.class);
 
-    private static final String COMPARISON_ANNO_PACKAGE = In.class.getPackageName();
-    private static final String FUNCTION_ANNO_PACKAGE = Not.class.getPackageName();
-    private static final String UPDATE_ANNO_PACKAGE = Add.class.getPackageName();
-
-    private static final Map<String, String> FUNCTION_CALLS = new HashMap<>();
-    static {
-        FUNCTION_CALLS.put(AbsoluteValue.class.getSimpleName(), "ABS(");
-        FUNCTION_CALLS.put(CharCount.class.getSimpleName(), "LENGTH(");
-        FUNCTION_CALLS.put(ElementCount.class.getSimpleName(), "SIZE(");
-        FUNCTION_CALLS.put(IgnoreCase.class.getSimpleName(), "LOWER(");
-        FUNCTION_CALLS.put(Not.class.getSimpleName(), "NOT(");
-        FUNCTION_CALLS.put(Rounded.Direction.DOWN.name(), "FLOOR(");
-        FUNCTION_CALLS.put(Rounded.Direction.NEAREST.name(), "ROUND(");
-        FUNCTION_CALLS.put(Rounded.Direction.UP.name(), "CEILING(");
-        FUNCTION_CALLS.put(Trimmed.class.getSimpleName(), "TRIM(");
-        FUNCTION_CALLS.put(Extract.Field.DAY.name(), "EXTRACT (DAY FROM ");
-        FUNCTION_CALLS.put(Extract.Field.HOUR.name(), "EXTRACT (HOUR FROM ");
-        FUNCTION_CALLS.put(Extract.Field.MINUTE.name(), "EXTRACT (MINUTE FROM ");
-        FUNCTION_CALLS.put(Extract.Field.MONTH.name(), "EXTRACT (MONTH FROM ");
-        FUNCTION_CALLS.put(Extract.Field.QUARTER.name(), "EXTRACT (QUARTER FROM ");
-        FUNCTION_CALLS.put(Extract.Field.SECOND.name(), "EXTRACT (SECOND FROM ");
-        FUNCTION_CALLS.put(Extract.Field.WEEK.name(), "EXTRACT (WEEK FROM ");
-        FUNCTION_CALLS.put(Extract.Field.YEAR.name(), "EXTRACT (YEAR FROM ");
-    }
+    private static final String COMPARISON_ANNO_PACKAGE = "io.openliberty.data.repository.comparison";
+    private static final String FUNCTION_ANNO_PACKAGE = "io.openliberty.data.repository.function";
+    private static final String UPDATE_ANNO_PACKAGE = "io.openliberty.data.repository.update";
 
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = new HashSet<>(Arrays.asList //
     (Limit.class, Order.class, PageRequest.class, Sort.class, Sort[].class));
@@ -295,8 +247,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * Invoked when the bean for the repository is disposed.
      */
     public void beanDisposed() {
-        // TODO re-enable when using a single bean for the repository rather than sharing the repository across multiple beans
-        // isDisposed.set(true);
+        isDisposed.set(true);
     }
 
     /**
@@ -354,9 +305,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
             OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
 
             // experimental annotation types
-            Count count = method.getAnnotation(Count.class);
-            Exists exists = method.getAnnotation(Exists.class);
-            Select select = method.getAnnotation(Select.class);
+            Annotation count = provider.compat.getCountAnnotation(method);
+            Annotation exists = provider.compat.getExistsAnnotation(method);
+            Annotation select = provider.compat.getSelectAnnotation(method);
 
             Annotation methodTypeAnno = queryInfo.validateAnnotationCombinations(delete, insert, update, save,
                                                                                  find, query, orderBy,
@@ -1192,7 +1143,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     private int generateConditionsForIdClass(QueryInfo queryInfo, ParamInfo paramInfo, int qp, StringBuilder q) {
 
-        if (paramInfo.comparisonAnno != null && !(paramInfo.comparisonAnno instanceof Assign))
+        if (paramInfo.comparisonAnno != null) // TODO allow Equals if it is ever added
             throw new MappingException("The " + paramInfo.comparisonAnno.annotationType().getSimpleName() +
                                        " annotation cannot be applied to a parameter of the " +
                                        queryInfo.method.getName() + " method of the " + repositoryInterface.getName() +
@@ -1202,9 +1153,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (paramInfo.functionAnnos != null)
             for (ListIterator<Annotation> fn = paramInfo.functionAnnos.listIterator(paramInfo.functionAnnos.size()); fn.hasPrevious();) {
                 Annotation anno = fn.previous();
-                if (anno instanceof IgnoreCase)
+                String annoName = anno.annotationType().getSimpleName();
+                if ("IgnoreCase".equals(annoName))
                     ignoreCase = true;
-                else if (anno instanceof Not)
+                else if ("Not".equals(annoName))
                     q.append(" NOT ");
                 else
                     throw new MappingException("The " + anno.annotationType().getSimpleName() +
@@ -1303,7 +1255,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             // Write new JPQL, starting with SELECT or UPDATE
             if (!hasUpdateParam) {
                 queryInfo.type = QueryInfo.Type.FIND;
-                q = generateSelectClause(queryInfo, queryInfo.method.getAnnotation(Select.class));
+                q = generateSelectClause(queryInfo, provider.compat.getSelectAnnotation(queryInfo.method));
             } else {
                 queryInfo.type = QueryInfo.Type.UPDATE;
                 q = new StringBuilder(250).append("UPDATE ").append(queryInfo.entityInfo.name).append(' ').append(o).append(" SET");
@@ -1317,7 +1269,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         if (paramInfo.isIdClass) {
                             if (paramInfo.updateAnno == null) {
                                 qp += queryInfo.entityInfo.idClassAttributeAccessors.size() - 1;
-                            } else if (paramInfo.updateAnno instanceof Assign) {
+                            } else if ("=".equals(provider.compat.getUpdateAttributeAndOperation(paramInfo.updateAnno)[1])) {
                                 //    generateUpdatesForIdClass(queryInfo, update, first, q);
                                 throw new UnsupportedOperationException("@Assign IdClass"); // TODO
                             } else {
@@ -1327,27 +1279,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                            repositoryInterface.getName() + " repository when the Id is an IdClass."); // TODO NLS
                             }
                         } else if (paramInfo.updateAnno != null) {
-                            Annotation anno = paramInfo.updateAnno;
-                            String attribute;
-                            char op;
-                            if (anno instanceof Assign) {
-                                attribute = ((Assign) anno).value();
-                                op = '=';
-                            } else if (anno instanceof Add) {
-                                attribute = ((Add) anno).value();
-                                op = '+';
-                            } else if (anno instanceof Multiply) {
-                                attribute = ((Multiply) anno).value();
-                                op = '*';
-                            } else if (anno instanceof Divide) {
-                                attribute = ((Divide) anno).value();
-                                op = '/';
-                            } else if (anno instanceof SubtractFrom) {
-                                attribute = ((SubtractFrom) anno).value();
-                                op = '-';
-                            } else { // should be unreachable
-                                throw new UnsupportedOperationException(anno.toString());
-                            }
+                            String[] attrAndOp = provider.compat.getUpdateAttributeAndOperation(paramInfo.updateAnno);
+                            String attribute = attrAndOp[0];
+                            String op = attrAndOp[1];
 
                             if ("".equals(attribute)) {
                                 if (isNamePresent == null) {
@@ -1358,7 +1292,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     attribute = params[p].getName();
                                 else
                                     throw new MappingException("You must specify an entity attribute name as the value of the " +
-                                                               anno.annotationType().getName() + " annotation on parameter " + (p + 1) +
+                                                               paramInfo.updateAnno.annotationType().getName() + " annotation on parameter " + (p + 1) +
                                                                " of the " + queryInfo.method.getName() + " method of the " +
                                                                repositoryInterface.getName() + " repository or compile the application" +
                                                                " with the -parameters compiler option that preserves the parameter names."); // TODO NLS
@@ -1371,9 +1305,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                             boolean withFunction = false;
                             switch (op) {
-                                case '=':
+                                case "=":
                                     break;
-                                case '+':
+                                case "+":
                                     if (withFunction = CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name)))
                                         q.append("CONCAT(").append(o_).append(name).append(',');
                                     else
@@ -1434,13 +1368,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (paramInfo != null && paramInfo.functionAnnos != null)
                     for (ListIterator<Annotation> fn = paramInfo.functionAnnos.listIterator(paramInfo.functionAnnos.size()); fn.hasPrevious();) {
                         Annotation anno = fn.previous();
-                        ignoreCase |= anno instanceof IgnoreCase;
-                        String functionType = anno instanceof Extract ? ((Extract) anno).value().name() //
-                                        : anno instanceof Rounded ? ((Rounded) anno).value().name() //
-                                                        : anno.annotationType().getSimpleName();
-                        String functionCall = FUNCTION_CALLS.get(functionType);
-                        if (functionCall == null)
-                            throw new UnsupportedOperationException(anno.toString()); // should never occur
+                        String functionCall = provider.compat.getFunctionCall(anno);
+                        ignoreCase |= "LOWER(".equals(functionCall);
                         attributeExpr.append(functionCall);
                     }
 
@@ -1450,55 +1379,63 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                 if (paramInfo != null && paramInfo.functionAnnos != null)
                     for (Annotation anno : paramInfo.functionAnnos) {
-                        if (anno instanceof Rounded && ((Rounded) anno).value() == Rounded.Direction.NEAREST)
+                        if (provider.compat.roundToNearest(anno))
                             attributeExpr.append(", 0)"); // round to zero digits beyond the decimal
                         else
                             attributeExpr.append(')');
                     }
 
+                String comparisonName = paramInfo == null || paramInfo.comparisonAnno == null //
+                                ? null // Equals
+                                : paramInfo.comparisonAnno.annotationType().getSimpleName();
+
                 boolean isCollection = queryInfo.entityInfo.collectionElementTypes.containsKey(name);
                 if (isCollection)
-                    verifyCollectionsSupported(name, ignoreCase, paramInfo == null ? null : paramInfo.comparisonAnno);
+                    if (paramInfo.comparisonAnno != null && !"Contains".equals(comparisonName) || ignoreCase)
+                        throw new MappingException(new UnsupportedOperationException("The parameter annotation " +
+                                                                                     (ignoreCase ? "IgnoreCase" : comparisonName) +
+                                                                                     " which is applied to entity property " + name +
+                                                                                     " is not supported for collection properties.")); // TODO NLS (future)
 
                 queryInfo.paramCount++;
 
-                if (paramInfo == null || paramInfo.comparisonAnno == null) { // Equals
+                if (comparisonName == null) { // Equals
                     q.append(attributeExpr).append('=');
                     appendParam(q, ignoreCase, qp);
-                } else if (paramInfo.comparisonAnno instanceof GreaterThan) {
+                } else if ("GreaterThan".equals(comparisonName)) {
                     q.append(attributeExpr).append('>');
                     appendParam(q, ignoreCase, qp);
-                } else if (paramInfo.comparisonAnno instanceof GreaterThanEqual) {
+                } else if ("GreaterThanEqual".equals(comparisonName)) {
                     q.append(attributeExpr).append(">=");
                     appendParam(q, ignoreCase, qp);
-                } else if (paramInfo.comparisonAnno instanceof LessThan) {
+                } else if ("LessThan".equals(comparisonName)) {
                     q.append(attributeExpr).append('<');
                     appendParam(q, ignoreCase, qp);
-                } else if (paramInfo.comparisonAnno instanceof LessThanEqual) {
+                } else if ("LessThanEqual".equals(comparisonName)) {
                     q.append(attributeExpr).append("<=");
                     appendParam(q, ignoreCase, qp);
-                } else if (paramInfo.comparisonAnno instanceof Contains) {
+                } else if ("Contains".equals(comparisonName)) {
                     if (isCollection) {
                         q.append(" ?").append(qp).append(" MEMBER OF ").append(attributeExpr);
                     } else {
                         q.append(attributeExpr).append(" LIKE CONCAT('%', ");
                         appendParam(q, ignoreCase, qp).append(", '%')");
                     }
-                } else if (paramInfo.comparisonAnno instanceof Like) {
+                } else if ("Like".equals(comparisonName)) {
                     q.append(attributeExpr).append(" LIKE ");
                     appendParam(q, ignoreCase, qp);
-                } else if (paramInfo.comparisonAnno instanceof StartsWith) {
+                } else if ("StartsWith".equals(comparisonName)) {
                     q.append(attributeExpr).append(" LIKE CONCAT(");
                     appendParam(q, ignoreCase, qp).append(", '%')");
-                } else if (paramInfo.comparisonAnno instanceof EndsWith) {
+                } else if ("EndsWith".equals(comparisonName)) {
                     q.append(attributeExpr).append(" LIKE CONCAT('%', ");
                     appendParam(q, ignoreCase, qp).append(')');
-                } else if (paramInfo.comparisonAnno instanceof In) {
+                } else if ("In".equals(comparisonName)) {
                     if (ignoreCase)
                         throw new MappingException("The " + Set.of("IgnoreCase", "In") +
                                                    " annotations cannot be combined on parameter " + (p + 1) + " of the " +
                                                    queryInfo.method.getName() + " method of the " +
-                                                   repositoryInterface.getName() + " repository."); // TODO NLS
+                                                   repositoryInterface.getName() + " repository."); // TODO NLS (future)
                     q.append(attributeExpr).append(" IN ");
                     appendParam(q, ignoreCase, qp);
                 } else {
@@ -1636,7 +1573,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 orderBy = methodName.indexOf("OrderBy", by + 2);
             }
             parseFindClause(queryInfo, methodName, by > 0 ? by : orderBy > 0 ? orderBy : -1);
-            q = generateSelectClause(queryInfo, queryInfo.method.getAnnotation(Select.class));
+            q = generateSelectClause(queryInfo, provider.compat.getSelectAnnotation(queryInfo.method));
             if (by > 0) {
                 int where = q.length();
                 generateWhereClause(queryInfo, methodName, by + 2, orderBy > 0 ? orderBy : methodName.length(), q);
@@ -1662,7 +1599,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                             " repository method."); // TODO NLS
                 queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
                 parseDeleteBy(queryInfo, by);
-                Select select = null; // queryInfo.method.getAnnotation(Select.class); // TODO This would be limited by collision with update count/boolean
+                Annotation select = null; // provider.compat.getSelectAnnotation(queryInfo.method); // TODO This would be limited by collision with update count/boolean
                 q = generateSelectClause(queryInfo, select);
                 queryInfo.jpqlDelete = generateDeleteById(queryInfo);
             } else { // DELETE
@@ -1745,35 +1682,39 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     if (anno instanceof By) {
                         paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
                         paramInfo.byAttribute = ((By) anno).value();
-                    } else if (anno instanceof Or) {
-                        paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
-                        paramInfo.or = true;
                     } else {
-                        String packageName = anno.annotationType().getPackageName();
-                        if (COMPARISON_ANNO_PACKAGE.equals(packageName)) {
+                        Class<?> annoType = anno.annotationType();
+                        if ("io.openliberty.data.repository.Or".equals(annoType.getName())) {
                             paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
-                            if (paramInfo.comparisonAnno == null)
-                                paramInfo.comparisonAnno = anno;
-                            else
-                                throw new MappingException("The " + Set.of(paramInfo.comparisonAnno, anno) +
-                                                           " annotations cannot be combined on parameter " + (p + 1) + " of the " +
-                                                           queryInfo.method.getName() + " method of the " +
-                                                           repositoryInterface.getName() + " repository."); // TODO NLS
-                        } else if (FUNCTION_ANNO_PACKAGE.equals(packageName)) {
-                            paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
-                            paramInfo.addFunctionAnnotation(anno);
-                        } else if (UPDATE_ANNO_PACKAGE.equals(packageName)) {
-                            paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
-                            hasUpdateParam = true;
-                            if (paramInfo.updateAnno == null)
-                                paramInfo.updateAnno = anno;
-                            else
-                                throw new MappingException("The " + Set.of(paramInfo.updateAnno, anno) +
-                                                           " annotations cannot be combined on parameter " + (p + 1) + " of the " +
-                                                           queryInfo.method.getName() + " method of the " +
-                                                           repositoryInterface.getName() + " repository."); // TODO NLS
+                            paramInfo.or = true;
+                        } else {
+                            String packageName = anno.annotationType().getPackageName();
+                            if (COMPARISON_ANNO_PACKAGE.equals(packageName)) {
+                                paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
+                                if (paramInfo.comparisonAnno == null)
+                                    paramInfo.comparisonAnno = anno;
+                                else
+                                    throw new MappingException("The " + Set.of(paramInfo.comparisonAnno, anno) +
+                                                               " annotations cannot be combined on parameter " + (p + 1) + " of the " +
+                                                               queryInfo.method.getName() + " method of the " +
+                                                               repositoryInterface.getName() + " repository."); // TODO NLS
+                            } else if (FUNCTION_ANNO_PACKAGE.equals(packageName)) {
+                                paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
+                                paramInfo.addFunctionAnnotation(anno);
+                            } else if (UPDATE_ANNO_PACKAGE.equals(packageName)) {
+                                paramInfo = paramInfo == null ? new ParamInfo() : paramInfo;
+                                hasUpdateParam = true;
+                                if (paramInfo.updateAnno == null)
+                                    paramInfo.updateAnno = anno;
+                                else
+                                    throw new MappingException("The " + Set.of(paramInfo.updateAnno, anno) +
+                                                               " annotations cannot be combined on parameter " + (p + 1) + " of the " +
+                                                               queryInfo.method.getName() + " method of the " +
+                                                               repositoryInterface.getName() + " repository."); // TODO NLS
+                            }
                         }
                     }
+
                 allParamInfo[p] = paramInfo;
             }
 
@@ -1781,9 +1722,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (!hasUpdateParam)
                 throw new MappingException("Because the " + methodName + " method of the " +
                                            repositoryInterface.getName() + " repository is an update operation, it must have either " +
-                                           "a single parameter that is the entity type or an Iterable, Stream, or array of entity, " +
-                                           "Or it must have at least one parameter that is annotated with one of " +
-                                           List.of(Assign.class, Add.class, Multiply.class, Divide.class) + "."); // TODO
+                                           "a single parameter that is the entity type or an Iterable, Stream, or array of entity."); // TODO NLS
+            // TODO future:
+            //                             "or it must have at least one parameter that is annotated with one of " +
+            //                             List.of(Assign.class, Add.class, Multiply.class, Divide.class) + ".");
         } else if (hasUpdateParam) {
             throw new MappingException("Parameters of the " + methodName + " method of the " +
                                        repositoryInterface.getName() + " repository must not be annotated with annotations from the " +
@@ -1804,12 +1746,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
             if (queryInfo.method.getParameterCount() > 0)
                 generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
-        } else if (methodTypeAnno instanceof Count) {
+        } else if ("Count".equals(methodTypeAnno.annotationType().getSimpleName())) {
             queryInfo.type = QueryInfo.Type.COUNT;
             q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
             if (queryInfo.method.getParameterCount() > 0)
                 generateFromParameters(queryInfo, q, methodTypeAnno, countPages, hasUpdateParam, allParamInfo);
-        } else if (methodTypeAnno instanceof Exists) {
+        } else if ("Exists".equals(methodTypeAnno.annotationType().getSimpleName())) {
             queryInfo.type = QueryInfo.Type.EXISTS;
             String name = entityInfo.idClassAttributeAccessors == null ? ID : entityInfo.idClassAttributeAccessors.firstKey();
             String attrName = entityInfo.getAttributeName(name, true);
@@ -1835,19 +1777,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param select    Select annotation if present on the method.
      * @return the SELECT clause.
      */
-    private StringBuilder generateSelectClause(QueryInfo queryInfo, Select select) {
+    private StringBuilder generateSelectClause(QueryInfo queryInfo, Annotation select) {
         StringBuilder q = new StringBuilder(200);
         String o = queryInfo.entityVar;
         String o_ = queryInfo.entityVar_;
         EntityInfo entityInfo = queryInfo.entityInfo;
 
-        boolean distinct = select != null && select.distinct();
-        String function = select == null ? null : toFunctionName(select.function());
         String[] cols;
         if (select == null) {
             cols = null;
         } else {
-            String[] selections = select.value();
+            String[] selections = provider.compat.getSelections(select);
             cols = new String[selections.length];
             for (int i = 0; i < cols.length; i++) {
                 String name = entityInfo.getAttributeName(selections[i], true);
@@ -1866,7 +1806,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             if (singleType.isAssignableFrom(entityInfo.entityClass)
                 || entityInfo.inheritance && entityInfo.entityClass.isAssignableFrom(singleType)) {
                 // Whole entity
-                q.append(distinct ? "DISTINCT " : "").append(o);
+                q.append(o);
             } else {
                 // Look for single entity attribute with the desired type:
                 String singleAttributeName = null;
@@ -1877,7 +1817,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         attributeType = QueryInfo.wrapperClassIfPrimitive(attributeType);
                     if (singleType.isAssignableFrom(attributeType)) {
                         singleAttributeName = entry.getKey();
-                        q.append(distinct ? "DISTINCT " : "").append(o_).append(singleAttributeName);
+                        q.append(o_).append(singleAttributeName);
                         break;
                     }
                 }
@@ -1892,23 +1832,23 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     if (entityInfo.idClassAttributeAccessors != null && singleType.equals(entityInfo.idType))
                         for (String idClassAttributeName : entityInfo.idClassAttributeAccessors.keySet()) {
                             String name = entityInfo.getAttributeName(idClassAttributeName, true);
-                            generateSelectExpression(q, first, function, distinct, o, name);
+                            q.append(first ? "" : ", ").append(o).append('.').append(name);
                             first = false;
                         }
                     else if ((relAttrNames = entityInfo.relationAttributeNames.get(singleType)) != null)
                         for (String name : relAttrNames) {
-                            generateSelectExpression(q, first, function, distinct, o, name);
+                            q.append(first ? "" : ", ").append(o).append('.').append(name);
                             first = false;
                         }
                     else if (entityInfo.recordClass == null)
                         for (String name : entityInfo.attributeTypes.keySet()) {
-                            generateSelectExpression(q, first, function, distinct, o, name);
+                            q.append(first ? "" : ", ").append(o).append('.').append(name);
                             first = false;
                         }
                     else {
                         for (RecordComponent component : entityInfo.recordClass.getRecordComponents()) {
                             String name = component.getName();
-                            generateSelectExpression(q, first, function, distinct, o, name);
+                            q.append(first ? "" : ", ").append(o).append('.').append(name);
                             first = false;
                         }
                     }
@@ -1932,32 +1872,19 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
             if (selectAsColumns) {
                 // Specify columns without creating new instance
-                for (int i = 0; i < cols.length; i++) {
-                    generateSelectExpression(q, i == 0, function, distinct, o, cols[i]);
-                }
+                for (int i = 0; i < cols.length; i++)
+                    q.append(i == 0 ? "" : ", ").append(o).append('.').append(cols[i]);
             } else {
                 // Construct new instance from defined columns
                 q.append("NEW ").append(singleType.getName()).append('(');
-                for (int i = 0; i < cols.length; i++) {
-                    generateSelectExpression(q, i == 0, function, distinct, o, cols[i]);
-                }
+                for (int i = 0; i < cols.length; i++)
+                    q.append(i == 0 ? "" : ", ").append(o).append('.').append(cols[i]);
                 q.append(')');
             }
         }
 
         q.append(" FROM ").append(entityInfo.name).append(' ').append(o);
         return q;
-    }
-
-    private void generateSelectExpression(StringBuilder q, boolean isFirst, String function, boolean distinct, String o, String attributeName) {
-        if (!isFirst)
-            q.append(", ");
-        if (function != null)
-            q.append(function).append('(');
-        q.append(distinct ? "DISTINCT " : "");
-        q.append(o).append('.').append(attributeName);
-        if (function != null)
-            q.append(')');
     }
 
     /**
@@ -2633,32 +2560,69 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                     returnValue = results.iterator();
                                 } else if (queryInfo.returnArrayType != null) {
                                     int size = results.size();
-                                    Object firstResult = size == 0 ? null : results.get(0);
-                                    if (firstResult != null && firstResult.getClass().isArray()) {
-                                        if (size == 1) {
-                                            Class<?> optionalType = queryInfo.getOptionalResultType();
-                                            if (firstResult.getClass().equals(optionalType))
-                                                returnValue = firstResult;
-                                            else {
-                                                int len = Array.getLength(firstResult);
-                                                returnValue = Array.newInstance(queryInfo.returnArrayType, len);
-                                                for (int i = 0; i < len; i++) {
-                                                    Object element = Array.get(firstResult, i);
-                                                    Array.set(returnValue, i, queryInfo.returnArrayType.isInstance(element) //
-                                                                    ? element : to(queryInfo.returnArrayType, element, true));
-                                                }
-                                            }
-                                        } else { // result is a list of multiple arrays
-                                            returnValue = results;
+                                    Object firstNonNullResult = null;
+                                    for (Object result : results)
+                                        if (result != null) {
+                                            firstNonNullResult = result;
+                                            break;
                                         }
-                                    } else {
-                                        // TODO Size 0 should be an error when the selected attribute is an array.
-                                        // The following makes sense when not selecting an array attribute, and instead
-                                        // using array to represent multiple results returned.
+                                    if (firstNonNullResult == null
+                                        || queryInfo.type == QueryInfo.Type.FIND_AND_DELETE
+                                        || queryInfo.returnArrayType != Object.class && queryInfo.returnArrayType.isInstance(firstNonNullResult)
+                                        || queryInfo.returnArrayType.isPrimitive() && isWrapperClassFor(queryInfo.returnArrayType, firstNonNullResult.getClass())) {
                                         returnValue = Array.newInstance(queryInfo.returnArrayType, size);
                                         int i = 0;
                                         for (Object result : results)
                                             Array.set(returnValue, i++, result);
+                                    } else if (firstNonNullResult.getClass().isArray()) {
+                                        if (trace && tc.isDebugEnabled())
+                                            Tr.debug(this, tc, "convert " + firstNonNullResult.getClass().getName() +
+                                                               " to " + queryInfo.returnArrayType.getName());
+                                        if (queryInfo.returnArrayType.isArray()) {
+                                            // convert List<Object[]> to array of array
+                                            returnValue = Array.newInstance(queryInfo.returnArrayType, size);
+                                            int i = 0;
+                                            for (Object result : results)
+                                                if (result == null) {
+                                                    Array.set(returnValue, i++, result);
+                                                } else {
+                                                    // Object[] needs conversion to returnArrayType
+                                                    Class<?> subarrayType = queryInfo.returnArrayType.getComponentType();
+                                                    int len = Array.getLength(result);
+                                                    Object subarray = Array.newInstance(subarrayType, len);
+                                                    for (int j = 0; j < len; j++) {
+                                                        Object element = Array.get(result, j);
+                                                        Array.set(subarray, j, subarrayType.isInstance(element) //
+                                                                        ? element : to(subarrayType, element, true));
+                                                    }
+                                                    Array.set(returnValue, i++, subarray);
+                                                }
+                                        } else if (size == 1) {
+                                            // convert size 1 List<Object[]> to array
+                                            Class<?> optionalType = queryInfo.getOptionalResultType();
+                                            if (firstNonNullResult.getClass().equals(optionalType))
+                                                returnValue = firstNonNullResult;
+                                            else {
+                                                int len = Array.getLength(firstNonNullResult);
+                                                returnValue = Array.newInstance(queryInfo.returnArrayType, len);
+                                                for (int i = 0; i < len; i++) {
+                                                    Object element = Array.get(firstNonNullResult, i);
+                                                    Array.set(returnValue, i, queryInfo.returnArrayType.isInstance(element) //
+                                                                    ? element : to(queryInfo.returnArrayType, element, true));
+                                                }
+                                            }
+                                        } else {
+                                            // List<Object[]> with multiple Object[] elements cannot convert to a one dimensional array
+                                            throw new NonUniqueResultException(""); // TODO NLS
+                                        }
+                                    } else {
+                                        throw new MappingException("The " + queryInfo.returnArrayType.getName() +
+                                                                   " array type that is declared to be returned by the " +
+                                                                   queryInfo.method.getName() + " method of the " +
+                                                                   queryInfo.method.getDeclaringClass().getName() +
+                                                                   " repository is incompatible with the " +
+                                                                   firstNonNullResult.getClass().getName() +
+                                                                   " type of the observed query results."); // TODO NLS
                                     }
                                 } else if (results.isEmpty()) {
                                     throw new EmptyResultException("Query with return type of " + returnType.getName() +
@@ -2872,6 +2836,24 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
     }
 
+    /**
+     * Indicates if the specified class is a wrapper for the primitive class.
+     *
+     * @param primitive primitive class.
+     * @param cl        another class that might be a wrapper class for the primitive class.
+     * @return true if the class is the wrapper class for the primitive class, otherwise false.
+     */
+    private final boolean isWrapperClassFor(Class<?> primitive, Class<?> cl) {
+        return primitive == long.class && cl == Long.class ||
+               primitive == int.class && cl == Integer.class ||
+               primitive == float.class && cl == Float.class ||
+               primitive == double.class && cl == Double.class ||
+               primitive == char.class && cl == Character.class ||
+               primitive == byte.class && cl == Byte.class ||
+               primitive == boolean.class && cl == Boolean.class ||
+               primitive == short.class && cl == Short.class;
+    }
+
     @Trivial
     private final Object oneResult(List<?> results) {
         int size = results.size();
@@ -3079,11 +3061,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param failIfNotConverted whether or not to fail if unable to convert the value.
      * @return new instance of the requested type.
      */
+    @Trivial // avoid tracing value from customer data
     private static final Object to(Class<?> type, Object item, boolean failIfNotConverted) {
         Object result = item;
         if (item == null) {
             if (type.isPrimitive())
-                throw new NullPointerException(); // TODO NLS
+                throw new MappingException("Query returned a null result which is not compatible with the type that is " +
+                                           "expected by the repository method signature: " + type.getName()); // TODO NLS
         } else if (item instanceof Number && (type.isPrimitive() || Number.class.isAssignableFrom(type))) {
             Number n = (Number) item;
             if (long.class.equals(type) || Long.class.equals(type))
@@ -3100,13 +3084,17 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 result = n.byteValue();
             else if (boolean.class.equals(type) || Boolean.class.equals(type))
                 result = n.longValue() != 0L;
+            else if (failIfNotConverted)
+                throw new MappingException("Query returned a result of type " + item.getClass().getName() +
+                                           " which is not compatible with the type that is expected by the repository method signature: " +
+                                           type.getName()); // TODO
         } else if (type.isAssignableFrom(String.class)) {
             result = item.toString();
-        }
-        if (failIfNotConverted && result == item && item != null)
+        } else if (failIfNotConverted) {
             throw new MappingException("Query returned a result of type " + item.getClass().getName() +
                                        " which is not compatible with the type that is expected by the repository method signature: " +
                                        type.getName()); // TODO
+        }
         return result;
     }
 
@@ -3145,22 +3133,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (entity != o && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "toEntity " + oClass.getName() + " --> " + entity.getClass().getName());
         return entity;
-    }
-
-    @Trivial
-    private static final String toFunctionName(Aggregate function) {
-        switch (function) {
-            case UNSPECIFIED:
-                return null;
-            case AVERAGE:
-                return "AVG";
-            case MAXIMUM:
-                return "MAX";
-            case MINIMUM:
-                return "MIN";
-            default: // COUNT, SUM
-                return function.name();
-        }
     }
 
     @Trivial
@@ -3422,22 +3394,5 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (numUpdated > 1)
             throw new DataException("Found " + numUpdated + " matching entities."); // ought to be unreachable
         return numUpdated;
-    }
-
-    /**
-     * Confirm that collections are supported for this condition,
-     * based on whether case insensitive comparison is requested.
-     *
-     * @param attributeName entity attribute to which the condition is to be applied.
-     * @param conditionAnno condition annotation such as LessThan.
-     * @throws MappingException with chained UnsupportedOperationException if not supported.
-     */
-    @Trivial
-    private static void verifyCollectionsSupported(String attributeName, boolean ignoreCase, Annotation conditionAnno) {
-        if (conditionAnno != null && !(conditionAnno instanceof Contains) || ignoreCase)
-            throw new MappingException(new UnsupportedOperationException("The parameter annotation " +
-                                                                         (ignoreCase ? "IgnoreCase" : conditionAnno.annotationType().getSimpleName()) +
-                                                                         " which is applied to entity property " + attributeName +
-                                                                         " is not supported for collection properties.")); // TODO NLS
     }
 }

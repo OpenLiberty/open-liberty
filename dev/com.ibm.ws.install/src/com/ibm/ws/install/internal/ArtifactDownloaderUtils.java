@@ -282,6 +282,20 @@ public class ArtifactDownloaderUtils {
         }
     }
 
+    /**
+     * Users may not have access to the entire repository so we don't check other 400 or greater level response codes
+     *
+     * @param repoResponseCode
+     * @return true if responseCode is anything other than 404
+     */
+    public static boolean checkResponseCode(int repoResponseCode) {
+        boolean connected = true;
+        if (repoResponseCode == 404) {
+            connected = false;
+        }
+        return connected;
+    }
+
     public static String getMavenCoordFromPath(String coordPath, String groupID) {
         String result = coordPath.replace("\\", "/");
         String[] resSplit = result.split("/");

@@ -29,7 +29,7 @@ fat.project: true
   io.openliberty.data,\
   io.openliberty.jakarta.annotation.2.1,\
   io.openliberty.jakarta.cdi.4.0,\
-  io.openliberty.jakarta.data.1.0,\
+  io.openliberty.jakarta.data.1.1,\
   io.openliberty.jakarta.interceptor.2.1,\
   io.openliberty.jakarta.persistence.3.1,\
   io.openliberty.jakarta.servlet.6.0;version=latest,\

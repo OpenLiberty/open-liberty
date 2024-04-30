@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF CVE Reporting
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKF1700 - CWWKF1799
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.reporting.internal: CWWKF1700 - CWWKF1799
+
+CWWKF1700.reporting.is.enabled=CWWKF1700I: A verifica\u00e7\u00e3o de vulnerabilidades de seguran\u00e7a est\u00e1 ativada As informa\u00e7\u00f5es sobre esse tempo de execu\u00e7\u00e3o do Liberty ser\u00e3o analisadas em rela\u00e7\u00e3o a vulnerabilidades conhecidas
+CWWKF1700.reporting.is.enabled.explanation= A verifica\u00e7\u00e3o de vulnerabilidades de seguran\u00e7a est\u00e1 ativada no momento
+CWWKF1700.reporting.is.enabled.useraction=Para desativar a verifica\u00e7\u00e3o de vulnerabilidades de seguran\u00e7a, especifique <cveReporting enabled="false" /> no arquivo server.xml ..
+
+CWWKF1701.reporting.is.disabled=CWWKF1701I: A verifica\u00e7\u00e3o de vulnerabilidades de seguran\u00e7a est\u00e1 desativada
+CWWKF1701.reporting.is.disabled.explanation=A verifica\u00e7\u00e3o de vulnerabilidades de seguran\u00e7a deve ser ativada para execu\u00e7\u00e3o..
+CWWKF1701.reporting.is.disabled.useraction=Para ativar a verifica\u00e7\u00e3o de vulnerabilidades de seguran\u00e7a, especifique <cveReporting enabled="true" /> no arquivo server.xml ..
+
+more.information.message=Para obter mais informa\u00e7\u00f5es, \u00e9 poss\u00edvel revisar {0}
+
+CWWKF1702.cve.found=CWWKF1702W: Com base em uma avalia\u00e7\u00e3o de {0}, revise os seguintes boletins de seguran\u00e7a: {1}
+CWWKF1702.cve.found.explanation=As vulnerabilidades de seguran\u00e7a foram localizadas
+CWWKF1702.cve.found.useraction=Revise os CVEs na mensagem e resolva as vulnerabilidades da seguran\u00e7a
+
+CWWKF1703.cve.not.found=CWWKF1703I: Com base na an\u00e1lise do Tempo de Execu\u00e7\u00e3o, nenhuma vulnerabilidade de seguran\u00e7a que requer an\u00e1lise adicional foi localizada.
+CWWKF1703.cve.not.found.explanation=Nenhuma vulnerabilidade de seguran\u00e7a foi localizada neste momento..
+CWWKF1703.cve.not.found.useraction=Nenhum.
+
+CWWKF1704.incorrect.url=CWWKF1704W: A URL especificada n\u00e3o est\u00e1 correta e uma conex\u00e3o n\u00e3o pode ser feita: {0} .
+CWWKF1704.incorrect.url.explanation=Nenhuma conex\u00e3o pode ser feita para a URL fornecida..
+CWWKF1704.incorrect.url.useraction=Verifique se a URL est\u00e1 correta
+
+CWWKF1705.failed.response=CWWKF1705W: N\u00e3o \u00e9 poss\u00edvel recuperar informa\u00e7\u00f5es relevantes do CVE devido a um problema de comunica\u00e7\u00e3o com o CVE Reporting Service.
+CWWKF1705.failed.response.explanation=O servi\u00e7o n\u00e3o pode fornecer uma resposta.
+CWWKF1705.failed.response.useraction=Corrija o problema de comunica\u00e7\u00e3o e tente novamente
+
+CWWKF1706.issue.parsing=CWWKF1706W: Problema ao analisar Informa\u00e7\u00f5es do Produto.
+CWWKF1706.issue.parsing.explanation=O servi\u00e7o n\u00e3o pode analisar com \u00eaxito as informa\u00e7\u00f5es do produto..
+CWWKF1706.issue.parsing.useraction=Corrija o problema de comunica\u00e7\u00e3o e tente novamente

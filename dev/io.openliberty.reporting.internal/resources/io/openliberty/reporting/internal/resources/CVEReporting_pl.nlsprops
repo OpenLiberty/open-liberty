@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF CVE Reporting
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKF1700 - CWWKF1799
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.reporting.internal: CWWKF1700 - CWWKF1799
+
+CWWKF1700.reporting.is.enabled=CWWKF1700I: Sprawdzanie s\u0142abych punkt\u00f3w zabezpiecze\u0144 jest w\u0142\u0105czone. Informacje o tym \u015brodowisku wykonawczym Liberty zostan\u0105 przeanalizowane pod k\u0105tem znanych s\u0142abych punkt\u00f3w zabezpiecze\u0144.
+CWWKF1700.reporting.is.enabled.explanation= Sprawdzanie s\u0142abych punkt\u00f3w zabezpiecze\u0144 jest obecnie w\u0142\u0105czone.
+CWWKF1700.reporting.is.enabled.useraction=Aby wy\u0142\u0105czy\u0107 sprawdzanie pod k\u0105tem s\u0142abych punkt\u00f3w zabezpiecze\u0144, nale\u017cy poda\u0107 warto\u015b\u0107 <cveReporting enabled="false" /> w pliku server.xml .
+
+CWWKF1701.reporting.is.disabled=CWWKF1701I: Sprawdzanie s\u0142abych punkt\u00f3w zabezpiecze\u0144 jest wy\u0142\u0105czone.
+CWWKF1701.reporting.is.disabled.explanation=Sprawdzanie s\u0142abych punkt\u00f3w zabezpiecze\u0144 musi by\u0107 w\u0142\u0105czone, aby mo\u017cna by\u0142o je uruchomi\u0107.
+CWWKF1701.reporting.is.disabled.useraction=Aby w\u0142\u0105czy\u0107 sprawdzanie pod k\u0105tem s\u0142abych punkt\u00f3w zabezpiecze\u0144, nale\u017cy okre\u015bli\u0107 parametr <cveReporting enabled="true" /> w pliku server.xml .
+
+more.information.message=Wi\u0119cej informacji na ten temat zawiera sekcja {0}
+
+CWWKF1702.cve.found=CWWKF1702W: Na podstawie oceny {0}przejrzyj nast\u0119puj\u0105ce biuletyny bezpiecze\u0144stwa: {1}
+CWWKF1702.cve.found.explanation=Znaleziono s\u0142abe punkty zabezpiecze\u0144.
+CWWKF1702.cve.found.useraction=Przejrzyj CVE w komunikacie i usu\u0144 s\u0142abe punkty zabezpiecze\u0144.
+
+CWWKF1703.cve.not.found=CWWKF1703I: Na podstawie analizy \u015brodowiska wykonawczego nie znaleziono \u017cadnych s\u0142abych punkt\u00f3w zabezpiecze\u0144 wymagaj\u0105cych dalszej analizy.
+CWWKF1703.cve.not.found.explanation=W tym momencie nie znaleziono \u017cadnych s\u0142abych punkt\u00f3w zabezpiecze\u0144.
+CWWKF1703.cve.not.found.useraction=Brak.
+
+CWWKF1704.incorrect.url=CWWKF1704W: Podany adres URL jest niepoprawny i nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia: {0}
+CWWKF1704.incorrect.url.explanation=Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia dla podanego adresu URL.
+CWWKF1704.incorrect.url.useraction=Sprawd\u017a, czy adres URL jest poprawny.
+
+CWWKF1705.failed.response=CWWKF1705W: Nie mo\u017cna pobra\u0107 odpowiednich informacji CVE z powodu problemu z komunikacj\u0105 z us\u0142ug\u0105 raportowania CVE.
+CWWKF1705.failed.response.explanation=Us\u0142uga nie mo\u017ce dostarczy\u0107 odpowiedzi.
+CWWKF1705.failed.response.useraction=Rozwi\u0105\u017c problem z komunikacj\u0105 i spr\u00f3buj ponownie.
+
+CWWKF1706.issue.parsing=CWWKF1706W: Wyst\u0105pi\u0142 problem podczas analizowania informacji o produkcie.
+CWWKF1706.issue.parsing.explanation=Us\u0142uga nie mo\u017ce pomy\u015blnie przeanalizowa\u0107 informacji o produkcie.
+CWWKF1706.issue.parsing.useraction=Rozwi\u0105\u017c problem z komunikacj\u0105 i spr\u00f3buj ponownie.

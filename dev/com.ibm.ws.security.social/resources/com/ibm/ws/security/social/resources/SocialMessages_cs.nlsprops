@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -655,3 +655,9 @@ BACKCHANNEL_REQUEST_NOT_SUPPORTED_CONFIG.useraction=Pou\u017eijte koncov\u00fd b
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD=CWWKS2351E: Klient {0} OpenID Connect pou\u017e\u00edv\u00e1 metodu ov\u011b\u0159en\u00ed koncov\u00e9ho bodu tokenu {1}. Tato metoda ov\u011b\u0159en\u00ed vy\u017eaduje utajen\u00fd tajn\u00fd kl\u00ed\u010d klienta, ale tajn\u00fd kl\u00ed\u010d klienta nen\u00ed nakonfigurov\u00e1n.
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.explanation=Metoda ov\u011b\u0159en\u00ed koncov\u00e9ho bodu tokenu uveden\u00e1 ve zpr\u00e1v\u011b po\u017eaduje tajn\u00fd kl\u00ed\u010d klienta pro ov\u011b\u0159en\u00ed s koncov\u00fdm bodem tokenu poskytovatele OpenID Connect.
 CLIENT_SECRET_MISSING_BUT_REQUIRED_BY_TOKEN_AUTH_METHOD.useraction=Nakonfigurujte tajn\u00fd kl\u00ed\u010d klienta pro klienta OpenID Connect, nebo p\u0159epn\u011bte metodu ov\u011b\u0159en\u00ed koncov\u00e9ho bodu tokenu klienta na metodu nevy\u017eaduj\u00edc\u00ed tajn\u00fd kl\u00ed\u010d klienta.
+
+# do not translate hostname, sameSiteCookie, webAppSecurity, Strict, Lax, None
+# used by client
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE=CWWKS2352E: Po\u017eadavek na [{0}] nen\u00ed platn\u00fd. Chyb\u00ed po\u017eadovan\u00fd soubor cookie s n\u00e1zvem, kter\u00fd za\u010d\u00edn\u00e1 hodnotou WASReqURLOidc. N\u00e1zev hostitele, kter\u00fd se pou\u017e\u00edv\u00e1 pro p\u0159\u00edstup ke klientovi, se nemus\u00ed shodovat s n\u00e1zvem, kter\u00fd je registrov\u00e1n u poskytovatele.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.explanation=Klient p\u0159ijal po\u017eadavek, kter\u00fd neobsahoval po\u017eadovan\u00fd soubor cookie.
+OIDC_CLIENT_BAD_REQUEST_NO_COOKIE.useraction=Ov\u011b\u0159te poskytovatele OpenID Connect a konfigurace klienta. Chyb\u011bj\u00edc\u00ed soubor cookie m\u016f\u017ee b\u00fdt zp\u016fsoben p\u0159\u00edstupem ke klientovi s n\u00e1zvem hostitele, kter\u00fd se li\u0161\u00ed od n\u00e1zvu hostitele p\u0159esm\u011brov\u00e1n\u00ed registrovan\u00e9ho u poskytovatele. Jestli\u017ee je atribut sameSiteCookie v prvku webAppSecurity v konfiguraci serveru nastaven na Strict, zkuste nastavit hodnotu na Lax nebo None.

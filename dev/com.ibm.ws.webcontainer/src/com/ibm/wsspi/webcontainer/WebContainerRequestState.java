@@ -266,6 +266,13 @@ public class WebContainerRequestState {
             existingAttributesMap.put(attribute[0], fixedValue);
             cookieAttributesMap.put(cookieName, existingAttributesMap);
         }
+
+        HashMap<String,String> existingAttributesMap = cookieAttributesMap.get(cookieName);
+        if(existingAttributesMap == null) {
+            existingAttributesMap = new HashMap<String,String>();
+        }
+        existingAttributesMap.put(attribute[0], attribute[1]);
+        cookieAttributesMap.put(cookieName, existingAttributesMap);
     }
     
     /**

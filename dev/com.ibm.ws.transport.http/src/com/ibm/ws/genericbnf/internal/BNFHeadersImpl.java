@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -3564,7 +3564,9 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
             length++;
             // check the limit on a token size
-            if (length > this.limitTokenSize) {
+            if ((this.parsedToken != null && this.parsedToken.length + length > this.limitTokenSize) || length > this.limitTokenSize) {
+                if (this.parsedToken != null)
+                    length += this.parsedToken.length;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "findCRLFTokenLength: length is too big: " + length);
                 }
@@ -3649,7 +3651,9 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
             length++;
             // check the limit on a token size
-            if (length > this.limitTokenSize) {
+            if ((this.parsedToken != null && this.parsedToken.length + length > this.limitTokenSize) || length > this.limitTokenSize) {
+                if (this.parsedToken != null)
+                    length += this.parsedToken.length;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "findTokenLength: length is too big: " + length);
                 }
@@ -3895,7 +3899,9 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
             length++;
             // check the limit on a token size
-            if (length > this.limitTokenSize) {
+            if ((this.parsedToken != null && this.parsedToken.length + length > this.limitTokenSize) || length > this.limitTokenSize) {
+                if (this.parsedToken != null)
+                    length += this.parsedToken.length;
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "findTokenLength: length is too big: " + length);
                 }
@@ -4170,7 +4176,8 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
             }
             Tr.debug(tc, "Saving token: "
                          + value
-                         + " len:" + length
+                         + " currentLen:" + length
+                         + " accumulatedLen:" + ((this.parsedToken == null) ? length : this.parsedToken.length + length)
                          + " start:" + start + " pos:" + this.bytePosition
                          + " delim:" + delim);
         }

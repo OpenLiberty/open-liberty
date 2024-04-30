@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF CVE Reporting
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKF1700 - CWWKF1799
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.reporting.internal: CWWKF1700 - CWWKF1799
+
+CWWKF1700.reporting.is.enabled=CWWKF1700I: A biztons\u00e1gi sebezhet\u0151s\u00e9gek ellen\u0151rz\u00e9se enged\u00e9lyezett. A Liberty fut\u00e1si k\u00f6rnyezettel kapcsolatos inform\u00e1ci\u00f3kat az ismert sebezhet\u0151s\u00e9gek ellen elemzik.
+CWWKF1700.reporting.is.enabled.explanation= A biztons\u00e1gi sebezhet\u0151s\u00e9gek ellen\u0151rz\u00e9se jelenleg enged\u00e9lyezett.
+CWWKF1700.reporting.is.enabled.useraction=A biztons\u00e1gi sebezhet\u0151s\u00e9gek ellen\u0151rz\u00e9s\u00e9nek letilt\u00e1s\u00e1hoz adja meg a <cveReporting enabled="false" /> \u00e9rt\u00e9ket a server.xml f\u00e1jlban.
+
+CWWKF1701.reporting.is.disabled=CWWKF1701I: A biztons\u00e1gi r\u00e9sek ellen\u0151rz\u00e9se le van tiltva.
+CWWKF1701.reporting.is.disabled.explanation=A biztons\u00e1gi r\u00e9sek ellen\u0151rz\u00e9s\u00e9t enged\u00e9lyezni kell.
+CWWKF1701.reporting.is.disabled.useraction=A biztons\u00e1gi sebezhet\u0151s\u00e9gek ellen\u0151rz\u00e9s\u00e9nek enged\u00e9lyez\u00e9s\u00e9hez adja meg a <cveReporting enabled="true" /> \u00e9rt\u00e9ket a server.xml f\u00e1jlban.
+
+more.information.message=Tov\u00e1bbi inform\u00e1ci\u00f3k: {0}
+
+CWWKF1702.cve.found=CWWKF1702W: A {0}\u00e9rt\u00e9kel\u00e9s alapj\u00e1n tekintse \u00e1t a k\u00f6vetkez\u0151 biztons\u00e1gi jelent\u00e9seket: {1}
+CWWKF1702.cve.found.explanation=A biztons\u00e1gi r\u00e9seket megtal\u00e1lt\u00e1k.
+CWWKF1702.cve.found.useraction=Tekintse \u00e1t a CVE-ket az \u00fczenetben, \u00e9s oldja meg a biztons\u00e1gi r\u00e9seket.
+
+CWWKF1703.cve.not.found=CWWKF1703I: A fut\u00e1si k\u00f6rnyezet elemz\u00e9se alapj\u00e1n nem tal\u00e1ltak tov\u00e1bbi elemz\u00e9st ig\u00e9nyl\u0151 biztons\u00e1gi r\u00e9seket.
+CWWKF1703.cve.not.found.explanation=Jelenleg nem tal\u00e1ltak biztons\u00e1gi r\u00e9seket.
+CWWKF1703.cve.not.found.useraction=Nincs.
+
+CWWKF1704.incorrect.url=CWWKF1704W: A megadott URL helytelen \u00e9s kapcsolat nem lehets\u00e9ges: {0}
+CWWKF1704.incorrect.url.explanation=Nem lehet csatlakozni a megadott URL c\u00edmhez.
+CWWKF1704.incorrect.url.useraction=Ellen\u0151rizze, hogy az URL helyes-e.
+
+CWWKF1705.failed.response=CWWKF1705W: Nem lehet lek\u00e9rni a vonatkoz\u00f3 CVE inform\u00e1ci\u00f3kat a CVE jelent\u00e9sk\u00e9sz\u00edt\u00e9si szolg\u00e1ltat\u00e1ssal kapcsolatos kommunik\u00e1ci\u00f3s probl\u00e9ma miatt.
+CWWKF1705.failed.response.explanation=A szolg\u00e1ltat\u00e1s nem tud v\u00e1laszt adni.
+CWWKF1705.failed.response.useraction=Jav\u00edtsa ki a kommunik\u00e1ci\u00f3s probl\u00e9m\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+CWWKF1706.issue.parsing=CWWKF1706W: Probl\u00e9ma a Term\u00e9kinform\u00e1ci\u00f3k \u00e9rtelmez\u00e9sekor.
+CWWKF1706.issue.parsing.explanation=A szolg\u00e1ltat\u00e1s nem tudja sikeresen \u00e9rtelmezni a term\u00e9k inform\u00e1ci\u00f3it.
+CWWKF1706.issue.parsing.useraction=Jav\u00edtsa ki a kommunik\u00e1ci\u00f3s probl\u00e9m\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra.

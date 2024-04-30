@@ -23,9 +23,9 @@ Export-Package: \
   jakarta.annotation.sql;version="3.0.0"
 
 -includeresource: \
-  @${repo;jakarta.annotation:jakarta.annotation-api;3.0.0.staged;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.annotation:jakarta.annotation-api;3.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
-   dep1;groupId=jakarta.annotation;artifactId=jakarta.annotation-api;version=3.0.0-staged;scope=runtime
+   dep1;groupId=jakarta.annotation;artifactId=jakarta.annotation-api;version=3.0.0;scope=runtime
 
    

@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF CVE Reporting
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKF1700 - CWWKF1799
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.reporting.internal: CWWKF1700 - CWWKF1799
+
+CWWKF1700.reporting.is.enabled=CWWKF1700I: \u5df2\u542f\u7528\u5b89\u5168\u6f0f\u6d1e\u68c0\u67e5\u3002 \u5c06\u6839\u636e\u5df2\u77e5\u6f0f\u6d1e\u5206\u6790\u6709\u5173\u6b64 Liberty \u8fd0\u884c\u65f6\u7684\u4fe1\u606f\u3002
+CWWKF1700.reporting.is.enabled.explanation= \u5f53\u524d\u5df2\u542f\u7528\u5b89\u5168\u6f0f\u6d1e\u68c0\u67e5\u3002
+CWWKF1700.reporting.is.enabled.useraction=\u8981\u7981\u7528\u5b89\u5168\u6f0f\u6d1e\u68c0\u67e5\uff0c\u8bf7\u5728 server.xml \u6587\u4ef6\u4e2d\u6307\u5b9a <cveReporting enabled="false" /> \u3002
+
+CWWKF1701.reporting.is.disabled=CWWKF1701I: \u5df2\u7981\u7528\u5b89\u5168\u6f0f\u6d1e\u68c0\u67e5\u3002
+CWWKF1701.reporting.is.disabled.explanation=\u5fc5\u987b\u542f\u7528\u5b89\u5168\u6f0f\u6d1e\u68c0\u67e5\u624d\u80fd\u8fd0\u884c\u3002
+CWWKF1701.reporting.is.disabled.useraction=\u8981\u542f\u7528\u5b89\u5168\u6f0f\u6d1e\u68c0\u67e5\uff0c\u8bf7\u5728 server.xml \u6587\u4ef6\u4e2d\u6307\u5b9a <cveReporting enabled="true" /> \u3002
+
+more.information.message=\u6709\u5173\u66f4\u591a\u4fe1\u606f\uff0c\u60a8\u53ef\u4ee5\u67e5\u770b {0}
+
+CWWKF1702.cve.found=CWWKF1702W: \u6839\u636e {0}\u7684\u8bc4\u4f30\uff0c\u67e5\u770b\u4ee5\u4e0b\u5b89\u5168\u516c\u544a: {1}
+CWWKF1702.cve.found.explanation=\u53d1\u73b0\u4e86\u5b89\u5168\u6f0f\u6d1e\u3002
+CWWKF1702.cve.found.useraction=\u67e5\u770b\u6d88\u606f\u4e2d\u7684 CVE \u5e76\u89e3\u51b3\u5b89\u5168\u6f0f\u6d1e\u3002
+
+CWWKF1703.cve.not.found=CWWKF1703I: \u6839\u636e\u5bf9 Runtime \u7684\u5206\u6790\uff0c\u672a\u53d1\u73b0\u9700\u8981\u8fdb\u4e00\u6b65\u5206\u6790\u7684\u5b89\u5168\u6f0f\u6d1e\u3002
+CWWKF1703.cve.not.found.explanation=\u6b64\u65f6\u672a\u627e\u5230\u4efb\u4f55\u5b89\u5168\u6f0f\u6d1e\u3002
+CWWKF1703.cve.not.found.useraction=\u65e0\u3002
+
+CWWKF1704.incorrect.url=CWWKF1704W: \u6307\u5b9a\u7684 URL \u4e0d\u6b63\u786e\uff0c\u65e0\u6cd5\u5efa\u7acb\u8fde\u63a5: {0}
+CWWKF1704.incorrect.url.explanation=\u65e0\u6cd5\u4e3a\u63d0\u4f9b\u7684 URL \u5efa\u7acb\u8fde\u63a5\u3002
+CWWKF1704.incorrect.url.useraction=\u8bf7\u9a8c\u8bc1 URL \u662f\u5426\u6b63\u786e\u3002
+
+CWWKF1705.failed.response=CWWKF1705W: \u7531\u4e8e\u4e0e CVE \u62a5\u544a\u670d\u52a1\u7684\u901a\u4fe1\u95ee\u9898\uff0c\u65e0\u6cd5\u68c0\u7d22\u76f8\u5173 CVE \u4fe1\u606f\u3002
+CWWKF1705.failed.response.explanation=\u670d\u52a1\u65e0\u6cd5\u63d0\u4f9b\u54cd\u5e94\u3002
+CWWKF1705.failed.response.useraction=\u8bf7\u89e3\u51b3\u901a\u4fe1\u95ee\u9898\uff0c\u7136\u540e\u91cd\u8bd5\u3002
+
+CWWKF1706.issue.parsing=CWWKF1706W: \u89e3\u6790\u4ea7\u54c1\u4fe1\u606f\u65f6\u53d1\u751f\u95ee\u9898\u3002
+CWWKF1706.issue.parsing.explanation=\u670d\u52a1\u65e0\u6cd5\u6210\u529f\u89e3\u6790\u4ea7\u54c1\u4fe1\u606f\u3002
+CWWKF1706.issue.parsing.useraction=\u8bf7\u89e3\u51b3\u901a\u4fe1\u95ee\u9898\uff0c\u7136\u540e\u91cd\u8bd5\u3002

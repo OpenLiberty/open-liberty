@@ -1,0 +1,27 @@
+spring:
+  cloud:
+    refresh:
+      never-refreshable:
+      extra-refreshable:
+        - javax.sql.DataSource
+        - com.zaxxer.hikari.HikariDataSource
+  application:
+    name: context-demo
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate.id.new_generator_mappings: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/database
+    username: builduser
+    password: buildpw
+    driver-class-name: org.postgresql.Driver
+
+logging:
+  level:
+    org:
+      springframework:
+        context:
+          support:
+            DefaultLifecycleProcessor: debug
+

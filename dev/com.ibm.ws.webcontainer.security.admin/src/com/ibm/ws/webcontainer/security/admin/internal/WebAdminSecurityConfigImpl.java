@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security.admin.internal;
 
@@ -58,6 +55,7 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     private final String sameSiteCookie = "Disabled";
     private final Boolean partitionedCookie = false;
     private final Boolean useContextRootForSSOCookiePath = false;
+    private final long postParamMaxRequestBodySize = 1024 * 1024 * 128L;
 
     WebAdminSecurityConfigImpl(Map<String, Object> newProperties) {
         //nothing to do, values are hard-coded
@@ -322,5 +320,14 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public boolean isUseContextRootForSSOCookiePath() {
         return useContextRootForSSOCookiePath;
+    }
+
+    @Override
+    public long postParamMaxRequestBodySize() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return globalConfig.postParamMaxRequestBodySize();
+        else
+            return postParamMaxRequestBodySize;
     }
 }

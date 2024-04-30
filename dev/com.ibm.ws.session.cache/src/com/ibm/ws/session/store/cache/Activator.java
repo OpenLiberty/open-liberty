@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,11 +13,12 @@
 package com.ibm.ws.session.store.cache;
 
 import java.util.Collections;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -27,26 +28,33 @@ import org.osgi.service.condition.Condition;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
+import com.ibm.ws.runtime.update.RuntimeUpdateListener;
+import com.ibm.ws.runtime.update.RuntimeUpdateManager;
+import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
+import com.ibm.ws.threading.listeners.CompletionListener;
+
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
- * Activator to track running condition (io.openliberty.process.running) and listen configuration update events. Re-register the 
- * session.cache.config service when both the running condition is true and the configuration is updated.
- * 
+ * Activator to track running condition (io.openliberty.process.running) and listen configuration update events. Re-register the
+ * session.cache.config condition service when both the running condition is true and the configuration is updated.
+ *
  */
-public class Activator implements BundleActivator, ServiceTrackerCustomizer<Condition, Boolean>, ConfigurationListener {
+public class Activator implements BundleActivator, ServiceTrackerCustomizer<Condition, Boolean>, ConfigurationListener, RuntimeUpdateListener {
+    public static final String SESSION_CACHE_CONFIG_CONDITION = "session.cache.config";
     private final AtomicReference<ServiceRegistration<Condition>> conditionReg = new AtomicReference<>();
-    
     volatile ServiceTracker<Condition, Boolean> runningConditionTracker;
     volatile BundleContext bc;
-    
+
     @Override
     public void start(BundleContext context) throws Exception {
         bc = context;
         runningConditionTracker = new ServiceTracker<>(bc, Condition.class, this);
         runningConditionTracker.open();
         refreshConfigCondition();
-        bc.registerService(ConfigurationListener.class, this, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
+        bc.registerService(
+                           new String[] {ConfigurationListener.class.getName(), RuntimeUpdateListener.class.getName()},
+                           this, null);
     }
 
     @Override
@@ -74,20 +82,49 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Cond
 
     @Override
     public void configurationEvent(ConfigurationEvent event) {
-        if ("com.ibm.ws.session.cache".equals(event.getPid()) && (event.getType() == ConfigurationEvent.CM_UPDATED || event.getType() == ConfigurationEvent.CM_DELETED)) {
+        if ("com.ibm.ws.session.cache".equals(event.getPid())
+            && (event.getType() == ConfigurationEvent.CM_UPDATED || event.getType() == ConfigurationEvent.CM_DELETED)) {
             // using == Boolean.TRUE here because getService may return null
             if (runningConditionTracker.getService() == Boolean.TRUE) {
-                refreshConfigCondition();
+                doRefreshConfigCondition.set(true);
             }
         }
     }
 
-    private void refreshConfigCondition() {
+    AtomicBoolean doRefreshConfigCondition = new AtomicBoolean(false);
+
+    @Override
+    public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
+        if (RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName())) {
+            notification.onCompletion(new CompletionListener<Boolean>() {
+
+                @Override
+                public void successfulCompletion(Future<Boolean> future, Boolean result) {
+                    checkForRefresh();
+                }
+
+                @Override
+                public void failedCompletion(Future<Boolean> future, Throwable t) {
+                    checkForRefresh();
+                }
+
+                private void checkForRefresh() {
+                    if (doRefreshConfigCondition.compareAndSet(true, false)) {
+                        refreshConfigCondition();
+                    }
+                }
+
+            });
+        }
+    }
+
+    void refreshConfigCondition() {
         conditionReg.getAndUpdate((reg) -> {
             if (reg != null) {
                 reg.unregister();
             }
-            return bc.registerService(Condition.class, Condition.INSTANCE, FrameworkUtil.asDictionary(Collections.singletonMap(Condition.CONDITION_ID, "session.cache.config")));
+            return bc.registerService(Condition.class, Condition.INSTANCE,
+                                      FrameworkUtil.asDictionary(Collections.singletonMap(Condition.CONDITION_ID, SESSION_CACHE_CONFIG_CONDITION)));
         });
     }
 }

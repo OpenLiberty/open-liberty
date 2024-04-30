@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2018 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.session.store.db;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
@@ -168,21 +169,20 @@ public class DatabaseStoreService implements SessionStoreService {
         dataSourceFactoryRef.deactivate(context);
         uowCurrentRef.deactivate(context);
         userTransactionRef.deactivate(context);
-        if (isCompletedPassivation()) { //START 128284
-            serializationServiceRef.deactivate(context);
-        } else {
-
-            while (!isCompletedPassivation()){
-                try {
-                    Thread.sleep(100L); // sleep 1/10th of a second
-                } catch (InterruptedException e) {
-                    FFDCFilter.processException(e, this.getClass().getName(), "180");
-                } finally {
-                    serializationServiceRef.deactivate(context);
-                }
+        
+        // Block the progress of deactivate so that session manager is able to access the DB until it finishes stopping applications.
+        // The approach of blocking is aligned CacheStoreService with MAX_WAIT
+        final long MAX_WAIT = TimeUnit.SECONDS.toNanos(20);
+        for (long start = System.nanoTime(); !isCompletedPassivation() && System.nanoTime() - start < MAX_WAIT;)
+        {    
+            try {
+                TimeUnit.MILLISECONDS.sleep(100); // sleep 1/10th of a second
+            } catch (InterruptedException e) {
+                FFDCFilter.processException(e, this.getClass().getName(), "180");
             }
-        } // END 128284
-
+        }
+        serializationServiceRef.deactivate(context);
+        
     }
 
     /**

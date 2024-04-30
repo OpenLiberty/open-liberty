@@ -12,12 +12,16 @@
  *******************************************************************************/
 package io.openliberty.jcache.internal;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -27,6 +31,11 @@ import org.osgi.service.condition.Condition;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
+import com.ibm.ws.runtime.update.RuntimeUpdateListener;
+import com.ibm.ws.runtime.update.RuntimeUpdateManager;
+import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
+import com.ibm.ws.threading.listeners.CompletionListener;
+
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
@@ -34,8 +43,9 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  * jcache.cachemanager.config condition service when both the running condition is true and the configuration is updated.
  *
  */
-public class Activator implements BundleActivator, ServiceTrackerCustomizer<Condition, Boolean>, ConfigurationListener {
+public class Activator implements BundleActivator, ServiceTrackerCustomizer<Condition, Boolean>, ConfigurationListener, RuntimeUpdateListener {
     public static final String CACHE_MANAGER_CONFIG_CONDITION = "jcache.cachemanager.config";
+    private static final Set<String> pids = new HashSet<>(Arrays.asList("io.openliberty.jcache.cachemanager", "io.openliberty.jcache.cachingprovider"));
     private final AtomicReference<ServiceRegistration<Condition>> conditionReg = new AtomicReference<>();
     volatile ServiceTracker<Condition, Boolean> runningConditionTracker;
     volatile BundleContext bc;
@@ -46,7 +56,9 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Cond
         runningConditionTracker = new ServiceTracker<>(bc, Condition.class, this);
         runningConditionTracker.open();
         refreshConfigCondition();
-        bc.registerService(ConfigurationListener.class, this, FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, Integer.MIN_VALUE)));
+        bc.registerService(
+                           new String[] { ConfigurationListener.class.getName(), RuntimeUpdateListener.class.getName() },
+                           this, null);
     }
 
     @Override
@@ -74,16 +86,43 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Cond
 
     @Override
     public void configurationEvent(ConfigurationEvent event) {
-        if ("io.openliberty.jcache.cachemanager".equals(event.getFactoryPid())
+        if (pids.contains(event.getFactoryPid())
             && (event.getType() == ConfigurationEvent.CM_UPDATED || event.getType() == ConfigurationEvent.CM_DELETED)) {
             // using == Boolean.TRUE here because getService may return null
             if (runningConditionTracker.getService() == Boolean.TRUE) {
-                refreshConfigCondition();
+                doRefreshConfigCondition.set(true);
             }
         }
     }
 
-    private void refreshConfigCondition() {
+    AtomicBoolean doRefreshConfigCondition = new AtomicBoolean(false);
+
+    @Override
+    public void notificationCreated(RuntimeUpdateManager updateManager, RuntimeUpdateNotification notification) {
+        if (RuntimeUpdateNotification.CONFIG_UPDATES_DELIVERED.equals(notification.getName())) {
+            notification.onCompletion(new CompletionListener<Boolean>() {
+
+                @Override
+                public void successfulCompletion(Future<Boolean> future, Boolean result) {
+                    checkForRefresh();
+                }
+
+                @Override
+                public void failedCompletion(Future<Boolean> future, Throwable t) {
+                    checkForRefresh();
+                }
+
+                private void checkForRefresh() {
+                    if (doRefreshConfigCondition.compareAndSet(true, false)) {
+                        refreshConfigCondition();
+                    }
+                }
+
+            });
+        }
+    }
+
+    void refreshConfigCondition() {
         conditionReg.getAndUpdate((reg) -> {
             if (reg != null) {
                 reg.unregister();

@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF CVE Reporting
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKF1700 - CWWKF1799
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.reporting.internal: CWWKF1700 - CWWKF1799
+
+CWWKF1700.reporting.is.enabled=CWWKF1700I: La v\u00e9rification des vuln\u00e9rabilit\u00e9s de s\u00e9curit\u00e9 est activ\u00e9e. Les informations relatives \u00e0 cet environnement d'ex\u00e9cution Liberty seront analys\u00e9es par rapport aux vuln\u00e9rabilit\u00e9s connues.
+CWWKF1700.reporting.is.enabled.explanation= La v\u00e9rification des vuln\u00e9rabilit\u00e9s de s\u00e9curit\u00e9 est actuellement activ\u00e9e.
+CWWKF1700.reporting.is.enabled.useraction=Pour d\u00e9sactiver la v\u00e9rification des vuln\u00e9rabilit\u00e9s en mati\u00e8re de s\u00e9curit\u00e9, sp\u00e9cifiez <cveReporting enabled="false" /> dans le fichier server.xml .
+
+CWWKF1701.reporting.is.disabled=CWWKF1701I: La v\u00e9rification des vuln\u00e9rabilit\u00e9s de s\u00e9curit\u00e9 est d\u00e9sactiv\u00e9e.
+CWWKF1701.reporting.is.disabled.explanation=La v\u00e9rification des vuln\u00e9rabilit\u00e9s de s\u00e9curit\u00e9 doit \u00eatre activ\u00e9e pour pouvoir \u00eatre ex\u00e9cut\u00e9e.
+CWWKF1701.reporting.is.disabled.useraction=Pour activer la v\u00e9rification des vuln\u00e9rabilit\u00e9s en mati\u00e8re de s\u00e9curit\u00e9, sp\u00e9cifiez <cveReporting enabled="true" /> dans le fichier server.xml .
+
+more.information.message=Pour plus d'informations, vous pouvez consulter {0}
+
+CWWKF1702.cve.found=CWWKF1702W: En fonction d'une \u00e9valuation de {0}, passez en revue les bulletins de s\u00e9curit\u00e9 suivants: {1}
+CWWKF1702.cve.found.explanation=Des vuln\u00e9rabilit\u00e9s de s\u00e9curit\u00e9 ont \u00e9t\u00e9 d\u00e9tect\u00e9es.
+CWWKF1702.cve.found.useraction=Passez en revue les CVE dans le message et r\u00e9solvez les vuln\u00e9rabilit\u00e9s de s\u00e9curit\u00e9.
+
+CWWKF1703.cve.not.found=CWWKF1703I: Sur la base de l'analyse de l'environnement d'ex\u00e9cution, aucune vuln\u00e9rabilit\u00e9 de s\u00e9curit\u00e9 n\u00e9cessitant une analyse plus approfondie n'a \u00e9t\u00e9 trouv\u00e9e.
+CWWKF1703.cve.not.found.explanation=Aucune vuln\u00e9rabilit\u00e9 de s\u00e9curit\u00e9 n'a \u00e9t\u00e9 trouv\u00e9e pour le moment.
+CWWKF1703.cve.not.found.useraction=N\u00e9ant.
+
+CWWKF1704.incorrect.url=CWWKF1704W: L'URL sp\u00e9cifi\u00e9e n'est pas correcte et une connexion ne peut pas \u00eatre \u00e9tablie: {0}
+CWWKF1704.incorrect.url.explanation=Aucune connexion ne peut \u00eatre \u00e9tablie pour l'URL fournie.
+CWWKF1704.incorrect.url.useraction=V\u00e9rifiez que l'URL est correcte.
+
+CWWKF1705.failed.response=CWWKF1705W: Impossible d'extraire les informations CVE pertinentes en raison d'un probl\u00e8me de communication avec le service de g\u00e9n\u00e9ration de rapports CVE.
+CWWKF1705.failed.response.explanation=Le service ne peut pas fournir de r\u00e9ponse.
+CWWKF1705.failed.response.useraction=Corrigez le probl\u00e8me de communication et r\u00e9essayez.
+
+CWWKF1706.issue.parsing=CWWKF1706W: Probl\u00e8me lors de l'analyse syntaxique des informations produit.
+CWWKF1706.issue.parsing.explanation=Le service ne peut pas analyser correctement les informations sur le produit.
+CWWKF1706.issue.parsing.useraction=Corrigez le probl\u00e8me de communication et r\u00e9essayez.
