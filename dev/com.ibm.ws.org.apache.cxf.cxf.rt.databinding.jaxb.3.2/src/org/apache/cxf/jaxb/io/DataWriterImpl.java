@@ -56,7 +56,7 @@ import org.apache.cxf.service.model.MessagePartInfo;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 
 public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
-    private static final Logger LOG = LogUtils.getLogger(JAXBDataBinding.class);
+    private static final Logger LOG = LogUtils.getLogger(DataWriterImpl.class); // Liberty change
 
     ValidationEventHandler veventHandler;
     boolean setEventHandler = true;
@@ -85,6 +85,9 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
             if (veventHandler == null) {
                 veventHandler = databinding.getValidationEventHandler();
             }
+	    if (LOG.isLoggable(Level.FINEST)) { // Liberty change begin
+		LOG.finest("Validation event handler: " + (veventHandler != null ? veventHandler.getClass().getCanonicalName() : "null"));
+	    } // Liberty change end
             setEventHandler = MessageUtils.getContextualBoolean(m,
                     JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
         }

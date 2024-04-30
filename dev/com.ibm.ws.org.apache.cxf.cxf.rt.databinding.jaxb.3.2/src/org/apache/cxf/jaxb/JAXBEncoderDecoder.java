@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -101,6 +102,10 @@ import org.apache.ws.commons.schema.constants.Constants;
  * Utility functions for JAXB.
  */
 public final class JAXBEncoderDecoder {
+
+    private static final Logger LOG = LogUtils.getLogger(JAXBEncoderDecoder.class);
+    private static boolean isLoggableFinest = LOG.isLoggable(Level.FINEST);  // Liberty change
+
     private static final class AddXSITypeStreamReader extends StreamReaderDelegate {
         private boolean first = true;
         private int offset = 1;
@@ -181,8 +186,6 @@ public final class JAXBEncoderDecoder {
             return super.getAttributeValue(namespaceUri, localName);
         }
     }
-
-    private static final Logger LOG = LogUtils.getLogger(JAXBEncoderDecoder.class);
 
     private JAXBEncoderDecoder() {
     }
@@ -324,6 +327,9 @@ public final class JAXBEncoderDecoder {
 
         try {
             JAXBUtils.BridgeWrapper bridge = JAXBUtils.createBridge(ctxClasses, qname, cls, anns);
+	    if (isLoggableFinest) { // Liberty change begin
+               LOG.finest("unmarshalWithBridge: bridge class: " + bridge.getClass().getCanonicalName());
+	    } // Liberty change end
 
             if (source instanceof XMLStreamReader) {
                 //DOMUtils.writeXml(StaxUtils.read((XMLStreamReader)source), System.out);
@@ -467,17 +473,25 @@ public final class JAXBEncoderDecoder {
                         Object o = Utils.getMethodValue(m, elValue);  
                         // Liberty Change Start: Prevent duplicate or null message elements from appearing in SOAPFaults when Throwable.getMessage() is added to the list of methods to be marshalled
                         if(m.getName().equals("getMessage") && o != null) { // Only write getMessage element once and as long as o is not null.
-                            LOG.finest("method m: " + m +  " is equal to getMessage and Object o is not null");
+			    if (isLoggableFinest) { // Liberty change begin
+                               LOG.finest("method m: " + m +  " is equal to getMessage and Object o is not null");
+			    } // Liberty change end
                             if(!o.equals(hasGetMessage)) { // Don't write a second message element if getMessage has already been processed for the same value
+			    if (isLoggableFinest) { // Liberty change begin
                                 LOG.finest("Object value wasn't equal to hasGetMessage, writing Object o: " + o);
+		            } // Liberty change end	
                                 writeObject(marshaller, writer, newJAXBElement(mname, String.class, o));
                             }
                             hasGetMessage = o; // track that one getMessage method and value has already been written
                         } else if (!m.getName().equals("getMessage")){ // if the method is not getMessage write any value. 
-                            LOG.finest("method m: " + m +  " is not equal to getMessage, writing Object o:" + o);
+			    if (isLoggableFinest) { // Liberty change begin
+                               LOG.finest("method m: " + m +  " is not equal to getMessage, writing Object o:" + o);
+		            } // Liberty change end	
                             writeObject(marshaller, writer, newJAXBElement(mname, String.class, o));
                         } else if (o == null && !m.getDeclaringClass().equals(Throwable.class)) { // Add getMessage if the value is null, but it's not a Throwable.class. 
-                            LOG.finest("method m: " + m +  " is not from Throwable.class. Writing Object o:" + o);
+			    if (isLoggableFinest) { // Liberty change begin
+                               LOG.finest("method m: " + m +  " is not from Throwable.class. Writing Object o:" + o);
+			    } // Liberty change end
                             writeObject(marshaller, writer, newJAXBElement(mname, String.class, o));
                         }
                         // Liberty Change End
@@ -545,6 +559,9 @@ public final class JAXBEncoderDecoder {
                 reader.nextTag();
             } catch (XMLStreamException e) {
                 // ignore
+	        if (isLoggableFinest) { // Liberty change begin
+                   LOG.finest("unmarshallException: Ignoring exception: " + e);
+		} // Liberty change end
             }
         } else {
             throw new Fault(new Message("UNKNOWN_SOURCE", LOG, source.getClass().getName()));
@@ -820,6 +837,9 @@ public final class JAXBEncoderDecoder {
                         return CastUtils.cast((List<?>)cls.newInstance());
                     } catch (Exception e) {
                         // ignore, just return an ArrayList
+	                if (isLoggableFinest) { // Liberty change begin
+                           LOG.finest("createList: Ignoring exception: " + e);
+		        } // Liberty change end
                     }
                 }
             }
@@ -872,6 +892,9 @@ public final class JAXBEncoderDecoder {
             // special treat two jaxb defined built-in abstract types
             unmarshalWithClass = true;
         }
+	if (isLoggableFinest) { // Liberty change begin
+           LOG.finest("doUnmarshal: unmarshalWithClass value: " + unmarshalWithClass);
+	} // Liberty change end
         if (source instanceof Node) {
             obj = unmarshalWithClass ? u.unmarshal((Node)source, clazz)
                 : u.unmarshal((Node)source);
@@ -990,6 +1013,9 @@ public final class JAXBEncoderDecoder {
                         .invoke(c, new Object[1]);
                 } catch (Throwable t) {
                     //ignore
+	            if (isLoggableFinest) { // Liberty change begin
+                       LOG.finest("findExtraNamespaces: Ignoring Throwable: " + t);
+		    } // Liberty change end
                 }
                 Field f = ReflectionUtil.getDeclaredField(c.getClass(), "mNamespaces");
                 ReflectionUtil.setAccessible(f);
@@ -1018,7 +1044,10 @@ public final class JAXBEncoderDecoder {
                     }
                 }
             } catch (Throwable t2) {
-                //ignore
+                // ignore
+	        if (isLoggableFinest) { // Liberty change begin
+                   LOG.finest("findExtraNamespaces: Ignoring Throwable t2: " + t2);
+		} // Liberty change end
             }
         }
         if (!nsMap.isEmpty()) {
@@ -1031,6 +1060,12 @@ public final class JAXBEncoderDecoder {
                 }
             }
             if (!nsMap.isEmpty()) {
+	        if (isLoggableFinest) { // Liberty change begin
+                   LOG.finest("findExtraNamespaces: Got some extra namespaces: " + (nsMap != null ? nsMap.size() : "0"));
+                   for (Map.Entry<String, String> exNs: nsMap.entrySet()) {
+                      LOG.finest("ExNSkey: " + exNs.getKey() + ", ExNSValue: " + exNs.getValue());
+		   }
+		} // Liberty change end
                 @SuppressWarnings("unchecked")
                 final Map.Entry<String, String>[] namespaces
                     = nsMap.entrySet().toArray(new Map.Entry[nsMap.size()]);

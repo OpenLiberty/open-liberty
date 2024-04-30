@@ -70,6 +70,7 @@ class JAXBContextInitializer extends ServiceModelVisitor {
     private Set<Class<?>> globalAdapters = new HashSet<>();
     private Map<String, Object> unmarshallerProperties;
     private Bus bus;
+    private boolean isLoggableFinest = LOG.isLoggable(Level.FINEST);  // Liberty change
 
     JAXBContextInitializer(Bus bus, ServiceInfo serviceInfo,
                            Set<Class<?>> classes,
@@ -86,11 +87,17 @@ class JAXBContextInitializer extends ServiceModelVisitor {
     public void begin(MessagePartInfo part) {
         Class<?> clazz = part.getTypeClass();
         if (clazz == null) {
+            if (isLoggableFinest) { // Liberty change begin
+	       LOG.finest("begin: MessagePart typeClass is null, returning");
+	    } // Liberty change end
             return;
         }
 
         if (Exception.class.isAssignableFrom(clazz)) {
             //exceptions are handled special, make sure we mark it
+            if (isLoggableFinest) { // Liberty change begin
+	       LOG.finest("begin: Setting custom_exception property to true");
+	    } // Liberty change end
             part.setProperty(JAXBDataBinding.class.getName() + ".CUSTOM_EXCEPTION",
                              Boolean.TRUE);
         }
@@ -110,6 +117,9 @@ class JAXBContextInitializer extends ServiceModelVisitor {
                 //if the wrapper has a type class, we don't need to do anything
                 //as everything would have been discovered when walking the
                 //wrapper type (unless it's a header which wouldn't be in the wrapper)
+                if (isLoggableFinest) { // Liberty change begin
+	           LOG.finest("begin: Wrapper already has a type class, return");
+	        } // Liberty change end
                 return;
             }
         }
@@ -117,6 +127,9 @@ class JAXBContextInitializer extends ServiceModelVisitor {
             && clazz.isArray()
             && !Byte.TYPE.equals(clazz.getComponentType())) {
             clazz = clazz.getComponentType();
+            if (isLoggableFinest) { // Liberty change begin
+	       LOG.finest("begin: Clazz componentType: " + (clazz != null ? clazz.getName() : "null"));
+	    } // Liberty change end
         }
 
         Annotation[] a = (Annotation[])part.getProperty("parameter.annotations");
@@ -124,6 +137,9 @@ class JAXBContextInitializer extends ServiceModelVisitor {
 
         Type genericType = (Type) part.getProperty("generic.type");
         if (genericType != null) {
+            if (isLoggableFinest) { // Liberty change begin
+	       LOG.finest("begin: genericType: " + genericType.getTypeName());
+	    } // Liberty change end
             boolean isList = Collection.class.isAssignableFrom(clazz);
             if (isFromWrapper) {
                 if (genericType instanceof Class
@@ -150,6 +166,9 @@ class JAXBContextInitializer extends ServiceModelVisitor {
                     Class<? extends Object> arrayCls =
                         Array.newInstance((Class<?>) pt.getActualTypeArguments()[0], 0).getClass();
                     clazz = arrayCls;
+                    if (isLoggableFinest) { // Liberty change begin
+	               LOG.finest("begin: Setting typeclass 1 to : " + (clazz != null ? clazz.getName() : "null"));
+	            } // Liberty change end
                     part.setTypeClass(clazz);
                     if (isFromWrapper) {
                         addType(clazz.getComponentType(), true);
@@ -161,6 +180,9 @@ class JAXBContextInitializer extends ServiceModelVisitor {
                     Class<? extends Object> arrayCls =
                         Array.newInstance((Class<?>) gat.getGenericComponentType(), 0).getClass();
                     clazz = Array.newInstance(arrayCls, 0).getClass();
+                    if (isLoggableFinest) { // Liberty change begin
+	               LOG.finest("begin: Setting typeclass 2 to : " + (clazz != null ? clazz.getName() : "null"));
+	            } // Liberty change end
                     part.setTypeClass(clazz);
                     if (isFromWrapper) {
                         addType(clazz.getComponentType(), true);
@@ -182,6 +204,9 @@ class JAXBContextInitializer extends ServiceModelVisitor {
                 }
             }
 
+            if (isLoggableFinest) { // Liberty change begin
+	       LOG.finest("begin: addClass: " + (clazz != null ? clazz.getName() : "null"));
+	    } // Liberty change end
             addClass(clazz);
         }
     }
@@ -375,7 +400,7 @@ class JAXBContextInitializer extends ServiceModelVisitor {
             return;
         }
         if (cls.getName().startsWith("java.")
-            || cls.getName().startsWith("javax.")) {
+            || cls.getName().startsWith("javax.") || cls.getName().startsWith("jakarta.")) { // Liberty change
             return;
         }
         //walk the public fields/methods to try and find all the classes. JAXB will only load the

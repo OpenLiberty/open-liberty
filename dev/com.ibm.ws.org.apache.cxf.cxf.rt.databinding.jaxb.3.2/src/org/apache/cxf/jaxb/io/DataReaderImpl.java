@@ -46,11 +46,12 @@ import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.service.model.MessagePartInfo;
 
 public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
-    private static final Logger LOG = LogUtils.getLogger(JAXBDataBinding.class);
+    private static final Logger LOG = LogUtils.getLogger(DataReaderImpl.class);  // Liberty change
     JAXBDataBinding databinding;
     boolean unwrapJAXBElement;
     ValidationEventHandler veventHandler;
     boolean setEventHandler = true;
+    private static boolean isLoggableFine = LOG.isLoggable(Level.FINE);  // Liberty change
 
     public DataReaderImpl(JAXBDataBinding binding, boolean unwrap) {
         super(binding.getContext());
@@ -76,6 +77,9 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
             }
             // hack for CXF-3453
             String msg = event.getMessage();
+	    if (LOG.isLoggable(Level.FINE)) {  // Liberty change begin
+		LOG.fine("ValidationEvent message: " + msg);
+	    } // Liberty change end
             return msg != null
                 && msg.contains(":Id")
                 && (msg.startsWith("cvc-type.3.1.1")
@@ -88,7 +92,9 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
     public void setProperty(String prop, Object value) {
         if (prop.equals(JAXBDataBinding.UNWRAP_JAXB_ELEMENT)) {
             unwrapJAXBElement = Boolean.TRUE.equals(value);
-            LOG.fine("UnwrapJAXBElement is set to: " + unwrapJAXBElement + " trough property"); // Liberty change
+	    if (LOG.isLoggable(Level.FINE)) {  // Liberty change begin
+            	LOG.fine("UnwrapJAXBElement is set to: " + unwrapJAXBElement + " trough property"); // Liberty change
+	    } // Liberty change end
         } else if (prop.equals(org.apache.cxf.message.Message.class.getName())) {
             org.apache.cxf.message.Message m = (org.apache.cxf.message.Message)value;
             veventHandler = getValidationEventHandler(m, JAXBDataBinding.READER_VALIDATION_EVENT_HANDLER);
@@ -97,14 +103,18 @@ public class DataReaderImpl<T> extends JAXBDataBase implements DataReader<T> {
             }
             setEventHandler = MessageUtils.getContextualBoolean(m,
                     JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
-            LOG.fine("SetEventHandler is set to: " + setEventHandler); // Liberty change
+	    if (LOG.isLoggable(Level.FINE)) {  // Liberty change begin
+            	LOG.fine("SetEventHandler is set to: " + setEventHandler); // Liberty change
+	    } // Liberty change end
             Object unwrapProperty = m.get(JAXBDataBinding.UNWRAP_JAXB_ELEMENT);
             if (unwrapProperty == null) {
                 unwrapProperty = m.getExchange().get(JAXBDataBinding.UNWRAP_JAXB_ELEMENT);
             }
             if (unwrapProperty != null) {
                 unwrapJAXBElement = Boolean.TRUE.equals(unwrapProperty);
-                LOG.fine("UnwrapJAXBElement is set to: " + unwrapJAXBElement); // Liberty change
+	        if (LOG.isLoggable(Level.FINE)) {  // Liberty change begin
+                   LOG.fine("UnwrapJAXBElement is set to: " + unwrapJAXBElement); // Liberty change
+	        } // Liberty change end
             }
         }
     }

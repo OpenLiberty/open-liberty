@@ -23,6 +23,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.apache.cxf.attachment.AttachmentDataSource;
@@ -33,6 +35,7 @@ import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
+import org.apache.cxf.common.logging.LogUtils;
 
 /**
  *
@@ -48,6 +51,8 @@ public final class JAXBAttachmentSchemaValidationHack extends AbstractPhaseInter
         super(Phase.POST_PROTOCOL);
     }
 
+    private static final Logger LOG = LogUtils.getL7dLogger(JAXBAttachmentSchemaValidationHack.class);  // Liberty change
+
     public void handleMessage(Message message) throws Fault {
         // This assumes that this interceptor is only use in IN / IN Fault chains.
         if (ServiceUtils.isSchemaValidationEnabled(SchemaValidationType.IN, message)
@@ -61,6 +66,9 @@ public final class JAXBAttachmentSchemaValidationHack extends AbstractPhaseInter
                     } catch (IOException e) {
                         throw new Fault(e);
                     }
+		    if (LOG.isLoggable(Level.FINEST)) { // Liberty change begin
+			LOG.finest("Adding AttachmentDataSource: " + ds.getName());
+		    } // Liberty change end
                     dss.add(ds);
                 }
             }
