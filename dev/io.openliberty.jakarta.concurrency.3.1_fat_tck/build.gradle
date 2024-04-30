@@ -11,6 +11,24 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+// Custom repository for Open Liberty version used for certification
+repositories {
+  ivy {
+    url 'https://public.dhe.ibm.com/ibmdl/export/pub/software/'
+    
+    //https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/tck/2024-04-23_2000/openliberty-24.0.0.6-beta-cl240520240423-2000.zip'
+    
+    patternLayout {
+      artifact '/[organization]/[module]/tck/2024-04-23_2000/[revision].[ext]'
+    }
+    
+    metadataSources {
+      ivyDescriptor()
+      artifact()
+    } 
+  }
+}
+
 configurations { 
   arquillian
   wlp
@@ -19,8 +37,9 @@ configurations {
 dependencies {
   arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.1.1'
 
-  //TODO Configure WLP dependency if doing verification testing, Example below:
-  //wlp 'io.openliberty.beta:openliberty-runtime:24.0.0.5-beta@zip'
+  //TODO Configure WLP dependency if doing verification testing, Examples below:
+  //wlp 'openliberty:runtime:openliberty-24.0.0.6-beta-cl240520240423-2000@zip' // certification version
+  //wlp 'io.openliberty.beta:openliberty-runtime:24.0.0.6-beta@zip'             // future versions
 }
 
 addRequiredLibraries.dependsOn addDerby
@@ -28,7 +47,7 @@ addRequiredLibraries.dependsOn addDerby
 // These tasks are used only for external users who do not want to build all of liberty to run TCK
 
 ext {
-	fromServer = System.getProperty("jakarta.tck.platform", "web") == "web" ? "ConcurrentTCKWebServer" : "ConcurrentTCKFullServer"
+    fromServer = System.getProperty("jakarta.tck.platform", "web") == "web" ? "ConcurrentTCKWebServer" : "ConcurrentTCKFullServer"
 }
 
 task getWLP(type: Copy) {

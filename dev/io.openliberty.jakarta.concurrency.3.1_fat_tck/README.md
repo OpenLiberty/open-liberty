@@ -198,7 +198,7 @@ For more detailed instructions on building Open Liberty please see the [Building
 Finally, you can run the TCK using the `buildandrun` gradle task
 
 ```sh
-./gradlew io.openliberty.jakarta.concurrency.3.0_fat_tck:buildandrun
+./gradlew io.openliberty.jakarta.concurrency.3.1_fat_tck:buildandrun
 ```
 
 NOTE: Running the TCK using this method will use a published TCK version, and not the `SNAPSHOT` version from a local build. 
