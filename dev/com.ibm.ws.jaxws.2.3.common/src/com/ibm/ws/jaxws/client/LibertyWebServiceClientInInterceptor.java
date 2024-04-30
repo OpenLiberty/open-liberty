@@ -76,7 +76,7 @@ public class LibertyWebServiceClientInInterceptor  extends AbstractPhaseIntercep
             ignoreUnexpectedElements = WebServicesClientConfigHolder.getIgnoreUnexpectedElements(WebServiceConfigConstants.DEFAULT_PROP);
         }
         
-        // If both values are null, then we can just skip the rest of this interceptor and return
+        // If both values are null, then we can just skip the rest of this intercepter and return
         if(enableSchemaValidation == null && ignoreUnexpectedElements == null) {
             if (debug) {
                 Tr.debug(tc, "No webServiceClient configuration found. returning.");
@@ -84,43 +84,29 @@ public class LibertyWebServiceClientInInterceptor  extends AbstractPhaseIntercep
             return;
         }
         
+        
+        // Enable or disable schema validation as long as property is non-null
+        if(enableSchemaValidation != null) {
+            message.put("schema-validation-enabled", (boolean) enableSchemaValidation);
 
-        
-        if (debug) {
-            Tr.debug(tc, "Found webServiceClient configuration - enableSchemaValidation = " + enableSchemaValidation + ", ignoreUnexpectedElements = " + ignoreUnexpectedElements);
-            
-        }
-        
-        // now that we've done pulled the config, we can cast the Objects to proper booleans
-        boolean enableSchemaValidationValue = (boolean) enableSchemaValidation;
-        boolean ignoreUnexpectedElementsValue = (boolean) ignoreUnexpectedElements;
-        
-        // If both values are set like this, these are the default behaviors and we can just no-op return. 
-        if(enableSchemaValidationValue == true && ignoreUnexpectedElementsValue == false) {
-            if (debug) {
-                Tr.debug(tc, "The webServiceClient configuration found matches the default behavior, returning.");
-            }
-            return;
-        }
-        
-        if(enableSchemaValidationValue == false) { // since the existing behavior already sets this with a true value, only change it when value is false
-            // Set the CXF property for enabling schema validation based on the value from our config
-            MessageUtils.getContextualBoolean(message, "schema-validation-enabled", (boolean) enableSchemaValidation);
-            
             if (debug) {
                 Tr.debug(tc, "Set schema-validation-enabled to " + enableSchemaValidation);
                 
             }
         }
-            
-        if(ignoreUnexpectedElementsValue == true) { // existing behavior sets this to true, but since we have to invert to match the property, only set it when our property is true
-            // Set the CXF property for enabling schema validation based on the value from our config
+        
+        // Set ignoreUnexpectedElements as long as property is non-null
+        if(ignoreUnexpectedElements != null) {
+
+            // Existing behavior sets this to true, but we have to invert to match the property, and
+            // set the CXF property for enabling schema validation based on the value from our config
             // TODO implement custom Validation Event Handler to ignore only UnexpectedElementExceptions
-            MessageUtils.getContextualBoolean(message, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, !ignoreUnexpectedElementsValue); // Since we are using our internal property to set a CXF property, we must invert the value
+            message.put(JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, ! (boolean) ignoreUnexpectedElements); // Since we are using our internal property to set a CXF property, we must invert the value
             
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to  " + !ignoreUnexpectedElementsValue);
+            if (debug) {
+                Tr.debug(tc, "Set JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER to  " + !(boolean) ignoreUnexpectedElements);
             } 
+            
         }
     }
 
