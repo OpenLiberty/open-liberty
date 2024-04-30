@@ -14,8 +14,9 @@ package com.ibm.websphere.microprofile.faulttolerance.metrics.fat.suite;
 
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.CDIFallbackTest;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.MetricRemovalTest;
-import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.TelemetryMetricIsolationTest;
 import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.circuitbreaker.CircuitBreakerMetricTest;
+import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.TelemetryMetricIsolationTest;
+import com.ibm.websphere.microprofile.faulttolerance.metrics.fat.tests.TelemetryMetricCombinationTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -27,6 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 MetricRemovalTest.class,
                 CircuitBreakerMetricTest.class,
                 TelemetryMetricIsolationTest.class,
+                TelemetryMetricCombinationTest.class,
 })
 public class FATSuite {
 
