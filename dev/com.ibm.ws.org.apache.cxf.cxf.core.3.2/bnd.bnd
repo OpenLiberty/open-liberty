@@ -168,7 +168,8 @@ instrument.classesExcludes: \
   org/apache/cxf/phase/*.class, \
   org/apache/cxf/interceptor/*.class, \
   org/apache/cxf/service/model/*.class, \
-  org/apache/cxf/staxutils/*.class
+  org/apache/cxf/staxutils/*.class, \
+  org/apache/cxf/common/logging/*.class
 
 -buildpath: \
   javax.activation:activation;version=1.1, \

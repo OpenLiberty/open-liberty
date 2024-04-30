@@ -239,7 +239,7 @@ public final class LogUtils {
      * Create a logger
      */
     @FFDCIgnore({ MissingResourceException.class, IllegalArgumentException.class }) // Liberty Change
-    protected static Logger createLogger(final Class<?> cls,
+    protected static CXFLogger createLogger(final Class<?> cls,
                                          String name,
                                          String loggerName) {
         ClassLoader orig = getContextClassLoader();
@@ -271,21 +271,26 @@ public final class LogUtils {
                 b.getLocale();
             }
 
+            // Default logger of Liberty is WsLogger. 
+            // CXFLogger is inherited from this WsLogger class to preserve same behavior
+            // except the one that we aimed to change. Which is to add class name to log records
+            loggerClass=CXFLogger.class; //Liberty change 
+            
             if (loggerClass != null) {
                 try {
-                    Constructor<?> cns = loggerClass.getConstructor(String.class, String.class);
+                    Constructor<?> cns = loggerClass.getConstructor(String.class, String.class, Class.class);   //Liberty change: Class is added as parameter
                     if (name == null) {
                         try {
-                            return (Logger) cns.newInstance(loggerName, bundleName);
+                            return (CXFLogger) cns.newInstance(loggerName, bundleName, cls);    //Liberty change: Class is added as parameter
                         } catch (InvocationTargetException ite) {
                             if (ite.getTargetException() instanceof MissingResourceException) {
-                                return (Logger) cns.newInstance(loggerName, null);
+                                return (CXFLogger) cns.newInstance(loggerName, null, cls);   //Liberty change: Class is added as parameter
                             }
                             throw ite;
                         }
                     }
                     try {
-                        return (Logger) cns.newInstance(loggerName, bundleName);
+                        return (CXFLogger) cns.newInstance(loggerName, bundleName, cls);   //Liberty change: Class is added as parameter
                     } catch (InvocationTargetException ite) {
                         if (ite.getTargetException() instanceof MissingResourceException) {
                             throw (MissingResourceException) ite.getTargetException();
@@ -297,12 +302,12 @@ public final class LogUtils {
                 }
             }
 
-            Logger logger;
+            CXFLogger logger;
             try {
-                logger = Logger.getLogger(loggerName, bundleName); //NOPMD
+                 logger = CXFLogger.getLogger(loggerName, bundleName, cls);   //Liberty change: Class is added as parameter
             } catch (IllegalArgumentException | MissingResourceException ex) {
                 //likely a mismatch on the bundle name, just return the default
-                logger = Logger.getLogger(loggerName); //NOPMD
+                logger = CXFLogger.getLogger(loggerName, cls); //NOPMD    //Liberty change: Class is added as parameter
             }
             return logger;
         } finally {
