@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -70,8 +70,10 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
     protected static final int CS_NULL = -1;
     protected static final int CS_DELETE_IN_PROGRESS = -2;
 
-    protected final Object findOpenIndexSync = new Object() {};
-    protected final Object shutdownSync = new Object() {};
+    protected final Object findOpenIndexSync = new Object() {
+    };
+    protected final Object shutdownSync = new Object() {
+    };
 
     protected int maxKeysPerSelector;
 
@@ -83,6 +85,31 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
     private final boolean combineSelectors;
     protected int wakeupOption;
     private final ThreadGroup tGroup;
+
+    // virtual threads enablement patch begin
+    private final static boolean useVirtualThreads;
+    private static int initialRequestsHandledByDEs;
+
+    static {
+        String wqmUseVirtualThreads = getSystemProperty("wqmUseVirtualThreads");
+        useVirtualThreads = (wqmUseVirtualThreads == null) ? false : Boolean.parseBoolean(wqmUseVirtualThreads);
+        String wqminitialRequestsHandledByDEs = getSystemProperty("wqminitialRequestsHandledByDEs");
+        initialRequestsHandledByDEs = (wqminitialRequestsHandledByDEs == null) ? 10 : Integer.parseInt(wqminitialRequestsHandledByDEs);
+    }
+
+    /**
+     * privileged access to read system properties
+     *
+     */
+    private static final String getSystemProperty(final String propName) {
+        return AccessController.doPrivileged(new PrivilegedAction<String>() {
+            @Override
+            public String run() {
+                return System.getProperty(propName);
+            }
+        });
+    }
+    // virtual threads enablement patch end
 
     /**
      * Constructor.
@@ -769,19 +796,29 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
      * @return boolean, true if dispatched
      */
     private boolean dispatchWorker(Worker worker) {
-        ExecutorService executorService = CHFWBundle.getExecutorService();
-        if (null == executorService) {
-            if (FrameworkState.isValid()) {
-                Tr.error(tc, "EXECUTOR_SVC_MISSING");
-                throw new RuntimeException("Missing executor service");
-            } else {
-                // The framework is shutting down: the executor service may be
-                // missing by the time the async work is dispatched.
-                return false;
-            }
-        }
+        // virtual threads enablement patch begin
+        if (initialRequestsHandledByDEs > 0)
+            initialRequestsHandledByDEs--;
+        if (!useVirtualThreads || (initialRequestsHandledByDEs > 0)) {
 
-        executorService.execute(worker);
+            ExecutorService executorService = CHFWBundle.getExecutorService();
+            if (null == executorService) {
+                if (FrameworkState.isValid()) {
+                    Tr.error(tc, "EXECUTOR_SVC_MISSING");
+                    throw new RuntimeException("Missing executor service");
+                } else {
+                    // The framework is shutting down: the executor service may be
+                    // missing by the time the async work is dispatched.
+                    return false;
+                }
+            }
+
+            executorService.execute(worker);
+        } else { // gjd hack
+            // hack in a virtual thread launch ...
+            Thread thread = Thread.ofVirtual().start(worker);
+        }
+        // virtual threads enablement patch end
 
         return true;
     }
@@ -1022,7 +1059,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
      * As a result, a separate thread from the caller will do the work.
      *
      * @param work
-     *            information about the connect
+     *                 information about the connect
      * @return true if request was dispatched, false if not
      */
     protected boolean dispatchConnect(ConnectInfo work) {

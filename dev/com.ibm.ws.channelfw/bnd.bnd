@@ -23,6 +23,10 @@ WS-TraceGroup: ChannelFramework
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
+javac.source: 21
+javac.target: 21
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))
+
 # For each exported package, create (in that package) a package-info.java
 # file, and place an @version javadoc tag in package-level javadoc. 
 # Append ";provide:=true" if this bundle also provides an implementation
