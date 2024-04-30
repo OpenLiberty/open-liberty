@@ -246,17 +246,24 @@ public class WebContainerRequestState {
             }
         }
 
+        System.out.println("Num Attr values: " + attribute.length) ;
+        String tempFixedValue = null ; 
+       if (attribute.length > 1) {
+           tempFixedValue = attribute[1] ; 
+        }
+        String fixedValue = tempFixedValue ; 
+
         if (cookieAttributesMap == null || cookieAttributesMap.isEmpty()) {
             cookieAttributesMap = new HashMap<String,HashMap<String,String>>();
             cookieAttributesMap.put(cookieName, new HashMap<String,String>() {{
-                put(attribute[0], attribute[1]);
+                put(attribute[0], fixedValue);
             }});
         } else {
             HashMap<String,String> existingAttributesMap = cookieAttributesMap.get(cookieName);
             if(existingAttributesMap == null) { // avoid unit test NPEs
                 existingAttributesMap = new HashMap<String,String>();
             }
-            existingAttributesMap.put(attribute[0], attribute[1]);
+            existingAttributesMap.put(attribute[0], fixedValue);
             cookieAttributesMap.put(cookieName, existingAttributesMap);
         }
     }

@@ -138,6 +138,10 @@
      			<Option label="%sameSiteCookieStrict" value="Strict"/>
         </AD>    
         
+        <AD id="partitionedCookie" name="%partitionedCookie" description="%partitionedCookie.desc"
+            required="false" type="Boolean"
+            default="false" />
+
         <AD id="useContextRootForSSOCookiePath" name="%useContextRootForSSOCookiePath" description="%useContextRootForSSOCookiePath.desc" 
             required="false" type="Boolean" default="false"/>
      			
@@ -151,7 +155,7 @@
             ibm:final="true" name="internal" description="internal use only" />
         <AD id="loggedOutCookieCacheService.cardinality.minimum" type="String"  default="${count(loggedOutCookieCacheRef)}" 
             ibm:final="true" name="internal" description="internal use only"/>
-            
+
     </OCD>
     <Designate pid="com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl">
         <Object ocdref="com.ibm.ws.webcontainer.security.metatype"/>

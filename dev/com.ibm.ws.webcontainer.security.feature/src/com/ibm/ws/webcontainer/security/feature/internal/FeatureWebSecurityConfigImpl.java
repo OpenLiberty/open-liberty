@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,7 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean trackLoggedOutSSOCookies = false;
     private final Boolean useOnlyCustomCookieName = false;
     private final Boolean useContextRootForSSOCookiePath = false;
+    private final Boolean partitionedCookie = false;
 
     FeatureWebSecurityConfigImpl(Map<String, Object> newProperties) {
         //nothing to do, values are hard-coded
@@ -411,6 +412,16 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
             return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getSameSiteCookie();
         else
             return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean getPartitionedCookie() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getPartitionedCookie();
+        else
+            return partitionedCookie;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,7 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean trackLoggedOutSSOCookies = true;
     private final Boolean useOnlyCustomCookieName = false;
     private final String sameSiteCookie = "Disabled";
+    private final Boolean partitionedCookie = false;
     private final Boolean useContextRootForSSOCookiePath = false;
 
     WebAdminSecurityConfigImpl(Map<String, Object> newProperties) {
@@ -306,6 +307,16 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
             return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getSameSiteCookie();
         else
             return sameSiteCookie;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean getPartitionedCookie() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getPartitionedCookie();
+        else
+            return partitionedCookie;
     }
 
     @Override
