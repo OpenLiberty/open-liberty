@@ -6,6 +6,9 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security.internal;
 
@@ -70,6 +73,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     public static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
     public static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
     public static final String CFG_KEY_SAME_SITE_COOKIE = "sameSiteCookie";
+    public static final String CFG_KEY_PARTITIONED_COOKIE = "partitionedCookie";
     public static final String CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH = "useContextRootForSSOCookiePath";
     public static final String CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS = "postParamMaxRequestBodySize";
 
@@ -103,6 +107,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final String loginFormContextRoot;
     private final String basicAuthRealmName;
     private final String sameSiteCookie;
+    private final Boolean partitionedCookie;
     private final Boolean useContextRootForSSOCookiePath;
     private final Long postParamMaxRequestBodySize;
 
@@ -144,6 +149,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT, "loginFormContextRoot");
             put(CFG_KEY_BASIC_AUTH_REALM_NAME, "basicAuthRealmName");
             put(CFG_KEY_SAME_SITE_COOKIE, "sameSiteCookie");
+            put(CFG_KEY_PARTITIONED_COOKIE, "partitionedCookie");
             put(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH, "useContextRootForSSOCookiePath");
             put(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS, "postParamMaxRequestBodySize");
         }
@@ -189,6 +195,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         loginFormContextRoot = (String) newProperties.get(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT);
         basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
         sameSiteCookie = (String) newProperties.get(CFG_KEY_SAME_SITE_COOKIE);
+        partitionedCookie = (Boolean) newProperties.get(CFG_KEY_PARTITIONED_COOKIE);
         useContextRootForSSOCookiePath = (Boolean) newProperties.get(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH);
         postParamMaxRequestBodySize = (Long) newProperties.get(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS);
 
@@ -593,6 +600,15 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         return sameSiteCookie;
     }
 
+    /** the Partitioned cookie attribute is only valid when SameSite=none. */
+    @Override
+    public boolean isPartitionedCookie() {
+        if ("None".equalsIgnoreCase(sameSiteCookie)) {
+            return partitionedCookie;
+        }
+        return false;
+    }
+
     @Override
     public boolean isUseContextRootForSSOCookiePath() {
         return useContextRootForSSOCookiePath;
@@ -602,5 +618,4 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     public long postParamMaxRequestBodySize() {
         return postParamMaxRequestBodySize.longValue();
     }
-
 }

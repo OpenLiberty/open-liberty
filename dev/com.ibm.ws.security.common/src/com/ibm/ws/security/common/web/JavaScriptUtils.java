@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -228,6 +228,11 @@ public class JavaScriptUtils {
                 if ("None".equalsIgnoreCase(sameSite)) {
                     cookieProperties.put("secure", null);
                 }
+            }
+			//WC want's us to put to value for partitioned regardless of the
+			//SS value in case they have a SS setting
+            if (webAppSecurityConfig.isPartitionedCookie()) {
+              cookieProperties.put("Partitioned", null);
             }
         }
         return cookieProperties;

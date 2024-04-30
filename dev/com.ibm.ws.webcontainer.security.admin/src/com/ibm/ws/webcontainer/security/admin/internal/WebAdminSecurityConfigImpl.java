@@ -6,6 +6,9 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security.admin.internal;
 
@@ -53,6 +56,7 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean trackLoggedOutSSOCookies = true;
     private final Boolean useOnlyCustomCookieName = false;
     private final String sameSiteCookie = "Disabled";
+    private final Boolean partitionedCookie = false;
     private final Boolean useContextRootForSSOCookiePath = false;
     private final long postParamMaxRequestBodySize = 1024 * 1024 * 128L;
 
@@ -301,17 +305,29 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     public String getSameSiteCookie() {
         WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
         if (globalConfig != null)
-            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getSameSiteCookie();
+            return globalConfig.getSameSiteCookie();
         else
             return sameSiteCookie;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean isPartitionedCookie() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return globalConfig.isPartitionedCookie();
+        else
+            return partitionedCookie;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public boolean isUseContextRootForSSOCookiePath() {
         return useContextRootForSSOCookiePath;
     }
-
-    @Override
+	
+    /** {@inheritDoc} */
+	@Override
     public long postParamMaxRequestBodySize() {
         WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
         if (globalConfig != null)
