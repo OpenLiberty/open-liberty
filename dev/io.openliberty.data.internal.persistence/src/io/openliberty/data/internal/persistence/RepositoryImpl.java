@@ -247,8 +247,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * Invoked when the bean for the repository is disposed.
      */
     public void beanDisposed() {
-        // TODO re-enable when using a single bean for the repository rather than sharing the repository across multiple beans
-        // isDisposed.set(true);
+        isDisposed.set(true);
     }
 
     /**

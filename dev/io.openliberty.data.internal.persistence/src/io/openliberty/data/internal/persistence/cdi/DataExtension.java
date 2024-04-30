@@ -20,8 +20,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -72,7 +70,6 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.Bean;
-import jakarta.enterprise.inject.spi.BeanAttributes;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
@@ -87,13 +84,8 @@ import jakarta.persistence.EntityManagerFactory;
  * CDI extension to handle the injection of repository implementations
  * that this Jakarta Data provider can supply.
  */
-public class DataExtension implements Extension, PrivilegedAction<DataExtensionProvider> {
+public class DataExtension implements Extension {
     private static final TraceComponent tc = Tr.register(DataExtension.class);
-
-    /**
-     * OSGi service that registers this extension.
-     */
-    private final DataExtensionProvider provider = AccessController.doPrivileged(this);
 
     /**
      * Map of repository annotated type to Repository annotation.
@@ -123,6 +115,11 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
     @FFDCIgnore(NamingException.class)
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanMgr) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        // Obtain the service that informed CDI of this extension.
+        BundleContext bundleContext = FrameworkUtil.getBundle(DataExtensionProvider.class).getBundleContext();
+        ServiceReference<DataExtensionProvider> ref = bundleContext.getServiceReference(DataExtensionProvider.class);
+        DataExtensionProvider provider = bundleContext.getService(ref);
 
         // Group entities by data access provider and class loader
         Map<EntityManagerBuilder, EntityManagerBuilder> entityGroups = new HashMap<>();
@@ -268,10 +265,11 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
                     if (!Query.class.equals(entityClass))
                         emBuilder.add(entityClass);
 
-                BeanAttributes<?> attrs = beanMgr.createBeanAttributes(repositoryType);
-                Bean<?> bean = beanMgr.createBean(attrs, repositoryInterface, new RepositoryProducer.Factory<>( //
+                RepositoryProducer<Object> producer = new RepositoryProducer<>( //
                                 repositoryInterface, beanMgr, provider, this, //
-                                emBuilder, primaryEntityClassReturnValue[0], queriesPerEntityClass));
+                                emBuilder, primaryEntityClassReturnValue[0], queriesPerEntityClass);
+                @SuppressWarnings("unchecked")
+                Bean<Object> bean = beanMgr.createBean(producer, (Class<Object>) repositoryInterface, producer);
                 event.addBean(bean);
             }
         }
@@ -542,17 +540,6 @@ public class DataExtension implements Extension, PrivilegedAction<DataExtensionP
 
         primaryEntityClassReturnValue[0] = primaryEntityClass;
         return supportsAllEntities;
-    }
-
-    /**
-     * Obtain the service that informed CDI of this extension.
-     */
-    @Override
-    @Trivial
-    public DataExtensionProvider run() {
-        BundleContext bundleContext = FrameworkUtil.getBundle(DataExtensionProvider.class).getBundleContext();
-        ServiceReference<DataExtensionProvider> ref = bundleContext.getServiceReference(DataExtensionProvider.class);
-        return bundleContext.getService(ref);
     }
 
     /**
