@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.restfulws.mpmetrics;
 
+import java.nio.charset.MalformedInputException;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,6 +30,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs.monitor.metrics.service.RestMetricsCallback;
 
 import io.openliberty.microprofile.metrics.internal.monitor.computed.internal.ComputedMonitorMetricsHandler;
@@ -49,26 +51,25 @@ public class RestMetricsCallbackImpl implements RestMetricsCallback {
             + "duration within the previous completed full minute and lowest recorded time duration within the "
             + "previous completed full minute.";
 
-    /*
-     * Use a string that would not clash with any customer configured naming.
-     */
-    private static final String FAILURE_STRING = "!io.openliberty.metrics.failure!";
-
     @Override
     public void createRestMetric(String classMethodParamSignature, String statsKey) {
         Timer restTimer;
 
         // check if timerMap has this key - if we did, then something weird happened
         if (!timerMap.contains(statsKey)) {
-
             String appName = resolveAppNameFromStatsKey(statsKey);
 
-            /*
-             * Something went wrong, no longer continue
-             */
-            if (appName.equals(FAILURE_STRING))
+            // App name should not be null, something went wrong.
+            if (appName == null) {
+                // log and return - do not continue with creation
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc,
+                            String.format(
+                                    "Encountered issue when validating REST stats key: [%s]. REST metric will not be created."), statsKey);
+                }
                 return;
-
+            }
+            
             // Used for clean up when app is unloaded
             addKeyToMetricInfo(appName, statsKey);
 
@@ -79,7 +80,7 @@ public class RestMetricsCallbackImpl implements RestMetricsCallback {
             MetricRegistry baseMetricRegistry = MonitorAppStateListener.sharedMetricRegistries
                     .getOrCreate(MetricRegistry.BASE_SCOPE);
             Metadata metricMetadata = Metadata.builder().withName("REST.request")
-                    .withDescription(REST_REQUEST_DESCRIPTION).build(); // <- FIXME: not translated lol
+                    .withDescription(REST_REQUEST_DESCRIPTION).build(); 
             Tag classTag = new Tag("class", className);
             Tag methodTag = new Tag("method", methodName);
             restTimer = baseMetricRegistry.timer(metricMetadata, classTag, methodTag);
@@ -129,7 +130,7 @@ public class RestMetricsCallbackImpl implements RestMetricsCallback {
 
             /*
              * This should have been created. Unless something went wrong. We will not
-             * "create" it now since something has gone very wrong.
+             * "create" it now since something has gone wrong from before.
              */
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, String.format(
@@ -207,21 +208,15 @@ public class RestMetricsCallbackImpl implements RestMetricsCallback {
      * of appName[/moduleName]/class/method(params...)
      * 
      * @param statsKey the appName[/moduleName]/class/method(params...)
-     * @return the derived appName
+     * @return the derived appName or null if error occurred
      */
-    private String resolveAppNameFromStatsKey(String statsKey) {
+    private String resolveAppNameFromStatsKey(String statsKey){
         if (statsKey == null || statsKey.isBlank()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, String.format("REST StatsKey is empty"));
-            }
-            return FAILURE_STRING;
+            return null;
         } else {
             String[] keyComponents = statsKey.split("/");
-            if (keyComponents.length == 0 || keyComponents.length > 3) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, String.format("REST StatsKey is malformed"));
-                }
-                return FAILURE_STRING;
+            if (keyComponents.length == 0 || keyComponents.length > 4) {
+                return null;
             } else {
                 // AppName is always first one
                 return keyComponents[0];
