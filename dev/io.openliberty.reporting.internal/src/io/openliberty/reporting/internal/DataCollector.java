@@ -48,6 +48,7 @@ public class DataCollector {
         data.put("id", uniqueID);
         data.put("productEdition", productEdition);
         data.put("productVersion", productVersion);
+        data.put("productName", productName);
         data.put("features", String.join(",", installedFeatures));
         data.put("javaVendor", javaVendor);
         data.put("javaVersion", javaRuntimeInfo);
@@ -67,6 +68,8 @@ public class DataCollector {
 
     private final String productVersion;
     private final String productEdition;
+
+    private final String productName = "Liberty";
 
     private final Set<String> iFixSet = new HashSet<>();
 
