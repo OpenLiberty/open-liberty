@@ -10,6 +10,7 @@
 package com.ibm.ws.kernel.feature.internal.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,15 +20,28 @@ import java.util.Set;
 
 public class VerifyData {
 
+    //
+
+    public VerifyData add(VerifyData other) {
+        Map<String, VerifyCase> mappedCases = mapCases();
+        Map<String, VerifyCase> otherMappedCases = other.mapCases();
+
+        mappedCases.putAll(otherMappedCases);
+
+        return new VerifyData(mappedCases.values());
+    }
+
+    //
+
     public VerifyData() {
         this.cases = new ArrayList<>();
     }
 
-    public VerifyData(List<LazySupplier<VerifyCase>> cases) {
+    public VerifyData(Collection<? extends LazySupplier<VerifyCase>> cases) {
         this.cases = new ArrayList<>(cases.size());
 
         for (LazySupplier<VerifyCase> verifyCase : cases) {
-            this.cases.add(verifyCase.get());
+            this.cases.add(verifyCase.supply());
         }
     }
 
@@ -53,7 +67,11 @@ public class VerifyData {
 
         StringBuilder keyBuilder = new StringBuilder();
         for (VerifyCase verifyCase : cases) {
-            mappedCases.put(verifyCase.asKey(keyBuilder), verifyCase);
+            String caseKey = verifyCase.asKey(keyBuilder);
+            VerifyCase priorCase = mappedCases.put(caseKey, verifyCase);
+            if (priorCase != null) {
+                System.out.println("ERROR: Key duplication [ " + caseKey + " ]");
+            }
         }
 
         return mappedCases;
@@ -80,7 +98,7 @@ public class VerifyData {
         return System.nanoTime();
     }
 
-    public static class VerifyCase {
+    public static class VerifyCase implements LazySupplier<VerifyCase> {
         public String name;
         public String description;
         public long durationNs;
@@ -154,8 +172,8 @@ public class VerifyData {
             }
 
             String key = keyBuilder.toString();
-
             keyBuilder.setLength(0);
+
             return key;
         }
 
@@ -163,6 +181,23 @@ public class VerifyData {
                                  Set<String> altResolved, boolean altUsedKernel) {
 
             VerifyDelta.kernelAdjust(this, usedKernel, altResolved, altUsedKernel);
+        }
+
+        //
+
+        @Override
+        public VerifyCase produce() {
+            return this;
+        }
+
+        @Override
+        public VerifyCase supply() {
+            return this;
+        }
+
+        @Override
+        public VerifyCase getSupplied() {
+            return this;
         }
     }
 

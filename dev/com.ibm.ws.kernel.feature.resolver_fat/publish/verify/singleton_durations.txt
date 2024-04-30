@@ -359,12 +359,6 @@ io.openliberty.xmlBinding-3.0_SERVER 0.004876800 s
 io.openliberty.xmlBinding-4.0_SERVER 0.009160600 s
 io.openliberty.xmlWS-3.0_SERVER 0.010505400 s
 io.openliberty.xmlWS-4.0_SERVER 0.010135600 s
-test.featurefixmanager-1.0_SERVER 0.020135600 s
-test.InterimFixesManagerTest-1.0_SERVER 0.000385900 s
-test.InterimFixManagerTest-1.0_SERVER 0.000295500 s
-test.TestFixManagerTest-1.0_SERVER 0.000294600 s
-txtest-1.0_SERVER 0.000299800 s
-txtest-2.0_SERVER 0.000339900 s
 com.ibm.websphere.appserver.jaxb-2.2_CLIENT 0.002258200 s
 com.ibm.websphere.appserver.jndi-1.0_CLIENT 0.002173600 s
 com.ibm.websphere.appserver.osgiConsole-1.0_CLIENT 0.000378200 s

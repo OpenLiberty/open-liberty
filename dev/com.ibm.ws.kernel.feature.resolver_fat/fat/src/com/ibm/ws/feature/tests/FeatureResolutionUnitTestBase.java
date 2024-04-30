@@ -12,6 +12,11 @@
  *******************************************************************************/
 package com.ibm.ws.feature.tests;
 
+import static com.ibm.ws.feature.tests.RepositoryUtil.getFeature;
+import static com.ibm.ws.feature.tests.RepositoryUtil.getRepository;
+import static com.ibm.ws.feature.tests.RepositoryUtil.ignoreFeatures;
+import static com.ibm.ws.feature.tests.RepositoryUtil.setupLocations;
+import static com.ibm.ws.feature.tests.RepositoryUtil.setupRepo;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -27,9 +32,7 @@ import java.util.Set;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.feature.ProcessType;
-import com.ibm.ws.kernel.feature.Visibility;
 import com.ibm.ws.kernel.feature.internal.FeatureResolverImpl;
-import com.ibm.ws.kernel.feature.internal.subsystem.FeatureRepository;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
 import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
@@ -37,10 +40,6 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
-import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
-
-import componenttest.common.apiservices.Bootstrap;
 
 /**
  * Feature resolution testing.
@@ -62,32 +61,81 @@ public class FeatureResolutionUnitTestBase {
     public static final class FailureSummary {
         public final String description;
         public final List<String> features;
-        public final List<String> extra;
-        public final List<String> missing;
+        public final List<String> messages;
 
-        FailureSummary(String description, List<String> features, List<String> extra, List<String> missing) {
-            this.description = description;
-            this.features = new ArrayList<>(features);
-            this.extra = (((extra == null) || extra.isEmpty()) ? null : new ArrayList<>(extra));
-            this.missing = (((missing == null) || missing.isEmpty()) ? null : new ArrayList<>(missing));
+        public FailureSummary(VerifyCase inputCase, List<String> messages) {
+            this.description = inputCase.description;
+            this.features = new ArrayList<>(inputCase.input.roots);
+            this.messages = new ArrayList<>(messages);
+        }
+
+        public FailureSummary(VerifyCase inputCase, List<String> extra, List<String> missing) {
+            this.description = inputCase.description;
+            this.features = new ArrayList<>(inputCase.input.roots);
+
+            int numMessages = ((extra == null) ? 0 : extra.size()) + ((missing == null) ? 0 : missing.size());
+            ArrayList<String> useMessages = new ArrayList<>(numMessages);
+            if (extra != null) {
+                for (String extraFeature : extra) {
+                    useMessages.add("Extra [ " + extraFeature + " ]");
+                }
+            }
+            if (missing != null) {
+                for (String missingFeature : missing) {
+                    useMessages.add("Missing [ " + missingFeature + " ]");
+                }
+            }
+            this.messages = useMessages;
         }
 
         public void print(PrintStream output) {
-            output.println("Test [ " + description + " ]:");
+            output.println("Feature resolution [ " + description + " ]:");
             output.println("  Features [ " + features + " ]");
-            if (extra != null) {
-                output.println("  Extra [ " + extra + " ]");
+            for (String message : messages) {
+                output.println("  [ " + message + " ]");
             }
-            if (missing != null) {
-                output.println("  Missing [ " + missing + " ]");
+        }
+
+        public String getMessage() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("Feature resolution [ " + description + " ]");
+            builder.append(" failed with [ ");
+            builder.append(Integer.toString(messages.size()));
+            builder.append(" ] errors: ");
+
+            int errorNo = 0;
+            for (String error : messages) {
+                if (errorNo > 3) {
+                    builder.append("...");
+                    break;
+                } else if (errorNo > 0) {
+                    builder.append(", ");
+                }
+
+                builder.append(error);
+                errorNo++;
             }
+
+            return builder.toString();
         }
     }
 
-    public static void addFailure(String description, List<String> features, List<String> extra, List<String> missing) {
-        failures.add(new FailureSummary(description, features, extra, missing));
+    public static FailureSummary addRootFailure(VerifyCase inputCase, List<String> errors) {
+        FailureSummary summary = new FailureSummary(inputCase, errors);
 
+        failures.add(summary);
         System.out.println("Failures [ " + failures.size() + " ]");
+
+        return summary;
+    }
+
+    public static FailureSummary addFailure(VerifyCase inputCase, List<String> extra, List<String> missing) {
+        FailureSummary summary = new FailureSummary(inputCase, extra, missing);
+
+        failures.add(summary);
+        System.out.println("Failures [ " + failures.size() + " ]");
+
+        return summary;
     }
 
     public static void printFailures(PrintStream output) {
@@ -116,84 +164,25 @@ public class FeatureResolutionUnitTestBase {
 
     //
 
+    public static boolean didSetup;
+
+    public static void doSetupClass() throws Exception {
+        doSetupClass(getServerName());
+    }
+
     public static void doSetupClass(String serverName) throws Exception {
+        if (didSetup) {
+            return;
+        }
+
         setupLocations();
         setupRepo(serverName);
         setupBeta();
+
+        didSetup = true;
     }
 
     //
-
-    public static final String INSTALL_PATH_PROPERTY_NAME = "libertyInstallPath";
-
-    public static String IMAGE_PATH;
-    public static String BOOTSTRAP_LIB_PATH;
-
-    public static File IMAGE_DIR;
-    public static File BOOTSTRAP_LIB_DIR;
-
-    public static File getImageDir() {
-        return IMAGE_DIR;
-    }
-
-    public static File getBootstrapLibDir() {
-        return BOOTSTRAP_LIB_DIR;
-    }
-
-    public static void setupLocations() throws Exception {
-        Bootstrap bootstrap = Bootstrap.getInstance(); // throws Exception
-
-        IMAGE_PATH = bootstrap.getValue(INSTALL_PATH_PROPERTY_NAME);
-        BOOTSTRAP_LIB_PATH = IMAGE_PATH + "/lib";
-
-        IMAGE_DIR = new File(IMAGE_PATH);
-        BOOTSTRAP_LIB_DIR = new File(BOOTSTRAP_LIB_PATH);
-    }
-
-    //
-
-    public static void setupRepo(String serverName) throws Exception {
-        System.out.println("Image   [ " + IMAGE_DIR.getAbsolutePath() + " ]");
-        System.out.println("BootLib [ " + BOOTSTRAP_LIB_DIR.getAbsolutePath() + " ]");
-        System.out.println("Server  [ " + serverName + " ]");
-
-        Utils.setInstallDir(IMAGE_DIR);
-        KernelUtils.setBootStrapLibDir(BOOTSTRAP_LIB_DIR);
-        BundleRepositoryRegistry.initializeDefaults(serverName, true);
-
-        FeatureRepository repoImpl = new FeatureRepository();
-        repoImpl.init();
-        System.out.println("Features [ " + repoImpl.getFeatures().size() + " ]");
-
-        repository = new FeatureResolver.Repository() {
-            private final FeatureRepository baseRepo = repoImpl;
-
-            @Override
-            public List<ProvisioningFeatureDefinition> getFeatures() {
-                return baseRepo.getFeatures();
-            }
-
-            @Override
-            public List<ProvisioningFeatureDefinition> select(Selector<ProvisioningFeatureDefinition> selector) {
-                return baseRepo.select(selector);
-            }
-
-            @Override
-            public ProvisioningFeatureDefinition getFeature(String featureName) {
-                return baseRepo.getFeature(featureName);
-            }
-
-            @Override
-            public List<String> getConfiguredTolerates(String baseSymbolicName) {
-                return baseRepo.getConfiguredTolerates(baseSymbolicName);
-            }
-
-            @Override
-            public Collection<ProvisioningFeatureDefinition> getAutoFeatures() {
-                return baseRepo.getAutoFeatures();
-            }
-        };
-    }
 
     public static void setupBeta() {
         System.setProperty("com.ibm.ws.beta.edition", "true");
@@ -211,94 +200,8 @@ public class FeatureResolutionUnitTestBase {
 
     //
 
-    public static boolean isPublic(ProvisioningFeatureDefinition featureDef) {
-        return (featureDef.getVisibility() == Visibility.PUBLIC);
-    }
-
-    public static FeatureResolver.Repository repository;
-
-    public static FeatureResolver.Repository getRepository() {
-        return repository;
-    }
-
-    public static ProvisioningFeatureDefinition getFeature(String featureName) {
-        return getRepository().getFeature(featureName);
-    }
-
-    private static List<String> publicFeatures;
-
-    public static List<String> getPublicFeatures() {
-        if (publicFeatures == null) {
-            List<String> features = new ArrayList<>();
-            for (ProvisioningFeatureDefinition featureDef : getRepository().getFeatures()) {
-                if (isPublic(featureDef)) {
-                    features.add(featureDef.getSymbolicName());
-                }
-            }
-            publicFeatures = features;
-        }
-        return publicFeatures;
-    }
-
-    private static List<String> versionlessFeatures;
-
-    public static List<String> getVersionlessFeatures() {
-        if (versionlessFeatures == null) {
-            List<String> features = new ArrayList<>();
-            for (String publicFeature : getPublicFeatures()) {
-                if (publicFeature.startsWith("io.openliberty.versionless")) {
-                    features.add(publicFeature);
-                }
-            }
-            versionlessFeatures = features;
-        }
-        return versionlessFeatures;
-    }
-
-    private static List<String> servletFeatures;
-
-    public static List<String> getServletFeatures() {
-        if (servletFeatures == null) {
-            List<String> features = new ArrayList<>();
-            for (String publicFeature : getPublicFeatures()) {
-                if (publicFeature.startsWith("servlet-")) {
-                    features.add(publicFeature);
-                }
-            }
-            servletFeatures = features;
-        }
-        return servletFeatures;
-    }
-
-    public static List<ProvisioningFeatureDefinition> ignoreFeatures(String tag, List<String> featureNames) {
-        System.out.println("Ignore [ " + tag + " ] features:");
-        for (String featureName : featureNames) {
-            System.out.println("  " + featureName);
-        }
-
-        return Collections.emptyList();
-    }
-
-    public static List<ProvisioningFeatureDefinition> getFeatures(List<String> featureNames) {
-        List<ProvisioningFeatureDefinition> featureDefs = new ArrayList<>(featureNames.size());
-        for (String featureName : featureNames) {
-            ProvisioningFeatureDefinition featureDef = getFeature(featureName);
-            if (featureDef == null) {
-                throw new IllegalArgumentException("Feature not found [ " + featureName + " ]");
-            }
-            featureDefs.add(featureDef);
-        }
-        return featureDefs;
-    }
-
-    //
-
-    public static Collection<Object[]> readCases(File verifyDataFile) throws Exception {
-        VerifyData verifyData = readData(verifyDataFile);
+    public static Collection<Object[]> asCases(VerifyData verifyData) {
         List<? extends VerifyCase> cases = verifyData.getCases();
-
-        System.out.println("Read [ " + cases.size() + " ]" +
-                           " test cases from [ " + verifyDataFile.getAbsolutePath() + " ]");
 
         List<Object[]> params = new ArrayList<>(cases.size());
         for (VerifyCase aCase : cases) {
@@ -308,7 +211,10 @@ public class FeatureResolutionUnitTestBase {
     }
 
     public static VerifyData readData(File verifyDataFile) throws Exception {
-        return VerifyXML.read(verifyDataFile);
+        VerifyData verifyData = VerifyXML.read(verifyDataFile);
+        System.out.println("Read [ " + verifyData.getCases().size() + " ]" +
+                           " test cases from [ " + verifyDataFile.getAbsolutePath() + " ]");
+        return verifyData;
     }
 
     //
@@ -352,7 +258,50 @@ public class FeatureResolutionUnitTestBase {
 
     public static final Collection<ProvisioningFeatureDefinition> emptyFeatureDefs = Collections.<ProvisioningFeatureDefinition> emptySet();
 
-    public Result resolveFeatures(VerifyCase verifyCase) throws Exception {
+    public List<String> detectFeatureErrors(List<String> rootFeatures) {
+        // Do nothing by default; this should be specialized
+        // according to the case pattern used by the test.
+        return null;
+    }
+
+    public List<String> detectSingletonErrors(List<String> rootFeatures) {
+        String rootFeature = rootFeatures.get(0);
+
+        if (getFeature(rootFeature) == null) {
+            String message = "Root feature [ " + rootFeature + " ]: Missing from baseline";
+            return Collections.singletonList(message);
+        } else {
+            return null;
+        }
+    }
+
+    public List<String> detectPairErrors(List<String> rootFeatures) {
+        String rootFeature0 = rootFeatures.get(0);
+        String rootFeature1 = rootFeatures.get(1);
+
+        List<String> rootErrors = null;
+
+        if (getFeature(rootFeature0) == null) {
+            String message = "Root feature [ " + rootFeature0 + " ]: Missing from baseline";
+
+            rootErrors = new ArrayList<>(2);
+            rootErrors.add(message);
+        }
+
+        if (getFeature(rootFeature1) == null) {
+            String message = "Combination feature [ " + rootFeature1 + " ]: Missing from baseline";
+
+            if (rootErrors == null) {
+                rootErrors = Collections.singletonList(message);
+            } else {
+                rootErrors.add(message);
+            }
+        }
+
+        return rootErrors;
+    }
+
+    public Result resolveFeatures(VerifyCase verifyCase, List<String> rootErrors) throws Exception {
         return resolver.resolveFeatures(getRepository(),
                                         ignoreFeatures("Kernel", verifyCase.input.kernel),
                                         verifyCase.input.roots,
@@ -384,8 +333,15 @@ public class FeatureResolutionUnitTestBase {
 
         System.out.println("Verifying [ " + inputCase.name + " ] [ " + inputCase.description + " ]");
 
+        List<String> rootErrors = detectFeatureErrors(inputCase.input.roots);
+        if (rootErrors != null) {
+            FailureSummary summary = addRootFailure(inputCase, rootErrors);
+            fail(summary.getMessage());
+            return; // 'fail' never returns.
+        }
+
         long startNs = System.nanoTime();
-        Result result = resolveFeatures(inputCase);
+        Result result = resolveFeatures(inputCase, rootErrors);
         long endNs = System.nanoTime();
         long durationNs = endNs - startNs;
 
@@ -423,8 +379,9 @@ public class FeatureResolutionUnitTestBase {
         }
 
         if ((errors != null) && !errors.isEmpty()) {
-            addFailure(inputCase.description, inputCase.input.roots, extra, missing);
-            fail("Verification failed with [ " + errors.size() + " ] errors");
+            FailureSummary summary = addFailure(inputCase, extra, missing);
+            fail(summary.getMessage());
+            return; // 'fail' never returns.
         }
     }
 

@@ -21,7 +21,8 @@ import java.util.Set;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.kernel.feature.ProcessType;
-import com.ibm.ws.kernel.feature.internal.util.LazySupplier;
+import com.ibm.ws.kernel.feature.internal.util.BiTransformer;
+import com.ibm.ws.kernel.feature.internal.util.LazySupplierImpl;
 import com.ibm.ws.kernel.feature.internal.util.RepoXML;
 import com.ibm.ws.kernel.feature.internal.util.Transformer;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData;
@@ -53,6 +54,27 @@ public class FeatureResolverBaseline {
 
     //
 
+    public static final String WAS_LIBERTY_TAIL = "_WL";
+
+    private String adjustFileName(String fileName) {
+        if ( fileName == null ) {
+            return null;
+
+        } else if ( isOpenLiberty() ) {
+            return fileName;
+
+        } else {
+            int extensionIndex = fileName.lastIndexOf('.');
+            if ( extensionIndex == -1 ) {
+                return fileName + WAS_LIBERTY_TAIL;
+            } else {
+                String baseName = fileName.substring(0, extensionIndex);
+                String ext = fileName.substring(extensionIndex);
+                return baseName + WAS_LIBERTY_TAIL + ext;
+            }
+        }
+    }
+
     public static void generate(FeatureResolverImpl resolver, Repository repository,
                                 Set<String> allowedMultiple,
                                 Collection<ProvisioningFeatureDefinition> kernelFeatures) {
@@ -60,22 +82,29 @@ public class FeatureResolverBaseline {
         FeatureResolverBaseline baseline =
             new FeatureResolverBaseline(resolver, repository);
 
-        if (VerifyEnv.REPO_FILE_NAME != null) {
-            baseline.writeRepository(VerifyEnv.REPO_FILE_NAME);
+        String repoFileName = VerifyEnv.REPO_FILE_NAME;
+        if (repoFileName != null) {
+            baseline.writeRepository(baseline.adjustFileName(repoFileName));
         }
 
-        if (VerifyEnv.RESULTS_SINGLETON_FILE_NAME != null) {
+        String singletonFileName = VerifyEnv.RESULTS_SINGLETON_FILE_NAME;
+        if (singletonFileName != null) {
+            String durationsFileName = VerifyEnv.DURATIONS_SINGLETON_FILE_NAME;
+
             baseline.generateSingleton(allowedMultiple,
                                        kernelFeatures,
-                                       VerifyEnv.RESULTS_SINGLETON_FILE_NAME,
-                                       VerifyEnv.DURATIONS_SINGLETON_FILE_NAME);
+                                       baseline.adjustFileName(singletonFileName),
+                                       baseline.adjustFileName(durationsFileName));
         }
 
-        if (VerifyEnv.RESULTS_SERVLET_FILE_NAME != null) {
+        String servletFileName = VerifyEnv.RESULTS_SERVLET_FILE_NAME;
+        if (servletFileName != null) {
+            String durationsFileName = VerifyEnv.DURATIONS_SERVLET_FILE_NAME;
+
             baseline.generateServlet(allowedMultiple,
                                      kernelFeatures,
-                                     VerifyEnv.RESULTS_SERVLET_FILE_NAME,
-                                     VerifyEnv.DURATIONS_SERVLET_FILE_NAME);
+                                     baseline.adjustFileName(servletFileName),
+                                     baseline.adjustFileName(durationsFileName));
         }
     }
 
@@ -96,6 +125,12 @@ public class FeatureResolverBaseline {
 
     private static final String SERVLET_VERSIONLESS_PREFIX = "servlet-";
     private static final String VERSIONLESS_PREFIX = "io.openliberty.versionless.";
+
+    private static final String WAS_LIBERTY_FEATURE_NAME = "apiDiscovery-1.0";
+
+    private boolean isOpenLiberty() {
+        return (repository.getFeature(WAS_LIBERTY_FEATURE_NAME) == null);
+    }
 
     private List<String> getServletFeatures() {
         List<String> servletFeatures = new ArrayList<>();
@@ -148,7 +183,7 @@ public class FeatureResolverBaseline {
 
     public static interface CaseGenerator {
         String getDescription();
-        List<LazySupplier<VerifyCase>> generate();
+        List<LazySupplierImpl<VerifyCase>> generate();
     }
 
     private void writeCases(CaseGenerator generator,
@@ -161,7 +196,7 @@ public class FeatureResolverBaseline {
         String resultsFilePath = resultsFile.getAbsolutePath();
 
         info("Resolving ...");
-        List<LazySupplier<VerifyCase>> cases = generator.generate();
+        List<LazySupplierImpl<VerifyCase>> cases = generator.generate();
         info("Resolving ... done");
 
         info("Writing to [ " + resultsFilePath + " ] ...");
@@ -202,7 +237,7 @@ public class FeatureResolverBaseline {
             }
 
             @Override
-            public List<LazySupplier<VerifyCase>> generate() {
+            public List<LazySupplierImpl<VerifyCase>> generate() {
                 return generateSingleton(allowedMultiple, kernelFeatures);
             }
         };
@@ -235,7 +270,7 @@ public class FeatureResolverBaseline {
             }
 
             @Override
-            public List<LazySupplier<VerifyCase>> generate() {
+            public List<LazySupplierImpl<VerifyCase>> generate() {
                 return generateServlet(allowedMultiple, kernelFeatures);
             }
         };
@@ -279,10 +314,10 @@ public class FeatureResolverBaseline {
      *
      * @return A list of (lazy) case data.
      */
-    private List<LazySupplier<VerifyCase>> generateSingleton(final Set<String> allowedMultiple,
+    private List<LazySupplierImpl<VerifyCase>> generateSingleton(final Set<String> allowedMultiple,
                                                              final Collection<ProvisioningFeatureDefinition> kernelFeatures) {
 
-        List<ProvisioningFeatureDefinition> publicDefs = repository.select(RepoXML.IS_PUBLIC);
+        List<ProvisioningFeatureDefinition> publicDefs = repository.select(RepoXML.PUBLIC_NOT_TEST);
         int numDefs = publicDefs.size();
         ProvisioningFeatureDefinition[] publicDefsArray = publicDefs.toArray( new ProvisioningFeatureDefinition[numDefs]);
         Arrays.sort(publicDefsArray, COMPARE_SYMBOLIC);
@@ -319,13 +354,13 @@ public class FeatureResolverBaseline {
                 }
         };
 
-        List<LazySupplier<VerifyCase>> cases = new ArrayList<>( publicServerDefs.size() + publicClientDefs.size() );
+        List<LazySupplierImpl<VerifyCase>> cases = new ArrayList<>( publicServerDefs.size() + publicClientDefs.size() );
 
         for (ProvisioningFeatureDefinition def : publicServerDefs ) {
             final ProvisioningFeatureDefinition useDef = def;
-            cases.add( new LazySupplier<VerifyCase>() {
+            cases.add( new LazySupplierImpl<VerifyCase>() {
                 @Override
-                public VerifyCase supply() {
+                public VerifyCase produce() {
                     return createServerResult.apply(useDef);
                 }
             });
@@ -333,9 +368,9 @@ public class FeatureResolverBaseline {
 
         for (ProvisioningFeatureDefinition def : publicClientDefs ) {
             final ProvisioningFeatureDefinition useDef = def;
-            cases.add( new LazySupplier<VerifyCase>() {
+            cases.add( new LazySupplierImpl<VerifyCase>() {
                 @Override
-                public VerifyCase supply() {
+                public VerifyCase produce() {
                     return createClientResult.apply(useDef);
                 }
             });
@@ -359,8 +394,8 @@ public class FeatureResolverBaseline {
      *
      * @return A list of (lazy) case data.
      */
-    private List<LazySupplier<VerifyCase>> generateServlet(final Set<String> allowedMultiple,
-                                                           final Collection<ProvisioningFeatureDefinition> kernelFeatures) {
+    private List<LazySupplierImpl<VerifyCase>> generateServlet(final Set<String> allowedMultiple,
+                                                               final Collection<ProvisioningFeatureDefinition> kernelFeatures) {
 
         List<String> servletFeatures = getServletFeatures();
         List<String> versionlessFeatures = getVersionlessFeatures();
@@ -368,37 +403,39 @@ public class FeatureResolverBaseline {
         int numServlet = servletFeatures.size();
         int numVersionless = versionlessFeatures.size();
 
-        info("Servlet features [ " + numServlet+ " ]");
-        info("Versionless features [ " + numVersionless + " ]");
+        info("Servlet features [ " + numServlet + " ]");
+        for ( String feature : servletFeatures ) {
+            info("  [ " + feature + " ]");
+        }
 
-        final Transformer<List<String>, VerifyCase> createResult =
-            new Transformer<List<String>, VerifyCase>() {
+        info("Versionless features [ " + numVersionless + " ]");
+        for ( String feature : versionlessFeatures ) {
+            info("  [ " + feature + " ]");
+        }
+
+        final BiTransformer<String, String, VerifyCase> createResult =
+            new BiTransformer<String, String, VerifyCase>() {
                 @Override
-                public VerifyCase apply(List<String> rootFeatures) {
+                public VerifyCase apply(String servletFeature, String versionlessFeature) {
                     return createServletResult(allowedMultiple,
-                                               kernelFeatures, rootFeatures,
+                                               kernelFeatures,
+                                               servletFeature, versionlessFeature,
                                                ProcessType.SERVER);
                 }
         };
 
         info("Servlet cases [ " + numServlet * numVersionless + " ]");
 
-        List<LazySupplier<VerifyCase>> servletCases = new ArrayList<>(numServlet * numVersionless);
-
-        final List<String> rootFeatures = new ArrayList<String>(2);
-        rootFeatures.add("dummy"); // Need to pre-populate the list to enable
-        rootFeatures.add("dummy"); // setting specific elements.
+        List<LazySupplierImpl<VerifyCase>> servletCases = new ArrayList<>(numServlet * numVersionless);
 
         for ( String servletFeature : servletFeatures ) {
-            rootFeatures.set(0, servletFeature);
-
             for ( String versionlessFeature : versionlessFeatures ) {
-                rootFeatures.set(1, versionlessFeature);
-
-                servletCases.add( new LazySupplier<VerifyCase>() {
+                final String useServlet = servletFeature;
+                final String useVersionless = versionlessFeature;
+                servletCases.add( new LazySupplierImpl<VerifyCase>() {
                     @Override
-                    public VerifyCase supply() {
-                        return createResult.apply(rootFeatures);
+                    public VerifyCase produce() {
+                        return createResult.apply(useServlet, useVersionless);
                     }
                 });
             }
@@ -424,13 +461,19 @@ public class FeatureResolverBaseline {
      */
     private VerifyCase createServletResult(Set<String> allowedMultiple,
                                            Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                                           List<String> rootFeatures,
+                                           String servletFeature, String versionlessFeature,
                                            ProcessType processType) {
 
         Set<String> preResolved = Collections.emptySet();
         EnumSet<ProcessType> processTypes = EnumSet.of(processType);
 
+        List<String> rootFeatures = new ArrayList<>(2);
+        rootFeatures.add(servletFeature);
+        rootFeatures.add(versionlessFeature);
+
         info("Creating servlet test result ... ");
+        info("  Servlet feature [ " + servletFeature + " ]");
+        info("  Versionless feature [ " + versionlessFeature + " ]");
 
         long startTimeNs = VerifyData.getTimeNs();
 
@@ -449,9 +492,6 @@ public class FeatureResolverBaseline {
         info("Creating servlet test result ... done [ " + Long.toString(durationNs) + " ns ]");
 
         boolean allowMultiple = (allowedMultiple != null);
-
-        String servletFeature = rootFeatures.get(0);
-        String versionlessFeature = rootFeatures.get(1);
 
         String name = servletFeature + "_" + versionlessFeature + (allowMultiple ? "_n" : "");
 

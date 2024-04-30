@@ -128,7 +128,7 @@ public class FATFeatureTester {
         while ((againstFeature = againstFeatures.poll()) != null) {
             if (!compatibleFeatures.contains(againstFeature) &&
                 !incompatibleFeatures.contains(againstFeature)) {
-                FATLogger.info(c, method, "Unexpected test [ " + baseFeature + " ] against [ " + againstFeature + " ]");
+                FATLogger.info(c, method, "Test [ " + baseFeature + " ] against [ " + againstFeature + " ]: Disincluded");
                 continue;
             }
 

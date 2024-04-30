@@ -9,19 +9,44 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal.util;
 
-public abstract class LazySupplier<T> {
-    private T supplied;
+/**
+ * Type for a lazy producer.
+ */
+public interface LazySupplier<T> {
 
-    public abstract T supply();
+    /**
+     * Produce an object of the supplied type.
+     *
+     * This is distinguished from {@link #supply()}: Usually,
+     * {@link #produce()} produces a new instance, while
+     * {@link #supply()} returns either a new instance obtained
+     * from {@link #produce()}, or returns a cached copy of a
+     * previously supplied instance.
+     *
+     * @return An object of the supplied type.
+     */
+    T produce();
 
-    public T getSupplied() {
-        return supplied;
-    }
+    /**
+     * Supply an object of the supplied type.
+     *
+     * This is distinguished from {@link #produce()}: Usually,
+     * {@link #produce()} produces a new instance, while
+     * {@link #supply()} returns either a new instance obtained
+     * from {@link #produce()}, or returns a cached copy of a
+     * previously supplied instance.
+     *
+     * @return An object of the supplied type.
+     */
+    T supply();
 
-    public T get() {
-        if (supplied == null) {
-            supplied = supply();
-        }
-        return supplied;
-    }
+    /**
+     * Answer the previously supplied value.
+     *
+     * Answer null if {@link #supply()} has not yet been invoked.
+     *
+     * @return The previously supplied value.
+     */
+    T getSupplied();
+
 }

@@ -20,10 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.osgi.framework.Version;
+
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
-
-import org.osgi.framework.Version;
 
 /**
  * A resolver for liberty features. The resolver has two modes:
@@ -42,7 +42,7 @@ public interface FeatureResolver {
     public static interface Selector<T> {
         boolean test(T input);
     }
-    
+
     /**
      * A collection of features which are available for feature resolution.
      */
@@ -101,28 +101,61 @@ public interface FeatureResolver {
 
     /**
      * A feature resolution result.
+     *
+     * The result includes both resolved features, and includes feature resolution
+     * errors.
      */
     public static interface Result {
+        /**
+         * Answer the names of resolved features.
+         *
+         * @return The names of resolved features.
+         */
         Set<String> getResolvedFeatures();
 
         //
 
+        /**
+         * Tell if any errors were recorded when resolving the features.
+         *
+         * See {@link #getMissing()}, {@link #getNonPublicRoots()}, and {@link #getWrongProcessTypes()}.
+         *
+         * @return True or false telling if errors were recorded.
+         */
         boolean hasErrors();
 
+        /**
+         * Tell what requested features were missing.
+         *
+         * @return The features which were missing.
+         */
         Set<String> getMissing();
 
+        /**
+         * Tell what requested features were not public features.
+         *
+         * @return Requested features which are not public features.
+         */
         Set<String> getNonPublicRoots();
 
         /**
-         * Not really used yet
+         * Tell what resolved features are for the wrong process type.
+         *
+         * The chains show how the problem feature was reached.
+         *
+         * @return Resolved features which are of the wrong process type.
          */
         Map<String, Chain> getWrongProcessTypes();
 
         /**
-         * The conflicting chains that resulted from a resolution operation. The key
-         * is the base name of the feature that has conflicting versions required.
-         * The value is a collection of dependency {@link Chain}s that transitively
-         * lead to the conflicting versions of the feature.
+         * Tell what resolved features require multiple, incompatible versions
+         * of the feature.
+         *
+         * The chains show how each of the versions of the feature was reached.
+         *
+         * Keys are base feature names.
+         *
+         * @return Table of feature conflicts.
          */
         Map<String, Collection<Chain>> getConflicts();
     }
@@ -137,6 +170,22 @@ public interface FeatureResolver {
         private final Version _preferredVersion;
         private final String _originalFeatureReq;
 
+        private static Version parseVersion(String preferredVersion) {
+            try {
+                return Version.parseVersion(preferredVersion);
+            } catch (IllegalArgumentException e) {
+                return Version.emptyVersion;
+            }
+        }
+
+        private static List<String> copyChain(Collection<String> chain) {
+            return (chain.isEmpty() ? Collections.<String> emptyList() : new ArrayList<String>(chain));
+        }
+
+        public Chain(String rootSymbolicName, String preferredVersion) {
+            this(Collections.<String> emptyList(), Collections.singletonList(rootSymbolicName), preferredVersion, rootSymbolicName);
+        }
+
         /**
          * Creates a dependency chain.
          *
@@ -145,29 +194,21 @@ public interface FeatureResolver {
          * @param preferredVersion   The preferred version
          * @param originalFeatureReq The full feature name that is required.
          */
-        public Chain(Collection<String> chain, List<String> candidates, String preferredVersion, String originalFeatureReq) {
-            _chain = chain.isEmpty() ? Collections.<String> emptyList() : new ArrayList<String>(chain);
+        public Chain(Collection<String> chain,
+                     List<String> candidates,
+                     String preferredVersion,
+                     String originalFeatureReq) {
+
+            _chain = copyChain(chain);
             _candidates = candidates;
-            Version v;
-            try {
-                v = Version.parseVersion(preferredVersion);
-            } catch (IllegalArgumentException e) {
-                v = Version.emptyVersion;
-            }
-            _preferredVersion = v;
+            _preferredVersion = parseVersion(preferredVersion);
             _originalFeatureReq = originalFeatureReq;
         }
 
         public Chain(String candidate, String preferredVersion, String originalFeatureReq) {
             _chain = Collections.<String> emptyList();
             _candidates = Collections.singletonList(candidate);
-            Version v;
-            try {
-                v = Version.parseVersion(preferredVersion);
-            } catch (IllegalArgumentException e) {
-                v = Version.emptyVersion;
-            }
-            _preferredVersion = v;
+            _preferredVersion = parseVersion(preferredVersion);
             _originalFeatureReq = originalFeatureReq;
         }
 

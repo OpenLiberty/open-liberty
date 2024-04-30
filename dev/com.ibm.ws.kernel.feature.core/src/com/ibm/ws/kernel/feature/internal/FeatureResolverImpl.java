@@ -209,7 +209,6 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     @Override
-
     public Result resolveFeatures(FeatureResolver.Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures,
                                   Set<String> preResolved, boolean allowMultipleVersions) {
         // Note that when no process type is passed we support all process types.
@@ -317,14 +316,11 @@ public class FeatureResolverImpl implements FeatureResolver {
                     // don't allow non-public roots
                     selectionContext.getResult().addNonPublicRoot(rootFeatureName);
                     iRootFeatures.remove();
-                } else if (!!!supportedProcessType(selectionContext._supportedProcessTypes, rootFeatureDef)) {
+                } else if (!supportedProcessType(selectionContext._supportedProcessTypes, rootFeatureDef)) {
                     // don't allow features that are for the wrong container type
                     String rootSymbolicName = rootFeatureDef.getSymbolicName();
-                    String[] nameAndVersion = parseNameAndVersion(rootSymbolicName);
-                    String preferredVersion = nameAndVersion[1];
-                    Chain chain = new Chain(Collections.<String> emptyList(), Collections.singletonList(rootSymbolicName), preferredVersion,
-                                            rootSymbolicName);
-                    selectionContext.getResult().addWrongProcessType(rootFeatureName, chain);
+                    String preferredVersion = parseVersion(rootSymbolicName);
+                    selectionContext.getResult().addWrongProcessType(rootFeatureName, preferredVersion);
                     iRootFeatures.remove();
                 } else if (preResolved.contains(rootFeatureDef.getSymbolicName())) {
                     // remove pre-resolved features from the root
@@ -438,10 +434,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         for (String rootFeatureName : rootFeatures) {
             ProvisioningFeatureDefinition rootFeatureDef = selectionContext.getRepository().getFeature(rootFeatureName);
             if (rootFeatureDef == null) {
-                // missing case
                 selectionContext.getResult().addMissing(rootFeatureName);
             } else {
-                // process the selected root and its included features
                 processSelected(rootFeatureDef, null, chain, result, selectionContext);
             }
         }
@@ -450,6 +444,14 @@ public class FeatureResolverImpl implements FeatureResolver {
         // In other words, it is the best conflict count we will ever achieve.
         selectionContext.setInitialRootBlockedCount();
         return result;
+    }
+
+    public static String parseName(String feature) {
+        return parseNameAndVersion(feature)[0];
+    }
+
+    public static String parseVersion(String feature) {
+        return parseNameAndVersion(feature)[1];
     }
 
     @FFDCIgnore(IllegalArgumentException.class)
@@ -553,7 +555,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         if (symbolicName == null) {
             // TODO why do we report this feature as missing, seems a better error message would indicate the FeatureResource requirement has no SN
             // get the symbolic name from the last in chain
-            if (!!!chain.isEmpty()) {
+            if (!chain.isEmpty()) {
                 selectionContext.getResult().addMissing(chain.peekLast());
             }
             return;
@@ -910,7 +912,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             // first check for container type
             for (Iterator<String> iCandidateNames = candidateNames.iterator(); iCandidateNames.hasNext();) {
                 ProvisioningFeatureDefinition fd = _repository.getFeature(iCandidateNames.next());
-                if (!!!supportedProcessType(_supportedProcessTypes, fd)) {
+                if (!supportedProcessType(_supportedProcessTypes, fd)) {
                     Chain c = new Chain(chain, candidateNames, preferredVersion, symbolicName);
                     _current._result.addWrongProcessType(symbolicName, c);
                     iCandidateNames.remove();
@@ -920,7 +922,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 _current._result.addMissing(symbolicName);
                 return;
             }
-            if (!!!isSingleton || allowMultipleVersions(baseSymbolicName)) {
+            if (!isSingleton || allowMultipleVersions(baseSymbolicName)) {
                 // must allow all candidates
                 return;
             }
@@ -1106,7 +1108,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         void addConflict(String baseFeatureName, List<Chain> conflicts) {
             _current._blockedFeatures.add(baseFeatureName);
-            _current._result.addConflict0(baseFeatureName, conflicts);
+            _current._result.addConflict(baseFeatureName, conflicts);
         }
 
         void putVersionless(String feature, List<String> tolerates) {
@@ -1252,74 +1254,153 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
 
     static class ResultImpl implements Result {
-        // TODO we should not have use a LinkedHashSet, but it appears auto-features are pretty sensitive to being installed last
-        final Set<String> _resolved = new LinkedHashSet<String>();
-        final Set<String> _missing = new HashSet<String>();
-        final Set<String> _nonPublicRoots = new HashSet<String>();
-        final Map<String, Collection<Chain>> _conflicts = new HashMap<String, Collection<Chain>>();
-        final Map<String, Chain> _wrongProcessTypes = new HashMap<String, Chain>();
+        public ResultImpl() {
+            this._missing = new HashSet<String>();
+            this._nonPublicRoots = new HashSet<String>();
+            this._wrongProcessTypes = new HashMap<>();
+            this._conflicts = new HashMap<>();
+            this._resolved = new LinkedHashSet<>();
+        }
+
+        //
 
         @Override
-        public Set<String> getResolvedFeatures() {
-            return _resolved;
+        public boolean hasErrors() {
+            return !(_missing.isEmpty() &&
+                     _nonPublicRoots.isEmpty() &&
+                     _wrongProcessTypes.isEmpty() &&
+                     _conflicts.isEmpty());
         }
 
-        ResultImpl setResolvedFeatures(Collection<String> resolved) {
-            // NOTE: This should replace any existing resolved.
-            // When processing auto-features we start with
-            // an already processed permutation with a result
-            // we must replace that with this new set of resolved
-            _resolved.clear();
-            _resolved.addAll(resolved);
-            return this;
-        }
+        //
+
+        private final Set<String> _missing;
 
         @Override
         public Set<String> getMissing() {
             return _missing;
         }
 
+        // FeatureResolverImpl.checkRootsAreAccessibleAndSetFullName
+        // -- A root feature does not exist.
+        // -- Root feature name.
+
+        // FeatureResolverImpl.processIncluded
+        // -- An included resource does not have a symbolic name.
+        // -- Resolution chain.
+        // -- Included resource.
+
+        // FeatureResolverImpl.processRoots
+        // -- An public feature obtained by resolution does not exist.
+        // -- Resolved feature name.
+
+        // FeatureResolverImpl.SelectionContext.processCandidates
+        // -- No candidate is available which matches the resolution process type.
+        // -- Resolution chain.
+        // -- Feature base name.
+        // -- Tolerated versions.
+
         void addMissing(String missingFeature) {
             if (_missing.add(missingFeature)) {
-                trace("Missing a feature: " + missingFeature);
+                trace("Missing feature: " + missingFeature);
             }
         }
 
-        @Override
-        public Map<String, Collection<Chain>> getConflicts() {
-            return _conflicts;
-        }
-
-        void addConflict0(String baseFeatureName, Collection<Chain> conflicts) {
-            trace("Found a conflict for feature: \"" + baseFeatureName + "\" with conficts: " + conflicts);
-            _conflicts.put(baseFeatureName, conflicts);
-        }
+        private final Set<String> _nonPublicRoots;
 
         @Override
         public Set<String> getNonPublicRoots() {
             return _nonPublicRoots;
         }
 
+        // FeatureResolverImpl.checkRootsAreAccessibleAndSetFullName
+        // -- A non-public root feature was specified.
+        // -- Root feature name.
+
         void addNonPublicRoot(String nonPublicRoot) {
             if (_nonPublicRoots.add(nonPublicRoot)) {
-                trace("A non-public root feature is being used: " + nonPublicRoot);
+                trace("Non-public root feature: " + nonPublicRoot);
             }
         }
+
+        private final Map<String, Chain> _wrongProcessTypes;
 
         @Override
         public Map<String, Chain> getWrongProcessTypes() {
             return _wrongProcessTypes;
         }
 
-        void addWrongProcessType(String wrongProcessType, Chain chain) {
-            if (_wrongProcessTypes.put(wrongProcessType, chain) == null) {
-                trace("A feature with the wrong process type is being used: \"" + wrongProcessType + "\" from chain: " + chain);
+        // FeatureResolverImpl.checkRootsAreAccessibleAndSetFullName
+        // -- A root feature was specified that does not match the resolution process type.
+        // -- Root feature name.
+        // FeatureResolverImpl.SelectionContext.processCandidates
+        // -- A candidate has the wrong process type.
+        // -- Candidate feature symbolic name.
+        // -- Candidate resolution chain.
+
+        void addWrongProcessType(String symbolicName, Chain chain) {
+            if (_wrongProcessTypes.put(symbolicName, chain) == null) {
+                trace("Incompatible process type for feature: " + symbolicName + " reached by: " + chain);
             }
         }
 
+        void addWrongProcessType(String symbolicName, String preferredVersion) {
+            Chain chain = new Chain(symbolicName, preferredVersion);
+
+            if (_wrongProcessTypes.put(symbolicName, chain) == null) {
+                trace("Incompatible process type for feature: " + symbolicName);
+            }
+        }
+
+        //
+
+        private final Map<String, Collection<Chain>> _conflicts;
+
         @Override
-        public boolean hasErrors() {
-            return !!!(_missing.isEmpty() && _nonPublicRoots.isEmpty() && _conflicts.isEmpty() && _wrongProcessTypes.isEmpty());
+        public Map<String, Collection<Chain>> getConflicts() {
+            return _conflicts;
+        }
+
+        // FeatureResolverImpl.SelectionContext.addConflict
+
+        // com.ibm.ws.kernel.feature.internal.FeatureResolverImpl.Chains.select
+        // -- None of the chains available for a feature can be resolved.
+        // com.ibm.ws.kernel.feature.internal.FeatureResolverImpl.SelectionContext.primeSelected
+        // -- Resolution reached a feature at a version different than was previously selected for the feature.
+        // com.ibm.ws.kernel.feature.internal.FeatureResolverImpl.SelectionContext.processCandidates
+        // -- None of the candidates available for resolution can be selected.
+
+        void addConflict(String baseFeatureName, Collection<Chain> conflicts) {
+            trace("Resolution conflicts for: " + baseFeatureName + ":");
+            for ( Chain conflictChain : conflicts) {
+                trace("  Conflict chain: " + conflictChain);
+            }
+            _conflicts.put(baseFeatureName, conflicts);
+        }
+
+        //
+
+        // Remember the resolved in resolution order.
+        // This used to be necessary, but is now less necessary
+        // due to changes made to enable parallel bundle startup.
+
+        private final Set<String> _resolved;
+
+        @Override
+        public Set<String> getResolvedFeatures() {
+            return _resolved;
+        }
+
+        // NOTE: This should replace any existing resolved.
+        // When processing auto-features we start with
+        // an already processed permutation with a result
+        // we must replace that with this new set of resolved
+
+        ResultImpl setResolvedFeatures(Collection<String> resolved) {
+            _resolved.clear();
+            _resolved.addAll(resolved);
+
+            return this;
         }
     }
 }

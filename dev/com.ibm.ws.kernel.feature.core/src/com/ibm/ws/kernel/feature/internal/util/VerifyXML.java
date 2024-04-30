@@ -39,17 +39,17 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyInput;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyOutput;
 
 public class VerifyXML extends BaseXML {
-    public static void writeDurations(File file, List<LazySupplier<VerifyCase>> cases) throws Exception {
+    public static void writeDurations(File file, List<LazySupplierImpl<VerifyCase>> cases) throws Exception {
         try (FileWriter fW = new FileWriter(file, !DO_APPEND);
                         PrintWriter pW = new PrintWriter(fW)) {
             writeDurations(pW, cases);
         }
     }
 
-    public static void writeDurations(PrintWriter output, List<LazySupplier<VerifyCase>> cases) throws Exception {
+    public static void writeDurations(PrintWriter output, List<LazySupplierImpl<VerifyCase>> cases) throws Exception {
         StringBuilder lineBuilder = new StringBuilder();
 
-        for (LazySupplier<VerifyCase> caseSupplier : cases) {
+        for (LazySupplierImpl<VerifyCase> caseSupplier : cases) {
             // Only write the case if the supplier was previously
             // successful.
 
@@ -98,7 +98,7 @@ public class VerifyXML extends BaseXML {
         });
     }
 
-    public static void write(File file, final List<LazySupplier<VerifyCase>> cases) throws Exception {
+    public static void write(File file, final List<LazySupplierImpl<VerifyCase>> cases) throws Exception {
         write(file, new FailableConsumer<PrintWriter, Exception>() {
             @Override
             public void accept(PrintWriter pW) throws Exception {
@@ -172,12 +172,12 @@ public class VerifyXML extends BaseXML {
             closeElement(CASES_TAG);
         }
 
-        public void write(List<LazySupplier<VerifyCase>> cases) throws Exception {
+        public void write(List<LazySupplierImpl<VerifyCase>> cases) throws Exception {
             openElement(CASES_TAG);
             upIndent();
 
-            for (LazySupplier<VerifyCase> verifyCase : cases) {
-                write(verifyCase.get());
+            for (LazySupplierImpl<VerifyCase> verifyCase : cases) {
+                write(verifyCase.supply());
             }
 
             downIndent();

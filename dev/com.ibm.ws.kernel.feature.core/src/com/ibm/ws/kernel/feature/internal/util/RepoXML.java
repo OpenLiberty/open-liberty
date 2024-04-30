@@ -50,6 +50,20 @@ import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 
 public class RepoXML extends BaseXML {
 
+    public static Selector<ProvisioningFeatureDefinition> PUBLIC_NOT_TEST = new Selector<ProvisioningFeatureDefinition>() {
+        @Override
+        public boolean test(ProvisioningFeatureDefinition def) {
+            return isPublic(def) && isNotTest(def);
+        }
+    };
+
+    public static Selector<ProvisioningFeatureDefinition> IS_NOT_TEST = new Selector<ProvisioningFeatureDefinition>() {
+        @Override
+        public boolean test(ProvisioningFeatureDefinition def) {
+            return isNotTest(def);
+        }
+    };
+
     public static Selector<ProvisioningFeatureDefinition> IS_PUBLIC = new Selector<ProvisioningFeatureDefinition>() {
         @Override
         public boolean test(ProvisioningFeatureDefinition def) {
@@ -59,6 +73,11 @@ public class RepoXML extends BaseXML {
 
     public static boolean isPublic(ProvisioningFeatureDefinition def) {
         return (def.getVisibility() == Visibility.PUBLIC);
+    }
+
+    public static boolean isNotTest(ProvisioningFeatureDefinition def) {
+        String symbolicName = def.getSymbolicName();
+        return (!symbolicName.startsWith("test.") && !symbolicName.startsWith("txtest-"));
     }
 
     public static Selector<ProvisioningFeatureDefinition> IS_CLIENT = new Selector<ProvisioningFeatureDefinition>() {

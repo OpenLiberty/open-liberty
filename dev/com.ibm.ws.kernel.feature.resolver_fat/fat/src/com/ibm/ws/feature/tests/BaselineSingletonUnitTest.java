@@ -14,6 +14,7 @@ package com.ibm.ws.feature.tests;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -23,6 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import com.ibm.ws.kernel.feature.internal.util.VerifyData;
 import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
 
 /**
@@ -30,9 +32,19 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyData.VerifyCase;
  */
 @RunWith(Parameterized.class)
 public class BaselineSingletonUnitTest extends FeatureResolutionUnitTestBase {
+    // Not currently used:
+    //
+    // BeforeClass is invoked after data() is invoked.
+    //
+    // But 'data' requires the locations and repository,
+    // which were being setup in 'setupClass'.
+    //
+    // The setup steps have been moved to 'data()', and
+    // have been set run at most once.
+
     @BeforeClass
     public static void setupClass() throws Exception {
-        doSetupClass(getServerName());
+        // doSetupClass(getServerName());
     }
 
     @AfterClass
@@ -40,10 +52,15 @@ public class BaselineSingletonUnitTest extends FeatureResolutionUnitTestBase {
         doTearDownClass();
     }
 
-    public static final String DATA_FILE_PATH = "publish/verify/singleton_expected.xml";
+    public static final String DATA_FILE_PATH_OL = "publish/verify/singleton_expected.xml";
+    public static final String DATA_FILE_PATH_WL = "publish/verify/singleton_expected_WL.xml";
 
-    public static File getDataFile() {
-        return new File(DATA_FILE_PATH);
+    public static File getDataFile_OL() {
+        return new File(DATA_FILE_PATH_OL);
+    }
+
+    public static File getDataFile_WL() {
+        return new File(DATA_FILE_PATH_WL);
     }
 
     // To use change the name of parameterized tests, you say:
@@ -60,7 +77,20 @@ public class BaselineSingletonUnitTest extends FeatureResolutionUnitTestBase {
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() throws Exception {
-        return readCases(getDataFile());
+        doSetupClass(); // 'data()' is invoked before the '@BeforeClass' method.
+
+        VerifyData verifyData = readData(getDataFile_OL());
+
+        // WAS liberty adds and modifies the Open liberty cases.
+        if (RepositoryUtil.isWASLiberty()) {
+            int initialCount = verifyData.getCases().size();
+            VerifyData verifyData_WL = readData(getDataFile_WL());
+            verifyData = verifyData.add(verifyData_WL);
+            int finalCount = verifyData.getCases().size();
+            System.out.println("Case adjustment [ " + (finalCount - initialCount) + " ]");
+        }
+
+        return asCases(verifyData);
     }
 
     public BaselineSingletonUnitTest(String name, VerifyCase testCase) throws Exception {
@@ -75,6 +105,11 @@ public class BaselineSingletonUnitTest extends FeatureResolutionUnitTestBase {
     @After
     public void tearDownTest() throws Exception {
         doClearResolver();
+    }
+
+    @Override
+    public List<String> detectFeatureErrors(List<String> rootFeatures) {
+        return detectSingletonErrors(rootFeatures);
     }
 
     @Test

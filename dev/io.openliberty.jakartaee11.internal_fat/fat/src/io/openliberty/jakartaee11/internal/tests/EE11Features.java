@@ -192,9 +192,7 @@ public class EE11Features {
         // MP features are only compatible if they're in MP versions which work with EE11
         features.removeAll(getMPFeatures());
 
-        // compatibleFeatures.addAll(getCompatibleMPFeatures(EEVersion.EE11));
         // add back when MP adds EE 11 support
-
         features.addAll(JakartaEE11Action.EE11_FEATURE_SET);
 
         // Value-add features which aren't compatible
@@ -211,9 +209,6 @@ public class EE11Features {
 
         features.remove("mpReactiveMessaging-3.0"); //still in development
         features.remove("mpTelemetry-2.0"); //Not yet assigned to an MPXX_FEATURES_ARRAY
-
-        features.remove("mpHealth"); //versionless features in development
-        features.remove("mpMetrics");
 
         features.remove("jwtSso-1.0"); // this will be removed when MP supports EE 11
 
