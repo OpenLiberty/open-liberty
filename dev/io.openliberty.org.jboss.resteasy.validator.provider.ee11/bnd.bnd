@@ -1,0 +1,66 @@
+#*******************************************************************************
+# Copyright (c) 2022, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: io.openliberty.org.jboss.resteasy.validator.provider.ee11
+Bundle-SymbolicName: io.openliberty.org.jboss.resteasy.validator.provider.ee11
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+resteasy-version=6.2.8.Final
+
+src: src
+
+app-resources= \
+  META-INF/services/jakarta.ws.rs.ext.Providers
+
+-cdiannotations:
+
+Service-Component: \
+  io.openliberty.org.jboss.resteasy.validator.provider.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=optional; \
+    properties:="resources=${app-resources}"
+
+Export-Package: \
+  org.jboss.resteasy.plugins.validation;version=${resteasy-version};thread-context=true, \
+  org.jboss.resteasy.plugins.validation.i18n;version=${resteasy-version}
+
+Import-Package: \
+  org.jboss.resteasy.api.validation, \
+  jakarta.enterprise.context;version=!,\
+  jakarta.persistence,\
+  jakarta.ws.rs.core;version="[3.1,5)",\
+  jakarta.ws.rs.ext;version="[3.1,5)",\
+  *
+
+instrument.ffdc: false
+
+Include-Resource:\
+@${repo;org.jboss.resteasy:resteasy-validator-provider;${resteasy-version};EXACT}, \
+org/jboss/resteasy=${bin}/org/jboss/resteasy
+
+-buildpath: \
+  org.jboss.resteasy:resteasy-validator-provider;strategy=exact;version='${resteasy-version}',\
+  io.openliberty.org.jboss.logging35,\
+  io.openliberty.org.jboss.resteasy.common.ee10,\
+  io.openliberty.org.jboss.resteasy.cdi.ee10,\
+  com.ibm.ws.com.fasterxml.classmate;version=latest,\
+  io.openliberty.jakarta.cdi.4.0,\
+  io.openliberty.jakarta.validation.3.0;version=latest,\
+  io.openliberty.jakarta.restfulWS.3.1
