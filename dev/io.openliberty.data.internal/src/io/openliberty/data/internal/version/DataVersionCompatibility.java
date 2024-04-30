@@ -46,20 +46,14 @@ public interface DataVersionCompatibility {
     String getFunctionCall(Annotation functionAnno);
 
     /**
-     * Obtains the Select annotation if present on the method. Otherwise null.
+     * Obtains the value of the Select annotation if present on the method.
+     * Otherwise null.
      *
      * @param method repository method. Must not be null.
-     * @return Select annotation if present, otherwise null.
+     * @return values of the Select annotation indicating the columns to select,
+     *         otherwise null.
      */
-    Annotation getSelectAnnotation(Method method);
-
-    /**
-     * Obtains the value of the Select annotation.
-     *
-     * @param select Select annotation. Must not be null.
-     * @return values of the Select annotation indicating the columns to select.
-     */
-    String[] getSelections(Annotation select);
+    String[] getSelections(Method method);
 
     /**
      * Return a 2-element array where the first element is the entity attribute name

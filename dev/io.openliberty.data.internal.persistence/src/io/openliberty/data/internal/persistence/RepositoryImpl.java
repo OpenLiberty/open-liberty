@@ -24,9 +24,6 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.RecordComponent;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
@@ -307,11 +304,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
             // experimental annotation types
             Annotation count = provider.compat.getCountAnnotation(method);
             Annotation exists = provider.compat.getExistsAnnotation(method);
-            Annotation select = provider.compat.getSelectAnnotation(method);
 
             Annotation methodTypeAnno = queryInfo.validateAnnotationCombinations(delete, insert, update, save,
                                                                                  find, query, orderBy,
-                                                                                 count, exists, select);
+                                                                                 count, exists);
 
             if (query != null) { // @Query annotation
                 queryInfo.initForQuery(query.value(), multiType, entityInfos, primaryEntityInfoFuture);
@@ -340,16 +336,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     q = generateQueryFromMethodName(queryInfo, countPages);
                 }
 
-                // TODO did we break the following? Maybe move this into the above methods?
-                // @Select annotation only
-                if (q == null && queryInfo.type == null && select != null) {
-                    queryInfo.type = QueryInfo.Type.FIND;
-                    q = generateSelectClause(queryInfo, select);
-                    if (countPages)
-                        generateCount(queryInfo, null);
-                } else if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE
-                           && multiType != null
-                           && Stream.class.isAssignableFrom(multiType)) {
+                if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE
+                    && multiType != null
+                    && Stream.class.isAssignableFrom(multiType)) {
                     throw new UnsupportedOperationException("The " + method.getName() + " method of the " + repositoryInterface.getName() +
                                                             " repository interface cannot use the " +
                                                             method.getReturnType().getName() + " return type for a delete operation.");
@@ -424,7 +413,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>(orderBy.length + 2) : queryInfo.sorts;
                 if (q == null)
                     if (queryInfo.jpql == null) {
-                        q = generateSelectClause(queryInfo, select); // TODO can select ever be present here and not already handled by other code path?
+                        q = generateSelectClause(queryInfo);
                         if (countPages)
                             generateCount(queryInfo, null);
                     } else {
@@ -1255,7 +1244,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             // Write new JPQL, starting with SELECT or UPDATE
             if (!hasUpdateParam) {
                 queryInfo.type = QueryInfo.Type.FIND;
-                q = generateSelectClause(queryInfo, provider.compat.getSelectAnnotation(queryInfo.method));
+                q = generateSelectClause(queryInfo);
             } else {
                 queryInfo.type = QueryInfo.Type.UPDATE;
                 q = new StringBuilder(250).append("UPDATE ").append(queryInfo.entityInfo.name).append(' ').append(o).append(" SET");
@@ -1573,7 +1562,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 orderBy = methodName.indexOf("OrderBy", by + 2);
             }
             parseFindClause(queryInfo, methodName, by > 0 ? by : orderBy > 0 ? orderBy : -1);
-            q = generateSelectClause(queryInfo, provider.compat.getSelectAnnotation(queryInfo.method));
+            q = generateSelectClause(queryInfo);
             if (by > 0) {
                 int where = q.length();
                 generateWhereClause(queryInfo, methodName, by + 2, orderBy > 0 ? orderBy : methodName.length(), q);
@@ -1599,8 +1588,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                             " repository method."); // TODO NLS
                 queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
                 parseDeleteBy(queryInfo, by);
-                Annotation select = null; // provider.compat.getSelectAnnotation(queryInfo.method); // TODO This would be limited by collision with update count/boolean
-                q = generateSelectClause(queryInfo, select);
+                q = generateSelectClause(queryInfo);
                 queryInfo.jpqlDelete = generateDeleteById(queryInfo);
             } else { // DELETE
                 queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
@@ -1738,7 +1726,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         } else if (methodTypeAnno instanceof Delete) {
             if (queryInfo.isFindAndDelete()) {
                 queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
-                q = generateSelectClause(queryInfo, null);
+                q = generateSelectClause(queryInfo);
                 queryInfo.jpqlDelete = generateDeleteById(queryInfo);
             } else { // DELETE
                 queryInfo.type = QueryInfo.Type.DELETE;
@@ -1774,20 +1762,21 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * Generates the SELECT clause of the JPQL.
      *
      * @param queryInfo query information
-     * @param select    Select annotation if present on the method.
      * @return the SELECT clause.
      */
-    private StringBuilder generateSelectClause(QueryInfo queryInfo, Annotation select) {
+    private StringBuilder generateSelectClause(QueryInfo queryInfo) {
         StringBuilder q = new StringBuilder(200);
         String o = queryInfo.entityVar;
         String o_ = queryInfo.entityVar_;
         EntityInfo entityInfo = queryInfo.entityInfo;
 
-        String[] cols;
-        if (select == null) {
+        String[] cols, selections = provider.compat.getSelections(queryInfo.method);
+        if (selections == null || selections.length == 0) {
             cols = null;
+        } else if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE) {
+            // TODO NLS message for error path once selections are supported function
+            throw new UnsupportedOperationException();
         } else {
-            String[] selections = provider.compat.getSelections(select);
             cols = new String[selections.length];
             for (int i = 0; i < cols.length; i++) {
                 String name = entityInfo.getAttributeName(selections[i], true);
@@ -3121,14 +3110,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
         Class<?> oClass = o == null ? null : o.getClass();
         if (o != null && oClass.isRecord())
             try {
-                final Object recordObj = o;
-                entity = AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
-                    Class<?> entityClass = oClass.getClassLoader().loadClass(oClass.getName() + "Entity");
-                    Constructor<?> ctor = entityClass.getConstructor(oClass);
-                    return ctor.newInstance(recordObj);
-                });
-            } catch (PrivilegedActionException x) {
-                throw new MappingException("Unable to convert record " + oClass + " to generated entity class.", x.getCause()); // TODO NLS
+                Class<?> entityClass = oClass.getClassLoader().loadClass(oClass.getName() + "Entity");
+                Constructor<?> ctor = entityClass.getConstructor(oClass);
+                entity = ctor.newInstance(o);
+            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | //
+                            InvocationTargetException | NoSuchMethodException | SecurityException x) {
+                throw new MappingException("Unable to convert record " + oClass + " to generated entity class.", //
+                                x instanceof InvocationTargetException ? x.getCause() : x); // TODO NLS
             }
         if (entity != o && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "toEntity " + oClass.getName() + " --> " + entity.getClass().getName());
