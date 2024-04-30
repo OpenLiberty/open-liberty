@@ -20,12 +20,15 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.jaxrs.monitor.JaxRsMonitorFilter.RestMetricInfo;
+import com.ibm.ws.jaxrs.monitor.metrics.service.RestMetricsCallback;
 
 @Component(immediate = true, property = { "service.vendor=IBM" }, configurationPid = "com.ibm.ws.monitor.internal.MonitoringFrameworkExtender", configurationPolicy = ConfigurationPolicy.OPTIONAL, service = {ApplicationStateListener.class})
 public class MonitorAppStateListener implements ApplicationStateListener {
@@ -33,6 +36,8 @@ public class MonitorAppStateListener implements ApplicationStateListener {
     private final static String MONITORING_GROUP_FILTER = "filter";
 
     private static final TraceComponent tc = Tr.register(MonitorAppStateListener.class);
+    
+    static RestMetricsCallback restMetricCallback;
 
     /*
      * By Default, without any monitor-1.0 filters on, all monitor components are enabled
@@ -109,5 +114,10 @@ public class MonitorAppStateListener implements ApplicationStateListener {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, String.format("JAX-RS filter is enabled set to: [%s]", isRESTEnabled));
         }
+    }
+    
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
+    public void getMP5RestMetricsCallback(RestMetricsCallback restMetricCallback) {
+    	MonitorAppStateListener.restMetricCallback = restMetricCallback;
     }
 }
