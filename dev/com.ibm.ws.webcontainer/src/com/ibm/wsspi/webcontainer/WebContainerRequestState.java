@@ -246,7 +246,7 @@ public class WebContainerRequestState {
             }
         }
 
-        System.out.println("Num Attr values: " + attribute.length) ;
+        logger.logp(Level.FINE, CLASS_NAME, methodName, "Num Attr values: " + attribute.length) ;
         String tempFixedValue = null ; 
        if (attribute.length > 1) {
            tempFixedValue = attribute[1] ; 
