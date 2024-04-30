@@ -23,32 +23,32 @@
 #-----------------------------------------------------------------------------------------------------------------------------
 # Message prefix block for io.openliberty.reporting.internal: CWWKF1700 - CWWKF1799
 
-CWWKF1700.reporting.is.enabled=CWWKF1700I: The checking for security vulnerabilities is enabled. Information about this Liberty runtime will be analyzed against known vulnerabilities.
-CWWKF1700.reporting.is.enabled.explanation= The checking for security vulnerabilities is currently enabled.
-CWWKF1700.reporting.is.enabled.useraction=To disable the checking for security vulnerabilities, specify <cveReporting enabled="false" /> in the server.xml file.
+CWWKF1700.reporting.is.enabled=CWWKF1700I: Kontrola ohro\u017een\u00ed zabezpe\u010den\u00ed je povolena. Informace o tomto b\u011bhov\u00e9m prost\u0159ed\u00ed Liberty budou analyzov\u00e1ny proti zn\u00e1m\u00fdm zranitelnostem.
+CWWKF1700.reporting.is.enabled.explanation= Kontrola slab\u00fdch m\u00edst zabezpe\u010den\u00ed je v sou\u010dasn\u00e9 dob\u011b povolena.
+CWWKF1700.reporting.is.enabled.useraction=Chcete-li zak\u00e1zat kontrolu ohro\u017een\u00ed zabezpe\u010den\u00ed, zadejte v souboru server.xml hodnotu <cveReporting enabled="false" /> .
 
-CWWKF1701.reporting.is.disabled=CWWKF1701I: The checking for security vulnerabilities is disabled.
-CWWKF1701.reporting.is.disabled.explanation=The checking for security vulnerabilities must be enabled to run.
-CWWKF1701.reporting.is.disabled.useraction=To enable the checking for security vulnerabilities, specify <cveReporting enabled="true" /> in the server.xml file.
+CWWKF1701.reporting.is.disabled=CWWKF1701I: Kontrola ohro\u017een\u00ed zabezpe\u010den\u00ed je zak\u00e1z\u00e1na.
+CWWKF1701.reporting.is.disabled.explanation=Kontrola ohro\u017een\u00ed zabezpe\u010den\u00ed mus\u00ed b\u00fdt povolena pro spu\u0161t\u011bn\u00ed.
+CWWKF1701.reporting.is.disabled.useraction=Chcete-li povolit kontrolu ohro\u017een\u00ed zabezpe\u010den\u00ed, zadejte v souboru server.xml hodnotu <cveReporting enabled="true" /> .
 
-more.information.message=For more information, you can review {0}
+more.information.message=Dal\u0161\u00ed informace naleznete v t\u00e9matu {0} .
 
-CWWKF1702.cve.found=CWWKF1702W: Based on an assessment of {0}, review the following security bulletins: {1}
-CWWKF1702.cve.found.explanation=Security vulnerabilities were found.
-CWWKF1702.cve.found.useraction=Review the CVEs in the message and resolve the security vulnerabilities.
+CWWKF1702.cve.found=CWWKF1702W: Na z\u00e1klad\u011b posouzen\u00ed {0}p\u0159ezkoumejte n\u00e1sleduj\u00edc\u00ed v\u00fdv\u011bsky zabezpe\u010den\u00ed: {1}
+CWWKF1702.cve.found.explanation=Byla nalezena chyba zabezpe\u010den\u00ed.
+CWWKF1702.cve.found.useraction=P\u0159ezkoumejte soubory CVEs ve zpr\u00e1v\u011b a vy\u0159e\u0161te ohro\u017een\u00ed zabezpe\u010den\u00ed.
 
-CWWKF1703.cve.not.found=CWWKF1703I: Based on analysis of the Runtime, no security vulnerabilities requiring further analysis were found.
-CWWKF1703.cve.not.found.explanation=No security vulnerabilities were found at this time.
-CWWKF1703.cve.not.found.useraction=None.
+CWWKF1703.cve.not.found=CWWKF1703I: Na z\u00e1klad\u011b anal\u00fdzy b\u011bhov\u00e9ho prost\u0159ed\u00ed nebyla nalezena \u017e\u00e1dn\u00e1 ohro\u017een\u00ed zabezpe\u010den\u00ed, kter\u00e1 by vy\u017eadovala dal\u0161\u00ed anal\u00fdzu.
+CWWKF1703.cve.not.found.explanation=V tuto chv\u00edli nebyly nalezeny \u017e\u00e1dn\u00e9 chyby zabezpe\u010den\u00ed.
+CWWKF1703.cve.not.found.useraction=Nen\u00ed.
 
-CWWKF1704.incorrect.url=CWWKF1704W: The specified URL is not correct and a connection cannot be made: {0}
-CWWKF1704.incorrect.url.explanation=No connection can be made for the provided URL.
-CWWKF1704.incorrect.url.useraction=Verify that the URL is correct.
+CWWKF1704.incorrect.url=CWWKF1704W: Zadan\u00e1 adresa URL nen\u00ed spr\u00e1vn\u00e1 a nelze vytvo\u0159it p\u0159ipojen\u00ed: {0}
+CWWKF1704.incorrect.url.explanation=Pro poskytnutou adresu URL nelze vytvo\u0159it \u017e\u00e1dn\u00e9 p\u0159ipojen\u00ed.
+CWWKF1704.incorrect.url.useraction=Ov\u011b\u0159te, \u017ee je adresa URL spr\u00e1vn\u00e1.
 
-CWWKF1705.failed.response=CWWKF1705W: Unable to retrieve relevant CVE information due to a communication issue with the CVE Reporting Service.
-CWWKF1705.failed.response.explanation=The service cannot provide a response.
-CWWKF1705.failed.response.useraction=Fix the communication issue and try again.
+CWWKF1705.failed.response=CWWKF1705W: Nelze na\u010d\u00edst p\u0159\u00edslu\u0161n\u00e9 informace CVE kv\u016fli probl\u00e9mu s komunikac\u00ed se slu\u017ebou CVE Reporting Service.
+CWWKF1705.failed.response.explanation=Slu\u017eba nem\u016f\u017ee poskytnout odpov\u011b\u010f.
+CWWKF1705.failed.response.useraction=Opravte probl\u00e9m s komunikac\u00ed a zkuste to znovu.
 
-CWWKF1706.issue.parsing=CWWKF1706W: Issue when parsing Product Information.
-CWWKF1706.issue.parsing.explanation=The service cannot successfully parse the product information.
-CWWKF1706.issue.parsing.useraction=Fix the communication issue and try again.
+CWWKF1706.issue.parsing=CWWKF1706W: Probl\u00e9m p\u0159i anal\u00fdze informac\u00ed o produktu.
+CWWKF1706.issue.parsing.explanation=Slu\u017eba nem\u016f\u017ee \u00fasp\u011b\u0161n\u011b analyzovat informace o produktu.
+CWWKF1706.issue.parsing.useraction=Opravte probl\u00e9m s komunikac\u00ed a zkuste to znovu.

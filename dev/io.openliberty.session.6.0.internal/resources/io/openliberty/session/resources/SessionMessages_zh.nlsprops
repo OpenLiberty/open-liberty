@@ -17,7 +17,7 @@
 # Note:
 #Last used error meessage code was SESN8502I
 #
-#Use 8600 - 8699 for Servlet 6.0 - EE10
+#Use 8600 - 8699 for Servlet 6.0 (EE10) and above
 #
 # -----------------------------------------------
 cookie.attribute.name.null=SESN8600E: Cookie \u7c7b\u4e0a\u7684\u5c5e\u6027\u540d\u79f0\u4e3a Null\u3002
@@ -27,3 +27,13 @@ cookie.attribute.name.null.useraction=\u786e\u4fdd\u5c5e\u6027\u540d\u79f0\u4e0d
 cookie.attribute.name.invalid.[{0}]=SESN8601E: [{0}] \u5c5e\u6027\u540d\u79f0\u5305\u542b\u65e0\u6548\u5b57\u7b26\u3002
 cookie.attribute.name.invalid.[{0}].explanation=\u5c5e\u6027\u540d\u79f0\u81f3\u5c11\u5305\u542b\u4e0b\u5217\u5176\u4e2d\u4e00\u4e2a\u5206\u9694\u7b26\u5b57\u7b26\uff0c\u4f46\u4e0d\u80fd\u5728 Cookie \u7c7b\u7684\u5c5e\u6027\u540d\u79f0\u4e2d\u4f7f\u7528\u8fd9\u4e9b\u5206\u9694\u7b26\uff1a( ) < > @ , ; :  " / [ ] ? = { }
 cookie.attribute.name.invalid.[{0}].useraction=\u786e\u4fdd\u5c5e\u6027\u540d\u79f0\u4e0d\u5305\u542b\u4efb\u4f55\u5206\u9694\u7b26\u5b57\u7b26\uff0c\u5e76\u4e14\u5c5e\u6027\u540d\u79f0\u6709\u6548\u3002
+# -----------------------------------------------
+# Servlet 6.1
+session.is.invalid=SESN8602E: \u4f1a\u8bdd\u65e0\u6548\u3002
+session.is.invalid.explanation=\u5f53\u524d\u4f1a\u8bdd\u5df2\u5230\u671f\u4e14\u65e0\u6548\u3002
+session.is.invalid.useraction=\u8bf7\u5c1d\u8bd5\u767b\u5f55\u6216\u91cd\u65b0\u83b7\u53d6\u65b0\u4f1a\u8bdd\u3002
+# -----------------------------------------------
+# Servlet 6.1
+session.id.is.invalid=SESN8603E: \u4f1a\u8bdd\u6807\u8bc6\u65e0\u6548\u3002
+session.id.is.invalid.explanation=\u81ea\u4e0a\u6b21\u8bbf\u95ee\u4ee5\u6765\uff0c\u4f1a\u8bdd\u6807\u8bc6\u5df2\u66f4\u6539\u3002
+session.id.is.invalid.useraction=\u81ea\u4e0a\u6b21\u8bbf\u95ee\u4ee5\u6765\uff0c\u4f1a\u8bdd\u6807\u8bc6\u5df2\u66f4\u6539\u3002 \u8bf7\u91cd\u65b0\u5c1d\u8bd5\u767b\u5f55\u3002

@@ -17,7 +17,7 @@
 # Note:
 #Last used error meessage code was SESN8502I
 #
-#Use 8600 - 8699 for Servlet 6.0 - EE10
+#Use 8600 - 8699 for Servlet 6.0 (EE10) and above
 #
 # -----------------------------------------------
 cookie.attribute.name.null=SESN8600E: N\u00e1zev atributu ve t\u0159\u00edd\u011b souboru cookie m\u00e1 hodnotu null.
@@ -27,3 +27,13 @@ cookie.attribute.name.null.useraction=Ujist\u011bte se, \u017ee n\u00e1zev atrib
 cookie.attribute.name.invalid.[{0}]=SESN8601E: N\u00e1zev atributu [{0}] obsahuje neplatn\u00e9 znaky.
 cookie.attribute.name.invalid.[{0}].explanation=N\u00e1zev atributu obsahuje alespo\u0148 jeden z n\u00e1sleduj\u00edc\u00edch odd\u011blovac\u00edch znak\u016f, kter\u00e9 nemohou b\u00fdt pou\u017eity v n\u00e1zvu atributu ve t\u0159\u00edd\u011b souboru cookie: ( ) < > @ , ; :  " / [ ] ? = { }
 cookie.attribute.name.invalid.[{0}].useraction=Ujist\u011bte se, \u017ee n\u00e1zev atributu neobsahuje \u017e\u00e1dn\u00e9 odd\u011blovac\u00ed znaky a \u017ee n\u00e1zev atributu je platn\u00fd.
+# -----------------------------------------------
+# Servlet 6.1
+session.is.invalid=SESN8602E: Relace je neplatn\u00e1.
+session.is.invalid.explanation=Aktu\u00e1ln\u00ed relace vypr\u0161ela a je neplatn\u00e1.
+session.is.invalid.useraction=Zkuste se p\u0159ihl\u00e1sit nebo znovu z\u00edskat novou relaci.
+# -----------------------------------------------
+# Servlet 6.1
+session.id.is.invalid=SESN8603E: ID relace je neplatn\u00e9.
+session.id.is.invalid.explanation=ID relace se od posledn\u00edho p\u0159\u00edstupu zm\u011bnilo.
+session.id.is.invalid.useraction=ID relace se od posledn\u00edho p\u0159\u00edstupu zm\u011bnilo. P\u0159ihlaste se znovu.
