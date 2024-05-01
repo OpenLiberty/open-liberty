@@ -118,28 +118,6 @@ public class FormParamInjector extends StringParameterInjector implements ValueI
                 }
             }
         }
-			// Jim... I believe this is no longer needed.
-/*            list = decodedFormParams.get(paramName);
-            if (list == null) {
-                Optional<EntityPart> part = request.getFormEntityPart(paramName);
-                InputStream is = part.map(EntityPart::getContent).orElse(null);
-                if (is != null) {
-                    try {
-                        String test = ProviderHelper.readString(is, part.get().getMediaType());
-                        decodedFormParams.putSingle(paramName, test);
-                        list = decodedFormParams.get(paramName);
-                    } catch (IOException e) {
-                        if (debug) {
-                           Tr.debug(tc, "Unexpected exception processing multipart FormParams", e); 
-                        }
-                     }                
-                }
-              
-            }  
-            
-        } else {
-            list = decodedFormParams.get(paramName);
-        } */
       // Liberty change end
      
         List<String> list = request.getDecodedFormParameters().get(paramName);
