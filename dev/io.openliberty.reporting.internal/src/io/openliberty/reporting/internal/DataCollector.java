@@ -11,7 +11,6 @@
 package io.openliberty.reporting.internal;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,6 +19,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.ibm.websphere.kernel.server.ServerInfoMBean;
+import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.feature.FeatureDefinition;
 import com.ibm.ws.kernel.feature.FeatureProvisioner;
 import com.ibm.ws.kernel.feature.FixManager;
@@ -122,8 +122,14 @@ public class DataCollector {
                 productEdition = allProductInfo.get("io.openliberty").getEdition();
             }
 
-            StringBuilder input = new StringBuilder().append(serverInfo.getInstallDirectory()).append(productEdition)
-                    .append(javaVendor).append(osArch).append(os).append(InetAddress.getLocalHost().getHostName());
+            StringBuilder input = new StringBuilder();
+
+            input.append(serverInfo.getInstallDirectory());
+            input.append(productEdition);
+            input.append(javaVendor);
+            input.append(osArch);
+            input.append(os);
+            input.append(KernelUtils.getServerHostName());
 
             uniqueID = HashUtils.hashString(input.toString()); // placeholder.
 
