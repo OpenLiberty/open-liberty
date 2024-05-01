@@ -1268,6 +1268,16 @@ public class SSLUtils {
         } else {
             // Update engine with client side specific config parameters.
             engine.setUseClientMode(true);
+            boolean verifyHostname = config.getBooleanProperty(Constants.SSLPROP_HOSTNAME_VERIFICATION);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "SSLLinkConfig.getBooleanProperty -> " + Constants.SSLPROP_HOSTNAME_VERIFICATION + "=" + verifyHostname);
+            }
+            if (verifyHostname) {
+                sslParameters.setEndpointIdentificationAlgorithm("HTTPS");  // enable hostname verification
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Hostname verification is enabled");
+                }
+            }
 
             //set the ssl parameters collected on the engine
             engine.setSSLParameters(sslParameters);
