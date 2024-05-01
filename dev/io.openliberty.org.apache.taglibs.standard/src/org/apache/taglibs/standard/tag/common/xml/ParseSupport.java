@@ -140,7 +140,7 @@
                 	 } catch (PrivilegedActionException pae) {} // eat the exception
                 	 
                 	 try {
-	                     accessExternalDTD = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+                		 accessExternalSchema = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
 	                         public String run() throws PrivilegedActionException {
 	                             return System.getProperty(ACCESS_EXTERNAL_SCHEMA_SETTING);
 	                         }
