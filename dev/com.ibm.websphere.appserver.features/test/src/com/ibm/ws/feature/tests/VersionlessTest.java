@@ -11,6 +11,7 @@ package com.ibm.ws.feature.tests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -97,6 +98,71 @@ public class VersionlessTest {
                 System.out.println("    [ " + featureName + " ] [ " + cohorts.get(featureName) + " ]");
             }
         });
+    }
+
+    @Test
+    public void listMicroProfileCohorts(){
+        System.out.println("MP Cohorts!!");
+        ArrayList<String> allCohorts = new ArrayList<>();
+        Map<String, List<String>> featuresMPDependencies = new HashMap<>();
+        getSelectorCohorts().forEach((String baseName, List<String> featureBaseNames) -> {
+            if(baseName.equals("microProfile")){
+                for (String featureBaseName : featureBaseNames) {
+                    List<String> cohort = cohorts.get(featureBaseName);
+                    allCohorts.addAll(cohort);
+                    System.out.println("    [ " + featureBaseName + " ] [ " + cohort + " ]");
+
+                    for (String version : cohort) {
+                        String featureName = featureBaseName + "-" + version;
+                        FeatureInfo featureInfo = getFeature(featureName);
+                        if (featureInfo == null) {
+                            continue;
+                        } else {
+                            System.out.println("      [ " + featureInfo.getName() + " ]");
+                        }
+
+                        featureInfo.forEachSortedDepName((String depName) -> {
+                            FeatureInfo depInfo = getFeature(depName);
+                            if (depInfo == null) {
+                                System.out.println("        [ " + depName + " ** NOT FOUND ** ]");
+                            } else if (depInfo.isPublic()) {
+                                System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
+                            }
+                            if(depInfo.getShortName() != null){
+                                if(depInfo.getShortName().startsWith("mp")){
+                                    if(featuresMPDependencies.containsKey(depInfo.getShortName())){
+                                        featuresMPDependencies.get(depInfo.getShortName()).add(version);
+                                    }
+                                    else{
+                                        List<String> mpVersions = new ArrayList<String>();
+                                        mpVersions.add(version);
+                                        featuresMPDependencies.put(depInfo.getShortName(), mpVersions);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        System.out.println("Features MP Deps:");
+
+        List<String> sortedFeatures = new ArrayList<>(featuresMPDependencies.keySet());
+        Collections.sort(sortedFeatures);
+
+        ArrayList<String> missingCohorts = (ArrayList<String>) allCohorts.clone();
+        String current = "";
+
+        for(String feature : sortedFeatures){
+            if(!current.equals("") && !current.equals(feature.split("-")[0])){
+                System.out.println("        " + current + " missing cohorts: " + missingCohorts);
+                missingCohorts = (ArrayList<String>) allCohorts.clone();
+            }
+            current = feature.split("-")[0];
+            System.out.println("    [ " + feature + " ]   " + featuresMPDependencies.get(feature));
+            missingCohorts.removeAll(featuresMPDependencies.get(feature));
+        }
     }
 
     @Test
@@ -196,7 +262,7 @@ public class VersionlessTest {
 
         String errorOutput =    "There are versionless features that need to be created. " +
                                 "Templates for the needed features have been created in the 'build/versionless' directory.\n" + 
-                                "Keep in mind the templates are not guarenteed to be correct and are soley meant to " + 
+                                "Keep in mind the templates are not guarenteed to be correct and are solely meant to " + 
                                 "act as a helpful starting point for creating a versionless feature.\n" + 
                                 "Verify the data inside the feature files are correct, then copy the features from 'build/versionless' into 'visibility'.\n" + createdFeatures;
 

@@ -30,14 +30,20 @@ public class VersionlessFeatureCreator {
         }
 
         if(akaFeature != null){
+            // this feature is the older version of an newer feature
+            // ex. ejb
+            // in this scenario we add the future feature versions
+            ArrayList<String[]> temp = akaFeature.getFeaturesAndPlatform();
+            for(String[] featAndPlat : temp){
+                feature.addFeaturePlatform(featAndPlat);
+            }
+        }
+        else{
             if(feature.getAKAFutureFeature() != null){
-                // this feature is the older version of an newer feature
-                // ex. ejb
-                // in this scenario we add the future feature versions
-                ArrayList<String[]> temp = akaFeature.getFeaturesAndPlatform();
-                for(String[] featAndPlat : temp){
-                    feature.addFeaturePlatform(featAndPlat);
-                }
+                feature.setAKAFutureFeature(null);
+            }
+            if(feature.getAlsoKnownAs() != null){
+                feature.setAlsoKnownAs(null);
             }
         }
 
@@ -48,18 +54,20 @@ public class VersionlessFeatureCreator {
         //  features[0] == the name of the feature ex. servlet-4.0
         //  features[1] == the name of the platform it depends on ex. jakartaPlatform-8.0
         //  features[2] == the full name of the feature ex. com.ibm.ws.servlet-4.0
-    	for(String[] features : feature.getFeaturesAndPlatform()) {
-            // Code for utilizing the ee/mp versions to add within the private feature defs
-            // String[] dependencyVersions = feature.getAllDependencyVersions(features[0], features[1].split("-")[0]);
-            // if(dependencyVersions[1].equals("")){
-            //     createPrivateVersionedFeature(feature.getFeatureName(), features[0].split("-")[1], features[1].split("-")[0], features[1].split("-")[1], features[2]);
-            // }
-            // else{
-            //     createPrivateVersionedFeature(feature.getFeatureName(), features[0].split("-")[1], features[1].split("-")[0], dependencyVersions[0]+"; ibm.tolerates:=\"" + dependencyVersions[1] + "\"", features[2]);
-            // }
+        if(feature.getAlsoKnownAs() == null){
+            for(String[] features : feature.getFeaturesAndPlatform()) {
+                // Code for utilizing the ee/mp versions to add within the private feature defs
+                // String[] dependencyVersions = feature.getAllDependencyVersions(features[0], features[1].split("-")[0]);
+                // if(dependencyVersions[1].equals("")){
+                //     createPrivateVersionedFeature(feature.getFeatureName(), features[0].split("-")[1], features[1].split("-")[0], features[1].split("-")[1], features[2]);
+                // }
+                // else{
+                //     createPrivateVersionedFeature(feature.getFeatureName(), features[0].split("-")[1], features[1].split("-")[0], dependencyVersions[0]+"; ibm.tolerates:=\"" + dependencyVersions[1] + "\"", features[2]);
+                // }
 
-            if(createPrivateVersionedFeature(feature.getFeatureName(), features[0].split("-")[1], features[2])){
-                generatedNewFile = true;
+                if(createPrivateVersionedFeature(feature.getFeatureName(), features[0].split("-")[1], features[2])){
+                    generatedNewFile = true;
+                }
             }
         }
 
@@ -128,11 +136,15 @@ public class VersionlessFeatureCreator {
         writer.append("Subsystem-Name: " + feature.getSubsystemName());
         writer.newLine();
         String[] versions = feature.getPreferredAndTolerates();
+        String toleratesFeature = feature.getFeatureName();
+        if(feature.getAlsoKnownAs() != null){
+            toleratesFeature = feature.getAlsoKnownAs();
+        }
         if(versions.length == 1){
-            writer.append("-features=io.openliberty.internal.versionless." + feature.getFeatureName() + "-" + versions[0]);
+            writer.append("-features=io.openliberty.internal.versionless." + toleratesFeature + "-" + versions[0]);
         }
         else{
-            writer.append("-features=io.openliberty.internal.versionless." + feature.getFeatureName() + "-" + versions[0] + "; ibm.tolerates:=\"" + versions[1] + "\"");
+            writer.append("-features=io.openliberty.internal.versionless." + toleratesFeature + "-" + versions[0] + "; ibm.tolerates:=\"" + versions[1] + "\"");
         }
         writer.newLine();
         writer.append("kind=beta");
@@ -202,6 +214,9 @@ public class VersionlessFeatureCreator {
         File existingFeature = new File(checkExistingPublic + feature.getFeatureName() + "/io.openliberty.versionless." + feature.getFeatureName() + ".feature");
         ArrayList<String> existingFeatureVersions = new ArrayList<String>();
         String featureFullName = "io.openliberty.internal.versionless." + feature.getFeatureName() + "-";
+        if(feature.getAlsoKnownAs() != null){
+            featureFullName = "io.openliberty.internal.versionless." + feature.getAlsoKnownAs() + "-";
+        }
         try {
             Scanner myReader = new Scanner(existingFeature);
             while (myReader.hasNextLine()) {
@@ -244,8 +259,6 @@ public class VersionlessFeatureCreator {
         if(!!!featureVersions.isEmpty() || !!!copyExistingVersions.isEmpty()){
             return false;
         }
-
-        
 
         return true;
     }

@@ -278,8 +278,13 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         // Always prime the selected with the pre-resolved and the root features.
         // This will ensure that the root and pre-resolved features do not conflict
+        Collection<String> rootFeaturesList = new ArrayList<String>(rootFeatures);
+        //Implementation for platform element
+        if(isBeta && rootPlatforms != null){
+            rootFeaturesList.addAll(rootPlatforms);
+        }
         selectionContext.primeSelected(preResolved);
-        selectionContext.primeSelected(rootFeatures);
+        selectionContext.primeSelected(rootFeaturesList);
 
         // Even if the feature set hasn't changed, we still need to process the auto features and add any features that need to be
         // installed/uninstalled to the list. This recursively iterates over the auto Features, as previously installed features
@@ -291,7 +296,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         do {
             if (!!!autoFeaturesToInstall.isEmpty()) {
                 // this is after the first pass;  use the autoFeaturesToInstall as the roots
-                rootFeatures = autoFeaturesToInstall;
+                rootFeaturesList = autoFeaturesToInstall;
                 // Need to prime the auto features as selected
                 selectionContext.primeSelected(autoFeaturesToInstall);
                 // and use the resolved as the preResolved
@@ -301,7 +306,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 // otherwise they would get lost
                 selectionContext.saveCurrentPreResolvedConflicts();
             }
-            resolved = doResolveFeatures(rootFeatures, preResolved, selectionContext);
+            resolved = doResolveFeatures(rootFeaturesList, preResolved, selectionContext);
         } while (!!!(autoFeaturesToInstall = processAutoFeatures(kernelFeatures, resolved, seenAutoFeatures, selectionContext)).isEmpty());
         // Finally return the selected result
         return selectionContext.getResult();
@@ -669,7 +674,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
         selectionContext.processCandidates(chain, candidateNames, symbolicName, baseSymbolicName, preferredVersion, isSingleton);
         // check if there is a single candidate left after processing
-        if (candidateNames.size() == 1) {
+        if (candidateNames.size() == 1 && (!!!baseSymbolicName.startsWith("io.openliberty.internal.versionless.") || (baseSymbolicName.startsWith("io.openliberty.internal.versionless.") && selectionContext.getSelected(baseSymbolicName) != null))) {
             // We selected one candidate; now process the selected
             String selectedName = candidateNames.get(0);
             processSelected(selectionContext.getRepository().getFeature(selectedName), allowedTolerations, chain, result, selectionContext);
@@ -863,6 +868,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             // we only pop as long as there is more than one because we don't want to reuse the first
             Permutation popped = _permutations.size() > 1 ? _permutations.pollFirst() : null;
             if (popped != null) {
+                triedVersionless = false;
                 _current = popped;
                 return true;
             }
@@ -904,8 +910,8 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         void processCandidates(Collection<String> chain, List<String> candidateNames, String symbolicName, String baseSymbolicName, String preferredVersion, boolean isSingleton) {
             if  (baseSymbolicName.startsWith("io.openliberty.internal.versionless.") && 
-                getSelected("com.ibm.websphere.appserver.eeCompatible") == null && 
-                candidateNames.size() > 1){
+                getSelected("com.ibm.websphere.appserver.eeCompatible") == null){
+
                 addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
                 return;
             }
@@ -1000,6 +1006,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             if (_current._postponed.isEmpty() && _current._postponedVersionless.isEmpty()) {
                 return;
             }
+            
             // Only process the first postponed and try again;
             // We have to do this one postpone at a time because
             // The decision of one postpone may effect the path of the
