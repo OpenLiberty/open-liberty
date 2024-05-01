@@ -1135,7 +1135,7 @@ public class DataExperimentalServlet extends FATServlet {
                                      .collect(Collectors.toList()));
 
         assertEquals(List.of("030-2 E314", "050-2 B125", "050-2 G105"),
-                     reservations.findByStopOrStartOrStart(OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT),
+                     reservations.findByStopOrStartAtAnyOf(OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT),
                                                            OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT),
                                                            OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT))
                                      .parallel()
@@ -1143,10 +1143,10 @@ public class DataExperimentalServlet extends FATServlet {
                                      .collect(Collectors.toList()));
 
         assertEquals(List.of(10030004L, 10030005L, 10030006L, 10030009L),
-                     reservations.findByStopOrStartOrStartOrStart(OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT),
-                                                                  OffsetDateTime.of(2022, 5, 25, 7, 30, 0, 0, CDT),
-                                                                  OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT),
-                                                                  OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT))
+                     reservations.findByStopOrStartAtAnyOf(OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT),
+                                                           OffsetDateTime.of(2022, 5, 25, 7, 30, 0, 0, CDT),
+                                                           OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT),
+                                                           OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT))
                                      .parallel()
                                      .sorted()
                                      .boxed()
@@ -1157,9 +1157,9 @@ public class DataExperimentalServlet extends FATServlet {
                              OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT).toInstant(),
                              OffsetDateTime.of(2022, 5, 25, 13, 0, 0, 0, CDT).toInstant(),
                              OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT).toInstant()),
-                     reservations.findByStopOrStopOrStop(OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT),
-                                                         OffsetDateTime.of(2022, 5, 25, 15, 0, 0, 0, CDT),
-                                                         OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT))
+                     reservations.findByStoppingAtAnyOf(OffsetDateTime.of(2022, 5, 25, 14, 0, 0, 0, CDT),
+                                                        OffsetDateTime.of(2022, 5, 25, 15, 0, 0, 0, CDT),
+                                                        OffsetDateTime.of(2022, 5, 25, 11, 0, 0, 0, CDT))
                                      .map(r -> r.start().toInstant())
                                      .sorted()
                                      .collect(Collectors.toList()));
@@ -1443,9 +1443,9 @@ public class DataExperimentalServlet extends FATServlet {
 
         reservations.saveAll(List.of(r1, r2, r3, r4));
 
-        ReservedTimeSlot[] reserved = reservations.findTimeSlotByLocationAndStartBetweenOrderByStart("30-2 C206",
-                                                                                                     OffsetDateTime.of(2022, 6, 3, 0, 0, 0, 0, CDT),
-                                                                                                     OffsetDateTime.of(2022, 6, 3, 23, 59, 59, 0, CDT));
+        ReservedTimeSlot[] reserved = reservations.findTimeSlotWithin("30-2 C206",
+                                                                      OffsetDateTime.of(2022, 6, 3, 0, 0, 0, 0, CDT),
+                                                                      OffsetDateTime.of(2022, 6, 3, 23, 59, 59, 0, CDT));
         assertArrayEquals(new ReservedTimeSlot[] { new ReservedTimeSlot(r2.start, r2.stop),
                                                    new ReservedTimeSlot(r1.start, r1.stop),
                                                    new ReservedTimeSlot(r3.start, r3.stop) },
