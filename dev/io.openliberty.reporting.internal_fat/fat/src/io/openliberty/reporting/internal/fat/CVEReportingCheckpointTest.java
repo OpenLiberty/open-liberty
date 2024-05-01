@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,6 +38,11 @@ public class CVEReportingCheckpointTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    @BeforeClass
+    public static void setup() throws Exception {
+        server.saveServerConfiguration();
+    }
+
     @After
     public void tearDown() throws Exception {
 
@@ -44,7 +50,7 @@ public class CVEReportingCheckpointTest extends FATServletClient {
             server.stopServer();
         }
 
-        // server.restoreServerConfiguration();
+        server.restoreServerConfiguration();
     }
 
     @Test
