@@ -46,8 +46,6 @@ public class CVEReportingResponseEndpoints extends Application {
 
         data = dataReceived;
 
-        System.out.println("CONSUMED: " + data);
-
         System.out.println("POST COMPLETED");
 
         CveProduct cveProduct = new CveProduct();
