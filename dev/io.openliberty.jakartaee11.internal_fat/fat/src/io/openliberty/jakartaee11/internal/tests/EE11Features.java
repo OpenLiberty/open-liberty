@@ -134,7 +134,7 @@ public class EE11Features {
 
         this.incompatibleFeatures_ol = getIncompatibleFeatures(versionedFeatures_ol,
                                                                compatibleFeatures_ol,
-                                                               !OPEN_LIBERTY_ONLY);
+                                                               OPEN_LIBERTY_ONLY);
 
         this.serverFeatures_wl = getInstalledFeatures(installRoot, !OPEN_LIBERTY_ONLY);
         this.versionedFeatures_wl = getVersionedFeatures(serverFeatures_wl);
@@ -192,8 +192,9 @@ public class EE11Features {
         // MP features are only compatible if they're in MP versions which work with EE11
         features.removeAll(getMPFeatures());
 
-        // add back when MP adds EE 11 support
+        // Add back EE-11
         features.addAll(JakartaEE11Action.EE11_FEATURE_SET);
+        features.add("data-1.0"); // tolerates EE-11
 
         // Value-add features which aren't compatible
         features.remove("openid-2.0"); // stabilized

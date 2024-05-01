@@ -315,7 +315,7 @@ public class FeatureResolverBaseline {
      * @return A list of (lazy) case data.
      */
     private List<LazySupplierImpl<VerifyCase>> generateSingleton(final Set<String> allowedMultiple,
-                                                             final Collection<ProvisioningFeatureDefinition> kernelFeatures) {
+                                                                 final Collection<ProvisioningFeatureDefinition> kernelFeatures) {
 
         List<ProvisioningFeatureDefinition> publicDefs = repository.select(RepoXML.PUBLIC_NOT_TEST);
         int numDefs = publicDefs.size();

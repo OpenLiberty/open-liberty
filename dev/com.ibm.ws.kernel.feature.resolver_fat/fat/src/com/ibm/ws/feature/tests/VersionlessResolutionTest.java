@@ -44,22 +44,22 @@ public class VersionlessResolutionTest {
     //
     // open-liberty/dev/com.ibm.ws.kernel.feature.resolver_fat/publish/verify/expected.xml
     // -- as --
-    // open-liberty/dev/com.ibm.ws.kernel.feature.resolver_fat/build/libs/autoFVT/publish/verify/expected.xml
+    // open-liberty/dev/com.ibm.ws.kernel.feature.resolver_fat/output/libs/autoFVT/publish/verify/expected.xml
     //
     // Actual results:
     //
-    // open-liberty/dev/com.ibm.ws.kernel.feature.resolver_fat/build/libs/autoFVT/build/verify/actual.xml
+    // open-liberty/dev/com.ibm.ws.kernel.feature.resolver_fat/build/libs/autoFVT/output/verify/actual.xml
     //
     // When updating the expected results, copy the actual results to the root publish folder.
 
-    public static final String REPO_PATH = "build/verify/repository.xml";
+    public static final String REPO_PATH = "output/verify/repository.xml";
 
-    public static final String SINGLETON_ACTUAL_PATH = "build/verify/singleton_actual.xml";
-    public static final String SINGLETON_DURATIONS_PATH = "build/verify/singleton_durations.txt";
+    public static final String SINGLETON_ACTUAL_PATH = "output/verify/singleton_actual.xml";
+    public static final String SINGLETON_DURATIONS_PATH = "output/verify/singleton_durations.txt";
     public static final String SINGLETON_EXPECTED_PATH = "publish/verify/singleton_expected.xml";
 
-    public static final String SERVLET_ACTUAL_PATH = "build/verify/servlet_actual.xml";
-    public static final String SERVLET_DURATIONS_PATH = "build/verify/servlet_durations.txt";
+    public static final String SERVLET_ACTUAL_PATH = "output/verify/servlet_actual.xml";
+    public static final String SERVLET_DURATIONS_PATH = "output/verify/servlet_durations.txt";
     public static final String SERVLET_EXPECTED_PATH = "publish/verify/servlet_expected.xml";
 
     public static File repoFile;

@@ -128,7 +128,7 @@ public class EE9Features {
 
         this.incompatibleFeatures_ol = getIncompatibleFeatures(versionedFeatures_ol,
                                                                compatibleFeatures_ol,
-                                                               !OPEN_LIBERTY_ONLY);
+                                                               OPEN_LIBERTY_ONLY);
 
         this.serverFeatures_wl = getInstalledFeatures(installRoot, !OPEN_LIBERTY_ONLY);
         this.versionedFeatures_wl = getVersionedFeatures(serverFeatures_wl);

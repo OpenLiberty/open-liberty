@@ -25,9 +25,9 @@ are generated and written to the file as specified through the environment varia
 data is generated as a callout during usual feature resolution.  Server class "FeatureManager"
 calls out to helper "FeatureResolverBaseline".
 
-Currently, baseline data is written to the autoFVT build directory, for example:   
+Currently, baseline data is written to the autoFVT output directory, for example:   
 
-dev/com.ibm.ws.kernel.feature.resolver_fat/build/libs/autoFVT/build/verify:
+dev/com.ibm.ws.kernel.feature.resolver_fat/build/libs/autoFVT/output/verify:
   servlet_actual.xml
   servlet_durations.txt
   singleton_actual.xml

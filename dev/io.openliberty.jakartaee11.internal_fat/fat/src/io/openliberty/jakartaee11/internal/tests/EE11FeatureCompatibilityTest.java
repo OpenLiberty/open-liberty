@@ -210,6 +210,14 @@ public class EE11FeatureCompatibilityTest extends FATServletClient {
         Set<String> compatibleFeatures = getCompatibleFeatures();
         Set<String> incompatibleFeatures = getIncompatibleFeatures();
 
+//        FATLogger.info(c, method, "Versioned    [ data-1.0 ]: " + versionedFeatures.contains("data-1.0"));
+//        FATLogger.info(c, method, "Compatible   [ data-1.0 ]: " + compatibleFeatures.contains("data-1.0"));
+//        FATLogger.info(c, method, "Incompatible [ data-1.0 ]: " + incompatibleFeatures.contains("data-1.0"));
+//
+//        FATLogger.info(c, method, "Versioned    [ data-1.1 ]: " + versionedFeatures.contains("data-1.1"));
+//        FATLogger.info(c, method, "Compatible   [ data-1.1 ]: " + compatibleFeatures.contains("data-1.1"));
+//        FATLogger.info(c, method, "Incompatible [ data-1.1 ]: " + incompatibleFeatures.contains("data-1.1"));
+
         String cdiFeatureEE11 = "cdi-4.1";
 
         Map<String, String> cdiSpecialConflicts = EE11Features.getCDIConflicts();

@@ -106,70 +106,24 @@ public interface FeatureResolver {
      * errors.
      */
     public static interface Result {
-        /**
-         * Answer the names of resolved features.
-         *
-         * @return The names of resolved features.
-         */
         Set<String> getResolvedFeatures();
 
         //
 
-        /**
-         * Tell if any errors were recorded when resolving the features.
-         *
-         * See {@link #getMissing()}, {@link #getNonPublicRoots()}, and {@link #getWrongProcessTypes()}.
-         *
-         * @return True or false telling if errors were recorded.
-         */
         boolean hasErrors();
 
-        /**
-         * Tell what requested features were missing.
-         *
-         * @return The features which were missing.
-         */
         Set<String> getMissing();
 
-        /**
-         * Tell what requested features were not public features.
-         *
-         * @return Requested features which are not public features.
-         */
         Set<String> getNonPublicRoots();
 
-        /**
-         * Tell what resolved features are for the wrong process type.
-         *
-         * The chains show how the problem feature was reached.
-         *
-         * @return Resolved features which are of the wrong process type.
-         */
         Map<String, Chain> getWrongProcessTypes();
 
-        /**
-         * Tell what resolved features require multiple, incompatible versions
-         * of the feature.
-         *
-         * The chains show how each of the versions of the feature was reached.
-         *
-         * Keys are base feature names.
-         *
-         * @return Table of feature conflicts.
-         */
         Map<String, Collection<Chain>> getConflicts();
     }
 
-    /**
-     * A dependency chain of feature requirements that lead a singleton feature
-     * and a list of candidates.
-     */
-    public static class Chain {
-        private final List<String> _chain;
-        private final List<String> _candidates;
-        private final Version _preferredVersion;
-        private final String _originalFeatureReq;
+    public static final List<String> EMPTY_STRINGS = Collections.emptyList();
 
+    public static class Chain {
         private static Version parseVersion(String preferredVersion) {
             try {
                 return Version.parseVersion(preferredVersion);
@@ -179,38 +133,53 @@ public interface FeatureResolver {
         }
 
         private static List<String> copyChain(Collection<String> chain) {
-            return (chain.isEmpty() ? Collections.<String> emptyList() : new ArrayList<String>(chain));
+            return (chain.isEmpty() ? EMPTY_STRINGS : new ArrayList<String>(chain));
         }
 
-        public Chain(String rootSymbolicName, String preferredVersion) {
-            this(Collections.<String> emptyList(), Collections.singletonList(rootSymbolicName), preferredVersion, rootSymbolicName);
+        public Chain(String featureName, String preferredVersion) {
+            this(EMPTY_STRINGS, Collections.singletonList(featureName), preferredVersion, featureName);
         }
 
-        /**
-         * Creates a dependency chain.
-         *
-         * @param chain              The chain of feature names that have lead to a requirement on a singleton feature
-         * @param candidates         The tolerated candidates that were found which may satisfy the feature requirement
-         * @param preferredVersion   The preferred version
-         * @param originalFeatureReq The full feature name that is required.
-         */
-        public Chain(Collection<String> chain,
-                     List<String> candidates,
-                     String preferredVersion,
-                     String originalFeatureReq) {
+        public Chain(Chain otherChain) {
+            this._chain = copyChain(otherChain._chain);
 
-            _chain = copyChain(chain);
-            _candidates = candidates;
-            _preferredVersion = parseVersion(preferredVersion);
-            _originalFeatureReq = originalFeatureReq;
+            this._featureName = otherChain._featureName;
+            this._preferredVersion = otherChain._preferredVersion;
+
+            this._candidates = new ArrayList<String>(otherChain.getCandidates());
+
+            this.toString = getString();
         }
 
-        public Chain(String candidate, String preferredVersion, String originalFeatureReq) {
-            _chain = Collections.<String> emptyList();
-            _candidates = Collections.singletonList(candidate);
-            _preferredVersion = parseVersion(preferredVersion);
-            _originalFeatureReq = originalFeatureReq;
+        public Chain(Collection<String> chain, List<String> candidates, String preferredVersion, String featureName) {
+            this._chain = copyChain(chain);
+
+            this._featureName = featureName;
+            this._preferredVersion = parseVersion(preferredVersion);
+
+            this._candidates = candidates;
+
+            this.toString = getString();
         }
+
+        public Chain(String candidate, String preferredVersion, String featureName) {
+            this._chain = EMPTY_STRINGS;
+
+            this._featureName = featureName;
+            this._preferredVersion = parseVersion(preferredVersion);
+
+            this._candidates = Collections.singletonList(candidate);
+
+            this.toString = getString();
+        }
+
+        //
+
+        private final List<String> _chain;
+
+        private final String _featureName;
+        private final Version _preferredVersion;
+        private final List<String> _candidates;
 
         public List<String> getChain() {
             return _chain;
@@ -225,58 +194,71 @@ public interface FeatureResolver {
         }
 
         public String getFeatureRequirement() {
-            return _originalFeatureReq;
+            return _featureName;
         }
+
+        private String getString() {
+            StringBuilder builder = new StringBuilder();
+
+            builder.append("ROOT->");
+
+            for (String featureName : _chain) {
+                builder.append(featureName);
+                builder.append("->");
+            }
+            builder.append(_candidates);
+            builder.append(" ");
+            builder.append(_preferredVersion);
+
+            return builder.toString();
+        }
+
+        private final String toString;
 
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("ROOT->");
-            for (String featureName : _chain) {
-                builder.append(featureName).append("->");
-            }
-            builder.append(_candidates);
-            builder.append(" ").append(_preferredVersion);
-            return builder.toString();
+            return toString;
         }
     }
+
+    //
 
     /**
      * Resolve with an empty collection of kernel features.
      */
-    public Result resolveFeatures(Repository repository,
-                                  Collection<String> rootFeatures,
-                                  Set<String> preResolved,
-                                  boolean allowMultipleVersions);
+    Result resolveFeatures(Repository repository,
+                           Collection<String> rootFeatures,
+                           Set<String> preResolved,
+                           boolean allowMultipleVersions);
 
     /**
      * Resolve allowing all process types.
      */
-    public Result resolveFeatures(Repository repository,
-                                  Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                                  Collection<String> rootFeatures,
-                                  Set<String> preResolved,
-                                  boolean allowMultipleVersions);
+    Result resolveFeatures(Repository repository,
+                           Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                           Collection<String> rootFeatures,
+                           Set<String> preResolved,
+                           boolean allowMultipleVersions);
 
     /**
      * Main resolution API: Resolve features using the supplied parameters.
      */
-    public Result resolveFeatures(Repository repository,
-                                  Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                                  Collection<String> rootFeatures,
-                                  Set<String> preResolved,
-                                  boolean allowMultipleVersions,
-                                  EnumSet<ProcessType> supportedProcessTypes);
+    Result resolveFeatures(Repository repository,
+                           Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                           Collection<String> rootFeatures,
+                           Set<String> preResolved,
+                           boolean allowMultipleVersions,
+                           EnumSet<ProcessType> supportedProcessTypes);
 
     /**
      * Main resolution API: Resolve features using the supplied parameters.
      *
      * Specify features which multiple-versions are allowed using a set.
      */
-    public Result resolveFeatures(Repository repository,
-                                  Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                                  Collection<String> rootFeatures,
-                                  Set<String> preResolved,
-                                  Set<String> allowedMultipleVersions,
-                                  EnumSet<ProcessType> supportedProcessTypes);
+    Result resolveFeatures(Repository repository,
+                           Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                           Collection<String> rootFeatures,
+                           Set<String> preResolved,
+                           Set<String> allowedMultipleVersions,
+                           EnumSet<ProcessType> supportedProcessTypes);
 }

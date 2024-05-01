@@ -95,7 +95,6 @@ public class FeatureUtilities {
 
         // EE-related features which aren't in one of the feature sets
         features.add("appSecurity-1.0");
-        features.add("data-1.1");
         features.add("jsp-2.2");
         features.add("websocket-1.0");
 
