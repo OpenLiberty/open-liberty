@@ -12,7 +12,6 @@
  *******************************************************************************/
 package io.openliberty.restfulws.mpmetrics;
 
-import java.nio.charset.MalformedInputException;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,7 +29,6 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs.monitor.metrics.service.RestMetricsCallback;
 
 import io.openliberty.microprofile.metrics.internal.monitor.computed.internal.ComputedMonitorMetricsHandler;
