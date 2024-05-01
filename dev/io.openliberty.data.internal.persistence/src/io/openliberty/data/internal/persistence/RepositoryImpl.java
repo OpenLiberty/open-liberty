@@ -123,6 +123,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     public RepositoryImpl(DataExtensionProvider provider, DataExtension extension, EntityManagerBuilder builder,
                           Class<R> repositoryInterface, Class<?> primaryEntityClass,
                           Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
+        // EntityManagerBuilder.run guarantees that the future added to the following map will be completed even if an error occurs
         this.primaryEntityInfoFuture = primaryEntityClass == null ? null : builder.entityInfoMap.computeIfAbsent(primaryEntityClass, EntityInfo::newFuture);
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
@@ -140,20 +141,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else {
                 boolean inheritance = entityClass.getAnnotation(Inheritance.class) != null; // TODO what do we need to do this with?
 
-                Class<?> jpaEntityClass;
-                Class<?> recordClass = null;
-                if (entityClass.isRecord())
-                    try {
-                        recordClass = entityClass;
-                        jpaEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Entity");
-                    } catch (ClassNotFoundException x) {
-                        // TODO figure out how to best report this error to the user
-                        throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
-                    }
-                else
-                    jpaEntityClass = entityClass;
-
-                CompletableFuture<EntityInfo> entityInfoFuture = builder.entityInfoMap.computeIfAbsent(jpaEntityClass, EntityInfo::newFuture);
+                CompletableFuture<EntityInfo> entityInfoFuture = builder.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
                 entityInfoFutures.add(entityInfoFuture);
 
                 for (QueryInfo queryInfo : entry.getValue()) {
@@ -182,12 +170,29 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             .handle((ignore, x) -> {
                                 Map<String, CompletableFuture<EntityInfo>> entityInfos = new HashMap<>();
                                 for (CompletableFuture<EntityInfo> future : entityInfoFutures) {
-                                    if (future.isCompletedExceptionally())
+                                    if (future.isCompletedExceptionally()) {
                                         entityInfos.putIfAbsent(EntityInfo.FAILED, future);
-                                    else if (future.isDone())
-                                        entityInfos.put(future.join().name, future);
-                                    else
+                                    } else if (future.isDone()) {
+                                        EntityInfo entityInfo = future.join();
+                                        CompletableFuture<EntityInfo> conflict = entityInfos.put(entityInfo.name, future);
+                                        if (entityInfo.recordClass != null && conflict == null) {
+                                            String recordName = entityInfo.name.substring(0, entityInfo.name.length() - EntityInfo.RECORD_ENTITY_SUFFIX.length());
+                                            conflict = entityInfos.put(recordName, future);
+                                        }
+                                        if (conflict != null) {
+                                            EntityInfo conflictInfo = conflict.join(); // already completed
+                                            List<String> classNames = List.of((entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName(),
+                                                                              (conflictInfo.recordClass == null ? conflictInfo.entityClass : conflictInfo.recordClass).getName());
+                                            // TODO NLS, consider splitting message for records/normal entities
+                                            MappingException conflictX = new MappingException("The " + classNames + " entities have conflicting names. " +
+                                                                                              "When using records as entities, an entity name consisting of " +
+                                                                                              "the record name suffixed with " + EntityInfo.RECORD_ENTITY_SUFFIX +
+                                                                                              " is generated.");
+                                            entityInfos.putIfAbsent(EntityInfo.FAILED, CompletableFuture.failedFuture(conflictX));
+                                        }
+                                    } else {
                                         entityInfos.putIfAbsent(EntityInfo.FAILED, CompletableFuture.failedFuture(x));
+                                    }
                                 }
                                 return entityInfos;
                             });
@@ -256,6 +261,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     @Trivial
     private QueryInfo completeQueryInfo(EntityInfo entityInfo, QueryInfo queryInfo) {
+        // This code path does not require the record name in the map because it is not used for @Query
         return completeQueryInfo(Collections.singletonMap(entityInfo.name, CompletableFuture.completedFuture(entityInfo)),
                                  queryInfo);
     }

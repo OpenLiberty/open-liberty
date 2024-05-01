@@ -428,8 +428,11 @@ public class QueryInfo {
                                        " repository does not specify an entity class. To correct this, have the repository interface" +
                                        " extend DataRepository or another built-in repository interface and supply the entity class" +
                                        " as the first type variable."); // TODO NLS
-        else
-            return primaryEntityInfoFuture.join();
+
+        if (!primaryEntityInfoFuture.isDone() && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "await completion of primary entity info", primaryEntityInfoFuture);
+
+        return primaryEntityInfoFuture.join();
     }
 
     /**
@@ -910,10 +913,13 @@ public class QueryInfo {
 
             StringBuilder q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
             q.append("SELECT");
-            if (selectLen > 0)
+            if (selectLen > 0) {
                 appendWithIdentifierName(ql, select0, select0 + selectLen, q);
-            else
+                if (fromLen == 0 && whereLen == 0 && orderLen == 0)
+                    q.append(' ');
+            } else {
                 q.append(' ').append(entityVar).append(' ');
+            }
 
             q.append("FROM");
             if (fromLen > 0 && !lacksEntityVar)

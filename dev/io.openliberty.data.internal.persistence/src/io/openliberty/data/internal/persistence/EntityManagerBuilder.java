@@ -54,9 +54,15 @@ import jakarta.persistence.metamodel.Type;
 public abstract class EntityManagerBuilder implements Runnable {
     private static final TraceComponent tc = Tr.register(EntityManagerBuilder.class);
 
+    /**
+     * Entity classes as seen by the user, not generated entity classes for records.
+     */
     protected final Set<Class<?>> entities = new HashSet<>();
 
-    // Mapping of JPA entity class (not record class) to entity information.
+    /**
+     * Mapping of entity class (as seen by the user, not a generated record entity class)
+     * to entity information.
+     */
     final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
 
     /**
@@ -295,12 +301,13 @@ public abstract class EntityManagerBuilder implements Runnable {
                     }
                 }
 
-                Class<?> entityClass = entityType.getJavaType();
+                Class<?> jpaEntityClass = entityType.getJavaType();
+                Class<?> userEntityClass = recordClass == null ? jpaEntityClass : recordClass;
 
                 EntityInfo entityInfo = new EntityInfo( //
                                 entityType.getName(), //
-                                entityClass, //
-                                getRecordClass(entityClass), //
+                                jpaEntityClass, //
+                                recordClass, //
                                 attributeAccessors, //
                                 attributeNames, //
                                 attributeTypes, //
@@ -311,7 +318,7 @@ public abstract class EntityManagerBuilder implements Runnable {
                                 versionAttrName, //
                                 this);
 
-                entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture).complete(entityInfo);
+                entityInfoMap.computeIfAbsent(userEntityClass, EntityInfo::newFuture).complete(entityInfo);
             }
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "run: define entities");
