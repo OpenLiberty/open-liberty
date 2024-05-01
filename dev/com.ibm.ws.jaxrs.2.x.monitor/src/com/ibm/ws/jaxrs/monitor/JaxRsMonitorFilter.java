@@ -14,6 +14,7 @@ package com.ibm.ws.jaxrs.monitor;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -115,7 +116,7 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
     public void filter(ContainerRequestContext reqCtx) throws IOException {
         if (!MonitorAppStateListener.isRESTEnabled()) return;
         Class<?> resourceClass = resourceInfo.getResourceClass();
-
+        
         if (resourceClass != null) {
             Method resourceMethod = resourceInfo.getResourceMethod();
             MonitorKey monitorKey = monitorKeyCache.getMonitorKey(resourceClass, resourceMethod);
@@ -148,10 +149,11 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 
                 monitorKeyCache.putMonitorKey(resourceClass, resourceMethod, monitorKey);
             }
-
+            
             // Store the start time and key information in the ContainerRequestContext that can be accessed
             // in the response filter method.  
             reqCtx.setProperty(STATS_CONTEXT, new StatsContext(monitorKey, System.nanoTime()));
+            
         }
     }
 
@@ -190,7 +192,17 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
 
         REST_Stats stats = jaxRsCountByName.get(statsContext.monitorKey.statsKey);
         if (stats == null) {
-            stats = initJaxRsStats(statsContext.monitorKey.statsKey, statsContext.monitorKey.statsKeyPrefix, statsContext.monitorKey.statsMethodName);
+            stats = initJaxRsStats(statsContext.monitorKey.statsKey, statsContext.monitorKey.statsKeyPrefix,
+                    statsContext.monitorKey.statsMethodName);
+
+            /*
+             * If we have a MP5RestMetricsCallback service set, follow through to create
+             * REST metrics (i.e., for MP Metrics 5.x)
+             */
+            if (MonitorAppStateListener.restMetricCallback != null) {
+                MonitorAppStateListener.restMetricCallback.createRestMetric(statsContext.monitorKey.statsMethodName,
+                        statsContext.monitorKey.statsKey);
+            }
         }
 
         /*
@@ -202,15 +214,24 @@ public class JaxRsMonitorFilter implements ContainerRequestFilter, ContainerResp
         String metricsHeader = respCtx
                 .getHeaderString("com.ibm.ws.microprofile.metrics.monitor.MetricsJaxRsEMCallbackImpl.Exception");
 
-        //Check for MP Metrics 30 header;
+        //Check for MP Metrics 3 and 4 exception header;
         if (metricsHeader == null)
             metricsHeader = respCtx.getHeaderString("io.openliberty.microprofile.metrics.internal.monitor.MetricsJaxRsEMCallbackImpl.Exception");
 
-        //Check for MP Metrics 31 header;
+        //Check for MP Metrics 5.x exception header;
         if (metricsHeader == null)
             metricsHeader = respCtx.getHeaderString("io.openliberty.restfulws.mpmetrics.MetricsRestfulWsEMCallbackImpl.Exception");
-
+        
         if (metricsHeader == null) {
+            /*
+             * If we have a MP5RestMetricsCallback service set, follow through to update the
+             * REST metrics (i.e., for MP Metrics 5.x)
+             */
+            if (MonitorAppStateListener.restMetricCallback != null) {
+                MonitorAppStateListener.restMetricCallback.updateRestMetric(statsContext.monitorKey.statsMethodName,
+                        statsContext.monitorKey.statsKey, Duration.ofNanos(elapsedTime));
+            }
+        	
             // Need to start new minute here.. we need to pass in the stat object so we can
             // actually update Mbean
             maybeStartNewMinute(stats);
