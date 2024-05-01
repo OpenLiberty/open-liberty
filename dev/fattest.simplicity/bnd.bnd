@@ -61,6 +61,13 @@ Private-Package: \
     com.ibm.websphere.simplicity.configuration
 
 Include-Resource: \
+<<<<<<< HEAD
+=======
+    @${repo;org.bouncycastle:bcpg-jdk18on;1.78;EXACT},\
+    @${repo;org.bouncycastle:bcpkix-jdk18on;1.78;EXACT},\
+    @${repo;org.bouncycastle:bcprov-jdk18on;1.78;EXACT},\
+    @${repo;org.bouncycastle:bcutil-jdk18on;1.78;EXACT},\
+>>>>>>> 5994d5bcd7 (changed from v1.75 -> 1.78)
     init-sqlserver.sql=resources/init-sqlserver.sql
 
 test.project: true
@@ -112,6 +119,6 @@ fat.test.container.images: testcontainers/ryuk:0.6.0, testcontainers/sshd:1.1.0,
     io.openliberty.com.fasterxml.jackson;version=latest,\
     org.seleniumhq.selenium:selenium-api;version=4.8.3,\
     org.seleniumhq.selenium:selenium-support;version=4.8.3,\
-    io.openliberty.org.bouncycastle.bcpkix-jdk18on;version=latest,\
-    io.openliberty.org.bouncycastle.bcprov-jdk18on;version=latest,\
-    io.openliberty.org.bouncycastle.bcutil-jdk18on;version=latest
+    org.bouncycastle:bcpg-jdk18on;version=1.78.1,\
+    org.bouncycastle:bcpkix-jdk18on;version=1.78.1,\
+    org.bouncycastle:bcprov-jdk18on;version=1.78.1
