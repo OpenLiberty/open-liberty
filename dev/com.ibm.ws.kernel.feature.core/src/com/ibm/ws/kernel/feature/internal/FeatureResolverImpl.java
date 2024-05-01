@@ -75,13 +75,13 @@ public class FeatureResolverImpl implements FeatureResolver {
         private static final long serialVersionUID = 1L;
     }
 
-    private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
+    private static final boolean isBeta = true; //Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
     private static boolean shownVersionlessError = false;
 
-    private static String preferedFeatureVersions = System.getenv("PREFERRED_FEATURE_VERSIONS");
+    private String preferredPlatformVersions = System.getenv("PREFERRED_PLATFORM_VERSIONS");
 
-    private static String[][] parsedPreferedVersions;
+    private String[] parsedPreferedPlatforms;
 
     private static Map<String, String[]> parseNAV = new HashMap<String, String[]>();
 
@@ -97,40 +97,79 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
         tc = temp;
     }
+    
+    //mimics how the platform elements will work using the env var
+    private Collection<String> computePrefferedPlatform(Repository repo){
+        if(parsedPreferedPlatforms == null){
+            return null;
+        }
 
-    private void verifyVersionlessEnvVar(FeatureResolver.Repository repository){
-        String[] preferredVersions = (preferedFeatureVersions == null) ? new String[] {} : preferedFeatureVersions.split(",");
-        String[][] parsedVersions = new String[preferredVersions.length][2];
-        String invalid = "";
-        int invalidPadding = 0;
-        for (int i = 0; i < preferredVersions.length; i++) {
-            String[] current = parseNameAndVersion(preferredVersions[i].trim());
-            if(current[0] != null && current[1] != null && !current[0].isEmpty() && !current[1].isEmpty() && repository.getFeature(current[0] + "-" + current[1]) != null){
-                parsedVersions[i-invalidPadding] = current;
-            }
-            else{
-                invalidPadding++;
-                if(!invalid.isEmpty()){
-                    invalid += ",";
+        Collection<String> rootPlatforms = new ArrayList<String>();
+        for(String plat : parsedPreferedPlatforms){
+            if(plat.startsWith("jakartaee") || plat.startsWith("javaee")){
+                String version = "com.ibm.websphere.appserver.eeCompatible-" + plat.split("-")[1].trim();
+                if(repo.getFeature(version) != null){
+                    rootPlatforms.add(version);
                 }
-                invalid += " \"" + preferredVersions[i] + "\"";
+            }
+            else if(plat.startsWith("MicroProfile")){
+                String version = "io.openliberty.mpCompatible-" + plat.split("-")[1].trim();
+                if(repo.getFeature(version) != null){
+                    rootPlatforms.add(version);
+                }
             }
         }
-        parsedPreferedVersions = Arrays.copyOf(parsedVersions, parsedVersions.length-invalidPadding);
-        if(!!!invalid.isEmpty()){
-            trace("Removing invalid entries in PREFERRED_FEATURE_VERSIONS:" + invalid);
-        }
+        return rootPlatforms;
     }
 
-    public void setPrefferedVersion(String preferredFeatures){
-        preferedFeatureVersions = preferredFeatures;
-        String[] preferredVersions = (preferedFeatureVersions == null) ? new String[] {} : preferedFeatureVersions.split(",");
-        String[][] parsedVersions = new String[preferredVersions.length][2];
-        for (int i = 0; i < preferredVersions.length; i++) {
-            parsedVersions[i] = parseNameAndVersion(preferredVersions[i].trim());
+    //how the env var will work
+    private Collection<String> computePrefferedPlatformVariable(Repository repo){
+        if(parsedPreferedPlatforms == null){
+            return null;
         }
-        parsedPreferedVersions = parsedVersions;
 
+        List<String> eeCompatible = new ArrayList<String>();
+        List<String> mpCompatible = new ArrayList<String>();
+
+        Collection<String> rootPlatforms = new ArrayList<String>();
+        for(String plat : parsedPreferedPlatforms){
+            if(plat.startsWith("jakartaee") || plat.startsWith("javaee")){
+                String version = plat.split("-")[1].trim();
+                eeCompatible.add(version);
+            }
+            else if(plat.startsWith("MicroProfile")){
+                String version = plat.split("-")[1].trim();
+                mpCompatible.add(version);
+            }
+        }
+
+        if(!!!eeCompatible.isEmpty()){
+            Collection<FeatureResource> includes = repo.getFeature("io.openliberty.internal.versionless.eeCompatible").getConstituents(SubsystemContentType.FEATURE_TYPE);
+
+            for(FeatureResource include : includes){
+                List<String> tolerates = include.getTolerates();
+                tolerates.clear();
+                tolerates.addAll(eeCompatible);
+            }
+            rootPlatforms.add("io.openliberty.internal.versionless.eeCompatible");
+        }
+
+        if(!!!mpCompatible.isEmpty()){
+            Collection<FeatureResource> includes = repo.getFeature("io.openliberty.internal.versionless.mpCompatible").getConstituents(SubsystemContentType.FEATURE_TYPE);
+
+            for(FeatureResource include : includes){
+                List<String> tolerates = include.getTolerates();
+                tolerates.clear();
+                tolerates.addAll(mpCompatible);
+            }
+            rootPlatforms.add("io.openliberty.internal.versionless.mpCompatible");
+        }
+
+        return rootPlatforms;
+    }
+
+    public void setPreferredPlatforms(String[] plats){
+        parsedPreferedPlatforms = plats;
     }
 
     @Override
@@ -192,8 +231,11 @@ public class FeatureResolverImpl implements FeatureResolver {
                                   EnumSet<ProcessType> supportedProcessTypes) {
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
+        //Implementation for platform element
+        Collection<String> rootPlatforms;
         if(isBeta){
-            verifyVersionlessEnvVar(repository);
+            rootPlatforms = computePrefferedPlatform(repository);
+            rootPlatforms = computePrefferedPlatformVariable(repository);
         }
         
         // this checks if the pre-resolved exists in the repo;
@@ -205,8 +247,13 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         // Always prime the selected with the pre-resolved and the root features.
         // This will ensure that the root and pre-resolved features do not conflict
+        Collection<String> rootFeaturesList = new ArrayList<String>(rootFeatures);
+        //Implementation for platform element
+        if(isBeta && rootPlatforms != null){
+            rootFeaturesList.addAll(rootPlatforms);
+        }
         selectionContext.primeSelected(preResolved);
-        selectionContext.primeSelected(rootFeatures);
+        selectionContext.primeSelected(rootFeaturesList);
 
         // Even if the feature set hasn't changed, we still need to process the auto features and add any features that need to be
         // installed/uninstalled to the list. This recursively iterates over the auto Features, as previously installed features
@@ -218,7 +265,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         do {
             if (!!!autoFeaturesToInstall.isEmpty()) {
                 // this is after the first pass;  use the autoFeaturesToInstall as the roots
-                rootFeatures = autoFeaturesToInstall;
+                rootFeaturesList = autoFeaturesToInstall;
                 // Need to prime the auto features as selected
                 selectionContext.primeSelected(autoFeaturesToInstall);
                 // and use the resolved as the preResolved
@@ -228,7 +275,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 // otherwise they would get lost
                 selectionContext.saveCurrentPreResolvedConflicts();
             }
-            resolved = doResolveFeatures(rootFeatures, preResolved, selectionContext);
+            resolved = doResolveFeatures(rootFeaturesList, preResolved, selectionContext);
         } while (!!!(autoFeaturesToInstall = processAutoFeatures(kernelFeatures, resolved, seenAutoFeatures, selectionContext)).isEmpty());
         // Finally return the selected result
         return selectionContext.getResult();
@@ -504,52 +551,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             tolerates.addAll(overrideTolerates);
         }
 
-        //Gets the preferred feature version for a versionless feature from the PREFERRED_FEATURE_VERSIONS env var.
-        //PREFERRED_FEATURE_VERSIONS=mpMetrics-5.1,mpMetrics-5.0,mpMetrics-4.0,mpHealth-5.0,mpHealth-3.1
-        // if (isBeta) {
-        //     if (baseSymbolicName.startsWith("io.openliberty.internal.versionless.")) {
-        //         // parse and cache versionless feature versions
-        //         if (parsedPreferedVersions.length == 0) {
-        //             preferredVersion = "";
-        //             tolerates = new ArrayList<String>();
-        //         } else if ((tolerates = selectionContext.copyVersionless(baseSymbolicName)) != null) {
-        //             preferredVersion = tolerates.remove(0);
-        //             symbolicName = baseSymbolicName + "-" + preferredVersion;
-        //         } else {
-        //             preferredVersion = "";
-        //             tolerates = new ArrayList<String>();
-        //             for (String[] nAV : parsedPreferedVersions) {
-        //                 if (baseSymbolicName.endsWith(nAV[0])) {
-        //                     if (preferredVersion.isEmpty()) {
-        //                         preferredVersion = nAV[1];
-        //                         symbolicName = baseSymbolicName + "-" + nAV[1];
-        //                     } else {
-        //                         tolerates.add(nAV[1]);
-        //                     }
-        //                 }
-        //             }
-        //             List<String> allVersions = new ArrayList<String>(tolerates.size() + 1);
-        //             allVersions.add(preferredVersion);
-        //             allVersions.addAll(tolerates);
-        //             selectionContext.putVersionless(baseSymbolicName, allVersions);
-        //         }
-        //         if (preferredVersion.isEmpty()) {
-        //             if (!shownVersionlessError) {
-        //                 shownVersionlessError = true;
-        //                 if (preferedFeatureVersions == null) {
-        //                     Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_ENV_VAR");
-        //                 }
-        //                 else {
-        //                     String shortName = baseSymbolicName.replace("io.openliberty.internal.versionless.", "");
-        //                     Tr.error((TraceComponent) tc, "UPDATE_MISSING_VERSIONLESS_FEATURE_VAL", new Object[] { shortName });
-        //                 }
-        //             }
-        //             selectionContext.addConflict(includingFeature.getFeatureName(), null);
-        //             return;
-        //         }
-        //     }
-        // }
-
         List<String> candidateNames = new ArrayList<String>(1 + (tolerates == null ? 0 : tolerates.size()));
 
         // look for the preferred feature using the fully qualified symbolicName first
@@ -591,7 +592,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
         selectionContext.processCandidates(chain, candidateNames, symbolicName, baseSymbolicName, preferredVersion, isSingleton);
         // check if there is a single candidate left after processing
-        if (candidateNames.size() == 1) {
+        if (candidateNames.size() == 1 && (!!!baseSymbolicName.startsWith("io.openliberty.internal.versionless.") || (baseSymbolicName.startsWith("io.openliberty.internal.versionless.") && selectionContext.getSelected(baseSymbolicName) != null))) {
             // We selected one candidate; now process the selected
             String selectedName = candidateNames.get(0);
             processSelected(selectionContext.getRepository().getFeature(selectedName), allowedTolerations, chain, result, selectionContext);
@@ -797,6 +798,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             // we only pop as long as there is more than one because we don't want to reuse the first
             Permutation popped = _permutations.size() > 1 ? _permutations.pollFirst() : null;
             if (popped != null) {
+                triedVersionless = false;
                 _current = popped;
                 return true;
             }
@@ -834,12 +836,12 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         ResultImpl getResult() {
             return _current._result;
-        };
+        }
 
         void processCandidates(Collection<String> chain, List<String> candidateNames, String symbolicName, String baseSymbolicName, String preferredVersion, boolean isSingleton) {
             if  (baseSymbolicName.startsWith("io.openliberty.internal.versionless.") && 
-                getSelected("com.ibm.websphere.appserver.eeCompatible") == null && 
-                candidateNames.size() > 1){
+                getSelected("com.ibm.websphere.appserver.eeCompatible") == null){
+
                 addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
                 return;
             }
@@ -934,6 +936,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             if (_current._postponed.isEmpty() && _current._postponedVersionless.isEmpty()) {
                 return;
             }
+            
             // Only process the first postponed and try again;
             // We have to do this one postpone at a time because
             // The decision of one postpone may effect the path of the

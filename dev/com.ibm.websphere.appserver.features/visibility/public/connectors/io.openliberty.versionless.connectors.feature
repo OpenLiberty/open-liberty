@@ -3,6 +3,6 @@ symbolicName=io.openliberty.versionless.connectors
 visibility=public
 IBM-ShortName: connectors
 Subsystem-Name: connectors
--features=io.openliberty.internal.versionless.connectors-2.0; ibm.tolerates:="2.1"
+-features=io.openliberty.internal.versionless.jca-1.7; ibm.tolerates:="2.0,2.1"
 kind=beta
 edition=base

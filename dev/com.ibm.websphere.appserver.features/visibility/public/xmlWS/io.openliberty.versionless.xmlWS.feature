@@ -3,6 +3,6 @@ symbolicName=io.openliberty.versionless.xmlWS
 visibility=public
 IBM-ShortName: xmlWS
 Subsystem-Name: xmlWS
--features=io.openliberty.internal.versionless.xmlWS-3.0; ibm.tolerates:="4.0"
+-features=io.openliberty.internal.versionless.jaxws-2.2; ibm.tolerates:="3.0,4.0"
 kind=beta
 edition=base

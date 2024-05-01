@@ -666,7 +666,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
             // populate mapping from known, commonly used alternative names to allow hints when the wrong feature
             // name is specified in a server config.
-            for (String s : cachedAttr.alternateNames) {
+            for (String s : def.getImmutableAttributes().alternateNames) {
                 alternateFeatureNameToPublicName.put(s, cachedAttr.featureName);
             }
 
@@ -789,6 +789,10 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             result = cachedFeatures.get(name);
         }
         return result;
+    }
+
+    public Map<String, SubsystemFeatureDefinitionImpl> getAllFeatures(){
+        return cachedFeatures;
     }
 
     private static final String TOLERATE_PREFIX = "tolerates.";

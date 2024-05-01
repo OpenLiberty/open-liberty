@@ -3,6 +3,6 @@ symbolicName=io.openliberty.versionless.persistence
 visibility=public
 IBM-ShortName: persistence
 Subsystem-Name: persistence
--features=io.openliberty.internal.versionless.persistence-3.0; ibm.tolerates:="3.1"
+-features=io.openliberty.internal.versionless.jpa-2.1; ibm.tolerates:="2.2,3.0,3.1"
 kind=beta
 edition=base

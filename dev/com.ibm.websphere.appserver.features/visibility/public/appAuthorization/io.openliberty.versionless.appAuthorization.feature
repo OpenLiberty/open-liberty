@@ -3,6 +3,6 @@ symbolicName=io.openliberty.versionless.appAuthorization
 visibility=public
 IBM-ShortName: appAuthorization
 Subsystem-Name: appAuthorization
--features=io.openliberty.internal.versionless.appAuthorization-2.0; ibm.tolerates:="2.1"
+-features=io.openliberty.internal.versionless.jacc-1.5; ibm.tolerates:="2.0,2.1"
 kind=beta
 edition=base
