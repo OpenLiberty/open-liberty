@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -160,7 +160,7 @@ public class LastParticipantSupport {
 					.getXAResourceInfo(0);
 			XAResourceImpl xaRes = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
 			xaRes.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 			result2 = TM.enlist(xaRes, recoveryId);
@@ -202,7 +202,7 @@ public class LastParticipantSupport {
 					.getXAResourceInfo(0);
 			XAResourceImpl xaRes = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
 			result2 = TM.enlist(xaRes, recoveryId);
 		} catch (IllegalStateException e) {
@@ -239,7 +239,7 @@ public class LastParticipantSupport {
 					.getXAResourceInfo(0);
 			XAResourceImpl xaRes = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
 			xaRes.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 			result1 = TM.enlist(xaRes, recoveryId);
@@ -281,7 +281,7 @@ public class LastParticipantSupport {
 					.getXAResourceInfo(0);
 			XAResourceImpl xaRes = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
 			result1 = TM.enlist(xaRes, recoveryId);
 
@@ -327,7 +327,7 @@ public class LastParticipantSupport {
 			XAResourceImpl xaRes = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo)
 					.setPrepareAction(XAException.XA_RDONLY);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
 			xaRes.setExpectedDirection(XAResourceImpl.DIRECTION_COMMIT);
 			result2 = TM.enlist(xaRes, recoveryId);
@@ -375,7 +375,7 @@ public class LastParticipantSupport {
 			XAResourceImpl xaRes = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo)
 					.setPrepareAction(XAException.XA_RDONLY);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
 			result1 = TM.enlist(xaRes, recoveryId);
 
@@ -438,13 +438,13 @@ public class LastParticipantSupport {
 			XAResourceImpl xaRes4 = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo4)
 					.setPrepareAction(XAException.XA_RDONLY);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
-			final int recoveryId2 = TM.registerResourceInfo("xaResInfo2",
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
-			final int recoveryId3 = TM.registerResourceInfo("xaResInfo3",
+			final int recoveryId3 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo3);
-			final int recoveryId4 = TM.registerResourceInfo("xaResInfo4",
+			final int recoveryId4 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo4);
 			result1 = TM.enlist(xaRes, recoveryId);
 			result2 = TM.enlist(xaRes2, recoveryId2);
@@ -519,13 +519,13 @@ public class LastParticipantSupport {
 			XAResourceImpl xaRes4 = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo4)
 					.setPrepareAction(XAException.XA_RDONLY);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
-			final int recoveryId2 = TM.registerResourceInfo("xaResInfo2",
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
-			final int recoveryId3 = TM.registerResourceInfo("xaResInfo3",
+			final int recoveryId3 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo3);
-			final int recoveryId4 = TM.registerResourceInfo("xaResInfo4",
+			final int recoveryId4 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo4);
 			result1 = TM.enlist(xaRes, recoveryId);
 			result2 = TM.enlist(xaRes2, recoveryId2);
@@ -602,13 +602,13 @@ public class LastParticipantSupport {
 			XAResourceImpl xaRes4 = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo4)
 					.setPrepareAction(XAException.XA_RDONLY);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
-			final int recoveryId2 = TM.registerResourceInfo("xaResInfo2",
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
-			final int recoveryId3 = TM.registerResourceInfo("xaResInfo3",
+			final int recoveryId3 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo3);
-			final int recoveryId4 = TM.registerResourceInfo("xaResInfo4",
+			final int recoveryId4 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo4);
 			result2 = TM.enlist(xaRes, recoveryId);
 			result3 = TM.enlist(xaRes2, recoveryId2);
@@ -671,9 +671,9 @@ public class LastParticipantSupport {
 					.getXAResourceImpl(xaResInfo);
 			XAResourceImpl xaRes2 = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo2);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
-			final int recoveryId2 = TM.registerResourceInfo("xaResInfo2",
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
 			xaRes.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 			xaRes2.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
@@ -730,9 +730,9 @@ public class LastParticipantSupport {
 					.setPrepareAction(XAException.XA_RBROLLBACK);
 			XAResourceImpl xaRes2 = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo2);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
-			final int recoveryId2 = TM.registerResourceInfo("xaResInfo2",
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
 			xaRes.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 			xaRes2.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
@@ -784,9 +784,9 @@ public class LastParticipantSupport {
 			XAResourceImpl xaRes2 = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo2)
 					.setPrepareAction(XAException.XA_RBROLLBACK);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
-			final int recoveryId2 = TM.registerResourceInfo("xaResInfo2",
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
 			xaRes.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 			xaRes2.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
@@ -837,9 +837,9 @@ public class LastParticipantSupport {
 					.getXAResourceImpl(xaResInfo);
 			XAResourceImpl xaRes2 = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo2);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
-			final int recoveryId2 = TM.registerResourceInfo("xaResInfo2",
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
 			xaRes.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 			xaRes2.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
@@ -887,9 +887,9 @@ public class LastParticipantSupport {
 					.getXAResourceImpl(xaResInfo);
 			XAResourceImpl xaRes2 = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo2);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
-			final int recoveryId2 = TM.registerResourceInfo("xaResInfo2",
+			final int recoveryId2 = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo2);
 			xaRes.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 			xaRes2.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
@@ -963,7 +963,7 @@ public class LastParticipantSupport {
 					.getXAResourceInfo(0);
 			XAResourceImpl xaRes = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
 			result1 = TM.enlist(xaRes, recoveryId);
 		} catch (IllegalStateException e) {
@@ -998,7 +998,7 @@ public class LastParticipantSupport {
 					.getXAResourceInfo(0);
 			XAResourceImpl xaRes = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
 			xaRes.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 			result1 = TM.enlist(xaRes, recoveryId);
@@ -1035,7 +1035,7 @@ public class LastParticipantSupport {
 			XAResourceImpl xaRes = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo)
 					.setPrepareAction(XAException.XA_RBROLLBACK);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
 			xaRes.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 			result1 = TM.enlist(xaRes, recoveryId);
@@ -1071,7 +1071,7 @@ public class LastParticipantSupport {
 					.getXAResourceInfo(0);
 			XAResourceImpl xaRes = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
 			xaRes.setExpectedDirection(XAResourceImpl.DIRECTION_ROLLBACK);
 			result1 = TM.enlist(xaRes, recoveryId);
@@ -1108,7 +1108,7 @@ public class LastParticipantSupport {
 			XAResourceImpl xaRes = XAResourceFactoryImpl.instance()
 					.getXAResourceImpl(xaResInfo)
 					.setPrepareAction(XAException.XA_RDONLY);
-			final int recoveryId = TM.registerResourceInfo("xaResInfo",
+			final int recoveryId = TM.registerResourceInfo(XAResourceInfoFactory.filter,
 					xaResInfo);
 			result1 = TM.enlist(xaRes, recoveryId);
 		} catch (IllegalStateException e) {

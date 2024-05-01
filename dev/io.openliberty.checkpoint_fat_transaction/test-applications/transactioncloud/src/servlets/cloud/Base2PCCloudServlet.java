@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,9 +34,6 @@ import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 public class Base2PCCloudServlet extends FATServlet {
-
-    /**  */
-    private static final String filter = "(testfilter=jon)";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -73,17 +70,17 @@ public class Base2PCCloudServlet extends FATServlet {
             final XAResource xaRes1 = XAResourceFactoryImpl.instance()
                             .getXAResourceImpl(xaResInfo1)
                             .setCommitAction(XAResourceImpl.DIE);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance()
                             .getXAResourceImpl(xaResInfo2);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             final XAResource xaRes3 = XAResourceFactoryImpl.instance()
                             .getXAResourceImpl(xaResInfo3);
-            final int recoveryId3 = tm.registerResourceInfo(filter, xaResInfo3);
+            final int recoveryId3 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo3);
             tm.enlist(xaRes3, recoveryId3);
 
             tm.commit();
@@ -130,17 +127,17 @@ public class Base2PCCloudServlet extends FATServlet {
 
             final XAResource xaRes1 = XAResourceFactoryImpl.instance()
                             .getXAResourceImpl(xaResInfo1);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance()
                             .getXAResourceImpl(xaResInfo2);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             final XAResource xaRes3 = XAResourceFactoryImpl.instance()
                             .getXAResourceImpl(xaResInfo3);
-            final int recoveryId3 = tm.registerResourceInfo(filter, xaResInfo3);
+            final int recoveryId3 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo3);
             tm.enlist(xaRes3, recoveryId3);
 
             tm.commit();
@@ -165,12 +162,12 @@ public class Base2PCCloudServlet extends FATServlet {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance()
                             .getXAResource(xaResInfo1);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance()
                             .getXAResource(xaResInfo2);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             XAResourceImpl.dumpState();
@@ -216,12 +213,12 @@ public class Base2PCCloudServlet extends FATServlet {
                             .getXAResourceImpl(xaResInfo1)
                             .setPrepareAction(
                                               XAResourceImpl.DIE);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance()
                             .getXAResource(xaResInfo2);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             tm.commit();
@@ -268,14 +265,14 @@ public class Base2PCCloudServlet extends FATServlet {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance()
                             .getXAResource(xaResInfo1);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance()
                             .getXAResourceImpl(xaResInfo2)
                             .setPrepareAction(
                                               XAResourceImpl.DIE);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             tm.commit();
@@ -322,19 +319,19 @@ public class Base2PCCloudServlet extends FATServlet {
                             .getXAResourceImpl(xaResInfo1)
                             .setPrepareAction(
                                               XAException.XA_RBROLLBACK);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance()
                             .getXAResourceImpl(xaResInfo2)
                             .setRollbackAction(
                                                XAResourceImpl.DIE);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             final XAResource xaRes3 = XAResourceFactoryImpl.instance()
                             .getXAResource(xaResInfo3);
-            final int recoveryId3 = tm.registerResourceInfo(filter, xaResInfo3);
+            final int recoveryId3 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo3);
             tm.enlist(xaRes3, recoveryId3);
 
             tm.commit();
@@ -378,15 +375,15 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setPrepareAction(XAException.XA_RBROLLBACK);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo2);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             final XAResource xaRes3 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo3).setRollbackAction(XAResourceImpl.DIE);
-            final int recoveryId3 = tm.registerResourceInfo(filter, xaResInfo3);
+            final int recoveryId3 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo3);
             tm.enlist(xaRes3, recoveryId3);
 
             tm.commit();
@@ -428,15 +425,15 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo1);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo2).setRollbackAction(XAResourceImpl.DIE);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             final XAResource xaRes3 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo3).setPrepareAction(XAException.XA_RBROLLBACK);
-            final int recoveryId3 = tm.registerResourceInfo(filter, xaResInfo3);
+            final int recoveryId3 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo3);
             tm.enlist(xaRes3, recoveryId3);
 
             tm.commit();
@@ -477,11 +474,11 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo2);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             tm.commit();
@@ -548,11 +545,11 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo1);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo2).setCommitAction(XAResourceImpl.DIE);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             tm.commit();
@@ -589,11 +586,11 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setRollbackAction(XAResourceImpl.DIE);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo2);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             tm.rollback();
@@ -630,11 +627,11 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo1);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo2).setRollbackAction(XAResourceImpl.DIE);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             tm.rollback();
@@ -671,11 +668,11 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo2).setCommitAction(XAException.XA_HEURRB);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             tm.commit();
@@ -716,11 +713,11 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo2).setCommitAction(XAException.XA_HEURMIX);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             tm.commit();
@@ -761,11 +758,11 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo2).setCommitAction(XAException.XA_HEURCOM);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             tm.commit();
@@ -806,11 +803,11 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo2).setCommitAction(XAException.XA_HEURHAZ);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             tm.commit();
@@ -852,15 +849,15 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setPrepareAction(XAException.XA_RBROLLBACK);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo2).setRollbackAction(XAResourceImpl.DIE);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             final XAResource xaRes3 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo3).setRollbackAction(XAException.XA_HEURRB);
-            final int recoveryId3 = tm.registerResourceInfo(filter, xaResInfo3);
+            final int recoveryId3 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo3);
             tm.enlist(xaRes3, recoveryId3);
 
             tm.commit();
@@ -902,15 +899,15 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setPrepareAction(XAException.XA_RBROLLBACK);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo2).setRollbackAction(XAResourceImpl.DIE);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             final XAResource xaRes3 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo3).setRollbackAction(XAException.XA_HEURCOM);
-            final int recoveryId3 = tm.registerResourceInfo(filter, xaResInfo3);
+            final int recoveryId3 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo3);
             tm.enlist(xaRes3, recoveryId3);
 
             tm.commit();
@@ -952,15 +949,15 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setPrepareAction(XAException.XA_RBROLLBACK);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo2).setRollbackAction(XAResourceImpl.DIE);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             final XAResource xaRes3 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo3).setRollbackAction(XAException.XA_HEURMIX);
-            final int recoveryId3 = tm.registerResourceInfo(filter, xaResInfo3);
+            final int recoveryId3 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo3);
             tm.enlist(xaRes3, recoveryId3);
 
             tm.commit();
@@ -1002,15 +999,15 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setPrepareAction(XAException.XA_RBROLLBACK);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo2).setRollbackAction(XAResourceImpl.DIE);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
             tm.enlist(xaRes2, recoveryId2);
 
             final XAResource xaRes3 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo3).setRollbackAction(XAException.XA_HEURHAZ);
-            final int recoveryId3 = tm.registerResourceInfo(filter, xaResInfo3);
+            final int recoveryId3 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo3);
             tm.enlist(xaRes3, recoveryId3);
 
             tm.commit();
@@ -1054,7 +1051,7 @@ public class Base2PCCloudServlet extends FATServlet {
                 if (i == 0) {
                     xaRes.setPrepareAction(XAResourceImpl.DIE);
                 }
-                final int recoveryId = tm.registerResourceInfo(filter, xaResInfo);
+                final int recoveryId = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo);
                 tm.enlist(xaRes, recoveryId);
             }
 
@@ -1097,7 +1094,7 @@ public class Base2PCCloudServlet extends FATServlet {
                 if (i == 0) {
                     xaRes.setCommitAction(XAResourceImpl.DIE);
                 }
-                final int recoveryId = tm.registerResourceInfo(filter, xaResInfo);
+                final int recoveryId = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo);
                 tm.enlist(xaRes, recoveryId);
             }
 
@@ -1140,7 +1137,7 @@ public class Base2PCCloudServlet extends FATServlet {
                 if (i == 0) {
                     xaRes.setPrepareAction(XAResourceImpl.DIE);
                 }
-                final int recoveryId = tm.registerResourceInfo(filter, xaResInfo);
+                final int recoveryId = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo);
                 tm.enlist(xaRes, recoveryId);
             }
 
@@ -1183,7 +1180,7 @@ public class Base2PCCloudServlet extends FATServlet {
                 if (i == 0) {
                     xaRes.setCommitAction(XAResourceImpl.DIE);
                 }
-                final int recoveryId = tm.registerResourceInfo(filter, xaResInfo);
+                final int recoveryId = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo);
                 tm.enlist(xaRes, recoveryId);
             }
 
@@ -1224,15 +1221,15 @@ public class Base2PCCloudServlet extends FATServlet {
         try {
             tm.begin();
             final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1).setCommitAction(XAResourceImpl.DIE);
-            final int recoveryId1 = tm.registerResourceInfo(filter, xaResInfo1);
+            final int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
             tm.enlist(xaRes1, recoveryId1);
 
             final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo2);
-            final int recoveryId2 = tm.registerResourceInfo(filter, xaResInfo2, 1);
+            final int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2, 1);
             tm.enlist(xaRes2, recoveryId2);
 
             final XAResource xaRes3 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo3);
-            final int recoveryId3 = tm.registerResourceInfo(filter, xaResInfo3, -1);
+            final int recoveryId3 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo3, -1);
             tm.enlist(xaRes3, recoveryId3);
 
             // prepare order should be 3,2,1
