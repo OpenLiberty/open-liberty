@@ -36,7 +36,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     HttpChannelConfig config;
     private ChannelHandlerContext context;
-    private HttpDispatcherLink link;
+    // private HttpDispatcherLink link;
 
     public HttpDispatcherHandler(HttpChannelConfig config) {
 
@@ -111,23 +111,23 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     public void newRequest(ChannelHandlerContext context, FullHttpRequest request) {
 
-        boolean isH2 = false;
+        //boolean isH2 = false;
         //TODO: better way to set connection as isH2
         if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
             context.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
-            isH2 = true;
+            //isH2 = true;
         } else {
 
             context.channel().attr(NettyHttpConstants.PROTOCOL).set("http");
 
         }
 
-        if (link == null || isH2) {
-            MSP.log("Shiny new dispatcher link");
-            link = new HttpDispatcherLink();
-        } else {
-            MSP.log("Reusing link for new request");
-        }
+        // if (link == null || isH2) {
+        MSP.log("Shiny new dispatcher link");
+        HttpDispatcherLink link = new HttpDispatcherLink();
+//        } else {
+//            MSP.log("Reusing link for new request");
+//        }
 
         if (context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
             MSP.log("Found content length previously set from past request, removing");
