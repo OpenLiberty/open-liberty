@@ -22,12 +22,17 @@
 
 package org.eclipse.osgi.internal.cds;
 
-import com.ibm.oti.shared.SharedClassURLHelper;
+import static org.eclipse.osgi.internal.cds.CDSHookConfigurator.print;
+
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.eclipse.osgi.internal.debug.Debug;
 import org.eclipse.osgi.storage.bundlefile.BundleEntry;
 import org.eclipse.osgi.storage.bundlefile.BundleFile;
 import org.eclipse.osgi.storage.bundlefile.BundleFileWrapper;
+
+import com.ibm.oti.shared.SharedClassURLHelper;
 
 /**
  * Wraps an actual BundleFile object for purposes of loading classes from the
@@ -38,13 +43,16 @@ public class CDSBundleFile extends BundleFileWrapper {
 	private final URL url; // the URL to the content of the real bundle file
 	private SharedClassURLHelper urlHelper; // the url helper set by the classloader
 	private boolean primed = false;
+	private final Debug debug;
 
 	/**
 	 * The constructor
+	 * 
 	 * @param wrapped the real bundle file
 	 */
-	public CDSBundleFile(BundleFile wrapped) {
+	public CDSBundleFile(BundleFile wrapped, Debug debug) {
 		super(wrapped);
+		this.debug = debug;
 		// get the url to the content of the real bundle file
 		URL content = null;
 		try {
@@ -55,19 +63,22 @@ public class CDSBundleFile extends BundleFileWrapper {
 		this.url = content;
 	}
 
-	public CDSBundleFile(BundleFile bundleFile, SharedClassURLHelper urlHelper) {
-		this(bundleFile);
+	public CDSBundleFile(BundleFile bundleFile, Debug debug, SharedClassURLHelper urlHelper) {
+		this(bundleFile, debug);
 		this.urlHelper = urlHelper;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.osgi.storage.bundlefile.BundleFile#getEntry(java.lang.String)
+	 * 
+	 * @see
+	 * org.eclipse.osgi.storage.bundlefile.BundleFile#getEntry(java.lang.String)
 	 *
-	 * If path is not for a class then just use the wrapped bundle file to answer the call.
-	 * If the path is for a class, it returns a CDSBundleEntry object.
-	 * If the path is for a class, it will look for the magic cookie in the
-	 * shared classes cache. If found, the bytes representing the magic cookie are stored in CDSBundleEntry object.
+	 * If path is not for a class then just use the wrapped bundle file to answer
+	 * the call. If the path is for a class, it returns a CDSBundleEntry object. If
+	 * the path is for a class, it will look for the magic cookie in the shared
+	 * classes cache. If found, the bytes representing the magic cookie are stored
+	 * in CDSBundleEntry object.
 	 */
 	@Override
 	public BundleEntry getEntry(String path) {
@@ -76,7 +87,11 @@ public class CDSBundleFile extends BundleFileWrapper {
 		}
 		byte[] classbytes = getClassBytes(path.substring(0, path.length() - classFileExt.length()));
 		if (classbytes == null) {
-			return super.getEntry(path);
+			BundleEntry fromSuper = super.getEntry(path);
+			if (fromSuper != null) {
+				print(debug, () -> "Defining class from original bytes: " + url + ' ' + fromSuper.getName()); //$NON-NLS-1$
+			}
+			return fromSuper;
 		}
 
 		BundleEntry be = new CDSBundleEntry(path, classbytes, this);
@@ -89,6 +104,7 @@ public class CDSBundleFile extends BundleFileWrapper {
 
 	/**
 	 * Returns the file url to the content of the actual bundle file
+	 * 
 	 * @return the file url to the content of the actual bundle file
 	 */
 	URL getURL() {
@@ -96,8 +112,9 @@ public class CDSBundleFile extends BundleFileWrapper {
 	}
 
 	/**
-	 * Returns the url helper for this bundle file.  This is set by the
-	 * class loading hook
+	 * Returns the url helper for this bundle file. This is set by the class loading
+	 * hook
+	 * 
 	 * @return the url helper for this bundle file
 	 */
 	SharedClassURLHelper getURLHelper() {
@@ -105,8 +122,9 @@ public class CDSBundleFile extends BundleFileWrapper {
 	}
 
 	/**
-	 * Sets the url helper for this bundle file.  This is called by the
-	 * class loading hook.
+	 * Sets the url helper for this bundle file. This is called by the class loading
+	 * hook.
+	 * 
 	 * @param urlHelper the url helper
 	 */
 	void setURLHelper(SharedClassURLHelper urlHelper) {
@@ -115,9 +133,9 @@ public class CDSBundleFile extends BundleFileWrapper {
 	}
 
 	/**
-	 * Sets the primed flag for the bundle file.  This is called by the
-	 * class loading hook after the first class has been loaded from disk for
-	 * this bundle file.
+	 * Sets the primed flag for the bundle file. This is called by the class loading
+	 * hook after the first class has been loaded from disk for this bundle file.
+	 * 
 	 * @param primed the primed flag
 	 */
 	void setPrimed(boolean primed) {
@@ -126,17 +144,23 @@ public class CDSBundleFile extends BundleFileWrapper {
 
 	/**
 	 * Searches in the shared classes cache for the specified class name.
+	 * 
 	 * @param name the name of the class
-	 * @return the magic cookie to the shared class or null if the class is not in the cache.
+	 * @return the magic cookie to the shared class or null if the class is not in
+	 *         the cache.
 	 */
 	private byte[] getClassBytes(String name) {
 		if (urlHelper == null || url == null)
 			return null;
-		return urlHelper.findSharedClass(null, url, name);
+		byte[] results = urlHelper.findSharedClass(null, url, name);
+		print(debug, () -> results != null ? "Found shared class bytes for: " + name + ' ' + url //$NON-NLS-1$
+				: "No shared class bytes found for: " + name + ' ' + url); //$NON-NLS-1$
+		return results;
 	}
 
 	/**
 	 * Returns the primed flag for this bundle file.
+	 * 
 	 * @return the primed flag
 	 */
 	public boolean getPrimed() {

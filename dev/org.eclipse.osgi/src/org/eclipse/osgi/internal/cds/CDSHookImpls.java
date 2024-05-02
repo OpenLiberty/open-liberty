@@ -22,13 +22,13 @@
 
 package org.eclipse.osgi.internal.cds;
 
-import com.ibm.oti.shared.HelperAlreadyDefinedException;
-import com.ibm.oti.shared.Shared;
-import com.ibm.oti.shared.SharedClassHelperFactory;
-import com.ibm.oti.shared.SharedClassURLHelper;
+import static org.eclipse.osgi.internal.cds.CDSHookConfigurator.print;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import org.eclipse.osgi.internal.debug.Debug;
 import org.eclipse.osgi.internal.hookregistry.BundleFileWrapperFactoryHook;
 import org.eclipse.osgi.internal.hookregistry.ClassLoaderHook;
 import org.eclipse.osgi.internal.hookregistry.HookRegistry;
@@ -43,16 +43,28 @@ import org.eclipse.osgi.storage.bundlefile.BundleFile;
 import org.eclipse.osgi.storage.bundlefile.BundleFileWrapper;
 import org.eclipse.osgi.storage.bundlefile.BundleFileWrapperChain;
 
+import com.ibm.oti.shared.HelperAlreadyDefinedException;
+import com.ibm.oti.shared.Shared;
+import com.ibm.oti.shared.SharedClassHelperFactory;
+import com.ibm.oti.shared.SharedClassURLHelper;
+
 public class CDSHookImpls extends ClassLoaderHook implements BundleFileWrapperFactoryHook {
 	private static SharedClassHelperFactory factory = Shared.getSharedClassHelperFactory();
 
+	private final Debug debug;
+
+	public CDSHookImpls(Debug debug) {
+		this.debug = debug;
+	}
+
 	// With Equinox bug 226038 (v3.4), the framework will now pass an instance
-	// of BundleFileWrapperChain rather than the wrapped BundleFile.  This is
+	// of BundleFileWrapperChain rather than the wrapped BundleFile. This is
 	// so that multiple wrapping hooks can each wrap the BundleFile and all
 	// wrappers are accessible.
 	//
 	// The Wrapper chain will look like below:
-	// WrapperChain -> Wrapper<N> -> WrapperChain -> CDSBundleFile -> WrapperChain -> BundleFile
+	// WrapperChain -> Wrapper<N> -> WrapperChain -> CDSBundleFile -> WrapperChain
+	// -> BundleFile
 	//
 	private static CDSBundleFile getCDSBundleFile(BundleFile bundleFile) {
 		if (bundleFile instanceof BundleFileWrapperChain) {
@@ -62,12 +74,24 @@ public class CDSHookImpls extends ClassLoaderHook implements BundleFileWrapperFa
 	}
 
 	@Override
-	public void recordClassDefine(String name, Class<?> clazz, byte[] classbytes, ClasspathEntry classpathEntry, BundleEntry entry, ClasspathManager manager) { // only attempt to record the class define if:
+	public void recordClassDefine(String name, Class<?> clazz, byte[] classbytes, ClasspathEntry classpathEntry,
+			BundleEntry entry, ClasspathManager manager) { // only attempt to record the class define if:
 		// 1) the class was found (clazz != null)
 		// 2) the class has the magic class number CAFEBABE indicating a real class
 		// 3) the bundle file for the classpath entry is of type CDSBundleFile
-		// 4) class bytes is same as passed to weaving hook i.e. weaving hook did not modify the class bytes
-		if ((null == clazz) || (false == hasMagicClassNumber(classbytes)) || (null == getCDSBundleFile(classpathEntry.getBundleFile()))) {
+		// 4) class bytes is same as passed to weaving hook i.e. weaving hook did not
+		// modify the class bytes
+		if (null == clazz) {
+			print(debug, () -> "No class to store: " + name); //$NON-NLS-1$
+			return;
+		}
+		if ((false == hasMagicClassNumber(classbytes))) {
+			print(debug, () -> "Class was already stored: " + name); //$NON-NLS-1$
+			return;
+		}
+		CDSBundleFile cdsFile = getCDSBundleFile(classpathEntry.getBundleFile());
+		if (null == cdsFile) {
+			print(debug, () -> "No CDSBundleFile for class: " + name); //$NON-NLS-1$
 			return;
 		}
 		try {
@@ -84,7 +108,9 @@ public class CDSHookImpls extends ClassLoaderHook implements BundleFileWrapperFa
 				}
 				if (modified) {
 					// Class bytes have been modified by weaving hooks.
-					// Such classes need to be stored as Orphans, so skip the call to storeSharedClass()
+					// Such classes need to be stored as Orphans, so skip the call to
+					// storeSharedClass()
+					print(debug, () -> "class bytes have changed, cannot store."); //$NON-NLS-1$
 					return;
 				}
 			}
@@ -93,17 +119,17 @@ public class CDSHookImpls extends ClassLoaderHook implements BundleFileWrapperFa
 			return;
 		}
 
-		CDSBundleFile cdsFile = getCDSBundleFile(classpathEntry.getBundleFile());
-
 		if (null == cdsFile.getURL()) {
 			// something went wrong trying to determine the url to the real bundle file
 			return;
 		}
 
-		// look for the urlHelper; if it does not exist then we are not sharing for this class loader
+		// look for the urlHelper; if it does not exist then we are not sharing for this
+		// class loader
 		SharedClassURLHelper urlHelper = cdsFile.getURLHelper();
 		if (urlHelper == null) {
-			// this should never happen but just in case get the helper from the base host bundle file.
+			// this should never happen but just in case get the helper from the base host
+			// bundle file.
 			CDSBundleFile hostBundleFile = getCDSBundleFile(manager.getGeneration().getBundleFile());
 			if (null != hostBundleFile) {
 				// try getting the helper from the host base cdsFile
@@ -116,16 +142,21 @@ public class CDSHookImpls extends ClassLoaderHook implements BundleFileWrapperFa
 		}
 		if (null != urlHelper) {
 			// store the class in the cache
-			urlHelper.storeSharedClass(null, cdsFile.getURL(), clazz);
+			boolean successStore = urlHelper.storeSharedClass(null, cdsFile.getURL(), clazz);
+			print(debug, () -> successStore ? "Stored class: " + name : "Failed to store class: " + name); //$NON-NLS-1$//$NON-NLS-2$
 			cdsFile.setPrimed(true);
+		} else {
+			print(debug, () -> "No helper found to store class: " + name); //$NON-NLS-1$
 		}
 	}
 
 	private boolean hasMagicClassNumber(byte[] classbytes) {
 		if (classbytes == null || classbytes.length < 4)
 			return false;
-		// TODO maybe there is a better way to do this? I'm not sure why I had to AND each byte with the value I was checking ...
-		return (classbytes[0] & 0xCA) == 0xCA && (classbytes[1] & 0xFE) == 0xFE && (classbytes[2] & 0xBA) == 0xBA && (classbytes[3] & 0xBE) == 0xBE;
+		// TODO maybe there is a better way to do this? I'm not sure why I had to AND
+		// each byte with the value I was checking ...
+		return (classbytes[0] & 0xCA) == 0xCA && (classbytes[1] & 0xFE) == 0xFE && (classbytes[2] & 0xBA) == 0xBA
+				&& (classbytes[3] & 0xBE) == 0xBE;
 	}
 
 	@Override
@@ -138,7 +169,8 @@ public class CDSHookImpls extends ClassLoaderHook implements BundleFileWrapperFa
 			SharedClassURLHelper urlHelper = factory.getURLHelper(classLoader);
 			boolean minimizeUpdateChecks = urlHelper.setMinimizeUpdateChecks();
 			// set the url helper for the host base CDSBundleFile
-			CDSBundleFile hostFile = getCDSBundleFile(classLoader.getClasspathManager().getGeneration().getBundleFile());
+			CDSBundleFile hostFile = getCDSBundleFile(
+					classLoader.getClasspathManager().getGeneration().getBundleFile());
 			if (hostFile != null) {
 				hostFile.setURLHelper(urlHelper);
 				if (minimizeUpdateChecks) {
@@ -176,11 +208,13 @@ public class CDSHookImpls extends ClassLoaderHook implements BundleFileWrapperFa
 	}
 
 	@Override
-	public boolean addClassPathEntry(ArrayList<ClasspathEntry> cpEntries, String cp, ClasspathManager hostmanager, Generation sourceGeneration) {
+	public boolean addClassPathEntry(ArrayList<ClasspathEntry> cpEntries, String cp, ClasspathManager hostmanager,
+			Generation sourceGeneration) {
 		CDSBundleFile hostFile = getCDSBundleFile(hostmanager.getGeneration().getBundleFile());
 		CDSBundleFile sourceFile = getCDSBundleFile(sourceGeneration.getBundleFile());
 		if ((hostFile != sourceFile) && (null != hostFile) && (null != sourceFile)) {
-			// Set the helper that got set on the host base bundle file in classLoaderCreated.
+			// Set the helper that got set on the host base bundle file in
+			// classLoaderCreated.
 			// This is to handle the case where fragments are dynamically attached
 			SharedClassURLHelper urlHelper = hostFile.getURLHelper();
 			sourceFile.setURLHelper(urlHelper);
@@ -205,9 +239,9 @@ public class CDSHookImpls extends ClassLoaderHook implements BundleFileWrapperFa
 			if ((baseFile = getCDSBundleFile(baseFile)) != null) {
 				urlHelper = ((CDSBundleFile) baseFile).getURLHelper();
 			}
-			newBundleFile = new CDSBundleFile(bundleFile, urlHelper);
+			newBundleFile = new CDSBundleFile(bundleFile, debug, urlHelper);
 		} else {
-			newBundleFile = new CDSBundleFile(bundleFile);
+			newBundleFile = new CDSBundleFile(bundleFile, debug);
 		}
 
 		return newBundleFile;

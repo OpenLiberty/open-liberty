@@ -22,7 +22,10 @@
 
 package org.eclipse.osgi.internal.cds;
 
+import java.util.function.Supplier;
+
 import org.eclipse.osgi.framework.log.FrameworkLogEntry;
+import org.eclipse.osgi.internal.debug.Debug;
 import org.eclipse.osgi.internal.framework.EquinoxContainer;
 import org.eclipse.osgi.internal.hookregistry.HookConfigurator;
 import org.eclipse.osgi.internal.hookregistry.HookRegistry;
@@ -35,34 +38,45 @@ public class CDSHookConfigurator implements HookConfigurator {
 	private static final String OLD_CDS_CONFIGURATOR = "com.ibm.cds.CDSHookConfigurator"; //$NON-NLS-1$
 	private static final String J9_SHARED_CLASS_HELPER_CLASS = "com.ibm.oti.shared.SharedClassHelperFactory"; //$NON-NLS-1$
 
+	static void print(Debug debug, Supplier<String> msg) {
+		if (debug.DEBUG_LOADER_CDS) {
+			Debug.println(msg.get());
+		}
+	}
 	@Override
 	public void addHooks(HookRegistry hookRegistry) {
+		Debug debug = hookRegistry.getConfiguration().getDebug();
 		boolean disableCDS = Boolean.valueOf(hookRegistry.getConfiguration().getProperty(DISABLE_CDS));
 		if (disableCDS) {
+			print(debug, () -> "Class sharing is disabled by: " + DISABLE_CDS); //$NON-NLS-1$
 			return;
 		}
 		// check for the external com.ibm.cds system.bundle fragment
 		try {
 			Class.forName(OLD_CDS_CONFIGURATOR);
 			// the old com.ibm.cds fragment is installed; disable build-in one
+			print(debug, () -> "Detected old com.ibm.cds fragment."); //$NON-NLS-1$
 			return;
 		} catch (ClassNotFoundException e) {
 			// expected
 		}
 		try {
 			Class.forName(J9_SHARED_CLASS_HELPER_CLASS);
+			print(debug, () -> "Found Eclipse OpenJ9 support class: " + J9_SHARED_CLASS_HELPER_CLASS); //$NON-NLS-1$
 		} catch (ClassNotFoundException e) {
+			print(debug, () -> "Not running on Eclipse OpenJ9."); //$NON-NLS-1$
 			boolean reportErrors = Boolean.valueOf(hookRegistry.getConfiguration().getProperty(REPORT_ERRORS));
 			// not running on J9
 			if (reportErrors) {
 				EquinoxContainer container = hookRegistry.getContainer();
 				EquinoxLogServices logServices = container.getLogServices();
-				logServices.log(EquinoxContainer.NAME, FrameworkLogEntry.WARNING, "The J9 Class Sharing Adaptor will not work in this configuration. You are not running on a J9 Java VM.", null); //$NON-NLS-1$
+				logServices.log(EquinoxContainer.NAME, FrameworkLogEntry.WARNING,
+						"The J9 Class Sharing Adaptor will not work in this configuration. You are not running on a J9 Java VM.", //$NON-NLS-1$
+						null);
 			}
 			return;
 		}
-
-		new CDSHookImpls().registerHooks(hookRegistry);
+		new CDSHookImpls(debug).registerHooks(hookRegistry);
 	}
 
 }
