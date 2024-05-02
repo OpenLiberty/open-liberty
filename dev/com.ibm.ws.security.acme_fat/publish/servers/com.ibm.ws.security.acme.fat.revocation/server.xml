@@ -19,6 +19,7 @@
 
  	<include location="../fatTestCommon.xml" />
 	
+	<ssl id="defaultSSLConfig" verifyHostname="false" />
 	<keyStore id="defaultKeyStore" password="acmepassword"/>
 
 	<basicRegistry realm="basicRealm">
