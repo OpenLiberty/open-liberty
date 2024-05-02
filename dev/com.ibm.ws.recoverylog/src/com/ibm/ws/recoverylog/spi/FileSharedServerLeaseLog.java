@@ -666,7 +666,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     }
 
     @Override
-    @FFDCIgnore({ FileNotFoundException.class, IOException.class })
+    @FFDCIgnore({ FileNotFoundException.class, IOException.class, Throwable.class })
     public String getBackendURL(String recoveryId) {
         String filename = _serverInstallLeaseLogDir + File.separator + recoveryId;
         String ret = null;
