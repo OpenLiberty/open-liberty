@@ -2,6 +2,6 @@
 symbolicName=io.openliberty.internal.versionlessMP-6.1
 visibility=private
 singleton=true
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

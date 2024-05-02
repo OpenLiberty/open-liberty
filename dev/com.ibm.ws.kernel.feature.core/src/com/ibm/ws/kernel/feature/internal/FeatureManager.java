@@ -240,6 +240,9 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
 
         Set<String> getPlatformsWithLowerCaseName() {
             Set<String> lcnPlatforms = new HashSet<String>();
+            if(platforms == null){
+                return lcnPlatforms;
+            }
             for (String platform : platforms) {
                 lcnPlatforms.add(platform.toLowerCase());
             }
@@ -1478,7 +1481,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName(featureRepository);
         Set<String> newConfiguredPlatforms = featureChange.getPlatformsWithLowerCaseName();
 
-        if (newConfiguredFeatures.isEmpty() && featureRepository.emptyFeatures() && newConfiguredPlatforms.isEmpty()) {
+        if (newConfiguredFeatures.isEmpty() && featureRepository.emptyFeatures()) {
 
             //We instantiate a new BundleList because we want to make sure we
             //go into the code section below that clean any extra bundles. See
