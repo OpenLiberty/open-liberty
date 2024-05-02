@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -226,6 +226,7 @@ public interface FeatureResolver {
      * @param allowMultipleVersions a flag that allows multiple versions (this flag will effectively ignore singletons)
      * @return the resolution result
      */
+    @Deprecated
     public Result resolveFeatures(Repository repository, Collection<String> rootFeatures, Set<String> preResolved, boolean allowMultipleVersions);
 
     /**
@@ -242,6 +243,7 @@ public interface FeatureResolver {
      * @param allowMultipleVersions a flag that allows multiple versions (this flag will effectively ignore singletons)
      * @return the resolution result
      */
+    @Deprecated
     public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
                                   boolean allowMultipleVersions);
 
@@ -256,6 +258,7 @@ public interface FeatureResolver {
      * @param supportedProcessTypes the supported process types to allow to be resolved
      * @return the resolution result
      */
+    @Deprecated
     public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
                                   boolean allowMultipleVersions,
                                   EnumSet<ProcessType> supportedProcessTypes);
@@ -271,7 +274,79 @@ public interface FeatureResolver {
      * @param supportedProcessTypes   the supported process types to allow to be resolved
      * @return the resolution result
      */
+    @Deprecated
     public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
                                   Set<String> allowedMultipleVersions,
                                   EnumSet<ProcessType> supportedProcessTypes);
+
+    /**
+     * Resolves a collection of root features against a repository.
+     * This is a convenience method that effectively does the following:
+     * <code>
+     * resolveFeatures(repository, Collections.emptySet(), rootFeatures, preResolved, allowMultipleVersions);
+     * </code>
+     *
+     * @param repository            the feature repository to use
+     * @param rootFeatures          the root features to resolve
+     * @param preResolved           the set of already resolved features to base the resolution delta off of
+     * @param allowMultipleVersions a flag that allows multiple versions (this flag will effectively ignore singletons)
+     * @return the resolution result
+     */
+    public Result resolve(Repository repository, Collection<String> rootFeatures, Set<String> preResolved, boolean allowMultipleVersions,
+                          Set<String> platforms);
+
+    /**
+     * Resolves a collection of root features against a repository.
+     * This is a convenience method that effectively does the following:
+     * <code>
+     * resolveFeatures(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions, EnumSet.allOf(ProcessType.class));
+     * </code>
+     *
+     * @param repository            the feature repository to use
+     * @param kernelFeatures        the set of kernel features to use for auto-feature processing
+     * @param rootFeatures          the root features to resolve
+     * @param preResolved           the set of already resolved features to base the resolution delta off of
+     * @param allowMultipleVersions a flag that allows multiple versions (this flag will effectively ignore singletons)
+     * @param platforms             The platform specifies a programming model version; for example "jakartaee-10". The platform determines the version of features for which no
+     *                                  version is specified.
+     * @return the resolution result
+     */
+    public Result resolve(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
+                          boolean allowMultipleVersions, Set<String> platforms);
+
+    /**
+     * Resolves a collection of root features against a repository.
+     *
+     * @param repository            the feature repository to use
+     * @param kernelFeatures        the set of kernel features to use for auto-feature processing
+     * @param rootFeatures          the root features to resolve
+     * @param preResolved           the set of already resolved features to base the resolution delta off of
+     * @param allowMultipleVersions a flag that allows multiple versions (this flag will effectively ignore singletons)
+     * @param supportedProcessTypes the supported process types to allow to be resolved
+     * @param platforms             The platform specifies a programming model version; for example "jakartaee-10". The platform determines the version of features for which no
+     *                                  version is specified.
+     * @return the resolution result
+     */
+    public Result resolve(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
+                          boolean allowMultipleVersions,
+                          EnumSet<ProcessType> supportedProcessTypes,
+                          Set<String> platforms);
+
+    /**
+     * Resolves a collection of root features against a repository.
+     *
+     * @param repository              the feature repository to use
+     * @param kernelFeatures          the set of kernel features to use for auto-feature processing
+     * @param rootFeatures            the root features to resolve
+     * @param preResolved             the set of already resolved features to base the resolution delta off of
+     * @param allowedMultipleVersions the set that includes features that effectively ignore singletons (null means none, empty set means all)
+     * @param supportedProcessTypes   the supported process types to allow to be resolved
+     * @param platforms               The platform specifies a programming model version; for example "jakartaee-10". The platform determines the version of features for which no
+     *                                    version is specified.
+     * @return the resolution result
+     */
+    public Result resolve(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
+                          Set<String> allowedMultipleVersions,
+                          EnumSet<ProcessType> supportedProcessTypes,
+                          Set<String> platforms);
 }
