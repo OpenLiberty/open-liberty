@@ -506,6 +506,7 @@ org.bitbucket.b_c:jose4j:0.9.5
 org.bouncycastle:bcpg-jdk18on:1.75
 org.bouncycastle:bcpkix-jdk18on:1.75
 org.bouncycastle:bcprov-jdk18on:1.75
+org.bouncycastle:bcprov-jdk18on:1.78.1
 org.bouncycastle:bcutil-jdk18on:1.75
 org.brotli:dec:0.1.2
 org.checkerframework:checker-compat-qual:2.5.2
