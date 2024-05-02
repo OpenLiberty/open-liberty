@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.mail-2.0
-kind=beta
+kind=noship
 edition=base

@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.internal.versionlessMP-3.3, \
     com.ibm.websphere.appserver.mpFaultTolerance-2.1
-kind=beta
+kind=noship
 edition=base

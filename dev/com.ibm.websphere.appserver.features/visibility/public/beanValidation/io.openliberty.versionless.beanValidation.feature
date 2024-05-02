@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: beanValidation
 Subsystem-Name: beanValidation
 -features=io.openliberty.internal.versionless.beanValidation-1.1; ibm.tolerates:="2.0,3.0"
-kind=beta
+kind=noship
 edition=base

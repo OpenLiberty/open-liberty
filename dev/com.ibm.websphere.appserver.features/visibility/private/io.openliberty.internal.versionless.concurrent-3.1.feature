@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.concurrent-3.1
-kind=beta
+kind=noship
 edition=base

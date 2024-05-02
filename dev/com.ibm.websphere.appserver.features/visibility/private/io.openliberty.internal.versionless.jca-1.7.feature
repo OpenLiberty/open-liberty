@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     com.ibm.websphere.appserver.jca-1.7
-kind=beta
+kind=noship
 edition=base

@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.internal.versionlessMP-3.0; ibm.tolerates:="3.2", \
     com.ibm.websphere.appserver.mpRestClient-1.3
-kind=beta
+kind=noship
 edition=base

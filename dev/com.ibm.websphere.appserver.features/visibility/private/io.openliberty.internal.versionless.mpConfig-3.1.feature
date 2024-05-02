@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.internal.versionlessMP-6.1, \
     io.openliberty.mpConfig-3.1
-kind=beta
+kind=noship
 edition=base

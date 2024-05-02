@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.xmlBinding-3.0
-kind=beta
+kind=noship
 edition=base
