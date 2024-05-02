@@ -3584,7 +3584,11 @@ public class DataTestServlet extends FATServlet {
         assertEquals(20.98f, receipts.totalOf(2000L), 0.001f);
         assertEquals(15.99f, receipts.totalOf(2001L), 0.001f);
 
-        receipts.deleteByTotalLessThan(2000.0f);
+        assertEquals(true, receipts.addTax(2001L, 0.0813f));
+
+        assertEquals(17.29f, receipts.totalOf(2001L), 0.001f);
+
+        assertEquals(2, receipts.removeIfTotalUnder(2000.0f));
     }
 
     /**

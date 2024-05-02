@@ -445,28 +445,47 @@ public class QueryInfo {
      */
     @Trivial
     EntityInfo getEntityInfo(String entityName, Map<String, CompletableFuture<EntityInfo>> entityInfos) {
+        EntityInfo entityInfo;
         CompletableFuture<EntityInfo> future = entityInfos.get(entityName);
         if (future == null) {
-            // Identify possible case mismatch
-            for (String name : entityInfos.keySet())
-                if (entityName.equalsIgnoreCase(name))
+            // When a Java record is used as an entity, the name is [RecordName]Entity
+            String recordEntityName = entityName + EntityInfo.RECORD_ENTITY_SUFFIX;
+            future = entityInfos.get(recordEntityName);
+            if (future == null) {
+                entityInfo = null;
+            } else {
+                entityInfo = future.join();
+                if (entityInfo.recordClass == null)
+                    entityInfo = null;
+            }
+
+            if (entityInfo == null) {
+                // Identify possible case mismatch
+                for (String name : entityInfos.keySet()) {
+                    if (recordEntityName.equalsIgnoreCase(name) && entityInfos.get(name).join().recordClass != null)
+                        name = name.substring(0, name.length() - EntityInfo.RECORD_ENTITY_SUFFIX.length());
+                    if (entityName.equalsIgnoreCase(name))
+                        throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
+                                                   " repository specifies query language that requires a " + entityName +
+                                                   " entity that is not found but is a close match for the " + name +
+                                                   " entity. Review the query language to ensure the correct entity name is used."); // TODO NLS
+                }
+
+                future = entityInfos.get(EntityInfo.FAILED);
+                if (future == null)
                     throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
                                                " repository specifies query language that requires a " + entityName +
-                                               " entity that is not found but is a close match for the " + name +
-                                               " entity. Review the query language to ensure the correct entity name is used."); // TODO NLS
-
-            future = entityInfos.get(EntityInfo.FAILED);
-            if (future == null)
-                throw new MappingException("The " + method.getName() + " method of the " + method.getDeclaringClass().getName() +
-                                           " repository specifies query language that requires a " + entityName +
-                                           " entity that is not found. Check if " + entityName + " is the name of a valid entity." +
-                                           " To enable the entity to be found, give the repository a life cycle method that is" +
-                                           " annotated with one of " + "(Insert, Save, Update, Delete)" +
-                                           " and supply the entity as its parameter or have the repository extend" +
-                                           " DataRepository or another built-in repository interface with the entity class as the" +
-                                           " first type variable."); // TODO NLS
+                                               " entity that is not found. Check if " + entityName + " is the name of a valid entity." +
+                                               " To enable the entity to be found, give the repository a life cycle method that is" +
+                                               " annotated with one of " + "(Insert, Save, Update, Delete)" +
+                                               " and supply the entity as its parameter or have the repository extend" +
+                                               " DataRepository or another built-in repository interface with the entity class as the" +
+                                               " first type variable."); // TODO NLS
+            }
+        } else {
+            entityInfo = future.join();
         }
-        return future.join();
+        return entityInfo;
     }
 
     /**
@@ -652,8 +671,8 @@ public class QueryInfo {
                             // Entity identifier variable is not present. Add it.
                             entityVar = "o";
                             entityVar_ = "o.";
-                            jpql = new StringBuilder(entityName.length() + 14) //
-                                            .append("DELETE FROM ").append(entityName).append(" o").toString();
+                            jpql = new StringBuilder(entityInfo.name.length() + 14) //
+                                            .append("DELETE FROM ").append(entityInfo.name).append(" o").toString();
                         } else if (startAt + 6 < length
                                    && ql.regionMatches(true, startAt, "WHERE", 0, 5)
                                    && !Character.isJavaIdentifierPart(ql.charAt(startAt + 5))) {
@@ -661,7 +680,7 @@ public class QueryInfo {
                             entityVar = "o";
                             entityVar_ = "o.";
                             StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
-                                            .append("DELETE FROM ").append(entityName).append(" o WHERE");
+                                            .append("DELETE FROM ").append(entityInfo.name).append(" o WHERE");
                             jpql = appendWithIdentifierName(ql, startAt + 5, ql.length(), q).toString();
                         }
                     }
@@ -686,7 +705,7 @@ public class QueryInfo {
                     throw new MappingException("@Repository " + method.getDeclaringClass().getName() + " does not specify an entity class." + // TODO NLS
                                                " To correct this, have the repository interface extend DataRepository" +
                                                " or another built-in repository interface and supply the entity class as the first parameter.");
-                if (startAt + 1 < length && entityName.length() > 0 && Character.isWhitespace(ql.charAt(startAt))) {
+                if (startAt + 1 < length && entityInfo.name.length() > 0 && Character.isWhitespace(ql.charAt(startAt))) {
                     for (startAt++; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
                     if (startAt + 4 < length
                         && ql.regionMatches(true, startAt, "SET", 0, 3)
@@ -694,7 +713,7 @@ public class QueryInfo {
                         entityVar = "o";
                         entityVar_ = "o.";
                         StringBuilder q = new StringBuilder(ql.length() * 3 / 2) //
-                                        .append("UPDATE ").append(entityName).append(" o SET");
+                                        .append("UPDATE ").append(entityInfo.name).append(" o SET");
                         jpql = appendWithIdentifierName(ql, startAt + 3, ql.length(), q).toString();
                     }
                 }
