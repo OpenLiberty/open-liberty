@@ -92,6 +92,8 @@ public final class FeatureRepository implements FeatureResolver.Repository {
     /** List of currently installed features */
     private volatile Set<String> installedFeatures = Collections.emptySet();
 
+    private volatile Set<String> platforms = Collections.emptySet();
+
     /** List of currently configured features */
     private volatile Set<String> configuredFeatures = Collections.emptySet();
 
@@ -175,6 +177,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             // If stale, reset to empty list as we'll be rebuilding....
             installedFeatures = Collections.emptySet();
             configuredFeatures = Collections.emptySet();
+            platforms = Collections.emptySet();
         }
     }
 
@@ -694,6 +697,14 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             cacheOk = false;
             Tr.warning(tc, "UPDATE_BUNDLE_CACHE_WARNING", new Object[] { cacheRes.toExternalURI(), ioe.toString() });
         }
+    }
+
+    public void setPlatforms(Set<String> platforms) {
+        this.platforms = platforms;
+    }
+
+    public Set<String> getPlatforms() {
+        return platforms;
     }
 
     /**

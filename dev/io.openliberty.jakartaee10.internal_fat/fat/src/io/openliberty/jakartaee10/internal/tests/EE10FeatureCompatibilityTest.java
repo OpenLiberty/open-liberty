@@ -156,7 +156,6 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
         List<String> errors = FATFeatureTester.testCompatibility(cdiFeatureEE10, versionedFeatures,
                                                                  compatibleFeatures, incompatibleFeatures,
                                                                  cdiSpecialConflicts);
-
         if (!errors.isEmpty()) {
             FATLogger.dumpErrors(c, method, "EE10: Feature compatibility errors:", errors);
             Assert.fail("EE10 compatibility errors");

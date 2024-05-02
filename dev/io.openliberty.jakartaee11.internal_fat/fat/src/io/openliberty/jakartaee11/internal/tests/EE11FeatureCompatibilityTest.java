@@ -246,7 +246,6 @@ public class EE11FeatureCompatibilityTest extends FATServletClient {
         List<String> errors = FATFeatureTester.testCompatibility(servletFeatureEE11, versionedFeatures,
                                                                  compatibleFeatures, incompatibleFeatures,
                                                                  servletSpecialConflicts);
-
         if (!errors.isEmpty()) {
             FATLogger.dumpErrors(c, method, "EE11: Servlet compatibility errors:", errors);
             Assert.fail("EE11: Servlet compatibility errors");
@@ -340,7 +339,6 @@ public class EE11FeatureCompatibilityTest extends FATServletClient {
                 rootFeatures.add(rootFeature);
 
                 Result nonSSLResult = FATFeatureResolver.resolve(rootFeatures);
-
                 if (!nonSSLResult.getResolvedFeatures().contains("ssl-1.0")) {
                     rootFeatures.add("ssl-1.0");
                 }

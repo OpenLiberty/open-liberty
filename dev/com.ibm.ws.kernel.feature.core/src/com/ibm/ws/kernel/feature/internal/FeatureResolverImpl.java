@@ -202,26 +202,35 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     @Override
     public Result resolveFeatures(FeatureResolver.Repository repository, Collection<String> rootFeatures, Set<String> preResolved, boolean allowMultipleVersions) {
+
         // Note that when no process type is passed we support all process types.
-        return resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), rootFeatures, preResolved,
-                               allowMultipleVersions ? Collections.<String> emptySet() : null,
-                               EnumSet.allOf(ProcessType.class));
+        return resolve(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), rootFeatures, preResolved,
+                       allowMultipleVersions ? Collections.<String> emptySet() : null,
+                       EnumSet.allOf(ProcessType.class),
+                       null);
     }
 
     @Override
     public Result resolveFeatures(FeatureResolver.Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures,
                                   Set<String> preResolved, boolean allowMultipleVersions) {
+
         // Note that when no process type is passed we support all process types.
-        return resolveFeatures(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
-                               EnumSet.allOf(ProcessType.class));
+        return resolve(repository, kernelFeatures, rootFeatures,
+                       preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
+                       EnumSet.allOf(ProcessType.class),
+                       null);
     }
 
     @Override
-    public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
-                                  boolean allowMultipleVersions,
+    @Deprecated
+    public Result resolveFeatures(FeatureResolver.Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures,
+                                  Set<String> preResolved, boolean allowMultipleVersions,
                                   EnumSet<ProcessType> supportedProcessTypes) {
-        return resolveFeatures(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
-                               supportedProcessTypes);
+
+        return resolve(repository, kernelFeatures, rootFeatures,
+                       preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
+                       supportedProcessTypes,
+                       null);
     }
 
     // @formatter:off
