@@ -3572,6 +3572,22 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Tests that a record entity can be specified in the FROM clause of JDQL.
+     */
+    @Test
+    public void testRecordInFromClause() {
+        receipts.deleteByTotalLessThan(2000.0f);
+
+        receipts.saveAll(List.of(new Receipt(2000L, "C2000-00-123", 20.98f),
+                                 new Receipt(2001L, "C2000-00-123", 15.99f)));
+
+        assertEquals(20.98f, receipts.totalOf(2000L), 0.001f);
+        assertEquals(15.99f, receipts.totalOf(2001L), 0.001f);
+
+        receipts.deleteByTotalLessThan(2000.0f);
+    }
+
+    /**
      * Use repository updateBy methods with multiplication and division,
      */
     @Test

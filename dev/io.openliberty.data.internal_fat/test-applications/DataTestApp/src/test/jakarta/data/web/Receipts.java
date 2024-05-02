@@ -26,7 +26,7 @@ import jakarta.data.repository.Repository;
  */
 @Repository
 public interface Receipts extends CrudRepository<Receipt, Long> {
-    @Query("SELECT COUNT(o) FROM ReceiptEntity o") // TODO JDQL with only "SELECT COUNT(*)"
+    @Query("SELECT COUNT(this)")
     long count();
 
     boolean deleteByTotalLessThan(float max);
@@ -41,4 +41,7 @@ public interface Receipts extends CrudRepository<Receipt, Long> {
     boolean existsByPurchaseId(long id);
 
     Stream<Receipt> findByPurchaseIdIn(Iterable<Long> ids);
+
+    @Query("SELECT total FROM Receipt WHERE purchaseId=:id")
+    float totalOf(long id);
 }

@@ -36,7 +36,13 @@ import jakarta.persistence.Inheritance;
 /**
  * Entity information
  */
-class EntityInfo {
+public class EntityInfo {
+    /**
+     * Suffix for generated record class names. The name used for a generated
+     * record entity class is: [RecordName][RECORD_ENTITY_SUFFIX]
+     */
+    public static final String RECORD_ENTITY_SUFFIX = "Entity";
+
     /**
      * Constant to use in place of an entity name to indicate that processing of
      * entity information has failed for an entity.
@@ -61,7 +67,7 @@ class EntityInfo {
     final Class<?> idType; // type of the id, which could be a JPA IdClass for composite ids
     final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;
-    final String name;
+    final String name; // entity name to use in query language. If a record, the name will be [RecordName]Entity.
     final Class<?> recordClass; // null if not a record
     final String versionAttributeName; // null if unversioned
 
