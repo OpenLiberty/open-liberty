@@ -1,8 +1,8 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.internal.versionless.cdi-1.2
+symbolicName=io.openliberty.internal.versionless.appSecurity-6.0
 visibility=private
 singleton=true
 -features= \
-    com.ibm.websphere.appserver.cdi-1.2
+    io.openliberty.appSecurity-6.0
 kind=noship
 edition=base

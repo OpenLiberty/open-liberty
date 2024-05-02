@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.managedBeans-2.0
-kind=beta
+kind=noship
 edition=base

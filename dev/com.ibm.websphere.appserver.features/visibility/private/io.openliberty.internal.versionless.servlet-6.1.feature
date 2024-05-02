@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     com.ibm.websphere.appserver.servlet-6.1
-kind=beta
+kind=noship
 edition=base

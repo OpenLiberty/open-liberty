@@ -4,5 +4,5 @@ visibility=public
 IBM-ShortName: jca
 Subsystem-Name: jca
 -features=io.openliberty.internal.versionless.jca-1.7; ibm.tolerates:="2.0,2.1"
-kind=beta
+kind=noship
 edition=base

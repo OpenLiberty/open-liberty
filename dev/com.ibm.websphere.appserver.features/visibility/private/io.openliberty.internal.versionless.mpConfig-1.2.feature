@@ -5,5 +5,5 @@ singleton=true
 -features= \
     io.openliberty.internal.versionlessMP-1.3, \
     com.ibm.websphere.appserver.mpConfig-1.2
-kind=beta
+kind=noship
 edition=base

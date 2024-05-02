@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     com.ibm.websphere.appserver.jdbc-4.2
-kind=beta
+kind=noship
 edition=base

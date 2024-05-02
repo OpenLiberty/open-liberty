@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     com.ibm.websphere.appserver.jsf-2.3
-kind=beta
+kind=noship
 edition=base

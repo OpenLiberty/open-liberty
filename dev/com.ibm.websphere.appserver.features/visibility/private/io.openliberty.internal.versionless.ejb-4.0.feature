@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.enterpriseBeans-4.0
-kind=beta
+kind=noship
 edition=base

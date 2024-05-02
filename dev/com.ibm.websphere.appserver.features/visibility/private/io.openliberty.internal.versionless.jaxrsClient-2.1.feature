@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     com.ibm.websphere.appserver.jaxrsClient-2.1
-kind=beta
+kind=noship
 edition=base
