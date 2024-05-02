@@ -32,7 +32,6 @@ Subsystem-Name: Application Security 6.0 (Jakarta Security 4.0)
   io.openliberty.jsonp-2.1, \
   io.openliberty.webAppSecurity-2.0
 -bundles=\
-  com.ibm.json4j, \
   com.ibm.ws.org.apache.commons.lang3, \
   com.ibm.ws.org.apache.httpcomponents, \
   com.ibm.ws.org.jose4j, \
@@ -49,8 +48,8 @@ Subsystem-Name: Application Security 6.0 (Jakarta Security 4.0)
   io.openliberty.security.sso.internal, \
   io.openliberty.security.jaspic.2.0.internal, \
   io.openliberty.security.common.jwt.internal
-kind=noship
-edition=full
+kind=beta
+edition=core
 -jars=io.openliberty.jaspic.spi; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/io.openliberty.jaspic.spi_1.1-javadoc.zip
 WLP-InstantOn-Enabled: true

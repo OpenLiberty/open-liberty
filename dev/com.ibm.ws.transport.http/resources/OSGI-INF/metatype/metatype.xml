@@ -190,7 +190,7 @@
             id="limitNumHeaders" required="false" type="Integer" min="50" max="500" default="500" />
             
         <AD name="%http.limitFieldSize" description="%http.limitFieldSize.desc"
-            id="limitFieldSize" required="false" type="Integer" min="50" max="32768" default="32768" />
+            id="limitFieldSize" required="false" type="Integer" min="50" max="2147483647" default="32768" />
             
         <AD name="%http.doNotAllowDuplicateSetCookies" description="%http.doNotAllowDuplicateSetCookies.desc"
             id="DoNotAllowDuplicateSetCookies" required="false" type="String" default="false" />
@@ -236,6 +236,9 @@
 
         <AD name="%http2.maxStreamsRefused" description="%http2.maxStreamsRefused.desc"
             id="maxStreamsRefused" required="false" type="Integer" min="0" default="100" />
+
+        <AD name="%http2.maxHeaderBlockSize" description="%http2.maxHeaderBlockSize.desc"
+            id="maxHeaderBlockSize" required="false" type="Long" min="0" default="512000" />
 
         <!--  Not technically internal but specifying here to get the property types checked if specified -->    
         <AD name="internal" description="internal use only"

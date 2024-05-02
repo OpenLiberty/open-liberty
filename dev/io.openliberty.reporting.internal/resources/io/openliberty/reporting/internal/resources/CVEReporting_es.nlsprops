@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF CVE Reporting
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKF1700 - CWWKF1799
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.reporting.internal: CWWKF1700 - CWWKF1799
+
+CWWKF1700.reporting.is.enabled=CWWKF1700I: La comprobaci\u00f3n de vulnerabilidades de seguridad est\u00e1 habilitada. La informaci\u00f3n sobre este tiempo de ejecuci\u00f3n de Liberty se analizar\u00e1 en relaci\u00f3n con las vulnerabilidades conocidas.
+CWWKF1700.reporting.is.enabled.explanation= La comprobaci\u00f3n de vulnerabilidades de seguridad est\u00e1 habilitada actualmente.
+CWWKF1700.reporting.is.enabled.useraction=Para inhabilitar la comprobaci\u00f3n de vulnerabilidades de seguridad, especifique <cveReporting enabled="false" /> en el archivo server.xml .
+
+CWWKF1701.reporting.is.disabled=CWWKF1701I: La comprobaci\u00f3n de vulnerabilidades de seguridad est\u00e1 inhabilitada.
+CWWKF1701.reporting.is.disabled.explanation=La comprobaci\u00f3n de vulnerabilidades de seguridad debe estar habilitada para ejecutarse.
+CWWKF1701.reporting.is.disabled.useraction=Para habilitar la comprobaci\u00f3n de vulnerabilidades de seguridad, especifique <cveReporting enabled="true" /> en el archivo server.xml .
+
+more.information.message=Para obtener m\u00e1s informaci\u00f3n, puede revisar {0}
+
+CWWKF1702.cve.found=CWWKF1702W: Bas\u00e1ndose en una evaluaci\u00f3n de {0}, revise los siguientes boletines de seguridad: {1}
+CWWKF1702.cve.found.explanation=Se han encontrado vulnerabilidades de seguridad.
+CWWKF1702.cve.found.useraction=Revise las CVE en el mensaje y resuelva las vulnerabilidades de seguridad.
+
+CWWKF1703.cve.not.found=CWWKF1703I: Bas\u00e1ndose en el an\u00e1lisis del tiempo de ejecuci\u00f3n, no se han encontrado vulnerabilidades de seguridad que requieran un an\u00e1lisis adicional.
+CWWKF1703.cve.not.found.explanation=No se han encontrado vulnerabilidades de seguridad en este momento.
+CWWKF1703.cve.not.found.useraction=Ninguna.
+
+CWWKF1704.incorrect.url=CWWKF1704W: El URL especificado no es correcto y no se puede realizar una conexi\u00f3n: {0}
+CWWKF1704.incorrect.url.explanation=No se puede realizar ninguna conexi\u00f3n para el URL proporcionado.
+CWWKF1704.incorrect.url.useraction=Verifique que el URL es correcto.
+
+CWWKF1705.failed.response=CWWKF1705W: No se puede recuperar la informaci\u00f3n de CVE relevante debido a un problema de comunicaci\u00f3n con el servicio de informes de CVE.
+CWWKF1705.failed.response.explanation=El servicio no puede proporcionar una respuesta.
+CWWKF1705.failed.response.useraction=Arregle el problema de comunicaci\u00f3n e int\u00e9ntelo de nuevo.
+
+CWWKF1706.issue.parsing=CWWKF1706W: Problema al analizar la informaci\u00f3n del producto.
+CWWKF1706.issue.parsing.explanation=El servicio no puede analizar correctamente la informaci\u00f3n del producto.
+CWWKF1706.issue.parsing.useraction=Arregle el problema de comunicaci\u00f3n e int\u00e9ntelo de nuevo.

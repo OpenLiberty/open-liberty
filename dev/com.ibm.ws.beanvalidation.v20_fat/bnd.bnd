@@ -18,6 +18,7 @@ src: \
 	fat/src,\
 	test-applications/bvalApp/src,\
 	test-applications/bvalCDIApp/src,\
+	test-applications/bvalELApp/src,\
 	test-applications/bvalValueExtractorApp/src,\
 	test-applications/customBvalProviderApp/src,\
 	test-applications/HibernateConfig.war/src,\

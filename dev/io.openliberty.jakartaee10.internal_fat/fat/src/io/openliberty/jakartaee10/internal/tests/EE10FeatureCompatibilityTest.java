@@ -261,7 +261,8 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
             }
             featuresToTest.set(0, feature);
             featuresToTest.set(1, ee10FeatureName);
-            Result result = resolver.resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), featuresToTest, Collections.<String> emptySet(), false);
+            Result result = resolver.resolve(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), featuresToTest, Collections.<String> emptySet(), false,
+                                             Collections.<String> emptySet());
             Map<String, Collection<Chain>> conflicts = result.getConflicts();
             if (conflicts.isEmpty()) {
                 errors.add("Did not get expected conflict for " + feature + '\n');
@@ -432,7 +433,8 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
                 continue;
             }
             boolean expectToConflict = incompatibleFeatures.contains(feature);
-            Result result = resolver.resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), featuresToTest, Collections.<String> emptySet(), false);
+            Result result = resolver.resolve(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), featuresToTest, Collections.<String> emptySet(), false,
+                                             Collections.<String> emptySet());
             Log.info(c, "checkFeatures", "finished testing: " + feature + ", conflict expected: " + expectToConflict + ", conflict found: " + !result.getConflicts().isEmpty());
             Map<String, Collection<Chain>> conflicts = result.getConflicts();
             if (expectToConflict) {
@@ -475,14 +477,15 @@ public class EE10FeatureCompatibilityTest extends FATServletClient {
             } else {
                 featuresToTest = new HashSet<>();
                 featuresToTest.add(feature);
-                Result result = resolver.resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), featuresToTest, Collections.<String> emptySet(),
-                                                         false);
+                Result result = resolver.resolve(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), featuresToTest, Collections.<String> emptySet(),
+                                                 false, Collections.<String> emptySet());
                 if (!result.getResolvedFeatures().contains("ssl-1.0")) {
                     featuresToTest.add("ssl-1.0");
                 }
                 featuresToTest.add(!feature.equals("jsonp-2.1") ? "jsonp-2.1" : "jsonb-3.0");
             }
-            Result result = resolver.resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), featuresToTest, Collections.<String> emptySet(), false);
+            Result result = resolver.resolve(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), featuresToTest, Collections.<String> emptySet(), false,
+                                             Collections.<String> emptySet());
             if (!result.getConflicts().isEmpty()) {
                 errors.add("Got unexpected conflicts for feature " + feature + '\n');
             } else if (!result.getResolvedFeatures().contains("transportSecurity-1.0")) {

@@ -278,13 +278,15 @@ public class ServiceCaller<S> {
         }
 
         private boolean requiresUnget(ServiceEvent e) {
+            int eventType = e.getType();
             if (e.getServiceReference().equals(ref)) {
-                return (e.getType() == ServiceEvent.UNREGISTERING)
-                       || (filter != null && e.getType() == ServiceEvent.MODIFIED_ENDMATCH)
-                       || (e.getType() == ServiceEvent.MODIFIED && getRank(ref) != rank);
+                return (eventType == ServiceEvent.UNREGISTERING)
+                       || (filter != null && eventType == ServiceEvent.MODIFIED_ENDMATCH)
+                       || (eventType == ServiceEvent.MODIFIED && getRank(ref) != rank);
                 // if rank changed: untrack to force a new ReferenceAndService with new rank
             }
-            return e.getType() == ServiceEvent.MODIFIED && getRank(e.getServiceReference()) > rank;
+            return (eventType == ServiceEvent.MODIFIED || eventType == ServiceEvent.REGISTERED)
+                   && getRank(e.getServiceReference()) > rank;
         }
 
         // must hold monitor on ServiceCaller.this when calling track
@@ -367,9 +369,7 @@ public class ServiceCaller<S> {
      *
      * @param caller      a class from the bundle that will consume the service
      * @param serviceType the OSGi service type to look up
-     * @throws NullPointerException  if any of the parameters are {@code null}
-     * @throws IllegalStateException if the bundle associated with the caller class
-     *                                   cannot be determined
+     * @throws NullPointerException if any of the parameters are {@code null}
      */
     public ServiceCaller(Class<?> caller, Class<S> serviceType) {
         this(caller, serviceType, null);
@@ -383,13 +383,11 @@ public class ServiceCaller<S> {
      * @param serviceType the OSGi service type to look up
      * @param filter      the service filter used to look up the service. May be
      *                        {@code null}.
-     * @throws NullPointerException  if any of the parameters are {@code null}
-     * @throws IllegalStateException if the bundle associated with the caller class
-     *                                   cannot be determined
+     * @throws NullPointerException if any of the parameters are {@code null}
      */
     public ServiceCaller(Class<?> caller, Class<S> serviceType, String filter) {
         this.serviceType = Objects.requireNonNull(serviceType);
-        this.bundle = Optional.of(Objects.requireNonNull(caller)).map(FrameworkUtil::getBundle).orElseThrow(IllegalStateException::new);
+        this.bundle = Optional.of(Objects.requireNonNull(caller)).map(FrameworkUtil::getBundle).orElse(null);
         this.filter = filter;
         this.servicePermission = new ServicePermission(serviceType.getName(), ServicePermission.GET);
 
@@ -403,6 +401,9 @@ public class ServiceCaller<S> {
     }
 
     private BundleContext getContext() {
+        if (bundle == null) {
+            throw new IllegalStateException("Could not determine the bundle for the ServiceCaller.");
+        }
         if (System.getSecurityManager() != null) {
             return AccessController.doPrivileged((PrivilegedAction<BundleContext>) () -> bundle.getBundleContext());
         }
@@ -432,6 +433,8 @@ public class ServiceCaller<S> {
      * @param consumer the consumer of the OSGi service
      * @return true if the OSGi service was located and called successfully, false
      *         otherwise
+     * @throws IllegalStateException if the bundle associated with the caller class
+     *                                   cannot be determined
      */
     public boolean call(Consumer<S> consumer) {
         return trackCurrent().map(r -> {
@@ -446,6 +449,8 @@ public class ServiceCaller<S> {
      * @param <R>      the type returned by calling the method on the service
      * @param function A function that calls a method on the OSGi service and returns its output
      * @return an Optional containing the object returned by function, or null if it failed to return a value
+     * @throws IllegalStateException if the bundle associated with the caller class
+     *                                   cannot be determined
      */
     public <R> Optional<R> call(Function<S, R> function) {
         return Optional.ofNullable(trackCurrent().map(r -> {
@@ -458,6 +463,8 @@ public class ServiceCaller<S> {
      *
      * @return the currently available service or empty if the service cannot be
      *         found.
+     * @throws IllegalStateException if the bundle associated with the caller class
+     *                                   cannot be determined
      */
     public Optional<S> current() {
         return trackCurrent().map(r -> r.instance);

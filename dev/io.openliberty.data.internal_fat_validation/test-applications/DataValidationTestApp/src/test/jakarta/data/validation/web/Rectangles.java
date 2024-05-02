@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package test.jakarta.data.validation.web;
 
 import java.util.List;
 
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.validation.Valid;
@@ -31,7 +32,8 @@ public interface Rectangles {
 
     List<Rectangle> findByWidth(@Positive int width);
 
-    int findWidthById(String id);
+    @Query("SELECT width WHERE id=?1")
+    int getWidth(String id);
 
     @Save
     void save(@Valid Rectangle r);

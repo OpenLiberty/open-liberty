@@ -25,6 +25,7 @@ import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
@@ -55,14 +56,18 @@ public interface Houses {
     @Find
     House findById(@By(ID) String parcel);
 
+    @Query("SELECT garage.area WHERE garage IS NOT NULL")
     @OrderBy("purchasePrice")
-    int[] findGarageAreaByGarageNotNull();
+    int[] findGarageAreas();
 
+    @Query("SELECT garage.door, kitchen.length, kitchen.width WHERE parcelId = ?1")
     Optional<Object[]> findGarageDoorAndKitchenLengthAndKitchenWidthByParcelId(String parcel);
 
+    @Query("SELECT kitchen.length, kitchen.width, garage.area, area WHERE area < :maxArea")
     @OrderBy("lotSize")
     Stream<Object[]> findKitchenLengthAndKitchenWidthAndGarageAreaAndAreaByAreaLessThan(int maxArea);
 
+    @Query("SELECT purchasePrice WHERE lotSize > ?1")
     @OrderBy("area")
     DoubleStream findPurchasePriceByLotSizeGreaterThan(float minLotSize);
 

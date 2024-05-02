@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,23 +17,24 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.JdbcDatabaseContainer.NoDriverFoundException;
 import org.testcontainers.containers.wait.strategy.Wait;
 
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
-import com.ibm.ws.transaction.web.SSLRecoveryServlet;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.PostgreSQLContainer;
@@ -50,7 +51,6 @@ public class SSLRecoveryTest extends FATServletClient {
     private static final String POSTGRES_PASS = "superSecret";
 
     @Server("ssl-recovery")
-    @TestServlet(servlet = SSLRecoveryServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverLibertySSL;
 
     // The Dockerfile for 'jonhawkes/postgresql-ssl:1.0' can be found in the com.ibm.ws.jdbc_fat_postgresql project
@@ -99,6 +99,25 @@ public class SSLRecoveryTest extends FATServletClient {
             serverLibertySSL.stopServer();
         } finally {
             testContainer.stop();
+        }
+    }
+
+    @Test
+    public void testBothRollback() throws NoDriverFoundException, SQLException {
+        try {
+            runTest(serverLibertySSL, APP_NAME + "/SSLRecoveryServlet", "testBothRollback");
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+
+        // Tran should have rolled back
+        // Let's see if that 17 row is in the people table. It shouldn't be.
+        try (Connection con = testContainer.createConnection("");
+                        Statement stmt = con.createStatement();
+                        ResultSet rs = stmt.executeQuery("select id, name from people where id=17")) {
+            while (rs.next()) {
+                fail("Transaction did not rollback");
+            }
         }
     }
 

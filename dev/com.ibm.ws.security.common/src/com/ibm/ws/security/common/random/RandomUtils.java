@@ -38,9 +38,6 @@ public class RandomUtils {
             'u', 'v', 'w', 'x', 'y', 'z'
     };
 
-    static final String JCEPROVIDER_IBM = "IBMJCE";
-    static final String SECRANDOM_IBM = "IBMSecureRandom";
-    static final String SECRANDOM_SHA1PRNG = "SHA1PRNG";
 
     /**
      * Generates a random alphanumeric string of length n.
@@ -65,22 +62,8 @@ public class RandomUtils {
         return result.toString();
     }
 
-    @FFDCIgnore({ Exception.class })
     public static Random getRandom() {
-        Random result = null;
-        try {
-            if (Security.getProvider(JCEPROVIDER_IBM) != null) {
-                result = SecureRandom.getInstance(SECRANDOM_IBM);
-            } else {
-                result = SecureRandom.getInstance(SECRANDOM_SHA1PRNG);
-            }
-        } catch (Exception e) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "OLGH24469 - encountered exception : " + e.getMessage() + ", try without algorithm ");
-            }
-            result = new SecureRandom();
-        }
-        return result;
+        return new SecureRandom();
     }
 
     public static String generateUUID() {

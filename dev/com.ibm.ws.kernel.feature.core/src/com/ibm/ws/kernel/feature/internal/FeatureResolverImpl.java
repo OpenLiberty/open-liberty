@@ -172,20 +172,27 @@ public class FeatureResolverImpl implements FeatureResolver {
         parsedPreferedPlatforms = plats;
     }
 
+    //////// BEGIN - deprecated resolveFeatures() methods without platforms
+
     @Override
+    @Deprecated
     /*
      * (non-Javadoc)
      *
      * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection, java.util.Set)
+     *
      */
     public Result resolveFeatures(FeatureResolver.Repository repository, Collection<String> rootFeatures, Set<String> preResolved, boolean allowMultipleVersions) {
+
         // Note that when no process type is passed we support all process types.
-        return resolveFeatures(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), rootFeatures, preResolved,
-                               allowMultipleVersions ? Collections.<String> emptySet() : null,
-                               EnumSet.allOf(ProcessType.class));
+        return resolve(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), rootFeatures, preResolved,
+                       allowMultipleVersions ? Collections.<String> emptySet() : null,
+                       EnumSet.allOf(ProcessType.class),
+                       null);
     }
 
     @Override
+    @Deprecated
     /*
      * (non-Javadoc)
      *
@@ -194,9 +201,12 @@ public class FeatureResolverImpl implements FeatureResolver {
      */
     public Result resolveFeatures(FeatureResolver.Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures,
                                   Set<String> preResolved, boolean allowMultipleVersions) {
+
         // Note that when no process type is passed we support all process types.
-        return resolveFeatures(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
-                               EnumSet.allOf(ProcessType.class));
+        return resolve(repository, kernelFeatures, rootFeatures,
+                       preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
+                       EnumSet.allOf(ProcessType.class),
+                       null);
     }
 
     /*
@@ -207,11 +217,15 @@ public class FeatureResolverImpl implements FeatureResolver {
      * boolean, java.util.EnumSet)
      */
     @Override
-    public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
-                                  boolean allowMultipleVersions,
+    @Deprecated
+    public Result resolveFeatures(FeatureResolver.Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures,
+                                  Set<String> preResolved, boolean allowMultipleVersions,
                                   EnumSet<ProcessType> supportedProcessTypes) {
-        return resolveFeatures(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
-                               supportedProcessTypes);
+
+        return resolve(repository, kernelFeatures, rootFeatures,
+                       preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
+                       supportedProcessTypes,
+                       null);
     }
 
     /*
@@ -226,9 +240,86 @@ public class FeatureResolverImpl implements FeatureResolver {
      * 3) Check if there are any auto features to resolve; if so return to step 2 and resolve the auto-features as root features
      */
     @Override
+    @Deprecated
     public Result resolveFeatures(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
                                   Set<String> allowedMultipleVersions,
                                   EnumSet<ProcessType> supportedProcessTypes) {
+
+        return resolveFeatures(repository, kernelFeatures, rootFeatures, preResolved,
+                               allowedMultipleVersions,
+                               supportedProcessTypes);
+
+    }
+
+    //////// END - deprecated resolveFeatures() methods without platforms
+
+    @Override
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection, java.util.Set)
+     *
+     */
+    public Result resolve(FeatureResolver.Repository repository, Collection<String> rootFeatures, Set<String> preResolved, boolean allowMultipleVersions,
+                          Set<String> newConfiguredPlatforms) {
+
+        // Note that when no process type is passed we support all process types.
+        return resolve(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), rootFeatures, preResolved,
+                       allowMultipleVersions ? Collections.<String> emptySet() : null,
+                       EnumSet.allOf(ProcessType.class),
+                       newConfiguredPlatforms);
+    }
+
+    @Override
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection,
+     * java.util.Collection, java.util.Set)
+     */
+    public Result resolve(FeatureResolver.Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures,
+                          Set<String> preResolved, boolean allowMultipleVersions,
+                          Set<String> newConfiguredPlatforms) {
+
+        // Note that when no process type is passed we support all process types.
+        return resolve(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
+                       EnumSet.allOf(ProcessType.class),
+                       newConfiguredPlatforms);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection,
+     * java.util.Collection, java.util.Set,
+     * boolean, java.util.EnumSet)
+     */
+    @Override
+    public Result resolve(FeatureResolver.Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures,
+                          Set<String> preResolved, boolean allowMultipleVersions,
+                          EnumSet<ProcessType> supportedProcessTypes, Set<String> newConfiguredPlatforms) {
+
+        return resolve(repository, kernelFeatures, rootFeatures, preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
+                       supportedProcessTypes, newConfiguredPlatforms);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.kernel.feature.resolver.FeatureResolver#resolveFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository, java.util.Collection,
+     * java.util.Collection, java.util.Set,
+     * java.util.Set, java.util.EnumSet)
+     * Here are the steps this uses to resolve:
+     * 1) Primes the selected features with the pre-resolved and the root features (conflicts are reported, but no permutations for backtracking)
+     * 2) Resolve the root features
+     * 3) Check if there are any auto features to resolve; if so return to step 2 and resolve the auto-features as root features
+     */
+    @Override
+    public Result resolve(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
+                          Set<String> allowedMultipleVersions,
+                          EnumSet<ProcessType> supportedProcessTypes, Set<String> newConfiguredPlatforms) {
+
+
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
         //Implementation for platform element
@@ -237,7 +328,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             rootPlatforms = computePrefferedPlatform(repository);
             rootPlatforms = computePrefferedPlatformVariable(repository);
         }
-        
+
         // this checks if the pre-resolved exists in the repo;
         // if one does not exist then we start over with an empty set of pre-resolved
         preResolved = checkPreResolvedExistAndSetFullName(preResolved, selectionContext);

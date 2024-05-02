@@ -63,44 +63,6 @@ import jakarta.data.repository.Update;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Select {
-    // TODO should this include aggregates and distinct? These are not currently available in query-by-method
-    /**
-     * Aggregate functions.
-     */
-    public static enum Aggregate {
-        AVERAGE,
-        COUNT,
-        MAXIMUM,
-        MINIMUM,
-        SUM,
-        UNSPECIFIED
-    }
-
-    /**
-     * Specifies an aggregate function to apply to the selected entity attribute.
-     * When specifying an aggregate function, select a single entity attribute {@link #value}.
-     * The default is {@link Aggregate#UNSPECIFIED}, which means no aggregate function is applied.<p>
-     *
-     * An example repository method that counts the distinct first names that start with
-     * the specified letter,
-     *
-     * <pre>
-     * &#64;Select(function = Aggregate.COUNT, distinct = true, value = "firstName")
-     * int findByStartsWith(String firstLetter);
-     * </pre>
-     *
-     * @return the aggregate function to apply to the selected entity attribute.
-     */
-    Aggregate function() default Aggregate.UNSPECIFIED;
-
-    /**
-     * Requests that only distinct values of an entity attribute be returned.
-     * When specifying <code>distinct</code>, select a single entity attribute {@link #value}.
-     * The default is <code>false</code>.
-     *
-     * @return whether only distinct values of an entity attribute should be returned.
-     */
-    boolean distinct() default false;
 
     /**
      * Limits the entity attributes to the names listed.

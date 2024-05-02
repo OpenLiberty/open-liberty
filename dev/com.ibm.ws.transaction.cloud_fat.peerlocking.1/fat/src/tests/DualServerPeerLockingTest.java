@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,12 +16,13 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import org.junit.After;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.BeforeClass;
 
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.transaction.fat.util.FATUtils;
-import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.topology.impl.LibertyServer;
@@ -29,10 +30,10 @@ import componenttest.topology.impl.LibertyServer;
 public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
 
     @Server("com.ibm.ws.transaction_LKCLOUD001")
-    public static LibertyServer firstServer;
+    public static LibertyServer s1;
 
     @Server("com.ibm.ws.transaction_LKCLOUD002")
-    public static LibertyServer secondServer;
+    public static LibertyServer s2;
 
     @Server("defaultAttributesServer1")
     public static LibertyServer defaultAttributesServer1;
@@ -63,26 +64,28 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
                                                         "peerLockingEnabledServer1",
     };
 
-    protected LibertyServer[] servers = new LibertyServer[] { server1, server2 };
-
     @BeforeClass
     public static void setUp() throws Exception {
-        System.out.println("NYTRACE: DualServerPeerLockingTest.setUp called");
+        server1 = s1;
+        server2 = s2;
+
         servletName = APP_NAME + "/Simple2PCCloudServlet";
         cloud1RecoveryIdentity = "cloud001";
+        final WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "servlets.*");
+        final DeployOptions[] dO = new DeployOptions[0];
 
-        TxShrinkHelper.defaultApp(firstServer, APP_NAME, APP_PATH, "servlets.*");
-        TxShrinkHelper.defaultApp(secondServer, APP_NAME, APP_PATH, "servlets.*");
-        TxShrinkHelper.defaultApp(defaultAttributesServer1, APP_NAME, APP_PATH, "servlets.*");
-        TxShrinkHelper.defaultApp(defaultAttributesServer2, APP_NAME, APP_PATH, "servlets.*");
-        TxShrinkHelper.defaultApp(longPeerStaleTimeServer1, APP_NAME, APP_PATH, "servlets.*");
-        TxShrinkHelper.defaultApp(longPeerStaleTimeServer2, APP_NAME, APP_PATH, "servlets.*");
-        TxShrinkHelper.defaultApp(peerLockingDisabledServer1, APP_NAME, APP_PATH, "servlets.*");
-        TxShrinkHelper.defaultApp(peerLockingEnabledServer1, APP_NAME, APP_PATH, "servlets.*");
+        ShrinkHelper.exportAppToServer(server1, app, dO);
+        ShrinkHelper.exportAppToServer(server2, app, dO);
+        ShrinkHelper.exportAppToServer(defaultAttributesServer1, app, dO);
+        ShrinkHelper.exportAppToServer(defaultAttributesServer2, app, dO);
+        ShrinkHelper.exportAppToServer(longPeerStaleTimeServer1, app, dO);
+        ShrinkHelper.exportAppToServer(longPeerStaleTimeServer2, app, dO);
+        ShrinkHelper.exportAppToServer(peerLockingDisabledServer1, app, dO);
+        ShrinkHelper.exportAppToServer(peerLockingEnabledServer1, app, dO);
 
-        firstServer.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
-        secondServer.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
-        secondServer.useSecondaryHTTPPort();
+        s1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        s2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
+        s2.useSecondaryHTTPPort();
         defaultAttributesServer1.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         defaultAttributesServer2.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
         defaultAttributesServer2.useSecondaryHTTPPort();
@@ -100,11 +103,6 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
         super();
     }
 
-    @After
-    public void tearDown() throws Exception {
-        tidyServersAfterTest(servers);
-    }
-
     @Override
     public void dynamicTest(LibertyServer s1, LibertyServer s2, int test, int resourceCount) throws Exception {
         String testSuffix = String.format("%03d", test);
@@ -112,12 +110,11 @@ public class DualServerPeerLockingTest extends DualServerDynamicTestBase {
     }
 
     protected void dynamicTest(LibertyServer s1, LibertyServer s2, String testSuffix, int resourceCount) throws Exception {
-        final String method = "dynamicTest";
 
         server1 = s1;
         server2 = s2;
 
-        servers = new LibertyServer[] { s1, s2 };
+        serversToCleanup = new LibertyServer[] { s1, s2 };
 
         // Start Server1
         FATUtils.startServers(server1);

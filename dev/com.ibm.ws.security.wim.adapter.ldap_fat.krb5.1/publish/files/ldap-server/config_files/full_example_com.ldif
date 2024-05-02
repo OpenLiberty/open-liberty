@@ -1,0 +1,47 @@
+# EXAMPLE.COM
+dn: dc=example,dc=com
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: exmaple.com
+dc: example
+
+# users, EXAMPLE.COM
+dn: ou=users,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: users
+
+# user17, users, EXAMPLE.COM
+dn: uid=user17,dc=example,dc=com
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+cn: user17
+sn: user17
+uid: user17
+userPassword: max_secret
+
+# vmmUser1
+dn: uid=vmmUser1,dc=example,dc=com
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+cn: user1
+sn: user1
+uid: vmmUser1
+userPassword: password
+
+# vmmGroup1
+dn: cn=vmmGroup1,dc=example,dc=com
+objectClass: top
+objectClass: groupOfNames
+cn: vmmGroup1
+member: uid=vmmUser1,dc=example,dc=com
+
+# admins, EXAMPLE.COM
+dn: cn=admins,dc=example,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: Admins
+uniqueMember: uid=user17,dc=example,dc=com

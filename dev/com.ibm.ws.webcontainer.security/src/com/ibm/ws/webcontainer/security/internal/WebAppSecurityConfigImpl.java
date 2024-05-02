@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security.internal;
 
@@ -74,6 +71,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     public static final String CFG_KEY_BASIC_AUTH_REALM_NAME = "basicAuthenticationMechanismRealmName";
     public static final String CFG_KEY_SAME_SITE_COOKIE = "sameSiteCookie";
     public static final String CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH = "useContextRootForSSOCookiePath";
+    public static final String CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS = "postParamMaxRequestBodySize";
 
     // New attributes must update getChangedProperties method
     private final Boolean logoutOnHttpSessionExpire;
@@ -106,6 +104,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final String basicAuthRealmName;
     private final String sameSiteCookie;
     private final Boolean useContextRootForSSOCookiePath;
+    private final Long postParamMaxRequestBodySize;
 
     protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef;
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
@@ -146,6 +145,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_BASIC_AUTH_REALM_NAME, "basicAuthRealmName");
             put(CFG_KEY_SAME_SITE_COOKIE, "sameSiteCookie");
             put(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH, "useContextRootForSSOCookiePath");
+            put(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS, "postParamMaxRequestBodySize");
         }
     };
 
@@ -190,6 +190,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         basicAuthRealmName = (String) newProperties.get(CFG_KEY_BASIC_AUTH_REALM_NAME);
         sameSiteCookie = (String) newProperties.get(CFG_KEY_SAME_SITE_COOKIE);
         useContextRootForSSOCookiePath = (Boolean) newProperties.get(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH);
+        postParamMaxRequestBodySize = (Long) newProperties.get(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS);
 
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);
     }
@@ -596,4 +597,10 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     public boolean isUseContextRootForSSOCookiePath() {
         return useContextRootForSSOCookiePath;
     }
+
+    @Override
+    public long postParamMaxRequestBodySize() {
+        return postParamMaxRequestBodySize.longValue();
+    }
+
 }

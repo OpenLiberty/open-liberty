@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF CVE Reporting
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKF1700 - CWWKF1799
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.reporting.internal: CWWKF1700 - CWWKF1799
+
+CWWKF1700.reporting.is.enabled=CWWKF1700I: Verificarea vulnerabilit\u0103\u021bilor de securitate este activat\u0103. Informa\u021bii despre acest Liberty fi analizate \u00eempotriva vulnerabilit\u0103\u021bilor cunoscute.
+CWWKF1700.reporting.is.enabled.explanation= Verificarea vulnerabilit\u0103\u021bilor de securitate este \u00een prezent activat\u0103.
+CWWKF1700.reporting.is.enabled.useraction=Pentru a dezactiva verificarea pentru vulnerabilit\u0103\u021bile de securitate, specifica\u021bi <cveReporting enabled="false" /> \u00een server.xml
+
+CWWKF1701.reporting.is.disabled=CWWKF1701I: Verificarea vulnerabilit\u0103\u021bilor de securitate este dezactivat\u0103.
+CWWKF1701.reporting.is.disabled.explanation=Verificarea vulnerabilit\u0103\u021bilor de securitate trebuie s\u0103 fie activat\u0103 pentru a rula.
+CWWKF1701.reporting.is.disabled.useraction=Pentru a permite verificarea vulnerabilit\u0103\u021bilor de securitate, specifica\u021bi <cveReporting enabled="true" /> \u00een fi\u0219ierul " server.xml .
+
+more.information.message=Pentru mai multe informa\u021bii, pute\u021bi {0}
+
+CWWKF1702.cve.found=CWWKF1702W: Pe baza unei evalu\u0103ri a studiului de tip " {0}, examinati urm\u0103toarele buletine de {1}
+CWWKF1702.cve.found.explanation=Au fost g\u0103site vulnerabilit\u0103\u0163i de securitate.
+CWWKF1702.cve.found.useraction=Revizui\u021bi CVE-urile din mesaj \u0219i rezolva\u021bi vulnerabilit\u0103\u021bile de securitate.
+
+CWWKF1703.cve.not.found=CWWKF1703I: Pe baza analizei Runtime, nu au fost g\u0103site vulnerabilit\u0103\u021bi de securitate care necesit\u0103 analize suplimentare.
+CWWKF1703.cve.not.found.explanation=Nu au fost g\u0103site vulnerabilit\u0103\u021bi de securitate \u00een acest moment.
+CWWKF1703.cve.not.found.useraction=F\u0103r\u0103.
+
+CWWKF1704.incorrect.url=CWWKF1704W: URL-ul specificat nu este corect \u0219i nu se poate face o conexiune: {0}
+CWWKF1704.incorrect.url.explanation=Nu se poate face nici o conexiune pentru URL-ul furnizat.
+CWWKF1704.incorrect.url.useraction=Verifica\u021bi dac\u0103 adresa URL este corect\u0103.
+
+CWWKF1705.failed.response=CWWKF1705W: Nu sunt \u00een m\u0103sur\u0103 s\u0103 ob\u021bin\u0103 informa\u021bii CVE relevante din cauza unei probleme de comunicare cu Serviciul de raportare CVE.
+CWWKF1705.failed.response.explanation=Serviciul nu poate oferi un r\u0103spuns.
+CWWKF1705.failed.response.useraction=Fixa\u021bi problema de comunicare \u0219i \u00eencerca\u021bi din nou.
+
+CWWKF1706.issue.parsing=CWWKF1706W: Emitere atunci c\u00e2nd parsarea Informa\u021bii despre produs.
+CWWKF1706.issue.parsing.explanation=Serviciul nu poate analiza cu succes informa\u021biile despre produs.
+CWWKF1706.issue.parsing.useraction=Fixa\u021bi problema de comunicare \u0219i \u00eencerca\u021bi din nou.

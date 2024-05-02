@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,19 +13,30 @@
 
 configurations {
   appLibs
+  app2Libs 
 }
 
 dependencies {
   appLibs 'javax.xml.bind:jaxb-api:2.2.+'
   appLibs 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.+'
+  app2Libs 'javax.xml.bind:jaxb-api:2.3.+'
+  app2Libs 'com.sun.xml.bind:jaxb-impl:2.3.+'
+  app2Libs 'javax.activation:activation:1.1'
 }
 
 task addAppLibs(type: Copy) {
   from configurations.appLibs
+  into "${buildDir}/autoFVT/test-applications/thirdPartyJaxbJDKApp/resources/WEB-INF/lib"
+}
+
+task addApp2Libs(type: Copy) {
+  from configurations.app2Libs
   into "${buildDir}/autoFVT/test-applications/thirdPartyJaxbApp/resources/WEB-INF/lib"
 }
 
+
 addRequiredLibraries {
   dependsOn addAppLibs 
+  dependsOn addApp2Libs 
   dependsOn addJakartaTransformer
 }

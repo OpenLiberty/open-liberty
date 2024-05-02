@@ -1,0 +1,54 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWWKF
+#COMPONENTNAMEFOR CWWKF CVE Reporting
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# -------------------------------------------------------------------------------------------------
+#*******************************************************************************
+# Copyright (c) 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+# 
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKF1700 - CWWKF1799
+#-----------------------------------------------------------------------------------------------------------------------------
+# Message prefix block for io.openliberty.reporting.internal: CWWKF1700 - CWWKF1799
+
+CWWKF1700.reporting.is.enabled=CWWKF1700I: Kontrola ohro\u017een\u00ed zabezpe\u010den\u00ed je povolena. Informace o tomto b\u011bhov\u00e9m prost\u0159ed\u00ed Liberty budou analyzov\u00e1ny proti zn\u00e1m\u00fdm zranitelnostem.
+CWWKF1700.reporting.is.enabled.explanation= Kontrola slab\u00fdch m\u00edst zabezpe\u010den\u00ed je v sou\u010dasn\u00e9 dob\u011b povolena.
+CWWKF1700.reporting.is.enabled.useraction=Chcete-li zak\u00e1zat kontrolu ohro\u017een\u00ed zabezpe\u010den\u00ed, zadejte v souboru server.xml hodnotu <cveReporting enabled="false" /> .
+
+CWWKF1701.reporting.is.disabled=CWWKF1701I: Kontrola ohro\u017een\u00ed zabezpe\u010den\u00ed je zak\u00e1z\u00e1na.
+CWWKF1701.reporting.is.disabled.explanation=Kontrola ohro\u017een\u00ed zabezpe\u010den\u00ed mus\u00ed b\u00fdt povolena pro spu\u0161t\u011bn\u00ed.
+CWWKF1701.reporting.is.disabled.useraction=Chcete-li povolit kontrolu ohro\u017een\u00ed zabezpe\u010den\u00ed, zadejte v souboru server.xml hodnotu <cveReporting enabled="true" /> .
+
+more.information.message=Dal\u0161\u00ed informace naleznete v t\u00e9matu {0} .
+
+CWWKF1702.cve.found=CWWKF1702W: Na z\u00e1klad\u011b posouzen\u00ed {0}p\u0159ezkoumejte n\u00e1sleduj\u00edc\u00ed v\u00fdv\u011bsky zabezpe\u010den\u00ed: {1}
+CWWKF1702.cve.found.explanation=Byla nalezena chyba zabezpe\u010den\u00ed.
+CWWKF1702.cve.found.useraction=P\u0159ezkoumejte soubory CVEs ve zpr\u00e1v\u011b a vy\u0159e\u0161te ohro\u017een\u00ed zabezpe\u010den\u00ed.
+
+CWWKF1703.cve.not.found=CWWKF1703I: Na z\u00e1klad\u011b anal\u00fdzy b\u011bhov\u00e9ho prost\u0159ed\u00ed nebyla nalezena \u017e\u00e1dn\u00e1 ohro\u017een\u00ed zabezpe\u010den\u00ed, kter\u00e1 by vy\u017eadovala dal\u0161\u00ed anal\u00fdzu.
+CWWKF1703.cve.not.found.explanation=V tuto chv\u00edli nebyly nalezeny \u017e\u00e1dn\u00e9 chyby zabezpe\u010den\u00ed.
+CWWKF1703.cve.not.found.useraction=Nen\u00ed.
+
+CWWKF1704.incorrect.url=CWWKF1704W: Zadan\u00e1 adresa URL nen\u00ed spr\u00e1vn\u00e1 a nelze vytvo\u0159it p\u0159ipojen\u00ed: {0}
+CWWKF1704.incorrect.url.explanation=Pro poskytnutou adresu URL nelze vytvo\u0159it \u017e\u00e1dn\u00e9 p\u0159ipojen\u00ed.
+CWWKF1704.incorrect.url.useraction=Ov\u011b\u0159te, \u017ee je adresa URL spr\u00e1vn\u00e1.
+
+CWWKF1705.failed.response=CWWKF1705W: Nelze na\u010d\u00edst p\u0159\u00edslu\u0161n\u00e9 informace CVE kv\u016fli probl\u00e9mu s komunikac\u00ed se slu\u017ebou CVE Reporting Service.
+CWWKF1705.failed.response.explanation=Slu\u017eba nem\u016f\u017ee poskytnout odpov\u011b\u010f.
+CWWKF1705.failed.response.useraction=Opravte probl\u00e9m s komunikac\u00ed a zkuste to znovu.
+
+CWWKF1706.issue.parsing=CWWKF1706W: Probl\u00e9m p\u0159i anal\u00fdze informac\u00ed o produktu.
+CWWKF1706.issue.parsing.explanation=Slu\u017eba nem\u016f\u017ee \u00fasp\u011b\u0161n\u011b analyzovat informace o produktu.
+CWWKF1706.issue.parsing.useraction=Opravte probl\u00e9m s komunikac\u00ed a zkuste to znovu.

@@ -282,6 +282,20 @@ public class ArtifactDownloaderUtils {
         }
     }
 
+    /**
+     * Users may not have access to the entire repository so we don't check other 400 or greater level response codes
+     *
+     * @param repoResponseCode
+     * @return true if responseCode is anything other than 404
+     */
+    public static boolean checkResponseCode(int repoResponseCode) {
+        boolean connected = true;
+        if (repoResponseCode == 404) {
+            connected = false;
+        }
+        return connected;
+    }
+
     public static String getMavenCoordFromPath(String coordPath, String groupID) {
         String result = coordPath.replace("\\", "/");
         String[] resSplit = result.split("/");
@@ -339,6 +353,9 @@ public class ArtifactDownloaderUtils {
      * @throws InstallException if decoding the password fails due to an unsupported algorithm or invalid password.
      */
     protected static void verifyPassword(String pwd) throws InstallException {
+        if (pwd == null) {
+            return;
+        }
         if (!PasswordUtil.isEncrypted(pwd)) {
             logger.log(Level.FINE, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_TOOL_PWD_NOT_ENCRYPTED")
                                    + InstallUtils.NEWLINE);

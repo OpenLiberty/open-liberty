@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -581,27 +581,18 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         ClassNotFoundException cnfe = null;
         Object token = ThreadIdentityManager.runAsServer();
         try {
-            synchronized (getClassLoadingLock(name)) {
-                try {
-                    Class<?> result = findOrDelegateLoadClass(name, onlySearchSelf, returnNull);
-                    if (result != null) {
-                        return result;
-                    }
-                } catch (ClassNotFoundException e) {
-                    cnfe = e;
-                }
-                // The class could not be found on the local class path or by
-                // delegating to parent/library class loaders.  Try to generate it.
-                Class<?> generatedClass = generateClass(name);
-                if (generatedClass != null)
-                    return generatedClass;
+            Class<?> result = findOrDelegateLoadClass(name, onlySearchSelf, returnNull);
+            if (result != null) {
+                return result;
             }
+        } catch (ClassNotFoundException e) {
+            cnfe = e;
         } finally {
             ThreadIdentityManager.reset(token);
         }
 
         // Could not generate class - throw CNFE
-        // Event if going to return null, still call getExceptionWithSuggestion so that
+        // Even if going to return null, still call getExceptionWithSuggestion so that
         // the appropriate info message is output to the message.log.
         ClassNotFoundException toThrow = FeatureSuggestion.getExceptionWithSuggestion(cnfe, name, returnNull);
 
@@ -693,25 +684,43 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         if (parent == null) {
             return super.loadClass(name, false);
         }
-        Class<?> result = findLoadedClass(name);
-        if (result != null) {
-            return result;
-        }
-        if (!onlySearchSelf) {
-            if (parent instanceof NoClassNotFoundLoader) {
-                result = ((NoClassNotFoundLoader) parent).loadClassNoException(name);
-            } else {
-                try {
-                    result = parent.loadClass(name);
-                } catch (ClassNotFoundException e) {
-                    // move on to local findClass
+        Class<?> result = null;
+        ClassNotFoundException findException = null;
+        synchronized (getClassLoadingLock(name)) {
+            result = findLoadedClass(name);
+            if (result == null) {
+                if (!onlySearchSelf) {
+                    if (parent instanceof NoClassNotFoundLoader) {
+                        result = ((NoClassNotFoundLoader) parent).loadClassNoException(name);
+                    } else {
+                        try {
+                            result = parent.loadClass(name);
+                        } catch (ClassNotFoundException e) {
+                            // move on to local findClass
+                        }
+                    }
+                }
+                if (result == null) {
+                    try {
+                        result = findClass(name, returnNull);
+                    } catch (ClassNotFoundException cnfe) {
+                        findException = cnfe;
+                    }
+
+                    if (result == null) {
+                        // The class could not be found on the local class path or by
+                        // delegating to parent/library class loaders.  Try to generate it.
+                        result = generateClass(name);
+                    }
                 }
             }
-            if (result != null) {
-                return result;
-            }
         }
-        return findClass(name, returnNull);
+
+        if (result != null || returnNull) {
+            return result;
+        }
+
+        throw findException;
     }
 
     /**

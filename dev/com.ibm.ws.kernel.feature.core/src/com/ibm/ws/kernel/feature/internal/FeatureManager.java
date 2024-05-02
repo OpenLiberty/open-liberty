@@ -162,6 +162,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
     private static final TraceComponent tc = Tr.register(FeatureManager.class);
 
     private final static String CFG_KEY_ACTIVE_FEATURES = "feature";
+    private final static String CFG_KEY_PLATFORMS = "platform";
 
     public static final String EE_COMPATIBLE_NAME = "eeCompatible";
     final static String INSTALLED_BUNDLE_CACHE = "platform/feature.bundles.cache";
@@ -198,14 +199,20 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         final RuntimeUpdateManager runtimeUpdateManager;
         final ProvisioningMode provisioningMode;
         String[] features;
+        String[] platforms;
         RuntimeUpdateNotification appForceRestart = null;
         RuntimeUpdateNotification featureBundlesResolved = null;
         RuntimeUpdateNotification featureUpdatesCompleted = null;
 
         FeatureChange(RuntimeUpdateManager runtimeUpdateManager, ProvisioningMode provisioningMode, String[] features) {
+            this(runtimeUpdateManager, provisioningMode, features, null);
+        }
+
+        FeatureChange(RuntimeUpdateManager runtimeUpdateManager, ProvisioningMode provisioningMode, String[] features, String[] platforms) {
             this.runtimeUpdateManager = runtimeUpdateManager;
             this.provisioningMode = provisioningMode;
             this.features = features;
+            this.platforms = platforms;
             if (provisioningMode == ProvisioningMode.UPDATE) {
                 featureUpdatesCompleted = runtimeUpdateManager.createNotification(RuntimeUpdateNotification.FEATURE_UPDATES_COMPLETED);
             }
@@ -228,6 +235,15 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             }
 
             return lcnFeatures;
+        }
+
+        Set<String> getPlatformsWithLowerCaseName() {
+            Set<String> lcnPlatforms = new HashSet<String>();
+            for (String platform : platforms) {
+                lcnPlatforms.add(platform.toLowerCase());
+            }
+
+            return lcnPlatforms;
         }
     }
 
@@ -674,11 +690,16 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             features = new String[0];
         }
 
-        queueFeatureChange(mode, features);
+        String[] platforms = (String[]) configuration.get(CFG_KEY_PLATFORMS);
+        if (platforms == null) {
+            platforms = new String[0];
+        }
+
+        queueFeatureChange(mode, features, platforms);
     }
 
-    private void queueFeatureChange(final ProvisioningMode mode, String[] features) {
-        featureChanges.add(new FeatureChange(runtimeUpdateManager, mode, features));
+    private void queueFeatureChange(final ProvisioningMode mode, String[] features, String[] platforms) {
+        featureChanges.add(new FeatureChange(runtimeUpdateManager, mode, features, platforms));
         executorService.execute(new Runnable() {
             @Override
             public void run() {
@@ -783,7 +804,9 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 // been installed into the runtime, so that we can recalculate any new autofeatures to install.
                 featureChange.features = getPublicFeatures(preInstalledFeatures, false).toArray(new String[] {});
             }
+
             updateFeatures(locationService, provisioner, preInstalledFeatures, featureChange, featureUpdateNumber.incrementAndGet());
+
             // All done with the updates we could find...
             switch (featureChange.provisioningMode) {
                 case CONTENT_REQUEST:
@@ -1296,11 +1319,15 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         // In 850 we were not case sensitive so we need to stay that way.
         // Use a set to eliminate duplicates.
         Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName(featureRepository);
+        Set<String> newConfiguredPlatforms = featureChange.getPlatformsWithLowerCaseName();
 
-        return resolveFeatures(newConfiguredFeatures, new ArrayList<String>(), featureChange.provisioningMode);
+        return resolveFeatures(newConfiguredFeatures, new ArrayList<String>(), featureChange.provisioningMode, newConfiguredPlatforms);
     }
 
-    private Result resolveFeatures(Set<String> rootFeatures, Collection<String> restrictedAccessAttempts, ProvisioningMode mode) {
+    private Result resolveFeatures(Set<String> rootFeatures,
+                                   Collection<String> restrictedAccessAttempts,
+                                   ProvisioningMode mode,
+                                   Set<String> newConfiguredPlatforms) {
 
         if (rootFeatures.isEmpty() && featureRepository.emptyFeatures()) {
             Tr.warning(tc, "EMPTY_FEATURES_WARNING");
@@ -1348,27 +1375,31 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         if (featureListIsComplete) {
             result = createResultFromCompleteList(restrictedRespository, rootFeatures);
         } else {
-            result = callFeatureResolver(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, allowMultipleVersions, currentPackageServerConflict);
+            result = callFeatureResolver(restrictedRespository, kernelFeaturesHolder.getKernelFeatures(), rootFeatures, allowMultipleVersions, currentPackageServerConflict,
+                                         newConfiguredPlatforms);
         }
         restrictedAccessAttempts.addAll(restrictedRepoAccessAttempts);
         return result;
     }
 
     private Result callFeatureResolver(Repository restrictedRespository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Set<String> rootFeatures,
-                                       boolean allowMultipleVersions, Set<String> currentPackageServerConflict) {
+                                       boolean allowMultipleVersions, Set<String> currentPackageServerConflict, Set<String> newConfiguredPlatforms) {
 
         // short circuit if package server is expecting conflicts
         if (currentPackageServerConflict != null) {
-            return featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), currentPackageServerConflict,
-                                                   EnumSet.allOf(ProcessType.class));
+            return featureResolver.resolve(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), currentPackageServerConflict,
+                                           EnumSet.allOf(ProcessType.class),
+                                           newConfiguredPlatforms);
         }
         // resolve the features
         // TODO Note that we are just supporting all types at runtime right now.  In the future this may be restricted by the actual running process type
-        Result result = featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(),
-                                                        false);
+        Result result = featureResolver.resolve(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(),
+                                                false,
+                                                newConfiguredPlatforms);
         if (allowMultipleVersions) {
             if (!result.getConflicts().isEmpty()) {
-                result = featureResolver.resolveFeatures(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), true);
+                result = featureResolver.resolve(restrictedRespository, kernelFeatures, rootFeatures, Collections.<String> emptySet(), true,
+                                                 newConfiguredPlatforms);
             }
         }
 
@@ -1444,8 +1475,9 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         // In 850 we were not case sensitive so we need to stay that way.
         // Use a set to eliminate duplicates.
         Set<String> newConfiguredFeatures = featureChange.getFeaturesWithLowerCaseName(featureRepository);
+        Set<String> newConfiguredPlatforms = featureChange.getPlatformsWithLowerCaseName();
 
-        if (newConfiguredFeatures.isEmpty() && featureRepository.emptyFeatures()) {
+        if (newConfiguredFeatures.isEmpty() && featureRepository.emptyFeatures() && newConfiguredPlatforms.isEmpty()) {
 
             //We instantiate a new BundleList because we want to make sure we
             //go into the code section below that clean any extra bundles. See
@@ -1466,14 +1498,14 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         boolean appForceRestartSet = false;
         final boolean sameJavaSpecVersion = sameJavaSpecVersion();
         try {
-            if (areConfiguredFeaturesGood(newConfiguredFeatures) && sameJavaSpecVersion) {
+            if (areConfiguredFeaturesGood(newConfiguredFeatures, newConfiguredPlatforms) && sameJavaSpecVersion) {
                 featuresHaveChanges = false;
                 goodFeatures = preInstalledFeatures;
             } else {
                 // This will be populated by resolveFeatures if there are any restricted access attempts during resolution
                 Collection<String> restrictedAccessAttempts = new ArrayList<String>();
 
-                Result result = resolveFeatures(newConfiguredFeatures, restrictedAccessAttempts, featureChange.provisioningMode);
+                Result result = resolveFeatures(newConfiguredFeatures, restrictedAccessAttempts, featureChange.provisioningMode, newConfiguredPlatforms);
                 boolean reportedConfigurationErrors = reportErrors(result, restrictedAccessAttempts, newConfiguredFeatures, installStatus);
                 goodFeatures = result.getResolvedFeatures();
 
@@ -1647,8 +1679,11 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
      * @param newConfiguredFeatures
      * @return
      */
-    private boolean areConfiguredFeaturesGood(Set<String> newConfiguredFeatures) {
-        if (!!!featureRepository.isDirty() && !!!featureRepository.hasConfigurationError() && featureRepository.getConfiguredFeatures().equals(newConfiguredFeatures)) {
+    private boolean areConfiguredFeaturesGood(Set<String> newConfiguredFeatures, Set<String> newConfiguredPlatforms) {
+        if (!!!featureRepository.isDirty()
+            && !!!featureRepository.hasConfigurationError()
+            && featureRepository.getConfiguredFeatures().equals(newConfiguredFeatures)
+            && featureRepository.getPlatforms().equals(newConfiguredPlatforms)) {
             // check that all installed features are still installed
             for (String installedFeature : featureRepository.getInstalledFeatures()) {
                 if (featureRepository.getFeature(installedFeature) == null) {
@@ -2547,7 +2582,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
      */
     @Override
     public void refreshFeatures() {
-        queueFeatureChange(ProvisioningMode.REFRESH, null);
+        queueFeatureChange(ProvisioningMode.REFRESH, null, null);
     }
 
     /*
