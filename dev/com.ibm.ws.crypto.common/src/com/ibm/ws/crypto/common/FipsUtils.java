@@ -12,15 +12,27 @@ package com.ibm.ws.crypto.common;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+
+
 public class FipsUtils {
 
 	public static boolean isFIPSEnabled() {
+		// TODO remove beta mode check
+        return isRunningBetaMode() && isRunningFIPS140Dash3Mode();
+	}
+
+    static boolean isRunningFIPS140Dash3Mode() {
 		String fipsEnabled = AccessController.doPrivileged(new PrivilegedAction<String>() {
 			@Override
 			public String run() {
-				return System.getProperty("com.ibm.jsse2.usefipsprovider");
+				return System.getProperty("com.ibm.fips.mode");
 			}
 		});
-		return Boolean.parseBoolean(fipsEnabled);
+		return "140-3".equals(fipsEnabled);
+	}
+
+	private static boolean isRunningBetaMode() {
+		return ProductInfo.getBetaEdition();
 	}
 }
