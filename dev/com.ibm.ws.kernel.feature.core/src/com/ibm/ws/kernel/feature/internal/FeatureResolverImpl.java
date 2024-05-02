@@ -869,11 +869,13 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         void processCandidates(Collection<String> chain, List<String> candidateNames, String symbolicName, String baseSymbolicName, String preferredVersion, boolean isSingleton) {
-            if  (baseSymbolicName.startsWith("io.openliberty.internal.versionless.") && 
-                getSelected("com.ibm.websphere.appserver.eeCompatible") == null){
+            if  (baseSymbolicName.startsWith("io.openliberty.internal.versionless.")){
+                if  ((baseSymbolicName.substring(36, 38).equals("mp") && getSelected("io.openliberty.mpCompatible") == null && getSelected("io.openliberty.internal.versionlessMP") == null) || 
+                    (!baseSymbolicName.substring(36, 38).equals("mp") && getSelected("com.ibm.websphere.appserver.eeCompatible") == null)){
 
-                addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
-                return;
+                    addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
+                    return;
+                }
             }
             // first check for container type
             List<String> origCandidateNames = new ArrayList<>(candidateNames);
@@ -976,13 +978,40 @@ public class FeatureResolverImpl implements FeatureResolver {
 
             //if a versionless feature is postponed, process that first
             if(isBeta){
-                if(!!!_current._postponedVersionless.isEmpty() && getSelected("com.ibm.websphere.appserver.eeCompatible") != null){
-                    Map.Entry<String, Chains> firstPostponedVersionless = _current._postponedVersionless.entrySet().iterator().next();
-                    // try to find a good selection
-                    Chain selected = firstPostponedVersionless.getValue().select(firstPostponedVersionless.getKey(), this);
-                    if (selected != null) {
-                        // found a good one, select it.
-                        _current._selected.put(firstPostponedVersionless.getKey(), selected);
+                if(!!!_current._postponedVersionless.isEmpty() && (getSelected("io.openliberty.mpCompatible") != null || getSelected("io.openliberty.internal.versionlessMP") != null ||  getSelected("com.ibm.websphere.appserver.eeCompatible") != null)){
+
+                    Set<String> entries = _current._postponedVersionless.keySet();
+                    
+                    Iterator<Map.Entry<String, Chains>> postponedVersionlessIterator = _current._postponedVersionless.entrySet().iterator();
+                    
+                    Map.Entry<String, Chains> firstPostponedVersionless = null;
+                    while(postponedVersionlessIterator.hasNext()){
+                        firstPostponedVersionless = postponedVersionlessIterator.next();
+                        if(firstPostponedVersionless.getKey().substring(36, 38).equals("mp")){
+                            if(getSelected("io.openliberty.mpCompatible") != null || getSelected("io.openliberty.internal.versionlessMP") != null){
+                                break;
+                            }
+                        }
+                        else{
+                            if(getSelected("com.ibm.websphere.appserver.eeCompatible") != null){
+                                break;
+                            }
+                        }
+                        firstPostponedVersionless = null;
+                    }
+                    
+                    if(firstPostponedVersionless != null){
+                        // try to find a good selection
+                        Chain selected = firstPostponedVersionless.getValue().select(firstPostponedVersionless.getKey(), this);
+                        if (selected != null) {
+                            // found a good one, select it.
+                            _current._selected.put(firstPostponedVersionless.getKey(), selected);
+                        }
+            
+                        // clean postponed since we will walk the tree again and find them again if necessary
+                        _current._postponed.clear();
+                        _current._postponedVersionless.clear();
+                        return;
                     }
                     // clean postponed since we will walk the tree again and find them again if necessary
                     _current._postponed.clear();

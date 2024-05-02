@@ -3,6 +3,7 @@ symbolicName=io.openliberty.internal.versionless.mpJwt-2.0
 visibility=private
 singleton=true
 -features= \
+    io.openliberty.internal.versionlessMP-5.0, \
     io.openliberty.mpJwt-2.0
 kind=beta
 edition=base
