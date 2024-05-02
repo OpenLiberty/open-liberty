@@ -3,6 +3,7 @@ symbolicName=io.openliberty.internal.versionless.mpMetrics-2.0
 visibility=private
 singleton=true
 -features= \
+    io.openliberty.internal.versionlessMP-3.0, \
     com.ibm.websphere.appserver.mpMetrics-2.0
 kind=beta
 edition=base

@@ -3,6 +3,7 @@ symbolicName=io.openliberty.internal.versionless.mpConfig-1.1
 visibility=private
 singleton=true
 -features= \
+    io.openliberty.internal.versionlessMP-1.2, \
     com.ibm.websphere.appserver.mpConfig-1.1
 kind=beta
 edition=base

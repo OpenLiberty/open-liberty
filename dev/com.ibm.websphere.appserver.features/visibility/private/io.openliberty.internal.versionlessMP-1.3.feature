@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.mpCompatible-3.2
+symbolicName=io.openliberty.internal.versionlessMP-1.3
 visibility=private
 singleton=true
 kind=beta

@@ -16,7 +16,9 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.io.File;
 import java.io.IOException;
 
@@ -98,6 +100,73 @@ public class VersionlessTest {
                 System.out.println("    [ " + featureName + " ] [ " + cohorts.get(featureName) + " ]");
             }
         });
+    }
+
+    @Test
+    public void listEECohorts(){
+        System.out.println("EE Cohorts!!");
+        Set<String> allCohortsSet = new HashSet<String> (); 
+        Map<String, List<String>> featuresMPDependencies = new HashMap<>();
+        getSelectorCohorts().forEach((String baseName, List<String> featureBaseNames) -> {
+            if(baseName.equals("javaee") || baseName.equals("jakartaee") || baseName.equals("webProfile")){
+                for (String featureBaseName : featureBaseNames) {
+                    List<String> cohort = cohorts.get(featureBaseName);
+                    allCohortsSet.addAll(cohort);
+                    System.out.println("    [ " + featureBaseName + " ] [ " + cohort + " ]");
+
+                    for (String version : cohort) {
+                        String featureName = featureBaseName + "-" + version;
+                        FeatureInfo featureInfo = getFeature(featureName);
+                        if (featureInfo == null) {
+                            continue;
+                        } else {
+                            System.out.println("      [ " + featureInfo.getName() + " ]");
+                        }
+
+                        featureInfo.forEachSortedDepName((String depName) -> {
+                            FeatureInfo depInfo = getFeature(depName);
+                            if (depInfo == null) {
+                                System.out.println("        [ " + depName + " ** NOT FOUND ** ]");
+                            } else if (depInfo.isPublic()) {
+                                System.out.println("        [ " + depInfo.getBaseName() + " - " + depInfo.getVersion() + " ]");
+                            }
+                            if(depInfo.getShortName() != null){
+                                if(featuresMPDependencies.containsKey(depInfo.getShortName())){
+                                    featuresMPDependencies.get(depInfo.getShortName()).add(version);
+                                }
+                                else{
+                                    List<String> mpVersions = new ArrayList<String>();
+                                    mpVersions.add(version);
+                                    featuresMPDependencies.put(depInfo.getShortName(), mpVersions);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        System.out.println(allCohortsSet);
+        ArrayList<String> allCohorts = new ArrayList<>(allCohortsSet);
+        
+
+        System.out.println("Features EE Deps:");
+
+        List<String> sortedFeatures = new ArrayList<>(featuresMPDependencies.keySet());
+        Collections.sort(sortedFeatures);
+
+        ArrayList<String> missingCohorts = (ArrayList<String>) allCohorts.clone();
+        String current = "";
+
+        for(String feature : sortedFeatures){
+            if(!current.equals("") && !current.equals(feature.split("-")[0])){
+                System.out.println("        " + current + " missing cohorts: " + missingCohorts);
+                missingCohorts = (ArrayList<String>) allCohorts.clone();
+            }
+            current = feature.split("-")[0];
+            System.out.println("    [ " + feature + " ]   " + featuresMPDependencies.get(feature));
+            missingCohorts.removeAll(featuresMPDependencies.get(feature));
+        }
+
     }
 
     @Test

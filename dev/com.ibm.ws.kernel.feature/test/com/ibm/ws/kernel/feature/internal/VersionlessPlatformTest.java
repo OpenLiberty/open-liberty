@@ -104,30 +104,78 @@ public class VersionlessPlatformTest {
         for(String s : publicDefs.keySet()){
             if(s.startsWith("io.openliberty.versionless")){
                 String featureName = tempRepo.getFeature(s).getFeatureName();
-                testCases.add(new VersionlessTestCase(
-                    Arrays.asList(
-                        (featureName).split("\\s*,\\s*")
-                    ), 
-                    Collections.<String> emptyList(),
-                    new String[] {"jakartaee-7.0", "MicroProfile-1.0"}));
-                testCases.add(new VersionlessTestCase(
-                    Arrays.asList(
-                        (featureName).split("\\s*,\\s*")
-                    ), 
-                    Collections.<String> emptyList(),
-                    new String[] {"jakartaee-8.0", "MicroProfile-1.0"}));
-                testCases.add(new VersionlessTestCase(
-                    Arrays.asList(
-                        (featureName).split("\\s*,\\s*")
-                    ), 
-                    Collections.<String> emptyList(),
-                    new String[] {"jakartaee-9.0"}));
-                testCases.add(new VersionlessTestCase(
-                    Arrays.asList(
-                        (featureName).split("\\s*,\\s*")
-                    ), 
-                    Collections.<String> emptyList(),
-                    new String[] {"jakartaee-10.0", "MicroProfile-1.0"}));
+
+
+                if(featureName.startsWith("mp")){
+                    testCases.add(new VersionlessTestCase(
+                        Arrays.asList(
+                            (featureName).split("\\s*,\\s*")
+                        ), 
+                        Collections.<String> emptyList(),
+                        new String[] {"MicroProfile-1.3"}));
+                    testCases.add(new VersionlessTestCase(
+                        Arrays.asList(
+                            (featureName).split("\\s*,\\s*")
+                        ), 
+                        Collections.<String> emptyList(),
+                        new String[] {"MicroProfile-2.2"}));
+                    testCases.add(new VersionlessTestCase(
+                        Arrays.asList(
+                            (featureName).split("\\s*,\\s*")
+                        ), 
+                        Collections.<String> emptyList(),
+                        new String[] {"MicroProfile-3.0"}));
+                    testCases.add(new VersionlessTestCase(
+                        Arrays.asList(
+                            (featureName).split("\\s*,\\s*")
+                        ), 
+                        Collections.<String> emptyList(),
+                        new String[] {"MicroProfile-3.3"}));
+                    testCases.add(new VersionlessTestCase(
+                        Arrays.asList(
+                            (featureName).split("\\s*,\\s*")
+                        ), 
+                        Collections.<String> emptyList(),
+                        new String[] {"MicroProfile-4.0"}));
+                    testCases.add(new VersionlessTestCase(
+                        Arrays.asList(
+                            (featureName).split("\\s*,\\s*")
+                        ), 
+                        Collections.<String> emptyList(),
+                        new String[] {"MicroProfile-5.0"}));
+                    testCases.add(new VersionlessTestCase(
+                        Arrays.asList(
+                            (featureName).split("\\s*,\\s*")
+                        ), 
+                        Collections.<String> emptyList(),
+                        new String[] {"MicroProfile-6.0"}));
+                }
+                else{
+                    testCases.add(new VersionlessTestCase(
+                        Arrays.asList(
+                            (featureName).split("\\s*,\\s*")
+                        ), 
+                        Collections.<String> emptyList(),
+                        new String[] {"jakartaee-7.0"}));
+                    testCases.add(new VersionlessTestCase(
+                        Arrays.asList(
+                            (featureName).split("\\s*,\\s*")
+                        ), 
+                        Collections.<String> emptyList(),
+                        new String[] {"jakartaee-8.0"}));
+                    testCases.add(new VersionlessTestCase(
+                        Arrays.asList(
+                            (featureName).split("\\s*,\\s*")
+                        ), 
+                        Collections.<String> emptyList(),
+                        new String[] {"jakartaee-9.0"}));
+                    testCases.add(new VersionlessTestCase(
+                        Arrays.asList(
+                            (featureName).split("\\s*,\\s*")
+                        ), 
+                        Collections.<String> emptyList(),
+                        new String[] {"jakartaee-10.0"}));
+                }
             }
         }
 
