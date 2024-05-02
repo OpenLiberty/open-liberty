@@ -1,11 +1,11 @@
 # Jakarta Concurrency TCK Open Liberty Implementation
 
 This project runs the Jakarta Concurrency Technology Compatibility Kit (TCK) on Open Liberty.
-Before running this project it is recommended to read the documentation located in the base [TCK project](https://github.com/jakartaee/concurrency/blob/3.0.3/tck/README.md)
+Before running this project it is recommended to read the documentation located in the base [TCK project](https://github.com/jakartaee/concurrency/blob/main/tck/README.md)
 
 ## Overview
 
-In order to aid in the development of the `concurrent-3.0` feature, this project is configured specifically to allow
+In order to aid in the development of the `concurrent-3.1` feature, this project is configured specifically to allow
 the feature developers to run the TCK against a development image of Open Liberty.
 
 ## Choose a test strategy
@@ -15,15 +15,15 @@ This project has been constructed to support two different test strategies.
 1. Running the TCK for Verification
    1. This strategy is for those who want to run the TCK to verify compatibility, but do not need to run against a development environment.
 2. Running the TCK for Developers
-   1. This strategy is for those who are familiar with the Open Liberty project and are helping to develop the `concurrent-3.0` feature.
+   1. This strategy is for those who are familiar with the Open Liberty project and are helping to develop the `concurrent-3.1` feature.
 
 Many of the assets in this project are used in different ways based on the strategy being used. 
 Therefore, each strategy below has a `Background` section to explain how the different assets interact and end up depending on the strategy.
 
 ## Requirements
 
-- [JDK 11 or higher](https://adoptopenjdk.net/?variant=openjdk11)
-- [Maven 3.6.0 or higher](https://maven.apache.org/download.cgi)
+- JDK 17 or higher
+- [Maven 3.8.0 or higher](https://maven.apache.org/download.cgi)
 
 ## Getting started
 
@@ -32,12 +32,12 @@ Therefore, each strategy below has a `Background` section to explain how the dif
 If you want to test against the latest API and TCK versions the first step will be to clone and build the Jakarta Concurrency project.
 
 ```sh
-git clone git@github.com:eclipse-ee4j/concurrency-api.git
-cd concurrency-api
+git clone git@github.com:jakartaee/concurrency.git
+cd concurrency
 mvn clean install
 ```
 
-The API and TCK libraries will be tagged with the `3.0.3` version. Keep this in mind if you plan to follow the [Running the TCK for Verification](#Running-the-TCK-for-Verification) section. 
+The API and TCK libraries will be tagged with the `3.1.0` version. Keep this in mind if you plan to follow the [Running the TCK for Verification](#Running-the-TCK-for-Verification) section. 
 
 ### Getting Open Liberty
 
@@ -86,14 +86,16 @@ Provide a WebSphere Liberty Profile (WLP) dependency that corresponds to the rel
 Then, run the `buildWLP` task
 
 ```sh
-./gradlew io.openliberty.jakarta.concurrency.3.0_fat_tck:buildWLP
+./gradlew io.openliberty.jakarta.concurrency.3.1_fat_tck:buildWLP -Djakarta.tck.platform=web
 ```
+
+To run in full mode use `-Djakarta.tck.platform=full`
 
 This will create a `wlp` directory within this project.
 Navigate to this directory and start your server:
 
 ```sh
-cd io.openliberty.jakarta.concurrency.3.0_fat_tck/wlp
+cd io.openliberty.jakarta.concurrency.3.1_fat_tck/wlp
 
 ./bin/server start ConcurrentTCKServer \
 -Denv.tck_port=9080 \
@@ -112,17 +114,19 @@ mvn clean test -B \
 -Dtck_appDeployTimeout=180 \
 -Dtck_appUndeployTimeout=60 \
 -Dtck_port=9080 \
+-Djakarta.tck.platform=web \
 -Dsun.rmi.transport.tcp.responseTimeout=60000 \
--DsuiteXmlFile=tck-suite.xml \
 -Djava.util.logging.config.file=$PWD/logging.properties
 ```
 
+To run in full mode use `-Djakarta.tck.platform=full`
+
 By default the TCK will run against a staged version of Jakarta API and TCK uploaded to sonatype.
-If you want to test against a local `3.0.3-SNAPSHOT` then set these properties on the command above: 
+If you want to test against a local `3.1.0-SNAPSHOT` then set these properties on the command above: 
 
 ```txt
 -Djakarta.concurrent.tck.groupid=jakarta.enterprise.concurrent \
--Djakarta.concurrent.tck.version=3.0.3-SNAPSHOT
+-Djakarta.concurrent.tck.version=3.1.0-SNAPSHOT
 ```
 
 Finally, remember to stop the running server
@@ -194,7 +198,7 @@ For more detailed instructions on building Open Liberty please see the [Building
 Finally, you can run the TCK using the `buildandrun` gradle task
 
 ```sh
-./gradlew io.openliberty.jakarta.concurrency.3.0_fat_tck:buildandrun
+./gradlew io.openliberty.jakarta.concurrency.3.1_fat_tck:buildandrun
 ```
 
 NOTE: Running the TCK using this method will use a published TCK version, and not the `SNAPSHOT` version from a local build. 
