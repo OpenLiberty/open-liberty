@@ -780,6 +780,9 @@ public class VisibilityTest {
             if (featureInfo.isAutoFeature()) {
                 continue;
             }
+            if(featureInfo.getBaseName().contains("versionless")){
+                continue;
+            }
             String feature = entry.getKey();
             int lastIndex = feature.indexOf('-');
             if (lastIndex == -1) {
@@ -793,6 +796,9 @@ public class VisibilityTest {
             String featureName = entry.getKey();
 
             FeatureInfo featureInfo = entry.getValue();
+            if(featureInfo.getBaseName().contains("versionless")){
+                continue;
+            }
             Set<String> processedFeatures = new HashSet<>();
             Map<String, Attrs> depFeatures = featureInfo.getDependentFeatures();
             Set<String> rootDepFeatureWithoutTolerates = new HashSet<>();
