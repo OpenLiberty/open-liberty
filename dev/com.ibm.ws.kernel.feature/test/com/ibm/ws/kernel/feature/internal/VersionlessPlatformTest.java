@@ -112,43 +112,43 @@ public class VersionlessPlatformTest {
                             (featureName).split("\\s*,\\s*")
                         ), 
                         Collections.<String> emptyList(),
-                        new String[] {"MicroProfile-1.3"}));
+                        "MicroProfile-1.3"));
                     testCases.add(new VersionlessTestCase(
                         Arrays.asList(
                             (featureName).split("\\s*,\\s*")
                         ), 
                         Collections.<String> emptyList(),
-                        new String[] {"MicroProfile-2.2"}));
+                        "MicroProfile-2.2"));
                     testCases.add(new VersionlessTestCase(
                         Arrays.asList(
                             (featureName).split("\\s*,\\s*")
                         ), 
                         Collections.<String> emptyList(),
-                        new String[] {"MicroProfile-3.0"}));
+                        "MicroProfile-3.0"));
                     testCases.add(new VersionlessTestCase(
                         Arrays.asList(
                             (featureName).split("\\s*,\\s*")
                         ), 
                         Collections.<String> emptyList(),
-                        new String[] {"MicroProfile-3.3"}));
+                        "MicroProfile-3.3"));
                     testCases.add(new VersionlessTestCase(
                         Arrays.asList(
                             (featureName).split("\\s*,\\s*")
                         ), 
                         Collections.<String> emptyList(),
-                        new String[] {"MicroProfile-4.0"}));
+                        "MicroProfile-4.0"));
                     testCases.add(new VersionlessTestCase(
                         Arrays.asList(
                             (featureName).split("\\s*,\\s*")
                         ), 
                         Collections.<String> emptyList(),
-                        new String[] {"MicroProfile-5.0"}));
+                        "MicroProfile-5.0"));
                     testCases.add(new VersionlessTestCase(
                         Arrays.asList(
                             (featureName).split("\\s*,\\s*")
                         ), 
                         Collections.<String> emptyList(),
-                        new String[] {"MicroProfile-6.0"}));
+                        "MicroProfile-6.0"));
                 }
                 else{
                     testCases.add(new VersionlessTestCase(
@@ -156,25 +156,25 @@ public class VersionlessPlatformTest {
                             (featureName).split("\\s*,\\s*")
                         ), 
                         Collections.<String> emptyList(),
-                        new String[] {"jakartaee-7.0"}));
+                        "jakartaee-7.0"));
                     testCases.add(new VersionlessTestCase(
                         Arrays.asList(
                             (featureName).split("\\s*,\\s*")
                         ), 
                         Collections.<String> emptyList(),
-                        new String[] {"jakartaee-8.0"}));
+                        "jakartaee-8.0"));
                     testCases.add(new VersionlessTestCase(
                         Arrays.asList(
                             (featureName).split("\\s*,\\s*")
                         ), 
                         Collections.<String> emptyList(),
-                        new String[] {"jakartaee-9.0"}));
+                        "jakartaee-9.0"));
                     testCases.add(new VersionlessTestCase(
                         Arrays.asList(
                             (featureName).split("\\s*,\\s*")
                         ), 
                         Collections.<String> emptyList(),
-                        new String[] {"jakartaee-10.0"}));
+                        "jakartaee-10.0"));
                 }
             }
         }
@@ -260,7 +260,7 @@ public class VersionlessPlatformTest {
 
     @Test
     public void testVersionlessFeatureResolve() {
-        System.out.println("TestCase: " + this.testCase.getFeatureInputs() + " - " + Arrays.toString(this.testCase.getPlatforms()) + ": ");
+        System.out.println("TestCase: " + this.testCase.getFeatureInputs() + " - " + this.testCase.getPlatforms() + ": ");
         if(this.testCase.getPlatforms() != null){
             resolver.setPreferredPlatforms(this.testCase.getPlatforms());
         }

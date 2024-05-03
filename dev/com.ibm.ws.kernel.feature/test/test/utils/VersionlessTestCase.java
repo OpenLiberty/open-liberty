@@ -22,7 +22,7 @@ public class VersionlessTestCase {
 
     private List<String> featureInputs = new ArrayList<String>();
     private List<String> featureOutputs = new ArrayList<String>();
-    private String[] platforms;
+    private String platforms;
 
 
     public VersionlessTestCase(List<String> featureInputs, List<String> featureOutputs){
@@ -31,7 +31,7 @@ public class VersionlessTestCase {
         platforms = null;
     }
 
-    public VersionlessTestCase(List<String> featureInputs, List<String> featureOutputs, String[] platforms){
+    public VersionlessTestCase(List<String> featureInputs, List<String> featureOutputs, String platforms){
         this.featureInputs = featureInputs;
         this.featureOutputs = featureOutputs;
         this.platforms = platforms;
@@ -45,7 +45,7 @@ public class VersionlessTestCase {
         return featureOutputs;
     }
 
-    public String[] getPlatforms(){
+    public String getPlatforms(){
         return platforms;
     }
 }
