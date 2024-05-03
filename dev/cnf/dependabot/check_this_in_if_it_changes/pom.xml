@@ -3139,7 +3139,7 @@
     <dependency>
       <groupId>org.eclipse.microprofile.reactive.messaging</groupId>
       <artifactId>microprofile-reactive-messaging-api</artifactId>
-      <version>3.0</version>
+      <version>3.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile.rest.client</groupId>
