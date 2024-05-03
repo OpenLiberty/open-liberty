@@ -121,7 +121,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder {
     public DBStoreEMBuilder(String dataStore, boolean isConfigDisplayId, boolean isJNDIName,
                             AnnotatedType<?> type, ClassLoader repositoryClassLoader,
                             DataExtensionProvider provider) {
-        super(repositoryClassLoader);
+        super(provider, repositoryClassLoader);
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         ComponentMetaData cData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();

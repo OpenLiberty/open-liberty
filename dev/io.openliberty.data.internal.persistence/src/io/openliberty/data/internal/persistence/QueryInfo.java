@@ -19,6 +19,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -399,6 +400,121 @@ public class QueryInfo {
     }
 
     /**
+     * Generates the SELECT clause of the JPQL.
+     *
+     * @return the SELECT clause.
+     */
+    StringBuilder generateSelectClause() {
+        StringBuilder q = new StringBuilder(200);
+        String o = entityVar;
+        String o_ = entityVar_;
+
+        String[] cols, selections = entityInfo.builder.provider.compat.getSelections(method);
+        if (selections == null || selections.length == 0) {
+            cols = null;
+        } else if (type == QueryInfo.Type.FIND_AND_DELETE) {
+            // TODO NLS message for error path once selections are supported function
+            throw new UnsupportedOperationException();
+        } else {
+            cols = new String[selections.length];
+            for (int i = 0; i < cols.length; i++) {
+                String name = entityInfo.getAttributeName(selections[i], true);
+                cols[i] = name == null ? selections[i] : name;
+            }
+        }
+
+        Class<?> singleType = getSingleResultType();
+
+        if (singleType.isPrimitive())
+            singleType = QueryInfo.wrapperClassIfPrimitive(singleType);
+
+        q.append("SELECT ");
+
+        if (cols == null || cols.length == 0) {
+            if (singleType.isAssignableFrom(entityInfo.entityClass)
+                || entityInfo.inheritance && entityInfo.entityClass.isAssignableFrom(singleType)) {
+                // Whole entity
+                q.append(o);
+            } else {
+                // Look for single entity attribute with the desired type:
+                String singleAttributeName = null;
+                for (Map.Entry<String, Class<?>> entry : entityInfo.attributeTypes.entrySet()) {
+                    Class<?> collectionElementType = entityInfo.collectionElementTypes.get(entry.getKey());
+                    Class<?> attributeType = collectionElementType == null ? entry.getValue() : collectionElementType;
+                    if (attributeType.isPrimitive())
+                        attributeType = QueryInfo.wrapperClassIfPrimitive(attributeType);
+                    if (singleType.isAssignableFrom(attributeType)) {
+                        singleAttributeName = entry.getKey();
+                        q.append(o_).append(singleAttributeName);
+                        break;
+                    }
+                }
+
+                if (singleAttributeName == null) {
+                    // Construct new instance from IdClass, embeddable, or entity attributes.
+                    // It would be preferable if the spec included the Select annotation to explicitly identify parameters, but if that doesn't happen
+                    // TODO we could compare attribute types with known constructor to improve on guessing a correct order of parameters
+                    q.append("NEW ").append(singleType.getName()).append('(');
+                    List<String> relAttrNames;
+                    boolean first = true;
+                    if (entityInfo.idClassAttributeAccessors != null && singleType.equals(entityInfo.idType))
+                        for (String idClassAttributeName : entityInfo.idClassAttributeAccessors.keySet()) {
+                            String name = entityInfo.getAttributeName(idClassAttributeName, true);
+                            q.append(first ? "" : ", ").append(o).append('.').append(name);
+                            first = false;
+                        }
+                    else if ((relAttrNames = entityInfo.relationAttributeNames.get(singleType)) != null)
+                        for (String name : relAttrNames) {
+                            q.append(first ? "" : ", ").append(o).append('.').append(name);
+                            first = false;
+                        }
+                    else if (entityInfo.recordClass == null)
+                        for (String name : entityInfo.attributeTypes.keySet()) {
+                            q.append(first ? "" : ", ").append(o).append('.').append(name);
+                            first = false;
+                        }
+                    else {
+                        for (RecordComponent component : entityInfo.recordClass.getRecordComponents()) {
+                            String name = component.getName();
+                            q.append(first ? "" : ", ").append(o).append('.').append(name);
+                            first = false;
+                        }
+                    }
+                    q.append(')');
+                }
+            }
+        } else { // Individual columns are requested by @Select
+            Class<?> entityType = entityInfo.getType();
+            boolean selectAsColumns = singleType.isAssignableFrom(entityType)
+                                      || singleType.isInterface() // NEW instance doesn't apply to interfaces
+                                      || singleType.isPrimitive() // NEW instance should not be used on primitives
+                                      || singleType.getName().startsWith("java") // NEW instance constructor is unlikely for non-user-defined classes
+                                      || entityInfo.inheritance && entityType.isAssignableFrom(singleType);
+            if (!selectAsColumns && cols.length == 1) {
+                String singleAttributeName = cols[0];
+                Class<?> attributeType = entityInfo.collectionElementTypes.get(singleAttributeName);
+                if (attributeType == null)
+                    attributeType = entityInfo.attributeTypes.get(singleAttributeName);
+                selectAsColumns = attributeType != null && (Object.class.equals(attributeType) // JPA metamodel does not preserve the type if not an EmbeddableCollection
+                                                            || singleType.isAssignableFrom(attributeType));
+            }
+            if (selectAsColumns) {
+                // Specify columns without creating new instance
+                for (int i = 0; i < cols.length; i++)
+                    q.append(i == 0 ? "" : ", ").append(o).append('.').append(cols[i]);
+            } else {
+                // Construct new instance from defined columns
+                q.append("NEW ").append(singleType.getName()).append('(');
+                for (int i = 0; i < cols.length; i++)
+                    q.append(i == 0 ? "" : ", ").append(o).append('.').append(cols[i]);
+                q.append(')');
+            }
+        }
+
+        return q;
+    }
+
+    /**
      * Locate the entity information for the specified result class.
      *
      * @param entityType              single result type of a repository method, which is hopefully an entity class.
@@ -417,7 +533,7 @@ public class QueryInfo {
                     failedFuture = future;
                 } else {
                     EntityInfo info = future.join();
-                    if (entityType.equals(info.entityClass))
+                    if (entityType.equals(info.entityClass) || entityType.equals(info.recordClass))
                         return info;
                 }
             if (failedFuture != null)
@@ -930,17 +1046,16 @@ public class QueryInfo {
                 whereLen += 2 + (addSpace ? 1 : 0);
             }
 
-            StringBuilder q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
-            q.append("SELECT");
+            StringBuilder q;
             if (selectLen > 0) {
+                q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
+                q.append("SELECT");
                 appendWithIdentifierName(ql, select0, select0 + selectLen, q);
-                if (fromLen == 0 && whereLen == 0 && orderLen == 0)
-                    q.append(' ');
             } else {
-                q.append(' ').append(entityVar).append(' ');
+                q = generateSelectClause();
             }
 
-            q.append("FROM");
+            q.append(" FROM");
             if (fromLen > 0 && !lacksEntityVar)
                 q.append(ql.substring(from0, from0 + fromLen));
             else

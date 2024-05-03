@@ -204,7 +204,7 @@ public class DataExtension implements Extension {
                                     EntityManagerFactory emf = instance.get();
 
                                     if (emBuilder == null)
-                                        emBuilder = new PUnitEMBuilder(emf, loader);
+                                        emBuilder = new PUnitEMBuilder(emf, loader, provider);
                                     else
                                         throw new UnsupportedOperationException//
                                         ("The " + method.getName() + " resource accessor method of the " +
@@ -225,7 +225,7 @@ public class DataExtension implements Extension {
                     try {
                         Object resource = InitialContext.doLookup(dataStore);
                         if (resource instanceof EntityManagerFactory)
-                            emBuilder = new PUnitEMBuilder((EntityManagerFactory) resource, dataStore, loader);
+                            emBuilder = new PUnitEMBuilder((EntityManagerFactory) resource, dataStore, loader, provider);
 
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, dataStore + " is the JNDI name for " + resource);
@@ -238,7 +238,7 @@ public class DataExtension implements Extension {
                         Object resource = InitialContext.doLookup(javaCompName);
 
                         if (resource instanceof EntityManagerFactory)
-                            emBuilder = new PUnitEMBuilder((EntityManagerFactory) resource, javaCompName, loader);
+                            emBuilder = new PUnitEMBuilder((EntityManagerFactory) resource, javaCompName, loader, provider);
 
                         if (emBuilder != null || resource instanceof DataSource) {
                             isJNDIName = true;
