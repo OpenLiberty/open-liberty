@@ -112,7 +112,7 @@ public class FeatureDefinitionUtils {
         final String featureName;
         final String symbolicName;
         final String shortName;
-        public final Collection<String> alternateNames;
+        final Collection<String> alternateNames;
         final int featureVersion;
         final Visibility visibility;
         final AppForceRestart appRestart;

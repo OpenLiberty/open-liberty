@@ -680,7 +680,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
 
             // populate mapping from known, commonly used alternative names to allow hints when the wrong feature
             // name is specified in a server config.
-            for (String s : def.getImmutableAttributes().alternateNames) {
+            for (String s : cachedAttr.alternateNames) {
                 alternateFeatureNameToPublicName.put(s, cachedAttr.featureName);
             }
 
