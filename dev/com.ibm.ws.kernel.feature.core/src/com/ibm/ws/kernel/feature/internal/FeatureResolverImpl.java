@@ -99,31 +99,35 @@ public class FeatureResolverImpl implements FeatureResolver {
     }
     
     //mimics how the platform elements will work using the env var
-    private Collection<String> computePrefferedPlatform(Repository repo){
-        if(parsedPreferedPlatforms == null){
-            return null;
-        }
-
-        Collection<String> rootPlatforms = new ArrayList<String>();
-        for(String plat : parsedPreferedPlatforms){
-            if(plat.startsWith("jakartaee") || plat.startsWith("javaee")){
-                String version = "com.ibm.websphere.appserver.eeCompatible-" + plat.split("-")[1].trim();
-                if(repo.getFeature(version) != null){
-                    rootPlatforms.add(version);
+    private Set<String> computePrefferedPlatform(Repository repo, Set<String> rootPlatforms){
+        Set<String> processedPlatforms = new HashSet<String>();
+        for(String plat : rootPlatforms){
+            if(plat.indexOf("-") != -1){
+                if(plat.startsWith("jakartaee") || plat.startsWith("javaee")){
+                    String version = "com.ibm.websphere.appserver.eeCompatible-" + plat.split("-")[1].trim();
+                    if(repo.getFeature(version) != null){
+                        processedPlatforms.add(version);
+                    }
+                }
+                else if(plat.startsWith("MicroProfile")){
+                    String version = "io.openliberty.internal.versionlessMP-" + plat.split("-")[1].trim();
+                    if(repo.getFeature(version) != null){
+                        processedPlatforms.add(version);
+                    }
+                }
+                else{
+                    //error
                 }
             }
-            else if(plat.startsWith("MicroProfile")){
-                String version = "io.openliberty.internal.versionlessMP-" + plat.split("-")[1].trim();
-                if(repo.getFeature(version) != null){
-                    rootPlatforms.add(version);
-                }
+            else{
+                //error
             }
         }
-        return rootPlatforms;
+        return processedPlatforms;
     }
 
-    //how the env var will work
-    private Collection<String> computePrefferedPlatformVariable(Repository repo){
+    //process the environment variable for platforms
+    private Set<String> computePrefferedPlatformVariable(Repository repo){
         if(parsedPreferedPlatforms == null){
             return null;
         }
@@ -131,15 +135,28 @@ public class FeatureResolverImpl implements FeatureResolver {
         List<String> eeCompatible = new ArrayList<String>();
         List<String> mpCompatible = new ArrayList<String>();
 
-        Collection<String> rootPlatforms = new ArrayList<String>();
+        Set<String> envVarPlatforms = new HashSet<String>();
         for(String plat : parsedPreferedPlatforms){
             if(plat.startsWith("jakartaee") || plat.startsWith("javaee")){
-                String version = plat.split("-")[1].trim();
-                eeCompatible.add(version);
+                if(plat.indexOf("-") != -1){
+                    String version = plat.split("-")[1].trim();
+                    eeCompatible.add(version);
+                }
+                else{
+                    //error
+                }
             }
             else if(plat.startsWith("MicroProfile")){
-                String version = plat.split("-")[1].trim();
-                mpCompatible.add(version);
+                if(plat.indexOf("-") != -1){
+                    String version = plat.split("-")[1].trim();
+                    mpCompatible.add(version);
+                }
+                else{
+                    //error
+                }
+            }
+            else{
+                //eror
             }
         }
 
@@ -151,7 +168,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 tolerates.clear();
                 tolerates.addAll(eeCompatible);
             }
-            rootPlatforms.add("io.openliberty.internal.versionless.eeCompatible");
+            envVarPlatforms.add("io.openliberty.internal.versionless.eeCompatible");
         }
 
         if(!!!mpCompatible.isEmpty()){
@@ -162,10 +179,10 @@ public class FeatureResolverImpl implements FeatureResolver {
                 tolerates.clear();
                 tolerates.addAll(mpCompatible);
             }
-            rootPlatforms.add("io.openliberty.internal.versionless.mpCompatible");
+            envVarPlatforms.add("io.openliberty.internal.versionless.mpCompatible");
         }
 
-        return rootPlatforms;
+        return envVarPlatforms;
     }
 
     public void setPreferredPlatforms(String[] plats){
@@ -317,16 +334,20 @@ public class FeatureResolverImpl implements FeatureResolver {
     @Override
     public Result resolve(Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures, Set<String> preResolved,
                           Set<String> allowedMultipleVersions,
-                          EnumSet<ProcessType> supportedProcessTypes, Set<String> newConfiguredPlatforms) {
+                          EnumSet<ProcessType> supportedProcessTypes, Set<String> rootPlatforms) {
 
 
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
         //Implementation for platform element
-        Collection<String> rootPlatforms;
         if(isBeta){
-            rootPlatforms = computePrefferedPlatform(repository);
-            rootPlatforms = computePrefferedPlatformVariable(repository);
+            //validate the specified platforms in the server.xml
+            rootPlatforms = computePrefferedPlatform(repository, rootPlatforms);
+            //environment variable processing, replacing the existing rootplatforms if it exists
+            Set<String> temp = computePrefferedPlatformVariable(repository);
+            if(temp != null && !temp.isEmpty()){
+                rootPlatforms = temp;
+            }
         }
 
         // this checks if the pre-resolved exists in the repo;
@@ -481,7 +502,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             selectionContext.processPostponed();
             numBlocked = selectionContext.getBlockedCount();
             result = processRoots(rootFeatures, preResolved, selectionContext);
-        } while (selectionContext.hasPostponed() || numBlocked != selectionContext.getBlockedCount() || selectionContext.tryVersionlessResolution());
+        } while (selectionContext.hasPostponed() || numBlocked != selectionContext.getBlockedCount() || selectionContext.hasTriedVersionlessResolution());
         // Save the result in the current permutation
         selectionContext._current._result.setResolvedFeatures(result);
         selectionContext.checkForBestSolution();
@@ -931,8 +952,8 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         void processCandidates(Collection<String> chain, List<String> candidateNames, String symbolicName, String baseSymbolicName, String preferredVersion, boolean isSingleton) {
             if  (baseSymbolicName.startsWith("io.openliberty.internal.versionless.")){
-                if  ((baseSymbolicName.substring(36, 38).equals("mp") && getSelected("io.openliberty.mpCompatible") == null && getSelected("io.openliberty.internal.versionlessMP") == null) || 
-                    (!baseSymbolicName.substring(36, 38).equals("mp") && getSelected("com.ibm.websphere.appserver.eeCompatible") == null)){
+                if  ((baseSymbolicName.substring(36, 38).equals("mp") && getSelected("io.openliberty.internal.versionlessMP") == null) || //mp versionless features need versionlessMP to resolve
+                    (!baseSymbolicName.substring(36, 38).equals("mp") && getSelected("com.ibm.websphere.appserver.eeCompatible") == null)){ //ee versionless features need eeCompatible to resolve
 
                     addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
                     return;
@@ -1017,7 +1038,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         // Versionless features require eeCompatible to be resolved. In rare cases, eeCompatible will be resolved after
         // all versionles features have been postponed, and nothing else is postponed except for versionless features.
         // In that case we need to run the resolve loop one more time in order to not skip versionless features.
-        boolean tryVersionlessResolution(){
+        boolean hasTriedVersionlessResolution(){
             if(!triedVersionless){
                 triedVersionless = true;
                 return !!!_current._postponedVersionless.isEmpty();
@@ -1041,10 +1062,11 @@ public class FeatureResolverImpl implements FeatureResolver {
                 if(!!!_current._postponedVersionless.isEmpty() && (getSelected("io.openliberty.mpCompatible") != null || getSelected("io.openliberty.internal.versionlessMP") != null ||  getSelected("com.ibm.websphere.appserver.eeCompatible") != null)){
 
                     Set<String> entries = _current._postponedVersionless.keySet();
-                    
                     Iterator<Map.Entry<String, Chains>> postponedVersionlessIterator = _current._postponedVersionless.entrySet().iterator();
-                    
                     Map.Entry<String, Chains> firstPostponedVersionless = null;
+
+                    //Check if we have any postponed versionless features that can be resolved,
+                    //If we do, choose the first one we see
                     while(postponedVersionlessIterator.hasNext()){
                         firstPostponedVersionless = postponedVersionlessIterator.next();
                         if(firstPostponedVersionless.getKey().substring(36, 38).equals("mp")){
