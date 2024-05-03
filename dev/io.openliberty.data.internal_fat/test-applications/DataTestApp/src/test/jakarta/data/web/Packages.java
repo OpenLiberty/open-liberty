@@ -95,7 +95,7 @@ public interface Packages extends BasicRepository<Package, Integer> {
     List<Package> take(@By("description") String desc);
 
     @Delete
-    @OrderBy("id")
+    @OrderBy("width")
     List<Package> takeOrdered(String description);
 
     boolean updateByIdAddHeightMultiplyLengthDivideWidth(int id, float heightToAdd, float lengthMultiplier, float widthDivisor);

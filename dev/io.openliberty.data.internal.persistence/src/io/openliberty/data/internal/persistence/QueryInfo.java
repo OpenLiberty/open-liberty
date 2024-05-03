@@ -1206,13 +1206,15 @@ public class QueryInfo {
                   (update == null ? 0 : 1) +
                   (save == null ? 0 : 1);
 
-        int iusdce = ius +
-                     (delete == null ? 0 : 1) +
-                     (count == null ? 0 : 1) +
-                     (exists == null ? 0 : 1);
+        int iusce = ius +
+                    (count == null ? 0 : 1) +
+                    (exists == null ? 0 : 1);
+
+        int iusdce = iusce +
+                     (delete == null ? 0 : 1);
 
         if (iusdce + f > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists, Find)
-            || iusdce + o > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists, OrderBy)
+            || iusce + o > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists, OrderBy)
             || iusdce + q > 1) { // one of (Insert, Update, Save, Delete, Count, Exists) with Query
 
             // Invalid combination of multiple annotations
