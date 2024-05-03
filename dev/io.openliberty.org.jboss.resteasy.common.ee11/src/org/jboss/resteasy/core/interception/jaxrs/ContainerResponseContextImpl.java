@@ -33,6 +33,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 //Liberty change end
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import jakarta.ws.rs.container.ContainerResponseFilter;
 import jakarta.ws.rs.core.EntityTag;
@@ -55,6 +56,7 @@ import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.ResteasyAsynchronousResponse;
 import org.jboss.resteasy.tracing.RESTEasyTracingLogger;
+import org.jboss.resteasy.util.HeaderHelper;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -279,6 +281,17 @@ public class ContainerResponseContextImpl implements SuspendableContainerRespons
     @Override
     public String getHeaderString(String name) {
         return jaxrsResponse.getHeaderString(name);
+    }
+	
+    @Override
+    public boolean containsHeaderString(final String name, final Predicate<String> valuePredicate) {
+        return containsHeaderString(name, ",", valuePredicate);
+    }
+
+    @Override
+    public boolean containsHeaderString(final String name, final String valueSeparatorRegex,
+            final Predicate<String> valuePredicate) {
+        return HeaderHelper.containsHeaderString(getHeaderString(name), valueSeparatorRegex, valuePredicate);
     }
 
     @Override

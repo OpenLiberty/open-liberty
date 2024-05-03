@@ -29,6 +29,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Predicate;
 // Liberty change start
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -220,6 +221,17 @@ public class PreMatchContainerRequestContext implements SuspendableContainerRequ
     @Override
     public String getHeaderString(String name) {
         return httpRequest.getHttpHeaders().getHeaderString(name);
+    }
+
+    @Override
+    public boolean containsHeaderString(final String name, final Predicate<String> valuePredicate) {
+        return httpRequest.getHttpHeaders().containsHeaderString(name, valuePredicate);
+    }
+
+    @Override
+    public boolean containsHeaderString(final String name, final String valueSeparatorRegex,
+            final Predicate<String> valuePredicate) {
+        return httpRequest.getHttpHeaders().containsHeaderString(name, valueSeparatorRegex, valuePredicate);
     }
 
     @Override

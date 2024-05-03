@@ -131,6 +131,7 @@ public class DefaultConfiguration implements Configuration {
 
     private static class Resolver implements Function<String, String> {
         private final ResteasyConfiguration config;
+        private final ThreadLocal<Boolean> entered = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
         private Resolver(final ResteasyConfiguration config) {
             this.config = config;
@@ -138,32 +139,43 @@ public class DefaultConfiguration implements Configuration {
 
         @Override
         public String apply(final String name) {
-            //Liberty change start
-            String value = config == null ? null : config.getInitParameter(name);
-            if (value == null) {
-                if (System.getSecurityManager() == null) {
-                    value = System.getProperty(name);
-                    if (value == null) {
-                        value = System.getenv(name);
-                        if (value == null && config != null) {
-                            value = config.getInitParameter(name);
-                        }
-                    }
-                    return value;
-                }
-                return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
-                    String value2 = System.getProperty(name);
-                    if (value2 == null) {
-                        value2 = System.getenv(name);
-                        if (value2 == null && config != null) {
-                            value2 = config.getInitParameter(name);
-                        }
-                    }
-                    return value2;
-                });
+		    // Check for recursion, if we're back here assume null
+            if (entered.get()) {
+                return null;
             }
-            return value;
+            try{
+                entered.set(Boolean.TRUE);
+
+                //Liberty change start
+                String value = config == null ? null : config.getInitParameter(name);
+                if (value == null) {
+                    if (System.getSecurityManager() == null) {
+                        value = System.getProperty(name);
+                        if (value == null) {
+                            value = System.getenv(name);
+                            if (value == null && config != null) {
+                                value = config.getInitParameter(name);
+                            }
+                        }
+                        return value;
+                    }
+                    return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
+                        String value2 = System.getProperty(name);
+                        if (value2 == null) {
+                            value2 = System.getenv(name);
+                            if (value2 == null && config != null) {
+                                value2 = config.getInitParameter(name);
+                            }
+                        }
+                        return value2;
+                    });
+                }
+                //Liberty change end
+
+                return value;
+            } finally {
+                entered.remove();
+            }
         }
-        //Liberty change end
     }
 }

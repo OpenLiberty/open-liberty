@@ -45,8 +45,8 @@ Import-Package: \
   org.jboss.resteasy.api.validation, \
   jakarta.enterprise.context;version=!,\
   jakarta.persistence,\
-  jakarta.ws.rs.core;version="[3.1,5)",\
-  jakarta.ws.rs.ext;version="[3.1,5)",\
+  jakarta.ws.rs.core;version="[3.1,4)",\
+  jakarta.ws.rs.ext;version="[3.1,4)",\
   *
 
 instrument.ffdc: false

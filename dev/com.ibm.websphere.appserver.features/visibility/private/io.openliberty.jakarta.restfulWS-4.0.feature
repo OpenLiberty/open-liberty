@@ -10,7 +10,7 @@ Subsystem-Name: Jakarta RESTful Web Services 4.0
 -features=com.ibm.websphere.appserver.eeCompatible-11.0, \
   io.openliberty.noShip-1.0
 -bundles=\
-  io.openliberty.jakarta.restfulWS.4.0;location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.ws.rs:jakarta.ws.rs-api:3.1.0"
+  io.openliberty.jakarta.restfulWS.4.0;location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.ws.rs:jakarta.ws.rs-api:4.0.0"
 kind=noship
 edition=full
 WLP-Activation-Type: parallel

@@ -21,7 +21,7 @@ javac.target: 17
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
-resteasy-version=6.2.8.Final
+resteasy-version=7.0.0.Alpha1
 
 src: src
 
@@ -45,8 +45,8 @@ Import-Package: \
   org.jboss.resteasy.api.validation, \
   jakarta.enterprise.context;version=!,\
   jakarta.persistence,\
-  jakarta.ws.rs.core;version="[3.1,5)",\
-  jakarta.ws.rs.ext;version="[3.1,5)",\
+  jakarta.ws.rs.core;version="[4.0,5)",\
+  jakarta.ws.rs.ext;version="[4.0,5)",\
   *
 
 instrument.ffdc: false
@@ -58,9 +58,9 @@ org/jboss/resteasy=${bin}/org/jboss/resteasy
 -buildpath: \
   org.jboss.resteasy:resteasy-validator-provider;strategy=exact;version='${resteasy-version}',\
   io.openliberty.org.jboss.logging35,\
-  io.openliberty.org.jboss.resteasy.common.ee10,\
-  io.openliberty.org.jboss.resteasy.cdi.ee10,\
+  io.openliberty.org.jboss.resteasy.common.ee11,\
+  io.openliberty.org.jboss.resteasy.cdi.ee11,\
   com.ibm.ws.com.fasterxml.classmate;version=latest,\
-  io.openliberty.jakarta.cdi.4.0,\
-  io.openliberty.jakarta.validation.3.0;version=latest,\
-  io.openliberty.jakarta.restfulWS.3.1
+  io.openliberty.jakarta.cdi.4.1,\
+  io.openliberty.jakarta.validation.3.1;version=latest,\
+  io.openliberty.jakarta.restfulWS.4.0
