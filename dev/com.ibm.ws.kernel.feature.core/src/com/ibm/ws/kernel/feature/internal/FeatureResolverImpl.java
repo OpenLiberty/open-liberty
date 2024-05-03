@@ -100,6 +100,9 @@ public class FeatureResolverImpl implements FeatureResolver {
     
     //mimics how the platform elements will work using the env var
     private Set<String> computePrefferedPlatform(Repository repo, Set<String> rootPlatforms){
+        if(rootPlatforms == null){
+            return null;
+        }
         Set<String> processedPlatforms = new HashSet<String>();
         for(String plat : rootPlatforms){
             if(plat.indexOf("-") != -1){
@@ -116,11 +119,11 @@ public class FeatureResolverImpl implements FeatureResolver {
                     }
                 }
                 else{
-                    //error
+                    trace("Platform needs to be jakartaee, javaee, or MicroProfile, not " + plat);
                 }
             }
             else{
-                //error
+                trace("Platform needs to have a version, ex. javaee-7.0, not " + plat);
             }
         }
         return processedPlatforms;
@@ -128,35 +131,37 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     //process the environment variable for platforms
     private Set<String> computePrefferedPlatformVariable(Repository repo){
-        if(parsedPreferedPlatforms == null){
+        if(preferredPlatformVersions == null){
             return null;
         }
+        parsedPreferedPlatforms = preferredPlatformVersions.split(",");
 
         List<String> eeCompatible = new ArrayList<String>();
         List<String> mpCompatible = new ArrayList<String>();
 
         Set<String> envVarPlatforms = new HashSet<String>();
         for(String plat : parsedPreferedPlatforms){
+            plat = plat.trim();
             if(plat.startsWith("jakartaee") || plat.startsWith("javaee")){
                 if(plat.indexOf("-") != -1){
-                    String version = plat.split("-")[1].trim();
+                    String version = plat.split("-")[1];
                     eeCompatible.add(version);
                 }
                 else{
-                    //error
+                    trace("Platform environment variable entry " + plat + " needs to contain a version");
                 }
             }
             else if(plat.startsWith("MicroProfile")){
                 if(plat.indexOf("-") != -1){
-                    String version = plat.split("-")[1].trim();
+                    String version = plat.split("-")[1];
                     mpCompatible.add(version);
                 }
                 else{
-                    //error
+                    trace("Platform environment variable entry " + plat + " needs to contain a version");
                 }
             }
             else{
-                //eror
+                trace("Platform needs to be jakartaee, javaee, or MicroProfile, not " + plat);
             }
         }
 
@@ -185,8 +190,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         return envVarPlatforms;
     }
 
-    public void setPreferredPlatforms(String[] plats){
-        parsedPreferedPlatforms = plats;
+    public void setPreferredPlatforms(String plats){
+        preferredPlatformVersions = plats;
     }
 
     //////// BEGIN - deprecated resolveFeatures() methods without platforms
