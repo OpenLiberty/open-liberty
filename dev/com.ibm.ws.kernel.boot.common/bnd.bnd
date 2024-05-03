@@ -24,4 +24,5 @@ instrument.disabled: true
 publish.wlp.jar.disabled: true
 
 -buildpath: \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.com.ibm.oti.shared;version=latest
