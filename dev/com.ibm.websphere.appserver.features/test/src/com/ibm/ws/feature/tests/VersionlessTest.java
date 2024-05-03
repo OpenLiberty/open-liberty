@@ -33,7 +33,7 @@ import com.ibm.ws.feature.utils.VersionlessFeatureDefinition;
 import com.ibm.ws.feature.utils.VersionlessFeatureCreator;
 
 
-
+//Generating reports on EE and MP features as well as creating versionless features
 public class VersionlessTest {
 
     private static Map<String, FeatureInfo> featureRepo = null;
@@ -49,6 +49,10 @@ public class VersionlessTest {
         cohorts = computeCohorts();
     }
 
+    /**
+     * features and a list of their versions
+     * @return
+     */
     private static Map<String, List<String>> computeCohorts() {
         Map<String, List<String>> useCohorts = new LinkedHashMap<>();
 
@@ -77,6 +81,9 @@ public class VersionlessTest {
     }
 
 
+    /**
+     * List all features and their versions
+     */
     @Test
     public void listCohorts() {
 
@@ -90,6 +97,9 @@ public class VersionlessTest {
         }
     }
 
+    /**
+     * List all EE and MP platforms and their versions
+     */
     @Test
     public void listSelectorCohorts() {
 
@@ -102,6 +112,9 @@ public class VersionlessTest {
         });
     }
 
+    /**
+     * Generate report of all EE features and their platforms
+     */
     @Test
     public void listEECohorts(){
         System.out.println("EE Cohorts!!");
@@ -114,6 +127,7 @@ public class VersionlessTest {
                     allCohortsSet.addAll(cohort);
                     System.out.println("    [ " + featureBaseName + " ] [ " + cohort + " ]");
 
+                    //loop over each version of a platform to get data on its features
                     for (String version : cohort) {
                         String featureName = featureBaseName + "-" + version;
                         FeatureInfo featureInfo = getFeature(featureName);
@@ -169,6 +183,9 @@ public class VersionlessTest {
 
     }
 
+    /**
+     * Generate report on all MP features and its platforms
+     */
     @Test
     public void listMicroProfileCohorts(){
         System.out.println("MP Cohorts!!");
@@ -234,6 +251,12 @@ public class VersionlessTest {
         }
     }
 
+    /**
+     * Generate versionless features
+     * 1. Create a map of each feature (ex. servlet) and data on each of its versions
+     * 2. Validate the features using the VersionlessFeatureCreator
+     * 3. Create the features that need updating/creating in the build folder
+     */
     @Test
     public void listSelectorDetails() {
         Map<String, VersionlessFeatureDefinition> versionlessFeatures = new HashMap<String, VersionlessFeatureDefinition>();
@@ -245,6 +268,7 @@ public class VersionlessTest {
                 List<String> cohort = cohorts.get(featureBaseName);
                 System.out.println("    [ " + featureBaseName + " ] [ " + cohort + " ]");
 
+                //loops through each version of a platform
                 for (String version : cohort) {
                     String featureName = featureBaseName + "-" + version;
                     FeatureInfo featureInfo = getFeature(featureName);
@@ -255,6 +279,7 @@ public class VersionlessTest {
                         System.out.println("      [ " + featureInfo.getName() + " ]");
                     }
 
+                    //each feature dependency of the platform
                     featureInfo.forEachSortedDepName((String depName) -> {
                         FeatureInfo depInfo = getFeature(depName);
                         if (depInfo == null) {
@@ -265,8 +290,10 @@ public class VersionlessTest {
                             if (depInfo.isAlsoKnownAsSet()){
                                 System.out.println("            [ AKA: " + depInfo.getAlsoKnownAs() + " ]");
                             }
+                            //
                             if(!!!depInfo.getKind().equals("noship")){
                                 String featureTitle = depInfo.getShortName().split("-")[0]; //Just the name not the version
+                                //add features to our map and add data on its platform-version link
                                 if(versionlessFeatures.containsKey(featureTitle)){
                                     versionlessFeatures.get(featureTitle).addFeaturePlatform(new String[] { depInfo.getShortName(), baseName.replace("javaee", "jakartaee") + "-" + version, depInfo.getName()});
                                 }
@@ -274,6 +301,7 @@ public class VersionlessTest {
                                     versionlessFeatures.put(featureTitle, new VersionlessFeatureDefinition(featureTitle, featureTitle, new String[] { depInfo.getShortName(), baseName.replace("javaee", "jakartaee") + "-" + version, depInfo.getName()}));
                                 }
 
+                                //Keep track of features with updated names via the alsoknownas metadata
                                 if(depInfo.isAlsoKnownAsSet()){
                                     String aka = depInfo.getAlsoKnownAs().split("-")[0];
                                     if(!aka.equals(featureTitle)){

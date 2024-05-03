@@ -425,7 +425,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             selectionContext.processPostponed();
             numBlocked = selectionContext.getBlockedCount();
             result = processRoots(rootFeatures, preResolved, selectionContext);
-        } while (selectionContext.hasPostponed() || numBlocked != selectionContext.getBlockedCount() || selectionContext.tryVersionlessResolution());
+        } while (selectionContext.hasPostponed() || numBlocked != selectionContext.getBlockedCount() || selectionContext.hasTriedVersionlessResolution());
         // Save the result in the current permutation
         selectionContext._current._result.setResolvedFeatures(result);
         selectionContext.checkForBestSolution();
@@ -870,8 +870,8 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         void processCandidates(Collection<String> chain, List<String> candidateNames, String symbolicName, String baseSymbolicName, String preferredVersion, boolean isSingleton) {
             if  (baseSymbolicName.startsWith("io.openliberty.internal.versionless.")){
-                if  ((baseSymbolicName.substring(36, 38).equals("mp") && getSelected("io.openliberty.mpCompatible") == null && getSelected("io.openliberty.internal.versionlessMP") == null) || 
-                    (!baseSymbolicName.substring(36, 38).equals("mp") && getSelected("com.ibm.websphere.appserver.eeCompatible") == null)){
+                if  ((baseSymbolicName.substring(36, 38).equals("mp") && getSelected("io.openliberty.internal.versionlessMP") == null) || //mp versionless features need versionlessMP to resolve
+                    (!baseSymbolicName.substring(36, 38).equals("mp") && getSelected("com.ibm.websphere.appserver.eeCompatible") == null)){ //ee versionless features need eeCompatible to resolve
 
                     addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
                     return;
@@ -957,7 +957,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         // Versionless features require eeCompatible to be resolved. In rare cases, eeCompatible will be resolved after
         // all versionles features have been postponed, and nothing else is postponed except for versionless features.
         // In that case we need to run the resolve loop one more time in order to not skip versionless features.
-        boolean tryVersionlessResolution(){
+        boolean hasTriedVersionlessResolution(){
             if(!triedVersionless){
                 triedVersionless = true;
                 return !!!_current._postponedVersionless.isEmpty();
@@ -981,10 +981,11 @@ public class FeatureResolverImpl implements FeatureResolver {
                 if(!!!_current._postponedVersionless.isEmpty() && (getSelected("io.openliberty.mpCompatible") != null || getSelected("io.openliberty.internal.versionlessMP") != null ||  getSelected("com.ibm.websphere.appserver.eeCompatible") != null)){
 
                     Set<String> entries = _current._postponedVersionless.keySet();
-                    
                     Iterator<Map.Entry<String, Chains>> postponedVersionlessIterator = _current._postponedVersionless.entrySet().iterator();
-                    
                     Map.Entry<String, Chains> firstPostponedVersionless = null;
+
+                    //Check if we have any postponed versionless features that can be resolved,
+                    //If we do, choose the first one we see
                     while(postponedVersionlessIterator.hasNext()){
                         firstPostponedVersionless = postponedVersionlessIterator.next();
                         if(firstPostponedVersionless.getKey().substring(36, 38).equals("mp")){
