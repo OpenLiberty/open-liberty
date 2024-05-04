@@ -36,6 +36,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
@@ -66,12 +67,18 @@ public abstract class EntityManagerBuilder implements Runnable {
     final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
 
     /**
+     * OSGi service component that provides the CDI extension for Data.
+     */
+    final DataExtensionProvider provider;
+
+    /**
      * The class loader for repository classes.
      */
     private final ClassLoader repositoryClassLoader;
 
     @Trivial
-    protected EntityManagerBuilder(ClassLoader repositoryClassLoader) {
+    protected EntityManagerBuilder(DataExtensionProvider provider, ClassLoader repositoryClassLoader) {
+        this.provider = provider;
         this.repositoryClassLoader = repositoryClassLoader;
     }
 
