@@ -105,88 +105,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
     }
 
-    //
-
-    private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
-
-    private static boolean shownVersionlessError = false;
-    private static Set<String> noPreferredErrors = new HashSet<>();
-
-    private static void showVersionlessError(String baseSymbolicName) {
-        if (preferredFeatureVersions == null) {
-            if (!shownVersionlessError) {
-                shownVersionlessError = true;
-                error("UPDATE_MISSING_VERSIONLESS_ENV_VAR");
-            }
-        } else {
-            if (noPreferredErrors.add(baseSymbolicName)) {
-                String shortName = baseSymbolicName.replace("io.openliberty.internal.versionless.", "");
-                error("UPDATE_MISSING_VERSIONLESS_FEATURE_VAL", shortName);
-            }
-        }
-    }
-
-    private static String preferredFeatureVersions = System.getenv("PREFERRED_FEATURE_VERSIONS");
-    private static String[][] parsedPreferredVersions;
-
-    public void setPreferredVersion(String preferredFeatures) {
-        preferredFeatureVersions = preferredFeatures;
-        parsedPreferredVersions = null;
-    }
-
-    public static void parsePreferredVersions(Repository repository) {
-        if (parsedPreferredVersions != null) {
-            return;
-        }
-
-        if (preferredFeatureVersions == null) {
-            parsedPreferredVersions = new String[][] {};
-            return;
-        }
-
-        String[] rawPrefs = preferredFeatureVersions.split(",");
-        String[][] parsedPrefs = new String[rawPrefs.length][2];
-
-        StringBuilder unusableMsg = null;
-        int numUnusable = 0;
-
-        StringBuilder missingMsg = null;
-        int numMissing = 0;
-
-        for (int prefNo = 0; prefNo < rawPrefs.length; prefNo++) {
-            String pref = rawPrefs[prefNo].trim();
-
-            String[] parsedPref = parseNameAndVersion(pref);
-            String prefName = parsedPref[0];
-            String prefVersion = parsedPref[1];
-
-            if (((prefName != null) && !prefName.isEmpty()) &&
-                ((prefVersion != null) && !prefVersion.isEmpty())) {
-                if (repository.getFeature(pref) != null) {
-                    parsedPrefs[prefNo - (numUnusable + numMissing)] = parsedPref;
-                } else {
-                    numMissing++;
-                    missingMsg = append(missingMsg, pref);
-                }
-            } else {
-                numUnusable++;
-                unusableMsg = append(unusableMsg, pref);
-            }
-        }
-
-        if ((numUnusable == 0) && (numMissing == 0)) {
-            parsedPreferredVersions = parsedPrefs;
-
-        } else {
-            parsedPreferredVersions = Arrays.copyOf(parsedPrefs, parsedPrefs.length - (numMissing + numUnusable));
-
-            ususableMsg.insert(0, "Removed unsable entries from PREFERRED_FEATURE_VERSIONS [ ");
-            ususableMsg.append(" ]");
-            trace(ususableMsg.toString());
-        }
-    }
-
-    private static StringBuilder append(StringBuilder builder, String value) {
+    protected static StringBuilder append(StringBuilder builder, String value) {
         if (builder != null) {
             builder.append(',');
         } else {
@@ -198,42 +117,384 @@ public class FeatureResolverImpl implements FeatureResolver {
         return builder;
     }
 
-    private static Map<String, String[]> parseNAV = new HashMap<String, String[]>();
+    //
 
-    @Override
-    public Result resolveFeatures(FeatureResolver.Repository repository, Collection<String> rootFeatures, Set<String> preResolved, boolean allowMultipleVersions) {
+    // private static final boolean isBeta =
+    //     Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
+    private static final boolean isBeta = true;
 
-        // Note that when no process type is passed we support all process types.
-        return resolve(repository, Collections.<ProvisioningFeatureDefinition> emptySet(), rootFeatures, preResolved,
-                       allowMultipleVersions ? Collections.<String> emptySet() : null,
-                       EnumSet.allOf(ProcessType.class),
-                       null);
+    // Feature parse cache ...
+
+    /**
+     * Cache of parsed name and version values.
+     *
+     * Keys are versioned feature names, for example, "servlet-4.0".
+     * Values are the pair of the parsed base feature name plus the
+     * text of the version. Continuing the example, "servlet" and "4.0".
+     * A value which does not have a version will be returned with
+     * null version text. That is, "servlet" is stored as { "servlet", null }.
+     *
+     * The version text is validated: A version value which is not value
+     * is stored as null.
+     */
+    private static Map<String, String[]> parsedNAV = new HashMap<String, String[]>();
+
+    /**
+     * Answer the base name of a versioned feature name.
+     *
+     * Use the parse cache to do this quickly.
+     *
+     * @see {@link #parseNameAndVersion(String)}.
+     *
+     * @param feature The versioned feature name which is to be parsed.
+     *
+     * @return The base name of the feature name.
+     */
+    public static String parseName(String feature) {
+        return parseNameAndVersion(feature)[0];
     }
 
-    @Override
-    public Result resolveFeatures(FeatureResolver.Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures,
-                                  Set<String> preResolved, boolean allowMultipleVersions) {
-
-        // Note that when no process type is passed we support all process types.
-        return resolve(repository, kernelFeatures, rootFeatures,
-                       preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
-                       EnumSet.allOf(ProcessType.class),
-                       null);
+    /**
+     * Answer the version text of a versioned feature name.
+     * Answer null if the feature name does not have a version,
+     * or if the version text is not a valid version.
+     *
+     * Valid versions are expected to be dotted pairs of integers,
+     * for example, "10.0".
+     *
+     * Use the parse cache to do this quickly.
+     *
+     * @see {@link #parseNameAndVersion(String)}.
+     *
+     * @param feature The versioned feature name which is to be parsed.
+     *
+     * @return The version text of the feature name.
+     */
+    public static String parseVersion(String feature) {
+        return parseNameAndVersion(feature)[1];
     }
 
+    /**
+     * Answer the base name and the version text of a versioned
+     * feature name.
+     *
+     * Store null for the version text if the feature name does
+     * not have a version, or if the version text is not a valid
+     * version.
+     *
+     * Valid versions are expected to be dotted pairs of integers,
+     * for example, "10.0".
+     *
+     * Use the parse cache to do this quickly.
+     *
+     * @param feature The versioned feature name which is to be parsed.
+     *
+     * @return The base name and version text of the feature name.
+     */
+    @FFDCIgnore(IllegalArgumentException.class)
+    public static String[] parseNameAndVersion(String feature) {
+        String[] result = parsedNAV.get(feature);
+        if (result != null) {
+            return result;
+        }
+        // figure out the base symbolic name and 'version'
+        // using last dash as a convention to determine the version and symbolic name
+        String baseName = feature;
+        String version = null;
+        int lastDash = feature.lastIndexOf('-');
+        if (lastDash >= 0) {
+            // remove the version part of the symbolic name
+            version = feature.substring(lastDash + 1);
+            // Validate the version syntax
+            try {
+                Version.parseVersion(version);
+                baseName = feature.substring(0, lastDash);
+            } catch (IllegalArgumentException e) {
+                version = null;
+            }
+        }
+        result = new String[] { baseName, version };
+        parsedNAV.put(feature, result);
+        return result;
+    }
+
+    // Platform handling ...
+
+    public static final String PREFERRED_PLATFORM_VERSIONS_ENV_VAR = "PREFERRED_PLATFORM_VERSIONS";
+
+    private static String preferredPlatformVersions = System.getenv(PREFERRED_PLATFORM_VERSIONS_ENV_VAR);
+
+    /**
+     * Override the environment defined preferred platform value.
+     *
+     * Clear the cached parsed platforms.
+     *
+     * This is used for testing.
+     *
+     * @param preferredPlatformVersions The list of preferred platform versions.
+     */
+    public static void setPreferredPlatforms(String preferredPlatformVersions) {
+        FeatureResolverImpl.preferredPlatformVersions = preferredPlatformVersions;
+    }
+
+    /**
+     * Process the platforms which were specified within the server configuration
+     * or from the command line.
+     *
+     * This is almost the same as {@link #collectPlatformCompatibilityFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolverRepository)},
+     * except that the platform values are provided using a parameter instead
+     * of from an environment variable, and generated error messages are specific
+     * to receiving the platforms using a parameter.
+     *
+     * @param repo          The feature repository.
+     * @param rootPlatforms The specified platforms.
+     *
+     * @return The versioned compatibility feature names obtained from the
+     *         platform values.
+     */
+    private static Collection<String> collectPlatformCompatibilityFeatures(Repository repo, Collection<String> rootPlatforms) {
+        if (rootPlatforms == null) {
+            return null;
+        }
+
+        Set<String> compatibilityFeatures = new HashSet<String>();
+
+        for (String plat : rootPlatforms) {
+            plat = plat.trim();
+
+            String[] nameAndVersion = parseNameAndVersion(plat);
+            String platBase = nameAndVersion[0];
+            String platVersion = nameAndVersion[1];
+            if (platVersion == null) {
+                trace("Platform element [ " + plat + " ] does not contain a valid version.");
+                continue;
+            }
+
+            String compatibilityFeature;
+            if (platBase.startsWith("jakartaee") || platBase.startsWith("javaee")) {
+                compatibilityFeature = "com.ibm.websphere.appserver.eeCompatible-" + platVersion;
+            } else if (platBase.startsWith("MicroProfile")) {
+                compatibilityFeature = "io.openliberty.internal.versionlessMP-" + platVersion;
+            } else {
+                trace("Platform element [ " + plat + " ] is not a known platform.");
+                continue;
+            }
+
+            if (repo.getFeature(compatibilityFeature) != null) {
+                compatibilityFeatures.add(compatibilityFeature);
+            } else {
+                trace("Platform element [ " + plat + " ] is not a known platform version.");
+                continue;
+            }
+        }
+
+        return compatibilityFeatures;
+    }
+
+    // TODO: Need to rewrite this to externalize EE and MP specific information.
+
+    private static final String EE_COMPATIBLE_FEATURE_NAME = "io.openliberty.internal.versionless.eeCompatible";
+    private static final String MP_COMPATIBLE_FEATURE_NAME = "io.openliberty.internal.versionless.mpCompatible";
+
+    // TODO: This is temporary.  The feature resource cannot be mutated here.
+
+    /**
+     * Update the tolerated versions of the resources of a compatibility feature.
+     *
+     * @param repo             A feature repository.
+     * @param featureName      A compatibility feature name.
+     * @param updatedTolerates The updated tolerated versions.
+     */
+    private static void updateTolerates(Repository repo, String featureName, Collection<String> updatedTolerates) {
+        Collection<FeatureResource> includedResources = repo.getFeature(featureName).getConstituents(SubsystemContentType.FEATURE_TYPE);
+        for (FeatureResource includedResource : includedResources) {
+            List<String> tolerates = includedResource.getTolerates();
+            tolerates.clear();
+            tolerates.addAll(updatedTolerates);
+        }
+    }
+
+    /**
+     * Process the platforms which were specified within the server configuration
+     * or from the command line.
+     *
+     * This is almost the same as {@link #collectPlatformCompatibilityFeatures(com.ibm.ws.kernel.feature.resolver.FeatureResolverRepository, Collection<String>)},
+     * except that the platform values are obtained from an environment variable,
+     * with corresponding changes to generated error messages.
+     *
+     * See {@link #PREFERRED_PLATFORM_VERSIONS_ENV_VAR}.
+     *
+     * @param repo The feature repository.
+     *
+     * @return The versioned compatibility feature names obtained from the
+     *         platform values.
+     */
+    private static Set<String> collectPlatformCompatibilityFeatures(Repository repo) {
+        if (preferredPlatformVersions == null) {
+            return null;
+        }
+
+        String[] preferredPlatforms = preferredPlatformVersions.split(",");
+
+        List<String> eeCompatibleVersions = new ArrayList<String>();
+        List<String> mpCompatibleVersions = new ArrayList<String>();
+
+        Set<String> compatibilityFeatures = new HashSet<String>();
+
+        for (String plat : preferredPlatforms) {
+            plat = plat.trim();
+
+            String[] nameAndVersion = parseNameAndVersion(plat);
+            String platBase = nameAndVersion[0];
+            String platVersion = nameAndVersion[1];
+
+            if (platVersion == null) {
+                trace("Platform environment variable [ " + PREFERRED_PLATFORM_VERSIONS_ENV_VAR + " ]" +
+                      " platform value [ " + plat + " ] does not contain a valid version.");
+                continue;
+            }
+
+            if (platBase.startsWith("jakartaee") || platBase.startsWith("javaee")) {
+                eeCompatibleVersions.add(platVersion);
+            } else if (plat.startsWith("MicroProfile")) {
+                mpCompatibleVersions.add(platVersion);
+            } else {
+                trace("Platform environment variable [ " + PREFERRED_PLATFORM_VERSIONS_ENV_VAR + " ]" +
+                      " platform value [ " + plat + " ] is not a valid platform.");
+            }
+        }
+
+        if (!eeCompatibleVersions.isEmpty()) {
+            updateTolerates(repo, EE_COMPATIBLE_FEATURE_NAME, eeCompatibleVersions);
+            compatibilityFeatures.add(EE_COMPATIBLE_FEATURE_NAME);
+        }
+
+        if (!mpCompatibleVersions.isEmpty()) {
+            updateTolerates(repo, MP_COMPATIBLE_FEATURE_NAME, mpCompatibleVersions);
+            compatibilityFeatures.add(MP_COMPATIBLE_FEATURE_NAME);
+        }
+
+        return compatibilityFeatures;
+    }
+
+    //////// BEGIN - deprecated resolveFeatures() methods without platforms
+
+    @SuppressWarnings("deprecation")
     @Override
     @Deprecated
-    public Result resolveFeatures(FeatureResolver.Repository repository, Collection<ProvisioningFeatureDefinition> kernelFeatures, Collection<String> rootFeatures,
-                                  Set<String> preResolved, boolean allowMultipleVersions,
+    public Result resolveFeatures(FeatureResolver.Repository repository,
+                                  Collection<String> rootFeatures,
+                                  Set<String> preResolved,
+                                  boolean allowMultipleVersions) {
+        return resolve(repository,
+                       Collections.<ProvisioningFeatureDefinition> emptySet(),
+                       rootFeatures, preResolved,
+                       (allowMultipleVersions ? Collections.<String> emptySet() : null),
+                       EnumSet.allOf(ProcessType.class), // Default to all process types
+                       null);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    @Deprecated
+    public Result resolveFeatures(FeatureResolver.Repository repository,
+                                  Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                                  Collection<String> rootFeatures,
+                                  Set<String> preResolved,
+                                  boolean allowMultipleVersions) {
+        return resolve(repository,
+                       kernelFeatures, rootFeatures, preResolved,
+                       (allowMultipleVersions ? Collections.<String> emptySet() : null),
+                       EnumSet.allOf(ProcessType.class), // Default to all process types
+                       null);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    @Deprecated
+    public Result resolveFeatures(FeatureResolver.Repository repository,
+                                  Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                                  Collection<String> rootFeatures,
+                                  Set<String> preResolved,
+                                  boolean allowMultipleVersions,
                                   EnumSet<ProcessType> supportedProcessTypes) {
 
-        return resolve(repository, kernelFeatures, rootFeatures,
-                       preResolved, allowMultipleVersions ? Collections.<String> emptySet() : null,
+        return resolve(repository,
+                       kernelFeatures, rootFeatures, preResolved,
+                       (allowMultipleVersions ? Collections.<String> emptySet() : null),
                        supportedProcessTypes,
                        null);
     }
 
-    // @formatter:off
+    /**
+     * Old fully parameterized feature resolution method.
+     *
+     * This has been replaced with {@link #resolve}.
+     */
+    @SuppressWarnings("deprecation")
+    @Override
+    @Deprecated
+    public Result resolveFeatures(Repository repository,
+                                  Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                                  Collection<String> rootFeatures,
+                                  Set<String> preResolved,
+                                  Set<String> allowedMultipleVersions,
+                                  EnumSet<ProcessType> supportedProcessTypes) {
+
+        return resolve(repository,
+                       kernelFeatures, rootFeatures, preResolved,
+                       allowedMultipleVersions,
+                       supportedProcessTypes,
+                       null);
+    }
+
+    //////// END - deprecated resolveFeatures() methods without platforms
+
+    @Override
+    public Result resolve(FeatureResolver.Repository repository,
+                          Collection<String> rootFeatures,
+                          Set<String> preResolved,
+                          boolean allowMultipleVersions,
+                          Collection<String> rootPlatforms) {
+
+        return resolve(repository,
+                       Collections.<ProvisioningFeatureDefinition> emptySet(),
+                       rootFeatures,
+                       preResolved,
+                       (allowMultipleVersions ? Collections.<String> emptySet() : null),
+                       EnumSet.allOf(ProcessType.class), // Default to all process types
+                       rootPlatforms);
+    }
+
+    @Override
+    public Result resolve(FeatureResolver.Repository repository,
+                          Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                          Collection<String> rootFeatures,
+                          Set<String> preResolved, boolean allowMultipleVersions,
+                          Collection<String> rootPlatforms) {
+
+        return resolve(repository,
+                       kernelFeatures, rootFeatures, preResolved,
+                       (allowMultipleVersions ? Collections.<String> emptySet() : null),
+                       EnumSet.allOf(ProcessType.class), // Default to all process types
+                       rootPlatforms);
+    }
+
+    @Override
+    public Result resolve(FeatureResolver.Repository repository,
+                          Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                          Collection<String> rootFeatures,
+                          Set<String> preResolved,
+                          boolean allowMultipleVersions,
+                          EnumSet<ProcessType> supportedProcessTypes,
+                          Collection<String> rootPlatforms) {
+
+        return resolve(repository,
+                       kernelFeatures, rootFeatures, preResolved,
+                       (allowMultipleVersions ? Collections.<String> emptySet() : null),
+                       supportedProcessTypes,
+                       rootPlatforms);
+    }
 
     /**
      * Intercept {@link #doResolve} to inject test actions.
@@ -247,33 +508,38 @@ public class FeatureResolverImpl implements FeatureResolver {
      * After performing test actions, proceed to {@link #doResolve}.
      */
     @Override
-    public Result resolveFeatures(Repository repository,
-                                  Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                                  Collection<String> rootFeatures, Set<String> preResolved,
-                                  Set<String> allowedMultiple,
-                                  EnumSet<ProcessType> supportedProcessTypes) {
+    public Result resolve(Repository repository,
+                          Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                          Collection<String> rootFeatures, Set<String> preResolved,
+                          Set<String> allowedMultiple,
+                          EnumSet<ProcessType> supportedProcessTypes,
+                          Collection<String> rootPlatforms) {
 
         FeatureResolverBaseline.generate(this, repository, allowedMultiple, kernelFeatures);
 
         return doResolve(repository,
                          kernelFeatures, rootFeatures, preResolved,
-                         allowedMultiple, supportedProcessTypes);
+                         allowedMultiple, supportedProcessTypes,
+                         rootPlatforms);
     }
 
-    /*
-     * Here are the steps this uses to resolve:
-     * 1) Primes the selected features with the pre-resolved and the root features (conflicts are reported, but no permutations for backtracking)
-     * 2) Resolve the root features
-     * 3) Check if there are any auto features to resolve; if so return to step 2 and resolve the auto-features as root features
-     */
-    protected Result doResolve(Repository repository,
-                               Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                               Collection<String> rootFeatures, Set<String> preResolved,
-                               Set<String> allowedMultipleVersions,
-                               EnumSet<ProcessType> supportedProcessTypes) {
+    public Result doResolve(Repository repository,
+                            Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                            Collection<String> rootFeatures,
+                            Set<String> preResolved,
+                            Set<String> allowedMultipleVersions,
+                            EnumSet<ProcessType> supportedProcessTypes,
+                            Collection<String> rootPlatforms) {
+
+        SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
 
         if (isBeta) {
-            parsePreferredVersions(repository);
+            Set<String> envPlatforms = collectPlatformCompatibilityFeatures(repository);
+            if (envPlatforms != null) {
+                rootPlatforms = envPlatforms;
+            } else {
+                rootPlatforms = collectPlatformCompatibilityFeatures(repository, rootPlatforms);
+            }
         }
 
         SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
@@ -289,7 +555,7 @@ public class FeatureResolverImpl implements FeatureResolver {
         // This will ensure that the root and pre-resolved features do not conflict
         Collection<String> rootFeaturesList = new ArrayList<String>(rootFeatures);
         //Implementation for platform element
-        if(isBeta && rootPlatforms != null){
+        if (isBeta && rootPlatforms != null) {
             rootFeaturesList.addAll(rootPlatforms);
         }
         selectionContext.primeSelected(preResolved);
@@ -415,18 +681,21 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     Set<String> processCurrentPermutation(Collection<String> rootFeatures, Set<String> preResolved, SelectionContext selectionContext) {
         Set<String> result;
-        // The number of blocked is checked each time we process a postponed decision.
-        // A check is done each time we process the roots after doing a postponed decision
-        // to see if more features got blocked.  If more got blocked then we
-        // re-process the roots again.
-        // This is necessary to ensure the final result does not include one of the blocked features
         int numBlocked;
         do {
             selectionContext.processPostponed();
             numBlocked = selectionContext.getBlockedCount();
             result = processRoots(rootFeatures, preResolved, selectionContext);
-        } while (selectionContext.hasPostponed() || numBlocked != selectionContext.getBlockedCount() || selectionContext.hasTriedVersionlessResolution());
-        // Save the result in the current permutation
+
+            // Processing must continue if either:
+            //     There are still more postponed features;
+            //     More features are blocked;
+            //     There are still unresolved versionless features.
+
+        } while (selectionContext.hasPostponed() ||
+                 (numBlocked != selectionContext.getBlockedCount()) ||
+                 selectionContext.hasTriedVersionlessResolution());
+
         selectionContext._current._result.setResolvedFeatures(result);
         selectionContext.checkForBestSolution();
         return result;
@@ -455,41 +724,6 @@ public class FeatureResolverImpl implements FeatureResolver {
         // Any conflicts here will be due to hard failures with no alternative toleration choices.
         // In other words, it is the best conflict count we will ever achieve.
         selectionContext.setInitialRootBlockedCount();
-        return result;
-    }
-
-    public static String parseName(String feature) {
-        return parseNameAndVersion(feature)[0];
-    }
-
-    public static String parseVersion(String feature) {
-        return parseNameAndVersion(feature)[1];
-    }
-
-    @FFDCIgnore(IllegalArgumentException.class)
-    public static String[] parseNameAndVersion(String feature) {
-        String[] result = parseNAV.get(feature);
-        if (result != null) {
-            return result;
-        }
-        // figure out the base symbolic name and 'version'
-        // using last dash as a convention to determine the version and symbolic name
-        String baseName = feature;
-        String version = null;
-        int lastDash = feature.lastIndexOf('-');
-        if (lastDash >= 0) {
-            // remove the version part of the symbolic name
-            version = feature.substring(lastDash + 1);
-            // Validate the version syntax
-            try {
-                Version.parseVersion(version);
-                baseName = feature.substring(0, lastDash);
-            } catch (IllegalArgumentException e) {
-                version = null;
-            }
-        }
-        result = new String[] { baseName, version };
-        parseNAV.put(feature, result);
         return result;
     }
 
@@ -634,7 +868,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
         selectionContext.processCandidates(chain, candidateNames, symbolicName, baseSymbolicName, preferredVersion, isSingleton);
         // check if there is a single candidate left after processing
-        if (candidateNames.size() == 1 && (!!!baseSymbolicName.startsWith("io.openliberty.internal.versionless.") || (baseSymbolicName.startsWith("io.openliberty.internal.versionless.") && selectionContext.getSelected(baseSymbolicName) != null))) {
+        if (candidateNames.size() == 1 && (!!!baseSymbolicName.startsWith("io.openliberty.internal.versionless.")
+                                           || (baseSymbolicName.startsWith("io.openliberty.internal.versionless.") && selectionContext.getSelected(baseSymbolicName) != null))) {
             // We selected one candidate; now process the selected
             String selectedName = candidateNames.get(0);
             processSelected(selectionContext.getRepository().getFeature(selectedName), allowedTolerations, chain, result, selectionContext);
@@ -868,15 +1103,29 @@ public class FeatureResolverImpl implements FeatureResolver {
             return _current._result;
         }
 
-        void processCandidates(Collection<String> chain, List<String> candidateNames, String symbolicName, String baseSymbolicName, String preferredVersion, boolean isSingleton) {
-            if  (baseSymbolicName.startsWith("io.openliberty.internal.versionless.")){
-                if  ((baseSymbolicName.substring(36, 38).equals("mp") && getSelected("io.openliberty.internal.versionlessMP") == null) || //mp versionless features need versionlessMP to resolve
-                    (!baseSymbolicName.substring(36, 38).equals("mp") && getSelected("com.ibm.websphere.appserver.eeCompatible") == null)){ //ee versionless features need eeCompatible to resolve
+        // mp versionless features need "versionlessMP" to resolve
 
-                    addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
-                    return;
-                }
+        private static final String VERSIONLESS_MP = "io.openliberty.internal.versionless.versionlessMP";
+
+        boolean doPostponeVersionlessMP(String baseSymbolicName) {
+            return (baseSymbolicName.startsWith(VERSIONLESS_MP) && (getSelected(VERSIONLESS_MP) == null));
+        }
+
+        // ee versionless features need "eeCompatible" to resolve
+
+        private static final String VERSIONLESS_EE = "io.openliberty.internal.versionless.eeCompatible";
+
+        boolean doPostponeVersionlessEE(String baseSymbolicName) {
+            return (baseSymbolicName.startsWith(VERSIONLESS_EE) && (getSelected(VERSIONLESS_EE) == null));
+        }
+
+        void processCandidates(Collection<String> chain, List<String> candidateNames, String symbolicName, String baseSymbolicName, String preferredVersion, boolean isSingleton) {
+            if (doPostponeVersionlessEE(baseSymbolicName) ||
+                doPostponeVersionlessMP(baseSymbolicName)) {
+                addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
+                return;
             }
+
             // first check for container type
             List<String> origCandidateNames = new ArrayList<>(candidateNames);
             for (Iterator<String> iCandidateNames = candidateNames.iterator(); iCandidateNames.hasNext();) {
@@ -957,8 +1206,8 @@ public class FeatureResolverImpl implements FeatureResolver {
         // Versionless features require eeCompatible to be resolved. In rare cases, eeCompatible will be resolved after
         // all versionles features have been postponed, and nothing else is postponed except for versionless features.
         // In that case we need to run the resolve loop one more time in order to not skip versionless features.
-        boolean hasTriedVersionlessResolution(){
-            if(!triedVersionless){
+        boolean hasTriedVersionlessResolution() {
+            if (!triedVersionless) {
                 triedVersionless = true;
                 return !!!_current._postponedVersionless.isEmpty();
             }
@@ -969,7 +1218,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             if (_current._postponed.isEmpty() && _current._postponedVersionless.isEmpty()) {
                 return;
             }
-            
+
             // Only process the first postponed and try again;
             // We have to do this one postpone at a time because
             // The decision of one postpone may effect the path of the
@@ -977,8 +1226,10 @@ public class FeatureResolverImpl implements FeatureResolver {
             // unnecessary
 
             //if a versionless feature is postponed, process that first
-            if(isBeta){
-                if(!!!_current._postponedVersionless.isEmpty() && (getSelected("io.openliberty.mpCompatible") != null || getSelected("io.openliberty.internal.versionlessMP") != null ||  getSelected("com.ibm.websphere.appserver.eeCompatible") != null)){
+            if (isBeta) {
+                if (!!!_current._postponedVersionless.isEmpty()
+                    && (getSelected("io.openliberty.mpCompatible") != null || getSelected("io.openliberty.internal.versionlessMP") != null
+                        || getSelected("com.ibm.websphere.appserver.eeCompatible") != null)) {
 
                     Set<String> entries = _current._postponedVersionless.keySet();
                     Iterator<Map.Entry<String, Chains>> postponedVersionlessIterator = _current._postponedVersionless.entrySet().iterator();
@@ -986,34 +1237,29 @@ public class FeatureResolverImpl implements FeatureResolver {
 
                     //Check if we have any postponed versionless features that can be resolved,
                     //If we do, choose the first one we see
-                    while(postponedVersionlessIterator.hasNext()){
+                    while (postponedVersionlessIterator.hasNext()) {
                         firstPostponedVersionless = postponedVersionlessIterator.next();
-                        if(firstPostponedVersionless.getKey().substring(36, 38).equals("mp")){
-                            if(getSelected("io.openliberty.mpCompatible") != null || getSelected("io.openliberty.internal.versionlessMP") != null){
+                        if (firstPostponedVersionless.getKey().substring(36, 38).equals("mp")) {
+                            if (getSelected("io.openliberty.mpCompatible") != null || getSelected("io.openliberty.internal.versionlessMP") != null) {
                                 break;
                             }
-                        }
-                        else{
-                            if(getSelected("com.ibm.websphere.appserver.eeCompatible") != null){
+                        } else {
+                            if (getSelected("com.ibm.websphere.appserver.eeCompatible") != null) {
                                 break;
                             }
                         }
                         firstPostponedVersionless = null;
                     }
-                    
-                    if(firstPostponedVersionless != null){
+
+                    if (firstPostponedVersionless != null) {
                         // try to find a good selection
                         Chain selected = firstPostponedVersionless.getValue().select(firstPostponedVersionless.getKey(), this);
                         if (selected != null) {
                             // found a good one, select it.
                             _current._selected.put(firstPostponedVersionless.getKey(), selected);
                         }
-            
-                        // clean postponed since we will walk the tree again and find them again if necessary
-                        _current._postponed.clear();
-                        _current._postponedVersionless.clear();
-                        return;
                     }
+
                     // clean postponed since we will walk the tree again and find them again if necessary
                     _current._postponed.clear();
                     _current._postponedVersionless.clear();
@@ -1021,7 +1267,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                 }
             }
 
-            if(!!!_current._postponed.isEmpty()){
+            if (!!!_current._postponed.isEmpty()) {
                 Map.Entry<String, Chains> firstPostponed = _current._postponed.entrySet().iterator().next();
                 // try to find a good selection
                 Chain selected = firstPostponed.getValue().select(firstPostponed.getKey(), this);
@@ -1029,6 +1275,7 @@ public class FeatureResolverImpl implements FeatureResolver {
                     // found a good one, select it.
                     _current._selected.put(firstPostponed.getKey(), selected);
                 }
+
                 // clean postponed since we will walk the tree again and find them again if necessary
                 _current._postponed.clear();
                 _current._postponedVersionless.clear();
@@ -1089,10 +1336,9 @@ public class FeatureResolverImpl implements FeatureResolver {
             Chains existing = _current._postponed.get(baseName);
             if (existing == null) {
                 existing = new Chains();
-                if(baseName.startsWith("io.openliberty.internal.versionless.")){
+                if (baseName.startsWith("io.openliberty.internal.versionless.")) {
                     _current._postponedVersionless.put(baseName, existing);
-                }
-                else{
+                } else {
                     _current._postponed.put(baseName, existing);
                 }
             }

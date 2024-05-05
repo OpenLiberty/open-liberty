@@ -3366,8 +3366,6 @@
             <resolved>jwt-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.httpcommons-1.0</resolved>
             <resolved>appSecurity-2.0</resolved>
-            <resolved>io.openliberty.mpCompatible-0.0</resolved>
-            <resolved>com.ibm.websphere.appserver.org.eclipse.microprofile.jwt-1.0</resolved>
             <resolved>io.openliberty.jwtSso1.0.internal.ee-7.0</resolved>
             <resolved>jwtSso-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved>
@@ -18276,8 +18274,6 @@
             <resolved>com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0</resolved>
             <resolved>io.openliberty.jakarta.concurrency-2.0</resolved>
             <resolved>com.ibm.websphere.appserver.concurrencyPolicy-1.0</resolved>
-            <resolved>io.openliberty.mpCompatible-5.0</resolved>
-            <resolved>io.openliberty.org.eclipse.microprofile.contextpropagation-1.3</resolved>
             <resolved>concurrent-2.0</resolved>
             <resolved>restfulWSClient-3.0</resolved>
             <resolved>restfulWS-3.0</resolved>

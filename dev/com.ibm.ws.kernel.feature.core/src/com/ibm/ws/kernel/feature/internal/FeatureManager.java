@@ -67,6 +67,7 @@ import org.osgi.framework.wiring.BundleRequirement;
 import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.resource.Requirement;
+//import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedService;
 import org.osgi.service.component.ComponentContext;
@@ -2576,10 +2577,6 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         return featureRepository.getInstalledFeatures();
     }
 
-    /**
-     * @return List of installed features and implicitly-installed kernel features
-     * @throws IOException
-     */
     public Collection<ProvisioningFeatureDefinition> getInstalledFeatureDefinitions() {
         List<ProvisioningFeatureDefinition> result = new ArrayList<ProvisioningFeatureDefinition>();
         for (String s : getInstalledFeatures()) {
@@ -2588,37 +2585,21 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
         return result;
     }
 
-    /** {@inheritDoc} */
     @Override
     public FeatureDefinition getFeatureDefinition(String featureName) {
         return featureRepository.getFeature(featureName);
     }
 
-    /**
-     * TODO: FIXME -- this is for performance
-     *
-     * @return
-     */
     @Override
     public String getKernelApiServices() {
         return KernelFeatureDefinitionImpl.getKernelApiServices();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.wsspi.kernel.feature.FeatureController#refreshFeatures()
-     */
     @Override
     public void refreshFeatures() {
         queueFeatureChange(ProvisioningMode.REFRESH, null, null);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.wsspi.kernel.feature.FeatureProvisioner#refreshFeatures(org.osgi.framework.Filter)
-     */
     @Override
     public void refreshFeatures(Filter filter) {
         refreshFeatures();

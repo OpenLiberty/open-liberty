@@ -50,17 +50,35 @@ import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 
 public class RepoXML extends BaseXML {
 
+    public static final boolean IS_PUBLIC_FEATURE = true;
+    public static final boolean IS_VERSIONLESS_FEATURE = true;
+    public static final boolean IS_TEST_FEATURE = true;
+
+    public static Selector<ProvisioningFeatureDefinition> featureSelector(final boolean isPublic,
+                                                                          final boolean isVersionless,
+                                                                          final boolean isTest) {
+
+        return new Selector<ProvisioningFeatureDefinition>() {
+            @Override
+            public boolean test(ProvisioningFeatureDefinition def) {
+                return (isPublic == isPublic(def)) &&
+                       (isVersionless == isVersionless(def)) &&
+                       (isTest == isTest(def));
+            }
+        };
+    }
+
     public static Selector<ProvisioningFeatureDefinition> PUBLIC_NOT_TEST = new Selector<ProvisioningFeatureDefinition>() {
         @Override
         public boolean test(ProvisioningFeatureDefinition def) {
-            return isPublic(def) && isNotTest(def);
+            return isPublic(def) && !isTest(def);
         }
     };
 
     public static Selector<ProvisioningFeatureDefinition> IS_NOT_TEST = new Selector<ProvisioningFeatureDefinition>() {
         @Override
         public boolean test(ProvisioningFeatureDefinition def) {
-            return isNotTest(def);
+            return !isTest(def);
         }
     };
 
@@ -71,13 +89,19 @@ public class RepoXML extends BaseXML {
         }
     };
 
+    public static final String VERSIONLESS_PREFIX = "io.openliberty.versionless.";
+
+    public static boolean isVersionless(ProvisioningFeatureDefinition def) {
+        return def.getSymbolicName().startsWith(VERSIONLESS_PREFIX);
+    }
+
     public static boolean isPublic(ProvisioningFeatureDefinition def) {
         return (def.getVisibility() == Visibility.PUBLIC);
     }
 
-    public static boolean isNotTest(ProvisioningFeatureDefinition def) {
+    public static boolean isTest(ProvisioningFeatureDefinition def) {
         String symbolicName = def.getSymbolicName();
-        return (!symbolicName.startsWith("test.") && !symbolicName.startsWith("txtest-"));
+        return (symbolicName.startsWith("test.") || symbolicName.startsWith("txtest-"));
     }
 
     public static Selector<ProvisioningFeatureDefinition> IS_CLIENT = new Selector<ProvisioningFeatureDefinition>() {

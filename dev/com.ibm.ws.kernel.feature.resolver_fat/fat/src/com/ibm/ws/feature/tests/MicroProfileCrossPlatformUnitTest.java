@@ -100,7 +100,7 @@ public class MicroProfileCrossPlatformUnitTest extends FeatureResolutionUnitTest
     }
 
     @Override
-    public String getPreferredVersions() {
+    public String getPreferredPlatforms() {
         return "mpMetrics-5.1,mpMetrics-5.0,mpMetrics-4.0,mpMetrics-3.0,mpMetrics-2.3,mpMetrics-2.2" +
                ",mpMetrics-2.0,mpMetrics-1.1,mpMetrics-1.0,mpHealth-4.0,mpHealth-3.1,mpHealth-3.0" +
                ",mpHealth-2.2,mpHealth-2.1,mpHealth-2.0,mpHealth-1.0";

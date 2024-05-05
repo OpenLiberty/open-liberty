@@ -237,7 +237,7 @@ public class FeatureResolutionUnitTestBase {
 
     //
 
-    public String getPreferredVersions() {
+    public String getPreferredPlatforms() {
         return null;
     }
 
@@ -246,9 +246,9 @@ public class FeatureResolutionUnitTestBase {
     public void doSetupResolver() throws Exception {
         resolver = new FeatureResolverImpl();
 
-        String preferredVersions = getPreferredVersions();
-        if (preferredVersions != null) {
-            resolver.setPreferredVersion(preferredVersions);
+        String preferredPlatforms = getPreferredPlatforms();
+        if (preferredPlatforms != null) {
+            resolver.setPreferredPlatforms(preferredPlatforms);
         }
     }
 

@@ -24,4 +24,10 @@ public interface VerifyEnv {
 
     String DURATIONS_SERVLET_PROPERTY_NAME = "featureVerify_durations_servlet";
     String DURATIONS_SERVLET_FILE_NAME = System.getenv(DURATIONS_SERVLET_PROPERTY_NAME);
+
+    String RESULTS_SERVLET_MP_PROPERTY_NAME = "featureVerify_results_servletMP";
+    String RESULTS_SERVLET_MP_FILE_NAME = System.getenv(RESULTS_SERVLET_MP_PROPERTY_NAME);
+
+    String DURATIONS_SERVLET_MP_PROPERTY_NAME = "featureVerify_durations_servletMP";
+    String DURATIONS_SERVLET_MP_FILE_NAME = System.getenv(DURATIONS_SERVLET_MP_PROPERTY_NAME);
 }

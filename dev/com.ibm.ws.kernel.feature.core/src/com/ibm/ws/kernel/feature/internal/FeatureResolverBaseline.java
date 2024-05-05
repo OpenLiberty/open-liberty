@@ -33,6 +33,7 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 
 //@formatter:off
 public class FeatureResolverBaseline {
@@ -101,10 +102,14 @@ public class FeatureResolverBaseline {
         if (servletFileName != null) {
             String durationsFileName = VerifyEnv.DURATIONS_SERVLET_FILE_NAME;
 
-            baseline.generateServlet(allowedMultiple,
-                                     kernelFeatures,
-                                     baseline.adjustFileName(servletFileName),
-                                     baseline.adjustFileName(durationsFileName));
+            baseline.generatePairs(allowedMultiple,
+                                   kernelFeatures,
+                                   "Servlet and versionless (no MP)",
+                                   "Servlet", "Versionless (no MP)",
+                                   getServletFeatures(repository),
+                                   getVersionlessFeatures(repository, INCLUDE_EE, !INCLUDE_MP),
+                                   baseline.adjustFileName(servletFileName),
+                                   baseline.adjustFileName(durationsFileName));
         }
     }
 
@@ -123,16 +128,15 @@ public class FeatureResolverBaseline {
 
     private final Repository repository;
 
-    private static final String SERVLET_VERSIONLESS_PREFIX = "servlet-";
-    private static final String VERSIONLESS_PREFIX = "io.openliberty.versionless.";
-
     private static final String WAS_LIBERTY_FEATURE_NAME = "apiDiscovery-1.0";
 
     private boolean isOpenLiberty() {
         return (repository.getFeature(WAS_LIBERTY_FEATURE_NAME) == null);
     }
 
-    private List<String> getServletFeatures() {
+    private static final String SERVLET_VERSIONLESS_PREFIX = "servlet-";
+
+    private static List<String> getServletFeatures(Repository repository) {
         List<String> servletFeatures = new ArrayList<>();
         for ( ProvisioningFeatureDefinition featureDef : repository.getFeatures() ) {
             String featureName = featureDef.getIbmShortName();
@@ -144,11 +148,21 @@ public class FeatureResolverBaseline {
         return servletFeatures;
     }
 
-    private List<String> getVersionlessFeatures() {
+    private static final String VERSIONLESS_PREFIX = "io.openliberty.versionless.";
+    private static final String VERSIONLESS_MP_PREFIX = "io.openliberty.versionless.mp";
+
+    private static final boolean INCLUDE_EE = true;
+    private static final boolean INCLUDE_MP = true;
+
+    private static List<String> getVersionlessFeatures(Repository repository,
+                                                       boolean includeEE, boolean includeMP) {
         List<String> versionlessFeatures = new ArrayList<>();
         for ( ProvisioningFeatureDefinition featureDef : repository.getFeatures() ) {
             String featureName = featureDef.getSymbolicName();
-            if ( featureName.startsWith(VERSIONLESS_PREFIX) ) {
+            if ( featureName.startsWith(VERSIONLESS_PREFIX) &&
+                 (includeEE && includeMP) ||
+                 (includeEE && !featureName.startsWith(VERSIONLESS_MP_PREFIX)) ||
+                 (includeMP && featureName.startsWith(VERSIONLESS_MP_PREFIX)) ) {
                 versionlessFeatures.add(featureName);
             }
         }
@@ -258,20 +272,27 @@ public class FeatureResolverBaseline {
      * @param durationsFileName File which is to receive the resolution
      *     times.
      */
-    private void generateServlet(final Set<String> allowedMultiple,
-                                 final Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                                 String resultsFileName,
-                                 String durationsFileName) {
+    private void generatePairs(final Set<String> allowedMultiple,
+                               final Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                               final String description,
+                               final String element0Description,
+                               final String element1Description,
+                               final List<String> elements0,
+                               final List<String> elements1,
+                               String resultsFileName,
+                               String durationsFileName) {
 
         CaseGenerator generator = new CaseGenerator() {
             @Override
             public String getDescription() {
-                return "Test suite: All public features as singletons";
+                return "Test suite: " + description;
             }
 
             @Override
             public List<LazySupplierImpl<VerifyCase>> generate() {
-                return generateServlet(allowedMultiple, kernelFeatures);
+                return generatePairs(allowedMultiple, kernelFeatures,
+                                     element0Description, element1Description,
+                                     elements0, elements1);
             }
         };
 
@@ -317,20 +338,25 @@ public class FeatureResolverBaseline {
     private List<LazySupplierImpl<VerifyCase>> generateSingleton(final Set<String> allowedMultiple,
                                                                  final Collection<ProvisioningFeatureDefinition> kernelFeatures) {
 
-        List<ProvisioningFeatureDefinition> publicDefs = repository.select(RepoXML.PUBLIC_NOT_TEST);
-        int numDefs = publicDefs.size();
-        ProvisioningFeatureDefinition[] publicDefsArray = publicDefs.toArray( new ProvisioningFeatureDefinition[numDefs]);
-        Arrays.sort(publicDefsArray, COMPARE_SYMBOLIC);
+        Selector<ProvisioningFeatureDefinition> selector =
+                        RepoXML.featureSelector(RepoXML.IS_PUBLIC_FEATURE,
+                                                !RepoXML.IS_VERSIONLESS_FEATURE,
+                                                !RepoXML.IS_TEST_FEATURE);
 
-        List<ProvisioningFeatureDefinition> publicServerDefs = new ArrayList<>(numDefs);
-        List<ProvisioningFeatureDefinition> publicClientDefs = new ArrayList<>(numDefs);
+        List<ProvisioningFeatureDefinition> featureDefs = repository.select(selector);
+        int numDefs = featureDefs.size();
+        ProvisioningFeatureDefinition[] defsArray = featureDefs.toArray( new ProvisioningFeatureDefinition[numDefs]);
+        Arrays.sort(defsArray, COMPARE_SYMBOLIC);
 
-        for ( ProvisioningFeatureDefinition def : publicDefsArray ) {
+        List<ProvisioningFeatureDefinition> serverDefs = new ArrayList<>(numDefs);
+        List<ProvisioningFeatureDefinition> clientDefs = new ArrayList<>(numDefs);
+
+        for ( ProvisioningFeatureDefinition def : defsArray ) {
             if ( RepoXML.isServer(def) ) {
-                publicServerDefs.add(def);
+                serverDefs.add(def);
             }
             if ( RepoXML.isClient(def) ) {
-                publicClientDefs.add(def);
+                clientDefs.add(def);
             }
         }
 
@@ -354,9 +380,9 @@ public class FeatureResolverBaseline {
                 }
         };
 
-        List<LazySupplierImpl<VerifyCase>> cases = new ArrayList<>( publicServerDefs.size() + publicClientDefs.size() );
+        List<LazySupplierImpl<VerifyCase>> cases = new ArrayList<>( serverDefs.size() + clientDefs.size() );
 
-        for (ProvisioningFeatureDefinition def : publicServerDefs ) {
+        for (ProvisioningFeatureDefinition def : serverDefs ) {
             final ProvisioningFeatureDefinition useDef = def;
             cases.add( new LazySupplierImpl<VerifyCase>() {
                 @Override
@@ -366,7 +392,7 @@ public class FeatureResolverBaseline {
             });
         }
 
-        for (ProvisioningFeatureDefinition def : publicClientDefs ) {
+        for (ProvisioningFeatureDefinition def : clientDefs ) {
             final ProvisioningFeatureDefinition useDef = def;
             cases.add( new LazySupplierImpl<VerifyCase>() {
                 @Override
@@ -394,54 +420,55 @@ public class FeatureResolverBaseline {
      *
      * @return A list of (lazy) case data.
      */
-    private List<LazySupplierImpl<VerifyCase>> generateServlet(final Set<String> allowedMultiple,
-                                                               final Collection<ProvisioningFeatureDefinition> kernelFeatures) {
+    private List<LazySupplierImpl<VerifyCase>> generatePairs(
+        final Set<String> allowedMultiple,
+        final Collection<ProvisioningFeatureDefinition> kernelFeatures,
+        final String element0Desc, final String element1Desc,
+        List<String> elements0, List<String> elements1) {
 
-        List<String> servletFeatures = getServletFeatures();
-        List<String> versionlessFeatures = getVersionlessFeatures();
+        int num0 = elements0.size();
+        int num1 = elements1.size();
 
-        int numServlet = servletFeatures.size();
-        int numVersionless = versionlessFeatures.size();
-
-        info("Servlet features [ " + numServlet + " ]");
-        for ( String feature : servletFeatures ) {
-            info("  [ " + feature + " ]");
+        info(element0Desc + " features [ " + num0 + " ]");
+        for ( String feature0 : elements0 ) {
+            info("  [ " + feature0 + " ]");
         }
 
-        info("Versionless features [ " + numVersionless + " ]");
-        for ( String feature : versionlessFeatures ) {
+        info(element1Desc + " features [ " + num1 + " ]");
+        for ( String feature : elements1 ) {
             info("  [ " + feature + " ]");
         }
 
         final BiTransformer<String, String, VerifyCase> createResult =
             new BiTransformer<String, String, VerifyCase>() {
                 @Override
-                public VerifyCase apply(String servletFeature, String versionlessFeature) {
-                    return createServletResult(allowedMultiple,
+                public VerifyCase apply(String feature0, String feature1) {
+                    return createResult(allowedMultiple,
                                                kernelFeatures,
-                                               servletFeature, versionlessFeature,
+                                               element0Desc, element1Desc,
+                                               feature0, feature1,
                                                ProcessType.SERVER);
                 }
         };
 
-        info("Servlet cases [ " + numServlet * numVersionless + " ]");
+        info("Total cases [ " + num0 * num1 + " ]");
 
-        List<LazySupplierImpl<VerifyCase>> servletCases = new ArrayList<>(numServlet * numVersionless);
+        List<LazySupplierImpl<VerifyCase>> cases = new ArrayList<>(num0 * num1);
 
-        for ( String servletFeature : servletFeatures ) {
-            for ( String versionlessFeature : versionlessFeatures ) {
-                final String useServlet = servletFeature;
-                final String useVersionless = versionlessFeature;
-                servletCases.add( new LazySupplierImpl<VerifyCase>() {
+        for ( String feature0 : elements0 ) {
+            for ( String feature1 : elements1) {
+                final String useFeature0 = feature0;
+                final String useFeature1 = feature1;
+                cases.add( new LazySupplierImpl<VerifyCase>() {
                     @Override
                     public VerifyCase produce() {
-                        return createResult.apply(useServlet, useVersionless);
+                        return createResult.apply(useFeature0, useFeature1);
                     }
                 });
             }
         }
 
-        return servletCases;
+        return cases;
     }
 
     /**
@@ -452,50 +479,53 @@ public class FeatureResolverBaseline {
      *     multiple features.
      * @param kernelFeatures Kernel features to be used to perform the
      *     resolution.
-     * @param servletFeature A versioned servlet feature name.
-     * @param versionlessFeature A versionless feature.
+     * @param feature0 A versioned servlet feature name.
+     * @param feature1 A versionless feature.
      * @param processType Control parameter: Sets the process type active
      *     during resolution.
      *
      * @return The resolution result converted into a verification case.
      */
-    private VerifyCase createServletResult(Set<String> allowedMultiple,
-                                           Collection<ProvisioningFeatureDefinition> kernelFeatures,
-                                           String servletFeature, String versionlessFeature,
-                                           ProcessType processType) {
+    private VerifyCase createResult(Set<String> allowedMultiple,
+                                    Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                                    String feature0Desc, String feature1Desc,
+                                    String feature0, String feature1,
+                                    ProcessType processType) {
 
         Set<String> preResolved = Collections.emptySet();
         EnumSet<ProcessType> processTypes = EnumSet.of(processType);
 
         List<String> rootFeatures = new ArrayList<>(2);
-        rootFeatures.add(servletFeature);
-        rootFeatures.add(versionlessFeature);
+        rootFeatures.add(feature0);
+        rootFeatures.add(feature1);
 
-        info("Creating servlet test result ... ");
-        info("  Servlet feature [ " + servletFeature + " ]");
-        info("  Versionless feature [ " + versionlessFeature + " ]");
+        info("Creating test result ... ");
+        info("  " + feature0Desc + " feature [ " + feature0 + " ]");
+        info("  " + feature1Desc + " feature [ " + feature1 + " ]");
 
         long startTimeNs = VerifyData.getTimeNs();
 
         Result resultWithKernel = resolver.doResolve(repository,
                                                      kernelFeatures, rootFeatures, preResolved,
-                                                     allowedMultiple, processTypes);
+                                                     allowedMultiple, processTypes,
+                                                     null);
 
         Collection<ProvisioningFeatureDefinition> emptyDefs = Collections.emptySet();
         Result resultWithoutKernel = resolver.doResolve(repository,
                                                         emptyDefs, rootFeatures, preResolved,
-                                                        allowedMultiple, processTypes);
+                                                        allowedMultiple, processTypes,
+                                                        null);
 
         long endTimeNs = VerifyData.getTimeNs();
         long durationNs = endTimeNs - startTimeNs;
 
-        info("Creating servlet test result ... done [ " + Long.toString(durationNs) + " ns ]");
+        info("Creating test result ... done [ " + Long.toString(durationNs) + " ns ]");
 
         boolean allowMultiple = (allowedMultiple != null);
 
-        String name = servletFeature + "_" + versionlessFeature + (allowMultiple ? "_n" : "");
+        String name = feature0 + "_" + feature1 + (allowMultiple ? "_n" : "");
 
-        String description = "Simple versionless [ " + servletFeature + ", " + versionlessFeature + " ]" +
+        String description = "Feature pair [ " + feature0 + ", " + feature1 + " ]" +
                                (allowMultiple ? " [ Multiple ]" : "");
 
         return asCase(name, description,
@@ -535,12 +565,14 @@ public class FeatureResolverBaseline {
 
         Result resultWithKernel = resolver.doResolve(repository,
                                                      kernelFeatures, rootFeatures, preResolved,
-                                                     allowedMultiple, processTypes);
+                                                     allowedMultiple, processTypes,
+                                                     null);
 
         Collection<ProvisioningFeatureDefinition> emptyDefs = Collections.emptySet();
         Result resultWithoutKernel = resolver.doResolve(repository,
                                                         emptyDefs, rootFeatures, preResolved,
-                                                        allowedMultiple, processTypes);
+                                                        allowedMultiple, processTypes,
+                                                        null);
 
         long endTimeNs = VerifyData.getTimeNs();
         long durationNs = endTimeNs - startTimeNs;

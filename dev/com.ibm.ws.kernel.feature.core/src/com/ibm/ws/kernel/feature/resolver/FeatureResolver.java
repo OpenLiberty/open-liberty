@@ -261,4 +261,52 @@ public interface FeatureResolver {
                            Set<String> preResolved,
                            Set<String> allowedMultipleVersions,
                            EnumSet<ProcessType> supportedProcessTypes);
+
+    // Updated, platform aware, feature resolution API.
+
+    Result resolve(Repository repository,
+                   Collection<String> rootFeatures,
+                   Set<String> preResolved,
+                   boolean allowMultipleVersions,
+                   Collection<String> rootPlatforms);
+
+    Result resolve(Repository repository,
+                   Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                   Collection<String> rootFeatures,
+                   Set<String> preResolved,
+                   boolean allowMultipleVersions,
+                   Collection<String> platforms);
+
+    Result resolve(Repository repository,
+                   Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                   Collection<String> rootFeatures,
+                   Set<String> preResolved,
+                   boolean allowMultipleVersions,
+                   EnumSet<ProcessType> supportedProcessTypes,
+                   Collection<String> platforms);
+
+    /**
+     * Fully parameterized feature resolution: Resolves a root features and root
+     * platforms against a repository.
+     *
+     * @param repository              A feature repository.
+     * @param kernelFeatures          Preset kernel features.
+     * @param rootFeatures            Public features which are to be resolved.
+     * @param preResolved             Optional fully resolved features collection.
+     * @param allowedMultipleVersions Control parameter: Should resolution respect singleton
+     *                                    specifications on features.
+     * @param supportedProcessTypes   Control parameter: Limit resolution to features which support
+     *                                    these process types.
+     * @param rootPlatforms           Optional platforms which enable resolution of
+     *                                    versionless features.
+     *
+     * @return The feature resolution result.
+     */
+    public Result resolve(Repository repository,
+                          Collection<ProvisioningFeatureDefinition> kernelFeatures,
+                          Collection<String> rootFeatures,
+                          Set<String> preResolved,
+                          Set<String> allowedMultipleVersions,
+                          EnumSet<ProcessType> supportedProcessTypes,
+                          Collection<String> rootPlatforms);
 }

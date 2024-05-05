@@ -82,13 +82,13 @@ public class BaselineServletUnitTest extends FeatureResolutionUnitTestBase {
         VerifyData verifyData = readData(getDataFile_OL());
 
         // WAS liberty adds and modifies the Open liberty cases.
-        // if (RepositoryUtil.isWASLiberty()) {
-        int initialCount = verifyData.getCases().size();
-        VerifyData verifyData_WL = readData(getDataFile_WL());
-        verifyData = verifyData.add(verifyData_WL);
-        int finalCount = verifyData.getCases().size();
-        System.out.println("Case adjustment [ " + (finalCount - initialCount) + " ]");
-        // }
+        if (RepositoryUtil.isWASLiberty()) {
+            int initialCount = verifyData.getCases().size();
+            VerifyData verifyData_WL = readData(getDataFile_WL());
+            verifyData = verifyData.add(verifyData_WL);
+            int finalCount = verifyData.getCases().size();
+            System.out.println("Case adjustment [ " + (finalCount - initialCount) + " ]");
+        }
 
         return asCases(verifyData);
     }
