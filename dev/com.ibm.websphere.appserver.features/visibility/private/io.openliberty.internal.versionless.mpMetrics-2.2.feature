@@ -3,7 +3,8 @@ symbolicName=io.openliberty.internal.versionless.mpMetrics-2.2
 visibility=private
 singleton=true
 -features= \
-    io.openliberty.internal.versionlessMP-3.2, \
+    io.openliberty.noShip-1.0, \
+    io.openliberty.internal.mpVersion-3.2, \
     com.ibm.websphere.appserver.mpMetrics-2.2
 kind=noship
-edition=base
+edition=full

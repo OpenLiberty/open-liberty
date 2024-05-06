@@ -102,6 +102,8 @@ public class VersionlessFeatureCreator {
         writer.newLine();
         writer.append("-features= \\");
         writer.newLine();
+        writer.append("    io.openliberty.noShip-1.0, \\");
+        writer.newLine();
         if(x != null && y != null){
             writer.append("    " + x + "-" + y + ", \\");
             writer.newLine();

@@ -5,4 +5,4 @@ IBM-ShortName: appAuthorization
 Subsystem-Name: appAuthorization
 -features=io.openliberty.internal.versionless.jacc-1.5; ibm.tolerates:="2.0,2.1"
 kind=noship
-edition=base
+edition=full

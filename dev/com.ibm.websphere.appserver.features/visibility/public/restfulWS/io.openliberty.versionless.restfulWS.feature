@@ -5,4 +5,4 @@ IBM-ShortName: restfulWS
 Subsystem-Name: restfulWS
 -features=io.openliberty.internal.versionless.jaxrs-2.0; ibm.tolerates:="2.1,3.0,3.1"
 kind=noship
-edition=base
+edition=full

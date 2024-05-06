@@ -5,4 +5,4 @@ IBM-ShortName: restConnector
 Subsystem-Name: restConnector
 -features=io.openliberty.internal.versionless.restConnector-2.0
 kind=noship
-edition=base
+edition=full

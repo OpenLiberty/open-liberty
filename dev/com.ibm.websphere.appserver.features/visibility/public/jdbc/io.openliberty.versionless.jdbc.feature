@@ -5,4 +5,4 @@ IBM-ShortName: jdbc
 Subsystem-Name: jdbc
 -features=io.openliberty.internal.versionless.jdbc-4.1; ibm.tolerates:="4.2"
 kind=noship
-edition=base
+edition=full

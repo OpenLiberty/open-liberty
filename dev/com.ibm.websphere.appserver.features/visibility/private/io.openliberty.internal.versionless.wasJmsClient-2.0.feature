@@ -3,6 +3,7 @@ symbolicName=io.openliberty.internal.versionless.wasJmsClient-2.0
 visibility=private
 singleton=true
 -features= \
+    io.openliberty.noShip-1.0, \
     com.ibm.websphere.appserver.wasJmsClient-2.0
 kind=noship
-edition=base
+edition=full
