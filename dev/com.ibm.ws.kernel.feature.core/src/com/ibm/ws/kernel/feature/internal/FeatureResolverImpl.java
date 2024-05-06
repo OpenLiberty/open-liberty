@@ -1225,9 +1225,9 @@ public class FeatureResolverImpl implements FeatureResolver {
 
             //if a versionless feature is postponed, process that first
             if (isBeta) {
-                if (!!!_current._postponedVersionless.isEmpty()
-                    && (getSelected("io.openliberty.mpCompatible") != null || getSelected("io.openliberty.internal.versionlessMP") != null
-                        || getSelected("com.ibm.websphere.appserver.eeCompatible") != null)) {
+                if (!!!_current._postponedVersionless.isEmpty() &&
+                    ((getSelected("io.openliberty.internal.mpVersion") != null) ||
+                     (getSelected("com.ibm.websphere.appserver.eeCompatible") != null))) {
 
                     Set<String> entries = _current._postponedVersionless.keySet();
                     Iterator<Map.Entry<String, Chains>> postponedVersionlessIterator = _current._postponedVersionless.entrySet().iterator();
@@ -1237,8 +1237,9 @@ public class FeatureResolverImpl implements FeatureResolver {
                     //If we do, choose the first one we see
                     while (postponedVersionlessIterator.hasNext()) {
                         firstPostponedVersionless = postponedVersionlessIterator.next();
+
                         if (firstPostponedVersionless.getKey().substring(36, 38).equals("mp")) {
-                            if (getSelected("io.openliberty.mpCompatible") != null || getSelected("io.openliberty.internal.versionlessMP") != null) {
+                            if (getSelected("io.openliberty.internal.mpVersion") != null) {
                                 break;
                             }
                         } else {
