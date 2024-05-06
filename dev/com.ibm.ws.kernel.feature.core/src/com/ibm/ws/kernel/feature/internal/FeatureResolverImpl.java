@@ -274,7 +274,8 @@ public class FeatureResolverImpl implements FeatureResolver {
             if (platBase.startsWith("jakartaee") || platBase.startsWith("javaee")) {
                 compatibilityFeature = "com.ibm.websphere.appserver.eeCompatible-" + platVersion;
             } else if (platBase.startsWith("MicroProfile")) {
-                compatibilityFeature = "io.openliberty.internal.versionlessMP-" + platVersion;
+                compatibilityFeature = "io.openliberty.internal.mpVersion-" + platVersion;
+
             } else {
                 trace("Platform element [ " + plat + " ] is not a known platform.");
                 continue;
@@ -1101,25 +1102,61 @@ public class FeatureResolverImpl implements FeatureResolver {
             return _current._result;
         }
 
-        // mp versionless features need "versionlessMP" to resolve
+        /** The name of the EE compatibility feature. */
+        private static final String COMPATIBILITY_EE = "com.ibm.websphere.appserver.eeCompatible";
+        /** The name of the MicroProfile compatibility feature. */
+        private static final String COMPATIBILITY_MP = "io.openliberty.internal.mpVersion";
 
-        private static final String VERSIONLESS_MP = "io.openliberty.internal.versionless.versionlessMP";
+        /** The common prefix for all internal versionless features. */
+        private static final String VERSIONLESS_PREFIX = "io.openliberty.internal.versionless.";
+        /** The extended prefix for internal MicroProfile versionless features. */
+        private static final String VERSIONLESS_PREFIX_MP = "io.openliberty.internal.versionless.mp";
 
-        boolean doPostponeVersionlessMP(String baseSymbolicName) {
-            return (baseSymbolicName.startsWith(VERSIONLESS_MP) && (getSelected(VERSIONLESS_MP) == null));
+        /**
+         * Tell if a feature is an internal versionless feature.
+         *
+         * This answers true for both EE and Microprofile versionless features.
+         *
+         * @param baseSymbolicName The base symbolic name of a feature.
+         *
+         * @return True or false telling if the feature is an internal versionless feature.
+         */
+        boolean isVersionless(String baseSymbolicName) {
+            return baseSymbolicName.startsWith(VERSIONLESS_PREFIX);
         }
 
-        // ee versionless features need "eeCompatible" to resolve
+        /**
+         * Tell if a feature is an internal Microprofile versionless feature.
+         *
+         * @param baseSymbolicName The base symbolic name of a feature.
+         *
+         * @return True or false telling if the feature is an internal microprofile
+         *         versionless feature.
+         */
+        boolean isVersionlessMP(String baseSymbolicName) {
+            return baseSymbolicName.startsWith(VERSIONLESS_PREFIX_MP);
+        }
 
-        private static final String VERSIONLESS_EE = "io.openliberty.internal.versionless.eeCompatible";
-
-        boolean doPostponeVersionlessEE(String baseSymbolicName) {
-            return (baseSymbolicName.startsWith(VERSIONLESS_EE) && (getSelected(VERSIONLESS_EE) == null));
+        /**
+         * Tell if a feature is an internal EE versionless feature.
+         *
+         * @param baseSymbolicName The base symbolic name of a feature.
+         *
+         * @return True or false telling if the feature is an internal EE
+         *         versionless feature.
+         */
+        boolean isVersionlessEE(String baseSymbolicName) {
+            return (isVersionless(baseSymbolicName) && !isVersionlessMP(baseSymbolicName));
         }
 
         void processCandidates(Collection<String> chain, List<String> candidateNames, String symbolicName, String baseSymbolicName, String preferredVersion, boolean isSingleton) {
-            if (doPostponeVersionlessEE(baseSymbolicName) ||
-                doPostponeVersionlessMP(baseSymbolicName)) {
+            // A versionless candidate cannot be resolved until a version of the
+            // corresponding compatibility feature is selected.  That happens either
+            // because a platform was specified, or because a resolved feature pulls in
+            // a specific compatibility feature.
+            
+            if ((isVersionlessEE(baseSymbolicName) && (getSelected(COMPATIBILITY_EE) == null)) ||
+                (isVersionlessMP(baseSymbolicName) && (getSelected(COMPATIBILITY_MP) == null))) {
                 addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
                 return;
             }

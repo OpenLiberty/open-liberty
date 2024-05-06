@@ -148,7 +148,9 @@ public class FeatureResolverBaseline {
         return servletFeatures;
     }
 
+    /** Common prefix of public versionless features.  This is used by both EE and MP. */
     private static final String VERSIONLESS_PREFIX = "io.openliberty.versionless.";
+    /** Prefix of public microprofile versionless features. */
     private static final String VERSIONLESS_MP_PREFIX = "io.openliberty.versionless.mp";
 
     private static final boolean INCLUDE_EE = true;
