@@ -62,7 +62,7 @@ public class VersionlessFeatureCreator {
                 String x = null;
                 String y = null;
                 if(feature.getFeatureName().startsWith("mp")){
-                    x = "io.openliberty.internal.versionlessMP";
+                    x = "io.openliberty.internal.mpVersion";
                     if(dependencyVersions[1].equals("")){
                         y = features[1].split("-")[1];
                     }
@@ -86,10 +86,10 @@ public class VersionlessFeatureCreator {
     }
 
     private boolean createPrivateVersionedFeature(String featureName, String featureNum, String x, String y, String fullName) throws IOException {
-        // File checkExisting = new File(checkExistingPrivate + "io.openliberty.internal.versionless." + featureName + "-" + featureNum + ".feature");
-        // if(checkExisting.exists()){
-        //     return false;
-        // }
+        File checkExisting = new File(checkExistingPrivate + "io.openliberty.internal.versionless." + featureName + "-" + featureNum + ".feature");
+        if(checkExisting.exists()){
+            return false;
+        }
     	File f = new File(privatePath + "io.openliberty.internal.versionless." + featureName + "-" + featureNum + ".feature");
         BufferedWriter writer = new BufferedWriter(new FileWriter(f));
         writer.append("-include= ~${workspace}/cnf/resources/bnd/feature.props");
@@ -110,7 +110,7 @@ public class VersionlessFeatureCreator {
         writer.newLine();
         writer.append("kind=noship");
         writer.newLine();
-        writer.append("edition=base");
+        writer.append("edition=full");
         writer.newLine();
         
         writer.close();
@@ -119,12 +119,12 @@ public class VersionlessFeatureCreator {
     }
 
     private boolean createPublicVersionlessFeature(VersionlessFeatureDefinition feature) throws IOException {
-        // File checkExisting = new File(checkExistingPublic + feature.getFeatureName() + "/io.openliberty.versionless." + feature.getFeatureName() + ".feature");
-        // //Even if we already have an existing public versionless feature, 
-        // //if we created a new private versionless feature we need to update the public feature with new dependencies
-        // if(checkExisting.exists() && validatePublicVersionlessFeature(feature)){
-        //     return false;
-        // }
+        File checkExisting = new File(checkExistingPublic + feature.getFeatureName() + "/io.openliberty.versionless." + feature.getFeatureName() + ".feature");
+        //Even if we already have an existing public versionless feature, 
+        //if we created a new private versionless feature we need to update the public feature with new dependencies
+        if(checkExisting.exists() && validatePublicVersionlessFeature(feature)){
+            return false;
+        }
     	File dir = new File(publicPath + feature.getFeatureName());
     	if(!dir.exists()) {
     		dir.mkdirs();
@@ -159,7 +159,7 @@ public class VersionlessFeatureCreator {
         writer.newLine();
         writer.append("kind=noship");
         writer.newLine();
-        writer.append("edition=base");
+        writer.append("edition=full");
         writer.newLine();
 
         writer.close();
@@ -168,10 +168,10 @@ public class VersionlessFeatureCreator {
     }
 
     private void createPublicFeaturePropertiesFile(VersionlessFeatureDefinition feature) throws IOException {
-        // File checkExisting = new File(checkExistingPublic + feature.getFeatureName() + "/resources/l10n/io.openliberty.versionless." + feature.getFeatureName() + ".properties");
-        // if(checkExisting.exists()){
-        //     return;
-        // }
+        File checkExisting = new File(checkExistingPublic + feature.getFeatureName() + "/resources/l10n/io.openliberty.versionless." + feature.getFeatureName() + ".properties");
+        if(checkExisting.exists()){
+            return;
+        }
     	File dir = new File(publicPath + feature.getFeatureName() + "/resources/l10n");
         dir.mkdirs();
         File f = new File(publicPath + feature.getFeatureName() + "/resources/l10n/io.openliberty.versionless." + feature.getFeatureName() + ".properties");
