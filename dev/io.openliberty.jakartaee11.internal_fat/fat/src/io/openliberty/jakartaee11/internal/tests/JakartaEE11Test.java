@@ -38,41 +38,14 @@ import io.openliberty.jakartaee11.internal.tests.util.FATFeatureResolver;
 @RunWith(FATRunner.class)
 public class JakartaEE11Test extends FATServletClient {
 
-    private static Set<String> getCompatFeatures(boolean openLibertyOnly) {
-        Set<String> compatFeatures = EE11FeatureCompatibilityTest.getAllCompatibleFeatures(openLibertyOnly);
-        // remove features so that they don't cause feature conflicts.
-        compatFeatures.remove("jdbc-4.0");
-        compatFeatures.remove("jdbc-4.1");
-        compatFeatures.remove("jdbc-4.2");
-        compatFeatures.remove("sessionCache-1.0");
-        compatFeatures.remove("facesContainer-4.1");
-        compatFeatures.remove("jsonbContainer-3.0");
-        compatFeatures.remove("jsonpContainer-2.1");
-        compatFeatures.remove("passwordUtilities-1.1");
-        compatFeatures.remove("persistenceContainer-3.2");
+    public static EE11Features ee11Features;
 
-        // remove client features
-        compatFeatures.remove("jakartaeeClient-11.0");
-        compatFeatures.remove("appSecurityClient-1.0");
-
-        // remove acmeCA-2.0 since it requires additional resources and configuration
-        compatFeatures.remove("acmeCA-2.0");
-
-        // remove noship features
-        compatFeatures.remove("data-1.1");
-        compatFeatures.remove("jcacheContainer-1.1");
-        compatFeatures.remove("netty-1.0");
-        compatFeatures.remove("noShip-1.0");
-        compatFeatures.remove("scim-2.0");
-
-        // noship, still in development
-        compatFeatures.remove("mpReactiveStreams-3.0");
-        compatFeatures.remove("mpReactiveMessaging-3.0");
-
-        // remove logAnalysis-1.0.  It depends on hpel being configured
-        compatFeatures.remove("logAnalysis-1.0");
-
-        return compatFeatures;
+    static {
+        try {
+            ee11Features = new EE11Features(FATFeatureResolver.getInstallRoot());
+        } catch (Exception e) {
+            Assert.fail("Feature initialization error: " + e);
+        }
     }
 
     public static EE11Features getFeatures() {
@@ -156,7 +129,7 @@ public class JakartaEE11Test extends FATServletClient {
                                                  "CWWKS5207W", // The remaining ones relate to config not done for the server / app
                                                  "CWWWC0002W",
                                                  "CWMOT0010W",
-                                                 "CWWKE0701E", // TODO: Issue 28226: Fix this or verify that it is expected
+                                                 "CWWKE0701E", // TODO: Fix this or verify that it is expected
                                                  "TRAS4352W" // Only happens when running with WebSphere Liberty image due to an auto feature
             };
 
@@ -165,7 +138,7 @@ public class JakartaEE11Test extends FATServletClient {
                                                  "CWWKS5207W", // The remaining ones relate to config not done for the server / app
                                                  "CWWWC0002W",
                                                  "CWMOT0010W",
-                                                 "CWWKE0701E", // TODO: Issue 28226: Fix this or verify that it is expected
+                                                 "CWWKE0701E", // TODO: Fix this or verify that it is expected
                                                  "CWWKG0033W", // related to missing config for collectives
                                                  "CWSJY0035E", // wmqJmsClient.rar.location variable not in the server.xml
                                                  "CWWKE0701E", // wmqJmsClient.rar.location variable not in the server.xml
