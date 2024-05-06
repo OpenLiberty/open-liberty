@@ -35,7 +35,7 @@ import componenttest.topology.utils.tck.TCKRunner;
 @MinimumJavaLevel(javaLevel = 17)
 public class DataWebTckLauncher {
 
-    @Server("io.openliberty.org.jakarta.data.1.0.web")
+    @Server("io.openliberty.jakarta.data.1.0.web")
     public static LibertyServer server;
 
     @BeforeClass
