@@ -5,4 +5,4 @@ IBM-ShortName: xmlWS
 Subsystem-Name: xmlWS
 -features=io.openliberty.internal.versionless.jaxws-2.2; ibm.tolerates:="3.0,4.0"
 kind=noship
-edition=base
+edition=full

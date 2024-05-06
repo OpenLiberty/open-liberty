@@ -3,6 +3,7 @@ symbolicName=io.openliberty.internal.versionless.javaMail-2.1
 visibility=private
 singleton=true
 -features= \
+    io.openliberty.noShip-1.0, \
     io.openliberty.mail-2.1
 kind=noship
-edition=base
+edition=full

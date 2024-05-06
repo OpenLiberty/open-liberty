@@ -3,7 +3,8 @@ symbolicName=io.openliberty.internal.versionless.mpConfig-1.3
 visibility=private
 singleton=true
 -features= \
-    io.openliberty.internal.versionlessMP-1.4; ibm.tolerates:="2.0,2.1,2.2,3.0,3.2", \
+    io.openliberty.noShip-1.0, \
+    io.openliberty.internal.mpVersion-1.4; ibm.tolerates:="2.0,2.1,2.2,3.0,3.2", \
     com.ibm.websphere.appserver.mpConfig-1.3
 kind=noship
-edition=base
+edition=full

@@ -5,4 +5,4 @@ IBM-ShortName: jcaInboundSecurity
 Subsystem-Name: jcaInboundSecurity
 -features=io.openliberty.internal.versionless.jcaInboundSecurity-1.0; ibm.tolerates:="2.0"
 kind=noship
-edition=base
+edition=full

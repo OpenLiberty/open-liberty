@@ -5,4 +5,4 @@ IBM-ShortName: persistence
 Subsystem-Name: persistence
 -features=io.openliberty.internal.versionless.jpa-2.1; ibm.tolerates:="2.2,3.0,3.1"
 kind=noship
-edition=base
+edition=full

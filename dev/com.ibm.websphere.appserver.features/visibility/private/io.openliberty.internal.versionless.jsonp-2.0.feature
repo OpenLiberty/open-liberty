@@ -3,6 +3,7 @@ symbolicName=io.openliberty.internal.versionless.jsonp-2.0
 visibility=private
 singleton=true
 -features= \
+    io.openliberty.noShip-1.0, \
     io.openliberty.jsonp-2.0
 kind=noship
-edition=base
+edition=full
