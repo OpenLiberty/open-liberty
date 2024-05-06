@@ -22,6 +22,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -116,8 +117,12 @@ public class MonitorAppStateListener implements ApplicationStateListener {
         }
     }
     
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
-    public void getMP5RestMetricsCallback(RestMetricsCallback restMetricCallback) {
-    	MonitorAppStateListener.restMetricCallback = restMetricCallback;
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
+    public void setMP5RestMetricsCallback(RestMetricsCallback restMetricCallback) {
+        MonitorAppStateListener.restMetricCallback = restMetricCallback;
+    }
+    
+    public void unsetMP5RestMetricsCallback(RestMetricsCallback restMetricCallback) {
+        MonitorAppStateListener.restMetricCallback = null;
     }
 }
