@@ -531,8 +531,6 @@ public class FeatureResolverImpl implements FeatureResolver {
                             EnumSet<ProcessType> supportedProcessTypes,
                             Collection<String> rootPlatforms) {
 
-        SelectionContext selectionContext = new SelectionContext(repository, allowedMultipleVersions, supportedProcessTypes);
-
         if (isBeta) {
             Set<String> envPlatforms = collectPlatformCompatibilityFeatures(repository);
             if (envPlatforms != null) {
