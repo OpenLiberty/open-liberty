@@ -118,11 +118,11 @@ public class MonitorAppStateListener implements ApplicationStateListener {
     }
     
     @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
-    public void setMP5RestMetricsCallback(RestMetricsCallback restMetricCallback) {
+    public void setRestMetricsCallback(RestMetricsCallback restMetricCallback) {
         MonitorAppStateListener.restMetricCallback = restMetricCallback;
     }
     
-    public void unsetMP5RestMetricsCallback(RestMetricsCallback restMetricCallback) {
+    public void unsetRestMetricsCallback(RestMetricsCallback restMetricCallback) {
         MonitorAppStateListener.restMetricCallback = null;
     }
 }
