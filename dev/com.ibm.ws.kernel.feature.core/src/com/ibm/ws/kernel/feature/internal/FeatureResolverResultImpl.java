@@ -33,9 +33,8 @@ public class FeatureResolverResultImpl implements Result {
         this._missing = new HashSet<String>(0);
         this._missingRoots = new HashSet<>(0);
         this._missingReferences = new HashSet<>(0);
-
-        this._incompleteFeatures = new HashMap<>(0);
         this._unlabelledResources = new HashMap<>(0);
+        this._incompleteFeatures = new HashMap<>(0);
 
         this._nonPublicRoots = new HashSet<String>(0);
 
@@ -109,16 +108,16 @@ public class FeatureResolverResultImpl implements Result {
     // -- Root feature name.
     // addMissingRoot(featureName);
 
+    // FeatureResolverImpl.processRoots
+    // -- An public feature obtained by resolution does not exist.
+    // -- Resolved feature name.
+    // addMissingReference(featureName);
+
     // FeatureResolverImpl.processIncluded
     // -- An included resource does not have a symbolic name.
     // -- Resolution chain.
     // -- Included resource.
     // addUnlabelledResource(includedResource, resolutionChain)
-
-    // FeatureResolverImpl.processRoots
-    // -- An public feature obtained by resolution does not exist.
-    // -- Resolved feature name.
-    // addMissingReference(featureName);
 
     // FeatureResolverImpl.SelectionContext.processCandidates
     // -- No candidate is available which matches the resolution process type.
@@ -140,6 +139,16 @@ public class FeatureResolverResultImpl implements Result {
     protected void addMissingRoot(String featureName) {
         if (_missingRoots.add(featureName)) {
             trace("Root feature [ " + featureName + " ] is missing.");
+        }
+
+        addMissing(featureName);
+    }
+
+    protected final Set<String> _missingReferences;
+
+    protected void addMissingReference(String featureName) {
+        if (_missingReferences.add(featureName)) {
+            trace("Missing referenced feature [ " + featureName + " ]");
         }
 
         addMissing(featureName);
@@ -169,23 +178,13 @@ public class FeatureResolverResultImpl implements Result {
         addMissing(location);
     }
 
-    protected final Set<String> _missingReferences;
-
-    protected void addMissingReference(String featureName) {
-        if (_missingReferences.add(featureName)) {
-            trace("Missing referenced feature [ " + featureName + " ]");
-        }
-
-        addMissing(featureName);
-    }
-
     public static class IncompleteResolution {
-        public final String baseName;
+        public final String symbolicName;
         public final List<String> candidates;
         public final List<String> chain;
 
         public IncompleteResolution(String baseName, Collection<String> candidates, Collection<String> chain) {
-            this.baseName = baseName;
+            this.symbolicName = baseName;
             this.candidates = new ArrayList<>(candidates);
             this.chain = new ArrayList<>(chain);
         }
@@ -193,20 +192,20 @@ public class FeatureResolverResultImpl implements Result {
 
     protected final Map<String, Set<IncompleteResolution>> _incompleteFeatures;
 
-    protected void addIncomplete(String baseName, List<String> candidates, Collection<String> chain) {
-        Set<IncompleteResolution> resolutions = _incompleteFeatures.get(baseName);
+    protected void addIncomplete(String symbolicName, List<String> candidates, Collection<String> chain) {
+        Set<IncompleteResolution> resolutions = _incompleteFeatures.get(symbolicName);
         if (resolutions == null) {
             resolutions = new HashSet<>(1);
-            _incompleteFeatures.put(baseName, resolutions);
+            _incompleteFeatures.put(symbolicName, resolutions);
         }
 
-        IncompleteResolution resolution = new IncompleteResolution(baseName, candidates, chain);
+        IncompleteResolution resolution = new IncompleteResolution(symbolicName, candidates, chain);
         resolutions.add(resolution);
 
-        trace("Base feature [ " + baseName + " ] with candidates [ " + candidates + " ] has no resolutions for the process type.");
+        trace("Feature [ " + symbolicName + " ] with candidates [ " + candidates + " ] has no resolutions for the process type.");
         trace(describeResolutionPath(chain));
 
-        addMissing(baseName);
+        addMissing(symbolicName);
     }
 
     protected final Set<String> _nonPublicRoots;

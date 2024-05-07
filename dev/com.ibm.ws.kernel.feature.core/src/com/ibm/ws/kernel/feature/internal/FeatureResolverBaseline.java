@@ -212,10 +212,6 @@ public class FeatureResolverBaseline {
                 System.out.println("Add: Selected [ " + addReason + " ] [ " + featureName + " ]");
                 versionlessFeatures.add(featureName);
             }
-
-            if ( versionlessFeatures.size() == 20 ) {
-                break;
-            }
         }
 
         Collections.sort(versionlessFeatures);

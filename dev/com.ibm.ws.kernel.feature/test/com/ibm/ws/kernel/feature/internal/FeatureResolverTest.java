@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -77,6 +77,15 @@ public class FeatureResolverTest {
         final FeatureRepository repoImpl = new FeatureRepository();
         repoImpl.init();
         repository = new FeatureResolver.Repository() {
+            @Override
+            public List<ProvisioningFeatureDefinition> getFeatures() {
+                throw new UnsupportedOperationException("Unimplemented method 'getFeatures'");
+            }
+
+            @Override
+            public List<ProvisioningFeatureDefinition> select(FeatureResolver.Selector<ProvisioningFeatureDefinition> selector) {
+                throw new UnsupportedOperationException("Unimplemented method 'select'");
+            }
 
             @Override
             public ProvisioningFeatureDefinition getFeature(String featureName) {
