@@ -33,7 +33,6 @@ import org.apache.aries.util.manifest.ManifestHeaderProcessor;
 import org.apache.aries.util.manifest.ManifestHeaderProcessor.GenericMetadata;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.osgi.framework.Filter;
 // import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -43,6 +42,7 @@ import org.osgi.framework.VersionRange;
 import com.ibm.ws.kernel.feature.AppForceRestart;
 import com.ibm.ws.kernel.feature.ProcessType;
 import com.ibm.ws.kernel.feature.Visibility;
+import com.ibm.ws.kernel.feature.internal.FeatureResolverInterfacesTest.TestFeature;
 import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.HeaderElementDefinition;
@@ -231,10 +231,10 @@ public class FeatureResolverInterfacesTest {
             throw new UnsupportedOperationException("Unimplemented method 'getFeatures'");
         }
 
-        @Override
-        public List<ProvisioningFeatureDefinition> select(FeatureResolver.Selector<ProvisioningFeatureDefinition> selector) {
-            throw new UnsupportedOperationException("Unimplemented method 'select'");
-        }
+        // @Override
+        // public List<ProvisioningFeatureDefinition> select(FeatureResolver.Selector<ProvisioningFeatureDefinition> selector) {
+        //     throw new UnsupportedOperationException("Unimplemented method 'select'");
+        // }
 
         @Override
         public Collection<ProvisioningFeatureDefinition> getAutoFeatures() {

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal.subsystem;
 
- import java.io.BufferedInputStream;
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -796,7 +796,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
         return builder.toString();
     }
 
-    @Override
+    // @Override
     public List<ProvisioningFeatureDefinition> select(Selector<ProvisioningFeatureDefinition> selector) {
         if (selector == null) {
             return new ArrayList<>(cachedFeatures.values());

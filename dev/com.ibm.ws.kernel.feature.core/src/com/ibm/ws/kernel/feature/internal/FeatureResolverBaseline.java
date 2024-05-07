@@ -31,6 +31,7 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
 import com.ibm.ws.kernel.feature.internal.util.VerifyEnv;
 import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
@@ -393,7 +394,8 @@ public class FeatureResolverBaseline {
                                                 !RepoXML.IS_VERSIONLESS_FEATURE,
                                                 !RepoXML.IS_TEST_FEATURE);
 
-        List<ProvisioningFeatureDefinition> featureDefs = repository.select(selector);
+        List<ProvisioningFeatureDefinition> featureDefs = FeatureResolver.select(repository, selector);
+
         int numDefs = featureDefs.size();
         ProvisioningFeatureDefinition[] defsArray = featureDefs.toArray( new ProvisioningFeatureDefinition[numDefs]);
         Arrays.sort(defsArray, COMPARE_SYMBOLIC);

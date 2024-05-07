@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 
@@ -46,23 +47,14 @@ public class RestrictedFeatureRespository implements Repository {
     private final Collection<String> restrictedAttempts;
 
     @Override
-    public List<ProvisioningFeatureDefinition> select(Selector<ProvisioningFeatureDefinition> selector) {
-        return repo.select( new Selector<ProvisioningFeatureDefinition>() {
-            @Override
-            public boolean test(ProvisioningFeatureDefinition def) {
-                return ( !restricted.contains(def.getSymbolicName()) && selector.test(def) );
-            }
-        });
-    }
-
-    @Override
     public List<ProvisioningFeatureDefinition> getFeatures() {
-        return repo.select( new Selector<ProvisioningFeatureDefinition>() {
-            @Override
-            public boolean test(ProvisioningFeatureDefinition def) {
-                return ( !restricted.contains(def.getSymbolicName()) );
-            }
-        });
+        return FeatureResolver.select(repo,
+                                      new Selector<ProvisioningFeatureDefinition>() {
+                                          @Override
+                                          public boolean test(ProvisioningFeatureDefinition def) {
+                                              return (!restricted.contains(def.getSymbolicName()));
+                                          }
+                                      });
     }
 
     @Override
