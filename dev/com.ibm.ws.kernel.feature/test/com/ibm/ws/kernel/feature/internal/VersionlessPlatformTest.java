@@ -42,6 +42,7 @@ import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 
 import junit.framework.Assert;
@@ -236,6 +237,18 @@ public class VersionlessPlatformTest {
                     return testOverrides;
                 }
                 return repoImpl.getConfiguredTolerates(baseSymbolicName);
+            }
+
+            @Override
+            public List<ProvisioningFeatureDefinition> getFeatures() {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'getFeatures'");
+            }
+
+            @Override
+            public List<ProvisioningFeatureDefinition> select(Selector<ProvisioningFeatureDefinition> selector) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'select'");
             }
         };
     }

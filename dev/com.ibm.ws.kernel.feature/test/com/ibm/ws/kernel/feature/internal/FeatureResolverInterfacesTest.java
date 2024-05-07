@@ -49,6 +49,7 @@ import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 
 /**
  * In contrast to {@link FeatureResolverTest}, this class tests the feature resolver using its interfaces directly, without invoking any manifest reading code.
@@ -244,6 +245,18 @@ public class FeatureResolverInterfacesTest {
                 autoFeatures.put(feature.getSymbolicName(), feature);
                 autoFeatures.put(feature.getIbmShortName(), feature);
             }
+        }
+
+        @Override
+        public List<ProvisioningFeatureDefinition> getFeatures() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getFeatures'");
+        }
+
+        @Override
+        public List<ProvisioningFeatureDefinition> select(Selector<ProvisioningFeatureDefinition> selector) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'select'");
         }
 
     }

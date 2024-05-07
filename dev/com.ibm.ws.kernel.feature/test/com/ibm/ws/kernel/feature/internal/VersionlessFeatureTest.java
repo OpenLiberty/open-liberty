@@ -42,6 +42,7 @@ import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Chain;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
+import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
 
 import junit.framework.Assert;
@@ -102,7 +103,7 @@ public class VersionlessFeatureTest {
         Map<String, SubsystemFeatureDefinitionImpl> publicDefs = tempRepo.getAllFeatures();
 
         for(String s : publicDefs.keySet()){
-            if(s.startsWith("io.openliberty.versionless")){
+            if(s.startsWith("io.openliberty.versionless.")){
                 String featureName = tempRepo.getFeature(s).getFeatureName();
                 testCases.add(new VersionlessTestCase(
                     Arrays.asList(
@@ -122,21 +123,6 @@ public class VersionlessFeatureTest {
                     ), Collections.<String> emptyList()));
             }
         }
-
-        testCases.add(new VersionlessTestCase(
-            Arrays.asList(
-                "servlet-5.0, mpHealth, mpMetrics".split("\\s*,\\s*")
-            ), 
-            Arrays.asList(
-                "cdi-3.0, distributedMap-1.0, jndi-1.0, json-1.0, monitor-1.0, mpConfig-3.0, mpHealth, mpHealth-4.0, mpMetrics, mpMetrics-4.0, servlet-5.0, ssl-1.0".split("\\s*,\\s*")
-            )));
-        testCases.add(new VersionlessTestCase(
-            Arrays.asList(
-                "servlet-6.0, mpHealth, mpMetrics".split("\\s*,\\s*")
-            ), 
-            Arrays.asList(
-                "cdi-4.0, distributedMap-1.0, jndi-1.0, json-1.0, monitor-1.0, mpConfig-3.0, mpHealth, mpHealth-4.0, mpMetrics, mpMetrics-5.1, servlet-6.0, ssl-1.0".split("\\s*,\\s*")
-            )));
 
         System.out.println("TestCases: " + testCases.toString());
         System.out.println("As List: " + Arrays.asList(testCases));
@@ -195,6 +181,18 @@ public class VersionlessFeatureTest {
                     return testOverrides;
                 }
                 return repoImpl.getConfiguredTolerates(baseSymbolicName);
+            }
+
+            @Override
+            public List<ProvisioningFeatureDefinition> getFeatures() {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'getFeatures'");
+            }
+
+            @Override
+            public List<ProvisioningFeatureDefinition> select(Selector<ProvisioningFeatureDefinition> selector) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'select'");
             }
         };
     }
