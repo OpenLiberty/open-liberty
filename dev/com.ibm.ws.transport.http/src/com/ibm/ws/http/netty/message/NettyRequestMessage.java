@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -35,6 +34,7 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.netty.MSP;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
+import com.ibm.ws.http2.GrpcServletServices;
 import com.ibm.wsspi.genericbnf.HeaderStorage;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedMethodException;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedSchemeException;
@@ -52,8 +52,6 @@ import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.VoidChannelPromise;
-import io.netty.handler.codec.http.Cookie;
-import io.netty.handler.codec.http.CookieDecoder;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -78,6 +76,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     private HttpInboundServiceContext context;
 
     private String url;
+    private Boolean isGrpc = null;
 
     private MethodValues method;
     private SchemeValues scheme;
@@ -120,6 +119,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         HttpChannelConfig config = isc instanceof HttpInboundServiceContextImpl ? ((HttpInboundServiceContextImpl) isc).getHttpConfig() : null;
 
         super.init(request, isc, config);
+        setAndGetIsGrpc();
 //        verifyRequest();
     }
 
@@ -134,6 +134,75 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             message.setRequestURI(message.getRequestURI());
         // Need to check if Scheme is also verified by Netty coded or add that ourselves
         // Probably need to add check of authority ourselves as well
+    }
+
+    /**
+     * Using the pseudo headers set on this link, check to see if there is a matching gRPC service registered with
+     * the server. If a match is found, the PATH pseudo header will be updated with the correct application context.
+     *
+     * @return true if the request for this link maps to a registered gRPC service
+     */
+    public boolean setAndGetIsGrpc() {
+        if (isGrpc == null) {
+            if (GrpcServletServices.getServletGrpcServices() != null) {
+                Map<String, GrpcServletServices.ServiceInformation> servicePaths = GrpcServletServices.getServletGrpcServices();
+                if (servicePaths != null && !servicePaths.isEmpty()) {
+                    isGrpc = routeGrpcServletRequest(servicePaths);
+                } else {
+                    isGrpc = false;
+                }
+            } else {
+                isGrpc = false;
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            String currentURL = request.uri();
+            Tr.exit(tc, "setAndGetIsGrpc returning " + isGrpc + " for request path " + currentURL);
+        }
+        return isGrpc;
+    }
+
+    /**
+     * Existing gRPC clients don't know anything about application context roots. For example, a request
+     * might come in to "/helloworld.Greeter/SayHello"; so as a convenience, we will automatically append
+     * the correct application context root to the request. For this example, the URL will change from
+     * "/helloworld.Greeter/SayHello" -> "/app_context_root/helloworld.Greeter/SayHello"
+     *
+     * @return true if the request for this link maps to a gRPC service regustered in servicePaths
+     */
+    private boolean routeGrpcServletRequest(Map<String, GrpcServletServices.ServiceInformation> servicePaths) {
+        String requestContentType = Objects.isNull(HttpUtil.getMimeType(request)) ? null : HttpUtil.getMimeType(request).toString();
+        if (requestContentType != null && servicePaths != null) {
+            requestContentType = requestContentType.toLowerCase();
+            if ("application/grpc".equalsIgnoreCase(requestContentType)) {
+
+                String currentURL = request.uri();
+
+                System.out.println("Current url: " + currentURL);
+
+                String searchURL = currentURL;
+                searchURL = searchURL.substring(1);
+                int index = searchURL.lastIndexOf('/');
+                searchURL = searchURL.substring(0, index);
+
+                GrpcServletServices.ServiceInformation info = servicePaths.get(searchURL);
+                if (info != null) {
+                    String contextRoot = info.getContextRoot();
+                    if (contextRoot != null && !!!"/".equals(contextRoot)) {
+                        String newPath = contextRoot + currentURL;
+                        this.request.setUri(newPath);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Inbound gRPC request translated from " + currentURL + " to " + newPath);
+                        }
+                    }
+                    return true;
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Inbound gRPC request URL did not match any registered services: " + currentURL);
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -249,7 +318,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     }
 
     @Override
-    @FFDCIgnore({  URISyntaxException.class })
+    @FFDCIgnore({ URISyntaxException.class })
     public String getRequestURI() {
         MSP.log("getRequestURI: query.path()" + query.path() + "query uri: " + query.uri());
         if (getMethod().equalsIgnoreCase(HttpMethod.CONNECT.toString())) {
@@ -260,11 +329,11 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             //URI requestUri = new URL(request.uri()).toURI();
             URI requestUri = new URI(request.uri());
             // If it works it means we have an absolute URI and not a path
-            System.out.println("MSP: requestURI path is set to -> " + requestUri.getPath() );
+            System.out.println("MSP: requestURI path is set to -> " + requestUri.getPath());
             System.out.println("MSP: there is also the raw: " + requestUri.getRawPath());
             return requestUri.getRawPath();
-     //   } catch (MalformedURLException e) {
-          //  return query.path();
+            //   } catch (MalformedURLException e) {
+            //  return query.path();
         } catch (URISyntaxException e) {
             return query.path();
         }
@@ -703,11 +772,9 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 //
 //            }
 //        }
-        
-        
+
         return com.ibm.ws.http.netty.cookie.CookieDecoder.decode(cookieString);
 
-        
     }
 
     @Override

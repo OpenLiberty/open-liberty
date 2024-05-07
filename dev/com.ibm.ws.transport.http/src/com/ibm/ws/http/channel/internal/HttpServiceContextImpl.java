@@ -31,9 +31,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.zip.DataFormatException;
 
@@ -2275,16 +2272,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             ((NettyResponseMessage) getResponse()).processCookies();
             HeaderHandler headerHandler = new HeaderHandler(myChannelConfig, response);
             headerHandler.complianceCheck();
-            
+
 //            if(getResponse().getStatusCode().getIntCode() == 302) {
 //                getResponse().setContentLength(0);
 //            }
 
-           
             if (HttpUtil.isContentLengthSet(response)) {
                 this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(HttpUtil.getContentLength(response));
             }
-            
+
         }
         final boolean isSwitching = response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS);
 
@@ -2292,9 +2288,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).set("WebSocket");
         }
         this.nettyContext.channel().writeAndFlush(this.nettyResponse);
-        
-        this.setHeadersSent();
 
+        this.setHeadersSent();
 
         try {
         } catch (Exception e) {
@@ -3282,7 +3277,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             // Content-Length values by caller
             // PK48697 - only update these if the message allows it
             if (!isPartialBody() && !getRequest().getMethod().equals(MethodValues.HEAD.getName())) {
-//                complete = true;
+                complete = true;
                 getResponse().setContentLength(GenericUtils.sizeOf(buffers));
             } else if (!msg.isChunkedEncodingSet() && msg.getContentLength() == HttpGenerics.NOT_SET) {
                 System.out.println("Setting transfer encoding due to no content length or transfer header!!");
