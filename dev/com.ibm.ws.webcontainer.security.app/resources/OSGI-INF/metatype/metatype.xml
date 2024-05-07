@@ -143,8 +143,7 @@
         </AD>    
         
         <AD id="partitionedCookie" name="%partitionedCookie" description="%partitionedCookie.desc"
-            required="false" type="Boolean"
-            default="false" />
+            required="false" type="Boolean" />
 
         <AD id="useContextRootForSSOCookiePath" name="%useContextRootForSSOCookiePath" description="%useContextRootForSSOCookiePath.desc" 
             required="false" type="Boolean" default="false"/>

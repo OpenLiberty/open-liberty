@@ -227,12 +227,10 @@ public class JavaScriptUtils {
                 cookieProperties.put("SameSite", sameSite);
                 if ("None".equalsIgnoreCase(sameSite)) {
                     cookieProperties.put("secure", null);
+			    	if (webAppSecurityConfig.isPartitionedCookie()) {
+              			cookieProperties.put("Partitioned", null);
+            		}
                 }
-            }
-			//WC want's us to put to value for partitioned regardless of the
-			//SS value in case they have a SS setting
-            if (webAppSecurityConfig.isPartitionedCookie()) {
-              cookieProperties.put("Partitioned", null);
             }
         }
         return cookieProperties;

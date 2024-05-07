@@ -113,11 +113,22 @@ public class ReferrerURLCookieHandler extends URLHandler {
 
             if (sameSite.equals("None")) {
                 c.setSecure(true);
-                if (webAppSecConfig.isPartitionedCookie()) {
-                    requestState.setCookieAttributes(cookieName, "Partitioned=");
+				Boolean partitioned = webAppSecConfig.getPartitionedCookie();
+                if (partitioned!=null) {
+				    //web container wants the value as a n/v pair
+                    requestState.setCookieAttributes(cookieName, "Partitioned="+partitioned.toString());
                 }
             }
-        }
+		} else if (sameSite == null) {
+          Boolean partitioned = webAppSecConfig.getPartitionedCookie();
+          if (partitioned!=null) {
+            WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
+            // if SS has no value, then the WC wants us to pass on our partitioned value if
+            // one was specified by the user.  Even though Partitioned is an attribute and not a N/V pair,
+            // the WC wants us to set the attribute true/false and they'll translate it.
+            requestState.setCookieAttributes(cookieName, "Partitioned="+partitioned.toString());
+          }
+		}
 
         return c;
     }

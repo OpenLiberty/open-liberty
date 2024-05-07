@@ -155,6 +155,8 @@ public interface WebAppSecurityConfig {
 
     String getSameSiteCookie();
 
+    Boolean getPartitionedCookie();
+
     boolean isPartitionedCookie();
 
     /**

@@ -446,6 +446,36 @@ public class WebAppSecurityConfigImplTest {
         assertEquals("Vallid value should be returned.", REALM_NAME, webCfg.getBasicAuthRealmName());
     }
 
+    @Test
+    public void testPartitioned_notSet() {
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
+        assertNull("Partitioned value should be null, but is ["+webCfg.getPartitionedCookie()+"]", webCfg.getPartitionedCookie());
+        assertEquals("isPartitioned value should be false, but is ["+webCfg.isPartitionedCookie()+"]", false, webCfg.isPartitionedCookie());
+    }
+
+    @Test
+    public void testPartitioned_true() {
+        final String PART_NAME = "partitionedCookie";
+        final Boolean PART_VALUE = Boolean.TRUE;
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        cfg.put(PART_NAME,PART_VALUE);
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
+        assertEquals("Partitioned value should be TRUE, but is ["+webCfg.getPartitionedCookie()+"]", Boolean.TRUE, webCfg.getPartitionedCookie());
+        assertTrue("isPartitioned value should be true, but is ["+webCfg.isPartitionedCookie()+"]", webCfg.isPartitionedCookie());
+    }
+
+    @Test
+    public void testPartitioned_false() {
+        final String PART_NAME = "partitionedCookie";
+        final Boolean PART_VALUE = Boolean.FALSE;
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        cfg.put(PART_NAME,PART_VALUE);
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
+        assertEquals("Partitioned value should be FALSE, but is ["+webCfg.getPartitionedCookie()+"]", Boolean.FALSE, webCfg.getPartitionedCookie());
+        assertEquals("isPartitioned value should be false, but is ["+webCfg.isPartitionedCookie()+"]", false, webCfg.isPartitionedCookie());
+    }
+
     /**
      * @return
      */

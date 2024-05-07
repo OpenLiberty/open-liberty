@@ -600,11 +600,17 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         return sameSiteCookie;
     }
 
-    /** the Partitioned cookie attribute is only valid when SameSite=none. */
+    // Boolean object is used so that we can distinguish between
+    // true/false/not set
+    @Override
+    public Boolean getPartitionedCookie() {
+        return partitionedCookie;
+    }
+
     @Override
     public boolean isPartitionedCookie() {
-        if ("None".equalsIgnoreCase(sameSiteCookie)) {
-            return partitionedCookie;
+        if (partitionedCookie!=null && partitionedCookie==Boolean.TRUE) {
+          return true;
         }
         return false;
     }

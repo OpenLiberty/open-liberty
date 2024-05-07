@@ -41,6 +41,7 @@ import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
+import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 
 @RunWith(JMock.class)
 public class ReferrerURLCookieHandlerTest {
@@ -243,7 +244,7 @@ public class ReferrerURLCookieHandlerTest {
                 one(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
                 allowing(webAppSecConfig).getSameSiteCookie();
-                will(returnValue("Disabled"));
+                will(returnValue("Strict"));
             }
         });
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, (Subject) null);
@@ -652,6 +653,8 @@ public class ReferrerURLCookieHandlerTest {
         assertEquals(expected, result.getRedirectURL());
     }
 
+    //In these next tests, the values for SameSite are alternated so that we hit that 
+    // code and don't change behavior
     /**
      * check boolean of createCookie method
      * Input: HttpOnlyCookies:true, SSORequireSSL: true, enableHttpOnly: true
@@ -667,7 +670,7 @@ public class ReferrerURLCookieHandlerTest {
                 one(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
                 allowing(webAppSecConfig).getSameSiteCookie();
-                will(returnValue("Disabled"));
+                will(returnValue("Lax"));
             }
         });
         String url = "http://site.com:80/page";
@@ -704,7 +707,7 @@ public class ReferrerURLCookieHandlerTest {
     /**
      * check boolean of createCookie method
      * Input: HttpOnlyCookies:false, SSORequireSSL: false, enableHttpOnly: true
-     * Output: Secure flag: true, httpOnly flag: false
+     * Output: Secure flag: false, httpOnly flag: false
      */
     @Test
     public void testCreateCookieEnableHttpOnlyTrueHttpOnlyFalseSecureFalse() {
@@ -716,7 +719,7 @@ public class ReferrerURLCookieHandlerTest {
                 one(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(false));
                 allowing(webAppSecConfig).getSameSiteCookie();
-                will(returnValue("Disabled"));
+                will(returnValue("Strict"));
             }
         });
         String url = "http://site.com:80/page";
@@ -725,6 +728,99 @@ public class ReferrerURLCookieHandlerTest {
         assertFalse("The cookie must not be set to secure.", cookie.getSecure());
         assertFalse("The cookie must not be set to http only.", cookie.isHttpOnly());
     }
+
+    /**
+     * check boolean of createCookie method.  Make sure that SameSite=None overrides secure setting
+     * Input: HttpOnlyCookies:false, SSORequireSSL: false, enableHttpOnly: true, SameSite: None
+     * SameSite=None overrides SSORequireSSL=false
+     * Output: Secure flag: true, httpOnly flag: false
+     */
+    @Test
+    public void testCreateCookieEnableHttpOnlyTrueHttpOnlyFalseSecureFalse_SameSiteNone_Override() {
+       WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
+
+        context.checking(new Expectations() {
+            {
+                allowing(webAppSecConfig).isIncludePathInWASReqURL();
+                allowing(webAppSecConfig).getHttpOnlyCookies();
+                will(returnValue(false));
+                one(webAppSecConfig).getSSORequiresSSL();
+                will(returnValue(false));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("None"));
+                allowing(webAppSecConfig).getPartitionedCookie();
+                will(returnValue(null));
+            }
+        });
+        String url = "http://site.com:80/page";
+
+        Cookie cookie = handler.createCookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, url, true, req);
+        assertTrue("The cookie must not be set to secure.", cookie.getSecure());
+        assertFalse("The cookie must not be set to http only.", cookie.isHttpOnly());
+    }
+
+    /**
+     * check boolean of createCookie method.  Make sure that SameSite=None overrides secure setting
+     * and Partitioned setting does not affect behavior
+     * Input: HttpOnlyCookies:false, SSORequireSSL: false, enableHttpOnly: true, SameSite: None, Partitioned: true
+     * SameSite=None overrides SSORequireSSL=false
+     * Output: Secure flag: true, httpOnly flag: false
+     */
+    @Test
+    public void testCreateCookieEnableHttpOnlyTrueHttpOnlyFalseSecureFalse_SameSiteNone_Override_PartitionedTrue() {
+       WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
+
+        context.checking(new Expectations() {
+            {
+                allowing(webAppSecConfig).isIncludePathInWASReqURL();
+                allowing(webAppSecConfig).getHttpOnlyCookies();
+                will(returnValue(false));
+                one(webAppSecConfig).getSSORequiresSSL();
+                will(returnValue(false));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("None"));
+                allowing(webAppSecConfig).getPartitionedCookie();
+                will(returnValue(Boolean.TRUE));
+            }
+        });
+        String url = "http://site.com:80/page";
+
+        Cookie cookie = handler.createCookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, url, true, req);
+        assertTrue("The cookie must not be set to secure.", cookie.getSecure());
+        assertFalse("The cookie must not be set to http only.", cookie.isHttpOnly());
+    }
+
+    /**
+     * check boolean of createCookie method.  Make sure that SameSite=None overrides secure setting
+     * and Partitioned setting does not affect behavior
+     * Input: HttpOnlyCookies:false, SSORequireSSL: false, enableHttpOnly: true, SameSite: None,  Partitioned: false
+     * SameSite=None overrides SSORequireSSL=false
+     * Output: Secure flag: true, httpOnly flag: false
+     */
+    @Test
+    public void testCreateCookieEnableHttpOnlyTrueHttpOnlyFalseSecureFalse_SameSiteNone_Override_PartitionedFalse() {
+       WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
+
+        context.checking(new Expectations() {
+            {
+                allowing(webAppSecConfig).isIncludePathInWASReqURL();
+                allowing(webAppSecConfig).getHttpOnlyCookies();
+                will(returnValue(false));
+                one(webAppSecConfig).getSSORequiresSSL();
+                will(returnValue(false));
+                allowing(webAppSecConfig).getSameSiteCookie();
+                will(returnValue("None"));
+                allowing(webAppSecConfig).getPartitionedCookie();
+                will(returnValue(Boolean.FALSE));
+            }
+        });
+        String url = "http://site.com:80/page";
+
+        Cookie cookie = handler.createCookie(ReferrerURLCookieHandler.REFERRER_URL_COOKIENAME, url, true, req);
+        assertTrue("The cookie must not be set to secure.", cookie.getSecure());
+        assertFalse("The cookie must not be set to http only.", cookie.isHttpOnly());
+    }
+
 
     /**
      * check boolean of createCookie method
@@ -741,7 +837,7 @@ public class ReferrerURLCookieHandlerTest {
                 one(webAppSecConfig).getSSORequiresSSL();
                 will(returnValue(true));
                 allowing(webAppSecConfig).getSameSiteCookie();
-                will(returnValue("Disabled"));
+                will(returnValue("Lax"));
             }
         });
         String url = "http://site.com:80/page";

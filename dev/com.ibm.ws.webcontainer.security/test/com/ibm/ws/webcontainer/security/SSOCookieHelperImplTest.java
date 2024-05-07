@@ -204,7 +204,7 @@ public class SSOCookieHelperImplTest {
                 one(req).getRequestURL();
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
                 allowing(config).getSameSiteCookie();
-                will(returnValue("Disabled"));
+                will(returnValue("Lax"));
                 one(config).isUseContextRootForSSOCookiePath();
                 will(returnValue(false));
 
@@ -233,7 +233,7 @@ public class SSOCookieHelperImplTest {
                 one(req).getRequestURL();
                 will(returnValue(new StringBuffer(TEST_URL_STRING)));
                 allowing(config).getSameSiteCookie();
-                will(returnValue("Disabled"));
+                will(returnValue("Strict"));
                 one(config).isUseContextRootForSSOCookiePath();
                 will(returnValue(false));
 
@@ -241,6 +241,93 @@ public class SSOCookieHelperImplTest {
         });
         Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue, null);
         assertFalse("The cookie must not be set to secure.", ssoCookie.getSecure());
+        assertFalse("The cookie must not be set to http only.", ssoCookie.isHttpOnly());
+    }
+	
+    //we can't really check anything with regards to partioned here, we're just making
+	//sure that the partitioned settings don't change the rest of the expected behavior
+    @Test
+    public void testCreateCookie_noSSORequiresSSL_with_httpOnly_false_SSNone_partitionedNotSet() {
+        mock.checking(new Expectations() {
+            {
+                one(config).getSSOCookieName();
+                will(returnValue(cookieName));
+                one(config).getSSORequiresSSL();
+                will(returnValue(false));
+                one(config).getHttpOnlyCookies();
+                will(returnValue(false));
+                one(config).getSSODomainList();
+                one(config).getSSOUseDomainFromURL();
+                one(req).getRequestURL();
+                will(returnValue(new StringBuffer(TEST_URL_STRING)));
+                allowing(config).getSameSiteCookie();
+                will(returnValue("None"));
+                one(config).isUseContextRootForSSOCookiePath();
+                will(returnValue(false));
+                one(config).getPartitionedCookie();
+                will(returnValue(null));
+            }
+        });
+        Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue, null);
+        assertTrue("The cookie must be set to secure.", ssoCookie.getSecure());
+        assertFalse("The cookie must not be set to http only.", ssoCookie.isHttpOnly());
+    }
+
+    //we can't really check anything with regards to partioned here, we're just making
+	//sure that the partitioned settings don't change the rest of the expected behavior
+    @Test
+    public void testCreateCookie_noSSORequiresSSL_with_httpOnly_false_SSNone_partitionedTrue() {
+        mock.checking(new Expectations() {
+            {
+                one(config).getSSOCookieName();
+                will(returnValue(cookieName));
+                one(config).getSSORequiresSSL();
+                will(returnValue(false));
+                one(config).getHttpOnlyCookies();
+                will(returnValue(false));
+                one(config).getSSODomainList();
+                one(config).getSSOUseDomainFromURL();
+                one(req).getRequestURL();
+                will(returnValue(new StringBuffer(TEST_URL_STRING)));
+                allowing(config).getSameSiteCookie();
+                will(returnValue("None"));
+                one(config).isUseContextRootForSSOCookiePath();
+                will(returnValue(false));
+                one(config).getPartitionedCookie();
+                will(returnValue(Boolean.TRUE));
+            }
+        });
+        Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue, null);
+        assertTrue("The cookie must be set to secure.", ssoCookie.getSecure());
+        assertFalse("The cookie must not be set to http only.", ssoCookie.isHttpOnly());
+    }
+
+    //we can't really check anything with regards to partioned here, we're just making
+	//sure that the partitioned settings don't change the rest of the expected behavior
+    @Test
+    public void testCreateCookie_noSSORequiresSSL_with_httpOnly_false_SSNone_partitionedFalse() {
+        mock.checking(new Expectations() {
+            {
+                one(config).getSSOCookieName();
+                will(returnValue(cookieName));
+                one(config).getSSORequiresSSL();
+                will(returnValue(false));
+                one(config).getHttpOnlyCookies();
+                will(returnValue(false));
+                one(config).getSSODomainList();
+                one(config).getSSOUseDomainFromURL();
+                one(req).getRequestURL();
+                will(returnValue(new StringBuffer(TEST_URL_STRING)));
+                allowing(config).getSameSiteCookie();
+                will(returnValue("None"));
+                one(config).isUseContextRootForSSOCookiePath();
+                will(returnValue(false));
+                one(config).getPartitionedCookie();
+                will(returnValue(Boolean.FALSE));
+            }
+        });
+        Cookie ssoCookie = ssoCookieHelper.createCookie(req, cookieValue, null);
+        assertTrue("The cookie must be set to secure.", ssoCookie.getSecure());
         assertFalse("The cookie must not be set to http only.", ssoCookie.isHttpOnly());
     }
 

@@ -56,7 +56,7 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean trackLoggedOutSSOCookies = true;
     private final Boolean useOnlyCustomCookieName = false;
     private final String sameSiteCookie = "Disabled";
-    private final Boolean partitionedCookie = false;
+    private final Boolean partitionedCookie = null;
     private final Boolean useContextRootForSSOCookiePath = false;
     private final long postParamMaxRequestBodySize = 1024 * 1024 * 128L;
 
@@ -312,12 +312,25 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
 
     /** {@inheritDoc} */
     @Override
+    public Boolean getPartitionedCookie() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return globalConfig.getPartitionedCookie();
+        else
+            return partitionedCookie;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isPartitionedCookie() {
         WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
         if (globalConfig != null)
             return globalConfig.isPartitionedCookie();
-        else
-            return partitionedCookie;
+       
+        if (partitionedCookie!=null && partitionedCookie==Boolean.TRUE) {
+          return true;
+        }
+        return false;
     }
 
     /** {@inheritDoc} */
