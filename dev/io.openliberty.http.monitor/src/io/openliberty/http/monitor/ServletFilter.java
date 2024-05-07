@@ -32,7 +32,7 @@ public class ServletFilter implements Filter {
 	
 	
 	
-	private void resolveNetwortProtocolInfo(String protocolInfo, HttpStatAttributes httpStat) {
+	private void resolveNetworkProtocolInfo(String protocolInfo, HttpStatAttributes httpStat) {
 		String[] networkInfo = protocolInfo.trim().split("/");
 		String networkProtocolName = null;
 		String networkVersion = "";
@@ -59,7 +59,7 @@ public class ServletFilter implements Filter {
 
 			httpStat.setScheme(httpServletRequest.getScheme());
 
-			resolveNetwortProtocolInfo(httpServletRequest.getProtocol(), httpStat);
+			resolveNetworkProtocolInfo(httpServletRequest.getProtocol(), httpStat);
 
 			httpStat.setServerName(httpServletRequest.getServerName());
 			httpStat.setServerPort(httpServletRequest.getServerPort());
@@ -82,6 +82,8 @@ public class ServletFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
+		
+		System.out.println("ENTERING ZE FILTER");
 
 		String httpRoute;
 		String contextPath = servletRequest.getServletContext().getContextPath();
@@ -92,6 +94,8 @@ public class ServletFilter implements Filter {
 			throw ioe;
 		} catch (ServletException se) {
 			throw se;
+//		} catch (Exception e) { //Place Holder - can catch exception thrown by sevlet for error.type
+//			System.out.println("something happened here");
 		} finally {
 			long elapsednanos = System.nanoTime()-nanosStart;
 			HttpStatAttributes httpStat = new HttpStatAttributes();
@@ -116,20 +120,18 @@ public class ServletFilter implements Filter {
 				if (servletRequest instanceof SRTServletRequest) {
 					SRTServletRequest srtServletRequest = (SRTServletRequest) servletRequest;
 
-					IWebAppDispatcherContext wadc = srtServletRequest.getWebAppDispatcherContext();
+					IWebAppDispatcherContext webAppdispatcherContext = srtServletRequest.getWebAppDispatcherContext();
 
 					// Cast to WebAppDispatcherContext40 to obtain HttpServletMapping
-					if (wadc instanceof WebAppDispatcherContext40) {
-						WebAppDispatcherContext40 wadc40 = (WebAppDispatcherContext40) wadc;
-						
-						
+					if (webAppdispatcherContext instanceof WebAppDispatcherContext40) {
+						WebAppDispatcherContext40 webAppDispatcherContext40 = (WebAppDispatcherContext40) webAppdispatcherContext;
 						
 						//Can be null for direct match with servlet URL pattern with no wildcard
-						String pathInfo = wadc40.getPathInfo();
+						String pathInfo = webAppDispatcherContext40.getPathInfo();
 						//System.out.println("path Info: " + pathInfo); // Deal with null....
 						
 
-						HttpServletMapping httpServletMapping = wadc40.getServletMapping();
+						HttpServletMapping httpServletMapping = webAppDispatcherContext40.getServletMapping();
 						if (httpServletMapping != null && pathInfo != null) {
 
 							/*
@@ -145,7 +147,7 @@ public class ServletFilter implements Filter {
 							String matchValue = httpServletMapping.getMatchValue();
 
 							/*
-							 * Pattern is "/", match value is "" and path info is NOT "/"
+							 * Pattern is "/", match value is empty "" and path info is NOT "/"
 							 * 
 							 * This occurs if we hit a RESTful/JAX-RS configured application
 							 * and a non-existent path was encountered.
@@ -165,23 +167,24 @@ public class ServletFilter implements Filter {
 							 * and the request is sent to "/MyApp/" or "/MyApp"
 							 * We will just produce the httpRoute as "/MyApp"
 							 * 
-							 * This also applies to the MP Metrics "/metrics" endpioint
+							 * This also applies to the MP Metrics "/metrics" endpoint
 							 */
 							else if (pattern.equals("/*") && matchValue.isEmpty()) {
 								httpRoute = contextPath;
 							}
 							/*
 							 * Special case for MP Health's "/health" pattern is empty and match value is empty, but the pathInfo is "/"
-							 * This is different with a direct match with a servlet url pattern where pathInfo is empty, pattern contains the url pattern and matchValue is not empty (should mwatch the url pattern)
+							 * This is different with a direct match with a servlet url pattern where pathInfo is empty
+							 *  pattern contains the url pattern and matchValue is not empty (should match the url pattern)
 							 * /health
 							 */
 							else if (pathInfo.equals("/") && pattern.isEmpty() && matchValue.isEmpty()) {
 								httpRoute = contextPath;
 							}
 							/*
-							 *  A Match!
+							 *  A Match!  -- match for Servlet with a WILD CARD!
 							 */
-							else if (pattern != null && !pattern.equals("/") && !matchValue.isEmpty()) {
+							else if (pattern != null && pattern.endsWith("/*") && !matchValue.isEmpty()) {
 								httpRoute = contextPath + pattern;
 							} else {
 								// unknown scenario
@@ -201,7 +204,7 @@ public class ServletFilter implements Filter {
 								httpRoute = contextPath + "/*";
 								httpStat.setHttpRoute(httpRoute);
 							}
-							// Default page of some sort -> /context-path/
+							// Default page of some sort -> /context-path/ or file not found
 							else if (pathInfo.equals("/")) {
 								httpRoute = contextPath + "/";
 								httpStat.setHttpRoute(httpRoute);
@@ -209,7 +212,7 @@ public class ServletFilter implements Filter {
 							} else {
 								// something really weird has happened?!
 							}
-						} else if (httpServletMapping != null && pathInfo == null){
+						} else if (httpServletMapping != null && pathInfo == null){ // A SERVLET!!
 							String pattern = httpServletMapping.getPattern();
 							String matchValue = httpServletMapping.getMatchValue();
 							if (pattern != null && !pattern.equals("/") && !matchValue.isEmpty()) {

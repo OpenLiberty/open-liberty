@@ -14,7 +14,9 @@ package io.openliberty.http.monitor;
  */
 public interface HttpStatsMXBean {
 
-	//metadata
+	/*
+	 * HTTP Attributes
+	 */
 	
 	public String getRequestMethod();
 	
@@ -34,7 +36,9 @@ public interface HttpStatsMXBean {
 	
 	public String getError();
 	
-	//actual values
+	/*
+	 * Numerical values
+	 */
 	
 	public long getCount();
 	

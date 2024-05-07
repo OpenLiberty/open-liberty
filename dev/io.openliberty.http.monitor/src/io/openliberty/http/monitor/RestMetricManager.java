@@ -37,7 +37,7 @@ public class RestMetricManager {
 		
 		MetricRegistry vendorRegistry = sharedMetricRegistries.getOrCreate(MetricRegistry.VENDOR_SCOPE);
 		
-		Metadata md = new MetadataBuilder().withName("http.metric").withUnit(MetricUnits.SECONDS).build();
+		Metadata md = new MetadataBuilder().withName("http.metric").build();
 		
 		//MetricID mid = new MetricID("http.metric", retrieveTags(httpStatAttributes));
 
