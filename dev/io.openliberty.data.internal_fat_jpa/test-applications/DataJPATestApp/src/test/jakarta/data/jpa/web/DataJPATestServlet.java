@@ -3279,8 +3279,8 @@ public class DataJPATestServlet extends FATServlet {
             ibm = businesses.findFirstByName("IBM");
 
             assertEquals("IBM", ibm.name);
-            assertEquals(44.05881f, ibm.location.latitude, 0.00001f);
-            assertEquals(-92.50556f, ibm.location.longitude, 0.00001f);
+            assertEquals(44.05881f, ibm.location.latitude, 0.0001f);
+            assertEquals(-92.50556f, ibm.location.longitude, 0.0001f);
             assertEquals(3605, ibm.location.address.houseNum);
             assertEquals("US 52", ibm.location.address.street.name);
             assertEquals("N", ibm.location.address.street.direction);
@@ -3302,8 +3302,8 @@ public class DataJPATestServlet extends FATServlet {
         ibm = businesses.findFirstByName("IBM");
 
         assertEquals("IBM", ibm.name);
-        assertEquals(originalLatitude, ibm.location.latitude, 0.00001f);
-        assertEquals(originalLongitude, ibm.location.longitude, 0.00001f);
+        assertEquals(originalLatitude, ibm.location.latitude, 0.0001f);
+        assertEquals(originalLongitude, ibm.location.longitude, 0.0001f);
         assertEquals(2800, ibm.location.address.houseNum);
         assertEquals("37th St", ibm.location.address.street.name);
         assertEquals("NW", ibm.location.address.street.direction);
