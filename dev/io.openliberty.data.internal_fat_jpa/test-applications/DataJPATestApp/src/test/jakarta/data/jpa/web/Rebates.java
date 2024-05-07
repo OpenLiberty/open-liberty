@@ -45,6 +45,12 @@ public interface Rebates { // Do not allow this interface to inherit from other 
     @OrderBy("amount")
     List<Double> amounts(String customerId);
 
+    List<LocalDate> findByCustomerIdOrderByPurchaseMadeOnDesc(String customer);
+
+    @OrderBy("purchaseMadeOn")
+    @OrderBy("purchaseMadeAt")
+    PurchaseTime[] findTimeOfPurchaseByCustomerId(String customer);
+
     @Update
     Rebate modify(Rebate r);
 
@@ -63,10 +69,11 @@ public interface Rebates { // Do not allow this interface to inherit from other 
     @Save
     Rebate[] processAll(Rebate... r);
 
+    @Find
+    Optional<PurchaseTime> purchaseTime(int id);
+
     @Save
     Collection<Rebate> processMultiple(Collection<Rebate> r);
-
-    List<LocalDate> findByCustomerIdOrderByPurchaseMadeOnDesc(String customer);
 
     // TODO allow entity return types for Delete?
     @Delete

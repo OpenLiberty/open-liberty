@@ -2532,6 +2532,25 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(2));
         assertEquals(LocalDate.of(2024, Month.APRIL, 5), purchaseDates.get(3));
 
+        PurchaseTime time = rebates.purchaseTime(all[3 - 1].id()).orElseThrow();
+        assertEquals(LocalDate.of(2024, Month.MAY, 2), time.purchaseMadeOn());
+        assertEquals(LocalTime.of(9, 15, 0), time.purchaseMadeAt());
+
+        PurchaseTime[] times = rebates.findTimeOfPurchaseByCustomerId("testRecordEntityInferredFromReturnType-CustomerA");
+        assertEquals(Arrays.toString(times), 4, times.length);
+
+        assertEquals(LocalDate.of(2024, Month.APRIL, 5), times[0].purchaseMadeOn());
+        assertEquals(LocalTime.of(12, 46, 30), times[0].purchaseMadeAt());
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), times[1].purchaseMadeOn());
+        assertEquals(LocalTime.of(10, 55, 0), times[1].purchaseMadeAt());
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), times[2].purchaseMadeOn());
+        assertEquals(LocalTime.of(15, 40, 0), times[2].purchaseMadeAt());
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), times[3].purchaseMadeOn());
+        assertEquals(LocalTime.of(17, 50, 0), times[3].purchaseMadeAt());
+
         rebates.removeAll(all);
 
         assertEquals(false, rebates.status(all[3 - 1].id()).isPresent());
