@@ -65,6 +65,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     HttpResponse nettyResponse;
     HttpHeaders headers;
     HttpHeaders trailers;
+    NettyTrailers nettyTrailerWrapper;
     HttpInboundServiceContext context;
     HttpChannelConfig config;
 
@@ -76,6 +77,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         this.nettyResponse = response;
         this.headers = nettyResponse.headers();
         this.trailers = new DefaultHttpHeaders().clear();
+        this.nettyTrailerWrapper = new NettyTrailers(this.trailers);
 
         if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
             String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
@@ -131,7 +133,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 //        }
 //
 //        return rc;
-        return Boolean.FALSE;
+        return super.isBodyExpected();
     }
 
     @Override
@@ -285,7 +287,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         // TODO Auto-generated method stub)
 //        if (trailers.isEmpty())
 //            return null;
-        return new NettyTrailers(trailers);
+        return nettyTrailerWrapper;
     }
 
     public HttpHeaders getNettyTrailers() {
@@ -294,31 +296,22 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     }
 
     @Override
-    public VersionValues getVersionValue() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public String getVersion() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public void setVersion(VersionValues version) {
+        MSP.log("Illegal call from setVersion(VersionValues version)");
         // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setVersion(String version) throws UnsupportedProtocolVersionException {
+        MSP.log("Illegal call from setVersion(String version)");
         // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setVersion(byte[] version) throws UnsupportedProtocolVersionException {
+        MSP.log("Illegal call from setVersion(byte[] version)");
         // TODO Auto-generated method stub
 
     }
@@ -326,6 +319,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     @Override
     public HttpTrailersImpl createTrailers() {
         // TODO Auto-generated method stub
+        MSP.log("Illegal call from createTrailers()");
         return null;
     }
 
@@ -747,7 +741,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     public void setStatusCode(int code) {
         MSP.log("Setting status: " + code);
         this.nettyResponse.setStatus(HttpResponseStatus.valueOf(code));
- 
 
     }
 

@@ -49,6 +49,7 @@ import com.ibm.wsspi.http.channel.values.VersionValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.openliberty.http.constants.HttpGenerics;
 
 /**
@@ -862,12 +863,17 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public VersionValues getVersionValue() {
-        // TODO Auto-generated method stub
-        return null;
+        if (message.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+            return VersionValues.V20;
+        }
+        return VersionValues.find(message.protocolVersion().text());
     }
 
     @Override
     public String getVersion() {
+        if (message.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+            return VersionValues.V20.getName();
+        }
         return this.message.protocolVersion().text();
     }
 

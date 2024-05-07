@@ -16,8 +16,6 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -29,7 +27,6 @@ import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
-import com.ibm.wsspi.tcpchannel.TCPRequestContext;
 import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
@@ -38,9 +35,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
-import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.stream.ChunkedInput;
-import io.netty.util.ReferenceCountUtil;
 
 /**
  *
@@ -85,13 +80,12 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
     }
 
-
     public void setVC(VirtualConnection vc) {
         this.vc = vc;
     }
-    
+
     public void setStreamId(String streamId) {
-        System.out.println("Setting h2 stream id to: "+ streamId);
+        System.out.println("Setting h2 stream id to: " + streamId);
         this.streamID = streamId;
     }
 
@@ -103,11 +97,10 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
     @Override
     public void setBuffers(WsByteBuffer[] bufs) {
 
-        if(Objects.isNull(bufs)) {
+        if (Objects.isNull(bufs)) {
             clearBuffers();
             return;
         }
-
 
         MSP.log("Setting buffers on, have X buffers: " + bufs.length);
         // Assign the new buffers
@@ -206,19 +199,19 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         MSP.log("Trying to write synchronously: numBytes->" + numBytes + " timeout->" + timeout);
         AtomicLong writtenBytes = new AtomicLong(0);
         // Check if "Content-Length" is set for this channel
-        boolean hasContentLength = nettyChannel.hasAttr(NettyHttpConstants.CONTENT_LENGTH) && Objects.nonNull(nettyChannel.attr(NettyHttpConstants.CONTENT_LENGTH).get()) ;
+        boolean hasContentLength = nettyChannel.hasAttr(NettyHttpConstants.CONTENT_LENGTH) && Objects.nonNull(nettyChannel.attr(NettyHttpConstants.CONTENT_LENGTH).get());
 
-      //check if wsoc
+        //check if wsoc
         final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
-        
+
         System.out.println("MSP WRITE - protocol: " + protocol);
-        
+
         final boolean isWsoc = "WebSocket".equals(protocol);
-        
+
         final boolean isH2 = "HTTP2".equals(protocol);
-        
+
         System.out.println("Is WebSocket: " + isWsoc);
-        if(!nettyChannel.isWritable()) {
+        if (!nettyChannel.isWritable()) {
             MSP.log("not writable, wrote 0, not waiting");
             return writtenBytes.get();
         }
@@ -228,21 +221,17 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
         final AtomicReference<Throwable> writeFailure = new AtomicReference<>(null);
 
-
-
         try {
             for (WsByteBuffer buffer : buffers) {
-                if (buffer != null) {
-                    
-                    
-                    if(isH2) {
+                if (buffer != null && buffer.remaining() != 0) {
+
+                    if (isH2) {
                         writtenBytes.addAndGet(buffer.remaining());
                         AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(this.streamID), HttpDispatcher.getBufferManager().wrap(WsByteBufferUtils.asByteArray(buffer)));
                         this.nettyChannel.write(entry);
                     }
 
-
-                    else if(hasContentLength || isWsoc) {
+                    else if (hasContentLength || isWsoc) {
                         ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
                         MSP.log("WRITING -> " + nettyBuf.readableBytes() + " bytes.");
                         this.nettyChannel.write(nettyBuf); // Write data to the channel
@@ -301,41 +290,36 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         boolean wasWritable = nettyChannel.isWritable();
         long totalWrittenBytes = 0;
         ChannelFuture lastWriteFuture = null;
-        boolean hasContentLength = nettyChannel.hasAttr(NettyHttpConstants.CONTENT_LENGTH) && Objects.nonNull(nettyChannel.attr(NettyHttpConstants.CONTENT_LENGTH).get()) ;
+        boolean hasContentLength = nettyChannel.hasAttr(NettyHttpConstants.CONTENT_LENGTH) && Objects.nonNull(nettyChannel.attr(NettyHttpConstants.CONTENT_LENGTH).get());
         //check if wsoc
         final String protocol = nettyChannel.attr(NettyHttpConstants.PROTOCOL).get();
-        
+
         System.out.println("MSP WRITE - protocol: " + protocol);
-        
+
         final boolean isWsoc = "WebSocket".equals(protocol);
-        
+
         final boolean isH2 = "HTTP2".equals(protocol);
-        
+
         System.out.println("Is WebSocket: " + isWsoc);
 
-        
         if (Objects.isNull(buffers)) {
             return null;
         }
-
- 
-
 
         try {
             for (WsByteBuffer buffer : buffers) {
                 if (buffer != null && buffer.hasRemaining()) { // Check if buffer is not null and has data
                     byte[] byteArray = WsByteBufferUtils.asByteArray(buffer);
-                    if (byteArray != null) { 
-                        
-                        
-                        if(isH2) {
+                    if (byteArray != null) {
+
+                        if (isH2) {
                             totalWrittenBytes += buffer.remaining();
-                                AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(this.streamID), HttpDispatcher.getBufferManager().wrap(WsByteBufferUtils.asByteArray(buffer)));
-                                this.nettyChannel.writeAndFlush(entry);
-                            
+                            AbstractMap.SimpleEntry<Integer, WsByteBuffer> entry = new AbstractMap.SimpleEntry<Integer, WsByteBuffer>(Integer.valueOf(this.streamID), HttpDispatcher.getBufferManager().wrap(WsByteBufferUtils.asByteArray(buffer)));
+                            this.nettyChannel.writeAndFlush(entry);
+
                         }
-                        
-                        else if(hasContentLength || isWsoc) {
+
+                        else if (hasContentLength || isWsoc) {
                             ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
                             MSP.log("WRITING -> " + nettyBuf.readableBytes() + " bytes.");
                             lastWriteFuture = this.nettyChannel.writeAndFlush(nettyBuf); // Write data to the channel
@@ -347,10 +331,9 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                             ChunkedInput<ByteBuf> chunkedInput = new WsByteBufferChunkedInput(buffer);
                             MSP.log("Should be writing a chunk of size: " + chunkedInput.length());
                             lastWriteFuture = nettyChannel.writeAndFlush(chunkedInput);
-                            totalWrittenBytes +=chunkedInput.length();
+                            totalWrittenBytes += chunkedInput.length();
                         }
-                        
-                        
+
 //                        ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
 //                        lastWriteFuture = nettyChannel.write(nettyBuf);
 //                        totalWrittenBytes += nettyBuf.readableBytes();
@@ -363,10 +346,9 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 
             if (lastWriteFuture == null && wasWritable && stillWritable && totalWrittenBytes >= numBytes) {
                 return vc;
-                
-                
-            }else {
-                
+
+            } else {
+
                 if (lastWriteFuture != null) {
                     lastWriteFuture.addListener((ChannelFutureListener) future -> {
                         if (future.isSuccess()) {
@@ -379,21 +361,13 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                     });
                 }
             }
-                
-               
+
         } catch (Exception e) {
             System.out.println("*** EXIT 4 Exception: " + e.getMessage());
             callback.error(vc, null, new IOException(e));
         }
         return null; // Return null as the write operation is queued or forced to queue
     }
-    
-    
-    
-    
-    
-    
-    
 
     //TODO: force queue / timeout
 
@@ -438,7 +412,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 //                      System.out.println("*** EXIT 3 Exception: " + future.cause().getMessage());
 //                      callback.error(vc, this, new IOException(future.cause()));
 //                  }
-//              }); 
+//              });
 //          }
 //      }
 //
@@ -446,10 +420,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
 //      System.out.println("*** EXIT 4 Exception: " + e.getMessage());
 //      callback.error(vc, null, new IOException(e));
 //  }
-//  return null; 
+//  return null;
 //}
-
-
-
 
 }
