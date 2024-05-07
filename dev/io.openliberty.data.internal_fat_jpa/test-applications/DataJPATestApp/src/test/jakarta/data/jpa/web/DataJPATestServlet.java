@@ -2515,7 +2515,26 @@ public class DataJPATestServlet extends FATServlet {
         r = paid.get(2);
         assertEquals(5.0f, r.amount(), 0.001);
 
+        List<Double> amounts = rebates.amounts("testRecordEntityInferredFromReturnType-CustomerA");
+
+        assertEquals(4.0f, amounts.get(0), 0.001);
+        assertEquals(5.0f, amounts.get(1), 0.001);
+        assertEquals(10.0f, amounts.get(2), 0.001);
+        assertEquals(12.0f, amounts.get(3), 0.001);
+
+        assertEquals(Rebate.Status.VERIFIED, rebates.status(all[4 - 1].id()).orElseThrow());
+        assertEquals(Rebate.Status.PAID, rebates.status(all[3 - 1].id()).orElseThrow());
+
+        List<LocalDate> purchaseDates = rebates.findByCustomerIdOrderByPurchaseMadeOnDesc("testRecordEntityInferredFromReturnType-CustomerA");
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(0));
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(1));
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(2));
+        assertEquals(LocalDate.of(2024, Month.APRIL, 5), purchaseDates.get(3));
+
         rebates.removeAll(all);
+
+        assertEquals(false, rebates.status(all[3 - 1].id()).isPresent());
     }
 
     /**

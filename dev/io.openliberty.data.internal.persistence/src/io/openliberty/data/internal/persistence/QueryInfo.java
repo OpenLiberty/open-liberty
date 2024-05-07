@@ -443,11 +443,19 @@ public class QueryInfo {
                     Class<?> attributeType = collectionElementType == null ? entry.getValue() : collectionElementType;
                     if (attributeType.isPrimitive())
                         attributeType = QueryInfo.wrapperClassIfPrimitive(attributeType);
-                    if (singleType.isAssignableFrom(attributeType)) {
-                        singleAttributeName = entry.getKey();
-                        q.append(o_).append(singleAttributeName);
-                        break;
-                    }
+                    if (singleType.isAssignableFrom(attributeType))
+                        if (singleAttributeName == null)
+                            singleAttributeName = entry.getKey();
+                        else
+                            throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                                    method.getDeclaringClass().getName() +
+                                                                    " repository specifies the " + singleType.getName() +
+                                                                    " result type, which corresponds to multiple entity attributes: " +
+                                                                    singleAttributeName + ", " + entry.getKey() +
+                                                                    ". To use this result type, update the repository method to " +
+                                                                    "instead use the Query annotation with a SELECT clause to " +
+                                                                    "disambiguate which entity attribute to use as the result " +
+                                                                    "of the query."); // TODO NLS
                 }
 
                 if (singleAttributeName == null) {
@@ -481,6 +489,8 @@ public class QueryInfo {
                         }
                     }
                     q.append(')');
+                } else {
+                    q.append(o_).append(singleAttributeName);
                 }
             }
         } else { // Individual columns are requested by @Select
