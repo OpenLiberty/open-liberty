@@ -489,7 +489,7 @@ public class NettyTrailers implements HttpTrailers {
         Iterator<String> knowns = this.knownTGs.keySet().iterator();
         while (knowns.hasNext()) {
             String key = knowns.next();
-            setHeader(key, this.knownTGs.get(key).generateTrailerValue(key, this));
+            setHeader(key, new String(this.knownTGs.get(key).generateTrailerValue(key, this)));
         }
     }
 
