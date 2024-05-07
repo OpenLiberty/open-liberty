@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2022 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.http.dispatcher.internal;
 
@@ -82,6 +79,9 @@ public class HttpDispatcher {
     //Servlet 6.0
     private volatile ServiceReference<HttpBehavior> cookieBehaviorRef;
     private static volatile boolean useEE10Cookies = false;
+
+    //Servlet 6.1 (EE11)
+    private static volatile boolean isEE11 = false;
 
     static final String CONFIG_ALIAS = "httpDispatcher";
 
@@ -796,21 +796,27 @@ public class HttpDispatcher {
     protected synchronized void setCookiesBehavior(ServiceReference<HttpBehavior> reference) {
         cookieBehaviorRef = reference;
         useEE10Cookies = (Boolean) reference.getProperty(HttpBehavior.USE_EE10_COOKIES);
+        isEE11 = reference.getProperty(HttpBehavior.IS_EE11) == null ? false : true;
 
-        Tr.debug(tc, "setCookiesBehavior useEE10Cookies [" + useEE10Cookies + "]");
+        Tr.debug(tc, "setCookiesBehavior , useEE10Cookies [" + useEE10Cookies + "] , isEE11 [" + isEE11 + "]");
     }
 
     protected synchronized void unsetCookiesBehavior(ServiceReference<HttpBehavior> reference) {
         if (reference == this.cookieBehaviorRef) {
             cookieBehaviorRef = null;
             useEE10Cookies = false;
+            isEE11 = false;
 
-            Tr.debug(tc, "unsetCookiesBehavior useEE10Cookies [" + useEE10Cookies + "]");
+            Tr.debug(tc, "unsetCookiesBehavior , useEE10Cookies [" + useEE10Cookies + "] , isEE11 [" + isEE11 + "]");
         }
     }
 
     public static boolean useEE10Cookies() {
         return useEE10Cookies;
+    }
+
+    public static boolean isEE11() {
+        return isEE11;
     }
 
     /**

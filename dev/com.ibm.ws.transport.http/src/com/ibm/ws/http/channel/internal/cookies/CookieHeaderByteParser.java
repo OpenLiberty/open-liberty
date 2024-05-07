@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2022 IBM Corporation and others.
+ * Copyright (c) 2004, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.cookies;
 
@@ -47,6 +44,16 @@ public class CookieHeaderByteParser {
     //Servlet 6.0
     private boolean useEE10Cookies;
 
+    /*
+     * Servlet 6.1 (EE11)
+     * Response Set-Cookie behaviors (no change in request Cookie)
+     * 1. response addHeader/setHeader will not split the Set-Cookie header for arbitrary attributes
+     * 2. setAttribute with empty value - only show attribute name itself; example : setAttribute("JustName", "") or setAttribute("JustName", "=") > JustName;
+     * 3. setAttribute with null value - will remove that attribute
+     */
+    private boolean isEE11;
+    private boolean hasDollarSign = false;
+
     /**
      * Constructor for this class.
      */
@@ -70,7 +77,6 @@ public class CookieHeaderByteParser {
         if (null == headerValue) {
             throw new IllegalArgumentException("Null input");
         }
-
         // initialize the member variables
         this.name = null;
         this.value = null;
@@ -83,40 +89,123 @@ public class CookieHeaderByteParser {
         List<HttpCookie> cookiesList = new LinkedList<HttpCookie>();
         int version = 0;
 
+        //Servlet 6.1
+        this.isEE11 = HttpDispatcher.isEE11();
+        String cName = null;
+        String cValue = null;
+        hasDollarSign = false;
+        boolean isRequestCookie = cookieHeader.getName().equalsIgnoreCase("Cookie") ? true : false; //Cookie: request; Set-Cookie: response
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "parse [" + GenericUtils.nullOutPasswords(headerValue, (byte) '&') + "] " + cookieHeader);
+            Tr.entry(tc, "parse ENTRY [" + GenericUtils.nullOutPasswords(headerValue, (byte) '&') + "] " + cookieHeader);
+            Tr.debug(tc, "Request Cookie [" + isRequestCookie + "] , EE11 [" + isEE11 + "]");
         }
 
         // keep looping through pulling individual cookies or cookie attributes
         // until we run out of input data
-
         while (this.bytePosition < headerValue.length) {
-
             // parse out the cookie name or type, then get the value
             token = matchAndParse(headerValue, cookieHeader);
             parseValue(headerValue, token);
+
+            cName = GenericUtils.getEnglishString(this.name);
+            cValue = GenericUtils.getEnglishString(this.value);
+
+            /*
+             * matchAndParse() determines that the token is null - means this is not a pre-established cookie header types (i.e HttOnly, Secure, SameSite ...)
+             *
+             * Example: Consider this response cookieHeader [Cookie_viaAddHeader=CookieValue_viaAddHeader; Secure; SameSite=None; randomAttributeB=myAttValueB]
+             * (token is determined using the name part of each pair i.e Cookie_viaAddHeader, Secure, SameSite, randomAttributeB)
+             *
+             * The parsed output trace below will show something similar to:
+             * parsed token [null] , name [Cookie_viaAddHeader] , value [CookieValue_viaAddHeader] // -> new response Set-Cookie
+             * parsed token [Key: secure Ordinal: 4] , name [null] , value []
+             * parsed token [Key: samesite Ordinal: 11] , name [null] , value [None]
+             *
+             * parsed token [null] , name [randomAttributeB] , value [myAttValueB] // -> new response Set-Cookie (in 6.0)
+             *
+             * Response (i.e Set-Cookie header):
+             * - In 6.0, every unrecognized token (i.e token == null) will result in a new response Set-Cookie header (this caused the split header behavior in 6.0 when using
+             * addHeader or setHeader)
+             *
+             * - In 6.1, unrecognized token (i.e token == null) will NOT result in new Set-Cookie header for THIS SET. Instead, it is treated as an attribute of this Set-Cookie.
+             *
+             * Request (i.e Cookie header) - No attribute is accepted as per new RFC in 6.0; no $ is allowed Except for Version;
+             * attribute will be treated as a new Cookie header ($ is part of the header value)
+             *
+             * Example: Request Cookie header : [$Version=1; name1=value1; $Path=/Dollar_Path; $Domain=localhost; $NAME2=DollarNameValue; Domain=DomainValue] Key: Cookie
+             * Results in multiple request Cookie headers:
+             * [name1=value1]
+             * [$Path=/Dollar_Path]
+             * [$Domain=localhost]
+             * [$NAME2=DollarNameValue]
+             * [Domain=DomainValue]
+             *
+             */
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "parsed token [" + token + "] , name [" + cName + "] , value [" + cValue + "] , hasDollarSign ["
+                             + this.hasDollarSign + "] , cookiesList [" + cookiesList.size() + "]");
+            }
+
             if (null == token) {
                 // parsed name may not exist yet
                 if (null != this.name && 0 != this.name.length) {
-                    // Create an instance of the cookie
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Creating cookie, version " + version);
+                    /*
+                     * Request Cookie is processed the same in all versions 6.0 and above
+                     * Output Response Set-Cookie is processed differently
+                     */
+                    if (isRequestCookie || !isEE11) { // All Incoming requests or Servlet 6.0 responses
+                        // Create an instance of the cookie
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Creating cookie, version " + version);
+                        }
+                        try {
+                            cookie = new HttpCookie(cName, cValue);
+                        } catch (IllegalArgumentException iae) {
+                            // no FFDC required
+                            // Broken cookie name due to invalid characters
+                            this.name = null;
+                            this.value = null;
+                            continue;
+                        }
+                        cookie.setVersion(version);
+                        cookiesList.add(cookie);
                     }
-                    try {
-                        cookie = new HttpCookie(GenericUtils.getEnglishString(this.name), GenericUtils.getEnglishString(this.value));
-                    } catch (IllegalArgumentException iae) {
-                        // no FFDC required
-                        // Broken cookie name due to invalid characters
-                        this.name = null;
-                        this.value = null;
-                        continue;
+                    //Servlet 6.1 response outgoing
+                    else {
+                        if (cookiesList.size() == 0) { //only the first time to create an instance of the cookie for EACH Set-Cookie
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, " 6.1 - Creating cookie, version " + version);
+                            }
+                            try {
+                                cookie = new HttpCookie(cName, cValue);
+                            } catch (IllegalArgumentException iae) {
+                                // no FFDC required
+                                // Broken cookie name due to invalid characters
+                                this.name = null;
+                                this.value = null;
+                                continue;
+                            }
+                            cookie.setVersion(version);
+                            cookiesList.add(cookie);
+                        } else {
+                            /*
+                             * arbitrary attribute .i.e not the well known HttpOnly, SameSite ....
+                             */
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "parse ; arbitrary setAttribute , name [" + cName + "] , value [" + cValue + "]");
+                            }
+
+                            //????????? PMDINH TO-DO test to see if attribute already exists
+                            String existenceAtt = cookie.getAttribute(cName);
+                            if (existenceAtt != null)
+                                System.out.println("PMDINH Existing Atttribute [" + cName + "]");
+
+                            cookie.setAttribute(cName, cValue);
+                        }
                     }
-                    cookie.setVersion(version);
-                    cookiesList.add(cookie);
                 }
-
             } else if (null != this.value) {
-
                 // version is a special cookie value in that it might
                 // be at the front of the line and does not apply to just
                 // one cookie instance
@@ -138,8 +227,13 @@ public class CookieHeaderByteParser {
             token = null;
             this.name = null;
             this.value = null;
+            this.hasDollarSign = false;
 
         } // end - while have data to parse
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.exit(tc, "parse EXIT , cookiesList [" + cookiesList + "]");
+        }
 
         return cookiesList;
     }
@@ -157,7 +251,7 @@ public class CookieHeaderByteParser {
      */
     private CookieData matchAndParse(byte[] data, HeaderKeys hdr) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "matchAndParse " + " Entry");
+            Tr.debug(tc, "matchAndParse ENTRY" + " HeaderKeys [" + hdr + "]");
         }
 
         int pos = this.bytePosition;
@@ -209,7 +303,9 @@ public class CookieHeaderByteParser {
         }
 
         boolean foundDollar = ('$' == data[start]);
+
         if (foundDollar) {
+            hasDollarSign = true;
             // skip past the leading $ symbol
             start++;
         } else if ('"' == data[start] && '"' == data[stop]) {
@@ -225,7 +321,7 @@ public class CookieHeaderByteParser {
         CookieData token = CookieData.match(data, start, len);
         if (null != token && null != hdr) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "matchAndParse", " token name [" + token.getName() + "] , foundDollar [" + foundDollar + "]");
+                Tr.debug(tc, "matchAndParse , token name [" + token.getName() + "] , foundDollar [" + foundDollar + "]");
             }
 
             /*
@@ -242,6 +338,7 @@ public class CookieHeaderByteParser {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "matchAndParse", " dollar version ");
                         }
+
                         if (!token.validForHeader(hdr, foundDollar)) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "Token not valid for header, " + hdr + " " + token);
@@ -277,7 +374,12 @@ public class CookieHeaderByteParser {
                 }
             }
         }
+
         if (null == token) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "matchAndParse , token is null ; foundDollar [" + foundDollar + "]");
+            }
+
             // New cookie name found
             if (foundDollar && this.useEE10Cookies) { //Servlet 6.0 : $ is part of the name, so put it back and adjust the len
                 start--;
@@ -288,6 +390,10 @@ public class CookieHeaderByteParser {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "name: " + GenericUtils.getEnglishString(this.name));
             }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "matchAndParse EXIT" + " token [" + token + "]");
         }
 
         return token;
