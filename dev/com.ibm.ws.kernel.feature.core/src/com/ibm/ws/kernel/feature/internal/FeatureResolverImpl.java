@@ -734,10 +734,14 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         // first check if the feature is blocked as already in conflict
         String featureName = selectedFeature.getSymbolicName();
+        System.out.println("processSelected: " + featureName);
+
         String baseFeatureName = parseNameAndVersion(featureName)[0];
         if (selectionContext.isBlocked(baseFeatureName)) {
+            System.out.println("processSelected: " + featureName + ": blocked");
             return;
         }
+
         // Validation to make sure this feature is selected; this is really just to check bugs in the resolver
         if (selectedFeature.isSingleton() && !!!selectionContext.allowMultipleVersions(baseFeatureName)) {
             Chain existingSelection = selectionContext.getSelected(baseFeatureName);
@@ -747,12 +751,13 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
         }
 
-        if (chain.contains(selectedFeature.getSymbolicName())) {
+        if (chain.contains(featureName)) {
+            System.out.println("processSelected: " + featureName + ": cycle");
             // must be in a cycle
             return;
         }
 
-        chain.addLast(selectedFeature.getSymbolicName());
+        chain.addLast(featureName);
         try {
             // Depth-first: process any included features first.
             // Postpone decisions on variable candidates until after the first pass
@@ -790,19 +795,26 @@ public class FeatureResolverImpl implements FeatureResolver {
             // (TODO we really should not need to do this!! but things seem to really depend on install order!!)
             // NOTE 3: it is very important that the result includes the full feature name, not just the symbolic name
             // this ensures we include the product extension prefix if it exists.
-            result.add(selectedFeature.getFeatureName());
+            String name = selectedFeature.getFeatureName();
+            System.out.println("processSelected: " + featureName + ": selected: " + name);
+            result.add(name);
         }
     }
 
     private void processIncluded(ProvisioningFeatureDefinition includingFeature, FeatureResource included, Set<String> allowedTolerations, Deque<String> chain, Set<String> result,
                                  SelectionContext selectionContext) {
         String symbolicName = included.getSymbolicName();
+
+        System.out.println("processIncluded: " + symbolicName);
+
         if (symbolicName == null) {
             // TODO why do we report this feature as missing, seems a better error message would indicate the FeatureResource requirement has no SN
             // get the symbolic name from the last in chain
             if (!chain.isEmpty()) {
                 selectionContext.getResult().addUnlabelledResource(included, chain);
             }
+
+            System.out.println("processIncluded: " + symbolicName + ": null!");
             return;
         }
 
@@ -813,6 +825,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         // if the base name is blocked then we do not continue with this include
         if (selectionContext.isBlocked(baseSymbolicName)) {
+            System.out.println("processIncluded: " + symbolicName + ": blocked");
             return;
         }
 
@@ -865,14 +878,26 @@ public class FeatureResolverImpl implements FeatureResolver {
             // For now just use the first candidate
             candidateNames.retainAll(Collections.singleton(candidateNames.get(0)));
         }
+
+        System.out.println("processIncluded: " + symbolicName + ": candidates [ " + candidateNames.size() + " ]");
+
         selectionContext.processCandidates(chain, candidateNames, symbolicName, baseSymbolicName, preferredVersion, isSingleton);
-        // check if there is a single candidate left after processing
-        if (candidateNames.size() == 1 && (!!!baseSymbolicName.startsWith("io.openliberty.internal.versionless.")
-                                           || (baseSymbolicName.startsWith("io.openliberty.internal.versionless.") && selectionContext.getSelected(baseSymbolicName) != null))) {
-            // We selected one candidate; now process the selected
+
+        // If a single candidate remains,
+        // and it is not an unresolved versionless feature,
+        // process that candidate as a selection.
+
+        if ((candidateNames.size() == 1) &&
+            (!!!baseSymbolicName.startsWith("io.openliberty.internal.versionless.") ||
+             (baseSymbolicName.startsWith("io.openliberty.internal.versionless.") &&
+              (selectionContext.getSelected(baseSymbolicName) != null)))) {
+
             String selectedName = candidateNames.get(0);
-            processSelected(selectionContext.getRepository().getFeature(selectedName), allowedTolerations, chain, result, selectionContext);
+            processSelected(selectionContext.getRepository().getFeature(selectedName),
+                            allowedTolerations, chain, result, selectionContext);
         }
+
+        System.out.println("processIncluded: " + symbolicName + ": return");
     }
 
     private boolean isAccessible(ProvisioningFeatureDefinition includingFeature, ProvisioningFeatureDefinition candidateDef) {
@@ -1154,9 +1179,12 @@ public class FeatureResolverImpl implements FeatureResolver {
             // corresponding compatibility feature is selected.  That happens either
             // because a platform was specified, or because a resolved feature pulls in
             // a specific compatibility feature.
-            
+
+            System.out.println("processCandidates: " + baseSymbolicName);
+
             if ((isVersionlessEE(baseSymbolicName) && (getSelected(COMPATIBILITY_EE) == null)) ||
                 (isVersionlessMP(baseSymbolicName) && (getSelected(COMPATIBILITY_MP) == null))) {
+                System.out.println("processCandidates: " + baseSymbolicName + ": postpone");
                 addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
                 return;
             }
@@ -1173,12 +1201,15 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
             if (candidateNames.isEmpty()) {
                 _current._result.addIncomplete(baseSymbolicName, origCandidateNames, chain);
+                System.out.println("processCandidates: " + baseSymbolicName + ": incomplete");
                 return;
             }
             if (!isSingleton || allowMultipleVersions(baseSymbolicName)) {
                 // must allow all candidates
+                System.out.println("processCandidates: " + baseSymbolicName + ": allowed non-singleton");
                 return;
             }
+
             // make a copy for the chain if there is a conflict
             List<String> copyCandidates = new ArrayList<String>(candidateNames);
             // check if the base symbolic name is already selected and different than the candidates
@@ -1188,12 +1219,14 @@ public class FeatureResolverImpl implements FeatureResolver {
                 candidateNames.retainAll(selectedChain.getCandidates());
                 if (candidateNames.isEmpty()) {
                     addConflict(baseSymbolicName, asList(selectedChain, new Chain(chain, copyCandidates, preferredVersion, symbolicName)));
+                    System.out.println("processCandidates: " + baseSymbolicName + ": conflicted");
                     return;
                 }
             }
             if (candidateNames.size() > 1) {
                 // if the candidates are more than one then postpone the decision
                 addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
+                System.out.println("processCandidates: " + baseSymbolicName + ": postpone multiple candidates");
                 return;
             }
 
@@ -1219,8 +1252,8 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
             // if there was a postponed decision remove it
             _current._postponed.remove(baseSymbolicName);
-            return;
 
+            System.out.println("processCandidates: " + baseSymbolicName + ": return");
         }
 
         List<Chain> asList(Chain chain1, Chain chain2) {

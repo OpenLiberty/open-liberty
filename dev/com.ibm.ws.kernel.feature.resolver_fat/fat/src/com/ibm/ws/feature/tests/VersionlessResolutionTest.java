@@ -87,6 +87,9 @@ public class VersionlessResolutionTest {
     public static String servletExpectedResultsPath;
     public static VerifyData servletExpectedResults;
 
+    public static final boolean RUN_SINGLETON = false;
+    public static final boolean RUN_SERVLET = true;
+
     @BeforeClass
     public static void setupXML() throws Exception {
         System.out.println("Results paths:");
@@ -95,55 +98,71 @@ public class VersionlessResolutionTest {
         repoPath = repoFile.getAbsolutePath();
         System.out.println("Repo path [ " + repoPath + " ]");
 
-        singletonActualResultsFile = new File(SINGLETON_ACTUAL_PATH);
-        singletonActualResultsPath = singletonActualResultsFile.getAbsolutePath();
-        System.out.println("Actual singleton results path [ " + singletonActualResultsPath + " ]");
+        if (RUN_SINGLETON) {
+            singletonActualResultsFile = new File(SINGLETON_ACTUAL_PATH);
+            singletonActualResultsPath = singletonActualResultsFile.getAbsolutePath();
+            System.out.println("Actual singleton results path [ " + singletonActualResultsPath + " ]");
 
-        singletonDurationsFile = new File(SINGLETON_DURATIONS_PATH);
-        singletonDurationsPath = singletonDurationsFile.getAbsolutePath();
-        System.out.println("Singleton durations path [ " + singletonDurationsPath + " ]");
+            singletonDurationsFile = new File(SINGLETON_DURATIONS_PATH);
+            singletonDurationsPath = singletonDurationsFile.getAbsolutePath();
+            System.out.println("Singleton durations path [ " + singletonDurationsPath + " ]");
 
-        singletonExpectedResultsFile = new File(SINGLETON_EXPECTED_PATH);
-        singletonExpectedResultsPath = singletonExpectedResultsFile.getAbsolutePath();
-        System.out.println("Expected singleton results path [ " + singletonExpectedResultsPath + " ]");
+            singletonExpectedResultsFile = new File(SINGLETON_EXPECTED_PATH);
+            singletonExpectedResultsPath = singletonExpectedResultsFile.getAbsolutePath();
+            System.out.println("Expected singleton results path [ " + singletonExpectedResultsPath + " ]");
 
-        if (singletonExpectedResultsFile.exists()) {
-            singletonExpectedResults = load("Expected Results", singletonExpectedResultsPath);
-            System.out.println("Expected singleton cases [ " + singletonExpectedResults.cases.size() + " ]");
+            if (singletonExpectedResultsFile.exists()) {
+                singletonExpectedResults = load("Expected Results", singletonExpectedResultsPath);
+                System.out.println("Expected singleton cases [ " + singletonExpectedResults.cases.size() + " ]");
+            }
+        } else {
+            System.out.println("Singleton processing disabled");
         }
 
-        servletActualResultsFile = new File(SERVLET_ACTUAL_PATH);
-        servletActualResultsPath = servletActualResultsFile.getAbsolutePath();
-        System.out.println("Actual servlet results path [ " + servletActualResultsPath + " ]");
+        if (RUN_SERVLET) {
+            servletActualResultsFile = new File(SERVLET_ACTUAL_PATH);
+            servletActualResultsPath = servletActualResultsFile.getAbsolutePath();
+            System.out.println("Actual servlet results path [ " + servletActualResultsPath + " ]");
 
-        servletDurationsFile = new File(SERVLET_DURATIONS_PATH);
-        servletDurationsPath = servletDurationsFile.getAbsolutePath();
-        System.out.println("Servlet durations path [ " + servletDurationsPath + " ]");
+            servletDurationsFile = new File(SERVLET_DURATIONS_PATH);
+            servletDurationsPath = servletDurationsFile.getAbsolutePath();
+            System.out.println("Servlet durations path [ " + servletDurationsPath + " ]");
 
-        servletExpectedResultsFile = new File(SERVLET_EXPECTED_PATH);
-        servletExpectedResultsPath = servletExpectedResultsFile.getAbsolutePath();
-        System.out.println("Expected servlet results path [ " + servletExpectedResultsPath + " ]");
+            servletExpectedResultsFile = new File(SERVLET_EXPECTED_PATH);
+            servletExpectedResultsPath = servletExpectedResultsFile.getAbsolutePath();
+            System.out.println("Expected servlet results path [ " + servletExpectedResultsPath + " ]");
 
-        if (servletExpectedResultsFile.exists()) {
-            servletExpectedResults = load("Expected Results", servletExpectedResultsPath);
-            System.out.println("Expected servlet cases [ " + servletExpectedResults.cases.size() + " ]");
+            if (servletExpectedResultsFile.exists()) {
+                servletExpectedResults = load("Expected Results", servletExpectedResultsPath);
+                System.out.println("Expected servlet cases [ " + servletExpectedResults.cases.size() + " ]");
+            }
+        } else {
+            System.out.println("Servlet processing disabled");
         }
     }
 
     @Test
     public void verifyResolution() throws Exception {
         ensureDirectory(repoFile, repoPath);
-        ensureDirectory(singletonActualResultsFile, singletonActualResultsPath);
-        ensureDirectory(singletonDurationsFile, singletonDurationsPath);
-        ensureDirectory(servletActualResultsFile, servletActualResultsPath);
-        ensureDirectory(servletDurationsFile, servletDurationsPath);
+        if (RUN_SINGLETON) {
+            ensureDirectory(singletonActualResultsFile, singletonActualResultsPath);
+            ensureDirectory(singletonDurationsFile, singletonDurationsPath);
+        }
+        if (RUN_SINGLETON) {
+            ensureDirectory(servletActualResultsFile, servletActualResultsPath);
+            ensureDirectory(servletDurationsFile, servletDurationsPath);
+        }
 
         LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         server.addEnvVar(VerifyEnv.REPO_PROPERTY_NAME, repoPath);
-        server.addEnvVar(VerifyEnv.RESULTS_SINGLETON_PROPERTY_NAME, singletonActualResultsPath);
-        server.addEnvVar(VerifyEnv.DURATIONS_SINGLETON_PROPERTY_NAME, singletonDurationsPath);
-        server.addEnvVar(VerifyEnv.RESULTS_SERVLET_PROPERTY_NAME, servletActualResultsPath);
-        server.addEnvVar(VerifyEnv.DURATIONS_SERVLET_PROPERTY_NAME, servletDurationsPath);
+        if (RUN_SINGLETON) {
+            server.addEnvVar(VerifyEnv.RESULTS_SINGLETON_PROPERTY_NAME, singletonActualResultsPath);
+            server.addEnvVar(VerifyEnv.DURATIONS_SINGLETON_PROPERTY_NAME, singletonDurationsPath);
+        }
+        if (RUN_SERVLET) {
+            server.addEnvVar(VerifyEnv.RESULTS_SERVLET_PROPERTY_NAME, servletActualResultsPath);
+            server.addEnvVar(VerifyEnv.DURATIONS_SERVLET_PROPERTY_NAME, servletDurationsPath);
+        }
 
         server.startServer();
         try {
@@ -155,39 +174,44 @@ public class VersionlessResolutionTest {
         List<String> singletonFailures = new ArrayList<>();
         Map<String, List<String>> singletonErrors = Collections.emptyMap();
 
-        if (!singletonDurationsFile.exists()) {
-            singletonFailures.add("No singleton durations [ " + singletonDurationsPath + " ]");
-        }
-        if (!singletonActualResultsFile.exists()) {
-            singletonFailures.add("No singleton actual results [ " + singletonActualResultsPath + " ]");
-        } else {
-            if (singletonExpectedResults == null) {
-                singletonFailures.add("No singleton expected results [ " + singletonExpectedResultsPath + " ]");
+        if (RUN_SINGLETON) {
+            if (!singletonDurationsFile.exists()) {
+                singletonFailures.add("No singleton durations [ " + singletonDurationsPath + " ]");
+            }
+            if (!singletonActualResultsFile.exists()) {
+                singletonFailures.add("No singleton actual results [ " + singletonActualResultsPath + " ]");
             } else {
-                singletonActualResults = load("Actual", singletonActualResultsPath);
-                System.out.println("Actual singleton cases [ " + singletonActualResults.cases.size() + " ]");
+                if (singletonExpectedResults == null) {
+                    singletonFailures.add("No singleton expected results [ " + singletonExpectedResultsPath + " ]");
+                } else {
+                    singletonActualResults = load("Actual", singletonActualResultsPath);
+                    System.out.println("Actual singleton cases [ " + singletonActualResults.cases.size() + " ]");
 
-                System.out.println("Expected [ " + singletonExpectedResultsPath + " ]; Actual [ " + singletonActualResultsPath + " ]");
-                singletonErrors = VerifyDelta.compare(singletonExpectedResults, singletonActualResults, !VerifyDelta.UPDATED_USED_KERNEL);
+                    System.out.println("Expected [ " + singletonExpectedResultsPath + " ]; Actual [ " + singletonActualResultsPath + " ]");
+                    singletonErrors = VerifyDelta.compare(singletonExpectedResults, singletonActualResults, !VerifyDelta.UPDATED_USED_KERNEL);
+                }
             }
         }
 
         List<String> servletFailures = new ArrayList<>();
         Map<String, List<String>> servletErrors = Collections.emptyMap();
-        if (!servletDurationsFile.exists()) {
-            servletFailures.add("No servlet durations [ " + servletDurationsPath + " ]");
-        }
-        if (!servletActualResultsFile.exists()) {
-            servletFailures.add("No servlet actual results [ " + servletActualResultsPath + " ]");
-        } else {
-            if (servletExpectedResults == null) {
-                servletFailures.add("No servlet expected results [ " + servletExpectedResultsPath + " ]");
-            } else {
-                servletActualResults = load("Actual", servletActualResultsPath);
-                System.out.println("Actual servlet cases [ " + servletActualResults.cases.size() + " ]");
 
-                System.out.println("Expected [ " + servletExpectedResultsPath + " ]; Actual [ " + servletActualResultsPath + " ]");
-                servletErrors = VerifyDelta.compare(servletExpectedResults, servletActualResults, !VerifyDelta.UPDATED_USED_KERNEL);
+        if (RUN_SERVLET) {
+            if (!servletDurationsFile.exists()) {
+                servletFailures.add("No servlet durations [ " + servletDurationsPath + " ]");
+            }
+            if (!servletActualResultsFile.exists()) {
+                servletFailures.add("No servlet actual results [ " + servletActualResultsPath + " ]");
+            } else {
+                if (servletExpectedResults == null) {
+                    servletFailures.add("No servlet expected results [ " + servletExpectedResultsPath + " ]");
+                } else {
+                    servletActualResults = load("Actual", servletActualResultsPath);
+                    System.out.println("Actual servlet cases [ " + servletActualResults.cases.size() + " ]");
+
+                    System.out.println("Expected [ " + servletExpectedResultsPath + " ]; Actual [ " + servletActualResultsPath + " ]");
+                    servletErrors = VerifyDelta.compare(servletExpectedResults, servletActualResults, !VerifyDelta.UPDATED_USED_KERNEL);
+                }
             }
         }
 

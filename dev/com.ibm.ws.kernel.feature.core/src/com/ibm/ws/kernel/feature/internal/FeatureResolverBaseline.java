@@ -38,18 +38,44 @@ import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 //@formatter:off
 public class FeatureResolverBaseline {
 
+    static {
+        printPath(VerifyEnv.REPO_PROPERTY_NAME, VerifyEnv.REPO_FILE_NAME);
+        printPath(VerifyEnv.RESULTS_SINGLETON_PROPERTY_NAME, VerifyEnv.RESULTS_SINGLETON_FILE_NAME);
+        printPath(VerifyEnv.DURATIONS_SINGLETON_PROPERTY_NAME, VerifyEnv.DURATIONS_SINGLETON_FILE_NAME);
+        printPath(VerifyEnv.RESULTS_SERVLET_PROPERTY_NAME, VerifyEnv.RESULTS_SERVLET_FILE_NAME);
+        printPath(VerifyEnv.DURATIONS_SERVLET_PROPERTY_NAME, VerifyEnv.DURATIONS_SERVLET_FILE_NAME);
+        printPath(VerifyEnv.RESULTS_SERVLET_MP_PROPERTY_NAME, VerifyEnv.RESULTS_SERVLET_MP_FILE_NAME);
+        printPath(VerifyEnv.DURATIONS_SERVLET_MP_PROPERTY_NAME, VerifyEnv.DURATIONS_SERVLET_MP_FILE_NAME);
+    }
+
+    public static void printPath(String tag, String path) {
+        String absPath = ((path == null) ? null : (new File(path)).getAbsolutePath());
+        System.out.println(tag + ": [ " + absPath + " ]");
+    }
+
+    //
+
     @Trivial
     protected static void trace(String message) {
+        System.out.println("FeatureResolverBaseline: trace: " + message);
         FeatureResolverImpl.trace(message);
     }
 
     @Trivial
     protected static void error(String message, Object... parms) {
+        System.out.println("FeatureResolverBaseline: error: " + message);
+        for ( Object parm : parms ) {
+            System.out.println("FeatureResolverBaseline: error:   [ " + parm + " ]");
+        }
         FeatureResolverImpl.error(message, parms);
     }
 
     @Trivial
     protected static void info(String message, Object... parms) {
+        System.out.println("FeatureResolverBaseline: info: " + message);
+        for ( Object parm : parms ) {
+            System.out.println("FeatureResolverBaseline: info:   [ " + parm + " ]");
+        }
         FeatureResolverImpl.info(message, parms);
     }
 
@@ -158,17 +184,43 @@ public class FeatureResolverBaseline {
 
     private static List<String> getVersionlessFeatures(Repository repository,
                                                        boolean includeEE, boolean includeMP) {
+
+        System.out.println("Selecting versionless features:");
+
         List<String> versionlessFeatures = new ArrayList<>();
         for ( ProvisioningFeatureDefinition featureDef : repository.getFeatures() ) {
             String featureName = featureDef.getSymbolicName();
-            if ( featureName.startsWith(VERSIONLESS_PREFIX) &&
-                 (includeEE && includeMP) ||
-                 (includeEE && !featureName.startsWith(VERSIONLESS_MP_PREFIX)) ||
-                 (includeMP && featureName.startsWith(VERSIONLESS_MP_PREFIX)) ) {
+            if ( !featureName.startsWith(VERSIONLESS_PREFIX) ) {
+                System.out.println("Skip: Missing prefix [ " + featureName + " ]");
+                continue;
+            }
+
+            String addReason;
+            if ( includeEE && includeMP ) {
+                addReason = "Include EE and MP";
+            } else if (includeEE && !featureName.startsWith(VERSIONLESS_MP_PREFIX)) {
+                addReason = "Include EE";
+            } else if (includeMP && featureName.startsWith(VERSIONLESS_MP_PREFIX)) {
+                addReason = "Include MP";
+            } else {
+                addReason = null;
+            }
+
+            if ( addReason == null ) {
+                System.out.println("Skip: Not selected [ " + featureName + " ]");
+            } else {
+                System.out.println("Add: Selected [ " + addReason + " ] [ " + featureName + " ]");
                 versionlessFeatures.add(featureName);
             }
+
+            if ( versionlessFeatures.size() == 20 ) {
+                break;
+            }
         }
+
         Collections.sort(versionlessFeatures);
+
+        System.out.println("Selected versionless features: [ " + versionlessFeatures.size() + " ]");
         return versionlessFeatures;
     }
 

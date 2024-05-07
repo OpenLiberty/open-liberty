@@ -1036,13 +1036,6 @@
             <type>type=osgi.bundle</type>
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.json4j</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
     </feature>
     <feature>
         <file>com.ibm.websphere.appserver.auditCollector-1.0.mf</file>
@@ -4164,6 +4157,17 @@
             <type>type=osgi.bundle</type>
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
+    </feature>
+    <feature>
+        <file>com.ibm.websphere.appserver.eeCompatible-0.0.mf</file>
+        <name>com.ibm.websphere.appserver.eeCompatible-0.0</name>
+        <symbolic-name>com.ibm.websphere.appserver.eeCompatible-0.0</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
     </feature>
     <feature>
         <file>com.ibm.websphere.appserver.eeCompatible-10.0.mf</file>
@@ -11756,13 +11760,6 @@
             <type>type=jar</type>
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.json4j</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
     </feature>
     <feature>
         <file>com.ibm.websphere.appserver.jsonb-1.0.mf</file>
@@ -12592,13 +12589,6 @@
         </constituent>
         <constituent>
             <symbolic-name>io.openliberty.com.google.gson</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.json4j</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.bundle</type>
@@ -19369,13 +19359,6 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>com.ibm.json4j</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
             <symbolic-name>io.openliberty.org.apache.commons.codec</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -22320,13 +22303,6 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>com.ibm.json4j</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
             <symbolic-name>com.ibm.ws.rest.handler.config</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -22459,13 +22435,6 @@
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.bundle</type>
             <version-range>[1.2.0,1.3.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.json4j</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
             <symbolic-name>io.openliberty.org.apache.commons.codec</symbolic-name>
@@ -23497,8 +23466,8 @@
         <visibility>PRIVATE</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>com.ibm.websphere.appserver.spi.servlet_2.13-javadoc.zip</symbolic-name>
-            <location>dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.servlet_2.13-javadoc.zip</location>
+            <symbolic-name>com.ibm.websphere.appserver.spi.servlet_2.14-javadoc.zip</symbolic-name>
+            <location>dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.servlet_2.14-javadoc.zip</location>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=file</type>
@@ -23510,7 +23479,7 @@
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=jar</type>
-            <version-range>[2.13.0,2.14.0)</version-range>
+            <version-range>[2.14.0,2.15.0)</version-range>
         </constituent>
     </feature>
     <feature>
@@ -24003,13 +23972,6 @@
         </constituent>
         <constituent>
             <symbolic-name>io.openliberty.com.google.gson</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.json4j</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.bundle</type>
@@ -27005,6 +26967,13 @@
             <version-range>0.0.0</version-range>
         </constituent>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.jaspic.spi</symbolic-name>
             <location>dev/spi/ibm/,lib/</location>
             <start-level>12</start-level>
@@ -27592,13 +27561,6 @@
             <version-range>[1.1.0,1.2.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>com.ibm.json4j</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
             <symbolic-name>com.ibm.ws.org.apache.commons.lang3</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -27807,13 +27769,6 @@
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=jar</type>
             <version-range>[1.1.0,1.2.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.json4j</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
             <symbolic-name>com.ibm.ws.org.apache.commons.lang3</symbolic-name>
@@ -31309,14 +31264,6 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.data_1.0-javadoc.zip</symbolic-name>
-            <location>dev/api/ibm/javadoc/io.openliberty.data_1.0-javadoc.zip</location>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=file</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.eeCompatible-10.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
@@ -31340,6 +31287,61 @@
             <version-range>0.0.0</version-range>
         </constituent>
         <constituent>
+            <symbolic-name>io.openliberty.data.internal</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.bundle</type>
+            <version-range>[1.0.0,1.1.0)</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.data.1.0.internal</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.bundle</type>
+            <version-range>[1.0.0,1.1.0)</version-range>
+        </constituent>
+    </feature>
+    <feature>
+        <file>io.openliberty.data-1.1.mf</file>
+        <name>data-1.1</name>
+        <symbolic-name>io.openliberty.data-1.1</symbolic-name>
+        <short-name>data-1.1</short-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PUBLIC</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.data_1.1-javadoc.zip</symbolic-name>
+            <location>dev/api/ibm/javadoc/io.openliberty.data_1.1-javadoc.zip</location>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=file</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>com.ibm.websphere.appserver.eeCompatible-11.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.cdi-4.1</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.jakarta.data-1.1</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.data</symbolic-name>
             <location>dev/api/ibm/,lib/</location>
             <start-level>12</start-level>
@@ -31349,6 +31351,13 @@
         </constituent>
         <constituent>
             <symbolic-name>io.openliberty.data.internal</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.bundle</type>
+            <version-range>[1.0.0,1.1.0)</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.data.1.1.internal</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.bundle</type>
@@ -33371,76 +33380,169 @@
         </constituent>
     </feature>
     <feature>
-        <file>io.openliberty.internal.versionless.appAuthentication-2.0.mf</file>
-        <name>io.openliberty.internal.versionless.appAuthentication-2.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.appAuthentication-2.0</symbolic-name>
+        <file>io.openliberty.internal.mpVersion-1.0.mf</file>
+        <name>io.openliberty.internal.mpVersion-1.0</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-1.0</symbolic-name>
         <version>1.0.0</version>
         <ibm-version>2</ibm-version>
         <supported-version/>
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.appAuthentication-2.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
     </feature>
     <feature>
-        <file>io.openliberty.internal.versionless.appAuthentication-3.0.mf</file>
-        <name>io.openliberty.internal.versionless.appAuthentication-3.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.appAuthentication-3.0</symbolic-name>
+        <file>io.openliberty.internal.mpVersion-1.2.mf</file>
+        <name>io.openliberty.internal.mpVersion-1.2</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-1.2</symbolic-name>
         <version>1.0.0</version>
         <ibm-version>2</ibm-version>
         <supported-version/>
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.appAuthentication-3.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
     </feature>
     <feature>
-        <file>io.openliberty.internal.versionless.appAuthorization-2.0.mf</file>
-        <name>io.openliberty.internal.versionless.appAuthorization-2.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.appAuthorization-2.0</symbolic-name>
+        <file>io.openliberty.internal.mpVersion-1.3.mf</file>
+        <name>io.openliberty.internal.mpVersion-1.3</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-1.3</symbolic-name>
         <version>1.0.0</version>
         <ibm-version>2</ibm-version>
         <supported-version/>
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.appAuthorization-2.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
     </feature>
     <feature>
-        <file>io.openliberty.internal.versionless.appAuthorization-2.1.mf</file>
-        <name>io.openliberty.internal.versionless.appAuthorization-2.1</name>
-        <symbolic-name>io.openliberty.internal.versionless.appAuthorization-2.1</symbolic-name>
+        <file>io.openliberty.internal.mpVersion-1.4.mf</file>
+        <name>io.openliberty.internal.mpVersion-1.4</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-1.4</symbolic-name>
         <version>1.0.0</version>
         <ibm-version>2</ibm-version>
         <supported-version/>
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.appAuthorization-2.1</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
+    </feature>
+    <feature>
+        <file>io.openliberty.internal.mpVersion-2.0.mf</file>
+        <name>io.openliberty.internal.mpVersion-2.0</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-2.0</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+    </feature>
+    <feature>
+        <file>io.openliberty.internal.mpVersion-2.1.mf</file>
+        <name>io.openliberty.internal.mpVersion-2.1</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-2.1</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+    </feature>
+    <feature>
+        <file>io.openliberty.internal.mpVersion-2.2.mf</file>
+        <name>io.openliberty.internal.mpVersion-2.2</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-2.2</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+    </feature>
+    <feature>
+        <file>io.openliberty.internal.mpVersion-3.0.mf</file>
+        <name>io.openliberty.internal.mpVersion-3.0</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-3.0</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+    </feature>
+    <feature>
+        <file>io.openliberty.internal.mpVersion-3.2.mf</file>
+        <name>io.openliberty.internal.mpVersion-3.2</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-3.2</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+    </feature>
+    <feature>
+        <file>io.openliberty.internal.mpVersion-3.3.mf</file>
+        <name>io.openliberty.internal.mpVersion-3.3</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-3.3</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+    </feature>
+    <feature>
+        <file>io.openliberty.internal.mpVersion-4.0.mf</file>
+        <name>io.openliberty.internal.mpVersion-4.0</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-4.0</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+    </feature>
+    <feature>
+        <file>io.openliberty.internal.mpVersion-4.1.mf</file>
+        <name>io.openliberty.internal.mpVersion-4.1</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-4.1</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+    </feature>
+    <feature>
+        <file>io.openliberty.internal.mpVersion-5.0.mf</file>
+        <name>io.openliberty.internal.mpVersion-5.0</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-5.0</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+    </feature>
+    <feature>
+        <file>io.openliberty.internal.mpVersion-6.0.mf</file>
+        <name>io.openliberty.internal.mpVersion-6.0</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-6.0</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+    </feature>
+    <feature>
+        <file>io.openliberty.internal.mpVersion-6.1.mf</file>
+        <name>io.openliberty.internal.mpVersion-6.1</name>
+        <symbolic-name>io.openliberty.internal.mpVersion-6.1</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
     </feature>
     <feature>
         <file>io.openliberty.internal.versionless.appClientSupport-1.0.mf</file>
@@ -33452,6 +33554,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.appClientSupport-1.0</symbolic-name>
             <start-level>12</start-level>
@@ -33471,6 +33580,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.appClientSupport-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -33488,6 +33604,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.appSecurity-2.0</symbolic-name>
             <start-level>12</start-level>
@@ -33507,6 +33630,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.appSecurity-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -33524,6 +33654,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.appSecurity-4.0</symbolic-name>
             <start-level>12</start-level>
@@ -33543,7 +33680,39 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.appSecurity-5.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+    </feature>
+    <feature>
+        <file>io.openliberty.internal.versionless.appSecurity-6.0.mf</file>
+        <name>io.openliberty.internal.versionless.appSecurity-6.0</name>
+        <symbolic-name>io.openliberty.internal.versionless.appSecurity-6.0</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.appSecurity-6.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -33560,6 +33729,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.batch-1.0</symbolic-name>
             <start-level>12</start-level>
@@ -33579,6 +33755,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.batch-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -33596,6 +33779,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.batch-2.1</symbolic-name>
             <start-level>12</start-level>
@@ -33615,6 +33805,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.beanValidation-1.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -33632,6 +33829,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.beanValidation-2.0</symbolic-name>
             <start-level>12</start-level>
@@ -33651,6 +33855,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.beanValidation-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -33668,6 +33879,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.cdi-1.2</symbolic-name>
             <start-level>12</start-level>
@@ -33687,6 +33905,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.cdi-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -33704,6 +33929,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.cdi-3.0</symbolic-name>
             <start-level>12</start-level>
@@ -33723,6 +33955,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.cdi-4.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -33740,6 +33979,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.cdi-4.1</symbolic-name>
             <start-level>12</start-level>
@@ -33759,6 +34005,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.concurrent-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -33776,6 +34029,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.concurrent-2.0</symbolic-name>
             <start-level>12</start-level>
@@ -33795,6 +34055,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.concurrent-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -33813,61 +34080,14 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.concurrent-3.1</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.connectors-2.0.mf</file>
-        <name>io.openliberty.internal.versionless.connectors-2.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.connectors-2.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.connectors-2.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.connectors-2.1.mf</file>
-        <name>io.openliberty.internal.versionless.connectors-2.1</name>
-        <symbolic-name>io.openliberty.internal.versionless.connectors-2.1</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.connectors-2.1</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.connectorsInboundSecurity-2.0.mf</file>
-        <name>io.openliberty.internal.versionless.connectorsInboundSecurity-2.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.connectorsInboundSecurity-2.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.connectorsInboundSecurity-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -33885,11 +34105,42 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.data-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+        </constituent>
+    </feature>
+    <feature>
+        <file>io.openliberty.internal.versionless.eeCompatible.mf</file>
+        <name>io.openliberty.internal.versionless.eeCompatible</name>
+        <symbolic-name>io.openliberty.internal.versionless.eeCompatible</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>com.ibm.websphere.appserver.eeCompatible-0.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>6.0</tolerate>
+            <tolerate>7.0</tolerate>
+            <tolerate>8.0</tolerate>
+            <tolerate>9.0</tolerate>
+            <tolerate>10.0</tolerate>
+            <tolerate>11.0</tolerate>
         </constituent>
     </feature>
     <feature>
@@ -33902,6 +34153,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.ejb-3.2</symbolic-name>
             <start-level>12</start-level>
@@ -33921,6 +34179,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.enterpriseBeans-4.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -33938,6 +34203,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.ejbLite-3.2</symbolic-name>
             <start-level>12</start-level>
@@ -33957,6 +34229,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.enterpriseBeansLite-4.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -33974,6 +34253,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.el-3.0</symbolic-name>
             <start-level>12</start-level>
@@ -33993,6 +34279,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.expressionLanguage-4.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34010,6 +34303,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.expressionLanguage-5.0</symbolic-name>
             <start-level>12</start-level>
@@ -34029,43 +34329,14 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.expressionLanguage-6.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.enterpriseBeans-4.0.mf</file>
-        <name>io.openliberty.internal.versionless.enterpriseBeans-4.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.enterpriseBeans-4.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.enterpriseBeans-4.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.enterpriseBeansLite-4.0.mf</file>
-        <name>io.openliberty.internal.versionless.enterpriseBeansLite-4.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.enterpriseBeansLite-4.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.enterpriseBeansLite-4.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -34082,6 +34353,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.enterpriseBeansPersistentTimer-4.0</symbolic-name>
             <start-level>12</start-level>
@@ -34101,97 +34379,14 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.enterpriseBeansRemote-4.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.expressionLanguage-4.0.mf</file>
-        <name>io.openliberty.internal.versionless.expressionLanguage-4.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.expressionLanguage-4.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.expressionLanguage-4.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.expressionLanguage-5.0.mf</file>
-        <name>io.openliberty.internal.versionless.expressionLanguage-5.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.expressionLanguage-5.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.expressionLanguage-5.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.expressionLanguage-6.0.mf</file>
-        <name>io.openliberty.internal.versionless.expressionLanguage-6.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.expressionLanguage-6.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.expressionLanguage-6.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.faces-3.0.mf</file>
-        <name>io.openliberty.internal.versionless.faces-3.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.faces-3.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.faces-3.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.faces-4.0.mf</file>
-        <name>io.openliberty.internal.versionless.faces-4.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.faces-4.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.faces-4.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -34208,6 +34403,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.j2eeManagement-1.1</symbolic-name>
             <start-level>12</start-level>
@@ -34227,6 +34429,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jacc-1.5</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34244,6 +34453,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.appAuthorization-2.0</symbolic-name>
             <start-level>12</start-level>
@@ -34263,6 +34479,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.appAuthorization-2.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34280,6 +34503,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jaspic-1.1</symbolic-name>
             <start-level>12</start-level>
@@ -34299,6 +34529,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.appAuthentication-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34316,6 +34553,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.appAuthentication-3.0</symbolic-name>
             <start-level>12</start-level>
@@ -34335,6 +34579,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.javaMail-1.5</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34352,6 +34603,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.javaMail-1.6</symbolic-name>
             <start-level>12</start-level>
@@ -34371,6 +34629,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.mail-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34388,6 +34653,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.mail-2.1</symbolic-name>
             <start-level>12</start-level>
@@ -34407,6 +34679,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jaxrs-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34424,6 +34703,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jaxrs-2.1</symbolic-name>
             <start-level>12</start-level>
@@ -34443,6 +34729,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.restfulWS-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34460,6 +34753,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.restfulWS-3.1</symbolic-name>
             <start-level>12</start-level>
@@ -34479,6 +34779,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jaxrsClient-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34496,6 +34803,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jaxrsClient-2.1</symbolic-name>
             <start-level>12</start-level>
@@ -34515,6 +34829,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.restfulWSClient-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34532,6 +34853,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.restfulWSClient-3.1</symbolic-name>
             <start-level>12</start-level>
@@ -34551,6 +34879,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jaxws-2.2</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34568,6 +34903,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.xmlWS-3.0</symbolic-name>
             <start-level>12</start-level>
@@ -34587,6 +34929,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.xmlWS-4.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34604,6 +34953,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jca-1.7</symbolic-name>
             <start-level>12</start-level>
@@ -34623,6 +34979,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.connectors-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34640,6 +35003,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.connectors-2.1</symbolic-name>
             <start-level>12</start-level>
@@ -34659,6 +35029,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jcaInboundSecurity-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34676,6 +35053,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.connectorsInboundSecurity-2.0</symbolic-name>
             <start-level>12</start-level>
@@ -34695,6 +35079,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jdbc-4.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34712,6 +35103,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jdbc-4.2</symbolic-name>
             <start-level>12</start-level>
@@ -34731,6 +35129,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jms-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34748,6 +35153,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.messaging-3.0</symbolic-name>
             <start-level>12</start-level>
@@ -34767,6 +35179,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.messaging-3.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34784,6 +35203,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jndi-1.0</symbolic-name>
             <start-level>12</start-level>
@@ -34803,6 +35229,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jpa-2.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34820,6 +35253,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jpa-2.2</symbolic-name>
             <start-level>12</start-level>
@@ -34839,6 +35279,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.persistence-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34856,6 +35303,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.persistence-3.1</symbolic-name>
             <start-level>12</start-level>
@@ -34875,6 +35329,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jsf-2.2</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34892,6 +35353,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jsf-2.3</symbolic-name>
             <start-level>12</start-level>
@@ -34911,6 +35379,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.faces-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34928,6 +35403,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.faces-4.0</symbolic-name>
             <start-level>12</start-level>
@@ -34947,6 +35429,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jsonb-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -34964,6 +35453,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.jsonb-2.0</symbolic-name>
             <start-level>12</start-level>
@@ -34983,6 +35479,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.jsonb-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35000,6 +35503,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jsonp-1.0</symbolic-name>
             <start-level>12</start-level>
@@ -35019,6 +35529,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jsonp-1.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35036,6 +35553,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.jsonp-2.0</symbolic-name>
             <start-level>12</start-level>
@@ -35055,6 +35579,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.jsonp-2.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35072,6 +35603,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.jsp-2.3</symbolic-name>
             <start-level>12</start-level>
@@ -35091,6 +35629,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.pages-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35108,6 +35653,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.pages-3.1</symbolic-name>
             <start-level>12</start-level>
@@ -35127,43 +35679,14 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.pages-4.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.mail-2.0.mf</file>
-        <name>io.openliberty.internal.versionless.mail-2.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.mail-2.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.mail-2.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.mail-2.1.mf</file>
-        <name>io.openliberty.internal.versionless.mail-2.1</name>
-        <symbolic-name>io.openliberty.internal.versionless.mail-2.1</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.mail-2.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -35180,6 +35703,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.managedBeans-1.0</symbolic-name>
             <start-level>12</start-level>
@@ -35199,6 +35729,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.managedBeans-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35217,6 +35754,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.mdb-4.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35225,9 +35769,9 @@
         </constituent>
     </feature>
     <feature>
-        <file>io.openliberty.internal.versionless.messaging-3.0.mf</file>
-        <name>io.openliberty.internal.versionless.messaging-3.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.messaging-3.0</symbolic-name>
+        <file>io.openliberty.internal.versionless.mpCompatible.mf</file>
+        <name>io.openliberty.internal.versionless.mpCompatible</name>
+        <symbolic-name>io.openliberty.internal.versionless.mpCompatible</symbolic-name>
         <version>1.0.0</version>
         <ibm-version>2</ibm-version>
         <supported-version/>
@@ -35235,83 +35779,25 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.messaging-3.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.messaging-3.1.mf</file>
-        <name>io.openliberty.internal.versionless.messaging-3.1</name>
-        <symbolic-name>io.openliberty.internal.versionless.messaging-3.1</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.messaging-3.1</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.messagingClient-3.0.mf</file>
-        <name>io.openliberty.internal.versionless.messagingClient-3.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.messagingClient-3.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.messagingClient-3.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.messagingSecurity-3.0.mf</file>
-        <name>io.openliberty.internal.versionless.messagingSecurity-3.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.messagingSecurity-3.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.messagingSecurity-3.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.messagingServer-3.0.mf</file>
-        <name>io.openliberty.internal.versionless.messagingServer-3.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.messagingServer-3.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.messagingServer-3.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
+            <tolerate>1.2</tolerate>
+            <tolerate>1.3</tolerate>
+            <tolerate>1.4</tolerate>
+            <tolerate>2.0</tolerate>
+            <tolerate>2.1</tolerate>
+            <tolerate>2.2</tolerate>
+            <tolerate>3.0</tolerate>
+            <tolerate>3.2</tolerate>
+            <tolerate>3.3</tolerate>
+            <tolerate>4.0</tolerate>
+            <tolerate>4.1</tolerate>
+            <tolerate>5.0</tolerate>
+            <tolerate>6.0</tolerate>
+            <tolerate>6.1</tolerate>
         </constituent>
     </feature>
     <feature>
@@ -35324,6 +35810,20 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.2</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpConfig-1.1</symbolic-name>
             <start-level>12</start-level>
@@ -35343,6 +35843,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.3</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpConfig-1.2</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35360,6 +35874,25 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.4</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>2.0</tolerate>
+            <tolerate>2.1</tolerate>
+            <tolerate>2.2</tolerate>
+            <tolerate>3.0</tolerate>
+            <tolerate>3.2</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpConfig-1.3</symbolic-name>
             <start-level>12</start-level>
@@ -35379,6 +35912,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-3.3</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpConfig-1.4</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35396,6 +35943,21 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-4.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>4.1</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpConfig-2.0</symbolic-name>
             <start-level>12</start-level>
@@ -35415,6 +35977,21 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-5.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>6.0</tolerate>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.mpConfig-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35432,6 +36009,20 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-6.1</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.mpConfig-3.1</symbolic-name>
             <start-level>12</start-level>
@@ -35451,6 +36042,21 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.2</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>1.3</tolerate>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpFaultTolerance-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35468,6 +36074,22 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.4</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>2.0</tolerate>
+            <tolerate>2.1</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpFaultTolerance-1.1</symbolic-name>
             <start-level>12</start-level>
@@ -35487,6 +36109,22 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-2.2</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>3.0</tolerate>
+            <tolerate>3.2</tolerate>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpFaultTolerance-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35504,6 +36142,20 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-3.3</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpFaultTolerance-2.1</symbolic-name>
             <start-level>12</start-level>
@@ -35523,6 +36175,21 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-4.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>4.1</tolerate>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpFaultTolerance-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35540,6 +36207,22 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-5.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>6.0</tolerate>
+            <tolerate>6.1</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.mpFaultTolerance-4.0</symbolic-name>
             <start-level>12</start-level>
@@ -35559,6 +36242,25 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.2</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>1.3</tolerate>
+            <tolerate>1.4</tolerate>
+            <tolerate>2.0</tolerate>
+            <tolerate>2.1</tolerate>
+            <tolerate>2.2</tolerate>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpHealth-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35576,6 +36278,20 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-3.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpHealth-2.0</symbolic-name>
             <start-level>12</start-level>
@@ -35595,6 +36311,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-3.2</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpHealth-2.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35612,6 +36342,20 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-3.3</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpHealth-2.2</symbolic-name>
             <start-level>12</start-level>
@@ -35631,6 +36375,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-4.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpHealth-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35648,6 +36406,20 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-4.1</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpHealth-3.1</symbolic-name>
             <start-level>12</start-level>
@@ -35667,6 +36439,22 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-5.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>6.0</tolerate>
+            <tolerate>6.1</tolerate>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.mpHealth-4.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35684,6 +36472,21 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.2</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>1.3</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpJwt-1.0</symbolic-name>
             <start-level>12</start-level>
@@ -35703,6 +36506,26 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.4</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>2.0</tolerate>
+            <tolerate>2.1</tolerate>
+            <tolerate>2.2</tolerate>
+            <tolerate>3.0</tolerate>
+            <tolerate>3.2</tolerate>
+            <tolerate>3.3</tolerate>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpJwt-1.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35720,6 +36543,21 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-4.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>4.1</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpJwt-1.2</symbolic-name>
             <start-level>12</start-level>
@@ -35739,6 +36577,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-5.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.mpJwt-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35756,6 +36608,21 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-6.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>6.1</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.mpJwt-2.1</symbolic-name>
             <start-level>12</start-level>
@@ -35775,6 +36642,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.2</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpMetrics-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35792,6 +36673,24 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.3</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>1.4</tolerate>
+            <tolerate>2.0</tolerate>
+            <tolerate>2.1</tolerate>
+            <tolerate>2.2</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpMetrics-1.1</symbolic-name>
             <start-level>12</start-level>
@@ -35811,6 +36710,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-3.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpMetrics-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35828,6 +36741,20 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-3.2</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpMetrics-2.2</symbolic-name>
             <start-level>12</start-level>
@@ -35847,6 +36774,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-3.3</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpMetrics-2.3</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35864,6 +36805,21 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-4.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>4.1</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpMetrics-3.0</symbolic-name>
             <start-level>12</start-level>
@@ -35883,6 +36839,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-5.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.mpMetrics-4.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35900,6 +36870,20 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-6.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.mpMetrics-5.0</symbolic-name>
             <start-level>12</start-level>
@@ -35919,6 +36903,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-6.1</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.mpMetrics-5.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35936,6 +36934,23 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.3</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>1.4</tolerate>
+            <tolerate>2.0</tolerate>
+            <tolerate>2.1</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpOpenAPI-1.0</symbolic-name>
             <start-level>12</start-level>
@@ -35955,6 +36970,23 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-2.2</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>3.0</tolerate>
+            <tolerate>3.2</tolerate>
+            <tolerate>3.3</tolerate>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpOpenAPI-1.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -35972,6 +37004,21 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-4.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>4.1</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpOpenAPI-2.0</symbolic-name>
             <start-level>12</start-level>
@@ -35991,6 +37038,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-5.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.mpOpenAPI-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36008,6 +37069,21 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-6.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>6.1</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.mpOpenAPI-3.1</symbolic-name>
             <start-level>12</start-level>
@@ -36027,6 +37103,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.3</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpOpenTracing-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36044,6 +37134,21 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.4</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>2.0</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpOpenTracing-1.1</symbolic-name>
             <start-level>12</start-level>
@@ -36063,6 +37168,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-2.1</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpOpenTracing-1.2</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36080,6 +37199,23 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-2.2</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>3.0</tolerate>
+            <tolerate>3.2</tolerate>
+            <tolerate>3.3</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpOpenTracing-1.3</symbolic-name>
             <start-level>12</start-level>
@@ -36099,6 +37235,21 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-4.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>4.1</tolerate>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpOpenTracing-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36116,6 +37267,20 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-5.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.mpOpenTracing-3.0</symbolic-name>
             <start-level>12</start-level>
@@ -36135,6 +37300,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.3</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpRestClient-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36152,6 +37331,22 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.4</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>2.0</tolerate>
+            <tolerate>2.1</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpRestClient-1.1</symbolic-name>
             <start-level>12</start-level>
@@ -36171,6 +37366,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-2.2</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpRestClient-1.2</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36188,6 +37397,21 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-3.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>3.2</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpRestClient-1.3</symbolic-name>
             <start-level>12</start-level>
@@ -36207,6 +37431,20 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-3.3</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpRestClient-1.4</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36224,6 +37462,21 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-4.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>4.1</tolerate>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.mpRestClient-2.0</symbolic-name>
             <start-level>12</start-level>
@@ -36243,6 +37496,22 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-5.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>6.0</tolerate>
+            <tolerate>6.1</tolerate>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.mpRestClient-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36260,6 +37529,20 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-6.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.mpTelemetry-1.0</symbolic-name>
             <start-level>12</start-level>
@@ -36279,97 +37562,21 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-6.1</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.mpTelemetry-1.1</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.pages-3.0.mf</file>
-        <name>io.openliberty.internal.versionless.pages-3.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.pages-3.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.pages-3.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.pages-3.1.mf</file>
-        <name>io.openliberty.internal.versionless.pages-3.1</name>
-        <symbolic-name>io.openliberty.internal.versionless.pages-3.1</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.pages-3.1</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.pages-4.0.mf</file>
-        <name>io.openliberty.internal.versionless.pages-4.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.pages-4.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.pages-4.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.persistence-3.0.mf</file>
-        <name>io.openliberty.internal.versionless.persistence-3.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.persistence-3.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.persistence-3.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.persistence-3.1.mf</file>
-        <name>io.openliberty.internal.versionless.persistence-3.1</name>
-        <symbolic-name>io.openliberty.internal.versionless.persistence-3.1</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.persistence-3.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -36387,79 +37594,14 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.restConnector-2.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.restfulWS-3.0.mf</file>
-        <name>io.openliberty.internal.versionless.restfulWS-3.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.restfulWS-3.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.restfulWS-3.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.restfulWS-3.1.mf</file>
-        <name>io.openliberty.internal.versionless.restfulWS-3.1</name>
-        <symbolic-name>io.openliberty.internal.versionless.restfulWS-3.1</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.restfulWS-3.1</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.restfulWSClient-3.0.mf</file>
-        <name>io.openliberty.internal.versionless.restfulWSClient-3.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.restfulWSClient-3.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.restfulWSClient-3.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.restfulWSClient-3.1.mf</file>
-        <name>io.openliberty.internal.versionless.restfulWSClient-3.1</name>
-        <symbolic-name>io.openliberty.internal.versionless.restfulWSClient-3.1</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.restfulWSClient-3.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -36476,6 +37618,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.servlet-3.1</symbolic-name>
             <start-level>12</start-level>
@@ -36495,6 +37644,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.servlet-4.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36512,6 +37668,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.servlet-5.0</symbolic-name>
             <start-level>12</start-level>
@@ -36531,6 +37694,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.servlet-6.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36548,6 +37718,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.servlet-6.1</symbolic-name>
             <start-level>12</start-level>
@@ -36567,6 +37744,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.wasJmsClient-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36584,6 +37768,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.messagingClient-3.0</symbolic-name>
             <start-level>12</start-level>
@@ -36603,6 +37794,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.wasJmsSecurity-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36620,6 +37818,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.messagingSecurity-3.0</symbolic-name>
             <start-level>12</start-level>
@@ -36639,6 +37844,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.wasJmsServer-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36656,6 +37868,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.messagingServer-3.0</symbolic-name>
             <start-level>12</start-level>
@@ -36675,6 +37894,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>com.ibm.websphere.appserver.websocket-1.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36692,6 +37918,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.websocket-2.0</symbolic-name>
             <start-level>12</start-level>
@@ -36711,6 +37944,13 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.websocket-2.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -36728,6 +37968,13 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.xmlBinding-3.0</symbolic-name>
             <start-level>12</start-level>
@@ -36747,43 +37994,14 @@
         <singleton/>
         <restart>NEVER</restart>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.xmlBinding-4.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.xmlWS-3.0.mf</file>
-        <name>io.openliberty.internal.versionless.xmlWS-3.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.xmlWS-3.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.xmlWS-3.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.internal.versionless.xmlWS-4.0.mf</file>
-        <name>io.openliberty.internal.versionless.xmlWS-4.0</name>
-        <symbolic-name>io.openliberty.internal.versionless.xmlWS-4.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.xmlWS-4.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -36992,13 +38210,6 @@
         <restart>NEVER</restart>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.eeCompatible-11.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -37385,6 +38596,53 @@
         </constituent>
         <constituent>
             <symbolic-name>io.openliberty.jakarta.data.1.0</symbolic-name>
+            <location>dev/api/spec/,lib/</location>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.bundle</type>
+            <version-range>[1.0.0,1.1.0)</version-range>
+        </constituent>
+    </feature>
+    <feature>
+        <file>io.openliberty.jakarta.data-1.1.mf</file>
+        <name>io.openliberty.jakarta.data-1.1</name>
+        <symbolic-name>io.openliberty.jakarta.data-1.1</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <singleton/>
+        <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>com.ibm.websphere.appserver.eeCompatible-11.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.jakarta.annotation-3.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.jakarta.cdi-4.1</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.jakarta.data.1.1</symbolic-name>
             <location>dev/api/spec/,lib/</location>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
@@ -38447,13 +39705,6 @@
             <version-range>0.0.0</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-        <constituent>
             <symbolic-name>io.openliberty.jakarta.security.4.0</symbolic-name>
             <location>dev/api/spec/,lib/</location>
             <start-level>12</start-level>
@@ -38501,13 +39752,6 @@
         <restart>NEVER</restart>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.eeCompatible-11.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -40914,6 +42158,13 @@
             <version-range>0.0.0</version-range>
         </constituent>
         <constituent>
+            <symbolic-name>io.openliberty.noShip-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.security.common.internal</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -42424,116 +43675,22 @@
         <visibility>PRIVATE</visibility>
         <singleton/>
         <restart>NEVER</restart>
-    </feature>
-    <feature>
-        <file>io.openliberty.mpCompatible-1.0.mf</file>
-        <name>io.openliberty.mpCompatible-1.0</name>
-        <symbolic-name>io.openliberty.mpCompatible-1.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-    </feature>
-    <feature>
-        <file>io.openliberty.mpCompatible-1.2.mf</file>
-        <name>io.openliberty.mpCompatible-1.2</name>
-        <symbolic-name>io.openliberty.mpCompatible-1.2</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-    </feature>
-    <feature>
-        <file>io.openliberty.mpCompatible-1.3.mf</file>
-        <name>io.openliberty.mpCompatible-1.3</name>
-        <symbolic-name>io.openliberty.mpCompatible-1.3</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-    </feature>
-    <feature>
-        <file>io.openliberty.mpCompatible-1.4.mf</file>
-        <name>io.openliberty.mpCompatible-1.4</name>
-        <symbolic-name>io.openliberty.mpCompatible-1.4</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-    </feature>
-    <feature>
-        <file>io.openliberty.mpCompatible-2.0.mf</file>
-        <name>io.openliberty.mpCompatible-2.0</name>
-        <symbolic-name>io.openliberty.mpCompatible-2.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-    </feature>
-    <feature>
-        <file>io.openliberty.mpCompatible-2.1.mf</file>
-        <name>io.openliberty.mpCompatible-2.1</name>
-        <symbolic-name>io.openliberty.mpCompatible-2.1</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-    </feature>
-    <feature>
-        <file>io.openliberty.mpCompatible-2.2.mf</file>
-        <name>io.openliberty.mpCompatible-2.2</name>
-        <symbolic-name>io.openliberty.mpCompatible-2.2</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-    </feature>
-    <feature>
-        <file>io.openliberty.mpCompatible-3.0.mf</file>
-        <name>io.openliberty.mpCompatible-3.0</name>
-        <symbolic-name>io.openliberty.mpCompatible-3.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-    </feature>
-    <feature>
-        <file>io.openliberty.mpCompatible-3.2.mf</file>
-        <name>io.openliberty.mpCompatible-3.2</name>
-        <symbolic-name>io.openliberty.mpCompatible-3.2</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-    </feature>
-    <feature>
-        <file>io.openliberty.mpCompatible-3.3.mf</file>
-        <name>io.openliberty.mpCompatible-3.3</name>
-        <symbolic-name>io.openliberty.mpCompatible-3.3</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>1.2</tolerate>
+            <tolerate>1.3</tolerate>
+            <tolerate>1.4</tolerate>
+            <tolerate>2.0</tolerate>
+            <tolerate>2.1</tolerate>
+            <tolerate>2.2</tolerate>
+            <tolerate>3.0</tolerate>
+            <tolerate>3.2</tolerate>
+            <tolerate>3.3</tolerate>
+        </constituent>
     </feature>
     <feature>
         <file>io.openliberty.mpCompatible-4.0.mf</file>
@@ -42552,17 +43709,14 @@
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
         </constituent>
-    </feature>
-    <feature>
-        <file>io.openliberty.mpCompatible-4.1.mf</file>
-        <name>io.openliberty.mpCompatible-4.1</name>
-        <symbolic-name>io.openliberty.mpCompatible-4.1</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PRIVATE</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-4.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+            <tolerate>4.1</tolerate>
+        </constituent>
     </feature>
     <feature>
         <file>io.openliberty.mpCompatible-5.0.mf</file>
@@ -42576,6 +43730,13 @@
         <restart>NEVER</restart>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.eeCompatible-9.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-5.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -42599,6 +43760,13 @@
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
         </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-6.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
     </feature>
     <feature>
         <file>io.openliberty.mpCompatible-6.1.mf</file>
@@ -42612,6 +43780,13 @@
         <restart>NEVER</restart>
         <constituent>
             <symbolic-name>com.ibm.websphere.appserver.eeCompatible-10.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.internal.mpVersion-6.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -44948,7 +46123,7 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>io.openliberty.io.zipkin.zipkin2</symbolic-name>
+            <symbolic-name>io.openliberty.io.zipkin.zipkin2.1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.bundle</type>
@@ -45041,7 +46216,7 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>io.openliberty.io.zipkin.zipkin2</symbolic-name>
+            <symbolic-name>io.openliberty.io.zipkin.zipkin2.1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.bundle</type>
@@ -45106,7 +46281,7 @@
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
         <constituent>
-            <symbolic-name>io.openliberty.io.zipkin.zipkin2</symbolic-name>
+            <symbolic-name>io.openliberty.io.zipkin.zipkin2.2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.bundle</type>
@@ -50483,8 +51658,8 @@
         <visibility>PRIVATE</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.servlet.spi_2.13-javadoc.zip</symbolic-name>
-            <location>dev/spi/ibm/javadoc/io.openliberty.servlet.spi_2.13-javadoc.zip</location>
+            <symbolic-name>io.openliberty.servlet.spi_2.14-javadoc.zip</symbolic-name>
+            <location>dev/spi/ibm/javadoc/io.openliberty.servlet.spi_2.14-javadoc.zip</location>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=file</type>
@@ -50496,7 +51671,7 @@
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=jar</type>
-            <version-range>[2.13.0,2.14.0)</version-range>
+            <version-range>[2.14.0,2.15.0)</version-range>
         </constituent>
     </feature>
     <feature>
@@ -51115,6 +52290,13 @@
         </constituent>
         <constituent>
             <symbolic-name>io.openliberty.session.6.0.internal</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>PARALLEL</activation-type>
+            <type>type=osgi.bundle</type>
+            <version-range>[1.0.0,1.1.0)</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.session.6.1.internal</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
             <type>type=osgi.bundle</type>
@@ -51791,11 +52973,12 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.appAuthentication-2.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.jaspic-1.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>2.0</tolerate>
             <tolerate>3.0</tolerate>
         </constituent>
     </feature>
@@ -51810,11 +52993,12 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.appAuthorization-2.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.jacc-1.5</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>2.0</tolerate>
             <tolerate>2.1</tolerate>
         </constituent>
     </feature>
@@ -51856,6 +53040,7 @@
             <tolerate>3.0</tolerate>
             <tolerate>4.0</tolerate>
             <tolerate>5.0</tolerate>
+            <tolerate>6.0</tolerate>
         </constituent>
     </feature>
     <feature>
@@ -51952,11 +53137,12 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.connectors-2.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.jca-1.7</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>2.0</tolerate>
             <tolerate>2.1</tolerate>
         </constituent>
     </feature>
@@ -51971,11 +53157,12 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.connectorsInboundSecurity-2.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.jcaInboundSecurity-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>2.0</tolerate>
         </constituent>
     </feature>
     <feature>
@@ -52066,11 +53253,12 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.enterpriseBeans-4.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.ejb-3.2</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>4.0</tolerate>
         </constituent>
     </feature>
     <feature>
@@ -52084,11 +53272,12 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.enterpriseBeansLite-4.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.ejbLite-3.2</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>4.0</tolerate>
         </constituent>
     </feature>
     <feature>
@@ -52138,11 +53327,12 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.expressionLanguage-4.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.el-3.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>4.0</tolerate>
             <tolerate>5.0</tolerate>
             <tolerate>6.0</tolerate>
         </constituent>
@@ -52158,11 +53348,13 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.faces-3.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.jsf-2.2</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>2.3</tolerate>
+            <tolerate>3.0</tolerate>
             <tolerate>4.0</tolerate>
         </constituent>
     </feature>
@@ -52518,11 +53710,13 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.mail-2.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.javaMail-1.5</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>1.6</tolerate>
+            <tolerate>2.0</tolerate>
             <tolerate>2.1</tolerate>
         </constituent>
     </feature>
@@ -52574,11 +53768,12 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.messaging-3.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.jms-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>3.0</tolerate>
             <tolerate>3.1</tolerate>
         </constituent>
     </feature>
@@ -52593,11 +53788,12 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.messagingClient-3.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.wasJmsClient-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>3.0</tolerate>
         </constituent>
     </feature>
     <feature>
@@ -52611,11 +53807,12 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.messagingSecurity-3.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.wasJmsSecurity-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>3.0</tolerate>
         </constituent>
     </feature>
     <feature>
@@ -52629,11 +53826,12 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.messagingServer-3.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.wasJmsServer-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>3.0</tolerate>
         </constituent>
     </feature>
     <feature>
@@ -52854,11 +54052,12 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.pages-3.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.jsp-2.3</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>3.0</tolerate>
             <tolerate>3.1</tolerate>
             <tolerate>4.0</tolerate>
         </constituent>
@@ -52874,11 +54073,13 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.persistence-3.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.jpa-2.1</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>2.2</tolerate>
+            <tolerate>3.0</tolerate>
             <tolerate>3.1</tolerate>
         </constituent>
     </feature>
@@ -52911,11 +54112,13 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.restfulWS-3.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.jaxrs-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>2.1</tolerate>
+            <tolerate>3.0</tolerate>
             <tolerate>3.1</tolerate>
         </constituent>
     </feature>
@@ -52930,11 +54133,13 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.restfulWSClient-3.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.jaxrsClient-2.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>2.1</tolerate>
+            <tolerate>3.0</tolerate>
             <tolerate>3.1</tolerate>
         </constituent>
     </feature>
@@ -53067,11 +54272,12 @@
         <visibility>PUBLIC</visibility>
         <restart>NEVER</restart>
         <constituent>
-            <symbolic-name>io.openliberty.internal.versionless.xmlWS-3.0</symbolic-name>
+            <symbolic-name>io.openliberty.internal.versionless.jaxws-2.2</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
+            <tolerate>3.0</tolerate>
             <tolerate>4.0</tolerate>
         </constituent>
     </feature>
@@ -56502,110 +57708,6 @@
             <symbolic-name>com.ibm.ws.jaxws.security</symbolic-name>
             <start-level>12</start-level>
             <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>test.featurefixmanager-1.0.mf</file>
-        <name>test.featurefixmanager-1.0</name>
-        <symbolic-name>test.featurefixmanager-1.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PUBLIC</visibility>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>test.feature.fix.manager</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.wsspi.appserver.webBundle-1.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.websphere.appserver.servlet-3.1</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-            <tolerate>4.0</tolerate>
-        </constituent>
-    </feature>
-    <feature>
-        <file>test.InterimFixesManagerTest-1.0.mf</file>
-        <name>test.InterimFixesManagerTest-1.0</name>
-        <symbolic-name>test.InterimFixesManagerTest-1.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PUBLIC</visibility>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>ProvisioningInterimFixesTestBundle1</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>ProvisioningInterimFixesTestBundle2</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>ProvisioningInterimFixesTestBundle3</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>ProvisioningInterimFixesTestBundle4</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>test.InterimFixManagerTest-1.0.mf</file>
-        <name>test.InterimFixManagerTest-1.0</name>
-        <symbolic-name>test.InterimFixManagerTest-1.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PUBLIC</visibility>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>ProvisioningInterimFixesTestBundle4</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-    </feature>
-    <feature>
-        <file>test.TestFixManagerTest-1.0.mf</file>
-        <name>test.TestFixManagerTest-1.0</name>
-        <symbolic-name>test.TestFixManagerTest-1.0</symbolic-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PUBLIC</visibility>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>ProvisioningTestBundle</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.bundle</type>
             <version-range>[1.0.0,1.1.0)</version-range>
         </constituent>
