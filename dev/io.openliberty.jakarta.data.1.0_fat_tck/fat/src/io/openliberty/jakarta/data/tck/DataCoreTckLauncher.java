@@ -34,10 +34,10 @@ import componenttest.topology.utils.tck.TCKRunner;
 @MinimumJavaLevel(javaLevel = 17)
 public class DataCoreTckLauncher {
 
-    @Server("io.openliberty.org.jakarta.data.1.0.core")
+    @Server("io.openliberty.jakarta.data.1.0.core")
     public static LibertyServer persistenceServer;
 
-    @Server("io.openliberty.org.jakarta.data.1.0.core.nosql")
+    @Server("io.openliberty.jakarta.data.1.0.core.nosql")
     public static LibertyServer noSQLServer;
 
     @After
