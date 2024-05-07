@@ -72,11 +72,14 @@ public class ReporterTask implements Runnable {
             }
 
         } catch (DataCollectorException e) {
-            Tr.warning(tc, "CWWKF1705.issue.parsing");
+            Tr.warning(tc, "CWWKF1706.issue.parsing");
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 String causes = buildExceptionMessage(e);
                 Tr.debug(tc, "Failed due to: " + causes);
             }
+        } catch (Throwable e) {
+            Tr.warning(tc, "CWWKF1707.internal.error", e);
+            throw e;
         }
     }
 
