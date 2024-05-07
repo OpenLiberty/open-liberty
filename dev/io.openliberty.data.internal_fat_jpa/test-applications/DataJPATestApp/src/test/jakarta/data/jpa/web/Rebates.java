@@ -18,6 +18,7 @@ import java.util.List;
 
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
@@ -44,6 +45,9 @@ public interface Rebates { // Do not allow this interface to inherit from other 
 
     @Update
     List<Rebate> modifyMultiple(List<Rebate> r);
+
+    @Query("WHERE customerId=?1 AND status=test.jakarta.data.jpa.web.Rebate.Status.PAID ORDER BY amount DESC, id ASC")
+    List<Rebate> paidTo(String customerId);
 
     @Save
     Rebate process(Rebate r);

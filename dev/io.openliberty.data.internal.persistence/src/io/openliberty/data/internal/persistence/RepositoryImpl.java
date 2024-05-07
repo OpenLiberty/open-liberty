@@ -23,10 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.lang.reflect.RecordComponent;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
@@ -126,6 +122,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
     public RepositoryImpl(DataExtensionProvider provider, DataExtension extension, EntityManagerBuilder builder,
                           Class<R> repositoryInterface, Class<?> primaryEntityClass,
                           Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
+        // EntityManagerBuilder.run guarantees that the future added to the following map will be completed even if an error occurs
         this.primaryEntityInfoFuture = primaryEntityClass == null ? null : builder.entityInfoMap.computeIfAbsent(primaryEntityClass, EntityInfo::newFuture);
         this.provider = provider;
         this.repositoryInterface = repositoryInterface;
@@ -143,20 +140,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             } else {
                 boolean inheritance = entityClass.getAnnotation(Inheritance.class) != null; // TODO what do we need to do this with?
 
-                Class<?> jpaEntityClass;
-                Class<?> recordClass = null;
-                if (entityClass.isRecord())
-                    try {
-                        recordClass = entityClass;
-                        jpaEntityClass = recordClass.getClassLoader().loadClass(recordClass.getName() + "Entity");
-                    } catch (ClassNotFoundException x) {
-                        // TODO figure out how to best report this error to the user
-                        throw new MappingException("Unable to load generated entity class for record " + recordClass, x); // TODO NLS
-                    }
-                else
-                    jpaEntityClass = entityClass;
-
-                CompletableFuture<EntityInfo> entityInfoFuture = builder.entityInfoMap.computeIfAbsent(jpaEntityClass, EntityInfo::newFuture);
+                CompletableFuture<EntityInfo> entityInfoFuture = builder.entityInfoMap.computeIfAbsent(entityClass, EntityInfo::newFuture);
                 entityInfoFutures.add(entityInfoFuture);
 
                 for (QueryInfo queryInfo : entry.getValue()) {
@@ -185,12 +169,29 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             .handle((ignore, x) -> {
                                 Map<String, CompletableFuture<EntityInfo>> entityInfos = new HashMap<>();
                                 for (CompletableFuture<EntityInfo> future : entityInfoFutures) {
-                                    if (future.isCompletedExceptionally())
+                                    if (future.isCompletedExceptionally()) {
                                         entityInfos.putIfAbsent(EntityInfo.FAILED, future);
-                                    else if (future.isDone())
-                                        entityInfos.put(future.join().name, future);
-                                    else
+                                    } else if (future.isDone()) {
+                                        EntityInfo entityInfo = future.join();
+                                        CompletableFuture<EntityInfo> conflict = entityInfos.put(entityInfo.name, future);
+                                        if (entityInfo.recordClass != null && conflict == null) {
+                                            String recordName = entityInfo.name.substring(0, entityInfo.name.length() - EntityInfo.RECORD_ENTITY_SUFFIX.length());
+                                            conflict = entityInfos.put(recordName, future);
+                                        }
+                                        if (conflict != null) {
+                                            EntityInfo conflictInfo = conflict.join(); // already completed
+                                            List<String> classNames = List.of((entityInfo.recordClass == null ? entityInfo.entityClass : entityInfo.recordClass).getName(),
+                                                                              (conflictInfo.recordClass == null ? conflictInfo.entityClass : conflictInfo.recordClass).getName());
+                                            // TODO NLS, consider splitting message for records/normal entities
+                                            MappingException conflictX = new MappingException("The " + classNames + " entities have conflicting names. " +
+                                                                                              "When using records as entities, an entity name consisting of " +
+                                                                                              "the record name suffixed with " + EntityInfo.RECORD_ENTITY_SUFFIX +
+                                                                                              " is generated.");
+                                            entityInfos.putIfAbsent(EntityInfo.FAILED, CompletableFuture.failedFuture(conflictX));
+                                        }
+                                    } else {
                                         entityInfos.putIfAbsent(EntityInfo.FAILED, CompletableFuture.failedFuture(x));
+                                    }
                                 }
                                 return entityInfos;
                             });
@@ -259,6 +260,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     @Trivial
     private QueryInfo completeQueryInfo(EntityInfo entityInfo, QueryInfo queryInfo) {
+        // This code path does not require the record name in the map because it is not used for @Query
         return completeQueryInfo(Collections.singletonMap(entityInfo.name, CompletableFuture.completedFuture(entityInfo)),
                                  queryInfo);
     }
@@ -307,11 +309,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
             // experimental annotation types
             Annotation count = provider.compat.getCountAnnotation(method);
             Annotation exists = provider.compat.getExistsAnnotation(method);
-            Annotation select = provider.compat.getSelectAnnotation(method);
 
             Annotation methodTypeAnno = queryInfo.validateAnnotationCombinations(delete, insert, update, save,
                                                                                  find, query, orderBy,
-                                                                                 count, exists, select);
+                                                                                 count, exists);
 
             if (query != null) { // @Query annotation
                 queryInfo.initForQuery(query.value(), multiType, entityInfos, primaryEntityInfoFuture);
@@ -340,21 +341,16 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     q = generateQueryFromMethodName(queryInfo, countPages);
                 }
 
-                // TODO did we break the following? Maybe move this into the above methods?
-                // @Select annotation only
-                if (q == null && queryInfo.type == null && select != null) {
-                    queryInfo.type = QueryInfo.Type.FIND;
-                    q = generateSelectClause(queryInfo, select);
-                    if (countPages)
-                        generateCount(queryInfo, null);
-                } else if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE
-                           && multiType != null
-                           && Stream.class.isAssignableFrom(multiType)) {
+                if (queryInfo.type == QueryInfo.Type.FIND_AND_DELETE
+                    && multiType != null
+                    && Stream.class.isAssignableFrom(multiType)) {
                     throw new UnsupportedOperationException("The " + method.getName() + " method of the " + repositoryInterface.getName() +
                                                             " repository interface cannot use the " +
                                                             method.getReturnType().getName() + " return type for a delete operation.");
                 }
             }
+
+            EntityInfo entityInfo = queryInfo.entityInfo;
 
             // If we don't already know from generating the JPQL, find out how many
             // parameters the JPQL takes and which parameters are named parameters.
@@ -385,7 +381,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     if (paramName != null) {
                         if (queryInfo.paramNames == null)
                             queryInfo.paramNames = new ArrayList<>();
-                        EntityInfo entityInfo = queryInfo.entityInfo;
                         if (entityInfo.idClassAttributeAccessors != null && paramType.equals(entityInfo.idType))
                             // TODO is this correct to do when @Query has a named parameter with type of the IdClass?
                             // It seems like the JPQL would not be consistent.
@@ -424,7 +419,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 queryInfo.sorts = queryInfo.sorts == null ? new ArrayList<>(orderBy.length + 2) : queryInfo.sorts;
                 if (q == null)
                     if (queryInfo.jpql == null) {
-                        q = generateSelectClause(queryInfo, select); // TODO can select ever be present here and not already handled by other code path?
+                        q = queryInfo.generateSelectClause();
+                        q.append(" FROM ").append(entityInfo.name).append(' ').append(queryInfo.entityVar);
                         if (countPages)
                             generateCount(queryInfo, null);
                     } else {
@@ -1224,6 +1220,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     private StringBuilder generateFromParameters(QueryInfo queryInfo, StringBuilder q, Annotation methodAnno,
                                                  boolean countPages, boolean hasUpdateParam, ParamInfo[] allParamInfo) {
+        EntityInfo entityInfo = queryInfo.entityInfo;
         String o = queryInfo.entityVar;
         String o_ = queryInfo.entityVar_;
 
@@ -1242,9 +1239,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                        methodAnno.annotationType().getSimpleName() + " operation."); // TODO NLS
 
         // Identify IdClass parameters
-        if (queryInfo.entityInfo.idClassAttributeAccessors != null) {
+        if (entityInfo.idClassAttributeAccessors != null) {
             for (int p = 0; p < numAttributeParams; p++)
-                if (paramTypes[p].equals(queryInfo.entityInfo.idType)) {
+                if (paramTypes[p].equals(entityInfo.idType)) {
                     if (allParamInfo[p] == null)
                         allParamInfo[p] = new ParamInfo();
                     allParamInfo[p].isIdClass = true;
@@ -1255,10 +1252,10 @@ public class RepositoryImpl<R> implements InvocationHandler {
             // Write new JPQL, starting with SELECT or UPDATE
             if (!hasUpdateParam) {
                 queryInfo.type = QueryInfo.Type.FIND;
-                q = generateSelectClause(queryInfo, provider.compat.getSelectAnnotation(queryInfo.method));
+                q = queryInfo.generateSelectClause().append(" FROM ").append(entityInfo.name).append(' ').append(o);
             } else {
                 queryInfo.type = QueryInfo.Type.UPDATE;
-                q = new StringBuilder(250).append("UPDATE ").append(queryInfo.entityInfo.name).append(' ').append(o).append(" SET");
+                q = new StringBuilder(250).append("UPDATE ").append(entityInfo.name).append(' ').append(o).append(" SET");
 
                 boolean first = true;
                 // p is the method parameter number (0-based)
@@ -1268,7 +1265,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     if (paramInfo != null)
                         if (paramInfo.isIdClass) {
                             if (paramInfo.updateAnno == null) {
-                                qp += queryInfo.entityInfo.idClassAttributeAccessors.size() - 1;
+                                qp += entityInfo.idClassAttributeAccessors.size() - 1;
                             } else if ("=".equals(provider.compat.getUpdateAttributeAndOperation(paramInfo.updateAnno)[1])) {
                                 //    generateUpdatesForIdClass(queryInfo, update, first, q);
                                 throw new UnsupportedOperationException("@Assign IdClass"); // TODO
@@ -1298,7 +1295,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                                " with the -parameters compiler option that preserves the parameter names."); // TODO NLS
                             }
 
-                            String name = queryInfo.entityInfo.getAttributeName(attribute, true);
+                            String name = entityInfo.getAttributeName(attribute, true);
 
                             q.append(first ? " " : ", ").append(o_).append(name).append("=");
                             first = false;
@@ -1308,7 +1305,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 case "=":
                                     break;
                                 case "+":
-                                    if (withFunction = CharSequence.class.isAssignableFrom(queryInfo.entityInfo.attributeTypes.get(name)))
+                                    if (withFunction = CharSequence.class.isAssignableFrom(entityInfo.attributeTypes.get(name)))
                                         q.append("CONCAT(").append(o_).append(name).append(',');
                                     else
                                         q.append(o_).append(name).append('+');
@@ -1389,7 +1386,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 ? null // Equals
                                 : paramInfo.comparisonAnno.annotationType().getSimpleName();
 
-                boolean isCollection = queryInfo.entityInfo.collectionElementTypes.containsKey(name);
+                boolean isCollection = entityInfo.collectionElementTypes.containsKey(name);
                 if (isCollection)
                     if (paramInfo.comparisonAnno != null && !"Contains".equals(comparisonName) || ignoreCase)
                         throw new MappingException(new UnsupportedOperationException("The parameter annotation " +
@@ -1443,7 +1440,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
             } else if (paramInfo.isIdClass) {
                 // adjust query parameter position based on the number of parameters needed for an IdClass
-                qp += queryInfo.entityInfo.idClassAttributeAccessors.size() - 1;
+                qp += entityInfo.idClassAttributeAccessors.size() - 1;
             }
         }
         if (queryInfo.hasWhere)
@@ -1573,7 +1570,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 orderBy = methodName.indexOf("OrderBy", by + 2);
             }
             parseFindClause(queryInfo, methodName, by > 0 ? by : orderBy > 0 ? orderBy : -1);
-            q = generateSelectClause(queryInfo, provider.compat.getSelectAnnotation(queryInfo.method));
+            q = queryInfo.generateSelectClause().append(" FROM ").append(entityInfo.name).append(' ').append(o);
             if (by > 0) {
                 int where = q.length();
                 generateWhereClause(queryInfo, methodName, by + 2, orderBy > 0 ? orderBy : methodName.length(), q);
@@ -1599,8 +1596,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                                             " repository method."); // TODO NLS
                 queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
                 parseDeleteBy(queryInfo, by);
-                Annotation select = null; // provider.compat.getSelectAnnotation(queryInfo.method); // TODO This would be limited by collision with update count/boolean
-                q = generateSelectClause(queryInfo, select);
+                q = queryInfo.generateSelectClause().append(" FROM ").append(entityInfo.name).append(' ').append(o);
                 queryInfo.jpqlDelete = generateDeleteById(queryInfo);
             } else { // DELETE
                 queryInfo.type = queryInfo.type == null ? QueryInfo.Type.DELETE : queryInfo.type;
@@ -1738,7 +1734,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
         } else if (methodTypeAnno instanceof Delete) {
             if (queryInfo.isFindAndDelete()) {
                 queryInfo.type = QueryInfo.Type.FIND_AND_DELETE;
-                q = generateSelectClause(queryInfo, null);
+                q = queryInfo.generateSelectClause().append(" FROM ").append(entityInfo.name).append(' ').append(o);
                 queryInfo.jpqlDelete = generateDeleteById(queryInfo);
             } else { // DELETE
                 queryInfo.type = QueryInfo.Type.DELETE;
@@ -1767,123 +1763,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, methodName + " is identified as a " + queryInfo.type + " method");
 
-        return q;
-    }
-
-    /**
-     * Generates the SELECT clause of the JPQL.
-     *
-     * @param queryInfo query information
-     * @param select    Select annotation if present on the method.
-     * @return the SELECT clause.
-     */
-    private StringBuilder generateSelectClause(QueryInfo queryInfo, Annotation select) {
-        StringBuilder q = new StringBuilder(200);
-        String o = queryInfo.entityVar;
-        String o_ = queryInfo.entityVar_;
-        EntityInfo entityInfo = queryInfo.entityInfo;
-
-        String[] cols;
-        if (select == null) {
-            cols = null;
-        } else {
-            String[] selections = provider.compat.getSelections(select);
-            cols = new String[selections.length];
-            for (int i = 0; i < cols.length; i++) {
-                String name = entityInfo.getAttributeName(selections[i], true);
-                cols[i] = name == null ? selections[i] : name;
-            }
-        }
-
-        Class<?> singleType = queryInfo.getSingleResultType();
-
-        if (singleType.isPrimitive())
-            singleType = QueryInfo.wrapperClassIfPrimitive(singleType);
-
-        q.append("SELECT ");
-
-        if (cols == null || cols.length == 0) {
-            if (singleType.isAssignableFrom(entityInfo.entityClass)
-                || entityInfo.inheritance && entityInfo.entityClass.isAssignableFrom(singleType)) {
-                // Whole entity
-                q.append(o);
-            } else {
-                // Look for single entity attribute with the desired type:
-                String singleAttributeName = null;
-                for (Map.Entry<String, Class<?>> entry : entityInfo.attributeTypes.entrySet()) {
-                    Class<?> collectionElementType = entityInfo.collectionElementTypes.get(entry.getKey());
-                    Class<?> attributeType = collectionElementType == null ? entry.getValue() : collectionElementType;
-                    if (attributeType.isPrimitive())
-                        attributeType = QueryInfo.wrapperClassIfPrimitive(attributeType);
-                    if (singleType.isAssignableFrom(attributeType)) {
-                        singleAttributeName = entry.getKey();
-                        q.append(o_).append(singleAttributeName);
-                        break;
-                    }
-                }
-
-                if (singleAttributeName == null) {
-                    // Construct new instance from IdClass, embeddable, or entity attributes.
-                    // It would be preferable if the spec included the Select annotation to explicitly identify parameters, but if that doesn't happen
-                    // TODO we could compare attribute types with known constructor to improve on guessing a correct order of parameters
-                    q.append("NEW ").append(singleType.getName()).append('(');
-                    List<String> relAttrNames;
-                    boolean first = true;
-                    if (entityInfo.idClassAttributeAccessors != null && singleType.equals(entityInfo.idType))
-                        for (String idClassAttributeName : entityInfo.idClassAttributeAccessors.keySet()) {
-                            String name = entityInfo.getAttributeName(idClassAttributeName, true);
-                            q.append(first ? "" : ", ").append(o).append('.').append(name);
-                            first = false;
-                        }
-                    else if ((relAttrNames = entityInfo.relationAttributeNames.get(singleType)) != null)
-                        for (String name : relAttrNames) {
-                            q.append(first ? "" : ", ").append(o).append('.').append(name);
-                            first = false;
-                        }
-                    else if (entityInfo.recordClass == null)
-                        for (String name : entityInfo.attributeTypes.keySet()) {
-                            q.append(first ? "" : ", ").append(o).append('.').append(name);
-                            first = false;
-                        }
-                    else {
-                        for (RecordComponent component : entityInfo.recordClass.getRecordComponents()) {
-                            String name = component.getName();
-                            q.append(first ? "" : ", ").append(o).append('.').append(name);
-                            first = false;
-                        }
-                    }
-                    q.append(')');
-                }
-            }
-        } else { // Individual columns are requested by @Select
-            Class<?> entityType = entityInfo.getType();
-            boolean selectAsColumns = singleType.isAssignableFrom(entityType)
-                                      || singleType.isInterface() // NEW instance doesn't apply to interfaces
-                                      || singleType.isPrimitive() // NEW instance should not be used on primitives
-                                      || singleType.getName().startsWith("java") // NEW instance constructor is unlikely for non-user-defined classes
-                                      || entityInfo.inheritance && entityType.isAssignableFrom(singleType);
-            if (!selectAsColumns && cols.length == 1) {
-                String singleAttributeName = cols[0];
-                Class<?> attributeType = entityInfo.collectionElementTypes.get(singleAttributeName);
-                if (attributeType == null)
-                    attributeType = entityInfo.attributeTypes.get(singleAttributeName);
-                selectAsColumns = attributeType != null && (Object.class.equals(attributeType) // JPA metamodel does not preserve the type if not an EmbeddableCollection
-                                                            || singleType.isAssignableFrom(attributeType));
-            }
-            if (selectAsColumns) {
-                // Specify columns without creating new instance
-                for (int i = 0; i < cols.length; i++)
-                    q.append(i == 0 ? "" : ", ").append(o).append('.').append(cols[i]);
-            } else {
-                // Construct new instance from defined columns
-                q.append("NEW ").append(singleType.getName()).append('(');
-                for (int i = 0; i < cols.length; i++)
-                    q.append(i == 0 ? "" : ", ").append(o).append('.').append(cols[i]);
-                q.append(')');
-            }
-        }
-
-        q.append(" FROM ").append(entityInfo.name).append(' ').append(o);
         return q;
     }
 
@@ -3121,14 +3000,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
         Class<?> oClass = o == null ? null : o.getClass();
         if (o != null && oClass.isRecord())
             try {
-                final Object recordObj = o;
-                entity = AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
-                    Class<?> entityClass = oClass.getClassLoader().loadClass(oClass.getName() + "Entity");
-                    Constructor<?> ctor = entityClass.getConstructor(oClass);
-                    return ctor.newInstance(recordObj);
-                });
-            } catch (PrivilegedActionException x) {
-                throw new MappingException("Unable to convert record " + oClass + " to generated entity class.", x.getCause()); // TODO NLS
+                Class<?> entityClass = oClass.getClassLoader().loadClass(oClass.getName() + "Entity");
+                Constructor<?> ctor = entityClass.getConstructor(oClass);
+                entity = ctor.newInstance(o);
+            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | //
+                            InvocationTargetException | NoSuchMethodException | SecurityException x) {
+                throw new MappingException("Unable to convert record " + oClass + " to generated entity class.", //
+                                x instanceof InvocationTargetException ? x.getCause() : x); // TODO NLS
             }
         if (entity != o && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "toEntity " + oClass.getName() + " --> " + entity.getClass().getName());

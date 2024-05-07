@@ -238,7 +238,7 @@ public class AgentConfigTest {
      * Skipping for 1.4 and 4.1 as JavaAgent 1.29 currently will not return a span for methods annotated with @withSpan
      * (https://github.com/open-telemetry/opentelemetry-java-instrumentation/issues/10159)
      */
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID })
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID})
     public void testEnableSpecificInstrumentation() throws Exception {
         // Enable only @WithSpan instrumentation
         server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_DEFAULT_ENABLED", "false");

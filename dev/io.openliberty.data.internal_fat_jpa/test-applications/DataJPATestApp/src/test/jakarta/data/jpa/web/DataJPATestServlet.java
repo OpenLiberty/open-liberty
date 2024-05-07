@@ -573,7 +573,7 @@ public class DataJPATestServlet extends FATServlet {
         id = cities.deleteFirstByStateName("South Dakota", orderByPopulation).orElseThrow();
         assertEquals("South Dakota", id.stateName);
         if (supportsOrderByForUpdate)
-            assertEquals("Pierre", id.name);
+            assertEquals("Spearfish", id.name);
         // else order is unknown, but at least must be one of the city names that we added and haven't removed yet
         assertEquals("Found " + id, true, cityNames.remove(id.name));
 
@@ -2456,6 +2456,66 @@ public class DataJPATestServlet extends FATServlet {
                                      .collect(Collectors.toList()));
 
         assertEquals(false, page3.hasNext());
+    }
+
+    /**
+     * Use a repository method that runs a query without specifying an entity type
+     * and returns a record entity. The repository must be able to infer the record type
+     * to use from the return value and generate the proper select clause so that the
+     * generated entity type is converted to the record type.
+     */
+    @Test
+    public void testRecordQueryInfersSelectClause() {
+
+        Rebate r1 = new Rebate(10, 10.00, "testRecordEntityInferredFromReturnType-CustomerA", //
+                        LocalTime.of(15, 40, 0), //
+                        LocalDate.of(2024, Month.MAY, 1), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.MAY, 1, 15, 40, 0), //
+                        null);
+
+        Rebate r2 = new Rebate(12, 12.00, "testRecordEntityInferredFromReturnType-CustomerA", //
+                        LocalTime.of(12, 46, 30), //
+                        LocalDate.of(2024, Month.APRIL, 5), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.MAY, 2, 10, 18, 0), //
+                        null);
+
+        Rebate r3 = new Rebate(13, 3.00, "testRecordEntityInferredFromReturnType-CustomerB", //
+                        LocalTime.of(9, 15, 0), //
+                        LocalDate.of(2024, Month.MAY, 2), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.MAY, 2, 9, 15, 0), //
+                        null);
+
+        Rebate r4 = new Rebate(14, 4.00, "testRecordEntityInferredFromReturnType-CustomerA", //
+                        LocalTime.of(10, 55, 0), //
+                        LocalDate.of(2024, Month.MAY, 1), //
+                        Rebate.Status.VERIFIED, //
+                        LocalDateTime.of(2024, Month.MAY, 2, 14, 27, 45), //
+                        null);
+
+        Rebate r5 = new Rebate(15, 5.00, "testRecordEntityInferredFromReturnType-CustomerA", //
+                        LocalTime.of(17, 50, 0), //
+                        LocalDate.of(2024, Month.MAY, 1), //
+                        Rebate.Status.PAID, //
+                        LocalDateTime.of(2024, Month.MAY, 5, 15, 5, 0), //
+                        null);
+
+        Rebate[] all = rebates.addAll(r1, r2, r3, r4, r5);
+
+        List<Rebate> paid = rebates.paidTo("testRecordEntityInferredFromReturnType-CustomerA");
+
+        assertEquals(paid.toString(), 3, paid.size());
+        Rebate r;
+        r = paid.get(0);
+        assertEquals(12.0f, r.amount(), 0.001);
+        r = paid.get(1);
+        assertEquals(10.0f, r.amount(), 0.001);
+        r = paid.get(2);
+        assertEquals(5.0f, r.amount(), 0.001);
+
+        rebates.removeAll(all);
     }
 
     /**

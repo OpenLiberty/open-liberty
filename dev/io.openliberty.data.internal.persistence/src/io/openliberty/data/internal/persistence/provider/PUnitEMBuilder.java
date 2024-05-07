@@ -20,6 +20,7 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
+import io.openliberty.data.internal.persistence.cdi.DataExtensionProvider;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -37,8 +38,8 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
 
     private final String persistenceUnitRef;
 
-    public PUnitEMBuilder(EntityManagerFactory emf, ClassLoader repositoryClassLoader) {
-        super(repositoryClassLoader);
+    public PUnitEMBuilder(EntityManagerFactory emf, ClassLoader repositoryClassLoader, DataExtensionProvider provider) {
+        super(provider, repositoryClassLoader);
         this.emf = emf;
         this.persistenceUnitRef = emf.toString();
 
@@ -52,8 +53,9 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
         // DataStoreTestApp#DataStoreTestWeb.war, org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl@3708cabf]
     }
 
-    public PUnitEMBuilder(EntityManagerFactory emf, String persistenceUnitRef, ClassLoader repositoryClassLoader) {
-        super(repositoryClassLoader);
+    public PUnitEMBuilder(EntityManagerFactory emf, String persistenceUnitRef,
+                          ClassLoader repositoryClassLoader, DataExtensionProvider provider) {
+        super(provider, repositoryClassLoader);
         this.emf = emf;
         this.persistenceUnitRef = persistenceUnitRef;
 

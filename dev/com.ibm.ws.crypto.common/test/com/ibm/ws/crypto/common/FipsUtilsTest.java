@@ -18,39 +18,39 @@ import org.junit.Test;
 
 public class FipsUtilsTest {
 
-    private static final String FIPS_PROVIDER_PROPERTY = "com.ibm.jsse2.usefipsprovider";
+    private static final String FIPS_MODE_PROPERTY = "com.ibm.fips.mode";
     
-    private String usefipsproviderOrig;
+    private String fipsModeOrig;
 
     @Before
     public void beforeTest() {
-        usefipsproviderOrig = System.getProperty(FIPS_PROVIDER_PROPERTY);
+        fipsModeOrig = System.getProperty(FIPS_MODE_PROPERTY);
     }
 
     @After
     public void afterTest() {
-        if (usefipsproviderOrig == null) {
-            System.clearProperty(FIPS_PROVIDER_PROPERTY);
+        if (fipsModeOrig == null) {
+            System.clearProperty(FIPS_MODE_PROPERTY);
         } else {
-            System.setProperty(FIPS_PROVIDER_PROPERTY, usefipsproviderOrig);
+            System.setProperty(FIPS_MODE_PROPERTY, fipsModeOrig);
         }
     }
 
     @Test
     public void testIsFIPSEnabledFalse() {
-        System.setProperty("com.ibm.jsse2.usefipsprovider", "false");
-        assertFalse("isFIPSEnabled() is true", FipsUtils.isFIPSEnabled());
+        System.setProperty(FIPS_MODE_PROPERTY, "140-2");
+        assertFalse("isRunningFIPS140Dash3Mode() is true", FipsUtils.isRunningFIPS140Dash3Mode());
     }
 
     @Test
     public void testIsFIPSEnabledFalsePropNotSet() {
-        System.clearProperty("com.ibm.jsse2.usefipsprovider");
-        assertFalse("isFIPSEnabled() is true", FipsUtils.isFIPSEnabled());
+        System.clearProperty(FIPS_MODE_PROPERTY);
+        assertFalse("isRunningFIPS140Dash3Mode() is true", FipsUtils.isRunningFIPS140Dash3Mode());
     }
 
     @Test
     public void testIsFIPSEnabledTrue() {
-        System.setProperty("com.ibm.jsse2.usefipsprovider", "true");
-        assertTrue("isFIPSEnabled() is false", FipsUtils.isFIPSEnabled());
+        System.setProperty(FIPS_MODE_PROPERTY, "140-3");
+        assertTrue("isRunningFIPS140Dash3Mode() is false", FipsUtils.isRunningFIPS140Dash3Mode());
     }
 }

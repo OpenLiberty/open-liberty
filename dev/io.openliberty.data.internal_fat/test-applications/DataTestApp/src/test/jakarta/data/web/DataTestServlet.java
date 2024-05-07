@@ -1127,6 +1127,7 @@ public class DataTestServlet extends FATServlet {
     public void testFindAndDeleteMultipleAnnotated(HttpServletRequest request, HttpServletResponse response) {
         packages.save(new Package(60001, 61.0f, 41.0f, 26.0f, "testFindAndDeleteMultipleAnnotated"));
         packages.save(new Package(60002, 62.0f, 42.0f, 25.0f, "testFindAndDeleteMultipleAnnotated"));
+        packages.save(new Package(60003, 59.0f, 39.0f, 24.0f, "testFindAndDeleteMultipleAnnotated"));
 
         String jdbcJarName = request.getParameter("jdbcJarName").toLowerCase();
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
@@ -1134,27 +1135,34 @@ public class DataTestServlet extends FATServlet {
         List<Package> list = supportsOrderByForUpdate //
                         ? packages.takeOrdered("testFindAndDeleteMultipleAnnotated") //
                         : packages.take("testFindAndDeleteMultipleAnnotated");
-        assertEquals(list.toString(), 2, list.size());
+        assertEquals(list.toString(), 3, list.size());
 
         if (!supportsOrderByForUpdate) {
             System.out.println("Sorting results in test code.");
-            list.sort(Comparator.comparing(p -> p.id));
+            list.sort(Comparator.comparing(p -> p.width));
         }
 
         Package p0 = list.get(0);
         Package p1 = list.get(1);
+        Package p2 = list.get(2);
 
-        assertEquals(60001, p0.id);
-        assertEquals(61.0f, p0.length, 0.01f);
-        assertEquals(41.0f, p0.width, 0.01f);
-        assertEquals(26.0f, p0.height, 0.01f);
+        assertEquals(60003, p0.id);
+        assertEquals(59.0f, p0.length, 0.01f);
+        assertEquals(39.0f, p0.width, 0.01f);
+        assertEquals(24.0f, p0.height, 0.01f);
         assertEquals("testFindAndDeleteMultipleAnnotated", p0.description);
 
-        assertEquals(60002, p1.id);
-        assertEquals(62.0f, p1.length, 0.01f);
-        assertEquals(42.0f, p1.width, 0.01f);
-        assertEquals(25.0f, p1.height, 0.01f);
+        assertEquals(60001, p1.id);
+        assertEquals(61.0f, p1.length, 0.01f);
+        assertEquals(41.0f, p1.width, 0.01f);
+        assertEquals(26.0f, p1.height, 0.01f);
         assertEquals("testFindAndDeleteMultipleAnnotated", p1.description);
+
+        assertEquals(60002, p2.id);
+        assertEquals(62.0f, p2.length, 0.01f);
+        assertEquals(42.0f, p2.width, 0.01f);
+        assertEquals(25.0f, p2.height, 0.01f);
+        assertEquals("testFindAndDeleteMultipleAnnotated", p2.description);
 
         assertEquals(Collections.EMPTY_LIST, packages.take("testFindAndDeleteMultipleAnnotated"));
     }
@@ -3569,6 +3577,26 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, receipts.deleteByTotalLessThan(1000000.0f));
 
         assertEquals(0L, receipts.count());
+    }
+
+    /**
+     * Tests that a record entity can be specified in the FROM clause of JDQL.
+     */
+    @Test
+    public void testRecordInFromClause() {
+        receipts.deleteByTotalLessThan(2000.0f);
+
+        receipts.saveAll(List.of(new Receipt(2000L, "C2000-00-123", 20.98f),
+                                 new Receipt(2001L, "C2000-00-123", 15.99f)));
+
+        assertEquals(20.98f, receipts.totalOf(2000L), 0.001f);
+        assertEquals(15.99f, receipts.totalOf(2001L), 0.001f);
+
+        assertEquals(true, receipts.addTax(2001L, 0.0813f));
+
+        assertEquals(17.29f, receipts.totalOf(2001L), 0.001f);
+
+        assertEquals(2, receipts.removeIfTotalUnder(2000.0f));
     }
 
     /**

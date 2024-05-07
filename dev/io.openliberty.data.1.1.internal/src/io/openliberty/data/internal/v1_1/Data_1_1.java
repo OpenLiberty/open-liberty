@@ -96,14 +96,9 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     @Override
     @Trivial
-    public Annotation getSelectAnnotation(Method method) {
-        return method.getAnnotation(Select.class);
-    }
-
-    @Override
-    @Trivial
-    public String[] getSelections(Annotation select) {
-        return ((Select) select).value();
+    public String[] getSelections(Method method) {
+        Annotation select = method.getAnnotation(Select.class);
+        return select == null ? null : ((Select) select).value();
     }
 
     @Override
