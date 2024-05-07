@@ -190,16 +190,11 @@ public class CookieHeaderByteParser {
                             cookiesList.add(cookie);
                         } else {
                             /*
-                             * arbitrary attribute .i.e not the well known HttpOnly, SameSite ....
+                             * arbitrary attribute .i.e not the well known HttpOnly, SameSite, Partitioned ....
                              */
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "parse ; arbitrary setAttribute , name [" + cName + "] , value [" + cValue + "]");
                             }
-
-                            //????????? PMDINH TO-DO test to see if attribute already exists
-                            String existenceAtt = cookie.getAttribute(cName);
-                            if (existenceAtt != null)
-                                System.out.println("PMDINH Existing Atttribute [" + cName + "]");
 
                             cookie.setAttribute(cName, cValue);
                         }

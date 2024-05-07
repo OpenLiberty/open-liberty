@@ -29,6 +29,7 @@ import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ReadWriteByteBuf
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61RequestParameterTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ResponseNoOpAfterCommit;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ResponseSendRedirectTest;
+import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61SetCookieRandomAttributes;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -44,7 +45,8 @@ import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ResponseSendRedi
     Servlet61ReadWriteByteBufferTest.class,
     Servlet61RequestParameterTest.class,
     Servlet61ResponseNoOpAfterCommit.class,
-    Servlet61ResponseSendRedirectTest.class
+    Servlet61ResponseSendRedirectTest.class,
+    Servlet61SetCookieRandomAttributes.class
 })
 public class FATSuite {
     /**

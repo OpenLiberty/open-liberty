@@ -591,6 +591,10 @@ public class CookieUtils {
     /*
      * since Servlet 6.0 - Support Cookie's setAttribute
      * exclude "samesite", "port", "commenturl" attribute since they already set
+     *
+     * Updated Servlet 6.1:
+     * - handle empty and null value;
+     * - handle invalid character in attribute name;
      */
     private static void setAttributes(HttpCookie cookie, StringBuilder buffer) {
         Map<String, String> cookieAttrs = cookie.getAttributes();
