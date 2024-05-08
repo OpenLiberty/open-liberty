@@ -20,6 +20,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.RecordComponent;
+import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -197,6 +199,51 @@ public class EntityInfo {
         }
 
         return names;
+    }
+
+    /**
+     * Generates example method names for Query by Method Name using attribute names/types for this entity.
+     *
+     * @return list of example method names.
+     */
+    List<String> getExampleMethodNames() {
+        List<String> examples = new ArrayList<>(5);
+        String[] prefixes = { "find", "delete", "count", "exists" };
+        String[] numSuffixes = { "LessThanEqual(max)", "Between(min, max)", "GreaterThan(exclusiveMin)", "NotIn(setOfValues)" };
+        String[] strSuffixes = { "StartsWith(prefix)", "IgnoreCaseContains(pattern)", "EndsWith(suffix)", "NotLike(pattern)" };
+        int b = 0, e = 0, n = 0, p = 0, s = 0;
+        for (Map.Entry<String, Class<?>> attrClass : attributeTypes.entrySet()) {
+            String attrName = attrClass.getKey();
+            Class<?> attrType = attrClass.getValue();
+            if (attrName.length() > 2
+                && !attrName.toLowerCase().contains("version")
+                && attrName.indexOf('.') < 0 && attrName.indexOf('_') < 0)
+                if (CharSequence.class.isAssignableFrom(attrType))
+                    examples.add(prefixes[p++] + "By" +
+                                 Character.toUpperCase(attrName.charAt(0)) + attrName.substring(1) +
+                                 strSuffixes[s++]);
+                else if (boolean.class.equals(attrType) || Boolean.class.equals(attrType))
+                    examples.add(prefixes[p++] + "By" +
+                                 Character.toUpperCase(attrName.charAt(0)) + attrName.substring(1) +
+                                 (b++ % 2 == 0 ? "False()" : "True()"));
+                else if (attrType.isPrimitive()
+                         || Number.class.isAssignableFrom(attrType)
+                         || Temporal.class.isAssignableFrom(attrType))
+                    examples.add(prefixes[p++] + "By" +
+                                 Character.toUpperCase(attrName.charAt(0)) + attrName.substring(1) +
+                                 numSuffixes[n++]);
+                else if (attrType.isEnum())
+                    examples.add(prefixes[p++] + "By" +
+                                 Character.toUpperCase(attrName.charAt(0)) + attrName.substring(1) +
+                                 (e++ % 2 == 0 ? "NotIn(setOfValues)" : "In(setOfValues)"));
+            if (p >= 4)
+                break;
+        }
+        if (p == 0) {
+            examples.add("findById(id)");
+            examples.add("deleteByIdNotIn(setOfValues)");
+        }
+        return examples;
     }
 
     /**

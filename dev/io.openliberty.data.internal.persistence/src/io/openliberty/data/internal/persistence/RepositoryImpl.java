@@ -157,7 +157,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         if (entitylessQueryInfos != null) {
             if (entityInfoFutures.isEmpty()) {
-                MappingException x = new MappingException("@Repository " + repositoryInterface.getName() + " does not specify an entity class." + // TODO NLS
+                MappingException x = new MappingException("The " + repositoryInterface.getName() + " repository does not specify an entity class." + // TODO NLS
                                                           " To correct this, have the repository interface extend DataRepository" +
                                                           " or another built-in repository interface and supply the entity class as the first parameter.");
                 for (QueryInfo queryInfo : entitylessQueryInfos)
@@ -397,14 +397,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     queryInfo.paramCount++;
 
                     if (initialParamCount != 0)
-                        throw new MappingException("Cannot mix positional and named parameters on repository method " +
-                                                   method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
+                        throw new UnsupportedOperationException("Cannot mix positional and named parameters on repository method " +
+                                                                method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
 
                     int numParamNames = queryInfo.paramNames == null ? 0 : queryInfo.paramNames.size();
                     if (numParamNames > 0 && numParamNames != queryInfo.paramCount)
                         if (hasParamAnnotation) {
-                            throw new MappingException("Cannot mix positional and named parameters on repository method " +
-                                                       method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
+                            throw new UnsupportedOperationException("Cannot mix positional and named parameters on repository method " +
+                                                                    method.getDeclaringClass().getName() + '.' + method.getName()); // TODO NLS
                         } else { // we might have mistaken a literal value for a named parameter
                             queryInfo.paramNames = null;
                             queryInfo.paramCount -= queryInfo.paramAddedCount;
@@ -437,10 +437,20 @@ public class RepositoryImpl<R> implements InvocationHandler {
             queryInfo.jpql = q == null ? queryInfo.jpql : q.toString();
 
             if (queryInfo.type == null)
-                throw new MappingException("Repository method name " + method.getName() +
-                                           " does not map to a valid query. Some examples of valid method names are:" +
-                                           " save(entity), findById(id), findByPriceLessThanEqual(maxPrice), deleteById(id)," +
-                                           " existsById(id), countByPriceBetween(min, max), updateByIdSetPrice(id, newPrice)"); // TODO NLS
+                throw new UnsupportedOperationException("The " + method.getName() + " method of the " + repositoryInterface.getName() +
+                                                        " repository does not match any of the patterns defined by Jakarta Data. " +
+                                                        "A repository method must either use annotations such as " +
+                                                        "(Delete, Find, Insert, Query, Save, Update)" +
+                                                        " to define operations, be a resource accessor method without parameters and " +
+                                                        "returning one of " + "(Connection, DataSource, EntityManager)" +
+                                                        ", or it must be named according to the requirements of the " +
+                                                        "Query by Method Name pattern. Method names for Query by Method Name must " +
+                                                        "begin with one of the " + "(count, delete, exists, find)" +
+                                                        " keywords, followed by 0 or more additional characters, " +
+                                                        "optionally followed by the 'By' keyword and one or more conditions " +
+                                                        "delimited by the 'And' or 'Or' keyword. " +
+                                                        "Some examples of valid method names are: " +
+                                                        entityInfo.getExampleMethodNames() + "."); // TODO NLS
 
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "completeQueryInfo", queryInfo);
@@ -1627,16 +1637,20 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 generateWhereClause(queryInfo, methodName, by + 2, methodName.length(), q);
             queryInfo.type = QueryInfo.Type.EXISTS;
         } else {
-            throw new UnsupportedOperationException("The name of the " + methodName + " method of the " +
-                                                    queryInfo.method.getDeclaringClass().getName() +
-                                                    " repository does not meet the requirements for Query by Method Name." +
-                                                    " Method names for Query by Method Name must begin with one of the " +
-                                                    "(count, delete, exists, find, update)" +
-                                                    " keywords, followed by 0 or more additional characters," +
-                                                    " optionally followed by the 'By' keyword and one or more conditions." +
-                                                    " If you are not using Query by Method Name, " +
-                                                    " query methods must be annotated with one of: " +
-                                                    "(Delete, Find, Insert, Query, Save, Update)" + "."); // TODO NLS
+            throw new UnsupportedOperationException("The " + methodName + " method of the " + repositoryInterface.getName() +
+                                                    " repository does not match any of the patterns defined by Jakarta Data. " +
+                                                    "A repository method must either use annotations such as " +
+                                                    "(Delete, Find, Insert, Query, Save, Update)" +
+                                                    " to define operations, be a resource accessor method without parameters and " +
+                                                    "returning one of " + "(Connection, DataSource, EntityManager)" +
+                                                    ", or it must be named according to the requirements of the " +
+                                                    "Query by Method Name pattern. Method names for Query by Method Name must " +
+                                                    "begin with one of the " + "(count, delete, exists, find)" +
+                                                    " keywords, followed by 0 or more additional characters, " +
+                                                    "optionally followed by the 'By' keyword and one or more conditions " +
+                                                    "delimited by the 'And' or 'Or' keyword. " +
+                                                    "Some examples of valid method names are: " +
+                                                    entityInfo.getExampleMethodNames() + "."); // TODO NLS
         }
 
         if (trace && tc.isDebugEnabled())
@@ -3086,10 +3100,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
     private static final PageRequest toPageRequest(Limit limit) {
         if (limit.startAt() != 1L)
             throw new IllegalArgumentException("Limit with starting point " + limit.startAt() +
-                                               ", which is greater than 1, cannot be used to request pages.");
+                                               ", which is greater than 1, cannot be used to request pages."); // TODO NLS
         return PageRequest.ofSize(limit.maxResults());
     }
 
+    /**
+     * Converts an update count to the requested return type.
+     *
+     * @param i          update count value.
+     * @param returnType requested return type.
+     * @param queryInfo  query information.
+     * @return converted value.
+     */
     private static final Object toReturnValue(int i, Class<?> returnType, QueryInfo queryInfo) {
         Object result;
         if (int.class.equals(returnType) || Integer.class.equals(returnType) || Number.class.equals(returnType))
@@ -3102,8 +3124,14 @@ public class RepositoryImpl<R> implements InvocationHandler {
             result = null;
         else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType))
             result = CompletableFuture.completedFuture(toReturnValue(i, queryInfo.getSingleResultType(), null));
-        else
-            throw new UnsupportedOperationException("Return update count as " + returnType);
+        else // TODO queryInfo in message
+            throw new UnsupportedOperationException("The " + queryInfo.method.getName() + " method of the " +
+                                                    queryInfo.method.getDeclaringClass().getName() + " repository has a return type, " +
+                                                    returnType + ", that is not supported for repository Update and Delete operations. " +
+                                                    "Supported return types include void (for no result), boolean (to indicate whether " +
+                                                    "or not a matching entity was found), or one of the following types to indicate " +
+                                                    "how many matching entities were found: " +
+                                                    "long, Long, int, Integer, Number" + "."); // TODO NLS
 
         return result;
     }
