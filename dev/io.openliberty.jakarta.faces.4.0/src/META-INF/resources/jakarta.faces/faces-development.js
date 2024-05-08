@@ -5313,7 +5313,7 @@ exports.Style = Style;
  * small helper for the specialized jsf case
  * @constructor
  */
-const DEFAULT_allowList = () => {
+const DEFAULT_ALLOWLIST = () => {
     return true;
 };
 /**
@@ -6317,7 +6317,7 @@ class DomQuery {
      * @param allowListed: optional allowList function which can filter out script tags which are not processed
      * defaults to the standard jsf.js exclusion (we use this code for myfaces)
      */
-    runScripts(sticky = false, allowListed = DEFAULT_allowList) {
+    runScripts(sticky = false, allowListed = DEFAULT_ALLOWLIST) {
         const evalCollectedScripts = (scriptsToProcess) => {
             if (scriptsToProcess.length) {
                 // script source means we have to eval the existing
