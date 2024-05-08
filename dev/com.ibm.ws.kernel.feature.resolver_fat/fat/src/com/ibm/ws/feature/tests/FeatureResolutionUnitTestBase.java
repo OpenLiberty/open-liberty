@@ -15,6 +15,7 @@ package com.ibm.ws.feature.tests;
 import static com.ibm.ws.feature.tests.RepositoryUtil.getFeature;
 import static com.ibm.ws.feature.tests.RepositoryUtil.getRepository;
 import static com.ibm.ws.feature.tests.RepositoryUtil.ignoreFeatures;
+import static com.ibm.ws.feature.tests.RepositoryUtil.repository;
 import static com.ibm.ws.feature.tests.RepositoryUtil.setupLocations;
 import static com.ibm.ws.feature.tests.RepositoryUtil.setupRepo;
 import static org.junit.Assert.fail;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,6 +42,8 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
+
+import test.utils.SimpleTestCase;
 
 /**
  * Feature resolution testing.
@@ -210,6 +214,16 @@ public class FeatureResolutionUnitTestBase {
         return params;
     }
 
+    public static Collection<Object[]> asCases(List<String> listOfFeatures){
+        List<Object[]> output = new ArrayList<>();
+
+        for(String s : listOfFeatures){
+            output.add(new Object[]{new SimpleTestCase(new String[] {s}, new String[] {repository.getFeature(s).getIbmShortName()})});
+        }
+
+        return output;
+    }
+
     public static VerifyData readData(File verifyDataFile) throws Exception {
         VerifyData verifyData = VerifyXML.read(verifyDataFile);
         System.out.println("Read [ " + verifyData.getCases().size() + " ]" +
@@ -237,6 +251,13 @@ public class FeatureResolutionUnitTestBase {
 
     //
 
+    /*
+     * Example PreferredPlatforms:
+     * 
+     * "jakartaee-10.0, jakartaee-9.0, jakartaee-8.0, jakartaee-7.0," + 
+     * "MicroProfile-6.0, MicroProfile-5.0, MicroProfile-4.0, MicroProfile-3.0, MicroProfile-2.0, MicroProfile-1.2";
+     * 
+    */
     public String getPreferredPlatforms() {
         return null;
     }

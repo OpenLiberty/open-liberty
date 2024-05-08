@@ -39,10 +39,9 @@ public class VersionlessEnvVarErrorTest {
             server.stopServerAlways("CWWKF0001E", "CWWKF0048E");
         }
     }
-
     @Test
     public void testNoFeatureInEnvVar() throws Exception {
-        String envVar = "mpHealth-1.0,mpHealth-2.0,mpHealth-2.1,mpHealth-2.2,mpHealth-3.0,mpHealth-3.1,mpHealth-4.0";
+        String envVar = "MicroProfile-6.0, MicroProfile-5.0, MicroProfile-4.0, MicroProfile-3.0, MicroProfile-2.0, MicroProfile-1.2";
 
         LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
         server.addEnvVar("PREFERRED_FEATURE_VERSIONS", envVar);
