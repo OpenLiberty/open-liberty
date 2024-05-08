@@ -4,12 +4,24 @@ import java.util.Optional;
 
 public class HttpStatAttributes {
 	
-	Optional<String> httpRoute = Optional.ofNullable(null);
-	Optional<Integer> responseStatus = Optional.ofNullable(null);
-	Optional<Exception> exception = Optional.ofNullable(null);
 	
+	/*
+	 * Mandatory fields
+	 */
+	String requestMethod, scheme, networkProtocolName, networkProtocolVersion, serverName;
+	int serverPort;
+	
+	/*
+	 * Exception related fields are optional
+	 */
+	Optional<Exception> exception = Optional.ofNullable(null);
 	Optional<String> error = Optional.ofNullable(null);
 	
+	/*
+	 * Maybe Optional
+	 */ 
+	Optional<String> httpRoute = Optional.ofNullable(null); // maybe not optional..
+	Optional<Integer> responseStatus = Optional.ofNullable(null); // maybe not optional too...
 	
 	public Optional<String> getError() {
 		return error;
@@ -19,8 +31,7 @@ public class HttpStatAttributes {
 		this.error = Optional.ofNullable(error);
 	}
 
-	String requestMethod, scheme, networkProtocolName, networkProtocolVersion, serverName;
-	int serverPort;
+
 	
 	public Optional<Exception> getException() {
 		return exception;
@@ -94,6 +105,9 @@ public class HttpStatAttributes {
 
 	public void setResponseStatus(int responseStatus) {
 		this.responseStatus = Optional.ofNullable(responseStatus);
+		if (responseStatus >= 500) {
+			this.setError(String.valueOf(responseStatus));
+		}
 	}
 
 	@Override

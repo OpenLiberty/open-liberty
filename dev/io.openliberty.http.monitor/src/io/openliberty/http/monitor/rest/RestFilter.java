@@ -21,8 +21,6 @@ import jakarta.ws.rs.core.UriBuilder;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.container.ContainerRequestContext;
@@ -46,14 +44,6 @@ public class RestFilter implements ContainerRequestFilter, ContainerResponseFilt
     
     @Context
     HttpServletResponse servletResponse;
-
-    @PostConstruct
-    public void postConstruct() {
-    }
-
-    @PreDestroy
-    public void preDestroy() {
-    }
 
     @Override
     public void filter(ContainerRequestContext reqCtx) throws IOException {

@@ -37,7 +37,7 @@ public interface HttpStatsMXBean {
 	public String getError();
 	
 	/*
-	 * Numerical values
+	 * Metric values
 	 */
 	
 	public long getCount();

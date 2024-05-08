@@ -12,6 +12,8 @@ package io.openliberty.http.monitor;
 import java.io.IOException;
 import java.time.Duration;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.ws.webcontainer40.osgi.webapp.WebAppDispatcherContext40;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
@@ -30,60 +32,13 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class ServletFilter implements Filter {
 	
+	private static final TraceComponent tc = Tr.register(ServletFilter.class);
 	
-	
-	private void resolveNetworkProtocolInfo(String protocolInfo, HttpStatAttributes httpStat) {
-		String[] networkInfo = protocolInfo.trim().split("/");
-		String networkProtocolName = null;
-		String networkVersion = "";
-		if (networkInfo.length == 1) {
-			networkProtocolName = networkInfo[0].toLowerCase();
-		} else if( networkInfo.length == 2) {
-			networkProtocolName = networkInfo[0];
-			networkVersion = networkInfo[1];
-		} else {
-			//there shouldn't be more than two values.
-		}
-		
-		httpStat.setNetworkProtocolName(networkProtocolName);
-		httpStat.setNetworkProtocolVersion(networkVersion);
-	}
-	
-	private void resolveRequestAttributes(ServletRequest servletRequest, HttpStatAttributes httpStat) {
-		
-		// Retrieve the HTTP request attributes
-		if (HttpServletRequest.class.isInstance(servletRequest)) {
-			HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-
-			httpStat.setRequestMethod(httpServletRequest.getMethod());
-
-			httpStat.setScheme(httpServletRequest.getScheme());
-
-			resolveNetworkProtocolInfo(httpServletRequest.getProtocol(), httpStat);
-
-			httpStat.setServerName(httpServletRequest.getServerName());
-			httpStat.setServerPort(httpServletRequest.getServerPort());
-		} else {
-			// uh oh
-		}
-	}
-
-	// Only need to get response status
-	private void resolveResponseAttributes(ServletResponse servletResponse, HttpStatAttributes httpStat) {
-
-		if (servletResponse instanceof HttpServletResponse) {
-			HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-			httpStat.setResponseStatus(httpServletResponse.getStatus());
-		} else {
-			// uh oh
-		}
-	}
-
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
 		
-		System.out.println("ENTERING ZE FILTER");
+		System.out.println("HTTP bundle Servlet Filter doFilter entry");
 
 		String httpRoute;
 		String contextPath = servletRequest.getServletContext().getContextPath();
@@ -94,17 +49,19 @@ public class ServletFilter implements Filter {
 			throw ioe;
 		} catch (ServletException se) {
 			throw se;
-//		} catch (Exception e) { //Place Holder - can catch exception thrown by sevlet for error.type
-//			System.out.println("something happened here");
+//		} catch (Exception e) { 
+//			//Place Holder - can catch exception thrown by servlet through filter execution
 		} finally {
 			long elapsednanos = System.nanoTime()-nanosStart;
-			HttpStatAttributes httpStat = new HttpStatAttributes();
+			
+			//holder for http attributes
+			HttpStatAttributes httpStatsAttributesHolder = new HttpStatAttributes();
 
 			// Retrieve the HTTP request attributes
-			resolveRequestAttributes(servletRequest, httpStat);
+			resolveRequestAttributes(servletRequest, httpStatsAttributesHolder);
 
 			// Retrieve the HTTP response attribute (i.e. the response status)
-			resolveResponseAttributes(servletResponse, httpStat);
+			resolveResponseAttributes(servletResponse, httpStatsAttributesHolder);
 
 			// attempt to retrieve the `httpRoute` from the RESTful filter
 			httpRoute = (String) servletRequest.getAttribute("RESTFUL.HTTP.ROUTE");
@@ -202,12 +159,12 @@ public class ServletFilter implements Filter {
 							// Non existent path -> /context-path/*
 							if (!pathInfo.equals("/")) {
 								httpRoute = contextPath + "/*";
-								httpStat.setHttpRoute(httpRoute);
+								httpStatsAttributesHolder.setHttpRoute(httpRoute);
 							}
 							// Default page of some sort -> /context-path/ or file not found
 							else if (pathInfo.equals("/")) {
 								httpRoute = contextPath + "/";
-								httpStat.setHttpRoute(httpRoute);
+								httpStatsAttributesHolder.setHttpRoute(httpRoute);
 								//System.out.println(" DEFAULT PAGE : ");
 							} else {
 								// something really weird has happened?!
@@ -227,20 +184,85 @@ public class ServletFilter implements Filter {
 				} // cast to SRTServletRequest
 			} // if httpRoute null
 
-			httpStat.setHttpRoute(httpRoute);
-			//System.out.println(httpStat);
+			httpStatsAttributesHolder.setHttpRoute(httpRoute);
 
-			//Transfer information to HttpMetricsMonitor
-
+			/*
+			 * Pass information onto HttpStatsMonitor.
+			 */
 			HttpStatsMonitor httpMetricsMonitor = HttpStatsMonitor.getInstance();
 			if (httpMetricsMonitor != null) {
-				httpMetricsMonitor.updateHttpStatDuration(httpStat, Duration.ofNanos(elapsednanos));
+				httpMetricsMonitor.updateHttpStatDuration(httpStatsAttributesHolder, Duration.ofNanos(elapsednanos));
 			} else {
-				//TODO: log error - did not get instance of httpMetricsMonitor
+				Tr.debug(tc, "Could not acquire instance of HTtpStatsMonitor");
+				System.err.println("Could not acquire instance of HTtpStatsMonitor");
 			}
 
 		}
 
+	}
+	
+	/**
+	 * Resolve HTTP attributes related to request
+	 * @param servletRequest
+	 * @param httpStat
+	 */
+	private void resolveRequestAttributes(ServletRequest servletRequest, HttpStatAttributes httpStat) {
+		
+		// Retrieve the HTTP request attributes
+		if (HttpServletRequest.class.isInstance(servletRequest)) {
+			HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+
+			httpStat.setRequestMethod(httpServletRequest.getMethod());
+
+			httpStat.setScheme(httpServletRequest.getScheme());
+
+			resolveNetworkProtocolInfo(httpServletRequest.getProtocol(), httpStat);
+
+			httpStat.setServerName(httpServletRequest.getServerName());
+			httpStat.setServerPort(httpServletRequest.getServerPort());
+		} else {
+			Tr.debug(tc, "Expected an HttpServletRequest");
+			System.err.println("Expected an HttpServletRequest");
+		}
+	}
+
+	/**
+	 * Resolve HTTP attributes related to response
+	 * 
+	 * @param servletResponse
+	 * @param httpStat
+	 */
+	private void resolveResponseAttributes(ServletResponse servletResponse, HttpStatAttributes httpStat) {
+
+		if (servletResponse instanceof HttpServletResponse) {
+			HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+			httpStat.setResponseStatus(httpServletResponse.getStatus());
+		} else {
+			Tr.debug(tc, "Expected an HttpServletResponse");
+			System.err.println("Expected an HttpServletResponse");
+		}
+	}
+	
+	/**
+	 * Resolve Network Protocol Info  - move to common utility package
+	 * @param protocolInfo
+	 * @param httpStat
+	 */
+	private void resolveNetworkProtocolInfo(String protocolInfo, HttpStatAttributes httpStat) {
+		String[] networkInfo = protocolInfo.trim().split("/");
+		String networkProtocolName = null;
+		String networkVersion = "";
+		if (networkInfo.length == 1) {
+			networkProtocolName = networkInfo[0].toLowerCase();
+		} else if( networkInfo.length == 2) {
+			networkProtocolName = networkInfo[0];
+			networkVersion = networkInfo[1];
+		} else {
+			//there shouldn't be more than two values.
+		}
+		
+		httpStat.setNetworkProtocolName(networkProtocolName);
+		httpStat.setNetworkProtocolVersion(networkVersion);
 	}
 
 }

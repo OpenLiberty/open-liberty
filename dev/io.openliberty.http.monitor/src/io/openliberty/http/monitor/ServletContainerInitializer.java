@@ -25,10 +25,10 @@ import jakarta.servlet.ServletException;
 @Component(configurationPolicy = IGNORE)
 public class ServletContainerInitializer implements jakarta.servlet.ServletContainerInitializer {
 
-    /** {@inheritDoc} */
+    //happens when app id deployed
     @Override
     public void onStartup(Set<Class<?>> c, ServletContext sc) throws ServletException {
-
+    	System.out.println("ServletContainerInitializer doing something activate");
         FilterRegistration.Dynamic filterRegistration = sc
                 .addFilter("io.openliberty.http.monitor.ServletFilter", ServletFilter.class);
         filterRegistration.addMappingForUrlPatterns(null, true, "/*");

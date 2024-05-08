@@ -27,17 +27,11 @@ import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.pmi.factory.StatisticActions;
 import com.ibm.wsspi.http.HttpRequest;
 
-
-import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
-
 import com.ibm.wsspi.genericbnf.HeaderField;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  *
@@ -49,15 +43,25 @@ public class HttpStatsMonitor extends StatisticActions {
 
 	private final ThreadLocal<HttpStatAttributes> tl_httpStats = new ThreadLocal<HttpStatAttributes>();
 	private final ThreadLocal<Long> tl_startNanos = new ThreadLocal<Long>();
+	
+	public static HttpStatsMonitor instance;
 
 	/*
-	 * Set singleton
+	 * Instance block to create singleton.
+	 * The "Liberty-Monitoring-Components" in the bnd.bnd
+	 * specifies the monitor runtime to create an instance
+	 * of this class. We'll leverage that to
+	 * create the singleton.
+	 * 
+	 * Unconventional as we well set "this" particular instance.
 	 */
 	{
+		System.out.println("init HttpStatMonitor singleton");
 		if (instance == null) {
+			System.out.println(" set ins tance of httpStatMonitor");
 			instance = this;
 		} else {
-			Tr.debug(tc, "singleton already registered " + instance);
+			Tr.debug(tc, String.format("Multiple attempts to create %s. We already have an instance", HttpStatsMonitor.class.getName()));
 		}
 
 	}
@@ -66,12 +70,11 @@ public class HttpStatsMonitor extends StatisticActions {
 		if (instance != null) {
 			return instance;
 		} else {
-			System.out.println("DC: no instance found");
+			System.err.println("no instance found");
+			Tr.debug(tc, String.format("No instance of %s found", HttpStatsMonitor.class.getName()));
 		}
 		return null;
 	}
-
-	public static HttpStatsMonitor instance;
 
 	@PublishedMetric
 	public MeterCollection<HttpStats> HttpConnByRoute = new MeterCollection<HttpStats>("HttpMetrics", this);
@@ -80,23 +83,30 @@ public class HttpStatsMonitor extends StatisticActions {
 	@ProbeSite(clazz = "com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink", method = "sendResponse", args = "com.ibm.wsspi.http.channel.values.StatusCodes,java.lang.String,java.lang.Exception,boolean")
 	public void atSendResponseReturn(@This Object probedHttpDispatcherLinkObj) {
 
+		System.out.println("probe out");
+		
 		long elapsedNanos = System.nanoTime() - tl_startNanos.get();
 		HttpStatAttributes retrievedHttpStatAttr = tl_httpStats.get();
 
-
-		//System.out.println(retrievedHttpStatAttr);
-
 		if (retrievedHttpStatAttr == null) {
-			// Pretty important to get those httpAttributes
+			Tr.debug(tc, "probing out - Unable to retrieve HttpStatAttributes");
+			System.err.println("probing out - Unable to retrieve HttpStatAttributes");
 			return;
 		}
 
 		updateHttpStatDuration(retrievedHttpStatAttr, Duration.ofNanos(elapsedNanos));
 
 	}
-
+	
+	/**
+	 * Resolve Network Protocol Info  - move to common utility package
+	 * @param protocolInfo
+	 * @param httpStat
+	 */
 	private void resolveNetwortProtocolInfo(String protocolInfo, HttpStatAttributes httpStat) {
 		String[] networkInfo = protocolInfo.trim().split("/");
+		
+	
 		String networkProtocolName = null;
 		String networkVersion = "";
 		if (networkInfo.length == 1) {
@@ -105,7 +115,8 @@ public class HttpStatsMonitor extends StatisticActions {
 			networkProtocolName = networkInfo[0];
 			networkVersion = networkInfo[1];
 		} else {
-			// there shouldn't be more than two values.
+			Tr.debug(tc, String.format("More values than expected when parsing protocol information: [%s]", protocolInfo) );
+			System.err.println("Something has gone awry");
 		}
 
 		httpStat.setNetworkProtocolName(networkProtocolName);
@@ -113,7 +124,7 @@ public class HttpStatsMonitor extends StatisticActions {
 	}
 
 	//TODO: Use this instead. - related to the SendResponse
-	private void testJustHttpDispatcherLink(HttpDispatcherLink hdl ) {
+	private void resolveAtributesFromHttpDispatcherLink(HttpDispatcherLink hdl ) {
 		
 		System.out.println("Testing it out - START");
 		//will be able to get status
@@ -121,21 +132,27 @@ public class HttpStatsMonitor extends StatisticActions {
 		System.out.println("hdl host " + hdl.getRequestedHost());
 		System.out.println("hdl port " + hdl.getRequestedPort());
 		
+		System.out.println("asdf");
+		 hdl.getRequest();
+		 System.out.println("zzd");
 		
-		HttpRequest httpRequest = hdl.getRequest();
-		
-
-		System.out.println(" class of httpRequest " + httpRequest);
-		System.out.println("httpRequest URI " + httpRequest.getURI());
-		System.out.println("httpRequest method " + httpRequest.getMethod());
-		System.out.println("httpRequest scheme " + httpRequest.getScheme());
-		System.out.println("httpRequest ver" + httpRequest.getVersion());
-		System.out.println("httpRequest virHost " + httpRequest.getVirtualHost());
-		System.out.println("httpRequest virPort " + httpRequest.getVirtualPort());
-		//System.out.println("httpRequest " + httpRequest.);
-		
-		
-		System.out.println("Testing it out - STOP");
+		 try {
+			 
+				HttpRequest httpRequest = hdl.getRequest();
+				System.out.println(" class of httpRequest " + httpRequest);
+				System.out.println("httpRequest URI " + httpRequest.getURI());
+				System.out.println("httpRequest method " + httpRequest.getMethod());
+				System.out.println("httpRequest scheme " + httpRequest.getScheme());
+				System.out.println("httpRequest ver" + httpRequest.getVersion());
+				
+//				System.out.println("httpRequest virHost " + httpRequest.getVirtualHost());
+//				System.out.println("httpRequest virPort " + httpRequest.getVirtualPort());
+				
+				
+				System.out.println("Testing it out - STOP");
+		 } catch(Exception e) {
+			 System.out.println("oof" + e);
+		 }
 		
 	}
 	
@@ -143,6 +160,8 @@ public class HttpStatsMonitor extends StatisticActions {
 	@ProbeSite(clazz = "com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink", method = "sendResponse", args = "com.ibm.wsspi.http.channel.values.StatusCodes,java.lang.String,java.lang.Exception,boolean")
 	public void atSendResponse(@This Object probedHttpDispatcherLinkObj, @Args Object[] myargs) {
 
+		System.out.println("probe in");
+		
 		tl_startNanos.set(System.nanoTime());
 		HttpStatAttributes httpStatAttributes = new HttpStatAttributes();
 
@@ -163,7 +182,7 @@ public class HttpStatsMonitor extends StatisticActions {
 
 		if (probedHttpDispatcherLinkObj != null) {
 
-//			testJustHttpDispatcherLink((HttpDispatcherLink)probedHttpDispatcherLinkObj);
+			resolveAtributesFromHttpDispatcherLink((HttpDispatcherLink)probedHttpDispatcherLinkObj);
 			
 //				Method getRequestMethod = probedHttpDispatcherLinkObj.getClass().getMethod("getRequest", null);
 //
@@ -183,10 +202,10 @@ public class HttpStatsMonitor extends StatisticActions {
 				// Maybe use a method to encapsulate , if failure or null or excepton use
 				// alternative method -> see testJustHttpDispatcherLink()
 
-				HttpInboundServiceContext hisc = (HttpInboundServiceContext) httpInboundServiceContextImplObj;
+				HttpInboundServiceContext httpInboundServiceContextImplInstance = (HttpInboundServiceContext) httpInboundServiceContextImplObj;
 				
 				//TODO: vv can this be null? handle that?
-				HttpRequestMessage httpRequestMessage = hisc.getRequest();
+				HttpRequestMessage httpRequestMessage = httpInboundServiceContextImplInstance.getRequest();
 				
 				
 				//DC: did i even need this? could've just used HDL -> getRequest -> getInfo
@@ -211,14 +230,14 @@ public class HttpStatsMonitor extends StatisticActions {
 				}
 
 				if (serverName == null) {
-					serverName = hisc.getLocalAddr().getHostAddress();
+					serverName = httpInboundServiceContextImplInstance.getLocalAddr().getHostAddress();
 				}
 
 				//System.out.println("servername " + serverName);
 				httpStatAttributes.setServerName(serverName);
 
 				//System.out.println("port " + hisc.getLocalPort());
-				httpStatAttributes.setServerPort(hisc.getLocalPort());
+				httpStatAttributes.setServerPort(httpInboundServiceContextImplInstance.getLocalPort());
 
 			} catch (NoSuchFieldException e) { // getDeclaredField() call
 				e.printStackTrace();
@@ -240,37 +259,43 @@ public class HttpStatsMonitor extends StatisticActions {
 	// sync static methods for adding/retrieving
 
 	@FFDCIgnore({ClassNotFoundException.class, NoClassDefFoundError.class})
-	public void updateHttpStatDuration(HttpStatAttributes statAttri, Duration duration) {
+	public void updateHttpStatDuration(HttpStatAttributes httpStatAttributes, Duration duration) {
 
 		/*
-		 * Deal with Mbean
+		 * Create and/or update MBean
 		 */
-		String key = resovleKey(statAttri);
+		String key = resovleKey(httpStatAttributes);
 
 		HttpStats hms = HttpConnByRoute.get(key);
 		if (hms == null) {
-			hms = iniitializeHttpStat(key, statAttri);
+			hms = iniitializeHttpStat(key, httpStatAttributes);
 		}
 
 		hms.updateDuration(duration);
 
 		/*
-		 * Deal with Metrics
+		 * Handle metrics
 		 */
 		try {
-			if (Class.forName(SharedMetricRegistries.class.getName()) != null) {
-				RestMetricManager.updateHttpMetrics(statAttri, duration);
+			/*
+			 * Need to use String explicitly.
+			 * Otherwise, if you started w/o metrics and load metrics feature,
+			 * SharedMetricRegistries.class will throw NoClassDefFoundDError even
+			 * if it is on bundle's class path.
+			 */
+			if (Class.forName("io.openliberty.microprofile.metrics50.SharedMetricRegistries") != null) {
+				RestMetricManager.updateHttpMetrics(httpStatAttributes, duration);
 			}
 		} catch (ClassNotFoundException e) {
-
-			System.out.println("SharedMetricRegistries does not exist");
-			e.printStackTrace();
+			Tr.debug(tc, "Class not found");
+			System.out.println("SharedMetricRegistires ---- Class not found");
+			//e.printStackTrace();
 		} catch (NoClassDefFoundError e) {
-			System.out.println("SharedMetricRegistries does not exist");
-			e.printStackTrace();
+			Tr.debug(tc, "NoClassDefFoundError - because metrics wasn't dynamically imported");
+			System.out.println("SharedMetricRegistires ---- because metrics wasn't dynamically imported");
+			//e.printStackTrace();
 		}
 
-//		nothing for now
 	}
 
 	private synchronized HttpStats iniitializeHttpStat(String key, HttpStatAttributes statAttri) {
@@ -301,22 +326,32 @@ public class HttpStatsMonitor extends StatisticActions {
 		Optional<String> httpRoute = statAttri.getHttpRoute();
 		String requestMethod = statAttri.getRequestMethod();
 		Optional<Integer> responseStatus = statAttri.getResponseStatus();
-		Optional<Exception> exception = statAttri.getException();
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("\""); // starting quote
 		sb.append("method:" + requestMethod);
-		responseStatus.ifPresent(status -> sb.append(";status:" + status));
-		httpRoute.ifPresent(route -> {
-			sb.append(";httpRoute:" + route.replace("*", "\\*"));
-		});
+		
+		
+		/*
+		 * For the response status and route, we'll put "nothing" (i.e., "")
+		 * in place for the Mbean object name 
+		 */
+		//responseStatus.ifPresent(status -> sb.append(";status:" + status));
+		String respStatusString = (responseStatus.isPresent())? responseStatus.get().toString() : ""; 
+		sb.append(sb.append(";status:" + respStatusString));
+		
+//		httpRoute.ifPresent(route -> {
+//			sb.append(";httpRoute:" + route.replace("*", "\\*"));
+//		});
+		sb.append(";httpRoute:"+httpRoute.orElseGet( () -> "").replace("*", "\\*"));
+		
 		
 		//!!!: not used
-		exception.ifPresent(throwable -> sb.append(";error:" + exception.getClass().getName()));
+		//exception.ifPresent(throwable -> sb.append(";error:" + exception.getClass().getName()));
 
-		// double check if responseStatus is 4xx or 5xx
+		//TODO: double check if responseStatus is 4xx or 5xx -> ask about this?
 		responseStatus.ifPresent(status -> {
-			if (status > 400) {
+			if (status >= 500) {
 				sb.append(";error:" + status);
 			}
 		});

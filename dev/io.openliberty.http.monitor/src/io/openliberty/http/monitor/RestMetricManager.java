@@ -4,45 +4,56 @@ import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.time.Duration;
 
-import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetadataBuilder;
-import org.eclipse.microprofile.metrics.MetricID;
 import org.eclipse.microprofile.metrics.Tag;
 import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.MetricRegistry;
-import org.eclipse.microprofile.metrics.MetricUnits;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
 
 @Component(configurationPolicy = IGNORE)
 public class RestMetricManager {
 
-    static SharedMetricRegistries sharedMetricRegistries;
 	
-	@Reference
+	private static final TraceComponent tc = Tr.register(HttpStatsMonitor.class);
+	
+    static SharedMetricRegistries SHARED_METRIC_REGISTIRES = null;
+	
+	@Reference  // static and unary - so it MUST have it to activate
 	public void setSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistries) {
-		this.sharedMetricRegistries = sharedMetricRegistries;
+		System.out.println("SET SharedMetricREgistreis REST MetricManagr");
+		if (SHARED_METRIC_REGISTIRES == null) {
+			SHARED_METRIC_REGISTIRES = sharedMetricRegistries;
+		} else {
+			Tr.debug(tc, "Multiple Metric Registries' service-component active");
+			System.err.println("Multiple Metric Registries' service-component active");
+		}
+
+	}
+	
+	public void unsetSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistries) {
+		System.out.println("UNNNNSET SharedMetricREgistreis REST MetricManagr");
+		SHARED_METRIC_REGISTIRES = null;
 	}
 	
 	
 	public static void updateHttpMetrics(HttpStatAttributes httpStatAttributes, Duration duration) {
 		
-		if(sharedMetricRegistries == null) {
-			//System.out.println("did not acquire shared metric registries");
+		if(SHARED_METRIC_REGISTIRES == null) {
 			return;
 		}
 		
-		MetricRegistry vendorRegistry = sharedMetricRegistries.getOrCreate(MetricRegistry.VENDOR_SCOPE);
+		MetricRegistry vendorRegistry = SHARED_METRIC_REGISTIRES.getOrCreate(MetricRegistry.VENDOR_SCOPE);
 		
 		Metadata md = new MetadataBuilder().withName("http.metric").build();
-		
-		//MetricID mid = new MetricID("http.metric", retrieveTags(httpStatAttributes));
-
-		//Histogram httpHistogram = vendorRegistry.histogram(md,retrieveTags(httpStatAttributes));
-		//httpHistogram.update(duration.toMillis());
 		
 		Timer httpTimer = vendorRegistry.timer(md,retrieveTags(httpStatAttributes));
 		httpTimer.update(duration);
@@ -57,7 +68,7 @@ public class RestMetricManager {
 
 		
 		Integer status = httpStatAttributes.getResponseStatus().orElse(-1);
-		Tag responseStatus = new Tag("response_status", status == -1 ? "" : status.toString());
+		Tag responseStatus = new Tag("response_status", status == -1 ? "" : status.toString().trim());
 		
 		Tag httpRoute = new Tag("http_route", httpStatAttributes.getHttpRoute().orElse(""));
 		
@@ -67,6 +78,10 @@ public class RestMetricManager {
 		
 		Tag serverName = new Tag("server_name",httpStatAttributes.getServerName());
 		Tag serverPort = new Tag("server_port",String.valueOf(httpStatAttributes.getServerPort()));
+		
+		//do error? part of spec
+		
+		Tag errorType = new Tag("error_type", (status >= 500 ) ? status.toString().trim() : "n/a");
 		
 		Tag[] ret = new Tag[] {requestMethod, scheme, responseStatus, httpRoute, networkProtoclName, networkProtocolVersion, serverName, serverPort};
 		
