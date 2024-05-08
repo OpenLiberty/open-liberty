@@ -13,6 +13,7 @@
 package test.jakarta.data.jpa.web;
 
 import static com.ibm.websphere.simplicity.config.DataSourceProperties.DERBY_EMBEDDED;
+import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -77,6 +78,7 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.config.dsprops.testrules.SkipIfDataSourceProperties;
 
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import test.jakarta.data.jpa.web.CreditCard.CardId;
 import test.jakarta.data.jpa.web.CreditCard.Issuer;
@@ -1029,6 +1031,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Tests CrudRepository methods that supply entities as parameters.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testEntitiesAsParameters() throws Exception {
         orders.deleteAll();
@@ -1343,6 +1346,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Reproduces issue 27925.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testForeignKey() {
         Manufacturer toyota = new Manufacturer();
@@ -1480,6 +1484,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Avoid specifying a primary key value and let it be generated.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testGeneratedKey() {
         ZoneOffset MDT = ZoneOffset.ofHours(-6);
@@ -3316,6 +3321,7 @@ public class DataJPATestServlet extends FATServlet {
      * Test that a method that is annotated with the Update annotation can return entity results,
      * and the resulting entities match the updated values that were written to the database.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testUpdateWithEntityResults() {
         orders.deleteAll();
@@ -3481,6 +3487,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Test that @Delete requires the entity to exist with the same version as the database for successful removal.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testVersionedDelete() {
         orders.deleteAll();
@@ -3592,6 +3599,7 @@ public class DataJPATestServlet extends FATServlet {
      * Test that @Update requires the entity to exist with the same version as the database for successful update.
      * This tests covers an entity type with an IdClass.
      */
+    @SkipIfSysProp(DB_Postgres) //Failing on Postgres due to eclipselink issue.  OL Issue #28368
     @Test
     public void testVersionedUpdate() {
         orders.deleteAll();
