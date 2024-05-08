@@ -443,44 +443,51 @@ public class QueryInfo {
                     Class<?> attributeType = collectionElementType == null ? entry.getValue() : collectionElementType;
                     if (attributeType.isPrimitive())
                         attributeType = QueryInfo.wrapperClassIfPrimitive(attributeType);
-                    if (singleType.isAssignableFrom(attributeType)) {
-                        singleAttributeName = entry.getKey();
-                        q.append(o_).append(singleAttributeName);
-                        break;
-                    }
+                    if (singleType.isAssignableFrom(attributeType))
+                        if (singleAttributeName == null)
+                            singleAttributeName = entry.getKey();
+                        else
+                            throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                                    method.getDeclaringClass().getName() +
+                                                                    " repository specifies the " + singleType.getName() +
+                                                                    " result type, which corresponds to multiple entity attributes: " +
+                                                                    singleAttributeName + ", " + entry.getKey() +
+                                                                    ". To use this result type, update the repository method to " +
+                                                                    "instead use the Query annotation with a SELECT clause to " +
+                                                                    "disambiguate which entity attribute to use as the result " +
+                                                                    "of the query."); // TODO NLS
                 }
 
                 if (singleAttributeName == null) {
-                    // Construct new instance from IdClass, embeddable, or entity attributes.
-                    // It would be preferable if the spec included the Select annotation to explicitly identify parameters, but if that doesn't happen
-                    // TODO we could compare attribute types with known constructor to improve on guessing a correct order of parameters
+                    // Construct new instance for record or IdClass
                     q.append("NEW ").append(singleType.getName()).append('(');
-                    List<String> relAttrNames;
+                    RecordComponent[] recordComponents;
                     boolean first = true;
-                    if (entityInfo.idClassAttributeAccessors != null && singleType.equals(entityInfo.idType))
+                    if ((recordComponents = singleType.getRecordComponents()) != null)
+                        for (RecordComponent component : recordComponents) {
+                            String name = component.getName();
+                            q.append(first ? "" : ", ").append(o).append('.').append(name);
+                            first = false;
+                        }
+                    else if (entityInfo.idClassAttributeAccessors != null && singleType.equals(entityInfo.idType))
+                        // TODO determine correct order of idClass attributes for constructor (possibly based on type?)
+                        // instead of guessing they are alphabetized?
                         for (String idClassAttributeName : entityInfo.idClassAttributeAccessors.keySet()) {
                             String name = entityInfo.getAttributeName(idClassAttributeName, true);
                             q.append(first ? "" : ", ").append(o).append('.').append(name);
                             first = false;
                         }
-                    else if ((relAttrNames = entityInfo.relationAttributeNames.get(singleType)) != null)
-                        for (String name : relAttrNames) {
-                            q.append(first ? "" : ", ").append(o).append('.').append(name);
-                            first = false;
-                        }
-                    else if (entityInfo.recordClass == null)
-                        for (String name : entityInfo.attributeTypes.keySet()) {
-                            q.append(first ? "" : ", ").append(o).append('.').append(name);
-                            first = false;
-                        }
-                    else {
-                        for (RecordComponent component : entityInfo.recordClass.getRecordComponents()) {
-                            String name = component.getName();
-                            q.append(first ? "" : ", ").append(o).append('.').append(name);
-                            first = false;
-                        }
-                    }
+                    else
+                        throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                                method.getDeclaringClass().getName() + " repository specifies the " +
+                                                                singleType.getName() + " result type, which is not convertible from the " +
+                                                                entityInfo.entityClass.getName() + " entity type. A repository method " +
+                                                                "result type must be the entity type, an entity attribute type, or a " +
+                                                                "Java record with attribute names that are a subset of the entity attribute names, " +
+                                                                "or the Query annotation must be used to construct the result type with JPQL."); // TODO NLS
                     q.append(')');
+                } else {
+                    q.append(o_).append(singleAttributeName);
                 }
             }
         } else { // Individual columns are requested by @Select

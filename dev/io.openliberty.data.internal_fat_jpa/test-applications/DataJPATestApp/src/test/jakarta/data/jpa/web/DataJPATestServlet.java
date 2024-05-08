@@ -2515,7 +2515,45 @@ public class DataJPATestServlet extends FATServlet {
         r = paid.get(2);
         assertEquals(5.0f, r.amount(), 0.001);
 
+        List<Double> amounts = rebates.amounts("testRecordEntityInferredFromReturnType-CustomerA");
+
+        assertEquals(4.0f, amounts.get(0), 0.001);
+        assertEquals(5.0f, amounts.get(1), 0.001);
+        assertEquals(10.0f, amounts.get(2), 0.001);
+        assertEquals(12.0f, amounts.get(3), 0.001);
+
+        assertEquals(Rebate.Status.VERIFIED, rebates.status(all[4 - 1].id()).orElseThrow());
+        assertEquals(Rebate.Status.PAID, rebates.status(all[3 - 1].id()).orElseThrow());
+
+        List<LocalDate> purchaseDates = rebates.findByCustomerIdOrderByPurchaseMadeOnDesc("testRecordEntityInferredFromReturnType-CustomerA");
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(0));
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(1));
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(2));
+        assertEquals(LocalDate.of(2024, Month.APRIL, 5), purchaseDates.get(3));
+
+        PurchaseTime time = rebates.purchaseTime(all[3 - 1].id()).orElseThrow();
+        assertEquals(LocalDate.of(2024, Month.MAY, 2), time.purchaseMadeOn());
+        assertEquals(LocalTime.of(9, 15, 0), time.purchaseMadeAt());
+
+        PurchaseTime[] times = rebates.findTimeOfPurchaseByCustomerId("testRecordEntityInferredFromReturnType-CustomerA");
+        assertEquals(Arrays.toString(times), 4, times.length);
+
+        assertEquals(LocalDate.of(2024, Month.APRIL, 5), times[0].purchaseMadeOn());
+        assertEquals(LocalTime.of(12, 46, 30), times[0].purchaseMadeAt());
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), times[1].purchaseMadeOn());
+        assertEquals(LocalTime.of(10, 55, 0), times[1].purchaseMadeAt());
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), times[2].purchaseMadeOn());
+        assertEquals(LocalTime.of(15, 40, 0), times[2].purchaseMadeAt());
+
+        assertEquals(LocalDate.of(2024, Month.MAY, 1), times[3].purchaseMadeOn());
+        assertEquals(LocalTime.of(17, 50, 0), times[3].purchaseMadeAt());
+
         rebates.removeAll(all);
+
+        assertEquals(false, rebates.status(all[3 - 1].id()).isPresent());
     }
 
     /**

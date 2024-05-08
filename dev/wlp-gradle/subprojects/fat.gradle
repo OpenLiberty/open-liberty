@@ -100,17 +100,17 @@ task addJakartaTransformerRules(type: Copy) {
 task addJakartaTransformer(type: Copy) {
   mustRunAfter jar
   dependsOn addJakartaTransformerRules
-  from configurations.jakartaTransformer
+/*  from configurations.jakartaTransformer
   from configurations.jakartaTransformerPreJava17
   from configurations.jakartaTransformerJava17Plus
-  into new File(autoFvtDir, 'lib')
+  into new File(autoFvtDir, 'lib')*/
 }
 
 task copyTestContainers(type: Copy) {
   dependsOn ':io.openliberty.org.testcontainers:assembleTestContainerData'
   mustRunAfter jar
-  from configurations.testcontainers
-  into new File(autoFvtDir, 'lib')
+/*  from configurations.testcontainers
+  into new File(autoFvtDir, 'lib')*/
 }
 
 task addDerby(type: Copy) {
@@ -164,7 +164,7 @@ task autoFVT {
     }
 
     // Copy the buildtask jars
-    copy {
+    /*copy {
       from cnf.file('mavenlibs')
       into new File(autoFvtDir, 'build/lib')
       include 'asm-all-5.2.jar'
@@ -192,7 +192,7 @@ task autoFVT {
     copy {
       from cnf.file('mavenlibs/infra.buildtasks-core-7.0.2.jar')
       into new File(autoFvtDir, 'build/lib')
-    }
+    }*/
 
     // Copy the bundle jar
     copy {
@@ -202,11 +202,11 @@ task autoFVT {
     }
 
     // Include JSON-P processor implementation
-    copy {
+    /*copy {
       from project(':com.ibm.ws.org.glassfish.json').buildDir
       include '*.jar'
       into new File(autoFvtDir, 'lib')
-    }
+    }*/
 
     // Copy the DDL files
     // TODO: Consider if this can be removed, it looks like there's only a single project for this rule
@@ -293,12 +293,12 @@ task autoFVT {
     }
 
     // TODO: This is to compensate for the fact that the ant build of fattest.simplicity produced this jar but the gradle build doesn't
-    copy {
+    /*copy {
       from project(':com.ibm.ws.common.encoder').buildDir
       include 'com.ibm.ws.common.encoder.jar'
       rename 'com.ibm.ws.common.encoder.jar', 'fattest.encoder.jar'
       into new File(autoFvtDir, 'lib')
-    }
+    }*/
 
     // Copy the published files
     copy {
@@ -317,11 +317,11 @@ task autoFVT {
     }
 
     // Copy the logging libraries over for use while running FATs
-    copy {
+    /*copy {
       from project(':com.ibm.ws.logging.core').buildDir
       include 'com.ibm.ws.logging.core.jar'
       into new File(autoFvtDir, 'lib')
-    }
+    }*/
 
     // Copy all non-java app resources, such as *.html or *.jsp
     copy {

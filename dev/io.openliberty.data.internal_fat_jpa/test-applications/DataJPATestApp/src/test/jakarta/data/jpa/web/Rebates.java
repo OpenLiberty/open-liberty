@@ -12,12 +12,16 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
+import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
@@ -37,6 +41,16 @@ public interface Rebates { // Do not allow this interface to inherit from other 
     @Insert
     Iterable<Rebate> addMultiple(Iterable<Rebate> r);
 
+    @Query("WHERE customerId=?1")
+    @OrderBy("amount")
+    List<Double> amounts(String customerId);
+
+    List<LocalDate> findByCustomerIdOrderByPurchaseMadeOnDesc(String customer);
+
+    @OrderBy("purchaseMadeOn")
+    @OrderBy("purchaseMadeAt")
+    PurchaseTime[] findTimeOfPurchaseByCustomerId(String customer);
+
     @Update
     Rebate modify(Rebate r);
 
@@ -55,6 +69,9 @@ public interface Rebates { // Do not allow this interface to inherit from other 
     @Save
     Rebate[] processAll(Rebate... r);
 
+    @Find
+    Optional<PurchaseTime> purchaseTime(int id);
+
     @Save
     Collection<Rebate> processMultiple(Collection<Rebate> r);
 
@@ -67,4 +84,7 @@ public interface Rebates { // Do not allow this interface to inherit from other 
 
     @Delete
     void removeMultiple(ArrayList<Rebate> r);
+
+    @Find
+    Optional<Rebate.Status> status(int id);
 }
