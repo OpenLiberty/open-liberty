@@ -62,12 +62,19 @@ Private-Package: \
 
 Include-Resource: \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     @${repo;org.bouncycastle:bcpg-jdk18on;1.78;EXACT},\
     @${repo;org.bouncycastle:bcpkix-jdk18on;1.78;EXACT},\
     @${repo;org.bouncycastle:bcprov-jdk18on;1.78;EXACT},\
     @${repo;org.bouncycastle:bcutil-jdk18on;1.78;EXACT},\
 >>>>>>> 5994d5bcd7 (changed from v1.75 -> 1.78)
+=======
+    @${repo;org.bouncycastle:bcpg-jdk18on;1.78.1;EXACT},\
+    @${repo;org.bouncycastle:bcpkix-jdk18on;1.78.1;EXACT},\
+    @${repo;org.bouncycastle:bcprov-jdk18on;1.78.1;EXACT},\
+    @${repo;org.bouncycastle:bcutil-jdk18on;1.78.1;EXACT},\
+>>>>>>> c6ffe4d3e1 (updated to use v1.78.1)
     init-sqlserver.sql=resources/init-sqlserver.sql
 
 test.project: true

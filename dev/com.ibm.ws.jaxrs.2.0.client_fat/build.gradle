@@ -44,9 +44,9 @@ dependencies {
     'org.mock-server:mockserver-core:5.11.2',
     'org.mock-server:mockserver-logging:5.3.0',
     'org.mock-server:mockserver-netty:5.11.2',
-    'org.bouncycastle:bcprov-jdk18on:1.78',
-    'org.bouncycastle:bcpkix-jdk18on:1.78',
-    'org.bouncycastle:bcutil-jdk18on:1.78'
+    'org.bouncycastle:bcprov-jdk18on:1.78.1',
+    'org.bouncycastle:bcpkix-jdk18on:1.78.1',
+    'org.bouncycastle:bcutil-jdk18on:1.78.1'
 }
 
 task addThirdPartyJerseyClient(type: Copy) {
