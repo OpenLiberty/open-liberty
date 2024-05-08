@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,11 +31,6 @@ import io.openliberty.threading.virtual.VirtualThreadOps;
            service = VirtualThreadOps.class)
 @SatisfyingConditionTarget("(&(" + Condition.CONDITION_ID + "=io.openliberty.java.version)(io.openliberty.java.version>=21))")
 public class VirtualThreadOperations implements VirtualThreadOps {
-
-    @Activate // TODO remove
-    protected void activate() {
-        System.out.println("KJA1017 - VirtualThreadOperations activated");
-    }
 
     @Override
     public ThreadFactory createFactoryOfVirtualThreads(String namePrefix,

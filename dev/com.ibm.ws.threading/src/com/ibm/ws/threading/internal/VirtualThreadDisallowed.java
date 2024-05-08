@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ package com.ibm.ws.threading.internal;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ThreadFactory;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.propertytypes.SatisfyingConditionTarget;
@@ -29,13 +28,8 @@ import io.openliberty.threading.virtual.VirtualThreadOps;
 @Component(name = "com.ibm.ws.threading.internal.VirtualThreadDisallowed",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = VirtualThreadOps.class)
-@SatisfyingConditionTarget("(&(" + Condition.CONDITION_ID + "=io.openliberty.java.version)(io.openliberty.java.version<21))")
+@SatisfyingConditionTarget("(&(" + Condition.CONDITION_ID + "=io.openliberty.java.version)(!(io.openliberty.java.version>=21)))")
 public class VirtualThreadDisallowed implements VirtualThreadOps {
-
-    @Activate //TODO remove
-    public void activate() {
-        System.out.println("KJA1017 - VirtualThreadDisallowed activated");
-    }
 
     @Override
     public ThreadFactory createFactoryOfVirtualThreads(String namePrefix,

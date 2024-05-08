@@ -14,6 +14,7 @@ package com.ibm.ws.kernel.service.location.internal;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
+import java.util.Hashtable;
 
 import javax.naming.spi.InitialContextFactoryBuilder;
 import javax.naming.spi.NamingManager;
@@ -75,8 +76,11 @@ public class Activator implements BundleActivator {
             // This is important in order to maintain the order of running the hooks.
             checkpointHookRegistration = context.registerService(CheckpointHook.class, locServiceImpl,
                                                                  FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, 100)));
-            context.registerService(Condition.class, Condition.INSTANCE,
-                                    FrameworkUtil.asDictionary(Collections.singletonMap(JAVA_CONDITION_ID, JavaInfo.majorVersion())));
+
+            Hashtable<String, Object> javaConditionProps = new Hashtable<>();
+            javaConditionProps.put(JAVA_CONDITION_ID, JavaInfo.majorVersion());
+            javaConditionProps.put(Condition.CONDITION_ID, JAVA_CONDITION_ID);
+            context.registerService(Condition.class, Condition.INSTANCE, javaConditionProps);
 
             // Assume this is the first place that tries to set this
             try {
