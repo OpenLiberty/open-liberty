@@ -389,7 +389,7 @@ public class Http2LiteModeTests extends FATServletClient {
      */
     @Test
     public void testHeaderLimitReached() throws Exception {
-        runTest(continuationServletPath, testName.getMethodName());
+        runTest(Http2FullModeTests.continuationServletPath, testName.getMethodName());
     }
 
     /**
@@ -403,7 +403,7 @@ public class Http2LiteModeTests extends FATServletClient {
      */
     @Test
     public void testHeaderContinuationLimitReached() throws Exception {
-        runTest(continuationServletPath, testName.getMethodName());
+        runTest(Http2FullModeTests.continuationServletPath, testName.getMethodName());
     }
 
     /**
@@ -416,7 +416,7 @@ public class Http2LiteModeTests extends FATServletClient {
      */
     @Test
     public void testHeaderTokenSizeExceeded() throws Exception {
-        runTest(continuationServletPath, testName.getMethodName());
+        runTest(Http2FullModeTests.continuationServletPath, testName.getMethodName());
     }
 
     /**
@@ -429,7 +429,7 @@ public class Http2LiteModeTests extends FATServletClient {
      */
     @Test
     public void testHeaderSizeExceeded() throws Exception {
-        runTest(continuationServletPath, testName.getMethodName());
+        runTest(Http2FullModeTests.continuationServletPath, testName.getMethodName());
     }
 
     /**

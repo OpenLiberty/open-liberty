@@ -1109,7 +1109,7 @@ public class HttpChannelConfig {
     protected void parseLimitFieldSize(Object option) {
         if (Objects.nonNull(option)) {
             try {
-                this.limitFieldSize = minLimit(convertInteger(value), HttpConfigConstants.MIN_LIMIT_FIELDSIZE);
+                this.limitFieldSize = minLimit(convertInteger(option), HttpConfigConstants.MIN_LIMIT_FIELDSIZE);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: field size limit is " + getLimitOfFieldSize());
                 }
@@ -1298,7 +1298,7 @@ public class HttpChannelConfig {
 
     private void parseCookiesSameSitePartitioned(Map<Object, Object> props) {
         Object value = props.get(HttpConfigConstants.PROPNAME_SAMESITE_PARTITIONED);
-        if (null != value && this.useSameSiteConfig) {
+        if (null != value && this.useSameSiteConfig()) {
 
             if (value instanceof Boolean) {
                 Boolean partitionedValue= (Boolean) value;
@@ -1306,7 +1306,7 @@ public class HttpChannelConfig {
                     this.isPartitioned = true;
                 }
             }
-            if (this.useSameSiteConfig && (TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
+            if (this.useSameSiteConfig() && (TraceComponent.isAnyTracingEnabled()) && (tc.isEventEnabled())) {
                 Tr.event(tc, "Http Channel Config: SameSite Partitioned configuration parsed.");
             }
         }
