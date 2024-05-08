@@ -66,9 +66,11 @@ public final class JAXBAttachmentSchemaValidationHack extends AbstractPhaseInter
                     } catch (IOException e) {
                         throw new Fault(e);
                     }
-		    if (LOG.isLoggable(Level.FINEST)) { // Liberty change begin
+		    // Liberty Change begin
+		    if (LOG.isLoggable(Level.FINEST)) { 
 			LOG.finest("Adding AttachmentDataSource: " + ds.getName());
-		    } // Liberty change end
+		    } 
+		    // Liberty Change end
                     dss.add(ds);
                 }
             }
@@ -89,6 +91,11 @@ public final class JAXBAttachmentSchemaValidationHack extends AbstractPhaseInter
         public void handleMessage(Message message) throws Fault {
             Collection<AttachmentDataSource> dss = CastUtils.cast((List<?>)message.get(SAVED_DATASOURCES));
             for (AttachmentDataSource ds : dss) {
+		// Liberty Change begin
+		if (LOG.isLoggable(Level.FINEST)) { 
+		   LOG.finest("Releasing AttachmentDataSource: " + ds.getName());
+		} 
+		// Liberty Change end
                 ds.release();
             }
         }

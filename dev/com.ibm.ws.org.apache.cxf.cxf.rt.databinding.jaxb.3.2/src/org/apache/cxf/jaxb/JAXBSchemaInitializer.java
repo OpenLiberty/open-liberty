@@ -78,7 +78,6 @@ import org.apache.ws.commons.schema.utils.NamespaceMap;
  */
 class JAXBSchemaInitializer extends ServiceModelVisitor {
     private static final Logger LOG = LogUtils.getLogger(JAXBSchemaInitializer.class);
-    private boolean isLoggableFine = LOG.isLoggable(Level.FINE);
 
     private SchemaCollection schemas;
     private JAXBContextProxy context;
@@ -114,43 +113,56 @@ class JAXBSchemaInitializer extends ServiceModelVisitor {
     }
 
     public JAXBBeanInfo getBeanInfo(Type cls) {
+        boolean isLoggableFinest = LOG.isLoggable(Level.FINEST);  // Liberty Change
         if (cls instanceof Class) {
             if (((Class<?>)cls).isArray()) {
-	        if (isLoggableFine) { // Liberty change begin
-	           LOG.fine("getBeanInfo: Class is array");
-	        } // Liberty change end
+		// Liberty Change begin
+	        if (isLoggableFinest) { 
+	           LOG.finest("getBeanInfo: Class is array");
+	        } 
+		// Liberty Change end
                 return getBeanInfo(((Class<?>)cls).getComponentType());
             }
-	    if (isLoggableFine) { // Liberty change begin
-	       LOG.fine("getBeanInfo: Class is not array");
-	    } // Liberty change end
+	    // Liberty Change begin
+	    if (isLoggableFinest) { 
+	       LOG.finest("getBeanInfo: Class is not array");
+	    } 
+	    // Liberty Change end
             return getBeanInfo((Class<?>)cls);
         } else if (cls instanceof ParameterizedType) {
-	    if (isLoggableFine) { // Liberty change begin
-	       LOG.fine("getBeanInfo: Class is ParameterizedType");
+	    // Liberty Change begin
+	    if (isLoggableFinest) { 
+	       LOG.finest("getBeanInfo: Class is ParameterizedType");
 	       Type t3[] = ((ParameterizedType)cls).getActualTypeArguments();
-	       LOG.fine("getBeanInfo: ParameterizedType arguments size:" + (t3 != null ? t3.length : "null"));
-	    } // Liberty change end
+	       LOG.finest("getBeanInfo: ParameterizedType arguments size:" + (t3 != null ? t3.length : "null"));
+	    } 
+	    // Liberty Change end
             for (Type t2 : ((ParameterizedType)cls).getActualTypeArguments()) {
-	        if (isLoggableFine) { // Liberty change begin
-	           LOG.fine("getBeanInfo: Invoking getBeanInfo for type: " + (t2 != null ? t2.getTypeName() : "null"));
-	        } // Liberty change end
+		// Liberty Change begin
+	        if (isLoggableFinest) { 
+	           LOG.finest("getBeanInfo: Invoking getBeanInfo for type: " + (t2 != null ? t2.getTypeName() : "null"));
+	        } 
+		// Liberty Change end
                 return getBeanInfo(t2);
             }
         } else if (cls instanceof GenericArrayType) {
             GenericArrayType gt = (GenericArrayType)cls;
             Class<?> ct = (Class<?>) gt.getGenericComponentType();
             ct = Array.newInstance(ct, 0).getClass();
-	    if (isLoggableFine) { // Liberty change begin
-	       LOG.fine("getBeanInfo: GenericArrayType class ct: " + (ct != null ? ct.getName() : "null"));
-	    } // Liberty change end
+	    // Liberty Change begin
+	    if (isLoggableFinest) { 
+	       LOG.finest("getBeanInfo: GenericArrayType class ct: " + (ct != null ? ct.getName() : "null"));
+	    } 
+	    // Liberty Change end
 
             return getBeanInfo(ct);
         }
 
-	if (isLoggableFine) { // Liberty change begin
-	   LOG.fine("getBeanInfo: returning null");
-	} // Liberty change end
+	// Liberty Change begin
+	if (isLoggableFinest) { 
+	   LOG.finest("getBeanInfo: returning null");
+	} 
+	// Liberty Change end
         return null;
     }
 
@@ -400,30 +412,39 @@ class JAXBSchemaInitializer extends ServiceModelVisitor {
 
     public void end(FaultInfo fault) {
 
-	if (isLoggableFine) { // Liberty change begin
-	   LOG.fine("end: Processing Fault: " + fault.getFaultName());
-	} // Liberty change end
+	// Liberty Change begin
+        boolean isLoggableFinest = LOG.isLoggable(Level.FINEST);
+	if (isLoggableFinest) {
+	   LOG.finest("end: Processing Fault: " + fault.getFaultName());
+	} 
+	// Liberty Change end
 
         MessagePartInfo part = fault.getFirstMessagePart();
 
-	if (isLoggableFine) { // Liberty change begin
-	   LOG.fine("end: Fault message part: " + (part != null ? part.toString() : "null"));
-	} // Liberty change end
+	// Liberty Change begin
+	if (isLoggableFinest) { 
+	   LOG.finest("end: Fault message part: " + (part != null ? part.toString() : "null"));
+	} 
+	// Liberty Change end
 
         Class<?> cls = part.getTypeClass();
         Class<?> cl2 = (Class<?>)fault.getProperty(Class.class.getName());
 
-	if (isLoggableFine) { // Liberty change begin
-	   LOG.fine("end: part type cls: " + (cls != null ? cls.getName() : "null"));
-	   LOG.fine("end: Fault property class cl2: " + (cl2 != null ? cl2.getName() : "null"));
-	} // Liberty change end
+	// Liberty Change begin
+	if (isLoggableFinest) { 
+	   LOG.finest("end: part type cls: " + (cls != null ? cls.getName() : "null"));
+	   LOG.finest("end: Fault property class cl2: " + (cl2 != null ? cl2.getName() : "null"));
+	} 
+	// Liberty Change end
 
         if (cls != cl2) {
             QName name = (QName)fault.getProperty("elementName");
             part.setElementQName(name);
-	    if (isLoggableFine) { // Liberty change begin
-	       LOG.fine("end: elementName: " + name);
-	    } // Liberty change end
+	    // Liberty Change begin
+	    if (isLoggableFinest) { 
+	       LOG.finest("end: elementName: " + name);
+	    } 
+	    // Liberty Change end
             JAXBBeanInfo beanInfo = getBeanInfo(cls);
             if (beanInfo == null) {
                 throw new Fault(new Message("NO_BEAN_INFO", LOG, cls.getName()));
@@ -443,9 +464,11 @@ class JAXBSchemaInitializer extends ServiceModelVisitor {
                     return;
                 }
                 QName typeName = itr.next();
-	        if (isLoggableFine) { // Liberty change begin
-	           LOG.fine("end: setSchemaTypeName to: " + typeName);
-	        } // Liberty change end
+		// Liberty Change begin
+	        if (isLoggableFinest) { 
+	           LOG.finest("end: setSchemaTypeName to: " + typeName);
+	        } 
+		// Liberty Change end
                 el.setSchemaTypeName(typeName);
             }
         } else if (part.getXmlSchema() == null) {

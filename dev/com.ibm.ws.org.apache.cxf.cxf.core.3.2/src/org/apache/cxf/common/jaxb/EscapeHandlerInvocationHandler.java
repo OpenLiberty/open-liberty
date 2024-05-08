@@ -39,15 +39,19 @@ public final class EscapeHandlerInvocationHandler implements InvocationHandler {
             if ((Integer)args[1] == 0 && (Integer)args[2] == 0) {
                 Writer writer = (Writer)args[4];
                 writer.write("");
-	        if (LOG.isLoggable(Level.FINE)) {  // Liberty Change start
-		   LOG.fine("escape method returning null.");
-	        } // Liberty Change end
+		// Liberty Change begin
+	        if (LOG.isLoggable(Level.FINEST)) {  
+		   LOG.finest("escape method returning null.");
+	        } 
+		// Liberty Change end
                 return null;
             }
             result =  method.invoke(target, args);
-	    if (LOG.isLoggable(Level.FINE)) { // Liberty Change start
-	       LOG.fine("escape method returned result: " + result);
-	    } // Liberty Change end
+	    // Liberty Change begin
+	    if (LOG.isLoggable(Level.FINEST)) { 
+	       LOG.finest("escape method returned result: " + result);
+	    } 
+	    // Liberty Change end
         } 
         return result;
     }

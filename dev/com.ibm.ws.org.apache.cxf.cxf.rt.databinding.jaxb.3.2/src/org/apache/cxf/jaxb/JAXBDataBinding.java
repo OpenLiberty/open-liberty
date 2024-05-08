@@ -236,7 +236,6 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         = new LinkedBlockingDeque<SoftReference<Marshaller>>(MAX_LOAD_FACTOR);
     private Deque<SoftReference<Unmarshaller>> unmarshallers 
         = new LinkedBlockingDeque<SoftReference<Unmarshaller>>(MAX_LOAD_FACTOR);
-    private boolean isLoggableFine = LOG.isLoggable(Level.FINE);
     // Liberty change end
 
     public JAXBDataBinding() {
@@ -354,45 +353,54 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     @SuppressWarnings("unchecked")
     public synchronized void initialize(Service service) {
 
+        boolean isLoggableFinest = LOG.isLoggable(Level.FINEST);  // Liberty Change
         inInterceptors.addIfAbsent(JAXBAttachmentSchemaValidationHack.INSTANCE);
         inFaultInterceptors.addIfAbsent(JAXBAttachmentSchemaValidationHack.INSTANCE);
 
         // context is already set, don't redo it
         if (context != null) {
-	    if (isLoggableFine) {  // Liberty change begin
-	      LOG.fine("initialize: Context is already set, returning: " + context);
-	    } // Liberty change end
+	    // Liberty Change begin
+	    if (isLoggableFinest) {  
+	      LOG.finest("initialize: Context is already set, returning: " + context);
+	    } 
+	    // Liberty Change end
             return;
         }
 
         contextClasses = new LinkedHashSet<>();
 
         for (ServiceInfo serviceInfo : service.getServiceInfos()) {
-	    if (isLoggableFine) { // Liberty change begin
-	       LOG.fine("initialize: Processing serviceInfo: " + (serviceInfo != null ? serviceInfo.getName() : "NULL"));
-	    } // Liberty change end
+	    // Liberty Change begin
+	    if (isLoggableFinest) { 
+	       LOG.finest("initialize: Processing serviceInfo: " + (serviceInfo != null ? serviceInfo.getName() : "NULL"));
+	    } 
+	    // Liberty Change end
             JAXBContextInitializer initializer = new JAXBContextInitializer(getBus(), serviceInfo, contextClasses,
                     typeRefs, this.getUnmarshallerProperties());
             initializer.walk();
             if (serviceInfo.getProperty("extra.class") != null) {
                 Set<Class<?>> exClasses = serviceInfo.getProperty("extra.class", Set.class);
-	        if (isLoggableFine) { // Liberty change begin
-	           LOG.fine("initialize: Extra classes: ");
+		// Liberty Change begin
+	        if (isLoggableFinest) { 
+	           LOG.finest("initialize: Extra classes: ");
 		   if (exClasses != null) {
 		      for (Class<?> cls1 : exClasses) {
-	                LOG.fine("initialize: Adding extra class: " + (cls1 != null ? cls1.getName() : "null"));
+	                LOG.finest("initialize: Adding extra class: " + (cls1 != null ? cls1.getName() : "null"));
 		      }
 		   }
-	        } // Liberty change end
+	        } 
+		// Liberty Change end
                 contextClasses.addAll(exClasses);
             }
         }
 
         String tns = getNamespaceToUse(service);
 
-	if (isLoggableFine) {  // Liberty change begin
-	   LOG.fine("initialize: Target NS: " + tns);
-	}  // Liberty change end
+	// Liberty Change begin
+	if (isLoggableFinest) {  
+	   LOG.finest("initialize: Target NS: " + tns);
+	}  
+	// Liberty Change end
 
         final CachedContextAndSchemas cachedContextAndSchemas;
         try {
@@ -411,9 +419,11 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
 
             if (col.getXmlSchemas().length > 1) {
                 // someone has already filled in the types
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("initialize: Got schemas for service: " + (serviceInfo != null ? serviceInfo.getName() : "null"));
-                } // Liberty change end
+		// Liberty Change begin
+                if (isLoggableFinest) { 
+                   LOG.finest("initialize: Got schemas for service: " + (serviceInfo != null ? serviceInfo.getName() : "null"));
+                } 
+		// Liberty Change end
                 justCheckForJAXBAnnotations(serviceInfo);
                 continue;
             }
@@ -421,44 +431,57 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             boolean schemasFromCache = false;
             Collection<DOMSource> schemas = getSchemas();
             if (schemas == null || schemas.isEmpty()) {
-                if (LOG.isLoggable(Level.FINE)) {  // Liberty change begin
-                   LOG.fine("initialize: Try getting schemas from cache");
-                } // Liberty change end
+		// Liberty Change begin
+                if (isLoggableFinest) {  
+                   LOG.finest("initialize: Try getting schemas from cache");
+                } 
+		// Liberty Change end
                 schemas = cachedContextAndSchemas.getSchemas();
                 if (schemas != null) {
-                    if (LOG.isLoggable(Level.FINE)) {  // Liberty change begin
-                       LOG.fine("initialize: Got schemas from Context cache");
-                    } // Liberty change end
+		    // Liberty Change begin
+                    if (isLoggableFinest) {  
+                       LOG.finest("initialize: Got schemas from Context cache");
+                    } 
+		    // Liberty Change end
                     schemasFromCache = true;
                 }
             } else {
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("initialize: Got schemas from getSchemas");
-                } // Liberty change end
+		// Liberty Change begin
+                if (isLoggableFinest) { 
+                   LOG.finest("initialize: Got schemas from getSchemas");
+                } 
+		// Liberty Change end
                 schemasFromCache = true;
             }
             Set<DOMSource> bi = new LinkedHashSet<>();
             if (schemas == null) {
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("initialize: Generate Jaxb Schemas...");
-                } // Liberty change end
+                // Liberty Change begin 
+                if (isLoggableFinest) { 
+                   LOG.finest("initialize: Generate Jaxb Schemas...");
+                } // Liberty Change end
                 schemas = new LinkedHashSet<>();
                 try {
                     for (DOMResult r : generateJaxbSchemas()) {
-                        if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                           LOG.fine("initialize: Processing schema node: " + 
+			// Liberty Change begin
+                        if (isLoggableFinest) { 
+                           LOG.finest("initialize: Processing schema node: " + 
 								StaxUtils.toString(r.getNode()));
-                        } // Liberty change end
+                        } 
+			// Liberty Change end
                         DOMSource src = new DOMSource(r.getNode(), r.getSystemId());
                         if (isInBuiltInSchemas(r)) {
-                            if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                               LOG.fine("initialize: Adding builtinSchema");
-                            } // Liberty change end
+			    // Liberty Change begin
+                            if (isLoggableFinest) { 
+                               LOG.finest("initialize: Adding builtinSchema");
+                            } 
+			    // Liberty Change end
                             bi.add(src);
                         } else {
-                            if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                               LOG.fine("initialize: Adding src Schema");
-                            } // Liberty change end
+			    // Liberty Change begin
+                            if (isLoggableFinest) { 
+                               LOG.finest("initialize: Adding src Schema");
+                            } 
+			    // Liberty Change end
                             schemas.add(src);
                         }
                     }
@@ -470,43 +493,55 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 }
             }
             for (DOMSource r : schemas) {
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("initialize: Processing DOMSource node: " + 
+		// Liberty Change begin
+                if (isLoggableFinest) { 
+                   LOG.finest("initialize: Processing DOMSource node: " + 
 				(r != null ? StaxUtils.toString(r.getNode()) : "null"));
-                } // Liberty change end
+                } 
+		// Liberty Change end
                 if (bi.contains(r)) {
                     String ns = ((Document)r.getNode()).getDocumentElement().getAttribute("targetNamespace");
-                    if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                       LOG.fine("initialize: BuiltIn schema contains DOMSource r with NS: " + ns);
-                    }  // Liberty change end
+		    // Liberty Change begin
+                    if (isLoggableFinest) { 
+                       LOG.finest("initialize: BuiltIn schema contains DOMSource r with NS: " + ns);
+                    }  
+		    // Liberty Change end
                     if (serviceInfo.getSchema(ns) != null) {
-                        if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                           LOG.fine("initialize: serviceInfo has schema, continue");
-                        }  // Liberty change end
+		        // Liberty Change begin
+                        if (isLoggableFinest) { 
+                           LOG.finest("initialize: serviceInfo has schema, continue");
+                        }  
+		        // Liberty Change end
                         continue;
                     }
                 }
                 //StaxUtils.print(r.getNode());
                 //System.out.println();
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("initialize: Adding SchemaDocument for: " + r.getSystemId());
-                } // Liberty change end
+		// Liberty Change begin
+                if (isLoggableFinest) { 
+                   LOG.finest("initialize: Adding SchemaDocument for: " + r.getSystemId());
+                } 
+		// Liberty Change end
                 addSchemaDocument(serviceInfo,
                                   col,
                                  (Document)r.getNode(),
                                   r.getSystemId());
             }
 
-            if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-               LOG.fine("initialize: Calling JAXBSchemaInitializer for TNS: " + tns);
-            } // Liberty change end
+	    // Liberty Change begin
+            if (isLoggableFinest) { 
+               LOG.finest("initialize: Calling JAXBSchemaInitializer for TNS: " + tns);
+            } 
+	    // Liberty Change end
             JAXBSchemaInitializer schemaInit = new JAXBSchemaInitializer(serviceInfo, col, context,
                                                                          this.qualifiedSchemas, tns);
             schemaInit.walk();
             if (cachedContextAndSchemas != null && !schemasFromCache) {
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("initialize: Calling setSchemas");
-                } // Liberty change end
+		// Liberty Change begin
+                if (isLoggableFinest) { 
+                   LOG.finest("initialize: Calling setSchemas");
+                } 
+		// Liberty Change end
                 cachedContextAndSchemas.setSchemas(schemas);
             }
         }
@@ -521,27 +556,34 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     }
     private void checkForJAXBAnnotations(MessagePartInfo mpi, SchemaCollection schemaCollection, String ns) {
 
-        if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-           LOG.fine("checkForJAXBAnnotations for MessagePart:" + (mpi != null ? mpi.getName() : "null") );
-        } // Liberty change end
+	// Liberty Change begin
+        boolean isLoggableFinest = LOG.isLoggable(Level.FINEST);  
+        if (isLoggableFinest) { 
+           LOG.finest("checkForJAXBAnnotations for MessagePart:" + (mpi != null ? mpi.getName() : "null") );
+        } 
+	// Liberty Change end
 
         Annotation[] anns = (Annotation[])mpi.getProperty("parameter.annotations");
-        if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
+	// Liberty Change begin
+        if (isLoggableFinest) { 
 	   if (anns != null && anns.length > 0) {
 	      for (Annotation an1 : anns) {
-                 LOG.fine("checkForJAXBAnnotations: Found annotation: " + an1);
+                 LOG.finest("checkForJAXBAnnotations: Found annotation: " + an1);
 	      }
 	   }
-        } // Liberty change end
+        } 
+	// Liberty Change end
         JAXBContextProxy ctx = JAXBUtils.createJAXBContextProxy(context, schemaCollection, ns);
         XmlJavaTypeAdapter jta = JAXBSchemaInitializer.findFromTypeAdapter(ctx, mpi.getTypeClass(), anns);
         if (jta != null) {
             JAXBBeanInfo jtaBeanInfo = JAXBSchemaInitializer.findFromTypeAdapter(ctx, jta.value());
             JAXBBeanInfo beanInfo = JAXBSchemaInitializer.getBeanInfo(ctx, mpi.getTypeClass());
             if (jtaBeanInfo != beanInfo) {
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("checkForJAXBAnnotations: setting annotation properties");
-		} // Liberty change end
+	        // Liberty Change begin
+                if (isLoggableFinest) { 
+                   LOG.finest("checkForJAXBAnnotations: setting annotation properties");
+		} 
+		// Liberty Change end
                 mpi.setProperty("parameter.annotations", anns);
                 mpi.setProperty("honor.jaxb.annotations", Boolean.TRUE);
             }
@@ -588,9 +630,11 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         //add user extra class into jaxb context
         if (extraClass != null && extraClass.length > 0) {
             for (Class<?> clz : extraClass) {
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("Adding user extra class to JAXBContext:" + (clz != null ? clz.getName() : "null") );
-		} // Liberty change end
+	 	// Liberty Change begin
+                if (LOG.isLoggable(Level.FINEST)) { 
+                   LOG.finest("Adding user extra class to JAXBContext:" + (clz != null ? clz.getName() : "null") );
+		} 
+		// Liberty Change end
                 classes.add(clz);
             }
         }
@@ -616,9 +660,11 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 // REVISIT - ignorable if WS-ADDRESSING not available?
                 // maybe add a way to allow interceptors to add stuff to the
                 // context?
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("addWsAddressingTypes: Ignoring exception from classes.add: " + unused);
-		} // Liberty change end
+		// Liberty Change begin
+                if (LOG.isLoggable(Level.FINEST)) { 
+                   LOG.finest("addWsAddressingTypes: Ignoring exception from classes.add: " + unused);
+		} 
+		// Liberty Change end
             }
         }
     }
@@ -753,6 +799,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
 
     public WrapperHelper createWrapperHelper(Class<?> wrapperType, QName wrapperName, List<String> partNames,
                                              List<String> elTypeNames, List<Class<?>> partClasses) {
+        boolean isLoggableFinest = LOG.isLoggable(Level.FINEST);  // Liberty Change
         List<Method> getMethods = new ArrayList<>(partNames.size());
         List<Method> setMethods = new ArrayList<>(partNames.size());
         List<Method> jaxbMethods = new ArrayList<>(partNames.size());
@@ -773,9 +820,11 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             objectFactory = wrapperType.getClassLoader().loadClass(objectFactoryClassName).newInstance();
         } catch (Exception e) {
             // ignore, probably won't need it
-            if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-               LOG.fine("createWrapperHelper: Ignoring Exception from loadClass: " + e);
-	    } // Liberty change end
+	    // Liberty Change begin
+            if (isLoggableFinest) { 
+               LOG.finest("createWrapperHelper: Ignoring Exception from loadClass: " + e);
+	    } 
+	    // Liberty Change end
         }
         Method[] allOFMethods;
         if (objectFactory != null) {
@@ -805,10 +854,12 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             try {
                 getMethod = valueClass.getMethod(getAccessor, AbstractWrapperHelper.NO_CLASSES);
             } catch (NoSuchMethodException ex) {
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("createWrapperHelper: Ignoring Exception from valueClass getMethod: " + ex);
-	        } // Liberty change end
                 //ignore for now
+		// Liberty Change begin
+                if (isLoggableFinest) { 
+                   LOG.finest("createWrapperHelper: Ignoring Exception from valueClass getMethod: " + ex);
+	        } 
+		// Liberty Change end
             }
 
             Field elField = getElField(partName, valueClass);
@@ -823,10 +874,12 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                     String newAcc = getAccessor.replaceFirst("get", "is");
                     getMethod = wrapperType.getMethod(newAcc, AbstractWrapperHelper.NO_CLASSES);
                 } catch (NoSuchMethodException ex) {
-                    if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                       LOG.fine("createWrapperHelper: Ignoring Exception from newAcc getMethod: " + ex);
-	            } // Liberty change end
                     //ignore for now
+		    // Liberty Change begin
+                    if (isLoggableFinest) { 
+                       LOG.finest("createWrapperHelper: Ignoring Exception from newAcc getMethod: " + ex);
+	            } 
+		    // Liberty Change end
                 }
             }
             if (getMethod == null
@@ -839,10 +892,12 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                         getMethod = valueClass.getMethod("is_return",
                                                           new Class[0]);
                     } catch (NoSuchMethodException ex2) {
-                        if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                           LOG.fine("createWrapperHelper: Ignoring Exception from is_return getMethod: " + ex2);
-	                } // Liberty change end
                         //ignore for now
+			// Liberty Change begin
+                        if (isLoggableFinest) { 
+                           LOG.finest("createWrapperHelper: Ignoring Exception from is_return getMethod: " + ex2);
+	                } 
+			// Liberty Change end
                     }
                 }
             }
@@ -852,10 +907,12 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 try {
                     getMethod = valueClass.getMethod(getAccessor, AbstractWrapperHelper.NO_CLASSES);
                 } catch (NoSuchMethodException ex) {
-                    if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                       LOG.fine("createWrapperHelper: Ignoring another valueClass getMethod Exception : " + ex);
-	            } // Liberty change end
                     //ignore for now
+		    // Liberty Change begin
+                    if (isLoggableFinest) { 
+                       LOG.finest("createWrapperHelper: Ignoring another valueClass getMethod Exception : " + ex);
+	            } 
+		    // Liberty Change end
                 }
             }
             String setAccessor2 = setAccessor;
@@ -1016,9 +1073,11 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
         Marshaller m = null;
 
         if (!ENABLE_MARSHALL_POOLING) {
-            if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-               LOG.fine("Marshaller created [no pooling]");
-	    } // Liberty change end
+	    // Liberty Change begin
+            if (LOG.isLoggable(Level.FINEST)) { 
+               LOG.finest("Marshaller created [no pooling]");
+	    } 
+	    // Liberty Change end
         } else {
             Deque<SoftReference<Marshaller>> marshallers = noEscape ? noEscapeMarshallers : escapeMarshallers;
             SoftReference<Marshaller> ref = marshallers.poll();
@@ -1026,13 +1085,15 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 ref = marshallers.poll();
             }
 
-            if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
+	    // Liberty Change begin
+            if (LOG.isLoggable(Level.FINEST)) { 
                if (m == null) {
-                  LOG.fine("Marshaller created [not in pool]");
+                  LOG.finest("Marshaller created [not in pool]");
                } else {
-                  LOG.fine("Marshaller obtained [from  pool]");
+                  LOG.finest("Marshaller obtained [from  pool]");
                }
-	    } //  Liberty change end
+	    } 
+	    // Liberty Change end
         }
 
         if (m != null) {
@@ -1112,24 +1173,29 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
      * @throws JAXBException
      */
     public Unmarshaller getJAXBUnmarshaller(boolean setEventHandler, ValidationEventHandler veventHandler) throws JAXBException {
+        boolean isLoggableFinest = LOG.isLoggable(Level.FINEST);  // Liberty Change
         Unmarshaller unm = null;
         if (!ENABLE_UNMARSHALL_POOLING) {
-            if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-               LOG.fine("Unmarshaller created [no pooling]");
-	    } // Liberty change end
+	    // Liberty Change begin
+            if (isLoggableFinest) { 
+               LOG.finest("Unmarshaller created [no pooling]");
+	    } 
+	    // Liberty Change end
         } else {
             SoftReference<Unmarshaller> ref = unmarshallers.poll();
             while (ref != null && (unm = ref.get()) == null) {
                 ref = unmarshallers.poll();
             }
 
-            if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
+	    // Liberty Change begin
+            if (isLoggableFinest) { 
                if (unm == null) {
-                  LOG.fine("Unmarshaller created [not in pool]");
+                  LOG.finest("Unmarshaller created [not in pool]");
                } else {
-                  LOG.fine("Unmarshaller obtained [from  pool]");
+                  LOG.finest("Unmarshaller obtained [from  pool]");
                }
-	    }  // Liberty change end
+	    }  
+	    // Liberty Change end
         }
 
         if (unm != null) {
@@ -1137,32 +1203,44 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
             Class<? extends ValidationEventHandler> handlerClass = oldEventHandler == null ? null : oldEventHandler.getClass();
             if (!setEventHandler) {
                 if (handlerClass != DefaultValidationEventHandler.class) {
-                    if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                       LOG.fine("The ValidationEventHandler class, which is not the default, is not set.");
-	            }  // Liberty change end
+		    // Liberty Change begin
+                    if (isLoggableFinest) { 
+                       LOG.finest("The ValidationEventHandler class, which is not the default, is not set.");
+	            }  
+		    // Liberty Change end
                     // Don't add an eventHandler if the unmarshaller doesn't already have one.
                     // unm.setEventHandler(null);
                 }
             } else {
                 unm.setEventHandler(veventHandler);
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("ValidationEventHandler is set");
-		} // Liberty change end
+		// Liberty Change begin
+                if (isLoggableFinest) { 
+                   LOG.finest("ValidationEventHandler is set");
+		} 
+		// Liberty Change end
             }
         } else {
             unm = context.createUnmarshaller();
-            LOG.fine("Unmarshaller is created from JAXBContext"); // Liberty change
+	    // Liberty Change begin
+            if (isLoggableFinest) { 
+               LOG.finest("Unmarshaller is created from JAXBContext");
+	    }
+	    // Liberty Change end
             if (unmarshallerListener != null) {
                 unm.setListener(unmarshallerListener);
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("UnmarshallerListener is set");
-		} // Liberty change end
+		// Liberty Change begin
+                if (isLoggableFinest) { 
+                   LOG.finest("UnmarshallerListener is set");
+		} 
+		// Liberty Change end
             }
             if (setEventHandler) {
                 unm.setEventHandler(veventHandler);
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("ValidationEventHandler is set");
-		} // Liberty change end
+		// Liberty Change begin
+                if (isLoggableFinest) { 
+                   LOG.finest("ValidationEventHandler is set");
+		} 
+		// Liberty Change end
             }
             if (unmarshallerProperties != null) {
                 for (Map.Entry<String, Object> propEntry
@@ -1187,7 +1265,12 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
      */
     public void releaseJAXBUnmarshaller(Unmarshaller unmarshaller) {
 
-        LOG.fine("Unmarshaller placed back into pool"); // Liberty change
+	// Liberty Change begin
+        boolean isLoggableFinest = LOG.isLoggable(Level.FINEST);
+        if (isLoggableFinest) { 
+           LOG.finest("Unmarshaller placed back into pool"); // Liberty change
+	} 
+	// Liberty Change end
 
         if (ENABLE_UNMARSHALL_POOLING && unmarshaller != null) {
             try {
@@ -1199,15 +1282,19 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
                 }
             } catch (Throwable t) {
                 // Log the problem, and continue without pooling
-                if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-                   LOG.fine("The following exception is ignored. Processing continues " + t);
-	        } // Liberty change end
+		// Liberty Change begin
+                if (isLoggableFinest) { 
+                   LOG.finest("The following exception is ignored. Processing continues " + t);
+	        } 
+		// Liberty Change end
             }
         } else {
             JAXBUtils.closeUnmarshaller(unmarshaller);
-            if (LOG.isLoggable(Level.FINE)) { // Liberty change begin
-               LOG.fine("Unmarshaller is closed");
-	    } // Liberty change end
+	    // Liberty Change begin
+            if (isLoggableFinest) { 
+               LOG.finest("Unmarshaller is closed");
+	    } 
+	    // Liberty Change end
         }
     }
 }

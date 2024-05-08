@@ -42,9 +42,11 @@ public final class NamespaceMapper extends NamespacePrefixMapper {
                                      String suggestion,
                                      boolean requirePrefix) {
         String prefix = nspref.get(namespaceUri);
-        if (LOG.isLoggable(Level.FINEST)) {  // Liberty Change start
+	// Liberty Change begin
+        if (LOG.isLoggable(Level.FINEST)) {  
 	   LOG.finest("getPreferredPrefix: Got NS prefix: " + prefix);
-	} // Liberty Change end
+	} 
+	// Liberty Change end
         if (prefix != null) {
             return prefix;
         }
