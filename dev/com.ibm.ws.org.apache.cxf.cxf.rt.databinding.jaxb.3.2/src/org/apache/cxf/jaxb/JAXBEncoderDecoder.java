@@ -328,7 +328,7 @@ public final class JAXBEncoderDecoder {
             JAXBUtils.BridgeWrapper bridge = JAXBUtils.createBridge(ctxClasses, qname, cls, anns);
             // Liberty Change begin
 	    if (LOG.isLoggable(Level.FINEST)) {
-               LOG.finest("unmarshalWithBridge: bridge class: " + bridge.getClass().getCanonicalName());
+               LOG.finest("unmarshalWithBridge: bridge class: " + (bridge != null ? bridge.getClass().getCanonicalName() : "null"));
 	    } 
 	    // Liberty Change end
 

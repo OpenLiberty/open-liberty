@@ -567,9 +567,7 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
 	// Liberty Change begin
         if (isLoggableFinest) { 
 	   if (anns != null && anns.length > 0) {
-	      for (Annotation an1 : anns) {
-                 LOG.finest("checkForJAXBAnnotations: Found annotation: " + an1);
-	      }
+              LOG.finest("checkForJAXBAnnotations: Found annotations: " + anns);
 	   }
         } 
 	// Liberty Change end
@@ -627,11 +625,12 @@ public class JAXBDataBinding extends AbstractInterceptorProvidingDataBinding
     public CachedContextAndSchemas createJAXBContextAndSchemas(Set<Class<?>> classes,
                                                                String defaultNs)
         throws JAXBException {
+        boolean isLoggableFinest = LOG.isLoggable(Level.FINEST);  // Liberty Change
         //add user extra class into jaxb context
         if (extraClass != null && extraClass.length > 0) {
             for (Class<?> clz : extraClass) {
 	 	// Liberty Change begin
-                if (LOG.isLoggable(Level.FINEST)) { 
+                if (isLoggableFinest) { 
                    LOG.finest("Adding user extra class to JAXBContext:" + (clz != null ? clz.getName() : "null") );
 		} 
 		// Liberty Change end
