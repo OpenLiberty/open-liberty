@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.json.JsonObject;
 
@@ -57,7 +58,11 @@ public class CVEResponseTest extends FATServletClient {
     public static final String TEST_SERVER_NAME = "io.openliberty.reporting.response.test.server";
     public static final String APP_NAME = "CVEReportingResponseEndpoints";
 
+    private static final String STORE_PATH = "resources/security";
     private static final String KEYSTORE_FILENAME = "key.p12";
+    private static final String NEW_KEYSTORE_FILENAME = "NewKeyStore.jks";
+    private static final String NEW_TRUSTSTORE_FILENAME = "NewTrustStore.jks";
+    private static final String STORE_PASSWORD = "Liberty";
 
     protected static final Class<?> c = CVEResponseTest.class;
 
@@ -82,6 +87,7 @@ public class CVEResponseTest extends FATServletClient {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war").addPackage(CVEReportingResponseEndpoints.class.getPackage());
         ShrinkHelper.exportDropinAppToServer(server, app, SERVER_ONLY);
         testServer.useSecondaryHTTPPort();
+        testServer.saveServerConfiguration();
 
     }
 
@@ -97,10 +103,11 @@ public class CVEResponseTest extends FATServletClient {
                 testServer.stopServer();
             }
         }
+        testServer.restoreServerConfiguration();
     }
 
     public static void copyTrustStore(LibertyServer server, LibertyServer testServer) throws Exception {
-        testServer.copyFileToLibertyServerRoot(server.getServerRoot() + "/resources/security/", "resources/security",
+        testServer.copyFileToLibertyServerRoot(server.getServerRoot() + "/" + STORE_PATH, STORE_PATH,
                                                KEYSTORE_FILENAME);
     }
 
@@ -194,8 +201,6 @@ public class CVEResponseTest extends FATServletClient {
 
         server.waitForStringInLog("POST COMPLETED");
 
-        System.out.println("READY");
-
         assertNotNull("Response message for Open Liberty is incorrect",
                       testServer.waitForStringInTrace("CWWKF1702W: Based on an assessment of Open Liberty,"));
         assertNotNull("First CVE for Open Liberty is incorrect",
@@ -206,6 +211,90 @@ public class CVEResponseTest extends FATServletClient {
                       testServer.waitForStringInTrace("CWWKF1702W: Based on an assessment of IBM Semeru Java,"));
         assertNotNull("CVE for IBM Semeru Java is incorrect", testServer.waitForStringInTrace(
                                                                                               "https://www.ibm.com/support/pages/node/7125529 - CVE-2023-50314, CVE-2023-50315"));
+    }
+
+    /**
+     * Testing that we will be able to make a successful connection with the cloud service if the SSL feature is enabled
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testWithSslFeatureEnabled() throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        features.add("ssl-1.0");
+        server.updateServerConfiguration(config);
+        server.startServer();
+        server.waitForSSLStart();
+        copyTrustStore(server, testServer);
+        Process createKeyStore = Runtime.getRuntime().exec(getCertGenerationCommand(testServer.getServerRoot() + "/" + STORE_PATH + "/" + NEW_KEYSTORE_FILENAME, STORE_PASSWORD));
+        createKeyStore.waitFor();
+        Process createTrustStore = Runtime.getRuntime().exec(getCertGenerationCommand(testServer.getServerRoot() + "/" + STORE_PATH + "/" + NEW_TRUSTSTORE_FILENAME,
+                                                                                      STORE_PASSWORD));
+        createTrustStore.waitFor();
+        testServer.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dcve.insight.enabled=true",
+                                               "-Djavax.net.ssl.trustStore=" + testServer.getServerRoot() + "/resources/security/key.p12",
+                                               "-Djavax.net.ssl.trustStorePassword=password", "-Djavax.net.ssl.trustStoreType=PKCS12"));
+        testServer.startServer();
+        testServer.addIgnoredErrors(Collections.singletonList("CWWKF1702W"));
+
+        assertNotNull("CVE Reporting checks not been carried out", testServer.waitForStringInLog("CWWKF1700I"));
+
+        server.waitForStringInLog("POST COMPLETED");
+
+        assertNotNull("The connection was not successful with a customer user trust store", testServer.waitForStringInLog("CWWKF1702W:.*"));
+    }
+
+    /**
+     * Testing that we will not be able to make successful connection if the user specifies their own cert store
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testTrustWithInvalidCertificate() throws Exception {
+        server.startServer();
+        server.waitForSSLStart();
+        testServer.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dcve.insight.enabled=true"));
+        testServer.startServer();
+        List<String> warnings = Arrays.asList("CWWKF1702W", "CWWKF1705W");
+        testServer.addIgnoredErrors(warnings);
+
+        assertNotNull("CVE Reporting checks not been carried out", testServer.waitForStringInLog("CWWKF1700I"));
+
+        assertNotNull("The connection was made without a trust store", testServer.waitForStringInLog("CWWKF1705W:.*"));
+
+    }
+
+    /**
+     * Test that we will be able to make a successful connection with the cloud if transportSecurity feature is enabled.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testWithTransportSecurityEnabled() throws Exception {
+        ServerConfiguration config = server.getServerConfiguration();
+        Set<String> features = config.getFeatureManager().getFeatures();
+        features.add("transportSecurity-1.0");
+        server.updateServerConfiguration(config);
+        server.startServer();
+        server.waitForSSLStart();
+        copyTrustStore(server, testServer);
+        Process createKeyStore = Runtime.getRuntime().exec(getCertGenerationCommand(testServer.getServerRoot() + "/" + STORE_PATH + "/" + NEW_KEYSTORE_FILENAME, STORE_PASSWORD));
+        createKeyStore.waitFor();
+        Process createTrustStore = Runtime.getRuntime().exec(getCertGenerationCommand(testServer.getServerRoot() + "/" + STORE_PATH + "/" + NEW_TRUSTSTORE_FILENAME,
+                                                                                      STORE_PASSWORD));
+        createTrustStore.waitFor();
+        testServer.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dcve.insight.enabled=true",
+                                               "-Djavax.net.ssl.trustStore=" + testServer.getServerRoot() + "/resources/security/key.p12",
+                                               "-Djavax.net.ssl.trustStorePassword=password", "-Djavax.net.ssl.trustStoreType=PKCS12"));
+        testServer.startServer();
+        testServer.addIgnoredErrors(Collections.singletonList("CWWKF1702W"));
+
+        assertNotNull("CVE Reporting checks not been carried out", testServer.waitForStringInLog("CWWKF1700I"));
+
+        server.waitForStringInLog("POST COMPLETED");
+
+        assertNotNull("The connection was not successful with a customer user trust store", testServer.waitForStringInLog("CWWKF1702W:.*"));
 
     }
 
@@ -243,6 +332,22 @@ public class CVEResponseTest extends FATServletClient {
 
         assertNotNull("The MalformedURLException has not been thrown", testServer.waitForStringInLog("CWWKF1704W:.*"));
 
+    }
+
+    private static String getCertGenerationCommand(String filepath, String password) {
+        List<String> cmd = Arrays.asList("keytool",
+                                         "-genkey",
+                                         "-keystore", filepath,
+                                         "-storetype", "jks",
+                                         "-storepass", password,
+                                         "-keypass", password,
+                                         "-validity", "30",
+                                         "-dname", "CN=testCVEReporting",
+                                         "-sigalg", "SHA256withRSA",
+                                         "-keyalg", "RSA",
+                                         "-keysize", "2048");
+
+        return String.join(" ", cmd);
     }
 
 }

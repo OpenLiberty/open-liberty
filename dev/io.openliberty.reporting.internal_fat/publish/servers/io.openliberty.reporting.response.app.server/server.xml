@@ -38,6 +38,6 @@
     <!-- <webApplication contextRoot="/" /> -->
 
     <!-- Default SSL configuration enables trust for default certificates from the Java runtime -->
-    <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+	<ssl id="defaultSSLConfig" />
 
 </server>
