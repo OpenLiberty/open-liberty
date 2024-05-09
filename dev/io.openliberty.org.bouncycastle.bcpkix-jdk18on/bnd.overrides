@@ -1,5 +1,5 @@
 -include= ~../cnf/resources/bnd/rejar.props
-bVersion=1.78
+bVersion=1.78.1
 
 Bundle-SymbolicName: io.openliberty.org.bouncycastle.bcpkix-jdk18on
 
