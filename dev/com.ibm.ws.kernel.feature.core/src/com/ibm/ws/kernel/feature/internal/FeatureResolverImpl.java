@@ -119,7 +119,7 @@ public class FeatureResolverImpl implements FeatureResolver {
 
     //
 
-    private static final boolean isBeta = true;//Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
+    private static final boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
     // Feature parse cache ...
 
@@ -268,10 +268,12 @@ public class FeatureResolverImpl implements FeatureResolver {
                 continue;
             }
 
+            platBase = platBase.toLowerCase();
+
             String compatibilityFeature;
             if (platBase.startsWith("jakartaee") || platBase.startsWith("javaee")) {
                 compatibilityFeature = "com.ibm.websphere.appserver.eeCompatible-" + platVersion;
-            } else if (platBase.startsWith("MicroProfile")) {
+            } else if (platBase.startsWith("microprofile")) {
                 compatibilityFeature = "io.openliberty.internal.mpVersion-" + platVersion;
 
             } else {
@@ -329,7 +331,6 @@ public class FeatureResolverImpl implements FeatureResolver {
      *         platform values.
      */
     private Set<String> collectPlatformCompatibilityFeatures(Repository repo) {
-        System.out.println(preferredPlatformVersions);
         if (preferredPlatformVersions == null) {
             return null;
         }
@@ -348,6 +349,8 @@ public class FeatureResolverImpl implements FeatureResolver {
             String platBase = nameAndVersion[0];
             String platVersion = nameAndVersion[1];
 
+            platBase = platBase.toLowerCase();
+
             if (platVersion == null) {
                 trace("Platform environment variable [ " + PREFERRED_PLATFORM_VERSIONS_ENV_VAR + " ]" +
                       " platform value [ " + plat + " ] does not contain a valid version.");
@@ -356,19 +359,17 @@ public class FeatureResolverImpl implements FeatureResolver {
 
             if (platBase.startsWith("jakartaee") || platBase.startsWith("javaee")) {
                 eeCompatibleVersions.add(platVersion);
-            } else if (plat.startsWith("MicroProfile")) {
+            } else if (plat.startsWith("microprofile")) {
                 mpCompatibleVersions.add(platVersion);
             } else {
                 trace("Platform environment variable [ " + PREFERRED_PLATFORM_VERSIONS_ENV_VAR + " ]" +
                       " platform value [ " + plat + " ] is not a valid platform.");
             }
         }
-        System.out.println(eeCompatibleVersions);
         if (!eeCompatibleVersions.isEmpty()) {
             updateTolerates(repo, EE_COMPATIBLE_FEATURE_NAME, eeCompatibleVersions);
             compatibilityFeatures.add(EE_COMPATIBLE_FEATURE_NAME);
         }
-        System.out.println(mpCompatibleVersions);
         if (!mpCompatibleVersions.isEmpty()) {
             updateTolerates(repo, MP_COMPATIBLE_FEATURE_NAME, mpCompatibleVersions);
             compatibilityFeatures.add(MP_COMPATIBLE_FEATURE_NAME);
@@ -689,9 +690,7 @@ public class FeatureResolverImpl implements FeatureResolver {
             //     There are still more postponed features;
             //     More features are blocked;
             //     There are still unresolved versionless features.
-            System.out.println("Postponed Features: " + selectionContext._current._postponed);
-            System.out.println("Postponed Versionless Features: " + selectionContext._current._postponedVersionless);
-            System.out.println("Features Resolved: " + result);
+
         } while (selectionContext.hasPostponed() ||
                  (numBlocked != selectionContext.getBlockedCount()) ||
                  selectionContext.hasTriedVersionlessResolution());
@@ -735,11 +734,9 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         // first check if the feature is blocked as already in conflict
         String featureName = selectedFeature.getSymbolicName();
-        //System.out.println("processSelected: " + featureName);
 
         String baseFeatureName = parseNameAndVersion(featureName)[0];
         if (selectionContext.isBlocked(baseFeatureName)) {
-            //System.out.println("processSelected: " + featureName + ": blocked");
             return;
         }
 
@@ -753,7 +750,6 @@ public class FeatureResolverImpl implements FeatureResolver {
         }
 
         if (chain.contains(featureName)) {
-            //System.out.println("processSelected: " + featureName + ": cycle");
             // must be in a cycle
             return;
         }
@@ -797,7 +793,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             // NOTE 3: it is very important that the result includes the full feature name, not just the symbolic name
             // this ensures we include the product extension prefix if it exists.
             String name = selectedFeature.getFeatureName();
-            //System.out.println("processSelected: " + featureName + ": selected: " + name);
             result.add(name);
         }
     }
@@ -806,7 +801,6 @@ public class FeatureResolverImpl implements FeatureResolver {
                                  SelectionContext selectionContext) {
         String symbolicName = included.getSymbolicName();
 
-        //System.out.println("processIncluded: " + symbolicName);
 
         if (symbolicName == null) {
             // TODO why do we report this feature as missing, seems a better error message would indicate the FeatureResource requirement has no SN
@@ -815,7 +809,6 @@ public class FeatureResolverImpl implements FeatureResolver {
                 selectionContext.getResult().addUnlabelledResource(included, chain);
             }
 
-            //System.out.println("processIncluded: " + symbolicName + ": null!");
             return;
         }
 
@@ -826,7 +819,6 @@ public class FeatureResolverImpl implements FeatureResolver {
 
         // if the base name is blocked then we do not continue with this include
         if (selectionContext.isBlocked(baseSymbolicName)) {
-            //System.out.println("processIncluded: " + symbolicName + ": blocked");
             return;
         }
 
@@ -880,8 +872,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             candidateNames.retainAll(Collections.singleton(candidateNames.get(0)));
         }
 
-        //System.out.println("processIncluded: " + symbolicName + ": candidates [ " + candidateNames.size() + " ]");
-
         selectionContext.processCandidates(chain, candidateNames, symbolicName, baseSymbolicName, preferredVersion, isSingleton);
 
         // If a single candidate remains,
@@ -898,7 +888,6 @@ public class FeatureResolverImpl implements FeatureResolver {
                             allowedTolerations, chain, result, selectionContext);
         }
 
-        //System.out.println("processIncluded: " + symbolicName + ": return");
     }
 
     private boolean isAccessible(ProvisioningFeatureDefinition includingFeature, ProvisioningFeatureDefinition candidateDef) {
@@ -1181,11 +1170,9 @@ public class FeatureResolverImpl implements FeatureResolver {
             // because a platform was specified, or because a resolved feature pulls in
             // a specific compatibility feature.
 
-            //System.out.println("processCandidates: " + baseSymbolicName);
 
             if ((isVersionlessEE(baseSymbolicName) && (getSelected(COMPATIBILITY_EE) == null)) ||
                 (isVersionlessMP(baseSymbolicName) && (getSelected(COMPATIBILITY_MP) == null))) {
-                //System.out.println("processCandidates: " + baseSymbolicName + ": postpone");
                 addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
                 return;
             }
@@ -1202,12 +1189,10 @@ public class FeatureResolverImpl implements FeatureResolver {
             }
             if (candidateNames.isEmpty()) {
                 _current._result.addIncomplete(symbolicName, origCandidateNames, chain);
-                //System.out.println("processCandidates: " + baseSymbolicName + ": incomplete");
                 return;
             }
             if (!isSingleton || allowMultipleVersions(baseSymbolicName)) {
                 // must allow all candidates
-                //System.out.println("processCandidates: " + baseSymbolicName + ": allowed non-singleton");
                 return;
             }
 
@@ -1220,14 +1205,12 @@ public class FeatureResolverImpl implements FeatureResolver {
                 candidateNames.retainAll(selectedChain.getCandidates());
                 if (candidateNames.isEmpty()) {
                     addConflict(baseSymbolicName, asList(selectedChain, new Chain(chain, copyCandidates, preferredVersion, symbolicName)));
-                    //System.out.println("processCandidates: " + baseSymbolicName + ": conflicted");
                     return;
                 }
             }
             if (candidateNames.size() > 1) {
                 // if the candidates are more than one then postpone the decision
                 addPostponed(baseSymbolicName, new Chain(chain, candidateNames, preferredVersion, symbolicName));
-                //System.out.println("processCandidates: " + baseSymbolicName + ": postpone multiple candidates");
                 return;
             }
 
@@ -1254,7 +1237,6 @@ public class FeatureResolverImpl implements FeatureResolver {
             // if there was a postponed decision remove it
             _current._postponed.remove(baseSymbolicName);
 
-            //System.out.println("processCandidates: " + baseSymbolicName + ": return");
         }
 
         List<Chain> asList(Chain chain1, Chain chain2) {

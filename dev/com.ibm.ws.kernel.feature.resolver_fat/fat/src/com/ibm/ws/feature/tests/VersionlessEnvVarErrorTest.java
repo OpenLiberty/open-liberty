@@ -44,7 +44,7 @@ public class VersionlessEnvVarErrorTest {
         String envVar = "MicroProfile-6.0, MicroProfile-5.0, MicroProfile-4.0, MicroProfile-3.0, MicroProfile-2.0, MicroProfile-1.2";
 
         LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
-        server.addEnvVar("PREFERRED_FEATURE_VERSIONS", envVar);
+        server.addEnvVar("PREFERRED_PLATFORM_VERSIONS", envVar);
 
         server.startServer();
         try {
