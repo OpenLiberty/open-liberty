@@ -98,9 +98,6 @@ public final class JAXBContextCache {
     }
     private static final class CachedContextAndSchemasInternal {
 
-        boolean isLoggableFine = LOG.isLoggable(Level.FINE);
-        boolean isLoggableInfo = LOG.isLoggable(Level.INFO); 
-
         private final WeakReference<JAXBContext> context;
         private final WeakReference<Set<Class<?>>> classes;
         private Collection<DOMSource> schemas;
@@ -142,8 +139,8 @@ public final class JAXBContextCache {
         } catch (Throwable t) {
             //ignore
             // Liberty Change begin
-	    if (LOG.isLoggable(Level.FINE)) {  
-	       LOG.info("Ignoring throwable: " + t);
+	    if (LOG.isLoggable(Level.FINEST)) {  
+	       LOG.finest("Ignoring throwable: " + t);
             } 
             // Liberty Change end	
         }
@@ -195,8 +192,7 @@ public final class JAXBContextCache {
                                                                      boolean exact)
         throws JAXBException {
 
-        boolean isLoggableFine = LOG.isLoggable(Level.FINE);
-        boolean isLoggableInfo = LOG.isLoggable(Level.INFO);
+        boolean isLoggableFine = LOG.isLoggable(Level.FINE);  // Liberty Change
 
         for (Class<?> clz : classes) {
             if (clz.getName().endsWith("ObjectFactory")
@@ -276,8 +272,8 @@ public final class JAXBContextCache {
 	    // Liberty Change end
         } catch (JAXBException ex) {
 	    // Liberty Change begin
-	    if (isLoggableInfo) {
-	       LOG.info("Exception from createContext: " + ex);
+	    if (isLoggableFine) {
+	       LOG.fine("Exception from createContext: " + ex);
             }  
 	    // Liberty Change end
             // load jaxb needed class and try to create jaxb context
@@ -339,7 +335,7 @@ public final class JAXBContextCache {
                                       final Map<String, Object> map,
                                       Collection<Object> typeRefs)
         throws JAXBException {
-        boolean isLoggableInfo = LOG.isLoggable(Level.INFO);   // Liberty Change
+        boolean isLoggableFinest = LOG.isLoggable(Level.FINEST);   // Liberty Change
         JAXBContext ctx;
         if (typeRefs != null && !typeRefs.isEmpty()) {
             Class<?> fact = null;
@@ -355,8 +351,8 @@ public final class JAXBContextCache {
                 } catch (Throwable t2) {
                     //ignore
 	            // Liberty Change begin
-	            if (isLoggableInfo) {
-	               LOG.info("Ignoring throwable t2: " + t2);  
+	            if (isLoggableFinest) {
+	               LOG.finest("Ignoring throwable t2: " + t2);  
                     } 
                     // Liberty Change end	
                 }
@@ -385,8 +381,8 @@ public final class JAXBContextCache {
                         } catch (Throwable e) {
                             //ignore
 	                    // Liberty Change begin
-	                    if (isLoggableInfo) {
-	                       LOG.info("createContext: Ignoring throwable: " + e);  
+	                    if (isLoggableFinest) {
+	                       LOG.finest("createContext: Ignoring throwable: " + e);  
                             } 
                             // Liberty Change end
                         }
@@ -451,15 +447,15 @@ public final class JAXBContextCache {
 
     public static void addPackage(Set<Class<?>>  classes, String pkg, ClassLoader loader) {
 
-        boolean isLoggableInfo = LOG.isLoggable(Level.INFO);   // Liberty Change
+        boolean isLoggableFinest = LOG.isLoggable(Level.FINEST);   // Liberty Change
 
         try {
             classes.add(Class.forName(pkg + ".ObjectFactory", false, loader));
         } catch (Exception ex) {
             //ignore
 	    // Liberty Change begin
-	    if (isLoggableInfo) {
-	       LOG.info("addPackage: Ignoring exception: " + ex);
+	    if (isLoggableFinest) {
+	       LOG.finest("addPackage: Ignoring exception: " + ex);
             } 
 	    // Liberty Change end
         }
@@ -482,8 +478,8 @@ public final class JAXBContextCache {
                     } catch (Exception e) {
                         // ignore
 	                // Liberty Change begin
-	                if (isLoggableInfo) {
-	                   LOG.info("addPackage: Ignoring exception 1: " + e);
+	                if (isLoggableFinest) {
+	                   LOG.finest("addPackage: Ignoring exception 1: " + e);
                         } 
 		        // Liberty Change end
                     }
@@ -494,8 +490,8 @@ public final class JAXBContextCache {
         } catch (Exception ex) {
             //ignore
 	    // Liberty Change begin
-	    if (isLoggableInfo) {
-	       LOG.info("addPackage: Ignoring exception 2: " + ex);
+	    if (isLoggableFinest) {
+	       LOG.finest("addPackage: Ignoring exception 2: " + ex);
             } 
 	    // Liberty Change end
         }
