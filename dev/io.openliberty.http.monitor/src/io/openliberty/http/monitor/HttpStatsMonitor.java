@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,8 +41,8 @@ public class HttpStatsMonitor extends StatisticActions {
 
 	private static final TraceComponent tc = Tr.register(HttpStatsMonitor.class);
 
-	private final ThreadLocal<HttpStatAttributes> tl_httpStats = new ThreadLocal<HttpStatAttributes>();
-	private final ThreadLocal<Long> tl_startNanos = new ThreadLocal<Long>();
+	private static final ThreadLocal<HttpStatAttributes> tl_httpStats = new ThreadLocal<HttpStatAttributes>();
+	private static final ThreadLocal<Long> tl_startNanos = new ThreadLocal<Long>();
 	
 	public static HttpStatsMonitor instance;
 
@@ -83,7 +83,7 @@ public class HttpStatsMonitor extends StatisticActions {
 	@ProbeSite(clazz = "com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink", method = "sendResponse", args = "com.ibm.wsspi.http.channel.values.StatusCodes,java.lang.String,java.lang.Exception,boolean")
 	public void atSendResponseReturn(@This Object probedHttpDispatcherLinkObj) {
 
-		System.out.println("probe out");
+		System.out.println("probe out " + Thread.currentThread());
 		
 		long elapsedNanos = System.nanoTime() - tl_startNanos.get();
 		HttpStatAttributes retrievedHttpStatAttr = tl_httpStats.get();
@@ -159,13 +159,17 @@ public class HttpStatsMonitor extends StatisticActions {
 	@ProbeAtEntry
 	@ProbeSite(clazz = "com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink", method = "sendResponse", args = "com.ibm.wsspi.http.channel.values.StatusCodes,java.lang.String,java.lang.Exception,boolean")
 	public void atSendResponse(@This Object probedHttpDispatcherLinkObj, @Args Object[] myargs) {
-
-		System.out.println("probe in");
+		
+		tl_httpStats.set(null);; //reset just in case
+		
+		System.out.println("probe in " + Thread.currentThread());
 		
 		tl_startNanos.set(System.nanoTime());
 		HttpStatAttributes httpStatAttributes = new HttpStatAttributes();
 
-		// Get Status Code and Exception if it exists
+		/*
+		 *  Get Status Code (and Exception if it exists)
+		 */
 		if (myargs.length > 0) {
 			if (myargs[0] != null && myargs[0] instanceof StatusCodes) {
 				StatusCodes statCode = (StatusCodes) myargs[0];
@@ -178,80 +182,44 @@ public class HttpStatsMonitor extends StatisticActions {
 			}
 		} else {
 			// uh oh can't resolve status code and/or exceptions
+			System.err.println("Could not resolve response code");
 		}
 
 		if (probedHttpDispatcherLinkObj != null) {
 
-			resolveAtributesFromHttpDispatcherLink((HttpDispatcherLink)probedHttpDispatcherLinkObj);
+			//resolveAtributesFromHttpDispatcherLink((HttpDispatcherLink)probedHttpDispatcherLinkObj);
 			
-//				Method getRequestMethod = probedHttpDispatcherLinkObj.getClass().getMethod("getRequest", null);
-//
-//				Object httpRequestObj = getRequestMethod.invoke(probedHttpDispatcherLinkObj, null);
+			HttpDispatcherLink httpDispatcherLink = (HttpDispatcherLink)probedHttpDispatcherLinkObj;
+			httpStatAttributes.setServerName(httpDispatcherLink.getRequestedHost());
+			httpStatAttributes.setServerPort(httpDispatcherLink.getRemotePort());
+			
+			
+			 try {
+				 
+					HttpRequest httpRequest = httpDispatcherLink.getRequest();
+					
+//					System.out.println(" class of httpRequest " + httpRequest);
+//					System.out.println("httpRequest URI " + httpRequest.getURI());
+//					System.out.println("httpRequest method " + httpRequest.getScheme());
+//					System.out.println("httpRequest scheme " + httpRequest.getScheme());
+//					System.out.println("httpRequest ver" + httpRequest.getVersion());
+					
+					httpStatAttributes.setHttpRoute(httpRequest.getURI());
+					httpStatAttributes.setRequestMethod(httpRequest.getMethod());
+					httpStatAttributes.setScheme(httpRequest.getScheme());
+					resolveNetwortProtocolInfo(httpRequest.getVersion(), httpStatAttributes);
+					
 
-			try {
-				Field iscField;
 
-				iscField = probedHttpDispatcherLinkObj.getClass().getDeclaredField("isc");
+			 } catch(Exception e) {
+				 System.err.println("Something bad happened" + e);
+			 }
+			
 
-				iscField.setAccessible(true);
-
-				Object httpInboundServiceContextImplObj = iscField.get(probedHttpDispatcherLinkObj);
-
-				// TODO: ^^^^what if "httpInboundServiceContextImplObj" is null?! -- or it blows up due to modifying access
-				// (i.e. the catches below)
-				// Maybe use a method to encapsulate , if failure or null or excepton use
-				// alternative method -> see testJustHttpDispatcherLink()
-
-				HttpInboundServiceContext httpInboundServiceContextImplInstance = (HttpInboundServiceContext) httpInboundServiceContextImplObj;
-				
-				//TODO: vv can this be null? handle that?
-				HttpRequestMessage httpRequestMessage = httpInboundServiceContextImplInstance.getRequest();
-				
-				
-				//DC: did i even need this? could've just used HDL -> getRequest -> getInfo
-				httpStatAttributes.setRequestMethod(httpRequestMessage.getMethod());
-				httpStatAttributes.setScheme(httpRequestMessage.getScheme());
-
-				resolveNetwortProtocolInfo(httpRequestMessage.getVersion(), httpStatAttributes);
-
-				String serverName = null;
-
-				/*
-				 * Calculate the server-name First try to take it from the Host header
-				 * 
-				 * failing that, use InetAddress and get the IP
-				 */
-				HeaderField hostHeaderField = httpRequestMessage.getHeader("Host");
-				String sHostHeader = hostHeaderField.asString();
-				if (sHostHeader.contains(":")) {
-					serverName = sHostHeader.split(":")[0];
-				} else {
-					serverName = sHostHeader;
-				}
-
-				if (serverName == null) {
-					serverName = httpInboundServiceContextImplInstance.getLocalAddr().getHostAddress();
-				}
-
-				//System.out.println("servername " + serverName);
-				httpStatAttributes.setServerName(serverName);
-
-				//System.out.println("port " + hisc.getLocalPort());
-				httpStatAttributes.setServerPort(httpInboundServiceContextImplInstance.getLocalPort());
-
-			} catch (NoSuchFieldException e) { // getDeclaredField() call
-				e.printStackTrace();
-			} catch (SecurityException e) { // getDeclaredField() call
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) { // iscField.get call
-				e.printStackTrace();
-			} catch (IllegalAccessException e) { // iscField.get call
-				e.printStackTrace();
-			}
 			tl_httpStats.set(httpStatAttributes);
 
 		} else {
-			System.out.println("DC: failure of acquiring obj when probed fired");
+			System.err.println("Failed to obtain HttpDispatcherLink Object from probe");
 		}
 
 	}
@@ -261,14 +229,24 @@ public class HttpStatsMonitor extends StatisticActions {
 	@FFDCIgnore({ClassNotFoundException.class, NoClassDefFoundError.class})
 	public void updateHttpStatDuration(HttpStatAttributes httpStatAttributes, Duration duration) {
 
+		
+		
+		/*
+		 * First validate that we got all properties.
+		 */
+		if (!httpStatAttributes.validate()) {
+			System.err.println("Something isn't quite right");
+			System.err.println(httpStatAttributes.toString());
+		}
+		
 		/*
 		 * Create and/or update MBean
 		 */
-		String key = resovleKey(httpStatAttributes);
+		String key = resolveStatsKey(httpStatAttributes);
 
 		HttpStats hms = HttpConnByRoute.get(key);
 		if (hms == null) {
-			hms = iniitializeHttpStat(key, httpStatAttributes);
+			hms = initializeHttpStat(key, httpStatAttributes);
 		}
 
 		hms.updateDuration(duration);
@@ -298,7 +276,7 @@ public class HttpStatsMonitor extends StatisticActions {
 
 	}
 
-	private synchronized HttpStats iniitializeHttpStat(String key, HttpStatAttributes statAttri) {
+	private synchronized HttpStats initializeHttpStat(String key, HttpStatAttributes statAttri) {
 		/*
 		 * Check again it was added, thread that was blocking may have been adding it
 		 */
@@ -319,13 +297,13 @@ public class HttpStatsMonitor extends StatisticActions {
 	 * METHOD / RESPONSE
 	 * 
 	 */
-	private String resovleKey(HttpStatAttributes statAttri) {
-//		Each key is a nonempty string of characters which may not contain any of the characters comma (,), equals (=), colon, asterisk, or question mark. The same key may not occur twice in a given ObjectName.
-//
-//		Each value associated with a key is a string of characters that is either unquoted or quoted.
-		Optional<String> httpRoute = statAttri.getHttpRoute();
-		String requestMethod = statAttri.getRequestMethod();
-		Optional<Integer> responseStatus = statAttri.getResponseStatus();
+	private String resolveStatsKey(HttpStatAttributes httpStatAttributes) {
+		
+		
+
+		Optional<String> httpRoute = httpStatAttributes.getHttpRoute();
+		String requestMethod = httpStatAttributes.getRequestMethod();
+		Optional<Integer> responseStatus = httpStatAttributes.getResponseStatus();
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("\""); // starting quote
@@ -338,25 +316,89 @@ public class HttpStatsMonitor extends StatisticActions {
 		 */
 		//responseStatus.ifPresent(status -> sb.append(";status:" + status));
 		String respStatusString = (responseStatus.isPresent())? responseStatus.get().toString() : ""; 
-		sb.append(sb.append(";status:" + respStatusString));
+		sb.append(";status:" + respStatusString);
 		
 //		httpRoute.ifPresent(route -> {
 //			sb.append(";httpRoute:" + route.replace("*", "\\*"));
 //		});
 		sb.append(";httpRoute:"+httpRoute.orElseGet( () -> "").replace("*", "\\*"));
 		
-		
-		//!!!: not used
-		//exception.ifPresent(throwable -> sb.append(";error:" + exception.getClass().getName()));
 
-		//TODO: double check if responseStatus is 4xx or 5xx -> ask about this?
-		responseStatus.ifPresent(status -> {
-			if (status >= 500) {
-				sb.append(";error:" + status);
-			}
-		});
+		String errorType = httpStatAttributes.getErrorType().orElse("");
+		sb.append(";error:" + errorType);
+		
+
 		sb.append("\""); // ending quote
 		return sb.toString();
+	}
+	
+	private void saveOldCodeForResolvingHTTPAttributes() {
+		
+//		Method getRequestMethod = probedHttpDispatcherLinkObj.getClass().getMethod("getRequest", null);
+//
+//		Object httpRequestObj = getRequestMethod.invoke(probedHttpDispatcherLinkObj, null);
+
+
+//		try {
+//			Field iscField;
+//
+//			iscField = probedHttpDispatcherLinkObj.getClass().getDeclaredField("isc");
+//
+//			iscField.setAccessible(true);
+//
+//			Object httpInboundServiceContextImplObj = iscField.get(probedHttpDispatcherLinkObj);
+//
+//			// TODO: ^^^^what if "httpInboundServiceContextImplObj" is null?! -- or it blows up due to modifying access
+//			// (i.e. the catches below)
+//			// Maybe use a method to encapsulate , if failure or null or excepton use
+//			// alternative method -> see testJustHttpDispatcherLink()
+//
+//			HttpInboundServiceContext httpInboundServiceContextImplInstance = (HttpInboundServiceContext) httpInboundServiceContextImplObj;
+//			
+//			//TODO: vv can this be null? handle that?
+//			HttpRequestMessage httpRequestMessage = httpInboundServiceContextImplInstance.getRequest();
+//			
+//			
+//			//DC: did i even need this? could've just used HDL -> getRequest -> getInfo
+//			httpStatAttributes.setRequestMethod(httpRequestMessage.getMethod());
+//			httpStatAttributes.setScheme(httpRequestMessage.getScheme());
+//
+//			resolveNetwortProtocolInfo(httpRequestMessage.getVersion(), httpStatAttributes);
+//
+//			String serverName = null;
+//
+//			/*
+//			 * Calculate the server-name First try to take it from the Host header
+//			 * 
+//			 * failing that, use InetAddress and get the IP
+//			 */
+//			HeaderField hostHeaderField = httpRequestMessage.getHeader("Host");
+//			String sHostHeader = hostHeaderField.asString();
+//			if (sHostHeader.contains(":")) {
+//				serverName = sHostHeader.split(":")[0];
+//			} else {
+//				serverName = sHostHeader;
+//			}
+//
+//			if (serverName == null) {
+//				serverName = httpInboundServiceContextImplInstance.getLocalAddr().getHostAddress();
+//			}
+//
+//			//System.out.println("servername " + serverName);
+//			httpStatAttributes.setServerName(serverName);
+//
+//			//System.out.println("port " + hisc.getLocalPort());
+//			httpStatAttributes.setServerPort(httpInboundServiceContextImplInstance.getLocalPort());
+//
+//		} catch (NoSuchFieldException e) { // getDeclaredField() call
+//			e.printStackTrace();
+//		} catch (SecurityException e) { // getDeclaredField() call
+//			e.printStackTrace();
+//		} catch (IllegalArgumentException e) { // iscField.get call
+//			e.printStackTrace();
+//		} catch (IllegalAccessException e) { // iscField.get call
+//			e.printStackTrace();
+//		}
 	}
 
 }

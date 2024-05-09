@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,7 @@ public class ServletFilter implements Filter {
 
 			// attempt to retrieve the `httpRoute` from the RESTful filter
 			httpRoute = (String) servletRequest.getAttribute("RESTFUL.HTTP.ROUTE");
+			System.out.println(" JAX-RS / RESTFUL-WS $$$$$$ returned httpRoute " + httpRoute);
 			
 			/*
 			 * If it does not exist.
@@ -264,5 +265,7 @@ public class ServletFilter implements Filter {
 		httpStat.setNetworkProtocolName(networkProtocolName);
 		httpStat.setNetworkProtocolVersion(networkVersion);
 	}
+
+	
 
 }

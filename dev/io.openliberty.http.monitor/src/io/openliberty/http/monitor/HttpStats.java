@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,9 +24,8 @@ public class HttpStats extends Meter implements HttpStatsMXBean {
 	private String requestMethod, httpRoute;
 	private int responseStatus;
 
-	private String error = null;;
+	private String errorType = null;;
 
-	// others
 
 	private String scheme, serverName, networkProtocolName, networkProtocolVersion;
 	private int serverPort;
@@ -57,7 +56,7 @@ public class HttpStats extends Meter implements HttpStatsMXBean {
 
 		this.serverPort = httpStatAttributes.getServerPort();
 
-		this.error = httpStatAttributes.getError().orElse("");
+		this.errorType = httpStatAttributes.getErrorType().orElse("");
 	}
 
 	/**
@@ -132,8 +131,8 @@ public class HttpStats extends Meter implements HttpStatsMXBean {
 	}
 
 	@Override
-	public String getError() {
-		return error;
+	public String getErrorType() {
+		return errorType;
 	}
 
 }
