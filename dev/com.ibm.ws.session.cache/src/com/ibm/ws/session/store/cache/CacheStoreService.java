@@ -20,10 +20,13 @@ import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -63,6 +66,7 @@ import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.session.IStore;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.jcache.CacheManagerService;
 import io.openliberty.jcache.utils.CacheConfigUtil;
 
@@ -76,10 +80,20 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     private static final String CONFIG_KEY_URI = "uri";
     private static final String CONFIG_KEY_LIBRARY_REF = "libraryRef";
     private static final String CONFIG_KEY_PROPERTIES = "properties";
+    private static final Set<String> sessionCacheAttributes = new HashSet<>(Arrays.asList("appInCacheName",
+                                                                                          "cacheSeparator",
+                                                                                          "scheduleInvalidationFirstHour",
+                                                                                          "scheduleInvalidationSecondHour",
+                                                                                          "writeContents",
+                                                                                          "writeFrequency",
+                                                                                          "writeInterval"));
 
     Map<String, Object> configurationProperties;
+    Map<String, Object> oldConfigurationProperties;
     private static final int BASE_PREFIX_LENGTH = CONFIG_KEY_PROPERTIES.length();
     private static final int TOTAL_PREFIX_LENGTH = BASE_PREFIX_LENGTH + 3; //3 is the length of .0.
+    
+    private static final CheckpointPhase checkpointPhase = CheckpointPhase.getPhase();
 
     volatile CacheManager cacheManager; // requires lazy activation
     volatile CachingProvider cachingProvider; // requires lazy activation
@@ -121,7 +135,8 @@ public class CacheStoreService implements Introspector, SessionStoreService {
      * @param props   service properties
      */
     protected void activate(ComponentContext context, Map<String, Object> props) {
-        processConfiguration(props);
+        oldConfigurationProperties = new HashMap<String, Object>(props);
+        processConfiguration(props);       
     }
 
     private void processConfiguration(Map<String, Object> props) {
@@ -149,7 +164,18 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     }
 
     protected void modified(Map<String, Object> config) {
-        processConfiguration(config);
+        if (checkpointPhase != CheckpointPhase.INACTIVE && checkpointPhase.restored()) {
+            for (Map.Entry<String, Object> entry: config.entrySet()) {
+                String key = entry.getKey();
+                Object newValue = entry.getValue();
+                
+                Object oldValue = oldConfigurationProperties.get(key);
+                if (sessionCacheAttributes.contains(key) && !Objects.deepEquals(newValue, oldValue)) {
+                    Tr.warning(tc, "UPDATED_CONFIG_NOT_USED_AT_RESTORE", key);
+                }       
+            }
+            processConfiguration(config);    
+        }      
     }
     /**
      * Performs deferred activation/initialization.
