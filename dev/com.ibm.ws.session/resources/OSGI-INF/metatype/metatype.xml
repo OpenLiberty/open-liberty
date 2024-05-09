@@ -126,7 +126,7 @@
             name="%cookie.partitioned" 
             description="%cookie.partitioned.desc"
             ibmui:group="cookies"
-            required="false" type="String" default="Defer" ibm:beta="true">
+            required="false" type="String" default="Defer">
             <Option label="%cookie.partitioned.defer" value="Defer"/>
             <Option label="%cookie.partitioned.true" value="True"/>
             <Option label="%cookie.partitioned.false" value="False"/>

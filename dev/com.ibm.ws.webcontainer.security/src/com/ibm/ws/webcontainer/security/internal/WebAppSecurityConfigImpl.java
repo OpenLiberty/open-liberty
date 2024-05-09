@@ -199,14 +199,12 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         useContextRootForSSOCookiePath = (Boolean) newProperties.get(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH);
         postParamMaxRequestBodySize = (Long) newProperties.get(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS);
 
-        if (ProductInfo.getBetaEdition()) {
-            String partValue = (String) newProperties.get(CFG_KEY_PARTITIONED_COOKIE);
-            if ("true".equalsIgnoreCase(partValue)||"false".equalsIgnoreCase(partValue)) {
+        String partValue = (String) newProperties.get(CFG_KEY_PARTITIONED_COOKIE);
+        if ("true".equalsIgnoreCase(partValue)||"false".equalsIgnoreCase(partValue)) {
             //we want partitionedCookie to be null unless the value is true or false
             partitionedCookie = getBooleanValue(CFG_KEY_PARTITIONED_COOKIE, partValue);
-            } else {
+        } else {
             partitionedCookie = null;
-            }
         }
 
         WebAppSecurityCollaboratorImpl.setGlobalWebAppSecurityConfig(this);

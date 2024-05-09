@@ -304,8 +304,7 @@
            id="strict" required="false" type="String" cardinality="5000"/>
 
         <AD name="%http.samesite.partitioned" description="%http.samesite.partitioned.desc"
-           id="partitioned" required="false" type="Boolean" default="false" ibm:beta="true"/>
-
+           id="partitioned" required="false" type="Boolean" default="false"/>
 
         <AD name="internal" description="internal use only"
             id="service.ranking" required="false" type="Integer" default="0"/>

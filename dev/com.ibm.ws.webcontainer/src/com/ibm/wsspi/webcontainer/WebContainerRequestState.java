@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.util.WSThreadLocal;
 import com.ibm.wsspi.webcontainer.servlet.AsyncContext;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
@@ -214,14 +213,14 @@ public class WebContainerRequestState {
      * method is called for the same cookieName.
      *
      * Currently the only Cookie attribute that is supported by the runtime here
-     * is the SameSite Cookie attribute.  All other existing Cookie attributes must 
-     * be added via the Cookie API. Using this API to add anything but the SameSite attribute
+     * is the SameSite and Partitioned Cookie attributes.  All other existing Cookie attributes must 
+     * be added via the Cookie API. Using this API to add anything but the SameSite and Partitioned attributes
      * will be ignored.
      *
      * The cookieAttribute should be in the form: attributeName=attributeValue.
      *
      * @param cookieName - The Cookie name to add the attribute to.
-     * @param cookieAttributes - The Cookie attributes to be added in  the form: attributeName = attributeValue.  Currently, only SameSite=Lax|None|Strict is supported.
+     * @param cookieAttributes - The Cookie attributes to be added in  the form: attributeName = attributeValue.  Currently, only SameSite=Lax|None|Strict and Partitioned=true|false are supported.
      */
     public void setCookieAttributes(String cookieName, String cookieAttributes) {
         String methodName = "setCookieAttributes";
@@ -231,19 +230,10 @@ public class WebContainerRequestState {
         }
 
         String[] attribute = cookieAttributes.split("=");
-        /*
-         * Beta: This method will start accepting "Parititioned" as a new attribute. It will need to be in the form "partitioned=true/false".
-         */
-        if (ProductInfo.getBetaEdition()) { 
-            if (!(attribute[0].equals("SameSite") || attribute[0].equals("Partitioned"))) {
-                logger.logp(Level.FINE, CLASS_NAME, methodName, " Only SameSite attribute and Partitioned attribute are supported at this time.");
-                return;
-            }
-        } else {
-            if (!attribute[0].equals("SameSite")) {
-                logger.logp(Level.FINE, CLASS_NAME, methodName, " Only SameSite attribute is supported at this time.");
-                return;
-            }
+
+        if (!(attribute[0].equals("SameSite") || attribute[0].equals("Partitioned"))) {
+            logger.logp(Level.FINE, CLASS_NAME, methodName, " Only SameSite attribute and Partitioned attribute are supported at this time.");
+            return;
         }
 
        logger.logp(Level.FINE, CLASS_NAME, methodName, "Num Attr values: " + attribute.length) ;
