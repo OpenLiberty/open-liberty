@@ -20,6 +20,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.propertytypes.SatisfyingConditionTarget;
 import org.osgi.service.condition.Condition;
 
+import com.ibm.ws.kernel.service.util.JavaInfo;
+
 import io.openliberty.threading.virtual.VirtualThreadOps;
 
 /**
@@ -28,7 +30,7 @@ import io.openliberty.threading.virtual.VirtualThreadOps;
 @Component(name = "com.ibm.ws.threading.internal.VirtualThreadDisallowed",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = VirtualThreadOps.class)
-@SatisfyingConditionTarget("(&(" + Condition.CONDITION_ID + "=io.openliberty.java.version)(!(io.openliberty.java.version>=21)))")
+@SatisfyingConditionTarget("(&(" + Condition.CONDITION_ID + "=" + JavaInfo.CONDITION_ID + ")(!(" + JavaInfo.CONDITION_ID + ">=21)))")
 public class VirtualThreadDisallowed implements VirtualThreadOps {
 
     @Override

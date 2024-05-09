@@ -59,10 +59,10 @@ public class PolicyExecutorProvider implements ServerQuiesceListener {
     private final ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors = new ConcurrentHashMap<String, PolicyExecutorImpl>();
 
     /**
-     * Virtual thread operations that are only available when a Java 21+ feature includes the io.openliberty.threading.virtual.internal bundle.
+     * Virtual thread operations that were introduced in Java 21
      */
     @Reference
-    protected volatile VirtualThreadOps virtualThreadOps;
+    protected VirtualThreadOps virtualThreadOps;
 
     /**
      * Creates a new policy executor instance and initializes it per the specified OSGi service component properties.

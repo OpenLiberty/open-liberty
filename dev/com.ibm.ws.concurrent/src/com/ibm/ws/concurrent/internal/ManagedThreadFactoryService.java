@@ -36,7 +36,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.csi.J2EEName;
@@ -152,12 +151,10 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     private ThreadGroupTracker threadGroupTracker;
 
     /**
-     * Virtual thread operations that are only available when a Java 21+ feature includes the io.openliberty.threading.virtual.internal bundle.
+     * Virtual thread operations that were introduced in Java 21
      */
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL,
-               policy = ReferencePolicy.DYNAMIC,
-               policyOption = ReferencePolicyOption.GREEDY)
-    protected volatile VirtualThreadOps virtualThreadOps;
+    @Reference
+    protected VirtualThreadOps virtualThreadOps;
 
     /**
      * Factory that creates virtual threads. Null if not configured to create virtual threads.

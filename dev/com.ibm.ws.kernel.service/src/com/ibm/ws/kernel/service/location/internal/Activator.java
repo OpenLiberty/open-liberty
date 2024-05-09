@@ -41,8 +41,6 @@ import io.openliberty.checkpoint.spi.CheckpointHook;
 public class Activator implements BundleActivator {
     private static final TraceComponent tc = Tr.register(Activator.class);
 
-    private static final String JAVA_CONDITION_ID = "io.openliberty.java.version";
-
     /** Reference to active BundleContext (will be null between stop and start) */
     protected BundleContext context = null;
 
@@ -78,8 +76,8 @@ public class Activator implements BundleActivator {
                                                                  FrameworkUtil.asDictionary(Collections.singletonMap(Constants.SERVICE_RANKING, 100)));
 
             Hashtable<String, Object> javaConditionProps = new Hashtable<>();
-            javaConditionProps.put(JAVA_CONDITION_ID, JavaInfo.majorVersion());
-            javaConditionProps.put(Condition.CONDITION_ID, JAVA_CONDITION_ID);
+            javaConditionProps.put(JavaInfo.CONDITION_ID, JavaInfo.majorVersion());
+            javaConditionProps.put(Condition.CONDITION_ID, JavaInfo.CONDITION_ID);
             context.registerService(Condition.class, Condition.INSTANCE, javaConditionProps);
 
             // Assume this is the first place that tries to set this

@@ -1501,7 +1501,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
         // Validation that cannot be performed by metatype:
         if (useVirtualThreads && !virtualThreadOps.isSupported()) {
-            useVirtualThreads = false;
+            throw new IllegalArgumentException("virtual: true");
         }
 
         if (u_expedite > u_max)
