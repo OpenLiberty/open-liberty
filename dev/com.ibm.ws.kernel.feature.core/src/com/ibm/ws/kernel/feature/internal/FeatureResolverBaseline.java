@@ -31,7 +31,6 @@ import com.ibm.ws.kernel.feature.internal.util.VerifyDelta;
 import com.ibm.ws.kernel.feature.internal.util.VerifyEnv;
 import com.ibm.ws.kernel.feature.internal.util.VerifyXML;
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Result;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
@@ -372,6 +371,40 @@ public class FeatureResolverBaseline {
     };
 
     /**
+     * Select feature definitions which match a specified predicate.
+     *
+     * Select from all of the features of a repository.
+     *
+     * See {@link Repository#getFeatures()) and {@link #select(Selector, List)}.
+     *
+     * @param repository A feature repository.
+     * @param selector   A feature selector. If null, all features are selected.
+     *
+     * @return All feature definitions which match the predicate.
+     */
+    static List<ProvisioningFeatureDefinition> select(Repository repository, Selector<ProvisioningFeatureDefinition> selector) {
+        return select(repository.getFeatures(), selector);
+    }
+
+    /**
+     * Select feature definitions which match a specified predicate.
+     *
+     * @param defs     Feature definitions from which to select.
+     * @param selector A feature selector. If null, all features are selected.
+     *
+     * @return All feature definitions which match the predicate.
+     */
+    public static List<ProvisioningFeatureDefinition> select(List<ProvisioningFeatureDefinition> defs, Selector<ProvisioningFeatureDefinition> selector) {
+        List<ProvisioningFeatureDefinition> selected = new ArrayList<>(defs.size());
+        for (ProvisioningFeatureDefinition def : defs) {
+            if ((selector == null) || selector.test(def)) {
+                selected.add(def);
+            }
+        }
+        return selected;
+    }
+
+    /**
      * Generate resolution results for the specified parameters.  Generate
      * results for each single public feature and for each supported process
      * type of that feature.
@@ -394,7 +427,7 @@ public class FeatureResolverBaseline {
                                                 !RepoXML.IS_VERSIONLESS_FEATURE,
                                                 !RepoXML.IS_TEST_FEATURE);
 
-        List<ProvisioningFeatureDefinition> featureDefs = FeatureResolver.select(repository, selector);
+        List<ProvisioningFeatureDefinition> featureDefs = select(repository, selector);
 
         int numDefs = featureDefs.size();
         ProvisioningFeatureDefinition[] defsArray = featureDefs.toArray( new ProvisioningFeatureDefinition[numDefs]);

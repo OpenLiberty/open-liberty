@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.ibm.ws.kernel.feature.provisioning.ProvisioningFeatureDefinition;
-import com.ibm.ws.kernel.feature.resolver.FeatureResolver;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Repository;
 import com.ibm.ws.kernel.feature.resolver.FeatureResolver.Selector;
 
@@ -43,18 +42,32 @@ public class RestrictedFeatureRespository implements Repository {
 
     //
 
+    public static List<ProvisioningFeatureDefinition> select(Repository repository, Selector<ProvisioningFeatureDefinition> selector) {
+        return select(repository.getFeatures(), selector);
+    }
+
+    public static List<ProvisioningFeatureDefinition> select(List<ProvisioningFeatureDefinition> defs, Selector<ProvisioningFeatureDefinition> selector) {
+        List<ProvisioningFeatureDefinition> selected = new ArrayList<>(defs.size());
+        for (ProvisioningFeatureDefinition def : defs) {
+            if ((selector == null) || selector.test(def)) {
+                selected.add(def);
+            }
+        }
+        return selected;
+    }
+
     private final Collection<String> restricted;
     private final Collection<String> restrictedAttempts;
 
     @Override
     public List<ProvisioningFeatureDefinition> getFeatures() {
-        return FeatureResolver.select(repo,
-                                      new Selector<ProvisioningFeatureDefinition>() {
-                                          @Override
-                                          public boolean test(ProvisioningFeatureDefinition def) {
-                                              return (!restricted.contains(def.getSymbolicName()));
-                                          }
-                                      });
+        return select(repo,
+                      new Selector<ProvisioningFeatureDefinition>() {
+                          @Override
+                          public boolean test(ProvisioningFeatureDefinition def) {
+                              return (!restricted.contains(def.getSymbolicName()));
+                          }
+                      });
     }
 
     @Override

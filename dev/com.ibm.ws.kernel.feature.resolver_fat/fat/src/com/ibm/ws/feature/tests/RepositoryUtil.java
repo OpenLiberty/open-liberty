@@ -77,11 +77,6 @@ public class RepositoryUtil {
             }
 
             @Override
-            public List<ProvisioningFeatureDefinition> select(Selector<ProvisioningFeatureDefinition> selector) {
-                return baseRepo.select(selector);
-            }
-
-            @Override
             public ProvisioningFeatureDefinition getFeature(String featureName) {
                 return baseRepo.getFeature(featureName);
             }

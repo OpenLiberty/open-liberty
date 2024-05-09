@@ -82,10 +82,10 @@ public class FeatureResolverTest {
                 throw new UnsupportedOperationException("Unimplemented method 'getFeatures'");
             }
 
-            @Override
-            public List<ProvisioningFeatureDefinition> select(FeatureResolver.Selector<ProvisioningFeatureDefinition> selector) {
-                throw new UnsupportedOperationException("Unimplemented method 'select'");
-            }
+            // @Override
+            // public List<ProvisioningFeatureDefinition> select(FeatureResolver.Selector<ProvisioningFeatureDefinition> selector) {
+            //     throw new UnsupportedOperationException("Unimplemented method 'select'");
+            // }
 
             @Override
             public ProvisioningFeatureDefinition getFeature(String featureName) {

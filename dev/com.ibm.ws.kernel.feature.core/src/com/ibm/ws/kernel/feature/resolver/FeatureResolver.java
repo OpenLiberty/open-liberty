@@ -46,40 +46,6 @@ public interface FeatureResolver {
     //
 
     /**
-     * Select feature definitions which match a specified predicate.
-     *
-     * Select from all of the features of a repository.
-     *
-     * See {@link Repository#getFeatures()) and {@link #select(Selector, List)}.
-     *
-     * @param repository A feature repository.
-     * @param selector   A feature selector. If null, all features are selected.
-     *
-     * @return All feature definitions which match the predicate.
-     */
-    static List<ProvisioningFeatureDefinition> select(Repository repository, Selector<ProvisioningFeatureDefinition> selector) {
-        return select(repository.getFeatures(), selector);
-    }
-
-    /**
-     * Select feature definitions which match a specified predicate.
-     *
-     * @param defs     Feature definitions from which to select.
-     * @param selector A feature selector. If null, all features are selected.
-     *
-     * @return All feature definitions which match the predicate.
-     */
-    static List<ProvisioningFeatureDefinition> select(List<ProvisioningFeatureDefinition> defs, Selector<ProvisioningFeatureDefinition> selector) {
-        List<ProvisioningFeatureDefinition> selected = new ArrayList<>(defs.size());
-        for (ProvisioningFeatureDefinition def : defs) {
-            if ((selector == null) || selector.test(def)) {
-                selected.add(def);
-            }
-        }
-        return selected;
-    }
-
-    /**
      * A collection of features which are available for feature resolution.
      */
     public static interface Repository {

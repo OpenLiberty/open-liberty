@@ -302,12 +302,13 @@ public class FeatureResolutionUnitTestBase {
     }
 
     public Result resolveFeatures(VerifyCase verifyCase, List<String> rootErrors) throws Exception {
-        return resolver.resolveFeatures(getRepository(),
-                                        ignoreFeatures("Kernel", verifyCase.input.kernel),
-                                        verifyCase.input.roots,
-                                        Collections.<String> emptySet(), // pre-resolved feature names
-                                        verifyCase.input.isMultiple,
-                                        getProcessTypes(verifyCase));
+        return resolver.resolve(getRepository(),
+                                ignoreFeatures("Kernel", verifyCase.input.kernel),
+                                verifyCase.input.roots,
+                                Collections.<String> emptySet(), // pre-resolved feature names
+                                verifyCase.input.isMultiple,
+                                getProcessTypes(verifyCase),
+                                null);
     }
 
     public static EnumSet<ProcessType> getProcessTypes(VerifyCase verifyCase) {
