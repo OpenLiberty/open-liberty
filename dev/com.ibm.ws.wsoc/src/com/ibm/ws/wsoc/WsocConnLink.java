@@ -40,6 +40,13 @@ import com.ibm.ws.wsoc.external.SessionExt;
 import com.ibm.ws.wsoc.injection.InjectionProvider;
 import com.ibm.ws.wsoc.injection.InjectionProvider12;
 import com.ibm.ws.wsoc.injection.InjectionThings;
+import com.ibm.ws.wsoc.link.LinkRead;
+import com.ibm.ws.wsoc.link.LinkWrite;
+import com.ibm.ws.wsoc.link.LinkWriteExt10;
+import com.ibm.ws.wsoc.link.LinkWriteFactory;
+import com.ibm.ws.wsoc.servercontainer.ServerContainerExt;
+import com.ibm.ws.wsoc.servercontainer.ServletContainerFactory;
+import com.ibm.ws.wsoc.servercontainer.v10.ServerContainerImplFactory10;
 import com.ibm.ws.wsoc.util.Utils;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
@@ -148,7 +155,10 @@ public class WsocConnLink {
 
         TCPWriteRequestContext tcpWriteContext = tcpConnection.getWriteInterface();
         tcpReadContext = tcpConnection.getReadInterface();
-        linkWrite = new LinkWrite();
+
+
+        linkWrite = WebSocketVersionServiceManager.getLinkWriteFactory().getLinkWrite();
+        System.out.println("CREATED " + linkWrite);
         linkRead = new LinkRead();
 
         wrc = new WsocReadCallback();
@@ -609,7 +619,7 @@ public class WsocConnLink {
     }
 
     @FFDCIgnore(IOException.class)
-    protected void close(CloseReason cr, boolean needToCloseSession, boolean cleanupRead) {
+    public void close(CloseReason cr, boolean needToCloseSession, boolean cleanupRead) {
         //signal to close, return if already closing
         boolean closedAlready = false;
         closedAlready = signalClose();
@@ -1186,11 +1196,11 @@ public class WsocConnLink {
         return this.wsocSession;
     }
 
-    protected void callOnError(Throwable throwable) {
+    public void callOnError(Throwable throwable) {
         callOnError(throwable, false);
     }
 
-    protected void callOnError(Throwable throwable, boolean whileReading) {
+    public void callOnError(Throwable throwable, boolean whileReading) {
         signalNotWriting();
         if (whileReading) {
             this.setReadLinkStatus(READ_LINK_STATUS.ON_READ_THREAD);
@@ -1198,7 +1208,7 @@ public class WsocConnLink {
         appEndPoint.onError(wsocSession, throwable);
     }
 
-    protected void callOnClose(String reasonPhrase, CloseReason.CloseCode closeCode) {
+    public void callOnClose(String reasonPhrase, CloseReason.CloseCode closeCode) {
         boolean cleanupRead = false;
 
         if (checkIfClosingAlready()) {
@@ -1322,7 +1332,7 @@ public class WsocConnLink {
         return (int) Constants.DEFAULT_MAX_MSG_SIZE;
     }
 
-    protected InjectionThings pushContexts() {
+    public InjectionThings pushContexts() {
 
         boolean appActivateResult = false;
 
@@ -1379,7 +1389,7 @@ public class WsocConnLink {
         return it;
     }
 
-    protected void popContexts(InjectionThings it) {
+    public void popContexts(InjectionThings it) {
 
         // if CDI 1.2 is loaded, don't need to do anything here
         InjectionProvider12 ip12 = ServiceManager.getInjectionProvider12();

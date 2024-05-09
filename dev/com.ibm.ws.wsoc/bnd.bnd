@@ -26,6 +26,7 @@ Export-Package: \
   com.ibm.ws.wsoc.external, \
   com.ibm.ws.wsoc.outbound, \
   com.ibm.ws.wsoc.injection, \
+  com.ibm.ws.wsoc.link, \
   com.ibm.ws.wsoc, \
   com.ibm.ws.wsoc.servercontainer, \
   com.ibm.websphere.wsoc, \
@@ -39,7 +40,6 @@ Import-Package: \
   *
 
 Private-Package: \
-  com.ibm.ws.wsoc, \
   com.ibm.ws.wsoc.impl, \
   com.ibm.ws.wsoc.util, \
   com.ibm.ws.wsoc.internal.resources,\
@@ -70,6 +70,7 @@ Service-Component: \
     immediate:=true;\
     websocketFactoryService='com.ibm.ws.wsoc.external.WebSocketFactory(service.vendor=IBM)'; \
     servletContainerFactoryService='com.ibm.ws.wsoc.servercontainer.ServletContainerFactory(service.vendor=IBM)'; \
+    linkWriteFactoryService='com.ibm.ws.wsoc.link.LinkWriteFactory(service.vendor=IBM)'; \
     httpRequestorFactoryService='com.ibm.ws.wsoc.outbound.HttpRequestorFactory(service.vendor=IBM)'; \
     clientEndpointConfigCopyFactoryService='com.ibm.ws.wsoc.ClientEndpointConfigCopyFactory(service.vendor=IBM)'; \
     dynamic:='websocketFactoryService,servletContainerFactoryService,httpRequestorFactoryService,clientEndpointConfigCopyFactoryService'; \
@@ -118,7 +119,7 @@ instrument.classesExcludes: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-        io.openliberty.wsoc.ssl.internal;version=latest
+  io.openliberty.wsoc.ssl.internal;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

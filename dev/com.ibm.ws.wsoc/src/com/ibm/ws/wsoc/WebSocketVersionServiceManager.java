@@ -32,6 +32,8 @@ import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
+import com.ibm.ws.wsoc.link.LinkWriteFactory;
+import com.ibm.ws.wsoc.link.LinkWriteFactory10;
 /**
  * Provides various services for differnet features.
  */
@@ -47,9 +49,13 @@ public class WebSocketVersionServiceManager {
 
     private static final AtomicServiceReference<ServletContainerFactory> servletContainerFactorySRRef = new AtomicServiceReference<ServletContainerFactory>("servletContainerFactoryService");
 
+    private static final AtomicServiceReference<LinkWriteFactory> linkWriteFactorySRRef = new AtomicServiceReference<LinkWriteFactory>("linkWriteFactoryService");
+
     private static final WebSocketFactory DEFAULT_WEBSOCKET_FACTORY = new WebSocketFactoryImpl();
 
     private static final ServletContainerFactory DEFAULT_SERVLET_CONTAINER_FACTORY = new ServerContainerImplFactory10();
+
+    private static final LinkWriteFactory DEFAULT_SERVLET_LINK_WRITE_FACTORY = new LinkWriteFactory10();
 
     private static final AtomicServiceReference<HttpRequestorFactory> httpRequestorFactoryServiceRef =
                     new AtomicServiceReference<HttpRequestorFactory>("httpRequestorFactoryService");
@@ -74,6 +80,7 @@ public class WebSocketVersionServiceManager {
         servletContainerFactorySRRef.activate(context);
         httpRequestorFactoryServiceRef.activate(context);
         clientEndpointConfigCopyFactoryServiceRef.activate(context);
+        linkWriteFactorySRRef.activate(context);
     }
 
     /**
@@ -87,6 +94,7 @@ public class WebSocketVersionServiceManager {
         servletContainerFactorySRRef.deactivate(context);
         httpRequestorFactoryServiceRef.deactivate(context);
         clientEndpointConfigCopyFactoryServiceRef.deactivate(context);
+        linkWriteFactorySRRef.deactivate(context);
     }
 
     /**
@@ -152,6 +160,24 @@ public class WebSocketVersionServiceManager {
 
     protected void unsetServletContainerFactoryService(ServiceReference<ServletContainerFactory> service) {
         servletContainerFactorySRRef.unsetReference(service);
+    }
+
+
+    protected static LinkWriteFactory getLinkWriteFactory() {
+        // if websocket 2.2 is enabled, use XXX, else use default (XXX)
+        LinkWriteFactory linkWriteFactory = linkWriteFactorySRRef.getService();
+        if (linkWriteFactory != null) {
+            return linkWriteFactory;
+        }
+        return DEFAULT_SERVLET_LINK_WRITE_FACTORY;
+    }
+
+    protected void setLinkWriteFactoryService(ServiceReference<LinkWriteFactory> service) {
+        linkWriteFactorySRRef.setReference(service);
+    }
+
+    protected void unsetLinkWriteFactoryService(ServiceReference<LinkWriteFactory> service) {
+        linkWriteFactorySRRef.unsetReference(service);
     }
 
     protected void setWebsocketFactoryService(ServiceReference<WebSocketFactory> ref) {

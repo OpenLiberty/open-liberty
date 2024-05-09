@@ -7,7 +7,7 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.wsoc;
+package com.ibm.ws.wsoc.link;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -45,10 +45,24 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.wsoc.AnnotatedEndpoint;
+import com.ibm.ws.wsoc.EndpointMethodHelper;
+import com.ibm.ws.wsoc.FrameFormatException;
+import com.ibm.ws.wsoc.MaxMessageException;
+import com.ibm.ws.wsoc.MessageReadInfo;
+import com.ibm.ws.wsoc.MessageReader;
+import com.ibm.ws.wsoc.MethodData;
+import com.ibm.ws.wsoc.OpcodeType;
+import com.ibm.ws.wsoc.PongMessageImpl;
+import com.ibm.ws.wsoc.WsocBufferException;
+import com.ibm.ws.wsoc.WsocConnLink;
+import com.ibm.ws.wsoc.WsocReadCallback;
+import com.ibm.ws.wsoc.MessageReadInfo.State;
 import com.ibm.ws.wsoc.MessageReader.FSeqState;
 import com.ibm.ws.wsoc.MessageWriter.WRITE_TYPE;
 import com.ibm.ws.wsoc.WsocConnLink.CLOSE_FRAME_STATE;
 import com.ibm.ws.wsoc.WsocConnLink.DATA_TYPE;
+import com.ibm.ws.wsoc.WsocConnLink.LINK_STATUS;
 import com.ibm.ws.wsoc.WsocConnLink.READ_LINK_STATUS;
 import com.ibm.ws.wsoc.util.Utils;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
