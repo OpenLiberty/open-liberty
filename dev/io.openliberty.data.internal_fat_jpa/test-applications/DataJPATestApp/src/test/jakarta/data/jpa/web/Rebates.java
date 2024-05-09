@@ -75,7 +75,6 @@ public interface Rebates { // Do not allow this interface to inherit from other 
     @Save
     Collection<Rebate> processMultiple(Collection<Rebate> r);
 
-    // TODO allow entity return types for Delete?
     @Delete
     void remove(Rebate r);
 

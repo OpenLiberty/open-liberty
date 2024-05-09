@@ -2617,15 +2617,6 @@ public class DataJPATestServlet extends FATServlet {
 
         // Delete
         rebates.remove(r1);
-        // TODO allow entity return type on delete?
-        //r1 = rebates.remove(r1);
-        //assertEquals(Integer.valueOf(1), r1.id());
-        //assertEquals(1.00, r1.amount(), 0.001f);
-        //assertEquals(LocalTime.of(11, 31, 0), r1.purchaseMadeAt());
-        //assertEquals(LocalDate.of(2023, Month.OCTOBER, 16), r1.purchaseMadeOn());
-        //assertEquals(Rebate.Status.PAID, r1.status());
-        //assertEquals(LocalDateTime.of(2023, Month.OCTOBER, 16, 11, 44, 0), r1.updatedAt());
-        //assertEquals(Integer.valueOf(initialVersion + 2), r1.version());
     }
 
     /**
