@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -11,18 +11,16 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
 
--removeheaders = Import-Package
-
-Export-Package: \
- com.ibm.ws.kernel.boot.classloader, \
- io.openliberty.checkpoint.spi
+bVersion: 1.0
 
 instrument.disabled: true
-
 publish.wlp.jar.disabled: true
 
--buildpath: \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	io.openliberty.com.ibm.oti.shared;version=latest
+Bundle-Name: Open J9 CDS share classes stubs
+Bundle-Description: Open J9 CDS share classes stubs, version ${bVersion}
+Bundle-SymbolicName: io.openliberty.com.ibm.oti.shared 
+Export-Package: com.ibm.oti.shared; version=0.0
+Import-Package: *
+
+
