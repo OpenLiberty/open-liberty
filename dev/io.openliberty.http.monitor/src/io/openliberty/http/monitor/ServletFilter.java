@@ -37,8 +37,6 @@ public class ServletFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
 			throws IOException, ServletException {
-		
-		System.out.println("HTTP bundle Servlet Filter doFilter entry");
 
 		String httpRoute;
 		String contextPath = servletRequest.getServletContext().getContextPath();
@@ -49,8 +47,6 @@ public class ServletFilter implements Filter {
 			throw ioe;
 		} catch (ServletException se) {
 			throw se;
-//		} catch (Exception e) { 
-//			//Place Holder - can catch exception thrown by servlet through filter execution
 		} finally {
 			long elapsednanos = System.nanoTime()-nanosStart;
 			
@@ -65,7 +61,6 @@ public class ServletFilter implements Filter {
 
 			// attempt to retrieve the `httpRoute` from the RESTful filter
 			httpRoute = (String) servletRequest.getAttribute("RESTFUL.HTTP.ROUTE");
-			System.out.println(" JAX-RS / RESTFUL-WS $$$$$$ returned httpRoute " + httpRoute);
 			
 			/*
 			 * If it does not exist.
@@ -194,8 +189,9 @@ public class ServletFilter implements Filter {
 			if (httpMetricsMonitor != null) {
 				httpMetricsMonitor.updateHttpStatDuration(httpStatsAttributesHolder, Duration.ofNanos(elapsednanos));
 			} else {
-				Tr.debug(tc, "Could not acquire instance of HTtpStatsMonitor");
-				System.err.println("Could not acquire instance of HTtpStatsMonitor");
+				if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					Tr.debug(tc, "Could not acquire instance of HTTpStatsMonitor. Can not proceed to create/update Mbean.");
+				}
 			}
 
 		}
@@ -222,8 +218,9 @@ public class ServletFilter implements Filter {
 			httpStat.setServerName(httpServletRequest.getServerName());
 			httpStat.setServerPort(httpServletRequest.getServerPort());
 		} else {
-			Tr.debug(tc, "Expected an HttpServletRequest");
-			System.err.println("Expected an HttpServletRequest");
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, String.format("Expected an HttpServletRequest, instead got [%s].",servletRequest.getClass().toString()));
+			}
 		}
 	}
 
@@ -239,8 +236,9 @@ public class ServletFilter implements Filter {
 			HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 			httpStat.setResponseStatus(httpServletResponse.getStatus());
 		} else {
-			Tr.debug(tc, "Expected an HttpServletResponse");
-			System.err.println("Expected an HttpServletResponse");
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, String.format("Expected an HttpServletResponse, instead got [%s].",servletResponse.getClass().toString()));
+			}
 		}
 	}
 	

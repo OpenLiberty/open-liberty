@@ -21,15 +21,13 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
-import com.ibm.wsspi.http.channel.HttpRequestMessage;
-import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.pmi.factory.StatisticActions;
+
+import io.openliberty.http.monitor.metrics.RestMetricManager;
+
 import com.ibm.wsspi.http.HttpRequest;
 
-import com.ibm.wsspi.genericbnf.HeaderField;
-
-import java.lang.reflect.Field;
 import java.time.Duration;
 import java.util.Optional;
 
@@ -115,45 +113,13 @@ public class HttpStatsMonitor extends StatisticActions {
 			networkProtocolName = networkInfo[0];
 			networkVersion = networkInfo[1];
 		} else {
-			Tr.debug(tc, String.format("More values than expected when parsing protocol information: [%s]", protocolInfo) );
-			System.err.println("Something has gone awry");
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, String.format("More values than expected when parsing protocol information: [%s]", protocolInfo) );
+			}
 		}
 
 		httpStat.setNetworkProtocolName(networkProtocolName);
 		httpStat.setNetworkProtocolVersion(networkVersion);
-	}
-
-	//TODO: Use this instead. - related to the SendResponse
-	private void resolveAtributesFromHttpDispatcherLink(HttpDispatcherLink hdl ) {
-		
-		System.out.println("Testing it out - START");
-		//will be able to get status
-		System.out.println();
-		System.out.println("hdl host " + hdl.getRequestedHost());
-		System.out.println("hdl port " + hdl.getRequestedPort());
-		
-		System.out.println("asdf");
-		 hdl.getRequest();
-		 System.out.println("zzd");
-		
-		 try {
-			 
-				HttpRequest httpRequest = hdl.getRequest();
-				System.out.println(" class of httpRequest " + httpRequest);
-				System.out.println("httpRequest URI " + httpRequest.getURI());
-				System.out.println("httpRequest method " + httpRequest.getMethod());
-				System.out.println("httpRequest scheme " + httpRequest.getScheme());
-				System.out.println("httpRequest ver" + httpRequest.getVersion());
-				
-//				System.out.println("httpRequest virHost " + httpRequest.getVirtualHost());
-//				System.out.println("httpRequest virPort " + httpRequest.getVirtualPort());
-				
-				
-				System.out.println("Testing it out - STOP");
-		 } catch(Exception e) {
-			 System.out.println("oof" + e);
-		 }
-		
 	}
 	
 	@ProbeAtEntry
@@ -183,60 +149,50 @@ public class HttpStatsMonitor extends StatisticActions {
 		} else {
 			// uh oh can't resolve status code and/or exceptions
 			System.err.println("Could not resolve response code");
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "Could not resolve response code");
+			}
 		}
 
 		if (probedHttpDispatcherLinkObj != null) {
-
-			//resolveAtributesFromHttpDispatcherLink((HttpDispatcherLink)probedHttpDispatcherLinkObj);
-			
 			HttpDispatcherLink httpDispatcherLink = (HttpDispatcherLink)probedHttpDispatcherLinkObj;
 			httpStatAttributes.setServerName(httpDispatcherLink.getRequestedHost());
-			httpStatAttributes.setServerPort(httpDispatcherLink.getRemotePort());
-			
+			httpStatAttributes.setServerPort(httpDispatcherLink.getRequestedPort());
 			
 			 try {
-				 
+
 					HttpRequest httpRequest = httpDispatcherLink.getRequest();
-					
-//					System.out.println(" class of httpRequest " + httpRequest);
-//					System.out.println("httpRequest URI " + httpRequest.getURI());
-//					System.out.println("httpRequest method " + httpRequest.getScheme());
-//					System.out.println("httpRequest scheme " + httpRequest.getScheme());
-//					System.out.println("httpRequest ver" + httpRequest.getVersion());
 					
 					httpStatAttributes.setHttpRoute(httpRequest.getURI());
 					httpStatAttributes.setRequestMethod(httpRequest.getMethod());
 					httpStatAttributes.setScheme(httpRequest.getScheme());
 					resolveNetwortProtocolInfo(httpRequest.getVersion(), httpStatAttributes);
-					
-
 
 			 } catch(Exception e) {
-				 System.err.println("Something bad happened" + e);
+				 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+					 Tr.debug(tc, String.format("Exception occured %s" +  e));
+				 }
 			 }
 			
-
 			tl_httpStats.set(httpStatAttributes);
 
 		} else {
-			System.err.println("Failed to obtain HttpDispatcherLink Object from probe");
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "Failed to obtain HttpDispatcherLink Object from probe");
+			}
 		}
-
 	}
 
-	// sync static methods for adding/retrieving
 
-	@FFDCIgnore({ClassNotFoundException.class, NoClassDefFoundError.class})
 	public void updateHttpStatDuration(HttpStatAttributes httpStatAttributes, Duration duration) {
 
-		
-		
 		/*
 		 * First validate that we got all properties.
 		 */
 		if (!httpStatAttributes.validate()) {
-			System.err.println("Something isn't quite right");
-			System.err.println(httpStatAttributes.toString());
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, String.format("Invalid HTTP Stats attributes : \n %s", httpStatAttributes.toString()));
+			}
 		}
 		
 		/*
@@ -249,31 +205,18 @@ public class HttpStatsMonitor extends StatisticActions {
 			hms = initializeHttpStat(key, httpStatAttributes);
 		}
 
+		//Monitor bundle when updating statistics will do synchronization
 		hms.updateDuration(duration);
 
-		/*
-		 * Handle metrics
-		 */
-		try {
-			/*
-			 * Need to use String explicitly.
-			 * Otherwise, if you started w/o metrics and load metrics feature,
-			 * SharedMetricRegistries.class will throw NoClassDefFoundDError even
-			 * if it is on bundle's class path.
-			 */
-			if (Class.forName("io.openliberty.microprofile.metrics50.SharedMetricRegistries") != null) {
-				RestMetricManager.updateHttpMetrics(httpStatAttributes, duration);
+		
+		
+		if (RestMetricManager.getInstance() != null ) {
+			RestMetricManager.getInstance().updateHttpMetrics(httpStatAttributes, duration);
+		} else {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+				Tr.debug(tc, "No Available Metric runtimes to forward HTTP stats to.");
 			}
-		} catch (ClassNotFoundException e) {
-			Tr.debug(tc, "Class not found");
-			System.out.println("SharedMetricRegistires ---- Class not found");
-			//e.printStackTrace();
-		} catch (NoClassDefFoundError e) {
-			Tr.debug(tc, "NoClassDefFoundError - because metrics wasn't dynamically imported");
-			System.out.println("SharedMetricRegistires ---- because metrics wasn't dynamically imported");
-			//e.printStackTrace();
 		}
-
 	}
 
 	private synchronized HttpStats initializeHttpStat(String key, HttpStatAttributes statAttri) {
@@ -287,21 +230,19 @@ public class HttpStatsMonitor extends StatisticActions {
 		HttpStats httpMetricStats = new HttpStats(statAttri);
 		HttpConnByRoute.put(key, httpMetricStats);
 		return httpMetricStats;
-
 	}
 
-	/*
-	 * Calculate the key to put in - unique one for METHOD / RESPONSE / ROUTE
+	/**
+	 * Resolve the object name (specifically the name property)
+	 * <code> domain:type=type,name="this"</code>
 	 * 
-	 * Minimal produceable key is : METHOD IF Server encounters error , can create :
-	 * METHOD / RESPONSE
-	 * 
+	 * @param httpStatAttributes
+	 * @return
 	 */
 	private String resolveStatsKey(HttpStatAttributes httpStatAttributes) {
 		
-		
-
 		Optional<String> httpRoute = httpStatAttributes.getHttpRoute();
+		Optional<String> errorType = httpStatAttributes.getErrorType();
 		String requestMethod = httpStatAttributes.getRequestMethod();
 		Optional<Integer> responseStatus = httpStatAttributes.getResponseStatus();
 
@@ -309,96 +250,23 @@ public class HttpStatsMonitor extends StatisticActions {
 		sb.append("\""); // starting quote
 		sb.append("method:" + requestMethod);
 		
-		
 		/*
-		 * For the response status and route, we'll put "nothing" (i.e., "")
-		 * in place for the Mbean object name 
+		 * Status, Route  and errorType may be null.
+		 * In which cas we will not append it to the name property
 		 */
-		//responseStatus.ifPresent(status -> sb.append(";status:" + status));
-		String respStatusString = (responseStatus.isPresent())? responseStatus.get().toString() : ""; 
-		sb.append(";status:" + respStatusString);
-		
-//		httpRoute.ifPresent(route -> {
-//			sb.append(";httpRoute:" + route.replace("*", "\\*"));
-//		});
-		sb.append(";httpRoute:"+httpRoute.orElseGet( () -> "").replace("*", "\\*"));
-		
+		responseStatus.ifPresent(status -> sb.append(";status:" + status));
 
-		String errorType = httpStatAttributes.getErrorType().orElse("");
-		sb.append(";error:" + errorType);
 		
+		httpRoute.ifPresent(route -> {
+			sb.append(";httpRoute:" + route.replace("*", "\\*"));
+		});
+
+		httpRoute.ifPresent(route -> {
+			sb.append(";errorType:" + errorType);
+		});
 
 		sb.append("\""); // ending quote
 		return sb.toString();
-	}
-	
-	private void saveOldCodeForResolvingHTTPAttributes() {
-		
-//		Method getRequestMethod = probedHttpDispatcherLinkObj.getClass().getMethod("getRequest", null);
-//
-//		Object httpRequestObj = getRequestMethod.invoke(probedHttpDispatcherLinkObj, null);
-
-
-//		try {
-//			Field iscField;
-//
-//			iscField = probedHttpDispatcherLinkObj.getClass().getDeclaredField("isc");
-//
-//			iscField.setAccessible(true);
-//
-//			Object httpInboundServiceContextImplObj = iscField.get(probedHttpDispatcherLinkObj);
-//
-//			// TODO: ^^^^what if "httpInboundServiceContextImplObj" is null?! -- or it blows up due to modifying access
-//			// (i.e. the catches below)
-//			// Maybe use a method to encapsulate , if failure or null or excepton use
-//			// alternative method -> see testJustHttpDispatcherLink()
-//
-//			HttpInboundServiceContext httpInboundServiceContextImplInstance = (HttpInboundServiceContext) httpInboundServiceContextImplObj;
-//			
-//			//TODO: vv can this be null? handle that?
-//			HttpRequestMessage httpRequestMessage = httpInboundServiceContextImplInstance.getRequest();
-//			
-//			
-//			//DC: did i even need this? could've just used HDL -> getRequest -> getInfo
-//			httpStatAttributes.setRequestMethod(httpRequestMessage.getMethod());
-//			httpStatAttributes.setScheme(httpRequestMessage.getScheme());
-//
-//			resolveNetwortProtocolInfo(httpRequestMessage.getVersion(), httpStatAttributes);
-//
-//			String serverName = null;
-//
-//			/*
-//			 * Calculate the server-name First try to take it from the Host header
-//			 * 
-//			 * failing that, use InetAddress and get the IP
-//			 */
-//			HeaderField hostHeaderField = httpRequestMessage.getHeader("Host");
-//			String sHostHeader = hostHeaderField.asString();
-//			if (sHostHeader.contains(":")) {
-//				serverName = sHostHeader.split(":")[0];
-//			} else {
-//				serverName = sHostHeader;
-//			}
-//
-//			if (serverName == null) {
-//				serverName = httpInboundServiceContextImplInstance.getLocalAddr().getHostAddress();
-//			}
-//
-//			//System.out.println("servername " + serverName);
-//			httpStatAttributes.setServerName(serverName);
-//
-//			//System.out.println("port " + hisc.getLocalPort());
-//			httpStatAttributes.setServerPort(httpInboundServiceContextImplInstance.getLocalPort());
-//
-//		} catch (NoSuchFieldException e) { // getDeclaredField() call
-//			e.printStackTrace();
-//		} catch (SecurityException e) { // getDeclaredField() call
-//			e.printStackTrace();
-//		} catch (IllegalArgumentException e) { // iscField.get call
-//			e.printStackTrace();
-//		} catch (IllegalAccessException e) { // iscField.get call
-//			e.printStackTrace();
-//		}
 	}
 
 }

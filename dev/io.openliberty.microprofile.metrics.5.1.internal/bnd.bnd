@@ -44,14 +44,16 @@ Export-Package: \
 	io.openliberty.microprofile.metrics50.helper,\
 	io.openliberty.smallrye.metrics.adapters,\
 	io.openliberty.smallrye.metrics.cdi.adapters,\
-	io.openliberty.smallrye.metrics.cdi.adapters51
+	io.openliberty.smallrye.metrics.cdi.adapters51,\
+	io.openliberty.microprofile.metrics50.http
 
 -dsannotations-inherit: true
 -dsannotations: \
 	io.openliberty.microprofile.metrics50.internal.MetricsConfig,\
 	io.openliberty.microprofile.metrics50.SharedMetricRegistries,\
 	io.openliberty.microprofile.metrics50.internal.SmallryeMetricsCDIMetadata,\
-	io.openliberty.microprofile.metrics50.internal.ApplicationListener50
+	io.openliberty.microprofile.metrics50.internal.ApplicationListener50,\
+	io.openliberty.microprofile.metrics50.http.MPMetricsHTTPMetricsAdapterImpl
 
 WS-TraceGroup: METRICS
 
@@ -84,4 +86,5 @@ WS-TraceGroup: METRICS
 	com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.microprofile.metrics.common;version=latest,\
-	com.ibm.ws.microprofile.metrics;version=latest
+	com.ibm.ws.microprofile.metrics;version=latest,\
+	io.openliberty.http.monitor
