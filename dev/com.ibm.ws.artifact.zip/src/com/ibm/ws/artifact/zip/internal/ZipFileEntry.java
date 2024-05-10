@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.ZipFile;
 
 import com.ibm.websphere.ras.Tr;
@@ -113,6 +114,7 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
         return zipEntryData;
     }
 
+    private final AtomicBoolean jarProtocolVirtualDirWarning = new AtomicBoolean();
     /**
      * Answer the URL of this entry.
      *
@@ -134,6 +136,17 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
 
         URI entryUri = rootContainer.createEntryUri(useRelPath);
         if ( entryUri == null ) {
+            return null;
+        } else if (zipEntryData == null && "jar".equals(rootContainer.getProtocol())) {
+            // If the zipEntryData is null this is a "virtualized" entry that doesn't actually
+            // exist in the ZIP file.  When using the "jar" protocol we should not return
+            // URLs for virtualized entries because the JarURLConnection will not be able to
+            // connect to the non-existing JAR entry.
+            
+            // Post a warning the first time this happens
+            if (jarProtocolVirtualDirWarning.compareAndSet(false, true)) {
+                Tr.warning(tc, "CWWKM0129W.missing.dir.entry", rootContainer.getArchiveFilePath(), useRelPath);
+            }
             return null;
         }
 

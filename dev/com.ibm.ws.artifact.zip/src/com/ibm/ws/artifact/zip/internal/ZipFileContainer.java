@@ -462,7 +462,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
      *     this container.
      */
     @Trivial
-    private String getProtocol() {
+    String getProtocol() {
         return ( containerFactoryHolder.useJarUrls() ? "jar" : "wsjar" );
     }
 
@@ -661,7 +661,7 @@ public class ZipFileContainer implements com.ibm.wsspi.artifact.ArtifactContaine
      *
      * @return The absolute path to the archive file.
      */
-    private String getArchiveFilePath() {
+    String getArchiveFilePath() {
         if ( archiveFileLock == null ) {
             return archiveFilePath;
         } else {
