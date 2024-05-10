@@ -7,17 +7,18 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.wsoc.link;
-
-import javax.websocket.SendResult;
+package io.openliberty.wsoc22.link;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.wsoc.link.LinkWrite;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
-public class LinkWriteExt10 extends LinkWrite {
+import jakarta.websocket.SendResult;
 
-        private static final TraceComponent tc = Tr.register(LinkWriteExt10.class);
+public class LinkWriteExt22 extends LinkWrite {
+
+        private static final TraceComponent tc = Tr.register(LinkWriteExt22.class);
     
         public void processWrite(TCPWriteRequestContext wsc) {
 
@@ -31,8 +32,8 @@ public class LinkWriteExt10 extends LinkWrite {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "calling onResult on SendHandler: " + wsocSendHandler);
                 }
-                System.out.println("SESSION TO USE " + connLink.getWsocSession());
-                wsocSendHandler.onResult(SendResultGood);
+                SendResult goodResult = new SendResult(connLink.getWsocSession());
+                wsocSendHandler.onResult(goodResult);
             }
         }
 

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.wsoc.link;
 
@@ -37,10 +34,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.wsoc.MessageWriter;
+import com.ibm.ws.wsoc.MessageWriter.WRITE_TYPE;
 import com.ibm.ws.wsoc.OpcodeType;
 import com.ibm.ws.wsoc.WsocConnLink;
 import com.ibm.ws.wsoc.WsocWriteCallback;
-import com.ibm.ws.wsoc.MessageWriter.WRITE_TYPE;
 import com.ibm.ws.wsoc.util.Utils;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.tcpchannel.TCPRequestContext;
@@ -440,6 +437,7 @@ public abstract class LinkWrite {
         }
 
         if (textStreamEncoders != null) {
+            
             Encoder.TextStream en = (Encoder.TextStream) textStreamEncoders.get(encoderClass);
             if (en != null) {
                 return writeUsingEncoderTextStream(objectToWrite, encoderClass, writeType, en, false);

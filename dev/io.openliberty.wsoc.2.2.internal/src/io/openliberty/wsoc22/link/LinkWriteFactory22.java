@@ -7,11 +7,14 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.wsoc.link;
+package io.openliberty.wsoc22.link;
 
-public class LinkWriteFactory10 implements LinkWriteFactory {
+import com.ibm.ws.wsoc.link.LinkWrite;
+import com.ibm.ws.wsoc.link.LinkWriteFactory;
+
+public class LinkWriteFactory22 implements LinkWriteFactory {
     
     public LinkWrite getLinkWrite() {
-        return new LinkWriteExt10();
+        return new LinkWriteExt22();
     }
 }
