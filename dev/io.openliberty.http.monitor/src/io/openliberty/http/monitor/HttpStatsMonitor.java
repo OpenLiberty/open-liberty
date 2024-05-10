@@ -54,9 +54,7 @@ public class HttpStatsMonitor extends StatisticActions {
 	 * Unconventional as we well set "this" particular instance.
 	 */
 	{
-		System.out.println("init HttpStatMonitor singleton");
 		if (instance == null) {
-			System.out.println(" set ins tance of httpStatMonitor");
 			instance = this;
 		} else {
 			Tr.debug(tc, String.format("Multiple attempts to create %s. We already have an instance", HttpStatsMonitor.class.getName()));
@@ -68,8 +66,10 @@ public class HttpStatsMonitor extends StatisticActions {
 		if (instance != null) {
 			return instance;
 		} else {
-			System.err.println("no instance found");
-			Tr.debug(tc, String.format("No instance of %s found", HttpStatsMonitor.class.getName()));
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+				Tr.debug(tc, String.format("No instance of %s found", HttpStatsMonitor.class.getName()));
+			}
+
 		}
 		return null;
 	}
@@ -81,14 +81,14 @@ public class HttpStatsMonitor extends StatisticActions {
 	@ProbeSite(clazz = "com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink", method = "sendResponse", args = "com.ibm.wsspi.http.channel.values.StatusCodes,java.lang.String,java.lang.Exception,boolean")
 	public void atSendResponseReturn(@This Object probedHttpDispatcherLinkObj) {
 
-		System.out.println("probe out " + Thread.currentThread());
 		
 		long elapsedNanos = System.nanoTime() - tl_startNanos.get();
 		HttpStatAttributes retrievedHttpStatAttr = tl_httpStats.get();
 
 		if (retrievedHttpStatAttr == null) {
-			Tr.debug(tc, "probing out - Unable to retrieve HttpStatAttributes");
-			System.err.println("probing out - Unable to retrieve HttpStatAttributes");
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+				Tr.debug(tc, "Unable to retrieve HttpStatAttributes. Unable t time.");
+			}
 			return;
 		}
 
@@ -128,8 +128,6 @@ public class HttpStatsMonitor extends StatisticActions {
 		
 		tl_httpStats.set(null);; //reset just in case
 		
-		System.out.println("probe in " + Thread.currentThread());
-		
 		tl_startNanos.set(System.nanoTime());
 		HttpStatAttributes httpStatAttributes = new HttpStatAttributes();
 
@@ -148,7 +146,6 @@ public class HttpStatsMonitor extends StatisticActions {
 			}
 		} else {
 			// uh oh can't resolve status code and/or exceptions
-			System.err.println("Could not resolve response code");
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(tc, "Could not resolve response code");
 			}

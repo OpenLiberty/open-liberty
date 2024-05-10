@@ -56,8 +56,9 @@ public class RestMetricManager {
         	return instance;
     	} 
     	
-    	System.err.println("No RestMetricManager Instance available ");
-    	Tr.debug(tc, "No RestMetricManager Instance available ");
+    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+        	Tr.debug(tc, "No RestMetricManager Instance available ");
+    	}
     	return null;
     }
     
