@@ -23,19 +23,20 @@ public class SimpleTestCase {
 
     private List<String> featureInputs = new ArrayList<String>();
     private List<String> featureOutputs = new ArrayList<String>();
-    private String platforms;
+    private List<String> platforms = new ArrayList<String>();
+    private String platformEnv;
 
 
     public SimpleTestCase(List<String> featureInputs, List<String> featureOutputs){
         this.featureInputs = featureInputs;
         this.featureOutputs = featureOutputs;
-        platforms = null;
+        platformEnv = null;
     }
 
     public SimpleTestCase(List<String> featureInputs, List<String> featureOutputs, String platforms){
         this.featureInputs = featureInputs;
         this.featureOutputs = featureOutputs;
-        this.platforms = platforms;
+        this.platformEnv = platforms;
     }
 
     public SimpleTestCase(String[] featureInputs, String[] featureOutputs){
@@ -51,7 +52,7 @@ public class SimpleTestCase {
         return featureOutputs;
     }
 
-    public String getPlatforms(){
-        return platforms;
+    public String getPlatformEnv(){
+        return platformEnv;
     }
 }

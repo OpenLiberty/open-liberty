@@ -40,6 +40,9 @@ public class FeatureManager extends ConfigElement {
     @XmlElement(name = "feature")
     private Set<String> features;
 
+    @XmlElement(name = "platform")
+    private Set<String> platforms;
+
     /**
      * Retrieves the list of features in this configuration. Uses Strings to
      * define feature names to provide flexability for unknown/future features.
@@ -52,6 +55,21 @@ public class FeatureManager extends ConfigElement {
         }
         return this.features;
     }
+
+
+    /**
+     * Retrieves the list of features in this configuration. Uses Strings to
+     * define feature names to provide flexability for unknown/future features.
+     *
+     * @return the list of features in this configuration
+     */
+    public Set<String> getPlatforms() {
+        if (this.platforms == null) {
+            this.platforms = new TreeSet<String>();
+        }
+        return this.platforms;
+    }
+
 
     @Override
     public FeatureManager clone() throws CloneNotSupportedException {
