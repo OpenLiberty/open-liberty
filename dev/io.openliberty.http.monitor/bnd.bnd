@@ -21,10 +21,7 @@ Bundle-Name: io.openliberty.http.monitor
 Bundle-SymbolicName: io.openliberty.http.monitor
 Bundle-Description: io.openliberty.http.monitor; version=${bVersion}
 
-Include-Resource:\
-  META-INF=resources/META-INF
-
-src: src, resources
+src: src
 
 -dsannotations: \
   io.openliberty.http.monitor.ServletContainerInitializer,\
