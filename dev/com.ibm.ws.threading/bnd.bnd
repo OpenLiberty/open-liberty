@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017,2020 IBM Corporation and others.
+# Copyright (c) 2017, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -23,10 +23,12 @@ Bundle-SymbolicName: com.ibm.ws.threading; singleton:=true
 # for the exported API.
 Export-Package: com.ibm.ws.threading;provide:=true, \
                 com.ibm.wsspi.threading;provide:=true, \
-                com.ibm.ws.threading.listeners
+                com.ibm.ws.threading.listeners, \
+                io.openliberty.threading.virtual;provide:=true;-split-package:=merge-first
 
 Private-Package: com.ibm.ws.threading.internal, \
-    com.ibm.ws.threading.internal.resources
+    com.ibm.ws.threading.internal.resources, \
+    io.openliberty.threading.virtual.internal
 
 Import-Package: com.ibm.ws.kernel.boot.core.*,*
 
@@ -55,18 +57,23 @@ Service-Component=com.ibm.ws.threading.internal.DeferrableScheduledExecutorImpl;
     com.ibm.ws.threading.CompletionStageFactory, \
     com.ibm.ws.threading.PolicyExecutorProvider,\
     com.ibm.ws.threading.internal.ExecutorServiceImpl, \
-    com.ibm.ws.threading.internal.ThreadingIntrospector
+    com.ibm.ws.threading.internal.ThreadingIntrospector, \
+    com.ibm.ws.threading.internal.VirtualThreadDisallowed, \
+    io.openliberty.threading.virtual.internal.VirtualThreadOperations
 
 instrument.classesExcludes: com/ibm/ws/threading/internal/resources/*.class
 
 -buildpath: \
-    com.ibm.websphere.org.osgi.core;version=latest,\
-    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-    com.ibm.ws.logging.core;version=latest, \
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.ws.kernel.service;version=latest, \
-    com.ibm.ws.kernel.boot;version=latest, \
-    com.ibm.ws.kernel.boot.core;version=latest
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	io.openliberty.threading.virtual;version=latest,\
+	io.openliberty.threading.virtual.internal;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

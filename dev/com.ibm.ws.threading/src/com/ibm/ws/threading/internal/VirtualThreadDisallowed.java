@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,32 +10,35 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package io.openliberty.threading.internal.java21;
+package com.ibm.ws.threading.internal;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.ThreadFactory;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.propertytypes.SatisfyingConditionTarget;
+import org.osgi.service.condition.Condition;
 
-import com.ibm.ws.threading.VirtualThreadOps;
+import com.ibm.ws.kernel.service.util.JavaInfo;
+
+import io.openliberty.threading.virtual.VirtualThreadOps;
 
 /**
  * Makes Jakarta Data's Repository annotation into a bean defining annotation.
  */
-@Component(name = "io.openliberty.threading.internal.java21.VirtualThreadOperations",
+@Component(name = "com.ibm.ws.threading.internal.VirtualThreadDisallowed",
            configurationPolicy = ConfigurationPolicy.IGNORE,
            service = VirtualThreadOps.class)
-public class VirtualThreadOperations implements VirtualThreadOps {
+@SatisfyingConditionTarget("(&(" + Condition.CONDITION_ID + "=" + JavaInfo.CONDITION_ID + ")(!(" + JavaInfo.CONDITION_ID + ">=21)))")
+public class VirtualThreadDisallowed implements VirtualThreadOps {
+
     @Override
     public ThreadFactory createFactoryOfVirtualThreads(String namePrefix,
                                                        long initialCountValue,
                                                        boolean inherit,
                                                        UncaughtExceptionHandler uncaughtHandler) {
-        Thread.Builder builder = Thread.ofVirtual().name(namePrefix, initialCountValue).inheritInheritableThreadLocals(inherit);
-        if (uncaughtHandler != null)
-            builder = builder.uncaughtExceptionHandler(uncaughtHandler);
-        return builder.factory();
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -43,14 +46,16 @@ public class VirtualThreadOperations implements VirtualThreadOps {
                                       boolean inherit,
                                       UncaughtExceptionHandler uncaughtHandler,
                                       Runnable runnable) {
-        Thread.Builder builder = Thread.ofVirtual().name(name).inheritInheritableThreadLocals(inherit);
-        if (uncaughtHandler != null)
-            builder = builder.uncaughtExceptionHandler(uncaughtHandler);
-        return builder.unstarted(runnable);
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isSupported() {
+        return false;
     }
 
     @Override
     public boolean isVirtual(Thread thread) {
-        return thread.isVirtual();
+        throw new UnsupportedOperationException();
     }
 }
