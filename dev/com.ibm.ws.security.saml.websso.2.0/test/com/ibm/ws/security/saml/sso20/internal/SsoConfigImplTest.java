@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -126,7 +126,7 @@ public class SsoConfigImplTest {
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_clockSkew, 10l);
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_wantAssertionsSigned, true);
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_includeX509InSPMetadata, true);
-        SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_signatureMethodAlgorithm, SignatureMethodAlgorithm.SHA1.toString());
+        SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_signatureMethodAlgorithm, SignatureMethodAlgorithm.SHA256.toString());
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_authnRequestsSigned, true);
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_forceAuthn, true);
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_isPassive, true);
@@ -597,12 +597,12 @@ public class SsoConfigImplTest {
             e.printStackTrace();
             fail("Unexpected exception was thrown: " + e);
         }
-        SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_signatureMethodAlgorithm, "SHA1");
+        SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_signatureMethodAlgorithm, "SHA256");
 
         String result = ssoConfig.getSignatureMethodAlgorithm();
 
-        assertTrue("Algorithm should be " + SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1 + " and got " + result,
-                   result.equals(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1));
+        assertTrue("Algorithm should be " + SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256 + " and got " + result,
+                   result.equals(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256));
     }
 
     @Test

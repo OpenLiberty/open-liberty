@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -113,9 +113,7 @@ public class Solicited {
         //check whether we need to enforce ssl communication with IdP
         if (ssoService.getConfig() != null) {
             if (idpUrl != null && ssoService.getConfig().isHttpsRequired() && !(idpUrl.startsWith("https"))) {
-                throw new SamlException("SAML20_IDP_PROTOCOL_NOT_HTTPS",
-                                null,
-                                new Object[] { idpUrl });
+                throw new SamlException("SAML20_IDP_PROTOCOL_NOT_HTTPS", null, new Object[] { idpUrl });
             }
         }
         String shortRelayState = SamlUtil.generateRandom(); // no need to Base64 encode
@@ -136,14 +134,14 @@ public class Solicited {
         RequestUtil.cacheRequestInfo(shortRelayState, ssoService, cachingRequestInfo); // cache with shorRelayState
         if (!(ssoService.getConfig().isDisableInitialRequestCookie())) {
             irUtil.handleSerializingInitialRequest(req, resp, Constants.SP_INITAL, shortRelayState, cachingRequestInfo, ssoService);
-        }       
+        }
         TAIResult result = postIdp(req, resp, strAuthnRequest, relayState, idpUrl, cachingRequestInfo); // send out with the long relayState
         return result;
     }
 
     /**
      * find the single-sign-on service URL of the IdP
-     * 
+     *
      * @param basicMsgCtx
      * @return
      * @throws SamlException
@@ -163,13 +161,11 @@ public class Solicited {
             if (idpMetadataFile == null || idpMetadataFile.isEmpty()) {
                 throw new SamlException("SAML20_NO_IDP_URL_OR_METADATA",
                                 //SAML20_NO_IDP_URL_OR_METADATA=CWWKS5080E: Cannot find the IdP URL because the identity provider (IdP) metadata file is not set in the service provider (SP) [{0}].
-                                null,
-                                new Object[] { providerId });
+                                null, new Object[] { providerId });
             } else {
                 throw new SamlException("SAML20_NO_IDP_URL_ERROR",
                                 //SAML20_NO_IDP_URL_ERROR=CWWKS5079E: Cannot find the IdP URL through the identity provider (IdP) metadata file [{0}] in the service provider (SP) [{1}].
-                                null,
-                                new Object[] { idpMetadataFile, providerId });
+                                null, new Object[] { idpMetadataFile, providerId });
             }
 
         }
@@ -205,8 +201,7 @@ public class Solicited {
                     String providerId = ssoService.getProviderId();
                     throw new SamlException("SAML20_IDP_METADATA_PARSE_ERROR",
                                     //SAML20_IDP_METADATA_PARSE_ERROR=CWWKS5023E: The identity provider (IdP) metadata file [{0}] in the service provider (SP) [{1}] is not valid. The cause of the error is [{2}]
-                                    null,
-                                    new Object[] { idpMetadataFile, providerId, "No IDPSSODescriptor" });
+                                    null, new Object[] { idpMetadataFile, providerId, "No IDPSSODescriptor" });
                 }
             } else {
                 if (tc.isDebugEnabled()) {
@@ -221,8 +216,7 @@ public class Solicited {
                 String providerId = ssoService.getProviderId();
                 throw new SamlException("SAML20_NO_IDP_URL_ERROR",
                                 //SAML20_NO_IDP_URL_ERROR=CWWKS5079E: Cannot find the IdP URL through the identity provider (IdP) metadata file [{0}] in the service provider (SP) [{1}].
-                                null,
-                                new Object[] { idpMetadaFile, providerId });
+                                null, new Object[] { idpMetadaFile, providerId });
             }
         } catch (ResolverException e) {
             throw new SamlException(e); // Let SamlException handles the unexpected Exception
@@ -237,7 +231,7 @@ public class Solicited {
     // + "<saml:Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">" + acs + "</saml:Issuer> \n"
     // + "<samlp:NameIDPolicy AllowCreate=\"1\" /> \n" + "</samlp:AuthnRequest>"
     /**
-     * 
+     *
      * @param inResponseToId
      * @param req
      * @param basicMsgCtx
@@ -359,7 +353,7 @@ public class Solicited {
 
     /**
      * Send the authnRequest to IdP
-     * 
+     *
      * @param req
      * @param resp
      * @param AuthnRequest
@@ -374,8 +368,7 @@ public class Solicited {
                       String AuthnRequest,
                       String relayState,
                       String idpUrl,
-                      HttpRequestInfo cachingRequestInfo)
-                    throws WebTrustAssociationFailedException {
+                      HttpRequestInfo cachingRequestInfo) throws WebTrustAssociationFailedException {
 
         byte[] authnReqBytes = null;
         try {
@@ -416,49 +409,48 @@ public class Solicited {
         // expect to return a form to redirect to the idp by the browser
         //return TAIResult.create(HttpServletResponse.SC_FORBIDDEN); //
         // change to 401 because admincenter intercepts 403
-        return TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED); 
+        return TAIResult.create(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     /**
      * Signs the given SAML message if it a {@link SignableSAMLObject} and this encoder has signing credentials.
-     * 
+     *
      * @param messageContext current message context
-     * 
+     *
      * @throws MessageEncodingException thrown if there is a problem marshalling or signing the outbound message
      * @throws SamlException
      */
     @SuppressWarnings("unchecked")
     void signAuthnRequest(SAMLObject authnRequest, Credential signingCredential) throws SamlException {
         SsoConfig samlConfig = ssoService.getConfig();
-        //QName qName = Signature.DEFAULT_ELEMENT_NAME;       
+        //QName qName = Signature.DEFAULT_ELEMENT_NAME;
         if (authnRequest instanceof SignableSAMLObject && signingCredential != null) {
             SignableSAMLObject signableMessage = (SignableSAMLObject) authnRequest;
             XMLObjectBuilderFactory builderFactory = XMLObjectProviderRegistrySupport.getBuilderFactory();//v3
-            XMLObjectBuilder<Signature> signatureBuilder = (XMLObjectBuilder<Signature>)builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
+            XMLObjectBuilder<Signature> signatureBuilder = (XMLObjectBuilder<Signature>) builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
             Signature signature = signatureBuilder.buildObject(Signature.DEFAULT_ELEMENT_NAME);
-            signature.setSignatureAlgorithm(samlConfig.getSignatureMethodAlgorithm());//SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256);// SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1); //               
+            signature.setSignatureAlgorithm(samlConfig.getSignatureMethodAlgorithm());
             signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
 
             signature.setSigningCredential(signingCredential);
             signableMessage.setSignature(signature);
 
-            final ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader(); 
+            final ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
             try {
                 //Marshaller marshaller = Configuration.getMarshallerFactory().getMarshaller(signableMessage);
                 Marshaller marshaller = XMLObjectProviderRegistrySupport.getMarshallerFactory().getMarshaller(signableMessage);//v3
                 if (marshaller == null) {
                     throw new SamlException("SAML20_AUTHENTICATION_FAIL",
                                     //"CWWKS5063E: The Web Service Request failed due to the authentication is not successful.",
-                                    null,
-                                    new Object[] {});
+                                    null, new Object[] {});
                 }
-                marshaller.marshall(signableMessage); 
+                marshaller.marshall(signableMessage);
                 Thread.currentThread().setContextClassLoader(SignerProvider.class.getClassLoader());
                 Signer.signObject(signature);
             } catch (Exception e) {
                 throw new SamlException(e, true); // Let SamlException handles opensaml Exception
             } finally {
-                Thread.currentThread().setContextClassLoader(originalClassLoader); 
+                Thread.currentThread().setContextClassLoader(originalClassLoader);
             }
         }
     }

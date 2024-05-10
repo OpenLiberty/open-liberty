@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,6 +30,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+// TODO import com.ibm.ws.crypto.common.FipsUtils;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.SsoConfig;
@@ -307,12 +308,14 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
      */
     @Override
     public String getSignatureMethodAlgorithm() {
-        if ("SHA256".equalsIgnoreCase(signatureMethodAlgorithm)) {
-            return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
-        } else if ("SHA128".equalsIgnoreCase(signatureMethodAlgorithm)) {
-            return SignatureConstants.MORE_ALGO_NS + "rsa-sha128"; //???????
-        } else if ("SHA1".equalsIgnoreCase(signatureMethodAlgorithm)) {
-            return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
+        if (false /* TODO !FipsUtils.isFIPSEnabled() */) {
+            if ("SHA256".equalsIgnoreCase(signatureMethodAlgorithm)) {
+                return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
+            } else if ("SHA128".equalsIgnoreCase(signatureMethodAlgorithm)) {
+                return SignatureConstants.MORE_ALGO_NS + "rsa-sha128"; //???????
+            } else if ("SHA1".equalsIgnoreCase(signatureMethodAlgorithm)) {
+                return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
+            }
         }
         return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
     }

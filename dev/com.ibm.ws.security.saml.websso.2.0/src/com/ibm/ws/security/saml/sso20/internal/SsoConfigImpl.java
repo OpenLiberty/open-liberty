@@ -32,6 +32,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+// TODO com.ibm.ws.crypto.common.FipsUtils;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
@@ -248,7 +249,12 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
         httpsRequired = (Boolean) props.get(KEY_httpsRequired);
         allowCustomCacheKey = (Boolean) props.get(KEY_allowCustomCacheKey);
         wantAssertionsSigned = (Boolean) props.get(KEY_wantAssertionsSigned);
-        signatureMethodAlgorithm = trim((String) props.get(KEY_signatureMethodAlgorithm));
+        if (false /* TODO !FipsUtils.isFIPSEnabled() */) {
+            signatureMethodAlgorithm = trim((String) props.get(KEY_signatureMethodAlgorithm));
+        } else {
+            // In FIPS 140-3 mode we must use SHA-256 which is the default value
+            // TODO message for ignoring config if it was set to SHA1
+        }
         authnRequestsSigned = (Boolean) props.get(KEY_authnRequestsSigned);
         includeX509InSPMetadata = (Boolean) props.get(KEY_includeX509InSPMetadata);
         forceAuthn = (Boolean) props.get(KEY_forceAuthn);
@@ -579,10 +585,12 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
      */
     @Override
     public String getSignatureMethodAlgorithm() {
-        if ("SHA256".equalsIgnoreCase(signatureMethodAlgorithm)) {
-            return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
-        } else if ("SHA1".equalsIgnoreCase(signatureMethodAlgorithm)) {
-            return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
+        if (false /* TODO !FipsUtils.isFIPSEnabled() */ ) {
+            if ("SHA256".equalsIgnoreCase(signatureMethodAlgorithm)) {
+                return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
+            } else if ("SHA1".equalsIgnoreCase(signatureMethodAlgorithm)) {
+                return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
+            }
         }
         return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
     }

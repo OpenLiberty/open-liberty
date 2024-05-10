@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,8 +36,8 @@ import org.opensaml.saml.saml2.core.Status;
 import org.opensaml.saml.saml2.core.StatusCode;
 import org.opensaml.saml.saml2.core.StatusResponseType;
 import org.opensaml.saml.saml2.core.impl.IssuerBuilder;
-import org.opensaml.saml.saml2.core.impl.LogoutResponseMarshaller;
 import org.opensaml.saml.saml2.core.impl.LogoutResponseBuilder;
+import org.opensaml.saml.saml2.core.impl.LogoutResponseMarshaller;
 import org.opensaml.saml.saml2.core.impl.StatusBuilder;
 import org.opensaml.saml.saml2.core.impl.StatusCodeBuilder;
 import org.opensaml.saml.saml2.metadata.EntityDescriptor;
@@ -93,7 +93,7 @@ public class IdPInitiatedSLO {
             Tr.debug(tc, "IdPInitiatedSLO(" + service.getProviderId() + ")");
         }
     }
-    
+
     /**
      * @param ssoService2
      * @param msgCtx
@@ -200,7 +200,7 @@ public class IdPInitiatedSLO {
             //metadata = metadataProvider.getMetadata();
             // TODO: make sure that we have entityDescriptor type
             if (metadata2 != null) {
-                EntityDescriptor entityDescriptor = (EntityDescriptor) metadata2;
+                EntityDescriptor entityDescriptor = metadata2;
                 String idpEntityId = entityDescriptor.getEntityID();
                 //basicMsgCtx.setPeerEntityId(idpEntityId); //
                 IDPSSODescriptor ssoDescriptor = entityDescriptor.getIDPSSODescriptor(Constants.SAML20P_NS);
@@ -354,9 +354,9 @@ public class IdPInitiatedSLO {
         // requestInfo.setFragmentCookieId(cachingRequestInfo.getFragmentCookieId()); //TODO
         // If IdP sends the relaystate, then add it back into response
         if (this.idpRelayState != null) {
-         requestInfo.setParameter("RelayState", new String[] { this.idpRelayState }); // IdP sent one in the Logout request
+            requestInfo.setParameter("RelayState", new String[] { this.idpRelayState }); // IdP sent one in the Logout request
         }
-        
+
         requestInfo.setParameter("SAMLResponse", new String[] { samlResponse });
         requestInfo.redirectPostRequest(req,
                                         resp,
@@ -386,9 +386,9 @@ public class IdPInitiatedSLO {
             SignableSAMLObject signableMessage = (SignableSAMLObject) logoutResponse;
 
             XMLObjectBuilderFactory builderFactory = XMLObjectProviderRegistrySupport.getBuilderFactory();
-            XMLObjectBuilder<Signature> signatureBuilder = (XMLObjectBuilder<Signature>)builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
+            XMLObjectBuilder<Signature> signatureBuilder = (XMLObjectBuilder<Signature>) builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
             Signature signature = signatureBuilder.buildObject(Signature.DEFAULT_ELEMENT_NAME);
-            signature.setSignatureAlgorithm(samlConfig.getSignatureMethodAlgorithm());//SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256);// SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1); //
+            signature.setSignatureAlgorithm(samlConfig.getSignatureMethodAlgorithm());
             signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
 
             signature.setSigningCredential(signingCredential);
@@ -402,13 +402,13 @@ public class IdPInitiatedSLO {
                                     //"CWWKS5063E: The Web Service Request failed due to the authentication is not successful.",
                                     null, new Object[] {});
                 }
-                marshaller.marshall(signableMessage);                
+                marshaller.marshall(signableMessage);
                 Thread.currentThread().setContextClassLoader(SignerProvider.class.getClassLoader());
                 Signer.signObject(signature);
             } catch (Exception e) {
                 throw new SamlException(e, true); // Let SamlException handles opensaml Exception
             } finally {
-                Thread.currentThread().setContextClassLoader(originalClassLoader); 
+                Thread.currentThread().setContextClassLoader(originalClassLoader);
             }
         }
     }

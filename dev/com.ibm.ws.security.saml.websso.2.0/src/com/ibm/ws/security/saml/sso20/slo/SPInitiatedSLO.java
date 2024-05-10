@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -183,10 +183,10 @@ public class SPInitiatedSLO {
         try {
             criteriaSet = new CriteriaSet(new EntityIdCriterion(entityID));
             metadata2 = metadataProvider.resolveSingle(criteriaSet);
-            
+
             // TODO: make sure that we have an EntityDescriptor
             if (metadata2 != null) {
-                EntityDescriptor entityDescriptor = (EntityDescriptor) metadata2;
+                EntityDescriptor entityDescriptor = metadata2;
                 String idpEntityId = entityDescriptor.getEntityID(); // output variable
                 //basicMsgCtx.setPeerEntityId(idpEntityId);
                 IDPSSODescriptor ssoDescriptor = entityDescriptor.getIDPSSODescriptor(Constants.SAML20P_NS);
@@ -369,14 +369,15 @@ public class SPInitiatedSLO {
 //        } catch (ServletException e1) {
 //            //throw new SamlException(e1); //TODO
 //        }
-        //@AV999-092821 
-        if(req.getAttribute("OIDC_END_SESSION_REDIRECT") != null || req.getAttribute("OIDC_LOGOUT_REDIRECT_URL") != null || req.getAttribute("OIDC_LOGOUT_REDIRECT_PAGE") != null) {
+        //@AV999-092821
+        if (req.getAttribute("OIDC_END_SESSION_REDIRECT") != null || req.getAttribute("OIDC_LOGOUT_REDIRECT_URL") != null
+            || req.getAttribute("OIDC_LOGOUT_REDIRECT_PAGE") != null) {
             resp.setStatus(javax.servlet.http.HttpServletResponse.SC_ACCEPTED);
         } else {
             resp.setStatus(javax.servlet.http.HttpServletResponse.SC_OK);
-        
+
         }
-        
+
         ForwardRequestInfo requestInfo = new ForwardRequestInfo(idpUrl);
         requestInfo.setFragmentCookieId(cachingRequestInfo.getFragmentCookieId());
         requestInfo.setParameter("RelayState", new String[] { relayState });
@@ -407,11 +408,11 @@ public class SPInitiatedSLO {
         SsoConfig samlConfig = ssoService.getConfig();
         if (logoutRequest instanceof SignableSAMLObject && signingCredential != null) {
             SignableSAMLObject signableMessage = (SignableSAMLObject) logoutRequest;
-            
+
             XMLObjectBuilderFactory builderFactory = XMLObjectProviderRegistrySupport.getBuilderFactory();
-            XMLObjectBuilder<Signature> signatureBuilder = (XMLObjectBuilder<Signature>)builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
+            XMLObjectBuilder<Signature> signatureBuilder = (XMLObjectBuilder<Signature>) builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
             Signature signature = signatureBuilder.buildObject(Signature.DEFAULT_ELEMENT_NAME);
-            signature.setSignatureAlgorithm(samlConfig.getSignatureMethodAlgorithm());//SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256);// SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1); //
+            signature.setSignatureAlgorithm(samlConfig.getSignatureMethodAlgorithm());
             signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
 
             signature.setSigningCredential(signingCredential);
@@ -433,12 +434,12 @@ public class SPInitiatedSLO {
                             return SignerProvider.class.getClassLoader();
                         }
                     });
-                    setTCCLPrivAction(cl);                   
+                    setTCCLPrivAction(cl);
                 } else {
                     originalClassLoader = Thread.currentThread().getContextClassLoader();
                     cl = SignerProvider.class.getClassLoader();
                     Thread.currentThread().setContextClassLoader(cl);
-                }              
+                }
                 Signer.signObject(signature);
             } catch (Exception e) {
                 throw new SamlException(e, true); // Let SamlException handles opensaml Exception
@@ -451,12 +452,12 @@ public class SPInitiatedSLO {
             }
         }
     }
-    
+
     boolean privileged() {
         return (System.getSecurityManager() != null);
     }
-    
-    ClassLoader getTCCLPrivAction() {      
+
+    ClassLoader getTCCLPrivAction() {
         ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
             @Override
             public ClassLoader run() {
@@ -465,7 +466,7 @@ public class SPInitiatedSLO {
         });
         return cl;
     }
-    
+
     void setTCCLPrivAction(ClassLoader cl) {
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
             @Override
